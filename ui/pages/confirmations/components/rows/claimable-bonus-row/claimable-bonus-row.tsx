@@ -71,7 +71,6 @@ export function ClaimableBonusRow({
               <TextButton
                 key="terms-link"
                 variant={TextVariant.BodyMd}
-                isInverse
                 asChild
               >
                 <a

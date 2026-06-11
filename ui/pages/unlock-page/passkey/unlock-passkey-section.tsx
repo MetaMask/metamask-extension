@@ -301,7 +301,7 @@ export const UnlockPasskeySection = ({
           <TextButton
             type="button"
             data-testid="unlock-passkey-troubleshoot-button"
-            color={TextColor.PrimaryDefault}
+
             className="text-center"
             onClick={() => setShowTroubleshootModal(true)}
           >
@@ -322,7 +322,6 @@ export const UnlockPasskeySection = ({
       <TextButton
         type="button"
         data-testid="unlock-use-password-button"
-        color={TextColor.PrimaryDefault}
         className="text-center"
         onClick={handleUsePassword}
       >

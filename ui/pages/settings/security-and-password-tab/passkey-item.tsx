@@ -8,7 +8,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
-import { TextButton, TextColor } from '@metamask/design-system-react';
+import { TextButton } from '@metamask/design-system-react';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -254,7 +254,6 @@ const PasskeyItem = () => {
           <TextButton
             type="button"
             data-testid="security-passkey-sidepanel-continue-full-screen"
-            color={TextColor.PrimaryDefault}
             className="mt-2 flex w-full justify-start text-left"
             onClick={() => setShowPasskeyTroubleshootModal(true)}
           >

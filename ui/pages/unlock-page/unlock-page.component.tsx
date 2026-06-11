@@ -784,11 +784,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                   type="button"
                   onClick={this.onForgotPasswordOrLoginWithDiffMethods}
                   className="mb-4"
-                  color={
-                    isRehydrationFlow
-                      ? TextColor.TextDefault
-                      : TextColor.PrimaryDefault
-                  }
                 >
                   {isRehydrationFlow
                     ? t('useDifferentLoginMethod')

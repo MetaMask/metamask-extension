@@ -412,7 +412,6 @@ export default function SetupPasskeyContent({
             <TextButton
               type="button"
               className="w-full"
-              color={TextColor.PrimaryDefault}
               data-testid="passkey-maybe-later-button"
               onClick={handleMaybeLater}
             >

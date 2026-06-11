@@ -33,33 +33,29 @@ const AddRewardsAccount = ({ account }: AddRewardsAccountProps) => {
 
   return (
     <TextButton
-      onClick={handleClick}
-      textProps={{ variant: TextVariant.BodySm }}
+      onClick={isLoading ? undefined : handleClick}
+      variant={TextVariant.BodySm}
       data-testid="add-rewards-account-button"
-      startAccessory={
-        isLoading ? (
-          <Icon name={IconName.Loading} size={IconSize.Sm} />
-        ) : (
-          <img
-            src={'./images/metamask-rewards-points-alternative.svg'}
-            alt={t('rewardsPointsIcon')}
-            width={16}
-            height={16}
-          />
-        )
-      }
-      endAccessory={
-        isError ? (
-          <Icon
-            name={IconName.Refresh}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
-        ) : undefined
-      }
-      disabled={isLoading}
+      aria-disabled={isLoading}
     >
+      {isLoading ? (
+        <Icon name={IconName.Loading} size={IconSize.Sm} />
+      ) : (
+        <img
+          src={'./images/metamask-rewards-points-alternative.svg'}
+          alt={t('rewardsPointsIcon')}
+          width={16}
+          height={16}
+        />
+      )}
       {isError ? t('rewardsLinkAccountError') : t('rewardsLinkAccount')}
+      {isError && (
+        <Icon
+          name={IconName.Refresh}
+          size={IconSize.Sm}
+          color={IconColor.IconAlternative}
+        />
+      )}
     </TextButton>
   );
 };

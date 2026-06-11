@@ -274,8 +274,8 @@ const AccountList = ({
     <Box flexDirection={BoxFlexDirection.Row} className="hw-list-pagination">
       <TextButton
         className="hw-list-pagination__button"
-        isDisabled={isFirstPage}
-        onClick={goToPreviousPage}
+        aria-disabled={isFirstPage}
+        onClick={isFirstPage ? undefined : goToPreviousPage}
         data-testid="hw-list-pagination__prev-button"
       >
         {`< ${t('prev')}`}

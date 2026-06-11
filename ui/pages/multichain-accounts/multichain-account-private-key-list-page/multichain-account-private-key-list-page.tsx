@@ -14,6 +14,7 @@ import {
   ButtonIconSize,
   IconName,
   TextButton,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { AccountGroupId } from '@metamask/account-api';
 import {
@@ -21,7 +22,7 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { TextVariant as LegacyTextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainPrivateKeyList } from '../../../components/multichain-accounts/multichain-private-key-list';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
@@ -75,7 +76,7 @@ export const MultichainAccountPrivateKeyListPage = ({
     <Page>
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: LegacyTextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon

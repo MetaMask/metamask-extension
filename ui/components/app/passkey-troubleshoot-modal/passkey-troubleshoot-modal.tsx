@@ -158,7 +158,6 @@ export default function PasskeyTroubleshootModal({
               {t('passkeyTroubleshootModalOpenFullScreen')}
             </Button>
             <TextButton
-              color={TextColor.PrimaryDefault}
               className="text-center"
               onClick={handleStillHavingTrouble}
               asChild

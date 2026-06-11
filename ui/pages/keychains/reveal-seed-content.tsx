@@ -138,10 +138,10 @@ export function RevealSeedContent({
             recoveryPhraseChipsContainerClassName="recovery-phrase-chips-container"
           />
           <TextButton
-            onClick={onCopy}
+            onClick={phraseRevealed ? onCopy : undefined}
             data-testid="reveal-seed-copy-button"
+            aria-disabled={!phraseRevealed}
             className="hover:bg-transparent flex justify-center items-center w-full active:bg-transparent"
-            isDisabled={!phraseRevealed}
           >
             <Icon
               name={IconName.Copy}

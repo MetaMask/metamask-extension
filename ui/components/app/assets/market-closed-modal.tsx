@@ -53,10 +53,8 @@ export const MarketClosedModal = ({
               {t('bridgeMarketClosedModalDescription')}&nbsp;
               <TextButton
                 asChild
+                variant={TextVariant.BodyMd}
                 data-testid="market-closed-modal-learn-more"
-                textProps={{
-                  variant: TextVariant.BodyMd,
-                }}
                 style={{
                   alignItems: AlignItems.flexStart,
                 }}

@@ -101,7 +101,6 @@ export const SrpCard = ({
           {!hideShowAccounts && (
             <TextButton
               variant={TextVariant.BodySm}
-              color={TextColor.PrimaryDefault}
               className="srp-list__show-accounts"
               data-testid={`srp-list-show-accounts-${index}`}
               onClick={(event: React.MouseEvent) => {

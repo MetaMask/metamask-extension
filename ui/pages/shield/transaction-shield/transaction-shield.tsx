@@ -504,16 +504,12 @@ const TransactionShield = () => {
                   <TextButton
                     data-testid="shield-detail-manage-plan-button"
                     className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative hover:bg-transparent"
-                    endIconName={IconName.ArrowRight}
-                    endIconProps={{
-                      size: IconSize.Sm,
-                      color: IconColor.IconAlternative,
-                    }}
                     onClick={() => {
                       navigate(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
                     }}
                   >
                     {t('shieldTxDetailsManage')}
+                    <Icon name={IconName.ArrowRight} size={IconSize.Sm} color={IconColor.IconAlternative} />
                   </TextButton>
                 )}
               </Box>
@@ -572,16 +568,12 @@ const TransactionShield = () => {
               <TextButton
                 data-testid="shield-detail-view-benefits-button"
                 className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative hover:bg-transparent"
-                endIconName={IconName.ArrowRight}
-                endIconProps={{
-                  size: IconSize.Sm,
-                  color: IconColor.IconAlternative,
-                }}
                 onClick={() => {
                   handleViewFullBenefitsClicked();
                 }}
               >
                 {t('shieldTxMembershipBenefitsViewAll')}
+                <Icon name={IconName.ArrowRight} size={IconSize.Sm} color={IconColor.IconAlternative} />
               </TextButton>
             )}
           </Box>

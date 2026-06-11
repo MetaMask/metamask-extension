@@ -584,7 +584,6 @@ const ChangePassword = ({
             <TextButton
               type="button"
               data-testid="change-password-passkey-verifying-open-full-screen"
-              color={TextColor.PrimaryDefault}
               className="text-center"
               onClick={() => setShowPasskeyTroubleshootModal(true)}
             >
@@ -594,7 +593,6 @@ const ChangePassword = ({
           <TextButton
             type="button"
             data-testid="change-password-verify-passkey-use-password"
-            color={TextColor.PrimaryDefault}
             className="text-center mt-4"
             onClick={handleUseVerifyPassword}
           >
@@ -668,7 +666,6 @@ const ChangePassword = ({
                     <TextButton
                       type="button"
                       data-testid="change-password-passkey-toggle-open-full-screen"
-                      color={TextColor.PrimaryDefault}
                       className="mt-2 flex w-full justify-start text-left"
                       onClick={() => setShowPasskeyTroubleshootModal(true)}
                     >

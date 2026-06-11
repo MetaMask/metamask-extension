@@ -48,7 +48,6 @@ export function useMusdConversionHeaderContent(): HeaderContent {
               <TextButton
                 key="terms-link"
                 variant={TextVariant.BodyMd}
-                isInverse
                 asChild
               >
                 <a
