@@ -63,6 +63,40 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps an ERC-20 transfer with an incidental receive transfer to a Send activity', () => {
+    const transaction =
+      apiResponses.lineaAaveUsdcSendWithRebaseCredit as unknown as V1TransactionByHashResponse;
+    const aaveLineaUsdc = transaction.to;
+    const senderAddress = transaction.from;
+    const recipientAddress = transaction.valueTransfers?.[1]?.to;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress: senderAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toMatchObject({
+      type: 'send',
+      chainId: 'eip155:59144',
+      status: 'success',
+      timestamp: 1778074371000,
+      data: {
+        from: senderAddress,
+        to: recipientAddress,
+        hash: transaction.hash,
+        token: {
+          direction: 'out',
+          amount: '419402',
+          decimals: 6,
+          symbol: 'aLinUSDC',
+          assetId: toAssetId(aaveLineaUsdc, 'eip155:59144'),
+        },
+      },
+    });
+  });
+
   it('maps a native value contract call without method data to a Send activity', () => {
     const transaction = {
       hash: '0x64d2f26c261178252fcad9dbb665cf40337b827a582066553dd6634eaeea9f0a',

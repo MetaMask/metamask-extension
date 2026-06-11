@@ -121,24 +121,9 @@
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
     "currencyRates": {
-      "BNB": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
-      },
       "ETH": {
         "conversionDate": "object",
         "conversionRate": 1700,
-        "usdConversionRate": null
-      },
-      "MON": {
-        "conversionDate": "object",
-        "conversionRate": null,
-        "usdConversionRate": null
-      },
-      "POL": {
-        "conversionDate": null,
-        "conversionRate": null,
         "usdConversionRate": null
       }
     },
@@ -261,6 +246,7 @@
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
     "methodData": "object",
+    "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": "object",
     "musdConversionDismissedCtaKeys": "object",

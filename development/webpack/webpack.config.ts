@@ -44,6 +44,7 @@ import {
   UI_RELOAD_CLIENT_ENTRY_NAME,
 } from './utils/dev-server/reload-protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
+import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -171,7 +172,7 @@ const manifestPlugin = new ManifestPlugin({
     ? {
         zipOptions: {
           outFilePath: `../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
-          mtime: getLatestCommit().timestamp(),
+          mtime: getDefaultZipMtime(),
           excludeExtensions: ['.map'],
           // `level: 9` is the highest; it may increase build time by ~5% over level 1
           level: 9,

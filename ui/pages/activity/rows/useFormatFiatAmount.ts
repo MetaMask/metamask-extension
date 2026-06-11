@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   KnownCaipNamespace,
@@ -14,17 +14,13 @@ import {
   getDisplaySignPrefix,
   toMarketRateLookupToken,
 } from '../../../../shared/lib/activity/fiat';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
+import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { selectMarketRates } from '../../../selectors/activity';
 import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
 import { useAppSelector } from '../../../store/store';
-import { shouldShowPlusSign } from '../helpers';
 
 function resolveHexChainId(
   chainIdForFiat: Hex | CaipChainId | undefined,
@@ -54,8 +50,6 @@ function resolveHexChainId(
 }
 
 export function useFormatFiatAmount(
-  item: ActivityListItem,
-  primaryToken: TokenAmount | undefined,
   chainIdForFiat: Hex | CaipChainId | undefined,
 ) {
   const marketRates = useSelector(selectMarketRates);
@@ -68,46 +62,50 @@ export function useFormatFiatAmount(
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const hexChainId = resolveHexChainId(chainIdForFiat);
 
-  return useMemo(() => {
-    if (!shouldShowFiat || !primaryToken || !hexChainId) {
-      return undefined;
-    }
+  return useCallback(
+    (
+      primaryToken: TokenAmount | undefined,
+      options: { showPlus?: boolean } = {},
+    ) => {
+      if (!shouldShowFiat || !primaryToken || !hexChainId) {
+        return undefined;
+      }
 
-    const humanAmount = getHumanReadableTokenAmount(primaryToken);
-    const lookupToken = toMarketRateLookupToken(primaryToken, hexChainId);
+      const humanAmount = getHumanReadableTokenAmount(primaryToken);
+      const lookupToken = toMarketRateLookupToken(primaryToken, hexChainId);
 
-    if (humanAmount === undefined || !lookupToken) {
-      return undefined;
-    }
+      if (humanAmount === undefined || !lookupToken) {
+        return undefined;
+      }
 
-    const fiatMagnitude = calculateFiatFromMarketRates(
-      humanAmount,
-      lookupToken,
+      const fiatMagnitude = calculateFiatFromMarketRates(
+        humanAmount,
+        lookupToken,
+        marketRates,
+      );
+
+      if (fiatMagnitude === undefined) {
+        return undefined;
+      }
+
+      const fiatValue =
+        primaryToken.direction === 'out' ? -fiatMagnitude : fiatMagnitude;
+      const formattedFiat = formatCurrencyWithMinThreshold(
+        fiatValue,
+        currentCurrency,
+      );
+      const signPrefix = getDisplaySignPrefix(primaryToken.direction, {
+        showPlus: options.showPlus ?? true,
+      });
+
+      return applyDisplaySign(formattedFiat, signPrefix);
+    },
+    [
+      shouldShowFiat,
+      hexChainId,
       marketRates,
-    );
-
-    if (fiatMagnitude === undefined) {
-      return undefined;
-    }
-
-    const fiatValue =
-      primaryToken.direction === 'out' ? -fiatMagnitude : fiatMagnitude;
-    const formattedFiat = formatCurrencyWithMinThreshold(
-      fiatValue,
       currentCurrency,
-    );
-    const signPrefix = getDisplaySignPrefix(primaryToken.direction, {
-      showPlus: shouldShowPlusSign(item.type),
-    });
-
-    return applyDisplaySign(formattedFiat, signPrefix);
-  }, [
-    shouldShowFiat,
-    primaryToken,
-    item.type,
-    hexChainId,
-    marketRates,
-    currentCurrency,
-    formatCurrencyWithMinThreshold,
-  ]);
+      formatCurrencyWithMinThreshold,
+    ],
+  );
 }
