@@ -37,9 +37,7 @@ function filterE2eChangedFiles(changedFilesPaths) {
     (file) =>
       file.startsWith('test/e2e/') &&
       (file.endsWith('.spec.js') || file.endsWith('.spec.ts')) &&
-      // `*.pw.spec.ts` files are Playwright specs. They are discovered and
-      // executed by the Playwright runner, not Mocha. See migration
-      // design doc §4.
+      // TODO: add e2e quality gate for Playwright tests
       !file.endsWith('.pw.spec.ts'),
   );
   return e2eChangedFiles;
