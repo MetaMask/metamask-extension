@@ -827,18 +827,20 @@ const selectTokenBalancesStateForBalances = createSelector(
     // aggregated balance — USDC is the display currency on Arc, not the native.
     const result: typeof tokenBalances = {};
     for (const [account, chainMap] of Object.entries(tokenBalances)) {
-      result[account] = {};
+      const accountKey = account as Hex;
+      result[accountKey] = {};
       for (const [chainId, addressMap] of Object.entries(chainMap)) {
+        const chainKey = chainId as Hex;
         if (chainId === CHAIN_IDS.ARC) {
           const filtered: typeof addressMap = {};
           for (const [address, balance] of Object.entries(addressMap)) {
             if (address.toLowerCase() !== ARC_ZERO_ADDRESS) {
-              filtered[address] = balance;
+              filtered[address as Hex] = balance as Hex;
             }
           }
-          result[account][chainId] = filtered;
+          result[accountKey][chainKey] = filtered;
         } else {
-          result[account][chainId] = addressMap;
+          result[accountKey][chainKey] = addressMap;
         }
       }
     }
