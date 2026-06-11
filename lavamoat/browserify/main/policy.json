@@ -1971,7 +1971,7 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/bridge-status-controller>@metamask/keyring-controller": {
+    "@metamask/bridge-status-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
       },
@@ -1988,7 +1988,7 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/bridge-status-controller>@metamask/keyring-controller": {
+    "@metamask/transaction-pay-controller>@metamask/bridge-status-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
       },
