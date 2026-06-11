@@ -2479,6 +2479,20 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   },
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_pay_extended: {
+    name: 'confirmations_pay_extended',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      payStrategies: { relay: { gaslessEnabled: true } },
+      prefilledAmount: {
+        default: { enabled: false },
+      },
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_post_quote: {
     name: 'confirmations_pay_post_quote',
     type: FeatureFlagType.Remote,
