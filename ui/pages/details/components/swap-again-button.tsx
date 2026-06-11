@@ -5,7 +5,6 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
-import { getHumanReadableTokenAmount } from '../../../../shared/lib/activity/fiat';
 import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -37,16 +36,11 @@ export function SwapAgainButton({
     }
 
     const params = new URLSearchParams();
-    const amount = getHumanReadableTokenAmount(sourceToken);
 
     params.set(BridgeQueryParams.From, sourceToken.assetId);
     params.set(BridgeQueryParams.To, destinationToken.assetId);
 
-    if (amount) {
-      params.set(BridgeQueryParams.Amount, amount);
-    }
-
-    return params.toString() ? params : undefined;
+    return params;
   }, [destinationToken, sourceToken]);
 
   const handleClick = useCallback(() => {
