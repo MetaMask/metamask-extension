@@ -510,13 +510,8 @@ describe('ManifestPlugin', () => {
       initialFiles: string[],
       asyncFiles: string[] = [],
     ) {
-      const asyncChunkGroup = {
-        getFiles: () => asyncFiles,
-      };
       return {
         getFiles: () => initialFiles,
-        getChildren: () =>
-          asyncFiles.length ? new Set([asyncChunkGroup]) : new Set(),
         getEntrypointChunk: () => ({
           getAllAsyncChunks: () =>
             new Set(asyncFiles.length ? [{ files: new Set(asyncFiles) }] : []),
@@ -555,6 +550,7 @@ describe('ManifestPlugin', () => {
       stats = true,
       context = entrypointsStatsFixtureContext,
       manifestVersion = 3,
+      htmlScriptReferences = {},
     }: {
       entrypoints?: Record<string, ReturnType<typeof createMockEntrypoint>>;
       assets?: Record<string, number | string | Buffer>;
@@ -563,6 +559,7 @@ describe('ManifestPlugin', () => {
       stats?: boolean;
       context?: string;
       manifestVersion?: 2 | 3;
+      htmlScriptReferences?: Record<string, readonly string[]>;
     } = {}) {
       const files = Object.keys(assets);
       const { compiler, compilation, promise } = mockWebpack(
@@ -577,6 +574,42 @@ describe('ManifestPlugin', () => {
       compilation.entrypoints = new Map(
         Object.entries(entrypoints),
       ) as typeof compilation.entrypoints;
+      const entryModules = new Map<object, { resource?: string }>();
+      const entryDependencies = new Map<string, object>();
+      const incomingConnections = new Map<
+        { resource?: string },
+        { originModule: { resource: string } }[]
+      >();
+      compilation.entries = new Map(
+        Object.keys(entrypoints).map((name) => {
+          const dependency = {};
+          const module = { resource: join(context, `${name}.js`) };
+          entryDependencies.set(name, dependency);
+          entryModules.set(dependency, module);
+          return [name, { dependencies: [dependency] }];
+        }),
+      ) as typeof compilation.entries;
+
+      for (const [entrypointName, issuerResources] of Object.entries(
+        htmlScriptReferences,
+      )) {
+        const dependency = entryDependencies.get(entrypointName);
+        const module = dependency ? entryModules.get(dependency) : undefined;
+        if (module) {
+          incomingConnections.set(
+            module,
+            issuerResources.map((resource) => ({
+              originModule: { resource },
+            })),
+          );
+        }
+      }
+
+      compilation.moduleGraph = {
+        getModule: (dependency: object) => entryModules.get(dependency),
+        getIncomingConnections: (module: { resource?: string }) =>
+          incomingConnections.get(module) ?? [],
+      } as typeof compilation.moduleGraph;
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
         manifest_version: manifestVersion,
@@ -665,44 +698,7 @@ describe('ManifestPlugin', () => {
       });
     });
 
-    it('classifies manifest and HTML entrypoints internally', async () => {
-      const compilation = await buildStatsAssets({
-        context: entrypointsStatsFixtureContext,
-        assets: {
-          'service-worker.js': 10,
-          'scripts/contentscript.js': 20,
-          'home.js': 30,
-          'offscreen.js': 50,
-          'trezor-usb-permissions.js': 60,
-        },
-        entrypoints: {
-          'service-worker.js': createMockEntrypoint(['service-worker.js']),
-          'scripts/contentscript.js': createMockEntrypoint([
-            'scripts/contentscript.js',
-          ]),
-          home: createMockEntrypoint(['home.js']),
-          offscreen: createMockEntrypoint(['offscreen.js']),
-          'trezor-usb-permissions': createMockEntrypoint([
-            'trezor-usb-permissions.js',
-          ]),
-        },
-      });
-
-      const summary = readJsonAsset<BundleSizeSummary>(
-        compilation,
-        chromeSummaryAssetPath,
-      );
-      assert.deepStrictEqual(summary, {
-        background: 120,
-        ui: 30,
-        common: 0,
-        other: 0,
-        contentScripts: 20,
-        timestamp: summary.timestamp,
-      });
-    });
-
-    it('counts HtmlBundler-injected script files for HTML entrypoints', async () => {
+    it('counts webpack script entrypoints referenced by HTML entrypoints', async () => {
       const compilation = await buildStatsAssets({
         context: entrypointsStatsFixtureContext,
         assets: {
@@ -710,16 +706,25 @@ describe('ManifestPlugin', () => {
           'offscreen.js': 20,
           'offscreen-extra.js': 30,
           'offscreen-async.js': 40,
-          'offscreen.html':
-            '<html><script src="offscreen.js"></script><script src="offscreen-extra.js"></script></html>',
           'home.js': 50,
         },
         entrypoints: {
-          offscreen: createMockEntrypoint(
-            ['runtime.js', 'offscreen.js', 'offscreen.html'],
+          offscreen: createMockEntrypoint(['runtime.js']),
+          'offscreen.1': createMockEntrypoint(
+            ['runtime.js', 'offscreen.js', 'offscreen-extra.js'],
             ['offscreen-async.js'],
           ),
           home: createMockEntrypoint(['home.js']),
+        },
+        htmlScriptReferences: {
+          'offscreen.1': [
+            join(
+              entrypointsStatsFixtureContext,
+              'html',
+              'background',
+              'offscreen.html',
+            ),
+          ],
         },
         debug: true,
       });
@@ -741,6 +746,11 @@ describe('ManifestPlugin', () => {
         entrypoints: Record<string, unknown>;
       }>(compilation, chromeDebugAssetPath);
       assert.deepStrictEqual(debugArtifact.entrypoints.offscreen, {
+        categories: ['background'],
+        initialFiles: [{ name: 'runtime.js', size: 10 }],
+        asyncFiles: [],
+      });
+      assert.deepStrictEqual(debugArtifact.entrypoints['offscreen.1'], {
         categories: ['background'],
         initialFiles: [
           { name: 'runtime.js', size: 10 },
@@ -1503,6 +1513,10 @@ describe('ManifestPlugin', () => {
       __dirname,
       'fixtures/ManifestPlugin/entrypoints',
     );
+    const html = [
+      { directory: join('html', 'ui'), category: 'ui' },
+      { directory: join('html', 'background'), category: 'background' },
+    ] as const;
 
     function mockEntrypoint(...files: string[]) {
       return { getFiles: () => files };
@@ -1521,6 +1535,7 @@ describe('ManifestPlugin', () => {
           description: null,
           buildType: 'main',
           zip: false,
+          html,
         });
 
         plugin.apply(compiler);
@@ -1598,6 +1613,7 @@ describe('ManifestPlugin', () => {
           description: null,
           buildType: 'main',
           zip: false,
+          html,
         });
 
         plugin.apply(compiler);
