@@ -270,7 +270,8 @@ async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
     // otherwise overwrite the seeded `enabled: false` with the production
     // default (`enabled: true`), re-enabling slippage gating and leaving
     // market submit disabled without order-book estimates.
-    perpsSlippageConfig2: PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
+    perpsSlippageConfig2:
+      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
   });
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
