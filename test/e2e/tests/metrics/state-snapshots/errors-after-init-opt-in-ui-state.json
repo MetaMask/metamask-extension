@@ -373,7 +373,6 @@
     "socialBackupsMetadata": "object",
     "srpSessionData": "object",
     "status": "string",
-    "storageMetadata": "object",
     "storageWriteErrorType": null,
     "subjectMetadata": "object",
     "subjects": "object",
