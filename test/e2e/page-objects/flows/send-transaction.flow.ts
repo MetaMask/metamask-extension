@@ -3,7 +3,7 @@ import { Driver } from '../../webdriver/driver';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../pages/home/activity-list';
-import { createInternalTransaction } from './transaction';
+import { createInternalTransaction } from './transaction.flow';
 
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.

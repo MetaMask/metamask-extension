@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 212,
+      "currentMigrationVersion": 213,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -2099,6 +2099,7 @@
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
+      "migrationVersion": 0,
       "socialBackupsMetadata": []
     },
     "SelectedNetworkController": {
@@ -2273,6 +2274,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 212
+    "version": 213
   }
 }

@@ -18,8 +18,10 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('0 SOL');
       },
     );
@@ -34,10 +36,12 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('$0');
       },
     );
@@ -54,10 +58,12 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('$5,643.50');
       },
     );
@@ -72,8 +78,10 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('50 SOL');
       },
     );
