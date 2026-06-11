@@ -78,6 +78,12 @@
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
+    "test/integration/confirmations/transactions/increase-approval.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "Reselect: Input stability warnings": 1,
+      "error: Error: AggregateError": 1,
+      "warn: ⚠️ React Router Future Flag": 1
+    },
     "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
@@ -94,14 +100,11 @@
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 4,
-<<<<<<< Updated upstream
-      "warn: Selector unknown returned a different": 4,
-=======
       "error: Warning: Home uses the legacy": 1,
       "error: Warning: LegacyI18nProvider uses the legacy": 1,
       "error: Warning: LegacyMetaMetricsProvider uses the legacy": 1,
       "error: Warning: The current testing environment": 2,
->>>>>>> Stashed changes
+      "warn: Selector unknown returned a different": 4,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/nfts/nfts.test.tsx": {

@@ -113,6 +113,7 @@ ui/components/app/whats-new-popup               @MetaMask/core-extension-ux
 ui/css                                          @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
 ui/pages/core                                   @MetaMask/core-extension-ux
+ui/pages/permissions-connect/                   @MetaMask/core-extension-ux
 ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
 ui/components/app/transaction-list              @MetaMask/core-extension-ux
