@@ -230,6 +230,10 @@ export class ManifestPlugin<Z extends boolean> {
       for (const connection of compilation.moduleGraph.getIncomingConnections(
         module,
       )) {
+        if (!connection.originModule) {
+          continue;
+        }
+
         const issuerResource = getModuleResource(connection.originModule);
         if (!issuerResource) {
           continue;
