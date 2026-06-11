@@ -631,8 +631,9 @@ describe('MetaMetricsController', function () {
             names: {
               ethereumAddress: {},
             },
-            participateInMetaMetrics: true,
-            metaMetricsId: TEST_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
+            analyticsId: TEST_ANALYTICS_ID,
             currentCurrency: 'usd',
             dataCollectionForMarketing: false,
             preferences: {
@@ -1522,83 +1523,6 @@ describe('MetaMetricsController', function () {
       });
     });
 
-    it('should send chain_id_caip and null chain_id when a non-EVM network is selected', async function () {
-      await withController(
-        {
-          mockMultichainNetworkState: {
-            isEvmSelected: false,
-            selectedMultichainNetworkChainId:
-              'bip122:000000000019d6689c085ae165831e93',
-          },
-        },
-        ({ controller }) => {
-          const spy = jest.spyOn(segmentMock, 'page');
-          controller.trackPage({
-            name: 'New Confirmation Page',
-            environmentType: ENVIRONMENT_TYPE_BACKGROUND,
-            page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
-          });
-          expect(spy).toHaveBeenCalledTimes(1);
-          expect(spy).toHaveBeenCalledWith(
-            {
-              name: 'New Confirmation Page',
-              userId: TEST_ANALYTICS_ID,
-              context: DEFAULT_TEST_CONTEXT,
-              properties: {
-                params: undefined,
-                locale: LOCALE.replace('_', '-'),
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id: null,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id_caip: 'bip122:000000000019d6689c085ae165831e93',
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                environment_type: 'background',
-              },
-            },
-            spy.mock.calls[0][1],
-          );
-          expect(spy.mock.calls[0][0].properties).toHaveProperty(
-            'chain_id_caip',
-          );
-        },
-      );
-    });
-
-    it('should keep EVM chain_id and omit chain_id_caip when an EVM network is selected', async function () {
-      await withController(
-        {
-          mockMultichainNetworkState: {
-            isEvmSelected: true,
-            selectedMultichainNetworkChainId: 'eip155:1',
-          },
-        },
-        ({ controller }) => {
-          const spy = jest.spyOn(segmentMock, 'page');
-          controller.trackPage({
-            name: 'home',
-            environmentType: ENVIRONMENT_TYPE_BACKGROUND,
-            page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
-          });
-          expect(spy).toHaveBeenCalledTimes(1);
-          expect(spy).toHaveBeenCalledWith(
-            {
-              name: 'home',
-              userId: TEST_ANALYTICS_ID,
-              context: DEFAULT_TEST_CONTEXT,
-              properties: {
-                params: undefined,
-                ...DEFAULT_PAGE_PROPERTIES,
-              },
-            },
-            spy.mock.calls[0][1],
-          );
-          expect(spy.mock.calls[0][0].properties).not.toHaveProperty(
-            'chain_id_caip',
-          );
-        },
-      );
-    });
-
     it('preserves falsy page view properties except undefined', async function () {
       await withController(
         {
@@ -1667,8 +1591,9 @@ describe('MetaMetricsController', function () {
       },
       currentCurrency: 'usd',
       securityAlertsEnabled: false,
-      participateInMetaMetrics: true,
-      metaMetricsId: null,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
+      analyticsId: '',
       dataCollectionForMarketing: false,
       preferences: {
         privacyMode: false,
@@ -1858,8 +1783,9 @@ describe('MetaMetricsController', function () {
               },
             },
           },
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
           preferences: {
@@ -1956,8 +1882,9 @@ describe('MetaMetricsController', function () {
             theme: 'default' as ThemeType,
             useTokenDetection: true,
             allNfts: {},
-            participateInMetaMetrics: true,
-            metaMetricsId: TEST_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
+            analyticsId: TEST_ANALYTICS_ID,
             dataCollectionForMarketing: false,
             preferences: {
               privacyMode: false,
@@ -2011,8 +1938,9 @@ describe('MetaMetricsController', function () {
             theme: 'default' as ThemeType,
             useTokenDetection: true,
             allNfts: {},
-            participateInMetaMetrics: true,
-            metaMetricsId: TEST_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
+            analyticsId: TEST_ANALYTICS_ID,
             dataCollectionForMarketing: false,
             preferences: {
               privacyMode: false,
@@ -2079,8 +2007,9 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
           preferences: {
             privacyMode: true,
@@ -2146,8 +2075,9 @@ describe('MetaMetricsController', function () {
           },
           currentCurrency: 'usd',
           allNfts: {},
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
           preferences: {
             privacyMode: true,
@@ -2230,8 +2160,9 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
           preferences: {
             privacyMode: true,
@@ -2297,8 +2228,9 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
           preferences: {
             privacyMode: true,
@@ -2912,10 +2844,6 @@ type WithControllerOptions = {
       chainId: string;
     }
   >;
-  mockMultichainNetworkState?: {
-    isEvmSelected: boolean;
-    selectedMultichainNetworkChainId: string;
-  };
 };
 
 type WithControllerCallback<ReturnValue> = ({
@@ -2960,10 +2888,6 @@ async function withController<ReturnValue>(
         selectedNetworkClientId: {
           chainId: DEFAULT_CHAIN_ID,
         },
-      },
-      mockMultichainNetworkState = {
-        isEvmSelected: true,
-        selectedMultichainNetworkChainId: 'eip155:1',
       },
     } = rest;
 
@@ -3019,11 +2943,6 @@ async function withController<ReturnValue>(
       jest.fn().mockReturnValue({
         remoteFeatureFlags,
       }),
-    );
-
-    messenger.registerActionHandler(
-      'MultichainNetworkController:getState',
-      jest.fn().mockReturnValue(mockMultichainNetworkState),
     );
 
     messenger.registerActionHandler(
@@ -3157,7 +3076,6 @@ async function withController<ReturnValue>(
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',
         'RemoteFeatureFlagController:getState',
-        'MultichainNetworkController:getState',
         'SeedlessOnboardingController:getState',
       ],
       events: [

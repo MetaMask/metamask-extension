@@ -173,9 +173,14 @@ export type OAuthServiceOptions = {
   addEventBeforeMetricsOptIn: (event: MetaMetricsEventPayload) => void;
 
   /**
-   * Get whether the user has opted into MetaMetrics
+   * Get whether the user has completed the analytics onboarding prompt
    */
-  getParticipateInMetaMetrics: () => boolean | null;
+  getCompletedMetaMetricsOnboarding: () => boolean;
+
+  /**
+   * Get whether the user has opted into analytics
+   */
+  getOptedIn: () => boolean;
 
   /**
    * Persist the temporary Telegram profile-sync JWT until the SRP profile is

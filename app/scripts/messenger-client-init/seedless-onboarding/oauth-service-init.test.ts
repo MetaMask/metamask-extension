@@ -22,14 +22,14 @@ describe('OAuthServiceInit', () => {
   it('returns the service instance', () => {
     const requestMock = buildInitRequestMock();
 
-    // @ts-expect-error: Partial mock for testing.
+    // @ts-expect-error Partial mock for testing.
     requestMock.getMessengerClient.mockImplementation(() => {
       return {
         bufferedTrace: jest.fn(),
         bufferedEndTrace: jest.fn(),
         trackEvent: jest.fn(),
         addEventBeforeMetricsOptIn: jest.fn(),
-        state: { participateInMetaMetrics: false },
+        state: { completedMetaMetricsOnboarding: true, optedIn: false },
       };
     });
 

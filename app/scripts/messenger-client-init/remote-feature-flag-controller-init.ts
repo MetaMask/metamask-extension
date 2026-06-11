@@ -89,7 +89,7 @@ export const RemoteFeatureFlagControllerInit: MessengerClientInitFunction<
     fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
     disabled: getIsDisabled(),
     getMetaMetricsId: () =>
-      initMessenger.call('MetaMetricsController:getMetaMetricsId'),
+      initMessenger.call('AnalyticsController:getState').analyticsId,
     clientVersion: getBaseSemVerVersion(),
     prevClientVersion,
     clientConfigApiService: new ClientConfigApiService({
