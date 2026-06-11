@@ -50,7 +50,9 @@ const initialState = {
   completedOnboarding: false,
   knownMethodData: {},
   use4ByteResolution: true,
-  participateInMetaMetrics: null,
+  analyticsId: null,
+  optedIn: false,
+  completedMetaMetricsOnboarding: false,
   dataCollectionForMarketing: null,
   currencyRates: {
     ETH: {
@@ -169,9 +171,10 @@ export default function reduceMetamask(state = initialState, action) {
         isUnlocked: false,
         onboardingTabs: {},
         seedPhraseBackedUp: null,
-        // reset metametrics optin status
-        participateInMetaMetrics: null,
-        metaMetricsId: null,
+        // reset analytics opt-in status
+        analyticsId: null,
+        optedIn: false,
+        completedMetaMetricsOnboarding: false,
       };
     }
 

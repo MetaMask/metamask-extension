@@ -4,7 +4,7 @@ import {
   type MessengerEvents,
 } from '@metamask/messenger';
 import { RemoteFeatureFlagControllerMessenger } from '@metamask/remote-feature-flag-controller';
-import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../controllers/metametrics-controller-method-action-types';
+import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -37,7 +37,7 @@ export function getRemoteFeatureFlagControllerMessenger(
 }
 
 type AllowedInitializationActions =
-  | MetaMetricsControllerGetMetaMetricsIdAction
+  | AnalyticsControllerGetStateAction
   | PreferencesControllerGetStateAction
   | OnboardingControllerGetStateAction;
 
@@ -74,7 +74,7 @@ export function getRemoteFeatureFlagControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
-      'MetaMetricsController:getMetaMetricsId',
+      'AnalyticsController:getState',
       'PreferencesController:getState',
       'OnboardingController:getState',
     ],
