@@ -62,8 +62,9 @@ import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsSwapsChain,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
@@ -164,9 +165,13 @@ const AssetPage = ({
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const analyticsId = useSelector(getAnalyticsId);
 
   let address =
     (() => {
@@ -208,7 +213,7 @@ const AssetPage = ({
       getPortfolioUrl(
         '',
         'asset_page',
-        metaMetricsId,
+        analyticsId,
         isMetaMetricsEnabled === true,
         isMarketingEnabled === true,
         selectedAccount.address,
@@ -218,7 +223,7 @@ const AssetPage = ({
       selectedAccount.address,
       isMarketingEnabled,
       isMetaMetricsEnabled,
-      metaMetricsId,
+      analyticsId,
     ],
   );
 
