@@ -78,6 +78,12 @@
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
+    "test/integration/confirmations/transactions/increase-approval.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "Reselect: Input stability warnings": 1,
+      "error: Error: AggregateError": 1,
+      "warn: ⚠️ React Router Future Flag": 1
+    },
     "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
       "Reselect: Identity function warnings": 7,
       "Reselect: Input stability warnings": 1,
