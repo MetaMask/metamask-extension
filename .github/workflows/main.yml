@@ -763,12 +763,13 @@ jobs:
       - build-flask-webpack
       - build-flask-mv2-webpack
     # Only run on push to release/* branches (not PRs, not merge_group, not scheduled)
-    # and only when all 12 production builds succeed
+    # and only when get-requirements succeeds and all 12 production builds succeed
     if: >-
       ${{
         always() &&
         github.event_name == 'push' &&
         startsWith(github.ref_name, 'release/') &&
+        needs.get-requirements.result == 'success' &&
         contains(fromJson('["success","skipped"]'), needs.build-dist-browserify.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-dist-mv2-browserify.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-beta-browserify.result) &&
