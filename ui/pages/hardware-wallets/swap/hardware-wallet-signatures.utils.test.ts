@@ -8,6 +8,7 @@ import {
   getFinalStepLabel,
   getFirstStepDescription,
   getFinalStepDescription,
+  getQrHardwareSigningPageTitle,
   isQrHardwareSignRequest,
   getTransactionField,
 } from './hardware-wallet-signatures.utils';
@@ -380,6 +381,28 @@ describe('hardware-wallet-signatures utils', () => {
           t,
         }),
       ).toBeUndefined();
+    });
+  });
+
+  describe('getQrHardwareSigningPageTitle', () => {
+    it('returns the approval step title when awaiting the first signature', () => {
+      expect(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      ).toBe('bridgeQrHardwareSignStepTitle[2,4]');
+    });
+
+    it('returns the last step title when awaiting the final signature', () => {
+      expect(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      ).toBe('bridgeQrHardwareSignLastStepTitle');
     });
   });
 

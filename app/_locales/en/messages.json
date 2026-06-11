@@ -2083,6 +2083,14 @@
     "message": "Scan QR code below and sign on your device ($1/$2)",
     "description": "Title for a QR hardware-wallet bridge signature step. $1 is the current signature step and $2 is the total signature count."
   },
+  "bridgeQrHardwareSignStepTitle": {
+    "message": "Step $1 of $2: Scan the QR code shown on your wallet",
+    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
+  },
+  "bridgeQrHardwareSignLastStepTitle": {
+    "message": "Last step: Scan the QR code shown on your wallet",
+    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
+  },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "No quotes available. Try a smaller amount."
   },

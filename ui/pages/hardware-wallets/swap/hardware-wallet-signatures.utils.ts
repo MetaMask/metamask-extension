@@ -141,6 +141,35 @@ export const getTitle = ({
 };
 
 /**
+ * Returns the title for the full-page QR hardware wallet signing flow.
+ *
+ * @param options - Configuration object.
+ * @param options.activeQrStep - The signature step currently using QR signing.
+ * @param options.needsTwoConfirmations - Whether the transaction requires approval.
+ * @param options.t - The i18n translation function.
+ * @returns The localized page title string.
+ */
+export const getQrHardwareSigningPageTitle = ({
+  activeQrStep,
+  needsTwoConfirmations,
+  t,
+}: {
+  activeQrStep: HardwareWalletSignatureStatus;
+  needsTwoConfirmations: boolean;
+  t: ReturnType<typeof useI18nContext>;
+}) => {
+  if (activeQrStep === HardwareWalletSignatureStatus.AwaitingFinalSignature) {
+    return t('bridgeQrHardwareSignLastStepTitle');
+  }
+
+  if (needsTwoConfirmations) {
+    return t('bridgeQrHardwareSignStepTitle', ['2', '4']);
+  }
+
+  return t('bridgeQrHardwareSignTitle', ['1', '1']);
+};
+
+/**
  * Returns the label for the final step in the signature progress indicator.
  *
  * @param options - Configuration object.

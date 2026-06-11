@@ -26,7 +26,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
-import Reader from '../../../components/app/qr-hardware-popover/qr-hardware-sign-request/qr-reader';
 
 import { useHwSwapQuoteData } from '../../../hooks/hardware-wallets/useHwSwapQuoteData';
 import { useHwSwapSubmission } from '../../../hooks/hardware-wallets/useHwSwapSubmission';
@@ -43,13 +42,17 @@ import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import useSubmitBridgeTransaction from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { useHwSignTracker } from '../../../hooks/hardware-wallets/useHwSignTracker';
 import SignatureStatusIcon from './signature-status-icon';
-import QrSignatureCode from './qr-signature-code';
 import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
+import QrHardwareSigningPage, {
+  QrHardwareSigningPhase,
+} from './qr-hardware-signing-page';
+import QrSignatureCode from './qr-signature-code';
 import {
   SignatureStepStatus,
   getFinalStepLabel,
   getFinalStepDescription,
   getFirstStepDescription,
+  getQrHardwareSigningPageTitle,
   getStepStatus,
   getTitle,
   getTransactionField,
@@ -248,7 +251,7 @@ export default function HardwareWalletSignatures() {
     } else if (isTerminal) {
       setSigningInProgress(false);
     }
-  }, [signatureState.status, setSigningInProgress]);
+  }, [signatureState.status, setSigningInProgress, hasStartedSubmission]);
 
   // Clean up on unmount (e.g. user cancels or navigates away)
   useEffect(() => {
@@ -383,17 +386,25 @@ export default function HardwareWalletSignatures() {
     needsTwoConfirmations,
     t,
   });
-  const getQrTitle = () => {
-    if (
-      needsTwoConfirmations &&
-      signatureState.status ===
-        HardwareWalletSignatureStatus.AwaitingFinalSignature
-    ) {
-      return t('bridgeHwAlmostThereTitle');
-    }
-    return t('swapConfirmWithHwWallet');
-  };
-  const displayedTitle = showInlineQrSigning ? getQrTitle() : title;
+  const displayedTitle = title;
+  const showInlineQrCode = showInlineQrSigning && !isReadingQrSignature;
+  const showQrSigningPage =
+    showInlineQrSigning && activeQrStep && isReadingQrSignature;
+  const qrSigningPageTitle =
+    activeQrStep &&
+    getQrHardwareSigningPageTitle({
+      activeQrStep,
+      needsTwoConfirmations,
+      t,
+    });
+
+  const handleQrSigningPageBack = useCallback(() => {
+    setIsReadingQrSignature(false);
+  }, [setIsReadingQrSignature]);
+
+  const handleOpenQrSigningPage = useCallback(() => {
+    setIsReadingQrSignature(true);
+  }, [setIsReadingQrSignature]);
 
   /**
    * Retries the hardware wallet signing flow after a rejection, failure, or
@@ -495,6 +506,21 @@ export default function HardwareWalletSignatures() {
     navigateToBridgePage();
   }, [cancelCurrentBatch, handleQrSignatureCancel, navigateToBridgePage]);
 
+  if (showQrSigningPage && qrSignRequest && qrSigningPageTitle) {
+    return (
+      <QrHardwareSigningPage
+        title={qrSigningPageTitle}
+        phase={QrHardwareSigningPhase.ScanSignature}
+        payload={qrSignRequest.request.payload}
+        requestId={qrSignRequest.request.requestId}
+        onBack={handleQrSigningPageBack}
+        onCancel={handleCancel}
+        onContinueToScan={() => setIsReadingQrSignature(true)}
+        onScanSuccess={handleQrScanSuccess}
+      />
+    );
+  }
+
   return (
     <Box
       className="hardware-wallet-signatures"
@@ -561,30 +587,23 @@ export default function HardwareWalletSignatures() {
                       {firstStepDescription}
                     </Text>
                   )}
-                  {activeQrStep ===
-                    HardwareWalletSignatureStatus.AwaitingFirstSignature &&
-                    qrSignRequest &&
-                    (isReadingQrSignature ? (
+                  {showInlineQrCode &&
+                    activeQrStep ===
+                      HardwareWalletSignatureStatus.AwaitingFirstSignature &&
+                    qrSignRequest && (
                       <Box
-                        className="hardware-wallet-signatures__qr-reader"
-                        style={{ width: '100%' }}
+                        className="hardware-wallet-signatures__qr-code"
+                        flexDirection={BoxFlexDirection.Column}
+                        alignItems={BoxAlignItems.Center}
+                        gap={4}
                         marginTop={4}
                       >
-                        <Reader
+                        <QrSignatureCode
                           key={qrSignRequest.request.requestId}
-                          cancelQRHardwareSignRequest={handleQrSignatureCancel}
-                          submitQRHardwareSignature={handleQrScanSuccess}
-                          requestId={qrSignRequest.request.requestId}
-                          setErrorTitle={() => undefined}
-                          setErrorActive={() => undefined}
+                          payload={qrSignRequest.request.payload}
                         />
                       </Box>
-                    ) : (
-                      <QrSignatureCode
-                        key={qrSignRequest.request.requestId}
-                        payload={qrSignRequest.request.payload}
-                      />
-                    ))}
+                    )}
                 </Box>
               </li>
             )}
@@ -618,30 +637,23 @@ export default function HardwareWalletSignatures() {
                     {finalStepDescription}
                   </Text>
                 )}
-                {activeQrStep ===
-                  HardwareWalletSignatureStatus.AwaitingFinalSignature &&
-                  qrSignRequest &&
-                  (isReadingQrSignature ? (
+                {showInlineQrCode &&
+                  activeQrStep ===
+                    HardwareWalletSignatureStatus.AwaitingFinalSignature &&
+                  qrSignRequest && (
                     <Box
-                      className="hardware-wallet-signatures__qr-reader"
-                      style={{ width: '100%' }}
+                      className="hardware-wallet-signatures__qr-code"
+                      flexDirection={BoxFlexDirection.Column}
+                      alignItems={BoxAlignItems.Center}
+                      gap={4}
                       marginTop={4}
                     >
-                      <Reader
+                      <QrSignatureCode
                         key={qrSignRequest.request.requestId}
-                        cancelQRHardwareSignRequest={handleQrSignatureCancel}
-                        submitQRHardwareSignature={handleQrScanSuccess}
-                        requestId={qrSignRequest.request.requestId}
-                        setErrorTitle={() => undefined}
-                        setErrorActive={() => undefined}
+                        payload={qrSignRequest.request.payload}
                       />
                     </Box>
-                  ) : (
-                    <QrSignatureCode
-                      key={qrSignRequest.request.requestId}
-                      payload={qrSignRequest.request.payload}
-                    />
-                  ))}
+                  )}
               </Box>
             </li>
           </ul>
@@ -681,18 +693,15 @@ export default function HardwareWalletSignatures() {
               {t('bridgeHwResendTransaction')}
             </Button>
           )}
-          {showInlineQrSigning && !isRetryable && (
+          {showInlineQrCode && !isRetryable && (
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               isFullWidth
-              onClick={() =>
-                setIsReadingQrSignature(!isReadingQrSignature)
-              }
+              onClick={handleOpenQrSigningPage}
+              data-testid="hardware-wallet-signatures__scan-button"
             >
-              {isReadingQrSignature
-                ? t('bridgeQrHardwareShowQrCode')
-                : t('bridgeQrHardwareScanSignature')}
+              {t('bridgeQrHardwareScanSignature')}
             </Button>
           )}
           <Button

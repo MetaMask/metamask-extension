@@ -563,7 +563,7 @@ describe('HardwareWalletSignatures', () => {
     jest.restoreAllMocks();
   });
 
-  it('shows the active QR code inline for QR hardware wallets that need two signatures', () => {
+  it('shows the inline QR code for QR hardware wallets that need two signatures', () => {
     mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
     const qrAccount = {
@@ -611,20 +611,18 @@ describe('HardwareWalletSignatures', () => {
         },
       }),
     );
-    const { getByRole, getByText, container } = renderWithProvider(
+    const { getByRole, getByTestId, queryByTestId } = renderWithProvider(
       <HardwareWalletSignatures />,
       store,
     );
 
-    expect(getByText('Confirm with your hardware wallet')).toBeDefined();
-    expect(getByText('Approve 11 USDC')).toBeDefined();
-    expect(getByText('Send 11 USDC')).toBeDefined();
+    expect(queryByTestId('qr-hardware-signing-page')).toBeNull();
+    expect(
+      getByTestId('hardware-wallet-signatures__steps'),
+    ).toBeDefined();
     expect(
       getByRole('button', { name: "I've signed, scan signature" }),
     ).toBeDefined();
-    expect(
-      container.querySelector('[data-testid="hardware-wallet-signatures__steps"] svg'),
-    ).not.toBeNull();
   });
 
   describe('QR toggle button', () => {
@@ -680,7 +678,7 @@ describe('HardwareWalletSignatures', () => {
       return renderWithProvider(<HardwareWalletSignatures />, store);
     }
 
-    it('shows scan signature button initially', () => {
+    it('shows scan signature button initially on the QR signing page', () => {
       const { getByRole } = renderQrWallet();
 
       expect(
@@ -688,30 +686,25 @@ describe('HardwareWalletSignatures', () => {
       ).toBeDefined();
     });
 
-    it('shows Show QR code button after clicking scan signature', () => {
-      const { getByRole } = renderQrWallet();
+    it('opens the scanner when continue is pressed on the QR signing page', () => {
+      const { getByRole, queryByRole } = renderQrWallet();
 
       fireEvent.click(
         getByRole('button', { name: "I've signed, scan signature" }),
       );
 
       expect(
-        getByRole('button', { name: 'Show QR code' }),
-      ).toBeDefined();
+        queryByRole('button', { name: "I've signed, scan signature" }),
+      ).toBeNull();
     });
 
-    it('shows scan signature button again after clicking Show QR code', () => {
+    it('returns to the progress view when back is pressed from the scanner', () => {
       const { getByRole } = renderQrWallet();
 
       fireEvent.click(
         getByRole('button', { name: "I've signed, scan signature" }),
       );
-
-      expect(
-        getByRole('button', { name: 'Show QR code' }),
-      ).toBeDefined();
-
-      fireEvent.click(getByRole('button', { name: 'Show QR code' }));
+      fireEvent.click(getByRole('button', { name: 'Back' }));
 
       expect(
         getByRole('button', { name: "I've signed, scan signature" }),
@@ -900,7 +893,9 @@ describe('HardwareWalletSignatures', () => {
         await jest.advanceTimersByTimeAsync(6_000);
       });
 
-      expect(getByText('Confirm with your hardware wallet')).toBeDefined();
+      expect(
+        getByText('Almost there! Confirm on your device again'),
+      ).toBeDefined();
 
       jest.restoreAllMocks();
     });
@@ -953,7 +948,9 @@ describe('HardwareWalletSignatures', () => {
       });
 
       expect(mockSubmit).toHaveBeenCalledTimes(2);
-      expect(getByText('Confirm with your hardware wallet')).toBeDefined();
+      expect(
+        getByText('Almost there! Confirm on your device again'),
+      ).toBeDefined();
 
       jest.restoreAllMocks();
     });
