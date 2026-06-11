@@ -87,7 +87,7 @@ describe('Transaction activity list', function (this: Suite) {
         );
         await transactionDetails.checkTransactionViewDetailsLink();
         await transactionDetails.checkTransactionBaseFee(
-          commonSolanaTxFailedDetailsFixture.networkFee,
+          commonSolanaTxFailedDetailsFixture.networkFeeFiat,
         );
       },
     );
