@@ -92,6 +92,13 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
   confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_DISABLED_FLAG,
   perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
   perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
+  // Disable the configurable max-slippage controls in the generic Perps E2E
+  // fixture. When enabled, market-order submit is gated on a live order-book
+  // slippage estimate (usePerpsEstimatedSlippage) that the lifecycle WS mock
+  // does not feed, leaving submit-order-button permanently disabled. The flag
+  // is on in production (registry value), so it stays registered; tests that
+  // need the slippage UI can opt in explicitly. Covered by unit tests + recipe.
+  perpsSlippageConfig2: { enabled: false, minimumVersion: '0.0.0' },
 };
 
 /**
