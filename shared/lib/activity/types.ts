@@ -65,6 +65,11 @@ export type ActivityFee = {
   assetId?: string;
 };
 
+export type FiatAmount = {
+  amount: string;
+  currency?: string;
+};
+
 type ActivityData<Type extends ActivityKind, Data> = {
   type: Type;
   chainId: CaipChainId;
@@ -130,10 +135,8 @@ export type ActivityListItem =
   | ActivityData<
       'perpsAddFunds' | 'perpsWithdraw',
       {
-        fiat?: {
-          amount: string;
-          currency?: string;
-        };
+        fiat?: FiatAmount;
+        networkFee?: FiatAmount;
         token?: TokenAmount;
       }
     >

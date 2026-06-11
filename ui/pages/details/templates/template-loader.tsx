@@ -3,6 +3,7 @@ import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { ApprovalDetails } from './approval-details';
 import { BridgeDetails } from './bridge-details';
 import { DefaultDetails } from './default-details';
+import { PerpsDetails } from './perps-details';
 import { SendDetails } from './send-details';
 import { SwapDetails } from './swap-details';
 
@@ -32,6 +33,9 @@ export function TemplateLoader({ item }: Props) {
     case 'revokeSpendingCap':
     case 'increaseSpendingCap':
       return <ApprovalDetails item={item} />;
+    case 'perpsAddFunds':
+    case 'perpsWithdraw':
+      return <PerpsDetails item={item} />;
     default:
       return <DefaultDetails item={item} />;
   }

@@ -54,9 +54,7 @@ export function TransactionId({ value }: TransactionIdProps) {
       <Icon
         name={copied ? IconName.CopySuccess : IconName.Copy}
         size={IconSize.Xs}
-        color={
-          copied ? IconColor.SuccessDefault : IconColor.IconAlternative
-        }
+        color={copied ? IconColor.SuccessDefault : IconColor.IconAlternative}
       />
     </button>
   );

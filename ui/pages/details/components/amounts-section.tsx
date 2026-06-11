@@ -1,15 +1,21 @@
 import React from 'react';
 import type {
   ActivityListItem,
+  FiatAmount,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
 import { formatUnits } from '../../../../shared/lib/unit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-value';
+import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import { Row } from './shared';
 
 const maximumFractionDigits = 8;
+
+function getFiatValue(fiat?: FiatAmount) {
+  return typeof fiat?.amount === 'string' ? Number(fiat.amount) : undefined;
+}
 
 export function FeesRows({ item }: { item: ActivityListItem }) {
   const t = useI18nContext();
@@ -56,6 +62,45 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
           />
         );
       })}
+    </>
+  );
+}
+
+export function PerpsFiatRows({
+  item,
+}: {
+  item: Extract<ActivityListItem, { type: 'perpsAddFunds' | 'perpsWithdraw' }>;
+}) {
+  const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { fiat, networkFee } = item.data;
+  const amount = getFiatValue(fiat);
+  const networkFeeAmount = getFiatValue(networkFee);
+  const signedAmount =
+    item.type === 'perpsWithdraw' && typeof amount === 'number'
+      ? -amount
+      : amount;
+
+  const formatFiat = (value: number, currency?: string) =>
+    formatCurrencyWithMinThreshold(value, currency ?? PERPS_CURRENCY);
+
+  return (
+    <>
+      {typeof networkFeeAmount === 'number' &&
+      Number.isFinite(networkFeeAmount) ? (
+        <Row
+          label={t('networkFee')}
+          testId="transaction-base-fee"
+          value={formatFiat(networkFeeAmount, networkFee?.currency)}
+        />
+      ) : null}
+      {typeof signedAmount === 'number' && Number.isFinite(signedAmount) ? (
+        <Row
+          label={t('totalAmount')}
+          testId="transaction-breakdown-value-amount"
+          value={formatFiat(signedAmount, fiat?.currency)}
+        />
+      ) : null}
     </>
   );
 }

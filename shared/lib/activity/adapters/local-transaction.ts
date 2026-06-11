@@ -365,10 +365,12 @@ export function mapLocalTransaction(
         : undefined;
 
       const fiat = metamaskPay?.targetFiat
-        ? {
-            amount: metamaskPay.targetFiat,
-          }
+        ? { amount: metamaskPay.targetFiat }
         : undefined;
+      const networkFee =
+        typeof metamaskPay?.networkFeeFiat === 'string'
+          ? { amount: metamaskPay.networkFeeFiat }
+          : undefined;
 
       return {
         type:
@@ -380,8 +382,10 @@ export function mapLocalTransaction(
         timestamp,
         data: {
           hash,
+          from,
           token,
           fiat,
+          networkFee,
         },
       };
     }
