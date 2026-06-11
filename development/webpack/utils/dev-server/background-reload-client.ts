@@ -16,26 +16,22 @@ const FINGERPRINT_KEY = 'MM_BACKGROUND_RELOAD_FINGERPRINT';
 
 // The recorded fingerprint must outlive the MV3 service worker, which Chrome
 // idle-terminates and later restarts with the *registered* (possibly stale)
-// script — `storage.session` survives that. The MV2 background page is
-// persistent, so the in-memory fallback suffices there. The extension's real
-// wallet state lives in `storage.local`, which we deliberately don't touch.
+// script — `storage.session` survives that. The extension's real wallet state
+// lives in `storage.local`, which we deliberately don't touch.
 const sessionStorage = browser.storage?.session;
-
-let memoryFingerprint: string | undefined;
 
 /**
  * @returns The fingerprint of the code this extension instance is running, or
  * `undefined` if none has been recorded yet this extension lifetime.
  */
 async function getAppliedFingerprint(): Promise<string | undefined> {
-  if (sessionStorage) {
-    try {
-      return (await sessionStorage.get(FINGERPRINT_KEY))[FINGERPRINT_KEY];
-    } catch {
-      // fall through to the in-memory value
-    }
+  try {
+    return (await sessionStorage?.get(FINGERPRINT_KEY))?.[FINGERPRINT_KEY];
+  } catch {
+    // Unreadable storage reads as "nothing recorded": the announcement gets
+    // treated as a baseline rather than triggering a reload.
+    return undefined;
   }
-  return memoryFingerprint;
 }
 
 /**
@@ -44,11 +40,11 @@ async function getAppliedFingerprint(): Promise<string | undefined> {
  * @param fingerprint - The fingerprint to record.
  */
 async function setAppliedFingerprint(fingerprint: string): Promise<void> {
-  memoryFingerprint = fingerprint;
   try {
     await sessionStorage?.set({ [FINGERPRINT_KEY]: fingerprint });
   } catch {
-    // the in-memory value still covers contexts without storage access
+    // Swallow storage errors (e.g. the context being invalidated mid-reload)
+    // so they don't surface as unhandled rejections.
   }
 }
 
@@ -82,7 +78,6 @@ async function onFingerprint(
     return;
   }
   reloading = true;
-  // eslint-disable-next-line no-console
   console.info(
     '[MetaMask dev] reloading extension (background or content script changed)…',
   );
@@ -155,5 +150,14 @@ function connect(url: string, reconnectAttempt = 0): void {
 // Only run where WebSocket is available (MV3 service workers support it in
 // current browsers). Otherwise this is a no-op rather than a reconnect loop.
 if (typeof WebSocket !== 'undefined' && socketUrl) {
-  connect(socketUrl);
+  if (sessionStorage) {
+    connect(socketUrl);
+  } else {
+    // Without `storage.session` (Chrome <102, Firefox <115) the applied
+    // fingerprint can't be tracked across service-worker restarts, so
+    // auto-reload can't work reliably — disable it loudly.
+    console.warn(
+      '[MetaMask dev] extension auto-reload disabled: browser.storage.session is unavailable',
+    );
+  }
 }
