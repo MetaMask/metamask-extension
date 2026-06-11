@@ -14,19 +14,9 @@ import {
 } from '../../components/app/transaction-status-label';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 
-const hidePlusSignActivityTypes = new Set<ActivityListItem['type']>([
-  'approveSpendingCap',
-  'increaseSpendingCap',
-  'revokeSpendingCap',
-]);
-
 export type ActivityListFilter =
   | { assetId: CaipAssetType }
   | { networks: string[] };
-
-export function shouldShowPlusSign(activityType: ActivityListItem['type']) {
-  return !hidePlusSignActivityTypes.has(activityType);
-}
 
 export function activityMatchesAssetId(
   item: ActivityListItem,
@@ -137,12 +127,9 @@ export function dedupeItems(...sources: ActivityListItem[][]) {
       continue;
     }
 
-    // More categorized items take precedence
+    // More categorized items take precedence, unless it's a generic interaction
     const existingItem = dedupedItems[existingIndex];
-    if (
-      item.type === 'contractInteraction' &&
-      existingItem.type !== 'contractInteraction'
-    ) {
+    if (existingItem.type !== 'contractInteraction') {
       continue;
     }
 

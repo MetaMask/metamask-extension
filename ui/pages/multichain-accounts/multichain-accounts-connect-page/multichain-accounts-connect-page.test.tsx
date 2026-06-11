@@ -282,8 +282,8 @@ jest.mock('../../../hooks/multichain-accounts/useAccountBalance', () => ({
   }),
 }));
 
-jest.mock('../../permissions-connect/connect-page/utils', () => ({
-  ...jest.requireActual('../../permissions-connect/connect-page/utils'),
+jest.mock('../../../helpers/utils/caip25-permissions', () => ({
+  ...jest.requireActual('../../../helpers/utils/caip25-permissions'),
   getCaip25CaveatValueFromPermissions: jest.fn(),
 }));
 
@@ -292,7 +292,7 @@ jest.mock('../../../../shared/lib/multichain/scope-utils', () => ({
 }));
 
 const mockGetCaip25CaveatValueFromPermissions = jest.requireMock(
-  '../../permissions-connect/connect-page/utils',
+  '../../../helpers/utils/caip25-permissions',
 ).getCaip25CaveatValueFromPermissions;
 
 const mockTestDappUrl = 'https://test.dapp';

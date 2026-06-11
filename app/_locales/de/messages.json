@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Geöffnete Long-Position"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "Eröffnen der Short-Position fehlgeschlagen"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Finanzierungsgebühr empfangen"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Auszahlung fehlgeschlagen"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Auszahlung fehlgeschlagen"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Gelder auszahlen"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Gelder auszahlen"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Perps-Auszahlung"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Perps-Auszahlung"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -3447,9 +3448,6 @@
   },
   "enabled": {
     "message": "Aktiviert"
-  },
-  "enabledNetworks": {
-    "message": "Aktivierte Netzwerke"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 erfragt Ihren öffentlichen Verschlüsselungsschlüssel. Durch Ihre Zustimmung kann diese Site verschlüsselte Nachrichten an Sie verfassen.",
@@ -10069,9 +10067,6 @@
   },
   "termsOfUseTitle": {
     "message": "Prüfen Sie unsere Nutzungsbedingungen"
-  },
-  "testNetworks": {
-    "message": "Test-Netzwerke"
   },
   "testnets": {
     "message": "Testnets"

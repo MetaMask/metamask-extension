@@ -8,6 +8,7 @@ import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import {
   CUSTOM_TOKEN_IMPORT_ROUTE,
+  NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -30,11 +31,13 @@ const METRICS_PROPERTIES = {
 const mockTokenManagementLocationState = {
   current: null as unknown,
 };
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
   return {
     ...actual,
+    useNavigate: () => mockUseNavigate,
     useLocation: () => ({
       pathname: '/token-management',
       search: '',
@@ -248,6 +251,7 @@ describe('TokenManagementPage', () => {
 
   beforeEach(() => {
     mockTokenManagementLocationState.current = null;
+    mockUseNavigate.mockClear();
     resetTokenSearchState();
     const actions = getMockedActions();
     actions.addCustomAsset.mockClear();
@@ -274,6 +278,7 @@ describe('TokenManagementPage', () => {
   const createState = ({
     enabledNetworks = { '0x1': true },
     enabledNetworkMap = { eip155: enabledNetworks },
+    networkManagementEnabled = true,
     accountGroupAssets = {
       '0x1': [mainnetToken, nativeToken],
       '0x5': [goerliToken],
@@ -281,6 +286,7 @@ describe('TokenManagementPage', () => {
   }: {
     enabledNetworks?: Record<string, boolean>;
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
+    networkManagementEnabled?: boolean;
     accountGroupAssets?: Record<string, unknown[]>;
   } = {}) => ({
     ...mockState,
@@ -295,6 +301,10 @@ describe('TokenManagementPage', () => {
           order: 'asc',
           sortCallback: 'alphaNumeric',
         },
+      },
+      remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
+        extensionUxNetworkManagement: networkManagementEnabled,
       },
       enabledNetworkMap,
       networkConfigurationsByChainId: {
@@ -463,6 +473,31 @@ describe('TokenManagementPage', () => {
         'token-management-cell-0x1:0x0000000000000000000000000000000000000001-network-badge',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('opens the shared home network filter modal from the network filter button', async () => {
+    renderPage();
+
+    fireEvent.click(screen.getByTestId('token-management-network-filter'));
+
+    expect(
+      await screen.findByTestId('home-network-filter-manage-networks'),
+    ).toBeInTheDocument();
+  });
+
+  it('navigates to the dedicated networks page from manage networks in the shared modal', async () => {
+    renderPage();
+
+    fireEvent.click(screen.getByTestId('token-management-network-filter'));
+    fireEvent.click(
+      await screen.findByTestId('home-network-filter-manage-networks'),
+    );
+
+    await waitFor(() =>
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${NETWORKS_ROUTE}?drawerOpen=true`,
+      ),
+    );
   });
 
   it('shows tokens from all enabled networks when the home page filter is all networks', () => {

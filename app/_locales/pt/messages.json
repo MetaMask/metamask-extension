@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Abriu posição long"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "Abrir posição short falhou"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Taxa de financiamento recebida"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Falha ao sacar"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Falha ao sacar"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Sacando fundos"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Sacando fundos"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Saque de perps"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Saque de perps"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -3447,9 +3448,6 @@
   },
   "enabled": {
     "message": "Ativada"
-  },
-  "enabledNetworks": {
-    "message": "Redes habilitadas"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 gostaria da sua chave pública de criptografia. Ao consentir, este site conseguirá redigir mensagens criptografadas para você.",
@@ -10069,9 +10067,6 @@
   },
   "termsOfUseTitle": {
     "message": "Nossos Termos de Uso foram atualizados"
-  },
-  "testNetworks": {
-    "message": "Redes de teste"
   },
   "testnets": {
     "message": "Testnets"
