@@ -27,6 +27,7 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
 } from '../../../contexts/hardware-wallets';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import PrepareBridgePage from './prepare-bridge-page';
 
 // Mock the bridge hooks
@@ -599,7 +600,7 @@ describe('PrepareBridgePage', () => {
 
     // useGasIncluded7702 and useIsSendBundleSupported are mocked to false, so
     // before the fix the Max button is hidden for this native EVM token.
-    expect(getByText('Max')).toBeInTheDocument();
+    expect(getByText(messages.max.message)).toBeInTheDocument();
   });
 
   describe('token_security_type_destination coverage', () => {
