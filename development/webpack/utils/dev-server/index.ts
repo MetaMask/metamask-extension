@@ -55,7 +55,7 @@ export const injectEntryScripts = (
   const entrypoint = compilation.entrypoints.get(entryName);
   if (!entrypoint) {
     throw new Error(
-      `Entry "${entryName}" is missing from the compilation; it should have been registered by the dev-server middleware.`,
+      `Entry "${entryName}" is missing from the compilation, it should have been registered before running injectEntryScripts.`,
     );
   }
   const tags = entrypoint
