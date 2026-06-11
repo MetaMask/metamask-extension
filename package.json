@@ -300,13 +300,10 @@
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
     "@metamask/transaction-pay-controller@npm:^22.6.0": "patch:@metamask/transaction-pay-controller@npm%3A22.6.0#~/.yarn/patches/@metamask-transaction-pay-controller-npm-22.6.0-ecc6df0372.patch",
-<<<<<<< HEAD
+    "@metamask/assets-controller@npm:^7.1.2": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
+    "@metamask/assets-controller@npm:^8.1.0": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
     "@metamask/snap-account-service": "npm:@metamask-previews/snap-account-service@0.3.1-preview-f188e628b",
     "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@10.0.3-preview-f188e628b"
-=======
-    "@metamask/assets-controller@npm:^7.1.2": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
-    "@metamask/assets-controller@npm:^8.1.0": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch"
->>>>>>> main
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
