@@ -3449,9 +3449,6 @@
   "enabled": {
     "message": "Đã bật"
   },
-  "enabledNetworks": {
-    "message": "Mạng được bật"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 muốn biết khóa mã hóa công khai của bạn. Bằng việc đồng ý, trang web này sẽ có thể gửi thông báo được mã hóa cho bạn.",
     "description": "$1 is the web3 site name"
@@ -10078,9 +10075,6 @@
   },
   "termsOfUseTitle": {
     "message": "Xem lại Điều khoản sử dụng của chúng tôi"
-  },
-  "testNetworks": {
-    "message": "Mạng thử nghiệm"
   },
   "testnets": {
     "message": "Mạng thử nghiệm"
