@@ -301,7 +301,6 @@ export const UnlockPasskeySection = ({
           <TextButton
             type="button"
             data-testid="unlock-passkey-troubleshoot-button"
-
             className="text-center"
             onClick={() => setShowTroubleshootModal(true)}
           >

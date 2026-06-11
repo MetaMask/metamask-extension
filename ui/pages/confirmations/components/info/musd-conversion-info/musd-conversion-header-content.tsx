@@ -45,11 +45,7 @@ export function useMusdConversionHeaderContent(): HeaderContent {
           <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
             {t('musdBonusExplanation', [
               String(MUSD_CONVERSION_APY),
-              <TextButton
-                key="terms-link"
-                variant={TextVariant.BodyMd}
-                asChild
-              >
+              <TextButton key="terms-link" variant={TextVariant.BodyMd} asChild>
                 <a
                   href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                   target="_blank"

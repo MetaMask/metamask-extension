@@ -509,7 +509,11 @@ const TransactionShield = () => {
                     }}
                   >
                     {t('shieldTxDetailsManage')}
-                    <Icon name={IconName.ArrowRight} size={IconSize.Sm} color={IconColor.IconAlternative} />
+                    <Icon
+                      name={IconName.ArrowRight}
+                      size={IconSize.Sm}
+                      color={IconColor.IconAlternative}
+                    />
                   </TextButton>
                 )}
               </Box>
@@ -573,7 +577,11 @@ const TransactionShield = () => {
                 }}
               >
                 {t('shieldTxMembershipBenefitsViewAll')}
-                <Icon name={IconName.ArrowRight} size={IconSize.Sm} color={IconColor.IconAlternative} />
+                <Icon
+                  name={IconName.ArrowRight}
+                  size={IconSize.Sm}
+                  color={IconColor.IconAlternative}
+                />
               </TextButton>
             )}
           </Box>

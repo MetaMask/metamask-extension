@@ -68,11 +68,7 @@ export function ClaimableBonusRow({
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
             {t('musdClaimableBonusTooltip', [
-              <TextButton
-                key="terms-link"
-                variant={TextVariant.BodyMd}
-                asChild
-              >
+              <TextButton key="terms-link" variant={TextVariant.BodyMd} asChild>
                 <a
                   href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                   target="_blank"
