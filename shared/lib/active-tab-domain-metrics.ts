@@ -5,8 +5,7 @@ import { hasMinimumRequiredVersion } from './remote-feature-flag-utils';
  * LaunchDarkly flag key for the active-tab domain metrics allowlist.
  * Adding new domains requires a governance/privacy review before inclusion.
  */
-export const ACTIVE_TAB_DOMAIN_METRICS_FLAG =
-  'extensionUxActiveDomainMetrics';
+export const ACTIVE_TAB_DOMAIN_METRICS_FLAG = 'extensionUxActiveDomainMetrics';
 
 type ActiveTabDomainMetricsFlagSource = Pick<
   RemoteFeatureFlagControllerState,
@@ -18,16 +17,16 @@ type ActiveTabDomainFlag = {
   minimumVersion: string;
 };
 
-const isActiveTabDomainFlag = (v: unknown): v is ActiveTabDomainFlag =>
-  typeof v === 'object' &&
-  v !== null &&
-  'value' in v &&
-  Array.isArray((v as { value: unknown }).value) &&
-  'minimumVersion' in v &&
-  typeof (v as { minimumVersion: unknown }).minimumVersion === 'string';
+const isActiveTabDomainFlag = (flag: unknown): flag is ActiveTabDomainFlag =>
+  typeof flag === 'object' &&
+  flag !== null &&
+  'value' in flag &&
+  'minimumVersion' in flag &&
+  Array.isArray(flag.value) &&
+  typeof flag.minimumVersion === 'string';
 
-const isNonEmptyString = (v: unknown): v is string =>
-  typeof v === 'string' && v.length > 0;
+const isNonEmptyString = (s: unknown): s is string =>
+  typeof s === 'string' && s.length > 0;
 
 /**
  * Returns the allowlist from the remote feature flag.

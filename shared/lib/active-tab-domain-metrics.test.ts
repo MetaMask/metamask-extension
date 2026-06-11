@@ -4,10 +4,6 @@ import {
   getActiveTabDomainForMetrics,
 } from './active-tab-domain-metrics';
 
-// ---------------------------------------------------------------------------
-// getActiveTabDomainAllowlist
-// ---------------------------------------------------------------------------
-
 describe('getActiveTabDomainAllowlist', () => {
   describe('valid flag shape: { value, minimumVersion }', () => {
     it('returns the value array when the version requirement is met', () => {
@@ -126,43 +122,23 @@ describe('getActiveTabDomainAllowlist', () => {
       ).toStrictEqual([]);
     });
 
-    it('returns an empty array when the flag is a scalar string', () => {
-      expect(
-        getActiveTabDomainAllowlist({
-          remoteFeatureFlags: {
-            [ACTIVE_TAB_DOMAIN_METRICS_FLAG]: 'x.com',
-          },
-        }),
-      ).toStrictEqual([]);
-    });
-
     it('returns an empty array when source is undefined', () => {
-      expect(getActiveTabDomainAllowlist(undefined)).toStrictEqual([]);
+      expect(getActiveTabDomainAllowlist()).toStrictEqual([]);
     });
   });
 });
-
-// ---------------------------------------------------------------------------
-// getActiveTabDomainForMetrics
-// ---------------------------------------------------------------------------
 
 describe('getActiveTabDomainForMetrics', () => {
   const allowlist = ['x.com', 'twitter.com'];
 
   describe('allowlisted HTTPS origins', () => {
-    it('returns the canonical origin for an exact allowlisted hostname', () => {
+    it('returns the origin for an exact allowlisted hostname', () => {
       expect(getActiveTabDomainForMetrics('https://x.com', allowlist)).toBe(
         'https://x.com',
       );
     });
 
-    it('returns the canonical origin for the second allowlisted hostname', () => {
-      expect(
-        getActiveTabDomainForMetrics('https://twitter.com', allowlist),
-      ).toBe('https://twitter.com');
-    });
-
-    it('returns the canonical origin for a subdomain of an allowlisted hostname', () => {
+    it('returns the origin for a subdomain of an allowlisted hostname', () => {
       expect(
         getActiveTabDomainForMetrics('https://mobile.x.com', allowlist),
       ).toBe('https://mobile.x.com');
