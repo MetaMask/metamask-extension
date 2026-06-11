@@ -1,10 +1,10 @@
 import React from 'react';
 import type {
+  ActivityFee,
   ActivityListItem,
   FiatAmount,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
-import { formatUnits } from '../../../../shared/lib/unit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-value';
@@ -12,15 +12,22 @@ import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-v
 import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import { Row } from './shared';
 
-const maximumFractionDigits = 8;
-
 function getFiatValue(fiat?: FiatAmount) {
   return typeof fiat?.amount === 'string' ? Number(fiat.amount) : undefined;
 }
 
+function feeToToken(fee: ActivityFee): TokenAmount {
+  return {
+    amount: fee.amount,
+    decimals: fee.decimals,
+    symbol: fee.symbol,
+    assetId: fee.assetId,
+    direction: 'out',
+  };
+}
+
 export function FeesRows({ item }: { item: ActivityListItem }) {
   const t = useI18nContext();
-  const { formatToken } = useFormatters();
   const visibleFees =
     'fees' in item.data
       ? (item.data.fees?.filter((fee) => fee.amount) ?? [])
@@ -33,9 +40,8 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
   return (
     <>
       {visibleFees.map((fee, index) => {
-        const { amount: feeAmount, assetId, decimals, symbol, type } = fee;
+        const { assetId, symbol, type } = fee;
         let label = type;
-        let amount = feeAmount;
 
         if (type === 'base') {
           label = t('networkFee');
@@ -43,23 +49,12 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
           label = t('priorityFee');
         }
 
-        try {
-          amount = formatUnits(BigInt(feeAmount ?? 0), decimals ?? 0);
-        } catch {
-          amount = feeAmount;
-        }
         return (
           <Row
             key={`${type}-${assetId ?? symbol ?? index}`}
             label={label}
             testId={type === 'base' ? 'transaction-base-fee' : undefined}
-            value={
-              symbol
-                ? formatToken(amount as `${number}`, symbol, {
-                    maximumFractionDigits,
-                  })
-                : amount
-            }
+            value={<TokenFiatValue token={feeToToken(fee)} />}
           />
         );
       })}
