@@ -419,10 +419,7 @@ const HomeNetworkFilterModalContent = ({
       });
     }
 
-    if (
-      (showTestnets || process.env.METAMASK_DEBUG) &&
-      testNetworks.length > 0
-    ) {
+    if (showTestnets && testNetworks.length > 0) {
       nextSections.push({
         key: 'test-networks',
         title: t('testnets'),
