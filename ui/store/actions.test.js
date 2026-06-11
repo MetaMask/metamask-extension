@@ -2484,7 +2484,9 @@ describe('Actions', () => {
       });
       setBackgroundConnection(background.getApi());
 
-      await expect(store.dispatch(actions.setActiveNetwork())).not.toThrow();
+      await expect(
+        store.dispatch(actions.setActiveNetwork()),
+      ).resolves.not.toThrow();
     });
   });
 

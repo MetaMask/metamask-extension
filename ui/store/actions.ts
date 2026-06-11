@@ -4487,6 +4487,8 @@ export function setServiceWorkerKeepAlivePreference(
       await submitRequestToBackground('setServiceWorkerKeepAlivePreference', [
         value,
       ]);
+    } catch {
+      // TODO: Stop suppressing this error (either log or re-throw)
     } finally {
       dispatch(hideLoadingIndication());
     }
