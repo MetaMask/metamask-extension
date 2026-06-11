@@ -9,7 +9,6 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import {
   clearAccountDetails,
   exportAccount,
-  hideWarning,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
@@ -30,12 +29,10 @@ describe('AccountDetails', () => {
   const { address } = account;
   const mockClearAccountDetails = jest.fn();
   const mockExportAccount = jest.fn().mockResolvedValue(true);
-  const mockHideWarning = jest.fn();
 
   beforeEach(() => {
     clearAccountDetails.mockReturnValue(mockClearAccountDetails);
     exportAccount.mockReturnValue(mockExportAccount);
-    hideWarning.mockReturnValue(mockHideWarning);
   });
 
   afterEach(() => jest.clearAllMocks());

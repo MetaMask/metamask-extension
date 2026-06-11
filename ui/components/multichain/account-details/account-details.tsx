@@ -31,7 +31,7 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
 } from '../../../selectors';
-import { clearAccountDetails, hideWarning } from '../../../store/actions';
+import { clearAccountDetails } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
   Modal,
@@ -101,7 +101,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
 
   const onClose = useCallback(() => {
     dispatch(clearAccountDetails());
-    dispatch(hideWarning());
   }, [dispatch]);
 
   const avatar = (
@@ -126,7 +125,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             onClose={onClose}
             onBack={() => {
               if (attemptingExport === AttemptExportState.PrivateKey) {
-                dispatch(hideWarning());
                 setPrivateKey('');
                 setAttemptingExport(AttemptExportState.None);
               } else if (attemptingExport === AttemptExportState.None) {

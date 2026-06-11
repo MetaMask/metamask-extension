@@ -225,9 +225,6 @@ function mapDispatchToProps(dispatch) {
         dispatch(customOnHideOpts.action(...customOnHideOpts.args));
       }
     },
-    hideWarning: () => {
-      dispatch(actions.hideWarning());
-    },
   };
 }
 
@@ -242,7 +239,6 @@ class Modal extends Component {
   static propTypes = {
     active: PropTypes.bool.isRequired,
     hideModal: PropTypes.func.isRequired,
-    hideWarning: PropTypes.func.isRequired,
     modalState: PropTypes.object.isRequired,
   };
 
@@ -274,9 +270,7 @@ class Modal extends Component {
         keyboard={false}
         onHide={() => {
           if (modal.onHide) {
-            modal.onHide({
-              hideWarning: this.props.hideWarning,
-            });
+            modal.onHide();
           }
           this.props.hideModal(modal.customOnHideOpts);
         }}
