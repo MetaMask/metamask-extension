@@ -90,8 +90,7 @@ export function PayWithRow({
     getInternalAccountByAddress(state, from ?? ''),
   );
 
-  const isArc =
-    currentConfirmation?.chainId?.toLowerCase() === CHAIN_IDS.ARC;
+  const isArc = currentConfirmation?.chainId?.toLowerCase() === CHAIN_IDS.ARC;
 
   // On Arc, the transaction always pays with the native token — there is no
   // alternative pay-with route, so skip rendering the row entirely.

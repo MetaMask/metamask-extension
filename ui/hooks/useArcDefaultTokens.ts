@@ -46,7 +46,13 @@ export function useArcDefaultTokens() {
       if (dispatchedRef.current.has(account.id)) {
         continue;
       }
-      if (isAssetInAccountCustomAssets(customAssets, account.id, ARC_USDC_ASSET_ID)) {
+      if (
+        isAssetInAccountCustomAssets(
+          customAssets,
+          account.id,
+          ARC_USDC_ASSET_ID,
+        )
+      ) {
         // Already present — mark as handled so we never re-dispatch.
         dispatchedRef.current.add(account.id);
         continue;
