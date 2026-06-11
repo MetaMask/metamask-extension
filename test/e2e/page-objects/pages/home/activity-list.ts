@@ -47,7 +47,7 @@ class ActivityListPage extends HomePage {
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
 
-  private readonly transactionStatus = (status: string) => ({
+  private readonly transactionStatusLabel = (status: string) => ({
     testId: `transaction-details-status-${status}`,
   });
 
@@ -68,12 +68,8 @@ class ActivityListPage extends HomePage {
    */
   async clickOnActivity(expectedNumber: number): Promise<void> {
     console.log(`Clicking on activity ${expectedNumber}`);
-    await this.driver.waitForSelector(this.completedTransactions);
-    await this.driver.executeScript(
-      `document.querySelectorAll('[data-testid="activity-list-item"]')[${
-        expectedNumber - 1
-      }].click();`,
-    );
+    const activities = await this.driver.findElements(this.activityListAction);
+    await activities[expectedNumber - 1].click();
   }
 
   /**
@@ -382,7 +378,9 @@ class ActivityListPage extends HomePage {
     assert.equal(scannerLinks.length, 1, 'Scanner links are displayed');
 
     console.log(`Checking ${isBridge ? 'bridge' : 'swap'} status`);
-    await this.driver.waitForSelector(this.transactionStatus(expectedStatus));
+    await this.driver.waitForSelector(
+      this.transactionStatusLabel(expectedStatus),
+    );
 
     if (!isBridge) {
       console.log('Checking displayed amounts');
@@ -397,8 +395,6 @@ class ActivityListPage extends HomePage {
         });
       }
     }
-    // Legacy bridge details asserted the source/destination amount copy here.
-    // The redesigned bridge details title/amount layout is still being mapped.
 
     console.log('Navigating back to activity list');
     await this.driver.clickElement(this.backButton);

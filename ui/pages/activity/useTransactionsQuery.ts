@@ -104,21 +104,19 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
     refetchOnWindowFocus: true,
   });
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = query;
-
   // Client-side filters can result in empty pages, so skip a bounded number
   // until we find a non-empty page or reach the skip limit
   const fetchNextVisiblePage = useCallback(() => {
-    if (!hasNextPage || isFetchingNextPage) {
+    if (!query.hasNextPage || query.isFetchingNextPage) {
       return;
     }
 
     async function fetchPages() {
       let visibleItemCount =
-        data?.pages.flatMap((page) => page.data).length ?? 0;
-      let pageCount = data?.pages.length ?? 0;
+        query.data?.pages.flatMap((page) => page.data).length ?? 0;
+      let pageCount = query.data?.pages.length ?? 0;
       let emptyFilteredPagesSkipped = 0;
-      let result = await fetchNextPage();
+      let result = await query.fetchNextPage();
 
       while (
         result.hasNextPage &&
@@ -138,12 +136,17 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
         emptyFilteredPagesSkipped += 1;
         visibleItemCount = nextVisibleItemCount;
         pageCount = nextPageCount;
-        result = await fetchNextPage();
+        result = await query.fetchNextPage();
       }
     }
 
     fetchPages().catch(() => undefined);
-  }, [data?.pages, fetchNextPage, hasNextPage, isFetchingNextPage]);
+  }, [
+    query.data?.pages,
+    query.fetchNextPage,
+    query.hasNextPage,
+    query.isFetchingNextPage,
+  ]);
 
   return { ...query, fetchNextVisiblePage };
 }
