@@ -201,19 +201,27 @@ const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
 const PermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/permissions-page/permissions-page.js'),
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page.js'
+    ),
 );
 const GatorPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    ),
 );
 const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    ),
 );
 const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
+    ),
 );
 const Home = mmLazy(() => import('../home/index.js'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
@@ -678,7 +686,13 @@ export default function Routes() {
   }, [location.pathname, dispatch]);
 
   useEffect(() => {
-    if (shouldPreloadRiveForPath(location.pathname)) {
+    if (!shouldPreloadRiveForPath(location.pathname)) {
+      return undefined;
+    }
+    // Defer the runtime+WASM fetch to idle so it never competes with the
+    // route's critical render/network work. Falls back to a microtask where
+    // requestIdleCallback is unavailable.
+    const preload = () => {
       preloadRiveWasm().catch((error) => {
         logRiveRoutePreloadError(
           '[Rive] Failed to preload WASM for route:',
@@ -686,7 +700,13 @@ export default function Routes() {
           error,
         );
       });
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      const idleId = window.requestIdleCallback(preload);
+      return () => window.cancelIdleCallback?.(idleId);
     }
+    const timerId = setTimeout(preload, 0);
+    return () => clearTimeout(timerId);
   }, [location.pathname]);
 
   useEffect(() => {
