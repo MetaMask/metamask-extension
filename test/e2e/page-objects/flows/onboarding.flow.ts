@@ -86,7 +86,11 @@ const goToOnboardingWelcomeLoginPage = async ({
   driver: Driver;
   needNavigateToNewPage?: boolean;
 } & OnboardingMetricsFlowOptions) => {
-  const metricsOptions = { participateInMetaMetrics, optedIn, dataCollectionForMarketing };
+  const metricsOptions = {
+    participateInMetaMetrics,
+    optedIn,
+    dataCollectionForMarketing,
+  };
   if (needNavigateToNewPage) {
     await driver.navigate();
   }
@@ -422,7 +426,11 @@ export const importSRPOnboardingFlow = async ({
   fillSrpWordByWord?: boolean;
   needNavigateToNewPage?: boolean;
 } & OnboardingMetricsFlowOptions): Promise<void> => {
-  const metricsOptions = { participateInMetaMetrics, optedIn, dataCollectionForMarketing };
+  const metricsOptions = {
+    participateInMetaMetrics,
+    optedIn,
+    dataCollectionForMarketing,
+  };
   console.log('Starting the import of SRP onboarding flow');
   const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
     driver,
