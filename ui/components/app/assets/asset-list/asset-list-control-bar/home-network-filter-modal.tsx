@@ -58,7 +58,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
-import { NetworkListItem } from '../../../../multichain';
+import { NetworkListItem } from '../../../../multichain/network-list-item';
 
 type HomeNetworkFilterModalProps = {
   isOpen: boolean;
