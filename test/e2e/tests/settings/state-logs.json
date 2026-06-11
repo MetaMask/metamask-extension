@@ -283,6 +283,7 @@
     "allNftContracts": {},
     "allNfts": {},
     "allTokens": {},
+    "analyticsId": "string",
     "announcements": {},
     "appActiveTab": {
       "favIconUrl": "null",
@@ -1073,9 +1074,6 @@
     "metamaskNotificationsReadList": [],
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
-    "metaMetricsId": "string",
-    "analyticsId": "string",
-    "optedIn": "boolean",
     "methodData": {},
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
@@ -1181,6 +1179,7 @@
     "onboardingDate": "null",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
+    "optedIn": "boolean",
     "orderedNetworkList": [
       {
         "networkId": "string"
@@ -1189,7 +1188,6 @@
     "orderedTransactionHistory": [],
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
-    "participateInMetaMetrics": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",
