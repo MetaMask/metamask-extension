@@ -8,7 +8,8 @@ import {
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
 import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../../../shared/constants/bridge';
-import { IconName as ComponentIconName ,
+import {
+  IconName as ComponentIconName,
   Popover,
   PopoverRole,
 } from '../../../../../components/component-library';
