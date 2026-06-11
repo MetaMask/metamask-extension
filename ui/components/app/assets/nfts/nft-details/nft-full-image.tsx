@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { BoxJustifyContent } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useNavigationType, useParams } from 'react-router-dom';
 import { Nft } from '@metamask/assets-controllers';
@@ -117,7 +118,7 @@ export default function NftFullImage() {
         />
         <Content
           className={`fade-in ${visible ? 'visible' : ''}`}
-          justifyContent={JustifyContent.center}
+          justifyContent={BoxJustifyContent.Center}
         >
           <Box
             display={Display.Flex}

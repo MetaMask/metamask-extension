@@ -6,6 +6,7 @@ import {
   IconName,
 } from '../../../component-library';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
+import { BoxBackgroundColor } from '@metamask/design-system-react';
 import { Page, Header, Content, Footer } from '.';
 
 const story = {
@@ -55,7 +56,7 @@ export const HeaderStory = (args) => (
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successDefault}>
+      <Content backgroundColor={BoxBackgroundColor.SuccessDefault}>
         Contents!
       </Content>
     </Page>
@@ -76,10 +77,10 @@ export const FullscreenStory = (args) => (
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successDefault}>
+      <Content backgroundColor={BoxBackgroundColor.SuccessDefault}>
         {scrollingContent}
       </Content>
-      <Footer backgroundColor={BackgroundColor.warningDefault}>
+      <Footer backgroundColor={BoxBackgroundColor.WarningDefault}>
         <ButtonPrimary block disabled>
           Cancel
         </ButtonPrimary>
@@ -109,10 +110,10 @@ export const HeaderFooterStory = (args) => (
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successDefault}>
+      <Content backgroundColor={BoxBackgroundColor.SuccessDefault}>
         Content
       </Content>
-      <Footer backgroundColor={BackgroundColor.warningDefault}>
+      <Footer backgroundColor={BoxBackgroundColor.WarningDefault}>
         <ButtonPrimary block disabled>
           Cancel
         </ButtonPrimary>
@@ -139,10 +140,10 @@ export const ScrollingStory = (args) => (
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successDefault}>
+      <Content backgroundColor={BoxBackgroundColor.SuccessDefault}>
         {scrollingContent}
       </Content>
-      <Footer backgroundColor={BackgroundColor.warningDefault}>
+      <Footer backgroundColor={BoxBackgroundColor.WarningDefault}>
         <ButtonPrimary block disabled>
           Cancel
         </ButtonPrimary>

@@ -549,7 +549,7 @@ export const MultichainAccountsConnectPage = ({
     <Page
       data-testid="connect-page"
       className="main-container multichain-connect-page"
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
       <Header paddingTop={8} paddingBottom={4}>
         <Box
@@ -630,7 +630,7 @@ export const MultichainAccountsConnectPage = ({
       <Content
         paddingLeft={4}
         paddingRight={4}
-        backgroundColor={BackgroundColor.transparent}
+        backgroundColor={BoxBackgroundColor.Transparent}
       >
         <Tabs activeTab={activeTab} onTabClick={setActiveTab}>
           <Tab
