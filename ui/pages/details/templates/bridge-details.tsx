@@ -9,12 +9,15 @@ import {
 } from '@metamask/bridge-controller';
 import type { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
+import { getSanitizedChainId } from '../../../selectors/multichain-accounts/utils';
+import { selectBridgeHistoryItemByHash } from '../../../ducks/bridge-status/selectors';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
@@ -71,9 +74,6 @@ const BridgeNetworkRow = ({
   );
 };
 
-const selectBridgeHistory = (state: MetaMaskReduxState) =>
-  (state.metamask.txHistory ?? {}) as Record<string, BridgeHistoryItem>;
-
 export function BridgeDetails({
   item,
 }: {
@@ -89,16 +89,39 @@ export function BridgeDetails({
     destinationChainId && destinationChainId !== sourceChainId,
   );
 
-  const bridgeHistory = useSelector(selectBridgeHistory);
   const sourceTxHash = item.data.hash;
-  const destTxHash = sourceTxHash
-    ? Object.values(bridgeHistory).find(
-        (h) =>
-          h.status.srcChain?.txHash?.toLowerCase() ===
-            sourceTxHash.toLowerCase() ||
-          h.txMetaId?.toLowerCase() === sourceTxHash.toLowerCase(),
-      )?.status.destChain?.txHash
-    : undefined;
+  const { destTxHash, destinationAccountAddress } = useSelector((state) => {
+    const bridgeHistoryItem = sourceTxHash
+      ? selectBridgeHistoryItemByHash(state as MetaMaskReduxState, sourceTxHash)
+      : undefined;
+
+    const fromAddress = item.data.from ?? bridgeHistoryItem?.account;
+    let toAddress: string | undefined;
+
+    if (fromAddress && destinationChainId && showFromTo) {
+      const sanitizedDestChainId = getSanitizedChainId(
+        destinationChainId as CaipChainId,
+      );
+      toAddress = getAccountGroupsByAddress(state as MultichainAccountsState, [
+        fromAddress,
+      ])[0]?.accounts.find((account) =>
+        account.scopes.includes(sanitizedDestChainId),
+      )?.address;
+    }
+
+    return {
+      destTxHash: bridgeHistoryItem?.status.destChain?.txHash,
+      destinationAccountAddress: toAddress,
+    };
+  });
+
+  const fromAddress = item.data.from;
+  const showFromToAccountRows = Boolean(
+    showFromTo &&
+    fromAddress &&
+    destinationAccountAddress &&
+    fromAddress.toLowerCase() !== destinationAccountAddress.toLowerCase(),
+  );
 
   return (
     <div className="flex grow flex-col">
@@ -130,10 +153,23 @@ export function BridgeDetails({
             value={<TransactionStatus status={item.status} />}
           />
           <Row label={t('date')} value={formatDateTime(item.timestamp)} />
-          <Row
-            label={t('account')}
-            value={<AccountName address={item.data.from} />}
-          />
+          {showFromToAccountRows ? (
+            <>
+              <Row
+                label={t('from')}
+                value={<AccountName address={fromAddress} />}
+              />
+              <Row
+                label={t('to')}
+                value={<AccountName address={destinationAccountAddress} />}
+              />
+            </>
+          ) : (
+            <Row
+              label={t('account')}
+              value={<AccountName address={fromAddress} />}
+            />
+          )}
           <Row
             label={t('network')}
             value={
