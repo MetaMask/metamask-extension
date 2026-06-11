@@ -83,6 +83,16 @@ export const BridgeAssetPicker = ({
 
   const networkPickerButtonRef = useRef<HTMLButtonElement>(null);
   const [isNetworkPickerOpen, setIsNetworkPickerOpen] = useState(false);
+  // Mirrors `isNetworkPickerOpen` for the asset picker's outside-click handler.
+  // `ModalContent` registers its document `mousedown` listener once on mount,
+  // so it captures a stale `isClosedOnOutsideClick`. Selecting a network in the
+  // nested network modal fires `mousedown` before `click`, which would close the
+  // asset picker before the selection applies. Reading this ref in `handleClose`
+  // lets us ignore that close while the network picker is open.
+  const isNetworkPickerOpenRef = useRef(false);
+  useEffect(() => {
+    isNetworkPickerOpenRef.current = isNetworkPickerOpen;
+  }, [isNetworkPickerOpen]);
   // This is the network that the user has selected from the dropdown
   const [selectedChainId, setSelectedChainId] = useState<CaipChainId | null>(
     null,
@@ -127,6 +137,12 @@ export const BridgeAssetPicker = ({
   }, [isOpen]);
 
   const handleClose = useCallback(() => {
+    // Ignore close attempts (e.g. the parent modal's stale outside-click
+    // handler) while the network picker is open. The network picker manages
+    // its own close, so the asset picker should stay open underneath it.
+    if (isNetworkPickerOpenRef.current) {
+      return;
+    }
     if (closeFromMarketCloseRef.current) {
       closeFromMarketCloseRef.current = false;
       return;

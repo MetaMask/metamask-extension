@@ -332,6 +332,8 @@ export function mapLocalTransaction(
       };
     }
 
+    case TransactionType.perpsDeposit:
+    case TransactionType.perpsDepositAndOrder:
     case TransactionType.perpsWithdraw: {
       const { metamaskPay } = initialTransaction;
       const payChainId = metamaskPay?.chainId
@@ -353,7 +355,10 @@ export function mapLocalTransaction(
         : undefined;
 
       return {
-        type: 'perpsWithdraw',
+        type:
+          initialTransaction.type === TransactionType.perpsWithdraw
+            ? 'perpsWithdraw'
+            : 'perpsAddFunds',
         chainId: payChainId ?? chainId,
         status,
         timestamp,

@@ -430,6 +430,33 @@ describe('mapLocalTransaction', () => {
     });
   });
 
+  it('maps a Perps deposit local transaction to a Perps add funds activity', () => {
+    const transactionGroup = localStateFixtures.perpsDeposit
+      .transactionGroup as unknown as TransactionGroup;
+    const item = mapLocalTransaction(transactionGroup);
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toMatchObject({
+      type: 'perpsAddFunds',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1781185241609,
+      data: {
+        hash: '0x3073fa67020abb1931ed043d7a8b6b020aa1004c9d0dd9ebd43ca5b9c10e9503',
+        fiat: {
+          amount: '1.000169',
+        },
+        token: {
+          assetId: toAssetId(lineaMusd, 'eip155:1'),
+          decimals: 6,
+          direction: 'out',
+          symbol: 'mUSD',
+        },
+      },
+    });
+  });
+
   it('maps an Aave supply contract interaction to a Lending deposit activity', () => {
     const transaction = {
       chainId: CHAIN_IDS.BASE,
