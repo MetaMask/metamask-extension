@@ -3449,9 +3449,6 @@
   "enabled": {
     "message": "已启用"
   },
-  "enabledNetworks": {
-    "message": "启用的网络"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 想要您的加密公钥。同意后，该网站将可以向您发送加密消息。",
     "description": "$1 is the web3 site name"
@@ -10070,9 +10067,6 @@
   },
   "termsOfUseTitle": {
     "message": "我们的使用条款已更新"
-  },
-  "testNetworks": {
-    "message": "测试网络"
   },
   "testnets": {
     "message": "测试网"

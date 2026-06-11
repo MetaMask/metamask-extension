@@ -3449,9 +3449,6 @@
   "enabled": {
     "message": "Pinagana"
   },
-  "enabledNetworks": {
-    "message": "Naka-enable na mga network"
-  },
   "encryptionPublicKeyNotice": {
     "message": "Kailangan ng $1 ang iyong pampublikong encryption key. Sa pamamagitan ng pagbibigay ng pahintulot, makakagawa ang site na ito ng mga naka-encrypt na mensahe para sa iyo.",
     "description": "$1 is the web3 site name"
@@ -10070,9 +10067,6 @@
   },
   "termsOfUseTitle": {
     "message": "Na-update ang aming Mga Tuntunin sa Paggamit"
-  },
-  "testNetworks": {
-    "message": "Suriin ang mga network"
   },
   "testnets": {
     "message": "Mga Testnet"
