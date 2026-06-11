@@ -63,14 +63,15 @@ export function getActiveTabDomainForMetrics(
     return undefined;
   }
   try {
-    const { hostname, protocol } = new URL(origin);
-    if (protocol !== 'https:') {
+    const url = new URL(origin);
+    if (url.protocol !== 'https:') {
       return undefined;
     }
     return allowlist.some(
-      (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
+      (domain) =>
+        url.hostname === domain || url.hostname.endsWith(`.${domain}`),
     )
-      ? new URL(origin).origin
+      ? url.origin
       : undefined;
   } catch {
     return undefined;

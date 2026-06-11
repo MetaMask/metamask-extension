@@ -157,9 +157,9 @@ describe('getActiveTabDomainForMetrics', () => {
     });
 
     it('strips query parameters from the returned origin', () => {
-      expect(
-        getActiveTabDomainForMetrics('https://x.com?q=1', allowlist),
-      ).toBe('https://x.com');
+      expect(getActiveTabDomainForMetrics('https://x.com?q=1', allowlist)).toBe(
+        'https://x.com',
+      );
     });
   });
 
