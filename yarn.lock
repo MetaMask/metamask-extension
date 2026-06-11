@@ -7398,38 +7398,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^10.0.2":
-  version: 10.0.2
-  resolution: "@metamask/multichain-account-service@npm:10.0.2"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/accounts-controller": "npm:^39.0.0"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/eth-snap-keyring": "npm:^22.0.1"
-    "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-controller": "npm:^26.0.0"
-    "@metamask/keyring-internal-api": "npm:^11.0.1"
-    "@metamask/keyring-snap-client": "npm:^9.0.2"
-    "@metamask/keyring-utils": "npm:^3.2.1"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/snap-account-service": "npm:^0.3.0"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/snaps-sdk": "npm:^11.0.0"
-    "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.9.0"
-    async-mutex: "npm:^0.5.0"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/account-api": ^1.0.4
-    "@metamask/providers": ^22.0.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/14ed586988071cbfca53b6d5d263b391f1818e762eb1af175da33ddca38020eb82cdfcded3578093192c891e84ab7232112e8129cd2f98f10cce2d8c1f8d4b48
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-account-service@npm:^10.0.3":
+"@metamask/multichain-account-service@npm:^10.0.2, @metamask/multichain-account-service@npm:^10.0.3":
   version: 10.0.3
   resolution: "@metamask/multichain-account-service@npm:10.0.3"
   dependencies:
@@ -8201,25 +8170,6 @@ __metadata:
     styled-components: "npm:5.3.9"
     webpack: "npm:^5.88.2"
   checksum: 10/c06f8900448351d61cbc6d519a52060149db3512429aea5a6e1d612587b80ebc22ba1b8ce6ad2e9f58499d431a4f43a7056223318d07ef904532812dd6c8fa0e
-  languageName: node
-  linkType: hard
-
-"@metamask/snap-account-service@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/snap-account-service@npm:0.3.0"
-  dependencies:
-    "@metamask/account-api": "npm:^1.0.4"
-    "@metamask/account-tree-controller": "npm:^7.5.1"
-    "@metamask/eth-snap-keyring": "npm:^22.0.1"
-    "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-controller": "npm:^26.0.0"
-    "@metamask/keyring-snap-sdk": "npm:^9.0.1"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/snaps-sdk": "npm:^11.0.0"
-    "@metamask/utils": "npm:^11.9.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/b7088073cab6d3c208c33f16b14e7a2a047152efa1c432dd03702e0f4c67c8ca1fe40111f01ccfd6f77052fe9a8d79957a51a1d8272f27dd5ffa3e1d9b6cdc1d
   languageName: node
   linkType: hard
 
