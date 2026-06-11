@@ -64,8 +64,11 @@ export const simpleReloadScript = `
 /**
  * Script to read the encrypted vault from the IndexedDB backup database.
  * Resolves with the encrypted vault string, or `null` if it isn't present yet.
+ *
+ * Must be run via `executeAsyncScript` on an extension page (e.g. the login or
+ * home page) so it can access the extension's IndexedDB.
  */
-const readBackupVaultScript = `
+export const getBackupVaultScript = `
   const callback = arguments[arguments.length - 1];
   const request = globalThis.indexedDB.open('metamask-backup', 1);
   request.onupgradeneeded = () => {
@@ -89,6 +92,19 @@ const readBackupVaultScript = `
 `;
 
 /**
+ * Reads the encrypted vault from the IndexedDB backup database.
+ *
+ * @param driver - The WebDriver instance. Must currently be on an extension page
+ * (e.g. the login or home page) so the script can access the extension's IndexedDB.
+ * @returns The encrypted vault string, or `null` if it isn't present.
+ */
+export async function getBackupVault(driver: Driver): Promise<string | null> {
+  return (await driver.executeAsyncScript(getBackupVaultScript)) as
+    | string
+    | null;
+}
+
+/**
  * Waits for the encrypted vault to be written to the IndexedDB backup database.
  *
  * The backup write is asynchronous and debounced, so without this guard the
@@ -104,7 +120,7 @@ export async function waitForBackupVault(
   timeoutMs = 10000,
 ): Promise<void> {
   await driver.wait(async () => {
-    const backupVault = await driver.executeAsyncScript(readBackupVaultScript);
+    const backupVault = await getBackupVault(driver);
     return Boolean(backupVault);
   }, timeoutMs);
 }
