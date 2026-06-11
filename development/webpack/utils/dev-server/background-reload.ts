@@ -185,16 +185,22 @@ export function setupBackgroundReload(
       // MV3: the service worker loads exactly one file, so the client must be
       // part of that chunk. Pass only `name` so webpack merges this dependency
       // into the existing entry without a conflicting-entry-option error.
-      new compiler.webpack.EntryPlugin(compiler.context, backgroundClientEntry, {
-        name: serviceWorkerEntryName,
-      }).apply(compiler);
+      new compiler.webpack.EntryPlugin(
+        compiler.context,
+        backgroundClientEntry,
+        { name: serviceWorkerEntryName },
+      ).apply(compiler);
     } else {
       // MV2: register a standalone entry; `HtmlBundlerPlugin.beforeEmit` injects
       // it as a `<script>` into the background page.
-      new compiler.webpack.EntryPlugin(compiler.context, backgroundClientEntry, {
-        name: BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
-        chunkLoading: false,
-      }).apply(compiler);
+      new compiler.webpack.EntryPlugin(
+        compiler.context,
+        backgroundClientEntry,
+        {
+          name: BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+          chunkLoading: false,
+        },
+      ).apply(compiler);
     }
 
     compiler.hooks.done.tap('MetaMaskBackgroundReload', (stats) => {
