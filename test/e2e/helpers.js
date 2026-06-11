@@ -18,7 +18,7 @@ const { PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
+const { DAPP_PATHS, ERC_4337_ACCOUNT, E2E_DRIVER } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
@@ -156,6 +156,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     localNodeOptions = 'anvil',
     smartContract,
+    driverType = E2E_DRIVER.SELENIUM,
     driverOptions,
     dappOptions,
     staticServerOptions,
@@ -177,12 +178,6 @@ async function withFixtures(options, testSuite) {
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
-    // 'selenium' (default) keeps the existing Selenium path untouched.
-    // 'playwright' routes through the Playwright shim. Playwright spec files
-    // (`*.pw.spec.ts`) set this.
-    driverType = process.env.E2E_DRIVER_TYPE === 'playwright'
-      ? 'playwright'
-      : 'selenium',
   } = options;
 
   // Normalize localNodeOptions
@@ -393,7 +388,7 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    if (driverType === 'playwright') {
+    if (driverType === E2E_DRIVER.PLAYWRIGHT) {
       if (virtualAuthenticator) {
         throw new Error(
           'withFixtures: virtualAuthenticator is not supported on the Playwright path yet.',

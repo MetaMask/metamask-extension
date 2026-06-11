@@ -36,7 +36,7 @@ Start from the Selenium version and apply these mechanical changes:
 
 1. Replace the Mocha imports with `import { test as pwTest } from '@playwright/test'`.
 2. Wrap your test in `pwTest.describe(...)` / `pwTest(...)` instead of `describe` / `it`.
-3. Inside `withFixtures`, pass `driverType: 'playwright'`.
+3. Inside `withFixtures`, pass `driverType: E2E_DRIVER.PLAYWRIGHT` (from `test/e2e/constants.ts`).
 4. Use `testInfo.titlePath.join(' ')` for the `title` field instead of `this.test?.fullTitle()`.
 5. Leave **everything else unchanged** — page objects, flows, fixtures, helpers.
 
@@ -76,7 +76,7 @@ The Firefox path additionally requires `yarn playwright install firefox` once pe
 - **Factory**: [`test/e2e/webdriver/build-playwright-driver.ts`](../webdriver/build-playwright-driver.ts) — dispatches between Chrome/Firefox harnesses.
 - **Chrome harness**: [`shared/chrome-extension-harness.ts`](./shared/chrome-extension-harness.ts) — `launchPersistentContext` + `--load-extension` + deterministic extension-ID derivation.
 - **Firefox harness**: [`shared/firefox-extension-harness.ts`](./shared/firefox-extension-harness.ts) — Playwright Firefox `omni.ja` patch + RDP install + UUID lookup.
-- **withFixtures branch**: [`test/e2e/helpers.js`](../helpers.js) — `driverType: 'selenium' | 'playwright'`.
+- **withFixtures branch**: [`test/e2e/helpers.js`](../helpers.js) — `driverType` from [`E2E_DRIVER`](../constants.ts) (`SELENIUM` default, `PLAYWRIGHT` for migrated specs).
 
 ### Unsupported on the Playwright path (yet)
 

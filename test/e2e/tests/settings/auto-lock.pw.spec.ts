@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow -- @playwright/test exports `test` as a callable namespace; the global `test` is Mocha's
 import { test as pwTest } from '@playwright/test';
+import { E2E_DRIVER } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -18,7 +19,7 @@ pwTest.describe('Auto-Lock Timer', () => {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
-          driverType: 'playwright',
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           title: testInfo.titlePath.join(' '),
         },
         async ({ driver }) => {
