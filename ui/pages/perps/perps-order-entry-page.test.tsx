@@ -37,6 +37,25 @@ import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
 
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// default gate is a passthrough; the blocked case is simulated per-test below.
+const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
+jest.mock('../../components/app/compliance', () => ({
+  useComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+  useSelectedAccountComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+}));
+
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
 
 const enterAmount = (value: string) => {
@@ -311,6 +330,7 @@ describe('PerpsOrderEntryPage', () => {
     mockReplacePerpsToastByKey.mockReset();
     mockHidePerpsToast.mockReset();
     mockTriggerDeposit.mockClear();
+    mockSubmitRequestToBackground.mockResolvedValue(undefined);
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -621,6 +641,24 @@ describe('PerpsOrderEntryPage', () => {
 
       const submitButton = screen.getByTestId('submit-order-button');
       expect(submitButton).toBeDisabled();
+    });
+
+    it('gates the amount input add funds action when compliance blocks the selected wallet', async () => {
+      // Simulate a blocked wallet: the gate short-circuits and never runs the
+      // wrapped add-funds action. Real compliance check + access-restricted modal
+      // are covered in useComplianceGate.test.tsx and
+      // access-restricted-context.test.tsx.
+      mockComplianceGate.mockImplementationOnce(async () => undefined);
+      const store = mockStore(createMockState());
+
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('amount-input-add-funds'));
+      });
+
+      await waitFor(() => expect(mockComplianceGate).toHaveBeenCalled());
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
     });
 
     it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
@@ -1189,8 +1227,7 @@ describe('PerpsOrderEntryPage', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
@@ -1811,8 +1848,7 @@ describe('PerpsOrderEntryPage', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));

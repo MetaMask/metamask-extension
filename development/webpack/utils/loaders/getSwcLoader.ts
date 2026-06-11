@@ -1,9 +1,6 @@
-import { type Args } from '../cli';
-import { __HMR_READY__ } from '../helpers';
 import type { SwcLoaderOptions } from './swcLoader';
 
 export type SwcConfig = {
-  args: Pick<Args, 'watch'>;
   browsersListQuery: string;
   isDevelopment: boolean;
 };
@@ -35,8 +32,6 @@ export function getSwcLoader(
         transform: {
           react: {
             development: swcConfig.isDevelopment,
-            refresh:
-              __HMR_READY__ && swcConfig.isDevelopment && swcConfig.args.watch,
           },
           optimizer: {
             globals: {

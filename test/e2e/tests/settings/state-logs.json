@@ -621,6 +621,8 @@
         }
       }
     },
+    "batchSellTrades": "null",
+    "batchSellTradesLoadingStatus": "null",
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -634,6 +636,7 @@
       "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
+    "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
@@ -665,19 +668,9 @@
     "coverageResults": {},
     "cryptocurrencies": ["string"],
     "currencyRates": {
-      "BNB": {
-        "conversionDate": "null",
-        "conversionRate": "null",
-        "usdConversionRate": "null"
-      },
-      "ETH": {
+      "*": {
         "conversionDate": "null",
         "conversionRate": "number",
-        "usdConversionRate": "null"
-      },
-      "POL": {
-        "conversionDate": "null",
-        "conversionRate": "null",
         "usdConversionRate": "null"
       }
     },
@@ -1049,6 +1042,7 @@
       }
     ],
     "knownMethodData": {},
+    "lastCheckedAt": "null",
     "lastCompletedWithdrawalTimestamp": "null",
     "lastCompletedWithdrawalTxHashes": [],
     "lastDepositResult": "null",
@@ -1068,14 +1062,7 @@
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
     "marketData": {
-      "0x1": {},
-      "0x2105": {},
-      "0x38": {},
-      "0x539": {},
-      "0x89": {},
-      "0xa": {},
-      "0xa4b1": {},
-      "0xe708": {}
+      "*": {}
     },
     "marketFilterPreferences": {
       "optionId": "string",
@@ -1087,7 +1074,10 @@
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
     "metaMetricsId": "string",
+    "analyticsId": "string",
+    "optedIn": "boolean",
     "methodData": {},
+    "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
@@ -1310,7 +1300,15 @@
     },
     "localOverrides": {},
     "location": "string",
-    "rewardsAccounts": {},
+    "rewardsAccounts": {
+      "*": {
+        "account": "string",
+        "lastFreshOptInStatusCheck": "number",
+        "lastPerpsDiscountRateFetched": "null",
+        "perpsFeeDiscount": "null",
+        "subscriptionId": "null"
+      }
+    },
     "rewardsActiveAccount": "null",
     "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
@@ -1320,7 +1318,6 @@
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "null",
     "passkeyRecord": "null",
-    "segmentApiCalls": {},
     "selectedAccountGroup": "string",
     "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
@@ -1480,39 +1477,7 @@
     "tokenBalances": {},
     "tokenScanCache": {},
     "tokenSecurityTypeDestination": "null",
-    "tokensChainsCache": {
-      "0x539": {
-        "data": {
-          "0x0d8775f648430679a709e98d2b0cb6250d2887ef": {
-            "address": "string",
-            "aggregators": ["string"],
-            "decimals": "number",
-            "iconUrl": "string",
-            "name": "string",
-            "occurrences": "number",
-            "symbol": "string"
-          },
-          "0x6b175474e89094c44da98b954eedeac495271d0f": {
-            "address": "string",
-            "aggregators": ["string"],
-            "decimals": "number",
-            "erc20Permit": "boolean",
-            "fees": {
-              "0xb0da5965d43369968574d399dbe6374683773a65": "number"
-            },
-            "iconUrl": "string",
-            "name": "string",
-            "occurrences": "number",
-            "storage": {
-              "balance": "number"
-            },
-            "symbol": "string",
-            "type": "string"
-          }
-        },
-        "timestamp": "number"
-      }
-    },
+    "tokensChainsCache": {},
     "tokenWarnings": [],
     "tradeConfigurations": {
       "testnet": {},
@@ -1549,6 +1514,7 @@
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
     "userOperations": {},
+    "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",

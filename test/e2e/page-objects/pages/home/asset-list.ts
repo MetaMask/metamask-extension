@@ -1,10 +1,8 @@
-import { Driver } from '../../../webdriver/driver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { veryLargeDelayMs } from '../../../helpers';
+import HomePage from './homepage';
 
-class AssetListPage {
-  private readonly driver: Driver;
-
+class AssetListPage extends HomePage {
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
   private readonly assetPriceInDetailsModal =
@@ -75,7 +73,7 @@ class AssetListPage {
   private readonly sortByPopoverToggle =
     '[data-testid="sort-by-popover-toggle"]';
 
-  private readonly buySellButton = '[data-testid="coin-overview-buy"]';
+  private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
 
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
@@ -86,8 +84,6 @@ class AssetListPage {
       text: networkName,
     };
   };
-
-  private readonly sendButton = '[data-testid="eth-overview-send"]';
 
   private readonly tokenAddressInput =
     '[data-testid="import-tokens-modal-custom-address"]';
@@ -172,10 +168,6 @@ class AssetListPage {
     testId: 'refreshList',
   };
 
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
-
   async clickNetworkSelectorDropdown(): Promise<void> {
     console.log(`Clicking on the network selector dropdown`);
     await this.driver.clickElement(this.sortByPopoverToggle);
@@ -215,11 +207,6 @@ class AssetListPage {
     });
   }
 
-  async clickSendButton(): Promise<void> {
-    console.log(`Clicking on the send button`);
-    await this.driver.clickElement(this.sendButton);
-  }
-
   async clickMultichainTokenListButton(): Promise<void> {
     console.log('Clicking on multichain token list button');
     await this.driver.clickElement(this.multichainTokenListButton);
@@ -235,22 +222,17 @@ class AssetListPage {
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
-    let toggle;
-
+    // If the low value assets section is already expanded, no action is required.
     try {
-      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
+      await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+        timeout: 1000,
+      });
+      return;
     } catch {
-      return;
+      // Not expanded yet (or low value section not present), attempt to expand it below.
     }
 
-    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
-      return;
-    }
-
-    await this.driver.clickElement(this.lowValueAssetsToggle);
-    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
-      timeout: 5000,
-    });
+    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
@@ -411,6 +393,9 @@ class AssetListPage {
 
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenSearchInput, name);
+      // Wait for the async search results to fully settle before interacting,
+      // mirroring the guard in importTokenBySearch.
+      await this.waitUntilTokenSearchMatch(1);
       await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
       await this.driver.waitForSelector(this.tokenSearchSelected);
@@ -463,7 +448,7 @@ class AssetListPage {
 
   async checkBuySellButtonIsPresent(): Promise<void> {
     console.log(`Verify the buy/sell button is displayed`);
-    await this.driver.waitForSelector(this.buySellButton);
+    await this.driver.waitForSelector(this.coinOverviewBuyButton);
   }
 
   async checkMultichainTokenListButtonIsPresent(): Promise<void> {

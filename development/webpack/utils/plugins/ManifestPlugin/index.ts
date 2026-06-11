@@ -17,6 +17,7 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
+import { DEV_SERVER_CLIENT_ENTRY_NAME } from '../../constants';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
@@ -122,6 +123,7 @@ export class ManifestPlugin<Z extends boolean> {
     'snow.prod',
     'use-snow',
     'bootstrap',
+    DEV_SERVER_CLIENT_ENTRY_NAME,
   ]);
 
   private bundleSizeCategories: Map<string, Set<BundleSizeCategory>> =

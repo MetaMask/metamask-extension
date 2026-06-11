@@ -20,6 +20,10 @@ import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
 import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
+import {
+  DEFAULT_ZIP_MTIME,
+  isValidZipMtime,
+} from '../utils/plugins/ManifestPlugin/zip-mtime';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -27,6 +31,14 @@ function getWebpackInstance(config: Configuration) {
   // so we just delete the watch property.
   delete config.watch;
   return webpack(config);
+}
+
+function getExpectedDefaultZipMtime() {
+  const latestCommitTimestamp = getLatestCommit().timestamp();
+  if (isValidZipMtime(latestCommitTimestamp)) {
+    return latestCommitTimestamp;
+  }
+  return DEFAULT_ZIP_MTIME;
 }
 
 async function getWebpackWarnings(config: Configuration): Promise<string[]> {
@@ -399,9 +411,6 @@ inquire('long');
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
-        GOOGLE_PROD_CLIENT_ID: '00000000000',
-        APPLE_PROD_CLIENT_ID: '00000000000',
-        TELEGRAM_PROD_CLIENT_ID: '00000000000',
         METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );
@@ -440,6 +449,10 @@ inquire('long');
     assert.strictEqual(
       manifestPlugin.options.zipOptions.outFilePath,
       `../builds/metamask-[browser]-${packageVersion}.zip`,
+    );
+    assert.strictEqual(
+      manifestPlugin.options.zipOptions.mtime,
+      getExpectedDefaultZipMtime(),
     );
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
     assert(manifestPlugin.options.stats, 'Stats options should be present');
@@ -504,6 +517,20 @@ inquire('long');
       undefined,
       'BundleAnalyzerPlugin should be absent without --bundleAnalyzer',
     );
+  });
+
+  it('uses SOURCE_DATE_EPOCH as the default zip mtime when set', () => {
+    const config: Configuration = getWebpackConfig(['--zip'], {
+      SOURCE_DATE_EPOCH: '1711141205',
+    });
+    const instance = getWebpackInstance(config);
+    const manifestPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
+    ) as ManifestPlugin<true>;
+
+    assert(manifestPlugin, 'Manifest plugin should be present');
+    assert.strictEqual(manifestPlugin.options.zip, true);
+    assert.strictEqual(manifestPlugin.options.zipOptions.mtime, 1711141205000);
   });
 
   it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {
@@ -640,15 +667,34 @@ inquire('long');
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
-  it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
-    const config: Configuration = getWebpackConfig(['--watch'], {
-      __HMR_READY__: 'true',
+  it('includes the resolved zip mtime in the dry-run message when zipping', () => {
+    const exit = mock.method(process, 'exit', noop, { times: 1 });
+    const error = mock.method(console, 'error', noop, { times: 1 });
+
+    getWebpackConfig(['--zip', '--dry-run'], {
+      SOURCE_DATE_EPOCH: '1711141205',
     });
-    delete config.watch;
-    const instance = webpack(config);
-    const reactRefreshPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ReactRefreshPlugin',
+
+    assert.strictEqual(error.mock.calls.length, 1);
+    assert.match(
+      error.mock.calls[0].arguments[0] as string,
+      /Zip mtime: 1711141205000 \(2024-03-22T21:00:05\.000Z\)/u,
     );
-    assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
+
+    assert.strictEqual(exit.mock.calls.length, 1);
+    assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
+  });
+
+  it('validates SOURCE_DATE_EPOCH during zip dry-run', () => {
+    assert.throws(
+      () =>
+        getWebpackConfig(['--zip', '--dry-run'], {
+          SOURCE_DATE_EPOCH: '0',
+        }),
+      {
+        message:
+          /Invalid SOURCE_DATE_EPOCH value "0": expected a Unix timestamp in seconds greater than or equal to 315532800 and less than 4102444800/u,
+      },
+    );
   });
 });

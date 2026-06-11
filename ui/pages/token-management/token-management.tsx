@@ -33,7 +33,6 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { ERC20 } from '@metamask/controller-utils';
 
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
@@ -51,6 +50,7 @@ import {
   getEnabledNetworksByNamespace,
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
@@ -85,6 +85,8 @@ import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAss
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
+import { HomeNetworkFilterModal } from '../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
+import { getIsNetworkManagementEnabled } from '../../selectors/multichain/feature-flags';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
@@ -216,11 +218,6 @@ const normalizeToHexChainId = (chainId: string): string => {
     : chainId.toLowerCase();
 };
 
-const normalizeToCaipChainId = (chainId: string): CaipChainId =>
-  chainId.startsWith('0x')
-    ? formatChainIdToCaip(chainId as Hex)
-    : (chainId as CaipChainId);
-
 const getTokenAddressKey = (chainId: string, address: string) =>
   `${normalizeToHexChainId(chainId)}:${address.toLowerCase()}`;
 
@@ -348,6 +345,8 @@ export const TokenManagementPage = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [pageToast, setPageToast] = useState<{ symbol: string } | null>(null);
+  const [isNetworkFilterModalOpen, setIsNetworkFilterModalOpen] =
+    useState(false);
   const [pendingKeys, setPendingKeys] = useState<ReadonlySet<string>>(
     () => new Set<string>(),
   );
@@ -471,6 +470,7 @@ export const TokenManagementPage = () => {
   );
   const useExternalServices = useSelector(getUseExternalServices);
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
+  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
@@ -484,6 +484,7 @@ export const TokenManagementPage = () => {
       return {} as Record<string, boolean>;
     }
   });
+  const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allMultichainNetworkConfigurations = useSelector(
     getAllMultichainNetworkConfigurations,
@@ -611,11 +612,11 @@ export const TokenManagementPage = () => {
   const tokenSearchQuery = hasQuery ? debouncedSearchQuery : '';
 
   const searchNetworks = useMemo(() => {
-    if (allEnabledNetworksForAllNamespaces.length === 0) {
+    if (enabledCaipChainIds.length === 0) {
       return undefined;
     }
-    return allEnabledNetworksForAllNamespaces.map(normalizeToCaipChainId);
-  }, [allEnabledNetworksForAllNamespaces]);
+    return enabledCaipChainIds;
+  }, [enabledCaipChainIds]);
 
   const {
     data: searchResponse,
@@ -648,7 +649,7 @@ export const TokenManagementPage = () => {
   const isSearching =
     isWaitingForDebounce ||
     (hasQuery && debouncedSearchQuery.length > 0 && isSearchFetching);
-  const searchError = hasQuery ? searchQueryError : null;
+  const searchError = searchQueryError;
 
   const importedEvmTokensByChain = useMemo(() => {
     const map = new Map<string, Set<string>>();
@@ -736,8 +737,16 @@ export const TokenManagementPage = () => {
 
   const handleOpenNetworkFilter = useCallback(() => {
     commitStagedHides().catch(() => undefined);
-    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-  }, [commitStagedHides, dispatch]);
+    if (!isNetworkManagementEnabled) {
+      dispatch(showModal({ name: 'NETWORK_MANAGER' }));
+      return;
+    }
+    setIsNetworkFilterModalOpen(true);
+  }, [commitStagedHides, dispatch, isNetworkManagementEnabled]);
+
+  const handleCloseNetworkFilter = useCallback(() => {
+    setIsNetworkFilterModalOpen(false);
+  }, []);
 
   const handleAddCustomToken = useCallback(() => {
     commitStagedHides().catch(() => undefined);
@@ -1440,7 +1449,7 @@ export const TokenManagementPage = () => {
 
   const shouldShowTokenList = hasQuery
     ? hasResults || (!isSearching && !searchError)
-    : tokenListItems.length > 0 || !isSearchFetching;
+    : tokenListItems.length > 0 || (!isSearchFetching && !searchError);
 
   const startAccessory = (
     <Link to={DEFAULT_ROUTE} aria-label={t('back')} onClick={handleBack}>
@@ -1508,6 +1517,13 @@ export const TokenManagementPage = () => {
         </ButtonBase>
       </Box>
 
+      {isNetworkManagementEnabled ? (
+        <HomeNetworkFilterModal
+          isOpen={isNetworkFilterModalOpen}
+          onClose={handleCloseNetworkFilter}
+        />
+      ) : null}
+
       <ScrollContainer
         data-testid="token-management-page-list"
         onScroll={handleListScroll}
@@ -1519,6 +1535,12 @@ export const TokenManagementPage = () => {
         }}
       >
         {hasQuery && isSearching && !hasResults ? loadingState : null}
+        {!hasQuery &&
+        !isSearchFetching &&
+        searchError &&
+        tokenListItems.length === 0
+          ? searchErrorState
+          : null}
         {hasQuery && !isSearching && searchError && !hasResults
           ? searchErrorState
           : null}

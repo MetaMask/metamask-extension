@@ -18,14 +18,14 @@ import {
 } from '../resolve-carousel-href';
 import type { StackCardProps } from './stack-card.types';
 
-export const StackCard: React.FC<StackCardProps> = ({
+export const StackCard = ({
   slide,
   isCurrentCard,
   isLastSlide = false,
   onSlideClick,
   onTransitionToNextCard,
   className = '',
-}) => {
+}: StackCardProps) => {
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 

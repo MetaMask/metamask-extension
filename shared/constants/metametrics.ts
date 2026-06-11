@@ -100,10 +100,6 @@ export type MetaMetricsEventPayload = {
    */
   category?: string;
   /**
-   * The action ID to deduplicate event requests from the UI.
-   */
-  actionId?: string;
-  /**
    * The type of environment this event occurred in. Defaults to the background
    * process type.
    */
@@ -140,10 +136,6 @@ export type MetaMetricsEventPayload = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
-  /*
-   * The unique identifier for the event.
-   */
-  uniqueIdentifier?: string;
   /**
    * Whether the event is a duplicate of an anonymized event.
    */
@@ -164,26 +156,9 @@ export type UnsanitizedMetaMetricsEventPayload = Omit<
 
 export type MetaMetricsEventOptions = {
   /**
-   * Whether or not the event happened during the opt-in workflow.
-   */
-  isOptIn?: boolean;
-  /**
-   * Whether the segment queue should be flushed after tracking the event.
-   * Recommended if the result of tracking the event must be known before UI
-   * transition or update.
-   */
-  flushImmediately?: boolean;
-  /**
    * Whether to exclude the user's `metaMetricsId` for anonymity.
    */
   excludeMetaMetricsId?: boolean;
-  /**
-   * An override for the `metaMetricsId` in the event (no pun intended) one is
-   * created as a part of an asynchronous workflow, such as awaiting the result
-   * of the MetaMetrics opt-in function that generates the user's
-   * `metaMetricsId`.
-   */
-  metaMetricsId?: string;
   /**
    * Is this event a holdover from Matomo that needs further migration? When
    * true, sends the data to a special Segment source that marks the event data
@@ -197,10 +172,6 @@ export type MetaMetricsEventOptions = {
 };
 
 export type MetaMetricsEventFragment = {
-  /**
-   * The action ID of transaction metadata object.
-   */
-  actionId?: string;
   /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
@@ -323,6 +294,9 @@ export type SegmentEventPayload = {
     chain_id: string | null;
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    chain_id_caip?: string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type?: string;
     revenue?: number;
     value?: number;
@@ -379,19 +353,6 @@ export type MetaMetricsPagePayload = {
    * The dapp that triggered the page view.
    */
   referrer?: MetaMetricsReferrerObject;
-  /**
-   * The action ID of the page view.
-   */
-  actionId?: string;
-};
-
-export type MetaMetricsPageOptions = {
-  /**
-   * Is the current path one of the pages in the onboarding workflow? (If this
-   * is true and participateInMetaMetrics is null, then the page view will be
-   * tracked.)
-   */
-  isOptInPath?: boolean;
 };
 
 /**
@@ -990,6 +951,7 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
+  NavBatchSellButtonClicked = 'Batch Sell Button Clicked',
   NftAdded = 'NFT Added',
   NftDetected = 'NFT Detected',
   NoticeUpdateDisplayed = 'Notice Update Displayed',
@@ -1027,6 +989,8 @@ export enum MetaMetricsEventName {
   RpcServiceDegraded = 'RPC Service Degraded',
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
+  SeedlessOnboardingMigrationCompleted = 'Seedless Onboarding Migration Completed',
+  SeedlessOnboardingMigrationFailed = 'Seedless Onboarding Migration Failed',
   SettingsUpdated = 'Settings Updated',
   SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
@@ -1214,6 +1178,7 @@ export enum MetaMetricsEventName {
   HardwareWalletRecoverySuccessModalViewed = 'Hardware Wallet Recovery Success Modal Viewed',
   HardwareWalletRecoveryCtaClicked = 'Hardware Wallet Recovery CTA Clicked',
   HardwareWalletRecoveryRepairCtaClicked = 'Hardware Wallet Recovery Repair CTA Clicked',
+  QrHardwareScanFailed = 'QR Hardware Scan Failed',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',

@@ -321,6 +321,7 @@
         "depcheck>@babel/parser": true,
         "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
         "@lavamoat/webpack>lavamoat-core": true,
         "webpack": true
       }
@@ -529,20 +530,6 @@
         "mockttp>@peculiar/x509>reflect-metadata": true,
         "tslib": true,
         "mockttp>@peculiar/x509>tsyringe": true
-      }
-    },
-    "@pmmmwh/react-refresh-webpack-plugin": {
-      "builtin": {
-        "node:path.dirname": true,
-        "node:path.join": true
-      },
-      "globals": {
-        "__dirname": true,
-        "process.env.NODE_ENV": true
-      },
-      "packages": {
-        "schema-utils": true,
-        "webpack": true
       }
     },
     "jest-preview>sirv>@polka/url": {
@@ -2003,12 +1990,14 @@
     },
     "webpack-dev-server>launch-editor": {
       "builtin": {
+        "child_process.exec": true,
         "child_process.execSync": true,
         "child_process.spawn": true,
         "fs.existsSync": true,
         "os.release": true,
         "path.basename": true,
-        "path.relative": true
+        "path.relative": true,
+        "url.fileURLToPath": true
       },
       "globals": {
         "console.log": true,

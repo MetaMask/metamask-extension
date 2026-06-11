@@ -156,9 +156,11 @@ const mergeProps = (
 const UnlockPageConnected = compose(
   withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
-)(UnlockPage) as React.ComponentType<{
-  onSubmit?: (password: string) => Promise<void>;
-  navigateAfterUnlock?: () => Promise<void>;
-}>;
+)(UnlockPage) as React.ComponentType<
+  React.PropsWithChildren<{
+    onSubmit?: (password: string) => Promise<void>;
+    navigateAfterUnlock?: () => Promise<void>;
+  }>
+>;
 
 export default UnlockPageConnected;

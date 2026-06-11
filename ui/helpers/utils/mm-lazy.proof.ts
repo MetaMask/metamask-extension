@@ -9,9 +9,9 @@ import { mmLazy } from './mm-lazy';
  */
 
 type ButtonProps = { label: string; onClick: () => void };
-type ButtonComponent = React.FC<ButtonProps>;
+type ButtonComponent = React.ComponentType<ButtonProps>;
 type ModalProps = { isOpen: boolean };
-type ModalComponent = React.FC<ModalProps>;
+type ModalComponent = React.ComponentType<ModalProps>;
 
 /**
  * Type-level tests for `InferComponent`.

@@ -1,10 +1,18 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
-import { zeroAddress } from 'viem';
+import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transaction';
+import { toAssetId } from '../../asset-utils';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
-import type { ActivityListItem, Status } from '../types';
-import { supplyMethodIds } from './constants';
-import { getTokenAmountFromTransfer } from './helpers';
+import type { ActivityListItem, Status, TokenAmount } from '../types';
+import { supplyMethodIds, withdrawMethodIds, wrapMethodIds } from './constants';
+import {
+  getNativeAssetSafe,
+  getTokenMetadataFromKnownToken,
+  getTokenAmountFromTransfer,
+  isNftStandard,
+  withFallbackTokenAssetId,
+  type ValueTransfer,
+} from './helpers';
 
 // Converts indexed API transactions into the shared activity item shape
 export function mapApiEvmTransactions({
@@ -21,6 +29,10 @@ export function mapApiEvmTransactions({
     KnownCaipNamespace.Eip155,
     transaction.chainId.toString(),
   );
+  const getToken = (
+    transfer: ValueTransfer | undefined,
+    direction: TokenAmount['direction'],
+  ) => getTokenAmountFromTransfer(transfer, direction, chainId);
 
   const sentTransfer = valueTransfers?.find(({ from }) =>
     equalsIgnoreCase(from, subjectAddress),
@@ -30,21 +42,26 @@ export function mapApiEvmTransactions({
   );
   const sentNftTransfer = valueTransfers?.find(
     ({ from, transferType }) =>
-      equalsIgnoreCase(from, subjectAddress) &&
-      (transferType === 'erc721' || transferType === 'erc1155'),
+      equalsIgnoreCase(from, subjectAddress) && isNftStandard(transferType),
   );
   const receivedNftTransfer = valueTransfers?.find(
     ({ to, transferType }) =>
-      equalsIgnoreCase(to, subjectAddress) &&
-      (transferType === 'erc721' || transferType === 'erc1155'),
+      equalsIgnoreCase(to, subjectAddress) && isNftStandard(transferType),
   );
   const sentNativeTransfer = valueTransfers?.find(
     ({ from, transferType }) =>
       equalsIgnoreCase(from, subjectAddress) && transferType === 'normal',
   );
+  const hasNativeTransferWithoutMethod =
+    transactionCategory === 'CONTRACT_CALL' &&
+    !transaction.methodId &&
+    valueTransfers?.some(({ transferType }) => transferType === 'normal');
   const hasSupplyMethodId =
     transaction.methodId && supplyMethodIds.has(transaction.methodId);
-
+  const hasWithdrawMethodId =
+    transaction.methodId && withdrawMethodIds.has(transaction.methodId);
+  const hasWrapMethodId =
+    transaction.methodId && wrapMethodIds.has(transaction.methodId);
   if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
     if (!receivedTransfer?.symbol) {
       return {
@@ -52,8 +69,9 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
+        raw: { type: 'apiEvmTransaction', data: transaction },
         data: {
-          sourceToken: getTokenAmountFromTransfer(sentTransfer, 'out'),
+          sourceToken: getToken(sentTransfer, 'out'),
           hash,
         },
       };
@@ -64,9 +82,10 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
-        sourceToken: getTokenAmountFromTransfer(sentTransfer, 'out'),
-        destinationToken: getTokenAmountFromTransfer(receivedTransfer, 'in'),
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
         hash,
       },
     };
@@ -74,15 +93,21 @@ export function mapApiEvmTransactions({
 
   if (transactionCategory === 'APPROVE') {
     // TODO: Categorize REVOKE in the backend
+    const direction = receivedTransfer && !sentTransfer ? 'in' : 'out';
+    const assetId = toAssetId(transaction.to, chainId);
+    const token =
+      getTokenMetadataFromKnownToken(transaction.to, direction, chainId) ??
+      (assetId ? { direction, assetId } : undefined);
 
     return {
       type: 'approveSpendingCap',
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        tokenSymbol: sentTransfer?.symbol ?? receivedTransfer?.symbol,
+        token,
       },
     };
   }
@@ -96,24 +121,28 @@ export function mapApiEvmTransactions({
           chainId,
           status,
           timestamp,
+          raw: { type: 'apiEvmTransaction', data: transaction },
           data: {
             hash,
             from: receivedNftTransfer.from,
             to: receivedNftTransfer.to,
-            token: getTokenAmountFromTransfer(receivedNftTransfer, 'in'),
+            token: getToken(receivedNftTransfer, 'in'),
           },
         };
       }
 
       if (sentNativeTransfer) {
         return {
-          type: 'buy',
+          type: 'nftBuy',
           chainId,
           status,
           timestamp,
+          raw: { type: 'apiEvmTransaction', data: transaction },
           data: {
             hash,
-            token: getTokenAmountFromTransfer(receivedNftTransfer, 'in'),
+            from: receivedNftTransfer.from,
+            to: receivedNftTransfer.to,
+            token: getToken(receivedNftTransfer, 'in'),
           },
         };
       }
@@ -123,11 +152,12 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
+        raw: { type: 'apiEvmTransaction', data: transaction },
         data: {
           hash,
           from: receivedNftTransfer.from,
           to: receivedNftTransfer.to,
-          token: getTokenAmountFromTransfer(receivedNftTransfer, 'in'),
+          token: getToken(receivedNftTransfer, 'in'),
         },
       };
     }
@@ -138,11 +168,12 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
+        raw: { type: 'apiEvmTransaction', data: transaction },
         data: {
           hash,
           from: sentNftTransfer.from,
           to: sentNftTransfer.to,
-          token: getTokenAmountFromTransfer(sentNftTransfer, 'out'),
+          token: getToken(sentNftTransfer, 'out'),
         },
       };
     }
@@ -150,14 +181,25 @@ export function mapApiEvmTransactions({
 
   if (
     transactionCategory === 'TRANSFER' ||
-    transactionCategory === 'STANDARD'
+    transactionCategory === 'STANDARD' ||
+    hasNativeTransferWithoutMethod
   ) {
     const isReceive =
-      Boolean(receivedTransfer) ||
+      Boolean(receivedTransfer && !sentTransfer) ||
       (equalsIgnoreCase(transaction.to, subjectAddress) &&
         !equalsIgnoreCase(transaction.from, subjectAddress));
 
     const transfer = isReceive ? receivedTransfer : sentTransfer;
+    const direction = isReceive ? 'in' : 'out';
+    const nativeAsset = getNativeAssetSafe(chainId);
+    const nativeToken =
+      transactionCategory === 'STANDARD' && nativeAsset
+        ? ({
+            ...nativeAsset,
+            amount: transaction.value,
+            direction,
+          } as TokenAmount)
+        : undefined;
 
     // TODO: Handle mUSD converts in the backend
     // Falls back to "send" without a matching local transaction
@@ -167,10 +209,17 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         from: transfer?.from ?? transaction.from,
         to: transfer?.to ?? transaction.to,
-        token: getTokenAmountFromTransfer(transfer, isReceive ? 'in' : 'out'),
+        token:
+          withFallbackTokenAssetId(
+            getToken(transfer, direction),
+            transaction.to,
+            transfer?.transferType,
+            chainId,
+          ) ?? nativeToken,
         hash,
       },
     };
@@ -182,9 +231,10 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        token: getTokenAmountFromTransfer(receivedTransfer, 'in'),
+        token: getToken(receivedTransfer, 'in'),
       },
     };
   }
@@ -195,12 +245,43 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        token: getTokenAmountFromTransfer(
+        token: getToken(
           receivedTransfer ?? sentTransfer,
           receivedTransfer ? 'in' : 'out',
         ),
+      },
+    };
+  }
+
+  if (transactionCategory === 'BRIDGE_WITHDRAW') {
+    return {
+      type: 'bridge',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+      },
+    };
+  }
+
+  // lending withdrawal - applies to Earn features only
+  if (transactionCategory === 'WITHDRAW' && hasWithdrawMethodId) {
+    return {
+      type: 'lendingWithdrawal',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
       },
     };
   }
@@ -212,9 +293,41 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        token: getTokenAmountFromTransfer(sentTransfer, 'out'),
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+
+  // TODO: Not sure if this is specific enough, may need separate category in backend
+  if (receivedTransfer && hasWrapMethodId) {
+    return {
+      type: 'wrap',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+  if (transactionCategory === 'UNWRAP') {
+    return {
+      type: 'unwrap',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
       },
     };
   }
@@ -231,19 +344,44 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
-        sourceToken: getTokenAmountFromTransfer(sentTransfer, 'out'),
-        destinationToken: getTokenAmountFromTransfer(receivedTransfer, 'in'),
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
         hash,
       },
     };
   }
+
+  if (transactionCategory === 'DEPOSIT') {
+    return {
+      type: 'deposit',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        token: getToken(sentTransfer, 'in'),
+      },
+    };
+  }
+
+  const contractInteractionTransfer = sentTransfer ?? receivedTransfer;
+  const contractInteractionToken = getToken(
+    contractInteractionTransfer,
+    sentTransfer ? 'out' : 'in',
+  );
+  const contractInteractionTokenWithAmount = contractInteractionToken?.amount
+    ? contractInteractionToken
+    : undefined;
 
   return {
     type: 'contractInteraction',
     chainId,
     status,
     timestamp,
+    raw: { type: 'apiEvmTransaction', data: transaction },
     data: {
       hash,
       methodId: transaction.methodId,
@@ -252,6 +390,9 @@ export function mapApiEvmTransactions({
       transactionCategory,
       transactionProtocol: transaction.transactionProtocol,
       transactionType: transaction.transactionType,
+      ...(contractInteractionTokenWithAmount
+        ? { token: contractInteractionTokenWithAmount }
+        : {}),
     },
   };
 }
