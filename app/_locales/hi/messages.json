@@ -3449,9 +3449,6 @@
   "enabled": {
     "message": "चालू किया गया"
   },
-  "enabledNetworks": {
-    "message": "चालू किए गए नेटवर्क"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 आपकी पब्लिक एन्क्रिप्शन की (key) चाहता है। सहमति देने पर, यह साइट आपके लिए एन्क्रिप्ट किए गए मैसेज लिख पाएगी।",
     "description": "$1 is the web3 site name"
@@ -10070,9 +10067,6 @@
   },
   "termsOfUseTitle": {
     "message": "हमारी उपयोग की शर्तों की समीक्षा करें"
-  },
-  "testNetworks": {
-    "message": "टेस्ट नेटवर्क्स"
   },
   "testnets": {
     "message": "Testnets"

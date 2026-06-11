@@ -3449,9 +3449,6 @@
   "enabled": {
     "message": "Activada"
   },
-  "enabledNetworks": {
-    "message": "Redes habilitadas"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 quisiera su clave pública de cifrado. Al aceptar, este sitio podrá redactar mensajes cifrados para usted.",
     "description": "$1 is the web3 site name"
@@ -10078,9 +10075,6 @@
   },
   "termsOfUseTitle": {
     "message": "Revisa nuestros Términos de Uso"
-  },
-  "testNetworks": {
-    "message": "Redes de prueba"
   },
   "testnets": {
     "message": "Red de pruebas"

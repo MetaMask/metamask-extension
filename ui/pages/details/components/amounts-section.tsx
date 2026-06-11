@@ -8,6 +8,7 @@ import { formatUnits } from '../../../../shared/lib/unit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-value';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import { Row } from './shared';
 

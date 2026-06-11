@@ -411,23 +411,21 @@ export function previousValueComparator<A>(
 }
 
 /**
- * Determines whether to emit a MetaMetrics event for a given metaMetricsId.
- * Relies on the last 4 characters of the metametricsId. Assumes the IDs are evenly distributed.
- * If metaMetricsIds are distributed evenly, this should be a 1% sample rate
+ * Determines whether to emit a MetaMetrics event for a given analytics ID.
+ * Relies on the last 4 characters of the analytics ID. Assumes the IDs are evenly distributed.
+ * If analytics IDs are distributed evenly, this should be a 1% sample rate
  *
- * @param metaMetricsId - The metametricsId to use for the event.
+ * @param analyticsId - The analytics ID to use for the event.
  * @returns Whether to emit the event or not.
  */
-export function shouldEmitDappViewedEvent(
-  metaMetricsId: string | null,
-): boolean {
+export function shouldEmitDappViewedEvent(analyticsId: string | null): boolean {
   const isFireFox = getPlatform() === PLATFORM_FIREFOX;
 
-  if (metaMetricsId === null || isFireFox) {
+  if (analyticsId === null || isFireFox) {
     return false;
   }
 
-  const lastFourCharacters = metaMetricsId.slice(-4);
+  const lastFourCharacters = analyticsId.slice(-4);
   const lastFourCharactersAsNumber = parseInt(lastFourCharacters, 16);
 
   return lastFourCharactersAsNumber % 100 === 0;

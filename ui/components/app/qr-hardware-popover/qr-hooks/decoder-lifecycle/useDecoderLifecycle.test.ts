@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { URDecoder } from '@ngraveio/bc-ur';
+import log from 'loglevel';
 import {
   UrType,
   PAIRING_EXPECTED_UR_TYPES,
@@ -77,6 +78,30 @@ describe('useDecoderLifecycle', () => {
       expect(mockSetScanProgress).not.toHaveBeenCalled();
     });
 
+    it('skips processing when receiving the same frame content twice', () => {
+      const mockInstance = {
+        isComplete: jest.fn().mockReturnValue(false),
+        isError: jest.fn().mockReturnValue(false),
+        receivePart: jest.fn(),
+        estimatedPercentComplete: jest.fn().mockReturnValue(0.25),
+        resultUR: jest.fn(),
+      };
+      mockURDecoder.mockImplementation(
+        () => mockInstance as unknown as URDecoder,
+      );
+
+      const { result } = renderDecoderHook();
+
+      act(() => {
+        result.current.handleScan('ur:crypto-hdkey/frame-1');
+        result.current.handleScan('ur:crypto-hdkey/frame-1');
+        result.current.handleScan('ur:crypto-hdkey/frame-1');
+      });
+
+      expect(mockInstance.receivePart).toHaveBeenCalledTimes(1);
+      expect(mockSetScanProgress).toHaveBeenCalledTimes(1);
+    });
+
     it('feeds data into the decoder and updates progress', () => {
       const mockInstance = {
         isComplete: jest.fn().mockReturnValue(false),
@@ -124,6 +149,32 @@ describe('useDecoderLifecycle', () => {
       });
 
       expect(mockHandleSuccess).toHaveBeenCalledWith(mockResult);
+    });
+
+    it('does not update progress when decoder completes immediately', () => {
+      const mockResult = { type: UrType.CryptoHdkey };
+      const mockInstance = {
+        isComplete: jest
+          .fn()
+          .mockReturnValueOnce(false)
+          .mockReturnValueOnce(true),
+        isError: jest.fn().mockReturnValue(false),
+        receivePart: jest.fn(),
+        estimatedPercentComplete: jest.fn().mockReturnValue(1),
+        resultUR: jest.fn().mockReturnValue(mockResult),
+      };
+      mockURDecoder.mockImplementation(
+        () => mockInstance as unknown as URDecoder,
+      );
+
+      const { result } = renderDecoderHook();
+
+      act(() => {
+        result.current.handleScan('single-frame-qr');
+      });
+
+      expect(mockHandleSuccess).toHaveBeenCalledWith(mockResult);
+      expect(mockSetScanProgress).not.toHaveBeenCalled();
     });
 
     it('does not process data when decoder is already complete', () => {
@@ -297,6 +348,62 @@ describe('useDecoderLifecycle', () => {
         rawMessage: 'cbor decode failure',
       });
       expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    it('calls log.warn with the raw exception for ScanException errors', () => {
+      const warnSpy = jest.spyOn(log, 'warn').mockImplementation();
+      const thrownError = new Error('cbor decode failure');
+      const mockInstance = {
+        isComplete: jest.fn().mockReturnValue(false),
+        isError: jest.fn().mockReturnValue(false),
+        receivePart: jest.fn().mockImplementation(() => {
+          throw thrownError;
+        }),
+        estimatedPercentComplete: jest.fn(),
+        resultUR: jest.fn(),
+      };
+      mockURDecoder.mockImplementation(
+        () => mockInstance as unknown as URDecoder,
+      );
+
+      const { result } = renderDecoderHook();
+
+      act(() => {
+        result.current.handleScan('ur:crypto-hdkey/corrupted-data');
+      });
+
+      expect(warnSpy).toHaveBeenCalledWith('QR scan exception', thrownError);
+      warnSpy.mockRestore();
+    });
+
+    it('does not call log.warn for NonUrQrScanned errors', () => {
+      const warnSpy = jest.spyOn(log, 'warn').mockImplementation();
+      const mockInstance = {
+        isComplete: jest.fn().mockReturnValue(false),
+        isError: jest.fn().mockReturnValue(false),
+        receivePart: jest.fn().mockImplementation(() => {
+          throw new Error('invalid payload');
+        }),
+        estimatedPercentComplete: jest.fn(),
+        resultUR: jest.fn(),
+      };
+      mockURDecoder.mockImplementation(
+        () => mockInstance as unknown as URDecoder,
+      );
+
+      const { result } = renderDecoderHook();
+
+      act(() => {
+        result.current.handleScan('bad-data');
+      });
+
+      expect(mockSetScanError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: ScanErrorCategory.NonUrQrScanned,
+        }),
+      );
+      expect(warnSpy).not.toHaveBeenCalled();
+      warnSpy.mockRestore();
     });
 
     it('classifies as UrDecodeError when decoder enters error state', () => {
