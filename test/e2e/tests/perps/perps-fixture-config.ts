@@ -265,6 +265,12 @@ async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay: { name: 'empty' },
     perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
+    // Mirror the seeded controller state: the background
+    // RemoteFeatureFlagController refetches /v1/flags on load and would
+    // otherwise overwrite the seeded `enabled: false` with the production
+    // default (`enabled: true`), re-enabling slippage gating and leaving
+    // market submit disabled without order-book estimates.
+    perpsSlippageConfig2: PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
   });
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
