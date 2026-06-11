@@ -927,7 +927,7 @@
         "@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
+        "@metamask/account-tree-controller>@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
@@ -943,7 +943,7 @@
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
+        "@metamask/accounts-controller>@metamask/keyring-controller": true,
         "@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
@@ -1046,7 +1046,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controllers>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -1204,6 +1204,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@ethersproject/abi": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
@@ -1920,7 +1921,7 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/accounts-controller>@metamask/keyring-controller": {
+    "@metamask/account-tree-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
       },
@@ -1937,7 +1938,24 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/assets-controller>@metamask/keyring-controller": {
+    "@metamask/accounts-controller>@metamask/keyring-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "lodash": true,
+        "@metamask/keyring-controller>ulid": true
+      }
+    },
+    "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/accounts-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
       },
@@ -1971,7 +1989,41 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
+    "@metamask/multichain-account-service>@metamask/keyring-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "lodash": true,
+        "@metamask/keyring-controller>ulid": true
+      }
+    },
     "@metamask/signature-controller>@metamask/keyring-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "lodash": true,
+        "@metamask/keyring-controller>ulid": true
+      }
+    },
+    "@metamask/snap-account-service>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
       },
@@ -2093,7 +2145,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/account-api": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
+        "@metamask/multichain-account-service>@metamask/keyring-controller": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -2463,7 +2515,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
+        "@metamask/react-data-query>@tanstack/query-core": true,
         "@tanstack/react-query": true
       }
     },
@@ -2583,7 +2635,7 @@
       "packages": {
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
+        "@metamask/snap-account-service>@metamask/keyring-controller": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
         "@metamask/utils": true,
         "lodash": true
@@ -3081,7 +3133,7 @@
         "@metamask/base-controller": true,
         "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/transaction-pay-controller>@metamask/assets-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
         "@metamask/transaction-pay-controller>@metamask/transaction-controller": true,
@@ -3814,48 +3866,9 @@
     },
     "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
-        "AbortController": true,
-        "CancelledError": true,
-        "InfiniteQueryObserver": true,
-        "Mutation": true,
-        "MutationCache": true,
-        "MutationObserver": true,
-        "QueriesObserver": true,
-        "Query": true,
-        "QueryCache": true,
-        "QueryClient": true,
-        "QueryObserver": true,
         "addEventListener": false,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "defaultScheduler": true,
-        "defaultShouldDehydrateMutation": true,
-        "defaultShouldDehydrateQuery": true,
-        "dehydrate": true,
         "document": false,
-        "document.visibilityState": true,
-        "experimental_streamedQuery": true,
-        "focusManager": true,
-        "hashKey": true,
-        "hydrate": true,
-        "isCancelledError": true,
-        "isServer": true,
-        "keepPreviousData": true,
-        "matchMutation": true,
-        "matchQuery": true,
-        "noop": true,
-        "notifyManager": true,
-        "onlineManager": true,
-        "partialMatchKey": true,
-        "removeEventListener": true,
-        "replaceEqualDeep": true,
-        "setInterval": true,
-        "setTimeout": true,
-        "shouldThrowError": true,
-        "skipToken": true,
-        "timeoutManager": true
+        "document.visibilityState": true
       }
     },
     "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
@@ -3909,6 +3922,20 @@
         "shouldThrowError": true,
         "skipToken": true,
         "timeoutManager": true
+      }
+    },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
