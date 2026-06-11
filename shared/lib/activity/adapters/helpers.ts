@@ -4,7 +4,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { Hex } from 'viem';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
@@ -110,16 +109,6 @@ export function getLocalTransactionFees(
 
   return amount
     ? [buildBaseNetworkFee(amount, primaryTransaction.chainId)]
-    : undefined;
-}
-
-export function getBridgeHistoryNetworkFee(
-  bridgeHistoryItem?: BridgeHistoryItem,
-): ActivityFee[] | undefined {
-  const amount = bridgeHistoryItem?.pricingData?.quotedGasAmount;
-
-  return amount && bridgeHistoryItem
-    ? [buildBaseNetworkFee(amount, bridgeHistoryItem.quote.srcChainId)]
     : undefined;
 }
 

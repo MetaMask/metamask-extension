@@ -90,32 +90,38 @@ export function BridgeDetails({
   );
 
   const sourceTxHash = item.data.hash;
-  const { destTxHash, destinationAccountAddress } = useSelector((state) => {
-    const bridgeHistoryItem = sourceTxHash
-      ? selectBridgeHistoryItemByHash(state as MetaMaskReduxState, sourceTxHash)
-      : undefined;
+  const { destTxHash, destinationAccountAddress, fromAddress } = useSelector(
+    (state) => {
+      const bridgeHistoryItem = sourceTxHash
+        ? selectBridgeHistoryItemByHash(
+            state as MetaMaskReduxState,
+            sourceTxHash,
+          )
+        : undefined;
 
-    const fromAddress = item.data.from ?? bridgeHistoryItem?.account;
-    let toAddress: string | undefined;
+      const resolvedFromAddress =
+        item.data.from || bridgeHistoryItem?.account || undefined;
+      let toAddress: string | undefined;
 
-    if (fromAddress && destinationChainId && showFromTo) {
-      const sanitizedDestChainId = getSanitizedChainId(
-        destinationChainId as CaipChainId,
-      );
-      toAddress = getAccountGroupsByAddress(state as MultichainAccountsState, [
-        fromAddress,
-      ])[0]?.accounts.find((account) =>
-        account.scopes.includes(sanitizedDestChainId),
-      )?.address;
-    }
+      if (resolvedFromAddress && destinationChainId && showFromTo) {
+        const sanitizedDestChainId = getSanitizedChainId(
+          destinationChainId as CaipChainId,
+        );
+        toAddress = getAccountGroupsByAddress(
+          state as MultichainAccountsState,
+          [resolvedFromAddress],
+        )[0]?.accounts.find((account) =>
+          account.scopes.includes(sanitizedDestChainId),
+        )?.address;
+      }
 
-    return {
-      destTxHash: bridgeHistoryItem?.status.destChain?.txHash,
-      destinationAccountAddress: toAddress,
-    };
-  });
-
-  const fromAddress = item.data.from;
+      return {
+        destTxHash: bridgeHistoryItem?.status.destChain?.txHash,
+        destinationAccountAddress: toAddress,
+        fromAddress: resolvedFromAddress,
+      };
+    },
+  );
   const showFromToAccountRows = Boolean(
     showFromTo &&
     fromAddress &&
