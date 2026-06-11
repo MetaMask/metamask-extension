@@ -1621,7 +1621,6 @@ const state = {
     qrCodeData: null,
     networkDropdownOpen: false,
     isLoading: false,
-    warning: null,
     defaultHdPaths: {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'/0/0",
