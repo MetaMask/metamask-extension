@@ -11,22 +11,21 @@ const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 
 const MAX_RECONNECT_DELAY_MS = 5_000;
 
-// Storage key holding the fingerprint of the currently running code.
+// Storage key holding the fingerprint of the currently running code. The
+// record must outlive the MV3 service worker, which Chrome idle-terminates and
+// later restarts with the *registered* (possibly stale) script —
+// `storage.session` survives that. The extension's real wallet state lives in
+// `storage.local`, which we deliberately don't touch.
 const FINGERPRINT_KEY = 'MM_BACKGROUND_RELOAD_FINGERPRINT';
-
-// The recorded fingerprint must outlive the MV3 service worker, which Chrome
-// idle-terminates and later restarts with the *registered* (possibly stale)
-// script — `storage.session` survives that. The extension's real wallet state
-// lives in `storage.local`, which we deliberately don't touch.
-const sessionStorage = browser.storage?.session;
 
 /**
  * @returns The fingerprint of the code this extension instance is running, or
  * `undefined` if none has been recorded yet this extension lifetime.
  */
-async function getAppliedFingerprint(): Promise<string | undefined> {
+async function getStoredFingerprint(): Promise<string | undefined> {
   try {
-    return (await sessionStorage?.get(FINGERPRINT_KEY))?.[FINGERPRINT_KEY];
+    const record = await browser.storage.session.get(FINGERPRINT_KEY);
+    return record[FINGERPRINT_KEY];
   } catch {
     // Unreadable storage reads as "nothing recorded": the announcement gets
     // treated as a baseline rather than triggering a reload.
@@ -39,9 +38,9 @@ async function getAppliedFingerprint(): Promise<string | undefined> {
  *
  * @param fingerprint - The fingerprint to record.
  */
-async function setAppliedFingerprint(fingerprint: string): Promise<void> {
+async function setStoredFingerprint(fingerprint: string): Promise<void> {
   try {
-    await sessionStorage?.set({ [FINGERPRINT_KEY]: fingerprint });
+    await browser.storage.session.set({ [FINGERPRINT_KEY]: fingerprint });
   } catch {
     // Swallow storage errors (e.g. the context being invalidated mid-reload)
     // so they don't surface as unhandled rejections.
@@ -62,25 +61,22 @@ async function onFingerprint(
   fingerprint: string,
   socket: WebSocket,
 ): Promise<void> {
-  const applied = await getAppliedFingerprint();
+  const stored = await getStoredFingerprint();
   // Re-check `reloading` after the await: another announcement may have begun
   // a reload while this one was reading storage.
-  if (reloading || applied === fingerprint) {
+  if (reloading || stored === fingerprint) {
     return;
   }
   // Record before reloading: after the reload the new code receives the same
   // announcement again, finds it already recorded, and settles instead of
   // reloading in a loop.
-  await setAppliedFingerprint(fingerprint);
-  if (applied === undefined) {
+  await setStoredFingerprint(fingerprint);
+  if (stored === undefined) {
     // First announcement of this extension lifetime: the running code was just
     // loaded from the dev server's own output, so only record the baseline.
     return;
   }
   reloading = true;
-  console.info(
-    '[MetaMask dev] reloading extension (background or content script changed)…',
-  );
   // Close first so the impending teardown isn't logged as an unexpected
   // disconnect, then reload the whole extension.
   socket.close();
@@ -150,14 +146,5 @@ function connect(url: string, reconnectAttempt = 0): void {
 // Only run where WebSocket is available (MV3 service workers support it in
 // current browsers). Otherwise this is a no-op rather than a reconnect loop.
 if (typeof WebSocket !== 'undefined' && socketUrl) {
-  if (sessionStorage) {
-    connect(socketUrl);
-  } else {
-    // Without `storage.session` (Chrome <102, Firefox <115) the applied
-    // fingerprint can't be tracked across service-worker restarts, so
-    // auto-reload can't work reliably — disable it loudly.
-    console.warn(
-      '[MetaMask dev] extension auto-reload disabled: browser.storage.session is unavailable',
-    );
-  }
+  connect(socketUrl);
 }
