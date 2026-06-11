@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`<GasFeesSection /> does not render component for gas fees section 1`] = `<div />`;
 
@@ -75,7 +75,7 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
             style="cursor: default;"
           >
             <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
               data-testid="native-icon"
             >
               <span
@@ -103,7 +103,7 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
             class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
             data-testid="gas-fee-token-fee"
           >
-
+             
           </p>
         </div>
       </div>

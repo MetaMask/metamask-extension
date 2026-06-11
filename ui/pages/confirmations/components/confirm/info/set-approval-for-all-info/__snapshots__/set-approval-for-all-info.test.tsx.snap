@@ -391,7 +391,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
             style="cursor: default;"
           >
             <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
               data-testid="native-icon"
             >
               <span
@@ -419,7 +419,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
             class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
             data-testid="gas-fee-token-fee"
           >
-
+             
           </p>
         </div>
       </div>
