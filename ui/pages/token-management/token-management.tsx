@@ -85,6 +85,8 @@ import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAss
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
+import { HomeNetworkFilterModal } from '../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
+import { getIsNetworkManagementEnabled } from '../../selectors/multichain/feature-flags';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
@@ -343,6 +345,8 @@ export const TokenManagementPage = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [pageToast, setPageToast] = useState<{ symbol: string } | null>(null);
+  const [isNetworkFilterModalOpen, setIsNetworkFilterModalOpen] =
+    useState(false);
   const [pendingKeys, setPendingKeys] = useState<ReadonlySet<string>>(
     () => new Set<string>(),
   );
@@ -466,6 +470,7 @@ export const TokenManagementPage = () => {
   );
   const useExternalServices = useSelector(getUseExternalServices);
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
+  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
@@ -732,8 +737,16 @@ export const TokenManagementPage = () => {
 
   const handleOpenNetworkFilter = useCallback(() => {
     commitStagedHides().catch(() => undefined);
-    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-  }, [commitStagedHides, dispatch]);
+    if (!isNetworkManagementEnabled) {
+      dispatch(showModal({ name: 'NETWORK_MANAGER' }));
+      return;
+    }
+    setIsNetworkFilterModalOpen(true);
+  }, [commitStagedHides, dispatch, isNetworkManagementEnabled]);
+
+  const handleCloseNetworkFilter = useCallback(() => {
+    setIsNetworkFilterModalOpen(false);
+  }, []);
 
   const handleAddCustomToken = useCallback(() => {
     commitStagedHides().catch(() => undefined);
@@ -1503,6 +1516,13 @@ export const TokenManagementPage = () => {
           </Text>
         </ButtonBase>
       </Box>
+
+      {isNetworkManagementEnabled ? (
+        <HomeNetworkFilterModal
+          isOpen={isNetworkFilterModalOpen}
+          onClose={handleCloseNetworkFilter}
+        />
+      ) : null}
 
       <ScrollContainer
         data-testid="token-management-page-list"

@@ -2,7 +2,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
-import { getCaip25CaveatValueFromPermissions } from '../pages/permissions-connect/connect-page/utils';
+import { getCaip25CaveatValueFromPermissions } from '../helpers/utils/caip25-permissions';
 import {
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
