@@ -13,6 +13,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
+import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
@@ -75,6 +76,7 @@ export const BridgeAssetPicker = ({
   );
 
   const t = useI18nContext();
+  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const { isStockToken, isTokenTradingOpen } = useRWAToken();
   const [showMarketClosedModal, setShowMarketClosedModal] = useState(false);
   const closeFromMarketCloseRef = useRef(false);
@@ -203,7 +205,11 @@ export const BridgeAssetPicker = ({
               style={{ minHeight: 32 }}
             />
             <NetworkPicker
-              buttonElement={networkPickerButtonRef.current}
+              buttonElement={
+                isNetworkManagementEnabled
+                  ? undefined
+                  : networkPickerButtonRef.current
+              }
               isOpen={isNetworkPickerOpen}
               chains={chains}
               selectedChainId={selectedChainId}
@@ -248,7 +254,7 @@ export const BridgeAssetPicker = ({
               }
             />
 
-            {!isNetworkPickerOpen && (
+            {isNetworkManagementEnabled || !isNetworkPickerOpen ? (
               <BridgeAssetList
                 accountGroupId={accountGroup?.id}
                 chainIds={chainIdsSet}
@@ -269,7 +275,7 @@ export const BridgeAssetPicker = ({
                 }}
                 {...assetListProps}
               />
-            )}
+            ) : null}
           </ModalBody>
         </ModalContent>
       </Modal>

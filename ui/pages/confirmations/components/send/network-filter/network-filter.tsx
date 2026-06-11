@@ -276,13 +276,19 @@ export const NetworkFilter = ({
                 onClick={() => handleNetworkSelection(null)}
                 focus={false}
               />
-              {networkSections.map((section) => (
+              {networkSections.length > 0 ? (
+                <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
+              ) : null}
+              {networkSections.map((section, index) => (
                 <Box
                   key={section.key}
                   display={Display.Flex}
                   flexDirection={FlexDirection.Column}
                   width={BlockSize.Full}
                 >
+                  {index > 0 ? (
+                    <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
+                  ) : null}
                   {section.titleKey ? (
                     <Text
                       paddingLeft={4}

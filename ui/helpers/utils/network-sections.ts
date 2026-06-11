@@ -75,11 +75,9 @@ export function getNetworkSections<TNetwork extends { chainId: string }>(
       .sort(compareFn),
   })).filter(({ items }) => items.length > 0);
 
-  const showHeaders = groupedSections.length > 1;
-
   return groupedSections.map(({ key, items }) => ({
     key,
-    titleKey: showHeaders ? SECTION_TITLE_KEY[key] : undefined,
+    titleKey: SECTION_TITLE_KEY[key],
     items,
   }));
 }
