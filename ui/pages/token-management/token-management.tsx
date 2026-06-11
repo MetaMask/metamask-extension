@@ -127,6 +127,12 @@ const TOKEN_MANAGEMENT_DEFAULT_VIEW_STATE = 'default';
 const TOKEN_MANAGEMENT_NO_RESULTS_VIEW_STATE = 'no_results';
 const TOKEN_MANAGEMENT_LOCATION = 'MANAGE_TOKENS';
 const TOKEN_MANAGEMENT_CUSTOM_CTA_LOCATION = 'MANAGE_TOKENS_CUSTOM_CTA';
+const ARC_USDC_ASSET_ID =
+  'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
+// Bare contract address portion of the ARC USDC CAIP-19 id. `visibleTokens`
+// may expose either the bare address or the full CAIP-19 id, so we match both.
+const ARC_USDC_ADDRESS =
+  ARC_USDC_ASSET_ID.split(':').pop()?.toLowerCase() ?? '';
 const METRICS_PROPERTIES = {
   assetType: 'asset_type',
   chainId: 'chain_id',
@@ -612,6 +618,19 @@ export const TokenManagementPage = () => {
     }
     return enabledCaipChainIds;
   }, [enabledCaipChainIds]);
+
+  const isArcUsdc = useMemo(() => {
+    return visibleTokens.some((token) => {
+      const identifier = (
+        ('address' in token && token.address ? token.address : token.assetId) ??
+        ''
+      ).toLowerCase();
+      return (
+        identifier === ARC_USDC_ADDRESS ||
+        identifier === ARC_USDC_ASSET_ID.toLowerCase()
+      );
+    });
+  }, [visibleTokens]);
 
   const {
     data: searchResponse,
@@ -1104,7 +1123,7 @@ export const TokenManagementPage = () => {
           primaryLabel={token.name ?? token.symbol}
           secondaryLabel={`${token.balance} ${token.symbol}`}
           isOn={!isHidden}
-          disabled={isNativeToken || pendingKeys.has(key)}
+          disabled={isNativeToken || pendingKeys.has(key) || isArcUsdc}
           onToggle={(nextValue) => handleToggle(token, nextValue)}
           showToggle={isManageableToken || isNativeToken}
           testIdSuffix={key}
@@ -1119,6 +1138,7 @@ export const TokenManagementPage = () => {
       handleToggle,
       pendingKeys,
       stagedHideKeys,
+      isArcUsdc,
     ],
   );
 
@@ -1182,7 +1202,7 @@ export const TokenManagementPage = () => {
             payload.caipChainId
           }
           isOn={isPending || (isImported && !isHidden) || payload.isNative}
-          disabled={payload.isNative || isPending}
+          disabled={payload.isNative || isPending || isArcUsdc}
           isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
           showToggle={!payload.isNative}
@@ -1201,6 +1221,7 @@ export const TokenManagementPage = () => {
       networkConfigurations,
       pendingKeys,
       stagedHideKeys,
+      isArcUsdc,
     ],
   );
 

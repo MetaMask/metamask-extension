@@ -246,6 +246,56 @@ describe('TokenManagementPage', () => {
     },
   };
 
+  // ARC USDC is identified by this synthetic address. The full CAIP-19 id lives
+  // on `eip155:5042`, but `visibleTokens` may expose either the bare address or
+  // the full CAIP-19 id, so both forms must be detected.
+  const arcUsdcAddress = '0x3600000000000000000000000000000000000000';
+  const arcUsdcCaipAssetId = `eip155:5042/erc20:${arcUsdcAddress}`;
+
+  const arcUsdcBareToken = {
+    accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    accountType: 'eip155:eoa',
+    assetId: arcUsdcAddress,
+    address: arcUsdcAddress,
+    chainId: '0x1',
+    image: '',
+    name: 'ARC USD Coin',
+    symbol: 'USDC',
+    decimals: 6,
+    isNative: false,
+    rawBalance: '0x1',
+    balance: '5.0',
+    fiat: {
+      balance: 5,
+      currency: 'usd',
+      conversionRate: 1,
+    },
+  };
+
+  const arcUsdcCaipToken = {
+    accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    accountType: 'eip155:eoa',
+    assetId: arcUsdcCaipAssetId,
+    chainId: '0x1',
+    image: '',
+    name: 'ARC USD Coin',
+    symbol: 'USDC',
+    decimals: 6,
+    isNative: false,
+    rawBalance: '0x1',
+    balance: '5.0',
+    fiat: {
+      balance: 5,
+      currency: 'usd',
+      conversionRate: 1,
+    },
+  };
+
+  const getMainnetTokenToggle = () =>
+    screen
+      .getByTestId(`token-management-cell-0x1:${mainnetToken.address}-toggle`)
+      .closest('.toggle-button');
+
   beforeEach(() => {
     mockTokenManagementLocationState.current = null;
     resetTokenSearchState();
@@ -1360,5 +1410,57 @@ describe('TokenManagementPage', () => {
         'token-management-cell-0x1:0x0000000000000000000000000000000000000001-toggle',
       ),
     ).toBeInTheDocument();
+  });
+
+  describe('ARC USDC detection', () => {
+    it('leaves manageable token toggles enabled when no ARC USDC token is present', () => {
+      renderPage();
+
+      expect(getMainnetTokenToggle()).not.toHaveClass('toggle-button--disabled');
+    });
+
+    it('disables manageable token toggles when an ARC USDC token (bare address) is present', () => {
+      renderPage(
+        createState({
+          accountGroupAssets: {
+            '0x1': [mainnetToken, arcUsdcBareToken, nativeToken],
+          },
+        }),
+      );
+
+      expect(screen.getByText('ARC USD Coin')).toBeInTheDocument();
+      expect(getMainnetTokenToggle()).toHaveClass('toggle-button--disabled');
+    });
+
+    it('disables manageable token toggles when an ARC USDC token (full CAIP-19 id) is present', () => {
+      renderPage(
+        createState({
+          accountGroupAssets: {
+            '0x1': [mainnetToken, arcUsdcCaipToken, nativeToken],
+          },
+        }),
+      );
+
+      expect(getMainnetTokenToggle()).toHaveClass('toggle-button--disabled');
+    });
+
+    it('does not flag a same-shaped non-ARC token as ARC USDC', () => {
+      const nonArcToken = {
+        ...arcUsdcBareToken,
+        assetId: '0x1111111111111111111111111111111111111111',
+        address: '0x1111111111111111111111111111111111111111',
+        name: 'Not ARC',
+      };
+
+      renderPage(
+        createState({
+          accountGroupAssets: {
+            '0x1': [mainnetToken, nonArcToken, nativeToken],
+          },
+        }),
+      );
+
+      expect(getMainnetTokenToggle()).not.toHaveClass('toggle-button--disabled');
+    });
   });
 });
