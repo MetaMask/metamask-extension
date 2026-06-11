@@ -70,6 +70,7 @@ type NetworkRowProps = {
   iconSrc?: string | IconName;
   chainId?: string;
   selected?: boolean;
+  disabled?: boolean;
   endIconName?: IconName;
   onClick: () => void;
   testId: string;
@@ -81,6 +82,7 @@ export type NetworkSelectionItem = {
   iconSrc?: string | IconName;
   chainId?: string;
   selected?: boolean;
+  disabled?: boolean;
   endIconName?: IconName;
   onClick: () => void;
   testId: string;
@@ -97,6 +99,7 @@ type NetworkSelectionModalProps = {
   onClose: () => void;
   title: React.ReactNode;
   sections: NetworkSelectionSection[];
+  'data-testid'?: string;
   topItem?: NetworkSelectionItem;
   footerButton?: {
     label: React.ReactNode;
@@ -128,6 +131,7 @@ const HomeNetworkFilterRow = ({
   iconSrc,
   chainId,
   selected = false,
+  disabled = false,
   endIconName,
   onClick,
   testId,
@@ -139,6 +143,7 @@ const HomeNetworkFilterRow = ({
         iconSrc={isIconName(iconSrc) ? (iconSrc as string) : iconSrc}
         chainId={chainId}
         selected={selected}
+        disabled={disabled}
         onClick={onClick}
         focus={false}
         endAccessory={
@@ -159,6 +164,7 @@ export const NetworkSelectionModal = ({
   sections,
   topItem,
   footerButton,
+  'data-testid': dataTestId,
 }: NetworkSelectionModalProps) => {
   return (
     <Modal
@@ -166,6 +172,7 @@ export const NetworkSelectionModal = ({
       onClose={onClose}
       isClosedOnOutsideClick
       isClosedOnEscapeKey
+      data-testid={dataTestId}
     >
       <ModalOverlay />
       {isOpen ? (
@@ -220,6 +227,9 @@ export const NetworkSelectionModal = ({
                   />
                 )}
               </button>
+            ) : null}
+            {topItem && sections.length > 0 ? (
+              <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
             ) : null}
             {sections.map((section, index) => (
               <Box key={section.key} className="flex flex-col">
