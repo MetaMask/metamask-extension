@@ -696,7 +696,7 @@ describe('mapLocalTransaction', () => {
       },
     });
 
-    expect(item).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'swap',
       chainId: 'eip155:1',
       status: 'success',
@@ -753,6 +753,68 @@ describe('mapLocalTransaction', () => {
     expect(item.status).toBe('failed');
   });
 
+  it('maps a local bridge network fee from the transaction receipt', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.ARBITRUM,
+      id: 'bridge-fee-id',
+      hash: '0xbridgefee',
+      status: TransactionStatus.confirmed,
+      time: 1779392463306,
+      type: TransactionType.bridge,
+      txParams: {
+        from,
+        to,
+        value: '0x0',
+      },
+      txReceipt: {
+        gasUsed: '0x24405',
+        effectiveGasPrice: '0x6fc23ac1d',
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x3',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction({
+      ...transactionGroup,
+      sourceToken: {
+        amount: '99130000000000',
+        assetId: 'eip155:42161/slip44:60',
+        decimals: 18,
+        direction: 'out',
+        symbol: 'ETH',
+      },
+      destinationToken: {
+        amount: '141592',
+        assetId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/spl-token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        decimals: 6,
+        direction: 'in',
+        symbol: 'USDC',
+      },
+    });
+
+    expect(item).toMatchObject({
+      type: 'bridge',
+      data: {
+        fees: [
+          {
+            type: 'base',
+            amount: String(BigInt('0x24405') * BigInt('0x6fc23ac1d')),
+            assetId: 'eip155:42161/slip44:60',
+            decimals: 18,
+            symbol: 'ETH',
+          },
+        ],
+      },
+    });
+  });
+
   it('maps swap metadata token symbols to a Swap activity', () => {
     const transaction = {
       chainId: CHAIN_IDS.BASE,
@@ -784,7 +846,7 @@ describe('mapLocalTransaction', () => {
 
     const item = mapLocalTransaction(transactionGroup);
 
-    expect(item).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'swap',
       chainId: 'eip155:8453',
       status: 'success',

@@ -11,7 +11,7 @@ import {
   resolveApprovalTokenContractAddress,
 } from '../../transaction.utils';
 import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
-import type { ActivityListItem, TokenAmount } from '../types';
+import type { ActivityFee, ActivityListItem, TokenAmount } from '../types';
 import {
   supplyMethodIds,
   unwrapMethodIds,
@@ -20,6 +20,7 @@ import {
 } from './constants';
 import {
   getKnownTokenMetadata,
+  getLocalTransactionFees,
   getLocalTransactionStatus,
   getNativeAssetSafe,
   getTokenMetadataFromKnownToken,
@@ -36,8 +37,11 @@ export function mapLocalTransaction(
     nativeAssetSymbol?: string;
     contractTokenMetadata?: { symbol?: string; decimals?: number };
     activityStatus?: ActivityListItem['status'];
+    fees?: ActivityFee[];
   },
 ): ActivityListItem {
+  const fees =
+    transactionGroup.fees ?? getLocalTransactionFees(transactionGroup);
   const { initialTransaction, primaryTransaction } = transactionGroup;
   const chainId = toCaipChainId(
     KnownCaipNamespace.Eip155,
@@ -299,6 +303,7 @@ export function mapLocalTransaction(
           from,
           sourceToken,
           destinationToken,
+          fees,
         },
       };
     }
@@ -318,6 +323,7 @@ export function mapLocalTransaction(
           from,
           sourceToken: enrichedSourceToken,
           destinationToken: enrichedDestinationToken,
+          fees,
         },
       };
     }

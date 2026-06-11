@@ -24,6 +24,10 @@ import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts'
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
+import {
+  getBridgeHistoryNetworkFee,
+  getLocalTransactionFees,
+} from '../../shared/lib/activity/adapters/helpers';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
@@ -479,12 +483,16 @@ export const selectLocalActivityItems = createSelector(
           transactionGroup,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
+        const fees =
+          getLocalTransactionFees(transactionGroup) ??
+          getBridgeHistoryNetworkFee(bridgeHistoryItem);
 
         return enrichLocalMusdClaimActivity(
           mapLocalTransaction({
             ...transactionGroup,
             ...getSwapTokens(bridgeHistoryItem),
             ...(activityStatus ? { activityStatus } : {}),
+            fees,
             nativeAssetSymbol,
             contractTokenMetadata,
           }),
