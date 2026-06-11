@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "오픈한 롱"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "숏 포지션 열기 실패"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "펀딩 수수료 수령 완료"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "출금 실패"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "출금 실패"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "자금 출금 중"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "자금 출금"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "무기한 선물 출금"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "무기한 선물 출금"
   },
   "activity_predictionCashedOut_failed_description": {

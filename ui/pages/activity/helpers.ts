@@ -3,27 +3,20 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { CaipAssetType } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { selectLocalTransactionsByHash } from '../../selectors/activity';
 import {
   getStatusKey,
   QUEUED_PSEUDO_STATUS,
   SIGNING_PSUEDO_STATUS,
 } from '../../components/app/transaction-status-label';
-
-const hidePlusSignActivityTypes = new Set<ActivityListItem['type']>([
-  'approveSpendingCap',
-  'increaseSpendingCap',
-  'revokeSpendingCap',
-]);
+import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 
 export type ActivityListFilter =
   | { assetId: CaipAssetType }
   | { networks: string[] };
-
-export function shouldShowPlusSign(activityType: ActivityListItem['type']) {
-  return !hidePlusSignActivityTypes.has(activityType);
-}
 
 export function activityMatchesAssetId(
   item: ActivityListItem,
@@ -42,12 +35,13 @@ export function activityMatchesAssetId(
   );
 }
 
-export function getActivityCellStatus(data: ActivityListItem): {
+function getActivityCellStatus(
+  data: ActivityListItem,
+  transactionGroup?: TransactionGroup,
+): {
   txStatus: string;
   pendingSubtitleKey?: string;
 } {
-  const transactionGroup =
-    data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
   const { primaryTransaction } = transactionGroup ?? {};
   const isEarliestNonce = data.isEarliestNonce ?? false;
 
@@ -80,6 +74,22 @@ export function getActivityCellStatus(data: ActivityListItem): {
   }
 
   return { txStatus };
+}
+
+export function useActivityCellStatus(data: ActivityListItem): {
+  txStatus: string;
+  pendingSubtitleKey?: string;
+  transactionGroup?: TransactionGroup;
+} {
+  const localTransactionsByHash = useSelector(selectLocalTransactionsByHash);
+  const transactionGroup = data.data.hash
+    ? localTransactionsByHash.get(data.data.hash.toLowerCase())
+    : undefined;
+
+  return {
+    ...getActivityCellStatus(data, transactionGroup),
+    transactionGroup,
+  };
 }
 
 export type GroupedItem =
