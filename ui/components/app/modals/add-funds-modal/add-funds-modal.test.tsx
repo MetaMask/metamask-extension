@@ -45,4 +45,32 @@ describe('Add funds modal Component', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('enables the buy crypto button when the chain is not in buyable chains', () => {
+    const storeWithUnsupportedChain = configureMockStore()({
+      ...defaultState,
+      ramps: {
+        buyableChains: [{ chainId: 1, active: true }],
+      },
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <AddFundsModal
+        onClose={jest.fn()}
+        token={{
+          address: '0x0',
+          decimals: 18,
+          symbol: 'USDC',
+          conversionRate: {
+            usd: '1',
+          },
+        }}
+        chainId={CHAIN_IDS.SEPOLIA}
+        payerAddress="0x0"
+      />,
+      storeWithUnsupportedChain,
+    );
+
+    expect(getByTestId('add-funds-modal-buy-crypto-button')).toBeEnabled();
+  });
 });

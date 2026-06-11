@@ -325,7 +325,7 @@ describe('NonEvmOverview', () => {
     expect(buyButton).toBeInTheDocument();
   });
 
-  it('"Buy & Sell" button is disabled if BTC is not buyable and SOL is not buyable', () => {
+  it('"Buy & Sell" button is enabled if BTC is not buyable and SOL is not buyable', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
@@ -333,7 +333,7 @@ describe('NonEvmOverview', () => {
     const buyButton = queryByTestId(BUY_BUTTON);
 
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
+    expect(buyButton).not.toBeDisabled();
   });
 
   it('"Buy & Sell" button is enabled if BTC is buyable', () => {

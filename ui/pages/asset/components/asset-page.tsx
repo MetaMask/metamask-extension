@@ -53,7 +53,6 @@ import { AddressCopyButton } from '../../../components/multichain';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { ActivityList as ActivityListV3 } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -115,7 +114,6 @@ const AssetPage = ({
   const t = useI18nContext();
   const navigate = useNavigate();
   const currency = useSelector(getCurrentCurrency);
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
   // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
@@ -346,7 +344,6 @@ const AssetPage = ({
             {...{
               account: selectedAccount,
               trackingLocation: 'asset-page',
-              isBuyableChain,
               isSigningEnabled,
               isSwapsChain,
               isBridgeChain,

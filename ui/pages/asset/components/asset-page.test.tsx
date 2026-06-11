@@ -406,7 +406,7 @@ describe('AssetPage', () => {
     expect(buyButton).toBeEnabled();
   });
 
-  it('should disable the buy button on unsupported chains', () => {
+  it('enables the buy button on unsupported chains', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -419,7 +419,16 @@ describe('AssetPage', () => {
     );
     const buyButton = queryByTestId('token-overview-buy');
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
+    expect(buyButton).not.toBeDisabled();
+
+    fireEvent.click(buyButton as HTMLElement);
+    expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+    await waitFor(() =>
+      expect(openTabSpy).toHaveBeenCalledWith({
+        url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_sell_button`),
+      }),
+    );
   });
 
   it('should open the buy crypto URL for a buyable chain ID', async () => {

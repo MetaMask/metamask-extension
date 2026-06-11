@@ -23,7 +23,6 @@ import {
   IconName,
   IconSize,
 } from '../../../components/component-library';
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -53,7 +52,6 @@ const TokenButtons = ({
 
   const currentChainId = token.chainId;
 
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
 
@@ -138,9 +136,7 @@ const TokenButtons = ({
         label={t('buy')}
         data-testid="token-overview-buy"
         onClick={handleBuyAndSellOnClick}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        disabled={token.isERC721 || !isBuyableChain}
+        disabled={token.isERC721}
       />
 
       {shouldShowSendButton ? (
