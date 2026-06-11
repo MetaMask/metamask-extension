@@ -1834,9 +1834,7 @@ describe('MetaMaskController', function () {
 
         await expect(
           metamaskController.revealSeedWordsWithPasskey(authenticationResponse),
-        ).rejects.toMatchObject({
-          code: PasskeyControllerErrorCode.AuthenticationVerificationFailed,
-        });
+        ).rejects.toThrow('Incorrect encryption key');
       });
 
       it('returns the encoded seed phrase for the given keyring after verification', async function () {

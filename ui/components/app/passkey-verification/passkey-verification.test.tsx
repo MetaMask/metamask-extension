@@ -69,7 +69,7 @@ describe('runPasskeyVerificationCeremony', () => {
 
   it('returns null when the ceremony is cancelled', async () => {
     mockStartPasskeyAuthentication.mockRejectedValueOnce(
-      new Error('cancelled'),
+      new DOMException('User cancelled', 'NotAllowedError'),
     );
 
     const response = await runPasskeyVerificationCeremony({
@@ -117,7 +117,7 @@ describe('PasskeyVerification', () => {
 
   it('calls onCeremonyFailed when the ceremony returns null', async () => {
     mockStartPasskeyAuthentication.mockRejectedValueOnce(
-      new Error('cancelled'),
+      new DOMException('User cancelled', 'NotAllowedError'),
     );
     const onCeremonyFailed = jest.fn();
 
