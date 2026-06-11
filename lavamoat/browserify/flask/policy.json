@@ -787,7 +787,7 @@
         "prop-types": true,
         "react": true,
         "react-dom": true,
-        "@material-ui/core>react-is": true,
+        "react-redux>react-is": true,
         "react-transition-group": true
       }
     },
@@ -848,7 +848,7 @@
       "packages": {
         "@babel/runtime": true,
         "prop-types": true,
-        "@material-ui/core>@material-ui/utils>react-is": true
+        "react-redux>react-is": true
       }
     },
     "@metamask/abi-utils": {
@@ -3895,7 +3895,7 @@
         "@tanstack/react-query>@tanstack/query-core": true,
         "react": true,
         "react-dom": true,
-        "react-redux>use-sync-external-store": true
+        "@tanstack/react-query>use-sync-external-store": true
       }
     },
     "@tanstack/react-virtual": {
@@ -6185,7 +6185,7 @@
         "react-beautiful-dnd>raf-schd": true,
         "react": true,
         "react-dom": true,
-        "react-beautiful-dnd>react-redux": true,
+        "react-redux": true,
         "redux": true,
         "react-beautiful-dnd>use-memo-one": true
       }
@@ -6297,16 +6297,6 @@
         "react": true
       }
     },
-    "@material-ui/core>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
-    "@material-ui/core>@material-ui/utils>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
     "react-redux>hoist-non-react-statics>react-is": {
       "globals": {
         "console": true
@@ -6317,17 +6307,7 @@
         "console": true
       }
     },
-    "react-markdown>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
     "react-redux>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
-    "react-beautiful-dnd>react-redux>react-is": {
       "globals": {
         "console": true
       }
@@ -6341,7 +6321,7 @@
         "prop-types": true,
         "react-markdown>property-information": true,
         "react": true,
-        "react-markdown>react-is": true,
+        "react-redux>react-is": true,
         "react-markdown>remark-parse": true,
         "react-markdown>remark-rehype": true,
         "react-markdown>space-separated-tokens": true,
@@ -6370,24 +6350,10 @@
       "packages": {
         "@babel/runtime": true,
         "react-redux>hoist-non-react-statics": true,
-        "react": true,
-        "react-dom": true,
-        "react-redux>react-is": true,
-        "react-redux>use-sync-external-store": true
-      }
-    },
-    "react-beautiful-dnd>react-redux": {
-      "globals": {
-        "console": true,
-        "document": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-redux>hoist-non-react-statics": true,
         "prop-types": true,
         "react": true,
         "react-dom": true,
-        "react-beautiful-dnd>react-redux>react-is": true
+        "react-redux>react-is": true
       }
     },
     "react-router-dom": {
@@ -7134,15 +7100,9 @@
     "@tanstack/react-query>use-sync-external-store": {
       "globals": {
         "__REACT_DEVTOOLS_GLOBAL_HOOK__": false,
+        "console.error": true,
         "document": false,
         "document.createElement": true
-      }
-    },
-    "react-redux>use-sync-external-store": {
-      "globals": {
-        "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
-        "console.error": true,
-        "document": true
       },
       "packages": {
         "react": true
