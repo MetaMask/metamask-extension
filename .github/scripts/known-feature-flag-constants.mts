@@ -47,6 +47,11 @@ const FILE_SOURCES: Array<{
     file: 'shared/constants/smartTransactions.ts',
     exportName: 'SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG',
   },
+  {
+    key: 'ACTIVE_TAB_DOMAIN_METRICS_FLAG',
+    file: 'shared/lib/active-tab-domain-metrics.ts',
+    exportName: 'ACTIVE_TAB_DOMAIN_METRICS_FLAG',
+  },
 ];
 
 /**
