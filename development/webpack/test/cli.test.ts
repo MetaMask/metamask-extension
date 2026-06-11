@@ -67,6 +67,28 @@ describe('./utils/cli.ts', () => {
       'Dry run message should be a string',
     );
     assert(message.length > 0, 'Dry run message should not be empty');
+    assert.doesNotMatch(message, /Zip mtime:/u);
+  });
+
+  it('getDryRunMessage includes the resolved zip mtime when zipping', () => {
+    const originalSourceDateEpoch = process.env.SOURCE_DATE_EPOCH;
+    process.env.SOURCE_DATE_EPOCH = '1711141205';
+
+    try {
+      const { args, features } = parseArgv(['--zip'], loadBuildTypesConfig());
+      const message = getDryRunMessage(args, features);
+
+      assert.match(
+        message,
+        /Zip mtime: 1711141205000 \(2024-03-22T21:00:05\.000Z\)/u,
+      );
+    } finally {
+      if (originalSourceDateEpoch === undefined) {
+        delete process.env.SOURCE_DATE_EPOCH;
+      } else {
+        process.env.SOURCE_DATE_EPOCH = originalSourceDateEpoch;
+      }
+    }
   });
 
   it('should allow for build types with no features', () => {

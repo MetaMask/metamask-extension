@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Posición larga abierta"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "Error al abrir posición corta"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Tarifa de depósito recibida"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Retiro fallido"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Retiro fallido"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Retirando fondos"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Retirando fondos"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Retiro de contratos perpetuos"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Retiro de contratos perpetuos"
   },
   "activity_predictionCashedOut_failed_description": {

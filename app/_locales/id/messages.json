@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Long terbuka"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "Pembukaan posisi short gagal"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Biaya pendanaan diterima"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Penarikan gagal"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Penarikan gagal"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Menarik dana"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Menarik dana"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Penarikan Perp"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Penarikan Perp"
   },
   "activity_predictionCashedOut_failed_description": {
