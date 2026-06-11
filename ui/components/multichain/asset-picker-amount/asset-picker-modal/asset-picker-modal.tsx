@@ -36,7 +36,6 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import {
   getAllTokens,
   getSelectedEvmInternalAccount,
@@ -46,6 +45,7 @@ import {
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import {
+  CHAIN_IDS,
   CHAIN_ID_TOKEN_IMAGE_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';

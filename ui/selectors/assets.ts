@@ -1472,9 +1472,9 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   } as AssetListState;
 };
 
-function filterArcNativeToken<T extends { isNative?: boolean }>(
-  assets: Record<string, T[]>,
-): Record<string, T[]> {
+function filterArcNativeToken<TAsset extends { isNative?: boolean }>(
+  assets: Record<string, TAsset[]>,
+): Record<string, TAsset[]> {
   const arcAssets = assets[CHAIN_IDS.ARC];
   if (!arcAssets) {
     return assets;
