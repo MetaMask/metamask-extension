@@ -118,7 +118,7 @@ export type ActivityListItem =
       }
     >
   | ActivityData<
-      'perpsWithdraw',
+      'perpsAddFunds' | 'perpsWithdraw',
       {
         fiat?: {
           amount: string;
