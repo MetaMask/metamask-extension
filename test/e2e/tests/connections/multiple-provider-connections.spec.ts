@@ -261,7 +261,6 @@ describe('Multiple Standard Dapp Connections', function () {
           .withAccountsControllerAdditionalAccountVault()
           .withPermissionControllerConnectedToTestDapp({
             account: [EVM_ADDRESS_ONE.toLowerCase(), EVM_ADDRESS_TWO],
-            chainIds: [1],
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -289,16 +288,24 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        // Solana Wallet Standard connects no longer silently grant
-        // EVM/Bitcoin/Tron popular networks. Only the previously-permitted
-        // EVM scope (Mainnet) and the newly-requested Solana scope are
-        // permitted.
-        await sitePermissionPage.checkConnectedNetworksNumber(2);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          [MAINNET_DISPLAY_NAME, 'Solana'],
+          [
+            MAINNET_DISPLAY_NAME,
+            LINEA_MAINNET_DISPLAY_NAME,
+            BASE_DISPLAY_NAME,
+            ARBITRUM_DISPLAY_NAME,
+            BSC_DISPLAY_NAME,
+            POLYGON_DISPLAY_NAME,
+            OPTIMISM_DISPLAY_NAME,
+            MONAD_DISPLAY_NAME,
+            'Solana',
+            'Bitcoin',
+            'Tron',
+          ],
           [EVM_ACCOUNT_LABEL_ONE, EVM_ACCOUNT_LABEL_TWO],
         );
       },
@@ -338,10 +345,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(1);
-        // EIP-1193 connects with no specific chains now default to EVM
-        // popular networks only (no Bitcoin/Tron). The previously-permitted
-        // Solana scope is preserved.
-        await sitePermissionPage.checkConnectedNetworksNumber(9);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -355,7 +359,9 @@ describe('Multiple Standard Dapp Connections', function () {
             ARBITRUM_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
             MONAD_DISPLAY_NAME,
+            'Bitcoin',
             'Solana',
+            'Tron',
           ],
           [EVM_ACCOUNT_LABEL_ONE],
         );
@@ -414,11 +420,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        // EIP-1193 wallet_requestPermissions with no specific chains now
-        // defaults to EVM popular networks only; Bitcoin/Tron are no longer
-        // silently granted. The previously-permitted Solana scope is
-        // preserved.
-        await sitePermissionPage.checkConnectedNetworksNumber(9);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -433,6 +435,8 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             MONAD_DISPLAY_NAME,
             'Solana',
+            'Bitcoin',
+            'Tron',
           ],
           [EVM_ACCOUNT_LABEL_TWO],
         );

@@ -1653,7 +1653,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     rpcEndpoints: [
       {
-        url: `https://mainnet.era.zksync.io`,
+        url: `https://zksync-mainnet.infura.io/v3/${infuraProjectId}`,
         failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
