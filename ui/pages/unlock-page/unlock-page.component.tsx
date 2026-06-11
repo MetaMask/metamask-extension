@@ -783,7 +783,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                   key="import-account"
                   type="button"
                   onClick={this.onForgotPasswordOrLoginWithDiffMethods}
-                  className="mb-4"
+                  className={`mb-4${isRehydrationFlow ? ' text-default hover:text-default active:text-default' : ''}`}
                 >
                   {isRehydrationFlow
                     ? t('useDifferentLoginMethod')
