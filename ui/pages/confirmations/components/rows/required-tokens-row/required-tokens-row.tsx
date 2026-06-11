@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
+import { isNativeAddress } from '@metamask/bridge-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   AlignItems,
@@ -18,7 +19,7 @@ import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransacti
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AmountPill } from '../../simulation-details/amount-pill';
 import { AssetPill } from '../../simulation-details/asset-pill';
-import type { TokenAssetIdentifier } from '../../simulation-details/types';
+import type { AssetIdentifier } from '../../simulation-details/types';
 
 export type RequiredTokensRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -45,11 +46,16 @@ export const RequiredTokensRow = ({
   return (
     <>
       {visibleTokens.map((token) => {
-        const asset: TokenAssetIdentifier = {
-          chainId: token.chainId as Hex,
-          address: token.address as Hex,
-          standard: TokenStandard.ERC20,
-        };
+        const asset: AssetIdentifier = isNativeAddress(token.address)
+          ? {
+              chainId: token.chainId as Hex,
+              standard: TokenStandard.none,
+            }
+          : {
+              chainId: token.chainId as Hex,
+              address: token.address as Hex,
+              standard: TokenStandard.ERC20,
+            };
 
         const amount = new BigNumber(token.amountHuman).negated();
         const amountFiatFormatted = fiatFormatter(
