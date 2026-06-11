@@ -770,14 +770,17 @@ describe('createTrustSignalsMiddleware', () => {
     });
 
     describe('permit signatures', () => {
-      const createPermitTypedData = (spender?: string) => ({
+      const createPermitTypedData = (
+        spender?: string,
+        permitType: string = 'Permit',
+      ) => ({
         domain: {
           name: 'Test Token',
           version: '1',
           chainId: 1,
           verifyingContract: TEST_ADDRESSES.TO,
         },
-        primaryType: 'Permit',
+        primaryType: permitType,
         message: {
           owner: TEST_ADDRESSES.FROM,
           spender: spender || TEST_ADDRESSES.SPENDER,
@@ -792,7 +795,7 @@ describe('createTrustSignalsMiddleware', () => {
             { name: 'chainId', type: 'uint256' },
             { name: 'verifyingContract', type: 'address' },
           ],
-          Permit: [
+          [permitType]: [
             { name: 'owner', type: 'address' },
             { name: 'spender', type: 'address' },
             { name: 'value', type: 'uint256' },
@@ -823,10 +826,16 @@ describe('createTrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        // Should scan both the verifying contract and the spender
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        // Should scan verifying contract, owner, and spender
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(3);
         expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
           TEST_ADDRESSES.TO,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.FROM,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
           getChainId(networkController),
@@ -844,6 +853,7 @@ describe('createTrustSignalsMiddleware', () => {
       it('handles permit spender scanning errors gracefully', async () => {
         scanAddressMockAndAddToCache
           .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN) // Contract scan succeeds
+          .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN) // Owner scan succeeds
           .mockRejectedValueOnce(new Error('Spender scan failed')); // Spender scan fails
 
         const { middleware, phishingController } = createMiddleware();
@@ -858,7 +868,7 @@ describe('createTrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(3);
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
 
@@ -866,7 +876,7 @@ describe('createTrustSignalsMiddleware', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createTrustSignalsMiddleware] error scanning spender address for permit:',
+          '[createTrustSignalsMiddleware] error scanning address in typed data message:',
           expect.any(Error),
         );
       });
@@ -933,10 +943,16 @@ describe('createTrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        // Should only scan the verifying contract
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
+        // Should scan verifying contract and owner (but not the missing spender)
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
         expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
           TEST_ADDRESSES.TO,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.FROM,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
           getChainId(networkController),
@@ -956,8 +972,7 @@ describe('createTrustSignalsMiddleware', () => {
           const { middleware, appStateController, networkController } =
             createMiddleware();
 
-          const permitData = createPermitTypedData();
-          permitData.primaryType = permitType;
+          const permitData = createPermitTypedData(undefined, permitType);
 
           const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
             TEST_ADDRESSES.FROM,
@@ -968,10 +983,16 @@ describe('createTrustSignalsMiddleware', () => {
 
           await middleware(req, res, next);
 
-          // Should scan both addresses for all permit types
-          expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+          // Should scan verifying contract, owner, and spender for all permit types
+          expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(3);
           expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
             TEST_ADDRESSES.TO,
+            appStateController.getAddressSecurityAlertResponse,
+            appStateController.addAddressSecurityAlertResponse,
+            getChainId(networkController),
+          );
+          expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+            TEST_ADDRESSES.FROM,
             appStateController.getAddressSecurityAlertResponse,
             appStateController.addAddressSecurityAlertResponse,
             getChainId(networkController),
@@ -1045,8 +1066,8 @@ describe('createTrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        // Should scan both the verifying contract and the delegate
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        // Should scan verifying contract, delegate, and delegator
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(3);
         expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
@@ -1059,6 +1080,12 @@ describe('createTrustSignalsMiddleware', () => {
           appStateController.addAddressSecurityAlertResponse,
           getChainId(networkController),
         );
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.FROM,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
@@ -1066,7 +1093,8 @@ describe('createTrustSignalsMiddleware', () => {
       it('handles delegation delegate scanning errors gracefully', async () => {
         scanAddressMockAndAddToCache
           .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN) // Contract scan succeeds
-          .mockRejectedValueOnce(new Error('Delegate scan failed')); // Delegate scan fails
+          .mockRejectedValueOnce(new Error('Delegate scan failed')) // Delegate scan fails
+          .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN); // Delegator scan succeeds
 
         const { middleware, phishingController } = createMiddleware();
 
@@ -1080,7 +1108,7 @@ describe('createTrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(3);
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
 
@@ -1088,7 +1116,7 @@ describe('createTrustSignalsMiddleware', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createTrustSignalsMiddleware] error scanning delegate address for delegation:',
+          '[createTrustSignalsMiddleware] error scanning address in typed data message:',
           expect.any(Error),
         );
       });
@@ -1113,10 +1141,16 @@ describe('createTrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        // Should only scan the verifying contract
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
+        // Should scan verifying contract and delegator (but not the missing delegate)
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
         expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
           TEST_ADDRESSES.TO,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.FROM,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
           getChainId(networkController),
