@@ -162,6 +162,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/bridge-controller": "74.0.0",
     "@metamask/keyring-controller": "^26.0.0",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "32.0.0",
@@ -301,7 +302,8 @@
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
     "@metamask/transaction-pay-controller@npm:^22.6.0": "patch:@metamask/transaction-pay-controller@npm%3A22.6.0#~/.yarn/patches/@metamask-transaction-pay-controller-npm-22.6.0-ecc6df0372.patch",
     "@metamask/assets-controller@npm:^7.1.2": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
-    "@metamask/assets-controller@npm:^8.1.0": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch"
+    "@metamask/assets-controller@npm:^8.1.0": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
+    "@metamask/assets-controller@npm:^8.3.2": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
