@@ -70,6 +70,18 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
+  "accessRestrictedContactSupport": {
+    "message": "Contact support"
+  },
+  "accessRestrictedDescriptionLine1": {
+    "message": "This wallet address has been flagged during compliance screening. As a result, some MetaMask services are unavailable."
+  },
+  "accessRestrictedDescriptionLine2": {
+    "message": "If you believe this is an error, contact support to request a review."
+  },
+  "accessRestrictedTitle": {
+    "message": "Access restricted"
+  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },
@@ -730,22 +742,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Received funding fee"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Withdrawal failed"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Withdrawal failed"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Withdrawing funds"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Withdrawing funds"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Perps withdrawal"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Perps withdrawal"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -6735,6 +6747,9 @@
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBalance": {
+    "message": "Perps balance"
+  },
   "perpsBasicFunctionalityOff": {
     "message": "This feature isn't available while basic functionality is turned off."
   },
@@ -6887,11 +6902,20 @@
   "perpsFilterCrypto": {
     "message": "Crypto"
   },
+  "perpsFilterEtf": {
+    "message": "ETF"
+  },
   "perpsFilterForex": {
     "message": "Forex"
   },
+  "perpsFilterIndex": {
+    "message": "Index"
+  },
   "perpsFilterNew": {
     "message": "New"
+  },
+  "perpsFilterPreIpo": {
+    "message": "Pre-IPO"
   },
   "perpsFilterStocks": {
     "message": "Stocks"
@@ -10544,6 +10568,10 @@
   "trezor": {
     "message": "Trezor",
     "description": "Hardware device name"
+  },
+  "trezorDesktopAppRequiredError": {
+    "message": "Trezor Suite Desktop is required to use Trezor with Firefox. Please install and open Trezor Suite (suite.trezor.io) and try again.",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
     "message": "Bandwidth"

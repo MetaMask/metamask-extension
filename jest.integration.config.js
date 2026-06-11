@@ -10,8 +10,9 @@ module.exports = {
   coverageReporters: ['html', 'json'],
   maxWorkers: '50%',
   moduleNameMapper: {
-    // Same stub as unit tests — integration suites load UI paths that import
-    // @metamask/perps-controller (e.g. via perps hooks barrel).
+    // Stub @metamask/perps-controller so integration suites can resolve it
+    // without transforming its ESM-only transitive deps (@nktkas/hyperliquid →
+    // @noble/hashes). Mirrors the unit jest config mapping.
     '^@metamask/perps-controller$':
       '<rootDir>/test/mocks/metamask-perps-controller.js',
   },
