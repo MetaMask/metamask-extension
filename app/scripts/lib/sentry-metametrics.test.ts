@@ -1,6 +1,6 @@
 import type { Client, Event as SentryEvent, EventHint } from '@sentry/types';
 
-import type { AnalyticsState } from './sentry-get-state';
+import type { AnalyticsParticipation } from './sentry-get-state';
 import { metaMetricsIntegration } from './sentry-metametrics';
 
 const stubHint = {} as EventHint;
@@ -13,7 +13,9 @@ describe('metaMetricsIntegration', () => {
     log.mockClear();
   });
 
-  function createIntegration(getAnalyticsState: () => Promise<AnalyticsState>) {
+  function createIntegration(
+    getAnalyticsState: () => Promise<AnalyticsParticipation>,
+  ) {
     return metaMetricsIntegration({
       getAnalyticsState,
       log,

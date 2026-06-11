@@ -4,16 +4,16 @@ import type { Backup } from '../../../shared/lib/stores/persistence-manager';
 
 type SentryAppStateSnapshot = Record<string, unknown>;
 
-type AnalyticsControllerStateFields = {
+type AnalyticsState = {
   analyticsId?: unknown;
   optedIn?: unknown;
 };
 
-type MetaMetricsControllerState = {
+type MetaMetricsState = {
   completedMetaMetricsOnboarding?: unknown;
 };
 
-export type AnalyticsState = {
+export type AnalyticsParticipation = {
   analyticsId?: string;
   optedIn: boolean;
   completedMetaMetricsOnboarding: boolean;
@@ -29,7 +29,7 @@ export function getState(): SentryAppStateSnapshot {
 /**
  * Resolves analytics state: sync snapshot first, then persisted / backup.
  */
-export async function getAnalyticsState(): Promise<AnalyticsState> {
+export async function getAnalyticsState(): Promise<AnalyticsParticipation> {
   const flags = getManifestFlags();
 
   if (flags.ci && flags.sentry?.forceEnable) {
@@ -71,7 +71,7 @@ export async function getAnalyticsState(): Promise<AnalyticsState> {
  */
 export function getAnalyticsStateFromAppState(
   appState: SentryAppStateSnapshot,
-): AnalyticsState {
+): AnalyticsParticipation {
   if (appState.persistedState) {
     return getAnalyticsStateFromPersistedState(appState.persistedState);
   }
@@ -91,7 +91,7 @@ export function getAnalyticsStateFromAppState(
  */
 function getAnalyticsStateFromPersistedState(
   persistedState: unknown,
-): Exclude<AnalyticsState, null> {
+): Exclude<AnalyticsParticipation, null> {
   const data = (
     persistedState as { data?: Record<string, unknown> } | undefined
   )?.data;
@@ -104,16 +104,15 @@ function getAnalyticsStateFromPersistedState(
  */
 function getAnalyticsStateFromBackupState(
   backupState: Backup | null,
-): Exclude<AnalyticsState, null> {
+): Exclude<AnalyticsParticipation, null> {
   return getAnalyticsStateFromControllerState(backupState);
 }
 
 function getAnalyticsStateFromUIState(
   metamaskState: unknown,
-): Exclude<AnalyticsState, null> {
+): Exclude<AnalyticsParticipation, null> {
   const { analyticsId, completedMetaMetricsOnboarding, optedIn } =
-    metamaskState as AnalyticsControllerStateFields &
-      MetaMetricsControllerState;
+    metamaskState as AnalyticsState & MetaMetricsState;
 
   return {
     analyticsId: typeof analyticsId === 'string' ? analyticsId : undefined,
@@ -124,13 +123,12 @@ function getAnalyticsStateFromUIState(
 
 function getAnalyticsStateFromControllerState(
   state: unknown,
-): Exclude<AnalyticsState, null> {
+): Exclude<AnalyticsParticipation, null> {
   const controllerState = isRecord(state) ? state : {};
-  const analyticsController =
-    getControllerState<AnalyticsControllerStateFields>(
-      controllerState.AnalyticsController,
-    );
-  const metaMetricsController = getControllerState<MetaMetricsControllerState>(
+  const analyticsController = getControllerState<AnalyticsState>(
+    controllerState.AnalyticsController,
+  );
+  const metaMetricsController = getControllerState<MetaMetricsState>(
     controllerState.MetaMetricsController,
   );
 

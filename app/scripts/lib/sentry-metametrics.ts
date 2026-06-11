@@ -5,7 +5,7 @@ import {
   Integration,
 } from '@sentry/types';
 
-import type { AnalyticsState } from './sentry-get-state';
+import type { AnalyticsParticipation } from './sentry-get-state';
 
 const NAME = 'MetaMetrics';
 
@@ -22,7 +22,7 @@ export function metaMetricsIntegration({
   getAnalyticsState,
   log,
 }: {
-  getAnalyticsState: () => Promise<AnalyticsState>;
+  getAnalyticsState: () => Promise<AnalyticsParticipation>;
   log: (message: string) => void;
 }): Integration {
   return {
