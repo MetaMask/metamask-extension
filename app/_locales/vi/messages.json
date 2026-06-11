@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Đã mở vị thế mua khống"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "Mở vị thế bán khống thất bại"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Đã nhận phí tài trợ"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Rút tiền thất bại"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Rút tiền thất bại"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Đang rút tiền"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Đang rút tiền"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Rút tiền hợp đồng vĩnh cửu"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Rút tiền hợp đồng vĩnh cửu"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -3447,9 +3448,6 @@
   },
   "enabled": {
     "message": "Đã bật"
-  },
-  "enabledNetworks": {
-    "message": "Mạng được bật"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 muốn biết khóa mã hóa công khai của bạn. Bằng việc đồng ý, trang web này sẽ có thể gửi thông báo được mã hóa cho bạn.",
@@ -10077,9 +10075,6 @@
   },
   "termsOfUseTitle": {
     "message": "Xem lại Điều khoản sử dụng của chúng tôi"
-  },
-  "testNetworks": {
-    "message": "Mạng thử nghiệm"
   },
   "testnets": {
     "message": "Mạng thử nghiệm"

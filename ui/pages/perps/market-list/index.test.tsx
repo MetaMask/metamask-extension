@@ -1,6 +1,9 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -199,7 +202,9 @@ describe('MarketListView', () => {
       fireEvent.change(searchInput, { target: { value: 'xyznomatch123' } });
 
       await waitFor(() => {
-        expect(screen.getByText(/no markets found/iu)).toBeInTheDocument();
+        expect(
+          screen.getByTestId('perps-market-list-no-results'),
+        ).toBeInTheDocument();
       });
     });
 
@@ -235,7 +240,29 @@ describe('MarketListView', () => {
       });
     });
 
-    it('shows equity markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
+    const filterLabelCases: [filter: string, expectedLabel: string][] = [
+      ['pre-ipo', messages.perpsFilterPreIpo.message],
+      ['index', messages.perpsFilterIndex.message],
+      ['etf', messages.perpsFilterEtf.message],
+    ];
+
+    filterLabelCases.forEach(([filter, expectedLabel]) => {
+      it(`shows a visible label for the ${filter} filter query param`, async () => {
+        renderWithProvider(
+          <MarketListView />,
+          mockStore,
+          `/perps/market-list?filter=${filter}`,
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('filter-select-button')).toHaveTextContent(
+            expectedLabel,
+          );
+        });
+      });
+    });
+
+    it('shows stock markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
       // mockStore has no perpsHip3AllowlistMarkets flag → allowedHip3Sources defaults to Set()
       renderWithProvider(<MarketListView />, mockStore);
 
@@ -243,10 +270,10 @@ describe('MarketListView', () => {
       const filterButton = screen.getByTestId('filter-select-button');
       fireEvent.click(filterButton);
       await waitFor(() => screen.getByTestId('filter-select-menu'));
-      fireEvent.click(screen.getByTestId('filter-select-option-stocks'));
+      fireEvent.click(screen.getByTestId('filter-select-option-stock'));
 
       await waitFor(() => {
-        // TSLA and AAPL are equity markets in mockHip3Markets
+        // TSLA and AAPL are stock markets in mockHip3Markets
         expect(screen.getByTestId('market-row-xyz-TSLA')).toBeInTheDocument();
         expect(screen.getByTestId('market-row-xyz-AAPL')).toBeInTheDocument();
         // BTC is a crypto market and should be absent
@@ -260,7 +287,7 @@ describe('MarketListView', () => {
       const filterButton = screen.getByTestId('filter-select-button');
       fireEvent.click(filterButton);
       await waitFor(() => screen.getByTestId('filter-select-menu'));
-      fireEvent.click(screen.getByTestId('filter-select-option-commodities'));
+      fireEvent.click(screen.getByTestId('filter-select-option-commodity'));
 
       await waitFor(() => {
         // GOLD and SILVER are commodity markets in mockHip3Markets
@@ -282,7 +309,7 @@ describe('MarketListView', () => {
       await waitFor(() => {
         const btcRow = screen.queryByTestId('market-row-BTC');
         expect(btcRow).toBeInTheDocument();
-        // HIP-3 equity market should not appear under Crypto
+        // HIP-3 stock market should not appear under Crypto
         expect(
           screen.queryByTestId('market-row-xyz-TSLA'),
         ).not.toBeInTheDocument();

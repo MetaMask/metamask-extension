@@ -97,7 +97,10 @@ import type {
   PasskeyAuthenticationOptions,
   PasskeyRegistrationResponse,
 } from '@metamask/passkey-controller';
-import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
+import {
+  toHardwareWalletError,
+  isTrezorDesktopConnectionMissingError,
+} from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
@@ -1587,6 +1590,14 @@ export function connectHardware(
     } catch (error) {
       logErrorWithMessage(error);
       const message = getErrorMessage(error);
+      if (
+        deviceName === HardwareDeviceNames.trezor &&
+        isTrezorDesktopConnectionMissingError(error)
+      ) {
+        const translatedError = new Error(t('trezorDesktopAppRequiredError'));
+        dispatch(displayWarning(translatedError));
+        throw translatedError;
+      }
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid &&
@@ -4146,12 +4157,29 @@ export function hideWarning() {
   };
 }
 
+/**
+ * Export an account.
+ *
+ * The password is verified to be correct before attempting to export the account. If the password
+ * is correct, the exported private key is passed to the `setPrivateKey` callback.
+ *
+ * @param password - The vault password.
+ * @param address - The address to export.
+ * @param setPrivateKey - The callback the private key is passed to if the export is successful.
+ * @param setShowHoldToReveal - Resets the "hold to reveal" state.
+ * @returns An error constant upon validation failure, or nothing upon success.
+ */
 export function exportAccount(
   password: string,
   address: string,
   setPrivateKey: (key: string) => void,
   setShowHoldToReveal: (show: boolean) => void,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<
+  void | { error: 'invalidPassword' },
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async function (dispatch) {
@@ -4162,10 +4190,8 @@ export function exportAccount(
       await submitRequestToBackground('verifyPassword', [password]);
     } catch (error) {
       log.error('Error in verifying password.');
-
       dispatch(hideLoadingIndication());
-      dispatch(displayWarning('Incorrect Password.'));
-      throw error;
+      return { error: 'invalidPassword' };
     }
 
     try {
@@ -4177,13 +4203,6 @@ export function exportAccount(
 
       setPrivateKey(result);
       setShowHoldToReveal(true);
-
-      return result;
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem exporting the account.'));
-
-      throw error;
     } finally {
       dispatch(hideLoadingIndication());
     }

@@ -1910,9 +1910,6 @@
   "enabled": {
     "message": "Cumasaithe"
   },
-  "enabledNetworks": {
-    "message": "Líonraí cumasaithe"
-  },
   "encryptionPublicKeyNotice": {
     "message": "Ba mhaith le $1 d’eochair chriptithe phoiblí. Trí thoiliú a thabhairt, beidh an suíomh seo in ann teachtaireachtaí criptithe a scríobh chugat.",
     "description": "$1 is the web3 site name"
@@ -5985,9 +5982,6 @@
   },
   "termsOfUseTitle": {
     "message": "Athbhreithnigh ár dTéarmaí Úsáide"
-  },
-  "testNetworks": {
-    "message": "Líonraí tástála"
   },
   "testnets": {
     "message": "Líonta tástála"

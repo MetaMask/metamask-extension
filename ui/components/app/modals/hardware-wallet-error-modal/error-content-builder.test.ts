@@ -84,4 +84,26 @@ describe('buildErrorContent', () => {
       expect(content).toMatchObject({ showRepairLink: false });
     });
   });
+
+  it('uses localized Trezor Suite Desktop copy for Desktop_ConnectionMissing', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) => {
+      if (key === HardwareWalletType.Trezor) {
+        return 'Trezor';
+      }
+
+      return substitutions ? `${key}:${substitutions.join(',')}` : key;
+    });
+
+    const error = new Error('Desktop_ConnectionMissing');
+
+    const content = buildErrorContent(error, HardwareWalletType.Trezor, t);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      title: 'hardwareWalletErrorTitleConnectYourDevice:Trezor',
+      description: 'trezorDesktopAppRequiredError',
+      showRepairLink: true,
+    });
+    expect(t).toHaveBeenCalledWith('trezorDesktopAppRequiredError');
+  });
 });

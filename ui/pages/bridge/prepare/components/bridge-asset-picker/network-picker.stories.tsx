@@ -48,9 +48,9 @@ export const NetworkPickerStory = () => {
         }))}
         selectedChainId={'eip155:1'}
         onNetworkChange={() => {}}
-        buttonElement={null}
         isOpen={true}
         onClose={() => {}}
+        testId="bridge-network-picker-story"
       />
     )
   );

@@ -95,6 +95,28 @@ const mockPerpsAnalyticsEventNames = {
   PerpsError: 'Perp Error',
 };
 
+const mockMarketCategories = [
+  'crypto',
+  'stock',
+  'pre-ipo',
+  'index',
+  'etf',
+  'commodity',
+  'forex',
+];
+
+function mockIsHip3Market(market) {
+  return Boolean(market?.isHip3) || Boolean(market?.marketSource);
+}
+
+function mockGetMarketTypeFilter(market) {
+  if (market?.marketType) {
+    return market.marketType;
+  }
+
+  return mockIsHip3Market(market) ? 'new' : 'crypto';
+}
+
 /**
  * Proxy-based mock for PERPS_ERROR_CODES.
  * Any property access returns the property name as a string, so code like
@@ -111,4 +133,7 @@ module.exports = {
   PERPS_EVENT_VALUE: mockPerpsEventValueLiterals,
   PerpsAnalyticsEvent: mockPerpsAnalyticsEventNames,
   PERPS_ERROR_CODES: mockPerpsErrorCodes,
+  MARKET_CATEGORIES: mockMarketCategories,
+  isHip3Market: mockIsHip3Market,
+  getMarketTypeFilter: mockGetMarketTypeFilter,
 };

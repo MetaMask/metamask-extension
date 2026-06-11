@@ -266,6 +266,13 @@ async function setupMocking(
       };
     });
 
+  // Rewards API
+  await server
+    .forPost('https://rewards.uat-api.cx.metamask.io/public/rewards/ois')
+    .thenCallback(() => {
+      return { statusCode: 200, json: { ois: [], sids: [] } };
+    });
+
   // User Profile Lineage
   await server
     .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')

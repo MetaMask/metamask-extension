@@ -16,9 +16,18 @@
   height: var(--text-field-height);
   border-color: var(--color-border-default);
 
+  /**
+  * We disable the default focus styles on the child Input using disableStateStyles
+  * and apply our own to ensure accessible consistent appearance across browsers
+  */
   &--focused {
     outline: 5px auto Highlight; // firefox
     outline: 5px auto -webkit-focus-ring-color; // chrome
+
+    // Firefox cuts off the default focus outline without this offset
+    @supports (-moz-appearance: none) {
+      outline-offset: -3px;
+    }
   }
 
   &--error {

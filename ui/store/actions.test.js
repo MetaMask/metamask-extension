@@ -1410,6 +1410,46 @@ describe('Actions', () => {
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
+    it('translates Trezor Suite Desktop missing errors during connect', async () => {
+      const store = mockStore();
+      const page = 0;
+      const hdPath = `m/44'/60'/0'/0`;
+
+      background.connectHardware.rejects(
+        Object.assign(new Error('Desktop_ConnectionMissing'), {
+          code: 'Desktop_ConnectionMissing',
+        }),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Trezor...',
+        },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'translated_trezorDesktopAppRequiredError',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await expect(
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.trezor,
+            page,
+            hdPath,
+            false,
+            translateHardwareMessage,
+          ),
+        ),
+      ).rejects.toThrow('translated_trezorDesktopAppRequiredError');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
     it('handles loadHid=false and skips WebHID request process', async () => {
       const store = mockStore({
         ...defaultState,
@@ -2837,20 +2877,16 @@ describe('Actions', () => {
 
     it('returns expected actions for successful action', async () => {
       const store = mockStore();
-
       const testPrivKey = 'a-test-priv-key';
-
       const verifyPasswordStub = sinon.stub().resolves();
-
       const exportAccountStub = sinon.stub().resolves(testPrivKey);
-
+      const setPrivateKeyStub = jest.fn();
+      const setShowHoldToReveal = jest.fn();
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
         exportAccount: exportAccountStub,
       });
-
       setBackgroundConnection(background.getApi());
-
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -2860,60 +2896,46 @@ describe('Actions', () => {
         actions.exportAccount(
           'a-test-password',
           '0xAddress',
-          jest.fn(),
-          jest.fn(),
+          setPrivateKeyStub,
+          setShowHoldToReveal,
         ),
       );
 
-      expect(verifyPasswordStub.callCount).toStrictEqual(1);
-      expect(exportAccountStub.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(setPrivateKeyStub).toHaveBeenCalledWith(testPrivKey);
+      expect(setShowHoldToReveal).toHaveBeenCalledWith(true);
     });
 
-    it('returns action errors when first func callback errors', async () => {
+    it('returns invalidPassword error when password validation failes', async () => {
       const store = mockStore();
-
       const verifyPasswordStub = sinon.stub().rejects(new Error('error'));
-
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
       });
-
       setBackgroundConnection(background.getApi());
-
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', payload: 'Incorrect Password.' },
       ];
 
       await expect(
         store.dispatch(actions.exportAccount('a-test-password', '0xAddress')),
-      ).rejects.toThrow('error');
+      ).resolves.toStrictEqual({ error: 'invalidPassword' });
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('returns action errors when second func callback errors', async () => {
+    it('throws when account export fails', async () => {
       const store = mockStore();
-
       const verifyPasswordStub = sinon.stub().resolves();
-
       const exportAccountStub = sinon.stub().rejects(new Error('error'));
-
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
         exportAccount: exportAccountStub,
       });
-
       setBackgroundConnection(background.getApi());
-
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'Had a problem exporting the account.',
-        },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
