@@ -135,6 +135,7 @@ const createAsset = ({
   address: addressOverride,
   balance = '1',
   rawBalance,
+  chainId = CHAIN_ID,
 }: {
   symbol: string;
   fiatBalance?: number;
@@ -142,6 +143,7 @@ const createAsset = ({
   address?: Hex;
   balance?: string;
   rawBalance?: Hex;
+  chainId?: Hex;
 }): Asset => {
   const address =
     addressOverride ??
@@ -153,7 +155,7 @@ const createAsset = ({
     assetId: address,
     address,
     balance,
-    chainId: CHAIN_ID,
+    chainId,
     decimals: 18,
     fiat:
       fiatBalance === undefined
@@ -359,6 +361,68 @@ describe('TokenList', () => {
 
     expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
     expect(screen.getByTestId('token-cell-MUSD')).toBeInTheDocument();
+    expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
+  });
+
+  it('does NOT renders zero-balance USDC if from another chain that Arc', () => {
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'USDC',
+          address: '0x3600000000000000000000000000000000000000',
+          balance: '0',
+          fiatBalance: 0,
+        }),
+        createAsset({ symbol: 'USDT', fiatBalance: 25 }),
+      ]),
+    );
+
+    render();
+
+    expect(screen.getByTestId('token-cell-USDT')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-USDC')).toBeNull();
+    expect(screen.getByTestId('low-value-assets-toggle')).toBeInTheDocument();
+  });
+
+  it('renders zero-balance USDC on Arc outside the low value bucket when zero-balance tokens are shown', () => {
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'USDC',
+          address: '0x3600000000000000000000000000000000000000',
+          balance: '0',
+          fiatBalance: 0,
+          chainId: '0x13b2',
+        }),
+        createAsset({ symbol: 'USDT', fiatBalance: 25 }),
+      ]),
+    );
+
+    render();
+
+    expect(screen.getByTestId('token-cell-USDT')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
+    expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
+  });
+
+  it('renders non-zero-balance USDC on Arc outside the low value bucket', () => {
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'USDC',
+          address: '0x3600000000000000000000000000000000000000',
+          balance: '1',
+          fiatBalance: 1,
+          chainId: '0x13b2',
+        }),
+        createAsset({ symbol: 'USDT', fiatBalance: 25 }),
+      ]),
+    );
+
+    render();
+
+    expect(screen.getByTestId('token-cell-USDT')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
     expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
   });
 
