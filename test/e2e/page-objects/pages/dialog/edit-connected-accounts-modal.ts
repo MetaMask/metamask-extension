@@ -95,7 +95,11 @@ class EditConnectedAccountsModal {
     );
     const checkboxes = await this.driver.findElements(this.accountCheckbox);
     const accountCheckbox = checkboxes[accountIndex - 1];
-    await accountCheckbox.click();
+    const checkboxId = await accountCheckbox.getAttribute('id');
+    // Design-system Checkbox renders the native input with opacity-0 behind a
+    // visual div, so clicking the input directly causes ElementClickInterceptedError.
+    // Click the associated label instead (same pattern as hardware-wallet account picker).
+    await this.driver.clickElement(`label[for="${checkboxId}"]`);
   }
 
   /**

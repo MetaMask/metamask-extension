@@ -12,10 +12,18 @@ import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   MultichainAccountList,
   MultichainAccountListProps,
 } from './multichain-account-list';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 jest.mock('../../../../shared/lib/trace', () => {
   const actual = jest.requireActual('../../../../shared/lib/trace');
@@ -189,6 +197,7 @@ describe('MultichainAccountList', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    setBackgroundConnection(backgroundConnectionMock as never);
     mockGetAccountGroupsByAddress.mockReturnValue([]);
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
   });
@@ -619,6 +628,21 @@ describe('MultichainAccountList', () => {
         walletTwoGroupId,
       );
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+
+    it('invokes toggle handler only once when checkbox is clicked', () => {
+      const handleAccountClick = jest.fn();
+
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+        handleAccountClick,
+      });
+
+      fireEvent.click(screen.getAllByRole('checkbox')[1]);
+
+      expect(handleAccountClick).toHaveBeenCalledTimes(1);
+      expect(handleAccountClick).toHaveBeenCalledWith(walletTwoGroupId);
     });
 
     it('handles checkbox click to deselect selected account', () => {
