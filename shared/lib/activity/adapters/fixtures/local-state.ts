@@ -103,6 +103,64 @@ const perpsWithdrawTransaction = {
   verifiedOnBlockchain: false,
 };
 
+const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+const arbitrumUsdc = '0xaf88d065e77c8cc2239327c5edb3a432268e5831';
+
+const perpsDepositTransaction = {
+  actionId: 1780690942749.6297,
+  batchTransactions: [],
+  batchTransactionsOptions: {},
+  chainId: CHAIN_IDS.ARBITRUM,
+  customNonceValue: '',
+  defaultGasEstimates: {
+    estimateType: 'medium',
+    gas: '0xce91',
+    maxFeePerGas: '0x3a430a0',
+    maxPriorityFeePerGas: '0x0',
+  },
+  gasFeeEstimatesLoaded: true,
+  gasFeeTokens: [],
+  gasLimitNoBuffer: '0xac24',
+  hash: '0xabc123deposit00000000000000000000000000000000000000000000000001',
+  id: '427ad200-611c-11f1-960a-af7f25501f43',
+  isFirstTimeInteraction: false,
+  isGasFeeSponsored: false,
+  isGasFeeTokenIgnoredIfBalance: false,
+  isIntentComplete: true,
+  isInternal: true,
+  metamaskPay: {
+    bridgeFeeFiat: '0.10',
+    chainId: CHAIN_IDS.BASE,
+    networkFeeFiat: '0.05',
+    targetFiat: '10.00',
+    tokenAddress: baseUsdc,
+    totalFiat: '10.15',
+  },
+  nestedTransactions: undefined,
+  networkClientId: 'arbitrum-mainnet',
+  origin: 'metamask',
+  originalGasEstimate: '0xce91',
+  status: TransactionStatus.confirmed,
+  submittedTime: 1780690964537,
+  time: 1780690942753,
+  txParams: {
+    data: '0xa9059cbb0000000000000000000000000000000000000000000000000000000000000000',
+    from: '0x9bed78535d6a03a955f1504aadba974d9a29e292',
+    gas: '0xce91',
+    gasLimit: '0xce91',
+    maxFeePerGas: '0x3a476f0',
+    maxPriorityFeePerGas: '0x0',
+    to: arbitrumUsdc,
+    type: '0x2',
+    value: '0x0',
+  },
+  txReceipt: undefined,
+  type: TransactionType.perpsDeposit,
+  userEditedGasLimit: false,
+  userFeeLevel: 'medium',
+  verifiedOnBlockchain: false,
+};
+
 export const localStateFixtures = {
   // ERC-1155 purchase local state before API metadata is available.
   nftPurchaseErc1155: {
@@ -121,6 +179,14 @@ export const localStateFixtures = {
       initialTransaction: perpsWithdrawTransaction,
       primaryTransaction: perpsWithdrawTransaction,
       transactions: [perpsWithdrawTransaction],
+    },
+  },
+  perpsDeposit: {
+    // Local-only Perps deposit from state.
+    transactionGroup: {
+      initialTransaction: perpsDepositTransaction,
+      primaryTransaction: perpsDepositTransaction,
+      transactions: [perpsDepositTransaction],
     },
   },
 };
