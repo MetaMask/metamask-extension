@@ -1,7 +1,4 @@
-import type { Transaction } from '@metamask/keyring-api';
-import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
-import type { TransactionGroup } from '../multichain/types';
 
 export type Status = 'pending' | 'success' | 'failed' | 'cancelled';
 
@@ -56,9 +53,21 @@ export type TokenAmount = {
   amount?: string;
   decimals?: number;
   symbol?: string;
-  // CAIP-19 asset id (from adapters)
   assetId?: string;
   direction: 'in' | 'out';
+};
+
+export type ActivityFee = {
+  type: string;
+  amount?: string;
+  decimals?: number;
+  symbol?: string;
+  assetId?: string;
+};
+
+export type FiatAmount = {
+  amount: string;
+  currency?: string;
 };
 
 type ActivityData<Type extends ActivityKind, Data> = {
@@ -67,13 +76,9 @@ type ActivityData<Type extends ActivityKind, Data> = {
   status: Status;
   timestamp: number;
   isEarliestNonce?: boolean;
-  /* Used by legacy details modals. Interim until redesigned details are implemented */
-  raw?:
-    | { type: 'apiEvmTransaction'; data: V1TransactionByHashResponse }
-    | { type: 'keyringTransaction'; data: Transaction }
-    | { type: 'localTransaction'; data: TransactionGroup };
   data: Data & {
     hash?: string;
+    from?: string;
   };
 };
 
@@ -84,6 +89,7 @@ export type ActivityListItem =
         from: string;
         to: string;
         token?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
   | ActivityData<
@@ -96,6 +102,7 @@ export type ActivityListItem =
       {
         sourceToken?: TokenAmount;
         destinationToken?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
   | ActivityData<
@@ -109,21 +116,27 @@ export type ActivityListItem =
       {
         sourceToken?: TokenAmount;
         destinationToken?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
   | ActivityData<
-      'buy' | 'claim' | 'deposit',
+      'buy' | 'claim',
       {
         token?: TokenAmount;
       }
     >
   | ActivityData<
+      'deposit',
+      {
+        token?: TokenAmount;
+        from?: string;
+      }
+    >
+  | ActivityData<
       'perpsAddFunds' | 'perpsWithdraw',
       {
-        fiat?: {
-          amount: string;
-          currency?: string;
-        };
+        fiat?: FiatAmount;
+        networkFee?: FiatAmount;
         token?: TokenAmount;
       }
     >
@@ -137,6 +150,7 @@ export type ActivityListItem =
       'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
       {
         token?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
   | ActivityData<
@@ -153,6 +167,7 @@ export type ActivityListItem =
         from: string;
         to: string;
         token?: TokenAmount;
+        fees?: ActivityFee[];
         methodId?: string;
         transactionCategory?: string;
         transactionProtocol?: string;
