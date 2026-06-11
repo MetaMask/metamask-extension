@@ -681,7 +681,7 @@ const state = {
       },
     },
     completedMetaMetricsOnboarding: true,
-          optedIn: true,
+    optedIn: true,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',

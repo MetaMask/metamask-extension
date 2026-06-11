@@ -22,7 +22,7 @@ export const PRODUCTION_LIKE_ENVIRONMENTS = [
  *
  * - The RPC endpoint is slow
  * - The user does not have local connectivity issues
- * - The user is in the MetaMetrics sample
+ * - The user is in the Analytics sample
  *
  * @param args - The arguments.
  * @param args.error - The connection or response error encountered after making
@@ -46,13 +46,13 @@ export function shouldCreateRpcServiceEvents({
 }
 
 /**
- * Determines whether the user is included in the sample for MetaMetrics.
+ * Determines whether the user is included in the sample for Analytics.
  *
  * In production and for a release candidate, we sample only 1% of the available
  * events; in development and testing we create every event.
  *
  * @param analyticsId - The analytics ID of the user.
- * @returns True if the user is included in the sample for MetaMetrics, false
+ * @returns True if the user is included in the sample for Analytics, false
  * otherwise.
  */
 function isSamplingAnalyticsUser(analyticsId: string) {
