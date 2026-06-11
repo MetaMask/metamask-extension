@@ -17,4 +17,4 @@
  * `false` for the disabled variant and only returns `true` when the current
  * extension version meets `minimumVersion`.
  */
-export const ENABLE_DMK_FEATURE_FLAG = 'enableDmk';
+export const ENABLE_DMK_FEATURE_FLAG = 'ledgerDmk';

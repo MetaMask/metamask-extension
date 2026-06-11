@@ -245,23 +245,7 @@ export class LedgerDMKBridgeHandler {
     });
 
     const device = await this.findPermittedDevice(bridge.dmk);
-    console.debug(
-      '[LedgerDMK] Device discovered, connecting...',
-      JSON.stringify({
-        deviceId: device.id,
-        deviceName: device.name,
-        deviceModel: device.deviceModel
-          ? { id: device.deviceModel.id, model: device.deviceModel.model, name: device.deviceModel.name }
-          : undefined,
-        transport: device.transport,
-      }),
-    );
-
     this.sessionId = await bridge.connect({ device });
-    console.debug(
-      '[LedgerDMK] Session established',
-      JSON.stringify({ sessionId: this.sessionId }),
-    );
 
     // Wait for the session to reach a ready state (current app reported)
     // before handing the session off to callers. Without this, connect()
@@ -274,8 +258,10 @@ export class LedgerDMKBridgeHandler {
       state$.pipe(
         filter(
           (s) =>
-            (s.sessionStateType === DeviceSessionStateType.ReadyWithoutSecureChannel ||
-              s.sessionStateType === DeviceSessionStateType.ReadyWithSecureChannel) &&
+            (s.sessionStateType ===
+              DeviceSessionStateType.ReadyWithoutSecureChannel ||
+              s.sessionStateType ===
+                DeviceSessionStateType.ReadyWithSecureChannel) &&
             s.currentApp,
         ),
       ),
@@ -287,11 +273,17 @@ export class LedgerDMKBridgeHandler {
         deviceModelId: sessionState.deviceModelId,
         deviceName: sessionState.deviceName,
         currentApp: sessionState.currentApp
-          ? { name: sessionState.currentApp.name, version: sessionState.currentApp.version }
+          ? {
+              name: sessionState.currentApp.name,
+              version: sessionState.currentApp.version,
+            }
           : undefined,
         firmwareVersion: sessionState.firmwareVersion,
         batteryStatus: sessionState.batteryStatus
-          ? { level: sessionState.batteryStatus.level, status: sessionState.batteryStatus.status }
+          ? {
+              level: sessionState.batteryStatus.level,
+              status: sessionState.batteryStatus.status,
+            }
           : undefined,
       }),
     );
