@@ -1,10 +1,6 @@
 import { noop } from 'lodash';
 import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 import {
-  getPPOMControllerMessenger,
-  getPPOMControllerInitMessenger,
-} from './ppom-controller-messenger';
-import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
   getMultichainRoutingServiceMessenger,
@@ -639,10 +635,6 @@ export const MESSENGER_FACTORIES = {
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
-  },
-  PPOMController: {
-    getMessenger: getPPOMControllerMessenger,
-    getInitMessenger: getPPOMControllerInitMessenger,
   },
   PreferencesController: {
     getMessenger: getPreferencesControllerMessenger,

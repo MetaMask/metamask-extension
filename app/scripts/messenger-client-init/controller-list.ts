@@ -9,7 +9,6 @@ import {
   PermissionSpecificationConstraint,
   SubjectMetadataController,
 } from '@metamask/permission-controller';
-import { PPOMController } from '@metamask/ppom-validator';
 import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionPayController } from '@metamask/transaction-pay-controller';
@@ -185,7 +184,6 @@ export type MessengerClient =
   | PermissionLogController
   | PerpsController
   | PhishingController
-  | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
   | RatesController
@@ -285,7 +283,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   PermissionLogController['state'] &
   PerpsController['state'] &
   PhishingController['state'] &
-  PPOMController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &

@@ -1,5 +1,4 @@
 import { AccountsController } from '@metamask/accounts-controller';
-import { PPOMController } from '@metamask/ppom-validator';
 import {
   NetworkClientId,
   NetworkController,
@@ -53,7 +52,6 @@ export type PPOMMiddlewareRequest<
  * after the user has confirmed or rejected the request,
  * the request will be forwarded to the next middleware, together with the PPOM response.
  *
- * @param ppomController - Instance of PPOMController.
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
  * @param appStateController
@@ -66,7 +64,6 @@ export function createPPOMMiddleware<
   Params extends (string | { to: string })[],
   Result extends Json,
 >(
-  ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
   appStateController: AppStateController,
@@ -121,7 +118,6 @@ export function createPPOMMiddleware<
         { name: TraceName.PPOMValidation, parentContext: req.traceContext },
         () =>
           validateRequestWithPPOM({
-            ppomController,
             request: req,
             securityAlertId,
             chainId: chainId as Hex,
