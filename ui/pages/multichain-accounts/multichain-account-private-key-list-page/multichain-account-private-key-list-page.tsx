@@ -14,7 +14,6 @@ import {
   ButtonIconSize,
   IconName,
   TextButton,
-  
 } from '@metamask/design-system-react';
 import { AccountGroupId } from '@metamask/account-api';
 import {

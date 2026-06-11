@@ -22,7 +22,6 @@ import {
   ModalOverlay,
   Text,
   TextButton,
-  
   TextAlign,
   TextColor,
   TextVariant,

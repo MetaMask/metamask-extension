@@ -19,7 +19,6 @@ import {
   BoxFlexDirection,
   TextTransform,
   TextButton,
-  
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { PolymorphicRef } from '../../../components/component-library';

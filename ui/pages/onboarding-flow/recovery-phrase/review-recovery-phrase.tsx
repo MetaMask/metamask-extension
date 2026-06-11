@@ -19,7 +19,6 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   TextButton,
-  
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {

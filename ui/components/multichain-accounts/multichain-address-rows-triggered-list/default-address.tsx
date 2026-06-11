@@ -7,7 +7,6 @@ import {
   BoxJustifyContent,
   Text,
   TextButton,
-  
   TextColor,
   TextVariant,
   FontWeight,

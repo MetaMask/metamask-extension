@@ -13,7 +13,6 @@ import {
   TextAlign,
   TextVariant,
   TextButton,
-  
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import {

@@ -11,7 +11,6 @@ import {
   IconSize,
   Text,
   TextButton,
-  
   TextVariant,
 } from '@metamask/design-system-react';
 import {

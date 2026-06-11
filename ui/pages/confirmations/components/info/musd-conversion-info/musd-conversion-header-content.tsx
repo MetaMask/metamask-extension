@@ -6,7 +6,6 @@ import {
   Text,
   TextAlign,
   TextButton,
-  
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';

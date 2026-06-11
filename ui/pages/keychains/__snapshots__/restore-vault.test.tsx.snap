@@ -49,14 +49,10 @@ exports[`Restore vault Component renders match snapshot 1`] = `
              
             Enter your 
             <button
-              class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
-              role="button"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default inline cursor-pointer appearance-none border-0 bg-transparent p-0 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+              type="button"
             >
-              <span
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-              >
-                Secret Recovery Phrase
-              </span>
+              Secret Recovery Phrase
             </button>
             . By importing the wallet, you will erase your current wallet data from this device. This can’t be undone.
              

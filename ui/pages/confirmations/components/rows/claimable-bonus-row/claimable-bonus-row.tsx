@@ -5,7 +5,6 @@ import {
   IconName,
   Text,
   TextButton,
-  
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';

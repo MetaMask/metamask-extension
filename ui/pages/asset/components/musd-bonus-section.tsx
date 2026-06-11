@@ -13,7 +13,6 @@ import {
   Text,
   TextAlign,
   TextButton,
-  
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -312,11 +311,7 @@ export function MusdBonusSection({
                 <strong>{t('musdAssetBonusTitle')}: </strong>
                 {t('musdAssetBonusInfoYourBonus', [
                   String(MUSD_CONVERSION_APY),
-                  <TextButton
-                    key="terms"
-                    variant={TextVariant.BodyMd}
-                    asChild
-                  >
+                  <TextButton key="terms" variant={TextVariant.BodyMd} asChild>
                     <a
                       href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                       target="_blank"

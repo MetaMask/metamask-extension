@@ -3,7 +3,6 @@ import {
   Box,
   Text,
   TextButton,
-  
   TextVariant,
   TextColor,
   BoxFlexDirection,

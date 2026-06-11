@@ -34,7 +34,6 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   TextButton,
-  
 } from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
