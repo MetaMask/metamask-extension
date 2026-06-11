@@ -26,7 +26,8 @@ export const getParticipateInMetaMetrics = (state) => {
 };
 
 /** @deprecated Use `getCompletedMetaMetricsOnboarding` instead. */
-export const getIsParticipateInMetaMetricsSet = getCompletedMetaMetricsOnboarding;
+export const getIsParticipateInMetaMetricsSet =
+  getCompletedMetaMetricsOnboarding;
 
 export const getPna25Acknowledged = (state) => state.metamask.pna25Acknowledged;
 
