@@ -440,7 +440,7 @@
     "@metamask/solana-wallet-standard": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.1.2",
-    "@metamask/transaction-controller": "^67.0.0",
+    "@metamask/transaction-controller": "^68.0.0",
     "@metamask/transaction-pay-controller": "^22.6.0",
     "@metamask/tron-wallet-snap": "^1.25.6",
     "@metamask/user-operation-controller": "^41.2.0",
@@ -856,12 +856,7 @@
       "ethereumjs-util>ethereum-cryptography>secp256k1#4.0.4": false
     }
   },
-  "previewBuilds": {
-    "@metamask/transaction-controller": {
-      "type": "breaking",
-      "previewVersion": "67.0.0-preview-a3b313179"
-    }
-  },
+  "previewBuilds": {},
   "packageManager": "yarn@4.14.1",
   "foundryup": {
     "binaries": [
