@@ -1,8 +1,10 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import 'ses';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
+import { getGlobalProperties } from '../../../helpers/protect-intrinsics-helpers';
 
 /**
  * End-to-end audit of the SES lockdown applied by
@@ -11,15 +13,6 @@ import { login } from '../../page-objects/flows/login.flow';
  * so by the time the unlocked home page is reachable, every named intrinsic
  * on `globalThis` must be non-configurable + non-writable (or, for accessor
  * properties, just non-configurable).
- *
- * Note: we deliberately use a hardcoded list of intrinsic names rather than
- * enumerating `new Compartment().globalThis` like `lockdown-more.js` does.
- * In LavaMoat-scuttled builds (default for test/production), `Compartment`
- * is removed from `globalThis` after init, so dynamic enumeration is
- * impossible from page scope. The list below is a conservative subset of
- * SES's `universalPropertyNames` that has been stable across modern Chrome
- * and Firefox for years — newer intrinsics (Iterator, AsyncDisposableStack,
- * etc.) are intentionally omitted to keep the test browser-agnostic.
  *
  * Browserify-only (for now): the webpack pipeline relies solely on the
  * SES `lockdown()` invocation inlined by `@lavamoat/webpack`. It does NOT
@@ -44,6 +37,8 @@ describe('SES lockdown - non-modifiable intrinsics', function (this: Suite) {
       return;
     }
 
+    const intrinsicNames = [...getGlobalProperties()];
+
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -52,67 +47,9 @@ describe('SES lockdown - non-modifiable intrinsics', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
 
-        const failures: string[] = await driver.executeScript(function () {
-          const intrinsicNames: string[] = [
-            // Fundamental constructors
-            'Object',
-            'Function',
-            'Array',
-            'String',
-            'Number',
-            'Boolean',
-            'BigInt',
-            'Symbol',
-            'Date',
-            'RegExp',
-            // Error constructors
-            'Error',
-            'EvalError',
-            'RangeError',
-            'ReferenceError',
-            'SyntaxError',
-            'TypeError',
-            'URIError',
-            // Keyed / weak collections
-            'Map',
-            'Set',
-            'WeakMap',
-            'WeakSet',
-            // Async / metaprogramming
-            'Promise',
-            'Proxy',
-            // Binary data
-            'ArrayBuffer',
-            'DataView',
-            'Int8Array',
-            'Uint8Array',
-            'Uint8ClampedArray',
-            'Int16Array',
-            'Uint16Array',
-            'Int32Array',
-            'Uint32Array',
-            'Float32Array',
-            'Float64Array',
-            // Namespace objects
-            'Math',
-            'JSON',
-            'Reflect',
-            // Global functions
-            'eval',
-            'isFinite',
-            'isNaN',
-            'parseFloat',
-            'parseInt',
-            'decodeURI',
-            'decodeURIComponent',
-            'encodeURI',
-            'encodeURIComponent',
-            // Primitive value globals
-            'NaN',
-            'Infinity',
-            'undefined',
-          ];
-
+        const failures: string[] = await driver.executeScript(function (
+          names: string[],
+        ) {
           // LavaMoat scuttling replaces protected intrinsics with throwing
           // accessors. The thrown message has a stable shape we recognise
           // and treat as an "expected" outcome rather than a lockdown failure.
@@ -121,7 +58,7 @@ describe('SES lockdown - non-modifiable intrinsics', function (this: Suite) {
 
           const issues: string[] = [];
 
-          for (const propertyName of intrinsicNames) {
+          for (const propertyName of names) {
             const descriptor = Reflect.getOwnPropertyDescriptor(
               globalThis,
               propertyName,
@@ -161,7 +98,7 @@ describe('SES lockdown - non-modifiable intrinsics', function (this: Suite) {
           }
 
           return issues;
-        });
+        }, intrinsicNames);
 
         assert.deepEqual(
           failures,
