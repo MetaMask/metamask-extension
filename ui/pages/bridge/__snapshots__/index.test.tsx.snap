@@ -94,7 +94,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       class="inline-flex"
                     >
                       <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
                       >
                         <img
                           alt="ETH"
@@ -108,7 +108,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       style="bottom: 0px; right: 0px;"
                     >
                       <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
                         style="border-width: 1px; border-radius: 6px;"
                       >
                         <img
@@ -148,7 +148,7 @@ exports[`Bridge renders the component with initial props 1`] = `
             style="position: relative;"
           >
             <div
-              class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-section"
+              class="bg-section prepare-bridge-page__switch-tokens flex"
               style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
             >
               <button
@@ -165,7 +165,7 @@ exports[`Bridge renders the component with initial props 1`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-box--padding-inline-4"
+              class="px-4"
               style="margin-top: -16px;"
             />
             <div
@@ -206,7 +206,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         class="inline-flex"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
                         >
                           <img
                             alt="mUSD"
@@ -220,7 +220,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         style="bottom: 0px; right: 0px;"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
                           style="border-width: 1px; border-radius: 6px;"
                         >
                           <img

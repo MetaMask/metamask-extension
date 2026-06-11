@@ -1,27 +1,20 @@
 import React from 'react';
 import classnames from 'clsx';
 import { StatusTypes } from '@metamask/bridge-controller';
-import { Box } from '../../../components/component-library';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Segment({ type }: { type: StatusTypes | null }) {
   return (
     <Box
-      width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      borderRadius={BorderRadius.pill}
+      className="w-full rounded-full"
+      backgroundColor={BoxBackgroundColor.BackgroundAlternative}
     >
       <Box
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.primaryDefault}
-        borderRadius={BorderRadius.pill}
+        backgroundColor={BoxBackgroundColor.PrimaryDefault}
         className={classnames({
+          'w-full rounded-full': true,
           'bridge-transaction-details__segment': true,
           'bridge-transaction-details__segment--pending':
             type === StatusTypes.PENDING,

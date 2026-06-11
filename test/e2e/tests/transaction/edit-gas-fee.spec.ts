@@ -3,14 +3,14 @@ import { login } from '../../page-objects/flows/login.flow';
 import {
   createInternalTransaction,
   createDappTransaction,
-} from '../../page-objects/flows/transaction';
+} from '../../page-objects/flows/transaction.flow';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockPriceApi } from '../tokens/utils/mocks';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -66,7 +66,7 @@ describe('Editing Confirm Transaction', function () {
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
         // check transaction in activity tab
-        await activityListPage.openActivityTab();
+        await activityListPage.goToActivityList();
         await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         await activityListPage.checkTransactionAmount('-1 ETH');
@@ -82,15 +82,8 @@ describe('Editing Confirm Transaction', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-        },
+        testSpecificMock: async (mockServer: MockttpServer) =>
+          mockPriceApi(mockServer, 1700),
       },
       async ({ driver }) => {
         await login(driver);
@@ -116,7 +109,7 @@ describe('Editing Confirm Transaction', function () {
         // confirms the transaction
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
-        await activityListPage.openActivityTab();
+        await activityListPage.goToActivityList();
         await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         await activityListPage.checkTransactionAmount('-1 ETH');
@@ -134,15 +127,8 @@ describe('Editing Confirm Transaction', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-        },
+        testSpecificMock: async (mockServer: MockttpServer) =>
+          mockPriceApi(mockServer, 1700),
       },
       async ({ driver }) => {
         // login to extension
@@ -180,7 +166,7 @@ describe('Editing Confirm Transaction', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await activityListPage.openActivityTab();
+        await activityListPage.goToActivityList();
         await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         await activityListPage.checkTransactionAmount('-0.001 ETH');

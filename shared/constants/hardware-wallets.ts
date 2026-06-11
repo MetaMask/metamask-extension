@@ -166,6 +166,10 @@ export const KEYRING_DEVICE_PROPERTY_MAP = {
 
 export const U2F_ERROR = 'U2F';
 
+/** Trezor SDK error code when Trezor Suite Desktop is unavailable (Firefox MV2). */
+export const TREZOR_DESKTOP_CONNECTION_MISSING_CODE =
+  'Desktop_ConnectionMissing';
+
 export const LEDGER_ERRORS_CODES = {
   '0x650f': 'ledgerErrorConnectionIssue',
   '0x5515': 'ledgerErrorDevicedLocked',

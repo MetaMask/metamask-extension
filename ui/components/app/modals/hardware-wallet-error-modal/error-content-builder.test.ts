@@ -32,4 +32,78 @@ describe('buildErrorContent', () => {
     ]);
     expect(t).toHaveBeenCalledWith('hardwareWalletErrorRecoveryUnlock2');
   });
+
+  describe('showRepairLink flag', () => {
+    const t = jest.fn((key: string) => key);
+
+    it('returns showRepairLink true for DeviceDisconnected', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.DeviceDisconnected,
+        HardwareWalletType.Ledger,
+      );
+      const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+      expect(content).toMatchObject({ showRepairLink: true });
+    });
+
+    it('returns showRepairLink true for ConnectionClosed', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.ConnectionClosed,
+        HardwareWalletType.Ledger,
+      );
+      const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+      expect(content).toMatchObject({ showRepairLink: true });
+    });
+
+    it('returns showRepairLink true for ConnectionTransportMissing', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.ConnectionTransportMissing,
+        HardwareWalletType.Ledger,
+      );
+      const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+      expect(content).toMatchObject({
+        variant: 'recovery',
+        showRepairLink: true,
+      });
+    });
+
+    it('returns showRepairLink false for AuthenticationDeviceLocked', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+      );
+      const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+      expect(content).toMatchObject({ showRepairLink: false });
+    });
+
+    it('returns showRepairLink false for unknown error codes', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.Unknown,
+        HardwareWalletType.Ledger,
+      );
+      const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+      expect(content).toMatchObject({ showRepairLink: false });
+    });
+  });
+
+  it('uses localized Trezor Suite Desktop copy for Desktop_ConnectionMissing', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) => {
+      if (key === HardwareWalletType.Trezor) {
+        return 'Trezor';
+      }
+
+      return substitutions ? `${key}:${substitutions.join(',')}` : key;
+    });
+
+    const error = new Error('Desktop_ConnectionMissing');
+
+    const content = buildErrorContent(error, HardwareWalletType.Trezor, t);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      title: 'hardwareWalletErrorTitleConnectYourDevice:Trezor',
+      description: 'trezorDesktopAppRequiredError',
+      showRepairLink: true,
+    });
+    expect(t).toHaveBeenCalledWith('trezorDesktopAppRequiredError');
+  });
 });

@@ -22,12 +22,12 @@ import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
+import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // so unify-state tests can exercise real feature-flag gating via controller state.
@@ -51,6 +51,48 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
     },
     api: {},
   }),
+}));
+
+jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
+  SnapAccountServiceInit: jest
+    .fn()
+    .mockImplementation(({ controllerMessenger }) => {
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:ensureReady',
+        // Never-resolving promise: prevents any Snap provider from proceeding
+        // past `ensureReady`, so no Snap accounts get created during init.
+        () => new Promise(() => undefined),
+      );
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:getLegacySnapKeyring',
+        async () => {
+          const result = await controllerMessenger.call(
+            'KeyringController:withController',
+            async (controller) => {
+              const found = controller.keyrings.find(
+                ({ keyring }) => keyring.type === 'Snap Keyring',
+              );
+              let snapKeyring = found?.keyring;
+              if (!snapKeyring) {
+                const { keyring } =
+                  await controller.addNewKeyring('Snap Keyring');
+                snapKeyring = keyring;
+              }
+              return { snapKeyring };
+            },
+          );
+          return result.snapKeyring;
+        },
+      );
+      return {
+        memStateKey: null,
+        persistedStateKey: null,
+        messengerClient: {
+          init: jest.fn().mockResolvedValue(undefined),
+          name: 'SnapAccountService',
+        },
+      };
+    }),
 }));
 
 jest.mock('../../ui/contexts/hardware-wallets', () => ({
@@ -185,6 +227,11 @@ describe('MetaMaskController', function () {
         getVersion: () => 'foo',
       },
       browser: browserPolyfillMock,
+      getRequestAccountTabIds: () => ({}),
+      getOpenMetamaskTabsIds: () => ({}),
+      notificationManager: {
+        markAsAutomaticallyClosed: jest.fn(),
+      },
       infuraProjectId: 'foo',
       cronjobControllerStorageManager: {
         init: noop,
@@ -222,26 +269,6 @@ describe('MetaMaskController', function () {
       );
       expect(METAMASK_HOTLIST_DIFF_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
-      );
-    });
-  });
-
-  describe('#importAccountWithStrategy', function () {
-    it('throws an error when importing the same account twice', async function () {
-      const importPrivkey =
-        '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
-      await metamaskController.createNewVaultAndKeychain('test@123');
-
-      await metamaskController.importAccountWithStrategy('privateKey', [
-        importPrivkey,
-      ]);
-
-      await expect(
-        metamaskController.importAccountWithStrategy('privateKey', [
-          importPrivkey,
-        ]),
-      ).rejects.toThrow(
-        'KeyringController - The account you are trying to import is a duplicate',
       );
     });
   });
@@ -463,6 +490,11 @@ describe('MetaMaskController', function () {
             getVersion: () => 'foo',
           },
           browser: browserPolyfillMock,
+          getRequestAccountTabIds: () => ({}),
+          getOpenMetamaskTabsIds: () => ({}),
+          notificationManager: {
+            markAsAutomaticallyClosed: jest.fn(),
+          },
           infuraProjectId: 'foo',
           cronjobControllerStorageManager: {
             init: noop,
@@ -815,118 +847,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#checkIsSeedlessPasswordOutdated', function () {
-    it('should return undefined if firstTimeFlowType is not seedless', async function () {
-      metamaskController.onboardingController.setFirstTimeFlowType(
-        FirstTimeFlowType.create,
-      );
-      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBeFalsy();
-    });
-
-    it('should return false if firstTimeFlowType is seedless and password is not outdated', async function () {
-      // We now need the Snap keyring after onboarding the wallet.
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
-      metamaskController.onboardingController.setFirstTimeFlowType(
-        FirstTimeFlowType.socialCreate,
-      );
-      metamaskController.onboardingController.completeOnboarding();
-      jest
-        .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
-        )
-        .mockResolvedValue(false);
-      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBe(false);
-      expect(
-        metamaskController.seedlessOnboardingController.checkIsPasswordOutdated,
-      ).toHaveBeenCalled();
-    });
-
-    it('should return true if firstTimeFlowType is seedless and password is outdated', async function () {
-      // We now need the Snap keyring after onboarding the wallet.
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
-      metamaskController.onboardingController.setFirstTimeFlowType(
-        FirstTimeFlowType.socialCreate,
-      );
-      metamaskController.onboardingController.completeOnboarding();
-      jest
-        .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
-        )
-        .mockResolvedValue(true);
-      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBe(true);
-      expect(
-        metamaskController.seedlessOnboardingController.checkIsPasswordOutdated,
-      ).toHaveBeenCalled();
-    });
-
-    it('captures the error when password check fails and captureSentryError is true', async function () {
-      const error = new Error('Network error');
-
-      jest
-        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
-        .mockReturnValue(true);
-      jest
-        .spyOn(metamaskController.onboardingController, 'state', 'get')
-        .mockReturnValue({ completedOnboarding: true });
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'captureException')
-        .mockImplementation();
-      jest
-        .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
-        )
-        .mockRejectedValue(error);
-
-      await expect(
-        metamaskController.checkIsSeedlessPasswordOutdated({
-          skipCache: false,
-          captureSentryError: true,
-        }),
-      ).rejects.toThrow(error);
-
-      expect(
-        metamaskController.controllerMessenger.captureException,
-      ).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not capture the error when password check fails and captureSentryError is false', async function () {
-      const error = new Error('Network error');
-
-      jest
-        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
-        .mockReturnValue(true);
-      jest
-        .spyOn(metamaskController.onboardingController, 'state', 'get')
-        .mockReturnValue({ completedOnboarding: true });
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'captureException')
-        .mockImplementation();
-      jest
-        .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
-        )
-        .mockRejectedValue(error);
-
-      await expect(
-        metamaskController.checkIsSeedlessPasswordOutdated({
-          skipCache: false,
-          captureSentryError: false,
-        }),
-      ).rejects.toThrow(error);
-
-      expect(
-        metamaskController.controllerMessenger.captureException,
-      ).not.toHaveBeenCalled();
-    });
-  });
-
   describe('#syncPasswordAndUnlockWallet', function () {
     const password = 'test@123';
 
@@ -968,7 +888,10 @@ describe('MetaMaskController', function () {
           )
           .mockReturnValue(true);
         jest
-          .spyOn(metamaskController, 'checkIsSeedlessPasswordOutdated')
+          .spyOn(
+            metamaskController.legacyBackgroundApiService,
+            'checkIsSeedlessPasswordOutdated',
+          )
           .mockResolvedValue(false);
 
         const submitPasswordSpy = jest
@@ -993,7 +916,10 @@ describe('MetaMaskController', function () {
           )
           .mockReturnValue(true);
         jest
-          .spyOn(metamaskController, 'checkIsSeedlessPasswordOutdated')
+          .spyOn(
+            metamaskController.legacyBackgroundApiService,
+            'checkIsSeedlessPasswordOutdated',
+          )
           .mockResolvedValue(true);
       });
 
@@ -1121,13 +1047,15 @@ describe('MetaMaskController', function () {
         ).toHaveBeenCalledWith(password);
         expect(metamaskController.syncKeyringEncryptionKey).toHaveBeenCalled();
         expect(
-          metamaskController.checkIsSeedlessPasswordOutdated,
+          metamaskController.legacyBackgroundApiService
+            .checkIsSeedlessPasswordOutdated,
         ).toHaveBeenNthCalledWith(1, {
           skipCache: false,
           captureSentryError: true,
         });
         expect(
-          metamaskController.checkIsSeedlessPasswordOutdated,
+          metamaskController.legacyBackgroundApiService
+            .checkIsSeedlessPasswordOutdated,
         ).toHaveBeenNthCalledWith(2, {
           skipCache: true,
           captureSentryError: true,
@@ -1224,7 +1152,10 @@ describe('MetaMaskController', function () {
 
       it('should unlock wallet when `revokePendingRefreshTokens` fails for non-outdated password', async function () {
         jest
-          .spyOn(metamaskController, 'checkIsSeedlessPasswordOutdated')
+          .spyOn(
+            metamaskController.legacyBackgroundApiService,
+            'checkIsSeedlessPasswordOutdated',
+          )
           .mockResolvedValue(false);
         const keyringSubmitPwdSpy = jest
           .spyOn(metamaskController.keyringController, 'submitPassword')
@@ -1243,7 +1174,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue('Unexpected error');
 
         // We now need the Snap keyring after unlocking the wallet.
-        jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+        jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({});
 
         await metamaskController.syncPasswordAndUnlockWallet(password);
         expect(keyringSubmitPwdSpy).toHaveBeenCalled();
@@ -1315,7 +1246,10 @@ describe('MetaMaskController', function () {
 
       it('should allow user to unlock the wallet even if checkIsPasswordOutdated fails', async function () {
         jest
-          .spyOn(metamaskController, 'checkIsSeedlessPasswordOutdated')
+          .spyOn(
+            metamaskController.legacyBackgroundApiService,
+            'checkIsSeedlessPasswordOutdated',
+          )
           .mockRejectedValue('Network Error');
         const keyringSubmitPwdSpy = jest
           .spyOn(metamaskController.keyringController, 'submitPassword')
@@ -1328,7 +1262,7 @@ describe('MetaMaskController', function () {
           .mockResolvedValue();
 
         // We now need the Snap keyring after unlocking the wallet.
-        jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+        jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({});
 
         await metamaskController.syncPasswordAndUnlockWallet(password);
         expect(keyringSubmitPwdSpy).toHaveBeenCalled();

@@ -5,14 +5,16 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { completeOnboardingWithPasskey } from '../../page-objects/flows/onboarding.flow';
 import {
   lockAndWaitForLoginPage,
   login,
 } from '../../page-objects/flows/login.flow';
-import { navigateToSecurityAndPassword } from '../../page-objects/flows/settings.flow';
+import {
+  closeSettings,
+  navigateToSecurityAndPassword,
+} from '../../page-objects/flows/settings.flow';
 import { DUMMY_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
 
 describe('Passkey settings', function () {
@@ -45,8 +47,7 @@ describe('Passkey settings', function () {
 
         await privacySettings.checkSecurityAndPasswordPageIsLoaded();
 
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         await lockAndWaitForLoginPage(driver);
 

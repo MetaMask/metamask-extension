@@ -31,7 +31,7 @@ export type RequestEthereumAccountsHooks = {
   sendMetrics: SendMetrics;
   metamaskState: Pick<
     FlattenedBackgroundStateProxy,
-    'metaMetricsId' | 'permissionHistory' | 'internalAccounts'
+    'analyticsId' | 'permissionHistory' | 'internalAccounts'
   >;
   getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
   requestPermissionsForOrigin: RequestPermissionsForOrigin;
@@ -142,7 +142,7 @@ async function requestEthereumAccountsImplementation(
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
   // we will leverage that to identify `is_first_visit` for metrics
-  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
+  if (shouldEmitDappViewedEvent(metamaskState.analyticsId)) {
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );

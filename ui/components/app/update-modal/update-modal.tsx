@@ -1,21 +1,22 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   Modal,
   ModalContent,
   ModalOverlay,
   ModalBody,
   ModalFooter,
-  Box,
   Text,
   ModalHeader,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  AlignItems,
   Display,
   FlexDirection,
-  JustifyContent,
-  BorderRadius,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -85,10 +86,9 @@ function UpdateModal() {
         />
         <ModalBody display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            borderRadius={BorderRadius.SM}
+            className="flex rounded-sm"
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
             padding={10}
           >
             <img src="/images/logo/metamask-fox.svg" width={160} height={160} />

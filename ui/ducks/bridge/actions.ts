@@ -1,7 +1,5 @@
 import {
-  BridgeBackgroundAction,
   type BridgeController,
-  BridgeUserAction,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   isCrossChain,
@@ -79,7 +77,7 @@ export {
 };
 
 const callBridgeControllerMethod = (
-  bridgeAction: BridgeUserAction | BridgeBackgroundAction,
+  bridgeAction: keyof BridgeController,
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -91,7 +89,7 @@ const callBridgeControllerMethod = (
 // Background actions
 export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+    dispatch(callBridgeControllerMethod('resetState'));
     await clearAllBridgeCacheItems();
   };
 };
@@ -108,7 +106,7 @@ export const trackUnifiedSwapBridgeEvent = <
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeBackgroundAction.TRACK_METAMETRICS_EVENT,
+        'trackUnifiedSwapBridgeEvent',
         eventName,
         propertiesFromClient,
       ),
@@ -128,13 +126,21 @@ export const updateQuoteRequestParams = (
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeUserAction.UPDATE_QUOTE_PARAMS,
+        'updateBridgeQuoteRequestParams',
         params,
         context,
         quoteRequestIndex,
         quoteRequestCount,
       ),
     );
+  };
+};
+
+export const updateBatchSellTrades = (
+  ...[quotes]: Parameters<BridgeController['updateBatchSellTrades']>
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await dispatch(callBridgeControllerMethod('updateBatchSellTrades', quotes));
   };
 };
 
@@ -261,8 +267,12 @@ export const setToToken = (newToToken: TokenPayload) => {
           fromToken.assetId,
         );
       }
-      // @ts-expect-error - GasFeeState's nested union type is causing a type mismatch
-      dispatch(setFromToken(fromTokenToUse));
+
+      await dispatch(
+        setFromToken(fromTokenToUse) as unknown as Parameters<
+          typeof dispatch
+        >[0],
+      );
     }
 
     dispatch(setToTokenAction(newToToken));

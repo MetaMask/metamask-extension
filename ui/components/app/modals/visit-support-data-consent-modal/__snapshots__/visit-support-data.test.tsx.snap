@@ -51,7 +51,7 @@ exports[`VisitSupportDataConsentModal renders the modal correctly when open 1`] 
           class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4"
+            class="gap-4 flex"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
