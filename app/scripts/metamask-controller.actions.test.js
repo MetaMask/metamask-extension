@@ -1796,9 +1796,7 @@ describe('MetaMaskController', function () {
           .mockReturnValue(false);
 
         await expect(
-          metamaskController.revealSeedWordsWithPasskey(
-            authenticationResponse,
-          ),
+          metamaskController.revealSeedWordsWithPasskey(authenticationResponse),
         ).rejects.toMatchObject({
           code: PasskeyControllerErrorCode.NotEnrolled,
         });
@@ -1816,9 +1814,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(new Error('invalid assertion'));
 
         await expect(
-          metamaskController.revealSeedWordsWithPasskey(
-            authenticationResponse,
-          ),
+          metamaskController.revealSeedWordsWithPasskey(authenticationResponse),
         ).rejects.toThrow('invalid assertion');
       });
 
@@ -1837,9 +1833,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(new Error('Incorrect encryption key'));
 
         await expect(
-          metamaskController.revealSeedWordsWithPasskey(
-            authenticationResponse,
-          ),
+          metamaskController.revealSeedWordsWithPasskey(authenticationResponse),
         ).rejects.toMatchObject({
           code: PasskeyControllerErrorCode.AuthenticationVerificationFailed,
         });
@@ -1860,11 +1854,10 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
           .mockResolvedValue(mnemonic);
 
-        const result =
-          await metamaskController.revealSeedWordsWithPasskey(
-            authenticationResponse,
-            'keyring-id',
-          );
+        const result = await metamaskController.revealSeedWordsWithPasskey(
+          authenticationResponse,
+          'keyring-id',
+        );
 
         expect(exportSeedPhraseSpy).toHaveBeenCalledWith(
           { encryptionKey: 'vault-key' },
@@ -1907,10 +1900,9 @@ describe('MetaMaskController', function () {
           .mockReturnValue(false);
 
         await expect(
-          metamaskController.exportAccountsWithPasskey(
-            authenticationResponse,
-            ['0xAddressOne'],
-          ),
+          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
+            '0xAddressOne',
+          ]),
         ).rejects.toMatchObject({
           code: PasskeyControllerErrorCode.NotEnrolled,
         });
@@ -1928,10 +1920,9 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(new Error('invalid assertion'));
 
         await expect(
-          metamaskController.exportAccountsWithPasskey(
-            authenticationResponse,
-            ['0xAddressOne'],
-          ),
+          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
+            '0xAddressOne',
+          ]),
         ).rejects.toThrow('invalid assertion');
       });
 
@@ -1950,10 +1941,9 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(new Error('Incorrect encryption key'));
 
         await expect(
-          metamaskController.exportAccountsWithPasskey(
-            authenticationResponse,
-            ['0xAddressOne'],
-          ),
+          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
+            '0xAddressOne',
+          ]),
         ).rejects.toThrow('Incorrect encryption key');
       });
 

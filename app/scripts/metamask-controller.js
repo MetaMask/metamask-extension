@@ -3417,8 +3417,7 @@ export default class MetamaskController extends EventEmitter {
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
       exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
-      revealSeedWordsWithPasskey:
-        this.revealSeedWordsWithPasskey.bind(this),
+      revealSeedWordsWithPasskey: this.revealSeedWordsWithPasskey.bind(this),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4671,10 +4670,9 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    const vaultKey =
-      await this.passkeyController.retrieveVaultKeyWithPasskey(
-        authenticationResponse,
-      );
+    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+      authenticationResponse,
+    );
 
     const mnemonic = await this.keyringController.exportSeedPhrase(
       { encryptionKey: vaultKey },
@@ -4703,10 +4701,9 @@ export default class MetamaskController extends EventEmitter {
 
     // Retrieve the passkey-wrapped vault key once. This also cryptographically
     // verifies the assertion, throwing on an invalid passkey.
-    const vaultKey =
-      await this.passkeyController.retrieveVaultKeyWithPasskey(
-        authenticationResponse,
-      );
+    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+      authenticationResponse,
+    );
 
     return Promise.all(
       addresses.map((address) =>

@@ -52,10 +52,11 @@ import {
   removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
+import { getIsSocialLoginFlow } from '../../../selectors';
 import {
-  getIsSocialLoginFlow,
-} from '../../../selectors';
-import { useIsPasskeyActive, useIsPasskeyIncompatibleInSidepanel } from '../../../hooks/usePasskeyAvailability';
+  useIsPasskeyActive,
+  useIsPasskeyIncompatibleInSidepanel,
+} from '../../../hooks/usePasskeyAvailability';
 import PasswordForm from '../password-form/password-form';
 import {
   SECURITY_AND_PASSWORD_ROUTE,
@@ -102,8 +103,10 @@ const ChangePassword = ({
   const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyActive = useIsPasskeyActive();
-  const isPasskeyIncompatibleWithSidepanel = useIsPasskeyIncompatibleInSidepanel();
-  const mustDeferPasskeyToBrowserTab = isPasskeyActive && isPasskeyIncompatibleWithSidepanel;
+  const isPasskeyIncompatibleWithSidepanel =
+    useIsPasskeyIncompatibleInSidepanel();
+  const mustDeferPasskeyToBrowserTab =
+    isPasskeyActive && isPasskeyIncompatibleWithSidepanel;
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const animationEventEmitter = useRef(new EventEmitter());
   const hasDeferredPasskeyToBrowserTabRef = useRef(false);
@@ -406,8 +409,7 @@ const ChangePassword = ({
       setIsVerifyingPasskey(true);
       try {
         const response = await runPasskeyVerificationCeremony({
-          sentryContext:
-            'Passkey authentication from change-password toggle',
+          sentryContext: 'Passkey authentication from change-password toggle',
           passkeyMethodLabel,
           t: t as (key: string, substitutions?: string[]) => string,
           showErrorToast: true,

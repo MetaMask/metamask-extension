@@ -131,13 +131,7 @@ export function PasskeyVerification({
     } finally {
       setIsVerifying(false);
     }
-  }, [
-    sentryContext,
-    passkeyMethodLabel,
-    t,
-    showErrorToast,
-    toastDurationMs,
-  ]);
+  }, [sentryContext, passkeyMethodLabel, t, showErrorToast, toastDurationMs]);
 
   useEffect(() => {
     if (!autoRunOnMount || deferToBrowserTab) {

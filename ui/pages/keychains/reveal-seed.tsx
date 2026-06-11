@@ -32,11 +32,11 @@ import {
   revealSeedWordsWithPasskey,
   scanUrlForPhishing,
 } from '../../store/actions';
+import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
 import {
-  getHDEntropyIndex,
-  getOriginOfCurrentTab,
-} from '../../selectors';
-import { useIsPasskeyActive, useIsPasskeyIncompatibleInSidepanel } from '../../hooks/usePasskeyAvailability';
+  useIsPasskeyActive,
+  useIsPasskeyIncompatibleInSidepanel,
+} from '../../hooks/usePasskeyAvailability';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import {
   PREVIOUS_ROUTE,
@@ -72,7 +72,8 @@ function RevealSeedPage() {
   const skipQuiz = locationState?.skipQuiz ?? false;
 
   const isPasskeyActive = useIsPasskeyActive();
-  const isPasskeyIncompatibleInSidepanel = useIsPasskeyIncompatibleInSidepanel();
+  const isPasskeyIncompatibleInSidepanel =
+    useIsPasskeyIncompatibleInSidepanel();
 
   // The credential step after the quiz: passkey when active, else password.
   const initialCredentialScreen =

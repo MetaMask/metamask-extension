@@ -68,7 +68,9 @@ describe('runPasskeyVerificationCeremony', () => {
   });
 
   it('returns null when the ceremony is cancelled', async () => {
-    mockStartPasskeyAuthentication.mockRejectedValueOnce(new Error('cancelled'));
+    mockStartPasskeyAuthentication.mockRejectedValueOnce(
+      new Error('cancelled'),
+    );
 
     const response = await runPasskeyVerificationCeremony({
       sentryContext: 'test ceremony',
@@ -114,7 +116,9 @@ describe('PasskeyVerification', () => {
   });
 
   it('calls onCeremonyFailed when the ceremony returns null', async () => {
-    mockStartPasskeyAuthentication.mockRejectedValueOnce(new Error('cancelled'));
+    mockStartPasskeyAuthentication.mockRejectedValueOnce(
+      new Error('cancelled'),
+    );
     const onCeremonyFailed = jest.fn();
 
     renderWithProvider(
@@ -135,9 +139,11 @@ describe('PasskeyVerification', () => {
   });
 
   it('calls onUsePassword and cancels the ceremony when use password is clicked', async () => {
-    mockStartPasskeyAuthentication.mockReturnValue(new Promise(() => {
-      // never resolves
-    }));
+    mockStartPasskeyAuthentication.mockReturnValue(
+      new Promise(() => {
+        // never resolves
+      }),
+    );
     const onUsePassword = jest.fn();
 
     const { getByTestId } = renderWithProvider(

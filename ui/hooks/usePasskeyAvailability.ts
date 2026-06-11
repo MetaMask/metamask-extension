@@ -29,9 +29,5 @@ export function useIsPasskeyActive(): boolean {
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
-  return (
-    isPasskeyRegistered &&
-    isPasskeyFeatureAvailable &&
-    !isSocialLoginFlow
-  );
+  return isPasskeyRegistered && isPasskeyFeatureAvailable && !isSocialLoginFlow;
 }

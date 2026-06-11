@@ -44,7 +44,9 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
 }));
 
 const mockUseIsPasskeyActive = jest.fn().mockReturnValue(false);
-const mockUseIsPasskeyIncompatibleInSidepanel = jest.fn().mockReturnValue(false);
+const mockUseIsPasskeyIncompatibleInSidepanel = jest
+  .fn()
+  .mockReturnValue(false);
 
 jest.mock('../../../hooks/usePasskeyAvailability', () => ({
   useIsPasskeyActive: () => mockUseIsPasskeyActive(),
@@ -577,9 +579,11 @@ describe('MultichainPrivateKeyList', () => {
     });
 
     it('falls back to the password prompt when "Use password" is clicked', async () => {
-      mockStartPasskeyAuthentication.mockReturnValue(new Promise(() => {
-        // never resolves
-      }));
+      mockStartPasskeyAuthentication.mockReturnValue(
+        new Promise(() => {
+          // never resolves
+        }),
+      );
 
       renderComponent();
 

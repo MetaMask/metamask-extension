@@ -884,9 +884,11 @@ describe('Reveal Seed Page', () => {
 
     it('falls back to the password prompt when "Use password" is clicked', async () => {
       // Keep the ceremony pending so the verifying step stays visible.
-      mockStartPasskeyAuthentication.mockReturnValue(new Promise(() => {
-        // never resolves
-      }));
+      mockStartPasskeyAuthentication.mockReturnValue(
+        new Promise(() => {
+          // never resolves
+        }),
+      );
 
       const { queryByTestId, getByText } = renderWithProvider(
         <RevealSeedPage />,

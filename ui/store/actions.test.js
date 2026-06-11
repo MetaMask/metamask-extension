@@ -982,9 +982,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.getApi.returns({
-        revealSeedWordsWithPasskey: sinon
-          .stub()
-          .rejects(new Error('error')),
+        revealSeedWordsWithPasskey: sinon.stub().rejects(new Error('error')),
       });
       setBackgroundConnection(background.getApi());
 

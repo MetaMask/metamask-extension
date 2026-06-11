@@ -1,4 +1,10 @@
-import React, { useMemo, useCallback, useState, useEffect, useContext } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useState,
+  useEffect,
+  useContext,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -33,10 +39,16 @@ import {
   exportAccounts,
   exportAccountsWithPasskey,
 } from '../../../store/actions';
-import { useIsPasskeyActive, useIsPasskeyIncompatibleInSidepanel } from '../../../hooks/usePasskeyAvailability';
+import {
+  useIsPasskeyActive,
+  useIsPasskeyIncompatibleInSidepanel,
+} from '../../../hooks/usePasskeyAvailability';
 import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
-import { createSentryError, getErrorMessage } from '../../../../shared/lib/error';
+import {
+  createSentryError,
+  getErrorMessage,
+} from '../../../../shared/lib/error';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   MetaMetricsEventCategory,
@@ -95,10 +107,13 @@ const MultichainPrivateKeyList = ({
   const [privateKeys, setPrivateKeys] = useState<Record<string, string>>({});
 
   const isPasskeyActive = useIsPasskeyActive();
-  const isPasskeyIncompatibleInSidepanel = useIsPasskeyIncompatibleInSidepanel();
+  const isPasskeyIncompatibleInSidepanel =
+    useIsPasskeyIncompatibleInSidepanel();
 
   const [screen, setScreen] = useState<string>(
-    isPasskeyActive && !isPasskeyIncompatibleInSidepanel ? VERIFY_PASSKEY_SCREEN : VERIFY_PASSWORD_SCREEN,
+    isPasskeyActive && !isPasskeyIncompatibleInSidepanel
+      ? VERIFY_PASSKEY_SCREEN
+      : VERIFY_PASSWORD_SCREEN,
   );
 
   const cleanStateVariables = useCallback(() => {
