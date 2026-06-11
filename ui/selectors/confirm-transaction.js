@@ -8,6 +8,7 @@ import {
   addEth,
 } from '../helpers/utils/confirm-tx.util';
 import {
+  getAccountTrackerControllerAccountsByChainId,
   getCurrencyRateControllerCurrencyRates,
   getCurrencyRateControllerCurrentCurrency,
 } from '../../shared/lib/selectors/assets-migration';
@@ -241,14 +242,18 @@ export function selectTransactionAvailableBalance(
 ) {
   const sender = selectTransactionSender(state, transactionId);
 
-  // Read directly from raw accountsByChainId to get the balance for the transaction's chain.
-  // getMetaMaskAccounts filters through getMetaMaskCachedBalances which only returns balances
-  // for networks enabled in the Network Manager, causing stale/zero balances on cross-chain sends.
   if (chainId && sender) {
-    const { accountsByChainId } = state.metamask;
     const checksummedSender = toChecksumHexAddress(sender);
+    // Raw accountsByChainId contains balances for all chains regardless of
+    // Network Manager enablement, preventing stale/zero balances on cross-chain sends.
+    // When assets-unify is fully enabled raw state may be empty, so fall back to
+    // the unified selector which derives balances from AssetsController.
     const chainBalance =
-      accountsByChainId?.[chainId]?.[checksummedSender]?.balance;
+      state.metamask.accountsByChainId?.[chainId]?.[checksummedSender]
+        ?.balance ??
+      getAccountTrackerControllerAccountsByChainId(state)?.[chainId]?.[
+        checksummedSender
+      ]?.balance;
     if (chainBalance) {
       return chainBalance;
     }
