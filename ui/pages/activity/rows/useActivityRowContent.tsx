@@ -187,17 +187,22 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
+      case 'perpsAddFunds':
       case 'perpsWithdraw': {
         const { fiat, token } = activity.data;
-        const fiatAmount = fiat ? -Number(fiat.amount) : undefined;
+        const fiatAmount = fiat ? Number(fiat.amount) : undefined;
+        const signedFiatAmount =
+          activity.type === 'perpsWithdraw' && fiatAmount !== undefined
+            ? -fiatAmount
+            : fiatAmount;
 
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
           subtitle: t('perpsBalance'),
           primaryAmount:
-            fiatAmount !== undefined && Number.isFinite(fiatAmount)
-              ? formatCurrencyWithMinThreshold(fiatAmount, PERPS_CURRENCY)
+            signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
+              ? formatCurrencyWithMinThreshold(signedFiatAmount, PERPS_CURRENCY)
               : undefined,
         };
       }
