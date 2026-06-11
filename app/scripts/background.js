@@ -1381,11 +1381,15 @@ function emitAppOpenedMetricEvent(environmentType) {
     return;
   }
 
-  const activeTabOrigin = controller.appStateController.state.appActiveTab?.origin;
+  const activeTabOrigin =
+    controller.appStateController.state.appActiveTab?.origin;
   const allowlist = getActiveTabDomainAllowlist(
     controller.remoteFeatureFlagController.state,
   );
-  const activeTabDomain = getActiveTabDomainForMetrics(activeTabOrigin, allowlist);
+  const activeTabDomain = getActiveTabDomainForMetrics(
+    activeTabOrigin,
+    allowlist,
+  );
 
   controller.metaMetricsController.trackEvent({
     event: MetaMetricsEventName.AppOpened,

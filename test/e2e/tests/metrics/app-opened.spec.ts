@@ -82,10 +82,7 @@ describe('App Opened metric', function () {
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
-        assert.equal(
-          events[0].properties.active_tab_domain,
-          'https://x.com',
-        );
+        assert.equal(events[0].properties.active_tab_domain, 'https://x.com');
       },
     );
   });

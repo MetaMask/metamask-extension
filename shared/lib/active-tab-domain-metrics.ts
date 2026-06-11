@@ -1,9 +1,10 @@
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { hasMinimumRequiredVersion } from './remote-feature-flag-utils';
 
 /**
  * LaunchDarkly flag key for the active-tab domain metrics allowlist.
- * The flag value must be a JSON array of hostname strings (e.g. ["x.com", "twitter.com"]).
- * Adding new domains requires a governance/privacy review before inclusion in the flag.
+ * Adding new domains requires a governance/privacy review before inclusion
+ * in the flag.
  */
 export const ACTIVE_TAB_DOMAIN_METRICS_FLAG =
   'extension-ux-active-domain-metrics';
@@ -13,30 +14,44 @@ type ActiveTabDomainMetricsFlagSource = Pick<
   'remoteFeatureFlags'
 >;
 
-const isNonEmptyString = (value: unknown): value is string =>
-  typeof value === 'string' && value.length > 0;
+/** Expected shape of the LaunchDarkly flag value. */
+type ActiveTabDomainFlag = {
+  value: unknown[];
+  minimumVersion: string;
+};
+
+const isActiveTabDomainFlag = (v: unknown): v is ActiveTabDomainFlag =>
+  typeof v === 'object' &&
+  v !== null &&
+  'value' in v &&
+  Array.isArray((v as { value: unknown }).value) &&
+  'minimumVersion' in v &&
+  typeof (v as { minimumVersion: unknown }).minimumVersion === 'string';
+
+const isNonEmptyString = (v: unknown): v is string =>
+  typeof v === 'string' && v.length > 0;
 
 /**
  * Returns the domain allowlist sourced from the remote feature flag.
- * Falls back to the hardcoded {@link ACTIVE_TAB_DOMAIN_ALLOWLIST} when the
- * flag is absent, not an array, or contains no valid non-empty strings.
+ * Expected flag shape: `{ value: string[], minimumVersion: string }`
  *
  * @param source - Remote feature flag controller state slice.
  */
 export function getActiveTabDomainAllowlist(
   source?: ActiveTabDomainMetricsFlagSource,
-): readonly string[] {
-  const flag =
-    source?.remoteFeatureFlags?.[ACTIVE_TAB_DOMAIN_METRICS_FLAG];
+): string[] {
+  const flag = source?.remoteFeatureFlags?.[ACTIVE_TAB_DOMAIN_METRICS_FLAG];
 
-  if (Array.isArray(flag)) {
-    const validated = flag.filter(isNonEmptyString);
-    if (validated.length > 0) {
-      return validated;
-    }
+  if (!isActiveTabDomainFlag(flag)) {
+    return [];
   }
 
-  return [];
+  if (!hasMinimumRequiredVersion(flag.minimumVersion)) {
+    return [];
+  }
+
+  const validated = flag.value.filter(isNonEmptyString);
+  return validated;
 }
 
 /**
@@ -44,17 +59,20 @@ export function getActiveTabDomainAllowlist(
  * undefined otherwise.
  *
  * @param origin - The raw origin string from the active browser tab.
- * @param allowlist - The domain allowlist to check against.
+ * @param allowlist - Domain hostnames to check against.
  */
 export function getActiveTabDomainForMetrics(
   origin: string | undefined,
   allowlist: string[],
 ): string | undefined {
-  if (!origin) {
+  if (!origin || allowlist.length === 0) {
     return undefined;
   }
   try {
-    const { hostname } = new URL(origin);
+    const { hostname, protocol } = new URL(origin);
+    if (protocol !== 'https:') {
+      return undefined;
+    }
     return allowlist.some(
       (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
     )
