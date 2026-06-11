@@ -1,7 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
 
-const MAX_VISIBLE_SLIDES = 8;
-
 export default class CarouselPage {
   private readonly carouselContainer = '[data-testid="carousel-container"]';
 
@@ -40,50 +38,10 @@ export default class CarouselPage {
     await this.driver.waitForSelector(this.currentSlideDescription);
   }
 
-  async checkRemainingSlideIsNotDismissable(): Promise<void> {
-    console.log('Check remaining slide is not dismissable');
+  async checkPageIsLoaded(): Promise<void> {
+    console.log('Check carousel page is loaded');
+    await this.driver.waitForSelector(this.carouselContainer);
     await this.driver.waitForSelector(this.currentSlide);
-    await this.driver.assertElementNotPresent(this.currentSlideCloseButton, {
-      findElementGuard: this.currentSlide,
-    });
-  }
-
-  async dismissAllSlides(): Promise<{ allDismissed: boolean }> {
-    console.log('Dismiss all dismissable carousel slides');
-
-    if (!(await this.isCarouselPresent())) {
-      return { allDismissed: true };
-    }
-
-    await this.waitForCarouselLoaded();
-
-    for (let attempts = 0; attempts < MAX_VISIBLE_SLIDES * 2; attempts++) {
-      if (!(await this.isCarouselPresent())) {
-        return { allDismissed: true };
-      }
-
-      const hasCloseButton = await this.driver.isElementPresentAndVisible(
-        this.currentSlideCloseButton,
-      );
-
-      if (!hasCloseButton) {
-        break;
-      }
-
-      const previousSlideId = await this.getCurrentSlideTestId();
-      await this.dismissCurrentSlide();
-
-      if (!(await this.isCarouselPresent())) {
-        return { allDismissed: true };
-      }
-
-      await this.driver.wait(async () => {
-        const currentSlideId = await this.getCurrentSlideTestId();
-        return currentSlideId !== previousSlideId;
-      }, 5000);
-    }
-
-    return { allDismissed: !(await this.isCarouselPresent()) };
   }
 
   async dismissCurrentSlide(): Promise<void> {
@@ -94,32 +52,37 @@ export default class CarouselPage {
     );
   }
 
-  private async getCurrentSlideTestId(): Promise<string | null> {
-    try {
-      const currentSlide = await this.driver.findElement(this.currentSlide);
-      return currentSlide.getAttribute('data-testid');
-    } catch {
-      return null;
-    }
-  }
+  async dismissSlides(maxToDismiss: number): Promise<void> {
+    console.log(`Dismiss up to ${maxToDismiss} carousel slides`);
 
-  async getSlideCount(): Promise<number> {
-    const slides = await this.driver.findElements(this.carouselSlide);
-    return slides.length;
+    for (let i = 0; i < maxToDismiss; i++) {
+      if (!(await this.isCarouselPresent())) {
+        return;
+      }
+
+      const hasCloseButton = await this.driver.isElementPresentAndVisible(
+        this.currentSlideCloseButton,
+      );
+
+      if (!hasCloseButton) {
+        return;
+      }
+
+      await this.dismissCurrentSlide();
+
+      if (!(await this.isCarouselPresent())) {
+        return;
+      }
+
+      const remaining = maxToDismiss - (i + 1);
+      if (remaining > 0) {
+        await this.driver.waitForSelector(this.carouselSlide);
+        await this.driver.waitForSelector(this.currentSlideCloseButton);
+      }
+    }
   }
 
   async isCarouselPresent(): Promise<boolean> {
     return this.driver.isElementPresentAndVisible(this.carouselContainer);
-  }
-
-  async waitForCarouselLoaded(): Promise<void> {
-    console.log('Wait for carousel to load');
-    await this.driver.waitForSelector(this.carouselContainer);
-    await this.driver.waitForSelector(this.currentSlide);
-
-    const slideCount = await this.getSlideCount();
-    if (slideCount === 0) {
-      throw new Error('Carousel should render at least one slide');
-    }
   }
 }
