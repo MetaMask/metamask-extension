@@ -3,7 +3,7 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { PPOMController } from '@metamask/ppom-validator';
+import { TransactionPayController } from '@metamask/transaction-pay-controller';
 import { Wallet } from '@metamask/wallet';
 
 import { buildControllerInitRequestMock } from './test/utils';
@@ -14,11 +14,13 @@ type InitFunctions = Parameters<
   typeof initMessengerClients
 >[0]['initFunctions'];
 
-const CONTROLLER_NAME_MOCK = 'PPOMController';
-const CONTROLLER_NAME_2_MOCK = 'TransactionPayController';
+const CONTROLLER_NAME_MOCK = 'TransactionPayController';
+const CONTROLLER_NAME_2_MOCK = 'ClientController';
 
 function buildControllerMock(name?: string) {
-  return { name: name ?? CONTROLLER_NAME_MOCK } as unknown as PPOMController;
+  return {
+    name: name ?? CONTROLLER_NAME_MOCK,
+  } as unknown as TransactionPayController;
 }
 
 function buildControllerInitResultMock({
