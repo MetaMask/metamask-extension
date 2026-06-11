@@ -441,7 +441,7 @@ inquire('long');
 
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
-    ) as WebpackPluginInstance;
+    ) as WebpackPluginInstance & ManifestPlugin<boolean>;
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, []);
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
@@ -461,44 +461,15 @@ inquire('long');
       BUNDLE_SIZE_SUMMARY_FILE,
     );
     assert.strictEqual(manifestPlugin.options.stats.debug, true);
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint({
-        name: 'home',
-        sourcePaths: [],
-        ownerPath: resolve(__dirname, '../../../app/html/ui/home.html'),
-      }),
-      'ui',
+    assert.deepStrictEqual(manifestPlugin.options.html, [
+      { directory: join('html', 'ui'), category: 'ui' },
+      { directory: join('html', 'background'), category: 'background' },
+    ]);
+
+    const htmlBundlerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'HtmlBundlerPlugin',
     );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint({
-        name: 'offscreen',
-        sourcePaths: [],
-        ownerPath: resolve(__dirname, '../../../app/html/app/offscreen.html'),
-      }),
-      'other',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint({
-        name: 'offscreen.1',
-        sourcePaths: [],
-        ownerPath: resolve(__dirname, '../../../app/html/app/offscreen.html'),
-      }),
-      'other',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint({
-        name: 'service-worker.ts',
-        sourcePaths: [],
-      }),
-      null,
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint({
-        name: 'unknown',
-        sourcePaths: [],
-      }),
-      null,
-    );
+    assert(htmlBundlerPlugin, 'HtmlBundlerPlugin should be present');
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',

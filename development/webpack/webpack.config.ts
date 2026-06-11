@@ -3,7 +3,7 @@
  */
 
 import { existsSync, readFileSync } from 'node:fs';
-import { join, sep } from 'node:path';
+import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
@@ -35,10 +35,6 @@ import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
-import type {
-  BundleSizeCategory,
-  BundleSizeEntrypoint,
-} from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
@@ -65,21 +61,6 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
-const bundleSizeUiEntrypointPath = `${join(context, 'html', 'ui')}${sep}`;
-const bundleSizeOtherEntrypointPath = `${join(context, 'html', 'app')}${sep}`;
-const classifyBundleSizeEntrypoint = (
-  entrypoint: BundleSizeEntrypoint,
-): BundleSizeCategory | null => {
-  if (entrypoint.ownerPath?.startsWith(bundleSizeUiEntrypointPath)) {
-    return 'ui';
-  }
-
-  if (entrypoint.ownerPath?.startsWith(bundleSizeOtherEntrypointPath)) {
-    return 'other';
-  }
-
-  return null;
-};
 
 // #region cache
 const cache = args.cache
@@ -116,6 +97,10 @@ const cache = args.cache
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 
 const manifestPlugin = new ManifestPlugin({
+  html: [
+    { directory: join('html', 'ui'), category: 'ui' },
+    { directory: join('html', 'background'), category: 'background' },
+  ],
   web_accessible_resources: webAccessibleResources,
   manifest_version: MANIFEST_VERSION,
   description: commitHash
@@ -150,7 +135,6 @@ const manifestPlugin = new ManifestPlugin({
     ? {
         outFile: BUNDLE_SIZE_SUMMARY_FILE,
         debug: true,
-        classifyEntrypoint: classifyBundleSizeEntrypoint,
       }
     : false,
 });

@@ -28,8 +28,7 @@ import {
 import { schema } from './schema';
 import type {
   BundleSizeCategory,
-  BundleSizeEntrypoint,
-  BundleSizeStatsOptions,
+  HtmlEntrypointOptions,
   ManifestPluginOptions,
 } from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
@@ -50,14 +49,19 @@ type CollectedBundleSizeStats = {
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
-const HTML_ENTRYPOINT_DIRECTORIES = [
-  path.join('html', 'ui'),
-  path.join('html', 'background'),
-] as const;
+const DEFAULT_HTML_ENTRYPOINTS = [
+  { directory: path.join('html', 'ui'), category: 'ui' },
+  { directory: path.join('html', 'background'), category: 'background' },
+] as const satisfies readonly HtmlEntrypointOptions[];
 const HTML_SCRIPT_SRC_PATTERN =
   /<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/giu;
-const HTML_INCLUDE_PATTERN = /<%~?\s*include\(\s*["']([^"']+)["']/gu;
-const NUMERIC_ENTRYPOINT_SUFFIX_PATTERN = /^(?<baseName>.+)\.\d+$/u;
+const ABSOLUTE_OR_PROTOCOL_RELATIVE_URL_PATTERN =
+  /^(?:[a-z][a-z0-9+.-]*:|\/\/)/iu;
+
+type ChunkGroupWithFiles = {
+  getFiles?: () => string[];
+  getChildren?: () => Iterable<ChunkGroupWithFiles>;
+};
 
 function isJavaScriptAsset(assetName: string): boolean {
   return (
@@ -99,8 +103,37 @@ function addToSetMap<TKey, TValue>(
   map.set(key, values);
 }
 
-function isLocalScriptReference(scriptPath: string): boolean {
-  return scriptPath.startsWith('.') || scriptPath.startsWith('/');
+function getLocalHtmlScriptAssetName(
+  scriptPath: string,
+  htmlAssetName: string,
+): string | undefined {
+  if (ABSOLUTE_OR_PROTOCOL_RELATIVE_URL_PATTERN.test(scriptPath)) {
+    return undefined;
+  }
+
+  const assetPath = scriptPath.split(/[?#]/u, 1)[0];
+  if (!assetPath) {
+    return undefined;
+  }
+
+  if (assetPath.startsWith('/')) {
+    return assetPath.slice(1);
+  }
+
+  const htmlDirectory = path.posix.dirname(htmlAssetName);
+  const normalizedPath = path.posix.normalize(
+    path.posix.join(htmlDirectory, assetPath),
+  );
+
+  if (normalizedPath.startsWith('../')) {
+    return undefined;
+  }
+
+  return normalizedPath;
+}
+
+function getChunkGroupFiles(chunkGroup: ChunkGroupWithFiles): Set<string> {
+  return new Set(chunkGroup.getFiles?.() ?? []);
 }
 
 /**
@@ -129,18 +162,13 @@ export class ManifestPlugin<Z extends boolean> {
   private bundleSizeCategories: Map<string, Set<BundleSizeCategory>> =
     new Map();
 
-  private bundleSizeSourcePaths: Map<string, Set<string>> = new Map();
+  private bundleSizeInitialFiles: Map<string, Set<string>> = new Map();
 
-  private bundleSizeOwnerPaths: Map<string, Set<string>> = new Map();
-
-  private bundleSizeOwnerCategories: Map<string, Set<BundleSizeCategory>> =
-    new Map();
-
-  private htmlScriptSourcePaths: Map<string, Set<string>> = new Map();
-
-  private htmlScriptOwnerPaths: Map<string, Set<string>> = new Map();
+  private bundleSizeAsyncFiles: Map<string, Set<string>> = new Map();
 
   private backgroundHtmlFiles: Set<string> = new Set();
+
+  private htmlEntrypointNames: Set<string> = new Set();
 
   /**
    * Returns `true` if the given entrypoint can be split into chunks.
@@ -228,91 +256,8 @@ export class ManifestPlugin<Z extends boolean> {
     return compilation.getAsset(zipAssetPath)!.source.size();
   }
 
-  private getHtmlScriptEntrypointName(entrypointName: string) {
-    if (this.htmlScriptOwnerPaths.has(entrypointName)) {
-      return entrypointName;
-    }
-
-    const baseName = entrypointName.match(NUMERIC_ENTRYPOINT_SUFFIX_PATTERN)
-      ?.groups?.baseName;
-    if (baseName && this.htmlScriptOwnerPaths.has(baseName)) {
-      return baseName;
-    }
-
-    return undefined;
-  }
-
-  private getBundleSizeEntrypointInfo(
-    name: string,
-    ownerPath?: string,
-  ): BundleSizeEntrypoint {
-    const sourcePaths = new Set(this.bundleSizeSourcePaths.get(name));
-    const htmlScriptEntrypointName = this.getHtmlScriptEntrypointName(name);
-
-    if (htmlScriptEntrypointName) {
-      for (const sourcePath of this.htmlScriptSourcePaths.get(
-        htmlScriptEntrypointName,
-      ) ?? []) {
-        sourcePaths.add(sourcePath);
-      }
-    }
-
-    return {
-      name,
-      sourcePaths: [...sourcePaths],
-      ...(ownerPath ? { ownerPath } : {}),
-    };
-  }
-
-  private getBundleSizeCategories(
-    statsOptions: BundleSizeStatsOptions,
-    name: string,
-  ): Set<BundleSizeCategory> {
-    const categories = new Set(this.bundleSizeCategories.get(name));
-
-    if (categories.size > 0) {
-      return categories;
-    }
-
-    const ownerPaths = new Set(this.bundleSizeOwnerPaths.get(name));
-    const htmlScriptEntrypointName = this.getHtmlScriptEntrypointName(name);
-
-    if (htmlScriptEntrypointName) {
-      for (const ownerPath of this.htmlScriptOwnerPaths.get(
-        htmlScriptEntrypointName,
-      ) ?? []) {
-        ownerPaths.add(ownerPath);
-      }
-    }
-
-    if (ownerPaths.size === 0) {
-      const category = statsOptions.classifyEntrypoint(
-        this.getBundleSizeEntrypointInfo(name),
-      );
-      if (category) {
-        categories.add(category);
-      }
-      return categories;
-    }
-
-    for (const ownerPath of ownerPaths) {
-      const ownerCategories = this.bundleSizeOwnerCategories.get(ownerPath);
-      if (ownerCategories) {
-        for (const category of ownerCategories) {
-          categories.add(category);
-        }
-        continue;
-      }
-
-      const category = statsOptions.classifyEntrypoint(
-        this.getBundleSizeEntrypointInfo(name, ownerPath),
-      );
-      if (category) {
-        categories.add(category);
-      }
-    }
-
-    return categories;
+  private getBundleSizeCategories(name: string): Set<BundleSizeCategory> {
+    return new Set(this.bundleSizeCategories.get(name));
   }
 
   /**
@@ -337,16 +282,29 @@ export class ManifestPlugin<Z extends boolean> {
       | undefined = statsOptions.debug ? {} : undefined;
 
     for (const [name, entry] of compilation.entrypoints) {
-      const categories = this.getBundleSizeCategories(statsOptions, name);
+      const categories = this.getBundleSizeCategories(name);
 
       if (categories.size === 0) {
         continue;
       }
 
-      const initialFiles = getAssetStats(compilation, entry.getFiles());
-      const asyncFiles = [
-        ...entry.getEntrypointChunk().getAllAsyncChunks(),
-      ].flatMap((chunk) => getAssetStats(compilation, chunk.files));
+      const initialFileNames = new Set(entry.getFiles());
+      for (const file of this.bundleSizeInitialFiles.get(name) ?? []) {
+        initialFileNames.add(file);
+      }
+
+      const asyncFileNames = new Set<string>();
+      for (const chunk of entry.getEntrypointChunk().getAllAsyncChunks()) {
+        for (const file of chunk.files) {
+          asyncFileNames.add(file);
+        }
+      }
+      for (const file of this.bundleSizeAsyncFiles.get(name) ?? []) {
+        asyncFileNames.add(file);
+      }
+
+      const initialFiles = getAssetStats(compilation, initialFileNames);
+      const asyncFiles = getAssetStats(compilation, asyncFileNames);
 
       if (debugEntrypoints) {
         debugEntrypoints[name] = {
@@ -730,51 +688,107 @@ export class ManifestPlugin<Z extends boolean> {
 
   private resetBundleSizeEntrypointMetadata(): void {
     this.bundleSizeCategories = new Map();
-    this.bundleSizeSourcePaths = new Map();
-    this.bundleSizeOwnerPaths = new Map();
-    this.bundleSizeOwnerCategories = new Map();
-    this.htmlScriptSourcePaths = new Map();
-    this.htmlScriptOwnerPaths = new Map();
+    this.bundleSizeInitialFiles = new Map();
+    this.bundleSizeAsyncFiles = new Map();
     this.backgroundHtmlFiles = new Set();
+    this.htmlEntrypointNames = new Set();
   }
 
-  private collectHtmlOwnedScripts({
-    context,
-    filePath,
-    ownerPath,
-    visitedFiles = new Set<string>(),
-  }: {
-    context: string;
-    filePath: string;
-    ownerPath: string;
-    visitedFiles?: Set<string>;
-  }): void {
-    if (visitedFiles.has(filePath)) {
-      return;
+  private resetCollectedBundleSizeEntrypointFiles(): void {
+    this.bundleSizeInitialFiles = new Map();
+    this.bundleSizeAsyncFiles = new Map();
+  }
+
+  private getHtmlEntrypoints(): readonly HtmlEntrypointOptions[] {
+    return this.options.html ?? DEFAULT_HTML_ENTRYPOINTS;
+  }
+
+  private getCompilationChunkGroups(
+    compilation: Compilation,
+  ): Set<ChunkGroupWithFiles> {
+    const chunkGroups = new Set<ChunkGroupWithFiles>();
+    const { namedChunkGroups } = compilation as Compilation & {
+      namedChunkGroups?: Map<string, unknown>;
+    };
+
+    for (const entrypoint of compilation.entrypoints.values()) {
+      chunkGroups.add(entrypoint as unknown as ChunkGroupWithFiles);
     }
-    visitedFiles.add(filePath);
-    this.watchedFiles.push(filePath);
 
-    const html = readFileSync(filePath, 'utf8');
+    for (const chunkGroup of namedChunkGroups?.values() ?? []) {
+      chunkGroups.add(chunkGroup as unknown as ChunkGroupWithFiles);
+    }
 
-    for (const [, scriptPath] of html.matchAll(HTML_SCRIPT_SRC_PATTERN)) {
-      if (!isLocalScriptReference(scriptPath)) {
+    return chunkGroups;
+  }
+
+  private collectAsyncBundleSizeFilesForChunkGroupFile(
+    compilation: Compilation,
+    entrypointName: string,
+    fileName: string,
+  ): void {
+    for (const chunkGroup of this.getCompilationChunkGroups(compilation)) {
+      if (!getChunkGroupFiles(chunkGroup).has(fileName)) {
         continue;
       }
 
-      const sourcePath = path.resolve(path.dirname(filePath), scriptPath);
-      const entrypointName = path.parse(sourcePath).name;
-      addToSetMap(this.htmlScriptSourcePaths, entrypointName, sourcePath);
-      addToSetMap(this.htmlScriptOwnerPaths, entrypointName, ownerPath);
+      for (const childChunkGroup of chunkGroup.getChildren?.() ?? []) {
+        for (const childFile of getChunkGroupFiles(childChunkGroup)) {
+          if (isJavaScriptAsset(childFile)) {
+            addToSetMap(this.bundleSizeAsyncFiles, entrypointName, childFile);
+          }
+        }
+      }
     }
+  }
 
-    for (const [, includePath] of html.matchAll(HTML_INCLUDE_PATTERN)) {
-      this.collectHtmlOwnedScripts({
-        context,
-        filePath: path.resolve(context, includePath),
-        ownerPath,
-        visitedFiles,
-      });
+  private collectHtmlBundleSizeEntrypointFiles(compilation: Compilation): void {
+    this.resetCollectedBundleSizeEntrypointFiles();
+
+    for (const entrypointName of this.htmlEntrypointNames) {
+      const entrypoint = compilation.entrypoints.get(entrypointName);
+      if (!entrypoint) {
+        continue;
+      }
+
+      const htmlAssetNames = new Set(
+        entrypoint.getFiles().filter((file) => file.endsWith('.html')),
+      );
+      htmlAssetNames.add(`${entrypointName}.html`);
+
+      for (const htmlAssetName of htmlAssetNames) {
+        const htmlAsset = compilation.getAsset(htmlAssetName);
+        if (!htmlAsset) {
+          continue;
+        }
+
+        const html = htmlAsset.source.source().toString();
+        for (const [, scriptPath] of html.matchAll(HTML_SCRIPT_SRC_PATTERN)) {
+          const scriptAssetName = getLocalHtmlScriptAssetName(
+            scriptPath,
+            htmlAssetName,
+          );
+
+          if (
+            !scriptAssetName ||
+            !isJavaScriptAsset(scriptAssetName) ||
+            !compilation.getAsset(scriptAssetName)
+          ) {
+            continue;
+          }
+
+          addToSetMap(
+            this.bundleSizeInitialFiles,
+            entrypointName,
+            scriptAssetName,
+          );
+          this.collectAsyncBundleSizeFilesForChunkGroupFile(
+            compilation,
+            entrypointName,
+            scriptAssetName,
+          );
+        }
+      }
     }
   }
 
@@ -798,7 +812,6 @@ export class ManifestPlugin<Z extends boolean> {
     this.addedScripts.add(filename);
     this.selfContainedScripts.add(filename);
     const filePath = path.resolve(compiler.context, filename);
-    addToSetMap(this.bundleSizeSourcePaths, filename, filePath);
     entries[filename] = {
       import: [filePath],
       chunkLoading: false,
@@ -812,27 +825,20 @@ export class ManifestPlugin<Z extends boolean> {
     entries,
     filename,
     directory,
+    category,
     opts,
   }: {
     compiler: Compiler;
     entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
     directory: string;
+    category: BundleSizeCategory;
     opts?: EntryDescriptionNormalized;
   }) => {
     const parsedFileName = path.parse(filename).name;
     const filePath = path.join(compiler.context, directory, filename);
-    addToSetMap(this.bundleSizeSourcePaths, parsedFileName, filePath);
-    addToSetMap(this.bundleSizeOwnerPaths, parsedFileName, filePath);
-    if (this.backgroundHtmlFiles.has(filename)) {
-      addToSetMap(this.bundleSizeCategories, parsedFileName, 'background');
-      addToSetMap(this.bundleSizeOwnerCategories, filePath, 'background');
-    }
-    this.collectHtmlOwnedScripts({
-      context: compiler.context,
-      filePath,
-      ownerPath: filePath,
-    });
+    addToSetMap(this.bundleSizeCategories, parsedFileName, category);
+    this.htmlEntrypointNames.add(parsedFileName);
     entries[parsedFileName] = { import: [filePath], ...opts };
   };
 
@@ -896,7 +902,7 @@ export class ManifestPlugin<Z extends boolean> {
       }
     }
 
-    for (const directory of HTML_ENTRYPOINT_DIRECTORIES) {
+    for (const { directory, category } of this.getHtmlEntrypoints()) {
       let htmlFiles: string[] = [];
       try {
         htmlFiles = readdirSync(path.join(compiler.context, directory));
@@ -922,7 +928,7 @@ export class ManifestPlugin<Z extends boolean> {
           ) {
             continue;
           }
-          this.addHtml({ compiler, entries, directory, filename });
+          this.addHtml({ compiler, entries, directory, filename, category });
         }
       }
     }
@@ -1025,6 +1031,7 @@ export class ManifestPlugin<Z extends boolean> {
         tapOptions,
         async (assets: Assets) => {
           this.resolveEntrypoints(compilation);
+          this.collectHtmlBundleSizeEntrypointFiles(compilation);
           const bundleSizeStats = this.collectBundleSizeStats(compilation);
           await this.zipAndMoveAssets(compilation, assets, options);
           this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
@@ -1034,6 +1041,7 @@ export class ManifestPlugin<Z extends boolean> {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
         this.resolveEntrypoints(compilation);
+        this.collectHtmlBundleSizeEntrypointFiles(compilation);
         const bundleSizeStats = this.collectBundleSizeStats(compilation);
         this.moveAssets(compilation, assets, options);
         this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);

@@ -10,10 +10,7 @@ import {
 } from '../utils/plugins/ManifestPlugin/stats';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip';
-import type {
-  BundleSizeCategory,
-  ZipOptions,
-} from '../utils/plugins/ManifestPlugin/types';
+import type { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import {
   DEFAULT_ZIP_MTIME,
   getDefaultZipMtime,
@@ -474,10 +471,6 @@ describe('ManifestPlugin', () => {
       }
     });
 
-    const statsFixtureContext = join(
-      __dirname,
-      'fixtures/ManifestPlugin/empty',
-    );
     const entrypointsStatsFixtureContext = join(
       __dirname,
       'fixtures/ManifestPlugin/entrypoints',
@@ -490,17 +483,6 @@ describe('ManifestPlugin', () => {
       '[browser]',
       'chrome',
     );
-    const statsEntrypointCategories = {
-      'service-worker.ts': 'background',
-      home: 'ui',
-      offscreen: 'other',
-      'scripts/contentscript.js': 'contentScripts',
-      'scripts/inpage.js': 'contentScripts',
-    } as const;
-    const classifyStatsEntrypoint = ({ name }: { name: string }) =>
-      statsEntrypointCategories[
-        name as keyof typeof statsEntrypointCategories
-      ] ?? null;
     const defaultStatsAssets = {
       'runtime.js': 100,
       'home.js': 200,
@@ -528,8 +510,13 @@ describe('ManifestPlugin', () => {
       initialFiles: string[],
       asyncFiles: string[] = [],
     ) {
+      const asyncChunkGroup = {
+        getFiles: () => asyncFiles,
+      };
       return {
         getFiles: () => initialFiles,
+        getChildren: () =>
+          asyncFiles.length ? new Set([asyncChunkGroup]) : new Set(),
         getEntrypointChunk: () => ({
           getAllAsyncChunks: () =>
             new Set(asyncFiles.length ? [{ files: new Set(asyncFiles) }] : []),
@@ -542,7 +529,7 @@ describe('ManifestPlugin', () => {
         ['runtime.js', 'home.js', 'shared.js', 'home.html', 'home.css'],
         ['home-async.js', 'home.css'],
       ),
-      'service-worker.ts': createMockEntrypoint(
+      'service-worker.js': createMockEntrypoint(
         ['service-worker.js', 'shared.js'],
         ['background.js'],
       ),
@@ -566,9 +553,8 @@ describe('ManifestPlugin', () => {
       zip = false,
       debug = false,
       stats = true,
-      context = statsFixtureContext,
+      context = entrypointsStatsFixtureContext,
       manifestVersion = 3,
-      classifyEntrypoint = classifyStatsEntrypoint,
     }: {
       entrypoints?: Record<string, ReturnType<typeof createMockEntrypoint>>;
       assets?: Record<string, number | string | Buffer>;
@@ -577,10 +563,6 @@ describe('ManifestPlugin', () => {
       stats?: boolean;
       context?: string;
       manifestVersion?: 2 | 3;
-      classifyEntrypoint?: (entrypoint: {
-        name: string;
-        ownerPath?: string;
-      }) => BundleSizeCategory | null;
     } = {}) {
       const files = Object.keys(assets);
       const { compiler, compilation, promise } = mockWebpack(
@@ -602,12 +584,15 @@ describe('ManifestPlugin', () => {
         versionName: '1.0.0',
         description: null,
         buildType: 'main',
+        html: [
+          { directory: join('html', 'ui'), category: 'ui' },
+          { directory: join('html', 'background'), category: 'background' },
+        ],
         ...getZipOptions(zip),
         ...(stats
           ? {
               stats: {
                 outFile: BUNDLE_SIZE_SUMMARY_FILE,
-                classifyEntrypoint,
                 ...(debug ? { debug: true } : {}),
               },
             }
@@ -627,11 +612,11 @@ describe('ManifestPlugin', () => {
         chromeSummaryAssetPath,
       );
       assert.deepStrictEqual(summary, {
-        background: 650,
-        ui: 550,
-        common: 150,
-        other: 140,
-        contentScripts: 900,
+        background: 790,
+        ui: 450,
+        common: 250,
+        other: 0,
+        contentScripts: 400,
         zip: compilation.assets['chrome/extension.zip'].size(),
         timestamp: summary.timestamp,
       });
@@ -647,7 +632,7 @@ describe('ManifestPlugin', () => {
         assets: debugStatsAssets,
         entrypoints: {
           home: createMockEntrypoint(['runtime.js', 'home.js', 'home.css']),
-          'service-worker.ts': createMockEntrypoint(
+          'service-worker.js': createMockEntrypoint(
             ['service-worker.js', 'shared.js'],
             ['background.js'],
           ),
@@ -668,7 +653,7 @@ describe('ManifestPlugin', () => {
             ],
             asyncFiles: [],
           },
-          'service-worker.ts': {
+          'service-worker.js': {
             categories: ['background'],
             initialFiles: [
               { name: 'service-worker.js', size: 300 },
@@ -680,25 +665,15 @@ describe('ManifestPlugin', () => {
       });
     });
 
-    it('classifies manifest and HTML-owned entrypoints before config fallback', async () => {
-      const classifyByOwnerPath = ({ ownerPath }: { ownerPath?: string }) => {
-        if (ownerPath?.includes(join('html', 'ui'))) {
-          return 'ui';
-        }
-        if (ownerPath?.includes(join('html', 'app'))) {
-          return 'other';
-        }
-        return null;
-      };
+    it('classifies manifest and HTML entrypoints internally', async () => {
       const compilation = await buildStatsAssets({
         context: entrypointsStatsFixtureContext,
         assets: {
           'service-worker.js': 10,
           'scripts/contentscript.js': 20,
           'home.js': 30,
-          'ui.js': 40,
           'offscreen.js': 50,
-          'usb-permissions.js': 60,
+          'trezor-usb-permissions.js': 60,
         },
         entrypoints: {
           'service-worker.js': createMockEntrypoint(['service-worker.js']),
@@ -706,11 +681,11 @@ describe('ManifestPlugin', () => {
             'scripts/contentscript.js',
           ]),
           home: createMockEntrypoint(['home.js']),
-          ui: createMockEntrypoint(['ui.js']),
-          'offscreen.1': createMockEntrypoint(['offscreen.js']),
-          'usb-permissions': createMockEntrypoint(['usb-permissions.js']),
+          offscreen: createMockEntrypoint(['offscreen.js']),
+          'trezor-usb-permissions': createMockEntrypoint([
+            'trezor-usb-permissions.js',
+          ]),
         },
-        classifyEntrypoint: classifyByOwnerPath,
       });
 
       const summary = readJsonAsset<BundleSizeSummary>(
@@ -718,12 +693,61 @@ describe('ManifestPlugin', () => {
         chromeSummaryAssetPath,
       );
       assert.deepStrictEqual(summary, {
-        background: 10,
-        ui: 70,
+        background: 120,
+        ui: 30,
         common: 0,
-        other: 110,
+        other: 0,
         contentScripts: 20,
         timestamp: summary.timestamp,
+      });
+    });
+
+    it('counts HtmlBundler-injected script files for HTML entrypoints', async () => {
+      const compilation = await buildStatsAssets({
+        context: entrypointsStatsFixtureContext,
+        assets: {
+          'runtime.js': 10,
+          'offscreen.js': 20,
+          'offscreen-extra.js': 30,
+          'offscreen-async.js': 40,
+          'offscreen.html':
+            '<html><script src="offscreen.js"></script><script src="offscreen-extra.js"></script></html>',
+          'home.js': 50,
+        },
+        entrypoints: {
+          offscreen: createMockEntrypoint(
+            ['runtime.js', 'offscreen.js', 'offscreen.html'],
+            ['offscreen-async.js'],
+          ),
+          home: createMockEntrypoint(['home.js']),
+        },
+        debug: true,
+      });
+
+      const summary = readJsonAsset<BundleSizeSummary>(
+        compilation,
+        chromeSummaryAssetPath,
+      );
+      assert.deepStrictEqual(summary, {
+        background: 100,
+        ui: 50,
+        common: 0,
+        other: 0,
+        contentScripts: 0,
+        timestamp: summary.timestamp,
+      });
+
+      const debugArtifact = readJsonAsset<{
+        entrypoints: Record<string, unknown>;
+      }>(compilation, chromeDebugAssetPath);
+      assert.deepStrictEqual(debugArtifact.entrypoints.offscreen, {
+        categories: ['background'],
+        initialFiles: [
+          { name: 'runtime.js', size: 10 },
+          { name: 'offscreen.js', size: 20 },
+          { name: 'offscreen-extra.js', size: 30 },
+        ],
+        asyncFiles: [{ name: 'offscreen-async.js', size: 40 }],
       });
     });
 
@@ -734,14 +758,11 @@ describe('ManifestPlugin', () => {
         assets: {
           'background-page.js': 10,
           'background-script.js': 20,
-          'background-loader.js': 40,
         },
         entrypoints: {
           background: createMockEntrypoint(['background-page.js']),
           'background.js': createMockEntrypoint(['background-script.js']),
-          'background.1': createMockEntrypoint(['background-loader.js']),
         },
-        classifyEntrypoint: () => null,
       });
 
       const summary = readJsonAsset<BundleSizeSummary>(
@@ -749,7 +770,7 @@ describe('ManifestPlugin', () => {
         chromeSummaryAssetPath,
       );
       assert.deepStrictEqual(summary, {
-        background: 70,
+        background: 30,
         ui: 0,
         common: 0,
         other: 0,
