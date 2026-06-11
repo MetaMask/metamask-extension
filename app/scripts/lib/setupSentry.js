@@ -10,8 +10,8 @@ import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
 import {
-  getMetaMetricsState,
-  getMetaMetricsStateFromAppState,
+  getAnalyticsState,
+  getAnalyticsStateFromAppState,
   getState,
 } from './sentry-get-state';
 import { makeTransport } from './sentry-make-transport';
@@ -109,7 +109,7 @@ function getClientOptions() {
         shouldCreateSpanForRequest,
       }),
       metaMetricsIntegration({
-        getMetaMetricsState,
+        getAnalyticsState,
         log,
       }),
     ],
@@ -283,9 +283,10 @@ export function beforeBreadcrumb() {
       return null;
     }
     const appState = getState();
-    const state = getMetaMetricsStateFromAppState(appState);
+    const state = getAnalyticsStateFromAppState(appState);
     if (
-      !state?.participateInMetaMetrics ||
+      !state?.completedMetaMetricsOnboarding ||
+      !state?.optedIn ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
