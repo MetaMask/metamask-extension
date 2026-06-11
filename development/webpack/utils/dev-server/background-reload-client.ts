@@ -77,6 +77,7 @@ async function onFingerprint(
     return;
   }
   reloading = true;
+  console.info('[webpack-dev-server] Background updated. Reloading...');
   // Close first so the impending teardown isn't logged as an unexpected
   // disconnect, then reload the whole extension.
   socket.close();
