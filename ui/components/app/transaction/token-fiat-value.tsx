@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { parseCaipAssetType } from '@metamask/utils';
+import { parseCaipAssetType, type Hex } from '@metamask/utils';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
+import { decimalToPrefixedHex } from '../../../../shared/lib/conversion.utils';
 import { formatUnits } from '../../../../shared/lib/unit';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { useGetTokenStandardAndDetails } from '../../../pages/confirmations/hooks/useGetTokenStandardAndDetails';
 import {
   getCurrentCurrency,
   getCurrencyRates,
@@ -24,18 +26,42 @@ export function TokenFiatValue({ token }: { token: TokenAmount }) {
     getMultichainAssetsRatesControllerConversionRates,
   );
 
-  const { amount: tokenAmount, decimals, symbol } = token;
+  const shouldResolveOnChain = !token.symbol || token.decimals === undefined;
+  const onChainLookup = useMemo(() => {
+    if (!shouldResolveOnChain || !token.assetId?.includes('/erc20:')) {
+      return undefined;
+    }
+
+    const { chain, assetReference } = parseCaipAssetType(
+      token.assetId as `${string}:${string}/${string}:${string}`,
+    );
+
+    return {
+      tokenAddress: assetReference as Hex,
+      chainId: decimalToPrefixedHex(chain.reference),
+    };
+  }, [shouldResolveOnChain, token.assetId]);
+
+  const onChainTokenDetails = useGetTokenStandardAndDetails(
+    onChainLookup?.tokenAddress,
+    onChainLookup?.chainId,
+  );
+
+  const symbol =
+    token.symbol ??
+    ('symbol' in onChainTokenDetails ? onChainTokenDetails.symbol : undefined);
+  const decimals = token.decimals ?? onChainTokenDetails.decimalsNumber;
 
   const humanAmount = useMemo(() => {
-    if (!tokenAmount) {
+    if (!token.amount) {
       return undefined;
     }
     try {
-      return formatUnits(BigInt(tokenAmount), decimals ?? 0);
+      return formatUnits(BigInt(token.amount), decimals ?? 0);
     } catch {
-      return tokenAmount;
+      return token.amount;
     }
-  }, [tokenAmount, decimals]);
+  }, [token.amount, decimals]);
 
   const fiatValue = useMemo(() => {
     if (!humanAmount) {

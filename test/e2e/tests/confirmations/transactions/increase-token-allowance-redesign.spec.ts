@@ -18,7 +18,6 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withTokensControllerERC20()
           .build(),
         smartContract,
         testSpecificMock: mocked4BytesIncreaseAllowance,
@@ -60,7 +59,6 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withTokensControllerERC20()
           .build(),
         smartContract,
         testSpecificMock: mocked4BytesIncreaseAllowance,
