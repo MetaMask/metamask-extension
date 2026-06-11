@@ -11,6 +11,7 @@ import {
   IconName,
   IconSize,
   IconColor,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -20,7 +21,6 @@ import { TransactionCard } from '../transaction-card';
 import { PERPS_CONSTANTS } from '../constants';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
-import { Skeleton } from '../../../component-library/skeleton';
 import type { PerpsTransaction } from '../types';
 
 const SKELETON_ITEMS = [1, 2, 3];
@@ -31,7 +31,11 @@ const RecentActivitySkeleton = () => (
     className="overflow-hidden rounded-xl"
   >
     {SKELETON_ITEMS.map((i) => (
-      <Skeleton key={i} className="h-[72px] w-full rounded-none" />
+      <Skeleton
+        key={i}
+        className="h-[72px] w-full rounded-none"
+        data-testid="perps-recent-activity-skeleton"
+      />
     ))}
   </Box>
 );

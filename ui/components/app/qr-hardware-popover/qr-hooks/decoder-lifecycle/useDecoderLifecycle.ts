@@ -1,10 +1,11 @@
 import { useCallback, useRef } from 'react';
 import { URDecoder } from '@ngraveio/bc-ur';
+import log from 'loglevel';
 import type {
   BaseQrReaderProps,
   WebcamError,
 } from '../../base-qr-reader/base-qr-reader.types';
-import { classifyScanResult } from '../../qr-utils/qr-utils';
+import { classifyScanResult, ScanErrorCategory } from '../../qr-utils/qr-utils';
 import type { DecoderCallbacks } from '../qr-hooks.types';
 
 /**
@@ -109,6 +110,9 @@ export function useDecoderLifecycle(
         });
 
         if (detectedError) {
+          if (detectedError.category === ScanErrorCategory.ScanException) {
+            log.warn('QR scan exception', exception);
+          }
           setScanError(detectedError);
         }
       }

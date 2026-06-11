@@ -43,6 +43,10 @@
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
       "Test errors: Fetch failures": 6
     },
+    "app/scripts/lib/transaction/hooks/index.test.ts": {
+      "error: Failed to record sentinel_relay metrics": 1,
+      "error: Failed to record sentinel_stx metrics": 1
+    },
     "app/scripts/messenger-client-init/confirmations/transaction-controller-init.test.ts": {
       "error: Failed to record sentinel_relay metrics": 1,
       "error: Failed to record sentinel_stx metrics": 3
@@ -212,7 +216,8 @@
       "Test errors: Uncaught Errors": 1
     },
     "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
-      "MetaMask: Background connection not initialized": 9
+      "MetaMask: Background connection not initialized": 9,
+      "React: PropTypes validation failures": 1
     },
     "ui/components/app/assets/asset-list/asset-list.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -935,7 +940,8 @@
       "error: Failed to detect if URL": 1
     },
     "ui/pages/custom-token-import/custom-token-import.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 2
+      "React: Act warnings (component updates not wrapped)": 2,
+      "error: Warning: React does not recognize": 3
     },
     "ui/pages/defi/components/defi-details-page.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -1150,6 +1156,9 @@
     "ui/pages/swaps/smart-transaction-status/smart-transaction-status.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/token-management/token-management.test.tsx": {
+      "MetaMask: Background connection not initialized": 4
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1

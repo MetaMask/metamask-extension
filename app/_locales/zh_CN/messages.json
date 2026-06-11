@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "已开设多头仓位"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "开空失败"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "已收取资金费"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "提款失败"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "提款失败"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "正在提取资金"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "正在提取资金"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "永续合约提现"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "永续合约提现"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -3447,9 +3448,6 @@
   },
   "enabled": {
     "message": "已启用"
-  },
-  "enabledNetworks": {
-    "message": "启用的网络"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 想要您的加密公钥。同意后，该网站将可以向您发送加密消息。",
@@ -10069,9 +10067,6 @@
   },
   "termsOfUseTitle": {
     "message": "我们的使用条款已更新"
-  },
-  "testNetworks": {
-    "message": "测试网络"
   },
   "testnets": {
     "message": "测试网"

@@ -82,16 +82,16 @@ import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../shared/lib
 import { MultichainEditAccountsPageWrapper } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-account-wrapper';
 import { SnapsPermissionsRequestType } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import {
+  getCaip25CaveatValueFromPermissions,
+  PermissionsRequest,
+} from '../../helpers/utils/caip25-permissions';
 import { ConnectionTrustSignalGate } from './connection-trust-signal-gate';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
-import {
-  getCaip25CaveatValueFromPermissions,
-  PermissionsRequest,
-} from './connect-page/utils';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 

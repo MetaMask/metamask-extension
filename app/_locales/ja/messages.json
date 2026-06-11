@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "ロングをオープンしました"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "ショートのオープンに失敗しました"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "入金手数料を受け取りました"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "出金失敗"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "出金失敗"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "資金を引き出しています"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "資金を引き出しています"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "パーペチュアルの引き出し"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "パーペチュアルの引き出し"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -3447,9 +3448,6 @@
   },
   "enabled": {
     "message": "有効にしました"
-  },
-  "enabledNetworks": {
-    "message": "ネットワークが有効になりました"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1は公開暗号鍵を必要とします。同意することによって、このサイトは暗号化されたメッセージを作成できます。",
@@ -10073,9 +10071,6 @@
   },
   "termsOfUseTitle": {
     "message": "利用規約が更新されました"
-  },
-  "testNetworks": {
-    "message": "テストネットワーク"
   },
   "testnets": {
     "message": "テストネット"

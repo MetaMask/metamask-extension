@@ -18,7 +18,7 @@ import {
   InternalAccountsState,
 } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockMultichainAccountsState } from '../../../../selectors/multichain-accounts/test-utils';
-import { PermissionsRequest } from '../../../../pages/permissions-connect/connect-page/utils';
+import { PermissionsRequest } from '../../../../helpers/utils/caip25-permissions';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
 import { MultichainEditAccountsPageWrapper } from './multichain-edit-account-wrapper';

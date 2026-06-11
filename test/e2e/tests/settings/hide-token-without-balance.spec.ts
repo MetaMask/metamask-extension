@@ -5,8 +5,8 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import AssetsSettingsPage from '../../page-objects/pages/settings/assets-settings-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 describe('Hide tokens without balance', function (this: Suite) {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,11 @@ describe('Hide tokens without balance', function (this: Suite) {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         smartContract,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
@@ -47,8 +52,7 @@ describe('Hide tokens without balance', function (this: Suite) {
         const assetsSettings = new AssetsSettingsPage(driver);
         await assetsSettings.checkAssetsPageIsLoaded();
         await assetsSettings.toggleHideTokensWithoutBalance();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         // Check that tokens with zero balances are hidden, tokens with non-zero balances remain visible
         await new HomePage(driver).checkPageIsLoaded();
