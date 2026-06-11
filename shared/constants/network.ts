@@ -404,6 +404,12 @@ export const STABLE_DISPLAY_NAME = 'Stable';
 export const MANTLE_DISPLAY_NAME = 'Mantle';
 export const ARC_DISPLAY_NAME = 'Arc';
 
+// On Arc, the native gas token and this USDC ERC20 are the same underlying
+// balance mirrored at two addresses with different decimals (native: 18,
+// USDC: 6). Spending USDC therefore draws down the balance used to pay gas.
+export const ARC_USDC_TOKEN_ADDRESS =
+  '0x3600000000000000000000000000000000000000';
+
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
 export const infuraProjectId =

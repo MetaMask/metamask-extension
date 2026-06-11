@@ -903,8 +903,7 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/hooks/send/useMaxAmount.test.ts": {
-      "MetaMask: Background connection not initialized": 3,
-      "React: Act warnings (component updates not wrapped)": 5
+      "MetaMask: Background connection not initialized": 3
     },
     "ui/pages/confirmations/hooks/send/useNameValidation.test.ts": {
       "error: Unexpected key \"DNS\" found in": 1

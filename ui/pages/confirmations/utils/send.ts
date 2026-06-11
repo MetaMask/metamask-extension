@@ -20,6 +20,57 @@ import {
   generateERC721TransferData,
 } from '../send-utils/send.utils';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ARC_USDC_TOKEN_ADDRESS,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
+import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
+
+/**
+ * Whether spending this asset draws down the same on-chain balance used to pay
+ * native gas. On Arc the native gas token and the displayed USDC ERC20 are the
+ * same balance mirrored at two addresses with different decimals (native: 18,
+ * USDC: 6), so the max sendable amount must reserve the native gas fee.
+ *
+ * @param chainId - The (hex) chain id of the send.
+ * @param asset - The asset being sent.
+ */
+export const sharesBalanceWithNativeGasToken = (
+  chainId: string | undefined,
+  asset?: Asset,
+): boolean => {
+  if (chainId?.toLowerCase() !== CHAIN_IDS.ARC) {
+    return false;
+  }
+  const identifier = (asset?.address ?? asset?.assetId ?? '').toLowerCase();
+  return identifier.endsWith(ARC_USDC_TOKEN_ADDRESS);
+};
+
+/**
+ * Fetch the medium "suggested max fee per gas" (in gwei) for a chain directly
+ * from the gas API. Used by the Arc max flow because the gas-fee controller is
+ * not necessarily polling estimates into state during the send flow, which
+ * would otherwise leave the reserved gas at zero. Returns 0 when unavailable.
+ *
+ * @param chainId - The hex chain id of the send.
+ */
+export const fetchSuggestedMaxFeePerGas = async (
+  chainId: string,
+): Promise<number> => {
+  try {
+    const decimalChainId = parseInt(chainId, 16);
+    const response = await fetch(
+      `${GAS_API_BASE_URL}/networks/${decimalChainId}/suggestedGasFees`,
+    );
+    if (!response.ok) {
+      return 0;
+    }
+    const data = await response.json();
+    return Number(data?.medium?.suggestedMaxFeePerGas ?? 0);
+  } catch {
+    return 0;
+  }
+};
 
 export const trimTrailingZeros = (numStr: string) => {
   return numStr.replace(/(\.\d*?[1-9])0+$/gu, '$1').replace(/\.0*$/u, '');
