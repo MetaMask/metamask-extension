@@ -39,9 +39,17 @@ index 4c64328b17c130c1177a9d3f63c977f0bb5a0b7e..05153e69d647259ea0737e7bea4bf10e
  ];
  export const DEFAULT_FEATURE_FLAG_CONFIG = {
 diff --git a/dist/constants/chains.cjs b/dist/constants/chains.cjs
-index 842508af67e7422febd3badcc7a43242f5ecc806..32f95c05b7993301ceb68e3b83fa16773fe32d16 100644
+index 842508af67e7422febd3badcc7a43242f5ecc806..9d7b515ce630a204f4c804eb02811b24a3774fdc 100644
 --- a/dist/constants/chains.cjs
 +++ b/dist/constants/chains.cjs
+@@ -1,6 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.NETWORK_TO_NAME_MAP = exports.MEGAETH_DISPLAY_NAME = exports.HYPEREVM_DISPLAY_NAME = exports.MONAD_DISPLAY_NAME = exports.SEI_DISPLAY_NAME = exports.MODE_DISPLAY_NAME = exports.MODE_SEPOLIA_DISPLAY_NAME = exports.SONEIUM_DISPLAY_NAME = exports.INK_DISPLAY_NAME = exports.INK_SEPOLIA_DISPLAY_NAME = exports.LISK_SEPOLIA_DISPLAY_NAME = exports.LISK_DISPLAY_NAME = exports.METACHAIN_ONE_DISPLAY_NAME = exports.BERACHAIN_DISPLAY_NAME = exports.OP_BNB_DISPLAY_NAME = exports.SCROLL_SEPOLIA_DISPLAY_NAME = exports.SCROLL_DISPLAY_NAME = exports.MOONRIVER_DISPLAY_NAME = exports.MOONBEAM_DISPLAY_NAME = exports.POLYGON_ZKEVM_DISPLAY_NAME = exports.CRONOS_DISPLAY_NAME = exports.AURORA_DISPLAY_NAME = exports.BASE_DISPLAY_NAME = exports.ZK_SYNC_ERA_DISPLAY_NAME = exports.GNOSIS_DISPLAY_NAME = exports.CELO_DISPLAY_NAME = exports.PALM_DISPLAY_NAME = exports.HARMONY_DISPLAY_NAME = exports.FANTOM_DISPLAY_NAME = exports.OPTIMISM_DISPLAY_NAME = exports.BNB_DISPLAY_NAME = exports.ARBITRUM_DISPLAY_NAME = exports.AVALANCHE_DISPLAY_NAME = exports.POLYGON_DISPLAY_NAME = exports.BSC_DISPLAY_NAME = exports.LOCALHOST_DISPLAY_NAME = exports.LINEA_MAINNET_DISPLAY_NAME = exports.LINEA_SEPOLIA_DISPLAY_NAME = exports.LINEA_GOERLI_DISPLAY_NAME = exports.SEPOLIA_DISPLAY_NAME = exports.GOERLI_DISPLAY_NAME = exports.MAINNET_DISPLAY_NAME = exports.NETWORK_TYPES = exports.CHAIN_IDS = void 0;
++exports.NETWORK_TO_NAME_MAP = exports.ARC_DISPLAY_NAME = exports.MEGAETH_DISPLAY_NAME = exports.HYPEREVM_DISPLAY_NAME = exports.MONAD_DISPLAY_NAME = exports.SEI_DISPLAY_NAME = exports.MODE_DISPLAY_NAME = exports.MODE_SEPOLIA_DISPLAY_NAME = exports.SONEIUM_DISPLAY_NAME = exports.INK_DISPLAY_NAME = exports.INK_SEPOLIA_DISPLAY_NAME = exports.LISK_SEPOLIA_DISPLAY_NAME = exports.LISK_DISPLAY_NAME = exports.METACHAIN_ONE_DISPLAY_NAME = exports.BERACHAIN_DISPLAY_NAME = exports.OP_BNB_DISPLAY_NAME = exports.SCROLL_SEPOLIA_DISPLAY_NAME = exports.SCROLL_DISPLAY_NAME = exports.MOONRIVER_DISPLAY_NAME = exports.MOONBEAM_DISPLAY_NAME = exports.POLYGON_ZKEVM_DISPLAY_NAME = exports.CRONOS_DISPLAY_NAME = exports.AURORA_DISPLAY_NAME = exports.BASE_DISPLAY_NAME = exports.ZK_SYNC_ERA_DISPLAY_NAME = exports.GNOSIS_DISPLAY_NAME = exports.CELO_DISPLAY_NAME = exports.PALM_DISPLAY_NAME = exports.HARMONY_DISPLAY_NAME = exports.FANTOM_DISPLAY_NAME = exports.OPTIMISM_DISPLAY_NAME = exports.BNB_DISPLAY_NAME = exports.ARBITRUM_DISPLAY_NAME = exports.AVALANCHE_DISPLAY_NAME = exports.POLYGON_DISPLAY_NAME = exports.BSC_DISPLAY_NAME = exports.LOCALHOST_DISPLAY_NAME = exports.LINEA_MAINNET_DISPLAY_NAME = exports.LINEA_SEPOLIA_DISPLAY_NAME = exports.LINEA_GOERLI_DISPLAY_NAME = exports.SEPOLIA_DISPLAY_NAME = exports.GOERLI_DISPLAY_NAME = exports.MAINNET_DISPLAY_NAME = exports.NETWORK_TYPES = exports.CHAIN_IDS = void 0;
+ /**
+  * An object containing all of the chain ids for networks both built in and
+  * those that we have added custom code to support our feature set.
 @@ -80,6 +80,7 @@ exports.CHAIN_IDS = {
      MONAD: '0x8f',
      HYPEREVM: '0x3e7',
@@ -95,7 +103,7 @@ index 5fb754d746dc2efc8fc296939315eb113a8496ba..7ee901ab24e6a182c946db01ea38f98c
  //# sourceMappingURL=chains.mjs.map
 \ No newline at end of file
 diff --git a/dist/constants/tokens.cjs b/dist/constants/tokens.cjs
-index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc0001f5df739 100644
+index 57f207adbd3a0323a50c5288a2971ad785c29501..1896fbd972d9e3672753e6ef8c404ab98260f480 100644
 --- a/dist/constants/tokens.cjs
 +++ b/dist/constants/tokens.cjs
 @@ -34,6 +34,7 @@ const CURRENCY_SYMBOLS = {
@@ -106,10 +114,11 @@ index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc000
  };
  const ETH_SWAPS_TOKEN_OBJECT = {
      symbol: CURRENCY_SYMBOLS.ETH,
-@@ -144,6 +145,13 @@ const HYPEREVM_SWAPS_TOKEN_OBJECT = {
+@@ -144,6 +145,14 @@ const HYPEREVM_SWAPS_TOKEN_OBJECT = {
  const MEGAETH_SWAPS_TOKEN_OBJECT = {
      ...ETH_SWAPS_TOKEN_OBJECT,
  };
++// Leaving for code consistency but we won't display it in the asset picker
 +const ARC_SWAPS_TOKEN_OBJECT = {
 +    symbol: 'USDC-native',
 +    name: 'USDC-native',
@@ -120,7 +129,7 @@ index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc000
  exports.SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
      [chains_1.CHAIN_IDS.MAINNET]: ETH_SWAPS_TOKEN_OBJECT,
      [chains_1.CHAIN_IDS.LOCALHOST]: TEST_ETH_SWAPS_TOKEN_OBJECT,
-@@ -161,6 +169,7 @@ exports.SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
+@@ -161,6 +170,7 @@ exports.SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
      [chains_1.CHAIN_IDS.MONAD]: MONAD_SWAPS_TOKEN_OBJECT,
      [chains_1.CHAIN_IDS.HYPEREVM]: HYPEREVM_SWAPS_TOKEN_OBJECT,
      [chains_1.CHAIN_IDS.MEGAETH]: MEGAETH_SWAPS_TOKEN_OBJECT,
@@ -128,16 +137,17 @@ index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc000
      [keyring_api_1.SolScope.Mainnet]: SOLANA_SWAPS_TOKEN_OBJECT,
      [keyring_api_1.SolScope.Devnet]: SOLANA_SWAPS_TOKEN_OBJECT,
      [keyring_api_1.BtcScope.Mainnet]: BTC_SWAPS_TOKEN_OBJECT,
-@@ -182,5 +191,6 @@ exports.SYMBOL_TO_SLIP44_MAP = {
+@@ -182,5 +192,7 @@ exports.SYMBOL_TO_SLIP44_MAP = {
      TRX: 'slip44:195',
      MON: 'slip44:268435779',
      HYPE: 'slip44:2457',
++    // It won't be displayed - hidden on UI client side
 +    'USDC-native': 'erc20:0x0000000000000000000000000000000000000000',
  };
  //# sourceMappingURL=tokens.cjs.map
 \ No newline at end of file
 diff --git a/dist/constants/tokens.mjs b/dist/constants/tokens.mjs
-index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44e97030f8 100644
+index 8764f757f3e41a6614dac2095038e26eba641d9a..a98dca6c3c4aaa78b165349a2afa227e98c1b48d 100644
 --- a/dist/constants/tokens.mjs
 +++ b/dist/constants/tokens.mjs
 @@ -31,6 +31,7 @@ const CURRENCY_SYMBOLS = {
@@ -148,10 +158,11 @@ index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44
  };
  const ETH_SWAPS_TOKEN_OBJECT = {
      symbol: CURRENCY_SYMBOLS.ETH,
-@@ -141,6 +142,13 @@ const HYPEREVM_SWAPS_TOKEN_OBJECT = {
+@@ -141,6 +142,14 @@ const HYPEREVM_SWAPS_TOKEN_OBJECT = {
  const MEGAETH_SWAPS_TOKEN_OBJECT = {
      ...ETH_SWAPS_TOKEN_OBJECT,
  };
++// Leaving for code consistency but we won't display it in the asset picker
 +const ARC_SWAPS_TOKEN_OBJECT = {
 +    symbol: 'USDC-native',
 +    name: 'USDC-native',
@@ -162,7 +173,7 @@ index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44
  export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
      [CHAIN_IDS.MAINNET]: ETH_SWAPS_TOKEN_OBJECT,
      [CHAIN_IDS.LOCALHOST]: TEST_ETH_SWAPS_TOKEN_OBJECT,
-@@ -158,6 +166,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
+@@ -158,6 +167,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
      [CHAIN_IDS.MONAD]: MONAD_SWAPS_TOKEN_OBJECT,
      [CHAIN_IDS.HYPEREVM]: HYPEREVM_SWAPS_TOKEN_OBJECT,
      [CHAIN_IDS.MEGAETH]: MEGAETH_SWAPS_TOKEN_OBJECT,
@@ -170,10 +181,11 @@ index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44
      [SolScope.Mainnet]: SOLANA_SWAPS_TOKEN_OBJECT,
      [SolScope.Devnet]: SOLANA_SWAPS_TOKEN_OBJECT,
      [BtcScope.Mainnet]: BTC_SWAPS_TOKEN_OBJECT,
-@@ -179,5 +188,6 @@ export const SYMBOL_TO_SLIP44_MAP = {
+@@ -179,5 +189,7 @@ export const SYMBOL_TO_SLIP44_MAP = {
      TRX: 'slip44:195',
      MON: 'slip44:268435779',
      HYPE: 'slip44:2457',
++    // It won't be displayed - hidden on UI client side
 +    'USDC-native': 'erc20:0x0000000000000000000000000000000000000000',
  };
  //# sourceMappingURL=tokens.mjs.map
