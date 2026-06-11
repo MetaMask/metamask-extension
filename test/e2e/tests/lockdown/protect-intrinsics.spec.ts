@@ -6,25 +6,6 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { getGlobalProperties } from '../../../helpers/protect-intrinsics-helpers';
 
-/**
- * End-to-end audit of the SES lockdown applied by
- * `app/scripts/lockdown-{install,run,more}.js`. The lockdown scripts are
- * injected into every extension HTML page by `development/build/scripts.js`,
- * so by the time the unlocked home page is reachable, every named intrinsic
- * on `globalThis` must be non-configurable + non-writable (or, for accessor
- * properties, just non-configurable).
- *
- * Browserify-only (for now): the webpack pipeline relies solely on the
- * SES `lockdown()` invocation inlined by `@lavamoat/webpack`. It does NOT
- * load `app/scripts/lockdown-more.js`'s `protectIntrinsics` IIFE, which is
- * what makes the globalThis *slots* (not just the intrinsic values) non-
- * configurable + non-writable. Without that step, every assertion below
- * fails on webpack builds even though SES did freeze the values themselves.
- * We skip the suite when the surrounding GitHub Actions job is a webpack
- * one (matching the `test-suite-name` naming convention in
- * `.github/workflows/e2e-chrome.yml` and `e2e-firefox.yml`). Re-enable on
- * webpack once it ships lockdown-more.js-equivalent slot hardening.
- */
 describe('SES lockdown - non-modifiable intrinsics', function (this: Suite) {
   it('freezes named globalThis intrinsics in the extension UI', async function () {
     if (process.env.TEST_SUITE_NAME?.includes('webpack')) {
