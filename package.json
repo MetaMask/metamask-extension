@@ -161,8 +161,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/bridge-controller": "npm:@metamask-previews/bridge-controller@74.0.0-preview-2b6e433",
-    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@12.1.0-preview-2b6e433",
+    "@metamask/bridge-controller@npm:^73.2.0": "patch:@metamask/bridge-controller@npm%3A73.2.0#~/.yarn/patches/@metamask-bridge-controller-npm-73.2.0-be55b13227.patch",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "32.0.0",
     "follow-redirects": "^1.16.0",
