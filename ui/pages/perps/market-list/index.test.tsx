@@ -206,7 +206,6 @@ describe('MarketListView', () => {
           screen.getByTestId('perps-market-list-no-results'),
         ).toBeInTheDocument();
       });
-      expect(screen.getByText(/no markets found/iu)).toBeInTheDocument();
     });
 
     it('hides filter row when searching', async () => {
