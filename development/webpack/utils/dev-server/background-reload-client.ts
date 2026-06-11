@@ -7,12 +7,12 @@ import { BACKGROUND_RELOAD_MESSAGE_TYPE } from './background-reload-protocol';
 // URL at server start (the port is only known then).
 declare const __resourceQuery: string;
 
+const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
+
 const MAX_RECONNECT_DELAY_MS = 5_000;
 
 // Storage key holding the fingerprint of the currently running code.
 const FINGERPRINT_KEY = 'MM_BACKGROUND_RELOAD_FINGERPRINT';
-
-const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 
 // The recorded fingerprint must outlive the MV3 service worker, which Chrome
 // idle-terminates and later restarts with the *registered* (possibly stale)
