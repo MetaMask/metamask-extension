@@ -5556,7 +5556,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
-    return this.#withKeyringForDevice(
+    return await this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         let accounts = [];
@@ -7374,6 +7374,7 @@ export default class MetamaskController extends EventEmitter {
         this.phishingController,
         this.preferencesController,
         this.getPermittedAccounts.bind(this),
+        sender?.url,
       ),
     );
 

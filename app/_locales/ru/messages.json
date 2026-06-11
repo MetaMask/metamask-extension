@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Открыта длинная позиция"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "Ошибка открытия короткой позиции"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Комиссия за финансирование получена"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Ошибка вывода средств"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Ошибка вывода средств"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Вывод средств"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Вывод средств"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Вывод средств бессрочных контрактов"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Вывод средств бессрочных контрактов"
   },
   "activity_predictionCashedOut_failed_description": {
