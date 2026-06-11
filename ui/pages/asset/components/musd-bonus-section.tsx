@@ -316,7 +316,6 @@ export function MusdBonusSection({
                       href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ textDecoration: 'underline' }}
                     >
                       {t('musdTermsApply')}
                     </a>
@@ -337,7 +336,6 @@ export function MusdBonusSection({
                     href={MUSD_SUPPORT_ARTICLE_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ textDecoration: 'underline' }}
                   >
                     {t('musdAssetBonusInfoLearnMore')}
                   </a>

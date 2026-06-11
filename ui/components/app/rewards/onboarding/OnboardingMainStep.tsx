@@ -376,7 +376,6 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
             <TextButton
               key="terms"
               variant={TextVariant.BodySm}
-              className="text-primary-default"
               onClick={openTermsOfUse}
             >
               {t('rewardsOnboardingLegalDisclaimerTermsLink')}
@@ -384,7 +383,6 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
             <TextButton
               key="learnMore"
               variant={TextVariant.BodySm}
-              className="text-primary-default"
               onClick={openLearnMore}
             >
               {t('rewardsOnboardingLegalDisclaimerLearnMoreLink')}

@@ -645,7 +645,6 @@ export const HardwareWalletErrorModal = React.memo(
                               <TextButton
                                 variant={TextVariant.BodyMd}
                                 onClick={handleRepairDevice}
-                                className="hover:bg-transparent active:bg-transparent w-fit"
                               >
                                 {t('hardwareWalletRepairLink')}
                               </TextButton>
