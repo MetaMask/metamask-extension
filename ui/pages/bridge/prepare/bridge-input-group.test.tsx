@@ -464,12 +464,17 @@ describe('BridgeInputGroup', () => {
       );
       expect(networkItems).toHaveLength(expectedNetworkCount);
 
-      fireEvent.click(
-        screen.getByTestId(
-          'network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        ),
+      const solanaNetworkItem = screen.getByTestId(
+        'network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
+      // `mousedown` reproduces the real-browser sequence: the asset picker's
+      // outside-click handler runs on `mousedown` (before `click`) and must not
+      // close the asset picker when selecting a network.
+      fireEvent.mouseDown(solanaNetworkItem);
+      fireEvent.click(solanaNetworkItem);
       await waitFor(() => {
+        // The asset picker stays open; only the network picker closes.
+        expect(getByTestId('bridge-asset-picker-modal')).toBeVisible();
         expect(
           screen.queryByTestId('bridge-network-picker-popover'),
         ).not.toBeInTheDocument();
