@@ -375,6 +375,14 @@ export function getAnalyticsId(state) {
   return analyticsId;
 }
 
+/**
+ * @param state
+ * @deprecated Use `getAnalyticsId` instead.
+ */
+export function getMetaMetricsId(state) {
+  return getAnalyticsId(state);
+}
+
 export function isCurrentProviderCustom(state) {
   const provider = getProviderConfig(state);
   return (

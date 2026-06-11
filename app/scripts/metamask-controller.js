@@ -2575,9 +2575,16 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
+    const { completedMetaMetricsOnboarding } = this.metaMetricsController.state;
+    const { optedIn, analyticsId } = this.analyticsController.state;
+    const participateInMetaMetrics =
+      completedMetaMetricsOnboarding === true ? optedIn : null;
+
     return {
       isInitialized,
       ...sanitizeUIState(flatState),
+      participateInMetaMetrics,
+      metaMetricsId: analyticsId,
     };
   }
 
