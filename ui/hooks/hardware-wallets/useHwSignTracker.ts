@@ -171,19 +171,18 @@ export function useHwSignTracker(
      * @param eventSource
      * @param processor
      */
-    const createEventHandler = (
-      eventSource: 'statusUpdated' | 'rejected' | 'finished',
-      processor: (txMeta: TransactionMeta) => EventResult,
-    ) =>
+    const createEventHandler =
+      (
+        eventSource: 'statusUpdated' | 'rejected' | 'finished',
+        processor: (txMeta: TransactionMeta) => EventResult,
+      ) =>
       ([{ transactionMeta }]: [{ transactionMeta: TransactionMeta }]) => {
         if (cancelled) {
           return;
         }
 
         strategy.checkRetryGeneration(
-          retryGenerationRef as
-            | React.RefObject<number | undefined>
-            | undefined,
+          retryGenerationRef as React.RefObject<number | undefined> | undefined,
           lastSeenGenerationRef,
         );
 

@@ -130,9 +130,7 @@ describe('SequentialTrackingStrategy', () => {
     it('dispatches TransactionRejected for tracked tx', () => {
       strategy.processStatusUpdated(createTxMeta({ id: 'tx-1' }));
 
-      const result = strategy.processRejected(
-        createTxMeta({ id: 'tx-1' }),
-      );
+      const result = strategy.processRejected(createTxMeta({ id: 'tx-1' }));
       expect(result.action).toEqual({
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });
@@ -145,7 +143,10 @@ describe('SequentialTrackingStrategy', () => {
   describe('processFinished', () => {
     it('returns null for untracked tx id', () => {
       const result = strategy.processFinished(
-        createTxMeta({ status: TransactionStatus.rejected, id: 'tx-untracked' }),
+        createTxMeta({
+          status: TransactionStatus.rejected,
+          id: 'tx-untracked',
+        }),
       );
       expect(result.action).toBeNull();
     });
@@ -196,9 +197,7 @@ describe('SequentialTrackingStrategy', () => {
       strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
 
       // Stale tx should be blocked
-      const result = strategy.processRejected(
-        createTxMeta({ id: 'tx-old' }),
-      );
+      const result = strategy.processRejected(createTxMeta({ id: 'tx-old' }));
       expect(result.action).toBeNull();
     });
 
@@ -241,11 +240,7 @@ describe('SequentialTrackingStrategy', () => {
     it('returns true and removes tx from pending set when found', () => {
       const pending = new Set(['tx-1']);
       const onSettled = jest.fn();
-      const consumed = strategy.checkPendingAbort(
-        'tx-1',
-        pending,
-        onSettled,
-      );
+      const consumed = strategy.checkPendingAbort('tx-1', pending, onSettled);
       expect(consumed).toBe(true);
       expect(pending.has('tx-1')).toBe(false);
     });
@@ -280,9 +275,7 @@ describe('SequentialTrackingStrategy', () => {
       expect(strategy.getTrackedTxIds()).toEqual(new Set());
 
       // Untracked tx should be blocked on rejected
-      const result = strategy.processRejected(
-        createTxMeta({ id: 'tx-1' }),
-      );
+      const result = strategy.processRejected(createTxMeta({ id: 'tx-1' }));
       expect(result.action).toBeNull();
     });
   });

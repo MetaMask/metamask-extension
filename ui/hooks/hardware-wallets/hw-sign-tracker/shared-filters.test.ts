@@ -42,10 +42,11 @@ describe('matchesTx', () => {
 
   it('returns false when transaction type is not a batch type', () => {
     expect(
-      matchesTx(createTxMeta({ type: TransactionType.simpleSend }), TARGET_FROM),
-    ).toBe(
-      false,
-    );
+      matchesTx(
+        createTxMeta({ type: TransactionType.simpleSend }),
+        TARGET_FROM,
+      ),
+    ).toBe(false);
   });
 
   it('returns true for matching address and bridge approval type', () => {

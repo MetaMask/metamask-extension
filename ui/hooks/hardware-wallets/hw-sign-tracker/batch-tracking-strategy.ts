@@ -65,9 +65,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
   // ---------------------------------------------------------------
 
   checkRetryGeneration(
-    retryGenerationRef:
-      | React.RefObject<number | undefined>
-      | undefined,
+    retryGenerationRef: React.RefObject<number | undefined> | undefined,
     lastSeenGenerationRef: React.MutableRefObject<number>,
   ): void {
     if (
@@ -178,9 +176,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
       return false;
     }
     pendingAbortTxIds.delete(txId);
-    if (
-      pendingAbortTxIds.size === 0
-    ) {
+    if (pendingAbortTxIds.size === 0) {
       onAllSettled();
     }
     return true;

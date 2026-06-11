@@ -1,4 +1,7 @@
-import type { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
+import type {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HwSignTrackerAction } from './types';
 import { ALL_BATCH_TYPES, APPROVAL_TYPES, TRADE_TYPES } from './constants';

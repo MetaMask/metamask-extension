@@ -9,9 +9,7 @@ export type HwSignTrackerAction =
   | { type: typeof HardwareWalletSignatureEvent.TransactionFailed };
 
 /** Result of processing a transaction event through a tracking strategy. */
-export type EventResult =
-  | { action: HwSignTrackerAction }
-  | { action: null };
+export type EventResult = { action: HwSignTrackerAction } | { action: null };
 
 /**
  * Strategy interface for batch or sequential tracking.
@@ -26,9 +24,7 @@ export type TrackingStrategy = {
    * @param lastSeenGenerationRef - Internal ref tracking the last-seen generation.
    */
   checkRetryGeneration(
-    retryGenerationRef:
-      | React.RefObject<number | undefined>
-      | undefined,
+    retryGenerationRef: React.RefObject<number | undefined> | undefined,
     lastSeenGenerationRef: React.MutableRefObject<number>,
   ): void;
 
@@ -69,7 +65,7 @@ export type TrackingStrategy = {
 
   /** Reset all tracking state (called on cancel, subscription teardown, enable toggle). */
   reset(): void;
-}
+};
 
 /** Options for configuring the hardware wallet signature tracker. */
 export type UseHwSignTrackerOptions = {

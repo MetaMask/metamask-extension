@@ -110,7 +110,10 @@ describe('BatchTrackingStrategy', () => {
       strategy.processStatusUpdated(createTxMeta({ batchId: 'batch-1' }));
 
       const result = strategy.processStatusUpdated(
-        createTxMeta({ status: TransactionStatus.failed, batchId: 'batch-other' }),
+        createTxMeta({
+          status: TransactionStatus.failed,
+          batchId: 'batch-other',
+        }),
       );
       expect(result.action).toBeNull();
     });
@@ -155,7 +158,10 @@ describe('BatchTrackingStrategy', () => {
       strategy.processStatusUpdated(createTxMeta({ batchId: 'batch-1' }));
 
       const result = strategy.processFinished(
-        createTxMeta({ status: TransactionStatus.rejected, batchId: 'batch-1' }),
+        createTxMeta({
+          status: TransactionStatus.rejected,
+          batchId: 'batch-1',
+        }),
       );
       expect(result.action).toEqual({
         type: HardwareWalletSignatureEvent.TransactionRejected,
@@ -177,7 +183,10 @@ describe('BatchTrackingStrategy', () => {
       strategy.processStatusUpdated(createTxMeta({ batchId: 'batch-1' }));
 
       const result = strategy.processFinished(
-        createTxMeta({ status: TransactionStatus.confirmed, batchId: 'batch-1' }),
+        createTxMeta({
+          status: TransactionStatus.confirmed,
+          batchId: 'batch-1',
+        }),
       );
       expect(result.action).toBeNull();
     });
@@ -186,7 +195,10 @@ describe('BatchTrackingStrategy', () => {
       strategy.processStatusUpdated(createTxMeta({ batchId: 'batch-1' }));
 
       const result = strategy.processFinished(
-        createTxMeta({ status: TransactionStatus.rejected, batchId: 'batch-stale' }),
+        createTxMeta({
+          status: TransactionStatus.rejected,
+          batchId: 'batch-stale',
+        }),
       );
       expect(result.action).toBeNull();
     });
@@ -204,7 +216,10 @@ describe('BatchTrackingStrategy', () => {
 
       // Old batch should now be stale — finished event blocked
       const result = strategy.processFinished(
-        createTxMeta({ status: TransactionStatus.rejected, batchId: 'batch-old' }),
+        createTxMeta({
+          status: TransactionStatus.rejected,
+          batchId: 'batch-old',
+        }),
       );
       expect(result.action).toBeNull();
     });
