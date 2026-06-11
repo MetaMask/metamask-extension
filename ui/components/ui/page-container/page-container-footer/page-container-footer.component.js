@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import {
-  Button,
-  ButtonSize,
-  ButtonVariant,
-} from '../../../component-library/button';
+import { Button, ButtonSize, ButtonVariant } from '@metamask/design-system-react';
+import { Icon } from '../../../component-library';
 
 export default class PageContainerFooter extends Component {
   static propTypes = {
@@ -65,7 +62,7 @@ export default class PageContainerFooter extends Component {
               )}
               onClick={(e) => onCancel(e)}
               data-testid="page-container-footer-cancel"
-              block
+              isFullWidth
             >
               {cancelText || this.context.t('cancel')}
             </Button>
@@ -81,9 +78,11 @@ export default class PageContainerFooter extends Component {
             disabled={disabled}
             onClick={(e) => onSubmit(e)}
             data-testid="page-container-footer-next"
-            startIconName={submitButtonIcon}
-            block
+            isFullWidth
           >
+            {submitButtonIcon && (
+              <Icon name={submitButtonIcon} style={{ marginRight: '8px' }} />
+            )}
             {submitText || this.context.t('next')}
           </Button>
         </footer>

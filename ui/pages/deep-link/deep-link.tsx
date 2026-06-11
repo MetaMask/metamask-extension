@@ -6,7 +6,7 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-} from '../../components/component-library/button';
+} from '@metamask/design-system-react';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -396,9 +396,11 @@ export const DeepLink = () => {
                 ''
               )}
               <Button
-                width={BlockSize.Full}
+                isFullWidth
                 variant={ButtonVariant.Primary}
-                href={route?.href ?? getExtensionURL('/')}
+                onClick={() => {
+                  window.location.href = route?.href ?? getExtensionURL('/');
+                }}
                 size={ButtonSize.Lg}
                 data-testid="deep-link-continue-button"
               >

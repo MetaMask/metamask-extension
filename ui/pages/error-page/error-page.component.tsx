@@ -7,6 +7,9 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  Button,
+  ButtonSize,
+  ButtonVariant,
 } from '@metamask/design-system-react';
 import { getParticipateInMetaMetrics } from '../../selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -16,8 +19,6 @@ import {
   IconName,
   IconSize,
   Text,
-  Button,
-  ButtonVariant,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -27,7 +28,6 @@ import {
 } from '../../components/component-library';
 import {
   AlignItems,
-  BlockSize,
   Display,
   FlexDirection,
   IconColor,
@@ -38,7 +38,6 @@ import {
 
 import { Textarea } from '../../components/component-library/textarea/textarea';
 import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
-import { ButtonSize } from '../../components/component-library/button/button.types';
 import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
 import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 
@@ -213,7 +212,7 @@ const ErrorPage = ({ error }: ErrorPageProps) => {
                 <Box className="flex" gap={4}>
                   <Button
                     variant={ButtonVariant.Secondary}
-                    width={BlockSize.Half}
+                    className="flex-1"
                     onClick={handleCloseDescribeModal}
                     size={ButtonSize.Md}
                   >
@@ -221,7 +220,7 @@ const ErrorPage = ({ error }: ErrorPageProps) => {
                   </Button>
                   <Button
                     variant={ButtonVariant.Primary}
-                    width={BlockSize.Half}
+                    className="flex-1"
                     onClick={handleSubmitFeedback}
                     size={ButtonSize.Md}
                     data-testid="error-page-sentry-feedback-submit-button"
@@ -279,9 +278,8 @@ const ErrorPage = ({ error }: ErrorPageProps) => {
         >
           {isMetaMetricsEnabled && (
             <Button
-              className="error-page__report-to-sentry-button"
-              marginBottom={2}
-              block
+              className="error-page__report-to-sentry-button mb-2"
+              isFullWidth
               data-testid="error-page-describe-what-happened-button"
               onClick={handleClickDescribeButton}
             >
@@ -289,9 +287,9 @@ const ErrorPage = ({ error }: ErrorPageProps) => {
             </Button>
           )}
           <Button
-            marginBottom={2}
+            className="mb-2"
             variant={ButtonVariant.Secondary}
-            block
+            isFullWidth
             data-testid="error-page-contact-support-button"
             onClick={() => setIsSupportDataConsentModalOpen(true)}
           >
@@ -299,7 +297,7 @@ const ErrorPage = ({ error }: ErrorPageProps) => {
           </Button>
           <Button
             variant={ButtonVariant.Secondary}
-            block
+            isFullWidth
             data-testid="error-page-try-again-button"
             onClick={async () => {
               await reloadExtensionFromUi();
