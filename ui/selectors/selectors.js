@@ -370,9 +370,17 @@ export function getNetworkIdentifier(state) {
   return nickname || rpcUrl || type;
 }
 
-export function getMetaMetricsId(state) {
+export function getAnalyticsId(state) {
   const { analyticsId } = state.metamask;
   return analyticsId;
+}
+
+/**
+ * @param state
+ * @deprecated Use `getAnalyticsId` instead.
+ */
+export function getMetaMetricsId(state) {
+  return getAnalyticsId(state);
 }
 
 export function isCurrentProviderCustom(state) {

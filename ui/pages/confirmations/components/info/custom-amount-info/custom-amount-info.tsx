@@ -72,6 +72,10 @@ export type CustomAmountInfoProps = {
   disablePay?: boolean;
   hasMax?: boolean;
   hidePayTokenAmount?: boolean;
+  /**
+   * When true, pre-fills the amount field with the max balance on load.
+   */
+  prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
   overrideBottomContent?: ReactNode;
   overrideCenterContent?: (amountHuman: string) => ReactNode;
@@ -89,6 +93,7 @@ export const CustomAmountInfo = React.memo(
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
+    prefillMaxOnLoad,
     preferredToken,
   }: CustomAmountInfoProps) => {
     useAutomaticTransactionPayToken({
@@ -114,6 +119,7 @@ export const CustomAmountInfo = React.memo(
       balanceUsdOverride,
       currency,
       disableUpdate,
+      prefillMaxOnLoad,
     });
 
     const handleAmountChange = useCallback(

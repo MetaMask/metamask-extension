@@ -70,9 +70,17 @@ export function useDecoderLifecycle(
         if (!data || decoder.isComplete()) {
           return;
         }
+
+        // Between animation frame transitions the camera may decode the
+        // same content multiple times. Skipping duplicates avoids
+        // redundant fountain-code work and unnecessary state updates.
+        if (data === lastScannedTextRef.current) {
+          return;
+        }
         lastScannedTextRef.current = data;
+
         decoder.receivePart(data);
-        setScanProgress(decoder.estimatedPercentComplete());
+
         // Fountain decoding can fail silently (e.g. checksum mismatch) without
         // throwing. Detect this before checking isComplete so the error is surfaced.
         if (decoder.isError()) {
@@ -85,6 +93,7 @@ export function useDecoderLifecycle(
           }
           return;
         }
+
         if (decoder.isComplete()) {
           const result = decoder.resultUR();
 
@@ -101,7 +110,13 @@ export function useDecoderLifecycle(
           handleSuccess(result).catch((successError: WebcamError) =>
             setError(successError),
           );
+          return;
         }
+
+        // Progress is only updated for incomplete multi-frame scans.
+        // Single-frame QR codes complete immediately above, avoiding a
+        // needless state update and React re-render.
+        setScanProgress(decoder.estimatedPercentComplete());
       } catch (exception) {
         const detectedError = classifyScanResult({
           text: lastScannedTextRef.current ?? undefined,

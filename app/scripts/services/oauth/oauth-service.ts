@@ -66,7 +66,9 @@ export class OAuthService {
 
   #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
 
-  #getParticipateInMetaMetrics: OAuthServiceOptions['getParticipateInMetaMetrics'];
+  #getCompletedMetaMetricsOnboarding: OAuthServiceOptions['getCompletedMetaMetricsOnboarding'];
+
+  #getOptedIn: OAuthServiceOptions['getOptedIn'];
 
   constructor({
     messenger,
@@ -76,7 +78,8 @@ export class OAuthService {
     bufferedEndTrace,
     trackEvent,
     addEventBeforeMetricsOptIn,
-    getParticipateInMetaMetrics,
+    getCompletedMetaMetricsOnboarding,
+    getOptedIn,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -87,7 +90,8 @@ export class OAuthService {
     this.#bufferedEndTrace = bufferedEndTrace;
     this.#trackEvent = trackEvent;
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
-    this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
+    this.#getCompletedMetaMetricsOnboarding = getCompletedMetaMetricsOnboarding;
+    this.#getOptedIn = getOptedIn;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -105,7 +109,8 @@ export class OAuthService {
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): void {
-    const isMetricsEnabled = Boolean(this.#getParticipateInMetaMetrics());
+    const isMetricsEnabled =
+      this.#getCompletedMetaMetricsOnboarding() && this.#getOptedIn();
 
     if (isMetricsEnabled) {
       this.#trackEvent(payload, options);
