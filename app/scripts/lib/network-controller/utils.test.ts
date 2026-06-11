@@ -24,7 +24,7 @@ describe('shouldCreateRpcServiceEvents', () => {
   describe('if not given an error', () => {
     const error = undefined;
 
-    describe('if given a MetaMetrics ID', () => {
+    describe('if given an analytics ID', () => {
       // @ts-expect-error The Mocha types are incorrect.
       describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
         'if the environment is %s',
@@ -104,7 +104,7 @@ describe('shouldCreateRpcServiceEvents', () => {
       });
     });
 
-    describe('if the MetaMetrics ID is undefined', () => {
+    describe('if the analytics ID is undefined', () => {
       const analyticsId = undefined;
 
       it('returns false', async () => {
@@ -117,7 +117,7 @@ describe('shouldCreateRpcServiceEvents', () => {
       });
     });
 
-    describe('if the MetaMetrics ID is null', () => {
+    describe('if the analytics ID is null', () => {
       const analyticsId = null;
 
       it('returns false', async () => {
@@ -134,7 +134,7 @@ describe('shouldCreateRpcServiceEvents', () => {
   describe('if given a non-connection error', () => {
     const error = new Error('some error');
 
-    describe('if given a MetaMetrics ID', () => {
+    describe('if given an analytics ID', () => {
       // @ts-expect-error The Mocha types are incorrect.
       describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
         'if the environment is %s',
@@ -214,7 +214,7 @@ describe('shouldCreateRpcServiceEvents', () => {
       });
     });
 
-    describe('if the MetaMetrics ID is undefined', () => {
+    describe('if the analytics ID is undefined', () => {
       const analyticsId = undefined;
 
       it('returns false', async () => {
@@ -227,7 +227,7 @@ describe('shouldCreateRpcServiceEvents', () => {
       });
     });
 
-    describe('if the MetaMetrics ID is null', () => {
+    describe('if the analytics ID is null', () => {
       const analyticsId = null;
 
       it('returns false', async () => {

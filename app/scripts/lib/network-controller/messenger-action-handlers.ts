@@ -29,7 +29,7 @@ import { shouldCreateRpcServiceEvents } from './utils';
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
- * @param args.analyticsId - The MetaMetrics ID of the user.
+ * @param args.analyticsId - The analytics ID of the user.
  * @param args.trackEvent - The function that will create the Segment event.
  */
 export function onRpcEndpointUnavailable({
@@ -74,7 +74,7 @@ export function onRpcEndpointUnavailable({
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
- * @param args.analyticsId - The MetaMetrics ID of the user.
+ * @param args.analyticsId - The analytics ID of the user.
  * @param args.retryReason - The category of error that was retried (only
  * present when `type` is `'retries_exhausted'`).
  * @param args.rpcMethodName - The JSON-RPC method that was being executed.
@@ -138,7 +138,7 @@ export function onRpcEndpointDegraded({
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
- * @param args.analyticsId - The MetaMetrics ID of the user.
+ * @param args.analyticsId - The analytics ID of the user.
  * @param args.retryReason - The category of error that was retried (only
  * present for degraded events when `type` is `'retries_exhausted'`).
  * @param args.rpcMethodName - The JSON-RPC method that was being executed
