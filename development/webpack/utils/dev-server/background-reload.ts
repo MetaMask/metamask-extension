@@ -1,12 +1,13 @@
 import { createHash } from 'node:crypto';
-import { resolve } from 'node:path';
 import type { Compilation, Compiler, Entrypoint, Module } from 'webpack';
 import type WebpackDevServer from 'webpack-dev-server';
 import { ManifestPlugin } from '../plugins/ManifestPlugin';
 import {
   BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
   BACKGROUND_RELOAD_MESSAGE_TYPE,
-} from './background-reload-protocol';
+  UI_RELOAD_MESSAGE_TYPE,
+} from './reload-protocol';
+import { createAnnouncer, getClientEntry } from './websocket';
 
 /**
  * Matches the entries of privileged HTML pages that cannot self-reload: the
@@ -147,7 +148,9 @@ const fingerprintCompilation = (
  * clients and to every client that connects later. The client decides whether
  * to reload by comparing against the fingerprint of its own running code, so
  * there are no reload loops on startup and no missed reloads after a
- * disconnect.
+ * disconnect. Builds that leave the fingerprint unchanged didn't touch
+ * privileged code, so the UI build hash is announced instead (via
+ * {@link UI_RELOAD_MESSAGE_TYPE}) so that UI pages can reload themselves.
  *
  * @param devServer - The running webpack dev server.
  * @param compilers - The compilers attached to the dev server.
@@ -156,46 +159,20 @@ export function setupBackgroundReload(
   devServer: WebpackDevServer,
   compilers: Compiler[],
 ): void {
-  const { host, port } = devServer.options;
-  const url = `ws://${host ?? 'localhost'}:${port}/ws`;
-  const clientRequest = `${resolve(__dirname, 'background-reload-client.ts')}?url=${encodeURIComponent(url)}`;
+  const backgroundClientEntry = getClientEntry(
+    devServer,
+    'background-reload-client.ts',
+  );
 
-  // The latest fingerprint per compiler, combined into the announced payload.
+  const announceFingerprint = createAnnouncer(
+    devServer,
+    BACKGROUND_RELOAD_MESSAGE_TYPE,
+  );
+  const announceHash = createAnnouncer(devServer, UI_RELOAD_MESSAGE_TYPE);
+
+  // The fingerprint of each compiler's last good build, for deciding whether
+  // a build needs an extension reload or a UI page reload.
   const fingerprints = new Map<Compiler, string>();
-  let announced: string | undefined;
-  let connectionListenerInstalled = false;
-
-  const announce = (): void => {
-    const server = devServer.webSocketServer;
-    if (!server) {
-      // Not created yet (it appears early in `WebpackDevServer.start()`, long
-      // before the first build finishes); the next build re-announces.
-      return;
-    }
-    if (!connectionListenerInstalled) {
-      connectionListenerInstalled = true;
-      // Push the current fingerprint to every (re)connecting client, so a
-      // change built while the client was disconnected (e.g. the MV3 service
-      // worker was idle-terminated by the browser) still triggers a reload.
-      // `implementation` is the underlying `ws` server (the default transport).
-      server.implementation.on('connection', (socket) => {
-        if (announced !== undefined) {
-          devServer.sendMessage(
-            [socket],
-            BACKGROUND_RELOAD_MESSAGE_TYPE,
-            announced,
-          );
-        }
-      });
-    }
-    const payload = [...fingerprints.values()].sort().join('|');
-    announced = payload;
-    devServer.sendMessage(
-      server.clients,
-      BACKGROUND_RELOAD_MESSAGE_TYPE,
-      payload,
-    );
-  };
 
   for (const compiler of compilers) {
     const manifestPlugin = findManifestPlugin(compiler);
@@ -208,13 +185,13 @@ export function setupBackgroundReload(
       // MV3: the service worker loads exactly one file, so the client must be
       // part of that chunk. Pass only `name` so webpack merges this dependency
       // into the existing entry without a conflicting-entry-option error.
-      new compiler.webpack.EntryPlugin(compiler.context, clientRequest, {
+      new compiler.webpack.EntryPlugin(compiler.context, backgroundClientEntry, {
         name: serviceWorkerEntryName,
       }).apply(compiler);
     } else {
       // MV2: register a standalone entry; `HtmlBundlerPlugin.beforeEmit` injects
       // it as a `<script>` into the background page.
-      new compiler.webpack.EntryPlugin(compiler.context, clientRequest, {
+      new compiler.webpack.EntryPlugin(compiler.context, backgroundClientEntry, {
         name: BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
         chunkLoading: false,
       }).apply(compiler);
@@ -226,11 +203,21 @@ export function setupBackgroundReload(
       if (stats.hasErrors()) {
         return;
       }
-      fingerprints.set(
-        compiler,
-        fingerprintCompilation(stats.compilation, manifestPlugin.addedScripts),
+      const previous = fingerprints.get(compiler);
+      const next = fingerprintCompilation(
+        stats.compilation,
+        manifestPlugin.addedScripts,
       );
-      announce();
+      fingerprints.set(compiler, next);
+      announceFingerprint(compiler, next);
+      // An unchanged fingerprint means no extension reload is coming to tear
+      // the UI pages down, so the UI build hash is announced so that the pages
+      // can reload themselves. The first build of a server session announces too:
+      // a page kept open across a dev-server restart would otherwise never
+      // learn that its code changed.
+      if (previous === undefined || previous === next) {
+        announceHash(compiler, stats.compilation.hash ?? '');
+      }
     });
   }
 }

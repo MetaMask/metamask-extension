@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
-import { BACKGROUND_RELOAD_MESSAGE_TYPE } from './background-reload-protocol';
+import { connectToDevServer } from './connect-to-dev-server';
+import { BACKGROUND_RELOAD_MESSAGE_TYPE } from './reload-protocol';
 
 // `__resourceQuery` is the query string of the request that pulled this module
 // in as an entry (e.g. `?url=ws%3A%2F%2Flocalhost%3A8080%2Fws`). webpack
@@ -8,8 +9,6 @@ import { BACKGROUND_RELOAD_MESSAGE_TYPE } from './background-reload-protocol';
 declare const __resourceQuery: string;
 
 const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
-
-const MAX_RECONNECT_DELAY_MS = 5_000;
 
 // Storage key holding the fingerprint of the currently running code. The
 // record must outlive the MV3 service worker, which Chrome idle-terminates and
@@ -62,7 +61,7 @@ async function onFingerprint(
   socket: WebSocket,
 ): Promise<void> {
   const stored = await getStoredFingerprint();
-  // Re-check `reloading` after the await: another announcement may have begun
+  // Re-check `reloading`: another announcement may have begun
   // a reload while this one was reading storage.
   if (reloading || stored === fingerprint) {
     return;
@@ -84,91 +83,14 @@ async function onFingerprint(
   browser.runtime.reload();
 }
 
-/**
- * Schedules a reconnection attempt with exponential backoff.
- *
- * @param url - The WebSocket URL to reconnect to.
- * @param previousAttempt - The number of the attempt that just failed.
- */
-function scheduleReconnect(url: string, previousAttempt: number): void {
-  const attempt = previousAttempt + 1;
-  const delay = Math.min(2 ** attempt * 100, MAX_RECONNECT_DELAY_MS);
-  setTimeout(() => connect(url, attempt), delay);
-}
-
-/**
- * Opens the dev-server WebSocket and processes its fingerprint announcements.
- *
- * @param url - The WebSocket URL to connect to.
- * @param reconnectAttempt - The current reconnection attempt count (0 on first
- * connect).
- */
-function connect(url: string, reconnectAttempt = 0): void {
-  let attempt = reconnectAttempt;
-  let socket: WebSocket;
-  try {
-    socket = new WebSocket(url);
-  } catch {
-    scheduleReconnect(url, attempt);
-    return;
-  }
-
-  socket.addEventListener('open', () => {
-    attempt = 0;
-  });
-
-  socket.addEventListener('message', (event: MessageEvent) => {
-    if (reloading || typeof event.data !== 'string') {
-      return;
-    }
-    let message: { type?: string; data?: unknown };
-    try {
-      message = JSON.parse(event.data);
-    } catch {
-      return;
-    }
-    if (
-      message.type === BACKGROUND_RELOAD_MESSAGE_TYPE &&
-      typeof message.data === 'string'
-    ) {
-      void onFingerprint(message.data, socket);
-    }
-  });
-
-  // A failed connection also fires `close` (after its `error`), so this handler
-  // covers both connection failures and later disconnects.
-  socket.addEventListener('close', () => {
-    if (!reloading) {
-      scheduleReconnect(url, attempt);
-    }
-  });
-}
-
-// Only run where WebSocket is available (MV3 service workers support it in
-// current browsers). Otherwise this is a no-op rather than a reconnect loop.
-if (typeof WebSocket !== 'undefined' && socketUrl) {
-  connect(socketUrl);
-}
-
-// `runtime.reload()` leaves any open extension tabs orphaned on Firefox: the
-// documents stay rendered but are bound to the torn-down extension instance,
-// so they can never reconnect to this one (Chrome just closes them instead).
-// Reload them so they boot against this instance. MV2 only: its persistent
-// background page starts once per extension lifetime, whereas the MV3 service
-// worker would re-run this on every idle-restart and reload healthy tabs.
-if (browser.runtime.getManifest().manifest_version === 2) {
-  const ownOrigin = browser.runtime.getURL('');
-  browser.tabs
-    .query({})
-    .then((tabs) => {
-      for (const tab of tabs) {
-        if (tab.id !== undefined && tab.url?.startsWith(ownOrigin)) {
-          void browser.tabs.reload(tab.id);
-        }
+if (socketUrl) {
+  connectToDevServer(
+    socketUrl,
+    () => reloading,
+    (type, data, socket) => {
+      if (type === BACKGROUND_RELOAD_MESSAGE_TYPE && typeof data === 'string') {
+        onFingerprint(data, socket);
       }
-    })
-    .catch(() => {
-      // If the tabs can't be enumerated, the orphaned pages just stay until
-      // manually refreshed — same as without this block.
-    });
+    },
+  );
 }

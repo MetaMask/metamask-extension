@@ -6,7 +6,8 @@ import { setupBackgroundReload } from './background-reload';
 
 export const DEV_SERVER_OPTIONS: Configuration = {
   hot: false,
-  liveReload: true,
+  // We use our own logic to decide when to reload.
+  liveReload: false,
   // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
   host: 'localhost',
   // pick a free port at startup.
@@ -31,9 +32,9 @@ export const DEV_SERVER_OPTIONS: Configuration = {
       'compilers' in devServer.compiler
         ? devServer.compiler.compilers
         : [devServer.compiler];
-    // UI pages reload themselves when their code changes.
+    // Injects the dev-server client and the ui-reload client into UI pages.
     setupUiReload(devServer, compilers);
-    // Background page, service worker, and content scripts reload themselves when their code changes.
+    // Injects the background-reload client into the background/service worker context.
     setupBackgroundReload(devServer, compilers);
     return middlewares;
   },

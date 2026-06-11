@@ -17,8 +17,10 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
-import { UI_RELOAD_CLIENT_ENTRY_NAME } from '../../dev-server/ui-reload';
-import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from '../../dev-server/background-reload-protocol';
+import {
+  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+  UI_RELOAD_CLIENT_ENTRY_NAME,
+} from '../../dev-server/reload-protocol';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,

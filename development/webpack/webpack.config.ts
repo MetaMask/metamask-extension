@@ -39,8 +39,10 @@ import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 import { injectEntryScripts } from './utils/dev-server';
-import { UI_RELOAD_CLIENT_ENTRY_NAME } from './utils/dev-server/ui-reload';
-import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from './utils/dev-server/background-reload-protocol';
+import {
+  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+  UI_RELOAD_CLIENT_ENTRY_NAME,
+} from './utils/dev-server/reload-protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 
 const buildTypes = loadBuildTypesConfig();

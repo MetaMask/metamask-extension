@@ -5,7 +5,7 @@ import {
   logWatchBuildStats,
   suppressDevServerInfoLogs,
 } from '../utils/dev-server';
-import { getDevServerClientUrl } from '../utils/dev-server/ui-reload';
+import { getDevServerClientEntry } from '../utils/dev-server/ui-reload';
 
 describe('./utils/dev-server', () => {
   afterEach(() => mock.restoreAll());
@@ -139,24 +139,24 @@ describe('./utils/dev-server', () => {
     });
   });
 
-  describe('getDevServerClientUrl', () => {
+  describe('getDevServerClientEntry', () => {
     const parse = (url: string) => {
       const [base, query] = url.split('?');
       return { base, params: new URLSearchParams(query) };
     };
 
     it('returns the webpack-dev-server client base path', () => {
-      const { base } = parse(getDevServerClientUrl({}));
+      const { base } = parse(getDevServerClientEntry({}));
       assert.strictEqual(base, 'webpack-dev-server/client/index');
     });
 
     it('always sets protocol=ws (extension pages cannot auto-detect WS protocol)', () => {
-      const { params } = parse(getDevServerClientUrl({}));
+      const { params } = parse(getDevServerClientEntry({}));
       assert.strictEqual(params.get('protocol'), 'ws');
     });
 
     it('omits hostname/port/hot/live-reload when the corresponding fields are unset', () => {
-      const { params } = parse(getDevServerClientUrl({}));
+      const { params } = parse(getDevServerClientEntry({}));
       assert.strictEqual(params.has('hostname'), false);
       assert.strictEqual(params.has('port'), false);
       assert.strictEqual(params.has('hot'), false);
@@ -164,36 +164,36 @@ describe('./utils/dev-server', () => {
     });
 
     it('maps `host` to the `hostname` param', () => {
-      const { params } = parse(getDevServerClientUrl({ host: 'localhost' }));
+      const { params } = parse(getDevServerClientEntry({ host: 'localhost' }));
       assert.strictEqual(params.get('hostname'), 'localhost');
     });
 
     it('forwards a numeric port as a string', () => {
-      const { params } = parse(getDevServerClientUrl({ port: 12345 }));
+      const { params } = parse(getDevServerClientEntry({ port: 12345 }));
       assert.strictEqual(params.get('port'), '12345');
     });
 
     it("forwards `port: 'auto'` as the string 'auto'", () => {
-      const { params } = parse(getDevServerClientUrl({ port: 'auto' }));
+      const { params } = parse(getDevServerClientEntry({ port: 'auto' }));
       assert.strictEqual(params.get('port'), 'auto');
     });
 
     it('forwards `hot` as a string', () => {
-      const hotTrue = parse(getDevServerClientUrl({ hot: true }));
+      const hotTrue = parse(getDevServerClientEntry({ hot: true }));
       assert.strictEqual(hotTrue.params.get('hot'), 'true');
 
-      const hotFalse = parse(getDevServerClientUrl({ hot: false }));
+      const hotFalse = parse(getDevServerClientEntry({ hot: false }));
       assert.strictEqual(hotFalse.params.get('hot'), 'false');
     });
 
     it('maps `liveReload` to the `live-reload` param', () => {
-      const { params } = parse(getDevServerClientUrl({ liveReload: true }));
+      const { params } = parse(getDevServerClientEntry({ liveReload: true }));
       assert.strictEqual(params.get('live-reload'), 'true');
       assert.strictEqual(params.has('liveReload'), false);
     });
 
     it('combines all fields into a single query string', () => {
-      const url = getDevServerClientUrl({
+      const url = getDevServerClientEntry({
         host: 'localhost',
         port: 8080,
         hot: false,
