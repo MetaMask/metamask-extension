@@ -47,6 +47,12 @@ class ActivityListPage extends HomePage {
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
 
+  private readonly transactionBreakdownRowValue = (rowIndex: number) => ({
+    css: `[data-testid="transaction-breakdown-row"]:nth-child(${
+      2 + rowIndex
+    }) [data-testid="transaction-breakdown-row-value"]`,
+  });
+
   private readonly transactionStatusLabel = '.transaction-status-label';
 
   private readonly popoverClose = '[data-testid="popover-close"]';
@@ -503,6 +509,19 @@ class ActivityListPage extends HomePage {
     await this.driver.waitForSelector({
       css: this.transactionAmountsInActivity,
       text: transactionAmount,
+    });
+  }
+
+  async checkTransactionBreakdownRowValue(
+    rowIndex: number,
+    expectedText: string,
+  ): Promise<void> {
+    console.log(
+      `Check transaction breakdown row ${rowIndex} value is ${expectedText}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.transactionBreakdownRowValue(rowIndex).css,
+      text: expectedText,
     });
   }
 
