@@ -19,6 +19,7 @@ import type { MetaMaskReduxState } from '../../../store/store';
 import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { AccountName } from '../../../components/app/transaction/account-name';
+import { TransactionId } from '../../../components/app/transaction/transaction-id';
 import { Footer, Row, Section } from '../components/shared';
 import { TokenRow } from '../components/token-row';
 import { FeesRows, TotalAmountRow } from '../components/amounts-section';
@@ -145,6 +146,10 @@ export function BridgeDetails({
                 <NetworkName chainId={sourceChainId} />
               )
             }
+          />
+          <Row
+            label={t('transactionIdLabel')}
+            value={<TransactionId value={sourceTxHash} />}
           />
         </Section>
 

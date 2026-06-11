@@ -8,6 +8,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { AccountName } from '../../../components/app/transaction/account-name';
+import { TransactionId } from '../../../components/app/transaction/transaction-id';
 import { Row, Section } from './shared';
 import { TokenRow } from './token-row';
 
@@ -78,6 +79,11 @@ export function MetadataSection({
       <Row
         label={t('network')}
         value={<NetworkName chainId={item.chainId} />}
+      />
+
+      <Row
+        label={t('transactionIdLabel')}
+        value={<TransactionId value={item.data.hash} />}
       />
     </Section>
   );
