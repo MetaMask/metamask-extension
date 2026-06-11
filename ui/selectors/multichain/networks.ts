@@ -664,8 +664,8 @@ export type MultichainNetwork = {
   nickname: string;
   isEvmNetwork: boolean;
   chainId: CaipChainId;
-  network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
-  ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
+  // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
+  network: ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
 };
 
 const MULTICHAIN_NETWORK_PROVIDERS: MultichainProviderConfig[] = Object.values(

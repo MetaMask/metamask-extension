@@ -12,7 +12,7 @@ export function MetaMaskTestReduxProvider({
   children,
 }: MetaMaskTestReduxProviderProps) {
   return (
-    <Provider store={store} stabilityCheck="never" noopCheck="never">
+    <Provider store={store}>
       {children}
     </Provider>
   );
