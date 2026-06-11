@@ -3,18 +3,16 @@ import { hasMinimumRequiredVersion } from './remote-feature-flag-utils';
 
 /**
  * LaunchDarkly flag key for the active-tab domain metrics allowlist.
- * Adding new domains requires a governance/privacy review before inclusion
- * in the flag.
+ * Adding new domains requires a governance/privacy review before inclusion.
  */
 export const ACTIVE_TAB_DOMAIN_METRICS_FLAG =
-  'extension-ux-active-domain-metrics';
+  'extensionUxActiveDomainMetrics';
 
 type ActiveTabDomainMetricsFlagSource = Pick<
   RemoteFeatureFlagControllerState,
   'remoteFeatureFlags'
 >;
 
-/** Expected shape of the LaunchDarkly flag value. */
 type ActiveTabDomainFlag = {
   value: unknown[];
   minimumVersion: string;
@@ -32,8 +30,7 @@ const isNonEmptyString = (v: unknown): v is string =>
   typeof v === 'string' && v.length > 0;
 
 /**
- * Returns the domain allowlist sourced from the remote feature flag.
- * Expected flag shape: `{ value: string[], minimumVersion: string }`
+ * Returns the allowlist from the remote feature flag.
  *
  * @param source - Remote feature flag controller state slice.
  */
@@ -41,7 +38,6 @@ export function getActiveTabDomainAllowlist(
   source?: ActiveTabDomainMetricsFlagSource,
 ): string[] {
   const flag = source?.remoteFeatureFlags?.[ACTIVE_TAB_DOMAIN_METRICS_FLAG];
-
   if (!isActiveTabDomainFlag(flag)) {
     return [];
   }
@@ -50,8 +46,7 @@ export function getActiveTabDomainAllowlist(
     return [];
   }
 
-  const validated = flag.value.filter(isNonEmptyString);
-  return validated;
+  return flag.value.filter(isNonEmptyString);
 }
 
 /**
