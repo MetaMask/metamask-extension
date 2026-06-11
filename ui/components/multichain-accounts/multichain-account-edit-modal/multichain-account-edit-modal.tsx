@@ -1,19 +1,23 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
-  ButtonSecondary,
-  FormTextField,
+  Box,
+  BoxFlexDirection,
+  Button,
+  ButtonVariant,
+  HelpText,
+  HelpTextSeverity,
+  Input,
+  Label,
   Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-} from '../../component-library';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountGroupName } from '../../../store/actions';
-import { FontWeight } from '../../../helpers/constants/design-system';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 
 export type MultichainAccountEditModalProps = {
@@ -66,35 +70,44 @@ export const MultichainAccountEditModal = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose} onBack={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+          onBack={onClose}
+          backButtonProps={{ ariaLabel: t('back') }}
+        >
           {t('rename')}
         </ModalHeader>
         <ModalBody>
           <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={4}>
             <Box>
-              <FormTextField
-                label={t('accountName')}
+              <Label htmlFor="account-name-input">{t('accountName')}</Label>
+              <Input
+                id="account-name-input"
                 aria-label={t('accountName')}
                 data-testid="account-name-input"
                 value={accountName}
                 onChange={(e) => setAccountName(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={currentAccountName}
-                error={showErrorMessage}
-                helpText={helpText}
-                helpTextProps={{ fontWeight: FontWeight.Medium }}
+                aria-invalid={showErrorMessage}
                 autoFocus
               />
+              {showErrorMessage && (
+                <HelpText severity={HelpTextSeverity.Danger}>
+                  {helpText}
+                </HelpText>
+              )}
             </Box>
-            <ButtonSecondary
+            <Button
+              variant={ButtonVariant.Secondary}
               onClick={handleSave}
               disabled={!accountName.trim()}
               aria-label={t('confirm')}
-              block
-              marginTop={4}
+              className="w-full mt-4"
             >
               {t('confirm')}
-            </ButtonSecondary>
+            </Button>
           </Box>
         </ModalBody>
       </ModalContent>
