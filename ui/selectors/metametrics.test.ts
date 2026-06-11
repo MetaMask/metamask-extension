@@ -1,4 +1,5 @@
 import {
+  getCompletedMetaMetricsOnboarding,
   getIsParticipateInMetaMetricsSet,
   getOptedIn,
   getParticipateInMetaMetrics,
@@ -42,6 +43,19 @@ describe('MetaMetrics selectors', () => {
   it('returns whether the user has opted in to analytics', () => {
     expect(getOptedIn(state({ optedIn: true }))).toBe(true);
     expect(getOptedIn(state({ optedIn: false }))).toBe(false);
+  });
+
+  it('returns whether metrics onboarding has been completed', () => {
+    expect(
+      getCompletedMetaMetricsOnboarding(
+        state({ completedMetaMetricsOnboarding: true }),
+      ),
+    ).toBe(true);
+    expect(
+      getCompletedMetaMetricsOnboarding(
+        state({ completedMetaMetricsOnboarding: false }),
+      ),
+    ).toBe(false);
   });
 
   it('returns the AnalyticsController analytics ID', () => {
