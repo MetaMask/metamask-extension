@@ -122,8 +122,10 @@ import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controlle
 
 import {
   SeedlessOnboardingControllerErrorMessage,
+  SeedlessOnboardingMigrationVersion,
   SecretType,
   RecoveryError,
+  EncAccountDataType,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -447,6 +449,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
+import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -467,6 +470,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import('@metamask/seedless-onboarding-controller').SecretMetadata} SecretMetadata
  */
 
 // Types of APIs
@@ -4289,6 +4293,11 @@ export default class MetamaskController extends EventEmitter {
       );
       createSeedPhraseBackupSuccess = true;
 
+      // Set migration version for new users so migration never runs
+      this.seedlessOnboardingController.setMigrationVersion(
+        SeedlessOnboardingMigrationVersion.V1,
+      );
+
       await this.syncKeyringEncryptionKey();
     } catch (error) {
       this.controllerMessenger?.captureException?.(
@@ -4309,10 +4318,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Fetches and restores all the backed-up Secret Data (SRPs and Private keys)
+   * Fetches all backed-up Secret Data (SRPs and Private keys) from the server.
    *
    * @param {string} password - The user's password.
-   * @returns {Promise<Buffer[]>} The seed phrase.
+   * @returns {Promise<SecretMetadata[]>} Array of secret metadata items.
    */
   async fetchAllSecretData(password) {
     let fetchAllSeedPhrasesSuccess = false;
@@ -4762,9 +4771,13 @@ export default class MetamaskController extends EventEmitter {
           name: TraceName.OnboardingAddSrp,
           op: TraceOperation.OnboardingSecurityOp,
         });
+
+        // Run data type migration before adding new SRP to ensure data consistency.
+        await runSeedlessOnboardingMigrations(this.controllerMessenger);
+
         await this.seedlessOnboardingController.addNewSecretData(
           seedPhraseAsUint8Array,
-          SecretType.Mnemonic,
+          EncAccountDataType.ImportedSrp,
           {
             keyringId,
           },
@@ -5084,11 +5097,9 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Restores an array of seed phrases to the vault and updates the SocialBackupMetadataState if import is successful.
+   * Restores an array of seed phrases to the vault.
    *
-   * This method is used to restore seed phrases from the Social Backup.
-   *
-   * @param {{data: Uint8Array, type: SecretType, timestamp: number, version: number}[]} secretDatas - The seed phrases to restore.
+   * @param {SecretMetadata[]} secretDatas - The secret metadata items to restore.
    * @returns {Promise<void>}
    */
   async restoreSeedPhrasesToVault(secretDatas) {
@@ -5538,7 +5549,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
-    return this.#withKeyringForDevice(
+    return await this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         let accounts = [];
@@ -7358,6 +7369,7 @@ export default class MetamaskController extends EventEmitter {
         this.phishingController,
         this.preferencesController,
         this.getPermittedAccounts.bind(this),
+        sender?.url,
       ),
     );
 

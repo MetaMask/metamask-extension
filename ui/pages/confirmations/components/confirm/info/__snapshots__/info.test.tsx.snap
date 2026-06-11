@@ -393,7 +393,7 @@ exports[`Info renders info section for approve request 1`] = `
               data-testid="native-icon"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
               >
                 <span
                   class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -752,7 +752,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
               data-testid="native-icon"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
               >
                 <span
                   class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -1369,7 +1369,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
               data-testid="native-icon"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
               >
                 <span
                   class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -2366,7 +2366,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"
@@ -2427,7 +2427,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"
@@ -2558,7 +2558,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"
@@ -2619,7 +2619,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"
@@ -2680,7 +2680,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"

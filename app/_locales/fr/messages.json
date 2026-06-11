@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Position longue ouverte"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "L’ouverture de position longue a échoué"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Frais d’approvisionnement reçus"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Le retrait a échoué"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Le retrait a échoué"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Retirer des fonds"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Retirer des fonds"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Retrait sur le perps"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Retrait sur le perps"
   },
   "activity_predictionCashedOut_failed_description": {
