@@ -36,6 +36,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import {
   getAllTokens,
   getSelectedEvmInternalAccount,
@@ -298,6 +299,7 @@ export function AssetPickerModal({
 
       if (
         isEvm &&
+        selectedNetwork.chainId !== CHAIN_IDS.ARC &&
         shouldAddToken(
           nativeToken.symbol,
           nativeToken.address,

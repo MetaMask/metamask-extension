@@ -41,7 +41,7 @@ import type {
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
-import { TEST_CHAINS } from '../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
@@ -818,9 +818,32 @@ const selectAccountsStateForBalances = createSelector(
 /**
  * Wraps token balances for core balance computations.
  */
+const ARC_ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
 const selectTokenBalancesStateForBalances = createSelector(
   [getTokenBalances],
-  (tokenBalances) => ({ tokenBalances }),
+  (tokenBalances) => {
+    // Strip the Arc native token (zero address) so it is excluded from the
+    // aggregated balance — USDC is the display currency on Arc, not the native.
+    const result: typeof tokenBalances = {};
+    for (const [account, chainMap] of Object.entries(tokenBalances)) {
+      result[account] = {};
+      for (const [chainId, addressMap] of Object.entries(chainMap)) {
+        if (chainId === CHAIN_IDS.ARC) {
+          const filtered: typeof addressMap = {};
+          for (const [address, balance] of Object.entries(addressMap)) {
+            if (address.toLowerCase() !== ARC_ZERO_ADDRESS) {
+              filtered[address] = balance;
+            }
+          }
+          result[account][chainId] = filtered;
+        } else {
+          result[account][chainId] = addressMap;
+        }
+      }
+    }
+    return { tokenBalances: result };
+  },
 );
 
 /**
@@ -1449,21 +1472,36 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   } as AssetListState;
 };
 
+function filterArcNativeToken<T extends { isNative?: boolean }>(
+  assets: Record<string, T[]>,
+): Record<string, T[]> {
+  const arcAssets = assets[CHAIN_IDS.ARC];
+  if (!arcAssets) {
+    return assets;
+  }
+  return {
+    ...assets,
+    [CHAIN_IDS.ARC]: arcAssets.filter((asset) => !asset.isNative),
+  };
+}
+
 export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
-    selectAssetsBySelectedAccountGroup(assetListState),
+    filterArcNativeToken(selectAssetsBySelectedAccountGroup(assetListState)),
 );
 
 export const getAssetsBySelectedAccountGroupIncludingHidden =
   createDeepEqualSelector(
     getStateForAssetSelector,
     (assetListState: AssetListState) =>
-      selectAssetsBySelectedAccountGroup({
-        ...assetListState,
-        allIgnoredTokens: EMPTY_OBJECT,
-        allIgnoredAssets: EMPTY_OBJECT,
-      }),
+      filterArcNativeToken(
+        selectAssetsBySelectedAccountGroup({
+          ...assetListState,
+          allIgnoredTokens: EMPTY_OBJECT,
+          allIgnoredAssets: EMPTY_OBJECT,
+        }),
+      ),
   );
 
 export const selectAccountSupportsEnabledNetworks = createSelector(
