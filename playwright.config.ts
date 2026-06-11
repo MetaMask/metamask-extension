@@ -89,14 +89,19 @@ const config: PlaywrightTestConfig = {
       timeout: 600 * 1000, // 10 minutes
     },
     // Migrated Selenium specs running through the PlaywrightDriver shim.
-    // See docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md.
-    // The browser fixtures from `use` are inert here — withFixtures spawns
-    // its own Playwright context via buildPlaywrightDriver.
+    //
+    // `use.*` options (video, trace, viewport, etc.) are inert here: these
+    // specs don't consume Playwright's built-in `page`/`context` fixtures.
+    // withFixtures spawns its own context via buildPlaywrightDriver →
+    // launchPersistentContext, which the runner never sees and therefore
+    // can't apply config to. To honor any `use.*` option, plumb it through
+    // the harness explicitly (see how `headless` is wired).
     {
       name: 'chrome-e2e',
       testDir: 'test/e2e/tests',
       testMatch: '**/*.pw.spec.ts',
       fullyParallel: false,
+      workers: 1,
       timeout: 5 * 60 * 1000,
     },
     {
@@ -104,6 +109,7 @@ const config: PlaywrightTestConfig = {
       testDir: 'test/e2e/tests',
       testMatch: '**/*.pw.spec.ts',
       fullyParallel: false,
+      workers: 1,
       timeout: 5 * 60 * 1000,
     },
   ],
