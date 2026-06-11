@@ -163,6 +163,7 @@
   },
   "resolutions": {
     "@metamask/bridge-controller": "74.0.0",
+    "@metamask/keyring-controller": "^26.0.0",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "32.0.0",
     "follow-redirects": "^1.16.0",
