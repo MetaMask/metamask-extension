@@ -3,6 +3,7 @@ import {
   BridgeController,
   BridgeControllerMessenger,
   UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { handleFetch, HttpError } from '@metamask/controller-utils';
 import { TransactionController } from '@metamask/transaction-controller';
@@ -18,6 +19,10 @@ import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
+import {
+  getActiveTabDomainAllowlist,
+  getActiveTabDomainForMetrics,
+} from '../../../shared/lib/active-tab-domain-metrics';
 import { MessengerClientInitFunction } from './types';
 import { BridgeControllerInitMessenger } from './messengers';
 
@@ -94,12 +99,36 @@ export const BridgeControllerInit: MessengerClientInitFunction<
 
     trackMetaMetricsFn: (event, properties) => {
       const actionId = (Date.now() + Math.random()).toString();
+
+      let activeTabDomain: string | undefined;
+      if (event === UnifiedSwapBridgeEventName.Submitted) {
+        try {
+          const appStateController = getMessengerClient('AppStateController');
+          const remoteFeatureFlagController = getMessengerClient(
+            'RemoteFeatureFlagController',
+          );
+          const activeTabOrigin =
+            appStateController?.state?.appActiveTab?.origin;
+          const allowlist = getActiveTabDomainAllowlist(
+            remoteFeatureFlagController?.state,
+          );
+          activeTabDomain = getActiveTabDomainForMetrics(
+            activeTabOrigin,
+            allowlist,
+          );
+        } catch {
+          // Intentionally empty
+        }
+      }
+
       initMessenger.call('MetaMetricsController:trackEvent', {
         category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
         event,
         properties: {
           ...(properties ?? {}),
           environmentType: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
           actionId,
         },
       });
