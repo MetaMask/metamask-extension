@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { URDecoder } from '@ngraveio/bc-ur';
+import log from 'loglevel';
 import {
   UrType,
   PAIRING_EXPECTED_UR_TYPES,
@@ -297,6 +298,62 @@ describe('useDecoderLifecycle', () => {
         rawMessage: 'cbor decode failure',
       });
       expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    it('calls log.warn with the raw exception for ScanException errors', () => {
+      const warnSpy = jest.spyOn(log, 'warn').mockImplementation();
+      const thrownError = new Error('cbor decode failure');
+      const mockInstance = {
+        isComplete: jest.fn().mockReturnValue(false),
+        isError: jest.fn().mockReturnValue(false),
+        receivePart: jest.fn().mockImplementation(() => {
+          throw thrownError;
+        }),
+        estimatedPercentComplete: jest.fn(),
+        resultUR: jest.fn(),
+      };
+      mockURDecoder.mockImplementation(
+        () => mockInstance as unknown as URDecoder,
+      );
+
+      const { result } = renderDecoderHook();
+
+      act(() => {
+        result.current.handleScan('ur:crypto-hdkey/corrupted-data');
+      });
+
+      expect(warnSpy).toHaveBeenCalledWith('QR scan exception', thrownError);
+      warnSpy.mockRestore();
+    });
+
+    it('does not call log.warn for NonUrQrScanned errors', () => {
+      const warnSpy = jest.spyOn(log, 'warn').mockImplementation();
+      const mockInstance = {
+        isComplete: jest.fn().mockReturnValue(false),
+        isError: jest.fn().mockReturnValue(false),
+        receivePart: jest.fn().mockImplementation(() => {
+          throw new Error('invalid payload');
+        }),
+        estimatedPercentComplete: jest.fn(),
+        resultUR: jest.fn(),
+      };
+      mockURDecoder.mockImplementation(
+        () => mockInstance as unknown as URDecoder,
+      );
+
+      const { result } = renderDecoderHook();
+
+      act(() => {
+        result.current.handleScan('bad-data');
+      });
+
+      expect(mockSetScanError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: ScanErrorCategory.NonUrQrScanned,
+        }),
+      );
+      expect(warnSpy).not.toHaveBeenCalled();
+      warnSpy.mockRestore();
     });
 
     it('classifies as UrDecodeError when decoder enters error state', () => {
