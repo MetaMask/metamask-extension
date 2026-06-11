@@ -1,5 +1,9 @@
 import React, { memo, useCallback, useState } from 'react';
-import { Box, BoxAlignItems, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   BackgroundColor,
   IconColor,

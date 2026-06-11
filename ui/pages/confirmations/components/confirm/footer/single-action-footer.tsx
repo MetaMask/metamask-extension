@@ -2,7 +2,11 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
-import { BoxFlexDirection, Button, ButtonSize } from '@metamask/design-system-react';
+import {
+  BoxFlexDirection,
+  Button,
+  ButtonSize,
+} from '@metamask/design-system-react';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -11,7 +15,6 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
-
 
 type ButtonState = {
   buttonText: string;
