@@ -85,8 +85,8 @@ AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [Me
 Zero-config setup:
 
 ```bash
-yarn install # clones MetaMask/skills into .skills-cache/metamask-skills
-yarn skills  # syncs all default skills from the cache
+yarn install # refreshes the MetaMask/skills cache via the shared `@metamask/skills` CLI
+yarn skills  # syncs all default skills through the `metamask-skills sync` command
 ```
 
 Optional local configuration:
@@ -100,7 +100,7 @@ SKILLS_DOMAINS=perps,testing yarn skills      # one-off domain override
 
 Use `.skills.local` for persistent skills configuration. Shell environment variables with the same names are supported for one-off or CI overrides and take precedence.
 
-Skipping `yarn skills` is fine — it only affects agent tooling, not the app build.
+Skipping `yarn skills` is fine — it only affects agent tooling, not the app build. The repo uses the shared `@metamask/skills` package so sync/cache behavior stays uniform across MetaMask packages. To opt into best-effort regeneration during install/setup, set `SKILLS_AUTO_UPDATE=1` in your shell or `.skills.local`.
 
 ## Git Hooks
 
