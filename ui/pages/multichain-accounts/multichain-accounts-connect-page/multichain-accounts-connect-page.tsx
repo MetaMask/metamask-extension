@@ -83,8 +83,7 @@ import { useAccountGroupsForPermissions } from '../../../hooks/useAccountGroupsF
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
-  // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-} from '../../permissions-connect/connect-page/utils';
+} from '../../../helpers/utils/caip25-permissions';
 import { MultichainSiteCell } from '../../../components/multichain-accounts/multichain-site-cell/multichain-site-cell';
 import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
