@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker"
+        >
+          <div
+            class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--datetime css-n5zogd-MuiFormControl-root-MuiTextField-root"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+            >
+              <input
+                aria-invalid="false"
+                aria-label="Choose date, selected date is Jun 2, 2026"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id="mui-1"
+                inputmode="text"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;

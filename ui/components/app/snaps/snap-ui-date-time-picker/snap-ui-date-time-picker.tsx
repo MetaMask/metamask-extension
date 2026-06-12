@@ -82,8 +82,8 @@ function parseInitialIsoValue(
  * @param props.form - The form identifier.
  * @param props.disabled - Whether the picker is disabled.
  * @param props.error - The error message to display.
- * @param props.disablePast - Whether to disable past dates.
- * @param props.disableFuture - Whether to disable future dates.
+ * @param props.disablePast - Whether to disable past dates (only for date and datetime types).
+ * @param props.disableFuture - Whether to disable future dates (only for date and datetime types).
  * @param props.placeholder - The placeholder text for the picker.
  * @returns The DateTimePicker component.
  */
@@ -158,7 +158,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
   );
 
   const handleChange = useCallback((date: DateTime | null) => {
-    draftRef.current = date ?? null;
+    draftRef.current = date;
   }, []);
 
   const handleOpen = useCallback(() => {
