@@ -16,8 +16,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { HardwareAccountCardProps } from './hardware-account-card.types';
 
 /**
- * Selectable multichain account card used during hardware wallet onboarding.
- * Renders account name, total balance, checkbox, and nested address rows.
+ * Account card for hardware wallet onboarding with selection and address rows.
  * @param options0
  * @param options0.account
  * @param options0.isSelected

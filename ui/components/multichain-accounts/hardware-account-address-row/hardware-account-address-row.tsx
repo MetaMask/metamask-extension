@@ -17,8 +17,7 @@ import { shortenString } from '../../../helpers/utils/util';
 import type { HardwareAccountAddressRowProps } from './hardware-account-address-row.types';
 
 /**
- * Displays a single blockchain address row within a hardware wallet account card,
- * including network icon, name, truncated address, optional address type badge, and balance.
+ * Address row for a hardware wallet account card.
  * @param options0
  * @param options0.address
  */

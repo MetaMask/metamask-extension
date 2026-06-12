@@ -1,6 +1,6 @@
 import type { HardwareWalletAccount } from '../../../../components/multichain-accounts/hardware-account-card';
 
-/** Props for {@link SelectHardwareAccountsPage}. */
+/** Props for SelectHardwareAccountsPage. */
 export type SelectHardwareAccountsPageProps = {
   accounts: HardwareWalletAccount[];
   selectedAccountIds: string[];

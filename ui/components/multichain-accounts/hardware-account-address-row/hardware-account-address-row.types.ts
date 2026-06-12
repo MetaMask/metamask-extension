@@ -1,7 +1,7 @@
-/** Avatar style used for a hardware wallet address row. */
+/** Icon type for a hardware wallet address row avatar. */
 export type HardwareWalletAddressIconType = 'network' | 'token';
 
-/** Blockchain address displayed within a hardware wallet account card. */
+/** Address data for a row in a hardware wallet account card. */
 export type HardwareWalletAccountAddress = {
   id: string;
   networkName: string;
@@ -12,7 +12,7 @@ export type HardwareWalletAccountAddress = {
   addressType?: string;
 };
 
-/** Props for {@link HardwareAccountAddressRow}. */
+/** Props for HardwareAccountAddressRow. */
 export type HardwareAccountAddressRowProps = {
   address: HardwareWalletAccountAddress;
 };

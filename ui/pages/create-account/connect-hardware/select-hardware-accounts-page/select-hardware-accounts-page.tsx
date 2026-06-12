@@ -22,6 +22,21 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { HardwareAccountCard } from '../../../../components/multichain-accounts/hardware-account-card';
 import type { SelectHardwareAccountsPageProps } from './select-hardware-accounts-page.types';
 
+/**
+ * Lets the user select hardware wallet accounts to import.
+ * @param options0
+ * @param options0.accounts
+ * @param options0.selectedAccountIds
+ * @param options0.onAccountSelectionChange
+ * @param options0.onBack
+ * @param options0.onShowMore
+ * @param options0.onContinue
+ * @param options0.onForgetDevice
+ * @param options0.hasMoreAccounts
+ * @param options0.isLoadingMore
+ * @param options0.onSettingsClick
+ * @param options0.showSettingsButton
+ */
 export const SelectHardwareAccountsPage = ({
   accounts,
   selectedAccountIds,

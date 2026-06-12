@@ -1,6 +1,6 @@
 import type { HardwareWalletAccountAddress } from '../hardware-account-address-row';
 
-/** Multichain account option shown during hardware wallet onboarding. */
+/** Hardware wallet account available for import during onboarding. */
 export type HardwareWalletAccount = {
   id: string;
   name: string;
@@ -9,7 +9,7 @@ export type HardwareWalletAccount = {
   isAlreadyConnected?: boolean;
 };
 
-/** Props for {@link HardwareAccountCard}. */
+/** Props for HardwareAccountCard. */
 export type HardwareAccountCardProps = {
   account: HardwareWalletAccount;
   isSelected: boolean;
