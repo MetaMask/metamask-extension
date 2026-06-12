@@ -1,6 +1,6 @@
 import { waitFor } from '@testing-library/react';
 
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_NATIVE_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -11,6 +11,7 @@ import {
   validateERC1155Balance,
   validateTokenBalance,
   validatePositiveNumericString,
+  mapSnapErrorCodeIntoTranslation,
 } from './useAmountValidation';
 
 const MOCK_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -196,6 +197,38 @@ describe('validateTokenBalance', () => {
   });
 });
 
+describe('mapSnapErrorCodeIntoTranslation', () => {
+  it('returns insufficientFundsSend for InsufficientBalance', () => {
+    expect(
+      mapSnapErrorCodeIntoTranslation(
+        'InsufficientBalance',
+        (str: string) => str,
+      ),
+    ).toEqual('insufficientFundsSend');
+  });
+
+  it('returns insufficientBalanceToCoverFees for InsufficientBalanceToCoverFee', () => {
+    expect(
+      mapSnapErrorCodeIntoTranslation(
+        'InsufficientBalanceToCoverFee',
+        (str: string) => str,
+      ),
+    ).toEqual('insufficientBalanceToCoverFees');
+  });
+
+  it('returns invalidValue for Invalid', () => {
+    expect(
+      mapSnapErrorCodeIntoTranslation('Invalid', (str: string) => str),
+    ).toEqual('invalidValue');
+  });
+
+  it('returns invalidValue for unknown error codes', () => {
+    expect(
+      mapSnapErrorCodeIntoTranslation('UnknownErrorCode', (str: string) => str),
+    ).toEqual('invalidValue');
+  });
+});
+
 describe('useAmountValidation', () => {
   it('return field for amount error', () => {
     const { result } = renderHookWithProvider(
@@ -317,6 +350,51 @@ describe('useAmountValidation', () => {
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
       value: '0.5',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+    await waitFor(() => expect(result.current.amountError).toEqual(undefined));
+  });
+
+  it('accepts "." as zero without reporting invalid amount', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      chainId: '0x5',
+      from: MOCK_ADDRESS_1,
+      value: '.',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+    await waitFor(() => expect(result.current.amountError).toEqual(undefined));
+  });
+
+  it('accepts "0." as zero without reporting invalid amount', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      chainId: '0x5',
+      from: MOCK_ADDRESS_1,
+      value: '0.',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+    await waitFor(() => expect(result.current.amountError).toEqual(undefined));
+  });
+
+  it('accepts trailing dot as valid intermediate input', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      chainId: '0x5',
+      from: MOCK_ADDRESS_1,
+      value: '5.',
     } as unknown as SendContext.SendContextType);
 
     const { result } = renderHookWithProvider(

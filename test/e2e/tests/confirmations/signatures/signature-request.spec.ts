@@ -1,13 +1,14 @@
-import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 
-import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   WINDOW_TITLES,
 } from '../../../constants';
+import { login } from '../../../page-objects/flows/login.flow';
 
 const signatureRequestType = {
   signTypedData: 'Sign Typed Data',
@@ -33,7 +34,7 @@ describe('Sign Typed Data Signature Request', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
@@ -41,7 +42,7 @@ describe('Sign Typed Data Signature Request', function () {
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
           const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-          await unlockWallet(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
@@ -81,14 +82,14 @@ describe('Sign Typed Data Signature Request', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
-          await unlockWallet(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();

@@ -10,7 +10,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
-} from '../../../../../shared/modules/network.utils';
+} from '../../../../../shared/lib/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { getValidUrl } from '../../util';
 

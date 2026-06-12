@@ -1,10 +1,8 @@
-import { describe, it, afterEach } from 'node:test';
+import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import { LoaderContext } from 'webpack';
-import swcLoader, {
-  type SwcLoaderOptions,
-  type SwcConfig,
-} from '../utils/loaders/swcLoader';
+import swcLoader, { type SwcLoaderOptions } from '../utils/loaders/swcLoader';
+import { getSwcLoader, type SwcConfig } from '../utils/loaders/getSwcLoader';
 import { Combination, generateCases } from './helpers';
 
 describe('swcLoader', () => {
@@ -68,6 +66,21 @@ describe('swcLoader', () => {
     );
   });
 
+  it('should stringify object source maps for inputSourceMap', async () => {
+    const { context, source, deferredPromise } = generateData();
+    const sourceMapObject = {
+      version: 3,
+      sources: ['test.ts'],
+      mappings: 'AAAA',
+    };
+
+    swcLoader.call(context, source, sourceMapObject as unknown as string);
+
+    const [err, content] = await deferredPromise;
+    assert.strictEqual(err, null);
+    assert.ok(content);
+  });
+
   it('should return an error when code is invalid', async () => {
     const { context, deferredPromise } = generateData();
     const brokenSource = 'this is not real code;';
@@ -83,31 +96,17 @@ describe('swcLoader', () => {
     const matrix = {
       syntax: ['typescript', 'ecmascript'] as const,
       enableJsx: [true, false] as const,
-      watch: [true, false] as const,
       isDevelopment: [true, false] as const,
     };
     generateCases(matrix).forEach(runTest);
 
     type TestCase = Combination<typeof matrix>;
 
-    afterEach(() => {
-      delete process.env.__HMR_READY__;
-    });
-    function runTest({ syntax, enableJsx, watch, isDevelopment }: TestCase) {
-      it(`should return a loader with correct properties when syntax is ${syntax}, jsx is ${enableJsx}, watch is ${watch}, and isDevelopment is ${isDevelopment}`, () => {
-        process.env.__HMR_READY__ = 'true';
-        // helpers caches `__HMR_READY__` on initialization, so we need to a new
-        // one after we mock `process.env.__HMR_READY__`.
-        delete require.cache[require.resolve('../utils/helpers')];
-        delete require.cache[require.resolve('../utils/loaders/swcLoader')];
-        const {
-          getSwcLoader,
-        }: typeof import('../utils/loaders/swcLoader') = require('../utils/loaders/swcLoader');
-
+    function runTest({ syntax, enableJsx, isDevelopment }: TestCase) {
+      it(`should return a loader with correct properties when syntax is ${syntax}, jsx is ${enableJsx}, and isDevelopment is ${isDevelopment}`, () => {
         // note: this test isn't exhaustive of all possible `swcConfig`
         // properties; it is mostly intended as sanity check.
         const swcConfig: SwcConfig = {
-          args: { watch },
           browsersListQuery: '',
           isDevelopment,
         };
@@ -124,7 +123,6 @@ describe('swcLoader', () => {
         });
         assert.deepStrictEqual(loader.options.jsc.transform.react, {
           development: isDevelopment,
-          refresh: isDevelopment && watch,
         });
       });
     }

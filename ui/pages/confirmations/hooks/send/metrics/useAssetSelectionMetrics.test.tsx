@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { ReactChildren } from 'react';
+import React from 'react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import {
@@ -18,6 +18,12 @@ import { useSendAssets } from '../useSendAssets';
 import { useAssetSelectionMetrics } from './useAssetSelectionMetrics';
 
 const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 const mockSetAssetFilterMethod = jest.fn();
 const mockUseSendMetricsContext = jest.mocked(useSendMetricsContext);
 const mockUseSendAssets = jest.mocked(useSendAssets);
@@ -30,8 +36,8 @@ jest.mock('../../../context/send-metrics', () => ({
 jest.mock('../useSendAssets');
 jest.mock('../useSendType');
 
-const Container = ({ children }: { children: ReactChildren }) => (
-  <MetaMetricsContext.Provider value={mockTrackEvent}>
+const Container = ({ children }: { children: React.ReactNode }) => (
+  <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
     {children}
   </MetaMetricsContext.Provider>
 );

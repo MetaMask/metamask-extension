@@ -5,10 +5,13 @@ import { screen, act, waitFor } from '@testing-library/react';
 import { DeFiPositionsControllerState } from '@metamask/assets-controllers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import DeFiList from './defi-list';
 
+const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
 const lidoPosition: DeFiPositionsControllerState['allDeFiPositions'] = {
-  [mockState.metamask.selectedAddress]: {
+  [selectedAddress]: {
     '0x5': {
       aggregatedMarketValue: 20540,
       protocols: {
@@ -58,7 +61,7 @@ const lidoPosition: DeFiPositionsControllerState['allDeFiPositions'] = {
 };
 const mountainPositionLowValue: DeFiPositionsControllerState['allDeFiPositions'] =
   {
-    [mockState.metamask.selectedAddress]: {
+    [selectedAddress]: {
       '0x5': {
         aggregatedMarketValue: 0.0000000001,
         protocols: {
@@ -136,14 +139,16 @@ describe('DeFiDetailsPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('We could not load this page.'),
+        screen.getByText(messages.defiTabErrorTitle.message),
       ).toBeInTheDocument();
-      expect(screen.getByText('Try visiting again later.')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.defiTabErrorContent.message),
+      ).toBeInTheDocument();
     });
   });
   it('readers loading spinner', async () => {
     const loadingState = {
-      [mockState.metamask.selectedAddress]: undefined,
+      [selectedAddress]: undefined,
     };
 
     await act(async () => {
@@ -189,15 +194,17 @@ describe('DeFiDetailsPage', () => {
   it('renders no positions message', async () => {
     await act(async () => {
       render({
-        [mockState.metamask.selectedAddress]: [],
+        [selectedAddress]: [],
       });
     });
 
     await waitFor(() => {
       expect(
-        screen.getByText('Lend, borrow, and trade, right in your wallet.'),
+        screen.getByText(messages.defiEmptyDescription.message),
       ).toBeInTheDocument();
-      expect(screen.getByText('Explore DeFi')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.exploreDefi.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('defi-tab-empty-state')).toBeInTheDocument();
     });
   });

@@ -15,7 +15,7 @@ const { ENVIRONMENT } = require('./constants');
  * @param {import('../lib/variables').Variables} options.variables
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  */
-module.exports.setEnvironmentVariables = function setEnvironmentVariables({
+function setEnvironmentVariables({
   buildName,
   isDevBuild,
   isTestBuild,
@@ -24,30 +24,6 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
   variables,
   version,
 }) {
-  const isSeedlessOnboardingEnabled =
-    variables.get('SEEDLESS_ONBOARDING_ENABLED')?.toString() === 'true';
-  let APPLE_CLIENT_ID = '';
-  if (isSeedlessOnboardingEnabled) {
-    APPLE_CLIENT_ID = getAppleClientId({
-      buildType,
-      variables,
-      environment,
-      testing: isTestBuild,
-      development: isDevBuild,
-    });
-  }
-
-  let GOOGLE_CLIENT_ID = '';
-  if (isSeedlessOnboardingEnabled) {
-    GOOGLE_CLIENT_ID = getGoogleClientId({
-      buildType,
-      variables,
-      environment,
-      testing: isTestBuild,
-      development: isDevBuild,
-    });
-  }
-
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -61,6 +37,8 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       testing: isTestBuild,
     }),
     METAMASK_DEBUG: isDevBuild || variables.getMaybe('METAMASK_DEBUG') === true,
+    SENTRY_DISTRIBUTED_TRACING_DISABLED:
+      variables.getMaybe('SENTRY_DISTRIBUTED_TRACING_DISABLED') === true,
     METAMASK_BUILD_NAME: buildName,
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,
@@ -91,13 +69,13 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     METAMASK_SHIELD_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
-    FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG: isTestBuild
-      ? 'true'
-      : variables.getMaybe('FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG'),
-    GOOGLE_CLIENT_ID,
-    APPLE_CLIENT_ID,
+    PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
+    ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
+      'ASSETS_UNIFIED_STATE_ENABLED',
+    ),
+    COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
   });
-};
+}
 
 const BUILD_TYPES_TO_SVG_LOGO_PATH = {
   main: './app/images/logo/metamask-fox.svg',
@@ -130,15 +108,6 @@ function getBuildIcon({ buildType }) {
 function getBuildAppId({ buildType }) {
   const baseDomain = 'io.metamask';
   return buildType === 'main' ? baseDomain : `${baseDomain}.${buildType}`;
-}
-
-function assertAndLoadEnvVar(envVarName, buildType, variables) {
-  const envVarValue = variables.get(envVarName);
-  assert(
-    typeof envVarValue === 'string' && envVarValue.length > 0,
-    `Build type "${buildType}" has improperly set ${envVarName} in builds.yml. Current value: "${envVarValue}"`,
-  );
-  return envVarValue;
 }
 
 /**
@@ -179,98 +148,6 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
     `Infura Project ID environmental variable "${infuraKeyReference}" is set improperly.`,
   );
   return infuraProjectId;
-}
-
-/**
- * Get the Google client ID for the current build.
- *
- * @param {object} options - The Google and Apple client IDs options.
- * @param {string} options.buildType - The current build type.
- * @param {keyof ENVIRONMENT} options.environment - The current build environment.
- * @param {boolean} options.testing - Whether this is a test build or not.
- * @param {boolean} options.development - Whether this is a development build or not.
- * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
- * @returns {object} The Google and Apple client IDs.
- */
-function getGoogleClientId({
-  buildType,
-  variables,
-  environment,
-  testing,
-  development,
-}) {
-  if (testing || development) {
-    if (!variables.isDefined('GOOGLE_CLIENT_ID')) {
-      throw new Error(
-        'GOOGLE_CLIENT_ID is not set for seedless onboarding enabled build',
-      );
-    }
-    return variables.get('GOOGLE_CLIENT_ID');
-  } else if (
-    environment === ENVIRONMENT.PRODUCTION ||
-    environment === ENVIRONMENT.RELEASE_CANDIDATE
-  ) {
-    // we will only load the Production client Id for production builds and release candidate builds
-    // prod builds -> `yarn build prod`
-    // release candidate builds -> `yarn build dist` in the release candidate branches (e.g. `release/*`)
-    const googleClientIdRef = assertAndLoadEnvVar(
-      'GOOGLE_CLIENT_ID_REF',
-      buildType,
-      variables,
-    );
-    return assertAndLoadEnvVar(googleClientIdRef, buildType, variables);
-  }
-
-  const envToLoad =
-    buildType === 'flask'
-      ? 'GOOGLE_CLIENT_ID_FLASK_UAT'
-      : 'GOOGLE_CLIENT_ID_UAT';
-  return variables.get(envToLoad);
-}
-
-/**
- * Get the Apple OAuth2 client ID for the current build.
- *
- * @param {object} options - The Apple client ID options.
- * @param {string} options.buildType - The current build type.
- * @param {keyof ENVIRONMENT} options.environment - The current build environment.
- * @param {boolean} options.testing - Whether this is a test build or not.
- * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
- * @param options.development
- * @returns {string} The Apple client ID.
- */
-function getAppleClientId({
-  buildType,
-  variables,
-  environment,
-  testing,
-  development,
-}) {
-  if (testing || development) {
-    if (!variables.isDefined('APPLE_CLIENT_ID')) {
-      throw new Error(
-        'APPLE_CLIENT_ID is not set for seedless onboarding enabled build',
-      );
-    }
-    return variables.get('APPLE_CLIENT_ID');
-  } else if (
-    environment === ENVIRONMENT.PRODUCTION ||
-    environment === ENVIRONMENT.RELEASE_CANDIDATE
-  ) {
-    // we will only load the Production client Id for production builds and release candidate builds
-    // prod builds -> `yarn build prod`
-    // release candidate builds -> `yarn build dist` in the release candidate branches (e.g. `release/*`)
-    const appleClientIdRef = assertAndLoadEnvVar(
-      'APPLE_CLIENT_ID_REF',
-      buildType,
-      variables,
-    );
-    return assertAndLoadEnvVar(appleClientIdRef, buildType, variables);
-  }
-
-  const envToLoad =
-    buildType === 'flask' ? 'APPLE_CLIENT_ID_FLASK_UAT' : 'APPLE_CLIENT_ID_UAT';
-  return variables.get(envToLoad);
 }
 
 /**
@@ -321,14 +198,13 @@ function getPhishingWarningPageUrl({ variables, testing }) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
       : `https://metamask.github.io/phishing-warning/v${
-          // eslint-disable-next-line node/global-require
+          // eslint-disable-next-line n/global-require
           require('@metamask/phishing-warning/package.json').version
         }/`;
   }
 
   let phishingWarningPageUrlObject;
   try {
-    // eslint-disable-next-line no-new
     phishingWarningPageUrlObject = new URL(phishingWarningPageUrl);
   } catch (error) {
     throw new Error(
@@ -347,3 +223,7 @@ function getPhishingWarningPageUrl({ variables, testing }) {
   // of the domain if it is missing
   return phishingWarningPageUrlObject.toString();
 }
+
+module.exports = {
+  setEnvironmentVariables,
+};

@@ -15,7 +15,7 @@ const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
 const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
-const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../../shared/lib/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
 const {
   getServerMochaToBackground,
@@ -190,6 +190,16 @@ class Driver {
   }
 
   async executeScript(script, ...args) {
+    // When tsx/esbuild transpiles TypeScript, it injects __name() calls to
+    // preserve function names. If a function passed here references __name,
+    // define it in the browser context so it doesn't throw.
+    if (typeof script === 'function') {
+      const src = script.toString();
+      if (src.includes('__name')) {
+        const wrapped = `var __name = (fn) => fn; return (${src}).apply(null, arguments);`;
+        return this.driver.executeScript(wrapped, args);
+      }
+    }
     return this.driver.executeScript(script, args);
   }
 
@@ -740,6 +750,19 @@ class Driver {
               error.name
             }`,
           );
+
+          // When another element (e.g. a toast banner) overlaps the target,
+          // scrolling it to the viewport center usually moves it clear of the
+          // obstruction so the next attempt can succeed.
+          if (error.name === 'ElementClickInterceptedError') {
+            try {
+              const el = await this.findElement(rawLocator);
+              await this.scrollToElement(el);
+            } catch {
+              // Element may have gone stale; the next iteration will re-find it.
+            }
+          }
+
           await this.delay(1000);
         } else {
           throw error;
@@ -775,7 +798,7 @@ class Driver {
    * @returns {Promise<void>} Promise that resolves when the element stops moving.
    * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
    */
-  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+  async waitForElementToStopMoving(rawLocator, timeout = 6000) {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
@@ -853,6 +876,24 @@ class Driver {
   }
 
   /**
+   * Clicks a nested button element by its text content.
+   * First attempts to click a button with the exact text, then falls back
+   * to finding an element containing the text and clicking its parent button.
+   *
+   * @param {string} buttonText - The text content of the button to click
+   * @returns {Promise<void>}
+   */
+  async clickNestedButton(buttonText) {
+    try {
+      await this.clickElement({ text: buttonText, tag: 'button' });
+    } catch (error) {
+      await this.clickElement({
+        xpath: `//*[contains(text(),"${buttonText}")]/parent::button`,
+      });
+    }
+  }
+
+  /**
    * Can fix instances where a normal click produces ElementClickInterceptedError
    *
    * @param rawLocator
@@ -921,7 +962,7 @@ class Driver {
    */
   async scrollToElement(element) {
     await this.driver.executeScript(
-      'arguments[0].scrollIntoView(true)',
+      'arguments[0].scrollIntoView({block:"center"})',
       element,
     );
   }
@@ -1030,20 +1071,40 @@ class Driver {
   }
 
   /**
+   * Retrieves the content of the clipboard.
+   *
+   * @returns {Promise<string>} promise that resolves to the clipboard content
+   * @throws {Error} throws an error if the clipboard content cannot be read
+   */
+  async getClipboardContent() {
+    try {
+      const clipboardText = await this.driver.executeScript(`
+        return navigator.clipboard.readText();
+      `);
+      console.log('Clipboard:', clipboardText || '(empty)');
+      return clipboardText;
+    } catch (error) {
+      console.log(
+        'Could not read clipboard - permission denied or not supported',
+        error,
+      );
+      return '';
+    }
+  }
+
+  /**
    * Paste a string into a field.
    *
-   * @param {string} rawLocator  - Element locator
+   * @param {string | object} rawLocator  - Element locator
    * @param {string} contentToPaste - content to paste
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
   async pasteIntoField(rawLocator, contentToPaste) {
     // Click to focus the field
     await this.clickElement(rawLocator);
-    await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste.replace(
-        /"/gu,
-        '\\"',
-      )}")`,
+    await this.driver.executeScript(
+      'navigator.clipboard.writeText(arguments[0])',
+      contentToPaste,
     );
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
@@ -1114,6 +1175,18 @@ class Driver {
     return await this.driver.executeScript(collectMetrics);
   }
 
+  async resetLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      window.stateHooks?.resetLongTaskMetrics?.();
+    });
+  }
+
+  async collectLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      return window.stateHooks?.getLongTaskMetricsWithTBT?.(true) ?? null;
+    });
+  }
+
   // Window management
 
   /**
@@ -1182,6 +1255,16 @@ class Driver {
   }
 
   /**
+   * Switches the WebDriver's context back to the default content (main page).
+   * Use this after interacting with an iframe to return to the parent document.
+   *
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   */
+  async switchToDefaultContent() {
+    await this.driver.switchTo().defaultContent();
+  }
+
+  /**
    * Retrieves the handles of all open window tabs in the browser session.
    *
    * @returns {Promise<Array<string>>} A promise that will
@@ -1192,6 +1275,15 @@ class Driver {
       return await this.windowHandles.getAllWindowHandles();
     }
     return await this.driver.getAllWindowHandles();
+  }
+
+  /**
+   * Retrieves the handle of the current active window or tab.
+   *
+   * @returns {Promise<string>} A promise that resolves with the current window handle.
+   */
+  async getCurrentWindowHandle() {
+    return await this.driver.getWindowHandle();
   }
 
   /**
@@ -1473,6 +1565,24 @@ class Driver {
   }
 
   /**
+   * Closes every browser tab/window except the currently focused one.
+   *
+   * @returns {Promise<void>} promise resolving after all other windows are closed
+   */
+  async closeAllOtherTabs() {
+    const handles = await this.getAllWindowHandles();
+    const current = await this.driver.getWindowHandle();
+    for (const h of handles) {
+      if (h !== current) {
+        await this.driver.switchTo().window(h);
+        await this.driver.close();
+      }
+    }
+    await this.driver.switchTo().window(current);
+    await this.getAllWindowHandles();
+  }
+
+  /**
    * Closes specific window tab identified by its window handle.
    *
    * @param {string} windowHandle - representing the unique identifier of the browser window to be closed.
@@ -1680,6 +1790,13 @@ class Driver {
       'Event fragment with id transaction-added-',
       // Sidepanel
       'GL Context was lost',
+      // Null/empty URLs that Chrome blocks before reaching the proxy
+      'net::ERR_BLOCKED_BY_CLIENT',
+      'null is blocked',
+      // AuthenticationController race: in-flight auth (#snapSignMessage,
+      // performSignIn, getBearerToken, ...) can re-check #isUnlocked after
+      // a lock fires mid-flight. No user impact; tracked in #37459.
+      'unable to proceed, wallet is locked',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
@@ -1804,6 +1921,14 @@ function collectMetrics() {
         type: navigationEntry.type,
       });
     });
+
+  const longTaskData = window.stateHooks?.getLongTaskMetricsWithTBT?.();
+  if (longTaskData) {
+    results.longTaskCount = longTaskData.count;
+    results.longTaskTotalDuration = longTaskData.totalDuration;
+    results.longTaskMaxDuration = longTaskData.maxDuration;
+    results.tbt = longTaskData.tbt;
+  }
 
   return {
     ...results,

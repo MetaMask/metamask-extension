@@ -18,8 +18,7 @@
   border-radius: 12px;
   border: 1px solid var(--color-border-muted);
   background: var(--color-background-default);
-  padding: 12px; // Adjusted top/bottom padding to fit 72px content
-  padding-left: 16px;
+  padding: 12px 10px; // reduced left and right padding to make content fit in sidebar
   position: absolute;
   overflow: hidden;
   left: 0;
@@ -28,7 +27,7 @@
   cursor: pointer;
   display: flex;
   flex-direction: row;
-  gap: 16px; // 16px gap as per spec
+  gap: 12px; // reduced gap to make content fit in sidebar
 
   &:hover {
     background: var(--color-background-default-hover);

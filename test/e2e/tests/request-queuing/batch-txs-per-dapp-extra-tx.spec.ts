@@ -1,17 +1,13 @@
 import { Suite } from 'mocha';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  DAPP_ONE_URL,
-  DAPP_URL,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { login } from '../../page-objects/flows/login.flow';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks', function (this: Suite) {
   it('should put txs from different dapps on different networks adds extra tx after in same queue.', async function () {
@@ -20,7 +16,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -39,7 +35,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
       },
 
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open Dapp One
         const firstTestDapp = new TestDapp(driver);

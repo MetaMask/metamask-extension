@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import { AlertTypes } from '../../shared/constants/alerts';
 import metamaskReducer from './metamask/metamask';
 import localeMessagesReducer from './locale/locale';
-import sendReducer from './send/send';
 import domainReducer from './domains';
 import appStateReducer from './app/app';
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck';
@@ -15,6 +14,7 @@ import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 import smartAccountsReducer from './smart-accounts/smart-accounts';
 import rewardsReducer from './rewards';
+import { perpsTutorialReducer } from './perps';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
@@ -24,7 +24,6 @@ export default combineReducers({
   appState: appStateReducer,
   DNS: domainReducer,
   history: historyReducer,
-  send: sendReducer,
   confirmAlerts: confirmAlertsReducer,
   confirmTransaction: confirmTransactionReducer,
   swaps: swapsReducer,
@@ -34,4 +33,5 @@ export default combineReducers({
   localeMessages: localeMessagesReducer,
   smartAccounts: smartAccountsReducer,
   rewards: rewardsReducer,
+  perpsTutorial: perpsTutorialReducer,
 });

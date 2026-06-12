@@ -2,35 +2,37 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 
 import SendPage from '../../page-objects/pages/send/send-page';
-import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { mockSendRedesignFeatureFlag } from '../send/common';
-import { withSolanaAccountSnap } from './common-solana';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { SOLANA_MAINNET_SCOPE } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { buildSolanaTestSpecificMock } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 
 describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockZeroBalance: true,
-        withCustomMocks: mockSendRedesignFeatureFlag,
       },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
+      async ({ driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await homePage.checkPageIsLoaded({ amount: '0' });
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0', 'SOL', false);
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          'SOL',
-        );
+        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
         await sendPage.fillRecipient('2433asd');
         await sendPage.checkInvalidAddressError();
@@ -47,73 +49,27 @@ describe('Send flow', function (this: Suite) {
     );
   });
 
-  it('full flow of USD with a positive balance account', async function () {
-    this.timeout(120000);
-    await withSolanaAccountSnap(
-      {
-        title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
-        mockGetTransactionSuccess: true,
-        withCustomMocks: mockSendRedesignFeatureFlag,
-      },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        const sendPage = new SendPage(driver);
-        await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
-        await homePage.clickOnSendButton();
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          'SOL',
-        );
-
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address nor amount',
-        );
-        await sendPage.fillRecipient(commonSolanaAddress);
-        await sendPage.fillAmount('10');
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          true,
-          'Continue button should be enabled',
-        );
-
-        await sendPage.pressContinueButton();
-
-        const confirmation = new SnapTransactionConfirmation(driver);
-        await confirmation.checkPageIsLoaded();
-        await confirmation.checkAccountIsDisplayed('Account 1');
-        await confirmation.clickFooterConfirmButton();
-
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
-        await activityList.checkNoFailedTransactions();
-      },
-    );
-  });
-
   it('full flow of SOL with a positive balance account', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionSuccess: true,
-        withCustomMocks: mockSendRedesignFeatureFlag,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionSuccess: true,
+        }),
       },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
+      async ({ driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
-        await homePage.checkPageIsLoaded({ amount: '50' });
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          'SOL',
-        );
+        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
@@ -136,8 +92,8 @@ describe('Send flow', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
+        await activityList.checkTxAction({ action: 'Sent SOL' });
+        await activityList.checkTxAmountInActivity('-0.007079 SOL', 1);
         await activityList.checkNoFailedTransactions();
       },
     );
@@ -145,23 +101,25 @@ describe('Send flow', function (this: Suite) {
 
   it('and transaction fails', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionFailed: true,
-        withCustomMocks: mockSendRedesignFeatureFlag,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionFailed: true,
+        }),
       },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
+      async ({ driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
-        await homePage.checkPageIsLoaded({ amount: '50' });
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          'SOL',
-        );
+        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
@@ -181,11 +139,12 @@ describe('Send flow', function (this: Suite) {
         const confirmation = new SnapTransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
         await confirmation.checkAccountIsDisplayed('Account 1');
+        await confirmation.checkSecurityAlertsErrorIsDisplayed();
         await confirmation.clickFooterConfirmButton();
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
         await activityList.checkTxAction({
-          action: 'Interaction',
+          action: 'Interaction failed',
           confirmedTx: 0,
         });
       },

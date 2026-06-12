@@ -1,5 +1,5 @@
 import type Jazzicon from '@metamask/jazzicon';
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
 
 /**
  * Defines the metadata for a token including optional icon URL.

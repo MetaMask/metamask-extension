@@ -8,7 +8,7 @@ import {
   MetaMetricsEventUiCustomization,
   MetaMetricsRequestedThrough,
 } from '../../../shared/constants/metametrics';
-import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../shared/lib/transaction.utils';
 
 import {
   BlockaidResultType,
@@ -20,15 +20,16 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-import { getErrorMessage } from '../../../shared/modules/error';
+import { getErrorMessage } from '../../../shared/lib/error';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
+import { getIframeProperties } from './getIframeProperties';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -236,6 +237,7 @@ function isMultichainRequestMethod(method) {
  * tracked within the globalRateLimitTimeout time window.
  * @param {AppStateController} [opts.appStateController]
  * @param {MetaMetricsController} [opts.metaMetricsController]
+ * @param {AnalyticsController} [opts.analyticsController]
  * @returns {Function}
  */
 
@@ -250,6 +252,7 @@ export default function createRPCMethodTrackingMiddleware({
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
+  analyticsController,
   getHDEntropyIndex,
 }) {
   return async function rpcMethodTrackingMiddleware(
@@ -257,7 +260,7 @@ export default function createRPCMethodTrackingMiddleware({
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
-    const { origin, method, params } = req;
+    const { origin, method, params, mainFrameOrigin, frameId } = req;
 
     const isMultichainRequest = isMultichainRequestMethod(method);
     // requestedThrough and eventCategory are currently redundant so we will want to
@@ -302,18 +305,25 @@ export default function createRPCMethodTrackingMiddleware({
       globalRateLimitMaxAmount > 0 &&
       globalRateLimitCount >= globalRateLimitMaxAmount;
 
-    // Get the participateInMetaMetrics state to determine if we should track
+    // Get the optedIn state to determine if we should track
     // anything. This is extra redundancy because this value is checked in
-    // the metametrics controller's trackEvent method as well.
-    const userParticipatingInMetaMetrics =
-      metaMetricsController.state.participateInMetaMetrics === true;
+    // the analytics controller's trackEvent method as well.
+    const { optedIn } = analyticsController.state;
+    const userParticipatingInMetaMetrics = optedIn === true;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[invokedMethod];
 
+    const iframeProps = getIframeProperties({
+      frameId,
+      origin,
+      mainFrameOrigin,
+    });
+
     const eventProperties = {
       api_source: requestedThrough,
+      ...iframeProps,
     };
 
     if (multichainApiRequestScope) {

@@ -1,24 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { MultichainAccountCell } from './multichain-account-cell';
 import { MultichainAccountCellProps } from './multichain-account-cell';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName, Checkbox } from '../../component-library';
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { Icon, IconName, Checkbox } from '../../component-library';
 
 // End accessory
 const MoreOptionsAccessory = () => (
   <Box
-    display={Display.Flex}
-    alignItems={AlignItems.center}
-    justifyContent={JustifyContent.center}
-    backgroundColor={BackgroundColor.backgroundMuted}
-    borderRadius={BorderRadius.LG}
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.Center}
+    backgroundColor={BoxBackgroundColor.BackgroundMuted}
+    className="flex rounded-lg"
     padding={1}
   >
     <Icon name={IconName.MoreVertical} />
@@ -27,9 +25,9 @@ const MoreOptionsAccessory = () => (
 
 const CheckboxAccessory = ({ checked = false }: { checked?: boolean }) => (
   <Box
-    display={Display.Flex}
-    alignItems={AlignItems.center}
-    justifyContent={JustifyContent.center}
+    className="flex"
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.Center}
     marginRight={2}
   >
     <Checkbox isChecked={checked} />
@@ -79,6 +77,11 @@ export default {
       control: 'boolean',
       description: 'Whether the account is selected',
     },
+    showDefaultAddress: {
+      control: 'boolean',
+      description:
+        'Whether to show the network avatars and copy functionality with optional default address',
+    },
   },
   args: {
     accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
@@ -98,7 +101,6 @@ const Template: StoryFn<typeof MultichainAccountCell> = (
 );
 
 export const Default = Template.bind({});
-Default.storyName = 'Default';
 
 export const Selected = Template.bind({});
 Selected.args = {
@@ -218,3 +220,19 @@ export const MultipleAccountsWithStartAccessories: StoryFn<
     />
   </div>
 );
+
+export const WithHoverableNetworkGroup = Template.bind({});
+WithHoverableNetworkGroup.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Account with Networks',
+  balance: '$2,400.00',
+  showDefaultAddress: true,
+};
+WithHoverableNetworkGroup.parameters = {
+  docs: {
+    description: {
+      story:
+        'Shows the network avatars and copy functionality below the account name with optional default address.',
+    },
+  },
+};

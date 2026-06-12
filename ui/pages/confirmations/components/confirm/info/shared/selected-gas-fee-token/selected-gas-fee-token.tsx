@@ -1,29 +1,22 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
-
-import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
+  BoxAlignItems,
   Icon,
   IconName,
   IconSize,
   Text,
-} from '../../../../../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-} from '../../../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
+import { useNativeCurrencySymbol } from '../../hooks/useNativeCurrencySymbol';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -31,7 +24,8 @@ export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
-  const { chainId, gasFeeTokens } = currentConfirmation;
+  const { chainId, gasFeeTokens, excludeNativeTokenForFee } =
+    currentConfirmation;
 
   const { isSupported: isGaslessSupported, isSmartTransaction } =
     useIsGaslessSupported();
@@ -50,19 +44,30 @@ export function SelectedGasFeeToken() {
     Boolean(gasFeeTokens?.length) &&
     (!hasOnlyFutureNativeToken || supportsFutureNative);
 
-  const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
-    chainId
-  ];
+  const nonNativeGasFeeTokensLength = useMemo(() => {
+    return (
+      gasFeeTokens?.filter(
+        (token) =>
+          token.tokenAddress && token.tokenAddress !== NATIVE_TOKEN_ADDRESS,
+      ) ?? []
+    ).length;
+  }, [gasFeeTokens]);
+  // If we decide the exclude the native token, check that gasFeeTokens has at least two items.
+  // Otherwise the native token is always an extra item.
+  const hasMoreThanOneGasFeeTokenToChooseFrom = excludeNativeTokenForFee
+    ? hasGasFeeTokens && nonNativeGasFeeTokensLength > 1
+    : hasGasFeeTokens;
 
   const handleClick = useCallback(() => {
-    if (!hasGasFeeTokens) {
+    if (!hasMoreThanOneGasFeeTokenToChooseFrom) {
       return;
     }
 
     setIsModalOpen(true);
-  }, [hasGasFeeTokens]);
+  }, [hasMoreThanOneGasFeeTokenToChooseFrom]);
 
-  const nativeTicker = networkConfiguration?.nativeCurrency;
+  const { nativeCurrencySymbol: nativeTicker } =
+    useNativeCurrencySymbol(chainId);
   const gasFeeToken = useSelectedGasFeeToken();
   const symbol = gasFeeToken?.symbol ?? nativeTicker;
 
@@ -74,21 +79,11 @@ export function SelectedGasFeeToken() {
       <Box
         data-testid="selected-gas-fee-token"
         onClick={handleClick}
-        backgroundColor={
-          hasGasFeeTokens
-            ? BackgroundColor.backgroundMuted
-            : BackgroundColor.transparent
-        }
-        borderRadius={BorderRadius.pill}
-        display={Display.InlineFlex}
-        alignItems={AlignItems.center}
-        paddingInlineStart={1}
-        marginLeft={1}
+        className="inline-flex"
+        alignItems={BoxAlignItems.Center}
         gap={1}
         style={{
-          cursor: hasGasFeeTokens ? 'pointer' : 'default',
-          paddingInlineEnd: '6px',
-          padding: hasGasFeeTokens ? '4px 8px' : '0px',
+          cursor: hasMoreThanOneGasFeeTokenToChooseFrom ? 'pointer' : 'default',
         }}
       >
         <GasFeeTokenIcon
@@ -96,10 +91,10 @@ export function SelectedGasFeeToken() {
           size={GasFeeTokenIconSize.Sm}
         />
         <Text>{symbol}</Text>
-        {hasGasFeeTokens && (
+        {hasMoreThanOneGasFeeTokenToChooseFrom && (
           <Icon
             data-testid="selected-gas-fee-token-arrow"
-            name={IconName.ArrowDown}
+            name={IconName.ArrowRight}
             size={IconSize.Sm}
           />
         )}

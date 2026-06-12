@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import {
   SWAPS_CHAINID_COMMON_TOKEN_PAIR,
   type SwapsTokenObject,

@@ -43,7 +43,7 @@ export function useSnapHome({ snapId }) {
     }
     fetchPage();
     return () => (cancelled = true);
-  }, [snapId]);
+  }, [snapId, dispatch]);
 
   return { data, error, loading };
 }

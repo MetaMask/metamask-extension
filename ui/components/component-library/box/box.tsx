@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { memoize } from 'lodash';
 
 import { BREAKPOINTS } from '../../../helpers/constants/design-system';
@@ -142,7 +142,11 @@ const generateClassNames = memoize(
 );
 
 /**
- * @deprecated Please update your code to use `Box` from `@metamask/design-system-react`
+ * @deprecated This component is deprecated and will be removed in a future release.
+ * Please use the Box component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#box-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-box--docs | Storybook Documentation}
+ * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/Box | Component Source}
  */
 export const Box: BoxComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

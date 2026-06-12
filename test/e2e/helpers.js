@@ -15,27 +15,26 @@ const { PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const {
-  ERC_4337_ACCOUNT,
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
-  TEST_SEED_PHRASE,
-  TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
-  ACCOUNT_1,
-  ACCOUNT_2,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
-  DAPP_PATHS,
-} = require('./constants');
+const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
-const LocalWebSocketServer = require('./websocket-server').default;
-const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
+const WebSocketRegistry = require('./websocket/registry').default;
+const { solanaWebSocketConfig } = require('./websocket/solana-mocks');
+const {
+  accountActivityWebSocketConfig,
+} = require('./websocket/account-activity-mocks');
+const { perpsWebSocketConfig } = require('./websocket/perps-mocks');
+const { WEBSOCKET_SERVICES } = require('./websocket/constants');
+const {
+  addVirtualAuthenticator,
+  removeVirtualAuthenticator,
+} = require('./webdriver/virtual-authenticator');
+
+// Register each WebSocket service explicitly.
+WebSocketRegistry.register(solanaWebSocketConfig);
+WebSocketRegistry.register(accountActivityWebSocketConfig);
+WebSocketRegistry.register(perpsWebSocketConfig);
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -131,7 +130,7 @@ function normalizeSmartContracts(smartContract) {
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('ganache', 'anvil'...).
+ * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('anvil', 'none').
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
@@ -140,7 +139,13 @@ function normalizeSmartContracts(smartContract) {
  */
 
 /**
- *
+ * @typedef {object} UnifiedEvmAccountsApiBalances
+ * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5).
+ * @property {string} [localhostNativeEthHuman] - Localhost (eip155:1337) native balance string. Auto-populated from the local node when omitted, so smart-contract deployment gas is reflected.
+ * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
+ */
+
+/**
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
@@ -165,7 +170,11 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
+    accountActivityWebSocketSpecificMocks = [],
+    perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
+    unifiedEvmAccountsApiBalances,
+    virtualAuthenticator,
   } = options;
 
   // Normalize localNodeOptions
@@ -202,8 +211,6 @@ async function withFixtures(options, testSuite) {
   let localNode;
   const localNodes = [];
 
-  let webSocketServer;
-
   try {
     // Start servers based on the localNodes array
     for (let i = 0; i < localNodeOptsNormalized.length; i++) {
@@ -212,17 +219,9 @@ async function withFixtures(options, testSuite) {
 
       switch (nodeType) {
         case 'anvil':
-          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const { Anvil } = require('./seeder/anvil');
           localNode = new Anvil();
-          await localNode.start(nodeOptions);
-          localNodes.push(localNode);
-          break;
-
-        case 'ganache':
-          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
-          const { Ganache } = require('./seeder/ganache');
-          localNode = new Ganache();
           await localNode.start(nodeOptions);
           localNodes.push(localNode);
           break;
@@ -246,15 +245,9 @@ async function withFixtures(options, testSuite) {
     if (smartContract) {
       switch (localNodeOptsNormalized[0].type) {
         case 'anvil':
-          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const AnvilSeeder = require('./seeder/anvil-seeder');
           seeder = new AnvilSeeder(localNodes[0].getProvider());
-          break;
-
-        case 'ganache':
-          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
-          const GanacheSeeder = require('./seeder/ganache-seeder');
-          seeder = new GanacheSeeder(localNodes[0].getProvider());
           break;
 
         default:
@@ -280,12 +273,7 @@ async function withFixtures(options, testSuite) {
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
     if (localNodes[0] && useBundler) {
-      await initBundler(
-        bundlerServer,
-        localNodes[0],
-        usePaymaster,
-        localNodeOptsNormalized,
-      );
+      await initBundler(bundlerServer, localNodes[0], usePaymaster);
     }
 
     await phishingPageServer.start();
@@ -328,10 +316,30 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Start WebSocket server and apply Solana mocks (defaults + overrides)
-    webSocketServer = LocalWebSocketServer.getServerInstance();
-    webSocketServer.start();
-    await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
+    // Start all registered WebSocket servers and apply mocks
+    await WebSocketRegistry.startAll({
+      [WEBSOCKET_SERVICES.solana]: { mocks: solanaWebSocketSpecificMocks },
+      [WEBSOCKET_SERVICES.accountActivity]: {
+        mocks: accountActivityWebSocketSpecificMocks,
+      },
+      [WEBSOCKET_SERVICES.perps]: { mocks: perpsWebSocketSpecificMocks },
+    });
+
+    // Sync the localhost native balance to what's actually on the node.
+    // This ensures the Accounts API v5 mock returns the correct balance
+    // even after smart-contract deployment has consumed gas.
+    let effectiveUnifiedEvmAccountsApiBalances =
+      unifiedEvmAccountsApiBalances ?? {};
+    if (
+      localNodes[0] &&
+      !effectiveUnifiedEvmAccountsApiBalances.localhostNativeEthHuman
+    ) {
+      const nodeBalance = await localNodes[0].getBalance();
+      effectiveUnifiedEvmAccountsApiBalances = {
+        ...effectiveUnifiedEvmAccountsApiBalances,
+        localhostNativeEthHuman: Number(nodeBalance.toFixed(3)).toString(),
+      };
+    }
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
@@ -348,6 +356,7 @@ async function withFixtures(options, testSuite) {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
       ethConversionInUsd,
       monConversionInUsd,
+      unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
     });
 
     if ((await detectPort(8000)) !== 8000) {
@@ -356,6 +365,36 @@ async function withFixtures(options, testSuite) {
       );
     }
     await mockServer.start(8000);
+
+    // Log every request hitting the mock server.
+    // In pass-through mode (benchmarks), group duplicates by host to reduce noise.
+    const requestLogLabel = useMockingPassThrough
+      ? 'Request going to a live server ============'
+      : 'Request sent to mock server ============';
+    const hostCounts = useMockingPassThrough ? new Map() : null;
+    const logColor = useMockingPassThrough ? '\x1b[32m' : '\x1b[38;5;216m';
+    mockServer.on('request', (req) => {
+      if (hostCounts) {
+        let host;
+        try {
+          host = new URL(req.url).host;
+        } catch {
+          host = req.url;
+        }
+        const count = (hostCounts.get(host) || 0) + 1;
+        hostCounts.set(host, count);
+        if (count <= 3) {
+          console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+        } else if (count === 4) {
+          console.log(
+            `\x1b[33m${requestLogLabel} ${host} (repeated, suppressing further logs)\x1b[0m`,
+          );
+        }
+      } else {
+        console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+      }
+    });
+
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver({
@@ -387,6 +426,7 @@ async function withFixtures(options, testSuite) {
                 `${new Date().toISOString()} [driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
                 ).slice(0, 224)}`, // limit the length of the log entry to 224 characters
+                false,
               );
               return originalProperty.bind(target)(...args);
             };
@@ -396,18 +436,30 @@ async function withFixtures(options, testSuite) {
       });
     }
 
+    const effectiveDriver = driverProxy ?? driver;
+
+    if (virtualAuthenticator) {
+      await addVirtualAuthenticator(effectiveDriver);
+    }
+
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
       bundlerServer,
       contractRegistry,
-      driver: driverProxy ?? driver,
+      driver: effectiveDriver,
       localNodes,
       mockedEndpoint,
       mockServer,
       extensionId,
       getNetworkReport,
       clearNetworkReport,
+      ...(virtualAuthenticator && {
+        resetVirtualAuthenticator: async () => {
+          await removeVirtualAuthenticator(effectiveDriver);
+          await addVirtualAuthenticator(effectiveDriver);
+        },
+      }),
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -534,14 +586,9 @@ async function withFixtures(options, testSuite) {
       shutdownTasks.push(
         (async () => {
           try {
-            if (
-              webSocketServer &&
-              typeof webSocketServer.stopAndCleanup === 'function'
-            ) {
-              await webSocketServer.stopAndCleanup();
-            }
+            await WebSocketRegistry.stopAll();
           } catch (e) {
-            console.log('WebSocket server already stopped or not initialized');
+            console.log('WebSocket servers already stopped or not initialized');
           }
         })(),
       );
@@ -562,59 +609,6 @@ async function withFixtures(options, testSuite) {
       }
     }
   }
-}
-
-const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
-  return contract
-    ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
-    : await driver.openNewPage(dappURL);
-};
-
-const switchToOrOpenDapp = async (
-  driver,
-  contract = null,
-  dappURL = DAPP_URL,
-) => {
-  const handle = await driver.windowHandles.switchToWindowIfKnown(
-    WINDOW_TITLES.TestDApp,
-  );
-
-  if (!handle) {
-    await openDapp(driver, contract, dappURL);
-  }
-};
-
-const clickNestedButton = async (driver, tabName) => {
-  try {
-    await driver.clickElement({ text: tabName, tag: 'button' });
-  } catch (error) {
-    await driver.clickElement({
-      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
-    });
-  }
-};
-
-/**
- * Unlocks the wallet using the provided password.
- * This method is intended to replace driver.navigate and should not be called after driver.navigate.
- *
- * @param {WebDriver} driver - The webdriver instance
- * @param {object} [options] - Options for unlocking the wallet
- * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
- * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
- */
-async function unlockWallet(
-  driver,
-  { navigate = true, password = WALLET_PASSWORD } = {},
-) {
-  if (navigate) {
-    await driver.navigate();
-  }
-
-  await driver.waitForSelector('#password', { state: 'enabled' });
-  await driver.fill('#password', password);
-  await driver.press('#password', driver.Key.ENTER);
-  await driver.assertElementNotPresent('[data-testid="unlock-page"]');
 }
 
 /**
@@ -750,26 +744,11 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function initBundler(
-  bundlerServer,
-  localNodeServer,
-  usePaymaster,
-  localNodeOptsNormalized,
-) {
+async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
   try {
-    const nodeType = localNodeOptsNormalized[0].type;
-
-    let seeder;
-
-    if (nodeType === 'ganache') {
-      // eslint-disable-next-line node/global-require -- load this module conditionally
-      const GanacheSeeder = require('./seeder/ganache-seeder');
-      seeder = new GanacheSeeder(localNodeServer.getProvider());
-    } else {
-      // eslint-disable-next-line node/global-require -- load this module conditionally
-      const AnvilSeeder = require('./seeder/anvil-seeder');
-      seeder = new AnvilSeeder(localNodeServer.getProvider());
-    }
+    // eslint-disable-next-line n/global-require -- load this module conditionally
+    const AnvilSeeder = require('./seeder/anvil-seeder');
+    const seeder = new AnvilSeeder(localNodeServer.getProvider());
 
     await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
@@ -801,9 +780,8 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  */
 async function isSidePanelEnabled() {
   try {
-    const hasSidepanel =
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.IS_SIDEPANEL === 'true';
+    // Check if browser is Chrome (sidepanel is only supported in Chrome)
+    const hasSidepanel = process.env.SELENIUM_BROWSER === 'chrome';
 
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
@@ -816,37 +794,69 @@ async function isSidePanelEnabled() {
   }
 }
 
+/**
+ * Check if a key should be ignored based on various rules
+ *
+ * @param {string} key - The key to check
+ * @param {string[]} ignoredKeys - Array of keys/prefixes to ignore
+ * @returns {boolean} True if the key should be ignored
+ */
+const shouldIgnoreKey = (key, ignoredKeys) => {
+  const hasNonZeroArrayIndex = key.split('.').some((part) => {
+    const matches = part.match(/\[(\d+)\]/gu);
+    return (
+      matches?.some((match) => {
+        const index = Number(match.slice(1, -1));
+        return Number.isNaN(index) === false && index !== 0;
+      }) ?? false
+    );
+  });
+  if (hasNonZeroArrayIndex) {
+    return true;
+  }
+
+  // Ignore entropy keys in account tree (dynamic entropy IDs)
+  if (key.match(/entropy:[A-Z0-9]+/u)) {
+    return true;
+  }
+
+  // Check if any part of the key path should be ignored
+  const keyParts = key.split('.');
+  const shouldIgnore = ignoredKeys.some((ignoredKey) => {
+    const ignoredParts = ignoredKey.split('.');
+
+    // Ignore if the ignored key is an exact prefix of the current key
+    // OR if the current key exactly matches the ignored key
+    // OR if the current key starts with the ignored key (for nested properties)
+    const isExactPrefix = ignoredParts.every(
+      (part, index) => keyParts[index] === part,
+    );
+    const isExactMatch = key === ignoredKey;
+    const startsWithIgnoredKey =
+      key.startsWith(`${ignoredKey}.`) || key.startsWith(`${ignoredKey}[`);
+
+    return isExactPrefix || isExactMatch || startsWithIgnoredKey;
+  });
+
+  return shouldIgnore;
+};
+
 module.exports = {
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
-  TEST_SEED_PHRASE,
-  TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
-  ACCOUNT_1,
-  ACCOUNT_2,
+  assertInAnyOrder,
+  convertETHToHexGwei,
   convertToHexValue,
-  tinyDelayMs,
-  regularDelayMs,
+  createDownloadFolder,
+  createWebSocketConnection,
+  generateRandNumBetween,
+  getCleanAppState,
+  getEventPayloads,
+  isSidePanelEnabled,
   largeDelayMs,
+  regularDelayMs,
+  roundToXDecimalPlaces,
+  sentryRegEx,
+  shouldIgnoreKey,
+  tinyDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  createDownloadFolder,
-  openDapp,
-  switchToOrOpenDapp,
-  unlockWallet,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-  roundToXDecimalPlaces,
-  generateRandNumBetween,
-  getEventPayloads,
-  assertInAnyOrder,
-  getCleanAppState,
-  clickNestedButton,
-  sentryRegEx,
-  createWebSocketConnection,
-  isSidePanelEnabled,
 };

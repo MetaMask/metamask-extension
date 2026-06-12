@@ -4,11 +4,6 @@
   &__container {
     max-height: 500px;
     overflow-y: auto;
-
-    &--settings {
-      max-height: unset;
-      overflow-y: visible;
-    }
   }
 
   &__divider {

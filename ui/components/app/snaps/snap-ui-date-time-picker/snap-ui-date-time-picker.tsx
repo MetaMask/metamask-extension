@@ -1,7 +1,7 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { DatePicker, DateTimePicker, TimePicker } from '@material-ui/pickers';
 import { Box } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { DateTime } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import { HelpText, HelpTextSeverity, Label } from '../../../component-library';
@@ -88,9 +88,7 @@ function normalizeDate(
  * @param props.placeholder - The placeholder text for the picker.
  * @returns The DateTimePicker component.
  */
-export const SnapUIDateTimePicker: FunctionComponent<
-  SnapUIDateTimePickerProps
-> = ({
+export const SnapUIDateTimePicker = ({
   type = 'datetime',
   label,
   placeholder,
@@ -100,7 +98,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
   error,
   disablePast = false,
   disableFuture = false,
-}) => {
+}: SnapUIDateTimePickerProps) => {
   const t = useI18nContext();
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 

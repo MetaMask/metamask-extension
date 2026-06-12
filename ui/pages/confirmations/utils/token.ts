@@ -72,6 +72,30 @@ export const memoizedGetTokenStandardAndDetails = memoize(
   },
 );
 
+export const memoizedGetTokenStandardAndDetailsByChain = memoize(
+  async (
+    tokenAddress?: Hex | string,
+    chainId?: Hex | string,
+  ): Promise<TokenDetails | Record<string, never>> => {
+    try {
+      if (!tokenAddress) {
+        return {};
+      }
+
+      return (await getTokenStandardAndDetailsByChain(
+        tokenAddress,
+        undefined,
+        undefined,
+        chainId,
+      )) as TokenDetails;
+    } catch {
+      return {};
+    }
+  },
+  // Custom resolver to use both tokenAddress and chainId as cache key
+  (tokenAddress, chainId) => `${tokenAddress}-${chainId}`,
+);
+
 /**
  * Fetches the decimals for the given token address.
  *
@@ -98,6 +122,57 @@ export const fetchErc20Decimals = async (
   } catch {
     return ERC20_DEFAULT_DECIMALS;
   }
+};
+
+/**
+ * Fetches the decimals for the given token address, throwing an error if unable to resolve.
+ * Used during permission signing to ensure accurate token metadata is available.
+ *
+ * @param address - The ethereum token contract address. It is expected to be in hex format.
+ * @param chainId - ChainId on which we need to check token. It is expected to be in hex format.
+ * @param config - Optional config.
+ * @param config.tries - The number of attempts before throwing. Default is 2.
+ * @throws Error if token decimals cannot be resolved after the specified number of tries
+ */
+export const fetchErc20DecimalsOrThrow = async (
+  address: Hex | string,
+  chainId?: Hex | string,
+  config: { tries?: number } = {},
+): Promise<number> => {
+  const { tries = 2 } = config;
+  let lastError: Error | undefined;
+
+  for (let attempt = 0; attempt < tries; attempt++) {
+    try {
+      const result = await getTokenStandardAndDetailsByChain(
+        address,
+        undefined,
+        undefined,
+        chainId,
+      );
+
+      if (!result) {
+        throw new Error(
+          `Unable to resolve token decimals for address ${address} on chain ${chainId}`,
+        );
+      }
+
+      const { decimals: decStr } = result;
+      const decimals = parseTokenDetailDecimals(decStr);
+
+      if (decimals === undefined) {
+        throw new Error(
+          `Unable to resolve token decimals for address ${address} on chain ${chainId}`,
+        );
+      }
+
+      return decimals;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+    }
+  }
+
+  throw lastError ?? new Error('Unknown error fetching token decimals');
 };
 
 /**

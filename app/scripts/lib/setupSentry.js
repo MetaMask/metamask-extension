@@ -1,15 +1,21 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
+import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-import { filterEvents } from './sentry-filter-events';
-
-let installType = 'unknown';
+import { metaMetricsIntegration } from './sentry-metametrics';
+import {
+  getAnalyticsState,
+  getAnalyticsStateFromAppState,
+  getState,
+} from './sentry-get-state';
+import { makeTransport } from './sentry-make-transport';
+import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -50,25 +56,32 @@ export default function setupSentry() {
 
   log('Initializing');
 
-  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
-  // If it's not, we still get the extensionId, but the installType will default to "unknown"
-  browser.management
-    .getSelf()
-    .then((extensionInfo) => {
-      if (extensionInfo.installType) {
-        installType = extensionInfo.installType;
-      }
-    })
-    .catch((error) => {
-      log('Error getting extension installType', error);
-    });
+  // Initialize install type early - fire and forget.
+  // By the time errors are reported, the cache should be populated.
+  initInstallType();
+
   integrateLogging();
   setSentryClient();
 
   return {
     ...Sentry,
-    getMetaMetricsEnabled,
   };
+}
+
+/**
+ * Deep-clone a Sentry report.
+ * If `cloneDeep` throws (unexpected graph), returns the original reference.
+ *
+ * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @returns {Record<string, unknown>} Cloned report, or original reference on failure.
+ */
+function safeCloneReport(report) {
+  try {
+    return cloneDeep(report);
+  } catch (err) {
+    log('Failed to clone Sentry event, using original reference', err);
+    return report;
+  }
 }
 
 function getClientOptions() {
@@ -77,7 +90,11 @@ function getClientOptions() {
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
-    beforeSend: (report) => rewriteReport(report),
+    // Clone before rewriteReport so we never mutate the event object that dedupeIntegration
+    // still holds as previousEvent — rewriteReportUrls changes stack frame filenames in place,
+    // which would otherwise make the next error look like a different stack (background timers
+    // usually run after beforeSend finished; rapid UI captures often dedupe first).
+    beforeSend: (report) => rewriteReport(safeCloneReport(report)),
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -86,12 +103,15 @@ function getClientOptions() {
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
       Sentry.browserTracingIntegration({
-        shouldCreateSpanForRequest: (url) => {
-          // Do not create spans for outgoing requests to a 'sentry.io' domain.
-          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
-        },
+        // Creates ui.long-animation-frame spans (falls back to ui.long-task).
+        // Pairs with TBT aggregate measurements from performance-observers.ts.
+        enableLongAnimationFrame: true,
+        shouldCreateSpanForRequest,
       }),
-      filterEvents({ getMetaMetricsEnabled, log }),
+      metaMetricsIntegration({
+        getAnalyticsState,
+        log,
+      }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -157,46 +177,13 @@ function setCITags() {
     Sentry.setTag('ci.job', ci.job);
     Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
     Sentry.setTag('ci.prNumber', ci.prNumber);
-  }
-}
-
-/**
- * Returns whether MetaMetrics is enabled, given the application state.
- *
- * @param {{ state: unknown} | { persistedState: unknown }} appState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
- */
-function getMetaMetricsEnabledFromAppState(appState) {
-  // during initialization after loading persisted state
-  if (appState.persistedState) {
-    return getMetaMetricsEnabledFromPersistedState(appState.persistedState);
-    // After initialization
-  } else if (appState.state) {
-    // UI
-    if (appState.state.metamask) {
-      return Boolean(appState.state.metamask.participateInMetaMetrics);
+    if (ci.persona) {
+      Sentry.setTag('ci.persona', ci.persona);
     }
-    // background
-    return Boolean(
-      appState.state.MetaMetricsController?.participateInMetaMetrics,
-    );
+    if (ci.testTitle) {
+      Sentry.setTag('ci.testTitle', ci.testTitle);
+    }
   }
-  // during initialization, before first persisted state is read
-  return false;
-}
-
-/**
- * Returns whether MetaMetrics is enabled, given the persisted state.
- *
- * @param {unknown} persistedState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
- */
-function getMetaMetricsEnabledFromPersistedState(persistedState) {
-  return Boolean(
-    persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
-  );
 }
 
 function getSentryEnvironment() {
@@ -232,36 +219,6 @@ function getSentryTarget() {
   }
 
   return SENTRY_DSN;
-}
-
-/**
- * Returns whether MetaMetrics is enabled. If the application hasn't yet
- * been initialized, the persisted state will be used (if any).
- *
- * @returns `true` if MetaMetrics is enabled, `false` otherwise.
- */
-async function getMetaMetricsEnabled() {
-  const flags = getManifestFlags();
-
-  if (flags.ci && flags.sentry.forceEnable) {
-    return true;
-  }
-
-  const appState = getState();
-
-  if (appState.state || appState.persistedState) {
-    return getMetaMetricsEnabledFromAppState(appState);
-  }
-
-  // If we reach here, it means the error was thrown before initialization
-  // completed, and before we loaded the persisted state for the first time.
-  try {
-    const persistedState = await globalThis.stateHooks.getPersistedState();
-    return getMetaMetricsEnabledFromPersistedState(persistedState);
-  } catch (error) {
-    log('Error retrieving persisted state', error);
-    return false;
-  }
 }
 
 function setSentryClient() {
@@ -326,8 +283,10 @@ export function beforeBreadcrumb() {
       return null;
     }
     const appState = getState();
+    const state = getAnalyticsStateFromAppState(appState);
     if (
-      !getMetaMetricsEnabledFromAppState(appState) ||
+      !state?.completedMetaMetricsOnboarding ||
+      !state?.optedIn ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
@@ -335,6 +294,46 @@ export function beforeBreadcrumb() {
     const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
     return newBreadcrumb;
   };
+}
+
+/**
+ * Returns whether a span should be created for a given request URL.
+ *
+ * Filters out high-volume fetches with no per-request diagnostic value:
+ * telemetry endpoints (sentry.io, segment.io), static config files re-fetched on
+ * a constant poll cadence (chainid.network, acl.execution.metamask.io), and local
+ * extension reads (snap manifests / locale files, and content-hashed
+ * preinstalled-snap `<hash>.json` bundles). All other requests are traced.
+ *
+ * @param {string} url - The request URL.
+ * @returns {boolean} Whether to create a span for the request.
+ */
+export function shouldCreateSpanForRequest(url) {
+  // Do not create spans for high-volume remote fetches with no per-request
+  // diagnostic value: telemetry endpoints (sentry.io, segment.io) and static
+  // config files re-fetched on a constant poll cadence (chainid.network chain
+  // registry; acl.execution.metamask.io PPOM allowlist registry/signature).
+  if (
+    /^https?:\/\/(?:[\w\d.@-]+\.)?(?:sentry\.io|segment\.io|chainid\.network|acl\.execution\.metamask\.io)(?:\/|$)/u.test(
+      url,
+    )
+  ) {
+    return false;
+  }
+  // Skip spans for high-volume local extension reads with no diagnostic value:
+  // snap manifests and locale files (under `/snaps/` and `/_locales/`, read on
+  // every SW restart / popup open) and the content-hashed preinstalled-snap
+  // bundles webpack emits at the extension root (`<hash>.json`, see
+  // app/scripts/constants/snaps.ts). Other local fetches keep their spans.
+  if (
+    /^(?:chrome|moz)-extension:\/\/[^/]+\/(?:(?:snaps|_locales)\/|[0-9a-f]{8,}\.json$)/u.test(
+      url,
+    )
+  ) {
+    return false;
+  }
+  // Create spans for all other requests.
+  return true;
 }
 
 /**
@@ -355,17 +354,23 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
   if (breadcrumb?.data?.from) {
     breadcrumb.data.from = hideUrlIfNotInternal(breadcrumb.data.from);
   }
+  // Sanitize any account addresses that may appear in the breadcrumb message or
+  // remaining data values.
+  if (typeof breadcrumb?.message === 'string') {
+    breadcrumb.message = sanitizeAddressesFromString(breadcrumb.message);
+  }
+  if (breadcrumb?.data) {
+    breadcrumb.data = sanitizeAddressesFromObject(breadcrumb.data);
+  }
   return breadcrumb;
 }
 
 /**
- * Receives a Sentry event object and modifies it before the
- * error is sent to Sentry. Modifications include both sanitization
- * of data via helper methods and addition of state data from the
- * return value of the second parameter passed to the function.
+ * Receives a Sentry event object and modifies it before the error is sent to Sentry.
+ * Sanitizes messages/URLs and attaches app state.
  *
  * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
- * @returns {object} A modified Sentry event object.
+ * @returns {object} The modified report (same reference).
  */
 export function rewriteReport(report) {
   try {
@@ -378,10 +383,13 @@ export function rewriteReport(report) {
     // but putting the code here as well gives public visibility to how we are handling
     // privacy with respect to sentry.
     sanitizeAddressesFromErrorMessages(report);
+    // Remove addresses from other error parameters (extra, contexts).
+    // Done before attaching appState below so the (already masked) appState is
+    // not re-walked.
+    sanitizeAddressesFromReportData(report);
     // modify report urls
     rewriteReportUrls(report);
 
-    // append app state
     const appState = getState();
 
     if (!report.extra) {
@@ -390,6 +398,8 @@ export function rewriteReport(report) {
     if (!report.tags) {
       report.tags = {};
     }
+
+    const installType = getInstallType();
 
     Object.assign(report.extra, {
       appState,
@@ -445,10 +455,112 @@ function sanitizeUrlsFromErrorMessages(report) {
  * @param {object} report - the report to modify
  */
 function sanitizeAddressesFromErrorMessages(report) {
-  rewriteErrorMessages(report, (errorMessage) => {
-    const newErrorMessage = errorMessage.replace(/0x[A-Fa-f0-9]{40}/u, '0x**');
-    return newErrorMessage;
-  });
+  rewriteErrorMessages(report, (errorMessage) =>
+    sanitizeAddressesFromString(errorMessage),
+  );
+}
+
+// Patterns for sanitizing account addresses before sending events to Sentry.
+// EVM is handled separately so it can keep its `0x**` replacement form.
+const EVM_ADDRESS_REGEX = /0x[A-Fa-f0-9]{40}/gu;
+const NON_EVM_ADDRESS_REGEXES = [
+  // Tron (base58, starts with `T`, 34 chars total)
+  /\bT[1-9A-HJ-NP-Za-km-z]{33}\b/gu,
+  // Stellar / XLM (starts with `G`, 56 chars total)
+  /\bG[A-Z2-7]{55}\b/gu,
+  // Bitcoin bech32 / taproot (`bc1...`)
+  /\bbc1[02-9ac-hj-np-z]{6,87}\b/gu,
+  // Bitcoin legacy P2PKH / P2SH (base58, starts with `1` or `3`)
+  /\b[13][1-9A-HJ-NP-Za-km-z]{25,34}\b/gu,
+  // Solana (base58, 32-44 chars). Kept last as its range overlaps the others.
+  /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/gu,
+];
+
+/**
+ * Sanitizes EVM and non-EVM account addresses from a string.
+ *
+ * @param {string} text - The string to sanitize addresses from.
+ * @returns {string} The string with any addresses replaced by a mask.
+ */
+function sanitizeAddressesFromString(text) {
+  // Sanitize EVM addresses first so the resulting `0x**` cannot be re-matched by
+  // the base58 patterns below.
+  let sanitized = text.replace(EVM_ADDRESS_REGEX, '0x**');
+  for (const regex of NON_EVM_ADDRESS_REGEXES) {
+    sanitized = sanitized.replace(regex, '**');
+  }
+  return sanitized;
+}
+
+/**
+ * Recursively sanitizes account addresses from the string values of an object,
+ * returning a sanitized copy without mutating the input. Used to scrub addresses
+ * that may appear in error parameters such as `report.extra`/`report.contexts`
+ * and in breadcrumb data. Not mutating matters for breadcrumbs, whose
+ * `data.arguments` holds live references (e.g. the thrown `Error`) that the
+ * extension may still use after the event is sent.
+ *
+ * @param {*} value - The value to sanitize addresses from.
+ * @param {WeakMap} [seen] - Maps already-visited inputs to their sanitized copy,
+ * so shared references stay consistent and cyclic structures terminate.
+ * @returns {*} The sanitized value (a copy for objects/arrays).
+ */
+function sanitizeAddressesFromObject(value, seen = new WeakMap()) {
+  if (typeof value === 'string') {
+    return sanitizeAddressesFromString(value);
+  }
+  // Leave primitives (and null) untouched.
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+  // Reuse the sanitized copy for any reference we've already processed, so shared
+  // references stay consistent and cyclic structures don't loop forever.
+  if (seen.has(value)) {
+    return seen.get(value);
+  }
+
+  if (Array.isArray(value)) {
+    const copy = [];
+    seen.set(value, copy);
+    for (let i = 0; i < value.length; i++) {
+      copy[i] = sanitizeAddressesFromObject(value[i], seen);
+    }
+    return copy;
+  }
+
+  const copy = {};
+  seen.set(value, copy);
+  // `Error` carries its address-bearing data on `message`/`stack`, which are
+  // non-enumerable and so invisible to the `Object.keys` walk below. These show
+  // up e.g. in console breadcrumbs, whose `data.arguments` holds the raw thrown
+  // error. Copy them across explicitly, sanitized.
+  if (value instanceof Error) {
+    if (typeof value.message === 'string') {
+      copy.message = sanitizeAddressesFromString(value.message);
+    }
+    if (typeof value.stack === 'string') {
+      copy.stack = sanitizeAddressesFromString(value.stack);
+    }
+  }
+  for (const key of Object.keys(value)) {
+    copy[key] = sanitizeAddressesFromObject(value[key], seen);
+  }
+  return copy;
+}
+
+/**
+ * Receives a Sentry event object and sanitizes account addresses from its
+ * error parameters (`extra` and `contexts`).
+ *
+ * @param {object} report - the report to modify
+ */
+function sanitizeAddressesFromReportData(report) {
+  if (report.extra) {
+    report.extra = sanitizeAddressesFromObject(report.extra);
+  }
+  if (report.contexts) {
+    report.contexts = sanitizeAddressesFromObject(report.contexts);
+  }
 }
 
 function simplifyErrorMessages(report) {
@@ -514,10 +626,6 @@ function toMetamaskUrl(origUrl) {
   return metamaskUrl;
 }
 
-function getState() {
-  return globalThis.stateHooks?.getSentryState?.() || {};
-}
-
 function integrateLogging() {
   if (!METAMASK_DEBUG) {
     return;
@@ -552,18 +660,6 @@ function addDebugListeners() {
   });
 
   log('Added debug listeners');
-}
-
-function makeTransport(options) {
-  return Sentry.makeFetchTransport(options, async (...args) => {
-    const metricsEnabled = await getMetaMetricsEnabled();
-
-    if (!metricsEnabled) {
-      throw new Error('Network request skipped as metrics disabled');
-    }
-
-    return await fetch(...args);
-  });
 }
 
 function isCompletedSessionEnvelope(envelope) {

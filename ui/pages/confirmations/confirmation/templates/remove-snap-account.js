@@ -33,7 +33,6 @@ function getValues(pendingApproval, t, actions, _navigate, _data, contexts) {
         key: 'remove-snap-account',
         props: {
           snapId,
-          snapName,
           publicAddress,
           onCancel,
         },

@@ -1,30 +1,12 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isValidMnemonic } from '@ethersproject/hdnode';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
   IconColor,
-  JustifyContent,
-  TextAlign,
+  BoxJustifyContent,
+  BoxAlignItems,
+  BoxFlexDirection,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentKeyring } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
-import {
   Text,
   Box,
   Button,
@@ -32,11 +14,25 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonSize,
-} from '../../../components/component-library';
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import {
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
 } from '../../../store/actions';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
@@ -67,7 +63,7 @@ export default function ImportSRP({
       navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
   }, [currentKeyring, navigate, isWalletResetInProgress]);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -80,10 +76,7 @@ export default function ImportSRP({
 
   const onContinue = useCallback(() => {
     let newSrpError = '';
-    if (
-      hasUpperCase(secretRecoveryPhrase) ||
-      !isValidMnemonic(secretRecoveryPhrase)
-    ) {
+    if (hasUpperCase(secretRecoveryPhrase)) {
       newSrpError = t('invalidSeedPhraseNotFound');
     }
 
@@ -119,27 +112,25 @@ export default function ImportSRP({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      className="import-srp h-full"
       gap={4}
-      className="import-srp"
       data-testid="import-srp"
     >
       <Box>
         <Box marginBottom={4}>
           <ButtonIcon
             iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
+            color={IconColor.IconDefault}
             size={ButtonIconSize.Md}
             data-testid="import-srp-back-button"
             onClick={onBack}
             ariaLabel={t('back')}
           />
         </Box>
-        <Box textAlign={TextAlign.Left} marginBottom={2}>
-          <Text variant={TextVariant.headingLg}>{t('importAWallet')}</Text>
+        <Box className="text-left mb-2">
+          <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
         </Box>
         <SrpInputForm
           error={srpError}
@@ -148,21 +139,18 @@ export default function ImportSRP({
         />
       </Box>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
-        textAlign={TextAlign.Left}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
+        className="w-full text-left"
       >
         <Button
-          width={BlockSize.Full}
           size={ButtonSize.Lg}
-          type="primary"
+          variant={ButtonVariant.Primary}
           data-testid="import-srp-confirm"
           onClick={onContinue}
           disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
-          className="import-srp__continue-button"
+          className="import-srp__continue-button w-full"
         >
           {t('continue')}
         </Button>

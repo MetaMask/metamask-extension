@@ -1,6 +1,6 @@
 import { NetworkController } from '@metamask/network-controller';
 import { JsonRpcRequest } from '@metamask/utils';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../../shared/lib/selectors/networks';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import {
@@ -18,6 +18,16 @@ export function isSecurityAlertsEnabledByUser(
 
 export function isEthSendTransaction(req: JsonRpcRequest): boolean {
   return req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION;
+}
+
+export function isEip7715AdvancedPermissionsRequest(
+  req: JsonRpcRequest,
+): boolean {
+  return (
+    req.method === MESSAGE_TYPE.WALLET_REQUEST_EXECUTION_PERMISSIONS ||
+    req.method === MESSAGE_TYPE.WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS ||
+    req.method === MESSAGE_TYPE.WALLET_GET_GRANTED_EXECUTION_PERMISSIONS
+  );
 }
 
 export function hasValidTransactionParams(

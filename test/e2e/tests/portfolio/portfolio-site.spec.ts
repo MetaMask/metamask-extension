@@ -1,10 +1,10 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { emptyHtmlPage } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import MockedPage from '../../page-objects/pages/mocked-page';
 
 describe('Portfolio site', function () {
@@ -29,7 +29,7 @@ describe('Portfolio site', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -39,7 +39,7 @@ describe('Portfolio site', function () {
         testSpecificMock: mockPortfolioSite,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await new HomePage(driver).openPortfolioPage();
         await driver.switchToWindowWithTitle('E2E Test Page');
 

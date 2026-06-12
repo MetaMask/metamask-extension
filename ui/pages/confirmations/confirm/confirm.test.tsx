@@ -34,6 +34,17 @@ jest.mock('../hooks/gas/useIsGaslessLoading', () => ({
   },
 }));
 
+// Mock async hooks used by useSpenderAlerts to prevent React Act warnings
+jest.mock('../components/confirm/info/approve/hooks/use-is-nft', () => ({
+  ...jest.requireActual('../components/confirm/info/approve/hooks/use-is-nft'),
+  useIsNFT: () => ({ isNFT: false, pending: false }),
+}));
+
+jest.mock('../../../hooks/useAsync', () => ({
+  ...jest.requireActual('../../../hooks/useAsync'),
+  useAsyncResult: () => ({ value: null, pending: false, error: undefined }),
+}));
+
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -94,6 +105,10 @@ describe('Confirm', () => {
       decimals: '2',
       standard: 'ERC20',
     });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
     let container;
@@ -135,6 +150,10 @@ describe('Confirm', () => {
     );
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
       decimals: '2',
       standard: 'ERC20',
     });
@@ -181,6 +200,10 @@ describe('Confirm', () => {
       decimals: '2',
       standard: 'ERC20',
     });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
 
     await act(async () => {
       const { container } = await renderWithConfirmContextProvider(
@@ -202,6 +225,10 @@ describe('Confirm', () => {
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
       decimals: '2',
       standard: 'ERC20',
     });

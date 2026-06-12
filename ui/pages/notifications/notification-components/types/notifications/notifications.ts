@@ -6,7 +6,6 @@ import type { INotification } from '@metamask/notification-services-controller/n
  */
 type Compute<Item> = Item extends Item ? { [K in keyof Item]: Item[K] } : never;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 type EmptyObj = {};
 
 /**
@@ -15,7 +14,9 @@ type EmptyObj = {};
 type NotificationFC<
   Notif = INotification,
   AdditionalProps extends Record<string, unknown> = EmptyObj,
-> = FC<Compute<{ notification: Notif } & AdditionalProps>>;
+> = FC<
+  React.PropsWithChildren<Compute<{ notification: Notif } & AdditionalProps>>
+>;
 
 export enum NotificationComponentType {
   AnnouncementBody = 'body_feature_announcement',

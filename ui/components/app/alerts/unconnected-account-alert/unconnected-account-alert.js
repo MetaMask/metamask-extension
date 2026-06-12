@@ -12,9 +12,9 @@ import {
 import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
-  getSelectedInternalAccount,
   getInternalAccounts,
 } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
 
@@ -40,16 +40,6 @@ const UnconnectedAccountAlert = () => {
     getOrderedConnectedAccountsForActiveTab,
   );
   const internalAccounts = useSelector(getInternalAccounts);
-  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
-  const internalAccountsMap = new Map(
-    internalAccounts.map((acc) => [acc.address, acc]),
-  );
-
-  const connectedAccountsWithName = connectedAccounts.map((account) => ({
-    ...account,
-    name: internalAccountsMap.get(account.address)?.metadata.name,
-  }));
-
   const origin = useSelector(getOriginOfCurrentTab);
   const account = useSelector(getSelectedInternalAccount);
   const { address: selectedAddress } = account;
@@ -116,7 +106,7 @@ const UnconnectedAccountAlert = () => {
       <ConnectedAccountsList
         accountToConnect={account}
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
-        connectedAccounts={connectedAccountsWithName}
+        connectedAccounts={connectedAccounts}
         selectedAddress={selectedAddress}
         setSelectedAddress={(address) => {
           const { id: accountId } = internalAccounts.find(

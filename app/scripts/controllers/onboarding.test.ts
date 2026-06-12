@@ -7,7 +7,8 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import OnboardingController, {
+import {
+  OnboardingController,
   OnboardingControllerMessenger,
   getDefaultOnboardingControllerState,
 } from './onboarding';

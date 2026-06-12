@@ -1,11 +1,11 @@
 import { Suite } from 'mocha';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { DAPP_URL } from '../../constants';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import { login } from '../../page-objects/flows/login.flow';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 
 describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
@@ -16,7 +16,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -38,7 +38,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });

@@ -2,7 +2,7 @@ import base32Encode from 'base32-encode';
 import base64 from 'base64-js';
 import browser from 'webextension-polyfill';
 
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import resolveEnsToIpfsContentId from './resolver';
 
 const fetchWithTimeout = getFetchWithTimeout();

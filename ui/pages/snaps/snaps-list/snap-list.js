@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import SnapListItem from '../../../components/app/snaps/snap-list-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -17,9 +17,11 @@ import {
   TextVariant,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { getAllSnapAvailableUpdates, getSnapsList } from '../../../selectors';
-import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import {
   Box,
   BannerTip,
@@ -40,15 +42,22 @@ import { getSnapRoute } from '../../../helpers/utils/util';
 
 const SnapList = () => {
   const t = useI18nContext();
-  const settingsRef = useRef();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  const fromPath = searchParams.get('from') ?? undefined;
+
+  const handleBack = () => {
+    if (fromPath === DEFAULT_ROUTE) {
+      navigate(PREVIOUS_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
+  };
+
   const onClick = (snap) => {
     navigate(getSnapRoute(snap.id));
   };
-
-  useEffect(() => {
-    handleSettingsRefs(t, t('snaps'), settingsRef);
-  }, [settingsRef, t]);
 
   const snapsList = useSelector(getSnapsList);
   const snapUpdateMap = useSelector(getAllSnapAvailableUpdates);
@@ -63,7 +72,7 @@ const SnapList = () => {
               ariaLabel="Back"
               iconName="arrow-left"
               size="sm"
-              onClick={() => navigate(DEFAULT_ROUTE)}
+              onClick={handleBack}
             />
           }
         >

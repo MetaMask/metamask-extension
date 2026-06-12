@@ -50,10 +50,10 @@ export const getSRP = async (driver: Driver) => {
   await headerNavbar.openSettingsPage();
   const settingsPage = new SettingsPage(driver);
   await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToPrivacySettings();
+  await settingsPage.goToSecurityAndPasswordSettings();
 
   const privacySettings = new PrivacySettings(driver);
-  await privacySettings.checkPageIsLoaded();
+  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
   await privacySettings.openRevealSrpQuiz();
   await privacySettings.completeRevealSrpQuiz();
   await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);

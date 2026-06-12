@@ -24,33 +24,3 @@
     z-index: 1050;
   }
 }
-
-.menu-item {
-  background: none;
-  font-size: inherit;
-  display: grid;
-  grid-template-columns: min-content auto;
-  text-align: start;
-  align-items: center;
-  width: 100%;
-  padding: 16px;
-  cursor: pointer;
-  color: inherit;
-
-  &:hover,
-  &:active {
-    color: inherit;
-    background: var(--color-background-default-hover);
-  }
-
-  &:focus {
-    outline: 2px solid var(--color-primary-default);
-    outline-offset: -2px;
-  }
-
-  &__icon {
-    margin-right: 8px;
-    grid-row: 1 / span 2;
-    color: var(--color-icon-alternative);
-  }
-}

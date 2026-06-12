@@ -6,12 +6,23 @@ import React, {
   useContext,
 } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  Text,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  TextVariant,
+  TextColor,
+  FontWeight,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   useEnableNotifications,
   useDisableNotifications,
@@ -22,15 +33,6 @@ import {
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../selectors/identity/backup-and-sync';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import { Box, Text } from '../../components/component-library';
-import {
-  Display,
-  JustifyContent,
-  FlexDirection,
-  AlignItems,
-  TextVariant,
-  TextColor,
-} from '../../helpers/constants/design-system';
 import {
   NotificationsSettingsBox,
   NotificationsSettingsType,
@@ -50,7 +52,7 @@ export function NotificationsSettingsAllowNotifications({
   dataTestId: string;
 }) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
@@ -142,15 +144,15 @@ export function NotificationsSettingsAllowNotifications({
 
   const privacyLink = useMemo(
     () => (
-      <Text
-        as="a"
-        href="https://support.metamask.io/privacy-and-security/profile-privacy"
-        target="_blank"
-        rel="noopener noreferrer"
-        key="privacy-link"
-        color={TextColor.infoDefault}
-      >
-        {t('notificationsSettingsPageAllowNotificationsLink')}
+      <Text asChild color={TextColor.InfoDefault}>
+        <a
+          href={ZENDESK_URLS.PROFILE_PRIVACY}
+          target="_blank"
+          rel="noopener noreferrer"
+          key="privacy-link"
+        >
+          {t('notificationsSettingsPageAllowNotificationsLink')}
+        </a>
       </Text>
     ),
     [t],
@@ -158,14 +160,10 @@ export function NotificationsSettingsAllowNotifications({
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.flexStart}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.flexStart}
-      gap={4}
-      paddingLeft={8}
-      paddingRight={8}
-      paddingBottom={8}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Start}
+      alignItems={BoxAlignItems.Stretch}
+      gap={1}
     >
       <NotificationsSettingsBox
         value={toggleValue}
@@ -178,12 +176,16 @@ export function NotificationsSettingsAllowNotifications({
       >
         <NotificationsSettingsType title={t('allowNotifications')} />
       </NotificationsSettingsBox>
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+      <Text
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Regular}
+        color={TextColor.TextAlternative}
+      >
         {t('notificationsSettingsPageAllowNotifications', [privacyLink])}
       </Text>
       {error && (
         <Box>
-          <Text as="p" color={TextColor.errorDefault}>
+          <Text color={TextColor.ErrorDefault}>
             {isMetamaskNotificationsEnabled
               ? t('turnOffMetamaskNotificationsError')
               : t('turnOnMetamaskNotificationsError')}

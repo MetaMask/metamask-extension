@@ -1,24 +1,37 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
-  getEnabledNetworksByNamespace,
-  getIsMultichainAccountsState2Enabled,
-  getNewTokensImported,
-  getPreferences,
-  getSelectedAccount,
+  getCurrencyRates,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
+  getUseExternalServices,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { type TokenWithFiatAmount } from '../types';
-import { filterAssets } from '../util/filter';
-import { sortAssets } from '../util/sort';
-import useMultiChainAssets from '../hooks/useMultichainAssets';
 import {
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
@@ -26,7 +39,6 @@ import {
 } from '../../../../selectors/multichain/networks';
 import {
   getAssetsBySelectedAccountGroup,
-  getTokenBalancesEvm,
   selectAccountGroupBalanceForEmptyState,
 } from '../../../../selectors/assets';
 import {
@@ -34,47 +46,170 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import {
   isEvmChainId,
-  isTronResource,
+  isTronSpecialAsset,
 } from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
-import { useScrollContainer } from '../../../../contexts/scroll-container';
+import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { isMusdToken } from '../../musd/constants';
+import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
   safeChains?: SafeChain[];
 };
 
+type TokenListDisplayItem =
+  | {
+      type: 'token';
+      token: TokenWithFiatAmount;
+    }
+  | {
+      type: 'low-value-toggle';
+      count: number;
+    };
+
+const LOW_VALUE_ASSET_FIAT_THRESHOLD = 1;
+let lowValueAssetsExpandedSessionValue = false;
+
+type CurrencyRate = {
+  conversionRate?: number | null;
+  usdConversionRate?: number | null;
+};
+
+type CurrencyRates = Record<string, CurrencyRate>;
+
+const getInitialLowValueAssetsExpanded = () => {
+  return lowValueAssetsExpandedSessionValue;
+};
+
+const setLowValueAssetsExpandedSessionValue = (isExpanded: boolean) => {
+  lowValueAssetsExpandedSessionValue = isExpanded;
+};
+
+const getLowValueAssetFiatThreshold = (currencyRates?: CurrencyRates) => {
+  const currencyRate = Object.values(currencyRates ?? {}).find(
+    ({ conversionRate, usdConversionRate }) =>
+      typeof conversionRate === 'number' &&
+      typeof usdConversionRate === 'number' &&
+      Number.isFinite(conversionRate) &&
+      Number.isFinite(usdConversionRate) &&
+      conversionRate > 0 &&
+      usdConversionRate > 0,
+  );
+
+  if (!currencyRate?.conversionRate || !currencyRate.usdConversionRate) {
+    return LOW_VALUE_ASSET_FIAT_THRESHOLD;
+  }
+
+  return (
+    (LOW_VALUE_ASSET_FIAT_THRESHOLD * currencyRate.conversionRate) /
+    currencyRate.usdConversionRate
+  );
+};
+
+const isLowValueAsset = (
+  token: TokenWithFiatAmount,
+  lowValueAssetFiatThreshold: number,
+) => {
+  const { tokenFiatAmount } = token;
+
+  return (
+    !token.isNative &&
+    !isMusdToken(token.address) &&
+    tokenFiatAmount !== null &&
+    tokenFiatAmount !== undefined &&
+    Number.isFinite(tokenFiatAmount) &&
+    tokenFiatAmount < lowValueAssetFiatThreshold
+  );
+};
+
+const isDecliningBalanceSort = (
+  tokenSortConfig: ReturnType<typeof getTokenSortConfig>,
+) =>
+  tokenSortConfig?.key === 'tokenFiatAmount' &&
+  tokenSortConfig?.order === 'dsc' &&
+  tokenSortConfig?.sortCallback === 'stringNumeric';
+
+const getTokenListItemKey = (item: TokenListDisplayItem, index: number) => {
+  if (item.type === 'low-value-toggle') {
+    return `low-value-assets-toggle-${index}`;
+  }
+
+  return `${item.token.chainId}-${item.token.symbol}-${item.token.address}`;
+};
+
+const LowValueAssetsToggle = ({
+  count,
+  isExpanded,
+  onClick,
+}: {
+  count: number;
+  isExpanded: boolean;
+  onClick: () => void;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center bg-background-default px-4 text-start text-inherit hover:bg-hover focus:outline-none"
+      style={{ height: ASSET_CELL_HEIGHT }}
+      aria-expanded={isExpanded}
+      data-testid="low-value-assets-toggle"
+    >
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        className="min-w-0"
+      >
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
+          ellipsis
+        >
+          {t('lowValueAssets', [count])}
+        </Text>
+        <Box marginLeft={1} className="flex-shrink-0">
+          <Icon
+            name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+          />
+        </Box>
+      </Box>
+    </button>
+  );
+};
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
-  const scrollContainerRef = useScrollContainer();
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
-  const newTokensImported = useSelector(getNewTokensImported);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
-  const selectedAccount = useSelector(getSelectedAccount);
-  const evmBalances = useSelector((state) =>
-    getTokenBalancesEvm(state, selectedAccount.address),
-  );
+  const currencyRates = useSelector(getCurrencyRates) as CurrencyRates;
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const [isLowValueAssetsExpanded, setIsLowValueAssetsExpanded] = useState(
+    getInitialLowValueAssetsExpanded,
+  );
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
-  const multichainAssets = useMultiChainAssets();
-
-  // network filter to determine which tokens to show in list
-  const networksToShow = useSelector(getEnabledNetworksByNamespace);
-
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
+  const useExternalServices = useSelector(getUseExternalServices);
+  const lowValueAssetFiatThreshold = useMemo(
+    () => getLowValueAssetFiatThreshold(currencyRates),
+    [currencyRates],
   );
 
   const allEnabledNetworksForAllNamespaces = useSelector(
@@ -82,19 +217,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   );
 
   const sortedFilteredTokens = useMemo(() => {
-    if (!isMultichainAccountsState2Enabled) {
-      const balances = isEvm ? evmBalances : multichainAssets;
-      const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
-        {
-          key: 'chainId',
-          opts: isEvm ? networksToShow : { [currentNetwork.chainId]: true },
-          filterCallback: 'inclusive',
-        },
-      ]);
-
-      return sortAssets([...filteredAssets], tokenSortConfig);
-    }
-
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
         if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
@@ -103,7 +225,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
         // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
         return assets.filter((asset) => {
-          if (isTronResource(asset)) {
+          if (isTronSpecialAsset(asset.assetId)) {
             return false;
           }
           if (shouldHideZeroBalanceTokens && asset.balance === '0') {
@@ -119,7 +241,17 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       tokenSortConfig,
     );
 
-    return accountAssets.map((asset) => {
+    // Filter out non-EVM assets when basic functionality toggle is OFF
+    // Exception: Keep assets for the currently selected non-EVM chain
+    const finalAccountAssets = useExternalServices
+      ? accountAssets
+      : accountAssets.filter(
+          (asset) =>
+            isEvmChainId(asset.chainId) ||
+            (!isEvm && asset.chainId === currentNetwork.chainId),
+        );
+
+    return finalAccountAssets.map((asset) => {
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -133,25 +265,72 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     });
   }, [
     isEvm,
-    evmBalances,
-    multichainAssets,
-    networksToShow,
     currentNetwork.chainId,
     tokenSortConfig,
-    isMultichainAccountsState2Enabled,
     accountGroupIdAssets,
-    // newTokensImported included in deps, but not in hook's logic
-    newTokensImported,
     allEnabledNetworksForAllNamespaces,
+    shouldHideZeroBalanceTokens,
+    useExternalServices,
   ]);
 
-  const virtualizer = useVirtualizer({
-    count: sortedFilteredTokens.length,
-    getScrollElement: () => scrollContainerRef?.current || null,
-    estimateSize: () => ASSET_CELL_HEIGHT,
-    overscan: 10,
-    initialOffset: scrollContainerRef?.current?.scrollTop,
-  });
+  const { visibleTokens, lowValueTokens } = useMemo(() => {
+    if (!isDecliningBalanceSort(tokenSortConfig)) {
+      return {
+        visibleTokens: sortedFilteredTokens,
+        lowValueTokens: [],
+      };
+    }
+
+    const highValueTokens: TokenWithFiatAmount[] = [];
+    const lowValueAssets: TokenWithFiatAmount[] = [];
+
+    sortedFilteredTokens.forEach((token) => {
+      if (isLowValueAsset(token, lowValueAssetFiatThreshold)) {
+        lowValueAssets.push(token);
+        return;
+      }
+      highValueTokens.push(token);
+    });
+
+    return {
+      visibleTokens: highValueTokens,
+      lowValueTokens: lowValueAssets,
+    };
+  }, [lowValueAssetFiatThreshold, sortedFilteredTokens, tokenSortConfig]);
+
+  const lowValueAssetCount = lowValueTokens.length;
+
+  const tokenListItems = useMemo<TokenListDisplayItem[]>(() => {
+    const visibleTokenItems: TokenListDisplayItem[] = visibleTokens.map(
+      (token) => ({
+        type: 'token',
+        token,
+      }),
+    );
+
+    if (lowValueAssetCount === 0) {
+      return visibleTokenItems;
+    }
+
+    return [
+      ...visibleTokenItems,
+      {
+        type: 'low-value-toggle',
+        count: lowValueAssetCount,
+      },
+      ...(isLowValueAssetsExpanded
+        ? lowValueTokens.map((token) => ({
+            type: 'token' as const,
+            token,
+          }))
+        : []),
+    ];
+  }, [
+    isLowValueAssetsExpanded,
+    lowValueAssetCount,
+    lowValueTokens,
+    visibleTokens,
+  ]);
 
   useEffect(() => {
     if (sortedFilteredTokens) {
@@ -187,62 +366,72 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     });
   };
 
+  const handleLowValueAssetsToggle = useCallback(() => {
+    const nextIsExpanded = !isLowValueAssetsExpanded;
+    setIsLowValueAssetsExpanded(nextIsExpanded);
+    setLowValueAssetsExpandedSessionValue(nextIsExpanded);
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Home,
+      event: MetaMetricsEventName.LowValueAssetsToggled,
+      properties: {
+        state: nextIsExpanded ? 'expanded' : 'collapsed',
+        count: lowValueAssetCount,
+      },
+    });
+  }, [isLowValueAssetsExpanded, lowValueAssetCount, trackEvent]);
+
+  const renderTokenCell = (token: TokenWithFiatAmount) => {
+    const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
+      token.chainId as CaipChainId,
+    );
+
+    return (
+      <TokenCell
+        token={token}
+        privacyMode={privacyMode}
+        onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
+        safeChains={safeChains}
+        musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+      />
+    );
+  };
+
+  const renderTokenListItem = ({ item }: { item: TokenListDisplayItem }) => {
+    if (item.type === 'low-value-toggle') {
+      return (
+        <LowValueAssetsToggle
+          count={item.count}
+          isExpanded={isLowValueAssetsExpanded}
+          onClick={handleLowValueAssetsToggle}
+        />
+      );
+    }
+
+    return renderTokenCell(item.token);
+  };
+
   // Disable virtualization when empty balance state is shown
   if (!hasBalance) {
     return (
       <div className="token-list-non-virtualized">
-        {sortedFilteredTokens.map((token) => {
-          const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
-            token.chainId as CaipChainId,
-          );
-
-          return (
-            <TokenCell
-              key={`${token.chainId}-${token.symbol}-${token.address}`}
-              token={token}
-              privacyMode={privacyMode}
-              onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
-              safeChains={safeChains}
-            />
-          );
-        })}
+        {tokenListItems.map((item, index) => (
+          <div key={getTokenListItemKey(item, index)}>
+            {renderTokenListItem({ item })}
+          </div>
+        ))}
       </div>
     );
   }
 
-  const virtualItems = virtualizer.getVirtualItems();
-
   return (
-    <div
-      className="relative w-full"
-      style={{
-        height: `${virtualizer.getTotalSize()}px`,
-      }}
-    >
-      {virtualItems.map((virtualItem) => {
-        const token = sortedFilteredTokens[virtualItem.index];
-        const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
-          token.chainId as CaipChainId,
-        );
-
-        return (
-          <div
-            key={`${token.chainId}-${token.symbol}-${token.address}`}
-            className="absolute top-0 left-0 w-full"
-            style={{
-              transform: `translateY(${virtualItem.start}px)`,
-            }}
-          >
-            <TokenCell
-              token={token}
-              privacyMode={privacyMode}
-              onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
-              safeChains={safeChains}
-            />
-          </div>
-        );
-      })}
-    </div>
+    <VirtualizedList
+      data={tokenListItems}
+      estimatedItemSize={ASSET_CELL_HEIGHT}
+      overscan={10}
+      keyExtractor={getTokenListItemKey}
+      renderItem={renderTokenListItem}
+    />
   );
 }
 

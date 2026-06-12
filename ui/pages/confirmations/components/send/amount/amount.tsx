@@ -105,7 +105,6 @@ export const Amount = ({
     amount,
     fiatMode,
     getFiatValue,
-    getNativeValue,
     setAmount,
     setAmountInputTypeFiat,
     setAmountInputTypeToken,
@@ -165,6 +164,7 @@ export const Amount = ({
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
         placeholder="0"
+        testId="send-amount-input"
         value={amount}
         endAccessory={
           <Box display={Display.Flex}>

@@ -2,6 +2,7 @@ import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { ERC20 } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Menu, MenuItem } from '../../../components/ui/menu';
@@ -18,10 +19,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../shared/constants/transaction';
+import { AssetType } from '../../../../shared/constants/transaction';
 
 const AssetOptions = ({
   onRemove,
@@ -31,7 +29,7 @@ const AssetOptions = ({
   isNativeAsset,
 }) => {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
@@ -56,7 +54,7 @@ const AssetOptions = ({
         token_contract_address: token?.address,
         token_decimal_precision: token?.decimals,
         location: MetaMetricsEventLocation.TokenDetails,
-        token_standard: TokenStandard.ERC20,
+        token_standard: ERC20,
         asset_type: AssetType.token,
         chain_id: token?.chainId,
       },
@@ -83,7 +81,7 @@ const AssetOptions = ({
           onHide={() => setAssetOptionsOpen(false)}
         >
           <MenuItem
-            iconName={IconName.Export}
+            iconNameLegacy={IconName.Export}
             data-testid="asset-options__etherscan"
             onClick={
               blockExplorerLinkText.firstPart === 'addBlockExplorer'
@@ -100,7 +98,7 @@ const AssetOptions = ({
           </MenuItem>
           {!isNativeAsset && (
             <MenuItem
-              iconName={IconName.Trash}
+              iconNameLegacy={IconName.Trash}
               data-testid="asset-options__hide"
               onClick={handleRemoveToken}
             >
@@ -109,7 +107,7 @@ const AssetOptions = ({
           )}
           {isNativeAsset || !onViewTokenDetails ? null : (
             <MenuItem
-              iconName={IconName.Info}
+              iconNameLegacy={IconName.Info}
               data-testid="asset-options__token-details"
               onClick={() => {
                 setAssetOptionsOpen(false);

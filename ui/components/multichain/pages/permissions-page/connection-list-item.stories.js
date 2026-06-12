@@ -63,7 +63,6 @@ const Template = (args) => (
 );
 
 export const Default = Template.bind({});
-Default.storyName = 'Default';
 
 export const Chaos = Template.bind({});
 Chaos.args = {

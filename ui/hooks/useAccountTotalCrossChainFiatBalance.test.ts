@@ -16,7 +16,7 @@ import {
 import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
-} from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/selectors/networks';
 import {
   FormattedTokensWithBalances,
   useAccountTotalCrossChainFiatBalance,
@@ -36,7 +36,7 @@ jest.mock('../ducks/metamask/metamask', () => ({
   getCurrencyRates: jest.fn(),
   getTokenBalances: jest.fn(),
 }));
-jest.mock('../../shared/modules/selectors/networks', () => ({
+jest.mock('../../shared/lib/selectors/networks', () => ({
   getSelectedNetworkClientId: jest.fn(),
   getNetworkConfigurationsByChainId: jest.fn(),
   getCurrentChainId: jest.fn(),

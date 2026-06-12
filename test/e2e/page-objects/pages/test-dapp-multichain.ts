@@ -1,7 +1,8 @@
 import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
 import { Json } from '@metamask/utils';
-import { largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { largeDelayMs, veryLargeDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { replaceColon } from '../../flask/multichain-api/testHelpers';
 
@@ -36,6 +37,11 @@ class TestDappMultichain {
     testId: 'invoke-all-methods-button',
   };
 
+  private readonly resultSummary = '.result-summary';
+
+  private readonly scopeCheckboxByName = (scope: string) =>
+    `input[name="${scope}"]`;
+
   private readonly sessionResultListItem = (resultNumber: number) => {
     return `#session-method-details-${resultNumber}`;
   };
@@ -47,8 +53,6 @@ class TestDappMultichain {
   private readonly walletNotifyResult = '#wallet-notify-container';
 
   private readonly walletRevokeSessionButton = '#revoke-session-btn';
-
-  private readonly resultSummary = '.result-summary';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -153,6 +157,18 @@ class TestDappMultichain {
     );
     await this.clickConnectExternallyConnectableButton();
     await this.driver.delay(veryLargeDelayMs);
+  }
+
+  /**
+   * Clicks scope checkboxes on the multichain test dapp to deselect the given scopes.
+   *
+   * @param scopes - CAIP-2 scope strings matching `input[name]` on the dapp.
+   */
+  async deselectScopes(scopes: string[]): Promise<void> {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+    for (const scope of scopes) {
+      await this.driver.clickElement(this.scopeCheckboxByName(scope));
+    }
   }
 
   /**

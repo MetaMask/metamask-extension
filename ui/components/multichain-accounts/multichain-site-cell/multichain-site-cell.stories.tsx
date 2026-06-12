@@ -52,6 +52,7 @@ const createMockAccountGroup = (
     entropy: {
       groupIndex: index,
     },
+    lastSelected: 0,
   },
   accounts: [
     createMockInternalAccount({

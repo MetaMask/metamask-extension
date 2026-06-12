@@ -1,6 +1,7 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React, { useState, useEffect } from 'react';
 import { useArgs } from '@storybook/client-api';
+import README from './README.mdx';
 
 import {
   Display,
@@ -13,7 +14,6 @@ import {
 
 import { FormTextField } from './form-text-field';
 
-import README from './README.mdx';
 import { Text } from '../text';
 import { Box } from '../box';
 import { ButtonSecondary } from '../button-secondary';
@@ -27,6 +27,7 @@ import { TextFieldType } from '../text-field';
 export default {
   title: 'Components/ComponentLibrary/FormTextField',
   component: FormTextField,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

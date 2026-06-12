@@ -2,12 +2,13 @@ import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import { MOCK_META_METRICS_ID, WALLET_PASSWORD } from '../../constants';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
+import { skipPasskeySetup } from '../../page-objects/flows/onboarding.flow';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -46,7 +47,7 @@ describe('App Installed Events', function () {
   it('are sent immediately when user installs app and chooses to opt in metrics', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -71,6 +72,7 @@ describe('App Installed Events', function () {
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+        await skipPasskeySetup(driver);
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
@@ -101,7 +103,7 @@ describe('App Installed Events', function () {
   it('are not sent when user installs app and chooses to opt out metrics', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -125,6 +127,7 @@ describe('App Installed Events', function () {
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+        await skipPasskeySetup(driver);
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();

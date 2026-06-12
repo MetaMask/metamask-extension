@@ -8,8 +8,6 @@ export const TYPED_SIGNATURE_VERSIONS = {
   V4: 'V4',
 };
 
-export const SPENDING_CAP_UNLIMITED_MSG = 'UNLIMITED MESSAGE';
-
 export const TypedSignSignaturePrimaryTypes = {
   PERMIT: 'Permit',
   ORDER: 'Order',

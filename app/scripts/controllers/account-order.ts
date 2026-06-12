@@ -5,6 +5,7 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
+import { AccountOrderControllerMethodActions } from './account-order-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';
@@ -20,29 +21,20 @@ export type AccountOrderControllerState = {
   hiddenAccountList: AccountAddress[];
 };
 
-export type AccountOrderControllerGetStateAction = {
-  type: 'AccountOrderController:getState';
-  handler: () => AccountOrderControllerState;
-};
+export type AccountOrderControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  AccountOrderControllerState
+>;
 
-// Describes the action for updating the accounts list
-export type AccountOrderControllerupdateAccountsListAction = {
-  type: `${typeof controllerName}:updateAccountsList`;
-  handler: AccountOrderController['updateAccountsList'];
-};
-
-// Describes the action for updating the accounts list
-export type AccountOrderControllerhideAccountsListAction = {
-  type: `${typeof controllerName}:updateHiddenAccountsList`;
-  handler: AccountOrderController['updateHiddenAccountsList'];
-};
+const MESSENGER_EXPOSED_METHODS = [
+  'updateAccountsList',
+  'updateHiddenAccountsList',
+] as const;
 
 // Union of all possible actions for the messenger
 export type AccountOrderControllerMessengerActions =
-  | ControllerGetStateAction<typeof controllerName, AccountOrderControllerState>
-  | AccountOrderControllerupdateAccountsListAction
-  | AccountOrderControllerhideAccountsListAction
-  | AccountOrderControllerGetStateAction;
+  | AccountOrderControllerGetStateAction
+  | AccountOrderControllerMethodActions;
 
 export type AccountOrderControllerMessengerEvents = ControllerStateChangeEvent<
   typeof controllerName,
@@ -109,6 +101,11 @@ export class AccountOrderController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**

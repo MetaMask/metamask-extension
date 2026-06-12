@@ -1,76 +1,83 @@
 import { Context } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { withFixtures, largeDelayMs } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from './utils/mocks';
 
-// Bug 37687 cannot sort tokens alphabetically in the wallet
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Token List Sorting', function () {
+describe('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;
   const customTokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
   const customTokenSymbol = 'ABC';
+  const customTokenAssetId = `eip155:1/erc20:${customTokenAddress.toLowerCase()}`;
 
   const testFixtures = {
-    fixtures: new FixtureBuilder({ inputChainId: mainnetChainId }).build(),
+    fixtures: new FixtureBuilderV2()
+      .withNetworkRpcUrlOnLocalhost(mainnetChainId)
+      .withEnabledNetworks({ eip155: { [mainnetChainId]: true } })
+      .build(),
     localNodeOptions: {
       chainId: parseInt(mainnetChainId, 16),
     },
   };
+
+  async function mockCustomTokenImport(mockServer: MockttpServer) {
+    await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
+      },
+      [customTokenAssetId]: {
+        price: 0,
+        marketCap: 0,
+        pricePercentChange1d: 0,
+      },
+    });
+  }
 
   it('should sort tokens alphabetically and by decreasing balance', async function () {
     await withFixtures(
       {
         ...testFixtures,
         title: (this as Context).test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
         },
+        testSpecificMock: mockCustomTokenImport,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
         await homePage.checkPageIsLoaded();
         await assetListPage.importCustomTokenByChain(
-          CHAIN_IDS.MAINNET,
+          mainnetChainId,
           customTokenAddress,
           customTokenSymbol,
         );
+        await assetListPage.dismissTokenImportedMessage();
 
         await assetListPage.checkTokenExistsInList('Ethereum');
         await assetListPage.sortTokenList('alphabetically');
-
-        await driver.waitUntil(
-          async () => {
-            const sortedTokenList = await assetListPage.getTokenListNames();
-            return sortedTokenList[0].includes(customTokenSymbol);
-          },
-          { timeout: largeDelayMs, interval: 100 },
-        );
+        await assetListPage.checkTokenPositionInList({
+          position: 1,
+          tokenName: customTokenSymbol,
+        });
 
         await assetListPage.sortTokenList('decliningBalance');
-        await driver.waitUntil(
-          async () => {
-            const sortedTokenListByBalance =
-              await assetListPage.getTokenListNames();
-            return sortedTokenListByBalance[0].includes('Ethereum');
-          },
-          { timeout: largeDelayMs, interval: 100 },
-        );
+        await assetListPage.checkTokenPositionInList({
+          position: 1,
+          tokenName: 'Ethereum',
+        });
       },
     );
   });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import SRPDetailsModal from './srp-details-modal';
 
 describe('SRP Details Modal', () => {
@@ -11,10 +12,10 @@ describe('SRP Details Modal', () => {
       <SRPDetailsModal onClose={onCloseStub} />,
     );
 
-    const title = getByText('What’s a Secret Recovery Phrase?');
+    const title = getByText(messages.srpDetailsTitle.message);
     expect(title).toBeInTheDocument();
 
-    const gotItButton = getByText('Got it');
+    const gotItButton = getByText(messages.gotIt.message);
     expect(gotItButton).toBeInTheDocument();
   });
 
@@ -23,7 +24,7 @@ describe('SRP Details Modal', () => {
       <SRPDetailsModal onClose={onCloseStub} />,
     );
 
-    const gotItButton = getByText('Got it');
+    const gotItButton = getByText(messages.gotIt.message);
     fireEvent.click(gotItButton);
     expect(onCloseStub).toHaveBeenCalled();
   });

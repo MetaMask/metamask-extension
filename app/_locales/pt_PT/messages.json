@@ -149,9 +149,6 @@
   "unlock": {
     "message": "Desbloquear"
   },
-  "userName": {
-    "message": "Nome de utilizador"
-  },
   "welcomeBack": {
     "message": "Bem-vindo de volta!"
   }

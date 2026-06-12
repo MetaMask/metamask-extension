@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates/approval-types';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -22,6 +22,13 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
+import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
+
+export enum ConfirmationLoader {
+  Default = 'default',
+  CustomAmount = 'customAmount',
+  Send = 'send',
+}
 
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
@@ -29,6 +36,11 @@ const CONNECT_APPROVAL_TYPES = [
   'wallet_updateSnap',
   'wallet_installSnapResult',
 ];
+
+export type ConfirmationNavigationOptions = {
+  loader?: ConfirmationLoader;
+  goBackTo?: string;
+};
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
@@ -85,13 +97,34 @@ export function useConfirmationNavigation() {
     [confirmations, getIndex, navigateToIndex],
   );
 
+  const navigateToTransaction = useCallback(
+    (transactionId: string, options: ConfirmationNavigationOptions = {}) => {
+      const params = new URLSearchParams();
+
+      if (options.loader && options.loader !== ConfirmationLoader.Default) {
+        params.set('loader', options.loader);
+      }
+
+      if (options.goBackTo) {
+        params.set('goBackTo', options.goBackTo);
+      }
+
+      navigate({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
+        search: params.toString(),
+      });
+    },
+    [navigate],
+  );
+
   return {
     confirmations,
     count,
     getIndex,
+    navigateNext,
     navigateToId,
     navigateToIndex,
-    navigateNext,
+    navigateToTransaction,
   };
 }
 
@@ -121,7 +154,11 @@ export function getConfirmationRoute(
 
   const type = nextConfirmation.type as ApprovalType;
 
-  if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
+  if (
+    TEMPLATED_CONFIRMATION_APPROVAL_TYPES.find(
+      (approvalType) => approvalType === type,
+    ) !== undefined
+  ) {
     return `${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`;
   }
 
@@ -165,4 +202,19 @@ export function getConfirmationRoute(
   }
 
   return '';
+}
+
+export function useConfirmationNavigationOptions(): ConfirmationNavigationOptions {
+  const [searchParams] = useSearchParams();
+
+  const loader =
+    (searchParams.get('loader') as ConfirmationLoader) ??
+    ConfirmationLoader.Default;
+
+  const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
+
+  return {
+    loader,
+    goBackTo,
+  };
 }

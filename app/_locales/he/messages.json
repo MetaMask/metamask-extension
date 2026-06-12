@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "עליך לבחור חשבון!"
   },
-  "activityLog": {
-    "message": "יומן פעילות"
-  },
   "addAcquiredTokens": {
     "message": "הוספת הטוקנים שהשגת באמצעות MetaMask"
   },
@@ -80,9 +77,6 @@
   },
   "autoLockTimeLimit": {
     "message": "טיימר התנתקות אוטומטית (דקות)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "הגדר/י את זמן היעדר הפעילות בדקות לפני ש-MetaMask יתנתק אוטומטית."
   },
   "average": {
     "message": "ממוצע"
@@ -184,12 +178,6 @@
   "createPassword": {
     "message": "יצירת ססמה"
   },
-  "currencyConversion": {
-    "message": "המרת מטבע"
-  },
-  "currentLanguage": {
-    "message": "שפה נוכחית"
-  },
   "custom": {
     "message": "מתקדם"
   },
@@ -210,9 +198,6 @@
   },
   "done": {
     "message": "סיום"
-  },
-  "downloadGoogleChrome": {
-    "message": "הורד/י את גוגל כרום"
   },
   "downloadStateLogs": {
     "message": "הורדת יומני מצב"
@@ -272,9 +257,6 @@
   "hardwareWallets": {
     "message": "חבר ארנק חומרה"
   },
-  "hardwareWalletsMsg": {
-    "message": "בחר/י ארנק חומרה שבו תרצה להשתמש עם MetaMask"
-  },
   "here": {
     "message": "כאן",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -301,9 +283,6 @@
   "imported": {
     "message": "מיובאות",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "העסקה הראשונית שלך אושרה על ידי הרשת. לחצ/י על אישור כדי לחזור."
   },
   "insufficientBalance": {
     "message": "יתרה לא מספיקה."
@@ -345,15 +324,6 @@
   "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
   },
-  "lineaGoerli": {
-    "message": "רשת בדיקה Linea Goerli"
-  },
-  "links": {
-    "message": "קישורים"
-  },
-  "loadMore": {
-    "message": "טען עוד"
-  },
   "loading": {
     "message": "טוען..."
   },
@@ -382,9 +352,6 @@
     "message": "יש לבחור קובץ לייצוא.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "לא ניתן לשלוח סכומים שליליים של ETH."
-  },
   "networkName": {
     "message": "שם רשת"
   },
@@ -394,15 +361,9 @@
   "nevermind": {
     "message": "לא משנה"
   },
-  "newAccount": {
-    "message": "חשבון חדש"
-  },
   "newAccountNumberName": {
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "איש קשר חדש"
   },
   "newContract": {
     "message": "חוזה חדש"
@@ -412,9 +373,6 @@
   },
   "next": {
     "message": "הבא"
-  },
-  "noConversionRateAvailable": {
-    "message": "אין שער המרה זמין"
   },
   "noWebcamFound": {
     "message": "מצלמת הרשת של מחשבך לא נמצאה. נא לנסות שוב."
@@ -490,12 +448,6 @@
   "rejectAll": {
     "message": "דחה הכל"
   },
-  "rejectTxsDescription": {
-    "message": "הנך עומד/ת לדחות קבוצת עסקאות $1."
-  },
-  "rejectTxsN": {
-    "message": "דחה $1 עסקאות "
-  },
   "rejected": {
     "message": "נדחה"
   },
@@ -505,9 +457,6 @@
   "removeAccount": {
     "message": "הסר חשבון"
   },
-  "removeAccountDescription": {
-    "message": "חשבון זה יוסר מארנקך. יש לוודא שיש לך את ה-seed phrase המקורי או המפתח האישי לחשבון מיובא זה לפני שתמשיך/י. באפשרותך ליבוא או לפתוח חשבונות שוב מהתפריט הנפתח של החשבון."
-  },
   "required": {
     "message": "נדרש"
   },
@@ -516,9 +465,6 @@
   },
   "restore": {
     "message": "שחזר"
-  },
-  "revealSeedWords": {
-    "message": "גלה מילות Seed"
   },
   "revealSeedWordsWarning": {
     "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך.",
@@ -566,9 +512,6 @@
   "showFiatConversionInTestnets": {
     "message": "הצג המרה -Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "בחר/י באפשרות זו כדי להציג המרת פיאט ב- Testnets"
-  },
   "showHexData": {
     "message": "הצג מידע הקסדצימלי (Hex)"
   },
@@ -593,17 +536,11 @@
   "speedUpCancellation": {
     "message": "האצת ביטול זה"
   },
-  "speedUpTransaction": {
-    "message": "האץ עסקה זו"
-  },
   "stateLogError": {
     "message": "שגיאה באחזור יומני המצב."
   },
   "stateLogs": {
     "message": "יומני מצב"
-  },
-  "stateLogsDescription": {
-    "message": "יומני המצב מכילים את כתובות החשבון הציבוריות שלך ועסקאות שנשלחו."
   },
   "submitted": {
     "message": "הוגש"
@@ -641,38 +578,11 @@
   "transaction": {
     "message": "עסקה"
   },
-  "transactionCancelAttempted": {
-    "message": "ניסיון לביטול העסקה נעשה עם עמלת דלק של $1 ב-$2"
-  },
-  "transactionCancelSuccess": {
-    "message": "העסקה בוטלה בהצלחה ב-$2"
-  },
-  "transactionConfirmed": {
-    "message": "עסקה מאושרת ב-$2."
-  },
-  "transactionCreated": {
-    "message": "עסקה נוצרה עם ערך של $1 ב-$2."
-  },
-  "transactionDropped": {
-    "message": "העסקה ירדה ב-$2."
-  },
   "transactionError": {
     "message": "תקלה בעסקה. שגיאה אירעה בקוד החוזה."
   },
   "transactionErrorNoContract": {
     "message": "מנסה לקרוא לפונקציה בכתובת ללא חוזה."
-  },
-  "transactionErrored": {
-    "message": "העסקה נתקלה בשגיאה."
-  },
-  "transactionResubmitted": {
-    "message": "העסקה הוגשה מחדש עם עמלת דלק שעלתה ל-$1 ב-$2"
-  },
-  "transactionSubmitted": {
-    "message": "עסקה הוגשה עם עמלת דלק של $1 ב-$2."
-  },
-  "transactionUpdated": {
-    "message": "העסקה עודכנה ב- $2."
   },
   "transfer": {
     "message": "העברה"
@@ -704,12 +614,6 @@
   "usedByClients": {
     "message": "בשימוש על ידי מגוון לקוחות שונים"
   },
-  "userName": {
-    "message": "שם משתמש"
-  },
-  "viewContact": {
-    "message": "הצג איש קשר"
-  },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"
   },
@@ -718,8 +622,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "ה-seed phrase הפרטי שלך"
   }
 }

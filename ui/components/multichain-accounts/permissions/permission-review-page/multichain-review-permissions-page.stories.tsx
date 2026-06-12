@@ -96,11 +96,12 @@ DefaultStory.args = {
   store: storeWithNoAccounts,
 };
 DefaultStory.parameters = {
-  initialEntries: [`/review-permissions/${encodeURIComponent('https://test.dapp')}`],
-}
+  initialEntries: [
+    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+  ],
+};
 
 export const WithOneConnectedAccount = Template.bind({});
-WithOneConnectedAccount.storyName = 'With One Connected Account';
 WithOneConnectedAccount.args = {
   store: storeWithOneAccount,
 };
@@ -110,11 +111,12 @@ WithOneConnectedAccount.parameters = {
       story: 'Shows the page with one connected account group',
     },
   },
-  initialEntries: [`/review-permissions/${encodeURIComponent('https://test.dapp')}`],
+  initialEntries: [
+    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+  ],
 };
 
 export const NoConnectedAccounts = Template.bind({});
-NoConnectedAccounts.storyName = 'No Connected Accounts';
 NoConnectedAccounts.args = {
   store: storeWithNoAccounts,
 };
@@ -124,5 +126,7 @@ NoConnectedAccounts.parameters = {
       story: 'Shows the page with no connected account groups',
     },
   },
-  initialEntries: [`/review-permissions/${encodeURIComponent('https://test.dapp')}`],
+  initialEntries: [
+    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+  ],
 };

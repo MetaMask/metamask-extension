@@ -5,8 +5,7 @@ class AddNetworkRpcUrlModal {
   private readonly driver: Driver;
 
   private readonly addRpcUrlButton = {
-    text: 'Add URL',
-    tag: 'button',
+    testId: 'page-container-footer-next',
   };
 
   private readonly addRpcNameInput = {
@@ -70,7 +69,8 @@ class AddNetworkRpcUrlModal {
 
   async saveAddRpcUrl(): Promise<void> {
     console.log('Confirm added RPC URL');
-    await this.driver.clickElementAndWaitToDisappear(this.addRpcUrlButton);
+    await this.driver.clickElement(this.addRpcUrlButton);
+    await this.driver.assertElementNotPresent(this.addRpcUrlInput);
   }
 
   /**

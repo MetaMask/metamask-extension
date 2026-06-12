@@ -11,6 +11,22 @@ const storybook = {
   component: BridgeQuotesModal,
 };
 
+const mockQuotes = (
+  mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]
+).map((quote) => ({
+  ...quote,
+  quote: {
+    ...quote.quote,
+    bridges: ['across (via Socket)'],
+    destAsset: {
+      ...quote.quote.destAsset,
+      decimals: 7,
+      symbol: 'USDC.E',
+    },
+    destTokenAmount: '1',
+  },
+}));
+
 export const NoTokenPricesAvailableStory = () => {
   return <BridgeQuotesModal onClose={() => {}} isOpen={true} />;
 };
@@ -21,7 +37,7 @@ NoTokenPricesAvailableStory.decorators = [
       store={configureStore(
         createBridgeMockStore({
           bridgeStateOverrides: {
-            quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+            quotes: mockQuotes,
           },
         }),
       )}
@@ -45,7 +61,7 @@ DefaultStory.decorators = [
             sortOrder: SortOrder.COST_ASC,
           },
           bridgeStateOverrides: {
-            quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+            quotes: mockQuotes,
           },
           metamaskStateOverrides: {
             currencyRates: {
@@ -81,7 +97,7 @@ PositiveArbitrage.decorators = [
             fromTokenExchangeRate: 0.99,
           },
           bridgeStateOverrides: {
-            quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+            quotes: mockQuotes,
           },
           metamaskStateOverrides: {
             currencyRates: {

@@ -14,15 +14,10 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getURLHostName,
-  roundToDecimalPlacesRemovingExtraZeroes,
-} from '../../../helpers/utils/util';
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { getURLHostName } from '../../../helpers/utils/util';
 import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
 import { showModal } from '../../../store/actions';
 import { getAssetDetailsAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
@@ -34,7 +29,7 @@ import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
 const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
-  const { address, symbol, decimals, isERC721, image } = token;
+  const { address, symbol, isERC721, image } = token;
 
   const tokenList = useSelector(getTokenList);
   const allNetworks: {
@@ -66,7 +61,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // Fetch token data from tokenList
   const tokenData = Object.values(tokenList).find(
@@ -84,23 +79,6 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     tokenData?.iconUrl || tokenDataFromChain?.iconUrl || image || '';
 
   const aggregators = tokenData?.aggregators;
-
-  const {
-    tokensWithBalances,
-  }: { tokensWithBalances: { string: string; balance: string }[] } =
-    useTokenTracker({
-      tokens: [
-        {
-          address,
-          symbol,
-          decimals,
-        },
-      ],
-      address: undefined,
-    });
-
-  const balance = tokensWithBalances?.[0];
-  const fiat = useTokenFiatAmount(address, balance?.string, symbol, {}, false);
 
   const tokenTrackerLink = getTokenTrackerLink(
     token.address,
@@ -128,14 +106,6 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
         decimals: token.decimals,
         image: iconUrl,
         aggregators,
-        balance: {
-          value: balance?.balance,
-          display: `${roundToDecimalPlacesRemovingExtraZeroes(
-            balance?.string,
-            5,
-          )}`,
-          fiat,
-        },
         isERC721,
       }}
       optionsButton={

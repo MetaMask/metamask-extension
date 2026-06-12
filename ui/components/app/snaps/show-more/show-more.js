@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import classnames from 'classnames';
+import classnames from 'clsx';
 import useIsOverflowing from '../../../../hooks/snaps/useIsOverflowing';
 import { Box, Button, ButtonVariant, Text } from '../../../component-library';
 import {

@@ -2,7 +2,7 @@
 import React, { useState, useContext, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -15,7 +15,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import {
   ButtonIcon,
@@ -43,6 +43,7 @@ import {
   getTargetAccountWithSendEtherInfo,
   unconfirmedTransactionsListSelector,
 } from '../../selectors';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 
 const Header = ({ approvalId }) => {
@@ -186,7 +187,7 @@ const MessageBody = forwardRef(
     ref,
   ) => {
     const dispatch = useDispatch();
-    const trackEvent = useContext(MetaMetricsContext);
+    const { trackEvent } = useContext(MetaMetricsContext);
     const t = useI18nContext();
 
     const [copyToClipboardPressed, setCopyToClipboardPressed] = useState(false);
@@ -329,7 +330,7 @@ const Footer = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const onCancelClick = async (event) => {
     event.stopPropagation(event);

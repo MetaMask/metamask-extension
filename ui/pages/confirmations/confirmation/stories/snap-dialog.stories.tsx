@@ -1,7 +1,5 @@
 import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
-import { getJsxElementFromComponent } from '@metamask/snaps-utils';
-import { button, copyable, heading, panel, text } from '@metamask/snaps-sdk';
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 
@@ -14,14 +12,18 @@ export default {
 const STATE_MOCK_DEFAULT = {
   interfaces: {
     testInterfaceId: {
-      content: getJsxElementFromComponent(
-        panel([
-          heading('Test Heading'),
-          text('Test Text'),
-          copyable('Test Copyable'),
-          button('Test Button'),
-        ]),
-      ),
+      content: {
+        type: 'Box',
+        props: {
+          children: [
+            { type: 'Heading', props: { children: 'Test Heading' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Copyable', props: { value: 'Test Copyable' }, key: null },
+            { type: 'Button', props: { children: 'Test Button' }, key: null },
+          ],
+        },
+        key: null,
+      },
       state: {},
       snapId: 'local:http://localhost:8080/',
     },
@@ -31,26 +33,30 @@ const STATE_MOCK_DEFAULT = {
 const STATE_MOCK_SCROLL = {
   interfaces: {
     testInterfaceId: {
-      content: getJsxElementFromComponent(
-        panel([
-          heading('Test Heading'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-          text('Test Text'),
-        ]),
-      ),
+      content: {
+        type: 'Box',
+        props: {
+          children: [
+            { type: 'Heading', props: { children: 'Test Heading' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+            { type: 'Text', props: { children: 'Test Text' }, key: null },
+          ],
+        },
+        key: null,
+      },
       state: {},
       snapId: 'local:http://localhost:8080/',
     },

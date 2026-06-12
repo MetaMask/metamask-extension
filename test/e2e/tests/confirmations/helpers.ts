@@ -1,13 +1,12 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import { LEGACY_SEND_FEATURE_FLAG } from '../send/common';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -27,7 +26,7 @@ export function withTransactionEnvelopeTypeFixtures(
   transactionEnvelopeType: TransactionEnvelopeType,
   testFunction: Parameters<typeof withFixtures>[1],
   mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
-  smartContract?: typeof SMART_CONTRACTS,
+  smartContract?: (typeof SMART_CONTRACTS)[keyof typeof SMART_CONTRACTS],
 ) {
   const combinedMocks = async (
     mockServer: Mockttp,
@@ -40,7 +39,7 @@ export function withTransactionEnvelopeTypeFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
           metaMetricsId: MOCK_META_METRICS_ID,
@@ -53,6 +52,11 @@ export function withTransactionEnvelopeTypeFixtures(
           : {},
       ...(smartContract && { smartContract }),
       testSpecificMock: combinedMocks,
+      manifestFlags: {
+        remoteFeatureFlags: {
+          extensionUxTokenManagementFilter: false,
+        },
+      },
       title,
     },
     testFunction,
@@ -72,14 +76,13 @@ export function withSignatureFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
           metaMetricsId: MOCK_META_METRICS_ID,
           participateInMetaMetrics: true,
         })
         .build(),
-      localNodeOptions: {},
       testSpecificMock: mocks,
       title,
     },
@@ -258,8 +261,12 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                 },
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_enforced_simulations: {
+                enabled: true,
+              },
             },
-            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),
@@ -605,7 +612,6 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),
@@ -648,7 +654,6 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),
@@ -677,7 +682,6 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),

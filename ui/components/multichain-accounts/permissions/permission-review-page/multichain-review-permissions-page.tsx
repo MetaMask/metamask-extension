@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CaipChainId, NonEmptyArray, Hex } from '@metamask/utils';
 import {
   getAllScopesFromCaip25CaveatValue,
@@ -8,13 +8,12 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
@@ -32,7 +31,6 @@ import {
 import {
   AvatarFavicon,
   AvatarFaviconSize,
-  Box,
   Button,
   ButtonPrimary,
   ButtonPrimarySize,
@@ -45,10 +43,7 @@ import { NoConnectionContent } from '../../../multichain/pages/connections/compo
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  DisconnectAllModal,
-  DisconnectType,
-} from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
+import { DisconnectAllModal } from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
 import { DisconnectPermissionsModal } from '../../../multichain/disconnect-permissions-modal/disconnect-permissions-modal';
 import { PermissionsHeader } from '../../../multichain/permissions-header/permissions-header';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
@@ -56,7 +51,7 @@ import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/netw
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
-import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/connect-page/utils';
+import { getCaip25CaveatValueFromPermissions } from '../../../../helpers/utils/caip25-permissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
 import {
@@ -65,7 +60,7 @@ import {
   getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
 
 export enum MultichainReviewPermissionsPageMode {
@@ -77,10 +72,10 @@ export const MultichainReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const urlParams = useParams<{ origin: string }>();
+  const [searchParams] = useSearchParams();
 
-  // @ts-expect-error TODO: Fix this type error by handling undefined parameters
-  const securedOrigin = decodeURIComponent(urlParams.origin);
+  const originParam = searchParams.get('origin');
+  const securedOrigin = decodeURIComponent(originParam ?? '');
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -382,8 +377,6 @@ export const MultichainReviewPermissions = () => {
 
           {showDisconnectAllModal ? (
             <DisconnectAllModal
-              type={DisconnectType.Account}
-              hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 setShowDisconnectAllModal(false);
@@ -419,11 +412,10 @@ export const MultichainReviewPermissions = () => {
           <>
             {existingConnectedCaipAccountIds.length > 0 ? (
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                width={BlockSize.Full}
+                flexDirection={BoxFlexDirection.Column}
+                className="flex w-full"
                 gap={2}
-                alignItems={AlignItems.center}
+                alignItems={BoxAlignItems.Center}
               >
                 {showAccountToast ? (
                   <ToastContainer>

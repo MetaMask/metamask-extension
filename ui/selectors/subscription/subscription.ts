@@ -9,11 +9,13 @@ import {
 import {
   getIsShieldSubscriptionActive,
   getShieldSubscription,
+  ShieldSubscriptionError,
 } from '../../../shared/lib/shield';
 
-export type SubscriptionState = {
+type SubscriptionState = {
   metamask: SubscriptionControllerState & {
     showShieldEntryModalOnce: boolean | null;
+    shieldSubscriptionError?: ShieldSubscriptionError | null;
   };
 };
 
@@ -79,4 +81,17 @@ export function getLatestShieldSubscription(
     return getShieldSubscription(lastSubscription);
   }
   return currentShieldSubscription;
+}
+
+/**
+ * Returns the shield subscription error object if one is set, or null otherwise.
+ * Used to display subscription-related errors on the shield plan page.
+ *
+ * @param state - Redux state object.
+ * @returns The error object with message and optional code, or null if no error
+ */
+export function getShieldSubscriptionError(
+  state: SubscriptionState,
+): ShieldSubscriptionError | null {
+  return state.metamask.shieldSubscriptionError ?? null;
 }

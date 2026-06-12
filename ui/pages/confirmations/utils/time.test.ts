@@ -1,4 +1,4 @@
-import { toHumanEstimatedTimeRange, toHumanSeconds } from './time';
+import { toHumanEstimatedTimeRange } from './time';
 
 describe('time utils', () => {
   describe('toHumanEstimatedTimeRange', () => {
@@ -18,20 +18,6 @@ describe('time utils', () => {
     it('formats time range in minutes when max is 60 seconds or more', () => {
       const result = toHumanEstimatedTimeRange(30000, 120000);
       expect(result).toBe('0.5 - 2 min');
-    });
-  });
-
-  describe('toHumanSeconds', () => {
-    it('converts milliseconds to human-readable seconds', () => {
-      expect(toHumanSeconds(5000)).toBe('5 sec');
-    });
-
-    it('rounds to whole seconds', () => {
-      expect(toHumanSeconds(5500)).toBe('5 sec');
-    });
-
-    it('handles zero milliseconds', () => {
-      expect(toHumanSeconds(0)).toBe('0 sec');
     });
   });
 });

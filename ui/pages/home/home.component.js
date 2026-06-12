@@ -4,26 +4,26 @@ import { Navigate } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
-  ///: END:ONLY_INCLUDE_IF
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
+import { wasPerpsUnmountedInAppRecently } from '../../helpers/perps/in-app-leave-marker';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import WhatsNewModal from '../../components/app/whats-new-modal';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import ConnectedSites from '../connected-sites';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import ConnectedAccounts from '../connected-accounts';
-import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
+import { isMv3ButOffscreenDocIsMissing } from '../../../shared/lib/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import { ScrollContainer } from '../../contexts/scroll-container';
-
 import {
   FontWeight,
   Display,
@@ -42,6 +42,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalContentSize,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -53,38 +54,39 @@ import {
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  PERPS_ROUTE,
+  PERPS_REOPEN_TTL_MS,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  SUPPORT_LINK,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../shared/lib/ui-utils';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
-import { setEditedNetwork } from '../../store/actions';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
-import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
+import RewardsModal from '../../components/app/rewards/onboarding/RewardsModal';
 import { Pna25Modal } from '../../components/app/modals/pna25-modal';
-///: BEGIN:ONLY_INCLUDE_IF(build-beta)
-import BetaHomeFooter from './beta/beta-home-footer.component';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import FlaskHomeFooter from './flask/flask-home-footer.component';
-///: END:ONLY_INCLUDE_IF
+import { DeeplinkQRCode } from '../../components/app/deeplink-qr-code';
+import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
+import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
+import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
+  isHardwareWalletErrorModalVisible,
 }) {
-  const shouldClose =
+  const baseCondition =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
+
+  const isHardwareWalletErrorModalBlockingClose =
+    isHardwareWalletErrorModalVisible;
+
+  const shouldClose = baseCondition && !isHardwareWalletErrorModalBlockingClose;
 
   return shouldClose;
 }
@@ -98,6 +100,8 @@ export default class Home extends PureComponent {
   static propTypes = {
     navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
+    isNotification: PropTypes.bool,
+    hasApprovalFlows: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -106,19 +110,12 @@ export default class Home extends PureComponent {
     showTermsOfUsePopup: PropTypes.bool.isRequired,
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     showMultiRpcModal: PropTypes.bool.isRequired,
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
-    defaultHomeActiveTabName: PropTypes.string,
-    participateInMetaMetrics: PropTypes.bool.isRequired,
-    onTabClick: PropTypes.func.isRequired,
+    participateInMetaMetrics: PropTypes.bool,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
     location: PropTypes.object,
@@ -134,13 +131,8 @@ export default class Home extends PureComponent {
     setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     newNetworkAddedName: PropTypes.string,
     editedNetwork: PropTypes.object,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool,
-    newNftAddedMessage: PropTypes.string,
-    setNewNftAddedMessage: PropTypes.func.isRequired,
-    removeNftMessage: PropTypes.string,
-    setRemoveNftMessage: PropTypes.func.isRequired,
+    isHardwareWalletErrorModalVisible: PropTypes.bool,
     attemptCloseNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     newTokensImportedError: PropTypes.string,
@@ -153,6 +145,7 @@ export default class Home extends PureComponent {
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
     redirectAfterDefaultPage: PropTypes.object,
+    setRedirectAfterDefaultPage: PropTypes.func,
     clearRedirectAfterDefaultPage: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
@@ -164,13 +157,21 @@ export default class Home extends PureComponent {
     setPendingShieldCohort: PropTypes.func,
     isSignedIn: PropTypes.bool,
     rewardsEnabled: PropTypes.bool,
-    rewardsOnboardingEnabled: PropTypes.bool,
-    rewardsOnboardingModalOpen: PropTypes.bool,
+    rewardsModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
+    envType: PropTypes.string,
+    pendingRedirectRoute: PropTypes.object,
+    clearPendingRedirectRoute: PropTypes.func,
+    lastVisitedPerpsRoute: PropTypes.shape({
+      path: PropTypes.string.isRequired,
+      timestamp: PropTypes.number.isRequired,
+    }),
+    clearLastVisitedPerpsRoute: PropTypes.func,
   };
 
   state = {
     canShowBlockageNotification: true,
+    deepLinkQrCode: null,
     notificationClosing: false,
     shouldEvaluateCohortEligibility: true,
   };
@@ -178,8 +179,23 @@ export default class Home extends PureComponent {
   constructor(props) {
     super(props);
 
-    const { attemptCloseNotificationPopup } = this.props;
-    if (shouldCloseNotificationPopup(props)) {
+    const {
+      attemptCloseNotificationPopup,
+      isNotification,
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    } = this.props;
+    if (
+      shouldCloseNotificationPopup({
+        isNotification,
+        totalUnapprovedCount,
+        hasApprovalFlows,
+        isSigningQRHardwareTransaction,
+        isHardwareWalletErrorModalVisible,
+      })
+    ) {
       this.state.notificationClosing = true;
       attemptCloseNotificationPopup();
     }
@@ -201,10 +217,88 @@ export default class Home extends PureComponent {
     }
   }
 
+  /**
+   * Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect).
+   * Must only be called once per arrival of a new pendingRedirectRoute, because
+   * clearPendingRedirectRoute is an async thunk — the prop stays non-null across
+   * several render cycles, so calling this unconditionally in componentDidUpdate
+   * would create a re-render loop.
+   */
+  checkPendingRedirectRoute() {
+    if (this.props.pendingRedirectRoute) {
+      const { path, search, environmentType } = this.props.pendingRedirectRoute;
+      const shouldRedirect =
+        !environmentType || environmentType === this.props.envType;
+
+      if (shouldRedirect) {
+        this.props.setRedirectAfterDefaultPage({
+          path: search ? `${path}${search}` : path,
+        });
+      }
+      this.props.clearPendingRedirectRoute();
+    }
+  }
+
+  /**
+   * Resume a recent Perps session if the user reopened the extension within
+   * {@link PERPS_REOPEN_TTL_MS}. Explicit `pendingRedirectRoute` always wins
+   * to avoid overriding a route set by a background flow. The persisted entry
+   * is cleared after inspection so it never hijacks a later home mount.
+   */
+  checkLastVisitedPerpsRoute() {
+    const {
+      lastVisitedPerpsRoute,
+      pendingRedirectRoute,
+      envType,
+      setRedirectAfterDefaultPage,
+      clearLastVisitedPerpsRoute,
+    } = this.props;
+
+    if (!lastVisitedPerpsRoute) {
+      return;
+    }
+
+    const { path, timestamp } = lastVisitedPerpsRoute;
+    const isFresh = Date.now() - timestamp < PERPS_REOPEN_TTL_MS;
+    // Exact match on `/perps` or a `/perps/...` sub-route only. Prevents a
+    // future sibling like `/perpsNew` from silently resuming off a stale
+    // persisted path. Strip any query/hash suffix first so a stored path
+    // like `/perps?tab=1` still matches.
+    const pathname = typeof path === 'string' ? path.split(/[?#]/u)[0] : '';
+    const isPerpsPath =
+      pathname === PERPS_ROUTE || pathname.startsWith(`${PERPS_ROUTE}/`);
+
+    // An in-app departure from `/perps/*` scheduled a Redux clear in the
+    // passive-effect phase — React fires this `componentDidMount` first, so
+    // the clear hasn't landed yet. The module-level marker tells us this is
+    // an in-app transition (not a popup reopen) and we must not replay the
+    // redirect. A fresh JS context (popup close→reopen) starts with an
+    // unset marker, so the real resume path still fires.
+    // `pendingRedirectRoute` is a higher-priority cross-session redirect
+    // (e.g. a background-initiated deeplink); skip the perps resume when
+    // one will actually fire in this environment. Mirror the
+    // `checkPendingRedirectRoute` env applicability check so an
+    // environment-mismatched pending entry (still non-null because the
+    // clear is async) does not suppress the perps resume. Always clear
+    // the persisted entry afterwards so a later home mount cannot replay
+    // it.
+    const pendingApplies =
+      Boolean(pendingRedirectRoute) &&
+      (!pendingRedirectRoute.environmentType ||
+        pendingRedirectRoute.environmentType === envType);
+    const justLeftPerpsInApp = wasPerpsUnmountedInAppRecently(1500);
+    if (!pendingApplies && !justLeftPerpsInApp && isFresh && isPerpsPath) {
+      setRedirectAfterDefaultPage({ path });
+    }
+
+    clearLastVisitedPerpsRoute?.();
+  }
+
   componentDidMount() {
     this.props.fetchBuyableChains();
 
-    // Check for redirect after default page
+    this.checkPendingRedirectRoute();
+    this.checkLastVisitedPerpsRoute();
     this.checkRedirectAfterDefaultPage();
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
@@ -216,15 +310,27 @@ export default class Home extends PureComponent {
     }
   }
 
-  static getDerivedStateFromProps(props) {
-    const shouldClose = shouldCloseNotificationPopup(props);
+  static getDerivedStateFromProps({
+    isNotification,
+    totalUnapprovedCount,
+    hasApprovalFlows,
+    isSigningQRHardwareTransaction,
+    isHardwareWalletErrorModalVisible,
+  }) {
+    const shouldClose = shouldCloseNotificationPopup({
+      isNotification,
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    });
     if (shouldClose) {
       return { notificationClosing: true };
     }
     return null;
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const {
       attemptCloseNotificationPopup,
       newNetworkAddedConfigurationId,
@@ -232,7 +338,6 @@ export default class Home extends PureComponent {
       clearNewNetworkAdded,
       pendingShieldCohort,
       evaluateCohortEligibility,
-      setPendingShieldCohort,
       isSignedIn,
     } = this.props;
 
@@ -240,7 +345,7 @@ export default class Home extends PureComponent {
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-    } = _prevProps;
+    } = prevProps;
     const { notificationClosing } = this.state;
 
     if (
@@ -262,12 +367,21 @@ export default class Home extends PureComponent {
       evaluateCohortEligibility &&
       isSignedIn
     ) {
-      setPendingShieldCohort(null);
       evaluateCohortEligibility(pendingShieldCohort);
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
 
-    // Check for redirect after default page on updates
+    // Only process pendingRedirectRoute when the prop first transitions from null to non-null
+    if (this.props.pendingRedirectRoute && !prevProps.pendingRedirectRoute) {
+      this.checkPendingRedirectRoute();
+    }
+
+    // Same one-shot pattern: only react when lastVisitedPerpsRoute hydrates from null to a value.
+    if (this.props.lastVisitedPerpsRoute && !prevProps.lastVisitedPerpsRoute) {
+      this.checkLastVisitedPerpsRoute();
+    }
+
+    // clearRedirectAfterDefaultPage is a synchronous Redux action, so the guard condition flips before the next render.
     this.checkRedirectAfterDefaultPage();
   }
 
@@ -292,26 +406,34 @@ export default class Home extends PureComponent {
     });
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   onSupportLinkClick = () => {
-    this.context.trackEvent(
-      {
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: SUPPORT_LINK,
+    if (isMain()) {
+      this.context.trackEvent(
+        {
+          category: MetaMetricsEventCategory.Home,
+          event: MetaMetricsEventName.SupportLinkClicked,
+          properties: {
+            url: SUPPORT_LINK,
+          },
         },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
-    );
+        {
+          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+        },
+      );
+    }
   };
-  ///: END:ONLY_INCLUDE_IF
 
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
     setOutdatedBrowserWarningLastShown(new Date().getTime());
+  };
+
+  showDeepLinkQrCode = (deepLinkQrCode) => {
+    this.setState({ deepLinkQrCode });
+  };
+
+  hideDeepLinkQrCode = () => {
+    this.setState({ deepLinkQrCode: null });
   };
 
   renderNotifications() {
@@ -327,12 +449,8 @@ export default class Home extends PureComponent {
       disableWeb3ShimUsageAlert,
       infuraBlocked,
       showOutdatedBrowserWarning,
-      newNftAddedMessage,
-      setNewNftAddedMessage,
       newNetworkAddedName,
       editedNetwork,
-      removeNftMessage,
-      setRemoveNftMessage,
       newTokensImported,
       newTokensImportedError,
       setNewTokensImported,
@@ -343,11 +461,9 @@ export default class Home extends PureComponent {
     } = this.props;
 
     const onAutoHide = () => {
-      setNewNftAddedMessage('');
-      setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      setEditedNetwork();
+      clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -366,75 +482,6 @@ export default class Home extends PureComponent {
       );
 
     const items = [
-      newNftAddedMessage === 'success' ? (
-        <ActionableMessage
-          key="new-nft-added"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('newNftAddedMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
-      removeNftMessage === 'success' ? (
-        <ActionableMessage
-          key="remove-nft"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
-      removeNftMessage === 'error' ? (
-        <ActionableMessage
-          key="remove-nft-error"
-          type="danger"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftErrorMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
       newNetworkAddedName ? (
         <ActionableMessage
           key="new-network-added"
@@ -634,7 +681,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
           location: 'marketing_consent_modal',
         },
       });
@@ -646,7 +693,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: consent,
+          [MetaMetricsUserTrait.HasMarketingConsent]: consent,
           location: 'marketing_consent_modal',
         },
       });
@@ -764,9 +811,9 @@ export default class Home extends PureComponent {
   };
 
   render() {
+    const { t } = this.context;
+    const { deepLinkQrCode } = this.state;
     const {
-      defaultHomeActiveTabName,
-      onTabClick,
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
@@ -776,11 +823,8 @@ export default class Home extends PureComponent {
       isPopup,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      showWhatsNewPopup,
-      hideWhatsNewPopup,
       completedOnboarding,
       onboardedInThisUISession,
-      announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
@@ -790,8 +834,7 @@ export default class Home extends PureComponent {
       showShieldEntryModal,
       isSocialLoginFlow,
       rewardsEnabled,
-      rewardsOnboardingEnabled,
-      rewardsOnboardingModalOpen,
+      rewardsModalOpen,
       showPna25Modal,
     } = this.props;
 
@@ -807,23 +850,11 @@ export default class Home extends PureComponent {
         firstTimeFlowType === FirstTimeFlowType.import) &&
       !newNetworkAddedConfigurationId;
 
-    const showWhatsNew =
-      canSeeModals &&
-      announcementsToShow &&
-      showWhatsNewPopup &&
-      !process.env.IN_TEST;
-
     const showMultiRpcEditModal =
-      canSeeModals &&
-      showMultiRpcModal &&
-      !showWhatsNew &&
-      !process.env.IN_TEST;
+      canSeeModals && showMultiRpcModal && !process.env.IN_TEST;
 
     const displayUpdateModal =
-      canSeeModals &&
-      showUpdateModal &&
-      !showWhatsNew &&
-      !showMultiRpcEditModal;
+      canSeeModals && showUpdateModal && !showMultiRpcEditModal;
 
     const showTermsOfUse =
       completedOnboarding &&
@@ -832,33 +863,40 @@ export default class Home extends PureComponent {
       !isSocialLoginFlow;
 
     const showRecoveryPhrase =
-      !showWhatsNew &&
-      showRecoveryPhraseReminder &&
-      !isPrimarySeedPhraseBackedUp;
+      showRecoveryPhraseReminder && !isPrimarySeedPhraseBackedUp;
 
     const showRewardsModal =
       rewardsEnabled &&
-      rewardsOnboardingEnabled &&
       canSeeModals &&
       !showTermsOfUse &&
-      !showWhatsNew &&
-      !showMultiRpcEditModal &&
-      !displayUpdateModal &&
-      !isSeedlessPasswordOutdated &&
-      !showShieldEntryModal &&
-      !showRecoveryPhrase;
-
-    const showPna25ModalComponent =
-      showPna25Modal &&
-      canSeeModals &&
-      !showTermsOfUse &&
-      !showWhatsNew &&
       !showMultiRpcEditModal &&
       !displayUpdateModal &&
       !isSeedlessPasswordOutdated &&
       !showShieldEntryModal &&
       !showRecoveryPhrase &&
-      !rewardsOnboardingModalOpen;
+      !deepLinkQrCode;
+
+    const showDeepLinkQrCodeModal =
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase &&
+      Boolean(deepLinkQrCode);
+
+    const showPna25ModalComponent =
+      showPna25Modal &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase &&
+      !rewardsModalOpen &&
+      !deepLinkQrCode;
 
     const { location } = this.props;
 
@@ -890,7 +928,6 @@ export default class Home extends PureComponent {
           {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
-          {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
           {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}
@@ -900,38 +937,71 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
-          {showRewardsModal && <RewardsOnboardingModal />}
+          {showRewardsModal && <RewardsModal />}
+          {showDeepLinkQrCodeModal ? (
+            <Modal
+              data-testid="deeplink-qrcode-modal"
+              isOpen
+              onClose={this.hideDeepLinkQrCode}
+            >
+              <ModalOverlay />
+              <ModalContent
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                size={ModalContentSize.Md}
+                modalDialogProps={{
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  style: {
+                    height: 'auto',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  },
+                }}
+              >
+                <ModalHeader
+                  closeButtonProps={{
+                    className: 'absolute z-10',
+                    style: {
+                      top: '24px',
+                      right: '12px',
+                    },
+                  }}
+                  paddingBottom={0}
+                  onClose={this.hideDeepLinkQrCode}
+                />
+                <DeeplinkQRCode
+                  title={t(deepLinkQrCode.titleKey)}
+                  description={t(deepLinkQrCode.descriptionKey)}
+                  data={deepLinkQrCode.deeplinkUrl}
+                  onDone={this.hideDeepLinkQrCode}
+                  doneLabel={t('done')}
+                  testId="deeplink-qrcode-container"
+                />
+              </ModalContent>
+            </Modal>
+          ) : null}
           {showPna25ModalComponent && <Pna25Modal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
           <div className="home__main-view">
             <AccountOverview
-              onTabClick={onTabClick}
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               onSupportLinkClick={this.onSupportLinkClick}
-              ///: END:ONLY_INCLUDE_IF
-              defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
             />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+            {(isBeta() || isFlask()) && (
               <div className="home__support">
-                <BetaHomeFooter />
+                <BetaAndFlaskHomeFooter />
               </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              <div className="home__support">
-                <FlaskHomeFooter />
-              </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
+            )}
           </div>
           {this.renderNotifications()}
         </div>
+
+        {/* Ghost component that manages the useHomeDeepLinkEffects */}
+        <HomeDeepLinkActions onQrCodeDeepLink={this.showDeepLinkQrCode} />
       </ScrollContainer>
     );
   }

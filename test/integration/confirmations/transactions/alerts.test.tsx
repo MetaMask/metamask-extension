@@ -15,7 +15,6 @@ import {
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -487,15 +486,23 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    expect(await screen.findByTestId('inline-alert')).toBeInTheDocument();
+    expect(await screen.findAllByTestId('inline-alert')).toHaveLength(2);
 
-    fireEvent.click(await screen.findByTestId('inline-alert'));
+    fireEvent.click((await screen.findAllByTestId('inline-alert'))[0]);
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),
     ).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      'We can’t move forward with this transaction until you manually update the fee.',
+    );
+
+    fireEvent.click(await screen.findByTestId('alert-modal-next-button'));
 
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),

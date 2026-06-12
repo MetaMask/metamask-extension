@@ -1,0 +1,72 @@
+diff --git a/dist/purify.cjs.js b/dist/purify.cjs.js
+index 50d135282ddc03239283aa173a22361b0c1007de..de40d0179969582e5e9a924f8ad3a62c8c776eb8 100644
+--- a/dist/purify.cjs.js
++++ b/dist/purify.cjs.js
+@@ -1303,7 +1303,8 @@ function createDOMPurify() {
+       the user has requested a DOM object rather than a string */
+     IS_EMPTY_INPUT = !dirty;
+     if (IS_EMPTY_INPUT) {
+-      dirty = '<!-->';
++      // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
++      dirty = '<!' + '--' + '>';
+     }
+     /* Stringify, in case dirty is an object */
+     if (typeof dirty !== 'string' && !_isNode(dirty)) {
+@@ -1338,7 +1339,8 @@ function createDOMPurify() {
+     } else if (dirty instanceof Node) {
+       /* If dirty is a DOM element, append to an empty document to avoid
+          elements being stripped by the parser */
+-      body = _initDocument('<!---->');
++      // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
++      body = _initDocument('<!' + '--' + '--' + '>');
+       importedNode = body.ownerDocument.importNode(dirty, true);
+       if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === 'BODY') {
+         /* Node is already a body, use as is */
+diff --git a/dist/purify.es.mjs b/dist/purify.es.mjs
+index 76cdcd25a5147a2e009e9f60b474cb97b83fe899..8aa0b3a1680fe8e4cd71909d1a9a12eb4a2f13db 100644
+--- a/dist/purify.es.mjs
++++ b/dist/purify.es.mjs
+@@ -1301,7 +1301,8 @@ function createDOMPurify() {
+       the user has requested a DOM object rather than a string */
+     IS_EMPTY_INPUT = !dirty;
+     if (IS_EMPTY_INPUT) {
+-      dirty = '<!-->';
++      // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
++      dirty = '<!' + '--' + '>';
+     }
+     /* Stringify, in case dirty is an object */
+     if (typeof dirty !== 'string' && !_isNode(dirty)) {
+@@ -1336,7 +1337,8 @@ function createDOMPurify() {
+     } else if (dirty instanceof Node) {
+       /* If dirty is a DOM element, append to an empty document to avoid
+          elements being stripped by the parser */
+-      body = _initDocument('<!---->');
++      // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
++      body = _initDocument('<!' + '--' + '--' + '>');
+       importedNode = body.ownerDocument.importNode(dirty, true);
+       if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === 'BODY') {
+         /* Node is already a body, use as is */
+diff --git a/dist/purify.js b/dist/purify.js
+index f8bdb8eb2519b54f1b8003a2e478032570a7011d..96116f06be5552fdd39b9b278f527481126b9bff 100644
+--- a/dist/purify.js
++++ b/dist/purify.js
+@@ -1307,7 +1307,8 @@
+           the user has requested a DOM object rather than a string */
+         IS_EMPTY_INPUT = !dirty;
+         if (IS_EMPTY_INPUT) {
+-          dirty = '<!-->';
++          // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
++          dirty = '<!' + '--' + '>';
+         }
+         /* Stringify, in case dirty is an object */
+         if (typeof dirty !== 'string' && !_isNode(dirty)) {
+@@ -1342,7 +1343,8 @@
+         } else if (dirty instanceof Node) {
+           /* If dirty is a DOM element, append to an empty document to avoid
+              elements being stripped by the parser */
+-          body = _initDocument('<!---->');
++          // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
++          body = _initDocument('<!' + '--' + '--' + '>');
+           importedNode = body.ownerDocument.importNode(dirty, true);
+           if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === 'BODY') {
+             /* Node is already a body, use as is */

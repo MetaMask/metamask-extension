@@ -1,10 +1,11 @@
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import AddTokenConfirmation from '../../page-objects/pages/confirmations/redesign/add-token-confirmations';
+import AddTokenConfirmation from '../../page-objects/pages/confirmations/add-token-confirmations';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Add token using wallet_watchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -13,7 +14,7 @@ describe('Add token using wallet_watchAsset', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -22,7 +23,7 @@ describe('Add token using wallet_watchAsset', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -58,9 +59,8 @@ describe('Add token using wallet_watchAsset', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withEnabledNetworks({ eip155: { '0x539': true } })
           .build(),
         smartContract,
         title: this.test?.fullTitle(),
@@ -68,7 +68,7 @@ describe('Add token using wallet_watchAsset', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();

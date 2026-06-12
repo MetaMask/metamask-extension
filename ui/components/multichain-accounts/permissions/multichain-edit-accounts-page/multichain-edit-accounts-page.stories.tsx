@@ -57,6 +57,7 @@ const mockSupportedAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
       hidden: false,
       pinned: false,
+      lastSelected: 0,
     },
     accounts: [
       {

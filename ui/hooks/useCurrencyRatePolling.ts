@@ -9,11 +9,9 @@ import {
   currencyRateStartPolling,
   currencyRateStopPollingByPollingToken,
 } from '../store/actions';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../ducks/metamask/metamask';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import { getIsUnlocked } from '../ducks/metamask/base-selectors';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import usePolling from './usePolling';
 

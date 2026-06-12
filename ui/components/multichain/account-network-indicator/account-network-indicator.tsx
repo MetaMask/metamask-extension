@@ -21,7 +21,7 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
+import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
 import Tooltip from '../../ui/tooltip';
 
 export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {

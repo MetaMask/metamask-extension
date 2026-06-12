@@ -16,7 +16,6 @@ jest.setTimeout(20_000);
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -51,6 +50,8 @@ describe('NFTs list', () => {
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
       selectedNetworkClientId: 'testNetworkConfigurationId',
       enabledNetworkMap: {
         eip155: {
@@ -60,7 +61,6 @@ describe('NFTs list', () => {
           '0xaa36a7': true,
         },
       },
-      participateInMetaMetrics: true,
       dataCollectionForMarketing: false,
     };
 

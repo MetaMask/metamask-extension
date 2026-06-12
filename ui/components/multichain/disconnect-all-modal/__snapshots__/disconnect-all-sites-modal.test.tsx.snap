@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DisconnectAllSitesModal renders correctly when open 1`] = `<div />`;

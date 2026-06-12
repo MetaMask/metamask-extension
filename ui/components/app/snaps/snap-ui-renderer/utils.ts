@@ -28,6 +28,9 @@ export type MapToTemplateParams = {
   t?: (key: string) => string;
   contentBackgroundColor?: string | undefined;
   componentMap: COMPONENT_MAPPING;
+  isScrollableContainer?: boolean;
+  setScroll: () => void;
+  scrollableContainerRef: React.RefObject<HTMLDivElement>;
 };
 
 /**
@@ -115,7 +118,10 @@ export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
 
 export const mapTextToTemplate = (
   elements: NonEmptyArray<JSXElement | string>,
-  params: Pick<MapToTemplateParams, 'map' | 'componentMap'>,
+  params: Pick<
+    MapToTemplateParams,
+    'map' | 'componentMap' | 'setScroll' | 'scrollableContainerRef'
+  >,
 ): NonEmptyArray<UIComponent | string> =>
   elements.map((element) => {
     // With the introduction of JSX elements here can be strings.

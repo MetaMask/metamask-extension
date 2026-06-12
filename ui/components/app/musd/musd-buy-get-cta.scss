@@ -1,0 +1,22 @@
+.musd-buy-get-cta {
+  width: 100%;
+
+  &__badge {
+    align-self: center;
+    margin-right: 16px;
+  }
+
+  &__avatar-network {
+    border-width: 2px;
+    background-color: var(--color-background-default);
+  }
+
+  &__text {
+    flex-grow: 1;
+    overflow: hidden;
+  }
+
+  &__button {
+    flex-shrink: 0;
+  }
+}

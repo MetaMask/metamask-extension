@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactToggleButton from 'react-toggle-button';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { lightTheme, darkTheme } from '@metamask/design-tokens';
 import { useTheme } from '../../../hooks/useTheme';
 
@@ -74,11 +74,12 @@ const ToggleButton = (props) => {
     disabled,
     className,
     dataTestId,
+    containerStyle,
   } = props;
 
   const modifier = value ? 'on' : 'off';
-
   const theme = useTheme();
+  const showLabels = Boolean(offLabel) && Boolean(onLabel);
 
   return (
     <label
@@ -100,6 +101,7 @@ const ToggleButton = (props) => {
       <ReactToggleButton
         value={value}
         onToggle={disabled ? undefined : onToggle}
+        containerStyle={containerStyle}
         activeLabel=""
         inactiveLabel=""
         trackStyle={value ? trackStyle : offTrackStyle}
@@ -110,10 +112,12 @@ const ToggleButton = (props) => {
           'data-testid': dataTestId,
         }}
       />
-      <div className="toggle-button__status">
-        <span className="toggle-button__label-off">{offLabel}</span>
-        <span className="toggle-button__label-on">{onLabel}</span>
-      </div>
+      {showLabels && (
+        <div className="toggle-button__status">
+          <span className="toggle-button__label-off">{offLabel}</span>
+          <span className="toggle-button__label-on">{onLabel}</span>
+        </div>
+      )}
     </label>
   );
 };
@@ -147,6 +151,10 @@ ToggleButton.propTypes = {
    * A test id for the toggle button
    */
   dataTestId: PropTypes.string,
+  /**
+   * Optional inline styles for the container
+   */
+  containerStyle: PropTypes.object,
 };
 
 export default ToggleButton;

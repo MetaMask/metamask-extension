@@ -6,20 +6,19 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
   FontWeight,
-  JustifyContent,
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../component-library';
+import { Text } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 
 export default class PermissionPageContainerContent extends PureComponent {
@@ -35,12 +34,15 @@ export default class PermissionPageContainerContent extends PureComponent {
     selectedPermissions: PropTypes.object.isRequired,
     selectedAccounts: PropTypes.array,
     requestedChainIds: PropTypes.array,
+    /** CAIP chain IDs for multichain permission display (e.g., 'solana:...') */
+    selectedCaipChainIds: PropTypes.array,
   };
 
   static defaultProps = {
     request: {},
     selectedAccounts: [],
     requestedChainIds: [],
+    selectedCaipChainIds: null,
   };
 
   static contextTypes = {
@@ -55,6 +57,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       selectedAccounts,
       subjectMetadata,
       requestedChainIds,
+      selectedCaipChainIds,
       request,
     } = this.props;
 
@@ -84,21 +87,17 @@ export default class PermissionPageContainerContent extends PureComponent {
     );
     return (
       <Box
-        className="permission-page-container-content"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.flexStart}
-        alignItems={AlignItems.center}
-        height={BlockSize.Full}
+        className="permission-page-container-content flex flex-col h-full"
+        justifyContent={BoxJustifyContent.Start}
+        alignItems={BoxAlignItems.Center}
         paddingLeft={4}
         paddingRight={4}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          className="flex flex-col"
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           paddingTop={4}
           paddingBottom={4}
         >
@@ -111,6 +110,7 @@ export default class PermissionPageContainerContent extends PureComponent {
                 as="span"
                 key={`description_key_${displayOrigin}`}
                 fontWeight={FontWeight.Medium}
+                className="break-all"
               >
                 {displayOrigin}
               </Text>,
@@ -118,13 +118,12 @@ export default class PermissionPageContainerContent extends PureComponent {
           </Text>
         </Box>
         <Box
-          display={Display.Flex}
-          backgroundColor={BackgroundColor.backgroundDefault}
+          className="flex rounded-xl"
+          backgroundColor={BoxBackgroundColor.BackgroundDefault}
           paddingLeft={4}
           paddingRight={4}
           paddingTop={2}
           paddingBottom={2}
-          borderRadius={BorderRadius.XL}
         >
           <PermissionsConnectPermissionList
             isRequestApprovalPermittedChains={Boolean(
@@ -141,6 +140,12 @@ export default class PermissionPageContainerContent extends PureComponent {
                 ? permissionDiffRequestedChainIds
                 : requestedChainIds
             }
+            // Incremental permission requests (permissionDiffMap present) are
+            // EVM-only (wallet_switchEthereumChain). Passing null here lets
+            // PermissionCell fall back to the EVM-only display via
+            // requestedChainIds, instead of showing pre-existing non-EVM
+            // chains (Bitcoin/Solana/Tron) from the full permission set.
+            caipChainIds={permissionDiffMap ? null : selectedCaipChainIds}
           />
         </Box>
       </Box>

@@ -1,15 +1,13 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import * as ControllerActionsModule from '../store/controller-actions/multichain-asset-rates-controller';
+import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import { getIsUnlocked } from '../ducks/metamask/base-selectors';
+import { getUseCurrencyRateCheck } from '../selectors';
 import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../ducks/metamask/metamask';
-import {
-  AccountsState,
+  type AccountsState,
   getSelectedInternalAccount,
-  getUseCurrencyRateCheck,
-} from '../selectors';
+} from '../../shared/lib/selectors/accounts';
 import usePolling from './usePolling';
 import useMultichainAssetsRatesPolling from './useMultichainAssetsRatesPolling';
 
@@ -20,7 +18,9 @@ type MockVar = any;
 jest.mock('react-redux');
 jest.mock('./usePolling');
 jest.mock('../ducks/metamask/metamask');
+jest.mock('../ducks/metamask/base-selectors');
 jest.mock('../selectors');
+jest.mock('../../shared/lib/selectors/accounts');
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 const mockUsePolling = usePolling as jest.MockedFunction<typeof usePolling>;
@@ -44,7 +44,7 @@ const arrangeSelectorMocks = () => {
       return mockGetCompletedOnboarding();
     }
     if (selector === getIsUnlocked) {
-      return mockGetIsUnlocked();
+      return mockGetIsUnlocked({} as MockVar);
     }
     if (selector === getUseCurrencyRateCheck) {
       return mockGetUseCurrencyRateCheck({});

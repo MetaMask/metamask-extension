@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ApprovalType } from '@metamask/controller-utils';
 import { ORIGIN_METAMASK } from '@metamask/approval-controller';
 import Popover from '../../../ui/popover';
 import ConfirmationPage from '../../../../pages/confirmations/confirmation/confirmation';
 import { getUnapprovedConfirmations } from '../../../../selectors';
+import { useBoolean } from '../../../../hooks/useBoolean';
 
 const NetworkConfirmationPopover = () => {
-  const [showPopover, setShowPopover] = useState(false);
+  const {
+    value: isOpen,
+    setTrue: openPopover,
+    setFalse: closePopover,
+  } = useBoolean();
 
   const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
 
@@ -19,14 +24,14 @@ const NetworkConfirmationPopover = () => {
           confirmation.type === ApprovalType.AddEthereumChain,
       );
 
-    if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
-      setShowPopover(true);
-    } else if (showPopover && !anAddNetworkConfirmationFromMetaMaskExists) {
-      setShowPopover(false);
+    if (!isOpen && anAddNetworkConfirmationFromMetaMaskExists) {
+      openPopover();
+    } else if (isOpen && !anAddNetworkConfirmationFromMetaMaskExists) {
+      closePopover();
     }
-  }, [unapprovedConfirmations, showPopover]);
+  }, [closePopover, openPopover, isOpen, unapprovedConfirmations]);
 
-  if (!showPopover) {
+  if (!isOpen) {
     return null;
   }
 

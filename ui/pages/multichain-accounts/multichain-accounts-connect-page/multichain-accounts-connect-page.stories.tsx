@@ -1,7 +1,6 @@
 import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { action } from '@storybook/addon-actions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -24,6 +23,9 @@ const mockTargetSubjectMetadata = {
   subjectType: 'website' as const,
 };
 
+const mockSelectedAccountGroup =
+  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
+
 const mockAccountTreeState = {
   wallets: {
     'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
@@ -40,6 +42,7 @@ const mockAccountTreeState = {
             entropy: { groupIndex: 0 },
             pinned: false,
             hidden: false,
+            lastSelected: 0,
           },
         },
         'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1': {
@@ -51,6 +54,7 @@ const mockAccountTreeState = {
             entropy: { groupIndex: 1 },
             pinned: false,
             hidden: false,
+            lastSelected: 0,
           },
         },
       },
@@ -60,8 +64,6 @@ const mockAccountTreeState = {
       },
     },
   },
-  selectedAccountGroup:
-    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId,
 };
 
 const mockInternalAccountsState = {
@@ -115,6 +117,7 @@ const mockMultichainState = createMockMultichainAccountsState(
   mockAccountTreeState,
   mockInternalAccountsState,
   mockNetworkConfigurations,
+  mockSelectedAccountGroup,
 );
 
 const store = configureStore({
@@ -125,7 +128,8 @@ const store = configureStore({
     ...mockMultichainState.metamask,
     // Preserve the network configuration from mockState
     selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
-    networkConfigurationsByChainId: mockState.metamask.networkConfigurationsByChainId,
+    networkConfigurationsByChainId:
+      mockState.metamask.networkConfigurationsByChainId,
     permissionHistory: {
       'https://test.dapp': {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -195,8 +199,12 @@ export const Default: Story = {
       },
     },
     permissionsRequestId: '1',
-    rejectPermissionsRequest: action('rejectPermissionsRequest'),
-    approveConnection: action('approveConnection'),
+    rejectPermissionsRequest: () => {
+      /* no-op */
+    },
+    approveConnection: () => {
+      /* no-op */
+    },
     targetSubjectMetadata: mockTargetSubjectMetadata,
   },
 };

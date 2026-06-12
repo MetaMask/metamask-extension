@@ -1,29 +1,25 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  FontWeight,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useModalProps } from '../../../../../hooks/useModalProps';
 import {
-  ButtonSize,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  Box,
-  Text,
   ModalFooter,
-  Button,
-  ButtonVariant,
 } from '../../../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { toggleExternalServices } from '../../../../../store/actions';
-import { onboardingToggleBasicFunctionalityOn } from '../../../../../ducks/app/app';
 
 export const CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME =
   'CONFIRM_TURN_ON_BACKUP_AND_SYNC';
@@ -39,21 +35,12 @@ export function ConfirmTurnOnBackupAndSyncModal() {
   const { props, hideModal } = useModalProps();
   const { enableBackupAndSync } = props;
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   const handleHideModal = () => {
     hideModal();
   };
 
-  const enableBasicFunctionality = async () => {
-    await Promise.all([
-      dispatch(onboardingToggleBasicFunctionalityOn()),
-      dispatch(toggleExternalServices(true)),
-    ]);
-  };
-
   const handleEnableBackupAndSync = async () => {
-    await enableBasicFunctionality();
     await enableBackupAndSync();
     hideModal();
   };
@@ -65,12 +52,7 @@ export function ConfirmTurnOnBackupAndSyncModal() {
       data-testid={confirmTurnOnBackupAndSyncModalTestIds.modal}
     >
       <ModalOverlay />
-      <ModalContent
-        modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
-        }}
-      >
+      <ModalContent>
         <ModalHeader
           paddingBottom={4}
           paddingRight={4}
@@ -78,13 +60,12 @@ export function ConfirmTurnOnBackupAndSyncModal() {
           onClose={handleHideModal}
         >
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
             gap={4}
           >
-            <Text variant={TextVariant.headingSm}>
+            <Text variant={TextVariant.HeadingSm}>
               {t('backupAndSyncEnable')}
             </Text>
           </Box>
@@ -94,32 +75,27 @@ export function ConfirmTurnOnBackupAndSyncModal() {
           marginLeft={4}
           marginRight={4}
           marginBottom={4}
-          display={Display.Flex}
+          flexDirection={BoxFlexDirection.Column}
           gap={4}
-          flexDirection={FlexDirection.Column}
         >
-          <Text variant={TextVariant.bodySm}>
+          <Text variant={TextVariant.BodySm}>
             {t('backupAndSyncEnableConfirmation', [
               <Text
+                asChild
                 key="basic-functionality"
-                variant={TextVariant.bodySmBold}
-                as="span"
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Bold}
               >
-                {t('backupAndSyncBasicFunctionalityNameMention')}
+                <span>{t('backupAndSyncBasicFunctionalityNameMention')}</span>
               </Text>,
             ])}
           </Text>
         </Box>
-        <ModalFooter
-          containerProps={{
-            flexDirection: FlexDirection.Row,
-            alignItems: AlignItems.stretch,
-          }}
-        >
-          <Box display={Display.Flex} gap={4}>
+        <ModalFooter>
+          <Box flexDirection={BoxFlexDirection.Row} gap={4}>
             <Button
               size={ButtonSize.Lg}
-              width={BlockSize.Half}
+              className="w-1/2"
               variant={ButtonVariant.Secondary}
               data-testid={confirmTurnOnBackupAndSyncModalTestIds.cancelButton}
               onClick={handleHideModal}
@@ -128,7 +104,7 @@ export function ConfirmTurnOnBackupAndSyncModal() {
             </Button>
             <Button
               size={ButtonSize.Lg}
-              width={BlockSize.Half}
+              className="w-1/2"
               variant={ButtonVariant.Primary}
               data-testid={confirmTurnOnBackupAndSyncModalTestIds.toggleButton}
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879

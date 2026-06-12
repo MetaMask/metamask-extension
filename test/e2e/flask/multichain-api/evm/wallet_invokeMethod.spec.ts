@@ -1,31 +1,138 @@
 import { strict as assert } from 'assert';
+import { MockttpServer } from 'mockttp';
 import { isHexString } from '@metamask/utils';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
-  convertETHToHexGwei,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../../constants';
+} from '../../../constants';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
+import { convertETHToHexGwei, withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/redesign/batch-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/batch-confirmation';
 import { mockEip7702FeatureFlag } from '../../../tests/confirmations/helpers';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   type FixtureCallbackArgs,
   addAccountInWalletAndAuthorize,
 } from '../testHelpers';
+import { SECURITY_ALERTS_PROD_API_BASE_URL } from '../../../tests/ppom/constants';
+
+/**
+ * Chains 1338 and 1000 are absent from the default fixture's AssetsController.
+ * With assets-unify, the native gas balance is read from there, so confirmations
+ * otherwise show "Insufficient funds". Pre-populate the missing chain balances.
+ */
+const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image: '',
+  name: 'Ethereum',
+  symbol: 'ETH',
+  type: 'native' as const,
+};
+
+// Account 2's deterministic UUID (derived from the test seed phrase).
+// Used here because the first test selects Account 2 for scope eip155:1338.
+const ACCOUNT_2_FIXTURE_ID = 'e9976a84-110e-46c3-9811-e2da7b5528d3';
+
+const EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER = {
+  assetsBalance: {
+    [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+      'eip155:1338/slip44:60': { amount: '25' },
+      'eip155:1000/slip44:60': { amount: '25' },
+    },
+    [ACCOUNT_2_FIXTURE_ID]: {
+      'eip155:1338/slip44:60': { amount: '25' },
+    },
+  },
+  assetsInfo: {
+    'eip155:1338/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+    'eip155:1000/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+  },
+};
+
+const SECURITY_ALERT_SIGNATURE_REQUEST = {
+  method: 'eth_signTypedData_v4',
+  params: [ACCOUNT_1],
+};
+
+const SIGN_TYPED_DATA_V4_PARAMS = [
+  ACCOUNT_1,
+  JSON.stringify({
+    domain: {
+      chainId: 1337,
+      name: 'Ether Mail',
+      verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+      version: '1',
+    },
+    message: {
+      contents: 'Hello, Bob!',
+      from: {
+        name: 'Cow',
+        wallet: ACCOUNT_1,
+      },
+      to: {
+        name: 'Bob',
+        wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+      },
+    },
+    primaryType: 'Mail',
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Group: [
+        { name: 'name', type: 'string' },
+        { name: 'members', type: 'Person[]' },
+      ],
+      Mail: [
+        { name: 'from', type: 'Person' },
+        { name: 'to', type: 'Person' },
+        { name: 'contents', type: 'string' },
+      ],
+      Person: [
+        { name: 'name', type: 'string' },
+        { name: 'wallet', type: 'address' },
+      ],
+    },
+  }),
+];
+
+async function mockSecurityAlertsForMaliciousSignature(
+  mockServer: MockttpServer,
+): Promise<void> {
+  await mockServer
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x539`)
+    .withJsonBodyIncluding(SECURITY_ALERT_SIGNATURE_REQUEST)
+    .thenJson(201, {
+      block: 20733277,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: 'Malicious',
+      reason: 'transfer_farming',
+      description: '',
+      features: ['Interaction with a known malicious address'],
+    });
+}
 
 describe('Multichain API', function () {
-  const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
-  const CAIP_ACCOUNT_IDS = [`eip155:0:${ACCOUNT_1}`, `eip155:0:${ACCOUNT_2}`];
+  const EVM_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
+  const CAIP_ACCOUNT_IDS = [
+    toEvmCaipAccountId(ACCOUNT_1),
+    toEvmCaipAccountId(ACCOUNT_2),
+  ];
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
     DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   );
@@ -40,13 +147,13 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -84,26 +191,73 @@ describe('Multichain API', function () {
     });
   });
 
+  describe('Calling `wallet_invokeMethod` with a signature request', function () {
+    it('displays a Blockaid warning for malicious typed data signatures', async function () {
+      await withFixtures(
+        {
+          title: this.test?.fullTitle(),
+          fixtures: new FixtureBuilderV2()
+            .withNetworkControllerTripleNode()
+            .build(),
+          testSpecificMock: mockSecurityAlertsForMaliciousSignature,
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+        },
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
+          const scope = EVM_SCOPES[0];
+
+          await login(driver);
+
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+          await testDapp.connectExternallyConnectable(extensionId);
+          await testDapp.initCreateSessionScopes([scope], CAIP_ACCOUNT_IDS);
+          await addAccountInWalletAndAuthorize(driver);
+
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
+          await testDapp.checkPageIsLoaded();
+          await testDapp.invokeMethod({
+            scope,
+            method: 'eth_signTypedData_v4',
+            params: SIGN_TYPED_DATA_V4_PARAMS,
+          });
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          const confirmation = new TransactionConfirmation(driver);
+          await confirmation.checkPageIsLoaded();
+          await confirmation.checkAlertMessageIsDisplayed(
+            'This is a deceptive request',
+          );
+          await confirmation.checkAlertMessageIsDisplayed(
+            'If you approve this request, a third party known for scams will take all your assets.',
+          );
+        },
+      );
+    });
+  });
+
   describe('Calling `wallet_invokeMethod` on the same dapp across three different connected chains', function () {
     describe('Read operations: calling different methods on each connected scope', function () {
       it('Should match selected method to the expected output', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
             await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(
-              GANACHE_SCOPES,
+              EVM_SCOPES,
               CAIP_ACCOUNT_IDS,
             );
             await addAccountInWalletAndAuthorize(driver);
@@ -113,17 +267,17 @@ describe('Multichain API', function () {
             );
 
             const TEST_METHODS = {
-              [GANACHE_SCOPES[0]]: 'eth_chainId',
-              [GANACHE_SCOPES[1]]: 'eth_getBalance',
-              [GANACHE_SCOPES[2]]: 'eth_gasPrice',
+              [EVM_SCOPES[0]]: 'eth_chainId',
+              [EVM_SCOPES[1]]: 'eth_getBalance',
+              [EVM_SCOPES[2]]: 'eth_gasPrice',
             };
             const EXPECTED_RESULTS = {
-              [GANACHE_SCOPES[0]]: '0x539',
-              [GANACHE_SCOPES[1]]: DEFAULT_INITIAL_BALANCE_HEX,
-              [GANACHE_SCOPES[2]]: '0x77359400',
+              [EVM_SCOPES[0]]: '0x539',
+              [EVM_SCOPES[1]]: DEFAULT_INITIAL_BALANCE_HEX,
+              [EVM_SCOPES[2]]: '0x77359400',
             };
 
-            for (const scope of GANACHE_SCOPES) {
+            for (const scope of EVM_SCOPES) {
               const invokeMethod = TEST_METHODS[scope];
               await testDapp.invokeMethodAndCheckResult({
                 scope,
@@ -143,20 +297,21 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
+              .withAssetsController(EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER)
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
             await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(
-              GANACHE_SCOPES,
+              EVM_SCOPES,
               CAIP_ACCOUNT_IDS,
             );
             await addAccountInWalletAndAuthorize(driver);
@@ -166,7 +321,7 @@ describe('Multichain API', function () {
             );
             await testDapp.checkPageIsLoaded();
 
-            for (const [i, scope] of GANACHE_SCOPES.entries()) {
+            for (const [i, scope] of EVM_SCOPES.entries()) {
               await testDapp.selectMethod({
                 scope,
                 method: 'eth_sendTransaction',
@@ -185,7 +340,7 @@ describe('Multichain API', function () {
               account: string;
               network: string;
             }[] = [];
-            for (const [i, scope] of GANACHE_SCOPES.entries()) {
+            for (const [i, scope] of EVM_SCOPES.entries()) {
               expectedConfirmations.push({
                 account:
                   i === INDEX_FOR_ALTERNATE_ACCOUNT ? 'Account 2' : 'Account 1',
@@ -207,7 +362,7 @@ describe('Multichain API', function () {
             });
 
             // Collect actual confirmations from each confirmation screen
-            for (let i = 0; i < GANACHE_SCOPES.length - 1; i++) {
+            for (let i = 0; i < EVM_SCOPES.length - 1; i++) {
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
               const confirmation = new TransactionConfirmation(driver);
               await confirmation.checkPageIsLoaded();
@@ -220,7 +375,7 @@ describe('Multichain API', function () {
               });
 
               // Confirm the transaction except for the last one
-              if (i < GANACHE_SCOPES.length - 2) {
+              if (i < EVM_SCOPES.length - 2) {
                 await confirmation.clickFooterConfirmButton();
               } else {
                 await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
@@ -248,20 +403,21 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
+              .withAssetsController(EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER)
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
             await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(
-              GANACHE_SCOPES,
+              EVM_SCOPES,
               CAIP_ACCOUNT_IDS,
             );
             const connectAccountConfirmation = new ConnectAccountConfirmation(
@@ -274,7 +430,7 @@ describe('Multichain API', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
             await testDapp.checkPageIsLoaded();
-            for (const scope of GANACHE_SCOPES) {
+            for (const scope of EVM_SCOPES) {
               await testDapp.selectMethod({
                 scope,
                 method: 'eth_sendTransaction',
@@ -282,7 +438,7 @@ describe('Multichain API', function () {
             }
 
             await testDapp.clickInvokeAllMethodsButton();
-            const totalNumberOfScopes = GANACHE_SCOPES.length;
+            const totalNumberOfScopes = EVM_SCOPES.length;
             const expectedNetworks = [
               'Localhost 8545',
               'Localhost 8546',
@@ -355,7 +511,7 @@ describe('Multichain API', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
             await testDapp.checkPageIsLoaded();
-            for (const scope of GANACHE_SCOPES) {
+            for (const scope of EVM_SCOPES) {
               let methodCount = 1;
               await driver.waitUntil(
                 async () => {
@@ -384,17 +540,15 @@ describe('Multichain API', function () {
     });
   });
 
-  // #37821 - When running EIP-5792 methods with EIP7702 feautre flag turned ON the confirmation screen crashes
-  // eslint-disable-next-line mocha/no-skipped-tests
-  describe.skip('EIP-5792 Methods', function () {
+  describe('EIP-5792 Methods', function () {
     describe('Calling `wallet_getCapabalities`', function () {
       it('should return the available capabilities', async function () {
         await withFixtures(
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -409,10 +563,10 @@ describe('Multichain API', function () {
             testSpecificMock: mockEip7702FeatureFlag,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            const scope = GANACHE_SCOPES[0];
+            const scope = EVM_SCOPES[0];
             const method = 'wallet_getCapabilities';
 
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -441,8 +595,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -457,10 +611,10 @@ describe('Multichain API', function () {
             testSpecificMock: mockEip7702FeatureFlag,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            const scope = GANACHE_SCOPES[0];
+            const scope = EVM_SCOPES[0];
             const method = 'wallet_sendCalls';
 
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -483,7 +637,6 @@ describe('Multichain API', function () {
             const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
               driver,
             );
-            await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
             await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
@@ -515,8 +668,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -531,10 +684,10 @@ describe('Multichain API', function () {
             testSpecificMock: mockEip7702FeatureFlag,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            const scope = GANACHE_SCOPES[0];
+            const scope = EVM_SCOPES[0];
             const method = 'wallet_sendCalls';
 
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -557,7 +710,6 @@ describe('Multichain API', function () {
             const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
               driver,
             );
-            await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
             await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(

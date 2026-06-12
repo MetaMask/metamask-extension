@@ -41,6 +41,104 @@ function formatCompact(
   });
 }
 
+// Format token quantity without trailing zeros.
+function formatTokenAmount(
+  formatToken: (
+    value: Value,
+    symbol: string,
+    options?: Intl.NumberFormatOptions,
+  ) => string,
+  value: Value,
+  symbol: string,
+) {
+  const minThreshold = 0.00001;
+  const number = Number(value);
+  const absoluteValue = Math.abs(number);
+
+  if (!Number.isFinite(number)) {
+    return '';
+  }
+
+  if (number === 0) {
+    return formatToken(0, symbol, { maximumFractionDigits: 0 });
+  }
+
+  if (absoluteValue < minThreshold) {
+    return `<${formatToken(minThreshold, symbol, {
+      minimumSignificantDigits: 1,
+      maximumSignificantDigits: 1,
+    })}`;
+  }
+
+  if (absoluteValue < 1) {
+    return formatToken(number, symbol, {
+      minimumSignificantDigits: 1,
+      maximumSignificantDigits: 4,
+    });
+  }
+
+  if (absoluteValue < 1000000) {
+    return formatToken(number, symbol, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4,
+    });
+  }
+
+  return formatToken(number, symbol, {
+    notation: 'compact',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+}
+
+const dateTimeFormatCache: Record<string, Intl.DateTimeFormat> = {};
+
+function getCachedDateTimeFormat(
+  locale: string,
+  options: Intl.DateTimeFormatOptions = {},
+) {
+  const key = `${locale}_${JSON.stringify(options)}`;
+  if (!dateTimeFormatCache[key]) {
+    dateTimeFormatCache[key] = new Intl.DateTimeFormat(locale, options);
+  }
+  return dateTimeFormatCache[key];
+}
+
+// Format a timestamp as a localized date+time string (e.g. "Mar 15, 2024, 2:30 PM").
+function formatDateTime(
+  config: { locale: string },
+  timestamp: string | number,
+  options?: Intl.DateTimeFormatOptions,
+) {
+  if (!timestamp) {
+    return '';
+  }
+  return getCachedDateTimeFormat(config.locale, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+    ...options,
+  }).format(new Date(timestamp));
+}
+
+// Format a timestamp as a localized medium date string (e.g. "Mar 15, 2024").
+function formatMediumDate(
+  locale: string,
+  timestamp: string | number,
+  options?: Intl.DateTimeFormatOptions,
+) {
+  if (!timestamp) {
+    return '';
+  }
+  return getCachedDateTimeFormat(locale, {
+    dateStyle: 'medium',
+    ...options,
+  }).format(new Date(timestamp));
+}
+
 export function useFormatters() {
   const locale = useSelector(getIntlLocale);
 
@@ -56,6 +154,18 @@ export function useFormatters() {
         base.formatNumber,
       ),
       formatCompact: formatCompact.bind(null, base.formatNumber),
+      /**
+       * Format token quantity without trailing zeros.
+       */
+      formatTokenAmount: formatTokenAmount.bind(null, base.formatToken),
+      /**
+       * Format a timestamp as a localized date+time string (e.g. "Mar 15, 2024, 2:30 PM").
+       */
+      formatDateTime: formatDateTime.bind(null, { locale }),
+      /**
+       * Format a timestamp as a localized medium date string (e.g. "Mar 15, 2024").
+       */
+      formatMediumDate: formatMediumDate.bind(null, locale),
     };
   }, [locale]);
 }

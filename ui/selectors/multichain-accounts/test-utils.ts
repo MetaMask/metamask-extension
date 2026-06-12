@@ -1,7 +1,7 @@
 import { AccountGroupId } from '@metamask/account-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/modules/selectors/networks';
+import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/lib/selectors/networks';
 import {
   AccountTreeState,
   InternalAccountsState,
@@ -19,10 +19,18 @@ export const createMockMultichainAccountsState = (
       MultichainNetworkConfiguration
     >;
   },
+  selectedAccountGroup: AccountGroupId | null = null as unknown as AccountGroupId,
 ): MultichainAccountsState & MultichainNetworkConfigurationsByChainIdState => ({
   metamask: {
+    selectedAccountGroup: selectedAccountGroup as AccountGroupId,
     accountTree,
     internalAccounts,
+    accountIdByAddress: Object.fromEntries(
+      Object.values(internalAccounts.accounts).map((account) => [
+        account.address,
+        account.id,
+      ]),
+    ),
     networkConfigurationsByChainId:
       networkConfigurations?.networkConfigurationsByChainId || {},
     multichainNetworkConfigurationsByChainId:
@@ -36,10 +44,11 @@ export const createEmptyState = (): MultichainAccountsState &
   createMockMultichainAccountsState(
     {
       wallets: {},
-      selectedAccountGroup: null as unknown as AccountGroupId,
     },
     {
       accounts: {},
       selectedAccount: '',
     },
+    undefined,
+    null as unknown as AccountGroupId,
   );

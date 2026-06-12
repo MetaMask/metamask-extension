@@ -1,38 +1,56 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 
 import {
+  Box,
+  Text,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+  ButtonIcon,
+  ButtonIconSize,
+  TextColor,
+  TextVariant,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontWeight,
+} from '@metamask/design-system-react';
+import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalContentSize,
-  Text,
-  IconName,
-  ButtonIcon,
-  ButtonIconSize,
   HelpText,
   HelpTextSeverity,
+  BannerAlert,
+  BannerAlertSeverity,
 } from '../../../../../components/component-library';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
+import { AddressPoisoningDetectionResult } from '../../../hooks/send/useAddressPoisoningDetection';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
 import { RecipientList } from '../recipient-list';
 import { RecipientInput } from '../recipient-input';
+import { AddressPoisoningAlertContent } from '../address-poisoning-alert-content/address-poisoning-alert-content';
 
 export const Recipient = ({
+  addressPoisoningDetectionResult,
   recipientValidationResult,
+  recipientCandidateAddress,
+  onAlertIconClick,
 }: {
+  addressPoisoningDetectionResult?: AddressPoisoningDetectionResult;
   recipientValidationResult: ReturnType<typeof useRecipientValidation>;
+  recipientCandidateAddress?: string;
+  onAlertIconClick?: () => void;
 }) => {
   const {
     recipientError,
+    recipientErrorAllowAcknowledge,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
@@ -47,6 +65,7 @@ export const Recipient = ({
   } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
   const recipientInputRef = useRef<HTMLInputElement>(null);
+  const poisoningMatch = addressPoisoningDetectionResult?.bestMatch;
   const closeRecipientModal = useCallback(() => {
     setIsRecipientModalOpen(false);
   }, []);
@@ -85,19 +104,54 @@ export const Recipient = ({
 
   return (
     <>
-      <Text variant={TextVariant.bodyMdMedium} paddingBottom={1}>
-        {t('to')}
-      </Text>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+        className="pb-1"
+      >
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {t('to')}
+        </Text>
+        {to === toAddressValidated && recipientErrorAllowAcknowledge && (
+          <Icon
+            name={IconName.Danger}
+            size={IconSize.Sm}
+            color={IconColor.WarningDefault}
+            onClick={onAlertIconClick}
+            style={{ cursor: 'pointer' }}
+            data-testid="recipient-alert-icon"
+          />
+        )}
+      </Box>
       <RecipientInput
         openRecipientModal={openRecipientModal}
         recipientInputRef={recipientInputRef}
         recipientValidationResult={recipientValidationResult}
       />
-      {to === toAddressValidated && recipientError && (
-        <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
-          {recipientError}
-        </HelpText>
+      {recipientCandidateAddress && poisoningMatch && (
+        <Box className="mt-2">
+          <BannerAlert
+            data-testid="address-poisoning-warning-banner"
+            severity={BannerAlertSeverity.Danger}
+            title={t('addressPoisoningTitle')}
+            description={t('addressPoisoningMessage')}
+          >
+            <AddressPoisoningAlertContent
+              address={recipientCandidateAddress}
+              knownAddress={poisoningMatch.knownAddress}
+              diffIndices={poisoningMatch.diffIndices}
+            />
+          </BannerAlert>
+        </Box>
       )}
+      {to === toAddressValidated &&
+        recipientError &&
+        !recipientErrorAllowAcknowledge && (
+          <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
+            {recipientError}
+          </HelpText>
+        )}
       {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}
@@ -105,9 +159,9 @@ export const Recipient = ({
       )}
       {to === toAddressValidated && recipientResolvedLookup && (
         <Text
-          color={TextColor.textAlternative}
-          marginTop={1}
-          variant={TextVariant.bodyXs}
+          color={TextColor.TextAlternative}
+          className="mt-1"
+          variant={TextVariant.BodyXs}
         >
           {t('resolutionProtocol', [resolutionProtocol ?? ''])}
         </Text>

@@ -12,11 +12,11 @@ import { Driver, PAGES } from './webdriver/driver';
 
 import { createDriverTransport } from './api-specs/helpers';
 
-import FixtureBuilder from './fixtures/fixture-builder';
-import { withFixtures, unlockWallet } from './helpers';
+import FixtureBuilderV2 from './fixtures/fixture-builder-v2';
+import { withFixtures } from './helpers';
 import { DAPP_URL, ACCOUNT_1 } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
-import HomePage from './page-objects/pages/home/homepage';
+import { login } from './page-objects/flows/login.flow';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -27,7 +27,7 @@ async function main() {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       localNodeOptions: 'none',
       title: 'api-specs coverage',
     },
@@ -44,11 +44,7 @@ async function main() {
       const server = mockServer(port, parsedDoc);
       server.start();
 
-      await unlockWallet(driver);
-      const homePage = new HomePage(driver);
-      await homePage.checkPageIsLoaded();
-      // We don't have balance so we expect to see Fund Your Wallet
-      await homePage.checkExpectedBalanceIsDisplayed('0', 'ETH');
+      await login(driver, { validateBalance: false });
 
       // Navigate to extension home screen
       await driver.navigate(PAGES.HOME);

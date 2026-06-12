@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-
 import { EstimatesModal } from '../estimates-modal/estimates-modal';
 import { AdvancedEIP1559Modal } from '../advanced-eip1559-modal/advanced-eip1559-modal';
 import { AdvancedGasPriceModal } from '../advanced-gas-price-modal/advanced-gas-price-modal';

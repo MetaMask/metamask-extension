@@ -4,7 +4,7 @@ import { Mockttp } from 'mockttp';
 import { Anvil } from '../../seeder/anvil';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -13,10 +13,23 @@ import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboardi
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
-import { handleSidepanelPostOnboarding } from '../../page-objects/flows/onboarding.flow';
+import {
+  handleSidepanelPostOnboarding,
+  skipPasskeySetup,
+} from '../../page-objects/flows/onboarding.flow';
+
+// 1 ETH in wei, hex-encoded
+const ONE_ETH_IN_WEI_HEX = '0xde0b6b3a7640000';
+
+// ABI-encoded uint256[] with a single element of 1 ETH (for BalanceChecker response)
+const BALANCE_CHECKER_1_ETH_RESULT =
+  '0x' +
+  '0000000000000000000000000000000000000000000000000000000000000020' +
+  '0000000000000000000000000000000000000000000000000000000000000001' +
+  '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
 
 async function mockSpotPrices(mockServer: Mockttp) {
-  return await mockServer
+  await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .thenCallback(() => ({
       statusCode: 200,
@@ -29,6 +42,27 @@ async function mockSpotPrices(mockServer: Mockttp) {
         },
       },
     }));
+
+  await mockServer
+    .forPost(/^https:\/\/mainnet\.infura\.io\//u)
+    .withJsonBodyIncluding({ method: 'eth_getBalance' })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { jsonrpc: '2.0', id: '1', result: ONE_ETH_IN_WEI_HEX },
+    }));
+
+  await mockServer
+    .forPost(/^https:\/\/mainnet\.infura\.io\//u)
+    .withJsonBodyIncluding({
+      method: 'eth_call',
+      params: [{ to: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39' }],
+    })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { jsonrpc: '2.0', id: '1', result: BALANCE_CHECKER_1_ETH_RESULT },
+    }));
 }
 
 describe('Incremental Security', function (this: Suite) {
@@ -38,14 +72,17 @@ describe('Incremental Security', function (this: Suite) {
         dappOptions: {
           customDappPaths: ['./send-eth-with-private-key-test'],
         },
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
             },
           })
           .build(),
+        localNodeOptions: {
+          chainId: 1,
+        },
         testSpecificMock: mockSpotPrices,
 
         title: this.test?.fullTitle(),
@@ -79,6 +116,7 @@ describe('Incremental Security', function (this: Suite) {
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+        await skipPasskeySetup(driver);
 
         // secure wallet later
         const secureWalletPage = new SecureWalletPage(driver);

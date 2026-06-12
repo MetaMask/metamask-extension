@@ -7,7 +7,6 @@ import {
   BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY,
   BASE_SUBSCRIPTION_API_URL,
   CLAIMS_API,
-  MOCK_CHECKOUT_SESSION_URL,
   MOCK_CLAIM_2,
   MOCK_CLAIMS_CONFIGURATION_RESPONSE,
   MOCK_CLAIMS_RESPONSE,
@@ -52,6 +51,7 @@ export class ShieldMockttpService {
       claimErrorCode?: string;
       defaultPaymentMethod?: 'card' | 'crypto';
       claimsResponse?: unknown[];
+      isSubscriptionCancelled?: boolean;
     },
   ) {
     // Mock Identity Services first as shield/subscription APIs depend on it (Auth Token)
@@ -71,6 +71,11 @@ export class ShieldMockttpService {
       this.#customClaimsResponse = overrides.claimsResponse;
     }
 
+    // Set subscription cancellation status if provided
+    if (overrides?.isSubscriptionCancelled) {
+      this.#cancelAtPeriodEnd = true;
+    }
+
     // Subscription APIs
     await this.#handleSubscriptionPricing(server);
     await this.#handleSubscriptionEligibility(server, overrides);
@@ -82,9 +87,12 @@ export class ShieldMockttpService {
     await this.#handleCancelSubscription(server, overrides);
     await this.#handleRenewSubscription(server, overrides);
     await this.#handleUpdateCryptoPaymentMethod(server);
+    // Mock USER_EVENTS - PROD URL
     await server
       .forPost(SUBSCRIPTION_API.USER_EVENTS)
       .thenJson(200, SHIELD_USER_EVENTS_RESPONSE);
+
+    // Mock COHORT_ASSIGNMENT - PROD URL
     await server
       .forPost(SUBSCRIPTION_API.COHORT_ASSIGNMENT)
       .thenJson(200, MOCK_COHORT_ASSIGNMENT_RESPONSE);
@@ -488,6 +496,7 @@ export class ShieldMockttpService {
   }
 
   async #handleSubscriptionPricing(server: Mockttp) {
+    // Mock PROD URL
     await server
       .forGet(SUBSCRIPTION_API.PRICING)
       .thenJson(200, SHIELD_PRICING_DATA);
@@ -499,84 +508,247 @@ export class ShieldMockttpService {
       mockNotEligible?: boolean;
     },
   ) {
+    const eligibilityResponse = [
+      {
+        canSubscribe: !overrides?.mockNotEligible,
+        canViewEntryModal: true,
+        minBalanceUSD: 1000,
+        product: 'shield',
+        modalType: 'A',
+        cohorts: [
+          {
+            cohort: 'wallet_home',
+            eligible: true,
+            eligibilityRate: 1.0,
+          },
+          {
+            cohort: 'post_tx',
+            eligible: true,
+            eligibilityRate: 1.0,
+          },
+        ],
+        assignedCohort: null,
+        hasAssignedCohortExpired: null,
+      },
+    ];
+
+    // Mock PROD URL
     await server
       .forGet(SUBSCRIPTION_API.ELIGIBILITY)
       .always()
-      .thenJson(200, [
-        {
-          canSubscribe: !overrides?.mockNotEligible,
-          canViewEntryModal: true,
-          minBalanceUSD: 1000,
-          product: 'shield',
-          modalType: 'A',
-          cohorts: [
-            {
-              cohort: 'wallet_home',
-              eligible: true,
-              eligibilityRate: 1.0,
-            },
-            {
-              cohort: 'post_tx',
-              eligible: true,
-              eligibilityRate: 1.0,
-            },
-          ],
-          assignedCohort: null,
-          hasAssignedCohortExpired: null,
-        },
-      ]);
+      .thenJson(200, eligibilityResponse);
   }
 
   async #handleCreateSubscriptionByCard(server: Mockttp) {
-    // Mock card subscription creation endpoint
+    const cardSubscriptionCallback = () => {
+      this.#hasSubscribedToShield = true;
+      // Reset cancelAtPeriodEnd when a new subscription is created
+      this.#cancelAtPeriodEnd = false;
+      return {
+        statusCode: 200,
+        json: {
+          checkoutSessionUrl: SUBSCRIPTION_API.CHECKOUT_SESSION,
+        },
+      };
+    };
+
+    // Mock PROD URL - use .always() to ensure it matches
     await server
       .forPost(SUBSCRIPTION_API.CREATE_SUBSCRIPTION_BY_CARD)
-      .thenCallback(() => {
-        this.#hasSubscribedToShield = true;
-        return {
-          statusCode: 200,
-          json: {
-            checkoutSessionUrl: MOCK_CHECKOUT_SESSION_URL,
-          },
-        };
-      });
+      .always()
+      .thenCallback(cardSubscriptionCallback);
   }
 
   async #handleCreateSubscriptionByCrypto(server: Mockttp) {
-    // Mock crypto subscription creation endpoint
+    const cryptoSubscriptionCallback = async (request: {
+      body: { getJson: () => Promise<unknown> };
+    }) => {
+      this.#hasSubscribedToShieldCrypto = true;
+      const body = (await request.body.getJson()) as {
+        recurringInterval?: 'month' | 'year';
+      };
+      // Extract recurringInterval from request body
+      if (body?.recurringInterval) {
+        this.#selectedInterval =
+          body.recurringInterval === 'month' ? 'month' : 'year';
+      }
+      return {
+        statusCode: 200,
+        json: [
+          this.#selectedInterval === 'month'
+            ? BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY
+            : BASE_SHIELD_SUBSCRIPTION_CRYPTO,
+        ],
+      };
+    };
+
+    // Mock PROD URL
     await server
       .forPost(SUBSCRIPTION_API.CREATE_SUBSCRIPTION_BY_CRYPTO)
-      .thenCallback(async (request) => {
-        this.#hasSubscribedToShieldCrypto = true;
-        const body = (await request.body.getJson()) as {
-          recurringInterval?: 'month' | 'year';
-        };
-        // Extract recurringInterval from request body
-        if (body?.recurringInterval) {
-          this.#selectedInterval =
-            body.recurringInterval === 'month' ? 'month' : 'year';
-        }
-        return {
-          statusCode: 200,
-          json: [
-            this.#selectedInterval === 'month'
-              ? BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY
-              : BASE_SHIELD_SUBSCRIPTION_CRYPTO,
-          ],
-        };
-      });
+      .thenCallback(cryptoSubscriptionCallback);
   }
 
   async #handleCryptoApprovalAmount(server: Mockttp) {
-    // Mock crypto approval amount endpoint
+    const approvalAmountResponse = {
+      approveAmount: '100000000', // 100 USDC/USDT with 6 decimals (100 * 10^6)
+      paymentAddress: '0x1234567890123456789012345678901234567890',
+      paymentTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC or USDT
+    };
+
+    // Mock PROD URL
     await server
       .forPost(SUBSCRIPTION_API.CRYPTO_APPROVAL_AMOUNT)
       .always()
-      .thenJson(200, {
-        approveAmount: '100000000', // 100 USDC/USDT with 6 decimals (100 * 10^6)
-        paymentAddress: '0x1234567890123456789012345678901234567890',
-        paymentTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC or USDT
-      });
+      .thenJson(200, approvalAmountResponse);
+  }
+
+  /**
+   * Builds a crypto subscription object with current payment token settings
+   */
+  #buildCryptoSubscription() {
+    const baseCryptoSubscription =
+      this.#selectedInterval === 'month'
+        ? BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY
+        : BASE_SHIELD_SUBSCRIPTION_CRYPTO;
+
+    return {
+      ...baseCryptoSubscription,
+      paymentMethod: {
+        type: 'crypto',
+        crypto: {
+          chainId: '0x1',
+          tokenAddress:
+            this.#currentPaymentTokenSymbol === 'USDT'
+              ? '0xdac17f958d2ee523a2206206994597c13d831ec7'
+              : '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          tokenSymbol: this.#currentPaymentTokenSymbol,
+          payerAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+        },
+      },
+    };
+  }
+
+  /**
+   * Builds a card subscription object
+   */
+  #buildCardSubscription() {
+    return { ...BASE_SHIELD_SUBSCRIPTION_CARD };
+  }
+
+  /**
+   * Determines if we should return a crypto subscription based on current state
+   *
+   * @param overrides - Optional overrides for subscription behavior
+   * @param overrides.isActiveUser - Whether user has an active subscription
+   * @param overrides.defaultPaymentMethod - Default payment method preference
+   * @returns True if crypto subscription should be returned
+   */
+  #shouldReturnCryptoSubscription(overrides?: {
+    isActiveUser?: boolean;
+    defaultPaymentMethod?: 'card' | 'crypto';
+  }): boolean {
+    return (
+      this.#hasSubscribedToShieldCrypto ||
+      (Boolean(overrides?.isActiveUser) &&
+        !this.#hasSubscribedToShield &&
+        overrides?.defaultPaymentMethod === 'crypto')
+    );
+  }
+
+  /**
+   * Determines if a subscription exists (either created or from overrides)
+   *
+   * @param overrides - Optional overrides for subscription behavior
+   * @param overrides.isActiveUser - Whether user has an active subscription
+   * @returns True if any subscription exists
+   */
+  #hasAnySubscription(overrides?: { isActiveUser?: boolean }): boolean {
+    return (
+      this.#hasSubscribedToShield ||
+      this.#hasSubscribedToShieldCrypto ||
+      Boolean(overrides?.isActiveUser)
+    );
+  }
+
+  /**
+   * Determines if a new subscription was just created
+   */
+  #hasNewSubscription(): boolean {
+    return this.#hasSubscribedToShield || this.#hasSubscribedToShieldCrypto;
+  }
+
+  /**
+   * Builds the subscription response based on current state
+   *
+   * @param overrides - Optional overrides for subscription behavior
+   * @param overrides.isActiveUser - Whether user has an active subscription
+   * @param overrides.defaultPaymentMethod - Default payment method preference
+   * @param overrides.isSubscriptionCancelled - Whether subscription is cancelled
+   * @returns The subscription response object
+   */
+  #buildSubscriptionResponse(overrides?: {
+    isActiveUser?: boolean;
+    defaultPaymentMethod?: 'card' | 'crypto';
+    isSubscriptionCancelled?: boolean;
+  }) {
+    // No subscription exists
+    if (!this.#hasAnySubscription(overrides)) {
+      return {
+        statusCode: 200,
+        json: {
+          subscriptions: [],
+          trialedProducts: [],
+        },
+      };
+    }
+
+    const isCancelled = overrides?.isSubscriptionCancelled ?? false;
+    const hasNewSubscription: boolean = this.#hasNewSubscription();
+    const shouldReturnCrypto: boolean =
+      this.#shouldReturnCryptoSubscription(overrides);
+
+    // Build base subscription object
+    const baseSubscription = shouldReturnCrypto
+      ? this.#buildCryptoSubscription()
+      : this.#buildCardSubscription();
+
+    // Determine subscription status
+    // - If cancelled AND no new subscription created: mark as cancelled
+    // - If new subscription was created: use default status (active/trialing)
+    const subscriptionStatus =
+      isCancelled && !hasNewSubscription ? 'canceled' : undefined;
+
+    // Apply subscription properties
+    const subscription = {
+      ...baseSubscription,
+      cancelAtPeriodEnd: this.#cancelAtPeriodEnd,
+      ...(subscriptionStatus && { status: subscriptionStatus }),
+    };
+
+    // If subscription is cancelled but no new subscription was created,
+    // return empty subscriptions array with cancelled subscription in lastSubscription
+    // This allows detail page to show cancelled subscription while plan page doesn't redirect
+    if (isCancelled && !hasNewSubscription) {
+      return {
+        statusCode: 200,
+        json: {
+          customerId: 'test_customer_id',
+          subscriptions: [], // Empty so plan page doesn't redirect
+          trialedProducts: ['shield'],
+          lastSubscription: subscription, // Include cancelled subscription here
+        },
+      };
+    }
+
+    // Normal flow: return subscription in subscriptions array
+    return {
+      statusCode: 200,
+      json: {
+        customerId: 'test_customer_id',
+        subscriptions: [subscription],
+        trialedProducts: ['shield'],
+      },
+    };
   }
 
   async #handleGetSubscriptions(
@@ -584,92 +756,23 @@ export class ShieldMockttpService {
     overrides?: {
       isActiveUser?: boolean;
       defaultPaymentMethod?: 'card' | 'crypto';
+      isSubscriptionCancelled?: boolean;
     },
   ) {
     // GET subscriptions - returns data only if subscription was requested
     // Using .always() to ensure this overrides global mocks
+    const subscriptionsCallback = () =>
+      this.#buildSubscriptionResponse(overrides);
+
+    // Mock PROD URL
     await server
       .forGet(SUBSCRIPTION_API.SUBSCRIPTIONS)
       .always()
-      .thenCallback(() => {
-        const hasSubscription =
-          this.#hasSubscribedToShield ||
-          this.#hasSubscribedToShieldCrypto ||
-          overrides?.isActiveUser;
-
-        if (!hasSubscription) {
-          return {
-            statusCode: 200,
-            json: {
-              subscriptions: [],
-              trialedProducts: [],
-            },
-          };
-        }
-
-        // Return crypto subscription if crypto was subscribed, or if defaultPaymentMethod is 'crypto'
-        const shouldReturnCrypto =
-          this.#hasSubscribedToShieldCrypto ||
-          (overrides?.isActiveUser &&
-            !this.#hasSubscribedToShield &&
-            overrides?.defaultPaymentMethod === 'crypto');
-
-        if (shouldReturnCrypto) {
-          const baseCryptoSubscription =
-            this.#selectedInterval === 'month'
-              ? BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY
-              : BASE_SHIELD_SUBSCRIPTION_CRYPTO;
-
-          // Create subscription with current payment token
-          const cryptoSubscription = {
-            ...baseCryptoSubscription,
-            paymentMethod: {
-              type: 'crypto',
-              crypto: {
-                chainId: '0x1',
-                tokenAddress:
-                  this.#currentPaymentTokenSymbol === 'USDT'
-                    ? '0xdac17f958d2ee523a2206206994597c13d831ec7'
-                    : '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                tokenSymbol: this.#currentPaymentTokenSymbol,
-                payerAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-              },
-            },
-          };
-
-          return {
-            statusCode: 200,
-            json: {
-              customerId: 'test_customer_id',
-              subscriptions: [
-                {
-                  ...cryptoSubscription,
-                  cancelAtPeriodEnd: this.#cancelAtPeriodEnd,
-                },
-              ],
-              trialedProducts: ['shield'],
-            },
-          };
-        }
-
-        return {
-          statusCode: 200,
-          json: {
-            customerId: 'test_customer_id',
-            subscriptions: [
-              {
-                ...BASE_SHIELD_SUBSCRIPTION_CARD,
-                cancelAtPeriodEnd: this.#cancelAtPeriodEnd,
-              },
-            ],
-            trialedProducts: ['shield'],
-          },
-        };
-      });
+      .thenCallback(subscriptionsCallback);
   }
 
   async #handleCheckoutSession(server: Mockttp) {
-    await server.forGet(MOCK_CHECKOUT_SESSION_URL).thenCallback(() => ({
+    await server.forGet(SUBSCRIPTION_API.CHECKOUT_SESSION).thenCallback(() => ({
       statusCode: 302,
       headers: { Location: 'https://mock-redirect-url.com' },
     }));
@@ -682,17 +785,20 @@ export class ShieldMockttpService {
     },
   ) {
     const subscriptionId = overrides?.subscriptionId || 'test_subscription_id';
+    const cancelCallback = () => {
+      this.#cancelAtPeriodEnd = true;
+      return {
+        statusCode: 200,
+        json: { ...BASE_SHIELD_SUBSCRIPTION_CARD, cancelAtPeriodEnd: true },
+      };
+    };
+
+    // Mock PROD URL
     await server
       .forPost(
         `${BASE_SUBSCRIPTION_API_URL}/subscriptions/${subscriptionId}/cancel`,
       )
-      .thenCallback(() => {
-        this.#cancelAtPeriodEnd = true;
-        return {
-          statusCode: 200,
-          json: { ...BASE_SHIELD_SUBSCRIPTION_CARD, cancelAtPeriodEnd: true },
-        };
-      });
+      .thenCallback(cancelCallback);
   }
 
   async #handleRenewSubscription(
@@ -702,23 +808,56 @@ export class ShieldMockttpService {
     },
   ) {
     const subscriptionId = overrides?.subscriptionId || 'test_subscription_id';
+    const renewCallback = () => {
+      this.#cancelAtPeriodEnd = false;
+      return {
+        statusCode: 200,
+        json: { ...BASE_SHIELD_SUBSCRIPTION_CARD, cancelAtPeriodEnd: false },
+      };
+    };
+
+    // Mock PROD URL
     await server
       .forPost(
         `${BASE_SUBSCRIPTION_API_URL}/subscriptions/${subscriptionId}/uncancel`,
       )
-      .thenCallback(() => {
-        this.#cancelAtPeriodEnd = false;
-        return {
-          statusCode: 200,
-          json: { ...BASE_SHIELD_SUBSCRIPTION_CARD, cancelAtPeriodEnd: false },
-        };
-      });
+      .thenCallback(renewCallback);
   }
 
   async #handleUpdateCryptoPaymentMethod(server: Mockttp) {
     // Mock the PATCH endpoint for updating crypto payment method
     // Endpoint: /subscriptions/:subscriptionId/payment-method/crypto
     // Use regex to match any subscription ID
+    const updatePaymentMethodCallback = async (request: {
+      body: { getJson: () => Promise<unknown> };
+    }) => {
+      const body = (await request.body.getJson()) as {
+        tokenSymbol?: string;
+        chainId?: string;
+        payerAddress?: string;
+        rawTransaction?: string;
+        recurringInterval?: string;
+        billingCycles?: number;
+      };
+
+      // Update payment token symbol based on the request
+      if (body?.tokenSymbol === 'USDT' || body?.tokenSymbol === 'USDC') {
+        this.#currentPaymentTokenSymbol = body.tokenSymbol;
+      }
+
+      // Update interval if provided
+      if (body?.recurringInterval) {
+        this.#selectedInterval =
+          body.recurringInterval === 'month' ? 'month' : 'year';
+      }
+
+      return {
+        statusCode: 200,
+        json: { success: true },
+      };
+    };
+
+    // Mock PROD URL - use regex to match any subscription ID
     const escapedBaseUrl = BASE_SUBSCRIPTION_API_URL.replace(
       /[.*+?^${}()|[\]\\]/gu,
       '\\$&',
@@ -727,36 +866,10 @@ export class ShieldMockttpService {
       `^${escapedBaseUrl}/subscriptions/[^/]+/payment-method/crypto$`,
       'u',
     );
-
     await server
       .forPatch(updatePaymentMethodRegex)
       .always()
-      .thenCallback(async (request) => {
-        const body = (await request.body.getJson()) as {
-          tokenSymbol?: string;
-          chainId?: string;
-          payerAddress?: string;
-          rawTransaction?: string;
-          recurringInterval?: string;
-          billingCycles?: number;
-        };
-
-        // Update payment token symbol based on the request
-        if (body?.tokenSymbol === 'USDT' || body?.tokenSymbol === 'USDC') {
-          this.#currentPaymentTokenSymbol = body.tokenSymbol;
-        }
-
-        // Update interval if provided
-        if (body?.recurringInterval) {
-          this.#selectedInterval =
-            body.recurringInterval === 'month' ? 'month' : 'year';
-        }
-
-        return {
-          statusCode: 200,
-          json: { success: true },
-        };
-      });
+      .thenCallback(updatePaymentMethodCallback);
   }
 
   async #handleGetClaimsConfigurations(server: Mockttp) {

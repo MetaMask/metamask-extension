@@ -14,7 +14,7 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   formatGatorAmountLabel,
@@ -27,9 +27,7 @@ import { useDisplayName } from '../../../hooks/snaps/useDisplayName';
 import { useGatorPermissionTokenInfo } from '../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { PermissionItemProps } from './types';
 
-export const PermissionItem: React.FC<PermissionItemProps> = ({
-  permission,
-}) => {
+export const PermissionItem = ({ permission }: PermissionItemProps) => {
   const networkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
   );
@@ -56,7 +54,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
       amount: string,
       tokenName: string,
       frequency: string,
-      tokenDecimals: number,
+      tokenDecimals?: number,
     ) =>
       formatGatorAmountLabel({
         amount,
@@ -68,7 +66,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     [locale],
   );
 
-  const signerAddress = permission.permission.permissionResponse.address;
+  const signerAddress = permission.permission.permissionResponse.from;
 
   // Always call useDisplayName hook (hooks must be called unconditionally)
   const displayNameResult = useDisplayName({
@@ -101,8 +99,8 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
 
   // Only memoize the formatted description since it depends on multiple values
   const formattedDescription = useMemo(() => {
-    // For erc20-token-revocation, only show account info (no amount/frequency data)
-    if (permission.permissionType === 'erc20-token-revocation') {
+    // For token-approval-revocation, only show account info (no amount/frequency data)
+    if (permission.permissionType === 'token-approval-revocation') {
       if (signerAddress) {
         return accountName || shortenAddress(signerAddress);
       }

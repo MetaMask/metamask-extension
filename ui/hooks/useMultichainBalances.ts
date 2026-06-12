@@ -9,11 +9,8 @@ import { SolScope, BtcScope, TrxScope } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
-import {
-  SLIP44_ASSET_NAMESPACE,
-  TRON_RESOURCE_SYMBOLS_SET,
-  type TronResourceSymbol,
-} from '../../shared/constants/multichain/assets';
+import { SLIP44_ASSET_NAMESPACE } from '../../shared/constants/multichain/assets';
+import { isTronSpecialAsset } from '../../shared/lib/asset-utils';
 import {
   getAccountAssets,
   getAssetsMetadata,
@@ -153,16 +150,17 @@ export const useMultichainBalances = (
     tronAccount?.type,
   );
 
+  // Filter out Tron special assets (resources, staking state, etc.) once
+  const filteredTronBalances = useMemo(
+    () =>
+      tronBalancesWithFiat.filter(
+        (token) => !isTronSpecialAsset(token.assetId),
+      ),
+    [tronBalancesWithFiat],
+  );
+
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
-    // Filter out Tron energy/bandwidth resources before combining
-    const filteredTronBalances = tronBalancesWithFiat.filter(
-      (token) =>
-        !TRON_RESOURCE_SYMBOLS_SET.has(
-          token.symbol.toLowerCase() as TronResourceSymbol,
-        ),
-    );
-
     return [
       ...evmBalancesWithFiatByChainId,
       ...solanaBalancesWithFiat,
@@ -178,19 +176,11 @@ export const useMultichainBalances = (
     evmBalancesWithFiatByChainId,
     solanaBalancesWithFiat,
     bitcoinBalancesWithFiat,
-    tronBalancesWithFiat,
+    filteredTronBalances,
   ]);
 
   // return total fiat balances by chainId/caipChainId
   const balanceByChainId = useMemo(() => {
-    // Filter out Tron energy/bandwidth resources
-    const filteredTronBalances = tronBalancesWithFiat.filter(
-      (token) =>
-        !TRON_RESOURCE_SYMBOLS_SET.has(
-          token.symbol.toLowerCase() as TronResourceSymbol,
-        ),
-    );
-
     return [
       ...evmBalancesWithFiatByChainId,
       ...solanaBalancesWithFiat,
@@ -208,7 +198,7 @@ export const useMultichainBalances = (
     evmBalancesWithFiatByChainId,
     solanaBalancesWithFiat,
     bitcoinBalancesWithFiat,
-    tronBalancesWithFiat,
+    filteredTronBalances,
   ]);
 
   return { assetsWithBalance, balanceByChainId };

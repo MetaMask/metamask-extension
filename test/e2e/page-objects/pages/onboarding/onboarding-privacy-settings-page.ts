@@ -16,15 +16,16 @@ class OnboardingPrivacySettingsPage {
 
   // General settings
   private readonly basicFunctionalityCheckbox =
-    '[id="basic-configuration-checkbox"]';
+    '[data-testid="basic-configuration-checkbox"]';
 
   private readonly basicFunctionalityToggle =
     '[data-testid="basic-functionality-toggle"] .toggle-button';
 
-  private readonly basicFunctionalityTurnOffButton = {
-    text: 'Turn off',
-    tag: 'button',
-  };
+  private readonly basicFunctionalityToggleOffState =
+    '[data-testid="basic-functionality-toggle"] .toggle-button.toggle-button--off';
+
+  private readonly basicFunctionalityTurnOffButton =
+    '[data-testid="basic-configuration-modal-toggle-button"]';
 
   private readonly basicFunctionalityTurnOffMessage = {
     text: 'Turn off basic functionality',
@@ -39,19 +40,9 @@ class OnboardingPrivacySettingsPage {
     tag: 'p',
   };
 
-  private readonly addCustomNetworkFormMessage = {
-    text: 'Add a custom network',
-    tag: 'h4',
-  };
-
   private readonly addRpcUrlButton = {
     text: 'Add RPC URL',
     tag: 'button',
-  };
-
-  private readonly addRpcUrlDialogMessage = {
-    text: 'Add RPC URL',
-    tag: 'h4',
   };
 
   private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
@@ -120,14 +111,18 @@ class OnboardingPrivacySettingsPage {
     await this.navigateToGeneralSettings();
     console.log('Adding custom network');
     await this.driver.clickElement(this.addCustomNetworkButton);
-    await this.driver.waitForSelector(this.addCustomNetworkFormMessage);
+    await this.driver.waitForMultipleSelectors([
+      this.networkNameInput,
+      this.chainIdInput,
+      this.addRpcUrlDropDown,
+    ]);
     await this.driver.fill(this.networkNameInput, networkName);
     await this.driver.fill(this.chainIdInput, chainId.toString());
     await this.driver.fill(this.currencySymbolInput, currencySymbol);
     // Add rpc url
     await this.driver.clickElement(this.addRpcUrlDropDown);
     await this.driver.clickElement(this.addRpcUrlButton);
-    await this.driver.waitForSelector(this.addRpcUrlDialogMessage);
+    await this.driver.waitForSelector(this.rpcUrlInput);
     await this.driver.fill(this.rpcUrlInput, networkUrl);
     await this.driver.clickElement(this.confirmAddRpcUrlButton);
     await this.driver.clickElementAndWaitToDisappear(
@@ -192,6 +187,9 @@ class OnboardingPrivacySettingsPage {
         (toggle) => toggle.click(),
       ),
     );
+    console.log('Verify all asset privacy toggles are off');
+    await this.driver.assertElementNotPresent(this.assetsPrivacyToggle);
+
     await this.navigateBackToSettingsPage();
   }
 
@@ -205,6 +203,10 @@ class OnboardingPrivacySettingsPage {
     await this.driver.waitForSelector(this.basicFunctionalityTurnOffMessage);
     await this.driver.clickElement(this.basicFunctionalityCheckbox);
     await this.driver.clickElement(this.basicFunctionalityTurnOffButton);
+
+    console.log('Verify basic functionality toggle is off');
+    await this.driver.waitForSelector(this.basicFunctionalityToggleOffState);
+
     await this.navigateBackToSettingsPage();
   }
 }

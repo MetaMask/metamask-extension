@@ -12,7 +12,7 @@ export type InternalAccountWithBalance = InternalAccount & {
   balance: string;
 };
 
-export type InternalAccountWithPinnedHiddenActiveLastSelected =
+type InternalAccountWithPinnedHiddenActiveLastSelected =
   InternalAccountWithBalance & {
     pinned: boolean;
     hidden: boolean;

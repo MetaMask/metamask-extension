@@ -34,6 +34,7 @@ jest.mock('react-redux', () => {
 
 const render = (props: AccountOverviewEthProps) => {
   const store = configureStore({
+    activeTab: mockState.activeTab,
     metamask: {
       ...mockState.metamask,
       remoteFeatureFlags: { assetsDefiPositionsEnabled: true }, // this to be removed when the feature flag is removed
@@ -58,8 +59,6 @@ describe('AccountOverviewEth', () => {
   });
   it('shows all tabs', () => {
     const { queryByTestId } = render({
-      defaultHomeActiveTabName: null,
-      onTabClick: jest.fn(),
       setBasicFunctionalityModalOpen: jest.fn(),
       onSupportLinkClick: jest.fn(),
     });

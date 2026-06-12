@@ -4,16 +4,17 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import { skipOnFirefox } from '../helpers';
 import { arrangeTestUtils } from './helpers';
@@ -51,15 +52,16 @@ describe('Account syncing - Multiple SRPs', function () {
     // Phase 1: Add a second account to the first SRP
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -111,6 +113,9 @@ describe('Account syncing - Multiple SRPs', function () {
         // Importing an SRP can be long, so we add a bit of extra time here
         await driver.delay(10000);
 
+        // Dismiss any lingering toast so it cannot overlay the add-account button.
+        await homePage.dismissSrpAddedToast();
+
         // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
@@ -145,15 +150,16 @@ describe('Account syncing - Multiple SRPs', function () {
     // Phase 2: Login to fresh instance, import second SRP and verify all accounts persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
 

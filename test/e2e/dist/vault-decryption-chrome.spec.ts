@@ -3,7 +3,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import level from 'level';
 import { Driver } from '../webdriver/driver';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
 import PrivacySettings from '../page-objects/pages/settings/privacy-settings';
@@ -104,7 +105,7 @@ async function getFileSize(filePath: string): Promise<number> {
 async function waitUntilFileIsWritten({
   driver,
   maxRetries = 10,
-  minFileSize = 1000000,
+  minFileSize = 30000,
 }: {
   driver: Driver;
   maxRetries?: number;
@@ -180,18 +181,18 @@ describe('Vault Decryptor Page', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-          // go to privacy settings page
+          // go to security and password settings page
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await homePage.checkBalanceEmptyStateIsDisplayed();
           await new HeaderNavbar(driver).openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToPrivacySettings();
+          await settingsPage.goToSecurityAndPasswordSettings();
 
           // fill password to reveal SRP and get the SRP
           const privacySettings = new PrivacySettings(driver);
-          await privacySettings.checkPageIsLoaded();
+          await privacySettings.checkSecurityAndPasswordPageIsLoaded();
           await privacySettings.openRevealSrpQuiz();
           await privacySettings.completeRevealSrpQuiz();
           await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
@@ -239,18 +240,18 @@ describe('Vault Decryptor Page', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // go to privacy settings page
+        // go to security and password settings page
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkBalanceEmptyStateIsDisplayed();
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         // fill password to reveal SRP and get the SRP
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
@@ -262,11 +263,7 @@ describe('Vault Decryptor Page', function () {
 
         // copy log file to a temp location, to avoid reading it while the browser is writting it
         type VaultData = {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          KeyringController: {
-            vault: string;
-          };
+          vault: string;
         };
         let newDir;
         let vaultObj;
@@ -275,8 +272,10 @@ describe('Vault Decryptor Page', function () {
           newDir = await copyDirectoryToTmp(extensionPath);
           db = new level.Level(newDir, { valueEncoding: 'json' });
           await db.open();
-          const data = (await db.get('data')) as unknown as VaultData;
-          vaultObj = JSON.parse(data.KeyringController.vault);
+          const keyringController = (await db.get(
+            'KeyringController',
+          )) as unknown as VaultData;
+          vaultObj = JSON.parse(keyringController.vault);
         } finally {
           if (db) {
             await db.close();

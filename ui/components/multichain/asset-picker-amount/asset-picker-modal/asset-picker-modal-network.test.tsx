@@ -7,11 +7,17 @@ import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
 const mockOnClose = jest.fn();
 const mockOnNetworkChange = jest.fn();
 const mockOnBack = jest.fn();
+
+const getNetworkDisplayName = (network: { chainId: string; name: string }) =>
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+    network.chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+  ] ?? network.name;
 
 describe('AssetPickerModalNetwork', () => {
   const mockStore = configureStore([thunk]);
@@ -121,10 +127,10 @@ describe('AssetPickerModalNetwork', () => {
       store,
     );
 
-    fireEvent.click(screen.getByLabelText('Close'));
+    fireEvent.click(screen.getByLabelText(messages.close.message));
     expect(mockOnClose).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByLabelText('Back'));
+    fireEvent.click(screen.getByLabelText(messages.back.message));
     expect(mockOnBack).toHaveBeenCalledTimes(1);
   });
 
@@ -134,9 +140,8 @@ describe('AssetPickerModalNetwork', () => {
       store,
     );
 
-    fireEvent.click(
-      screen.getByText(NETWORK_TO_SHORT_NETWORK_NAME_MAP[CHAIN_IDS.MAINNET]),
-    );
+    const [mainnetNetwork] = networkProps.networks;
+    fireEvent.click(screen.getByText(getNetworkDisplayName(mainnetNetwork)));
     expect(mockOnBack).toHaveBeenCalledTimes(1);
     expect(mockOnNetworkChange).toHaveBeenCalledTimes(1);
   });

@@ -1,15 +1,4 @@
-import { isProduction } from '../../../shared/modules/environment';
-
-/**
- * Decode a snap ID fron a pathname.
- *
- * @param pathname - The pathname to decode the snap ID from.
- * @returns The decoded snap ID, or `undefined` if the snap ID could not be decoded.
- */
-export const decodeSnapIdFromPathname = (pathname: string) => {
-  const snapIdURI = pathname?.match(/[^/]+$/u)?.[0];
-  return snapIdURI && decodeURIComponent(snapIdURI);
-};
+import { isProduction } from '../../../shared/lib/environment';
 
 const IGNORED_EXAMPLE_SNAPS = ['npm:@metamask/preinstalled-example-snap'];
 

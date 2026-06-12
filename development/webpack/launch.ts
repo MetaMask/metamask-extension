@@ -20,16 +20,16 @@ import type { Child, PTY, Stdio, StdName } from './types.ts';
 
 const rawArgv = process.argv.slice(2);
 
-const alias = { cache: 'c', help: 'h', watch: 'h' };
+const alias = { cache: 'c', help: 'h', watch: 'w' };
 type Args = { [x in keyof typeof alias]?: boolean };
 const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 
 if (args.cache === false || args.help === true || args.watch === true) {
   // there are no time savings to running the build in a child process if: the
   // cache is disabled, we need to output "help", or we're in watch mode.
-  require('./build.ts').build();
+  require('./build').build();
 } else {
-  fork(process, join(__dirname, 'fork.mts'), rawArgv);
+  fork(process, join(__dirname, 'fork'), rawArgv);
 }
 
 /**

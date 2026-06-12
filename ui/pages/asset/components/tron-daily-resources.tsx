@@ -2,20 +2,21 @@ import React from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   Text,
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
   IconColor,
-  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTronResources, TronResource } from '../hooks/useTronResources';
@@ -23,6 +24,7 @@ import { useTronResources, TronResource } from '../hooks/useTronResources';
 type TronDailyResourcesProps = {
   account: InternalAccount;
   chainId: string;
+  t: ReturnType<typeof useI18nContext>;
 };
 
 type ResourceCircleProps = {
@@ -80,10 +82,10 @@ const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
       </svg>
       {/* Icon in the center */}
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        className="flex"
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundAlternative}
         style={{
           position: 'absolute',
           top: '50%',
@@ -123,24 +125,20 @@ const ResourceRow = ({
 }: ResourceRowProps) => {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+      className="flex"
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       marginTop={3}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={4}
       >
         <ResourceCircle resource={resource} iconName={iconName} />
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={1}
-        >
+        <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={1}>
           <Text
             variant={TextVariant.bodyLgMedium}
             color={TextColor.textDefault}
@@ -152,7 +150,7 @@ const ResourceRow = ({
           </Text>
         </Box>
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+      <Box className="flex" flexDirection={BoxFlexDirection.Row}>
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
           {currentValue}
         </Text>
@@ -171,12 +169,13 @@ const ResourceRow = ({
  * @param options0
  * @param options0.account
  * @param options0.chainId
+ * @param options0.t
  */
 export const TronDailyResources = ({
   account,
   chainId,
+  t,
 }: TronDailyResourcesProps) => {
-  const t = useI18nContext();
   const { energy, bandwidth } = useTronResources(account, chainId);
 
   // Constants for resource calculations
@@ -198,16 +197,16 @@ export const TronDailyResources = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={1}
       paddingBottom={3}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        className="flex"
+        flexDirection={BoxFlexDirection.Column}
         gap={2}
         marginBottom={3}
       >

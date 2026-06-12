@@ -58,26 +58,29 @@ export const MULTICHAIN_NETWORK_TO_ASSET_TYPES: Record<
 } as const;
 
 /**
- * Tron resource types that should be filtered out from asset selectors.
- * These are virtual resources used for Tron network operations, not actual tokens.
+ * CAIP asset type portions (namespace:reference) for Tron special assets
+ * that should be filtered out from user-facing asset selectors.
+ * These are virtual resources and staking state assets passed from the Tron Snap
+ * to the extension for informational purposes, not actual tradeable tokens.
  */
-export const TRON_RESOURCE = {
-  ENERGY: 'energy',
-  BANDWIDTH: 'bandwidth',
-  MAX_ENERGY: 'max-energy',
-  MAX_BANDWIDTH: 'max-bandwidth',
-  STRX_ENERGY: 'strx-energy',
-  STRX_BANDWIDTH: 'strx-bandwidth',
+export const TRON_SPECIAL_ASSET_CAIP_TYPES = {
+  ENERGY: 'slip44:energy',
+  BANDWIDTH: 'slip44:bandwidth',
+  MAXIMUM_ENERGY: 'slip44:maximum-energy',
+  MAXIMUM_BANDWIDTH: 'slip44:maximum-bandwidth',
+  STAKED_FOR_ENERGY: 'slip44:195-staked-for-energy',
+  STAKED_FOR_BANDWIDTH: 'slip44:195-staked-for-bandwidth',
+  READY_FOR_WITHDRAWAL: 'slip44:195-ready-for-withdrawal',
+  STAKING_REWARDS: 'slip44:195-staking-rewards',
+  IN_LOCK_PERIOD: 'slip44:195-in-lock-period',
 } as const;
 
-export type TronResourceSymbol =
-  (typeof TRON_RESOURCE)[keyof typeof TRON_RESOURCE];
+export type TronSpecialAssetCaipType =
+  (typeof TRON_SPECIAL_ASSET_CAIP_TYPES)[keyof typeof TRON_SPECIAL_ASSET_CAIP_TYPES];
 
-export const TRON_RESOURCE_SYMBOLS = Object.values(
-  TRON_RESOURCE,
-) as readonly TronResourceSymbol[];
-
-export const TRON_RESOURCE_SYMBOLS_SET: ReadonlySet<TronResourceSymbol> =
-  new Set(TRON_RESOURCE_SYMBOLS);
+export const TRON_SPECIAL_ASSET_CAIP_TYPES_SET: ReadonlySet<TronSpecialAssetCaipType> =
+  new Set(
+    Object.values(TRON_SPECIAL_ASSET_CAIP_TYPES) as TronSpecialAssetCaipType[],
+  );
 
 export const SLIP44_ASSET_NAMESPACE = 'slip44';

@@ -1,8 +1,13 @@
 import assert from 'node:assert';
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
+import {
+  type TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { PAGES } from '../../webdriver/driver';
@@ -28,31 +33,35 @@ async function mockSegment(mockServer: Mockttp) {
 describe('Port Stream Chunking', function () {
   it('can load the wallet UI with a huge background state (~128MB)', async function () {
     // add MOCK_TRANSACTION_BY_TYPE.HUGE to an array a bunch of times
-    const hugeTx = {
-      id: 4243712234858512,
+    const hugeTx: TransactionMeta & {
+      loadingDefaults: boolean;
+      testingNoise: string;
+    } = {
+      id: '4243712234858512',
       time: 1589314601567,
-      status: 'confirmed',
-      chainId: '0x5',
+      status: TransactionStatus.confirmed,
+      chainId: '0x5' as const,
+      networkClientId: 'goerli',
       loadingDefaults: false,
       txParams: {
-        from: '0xabca64466f257793eaa52fcfff5066894b76a149',
-        to: '0xefg5bc4e8f1f969934d773fa67da095d2e491a97',
+        from: '0xabca64466f257793eaa52fcfff5066894b76a149' as `0x${string}`,
+        to: '0xefg5bc4e8f1f969934d773fa67da095d2e491a97' as `0x${string}`,
         nonce: '0xc',
         value: '0xde0b6b3a7640000',
         gas: '0x5208',
         gasPrice: '0x2540be400',
-        data: `0x${'11'.repeat(10 ** 6)}`, // big
+        data: `0x${'11'.repeat(10 ** 6)}` as `0x${string}`,
       },
       origin: 'metamask',
-      type: 'simpleSend',
+      type: TransactionType.simpleSend,
       testingNoise: '😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀',
     };
     const largeTransactions = Array.from({ length: 40 }, () => hugeTx);
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withTransactions(largeTransactions)
+        fixtures: new FixtureBuilderV2()
+          .withTransactionController({ transactions: largeTransactions })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,

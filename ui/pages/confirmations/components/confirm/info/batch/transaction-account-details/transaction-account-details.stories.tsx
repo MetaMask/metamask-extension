@@ -14,9 +14,7 @@ const TRANSACTION_MOCK = genUnapprovedContractInteractionConfirmation({
 
 const STATE_MOCK = getMockConfirmStateForTransaction(TRANSACTION_MOCK, {
   metamask: {
-    preferences: {
-      petnamesEnabled: true,
-    },
+    preferences: {},
   },
 });
 

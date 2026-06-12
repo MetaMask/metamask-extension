@@ -131,9 +131,6 @@ describe('useTokenListPolling', () => {
         useExternalServices: true,
         useTokenDetection: false,
         useTransactionSimulations: false,
-        preferences: {
-          petnamesEnabled: false,
-        },
         networkConfigurationsByChainId: {
           '0x1': {},
           '0x89': {},

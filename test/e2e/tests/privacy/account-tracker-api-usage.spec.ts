@@ -1,12 +1,15 @@
 import { strict as assert } from 'assert';
 import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
@@ -114,12 +117,10 @@ describe('Account Tracker API Usage', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
             },
           })
           .build(),
@@ -127,7 +128,6 @@ describe('Account Tracker API Usage', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await driver.delay(veryLargeDelayMs);
         let allInfuraJsonRpcRequests =
           await getAllInfuraJsonRpcRequests(mockedEndpoint);
         let rpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
@@ -142,7 +142,7 @@ describe('Account Tracker API Usage', function () {
           )} request has been made to infura before opening the UI`,
         );
 
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);
@@ -170,36 +170,57 @@ describe('Account Tracker API Usage', function () {
       'eth_call',
       'eth_getBalance',
     ];
+    const DELAY_UNTIL_NEXT_POLL = 20000;
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, {
+          validateBalance: false,
+          waitForNonEvmAccounts: false,
+        });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
-        await driver.delay(veryLargeDelayMs);
-        const initialInfuraJsonRpcRequests =
-          await getAllInfuraJsonRpcRequests(mockedEndpoint);
+
+        await driver.waitUntil(
+          async () => {
+            const accountTrackerRequests = getSpecifiedJsonRpcRequests(
+              await getAllInfuraJsonRpcRequests(mockedEndpoint),
+              RPC_METHODS_TO_TEST,
+            );
+
+            return accountTrackerRequests.length > 0;
+          },
+          { timeout: 30000, interval: 500 },
+        );
+
+        // Wait for at least one account tracker polling cycle while the UI is
+        // still open so in-flight requests finish before the UI is closed.
+        await driver.delay(DELAY_UNTIL_NEXT_POLL);
+
+        const initialRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
+          await getAllInfuraJsonRpcRequests(mockedEndpoint),
+          RPC_METHODS_TO_TEST,
+        );
 
         await driver.openNewURL('about:blank');
         // The delay is intentionally 20000, to ensure we cover at least 1 polling
         // loop of time for the block tracker.
-        await driver.delay(20000);
-
-        const currentInfuraJsonRpcRequests =
-          await getAllInfuraJsonRpcRequests(mockedEndpoint);
-
-        const initialRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
-          initialInfuraJsonRpcRequests,
-          RPC_METHODS_TO_TEST,
-        );
+        await driver.delay(DELAY_UNTIL_NEXT_POLL);
 
         const currentRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
-          currentInfuraJsonRpcRequests,
+          await getAllInfuraJsonRpcRequests(mockedEndpoint),
           RPC_METHODS_TO_TEST,
         );
 

@@ -1,17 +1,17 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { WINDOW_TITLES } from '../../constants';
-import PersonalSignConfirmation from '../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import PersonalSignConfirmation from '../../page-objects/pages/confirmations/personal-sign-confirmation';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
 
 function createShieldFixture() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -32,9 +32,8 @@ function createShieldFixture() {
         },
       },
     })
-    .withPermissionControllerConnectedToTestDapp()
-    .withAppStateController({
-      showShieldEntryModalOnce: null,
+    .withPermissionControllerConnectedToTestDapp({
+      chainIds: [1],
     });
 }
 
@@ -55,7 +54,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -90,7 +89,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -125,7 +124,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -163,7 +162,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -199,7 +198,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -236,7 +235,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();

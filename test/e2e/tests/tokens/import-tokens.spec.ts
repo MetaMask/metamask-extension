@@ -2,43 +2,223 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import {
+  mockFiatExchangeRates,
+  mockPriceApiSupportedNetworks,
+  mockSupportedVsCurrencies,
+} from '../btc/mocks/price-api';
+import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
+import NetworkManager, {
+  NetworkId,
+} from '../../page-objects/pages/network-manager';
+import { getMockAssetsPrice } from './utils/mocks';
+
+const ETH_CONVERSION_RATE_USD = 1700;
+const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+const POLYGON_USDT_ADDRESS = '0xc2132d05d31c914a87c6611c10748aeb04b58e8f';
+
+const SPOT_PRICES_V3_URL =
+  /^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u;
+/**
+ * Spot payload for native ETH when unified assets are on — USD price is normalized
+ * against conversionRate in selectors (`shared/lib/selectors/assets-migration.ts`).
+ */
+const NATIVE_ETH_SPOT_ENTRY_USD = {
+  id: 'ethereum',
+  price: ETH_CONVERSION_RATE_USD,
+  marketCap: 112500000,
+  totalVolume: 4500000,
+  dilutedMarketCap: 120000000,
+  pricePercentChange1d: 0,
+};
+
+/**
+ * Mocks the Token Search API (`/tokens/search`) for the tokens used in the
+ * import-from-search tests (CHAIN, CHANGE, CHAI).
+ * @param mockServer
+ */
+async function mockTokenSearch(mockServer: Mockttp) {
+  const searchableTokens = [
+    {
+      assetId: 'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
+      symbol: 'CHAIN',
+      name: 'Chain Games',
+      decimals: 18,
+    },
+    {
+      assetId: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
+      symbol: 'CHANGE',
+      name: 'ChangeX',
+      decimals: 18,
+    },
+    {
+      assetId: 'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215',
+      symbol: 'CHAI',
+      name: 'Chai',
+      decimals: 18,
+    },
+  ];
+
+  return mockServer
+    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const query = (url.searchParams.get('query') ?? '').trim().toLowerCase();
+
+      // Use exact-symbol or exact-name match to ensure each query returns
+      // exactly 1 result (needed by waitUntilTokenSearchMatch(1)).
+      const data = query
+        ? searchableTokens.filter(
+            (t) =>
+              t.symbol.toLowerCase() === query ||
+              t.name.toLowerCase() === query,
+          )
+        : [];
+
+      return {
+        statusCode: 200,
+        json: {
+          data,
+          count: data.length,
+          totalCount: data.length,
+          pageInfo: { hasNextPage: false, endCursor: '' },
+        },
+      };
+    });
+}
+
+/**
+ * Shared HTTP mocks for all import-token tests (both unified and legacy price paths).
+ * Token metadata (`tokens.api` v3 assets + token list + bridge) is required for both
+ * branches so paste-by-address can resolve symbol/decimals via `fetchAssetMetadata`.
+ *
+ * @param mockServer - Mockttp instance.
+ */
+async function importTokensTestMock(mockServer: Mockttp) {
+  const sharedMocks = [
+    // Price API
+    await mockFiatExchangeRates(mockServer),
+    await mockSupportedVsCurrencies(mockServer),
+    await mockPriceApiSupportedNetworks(mockServer),
+    // Tokens API – supported networks
+    await mockTokensV2SupportedNetworks(mockServer),
+    // Token Search API – /tokens/search
+    await mockTokenSearch(mockServer),
+    // Tokens API – /v3/assets
+    await mockAssetsV3(mockServer),
+    ...(await mockTokens(mockServer)),
+    ...(await mockPolygonBridgeApi(mockServer)),
+  ];
+
+  return [
+    await mockPriceFetch(mockServer),
+    ...sharedMocks,
+    await mockSpotPricesV3(mockServer),
+  ];
+}
 
 async function mockPriceFetch(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-      .withQuery({
-        assetIds:
-          'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215,eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca,eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3',
-        vsCurrency: 'ETH',
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
-              eth: 0.0002,
-            },
-            'eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca': {
-              eth: 0.0003,
-            },
-            'eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
-              eth: 0.0001,
-            },
+    await mockServer.forGet(SPOT_PRICES_V3_URL).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'eip155:1/slip44:60': {
+            price: ETH_CONVERSION_RATE_USD,
           },
-        };
-      }),
+          'eip155:59144/slip44:60': {
+            price: ETH_CONVERSION_RATE_USD,
+          },
+          'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+            price: 0.0002 * ETH_CONVERSION_RATE_USD,
+          },
+          'eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca': {
+            price: 0.0003 * ETH_CONVERSION_RATE_USD,
+          },
+          'eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
+            price: 0.0001 * ETH_CONVERSION_RATE_USD,
+          },
+        },
+      };
+    }),
   ];
+}
+
+async function mockSpotPricesV3(mockServer: Mockttp) {
+  const nativeAssets: Record<string, string> = {
+    'eip155:1/slip44:60': 'ethereum',
+    'eip155:59144/slip44:60': 'ethereum',
+    'eip155:8453/slip44:60': 'ethereum',
+    'eip155:137/slip44:60': 'pol',
+  };
+
+  const erc20Assets: Record<string, { symbol: string; usdPrice: number }> = {
+    'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4': {
+      symbol: 'chain',
+      usdPrice: 0.01,
+    },
+    'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754': {
+      symbol: 'changex',
+      usdPrice: 0.05,
+    },
+    'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+      symbol: 'chai',
+      usdPrice: 0.02,
+    },
+    [`eip155:1/erc20:${MUSD_ADDRESS.toLowerCase()}`]: {
+      symbol: 'musd',
+      usdPrice: 1.0,
+    },
+    [`eip155:59144/erc20:${MUSD_ADDRESS.toLowerCase()}`]: {
+      symbol: 'musd',
+      usdPrice: 1.0,
+    },
+    [`eip155:137/erc20:${POLYGON_USDT_ADDRESS}`]: {
+      symbol: 'usdt',
+      usdPrice: 1.0,
+    },
+  };
+
+  return await mockServer.forGet(SPOT_PRICES_V3_URL).thenCallback((request) => {
+    const url = new URL(request.url);
+    const assetIds = (url.searchParams.get('assetIds') ?? '').toLowerCase();
+
+    const json: Record<string, Record<string, unknown>> = {};
+
+    for (const [id, name] of Object.entries(nativeAssets)) {
+      if (assetIds.includes(id)) {
+        json[id] = {
+          ...NATIVE_ETH_SPOT_ENTRY_USD,
+          id: name,
+        };
+      }
+    }
+
+    for (const [id, { symbol }] of Object.entries(erc20Assets)) {
+      if (assetIds.includes(id)) {
+        json[id] = {
+          id: symbol,
+          price: 0,
+          marketCap: 0,
+          pricePercentChange1d: 0,
+        };
+      }
+    }
+
+    return { statusCode: 200, json };
+  });
 }
 
 async function mockTokens(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -110,7 +290,7 @@ async function mockTokens(mockServer: Mockttp) {
         };
       }),
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/137')
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/137(\?.*)?$/u)
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -167,19 +347,100 @@ async function mockPolygonBridgeApi(mockServer: Mockttp) {
   ];
 }
 
-async function mockTokensAndPrices(mockServer: Mockttp) {
-  return [
-    await mockPriceFetch(mockServer),
-    ...(await mockTokens(mockServer)),
-    ...(await mockPolygonBridgeApi(mockServer)),
-  ];
+async function mockAssetsV3(mockServer: Mockttp) {
+  return mockServer
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams
+        .getAll('assetIds')
+        .join(',')
+        .toLowerCase();
+
+      const assetMap: Record<
+        string,
+        { assetId: string; name: string; symbol: string; decimals: number }
+      > = {
+        'eip155:1': {
+          assetId: 'eip155:1/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        'eip155:59144': {
+          assetId: 'eip155:59144/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        'eip155:8453': {
+          assetId: 'eip155:8453/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        'eip155:137': {
+          assetId: 'eip155:137/slip44:60',
+          name: 'POL',
+          symbol: 'POL',
+          decimals: 18,
+        },
+        '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+          assetId: 'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215',
+          name: 'Chai',
+          symbol: 'CHAI',
+          decimals: 18,
+        },
+        '0x7051faed0775f664a0286af4f75ef5ed74e02754': {
+          assetId: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
+          name: 'Changex',
+          symbol: 'CHANGE',
+          decimals: 18,
+        },
+        '0xc4c2614e694cf534d407ee49f8e44d125e4681c4': {
+          assetId: 'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
+          name: 'Chain Games',
+          symbol: 'CHAIN',
+          decimals: 18,
+        },
+        '0xc2132d05d31c914a87c6611c10748aeb04b58e8f': {
+          assetId:
+            'eip155:137/erc20:0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+          name: 'Polygon Bridged USDT (Polygon)',
+          symbol: 'USDT',
+          decimals: 6,
+        },
+        // mUSD appears on both ETH and Linea with the same address, so use
+        // the full CAIP ID as the lookup key to distinguish chains.
+        [`eip155:1/erc20:${MUSD_ADDRESS.toLowerCase()}`]: {
+          assetId: `eip155:1/erc20:${MUSD_ADDRESS}`,
+          name: 'MUSD',
+          symbol: 'MUSD',
+          decimals: 6,
+        },
+        [`eip155:59144/erc20:${MUSD_ADDRESS.toLowerCase()}`]: {
+          assetId: `eip155:59144/erc20:${MUSD_ADDRESS}`,
+          name: 'MUSD',
+          symbol: 'MUSD',
+          decimals: 6,
+        },
+      };
+
+      const results = Object.entries(assetMap)
+        .filter(([key]) => assetIds.includes(key))
+        .map(([, value]) => value);
+
+      return { statusCode: 200, json: results };
+    });
 }
+
 describe('Import flow', function () {
   it('allows importing multiple tokens from search', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
@@ -187,52 +448,114 @@ describe('Import flow', function () {
               [CHAIN_IDS.BASE]: true,
             },
           })
-          .withTokensController({
-            tokenList: [
-              {
-                name: 'Chain Games',
-                symbol: 'CHAIN',
-                address: '0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
-              },
-              {
-                address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
-                symbol: 'CHANGE',
-                name: 'ChangeX',
-              },
-              {
-                name: 'Chai',
-                symbol: 'CHAI',
-                address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
-              },
-            ],
+          .withTokenListController({
             tokensChainsCache: {
               '0x1': {
+                timestamp: Date.now(),
                 data: {
                   '0xc4c2614e694cf534d407ee49f8e44d125e4681c4': {
                     name: 'Chain Games',
                     symbol: 'CHAIN',
                     address: '0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
+                    decimals: 18,
+                    occurrences: 1,
+                    aggregators: [],
+                    iconUrl: '',
                   },
                   '0x7051faed0775f664a0286af4f75ef5ed74e02754': {
                     name: 'ChangeX',
                     symbol: 'CHANGE',
                     address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
+                    decimals: 18,
+                    occurrences: 6,
+                    aggregators: [],
+                    iconUrl: '',
                   },
                   '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
                     name: 'Chai',
                     symbol: 'CHAI',
                     address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
+                    decimals: 18,
+                    occurrences: 1,
+                    aggregators: [],
+                    iconUrl: '',
                   },
                 },
               },
             },
           })
+          .withAssetsController({
+            assetsBalance: {
+              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+                'eip155:1/slip44:60': { amount: '25' },
+                'eip155:59144/slip44:60': { amount: '25' },
+                [`eip155:1/erc20:${MUSD_ADDRESS}`]: { amount: '100' },
+                [`eip155:59144/erc20:${MUSD_ADDRESS}`]: { amount: '50' },
+              },
+            },
+            assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+            assetsInfo: {
+              'eip155:1/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:59144/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:8453/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              [`eip155:1/erc20:${MUSD_ADDRESS}`]: {
+                type: 'erc20',
+                decimals: 6,
+                symbol: 'MUSD',
+                name: 'MUSD',
+              },
+              [`eip155:59144/erc20:${MUSD_ADDRESS}`]: {
+                type: 'erc20',
+                decimals: 6,
+                symbol: 'MUSD',
+                name: 'MUSD',
+              },
+              'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4': {
+                type: 'erc20',
+                decimals: 18,
+                symbol: 'CHAIN',
+                name: 'Chain Games',
+              },
+              'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754': {
+                type: 'erc20',
+                decimals: 18,
+                symbol: 'CHANGE',
+                name: 'ChangeX',
+              },
+              'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+                type: 'erc20',
+                decimals: 18,
+                symbol: 'CHAI',
+                name: 'Chai',
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTokensAndPrices,
+        testSpecificMock: importTokensTestMock,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -245,13 +568,12 @@ describe('Import flow', function () {
 
         const tokenList = new AssetListPage(driver);
 
-        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
-        // ERC20 Tokens: Chain Games, Chai
-        await tokenList.checkTokenItemNumber(6);
-        await tokenList.checkTokenExistsInList('Ether');
+        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, mUSD
+        // ERC20 Tokens: Chain Games, Chai, ChangeX
+        await tokenList.checkTokenItemNumber(8);
+        await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('Chain Games');
-        // TODO: add back this check once we figure out why tokens name displayed when running the test locally is changex but on CI it is ChangeX
-        // await tokenList.checkTokenExistsInList('Changex');
+        await tokenList.checkTokenExistsInList('Changex');
         await tokenList.checkTokenExistsInList('Chai');
       },
     );
@@ -260,9 +582,8 @@ describe('Import flow', function () {
   it('allows importing using contract address and not current network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withNetworkControllerOnPolygon()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
@@ -271,10 +592,10 @@ describe('Import flow', function () {
               [CHAIN_IDS.BASE]: true,
             },
           })
-          .withTokensController({
-            tokenList: [],
+          .withTokenListController({
             tokensChainsCache: {
               '0x1': {
+                timestamp: Date.now(),
                 data: {
                   '0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267': {
                     name: 'Entropy',
@@ -283,11 +604,13 @@ describe('Import flow', function () {
                     decimals: 18,
                     iconUrl:
                       'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267.png',
+                    occurrences: 1,
                     symbol: 'ERP',
                   },
                 },
               },
               '0x89': {
+                timestamp: Date.now(),
                 data: {
                   '0xc2132D05D31c914a87C6611C10748AEb04B58e8F': {
                     name: 'USDT',
@@ -303,30 +626,96 @@ describe('Import flow', function () {
               },
             },
           })
+          .withAssetsController({
+            assetsBalance: {
+              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+                'eip155:1/slip44:60': { amount: '25' },
+                'eip155:59144/slip44:60': { amount: '25' },
+                [`eip155:1/erc20:${MUSD_ADDRESS}`]: { amount: '100' },
+                [`eip155:59144/erc20:${MUSD_ADDRESS}`]: { amount: '50' },
+              },
+            },
+            assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+            assetsInfo: {
+              'eip155:1/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:59144/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:8453/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:137/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'POL',
+                name: 'POL',
+              },
+              [`eip155:1/erc20:${MUSD_ADDRESS}`]: {
+                type: 'erc20',
+                decimals: 6,
+                symbol: 'MUSD',
+                name: 'MUSD',
+              },
+              [`eip155:59144/erc20:${MUSD_ADDRESS}`]: {
+                type: 'erc20',
+                decimals: 6,
+                symbol: 'MUSD',
+                name: 'MUSD',
+              },
+              [`eip155:137/erc20:${POLYGON_USDT_ADDRESS}`]: {
+                type: 'erc20',
+                decimals: 6,
+                symbol: 'USDT',
+                name: 'Polygon Bridged USDT (Polygon)',
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTokensAndPrices,
+        testSpecificMock: importTokensTestMock,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
         const assetListPage = new AssetListPage(driver);
+        const networkManagerPage = new NetworkManager(driver);
+        await networkManagerPage.openNetworkManager();
+        await networkManagerPage.selectNetworkByChainId(NetworkId.POLYGON);
 
         // the token symbol is prefilled because of the mock
         await assetListPage.importCustomTokenByChain(
           '0x89',
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+          'USDT',
         );
+
+        console.log(`Imported token ++++++++++`);
+
         const tokenList = new AssetListPage(driver);
 
-        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
+        // Native Tokens: Polygon POL
         // ERC20 Tokens: Polygon USDT
-        await tokenList.checkTokenItemNumber(5);
+        await tokenList.checkTokenItemNumber(2);
 
-        await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('USDT');
         await tokenList.checkTokenExistsInList('POL');
       },

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-
+import README from './README.mdx';
 import { BlockSize, Display } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';
 import { Modal } from './modal';
 
-import README from './README.mdx';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { Box } from '../box';
 import { Button } from '../button';
@@ -21,6 +20,7 @@ import { TextFieldSearch } from '../text-field-search';
 export default {
   title: 'Components/ComponentLibrary/Modal',
   component: Modal,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

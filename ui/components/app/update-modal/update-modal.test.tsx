@@ -1,13 +1,25 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import UpdateModal from './update-modal';
 import '@testing-library/jest-dom';
 
 const mockStore = configureStore([thunk]);
+const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 
 const initialState = {
   metamask: {
@@ -68,7 +80,9 @@ const setup = (props: any) => {
   const store = mockStore(initialState);
   return render(
     <Provider store={store}>
-      <UpdateModal {...props} />
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <UpdateModal {...props} />
+      </MetaMetricsContext.Provider>
     </Provider>,
   );
 };
@@ -96,5 +110,33 @@ describe('UpdateModal', () => {
   it('renders the modal', () => {
     setup({});
     expect(screen.getByTestId('update-modal')).toBeInTheDocument();
+  });
+
+  it('tracks ForceUpgradeUpdateNeededPromptViewed event when modal is displayed', () => {
+    setup({});
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
+      category: MetaMetricsEventCategory.App,
+    });
+  });
+
+  it('tracks ForceUpgradeSkipped event when close button is clicked', () => {
+    setup({});
+    const closeButton = screen.getByTestId('update-modal-close-button');
+    fireEvent.click(closeButton);
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.ForceUpgradeSkipped,
+      category: MetaMetricsEventCategory.App,
+    });
+  });
+
+  it('tracks ForceUpgradeClickedUpdateToLatestVersion event when update button is clicked', () => {
+    setup({});
+    const updateButton = screen.getByTestId('update-modal-submit-button');
+    fireEvent.click(updateButton);
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.ForceUpgradeClickedUpdateToLatestVersion,
+      category: MetaMetricsEventCategory.App,
+    });
   });
 });

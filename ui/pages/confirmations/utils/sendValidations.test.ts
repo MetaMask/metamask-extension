@@ -5,6 +5,7 @@ import { confusables } from 'unicode-confusables';
 
 import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
+
 import {
   findConfusablesInRecipient,
   validateBtcAddress,
@@ -118,7 +119,7 @@ describe('SendValidations', () => {
       });
     });
 
-    it('rejects ERC721 token address', async () => {
+    it('rejects ERC721 token address with allowAcknowledge', async () => {
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
         standard: 'ERC721',
       });
@@ -130,6 +131,7 @@ describe('SendValidations', () => {
         ),
       ).toEqual({
         error: 'tokenContractError',
+        allowAcknowledge: true,
       });
 
       expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
@@ -138,6 +140,22 @@ describe('SendValidations', () => {
         undefined,
         '0x1',
       );
+    });
+
+    it('rejects ERC20 token address with allowAcknowledge', async () => {
+      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+        standard: 'ERC20',
+      });
+
+      expect(
+        await validateEvmHexAddress(
+          '0x1234567890123456789012345678901234567890',
+          '0x1',
+        ),
+      ).toEqual({
+        error: 'tokenContractError',
+        allowAcknowledge: true,
+      });
     });
   });
 

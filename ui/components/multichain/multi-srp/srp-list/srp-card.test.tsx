@@ -7,6 +7,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
 import { SrpCard } from './srp-card';
@@ -52,7 +53,10 @@ const mockSecondHdKeyring = {
   },
 };
 
-const render = (shouldTriggerBackup: boolean) => {
+const render = (
+  shouldTriggerBackup: boolean,
+  { isSettingsPage = false }: { isSettingsPage?: boolean } = {},
+) => {
   const store = configureMockStore([thunk])({
     ...mockState,
     metamask: {
@@ -69,6 +73,7 @@ const render = (shouldTriggerBackup: boolean) => {
       walletId={mockWalletId}
       shouldTriggerBackup={shouldTriggerBackup}
       onActionComplete={mocks.onActionComplete}
+      isSettingsPage={isSettingsPage}
     />,
     store,
   );
@@ -77,14 +82,20 @@ const render = (shouldTriggerBackup: boolean) => {
 describe('SrpCard', () => {
   it('renders the secret recovery phrases card', () => {
     const { getByText } = render(false);
-    expect(getByText('Secret Recovery Phrase 1')).toBeInTheDocument();
+    expect(
+      getByText(messages.srpListName.message.replace('$1', '1')),
+    ).toBeInTheDocument();
   });
 
   it('shows/hides accounts when clicking show/hide text', () => {
     const { getByText } = render(false);
-    const showAccountsButton = getByText('Show 1 account');
+    const showAccountsButton = getByText(
+      messages.SrpListShowSingleAccount.message,
+    );
     fireEvent.click(showAccountsButton);
-    expect(getByText('Hide 1 account')).toBeInTheDocument();
+    expect(
+      getByText(messages.SrpListHideSingleAccount.message),
+    ).toBeInTheDocument();
   });
 
   it('calls onActionComplete when clicking a keyring', () => {
@@ -95,5 +106,13 @@ describe('SrpCard', () => {
     fireEvent.click(keyring);
 
     expect(mocks.onActionComplete).toHaveBeenCalledWith(firstKeyringId, true);
+  });
+
+  it('renders expanded account rows on settings page', () => {
+    const { getByText } = render(false, { isSettingsPage: true });
+
+    fireEvent.click(getByText(messages.SrpListShowSingleAccount.message));
+
+    expect(getByText('Mock Account 1')).toBeInTheDocument();
   });
 });

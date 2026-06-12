@@ -1,14 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, Text } from '../../../components/component-library';
-import ToggleButton from '../../../components/ui/toggle-button';
 import {
-  JustifyContent,
+  Text,
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
   TextVariant,
-  AlignItems,
-  Display,
   TextColor,
+  FontWeight,
+} from '@metamask/design-system-react';
+import {
+  TextVariant as TextVariantComponent,
+  TextColor as TextColorComponent,
 } from '../../../helpers/constants/design-system';
+import { Text as TextComponent } from '../../../components/component-library';
+import ToggleButton from '../../../components/ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type SettingProps = {
@@ -36,35 +43,48 @@ export const Setting = ({
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Start}
       marginTop={3}
       marginBottom={enableMarginBottom ? 3 : 0}
-      className="privacy-settings__setting__wrapper"
       data-testid={dataTestId}
     >
-      <div className="privacy-settings__setting">
-        <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+        marginBottom={4}
+        className="w-full"
+        gap={4}
+      >
         <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          as="div"
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
         >
-          {description}
+          {title}
         </Text>
-      </div>
-      {showToggle ? (
-        <div className="privacy-settings__setting__toggle">
-          <ToggleButton
-            value={value}
-            onToggle={(val) => setValue?.(!val)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            disabled={disabled}
-          />
-        </div>
-      ) : null}
+        {showToggle ? (
+          <Box>
+            <ToggleButton
+              value={value}
+              onToggle={(val) => setValue?.(!val)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+              disabled={disabled}
+            />
+          </Box>
+        ) : null}
+      </Box>
+      <TextComponent
+        variant={TextVariantComponent.bodySm}
+        color={TextColorComponent.textAlternative}
+        as="div"
+        className="w-full"
+      >
+        {description}
+      </TextComponent>
     </Box>
   );
 };

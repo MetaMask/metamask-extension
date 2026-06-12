@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-
-import { ModalOverlay } from './modal-overlay';
-
 import README from './README.mdx';
+import { ModalOverlay } from './modal-overlay';
 
 export default {
   title: 'Components/ComponentLibrary/ModalOverlay',
   component: ModalOverlay,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

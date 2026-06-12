@@ -16,6 +16,7 @@ type TestConfirmContextValue = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
+  goBackTo: string | undefined;
 };
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -40,6 +41,7 @@ const renderWithConfirmContext = (
     } as SignatureRequestType,
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: () => undefined,
+    goBackTo: undefined,
   },
 ) => {
   return renderWithProvider(
@@ -158,8 +160,8 @@ describe('SmartTransactionsBannerAlert', () => {
         ...mockState.metamask,
         ...mockNetworkState({
           id: 'network-configuration-id-2',
-          chainId: CHAIN_IDS.POLYGON,
-          rpcUrl: 'https://polygon-rpc.com',
+          chainId: CHAIN_IDS.OPTIMISM, // OPTIMISM is not in the allowed STX chain IDs
+          rpcUrl: 'https://optimism-rpc.com',
         }),
       },
     };
@@ -266,6 +268,7 @@ describe('SmartTransactionsBannerAlert', () => {
       } as SignatureRequestType,
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: () => undefined,
+      goBackTo: undefined,
     };
 
     renderWithConfirmContext(

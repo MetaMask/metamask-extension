@@ -94,6 +94,13 @@ jest.mock('../../../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+// useMusdGeoBlocking calls submitRequestToBackground on mount; mock it so
+// the test environment does not trigger a "Background connection not
+// initialized" warning.
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue('US'),
+}));
+
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );

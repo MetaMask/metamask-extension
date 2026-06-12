@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { MOCK_META_METRICS_ID } from '../../constants';
 
@@ -35,7 +35,7 @@ describe('Nft detection event', function () {
   it('is sent when onboarding user', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,

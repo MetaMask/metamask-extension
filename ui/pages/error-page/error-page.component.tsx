@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import browser from 'webextension-polyfill';
 
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { getParticipateInMetaMetrics } from '../../selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   BannerAlert,
-  Box,
   Icon,
   IconName,
   IconSize,
@@ -22,9 +27,7 @@ import {
 } from '../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
@@ -37,6 +40,7 @@ import { Textarea } from '../../components/component-library/textarea/textarea';
 import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
 import { ButtonSize } from '../../components/component-library/button/button.types';
 import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
+import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 
 type ErrorPageProps = {
   error: {
@@ -47,7 +51,7 @@ type ErrorPageProps = {
   };
 };
 
-const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
+const ErrorPage = ({ error }: ErrorPageProps) => {
   const t = useI18nContext();
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
@@ -93,10 +97,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
     <section className="error-page">
       <section className="error-page__inner-wrapper">
         <Box
-          className="error-page__header"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
+          className="flex error-page__header"
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
         >
           <Icon
             name={IconName.Danger}
@@ -107,6 +110,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             color={TextColor.inherit}
             variant={TextVariant.headingMd}
             marginBottom={4}
+            data-testid="error-page-title"
           >
             {t('errorPageTitle')}
           </Text>
@@ -126,14 +130,12 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
         </Text>
 
         <Box
-          borderRadius={BorderRadius.LG}
+          className="flex rounded-lg error-page__error-message-wrapper"
           marginBottom={2}
           marginTop={2}
-          backgroundColor={BackgroundColor.errorMuted}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          backgroundColor={BoxBackgroundColor.ErrorMuted}
+          flexDirection={BoxFlexDirection.Column}
           padding={2}
-          className="error-page__error-message-wrapper"
         >
           {error.message ? (
             <Text
@@ -208,7 +210,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
                 />
               </ModalBody>
               <ModalFooter>
-                <Box display={Display.Flex} gap={4}>
+                <Box className="flex" gap={4}>
                   <Button
                     variant={ButtonVariant.Secondary}
                     width={BlockSize.Half}
@@ -269,11 +271,10 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
           />
         )}
         <Box
-          width={BlockSize.Full}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
+          className="flex w-full"
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
           marginTop={4}
         >
           {isMetaMetricsEnabled && (
@@ -300,8 +301,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             variant={ButtonVariant.Secondary}
             block
             data-testid="error-page-try-again-button"
-            // TODO: should this be a safe reload via the `WriteManager`?
-            onClick={() => browser.runtime.reload()}
+            onClick={async () => {
+              await reloadExtensionFromUi();
+            }}
           >
             {t('errorPageTryAgain')}
           </Button>

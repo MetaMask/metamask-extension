@@ -8,12 +8,10 @@ import * as da from '../app/_locales/da/messages.json';
 import * as de from '../app/_locales/de/messages.json';
 import * as el from '../app/_locales/el/messages.json';
 import * as en from '../app/_locales/en/messages.json';
-import * as es from '../app/_locales/es/messages.json';
 import * as es_419 from '../app/_locales/es_419/messages.json';
 import * as et from '../app/_locales/et/messages.json';
 import * as fa from '../app/_locales/fa/messages.json';
 import * as fi from '../app/_locales/fi/messages.json';
-import * as fil from '../app/_locales/fil/messages.json';
 import * as fr from '../app/_locales/fr/messages.json';
 import * as gu from '../app/_locales/gu/messages.json';
 import * as he from '../app/_locales/he/messages.json';
@@ -66,12 +64,10 @@ export {
   de,
   el,
   en,
-  es,
   es_419,
   et,
   fa,
   fi,
-  fil,
   fr,
   gu,
   he,

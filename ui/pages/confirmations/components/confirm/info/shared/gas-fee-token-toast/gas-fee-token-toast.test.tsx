@@ -7,7 +7,7 @@ import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmati
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { GasFeeTokenToast } from './gas-fee-token-toast';
 
-jest.mock('../../../../../../../../shared/modules/selectors');
+jest.mock('../../../../../../../../shared/lib/selectors');
 
 function getStore({
   noSelectedGasFeeToken,

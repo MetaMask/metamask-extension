@@ -9,6 +9,7 @@ import {
 } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
 import { NetworkRow } from './network-row';
@@ -32,8 +33,8 @@ describe('NetworkRow', () => {
       <NetworkRow />,
       mockStore,
     );
-    expect(getByText('Network')).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.network.message)).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
   });
 
   it('does not display network if isShownWithAlertsOnly is true and there is no field alert', () => {
@@ -43,7 +44,7 @@ describe('NetworkRow', () => {
       <NetworkRow isShownWithAlertsOnly />,
       mockStore,
     );
-    expect(queryByText('Network')).not.toBeInTheDocument();
+    expect(queryByText(messages.network.message)).not.toBeInTheDocument();
   });
 
   it('does display network if isShownWithAlertsOnly is true and field alert is present', () => {
@@ -73,7 +74,7 @@ describe('NetworkRow', () => {
       <NetworkRow isShownWithAlertsOnly />,
       mockStore,
     );
-    expect(getByText('Network')).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.network.message)).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
   });
 });

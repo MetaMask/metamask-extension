@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
@@ -10,26 +10,33 @@ import {
 } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-///: END:ONLY_INCLUDE_IF
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  ButtonBase,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { ChainId } from '../../../../shared/constants/network';
+import { transitionForward } from '../../ui/transition';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
-import {
-  AddressListQueryParams,
-  AddressListSource,
-} from '../../../pages/multichain-accounts/multichain-account-address-list-page';
+import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import {
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
-  isNonEvmAccount,
   getSwapsDefaultToken,
 } from '../../../selectors';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import Tooltip from '../../ui/tooltip';
 import {
@@ -37,34 +44,153 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { startNewDraftTransaction } from '../../../ducks/send';
 import {
+  BackgroundColor,
   BlockSize,
-  Display,
-  IconColor,
-  JustifyContent,
+  IconColor as IconColorLegacy,
 } from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName, IconSize } from '../../component-library';
+import {
+  Icon as IconLegacy,
+  IconName as IconNameLegacy,
+  IconSize as IconSizeLegacy,
+  Tag,
+  TagProps,
+} from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
+import { Toast, ToastContainer } from '../../multichain/toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-import { useRedesignedSendFlow } from '../../../pages/confirmations/hooks/useRedesignedSendFlow';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import { useOnClickOutside } from '../perps/hooks/useClickOutside';
+import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
+import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
-///: END:ONLY_INCLUDE_IF
+
+type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
+  classPrefix?: string;
+  onClick: () => void;
+  modalIsOpen: boolean;
+  actions: {
+    label: string;
+    onClick: () => void;
+    testId?: string;
+    iconName: IconName;
+    iconClassName?: string;
+    tagProps?: TagProps<TagElem>;
+    enabled: boolean;
+  }[];
+};
+
+const MoreButtonsGroup = ({
+  actions,
+  classPrefix,
+  onClick,
+  modalIsOpen,
+}: MoreButtonsGroupProps) => {
+  const t = useContext(I18nContext);
+  const hasOnlyOneEnabledAction =
+    actions.filter(({ enabled }) => enabled).length === 1;
+  const onlyEnabledAction = actions.filter(({ enabled }) => enabled)[0];
+
+  if (hasOnlyOneEnabledAction) {
+    return (
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        data-testid={`${classPrefix}-overview-default`}
+        Icon={
+          <Icon
+            name={onlyEnabledAction.iconName}
+            color={IconColor.IconAlternative}
+            size={IconSize.Md}
+            className={onlyEnabledAction.iconClassName}
+          />
+        }
+        label={onlyEnabledAction.label}
+        width={BlockSize.Full}
+        onClick={onlyEnabledAction.onClick}
+      />
+    );
+  }
+
+  return (
+    <>
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        data-testid={`${classPrefix}-overview-more`}
+        Icon={
+          <Icon
+            name={IconName.MoreHorizontal}
+            color={IconColor.IconAlternative}
+            size={IconSize.Md}
+          />
+        }
+        label={t('moreCapital')}
+        width={BlockSize.Full}
+        onClick={onClick}
+      />
+      {modalIsOpen && (
+        <Box className="flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg">
+          {actions.map((action) => (
+            <ButtonBase
+              key={action.label}
+              className="text-left rounded-none px-4 py-3 bg-transparent min-w-0 flex w-full items-center h-auto hover:bg-hover active:bg-pressed"
+              onClick={action.onClick}
+              data-testid={action.testId}
+            >
+              <Icon
+                name={action.iconName}
+                color={IconColor.IconAlternative}
+                size={IconSize.Md}
+                className={action.iconClassName}
+              />
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
+                textAlign={TextAlign.Left}
+                className="pl-4 pr-2 flex-1"
+              >
+                {action.label}
+              </Text>
+              {action.tagProps && <Tag {...action.tagProps} />}
+            </ButtonBase>
+          ))}
+        </Box>
+      )}
+    </>
+  );
+};
+
+const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
+  const t = useContext(I18nContext);
+
+  return (
+    <ToastContainer>
+      <Toast
+        startAdornment={
+          <Icon name={IconName.Export} color={IconColor.IconDefault} />
+        }
+        text={t('buyTabOpenedToastText')}
+        description={t('buyTabOpenedToastDescription')}
+        onClose={onClose}
+        autoHideTime={3000}
+        onAutoHideToast={onClose}
+      />
+    </ToastContainer>
+  );
+};
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -72,11 +198,10 @@ type CoinButtonsProps = {
   trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
-  /** @deprecated use bridge chain constants instead*/
-  isBridgeChain: boolean;
   isBuyableChain: boolean;
   classPrefix?: string;
-  iconButtonClassName?: string;
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
 };
 
 const CoinButtons = ({
@@ -87,12 +212,14 @@ const CoinButtons = ({
   isSigningEnabled,
   isBuyableChain,
   classPrefix = 'coin',
+  disableSendForNonEvm = false,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [showTabOpenedToast, setShowTabOpenedToast] = useState(false);
 
   const { address: selectedAddress } = account;
   const navigate = useNavigate();
@@ -101,26 +228,22 @@ const CoinButtons = ({
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
-
-  // Multichain accounts feature flag and selected account group
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const defaultSwapsToken = useSelector((state) =>
     getSwapsDefaultToken(state, chainId.toString()),
   );
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isMoreOptionsDropdownOpen, setIsMoreOptionsDropdownOpen] =
+    useState(false);
+
   // Pre-conditions
   if (isSwapsChain && defaultSwapsToken === undefined) {
     throw new Error('defaultSwapsToken is required');
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm();
-  ///: END:ONLY_INCLUDE_IF
 
   const location = useLocation();
 
@@ -138,14 +261,19 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-
-  const isNonEvmAccountWithoutExternalServices =
-    !isExternalServicesEnabled && isNonEvmAccount(account);
+  const batchSellEnabled = useSelector(getIsBatchSellEnabled);
+  const normalizedChainId = isCaipChainId(chainId) ? chainId : toHex(chainId);
+  const isEvmAsset = isEvmChainId(normalizedChainId);
 
   const buttonTooltips = {
     buyButton: [{ condition: !isBuyableChain, message: '' }],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
+      {
+        condition:
+          disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled,
+        message: 'currentlyUnavailable',
+      },
     ],
     swapButton: [
       {
@@ -212,12 +340,14 @@ const CoinButtons = ({
 
   const { openBridgeExperience } = useBridging();
 
+  const { openBatchSellExperience } = useBatchSell();
+
+  const handleMoreOptionsButtonClick = useCallback(() => {
+    setIsMoreOptionsDropdownOpen((prev) => !prev);
+  }, []);
+
   const setCorrectChain = useCallback(async () => {
-    if (
-      currentChainId !== chainId &&
-      multichainChainId !== chainId &&
-      !isMultichainAccountsState2Enabled
-    ) {
+    if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
@@ -232,14 +362,7 @@ const CoinButtons = ({
         throw err;
       }
     }
-  }, [
-    isMultichainAccountsState2Enabled,
-    currentChainId,
-    multichainChainId,
-    chainId,
-    networks,
-    dispatch,
-  ]);
+  }, [currentChainId, multichainChainId, chainId, networks, dispatch]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
@@ -264,34 +387,15 @@ const CoinButtons = ({
       { excludeMetaMetricsId: false },
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type) && !isSendRedesignEnabled) {
-      await handleSendNonEvm();
-      // Early return, not to let the non-EVM flow slip into the native send flow.
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     // Native Send flow
     await setCorrectChain();
-    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    let params;
-    if (trackingLocation !== 'home') {
-      params = { chainId: chainId.toString() };
-    }
-    navigateToSendRoute(navigate, isSendRedesignEnabled, params);
-  }, [
-    chainId,
-    account,
-    setCorrectChain,
-    isSendRedesignEnabled,
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    handleSendNonEvm,
-    ///: END:ONLY_INCLUDE_IF
-    trackingLocation,
-  ]);
+    const params =
+      trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
+    transitionForward(() => navigateToSendRoute(navigate, params));
+  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
+    setShowTabOpenedToast(true);
     openBuyCryptoInPdapp(getChainId());
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
@@ -324,11 +428,13 @@ const CoinButtons = ({
       : hexChainOrAssetId;
 
     // Handle clicking from the wallet or native asset overview page
-    openBridgeExperience(
-      MetaMetricsSwapsEventSource.MainView,
-      chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-        ? getNativeAssetForChainId(chainIdToUse)
-        : undefined,
+    transitionForward(() =>
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
+          ? getNativeAssetForChainId(chainIdToUse)
+          : undefined,
+      ),
     );
   }, [location, openBridgeExperience]);
 
@@ -346,38 +452,57 @@ const CoinButtons = ({
       },
     });
 
-    if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
+    if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      navigate(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+      transitionForward(() =>
+        navigate(
+          getMultichainAccountAddressListReceivePagePath(selectedAccountGroup),
+        ),
       );
     } else {
       // Show the traditional receive modal
       setShowReceiveModal(true);
     }
-  }, [
-    isMultichainAccountsState2Enabled,
-    selectedAccountGroup,
-    navigate,
-    trackEvent,
-    trackingLocation,
-    chainId,
-  ]);
+  }, [selectedAccountGroup, navigate, trackEvent, trackingLocation, chainId]);
+
+  const handleBatchSellOnClick = useCallback(() => {
+    trace({ name: TraceName.BatchSellModal });
+    trackEvent({
+      event: MetaMetricsEventName.NavBatchSellButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Batch Sell',
+        location: trackingLocation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+      },
+    });
+
+    transitionForward(() => openBatchSellExperience());
+  }, [trackEvent, trackingLocation, chainId, openBatchSellExperience]);
+
+  useOnClickOutside({
+    containerRef,
+    onClickOutside: () => setIsMoreOptionsDropdownOpen(false),
+    active: isMoreOptionsDropdownOpen,
+  });
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Row}
+      className="flex relative w-full"
+      justifyContent={BoxJustifyContent.Between}
       gap={3}
+      ref={containerRef}
     >
       <IconButton
         className={`${classPrefix}-overview__button`}
         Icon={
-          <Icon
-            name={IconName.Dollar}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
+          <IconLegacy
+            name={IconNameLegacy.Dollar}
+            color={IconColorLegacy.iconAlternative}
+            size={IconSizeLegacy.Md}
           />
         }
         disabled={!isBuyableChain}
@@ -395,7 +520,7 @@ const CoinButtons = ({
         Icon={
           <Icon
             name={IconName.SwapVertical}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
             size={IconSize.Md}
           />
         }
@@ -413,11 +538,14 @@ const CoinButtons = ({
         Icon={
           <Icon
             name={IconName.Send}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
             size={IconSize.Md}
           />
         }
-        disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
+        disabled={
+          !isSigningEnabled ||
+          (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
+        }
         label={t('send')}
         onClick={handleSendOnClick}
         width={BlockSize.Full}
@@ -431,20 +559,40 @@ const CoinButtons = ({
           onClose={() => setShowReceiveModal(false)}
         />
       )}
-      <IconButton
-        className={`${classPrefix}-overview__button`}
-        data-testid={`${classPrefix}-overview-receive`}
-        Icon={
-          <Icon
-            name={IconName.Received}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        label={t('receive')}
-        width={BlockSize.Full}
-        onClick={handleReceiveOnClick}
+
+      <MoreButtonsGroup
+        onClick={handleMoreOptionsButtonClick}
+        modalIsOpen={isMoreOptionsDropdownOpen}
+        classPrefix={classPrefix}
+        actions={[
+          {
+            label: t('batchSell'),
+            onClick: handleBatchSellOnClick,
+            testId: `${classPrefix}-overview-batchSell`,
+            iconName: IconName.Merge,
+            iconClassName: 'rotate-180',
+            tagProps: {
+              label: t('perpsFilterNew'),
+              labelProps: {
+                color: IconColorLegacy.primaryDefault,
+              },
+              backgroundColor: BackgroundColor.primaryMuted,
+            },
+            enabled: batchSellEnabled,
+          },
+          {
+            label: t('receive'),
+            onClick: handleReceiveOnClick,
+            testId: `${classPrefix}-overview-receive`,
+            iconName: IconName.Received,
+            enabled: true,
+          },
+        ]}
       />
+
+      {showTabOpenedToast && (
+        <TabOpenedToast onClose={() => setShowTabOpenedToast(false)} />
+      )}
     </Box>
   );
 };

@@ -50,4 +50,61 @@ describe('formatAmount', () => {
       },
     );
   });
+
+  describe('#formatAmount with ROUND_DOWN', () => {
+    const locale = 'en-US';
+    const roundDown = BigNumber.ROUND_DOWN;
+
+    it('returns "0" for zero amount regardless of rounding mode', () => {
+      expect(formatAmount(locale, new BigNumber(0), roundDown)).toBe('0');
+    });
+
+    it('returns "<0.000001" for amounts below MIN_AMOUNT regardless of rounding mode', () => {
+      expect(formatAmount(locale, new BigNumber(0.0000009), roundDown)).toBe(
+        '<0.000001',
+      );
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      // Already at 3 sig figs — no rounding occurs
+      [0.0000456, '0.0000456'],
+      // 4th sig fig (7) would round up; ROUND_DOWN truncates to 0.000456
+      [0.0004567, '0.000456'],
+      // 4th sig fig (6) would round up; ROUND_DOWN truncates to 0.00345
+      [0.003456, '0.00345'],
+      // 4th sig fig (5) would round up; ROUND_DOWN truncates to 0.0234
+      [0.023456, '0.0234'],
+      // 4th sig fig (4) would not round up anyway; same result
+      [0.125456, '0.125'],
+    ])(
+      'truncates amount less than 1 toward zero (%s => %s)',
+      (amount: number, expected: string) => {
+        expect(formatAmount(locale, new BigNumber(amount), roundDown)).toBe(
+          expected,
+        );
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      // 1 integer digit → maxFrac = 3; 4th decimal (4) would not round up anyway
+      [1.0034, '1.003'],
+      // 1 integer digit → maxFrac = 3; truncates rather than rounds up
+      [1.3034, '1.303'],
+      // 2 integer digits → maxFrac = 2; 3rd decimal (5) would round up; ROUND_DOWN gives 12.03
+      [12.0345, '12.03'],
+      // 3 integer digits → maxFrac = 1; 2nd decimal (5) would round up; ROUND_DOWN gives 121.4
+      [121.456, '121.4'],
+      // 4 integer digits → maxFrac = 0; result is whole number
+      [1034.123, '1,034'],
+    ])(
+      'truncates amount greater than or equal to 1 toward zero (%s => %s)',
+      (amount: number, expected: string) => {
+        expect(formatAmount(locale, new BigNumber(amount), roundDown)).toBe(
+          expected,
+        );
+      },
+    );
+  });
 });

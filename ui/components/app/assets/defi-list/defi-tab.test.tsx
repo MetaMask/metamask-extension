@@ -3,13 +3,16 @@ import { screen, act, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import DeFiTab from './defi-tab';
 
+const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
 const allDeFiPositions = {
-  [mockState.metamask.selectedAddress]: {
+  [selectedAddress]: {
     [CHAIN_IDS.MAINNET]: {
       aggregatedMarketValue: 20540,
       protocols: {
@@ -60,10 +63,10 @@ const allDeFiPositions = {
   },
 };
 const loadingDefiPositions = {
-  [mockState.metamask.selectedAddress]: undefined,
+  [selectedAddress]: undefined,
 };
 const noOpenPositions = {
-  [mockState.metamask.selectedAddress]: [],
+  [selectedAddress]: [],
 };
 const defiApiError = null;
 
@@ -176,9 +179,11 @@ describe('DefiList', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Lend, borrow, and trade, right in your wallet.'),
+        screen.getByText(messages.defiEmptyDescription.message),
       ).toBeInTheDocument();
-      expect(screen.getByText('Explore DeFi')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.exploreDefi.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('defi-tab-empty-state')).toBeInTheDocument();
 
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();

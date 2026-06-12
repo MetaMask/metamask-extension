@@ -10,10 +10,33 @@ import {
   createMockNotificationEthReceived,
 } from '@metamask/notification-services-controller/notification-services/mocks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { ASSETS_UNIFY_STATE_VERSION_1 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import {
   WalletFundsObtainedMonitor,
   WalletFundsObtainedMonitorMessenger,
 } from './WalletFundsObtainedMonitor';
+
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// and provide the pure flag-evaluation logic without the IN_TEST bypass
+// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
+// so using jest.requireActual here would make the function always return true,
+// breaking tests that exercise the disabled-flag path).
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: jest.fn(
+    (
+      featureFlag:
+        | { enabled: boolean; featureVersion: string }
+        | undefined
+        | null,
+      featureVersion: string,
+    ) =>
+      Boolean(featureFlag?.enabled) &&
+      featureFlag?.featureVersion === featureVersion,
+  ),
+}));
 
 function createMessengerMock(): jest.Mocked<WalletFundsObtainedMonitorMessenger> {
   return {
@@ -41,6 +64,9 @@ describe('WalletFundsObtainedMonitor', () => {
       }
       if (action === 'NotificationServicesController:getState') {
         return { isNotificationServicesEnabled: true };
+      }
+      if (action === 'RemoteFeatureFlagController:getState') {
+        return { remoteFeatureFlags: {} };
       }
       if (action === 'TokenBalancesController:getState') {
         return { tokenBalances: {} };
@@ -154,6 +180,76 @@ describe('WalletFundsObtainedMonitor', () => {
 
       // Should only subscribe once
       expect(messenger.subscribe).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when assets unify feature flag is enabled', () => {
+      // isAssetsUnifyStateFeatureEnabled always returns false on this build
+      // (build flag ASSETS_UNIFIED_STATE_ENABLED=false), so the legacy
+      // TokenBalancesController path is always taken regardless of the remote flag.
+
+      it('should subscribe to notifications if wallet has no existing funds', () => {
+        // beforeEach already sets TokenBalancesController → {} and
+        // MultichainBalancesController → {}, so no extra mock override needed.
+        walletFundsObtainedMonitor.setupMonitoring();
+
+        expect(messenger.call).toHaveBeenCalledWith(
+          'TokenBalancesController:getState',
+        );
+        expect(messenger.call).not.toHaveBeenCalledWith(
+          'AssetsController:getState',
+        );
+        expect(messenger.call).not.toHaveBeenCalledWith(
+          'AppStateController:setCanTrackWalletFundsObtained',
+          false,
+        );
+        expect(messenger.subscribe).toHaveBeenCalledWith(
+          'NotificationServicesController:notificationsListUpdated',
+          expect.any(Function),
+        );
+      });
+
+      it('should call setCanTrackWalletFundsObtained if wallet has existing funds', () => {
+        messenger.call.mockImplementation(((action: string) => {
+          if (action === 'OnboardingController:getState') {
+            return {
+              seedPhraseBackedUp: false,
+              firstTimeFlowType: FirstTimeFlowType.create,
+              completedOnboarding: true,
+            };
+          }
+          if (action === 'NotificationServicesController:getState') {
+            return { isNotificationServicesEnabled: true };
+          }
+          if (action === 'RemoteFeatureFlagController:getState') {
+            return { remoteFeatureFlags: {} };
+          }
+          if (action === 'TokenBalancesController:getState') {
+            return {
+              tokenBalances: {
+                '0x123': { '0x1': { '0x456': '0x100' } },
+              },
+            };
+          }
+          if (action === 'MultichainBalancesController:getState') {
+            return { balances: {} };
+          }
+          return undefined;
+        }) as any);
+
+        walletFundsObtainedMonitor.setupMonitoring();
+
+        expect(messenger.call).toHaveBeenCalledWith(
+          'TokenBalancesController:getState',
+        );
+        expect(messenger.call).not.toHaveBeenCalledWith(
+          'AssetsController:getState',
+        );
+        expect(messenger.call).toHaveBeenCalledWith(
+          'AppStateController:setCanTrackWalletFundsObtained',
+          false,
+        );
+        expect(messenger.subscribe).not.toHaveBeenCalled();
+      });
     });
   });
 

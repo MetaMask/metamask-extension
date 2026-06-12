@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { Severity, TextColor } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';

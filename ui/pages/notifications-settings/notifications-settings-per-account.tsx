@@ -60,7 +60,7 @@ export const NotificationsSettingsPerAccount = ({
   disabledSwitch,
   refetchAccountSettings,
 }: NotificationsSettingsPerAccountProps) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const {
     toggleAccount,

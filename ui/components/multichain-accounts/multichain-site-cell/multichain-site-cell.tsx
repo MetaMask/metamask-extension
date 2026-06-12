@@ -2,14 +2,14 @@ import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { AccountGroupId } from '@metamask/account-api';
-import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
+  AvatarAccountSize,
+  Box,
+  BoxBackgroundColor,
+  IconName,
+} from '@metamask/design-system-react';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Box, IconName } from '../../component-library';
 import { EditNetworksModal } from '../../multichain/edit-networks-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -37,7 +37,7 @@ type MultichainSiteCellProps = {
   hideAllToasts?: () => void;
 };
 
-export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
+export const MultichainSiteCell = ({
   nonTestNetworks,
   testNetworks,
   supportedAccountGroups,
@@ -47,9 +47,9 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
   selectedChainIds,
   isConnectFlow,
   hideAllToasts = () => undefined,
-}) => {
+}: MultichainSiteCellProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
   const seedAddressIcon = useSelector((state: MultichainAccountsState) => {
     // Only get seed address if we have a valid account group ID
@@ -116,8 +116,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
       <Box
         padding={4}
         gap={4}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.LG}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
       >
         <SiteCellConnectionListItem
           title={t('accountsPermissionsTitle')}
@@ -130,6 +129,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           onClick={handleOpenAccountsModal}
           paddingBottomValue={2}
           paddingTopValue={0}
+          // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
           content={
             selectedAccountGroupIds.length === 1 ? (
               <PreferredAvatar
@@ -154,6 +154,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           onClick={handleOpenNetworksModal}
           paddingTopValue={2}
           paddingBottomValue={0}
+          // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
           content={<MultichainSiteCellTooltip networks={selectedNetworks} />}
         />
       </Box>

@@ -1,0 +1,43 @@
++This patch fixes a bug in Lodash when it's run in a contentscript on Firefox.
++See here for details: https://github.com/lodash/lodash/issues/5934
+diff --git a/_freeGlobal.js b/_freeGlobal.js
+index bbec998fc8cbaaeec1f848017aa8e232d4d419eb..c0c1cf770949db4c0b3e4fbb4d22f90930349307 100644
+--- a/_freeGlobal.js
++++ b/_freeGlobal.js
+@@ -1,4 +1,4 @@
+-/** Detect free variable `global` from Node.js. */
+-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
++/** Detect free variable `globalThis` from Node.js. */
++var freeGlobal = typeof globalThis == 'object' && globalThis && globalThis.Object === Object && globalThis;
+
+ module.exports = freeGlobal;
+diff --git a/core.js b/core.js
+index 694ed51dd5fef287e802f01d39f4d0511a6239c2..c7b6165c87050578a799a43fd4eba1002b9c7ae0 100644
+--- a/core.js
++++ b/core.js
+@@ -61,8 +61,8 @@
+     "'": '&#39;'
+   };
+
+-  /** Detect free variable `global` from Node.js. */
+-  var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
++  /** Detect free variable `globalThis` from Node.js. */
++  var freeGlobal = typeof globalThis == 'object' && globalThis && globalThis.Object === Object && globalThis;
+
+   /** Detect free variable `self`. */
+   var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+diff --git a/lodash.js b/lodash.js
+index 8634cab16747f81f9336d1a231dc501af460179d..b187288c6811d0d1cc431cec4a0dc0965e23495a 100644
+--- a/lodash.js
++++ b/lodash.js
+@@ -427,8 +427,8 @@
+   var freeParseFloat = parseFloat,
+       freeParseInt = parseInt;
+
+-  /** Detect free variable `global` from Node.js. */
+-  var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
++  /** Detect free variable `globalThis` from Node.js. */
++  var freeGlobal = typeof globalThis == 'object' && globalThis && globalThis.Object === Object && globalThis;
+
+   /** Detect free variable `self`. */
+   var freeSelf = typeof self == 'object' && self && self.Object === Object && self;

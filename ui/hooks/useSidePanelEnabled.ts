@@ -1,4 +1,4 @@
-import { getIsSidePanelFeatureEnabled } from '../../shared/modules/environment';
+import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
 
 /**
  * Custom hook to check if sidepanel feature is enabled.

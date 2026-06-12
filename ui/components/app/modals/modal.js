@@ -5,14 +5,13 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
 import { NetworkManager } from '../../multichain/network-manager';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
 import {
   CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
   ConfirmTurnOnBackupAndSyncModal,
@@ -21,20 +20,14 @@ import {
 } from './identity';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
+import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
-import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
-import TransactionConfirmed from './transaction-confirmed';
 
 import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
-import EditApprovalPermission from './edit-approval-permission';
 import FadeModal from './fade-modal';
-import NewAccountModal from './new-account-modal';
-import RejectTransactions from './reject-transactions';
-import TransactionAlreadyConfirmed from './transaction-already-confirmed';
-
 // Metamask Notifications
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
 
@@ -59,33 +52,6 @@ const modalContainerMobileStyle = {
 };
 
 const MODALS = {
-  NEW_ACCOUNT: {
-    contents: <NewAccountModal />,
-    mobileModalStyle: {
-      width: '95%',
-      top: '10%',
-      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    laptopModalStyle: {
-      width: '375px',
-      top: '10%',
-      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    contentStyle: {
-      borderRadius: '10px',
-    },
-  },
-
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
     testId: 'hide-token-confirmation-modal',
@@ -106,19 +72,6 @@ const MODALS = {
 
   CONFIRM_RESET_ACCOUNT: {
     contents: <ConfirmResetAccount />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CONFIRM_REMOVE_ACCOUNT: {
-    contents: <ConfirmRemoveAccount />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -156,72 +109,9 @@ const MODALS = {
     },
   },
 
-  EDIT_APPROVAL_PERMISSION: {
-    contents: <EditApprovalPermission />,
-    mobileModalStyle: {
-      width: '95vw',
-      height: '100vh',
-      top: '50px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: 'auto',
-      height: '0px',
-      top: '80px',
-      left: '0px',
-      transform: 'none',
-      margin: '0 auto',
-      position: 'relative',
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  TRANSACTION_CONFIRMED: {
-    disableBackdropClick: true,
-    contents: <TransactionConfirmed />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  TRANSACTION_ALREADY_CONFIRMED: {
-    disableBackdropClick: true,
-    contents: <TransactionAlreadyConfirmed />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-  },
-
   QR_SCANNER: {
     contents: <QRScanner />,
     testId: 'qr-scanner-modal',
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  REJECT_TRANSACTIONS: {
-    contents: <RejectTransactions />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -295,6 +185,20 @@ const MODALS = {
     },
   },
 
+  [HARDWARE_WALLET_ERROR_MODAL_NAME]: {
+    contents: <HardwareWalletErrorModal />,
+    testId: 'hardware-wallet-error-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   DEFAULT: {
     contents: [],
     mobileModalStyle: {},
@@ -321,9 +225,6 @@ function mapDispatchToProps(dispatch) {
         dispatch(customOnHideOpts.action(...customOnHideOpts.args));
       }
     },
-    hideWarning: () => {
-      dispatch(actions.hideWarning());
-    },
   };
 }
 
@@ -338,7 +239,6 @@ class Modal extends Component {
   static propTypes = {
     active: PropTypes.bool.isRequired,
     hideModal: PropTypes.func.isRequired,
-    hideWarning: PropTypes.func.isRequired,
     modalState: PropTypes.object.isRequired,
   };
 
@@ -370,9 +270,7 @@ class Modal extends Component {
         keyboard={false}
         onHide={() => {
           if (modal.onHide) {
-            modal.onHide({
-              hideWarning: this.props.hideWarning,
-            });
+            modal.onHide();
           }
           this.props.hideModal(modal.customOnHideOpts);
         }}

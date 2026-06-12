@@ -3,10 +3,10 @@
 exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 1`] = `
 <div>
   <div
-    class="mm-box onboarding-app-header mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+    class="p-4 bg-default onboarding-app-header w-full"
   >
     <div
-      class="mm-box onboarding-app-header__contents mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full"
+      class="flex flex-row justify-between onboarding-app-header__contents w-full mx-auto"
     >
       <button
         class="mm-box onboarding-app-header__logo-container mm-box--background-color-transparent"
@@ -32,10 +32,10 @@ exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 
         />
       </button>
       <div
-        class="mm-box onboarding-app-header__banner-tip-container mm-box--padding-top-12"
+        class="pt-12 onboarding-app-header__banner-tip-container"
       >
         <div
-          class="mm-box mm-banner-base mm-banner-tip onboarding-app-header__banner-tip mm-box--padding-3 mm-box--display-flex mm-box--gap-4 mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-sm mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box mm-banner-base mm-banner-tip onboarding-app-header__banner-tip mm-box--padding-3 mm-box--display-flex mm-box--gap-2 mm-box--background-color-background-muted mm-box--rounded-sm mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -50,25 +50,37 @@ exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 
             class="mm-box mm-box--min-width-0"
           >
             <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--padding-right-2 mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
             >
               Pin the MetaMask extension
             </p>
             <p
-              class="mm-box mm-text mm-text--body-sm mm-box--padding-right-2 mm-box--align-items-center mm-box--color-text-alternative"
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default flex items-center pr-2"
             >
               <span>
                  
                 Click on 
-                <span
-                  class="mm-box onboarding-app-header__banner-tip-icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
-                  style="mask-image: url('./images/icons/extension.svg');"
-                />
+                <svg
+                  class="inline-block w-5 h-5 text-icon-default onboarding-app-header__banner-tip-icon"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.8 21H5q-.824 0-1.412-.587C3 19.826 3 19.55 3 19v-3.8q1.2 0 2.1-.762c.9-.763.9-1.155.9-1.938s-.3-1.43-.9-1.937S3.8 9.8 3 9.8V6q0-.825.588-1.412C4.176 4 4.45 4 5 4h4q0-1.05.725-1.775T11.5 1.5c1.05 0 1.292.242 1.775.725S14 3.3 14 4h4q.824 0 1.413.588C20.002 5.176 20 5.45 20 6v4q1.05 0 1.775.725c.725.725.725 1.075.725 1.775s-.242 1.292-.725 1.775S20.7 15 20 15v4q0 .824-.587 1.413c-.587.589-.863.587-1.413.587h-3.8q0-1.25-.787-2.125C12.625 18 12.25 18 11.5 18s-1.387.292-1.912.875S8.8 20.167 8.8 21M5 19h2.125q.6-1.65 1.925-2.325C10.375 16 10.75 16 11.5 16s1.567.225 2.45.675S15.475 17.9 15.875 19H18v-6h2q.2 0 .35-.15c.15-.15.15-.217.15-.35s-.05-.25-.15-.35S20.133 12 20 12h-2V6h-6V4q0-.2-.15-.35c-.15-.15-.217-.15-.35-.15s-.25.05-.35.15S11 3.867 11 4v2H5v2.2q1.35.5 2.175 1.675Q8 11.049 8 12.5q0 1.425-.825 2.6C6.35 16.275 5.9 16.45 5 16.8z"
+                  />
+                </svg>
                  and then 
-                <span
-                  class="mm-box onboarding-app-header__banner-tip-icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
-                  style="mask-image: url('./images/icons/keep.svg');"
-                />
+                <svg
+                  class="inline-block w-5 h-5 text-icon-default onboarding-app-header__banner-tip-icon"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m16 12 2 2v2h-5v6l-1 1-1-1v-6H6v-2l2-2V5H7V3h10v2h-1zm-7.15 2h6.3L14 12.85V5h-4v7.85z"
+                  />
+                </svg>
                  to pin it.
                  
               </span>
@@ -84,10 +96,10 @@ exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 
 exports[`OnboardingAppHeader should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box onboarding-app-header mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+    class="p-4 bg-default onboarding-app-header w-full"
   >
     <div
-      class="mm-box onboarding-app-header__contents mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full"
+      class="flex flex-row justify-between onboarding-app-header__contents w-full mx-auto"
     >
       <button
         class="mm-box onboarding-app-header__logo-container mm-box--background-color-transparent"

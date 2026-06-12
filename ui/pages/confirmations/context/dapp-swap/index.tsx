@@ -22,9 +22,11 @@ export const DappSwapContext = createContext<DappSwapContextType | undefined>(
   undefined,
 );
 
-export const DappSwapContextProvider: React.FC<{
+export const DappSwapContextProvider = ({
+  children,
+}: React.PropsWithChildren<{
   children: ReactElement;
-}> = ({ children }) => {
+}>) => {
   const { currentConfirmation } = useCurrentConfirmation();
   const [selectedQuote, setSelectedQuote] = useState<QuoteResponse | undefined>(
     undefined,
@@ -75,3 +77,11 @@ export const useDappSwapContext = () => {
   }
   return context as DappSwapContextType;
 };
+
+/**
+ * Optional version of useDappSwapContext. Returns undefined when used outside
+ * DappSwapContextProvider. Use when a component can be rendered in both confirm
+ * flow and outside it (e.g. cancel-speedup gas fee display).
+ */
+export const useDappSwapContextOptional = (): DappSwapContextType | undefined =>
+  useContext(DappSwapContext) as DappSwapContextType | undefined;

@@ -2,13 +2,13 @@ import browser from 'webextension-polyfill';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
+// @ts-expect-error @types/readable-stream does not export pipeline
 import { pipeline } from 'readable-stream';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { ExtensionPortStream } from 'extension-port-stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
-import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import {
   METAMASK_COOKIE_HANDLER,
   CONTENT_SCRIPT,

@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { FormTextField, FormTextFieldProps } from '../../../component-library';
 
@@ -41,7 +41,7 @@ const clamp = (inputValue: number, minimum?: number, maximum?: number) => {
 };
 
 export const SnapUIInput: FunctionComponent<
-  SnapUIInputProps & FormTextFieldProps<'div'>
+  React.PropsWithChildren<SnapUIInputProps & FormTextFieldProps<'div'>>
 > = memo(
   ({
     name,

@@ -4,16 +4,17 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import { skipOnFirefox } from '../helpers';
 import { arrangeTestUtils } from './helpers';
 
@@ -53,15 +54,16 @@ describe('Account syncing - Unsupported Account types', function () {
     // Phase 1: Create regular accounts and import a private key account
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -106,13 +108,7 @@ describe('Account syncing - Unsupported Account types', function () {
         );
 
         // Import a private key account (this should NOT sync)
-        await accountListPage.addNewImportedAccount(
-          IMPORTED_PRIVATE_KEY,
-          undefined,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
-        );
+        await accountListPage.addNewImportedAccount(IMPORTED_PRIVATE_KEY);
 
         // Verify imported account is visible in current session
         // TODO: uncomment this when the naming issue is fixed
@@ -127,15 +123,16 @@ describe('Account syncing - Unsupported Account types', function () {
     // Phase 2: Login to fresh instance and verify only regular accounts persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();

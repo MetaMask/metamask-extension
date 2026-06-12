@@ -31,6 +31,8 @@ export default function createMetamaskMiddleware({
   getPendingNonce,
   getPendingTransactionByHash,
   processRequestExecutionPermissions,
+  processGetSupportedExecutionPermissions,
+  processGetGrantedExecutionPermissions,
 }: Options) {
   const engine = JsonRpcEngineV2.create({
     middleware: [
@@ -50,6 +52,8 @@ export default function createMetamaskMiddleware({
         processDecryptMessage,
         processEncryptionPublicKey,
         processRequestExecutionPermissions,
+        processGetSupportedExecutionPermissions,
+        processGetGrantedExecutionPermissions,
       }),
       createPendingNonceMiddleware({ getPendingNonce }),
       createPendingTxMiddleware({ getPendingTransactionByHash }),

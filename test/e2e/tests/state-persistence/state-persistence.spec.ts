@@ -1,11 +1,54 @@
 import assert from 'node:assert/strict';
-import { WINDOW_TITLES } from '../../constants';
-import { WALLET_PASSWORD, unlockWallet, withFixtures } from '../../helpers';
+import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
+import { Mockttp } from 'mockttp';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { PAGES, type Driver } from '../../webdriver/driver';
+import LoginPage from '../../page-objects/pages/login-page';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+const NON_EVM_ACCOUNT_FLAG_OVERRIDES = [
+  { bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { solanaAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { tronAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  {
+    enableMultichainAccounts: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+  },
+  {
+    enableMultichainAccountsState2: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+  },
+];
+
+async function mockFeatureFlagsWithoutNonEvmAccounts(mockServer: Mockttp) {
+  const prodFlags = getProductionRemoteFlagApiResponse();
+  return [
+    await mockServer
+      .forGet(FEATURE_FLAGS_URL)
+      .withQuery({
+        client: 'extension',
+        distribution: 'main',
+        environment: 'dev',
+      })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [...prodFlags, ...NON_EVM_ACCOUNT_FLAG_OVERRIDES],
+      })),
+  ];
+}
 
 type DataStorage = {
   meta: {
@@ -44,6 +87,7 @@ const getFixtureOptions = (
   testContext: Mocha.Context,
   manifestTestingOverrides: Record<string, unknown> = {},
 ) => ({
+  ignoredConsoleErrors: [/getSubscriptions/u],
   title: testContext.test?.title,
   manifestFlags: {
     testing: {
@@ -51,6 +95,7 @@ const getFixtureOptions = (
       ...manifestTestingOverrides,
     },
   },
+  testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
 });
 
 const pausePersistence = async (driver: Driver) => {
@@ -180,6 +225,9 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
     if (MIGRATION_OVERRIDE_KEYS.includes(key)) {
       continue; // these are testing-only keys
     }
+    if (key.startsWith(STORAGE_KEY_PREFIX)) {
+      continue; // StorageService keys are managed independently
+    }
     assert.ok(
       key === 'manifest' || storage.manifest.includes(key),
       `storage key ${key} should be present in manifest`,
@@ -229,6 +277,7 @@ const assertDataStateStorage = (storage: DataStorage) => {
  */
 const expectSplitStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
+  console.log('split storage:', Object.keys(storage));
   assertSplitStateStorage(storage as SplitStateStorage);
   return storage;
 };
@@ -241,6 +290,7 @@ const expectSplitStateStorage = async (driver: Driver) => {
  */
 const expectDataStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
+  console.log('data storage:', Object.keys(storage));
   assertDataStateStorage(storage as DataStorage);
   return storage;
 };
@@ -262,6 +312,8 @@ async function waitForRestart(driver: Driver) {
     // reload and check title as quickly a possible
     { interval: 100, timeout: 10000 },
   );
+
+  await driver.waitForControllersLoaded();
   await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
 }
 
@@ -309,9 +361,9 @@ const reloadExtension = async (driver: Driver) => {
  */
 const reloadAndUnlock = async (driver: Driver) => {
   await reloadExtension(driver);
-  await unlockWallet(driver, {
-    password: WALLET_PASSWORD,
-  });
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPageIsLoaded();
+  await loginPage.loginToHomepage(WALLET_PASSWORD);
   await ensureHomeReady(driver);
 };
 
@@ -351,6 +403,7 @@ const assertAccountVisible = async (
   accountListPage: AccountListPage,
   accountName: string,
 ) => {
+  await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openAccountMenu();
   await accountListPage.checkAccountDisplayedInAccountList(accountName);
   await accountListPage.closeMultichainAccountsPage();
@@ -359,20 +412,8 @@ const assertAccountVisible = async (
 describe('State Persistence', function () {
   this.timeout(120000);
 
-  describe('data state', function () {
-    it('should default to the data state storage', async function () {
-      await withFixtures(getFixtureOptions(this), async ({ driver }) => {
-        await completeOnboardingAndSync(driver);
-        await driver.delay(5000);
-        await expectDataStateStorage(driver);
-      });
-    });
-  });
-
   describe('split state', function () {
-    // skipped until "split" state is set as the default
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should default to the split state storage', async function () {
+    it('should default to the split state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {
         await completeOnboardingAndSync(driver);
         await expectSplitStateStorage(driver);
@@ -388,38 +429,60 @@ describe('State Persistence', function () {
           const headerNavbar = new HeaderNavbar(driver);
           const accountListPage = new AccountListPage(driver);
 
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('completeOnboardingAndSync');
           await completeOnboardingAndSync(driver);
+          console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
+          console.log('headerNavbar.checkPageIsLoaded');
           await headerNavbar.checkPageIsLoaded();
+          console.log('headerNavbar.openAccountMenu');
           await headerNavbar.openAccountMenu();
+          console.log('accountListPage.checkPageIsLoaded');
           await accountListPage.checkPageIsLoaded();
+          console.log('accountListPage.addMultichainAccount');
           await accountListPage.addMultichainAccount();
+          console.log('accountListPage.renameAccount');
           await accountListPage.closeMultichainAccountsPage();
+          console.log('accountListPage.renameAccount');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
 
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
+          console.log('pausePersistence');
           await pausePersistence(driver);
+          console.log('setLocalStorageFlags');
           await setLocalStorageFlags(driver);
+          console.log('reloadAndUnlock');
           await reloadAndUnlock(driver);
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('assertAccountVisible');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('expectSplitStateStorage');
           await expectSplitStateStorage(driver);
 
+          console.log('reloadAndUnlock 2');
           await reloadAndUnlock(driver);
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('assertAccountVisible 2');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
+          console.log('expectSplitStateStorage 2');
           await expectSplitStateStorage(driver);
         },
       );

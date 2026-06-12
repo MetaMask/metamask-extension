@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Należy wybrać konto!"
   },
-  "activityLog": {
-    "message": "dziennik aktywności"
-  },
   "addAcquiredTokens": {
     "message": "Dodaj tokeny pozyskane przy pomocy MetaMask"
   },
@@ -80,9 +77,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Czas automatycznego wylogowania (w minutach)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Ustaw czas bezczynności w minutach, po którym MetaMask wyloguje Cię automatycznie"
   },
   "average": {
     "message": "Średnia"
@@ -184,12 +178,6 @@
   "createPassword": {
     "message": "Utwórz hasło"
   },
-  "currencyConversion": {
-    "message": "Przeliczanie walut"
-  },
-  "currentLanguage": {
-    "message": "Obecny język"
-  },
   "custom": {
     "message": "Zaawansowane"
   },
@@ -210,9 +198,6 @@
   },
   "done": {
     "message": "Gotowe"
-  },
-  "downloadGoogleChrome": {
-    "message": "Ściągnij Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Załaduj logi stanów"
@@ -272,9 +257,6 @@
   "hardwareWallets": {
     "message": "Podłącz sprzętowy portfel"
   },
-  "hardwareWalletsMsg": {
-    "message": "Wybierz portfel sprzętowy, którego chcesz użyć z MetaMaskiem"
-  },
   "here": {
     "message": "tutaj",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -301,9 +283,6 @@
   "imported": {
     "message": "Zaimportowane",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Twoja transakcja została potwierdzona w sieci. Kliknij OK żeby wrócić."
   },
   "insufficientBalance": {
     "message": "Niewystarczające saldo."
@@ -345,15 +324,6 @@
   "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
-  "lineaGoerli": {
-    "message": "Sieć testowa Linea Goerli"
-  },
-  "links": {
-    "message": "Łącza"
-  },
-  "loadMore": {
-    "message": "Załaduj więcej"
-  },
   "loading": {
     "message": "Ładowanie..."
   },
@@ -382,9 +352,6 @@
     "message": "Musisz wybrać plik do zaimportowania.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nie można wysłać ujemnych ilości ETH."
-  },
   "networkName": {
     "message": "Nazwa sieci"
   },
@@ -394,15 +361,9 @@
   "nevermind": {
     "message": "Nie ważne"
   },
-  "newAccount": {
-    "message": "Nowe konto"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Nowy kontakt"
   },
   "newContract": {
     "message": "Nowy kontrakt"
@@ -412,9 +373,6 @@
   },
   "next": {
     "message": "Dalej"
-  },
-  "noConversionRateAvailable": {
-    "message": "Brak kursu waluty"
   },
   "noWebcamFound": {
     "message": "Twoja kamera nie została znaleziona. Spróbuj ponownie."
@@ -487,12 +445,6 @@
   "rejectAll": {
     "message": "Odrzuć wszystkie"
   },
-  "rejectTxsDescription": {
-    "message": "Zamierzasz odrzucić wiele ($1) transakcji jednocześnie."
-  },
-  "rejectTxsN": {
-    "message": "Odrzuć transakcje ($1)"
-  },
   "rejected": {
     "message": "Odrzucone"
   },
@@ -502,9 +454,6 @@
   "removeAccount": {
     "message": "Usuń konto"
   },
-  "removeAccountDescription": {
-    "message": "To konto będzie usunięte z Twojego portfela. Zanim przejdziesz dalej, upewnij się, że masz frazę seed i klucz prywatny do tego importowanego konta. Możesz później importować lub utworzyć nowe konta z rozwijanego menu kont. "
-  },
   "required": {
     "message": "Wymagane"
   },
@@ -513,9 +462,6 @@
   },
   "restore": {
     "message": "Przywróć"
-  },
-  "revealSeedWords": {
-    "message": "Pokaż słowa seed"
   },
   "revealSeedWordsWarning": {
     "message": "Te słowa mogą być użyte żeby ukraść Twoje konta.",
@@ -563,9 +509,6 @@
   "showFiatConversionInTestnets": {
     "message": "Pokaż przeliczanie w sieciach testowych"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Wybierz tę opcję, aby wyświetlać przeliczanie waluty fiat w sieciach testowych"
-  },
   "showHexData": {
     "message": "Pokaż dane hex"
   },
@@ -590,17 +533,11 @@
   "speedUpCancellation": {
     "message": "Przyśpiesz anulowanie"
   },
-  "speedUpTransaction": {
-    "message": "Przyśpiesz transakcję"
-  },
   "stateLogError": {
     "message": "Błąd podczas pobierania logów stanów."
   },
   "stateLogs": {
     "message": "Logi stanów"
-  },
-  "stateLogsDescription": {
-    "message": "Logi stanów zawierają Twoje publiczne adresy kont i wykonanych transakcji."
   },
   "submitted": {
     "message": "Wysłane"
@@ -632,38 +569,11 @@
   "transaction": {
     "message": "transakcja"
   },
-  "transactionCancelAttempted": {
-    "message": "Podjęto próbę anulowania transakcji z opłatą za gaz w wysokości $1 – $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcja została anulowana pomyślnie – $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcja została potwierdzona o $2."
-  },
-  "transactionCreated": {
-    "message": "Transakcja o wartości $1 została utworzona o $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcja odrzucona – $2."
-  },
   "transactionError": {
     "message": "Błąd transakcji. Wyjątek w kodzie kontraktu."
   },
   "transactionErrorNoContract": {
     "message": "Próba wywołania funkcji na adresie, który nie jest adresem kontraktu."
-  },
-  "transactionErrored": {
-    "message": "Wystąpił błąd podczas wykonywania transakcji."
-  },
-  "transactionResubmitted": {
-    "message": "Transakcja wysłana ponownie z opłatą za gaz podwyższoną do $1 – $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transakcja wykonana z opłatą za gaz w wysokości $1 – $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcja zaktualizowana – $2."
   },
   "transfer": {
     "message": "Przelew"
@@ -695,12 +605,6 @@
   "usedByClients": {
     "message": "Używany przez różnych klientów"
   },
-  "userName": {
-    "message": "Nazwa użytkownika"
-  },
-  "viewContact": {
-    "message": "Wyświetl kontakt"
-  },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"
   },
@@ -709,8 +613,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Żeby użyć tej opcji należy podłączyć kamerę"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Twoja prywatna fraza seed"
   }
 }

@@ -138,6 +138,9 @@
         },
         "srcAmount": "1000000000000000",
         "destAmount": "4405865573929566208"
+      },
+      "priceData": {
+        "priceImpact": ".02"
       }
     },
     "trade": {
@@ -289,6 +292,9 @@
         },
         "srcAmount": "1000000000000000",
         "destAmount": "4405865573929566208"
+      },
+      "priceData": {
+        "priceImpact": ".02"
       }
     },
     "trade": {

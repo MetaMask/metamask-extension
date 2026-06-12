@@ -2,6 +2,7 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { AccountGroupId } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
@@ -23,13 +24,11 @@ const MOCK_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 const MOCK_GROUP_NAME = 'Account 1';
 
 const mockUseNavigate = jest.fn();
-const mockUseParams = jest.fn();
 const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useParams: () => mockUseParams(),
     useLocation: () => mockUseLocation(),
   };
 });
@@ -41,8 +40,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('renders the page with correct components', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
 
     const store = configureStore({
@@ -69,8 +68,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('navigates back when back button is clicked', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
 
     const store = configureStore({
@@ -88,8 +87,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('displays fallback text when account group does not exist', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: 'non-existent-group',
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent('non-existent-group')}`,
     });
 
     const store = configureStore({
@@ -108,10 +107,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('decodes and renders account group with encoded ID', () => {
-    const encodedGroupId = encodeURIComponent(MOCK_GROUP_ID);
-
-    mockUseParams.mockReturnValue({
-      accountGroupId: encodedGroupId,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
 
     const store = configureStore({
@@ -132,9 +129,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('shows receiving address title in receive mode', () => {
-    mockUseLocation.mockReturnValue({ search: '?source=receive' });
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}&source=receive`,
     });
 
     const store = configureStore({
@@ -146,16 +142,17 @@ describe('MultichainAccountAddressListPage', () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should show "Receiving address" instead of "Account 1 / Addresses"
-    expect(screen.getByText('Receiving address')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.receivingAddress.message),
+    ).toBeInTheDocument();
     expect(
       screen.queryByText(`${MOCK_GROUP_NAME} / Addresses`),
     ).not.toBeInTheDocument();
   });
 
   it('renders correctly with multiple accounts in group', () => {
-    // The mock state already has two accounts in the group
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
 
     const store = configureStore({
@@ -178,10 +175,9 @@ describe('MultichainAccountAddressListPage', () => {
   it('decodes and renders account group with special characters in ID', () => {
     const specialGroupId =
       'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
-    const encodedSpecialGroupId = encodeURIComponent(specialGroupId);
 
-    mockUseParams.mockReturnValue({
-      accountGroupId: encodedSpecialGroupId,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(specialGroupId)}`,
     });
 
     const store = configureStore({
@@ -199,9 +195,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('renders with different query parameters correctly', () => {
-    mockUseLocation.mockReturnValue({ search: '?source=other' });
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}&source=other`,
     });
 
     const store = configureStore({
@@ -216,12 +211,16 @@ describe('MultichainAccountAddressListPage', () => {
     expect(
       screen.getByText(`${MOCK_GROUP_NAME} / Addresses`),
     ).toBeInTheDocument();
-    expect(screen.queryByText('Receiving address')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        messages.destinationAccountPickerSearchPlaceholderToSolana.message,
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it('displays fallback text when account group ID is null', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: null,
+    mockUseLocation.mockReturnValue({
+      search: '',
     });
 
     const store = configureStore({
@@ -236,9 +235,9 @@ describe('MultichainAccountAddressListPage', () => {
     expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
   });
 
-  it('displays fallback text when account group ID is undefined', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: undefined,
+  it('displays fallback text when account group ID is missing', () => {
+    mockUseLocation.mockReturnValue({
+      search: '?other=param',
     });
 
     const store = configureStore({
@@ -255,8 +254,8 @@ describe('MultichainAccountAddressListPage', () => {
 
   describe('tracing', () => {
     it('ends ShowAccountAddressList trace on mount', () => {
-      mockUseParams.mockReturnValue({
-        accountGroupId: MOCK_GROUP_ID,
+      mockUseLocation.mockReturnValue({
+        search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
       });
 
       const store = configureStore(mockState);

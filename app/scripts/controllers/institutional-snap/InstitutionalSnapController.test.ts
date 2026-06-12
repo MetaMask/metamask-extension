@@ -158,9 +158,9 @@ describe('InstitutionalSnapController', () => {
     });
   });
 
-  describe('deferPublicationHook', () => {
+  describe('publishHook', () => {
     it('should handle deferred publication', async () => {
-      const result = await controller.deferPublicationHook(mockTransactionMeta);
+      const result = await controller.publishHook(mockTransactionMeta);
 
       expect(result).toBe(false);
       expect(messenger.call).toHaveBeenCalledWith(
@@ -206,7 +206,7 @@ describe('InstitutionalSnapController', () => {
         return {};
       });
 
-      const result = await controller.deferPublicationHook(mockTransactionMeta);
+      const result = await controller.publishHook(mockTransactionMeta);
       expect(result).toBe(true);
     });
   });

@@ -35,6 +35,7 @@ export default function Asset({
   accountType,
   assetItemProps = {},
   isDestinationToken = false,
+  rwaData,
 }: AssetProps) {
   const { formatCurrency, formatTokenQuantity } = useFormatters();
 
@@ -79,6 +80,7 @@ export default function Asset({
       isDestinationToken={isDestinationToken}
       address={address}
       accountType={accountType}
+      rwaData={rwaData}
       {...assetItemProps}
     />
   );

@@ -22,10 +22,12 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
             style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; padding-left: 0px; padding-right: 0px;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+              style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
+                style="flex-shrink: 0;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -65,14 +67,52 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="confirmation__details-network-name"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="transaction-details-origin-row"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -113,10 +153,12 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -177,10 +219,12 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
         style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+          style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
+            style="flex-shrink: 0;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -225,25 +269,25 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
             class="mm-box mm-text mm-text--body-md"
             data-testid="native-currency"
           >
-            $0.04
+            $0.07
           </p>
           <div
-            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
+            class="gap-1 items-center inline-flex"
             data-testid="selected-gas-fee-token"
-            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
+            style="cursor: default;"
           >
             <div
-              class="mm-box"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
               data-testid="native-icon"
             >
-              <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+              <span
+                class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
               >
                 E
-              </div>
+              </span>
             </div>
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
             >
               ETH
             </p>
@@ -272,10 +316,12 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -301,8 +347,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
             <span
               data-testid="gas-timing-time"
             >
-              ~
-              0 sec
+              ~0 sec
             </span>
           </p>
         </div>

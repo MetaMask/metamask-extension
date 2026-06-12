@@ -1,5 +1,4 @@
 import { omit, pick } from 'lodash';
-import { ApprovalType } from '@metamask/controller-utils';
 import {
   deleteInterface,
   rejectPendingApproval,
@@ -7,55 +6,7 @@ import {
   setNewNetworkAdded,
   addNetwork,
 } from '../../../../store/actions';
-import {
-  HYPERLIQUID_APPROVAL_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-} from '../../../../../shared/constants/app';
-import smartTransactionStatusPage from './smart-transaction-status-page';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import createSnapAccount from './create-snap-account';
-import removeSnapAccount from './remove-snap-account';
-import snapAccountRedirect from './snap-account-redirect';
-import createNamedSnapAccount from './create-named-snap-account';
-///: END:ONLY_INCLUDE_IF
-import switchEthereumChain from './switch-ethereum-chain';
-import success from './success';
-import error from './error';
-import snapAlert from './snaps/snap-alert/snap-alert';
-import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
-import snapPrompt from './snaps/snap-prompt/snap-prompt';
-import snapDefault from './snaps/snap-default/snap-default';
-import hyperliquidReferralConsent from './hyperliquid-referral-consent';
-
-const APPROVAL_TEMPLATES = {
-  [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
-  // Use ApprovalType from utils controller
-  [ApprovalType.ResultSuccess]: success,
-  [ApprovalType.ResultError]: error,
-  [SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage]:
-    smartTransactionStatusPage,
-  [ApprovalType.SnapDialogAlert]: snapAlert,
-  [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
-  [ApprovalType.SnapDialogPrompt]: snapPrompt,
-  [ApprovalType.SnapDialogDefault]: snapDefault,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
-    createSnapAccount,
-  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval]:
-    removeSnapAccount,
-  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount]:
-    createNamedSnapAccount,
-  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
-    snapAccountRedirect,
-  ///: END:ONLY_INCLUDE_IF
-  [HYPERLIQUID_APPROVAL_TYPE]: hyperliquidReferralConsent,
-};
-
-export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
-  Object.keys(APPROVAL_TEMPLATES);
+import { APPROVAL_TEMPLATES } from './approval-templates';
 
 const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',

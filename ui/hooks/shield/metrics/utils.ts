@@ -4,7 +4,7 @@ import {
   getBillingIntervalForMetrics,
   getShieldMarketingTrackingProps,
   getUserBalanceCategory,
-} from '../../../../shared/modules/shield';
+} from '../../../../shared/lib/shield';
 import { CaptureShieldPaymentMethodChangeEventParams } from '../../../../shared/types';
 import {
   CaptureShieldCtaClickedEventParams,

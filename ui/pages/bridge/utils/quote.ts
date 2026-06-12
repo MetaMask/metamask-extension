@@ -1,14 +1,8 @@
 import { BigNumber } from 'bignumber.js';
-import {
-  type QuoteResponse,
-  formatChainIdToCaip,
-  formatAddressToCaipReference,
-  isNativeAddress,
-  isNonEvmChainId,
-} from '@metamask/bridge-controller';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import { type QuoteResponse } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 
@@ -16,8 +10,13 @@ export const formatTokenAmount = (
   locale: string,
   amount: string,
   symbol: string = '',
+  roundingMode?: number,
 ) => {
-  const stringifiedAmount = formatAmount(locale, new BigNumber(amount));
+  const stringifiedAmount = formatAmount(
+    locale,
+    new BigNumber(amount),
+    roundingMode,
+  );
 
   return [stringifiedAmount, symbol].join(' ').trim();
 };
@@ -141,70 +140,71 @@ export const safeAmountForCalc = (
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,
-  toChainId,
-  fromChainId,
   isQuoteExpired,
-  insufficientBal,
 }: {
   activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
-  toChainId?: Hex | CaipChainId;
-  fromChainId?: Hex | CaipChainId;
   isQuoteExpired: boolean;
-  insufficientBal?: boolean;
 }): boolean => {
-  // 1. Ignore quotes that are expired (unless the only reason is an `insufficientBal` override for non-EVM chains)
-  if (
-    isQuoteExpired &&
-    (!insufficientBal ||
-      // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
-      (fromChainId && isNonEvmChainId(fromChainId)))
-  ) {
+  // 1. Ignore quotes that are expired
+  if (isQuoteExpired) {
     return true;
   }
 
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
-    const destChainId = activeQuote.quote?.destChainId;
-
-    // For non-EVM chains (Solana, Bitcoin, Tron), don't use toLowerCase() as addresses
-    // are case-sensitive (base58 encoding uses both upper and lowercase letters)
-    const isNonEvmDest = destChainId && isNonEvmChainId(destChainId);
-
-    // Extract raw addresses from CAIP-19 format if present
-    // The bridge API returns plain addresses, but UI may store CAIP-19 asset IDs
-    const quoteDestAddressRaw = activeQuote.quote?.destAsset?.address
-      ? formatAddressToCaipReference(activeQuote.quote.destAsset.address)
-      : '';
-    const selectedDestAddressRaw = toToken.address
-      ? formatAddressToCaipReference(toToken.address)
-      : '';
-
-    // For EVM chains, normalize to lowercase for comparison (addresses are case-insensitive)
-    // For non-EVM chains, preserve case (base58 addresses are case-sensitive)
-    const quoteDestAddress = isNonEvmDest
-      ? quoteDestAddressRaw
-      : quoteDestAddressRaw.toLowerCase();
-    const selectedDestAddress = isNonEvmDest
-      ? selectedDestAddressRaw
-      : selectedDestAddressRaw.toLowerCase();
-
-    const quoteDestChainIdCaip = destChainId
-      ? formatChainIdToCaip(destChainId)
-      : '';
-    const selectedDestChainIdCaip = toChainId
-      ? formatChainIdToCaip(toChainId)
-      : '';
-
-    const addressMatch =
-      quoteDestAddress === selectedDestAddress ||
-      (isNativeAddress(quoteDestAddress) &&
-        isNativeAddress(selectedDestAddress));
-    const chainMatch = quoteDestChainIdCaip === selectedDestChainIdCaip;
-    const isInvalid = !(addressMatch && chainMatch);
-
-    return isInvalid;
+    return (
+      activeQuote.quote.destAsset.assetId.toLowerCase() !==
+      toToken.assetId.toLowerCase()
+    );
   }
 
   return false;
+};
+
+/**
+ * Converts basis points (BPS) to percentage
+ * 1 BPS = 0.01%
+ *
+ * @param bps - The value in basis points (e.g., "87.5" or 87.5)
+ * @returns The percentage value as a string (e.g., "0.875")
+ */
+export const bpsToPercentage = (
+  bps: string | number | undefined,
+): string | undefined => {
+  if (bps === undefined || bps === null) {
+    return undefined;
+  }
+
+  const bpsValue = typeof bps === 'string' ? parseFloat(bps) : bps;
+
+  if (isNaN(bpsValue)) {
+    return undefined;
+  }
+
+  // BPS to percentage: divide by 100
+  return (bpsValue / 100).toString();
+};
+
+export const readMmFee = (quote: QuoteResponse) => {
+  // Get the fee percentage from the quote or fallback to default
+  // @ts-expect-error: controller types are not up to date yet
+  const quoteBpsFee = quote.quote.feeData?.metabridge?.quoteBpsFee;
+  // @ts-expect-error: controller types are not up to date yet
+  const baseBpsFee = quote.quote.feeData?.metabridge?.baseBpsFee;
+  const quoteFeePercentage = bpsToPercentage(quoteBpsFee);
+  const baseFeePercentage = bpsToPercentage(baseBpsFee);
+
+  const isDiscounted = Boolean(
+    quoteFeePercentage &&
+    baseFeePercentage &&
+    baseFeePercentage !== quoteFeePercentage &&
+    Boolean(quoteBpsFee),
+  );
+
+  return {
+    isDiscounted,
+    baseFeePercentage,
+    quoteFeePercentage,
+  };
 };

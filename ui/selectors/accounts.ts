@@ -5,21 +5,22 @@ import {
   CaipChainId,
   EthScope,
   TrxAccountType,
+  isEvmAccountType,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { createSelector } from 'reselect';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { createSelector } from 'reselect';
 
-export type AccountsState = {
-  metamask: AccountsControllerState;
-};
+import {
+  type AccountsState,
+  getSelectedInternalAccount,
+} from '../../shared/lib/selectors/accounts';
+import { EMPTY_OBJECT } from './shared';
 
 export function isBitcoinAccount(account: InternalAccount) {
   return Boolean(
     account &&
-      Object.values(BtcAccountType).includes(account.type as BtcAccountType),
+    Object.values(BtcAccountType).includes(account.type as BtcAccountType),
   );
 }
 
@@ -50,19 +51,23 @@ export const getInternalAccounts = createSelector(
   (accounts) => Object.values(accounts),
 );
 
+// Uses EMPTY_OBJECT to preserve referential equality when accountIdByAddress
+// is undefined, so downstream createSelector consumers don't recompute.
+export const getAccountIdByAddress = (state: AccountsState) =>
+  state.metamask.accountIdByAddress ?? EMPTY_OBJECT;
+
 export const getInternalAccountByAddress = createSelector(
-  [getInternalAccounts, (_, address: string) => address],
-  (accounts, address) => {
-    return accounts.find((account) =>
-      isEqualCaseInsensitive(account.address, address),
-    );
+  [
+    getInternalAccountsObject,
+    getAccountIdByAddress,
+    (_, address: string) => address,
+  ],
+  (accounts, accountIdByAddress, address) => {
+    const accountId =
+      accountIdByAddress[address] ?? accountIdByAddress[address?.toLowerCase()];
+    return accountId ? accounts[accountId] : undefined;
   },
 );
-
-export function getSelectedInternalAccount(state: AccountsState) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
-}
 
 export const isSelectedInternalAccountEth = createSelector(
   getSelectedInternalAccount,
@@ -74,14 +79,15 @@ export const isSelectedInternalAccountEth = createSelector(
   },
 );
 
+export const selectEvmAddress = createSelector(
+  getSelectedInternalAccount,
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
+);
+
 export const isSelectedInternalAccountSolana = createSelector(
   getSelectedInternalAccount,
   (account) => isSolanaAccount(account),
-);
-
-export const hasCreatedSolanaAccount = createSelector(
-  getInternalAccounts,
-  (accounts) => accounts.some((account) => isSolanaAccount(account)),
 );
 
 /**

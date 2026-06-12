@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -9,6 +9,7 @@ import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-de
 import ShieldClaimPage from '../../page-objects/pages/settings/shield/shield-claim-page';
 import ShieldClaimsListPage from '../../page-objects/pages/settings/shield/shield-claims-list-page';
 import ShieldSubscriptionApprovePage from '../../page-objects/pages/settings/shield/shield-subscription-approve-page';
+import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import {
   MOCK_CLAIM_2,
   MOCK_CLAIM_APPROVED,
@@ -17,23 +18,55 @@ import {
   MOCK_CLAIMS_3_PENDING,
 } from '../../helpers/shield/constants';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
+import { NETWORK_CLIENT_ID } from '../../constants';
+
+const isUnifiedAssetsEnabled = true;
 
 // Local fixture for this spec file
 function createShieldFixture() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  let builder = new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
       },
     })
-    .withAccountTracker({
-      accountsByChainId: {
+    .withTokensController({
+      allTokens: {
         '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              symbol: 'WETH',
+              decimals: 18,
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
         },
+      },
+    });
+
+  if (isUnifiedAssetsEnabled) {
+    builder = builder.withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+        },
+      },
+    });
+  }
+
+  return builder;
+}
+
+// Local fixture for cancelled subscription test - prevents entry modal from showing
+function createShieldFixtureCancelled() {
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
       },
     })
     .withTokensController({
@@ -52,32 +85,22 @@ function createShieldFixture() {
       },
     })
     .withAppStateController({
-      showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
+      showShieldEntryModalOnce: true, // Prevent entry modal from showing since subscription exists (even if cancelled)
     });
 }
 
 // Local fixture for crypto payment tests with USDC and USDT
 function createShieldFixtureCrypto() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  let builder = new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
       },
     })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
-        },
-      },
-    })
     .withTokensController({
       allTokens: {
         '0x1': {
-          // USDC and USDT tokens on Mainnet
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -96,10 +119,113 @@ function createShieldFixtureCrypto() {
           ],
         },
       },
-    })
-    .withAppStateController({
-      showShieldEntryModalOnce: null,
     });
+
+  if (isUnifiedAssetsEnabled) {
+    builder = builder.withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
+            amount: '100',
+          },
+          'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
+            amount: '100',
+          },
+        },
+      },
+      assetsInfo: {
+        'eip155:1/slip44:60': {
+          type: 'native',
+          symbol: 'ETH',
+          name: 'Ether',
+          decimals: 18,
+        },
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
+          type: 'erc20',
+          symbol: 'USDC',
+          name: 'USD Coin',
+          decimals: 6,
+          image: 'https://assets.metamask.io/usdc.png',
+        },
+        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
+          type: 'erc20',
+          symbol: 'USDT',
+          name: 'Tether USD',
+          decimals: 6,
+          image: 'https://assets.metamask.io/usdt.png',
+        },
+      },
+    });
+  }
+
+  return builder;
+}
+
+/**
+ * Accounts API mocks for unified-assets crypto payment flow (`main` uses
+ * `TokenBalancesController` instead).
+ *
+ * @param server - Mockttp server.
+ */
+async function shieldCryptoPaymentMockUnified(server: Mockttp) {
+  const shieldMockttpService = new ShieldMockttpService();
+  await shieldMockttpService.setup(server, {
+    isActiveUser: true,
+    defaultPaymentMethod: 'crypto',
+  });
+
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
+        partialSupport: { balances: [42220, 43114] },
+      },
+    }));
+
+  return server
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: 3,
+        unprocessedNetworks: [],
+        balances: [
+          {
+            accountId: 'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            assetId: 'eip155:1/slip44:60',
+            balance: '25',
+          },
+          {
+            accountId: 'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            assetId:
+              'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            balance: '1000',
+          },
+          {
+            accountId: 'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            assetId:
+              'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+            balance: '1000',
+          },
+        ],
+      },
+    }));
+}
+
+/**
+ * @param server - Mockttp server.
+ */
+function shieldCryptoPaymentMockLegacy(server: Mockttp) {
+  const shieldMockttpService = new ShieldMockttpService();
+  return shieldMockttpService.setup(server, {
+    isActiveUser: true,
+    defaultPaymentMethod: 'crypto',
+  });
 }
 
 describe('Shield Plan Stripe Integration', function () {
@@ -117,7 +243,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -172,6 +298,166 @@ describe('Shield Plan Stripe Integration', function () {
       );
     });
 
+    it('saves and deletes draft claim successfully', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (mockServer: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(mockServer, {
+              isActiveUser: true,
+            });
+          },
+        },
+        async ({ driver }) => {
+          await login(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToTransactionShieldPage();
+
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.checkPageIsLoaded();
+
+          await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickSubmitClaimButton();
+
+          const shieldClaimPage = new ShieldClaimPage(driver);
+          await shieldClaimPage.checkPageIsLoaded();
+
+          await shieldClaimPage.fillForm({
+            email: MOCK_CLAIM_2.email,
+            reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
+            chainId: '0x1',
+            impactedTxnHash: MOCK_CLAIM_2.impactedTxHash,
+            impactedWalletName: 'Account 1',
+            description: MOCK_CLAIM_2.description,
+            uploadTestFile: true,
+          });
+
+          await shieldClaimPage.clickSaveDraftButton();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.checkDraftSectionDisplayed();
+          await shieldClaimsListPage.checkDraftClaimExists();
+          await shieldClaimsListPage.clickDraftClaim();
+
+          await shieldClaimPage.checkPageIsLoaded();
+
+          await shieldClaimPage.fillEmail('updated@example.com');
+          await shieldClaimPage.checkDraftSavedToast();
+          await shieldClaimPage.waitForDraftSavedToastToDisappear();
+
+          await shieldClaimPage.selectImpactedWalletName('Account 1');
+          await shieldClaimPage.checkDraftSavedToast();
+          await shieldClaimPage.waitForDraftSavedToastToDisappear();
+
+          await shieldClaimPage.selectNetwork('0x1');
+          await shieldClaimPage.checkDraftSavedToast();
+          await shieldClaimPage.waitForDraftSavedToastToDisappear();
+
+          await shieldClaimPage.fillDescription('Updated description');
+          await shieldClaimPage.clickBackButton();
+
+          await shieldClaimPage.checkDraftSavedToast();
+          await shieldClaimPage.waitForDraftSavedToastToDisappear();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickDraftClaim();
+
+          await shieldClaimPage.checkPageIsLoaded();
+          await shieldClaimPage.verifyClaimData({
+            email: 'updated@example.com',
+            reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
+            impactedTxHash: MOCK_CLAIM_2.impactedTxHash,
+            description: 'Updated description',
+          });
+
+          await shieldClaimPage.clickDeleteDraftButton();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.checkDraftClaimDeleted();
+        },
+      );
+    });
+
+    it('saves and submits the claim successfully', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (mockServer: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(mockServer, {
+              isActiveUser: true,
+            });
+          },
+        },
+        async ({ driver }) => {
+          await login(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToTransactionShieldPage();
+
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.checkPageIsLoaded();
+
+          await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickSubmitClaimButton();
+
+          const shieldClaimPage = new ShieldClaimPage(driver);
+          await shieldClaimPage.checkPageIsLoaded();
+
+          await shieldClaimPage.fillForm({
+            email: MOCK_CLAIM_2.email,
+            reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
+            chainId: '0x1',
+            impactedTxnHash: MOCK_CLAIM_2.impactedTxHash,
+            impactedWalletName: 'Account 1',
+            description: MOCK_CLAIM_2.description,
+            uploadTestFile: true,
+          });
+
+          await shieldClaimPage.clickSaveDraftButton();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.checkDraftSectionDisplayed();
+          await shieldClaimsListPage.checkDraftClaimExists();
+          await shieldClaimsListPage.clickDraftClaim();
+
+          await shieldClaimPage.checkPageIsLoaded();
+          await shieldClaimPage.waitForDraftSavedToastToDisappear();
+
+          await shieldClaimPage.clickSubmitButton();
+
+          await shieldClaimPage.checkSuccessMessageDisplayed();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+
+          const { claimId } = SUBMIT_CLAIMS_RESPONSE;
+          await shieldClaimsListPage.checkClaimExists(claimId);
+        },
+      );
+    });
+
     it('displays error when transaction is not eligible', async function () {
       await withFixtures(
         {
@@ -184,9 +470,13 @@ describe('Shield Plan Stripe Integration', function () {
               claimErrorCode: 'E102', // TRANSACTION_NOT_ELIGIBLE
             });
           },
+          ignoredConsoleErrors: [
+            'Failed to submit shield claim',
+            'SubmitClaimError: This transaction is not done within MetaMask, hence it is not eligible for claims',
+          ],
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -240,9 +530,13 @@ describe('Shield Plan Stripe Integration', function () {
               claimErrorCode: 'E203', // DUPLICATE_CLAIM_EXISTS
             });
           },
+          ignoredConsoleErrors: [
+            'Failed to submit shield claim',
+            'SubmitClaimError: A claim has already been submitted for this transaction hash.',
+          ],
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -298,7 +592,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -339,7 +633,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -402,7 +696,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -445,7 +739,7 @@ describe('Shield Plan Stripe Integration', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -461,14 +755,13 @@ describe('Shield Plan Stripe Integration', function () {
         await shieldDetailPage.checkPageIsLoaded();
 
         // Cancel the subscription
+        await shieldDetailPage.clickManagePlanButton();
         await shieldDetailPage.cancelSubscription();
-
-        await shieldDetailPage.checkNotificationShieldBanner(
-          'Your plan will be cancelled on Nov 3, 2025.',
-        );
 
         // Renew the subscription
         await shieldDetailPage.clickRenewButton();
+
+        await settingsPage.goToTransactionShieldPage();
 
         await shieldDetailPage.checkNotificationShieldBannerRemoved();
         await shieldDetailPage.checkMembershipStatus('Active plan');
@@ -477,30 +770,41 @@ describe('Shield Plan Stripe Integration', function () {
   });
 
   it('should be able to change payment method from crypto to crypto (USDC -> USDT)', async function () {
-    await withFixtures(
-      {
-        fixtures: createShieldFixtureCrypto()
+    const cryptoPaymentFixtures = isUnifiedAssetsEnabled
+      ? createShieldFixtureCrypto()
+          .withAssetsController({
+            assetsBalance: {
+              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+                'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
+                  amount: '1000',
+                },
+                'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
+                  amount: '1000',
+                },
+              },
+            },
+          })
+          .build()
+      : createShieldFixtureCrypto()
           .withTokenBalancesController({
             tokenBalances: {
               '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
                 '0x1': {
-                  // 1000 USDT (6 decimals)
                   '0xdac17f958d2ee523a2206206994597c13d831ec7': '0x3B9ACA00',
-                  // 1000 USDC (6 decimals)
                   '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '0x3B9ACA00',
                 },
               },
             },
           })
-          .build(),
+          .build();
+
+    await withFixtures(
+      {
+        fixtures: cryptoPaymentFixtures,
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          const shieldMockttpService = new ShieldMockttpService();
-          return shieldMockttpService.setup(server, {
-            isActiveUser: true,
-            defaultPaymentMethod: 'crypto',
-          });
-        },
+        testSpecificMock: isUnifiedAssetsEnabled
+          ? shieldCryptoPaymentMockUnified
+          : shieldCryptoPaymentMockLegacy,
         localNodeOptions: [
           {
             type: 'anvil',
@@ -513,7 +817,7 @@ describe('Shield Plan Stripe Integration', function () {
         ],
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -527,7 +831,9 @@ describe('Shield Plan Stripe Integration', function () {
         const shieldDetailPage = new ShieldDetailPage(driver);
         await shieldDetailPage.checkPageIsLoaded();
 
-        await shieldDetailPage.checkPaymentMethod('USDC');
+        await shieldDetailPage.clickManagePlanButton();
+
+        await shieldDetailPage.checkPaymentMethod('Crypto (USDC)');
         await shieldDetailPage.clickPaymentMethod();
 
         await shieldDetailPage.selectPaymentMethodInModal('Pay with USDT');
@@ -542,7 +848,58 @@ describe('Shield Plan Stripe Integration', function () {
 
         await shieldSubscriptionApprovePage.clickFooterConfirmButton();
         await shieldDetailPage.checkPageIsLoaded();
-        await shieldDetailPage.checkPaymentMethod('USDT');
+
+        await shieldDetailPage.clickManagePlanButton();
+        await shieldDetailPage.checkPaymentMethod('Crypto (USDT)');
+      },
+    );
+  });
+
+  it('should resubscribe the fully cancelled subscription to card payment', async function () {
+    await withFixtures(
+      {
+        fixtures: createShieldFixtureCancelled().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          const shieldMockttpService = new ShieldMockttpService();
+          // Start with subscription cancelled (status: 'canceled')
+          return shieldMockttpService.setup(server, {
+            isActiveUser: true,
+            isSubscriptionCancelled: true,
+          });
+        },
+      },
+      async ({ driver }) => {
+        await login(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.waitForNetworkAndDOMReady();
+
+        await new HeaderNavbar(driver).openSettingsPage();
+
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+
+        await settingsPage.goToTransactionShieldPage();
+
+        const shieldDetailPage = new ShieldDetailPage(driver);
+        await shieldDetailPage.checkPageIsLoaded();
+
+        await shieldDetailPage.checkMembershipStatus('Inactive');
+
+        await shieldDetailPage.clickRenewButtonWhenCancelled();
+
+        const shieldPlanPage = new ShieldPlanPage(driver);
+        await shieldPlanPage.checkPageIsLoaded();
+
+        await shieldPlanPage.completeShieldPlanSubscriptionFlow(
+          'annual',
+          'card',
+        );
+
+        await shieldDetailPage.checkPageIsLoaded();
+        await shieldDetailPage.checkMembershipStatus('Active plan');
       },
     );
   });

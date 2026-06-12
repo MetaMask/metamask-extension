@@ -9,7 +9,13 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '../../../components/component-library';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import type { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -19,15 +25,19 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  getCurrentKeyring,
+  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
+  getIsPasskeyFeatureAvailable,
   getIsSocialLoginFlow,
 } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import {
   setFirstTimeFlowType,
   startOAuthLogin,
@@ -40,36 +50,37 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
   isUserCancelledLoginError,
   OAuthErrorMessages,
-} from '../../../../shared/modules/error';
+} from '../../../../shared/lib/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
 import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
-import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE, LoginErrorType } from './types';
+import {
+  LOGIN_ERROR,
+  LOGIN_OPTION,
+  LOGIN_TYPE,
+  LoginErrorType,
+  LoginType,
+} from './types';
 import LoginErrorModal from './login-error-modal';
 
 const MetaMaskWordMarkAnimation = lazy(
   () =>
     // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./metamask-wordmark-animation') as unknown as Promise<{
-      default: ComponentType<{
-        setIsAnimationComplete: (isAnimationComplete: boolean) => void;
-        isAnimationComplete?: boolean;
-        skipTransition?: boolean;
-      }>;
+      default: ComponentType<
+        React.PropsWithChildren<{
+          setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+          isAnimationComplete?: boolean;
+          skipTransition?: boolean;
+        }>
+      >;
     }>,
 );
 
@@ -77,10 +88,12 @@ const FoxAppearAnimation = lazy(
   () =>
     // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./fox-appear-animation') as unknown as Promise<{
-      default: ComponentType<{
-        isLoader?: boolean;
-        skipTransition?: boolean;
-      }>;
+      default: ComponentType<
+        React.PropsWithChildren<{
+          isLoader?: boolean;
+          skipTransition?: boolean;
+        }>
+      >;
     }>,
 );
 
@@ -98,6 +111,8 @@ export default function OnboardingWelcome() {
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
 
@@ -106,7 +121,8 @@ export default function OnboardingWelcome() {
 
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
-    animationCompleted?.MetamaskWordMarkAnimation,
+    animationCompleted?.MetamaskWordMarkAnimation ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
   );
 
   // In test environments or when returning from another page, skip animations
@@ -148,6 +164,8 @@ export default function OnboardingWelcome() {
         );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+      } else if (isPasskeyFeatureAvailable) {
+        navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
       } else {
         navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
@@ -178,11 +196,15 @@ export default function OnboardingWelcome() {
     isFireFox,
     isWalletResetInProgress,
     isSocialLoginFLow,
+    isPasskeyFeatureAvailable,
   ]);
 
-  const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
-    trackEvent;
+  const {
+    trackEvent,
+    bufferedTrace,
+    bufferedEndTrace,
+    onboardingParentContext,
+  } = useContext(MetaMetricsContext);
 
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -193,7 +215,7 @@ export default function OnboardingWelcome() {
       event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: MetaMetricsEventAccountType.Default,
+        account_type: accountTypeForMetrics,
       },
     });
     bufferedTrace?.({
@@ -203,7 +225,14 @@ export default function OnboardingWelcome() {
     });
 
     navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
+  }, [
+    dispatch,
+    navigate,
+    trackEvent,
+    onboardingParentContext,
+    bufferedTrace,
+    accountTypeForMetrics,
+  ]);
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -213,7 +242,7 @@ export default function OnboardingWelcome() {
       event: MetaMetricsEventName.WalletImportStarted,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: MetaMetricsEventAccountType.Imported,
+        account_type: accountTypeForMetrics,
       },
     });
     bufferedTrace?.({
@@ -223,10 +252,17 @@ export default function OnboardingWelcome() {
     });
 
     navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
+  }, [
+    dispatch,
+    navigate,
+    trackEvent,
+    onboardingParentContext,
+    bufferedTrace,
+    accountTypeForMetrics,
+  ]);
 
   const handleSocialLogin = useCallback(
-    async (socialConnectionType) => {
+    async (socialConnectionType: LoginType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
         bufferedTrace?.({
           name: TraceName.OnboardingSocialLoginAttempt,
@@ -236,7 +272,7 @@ export default function OnboardingWelcome() {
         });
         const isNewUser = await dispatch(
           startOAuthLogin(
-            socialConnectionType,
+            socialConnectionType as AuthConnection,
             bufferedTrace,
             bufferedEndTrace,
             trackEvent,
@@ -258,7 +294,7 @@ export default function OnboardingWelcome() {
   );
 
   const handleSocialLoginError = useCallback(
-    (error, socialConnectionType) => {
+    (error: Error | undefined, loginType: LoginType) => {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
@@ -268,13 +304,6 @@ export default function OnboardingWelcome() {
         return;
       }
 
-      bufferedTrace?.({
-        name: TraceName.OnboardingSocialLoginError,
-        op: TraceOperation.OnboardingError,
-        tags: { provider: socialConnectionType, errorMessage },
-        parentContext: onboardingParentContext?.current,
-      });
-      bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginError });
       bufferedEndTrace?.({
         name: TraceName.OnboardingSocialLoginAttempt,
         data: { success: false },
@@ -285,30 +314,61 @@ export default function OnboardingWelcome() {
         return;
       }
 
-      if (
-        errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR ||
-        errorMessage === OAuthErrorMessages.NO_AUTH_CODE_FOUND_ERROR
-      ) {
+      // Telegram-specific failures are most commonly caused by an outdated
+      // Telegram desktop app — the OAuth handshake happens inside Telegram's
+      // embedded webview which silently fails on old clients. Route those to
+      // a Telegram-specific modal so users know to update their Telegram app
+      // rather than seeing a generic connection error.
+      if (loginType === LOGIN_TYPE.TELEGRAM) {
+        const isTelegramVerifyFailure =
+          /Telegram verify failed:\s*(403|404)/u.test(errorMessage);
+        const isLikelyOutdatedApp =
+          isTelegramVerifyFailure ||
+          errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR;
+
+        if (isLikelyOutdatedApp) {
+          trackEvent({
+            category: MetaMetricsEventCategory.Onboarding,
+            event: MetaMetricsEventName.SocialLoginFailed,
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: `${MetaMetricsEventAccountType.Default}_${loginType}`,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              is_rehydration: 'unknown',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              failure_type: 'outdated_app',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              error_category: 'telegram_app',
+            },
+          });
+          setLoginError(LOGIN_ERROR.TELEGRAM_OUTDATED);
+          return;
+        }
+      }
+
+      if (errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR) {
         setLoginError(LOGIN_ERROR.UNABLE_TO_CONNECT);
         return;
       }
 
       setLoginError(LOGIN_ERROR.GENERIC);
     },
-    [onboardingParentContext, bufferedTrace, bufferedEndTrace],
+    [bufferedEndTrace, trackEvent],
   );
 
   const onSocialLoginCreateClick = useCallback(
-    async (socialConnectionType) => {
+    async (socialConnectionType: LoginType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
+      // here, we cannot use the selector yet because the social login flow is not complete and the state is not updated yet
+      const accountTypeForSocialLoginMetrics = `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`;
 
-      trackEvent({
+      await trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupStarted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+          account_type: accountTypeForSocialLoginMetrics,
         },
       });
 
@@ -316,12 +376,12 @@ export default function OnboardingWelcome() {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
         // Track wallet setup completed for social login users
-        trackEvent({
+        await trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+            account_type: accountTypeForSocialLoginMetrics,
           },
         });
         if (isNewUser) {
@@ -337,7 +397,7 @@ export default function OnboardingWelcome() {
           navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error as Error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
@@ -354,14 +414,18 @@ export default function OnboardingWelcome() {
   );
 
   const onSocialLoginImportClick = useCallback(
-    async (socialConnectionType) => {
+    async (socialConnectionType: LoginType) => {
       setIsLoggingIn(true);
-      trackEvent({
+
+      // here, we cannot use the selector yet because the social login flow is not complete and the state is not updated yet
+      const accountTypeForSocialLoginMetrics = `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`;
+
+      await trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletImportStarted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+          account_type: accountTypeForSocialLoginMetrics,
         },
       });
 
@@ -369,12 +433,12 @@ export default function OnboardingWelcome() {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
         // Track wallet login completed for existing social login users
-        trackEvent({
+        await trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+            account_type: accountTypeForSocialLoginMetrics,
           },
         });
 
@@ -391,7 +455,7 @@ export default function OnboardingWelcome() {
           navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error as Error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
@@ -407,8 +471,8 @@ export default function OnboardingWelcome() {
     ],
   );
 
-  const handleLoginError = useCallback((error) => {
-    if (isUserCancelledLoginError(error)) {
+  const handleLoginError = useCallback((error: unknown) => {
+    if (isUserCancelledLoginError(error as Error | undefined)) {
       setLoginError(null);
     } else {
       setLoginError(LOGIN_ERROR.GENERIC);
@@ -416,7 +480,7 @@ export default function OnboardingWelcome() {
   }, []);
 
   const handleLogin = useCallback(
-    async (loginType, loginOption) => {
+    async (loginType: LoginType, loginOption: string) => {
       try {
         if (!isFireFox) {
           // reset the participate in meta metrics in case it was set to true from previous login attempts
@@ -447,10 +511,11 @@ export default function OnboardingWelcome() {
         if (!isFireFox) {
           // automatically set participate in meta metrics to true for social login users in chrome
           dispatch(setParticipateInMetaMetrics(true));
-          // Set pna25Acknowledged to true for social login users if feature flag is enabled
-          if (process.env.EXTENSION_UX_PNA25) {
-            dispatch(setPna25Acknowledged(true));
-          }
+        }
+
+        if (!isFireFox) {
+          // Set pna25Acknowledged to true for social login users (Chrome)
+          dispatch(setPna25Acknowledged(true, true));
         }
       } catch (error) {
         handleLoginError(error);
@@ -470,13 +535,10 @@ export default function OnboardingWelcome() {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      className="welcome-container"
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
+      className="welcome-container h-full w-full"
     >
       {!isLoggingIn && (
         <Suspense fallback={<Box />}>
@@ -504,7 +566,7 @@ export default function OnboardingWelcome() {
 
           {loginError !== null && (
             <LoginErrorModal
-              onDone={() => setLoginError(null)}
+              onClose={() => setLoginError(null)}
               loginError={loginError}
             />
           )}

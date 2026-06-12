@@ -20,8 +20,8 @@ import {
   createTextItems,
   getAmount,
   formatIsoDateString,
-  getNetworkDetailsByChainId,
   getUsdAmount,
+  getNativeCurrencyLogoByChainId,
 } from '../../../../helpers/utils/notification.util';
 import { t } from '../../../../../shared/lib/translate';
 import {
@@ -137,7 +137,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           />
         ),
         Asset: ({ notification }) => {
-          const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
+          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
           );
           return (
@@ -165,7 +165,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           );
         },
         AssetReceived: ({ notification }) => {
-          const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
+          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
           );
           return (

@@ -5,9 +5,14 @@ class TransactionDetailsPage {
 
   private readonly solanaExplorerUrl = 'https://solscan.io';
 
+  private readonly explorerTestId = 'transaction-details-block-explorer';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
+
+  private readonly addressInActivityLog = (address: string) =>
+    `[data-address="${address}"]`;
 
   private readonly amount = (amount: string) => ({
     testId: 'transaction-list-item-primary-currency',
@@ -20,19 +25,17 @@ class TransactionDetailsPage {
   });
 
   private readonly fromToLink = (fromToAddress: string) =>
-    `a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`;
+    `[data-address="${fromToAddress}"]`;
 
   private readonly hashLink = (txHash: string) =>
-    `a[href='${this.solanaExplorerUrl}/tx/${txHash}']`;
+    `[data-testid="${this.explorerTestId}"][data-explorer-url="${this.solanaExplorerUrl}/tx/${txHash}"]`;
 
   private readonly status = (status: string) => ({
-    tag: 'p',
-    text: status,
+    testId: `transaction-details-status-${status}`,
   });
 
   private readonly viewDetailsLink = {
-    tag: 'button',
-    text: 'View details',
+    testId: this.explorerTestId,
   };
 
   async checkTransactionAmount(amount: string): Promise<void> {
@@ -57,6 +60,11 @@ class TransactionDetailsPage {
 
   async checkTransactionViewDetailsLink(): Promise<void> {
     await this.driver.waitForSelector(this.viewDetailsLink);
+  }
+
+  async checkAddressInActivityLog(address: string): Promise<void> {
+    console.log(`Checking address ${address} in activity log`);
+    await this.driver.waitForSelector(this.addressInActivityLog(address));
   }
 }
 

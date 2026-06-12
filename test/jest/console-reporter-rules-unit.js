@@ -266,6 +266,7 @@ module.exports = [
   {
     match: /FetchError \{/u,
     group: 'Test errors: Fetch failures',
+    keep: true,
   },
 
   // ===========================================================================

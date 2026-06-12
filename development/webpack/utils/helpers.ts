@@ -1,6 +1,6 @@
-import { readdirSync } from 'node:fs';
-import { parse, join, sep } from 'node:path';
-import type { EntryObject, Stats } from 'webpack';
+import { join, sep } from 'node:path';
+import type { Compiler, EntryObject, Stats } from 'webpack';
+import type { Configuration } from 'webpack-dev-server';
 import type TerserPluginType from 'terser-webpack-plugin';
 
 export type Manifest = chrome.runtime.Manifest;
@@ -8,19 +8,10 @@ export type ManifestV2 = chrome.runtime.ManifestV2;
 export type ManifestV3 = chrome.runtime.ManifestV3;
 export type EntryDescription = Exclude<EntryObject[string], string | string[]>;
 
-// HMR (Hot Module Reloading) can't be used until all circular dependencies in
-// the codebase are removed
-// See: https://github.com/MetaMask/metamask-extension/issues/22450
-// TODO: remove this variable when HMR is ready. The env var is for tests and
-// must also be removed everywhere.
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
-
 /**
  * Target browsers
  */
-export const Browsers = ['brave', 'chrome', 'firefox'] as const;
+export const Browsers = ['chrome', 'firefox'] as const;
 export type Browser = (typeof Browsers)[number];
 
 const slash = `\\${sep}`;
@@ -64,6 +55,16 @@ export const UI_DIR_RE = new RegExp(
 );
 
 /**
+ * Regular expression to match UI component source files, excluding test files,
+ * stories, container files, type declarations, mocks, and spec files.
+ * Used with `UI_DIR_RE` to scope thread-loader and React Compiler to UI components.
+ */
+export const UI_COMPONENT_RE = new RegExp(
+  `^(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
+  'u',
+);
+
+/**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`
@@ -71,118 +72,99 @@ export const UI_DIR_RE = new RegExp(
 export const noop = () => undefined;
 
 /**
+ * Suppresses routine webpack-dev-server info logs while leaving warnings and
+ * errors visible.
+ *
+ * webpack-dev-server logs startup and shutdown banners through webpack's
+ * infrastructure logger. Those banners interrupt webpack's progress status
+ * line, so the webpack launcher prints its own concise watch message instead.
+ *
+ * @param compiler - The webpack compiler.
+ */
+export function suppressDevServerInfoLogs(compiler: Compiler): void {
+  compiler.hooks.infrastructureLog.tap(
+    'MetaMaskDevServerInfoLogSuppressor',
+    (name, type) =>
+      name === 'webpack-dev-server' && type === 'info' ? true : undefined,
+  );
+}
+
+/**
+ * Logs watch-mode build stats and writes a line once the build is ready for
+ * more changes.
+ *
+ * webpack-dev-server starts listening before webpack finishes the initial
+ * compilation. Hooking the compiler completion keeps the output aligned with
+ * webpack watch mode: stats first, then the watch-ready line.
+ *
+ * @param compiler - The webpack compiler.
+ * @param message - The message to write.
+ */
+export function logWatchBuildStats(compiler: Compiler, message: string): void {
+  const logBuild = (error?: Error | null, stats?: Stats) => {
+    compiler.getInfrastructureLogger('webpack.Progress').status();
+    logStats(error, stats);
+    console.error(message);
+  };
+
+  compiler.hooks.done.tap('MetaMaskWatchBuildLogger', (stats) => {
+    logBuild(undefined, stats);
+  });
+  compiler.hooks.failed.tap('MetaMaskWatchBuildLogger', (error) => {
+    logBuild(error);
+  });
+}
+
+/**
+ * Temporarily ignores 'SIGINT' and 'SIGTERM' while webpack closes its
+ * filesystem cache.
+ *
+ * In the forked build path, the parent exits before `compiler.close()`
+ * completes so webpack can persist the cache in the background. During that
+ * handoff the parent can still forward shutdown signals to the child: Ctrl+C
+ * becomes 'SIGINT', and process managers or CI can send 'SIGTERM'. Node's
+ * default behavior would terminate the child and can leave the cache partially
+ * written.
+ *
+ * @param process - The process to install signal listeners on.
+ * @returns A cleanup function that removes the installed listeners.
+ */
+export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
+  const signals = ['SIGINT', 'SIGTERM'] as const;
+  signals.forEach((signal) => process.on(signal, noop));
+  return () => signals.forEach((signal) => process.off(signal, noop));
+}
+
+/**
+ * Builds the webpack-dev-server client import URL from a
+ * dev-server config. webpack preserves the query string as `__resourceQuery`,
+ * which the client reads at runtime to know where to connect.
+ *
+ * Only fields that are set are forwarded; anything omitted falls back to
+ * webpack-dev-server's client defaults at runtime. `protocol=ws` is always
+ * included because the extension page origin is `chrome-extension://...`,
+ * so the client cannot auto-detect a WebSocket protocol.
+ *
+ * @param config - The webpack-dev-server configuration.
+ * @returns The import specifier for the dev-server client.
+ */
+export const getDevServerClientUrl = (config: Configuration): string => {
+  const params = new URLSearchParams({ protocol: 'ws' });
+  if (config.host !== undefined) params.set('hostname', config.host);
+  if (config.port !== undefined) params.set('port', config.port.toString());
+  if (config.hot !== undefined) params.set('hot', config.hot.toString());
+  if (config.liveReload !== undefined) {
+    params.set('live-reload', config.liveReload.toString());
+  }
+  return `webpack-dev-server/client/index?${params}`;
+};
+
+/**
  * @param filename
  * @returns filename with .js extension (.ts | .tsx | .mjs -> .js)
  */
 export const extensionToJs = (filename: string) =>
   filename.replace(/\.(ts|tsx|mjs)$/u, '.js');
-
-/**
- * Collects all entry files for use with webpack.
- *
- * TODO: move this logic into the ManifestPlugin
- *
- * @param manifest - Base manifest file
- * @param appRoot - Absolute directory to search for entry files listed in the
- * base manifest
- * @returns an `entry` object containing html and JS entry points for use with
- * webpack, and an array, `manifestScripts`, list of filepaths of all scripts
- * that were added to it.
- */
-export function collectEntries(manifest: Manifest, appRoot: string) {
-  const htmlPages = join(appRoot, 'html', 'pages');
-  const entry: EntryObject = {};
-  /**
-   * Scripts that must be self-contained and not split into chunks.
-   */
-  const selfContainedScripts: Set<string> = new Set([
-    // Snow shouldn't be chunked
-    'snow.prod',
-    'use-snow',
-    'bootstrap',
-  ]);
-
-  function addManifestScript(
-    filename: string,
-    opts?: Partial<EntryDescription>,
-  ) {
-    selfContainedScripts.add(filename);
-    entry[filename] = {
-      chunkLoading: false,
-      filename: extensionToJs(filename), // output filename with .js extension
-      import: join(appRoot, filename), // the path to the file to use as an entry
-      ...opts,
-    };
-  }
-
-  function addHtml(filename: string) {
-    const parsedFileName = parse(filename).name;
-    entry[parsedFileName] = join(htmlPages, filename);
-  }
-
-  // add content_scripts to entries
-  for (const contentScript of manifest.content_scripts ?? []) {
-    for (const script of contentScript.js ?? []) {
-      addManifestScript(script);
-    }
-  }
-
-  if (manifest.manifest_version === 2) {
-    if (manifest.background?.page) {
-      addHtml(manifest.background.page);
-    }
-    for (const resource of manifest.web_accessible_resources ?? []) {
-      if (resource.endsWith('.js')) {
-        addManifestScript(resource);
-      }
-    }
-    for (const script of manifest.background?.scripts ?? []) {
-      addManifestScript(script);
-    }
-  } else if (manifest.manifest_version === 3) {
-    if (manifest.background?.service_worker) {
-      addManifestScript(manifest.background.service_worker, {
-        chunkLoading: 'import-scripts',
-      });
-    }
-    for (const resource of manifest.web_accessible_resources ?? []) {
-      for (const filename of resource.resources) {
-        if (filename.endsWith('.js')) {
-          addManifestScript(filename);
-        }
-      }
-    }
-  }
-
-  for (const filename of readdirSync(htmlPages)) {
-    // ignore non-htm/html files
-    if (/\.html?$/iu.test(filename)) {
-      // ignore background.html for MV2 as it was already handled above.
-      // we also ignore it for MV3 as there is no background page.
-      if (filename === 'background.html') {
-        continue;
-      }
-      // ignore offscreen.html for MV2 extensions
-      if (manifest.manifest_version === 2 && filename === 'offscreen.html') {
-        continue;
-      }
-      addHtml(filename);
-    }
-  }
-
-  /**
-   * Ignore scripts that were found in the manifest, as these are only loaded by
-   * the browser extension platform itself.
-   *
-   * @param entrypoint - The entrypoint to check.
-   * @param entrypoint.name - The name of the entrypoint.
-   * @returns
-   */
-  function canBeChunked({ name }: { name?: string | null }): boolean {
-    return !name || !selfContainedScripts.has(name);
-  }
-  return { entry, canBeChunked };
-}
 
 /**
  * It gets minimizers for the webpack build.

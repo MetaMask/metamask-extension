@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { CaipAssetType, Hex } from '@metamask/utils';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -10,23 +10,62 @@ import {
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
+import {
+  getAssetImageUrl,
+  isEvmChainId,
+} from '../../../../../../shared/lib/asset-utils';
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;
   isNative?: boolean;
   tokenImage: string;
   symbol: string;
+  assetId?: CaipAssetType | Hex;
+  networkBadgeTestId?: string;
+};
+
+export const getAvatarTokenSrc = (
+  opts: Pick<
+    AssetCellBadgeProps,
+    'chainId' | 'isNative' | 'tokenImage' | 'assetId'
+  >,
+): string => {
+  try {
+    const isEvm = isEvmChainId(opts.chainId);
+    if (isEvm && opts.isNative) {
+      return getNativeCurrencyForChain(opts.chainId);
+    }
+
+    if (!opts.tokenImage && opts.assetId && !opts.isNative) {
+      return getAssetImageUrl(opts.assetId, opts.chainId) ?? '';
+    }
+
+    return opts.tokenImage;
+  } catch (error) {
+    console.error('getAvatarTokenSrc - failed to get avatar token src', error);
+  }
+
+  return opts.tokenImage;
 };
 
 export const AssetCellBadge = React.memo(
-  ({ chainId, isNative, tokenImage, symbol }: AssetCellBadgeProps) => {
-    const isEvm = isEvmChainId(chainId);
+  ({
+    chainId,
+    isNative,
+    tokenImage,
+    symbol,
+    assetId,
+    networkBadgeTestId,
+  }: AssetCellBadgeProps) => {
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-    const avatarTokenSrc =
-      isEvm && isNative ? getNativeCurrencyForChain(chainId) : tokenImage;
+    const avatarTokenSrc = getAvatarTokenSrc({
+      chainId,
+      isNative,
+      tokenImage,
+      assetId,
+    });
     const badgeWrapperSrc = getImageForChainId(chainId) ?? undefined;
 
     return (
@@ -40,6 +79,9 @@ export const AssetCellBadge = React.memo(
             borderWidth={2}
           />
         }
+        badgeContainerProps={{
+          'data-testid': networkBadgeTestId,
+        }}
         marginRight={4}
         style={{ alignSelf: 'center' }}
       >
@@ -51,5 +93,11 @@ export const AssetCellBadge = React.memo(
       </BadgeWrapper>
     );
   },
-  (prevProps, nextProps) => prevProps.chainId === nextProps.chainId,
+  (prevProps, nextProps) =>
+    prevProps.chainId === nextProps.chainId &&
+    prevProps.isNative === nextProps.isNative &&
+    prevProps.tokenImage === nextProps.tokenImage &&
+    prevProps.symbol === nextProps.symbol &&
+    prevProps.assetId === nextProps.assetId &&
+    prevProps.networkBadgeTestId === nextProps.networkBadgeTestId,
 );

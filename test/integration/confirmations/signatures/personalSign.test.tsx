@@ -83,7 +83,9 @@ describe('PersonalSign Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
-          participateInMetaMetrics: true,
+          analyticsId: 'test-metametrics-id',
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
           dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,

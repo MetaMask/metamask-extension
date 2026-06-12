@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums jāatlasa konts!"
   },
-  "activityLog": {
-    "message": "darbību žurnāls"
-  },
   "addAcquiredTokens": {
     "message": "Pievienojiet marķierus, ko ieguvāt, izmantojot MetaMask"
   },
@@ -80,9 +77,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Automātiskās izrakstīšanās taimeris (minūtes)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Iestatiet bezdarbības laiku minūtēs, pēc kura MetaMask veiks automātisku izrakstīšanu"
   },
   "average": {
     "message": "Vidēji"
@@ -184,12 +178,6 @@
   "createPassword": {
     "message": "Izveidot paroli"
   },
-  "currencyConversion": {
-    "message": "Valūtas konvertācija"
-  },
-  "currentLanguage": {
-    "message": "Pašreizējā valodā"
-  },
   "custom": {
     "message": "Papildu"
   },
@@ -210,9 +198,6 @@
   },
   "done": {
     "message": "Pabeigts"
-  },
-  "downloadGoogleChrome": {
-    "message": "Lejupielādēt ar Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Lejupielādēt stāvokļa žurnālus"
@@ -272,9 +257,6 @@
   "hardwareWallets": {
     "message": "Pieslēdziet aparatūras maku"
   },
-  "hardwareWalletsMsg": {
-    "message": "Atlasiet aparatūras maku lietošanai ar MetaMask"
-  },
   "here": {
     "message": "šeit",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -301,9 +283,6 @@
   "imported": {
     "message": "Importēts",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Jūsu sākotnējais darījums apstiprināts tīklā. Spiediet OK, lai atgrieztos."
   },
   "insufficientBalance": {
     "message": "Nepietiekama bilance."
@@ -345,15 +324,6 @@
   "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli testa tīkls"
-  },
-  "links": {
-    "message": "Saites"
-  },
-  "loadMore": {
-    "message": "Ielādēt vairāk"
-  },
   "loading": {
     "message": "Notiek ielāde..."
   },
@@ -385,9 +355,6 @@
     "message": "Jums jāatlasa fails, ko importēt",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nav iespējams nosūtīt negatīvu ETH summu."
-  },
   "networkName": {
     "message": "Tīkla nosaukums"
   },
@@ -397,15 +364,9 @@
   "nevermind": {
     "message": "Nav svarīgi"
   },
-  "newAccount": {
-    "message": "Jauns konts"
-  },
   "newAccountNumberName": {
     "message": "Konts $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Jauna kontaktpersona"
   },
   "newContract": {
     "message": "Jauns līgums"
@@ -415,9 +376,6 @@
   },
   "next": {
     "message": "Nākamais"
-  },
-  "noConversionRateAvailable": {
-    "message": "Konversijas kurss nav pieejams"
   },
   "noWebcamFound": {
     "message": "Jūsu datora tīmekļa kamera netika atrasta. Lūdzu, mēģiniet vēlreiz."
@@ -493,12 +451,6 @@
   "rejectAll": {
     "message": "Noraidīt visus"
   },
-  "rejectTxsDescription": {
-    "message": "Jūs gatavojaties noraidīt $1 darījumus."
-  },
-  "rejectTxsN": {
-    "message": "Noraidīt $1 darījumus"
-  },
   "rejected": {
     "message": "Noraidīts"
   },
@@ -508,9 +460,6 @@
   "removeAccount": {
     "message": "Konta noņemšana"
   },
-  "removeAccountDescription": {
-    "message": "Šis darījums tiks dzēsts no jūsu maka. Pirms turpiniet, lūdzu, pārliecinieties, ka jums ir šī importētā konta oriģinālā sēklas frāze vai privātā atslēga. Jūs varat importēt vai izveidot kontus vēlreiz, izmantojot konta nolaižamo izvēlni."
-  },
   "required": {
     "message": "Nepieciešams"
   },
@@ -519,9 +468,6 @@
   },
   "restore": {
     "message": "Atjaunot"
-  },
-  "revealSeedWords": {
-    "message": "Parādīt atkopšanas vārdus"
   },
   "revealSeedWordsWarning": {
     "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai.",
@@ -569,9 +515,6 @@
   "showFiatConversionInTestnets": {
     "message": "Rādīt konversiju testa tīklos"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Atlasiet šo, lai testa tīklos uzrādītu fiat konversiju"
-  },
   "showHexData": {
     "message": "Rādīt hex datus"
   },
@@ -596,17 +539,11 @@
   "speedUpCancellation": {
     "message": "Paātrināt šo atcelšanu"
   },
-  "speedUpTransaction": {
-    "message": "Paātrināt šo darījumu"
-  },
   "stateLogError": {
     "message": "Iegūstot statusa žurnālus, radās kļūda."
   },
   "stateLogs": {
     "message": "Statusu žurnāli"
-  },
-  "stateLogsDescription": {
-    "message": "Statusa žurnāli ietver publisko kontu adreses un nosūtītos darījumus."
   },
   "submitted": {
     "message": "Iesniegts"
@@ -644,38 +581,11 @@
   "transaction": {
     "message": "darījums"
   },
-  "transactionCancelAttempted": {
-    "message": "Darījums tika mēģināts atcelt ar maksājumu par Gas $1 pie $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Darījums veiksmīgi atcelts $2"
-  },
-  "transactionConfirmed": {
-    "message": "Darījums apstiprināts $2."
-  },
-  "transactionCreated": {
-    "message": "Darījums $1 vērtībā izveidots $2."
-  },
-  "transactionDropped": {
-    "message": "Darījums atmests $2."
-  },
   "transactionError": {
     "message": "Darījuma kļūda. Līguma kodā uzrādās izņēmums."
   },
   "transactionErrorNoContract": {
     "message": "Mēģināt izsaukt funkciju, izmantojot adresi, kas nav norādīta līgumā."
-  },
-  "transactionErrored": {
-    "message": "Darījumā radusies kļūda."
-  },
-  "transactionResubmitted": {
-    "message": "Darījums atkārtoti iesniegts ar maksu par Gas, palielinātu līdz $1 pie $2"
-  },
-  "transactionSubmitted": {
-    "message": "Darījums iesniegts ar maksu par Gas $1 pie $2."
-  },
-  "transactionUpdated": {
-    "message": "Darījums atjaunināts $2."
   },
   "transfer": {
     "message": "Pārsūtīt"
@@ -707,12 +617,6 @@
   "usedByClients": {
     "message": "Izmanto dažādi klienti"
   },
-  "userName": {
-    "message": "Lietotājvārds"
-  },
-  "viewContact": {
-    "message": "Skatīt līgumu"
-  },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"
   },
@@ -721,8 +625,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Lai lietotu šo funkciju, jādod piekļuve kamerai."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Jūsu privātā atkopšanas frāze"
   }
 }

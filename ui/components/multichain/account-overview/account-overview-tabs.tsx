@@ -1,35 +1,43 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Hex, isStrictHexString } from '@metamask/utils';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { Hex } from '@metamask/utils';
+import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
+  AccountOverviewTab,
 } from '../../../../shared/constants/app-state';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { useTabState } from '../../../hooks/useTabState';
+import { useSafeChains } from '../networks-form/use-safe-chains';
 import {
+  getDefaultHomeActiveTabName,
   getEnabledChainIds,
-  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
-import { detectNfts } from '../../../store/actions';
+import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
+import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
+import {
+  detectNfts,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import TransactionList from '../../app/transaction-list';
-import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
-import { Box } from '../../component-library';
+import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { ActivityList as ActivityListV3 } from '../../../pages/activity/activity-list';
+import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
+import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
+import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
+import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
-import { AssetListTokenDetection } from './asset-list-token-detection';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
@@ -39,45 +47,82 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showDefi?: boolean;
 };
 
+/**
+ * Isolated component that starts/stops EVM token balance polling.
+ *
+ * This intentionally returns null and only runs a hook. While that may seem
+ * like an anti-pattern, it is the correct React performance pattern here:
+ * `useTokenBalances` internally calls `useSelector(getTokenBalances)`, which
+ * subscribes the calling component to every token-balance state update
+ * (every ~30 s). By placing the call in this tiny component instead of in
+ * `AccountOverviewTabs`, only this component re-renders when balances change,
+ * rather than the entire tabs subtree and all of its children.
+ *
+ * @param options - Component options.
+ * @param options.chainIds - The chain IDs to poll balances for.
+ */
+const TokenBalancesPoller = ({ chainIds }: { chainIds: Hex[] }) => {
+  useTokenBalances({ chainIds });
+  return null;
+};
+
 export const AccountOverviewTabs = ({
-  onTabClick,
-  defaultHomeActiveTabName,
   showTokens,
   showTokensLinks,
   showNfts,
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
+  const persistedTab = useSelector(getDefaultHomeActiveTabName);
+  const [urlTab, setActiveTabKey] = useTabState();
+  const activeTabKey = urlTab || persistedTab;
+
   const navigate = useNavigate();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
+  const isActivityListRedesignEnabled = useSelector(
+    getIsActivityListRedesignEnabled,
+  );
+  const prefetchTransactions = usePrefetchTransactions();
 
-  // Get all enabled networks (what the user has actually selected)
-  const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+  useEffect(() => {
+    if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+      setDefaultHomeActiveTabName(activeTabKey);
+    }
+  }, [activeTabKey]);
 
-  // Convert enabled networks to CAIP format for metrics
-  const networkFilterForMetrics = useMemo(
-    () =>
-      allEnabledNetworks.map((chainId) =>
-        isStrictHexString(chainId) ? toEvmCaipChainId(chainId) : chainId,
-      ),
-    [allEnabledNetworks],
+  const networkFilterForMetrics = useSelector(
+    selectEnabledNetworksAsCaipChainIds,
   );
 
-  // EVM specific tokenBalance polling, updates state via polling loop per chainId
-  useTokenBalances({
-    chainIds: selectedChainIds as Hex[],
-  });
+  // EVM token-balance polling is handled by TokenBalancesPoller (rendered below).
+  // Keeping it in an isolated child prevents balance updates from re-rendering
+  // this entire subtree every ~30 s.
 
   const handleTabClick = useCallback(
-    (tabName: AccountOverviewTabKey) => {
-      onTabClick(tabName);
+    (tabName: AccountOverviewTab) => {
+      if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[activeTabKey],
+        });
+      }
+
+      setActiveTabKey(tabName);
+
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP) {
+      // For ActivityListV3, ActivityScreenOpened is deferred to the list
+      // component so it can include accurate is_empty / pending_transactions
+      // after all data sources have loaded. For ActivityListV2 there is no
+      // equivalent deferred tracking, so fire immediately on click.
+      if (
+        tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP &&
+        (tabName !== AccountOverviewTabKey.Activity ||
+          !isActivityListRedesignEnabled)
+      ) {
         trackEvent({
           category: MetaMetricsEventCategory.Home,
           event:
@@ -90,44 +135,48 @@ export const AccountOverviewTabs = ({
           },
         });
       }
-      if (defaultHomeActiveTabName) {
-        endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
+      if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+        trace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
         });
       }
-      trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
-      });
     },
-    [networkFilterForMetrics, onTabClick],
+    [
+      activeTabKey,
+      isActivityListRedesignEnabled,
+      networkFilterForMetrics,
+      setActiveTabKey,
+      dispatch,
+      selectedChainIds,
+      trackEvent,
+    ],
   );
 
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
-      navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      transitionForward(() =>
+        navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      ),
     [navigate],
   );
   const onClickDeFi = useCallback(
     (chainId: string, protocolId: string) =>
-      navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+      transitionForward(() =>
+        navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+      ),
     [navigate],
   );
 
   const { safeChains } = useSafeChains();
 
-  const isBIP44FeatureFlagEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
 
   return (
     <>
-      <AssetListTokenDetection />
-
-      <Tabs<AccountOverviewTabKey>
-        defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
+      <TokenBalancesPoller chainIds={selectedChainIds as Hex[]} />
+      <Tabs<AccountOverviewTab>
+        animated
+        activeTab={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
           className: 'px-4',
@@ -139,28 +188,39 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Tokens}
             data-testid="account-overview__asset-tab"
           >
-            <Box marginBottom={2}>
+            <ErrorBoundary key="tokens">
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
               />
-            </Box>
+            </ErrorBoundary>
           </Tab>
         )}
+
+        {isPerpsExperienceAvailable && (
+          <Tab
+            name={t('perps')}
+            tabKey={AccountOverviewTabKey.Perps}
+            data-testid="account-overview__perps-tab"
+          >
+            <PerpsTab />
+          </Tab>
+        )}
+
         {showDefi && (
           <Tab
             name={t('defi')}
             tabKey={AccountOverviewTabKey.DeFi}
             data-testid="account-overview__defi-tab"
           >
-            <Box>
+            <ErrorBoundary key="defi">
               <DeFiTab
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
               />
-            </Box>
+            </ErrorBoundary>
           </Tab>
         )}
 
@@ -170,7 +230,9 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Nfts}
             data-testid="account-overview__nfts-tab"
           >
-            <NftsTab />
+            <ErrorBoundary key="nfts">
+              <NftsTab />
+            </ErrorBoundary>
           </Tab>
         )}
 
@@ -179,12 +241,15 @@ export const AccountOverviewTabs = ({
             name={t('activity')}
             tabKey={AccountOverviewTabKey.Activity}
             data-testid="account-overview__activity-tab"
+            onMouseEnter={prefetchTransactions}
           >
-            {showUnifiedTransactionList ? (
-              <UnifiedTransactionList />
-            ) : (
-              <TransactionList />
-            )}
+            <ErrorBoundary key="activity">
+              {isActivityListRedesignEnabled ? (
+                <ActivityListV3 />
+              ) : (
+                <ActivityListV2 />
+              )}
+            </ErrorBoundary>
           </Tab>
         )}
       </Tabs>

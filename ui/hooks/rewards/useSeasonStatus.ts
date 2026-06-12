@@ -4,7 +4,7 @@ import {
   getRewardsSeasonMetadata,
   getRewardsSeasonStatus,
 } from '../../store/actions';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   SeasonDtoState,
   SeasonStatusState,
@@ -51,6 +51,8 @@ export const useSeasonStatus = ({
       subscriptionId === 'pending' ||
       subscriptionId === 'retry' ||
       subscriptionId === 'error' ||
+      subscriptionId ===
+        'error-existing-subscription-hardware-wallet-explicit-sign' ||
       !isRewardsEnabled
     ) {
       dispatch(setSeasonStatus(null));

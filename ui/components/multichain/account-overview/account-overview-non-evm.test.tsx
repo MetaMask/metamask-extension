@@ -33,8 +33,6 @@ jest.mock('react-redux', () => {
 });
 
 const defaultProps: AccountOverviewNonEvmProps = {
-  defaultHomeActiveTabName: null,
-  onTabClick: jest.fn(),
   setBasicFunctionalityModalOpen: jest.fn(),
   onSupportLinkClick: jest.fn(),
 };
@@ -44,6 +42,7 @@ const render = (
   stateOverrides = {},
 ) => {
   const store = configureStore({
+    activeTab: mockState.activeTab,
     metamask: {
       ...mockState.metamask,
       preferences: {

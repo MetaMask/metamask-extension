@@ -56,6 +56,12 @@ class PhishingWarningPage {
     await this.driver.switchToFrame(iframe as unknown as string);
     await this.checkPageIsLoaded();
     await this.driver.clickElement(this.openWarningInNewTabLink);
+    try {
+      // Switch back to default content before retrying, in case we're stuck in the iframe context that was replaced on load
+      await this.driver.switchToDefaultContent();
+    } catch {
+      // context may already be discarded
+    }
   }
 
   async clickProceedAnywayButton(): Promise<void> {

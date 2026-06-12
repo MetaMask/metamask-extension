@@ -1,4 +1,4 @@
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import { AggregatorNetwork } from '../../../ducks/ramps/types';
 
 const fetchWithTimeout = getFetchWithTimeout();

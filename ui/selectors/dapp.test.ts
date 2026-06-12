@@ -2,23 +2,29 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
-import { getDappActiveNetwork } from './dapp';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
+import { getDappActiveNetwork, getIsEip1193CompatibleConnection } from './dapp';
 import {
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
+  getPermissions,
   getAllDomains,
 } from './selectors';
 import { getMultichainNetworkConfigurationsByChainId } from './multichain';
+
+// Mocked value for testing purposes only
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockedValue = any;
 
 // Mock the selectors that the new getDappActiveNetwork uses
 jest.mock('./selectors', () => ({
   getOrderedConnectedAccountsForActiveTab: jest.fn(),
   getOriginOfCurrentTab: jest.fn(),
+  getPermissions: jest.fn(),
   getAllDomains: jest.fn(),
 }));
 
-jest.mock('../../shared/modules/selectors/networks', () => ({
+jest.mock('../../shared/lib/selectors/networks', () => ({
   getNetworkConfigurationsByChainId: jest.fn(),
 }));
 
@@ -30,6 +36,7 @@ const mockGetOrderedConnectedAccountsForActiveTab = jest.mocked(
   getOrderedConnectedAccountsForActiveTab,
 );
 const mockGetOriginOfCurrentTab = jest.mocked(getOriginOfCurrentTab);
+const mockGetPermissions = jest.mocked(getPermissions);
 const mockGetAllDomains = jest.mocked(getAllDomains);
 const mockGetNetworkConfigurationsByChainId = jest.mocked(
   getNetworkConfigurationsByChainId,
@@ -103,7 +110,7 @@ describe('getDappActiveNetwork selector', () => {
 
   const arrangeMocks = () => {
     mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
-      mockEvmAccount,
+      mockEvmAccount as MockedValue,
     ]);
     mockGetOriginOfCurrentTab.mockReturnValue(mockOrigin);
     mockGetAllDomains.mockReturnValue({
@@ -135,7 +142,7 @@ describe('getDappActiveNetwork selector', () => {
   it('returns correct non-EVM network configuration for Solana account', () => {
     const mocks = arrangeMocks();
     mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
-      mockSolanaAccount,
+      mockSolanaAccount as MockedValue,
     ]);
     mocks.mockGetMultichainNetworkConfigurationsByChainId.mockReturnValue({
       'solana:mainnet': mockMultichainNetworkConfig,
@@ -154,7 +161,9 @@ describe('getDappActiveNetwork selector', () => {
 
   it('returns null when orderedConnectedAccounts is null', () => {
     const mocks = arrangeMocks();
-    mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue(null);
+    mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue(
+      null as MockedValue,
+    );
     const result = getDappActiveNetwork(mocks.mockState);
     expect(result).toBeNull();
   });
@@ -169,11 +178,127 @@ describe('getDappActiveNetwork selector', () => {
   it('returns null when no matching non-EVM network configuration exists', () => {
     const mocks = arrangeMocks();
     mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
-      mockSolanaAccount,
+      mockSolanaAccount as MockedValue,
     ]);
     mocks.mockGetMultichainNetworkConfigurationsByChainId.mockReturnValue({});
 
     const result = getDappActiveNetwork(mocks.mockState);
     expect(result).toBeNull();
+  });
+});
+
+describe('getIsEip1193CompatibleConnection', () => {
+  const MOCK_ORIGIN = 'https://example-dapp.com';
+
+  function makeCaip25Permission(
+    scopes: Record<string, { accounts: string[] }>,
+    sessionProperties?: Record<string, unknown>,
+  ) {
+    return {
+      'endowment:caip25': {
+        parentCapability: 'endowment:caip25',
+        caveats: [
+          {
+            type: 'authorizedScopes',
+            value: {
+              requiredScopes: {},
+              optionalScopes: scopes,
+              isMultichainOrigin: false,
+              ...(sessionProperties ? { sessionProperties } : {}),
+            },
+          },
+        ],
+      },
+    };
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGetOriginOfCurrentTab.mockReturnValue(MOCK_ORIGIN);
+  });
+
+  it('returns true when sessionProperties contains eip1193-compatible: "true"', () => {
+    const permissions = makeCaip25Permission(
+      { 'eip155:1': { accounts: ['eip155:1:0xabc'] } },
+      { 'eip1193-compatible': true },
+    );
+    mockGetPermissions.mockReturnValue(permissions as MockedValue);
+
+    const result = getIsEip1193CompatibleConnection({} as MockedValue);
+    expect(result).toBe(true);
+  });
+
+  it('returns false for EVM-only connections without eip1193-compatible session property', () => {
+    const permissions = makeCaip25Permission({
+      'eip155:1': { accounts: ['eip155:1:0xabc'] },
+      'eip155:137': { accounts: ['eip155:137:0xabc'] },
+    });
+    mockGetPermissions.mockReturnValue(permissions as MockedValue);
+
+    const result = getIsEip1193CompatibleConnection({} as MockedValue);
+    expect(result).toBe(false);
+  });
+
+  it('returns false for mixed EVM + non-EVM connections without eip1193-compatible', () => {
+    const permissions = makeCaip25Permission({
+      'eip155:1': { accounts: ['eip155:1:0xabc'] },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+        accounts: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4Hx'],
+      },
+    });
+    mockGetPermissions.mockReturnValue(permissions as MockedValue);
+
+    const result = getIsEip1193CompatibleConnection({} as MockedValue);
+    expect(result).toBe(false);
+  });
+
+  it('returns false for Solana-only connections', () => {
+    const permissions = makeCaip25Permission({
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+        accounts: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4Hx'],
+      },
+    });
+    mockGetPermissions.mockReturnValue(permissions as MockedValue);
+
+    const result = getIsEip1193CompatibleConnection({} as MockedValue);
+    expect(result).toBe(false);
+  });
+
+  it('returns true for mixed scopes when eip1193-compatible session property is set', () => {
+    const permissions = makeCaip25Permission(
+      {
+        'eip155:1': { accounts: ['eip155:1:0xabc'] },
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+          accounts: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4Hx'],
+        },
+      },
+      { 'eip1193-compatible': true },
+    );
+    mockGetPermissions.mockReturnValue(permissions as MockedValue);
+
+    const result = getIsEip1193CompatibleConnection({} as MockedValue);
+    expect(result).toBe(true);
+  });
+
+  it('returns false when no permissions exist for the origin', () => {
+    mockGetPermissions.mockReturnValue(undefined as MockedValue);
+
+    const result = getIsEip1193CompatibleConnection({} as MockedValue);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when no active tab origin', () => {
+    mockGetOriginOfCurrentTab.mockReturnValue('');
+
+    const result = getIsEip1193CompatibleConnection({} as MockedValue);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when scopes are empty', () => {
+    const permissions = makeCaip25Permission({});
+    mockGetPermissions.mockReturnValue(permissions as MockedValue);
+
+    const result = getIsEip1193CompatibleConnection({} as MockedValue);
+    expect(result).toBe(false);
   });
 });

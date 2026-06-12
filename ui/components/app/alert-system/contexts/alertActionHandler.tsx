@@ -13,10 +13,13 @@ export const AlertActionHandlerContext = createContext<
   AlertActionHandlerContextType | undefined
 >(undefined);
 
-export const AlertActionHandlerProvider: React.FC<{
+export const AlertActionHandlerProvider = ({
+  children,
+  onProcessAction,
+}: React.PropsWithChildren<{
   children: ReactElement;
   onProcessAction: (actionKey: string) => void;
-}> = ({ children, onProcessAction }) => {
+}>) => {
   const processAction = useCallback(
     (_actionKey: string) => {
       onProcessAction(_actionKey);

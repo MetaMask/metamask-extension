@@ -18,6 +18,7 @@ import { GasFeesRow } from '../gas-fees-row/gas-fees-row';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 
 export const GasFeesDetails = (): JSX.Element | null => {
   const t = useI18nContext();
@@ -30,18 +31,10 @@ export const GasFeesDetails = (): JSX.Element | null => {
     useEIP1559TxFees(transactionMeta);
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
-  const hasLayer1GasFee = Boolean(transactionMeta?.layer1GasFee);
-
   const {
     estimatedFeeFiat,
     estimatedFeeFiatWith18SignificantDigits,
     estimatedFeeNative,
-    l1FeeFiat,
-    l1FeeFiatWith18SignificantDigits,
-    l1FeeNative,
-    l2FeeFiat,
-    l2FeeFiatWith18SignificantDigits,
-    l2FeeNative,
     maxFeeFiat,
     maxFeeFiatWith18SignificantDigits,
     maxFeeNative,
@@ -50,6 +43,8 @@ export const GasFeesDetails = (): JSX.Element | null => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
+
+  const estimationFailed = useEstimationFailed();
 
   if (!transactionMeta?.txParams) {
     return null;
@@ -62,28 +57,6 @@ export const GasFeesDetails = (): JSX.Element | null => {
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
       />
-      {showAdvancedDetails &&
-        hasLayer1GasFee &&
-        !transactionMeta.isGasFeeSponsored && (
-          <>
-            <GasFeesRow
-              data-testid="gas-fee-details-l1"
-              label={t('l1Fee')}
-              tooltipText={t('l1FeeTooltip')}
-              fiatFee={l1FeeFiat}
-              fiatFeeWith18SignificantDigits={l1FeeFiatWith18SignificantDigits}
-              nativeFee={l1FeeNative}
-            />
-            <GasFeesRow
-              data-testid="gas-fee-details-l2"
-              label={t('l2Fee')}
-              tooltipText={t('l2FeeTooltip')}
-              fiatFee={l2FeeFiat}
-              fiatFeeWith18SignificantDigits={l2FeeFiatWith18SignificantDigits}
-              nativeFee={l2FeeNative}
-            />
-          </>
-        )}
       {supportsEIP1559 &&
         !transactionMeta.selectedGasFeeToken &&
         !transactionMeta.isGasFeeSponsored && (
@@ -98,13 +71,15 @@ export const GasFeesDetails = (): JSX.Element | null => {
                 chainId={transactionMeta.chainId}
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
+                userFeeLevelOverride={transactionMeta.userFeeLevel}
               />
             </Box>
           </ConfirmInfoAlertRow>
         )}
       {showAdvancedDetails &&
         !transactionMeta.selectedGasFeeToken &&
-        !transactionMeta.isGasFeeSponsored && (
+        !transactionMeta.isGasFeeSponsored &&
+        !estimationFailed && (
           <GasFeesRow
             data-testid="gas-fee-details-max-fee"
             label={t('maxFee')}

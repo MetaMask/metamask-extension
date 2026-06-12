@@ -65,9 +65,7 @@ type PermitSimulationValueDisplayParams = {
   canDisplayValueAsUnlimited?: boolean;
 };
 
-const PermitSimulationValueDisplay: React.FC<
-  PermitSimulationValueDisplayParams
-> = ({
+const PermitSimulationValueDisplay = ({
   chainId,
   primaryType,
   tokenContract,
@@ -77,12 +75,12 @@ const PermitSimulationValueDisplay: React.FC<
   credit,
   debit,
   canDisplayValueAsUnlimited,
-}) => {
+}: PermitSimulationValueDisplayParams) => {
   const t = useI18nContext();
 
   const exchangeRate = useTokenExchangeRate(tokenContract, chainId);
 
-  const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
+  const tokenDetails = useGetTokenStandardAndDetails(tokenContract, chainId);
   useTrackERC20WithoutDecimalInformation(
     chainId,
     tokenContract,

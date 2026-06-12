@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 
@@ -14,6 +14,7 @@ import { setSelectedInternalAccountWithoutLoading } from '../../../../store/acti
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import AccountListItem from '../../../multichain/account-list-item/account-list-item';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
 
 export type SnapUIAccountSelectorProps = {
   name: string;
@@ -40,21 +41,20 @@ export type SnapUIAccountSelectorProps = {
  * @param props.disabled - Whether the selector is disabled.
  * @returns The AccountSelector component.
  */
-export const SnapUIAccountSelector: FunctionComponent<
-  SnapUIAccountSelectorProps
-> = ({
+export const SnapUIAccountSelector = ({
   chainIds,
   switchGlobalAccount,
   hideExternalAccounts,
   disabled,
   ...props
-}) => {
+}: SnapUIAccountSelectorProps) => {
   const t = useI18nContext();
   const { snapId } = useSnapInterfaceContext();
   const dispatch = useDispatch();
   const internalAccounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );
+  const accountGroups = useSelector(getAllAccountGroups);
 
   const accounts = useMemo(() => {
     // Filter out the accounts that are not owned by the snap
@@ -71,8 +71,26 @@ export const SnapUIAccountSelector: FunctionComponent<
       return filteredChainIds.length > 0;
     });
 
-    return filteredAccounts;
-  }, [internalAccounts, chainIds, hideExternalAccounts, snapId]);
+    // Get the name from the account group if it exists, otherwise use the account name
+    // This is necessary because the account name is empty now and the group name is used instead,
+    // but we still want to show the account name if the group name is not available.
+    const updatedAccounts = filteredAccounts.map((account) => {
+      const name =
+        accountGroups.find(({ accounts: accountGroup }) =>
+          accountGroup.includes(account.id),
+        )?.metadata.name ?? account.metadata.name;
+
+      return {
+        ...account,
+        metadata: {
+          ...account.metadata,
+          name,
+        },
+      };
+    });
+
+    return updatedAccounts;
+  }, [internalAccounts, chainIds, hideExternalAccounts, snapId, accountGroups]);
 
   const options = accounts.map((account) => ({
     key: 'accountId',

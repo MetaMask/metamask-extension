@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import createStaticServer from '../../../../development/create-static-server';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 
 const dappPort = 8080;
@@ -18,11 +18,11 @@ describe('The provider', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 

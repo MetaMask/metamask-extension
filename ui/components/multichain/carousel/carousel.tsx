@@ -7,7 +7,7 @@ import {
 } from 'react-transition-group';
 import { Box, BoxProps } from '../../component-library';
 import { getSelectedAccount } from '../../../selectors';
-import type { CarouselProps, CarouselState, NavigationAction } from './types';
+import type { CarouselProps, CarouselState } from './types';
 import { MAX_SLIDES } from './constants';
 import { StackCard } from './stack-card';
 import { StackCardEmpty } from './stack-card-empty';
@@ -20,7 +20,7 @@ export const Carousel = React.forwardRef(
       isLoading = false,
       onSlideClose,
       onSlideClick,
-      onRenderSlides,
+      onActiveSlideChange,
       onEmptyState,
       className = '',
       ...props
@@ -113,30 +113,22 @@ export const Carousel = React.forwardRef(
       state.hasTriggeredEmptyState,
     ]);
 
-    // Render slides callback
+    // Notify parent when the active slide changes
     useEffect(() => {
-      if (
-        visibleSlides &&
-        visibleSlides.length > 0 &&
-        onRenderSlides &&
-        !isLoading
-      ) {
-        onRenderSlides(visibleSlides);
+      if (currentSlide && onActiveSlideChange && !isLoading) {
+        onActiveSlideChange(currentSlide);
       }
-    }, [visibleSlides, onRenderSlides, isLoading]);
+    }, [currentSlide, onActiveSlideChange, isLoading]);
 
     const handleSlideClose = (slideId: string, isLastSlide: boolean) => {
       transitionToNextCard(slideId, isLastSlide);
     };
 
-    const handleSlideClick = (
-      slideId: string,
-      navigation?: NavigationAction,
-    ) => {
+    const handleSlideClick = (slideId: string) => {
       if (state.isTransitioning) {
-        return;
+        return true;
       }
-      onSlideClick?.(slideId, navigation);
+      return onSlideClick?.(slideId);
     };
 
     // Loading state

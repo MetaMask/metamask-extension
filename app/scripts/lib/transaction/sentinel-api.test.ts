@@ -1,16 +1,18 @@
 import { Hex } from '@metamask/utils';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import {
   getSentinelNetworkFlags,
   buildUrl,
   SentinelNetwork,
   getSendBundleSupportedChains,
   isSendBundleSupported,
+  setSentinelApiAuth,
+  getSentinelApiHeadersAsync,
 } from './sentinel-api';
 
-jest.mock('../../../../shared/modules/fetch-with-timeout');
-jest.mock('../../../../shared/modules/conversion.utils');
+jest.mock('../../../../shared/lib/fetch-with-timeout');
+jest.mock('../../../../shared/lib/conversion.utils');
 
 const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> =
   jest.fn();
@@ -65,6 +67,49 @@ describe('sentinel-api', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.mocked(getFetchWithTimeout).mockReturnValue(fetchMock);
+    setSentinelApiAuth(undefined);
+  });
+
+  describe('setSentinelApiAuth and getSentinelApiHeadersAsync', () => {
+    it('returns base headers when no auth setter is configured', async () => {
+      const headers = await getSentinelApiHeadersAsync();
+      expect(headers).toMatchObject({
+        'X-Client-Id': 'extension',
+      });
+    });
+
+    it('includes Authorization when getter returns a token', async () => {
+      setSentinelApiAuth(async () => 'test-token');
+      const headers = await getSentinelApiHeadersAsync();
+      expect(headers).toMatchObject({
+        'X-Client-Id': 'extension',
+        Authorization: 'Bearer test-token',
+      });
+    });
+
+    it('adds Bearer prefix to the raw token', async () => {
+      setSentinelApiAuth(async () => 'raw-token');
+      const headers = await getSentinelApiHeadersAsync();
+      expect((headers as Record<string, string>).Authorization).toBe(
+        'Bearer raw-token',
+      );
+    });
+
+    it('omits Authorization when getter returns undefined', async () => {
+      setSentinelApiAuth(async () => undefined);
+      const headers = await getSentinelApiHeadersAsync();
+      expect(headers).toMatchObject({ 'X-Client-Id': 'extension' });
+      expect((headers as Record<string, string>).Authorization).toBeUndefined();
+    });
+
+    it('omits Authorization when getter throws', async () => {
+      setSentinelApiAuth(async () => {
+        throw new Error('token error');
+      });
+      const headers = await getSentinelApiHeadersAsync();
+      expect(headers).toMatchObject({ 'X-Client-Id': 'extension' });
+      expect((headers as Record<string, string>).Authorization).toBeUndefined();
+    });
   });
 
   describe('buildUrl', () => {
@@ -103,6 +148,10 @@ describe('sentinel-api', () => {
       const result = await getSentinelNetworkFlags(mainnetHex);
       expect(hexToDecimal).toHaveBeenCalledWith('0x1');
       expect(result).toStrictEqual(MAINNET_BASE);
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({ headers: expect.any(Object) }),
+      );
     });
 
     it('returns network data for another registered chainId (Polygon)', async () => {
@@ -126,10 +175,21 @@ describe('sentinel-api', () => {
       expect(result).toBeUndefined();
     });
 
-    it('throws if getNetworkData throws', async () => {
+    it('returns undefined if getNetworkData throws', async () => {
       fetchMock.mockRejectedValueOnce(new Error('API connection error'));
-      await expect(getSentinelNetworkFlags('0x1' as Hex)).rejects.toThrow(
-        'API connection error',
+      await expect(getSentinelNetworkFlags('0x1' as Hex)).resolves.toBe(
+        undefined,
+      );
+    });
+
+    it('returns undefined if getNetworkData returns null', async () => {
+      fetchMock.mockResolvedValueOnce({
+        json: async () => null,
+        ok: true,
+      } as Response);
+
+      await expect(getSentinelNetworkFlags('0x1' as Hex)).resolves.toBe(
+        undefined,
       );
     });
   });
@@ -171,6 +231,31 @@ describe('sentinel-api', () => {
 
       const result = await getSendBundleSupportedChains(['0xFAFA']);
       expect(result).toEqual({ '0xFAFA': false });
+    });
+
+    it('returns false for all chains if getNetworkData throws', async () => {
+      fetchMock.mockRejectedValueOnce(new Error('API connection error'));
+
+      const result = await getSendBundleSupportedChains(chainIds);
+      expect(result).toEqual({
+        '0x1': false,
+        '0x89': false,
+        '0xFAFA': false,
+      });
+    });
+
+    it('returns false for all chains if getNetworkData returns null', async () => {
+      fetchMock.mockResolvedValueOnce({
+        json: async () => null,
+        ok: true,
+      } as Response);
+
+      const result = await getSendBundleSupportedChains(chainIds);
+      expect(result).toEqual({
+        '0x1': false,
+        '0x89': false,
+        '0xFAFA': false,
+      });
     });
   });
 
@@ -245,11 +330,29 @@ describe('sentinel-api', () => {
       expect(result).toBe(false);
     });
 
-    it('throws if the fetch fails', async () => {
+    it('returns false if the fetch fails', async () => {
       fetchMock.mockRejectedValueOnce(new Error('API error!'));
-      await expect(isSendBundleSupported(mainnetHex)).rejects.toThrow(
-        'API error!',
-      );
+      await expect(isSendBundleSupported(mainnetHex)).resolves.toBe(false);
+    });
+
+    it('returns false if response json parsing fails', async () => {
+      fetchMock.mockResolvedValueOnce({
+        json: async () => {
+          throw new Error('Invalid JSON');
+        },
+        ok: true,
+      } as unknown as Response);
+
+      await expect(isSendBundleSupported(mainnetHex)).resolves.toBe(false);
+    });
+
+    it('returns false if response json is null', async () => {
+      fetchMock.mockResolvedValueOnce({
+        json: async () => null,
+        ok: true,
+      } as Response);
+
+      await expect(isSendBundleSupported(mainnetHex)).resolves.toBe(false);
     });
   });
 });

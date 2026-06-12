@@ -161,8 +161,19 @@ if (!window.crypto) {
   window.crypto = {};
 }
 if (!window.crypto.getRandomValues) {
-  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line n/global-require
   window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
+}
+
+// Ensure `crypto.randomUUID` exists in the test environment (some Jest
+// environments don't expose the webcrypto `crypto.randomUUID` even on Node 18+).
+if (typeof window.crypto.randomUUID !== 'function') {
+  // eslint-disable-next-line n/global-require
+  const nodeCrypto = require('crypto');
+
+  if (typeof nodeCrypto.randomUUID === 'function') {
+    window.crypto.randomUUID = nodeCrypto.randomUUID.bind(nodeCrypto);
+  }
 }
 
 // TextEncoder/TextDecoder
@@ -181,3 +192,21 @@ window.SVGPathElement = window.SVGPathElement || { prototype: {} };
 
 // scrollIntoView is not available in JSDOM
 window.HTMLElement.prototype.scrollIntoView = () => undefined;
+
+// ResizeObserver is not available in JSDOM
+if (typeof window.ResizeObserver === 'undefined') {
+  const ResizeObserver = function () {
+    // no-op for tests
+  };
+  ResizeObserver.prototype.observe = () => {
+    // no-op for tests
+  };
+  ResizeObserver.prototype.unobserve = () => {
+    // no-op for tests
+  };
+  ResizeObserver.prototype.disconnect = () => {
+    // no-op for tests
+  };
+  window.ResizeObserver = ResizeObserver;
+  global.ResizeObserver = ResizeObserver;
+}

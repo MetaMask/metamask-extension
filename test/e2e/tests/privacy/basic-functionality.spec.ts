@@ -2,12 +2,14 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
@@ -25,6 +27,44 @@ import {
 } from '../identity/account-syncing/mock-data';
 import { mockIdentityServices } from '../identity/mocks';
 
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+async function mockFeatureFlagsForPrivacyTest(server: Mockttp) {
+  const prodFlags = getProductionRemoteFlagApiResponse();
+  await server
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        ...prodFlags,
+        { bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+        { solanaAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+        { tronAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+        {
+          enableMultichainAccounts: {
+            enabled: false,
+            featureVersion: null,
+            minimumVersion: null,
+          },
+        },
+        {
+          enableMultichainAccountsState2: {
+            enabled: false,
+            featureVersion: null,
+            minimumVersion: null,
+          },
+        },
+        { assetsEnableNotificationsByDefault: false },
+        { assetsEnableNotificationsByDefaultV2: { value: false } },
+      ],
+    }));
+}
+
 async function mockApis(
   mockServer: Mockttp,
   userStorageMockttpController: UserStorageMockttpController,
@@ -39,48 +79,58 @@ async function mockApis(
   );
   await mockIdentityServices(mockServer, userStorageMockttpController);
 
-  return [
-    await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
+  // The unified-assets feature prefetches token lists for all popular chains
+  // via the old token-list API regardless of the basic-functionality toggle.
+  // Mock every chainId variant to prevent real network requests, but do not
+  // include this endpoint in the returned array so it is not subject to the
+  // "0 requests when privacy is off / ≥1 requests when privacy is on" assertions.
+  await mockServer
+    .forGet(/https:\/\/token\.api\.cx\.metamask\.io\/tokens\/\d+/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
+  const stalelistMock = await mockServer
+    .forGet(METAMASK_STALELIST_URL)
+    .thenCallback(() => {
       return {
         statusCode: 200,
         json: [{ fakedata: true }],
       };
-    }),
-    await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [{ fakedata: true }],
-        };
-      }),
-    await mockSpotPrices(mockServer, {
-      'eip155:1/slip44:60': {
-        price: 1700,
-        marketCap: 382623505141,
-        pricePercentChange1d: 0,
-      },
-    }),
-    await mockServer
-      .forGet(
-        'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
-      )
-      .withQuery({
-        limit: 50,
-        includeTopBid: 'true',
-        chainIds: ['1', '59144'],
-        continuation: '',
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            tokens: [],
-          },
-        };
-      }),
-    await mockEmptyPrices(mockServer),
-  ];
+    });
+
+  const spotPricesMock = await mockSpotPrices(mockServer, {
+    'eip155:1/slip44:60': {
+      price: 1700,
+      marketCap: 382623505141,
+      pricePercentChange1d: 0,
+    },
+  });
+
+  const nftMock = await mockServer
+    .forGet(
+      'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
+    )
+    .withQuery({
+      limit: 50,
+      includeTopBid: 'true',
+      chainIds: ['1', '59144'],
+      continuation: '',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+        },
+      };
+    });
+
+  await mockEmptyPrices(mockServer);
+
+  return [stalelistMock, spotPricesMock, nftMock];
 }
 
 describe('MetaMask onboarding', function () {
@@ -100,21 +150,16 @@ describe('MetaMask onboarding', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            sendRedesign: {
-              enabled: false,
-            },
-          },
-        },
-        testSpecificMock: (server: Mockttp) =>
-          mockApis(
+        testSpecificMock: async (server: Mockttp) => {
+          await mockFeatureFlagsForPrivacyTest(server);
+          return mockApis(
             server,
             userStorageMockttpController,
             mockedAccountSyncResponse,
-          ),
+          );
+        },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await importSRPOnboardingFlow({ driver });
@@ -140,8 +185,9 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await homePage.refreshErc20TokenList();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
 
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
@@ -160,7 +206,7 @@ describe('MetaMask onboarding', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
@@ -168,12 +214,14 @@ describe('MetaMask onboarding', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) =>
-          mockApis(
+        testSpecificMock: async (server: Mockttp) => {
+          await mockFeatureFlagsForPrivacyTest(server);
+          return mockApis(
             server,
             userStorageMockttpController,
             mockedAccountSyncResponse,
-          ),
+          );
+        },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeImportSRPOnboardingFlow({ driver });
@@ -181,8 +229,9 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await homePage.refreshErc20TokenList();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
 
         // Check if sidepanel is enabled
         const hasSidepanel = await isSidePanelEnabled();
@@ -201,9 +250,10 @@ describe('MetaMask onboarding', function () {
             continue;
           }
 
-          assert.equal(
-            requests.length,
-            1,
+          // There could be more than 1 requests since we're dealing with multichain
+          // accounts (e.g 1 request per supported chains).
+          assert.ok(
+            requests.length >= 1,
             `${mockedEndpoint} should make requests after onboarding`,
           );
         }

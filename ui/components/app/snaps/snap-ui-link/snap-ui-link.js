@@ -18,7 +18,7 @@ export const SnapUILink = ({ href, children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const isMetaMaskUrl = href.startsWith('metamask:');
-  const { navigate } = useSnapNavigation();
+  const { handleSnapNavigate } = useSnapNavigation();
 
   const { snapId } = useSnapInterfaceContext();
   const hideSnapBranding = useSelector((state) =>
@@ -26,7 +26,7 @@ export const SnapUILink = ({ href, children }) => {
   );
 
   const handleMetaMaskLinkClick = () => {
-    navigate(href);
+    handleSnapNavigate(href);
   };
 
   const handleLinkClick = () => {

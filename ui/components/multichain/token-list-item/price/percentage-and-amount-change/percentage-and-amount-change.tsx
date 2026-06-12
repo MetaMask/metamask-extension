@@ -9,24 +9,24 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   getSelectedAccountCachedBalance,
   getTokensMarketData,
 } from '../../../../../selectors';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { EtherDenomination } from '../../../../../../shared/constants/common';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 import {
-  getConversionRate,
   getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
+import { getConversionRate } from '../../../../../ducks/metamask/base-selectors';
 import {
   formatValue,
   isValidAmount,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 
 export const renderPercentageWithNumber = (

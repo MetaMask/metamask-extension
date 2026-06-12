@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums reikia pasirinkti paskyrą!"
   },
-  "activityLog": {
-    "message": "veiklos žurnalas"
-  },
   "addAcquiredTokens": {
     "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
   },
@@ -80,9 +77,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Automatinio atjungimo laikmatis (minutės)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Nustatykite laukimo  trukmę minutėmis iki „MetaMask“ automatinio atsijungimo"
   },
   "average": {
     "message": "Vidurkis"
@@ -184,12 +178,6 @@
   "createPassword": {
     "message": "Sukurti slaptažodį"
   },
-  "currencyConversion": {
-    "message": "Valiutos keitimas"
-  },
-  "currentLanguage": {
-    "message": "Dabartinė kalba"
-  },
   "custom": {
     "message": "Išplėstiniai"
   },
@@ -210,9 +198,6 @@
   },
   "done": {
     "message": "Atlikta"
-  },
-  "downloadGoogleChrome": {
-    "message": "Atsiunčiama „Google Chrome“"
   },
   "downloadStateLogs": {
     "message": "Atsisiųsti būsenos žurnalus"
@@ -272,9 +257,6 @@
   "hardwareWallets": {
     "message": "Susieti aparatinės įrangos slaptažodinę"
   },
-  "hardwareWalletsMsg": {
-    "message": "Pasirinkite aparatinės įrangos slaptažodinę, kurią pageidaujate naudoti su „MetaTask“"
-  },
   "here": {
     "message": "čia",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -301,9 +283,6 @@
   "imported": {
     "message": "Importuota",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Jūsų pradinė operacija patvirtinta tinkle. Norėdami grįžti, spustelėkite „Gerai“."
   },
   "insufficientBalance": {
     "message": "Nepakankamas likutis."
@@ -345,15 +324,6 @@
   "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
   },
-  "lineaGoerli": {
-    "message": "„Linea“ bandomasis tinklas"
-  },
-  "links": {
-    "message": "Nuorodos"
-  },
-  "loadMore": {
-    "message": "Įkelti daugiau"
-  },
   "loading": {
     "message": "Įkeliama..."
   },
@@ -385,9 +355,6 @@
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Neigiamų ETH sumų siųsti negalima."
-  },
   "networkName": {
     "message": "Tinklo pavadinimas"
   },
@@ -397,15 +364,9 @@
   "nevermind": {
     "message": "Nekreipti dėmesio"
   },
-  "newAccount": {
-    "message": "Nauja paskyra"
-  },
   "newAccountNumberName": {
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Naujas kontaktas"
   },
   "newContract": {
     "message": "Nauja sutartis"
@@ -415,9 +376,6 @@
   },
   "next": {
     "message": "Toliau"
-  },
-  "noConversionRateAvailable": {
-    "message": "Nėra keitimo kurso"
   },
   "noWebcamFound": {
     "message": "Jūsų kompiuterio vaizdo kamera nerasta. Bandykite dar kartą."
@@ -493,12 +451,6 @@
   "rejectAll": {
     "message": "Atmesti viską"
   },
-  "rejectTxsDescription": {
-    "message": "Vienu metu atmesite $1 operac."
-  },
-  "rejectTxsN": {
-    "message": "Atmesti $1 operac."
-  },
   "rejected": {
     "message": "Atmesta"
   },
@@ -508,9 +460,6 @@
   "removeAccount": {
     "message": "Pašalinti paskyrą"
   },
-  "removeAccountDescription": {
-    "message": "Ši paskyra bus pašalinta iš jūsų piniginės. Prieš tęsdami įsitikinkite, kad turite šios importuotos paskyros pradinę atkūrimo frazę arba asmeninį raktą. Paskyras importuoti ir vėl susikurti galite paskyros išskleidžiamajame meniu."
-  },
   "required": {
     "message": "Reikalaujama"
   },
@@ -519,9 +468,6 @@
   },
   "restore": {
     "message": "Atkurti"
-  },
-  "revealSeedWords": {
-    "message": "Atskleisti atkūrimo žodžius"
   },
   "revealSeedWordsWarning": {
     "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti.",
@@ -569,9 +515,6 @@
   "showFiatConversionInTestnets": {
     "message": "Rodyti keitimą „Testnet“"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Pasirinkite tai, kad būtų rodomas standartinės valiutos keitimas „Testnet“ programoje"
-  },
   "showHexData": {
     "message": "Rodyti šešioliktainius duomenis"
   },
@@ -596,17 +539,11 @@
   "speedUpCancellation": {
     "message": "Pagreitinti šį atšaukimą"
   },
-  "speedUpTransaction": {
-    "message": "Paspartinti šią operaciją"
-  },
   "stateLogError": {
     "message": "Klaida gaunant būsenos žurnalus."
   },
   "stateLogs": {
     "message": "Būsenos žurnalai"
-  },
-  "stateLogsDescription": {
-    "message": "Būsenos žurnaluose yra jūsų viešos paskyros adresų ir išsiųstų operacijų."
   },
   "submitted": {
     "message": "Pateikta"
@@ -644,38 +581,11 @@
   "transaction": {
     "message": "operacija"
   },
-  "transactionCancelAttempted": {
-    "message": "Operaciją mėginta atšaukti $2 su $1 dujų mokesčiu"
-  },
-  "transactionCancelSuccess": {
-    "message": "Operacija sėkmingai atšaukta $2"
-  },
-  "transactionConfirmed": {
-    "message": "Operacijos patvirtinimas $2."
-  },
-  "transactionCreated": {
-    "message": "Operacija sukurta $2 su $1 verte."
-  },
-  "transactionDropped": {
-    "message": "Operacija numesta prie$2."
-  },
   "transactionError": {
     "message": "Operacijos klaida. Sutarties kodo numetimo išimtis."
   },
   "transactionErrorNoContract": {
     "message": "Mėginama iškviesti funkciją nekontaktiniu adresu."
-  },
-  "transactionErrored": {
-    "message": "Įvyko operacijos klaida"
-  },
-  "transactionResubmitted": {
-    "message": "Operacija pakartotinai pateikta$2 su iki $1 padidintu dujų mokesčiu"
-  },
-  "transactionSubmitted": {
-    "message": "Operacija pateikta $2 su $1 dujų mokesčiu."
-  },
-  "transactionUpdated": {
-    "message": "Operacija atnaujinta$2."
   },
   "transfer": {
     "message": "Pervesti"
@@ -707,12 +617,6 @@
   "usedByClients": {
     "message": "Naudojama daugelio skirtingų klientų"
   },
-  "userName": {
-    "message": "Vartotojo vardas"
-  },
-  "viewContact": {
-    "message": "Peržiūrėti kontaktą"
-  },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"
   },
@@ -721,8 +625,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Jūsų asmeninė atkūrimo frazė"
   }
 }

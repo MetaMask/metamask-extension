@@ -2,26 +2,27 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   getEnabledNetworksByNamespace,
   getSelectedAccount,
   getTokenSortConfig,
 } from '../../../../selectors';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
-import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
 import PulseLoader from '../../../ui/pulse-loader';
-import { Box } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';
+import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { ASSET_CELL_HEIGHT } from '../constants';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DefiProtocolCell from './cells/defi-protocol-cell';
@@ -108,10 +109,10 @@ export default function DefiList({ onClick }: DefiListProps) {
   if (sortedFilteredDefi === undefined) {
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        className="flex"
       >
         <PulseLoader />
       </Box>
@@ -128,20 +129,15 @@ export default function DefiList({ onClick }: DefiListProps) {
   }
 
   return (
-    <>
-      {sortedFilteredDefi && sortedFilteredDefi.length > 0 ? (
-        sortedFilteredDefi.map((position: DeFiProtocolPosition) => {
-          return (
-            <DefiProtocolCell
-              key={`${position.protocolId}#${position.chainId}`}
-              position={position}
-              onClick={onClick}
-            />
-          );
-        })
-      ) : (
-        <DeFiEmptyStateMessage />
+    <VirtualizedList
+      data={sortedFilteredDefi}
+      estimatedItemSize={ASSET_CELL_HEIGHT}
+      overscan={10}
+      keyExtractor={(position) => `${position.protocolId}#${position.chainId}`}
+      renderItem={({ item: position }) => (
+        <DefiProtocolCell position={position} onClick={onClick} />
       )}
-    </>
+      listEmptyComponent={<DeFiEmptyStateMessage />}
+    />
   );
 }

@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-/* eslint-disable node/shebang */
+/* eslint-disable n/hashbang */
 const path = require('path');
 const { promises: fs, constants: fsConstants } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { withFixtures, tinyDelayMs } = require('./helpers');
-const FixtureBuilder = require('./fixtures/fixture-builder');
+const { default: FixtureBuilderV2 } = require('./fixtures/fixture-builder-v2');
 
 async function measurePage() {
   let metrics;
   try {
     await withFixtures(
-      { fixtures: new FixtureBuilder().build() },
+      { fixtures: new FixtureBuilderV2().build() },
       async ({ driver }) => {
         await driver.delay(tinyDelayMs);
         await driver.navigate();

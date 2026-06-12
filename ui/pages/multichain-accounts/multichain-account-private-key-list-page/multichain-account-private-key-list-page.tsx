@@ -1,12 +1,20 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
 import {
+  useNavigate,
+  useLocation,
+  type Location as RouterLocation,
+} from 'react-router-dom';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import { AccountGroupId } from '@metamask/account-api';
 import {
@@ -14,34 +22,27 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import {
-  TextVariant,
-  AlignItems,
-} from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainPrivateKeyList } from '../../../components/multichain-accounts/multichain-private-key-list';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-  ButtonLink,
-  ButtonLinkSize,
-} from '../../../components/component-library';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 type MultichainAccountPrivateKeyListPageProps = {
-  params?: { accountGroupId: string };
+  location?: RouterLocation;
 };
 
 export const MultichainAccountPrivateKeyListPage = ({
-  params: propsParams,
+  location: propsLocation,
 }: MultichainAccountPrivateKeyListPageProps = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const hookParams = useParams<{ accountGroupId: string }>();
+  const hookLocation = useLocation();
 
-  const { accountGroupId } = propsParams || hookParams;
+  const location = propsLocation || hookLocation;
+  const searchParams = new URLSearchParams(location.search);
+  const accountGroupId = searchParams.get('accountGroupId');
 
   const decodedAccountGroupId: AccountGroupId | null = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
@@ -59,19 +60,16 @@ export const MultichainAccountPrivateKeyListPage = ({
   }, [account, t]);
 
   const learnMoreLink = (
-    <ButtonLink
-      size={ButtonLinkSize.Inherit}
-      textProps={{
-        variant: TextVariant.bodyMd,
-        alignItems: AlignItems.flexStart,
-      }}
-      as="a"
-      href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {t('learnMoreUpperCase')}
-    </ButtonLink>
+    <TextButton asChild size={TextButtonSize.BodyMd}>
+      <a
+        className="items-start self-start"
+        href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('learnMoreUpperCase')}
+      </a>
+    </TextButton>
   );
 
   return (

@@ -37,7 +37,6 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
-import { useIsBIP44 } from '../../../../hooks/useIsBIP44';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { isValidUTF8 } from '../utils';
@@ -51,14 +50,12 @@ const getMessageText = (hexString?: string) => {
   return isValidUTF8(messageText) ? messageText : hexString;
 };
 
-const PersonalSignInfo: React.FC = () => {
+const PersonalSignInfo = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
-  const isBIP44 = useIsBIP44();
-
   if (!currentConfirmation?.msgParams) {
     return null;
   }
@@ -140,7 +137,7 @@ const PersonalSignInfo: React.FC = () => {
         </ConfirmInfoSection>
       )}
       <ConfirmInfoSection>
-        <NetworkRow isShownWithAlertsOnly={!isBIP44} />
+        <NetworkRow />
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}

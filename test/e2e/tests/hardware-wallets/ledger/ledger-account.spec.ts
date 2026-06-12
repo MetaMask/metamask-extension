@@ -1,5 +1,5 @@
 import { Browser } from 'selenium-webdriver';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
@@ -8,18 +8,18 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import MultichainAccountDetailsPage from '../../../page-objects/pages/multichain/multichain-account-details-page';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { checkAccountAddressDisplayedInAccountList } from '../common';
+import { login } from '../../../page-objects/flows/login.flow';
+import { checkAccountAddressDisplayedInAccountList } from '../../../page-objects/flows/account-list.flow';
 
 describe('Ledger Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -41,9 +41,6 @@ describe('Ledger Hardware', function () {
           await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
           return; // Exit early for Firefox
         }
-
-        // Click continue button when browser is not Firefox
-        await connectHardwareWalletPage.clickContinueButton();
 
         // For non-Firefox browsers, continue with the existing test flow
         const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
@@ -63,9 +60,15 @@ describe('Ledger Hardware', function () {
         }
 
         // Unlock first account of first page and check that the correct account has been added
-        await selectLedgerAccountPage.unlockAccount(1);
-        await headerNavbar.checkPageIsLoaded();
-        await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
+        await selectLedgerAccountPage.selectAccount(1);
+        // Brief pause to ensure React has fully committed the state update from
+        // account selection. Without this, the unlock handler may execute with a
+        // stale selectedAccounts closure on slower CI environments.
+        await driver.delay(1000);
+        await selectLedgerAccountPage.clickUnlockButton();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 1);
       },
@@ -75,11 +78,11 @@ describe('Ledger Hardware', function () {
   it('unlocks multiple accounts at once and removes one', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -100,9 +103,6 @@ describe('Ledger Hardware', function () {
           await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
           return; // Exit early for Firefox
         }
-
-        // Click continue button when browser is not Firefox
-        await connectHardwareWalletPage.clickContinueButton();
 
         // For non-Firefox browsers, continue with the existing test flow
         // Unlock 5 Ledger accounts

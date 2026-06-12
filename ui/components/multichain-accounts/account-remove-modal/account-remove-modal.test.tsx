@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AccountRemoveModal } from './account-remove-modal';
 
 describe('AccountRemoveModal', () => {
@@ -25,34 +26,36 @@ describe('AccountRemoveModal', () => {
   it('renders modal content when isOpen is true', () => {
     renderComponent();
 
-    expect(screen.getByText('Remove account')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.removeAccount.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('Ledger EVM Account')).toBeInTheDocument();
     expect(screen.getByText('0x5CfE7...6a7e1')).toBeInTheDocument();
     expect(
-      screen.getByText('This account will be removed from MetaMask.'),
+      screen.getByText(messages.removeAccountModalBannerTitle.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Make sure you have the Secret Recovery Phrase or private key for this account before removing.',
-      ),
+      screen.getByText(messages.removeAccountModalBannerDescription.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('Cancel')).toBeInTheDocument();
-    expect(screen.getByText('Remove')).toBeInTheDocument();
+    expect(screen.getByText(messages.cancel.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.remove.message)).toBeInTheDocument();
   });
 
   it('does not render when isOpen is false', () => {
     renderComponent({ isOpen: false });
 
-    expect(screen.queryByText('Remove account')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.removeAccount.message),
+    ).not.toBeInTheDocument();
   });
 
   it('calls appropriate handlers when buttons are clicked', () => {
     renderComponent();
 
-    screen.getByText('Cancel').click();
+    screen.getByText(messages.cancel.message).click();
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
 
-    screen.getByText('Remove').click();
+    screen.getByText(messages.remove.message).click();
     expect(defaultProps.onSubmit).toHaveBeenCalledTimes(1);
   });
 });

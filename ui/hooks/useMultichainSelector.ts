@@ -1,6 +1,6 @@
 import { useSelector, DefaultRootState } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { getSelectedInternalAccount } from '../selectors';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 
 export function useMultichainSelector<
   TState = DefaultRootState,

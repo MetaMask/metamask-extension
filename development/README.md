@@ -77,15 +77,15 @@ automatically categorized by environment based on build target and GitHub contex
 
 ### Environments
 
-| Environment         | When Used           | Build Command     | Webpack Command                                                | Branch/Context       |
-| ------------------- | ------------------- | ----------------- | -------------------------------------------------------------- | -------------------- |
-| `production`        | Production releases | `yarn build prod` | `yarn webpack --env production --targetEnvironment production` | `stable` branch      |
-| `staging`           | Main branch builds  | `yarn build dist` | `yarn webpack --env production`                                | `main` branch        |
-| `development`       | Local development   | `yarn start`      | `yarn webpack --env development --watch`                       | Local                |
-| `testing`           | E2E test builds     | `yarn build:test` | `yarn webpack --env production --test`                         | Any                  |
-| `pull-request`      | PR builds           | `yarn build dist` | `yarn webpack --env production`                                | `pull_request` event |
-| `release-candidate` | Release branches    | `yarn build dist` | `yarn webpack --env production`                                | `release/*` branches |
-| `other`             | Local dist builds   | `yarn build dist` | `yarn webpack --env production`                                | Local builds         |
+| Environment         | When Used           | Build Command     | Webpack Command                                   | Branch/Context       |
+| ------------------- | ------------------- | ----------------- | ------------------------------------------------- | -------------------- |
+| `production`        | Production releases | `yarn build prod` | `yarn webpack --mode production --env production` | `release/*` branches |
+| `staging`           | Main branch builds  | `yarn build dist` | `yarn webpack --mode production`                  | `main` branch        |
+| `development`       | Local development   | `yarn start`      | `yarn webpack --mode development --watch`         | Local                |
+| `testing`           | E2E test builds     | `yarn build:test` | `yarn webpack --mode production --test`           | Any                  |
+| `pull-request`      | PR builds           | `yarn build dist` | `yarn webpack --mode production`                  | `pull_request` event |
+| `release-candidate` | Release branches    | `yarn build dist` | `yarn webpack --mode production`                  | `release/*` branches |
+| `other`             | Local dist builds   | `yarn build dist` | `yarn webpack --mode production`                  | Local builds         |
 
 For non-main build types (beta, flask, experimental), the environment includes the build type suffix:
 
@@ -175,7 +175,7 @@ To enable Sentry error reporting for local development:
 3. List your organizations and copy the id for the organization you want to see `yarn sentry-cli organizations list`
 4. List your organization projects and copy the id for the you created `yarn sentry-cli projects list --org YOUR_ORG_ID`
 
-[<img src="../docs/assets/sentry-cli-release-process.gif">](sentry-cli.png)
+[<img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/f49d82308cb9a5c31ed0d0ec333a90b4bb774bc9/docs/assets/sentry-cli-release-process.gif">](sentry-cli.png)
 
 #### Publish a Release to Sentry
 

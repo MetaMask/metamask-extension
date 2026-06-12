@@ -3,7 +3,16 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontWeight,
+  OverflowWrap,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
@@ -12,11 +21,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  AlignItems,
   Display,
-  FlexDirection,
   JustifyContent,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -25,13 +31,11 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
 } from '../../../selectors';
-import { clearAccountDetails, hideWarning } from '../../../store/actions';
+import { clearAccountDetails } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
-  Box,
   Modal,
   ModalOverlay,
-  Text,
   ModalContent,
   ModalHeader,
   ModalBody,
@@ -55,7 +59,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) =>
@@ -97,7 +101,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
 
   const onClose = useCallback(() => {
     dispatch(clearAccountDetails());
-    dispatch(hideWarning());
   }, [dispatch]);
 
   const avatar = (
@@ -122,7 +125,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             onClose={onClose}
             onBack={() => {
               if (attemptingExport === AttemptExportState.PrivateKey) {
-                dispatch(hideWarning());
                 setPrivateKey('');
                 setAttemptingExport(AttemptExportState.None);
               } else if (attemptingExport === AttemptExportState.None) {
@@ -157,16 +159,15 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
               {attemptingExport === AttemptExportState.PrivateKey && (
                 <>
                   <Box
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    flexDirection={FlexDirection.Column}
+                    flexDirection={BoxFlexDirection.Column}
+                    alignItems={BoxAlignItems.Center}
                   >
                     {avatar}
                     <Text
-                      marginTop={2}
-                      marginBottom={2}
-                      variant={TextVariant.bodyLgMedium}
-                      style={{ wordBreak: 'break-word' }}
+                      variant={TextVariant.BodyLg}
+                      fontWeight={FontWeight.Medium}
+                      overflowWrap={OverflowWrap.BreakWord}
+                      className="mt-2 mb-2"
                     >
                       {account.metadata.name}
                     </Text>

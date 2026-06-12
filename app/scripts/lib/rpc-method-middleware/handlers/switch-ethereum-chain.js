@@ -7,9 +7,11 @@ import {
   switchChain,
 } from './ethereum-chain-utils';
 
-const switchEthereumChain = {
-  methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
-  implementation: switchEthereumChainHandler,
+/** @typedef {import('@metamask/json-rpc-engine').MethodHandler<Record<string, unknown>>} SwitchEthereumChainHandler */
+
+/** @type {SwitchEthereumChainHandler} */
+export const switchEthereumChainHandler = {
+  implementation: switchEthereumChainImplementation,
   hookNames: {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
@@ -25,9 +27,14 @@ const switchEthereumChain = {
   },
 };
 
-export default switchEthereumChain;
+/** @type {Record<MESSAGE_TYPE['SWITCH_ETHEREUM_CHAIN'], SwitchEthereumChainHandler>} */
+const switchEthereumChainHandlers = {
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChainHandler,
+};
 
-async function switchEthereumChainHandler(
+export default switchEthereumChainHandlers;
+
+async function switchEthereumChainImplementation(
   req,
   res,
   _next,

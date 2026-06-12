@@ -1,0 +1,17 @@
+@use "design-system";
+
+.change-password {
+  &__spinner {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  &__link-text {
+    color: var(--color-primary-default);
+  }
+
+  @include design-system.screen-sm-max {
+    height: 100%;
+  }
+}

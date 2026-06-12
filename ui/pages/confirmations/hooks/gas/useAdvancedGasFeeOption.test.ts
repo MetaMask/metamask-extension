@@ -8,6 +8,7 @@ import {
 import { GasModalType } from '../../constants/gas';
 import { useConfirmContext } from '../../context/confirm';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
+import { useTransactionGasLimit } from './useTransactionGasLimit';
 import { useAdvancedGasFeeOption } from './useAdvancedGasFeeOption';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -22,25 +23,37 @@ jest.mock('../../components/confirm/info/hooks/useFeeCalculations', () => ({
   useFeeCalculations: jest.fn(),
 }));
 
+jest.mock('./useTransactionGasLimit', () => ({
+  useTransactionGasLimit: jest.fn(),
+}));
+
 jest.mock('../transactions/useTransactionNativeTicker', () => ({
   useTransactionNativeTicker: () => 'ETH',
 }));
 
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
 const mockUseFeeCalculations = jest.mocked(useFeeCalculations);
+const mockUseTransactionGasLimit = jest.mocked(useTransactionGasLimit);
 
 describe('useAdvancedGasFeeOption', () => {
   const mockSetActiveModal = jest.fn();
+  const mockCalculateGasEstimate = jest.fn().mockReturnValue({
+    currentCurrencyFee: '$1.00',
+    preciseNativeCurrencyFee: '0.001',
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
 
+    mockCalculateGasEstimate.mockClear();
     mockUseFeeCalculations.mockReturnValue({
-      calculateGasEstimate: jest.fn().mockReturnValue({
-        currentCurrencyFee: '$1.00',
-        preciseNativeCurrencyFee: '0.001',
-      }),
+      calculateGasEstimate: mockCalculateGasEstimate,
     } as unknown as ReturnType<typeof useFeeCalculations>);
+
+    mockUseTransactionGasLimit.mockReturnValue({
+      gasLimit: '0x5208',
+      quotedGasLimit: undefined,
+    });
   });
 
   it('returns advanced option with isSelected false when userFeeLevel is a standard level', () => {
@@ -143,5 +156,37 @@ describe('useAdvancedGasFeeOption', () => {
     expect(mockSetActiveModal).toHaveBeenCalledWith(
       GasModalType.AdvancedGasPriceModal,
     );
+  });
+
+  it('passes the gas limit from useTransactionGasLimit to calculateGasEstimate and tooltip', () => {
+    mockUseTransactionGasLimit.mockReturnValue({
+      gasLimit: '0x1fbd0',
+      quotedGasLimit: undefined,
+    });
+
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        id: '1',
+        userFeeLevel: UserFeeLevel.CUSTOM,
+        gasFeeEstimates: {},
+        gasLimitNoBuffer: '0x5208',
+        containerTypes: ['EnforcedSimulations'],
+        txParams: {
+          type: TransactionEnvelopeType.feeMarket,
+          gas: '0x1fbd0',
+          maxFeePerGas: '0x2540be400',
+          maxPriorityFeePerGas: '0x3b9aca00',
+        },
+      },
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    const { result } = renderHook(() =>
+      useAdvancedGasFeeOption({ setActiveModal: mockSetActiveModal }),
+    );
+
+    expect(mockCalculateGasEstimate).toHaveBeenCalledWith(
+      expect.objectContaining({ gas: '0x1fbd0' }),
+    );
+    expect(result.current[0].tooltipProps?.gasLimit).toBe(0x1fbd0);
   });
 });

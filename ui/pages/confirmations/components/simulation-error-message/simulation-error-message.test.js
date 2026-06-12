@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import SimulationErrorMessage from './simulation-error-message';
 
 describe('Simulation Error Message', () => {
@@ -22,11 +23,11 @@ describe('Simulation Error Message', () => {
     );
 
     expect(
-      queryByText(
-        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
-      ),
+      queryByText(messages.simulationErrorMessageV2.message),
     ).toBeInTheDocument();
-    expect(queryByText('I want to proceed anyway')).toBeInTheDocument();
+    expect(
+      queryByText(messages.proceedWithTransaction.message),
+    ).toBeInTheDocument();
   });
 
   it('should render SimulationErrorMessage component without I want to procced anyway link', () => {
@@ -37,11 +38,11 @@ describe('Simulation Error Message', () => {
     );
 
     expect(
-      queryByText(
-        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
-      ),
+      queryByText(messages.simulationErrorMessageV2.message),
     ).toBeInTheDocument();
-    expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.proceedWithTransaction.message),
+    ).not.toBeInTheDocument();
   });
 
   it('should render SimulationErrorMessage component with I want to proceed anyway and fire that event', () => {
@@ -52,13 +53,15 @@ describe('Simulation Error Message', () => {
     );
 
     expect(
-      queryByText(
-        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
-      ),
+      queryByText(messages.simulationErrorMessageV2.message),
     ).toBeInTheDocument();
-    expect(queryByText('I want to proceed anyway')).toBeInTheDocument();
+    expect(
+      queryByText(messages.proceedWithTransaction.message),
+    ).toBeInTheDocument();
 
-    const proceedAnywayLink = getByText('I want to proceed anyway');
+    const proceedAnywayLink = getByText(
+      messages.proceedWithTransaction.message,
+    );
     fireEvent.click(proceedAnywayLink);
     expect(props.setUserAcknowledgedGasMissing).toHaveBeenCalledTimes(1);
   });

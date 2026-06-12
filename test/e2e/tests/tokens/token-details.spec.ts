@@ -2,16 +2,17 @@ import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
-  mockHistoricalPrices,
+  mockHistoricalPricesV3,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -21,7 +22,15 @@ describe('Token Details', function () {
   const symbol = 'foo';
 
   const fixtures = {
-    fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+      .withEnabledNetworks({ eip155: { [chainId]: true } })
+      .build(),
+    manifestFlags: {
+      remoteFeatureFlags: {
+        extensionUxTokenManagementFilter: false,
+      },
+    },
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },
@@ -38,7 +47,7 @@ describe('Token Details', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -82,25 +91,29 @@ describe('Token Details', function () {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price: 10000,
+              price: ethConversionInUsd,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
-            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
+            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: {
+              price: marketData.price * ethConversionInUsd,
+              marketCap: marketData.marketCap * ethConversionInUsd,
+            },
           }),
-          await mockHistoricalPrices(mockServer, {
-            address: tokenAddress,
-            chainId,
-            historicalPrices: [
-              { timestamp: 1717566000000, price: marketData.price * 0.9 },
-              { timestamp: 1717566322300, price: marketData.price },
-              { timestamp: 1717566611338, price: marketData.price * 1.1 },
+          await mockHistoricalPricesV3(
+            mockServer,
+            'eip155:1',
+            `erc20:${tokenAddress.toLowerCase()}`,
+            [
+              [1717566000000, marketData.price * 0.9],
+              [1717566322300, marketData.price],
+              [1717566611338, marketData.price * 1.1],
             ],
-          }),
+          ),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -132,6 +145,9 @@ describe('Token Details', function () {
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
+        // Native ETH price in the details view comes from the ETH conversion
+        // rate (see useCurrentPrice), so seed it to match the asserted price.
+        ethConversionInUsd: 1700,
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
@@ -140,10 +156,11 @@ describe('Token Details', function () {
               pricePercentChange1d: 0,
             },
           }),
+          await mockHistoricalPricesV3(mockServer, 'eip155:1', 'slip44:60'),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

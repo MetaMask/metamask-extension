@@ -10,9 +10,9 @@ import { captureException } from '../../../../../../shared/lib/sentry';
 import {
   getBestQuote,
   getBalanceChangeFromSimulationData,
-} from '../../../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
+} from '../../../../../../shared/lib/dapp-swap-comparison/dapp-swap-comparison-utils';
 import { TokenStandAndDetails } from '../../../../../store/actions';
-import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import { ConfirmMetamaskState } from '../../../types/confirm';
 import { getTokenValueFromRecord } from '../../../utils/token';
 import { selectDappSwapComparisonData } from '../../../selectors/confirm';

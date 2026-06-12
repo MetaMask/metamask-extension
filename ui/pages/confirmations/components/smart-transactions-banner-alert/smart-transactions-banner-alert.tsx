@@ -18,11 +18,11 @@ import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/con
 import {
   getSmartTransactionsOptInStatusInternal,
   getSmartTransactionsMigrationAppliedInternal,
-} from '../../../../../shared/modules/selectors/smart-transactions';
+} from '../../../../../shared/lib/selectors/smart-transactions';
 import {
   getChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../../../shared/modules/selectors';
+} from '../../../../../shared/lib/selectors';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -30,8 +30,8 @@ type SmartTransactionsBannerAlertProps = {
   marginType?: MarginType;
 };
 
-export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlertProps> =
-  React.memo(({ marginType = 'default' }) => {
+export const SmartTransactionsBannerAlert = React.memo(
+  ({ marginType = 'default' }: SmartTransactionsBannerAlertProps) => {
     const t = useI18nContext();
 
     let currentConfirmation;
@@ -134,7 +134,8 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
         </BannerAlert>
       </Box>
     );
-  });
+  },
+);
 
 SmartTransactionsBannerAlert.displayName = 'SmartTransactionsBannerAlert';
 

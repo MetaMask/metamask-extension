@@ -9,9 +9,6 @@ const storeMock = configureStore({
     completedOnboarding: true,
     participateInMetaMetrics: true,
     pna25Acknowledged: false,
-    remoteFeatureFlags: {
-      extensionUxPna25: true,
-    },
   },
 });
 
@@ -33,4 +30,3 @@ type Story = StoryObj<typeof Pna25Modal>;
 export const DefaultStory: Story = {};
 
 DefaultStory.storyName = 'Default';
-

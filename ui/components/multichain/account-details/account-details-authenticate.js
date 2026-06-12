@@ -1,21 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
-  Display,
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+  BoxFlexDirection,
+  Button,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import {
   FontWeight,
-  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { exportAccount, hideWarning } from '../../../store/actions';
-import {
-  BannerAlert,
-  Box,
-  ButtonPrimary,
-  ButtonSecondary,
-} from '../../component-library';
+import { exportAccount } from '../../../store/actions';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
+import { captureException } from '../../../../shared/lib/sentry';
 
 export const AccountDetailsAuthenticate = ({
   address,
@@ -27,22 +28,33 @@ export const AccountDetailsAuthenticate = ({
   const dispatch = useDispatch();
 
   const [password, setPassword] = useState('');
-
-  // Password error would result from appState
-  const warning = useSelector((state) => state.appState.warning);
+  const [warning, setWarning] = useState('');
 
   const onSubmit = useCallback(() => {
     dispatch(
       exportAccount(password, address, setPrivateKey, setShowHoldToReveal),
     )
       .then((res) => {
-        dispatch(hideWarning());
-        return res;
+        if (res && res.error && res.error === 'invalidPassword') {
+          setWarning(t('wrongPassword'));
+        } else if (warning !== '') {
+          setWarning('');
+        }
       })
-      .catch(() => {
-        // No need to do anything more with the caught error here, we already logged the error
+      .catch((error) => {
+        setWarning(t('unexpectedError'));
+        captureException(error);
       });
-  }, [dispatch, password, address, setPrivateKey, setShowHoldToReveal]);
+  }, [
+    dispatch,
+    password,
+    address,
+    setPrivateKey,
+    setShowHoldToReveal,
+    setWarning,
+    t,
+    warning,
+  ]);
 
   const handleKeyPress = useCallback(
     (e) => {
@@ -72,16 +84,25 @@ export const AccountDetailsAuthenticate = ({
       />
       <BannerAlert
         marginTop={6}
-        severity={Severity.Danger}
+        severity={BannerAlertSeverity.Danger}
         description={t('privateKeyWarning')}
       />
-      <Box display={Display.Flex} marginTop={6} gap={2}>
-        <ButtonSecondary onClick={onCancel} block>
+      <Box flexDirection={BoxFlexDirection.Row} marginTop={6} gap={2}>
+        <Button
+          variant={ButtonVariant.Secondary}
+          onClick={onCancel}
+          isFullWidth
+        >
           {t('cancel')}
-        </ButtonSecondary>
-        <ButtonPrimary onClick={onSubmit} disabled={password === ''} block>
+        </Button>
+        <Button
+          variant={ButtonVariant.Primary}
+          onClick={onSubmit}
+          disabled={password === ''}
+          isFullWidth
+        >
           {t('confirm')}
-        </ButtonPrimary>
+        </Button>
       </Box>
     </>
   );

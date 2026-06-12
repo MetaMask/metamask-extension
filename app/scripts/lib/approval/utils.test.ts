@@ -6,8 +6,15 @@ import { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { providerErrors } from '@metamask/rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-import { rejectAllApprovals, rejectOriginApprovals } from './utils';
+import {
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../../shared/constants/app';
+import {
+  getAttentionRequiredApprovalCount,
+  rejectAllApprovals,
+  rejectOriginApprovals,
+} from './utils';
 
 const ID_MOCK = '123';
 const ID_MOCK_2 = '456';
@@ -25,12 +32,30 @@ function createApprovalControllerMock(
     state: {
       pendingApprovals,
     },
-    accept: jest.fn(),
-    reject: jest.fn(),
+    acceptRequest: jest.fn(),
+    rejectRequest: jest.fn(),
   } as unknown as jest.Mocked<ApprovalController>;
 }
 
 describe('Approval Utils', () => {
+  describe('getAttentionRequiredApprovalCount', () => {
+    it('excludes smart transaction status page approvals', () => {
+      const approvalController = createApprovalControllerMock([
+        { id: ID_MOCK, type: ApprovalType.Transaction },
+        {
+          id: ID_MOCK_2,
+          type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+        },
+      ]);
+
+      expect(
+        getAttentionRequiredApprovalCount({
+          approvalController,
+        }),
+      ).toBe(1);
+    });
+  });
+
   describe('rejectAllApprovals', () => {
     it('rejects approval requests with rejected error', () => {
       const approvalController = createApprovalControllerMock([
@@ -42,12 +67,12 @@ describe('Approval Utils', () => {
         approvalController,
       });
 
-      expect(approvalController.reject).toHaveBeenCalledTimes(2);
-      expect(approvalController.reject).toHaveBeenCalledWith(
+      expect(approvalController.rejectRequest).toHaveBeenCalledTimes(2);
+      expect(approvalController.rejectRequest).toHaveBeenCalledWith(
         ID_MOCK,
         providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
-      expect(approvalController.reject).toHaveBeenCalledWith(
+      expect(approvalController.rejectRequest).toHaveBeenCalledWith(
         ID_MOCK_2,
         providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
@@ -65,8 +90,11 @@ describe('Approval Utils', () => {
 
       rejectAllApprovals({ approvalController });
 
-      expect(approvalController.accept).toHaveBeenCalledTimes(1);
-      expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, null);
+      expect(approvalController.acceptRequest).toHaveBeenCalledTimes(1);
+      expect(approvalController.acceptRequest).toHaveBeenCalledWith(
+        ID_MOCK,
+        null,
+      );
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
@@ -82,8 +110,11 @@ describe('Approval Utils', () => {
 
       rejectAllApprovals({ approvalController });
 
-      expect(approvalController.accept).toHaveBeenCalledTimes(1);
-      expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, false);
+      expect(approvalController.acceptRequest).toHaveBeenCalledTimes(1);
+      expect(approvalController.acceptRequest).toHaveBeenCalledWith(
+        ID_MOCK,
+        false,
+      );
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
@@ -124,8 +155,8 @@ describe('Approval Utils', () => {
         origin,
       });
 
-      expect(approvalController.reject).toHaveBeenCalledTimes(1);
-      expect(approvalController.reject).toHaveBeenCalledWith(
+      expect(approvalController.rejectRequest).toHaveBeenCalledTimes(1);
+      expect(approvalController.rejectRequest).toHaveBeenCalledWith(
         ID_MOCK,
         providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );

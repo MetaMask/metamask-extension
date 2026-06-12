@@ -36,6 +36,7 @@ describe('Permit Confirmation', () => {
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
         getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
+        getTokenStandardAndDetailsByChain: { decimals: '2', standard: 'ERC20' },
       }),
     );
   });
@@ -57,7 +58,9 @@ describe('Permit Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
-          participateInMetaMetrics: true,
+          analyticsId: 'test-metametrics-id',
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
           dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
@@ -267,8 +270,8 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    const headingText = tEn('blockaidTitleDeceptive') as string;
-    const bodyText = tEn('blockaidDescriptionApproveFarming') as string;
+    const headingText = tEn('blockaidTitleDeceptive');
+    const bodyText = tEn('blockaidDescriptionApproveFarming');
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();
   });
@@ -299,8 +302,9 @@ describe('Permit Confirmation', () => {
     expect(
       mockedBackgroundConnection.submitRequestToBackground,
     ).toHaveBeenCalledWith(
-      'updateEventFragment',
+      'upsertTransactionUIMetricsFragment',
       expect.arrayContaining([
+        expect.any(String),
         expect.objectContaining({
           properties: expect.objectContaining({
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -23,7 +23,7 @@ jobs:
       STORED_COVERAGE: ${{ needs.run-tests.outputs.stored-coverage }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 

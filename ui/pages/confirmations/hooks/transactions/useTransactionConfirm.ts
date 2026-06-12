@@ -12,11 +12,17 @@ import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useG
 import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
+import {
+  isHardwareWalletError,
+  isUserRejectedHardwareWalletError,
+  useHardwareWalletError,
+} from '../../../../contexts/hardware-wallets';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
+  const { showErrorModal } = useHardwareWalletError();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
@@ -83,7 +89,7 @@ export function useTransactionConfirm() {
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
   } = useShieldConfirm();
 
-  const onTransactionConfirm = useCallback(async () => {
+  const onTransactionConfirm = useCallback(async (): Promise<boolean> => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
     updateSwapWithQuoteDetailsIfRequired(newTransactionMeta);
@@ -99,19 +105,30 @@ export function useTransactionConfirm() {
     handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
     try {
       await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+      onDappSwapCompleted();
+      return true;
     } catch (error) {
       handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
         newTransactionMeta,
       );
-      throw error;
-    }
 
-    onDappSwapCompleted();
+      if (!isHardwareWalletError(error)) {
+        // Non-hardware wallet errors - just rethrow
+        throw error;
+      }
+      if (isUserRejectedHardwareWalletError(error)) {
+        // User intentionally rejected on device; do not show hardware error modal.
+        return false;
+      }
+      showErrorModal(error);
+      return false;
+    }
   }, [
     newTransactionMeta,
     customNonceValue,
     isGaslessSupportedSTX,
     dispatch,
+    showErrorModal,
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,

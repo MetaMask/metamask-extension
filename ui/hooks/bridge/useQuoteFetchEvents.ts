@@ -1,16 +1,19 @@
 /* eslint-disable camelcase */
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
+  getFromTokenBalanceInUsd,
   getWarningLabels,
+  type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
+import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 
 // This hook is used to track cross chain swaps events related to quote-fetching
 export const useQuoteFetchEvents = () => {
@@ -23,7 +26,17 @@ export const useQuoteFetchEvents = () => {
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
-  const warnings = useSelector(getWarningLabels);
+  const warnings = useSelector(
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
+
+  const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+
+  const getHasSufficientGasForQuote = useHasSufficientGasForQuoteForMetrics();
+  const hasSufficientGasForQuote = getHasSufficientGasForQuote(
+    activeQuote ?? null,
+  );
 
   // Emitted each time quotes are fetched successfully
   useEffect(() => {
@@ -32,10 +45,12 @@ export const useQuoteFetchEvents = () => {
         trackUnifiedSwapBridgeEvent(
           UnifiedSwapBridgeEventName.QuotesReceived,
           getQuotesReceivedProperties(
-            activeQuote,
+            activeQuote ?? null,
             warnings,
             isTxSubmittable,
             recommendedQuote,
+            fromTokenBalanceInUsd,
+            hasSufficientGasForQuote,
           ),
         ),
       );

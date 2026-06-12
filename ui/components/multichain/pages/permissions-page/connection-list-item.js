@@ -25,10 +25,7 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
-import {
-  getAllPermittedChainsForSelectedTab,
-  getIsMultichainAccountsState2Enabled,
-} from '../../../../selectors';
+import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
 import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
@@ -39,12 +36,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
   );
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 
-  const isState2Enabled = useSelector(getIsMultichainAccountsState2Enabled);
-
   const accountAddressSet = useMemo(() => {
-    if (!isState2Enabled) {
-      return null;
-    }
     const set = new Set();
     (accountGroups ?? []).forEach((group) => {
       (group.accounts ?? []).forEach((account) => {
@@ -52,12 +44,9 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       });
     });
     return set;
-  }, [isState2Enabled, accountGroups]);
+  }, [accountGroups]);
 
   const accountsToShow = useMemo(() => {
-    if (!isState2Enabled) {
-      return connection.addresses?.length ?? 0;
-    }
     if (!accountAddressSet || !connection.addresses?.length) {
       return 0;
     }
@@ -68,7 +57,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       }
     }
     return count;
-  }, [isState2Enabled, accountAddressSet, connection.addresses]);
+  }, [accountAddressSet, connection.addresses]);
 
   return (
     <Box

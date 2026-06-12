@@ -10,7 +10,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -30,13 +30,19 @@ import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
  * @param props.isAllApproval
  * @param props.isUnlimitedApproval
  */
-export const AmountPill: React.FC<{
+export const AmountPill = ({
+  asset,
+  amount,
+  isApproval,
+  isAllApproval,
+  isUnlimitedApproval,
+}: {
   asset: AssetIdentifier;
   amount: BigNumber;
   isApproval?: boolean;
   isAllApproval?: boolean;
   isUnlimitedApproval?: boolean;
-}> = ({ asset, amount, isApproval, isAllApproval, isUnlimitedApproval }) => {
+}) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
   const color = getColor({ amount, isApproval });

@@ -3,23 +3,25 @@ import { useDispatch } from 'react-redux';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
-import { AccountDetailsRow } from '../account-details-row';
 import {
   ButtonIcon,
   ButtonIconSize,
+  IconColor,
   IconName,
+} from '@metamask/design-system-react';
+
+import { AccountDetailsRow } from '../account-details-row';
+import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
 } from '../../component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import { AccountDetailsAuthenticate } from '../../multichain/account-details/account-details-authenticate';
 import { AccountDetailsKey } from '../../multichain/account-details/account-details-key';
-import { hideWarning } from '../../../store/actions';
 
 type AccountShowPrivateKeyRowProps = {
   account: InternalAccount;
@@ -49,7 +51,6 @@ export const AccountShowPrivateKeyRow = ({
     setShowPrivateKeyModal(false);
     setPrivateKey('');
     setShowHoldToReveal(false);
-    dispatch(hideWarning());
   };
 
   const showModal = showPrivateKeyModal && !showHoldToReveal;
@@ -63,7 +64,7 @@ export const AccountShowPrivateKeyRow = ({
           <ButtonIcon
             iconName={IconName.ArrowRight}
             ariaLabel={t('next')}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
             size={ButtonIconSize.Md}
           />
         }

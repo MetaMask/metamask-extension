@@ -19,7 +19,7 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../shared/constants/subscriptions';
 import { SHIELD_PLAN_ROUTE } from '../../helpers/constants/routes';
-import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
+import { isCryptoPaymentMethod } from '../../pages/shield/transaction-shield/types';
 import { useAsyncResult } from '../useAsync';
 import { getSubscriptionCryptoApprovalAmount } from '../../store/actions';
 import {
@@ -52,17 +52,17 @@ import {
 export const useHandlePayment = ({
   currentShieldSubscription,
   displayedShieldSubscription,
-  subscriptions,
   isCancelled,
-  subscriptionPricing,
   onOpenAddFundsModal,
+  subscriptions,
+  subscriptionPricing,
 }: {
   currentShieldSubscription?: Subscription;
   displayedShieldSubscription?: Subscription;
-  subscriptions?: Subscription[];
   isCancelled: boolean;
-  subscriptionPricing?: PricingResponse;
   onOpenAddFundsModal: () => void;
+  subscriptions?: Subscription[];
+  subscriptionPricing?: PricingResponse;
 }) => {
   const navigate = useNavigate();
   const { captureShieldErrorStateClickedEvent } = useSubscriptionMetrics();
@@ -256,7 +256,7 @@ export const useHandlePayment = ({
       // go to shield plan page to renew subscription for cancelled subscription
       navigate({
         pathname: SHIELD_PLAN_ROUTE,
-        search: `?source=${ShieldMetricsSourceEnum.Settings}`,
+        search: `?source=${ShieldMetricsSourceEnum.ShieldSettings}`,
       });
     } else if (isUnexpectedErrorCryptoPayment) {
       // handle support action

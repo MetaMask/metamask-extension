@@ -9,7 +9,8 @@ import { PreferencesController } from '../../controllers/preferences-controller'
 import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
-} from '../../../../shared/modules/transaction.utils';
+} from '../../../../shared/lib/transaction.utils';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
@@ -23,10 +24,12 @@ import {
   isSecurityAlertsEnabledByUser,
   isConnected,
   connectScreenHasBeenPrompted,
+  isEip7715AdvancedPermissionsRequest,
 } from './trust-signals-util';
 
 export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
   origin?: string;
+  requestUrl?: string;
   networkClientId: NetworkClientId;
 };
 
@@ -36,6 +39,7 @@ export function createTrustSignalsMiddleware(
   phishingController: PhishingController,
   preferencesController: PreferencesController,
   getPermittedAccounts: (origin: string) => string[],
+  requestUrl?: string,
 ) {
   return async (
     req: TrustSignalsMiddlewareRequest,
@@ -43,6 +47,8 @@ export function createTrustSignalsMiddleware(
     next: () => void,
   ) => {
     try {
+      req.requestUrl = requestUrl;
+
       if (
         !isSecurityAlertsEnabledByUser(preferencesController) ||
         !isSecurityAlertsAPIEnabled()
@@ -60,6 +66,8 @@ export function createTrustSignalsMiddleware(
         scanUrl(req, phishingController);
       } else if (connectScreenHasBeenPrompted(req)) {
         scanUrl(req, phishingController);
+      } else if (isEip7715AdvancedPermissionsRequest(req)) {
+        scanUrl(req, phishingController);
       }
     } catch (error) {
       console.error('[createTrustSignalsMiddleware] error: ', error);
@@ -73,8 +81,10 @@ function scanUrl(
   req: TrustSignalsMiddlewareRequest,
   phishingController: PhishingController,
 ) {
-  if (req.origin) {
-    phishingController.scanUrl(req.origin).catch((error) => {
+  const urlToScan = req.requestUrl ?? req.origin;
+
+  if (urlToScan) {
+    phishingController.scanUrl(urlToScan).catch((error) => {
       console.error('[createTrustSignalsMiddleware] error:', error);
     });
   }
@@ -145,6 +155,13 @@ function handleEthSignTypedData(
   appStateController: AppStateController,
   networkController: NetworkController,
 ) {
+  if (
+    req.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
+    req.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
+  ) {
+    return;
+  }
+
   if (!hasValidTypedDataParams(req)) {
     return;
   }

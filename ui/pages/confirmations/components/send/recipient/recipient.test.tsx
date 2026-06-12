@@ -237,6 +237,33 @@ describe('Recipient', () => {
     expect(queryByTestId('open-recipient-modal-btn')).not.toBeInTheDocument();
   });
 
+  it('renders address poisoning warning when a poisoning match exists', () => {
+    const recipientCandidateAddress =
+      '0x1111ffffffffffffffffffffffffffffffffaaaa';
+    const knownAddress = '0x111122223333444455556666777788889999aaaa';
+
+    const { getByTestId, getByText } = renderComponent({
+      recipientCandidateAddress,
+      addressPoisoningDetectionResult: {
+        isPoisoningSuspect: true,
+        bestMatch: {
+          knownAddress,
+          prefixMatchLength: 4,
+          suffixMatchLength: 4,
+          poisoningScore: 8,
+          diffIndices: [6, 7],
+        },
+        matches: [],
+        pending: false,
+      },
+    });
+
+    expect(getByTestId('address-poisoning-warning-banner')).toBeInTheDocument();
+    expect(getByText('ADDRESSPOISONINGTITLE')).toBeInTheDocument();
+    expect(getByText('ADDRESSPOISONINGMESSAGE')).toBeInTheDocument();
+    expect(getByText('COMPAREADDRESSES')).toBeInTheDocument();
+  });
+
   describe('metrics', () => {
     it('calls updateTo when recipient is selected from modal', () => {
       mockUseRecipients.mockReturnValue(mockRecipients);
@@ -249,6 +276,94 @@ describe('Recipient', () => {
         '0x1234567890abcdef1234567890abcdef12345678',
       );
       expect(mockSetRecipientInputMethodSelectAccount).toHaveBeenCalled();
+    });
+  });
+
+  describe('acknowledge', () => {
+    const tokenContractAddress = '0x1234567890abcdef1234567890abcdef12345678';
+
+    it('hides inline error when recipientErrorAllowAcknowledge is true', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { queryByText } = renderComponent({
+        recipientValidationResult: {
+          recipientError: 'Token contract error',
+          recipientErrorAllowAcknowledge: true,
+
+          acknowledgeError: jest.fn(),
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      expect(queryByText('Token contract error')).not.toBeInTheDocument();
+    });
+
+    it('renders alert icon next to To label when address is acknowledgeable', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { getByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: 'Token contract error',
+          recipientErrorAllowAcknowledge: true,
+
+          acknowledgeError: jest.fn(),
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      expect(getByTestId('recipient-alert-icon')).toBeInTheDocument();
+    });
+
+    it('calls onAlertIconClick when alert icon is clicked', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const mockOnAlertIconClick = jest.fn();
+
+      const { getByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: 'Token contract error',
+          recipientErrorAllowAcknowledge: true,
+
+          acknowledgeError: jest.fn(),
+          toAddressValidated: tokenContractAddress,
+        },
+        onAlertIconClick: mockOnAlertIconClick,
+      });
+
+      fireEvent.click(getByTestId('recipient-alert-icon'));
+      expect(mockOnAlertIconClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not render alert icon when address is not acknowledgeable', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { queryByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: 'Token contract error',
+          recipientErrorAllowAcknowledge: false,
+
+          acknowledgeError: jest.fn(),
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      expect(queryByTestId('recipient-alert-icon')).not.toBeInTheDocument();
     });
   });
 });

@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import configureStore from '../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { GasInput } from './gas-input';
@@ -44,7 +45,7 @@ describe('GasInput', () => {
     const { getByTestId, getByText } = render();
 
     expect(getByTestId('gas-input')).toBeInTheDocument();
-    expect(getByText('Gas limit')).toBeInTheDocument();
+    expect(getByText(messages.gasLimit.message)).toBeInTheDocument();
   });
 
   it('calls onChange when value changes', () => {

@@ -25,7 +25,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
+import { PRIVACY_ROUTE } from '../../../../helpers/constants/routes';
 import { setPna25Acknowledged } from '../../../../store/actions';
 import { PNA25_BLOG_POST_LINK, Pna25NoticeAction } from './constants';
 
@@ -34,7 +34,7 @@ export default function Pna25Modal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const hasTrackedView = useRef(false);
 
@@ -50,11 +50,15 @@ export default function Pna25Modal() {
 
       // Only acknowledge and close on user actions, not on initial view
       if (action !== Pna25NoticeAction.Viewed) {
-        dispatch(setPna25Acknowledged(true));
+        const disableDelay = [
+          Pna25NoticeAction.Close,
+          Pna25NoticeAction.AcceptAndClose,
+        ].includes(action);
+        dispatch(setPna25Acknowledged(true, disableDelay));
       }
 
       if (action === Pna25NoticeAction.OpenSettings) {
-        navigate(SECURITY_ROUTE);
+        navigate(PRIVACY_ROUTE);
       }
     },
     [trackEvent, dispatch, navigate],
@@ -68,7 +72,7 @@ export default function Pna25Modal() {
   }, [handleAction]);
 
   return (
-    <Modal isOpen onClose={() => dispatch(setPna25Acknowledged(true))}>
+    <Modal isOpen onClose={() => handleAction(Pna25NoticeAction.Close)}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={() => handleAction(Pna25NoticeAction.Close)}>

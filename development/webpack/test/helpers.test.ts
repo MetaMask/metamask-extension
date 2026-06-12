@@ -1,14 +1,12 @@
-import fs from 'node:fs';
 import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
-import { join } from 'node:path';
 import {
   version,
-  type Chunk,
   type Stats,
   type Compilation,
   type StatsOptions,
   type StatsCompilation,
+  type Compiler,
 } from 'webpack';
 import * as helpers from '../utils/helpers';
 import { type Combination, generateCases } from './helpers';
@@ -21,244 +19,40 @@ describe('./utils/helpers.ts', () => {
     assert.strictEqual(nothing, undefined);
   });
 
-  it('should return all entries listed in the manifest and file system for manifest_version 2', () => {
-    const originalReaddirSync = fs.readdirSync;
-    const otherHtmlEntries = ['one.html', 'two.html'];
-    const appRoot = '<app-root>';
-    const htmlPages = join(appRoot, 'html', 'pages');
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mock.method(fs, 'readdirSync', function (path: string, options: any) {
-      if (path === htmlPages) {
-        return [...otherHtmlEntries, 'three.not-html'];
-      }
-      return originalReaddirSync.call(fs, path, options);
+  describe('ignoreCacheShutdownSignal', () => {
+    it('silently ignores shutdown signals until cleanup', () => {
+      const listeners = new Map<NodeJS.Signals, () => void>();
+      const on = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+        listeners.set(signal, listener);
+      });
+      const off = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+        if (listeners.get(signal) === listener) {
+          listeners.delete(signal);
+        }
+      });
+      const signalProcess = {
+        on,
+        off,
+      } as unknown as NodeJS.Process;
+      const { mock: error } = mock.method(console, 'error', helpers.noop);
+
+      const cleanup = helpers.ignoreCacheShutdownSignal(signalProcess);
+
+      const signals = ['SIGINT', 'SIGTERM'] as const;
+      signals.forEach((signal) => {
+        const listener = listeners.get(signal);
+        assert(listener, `${signal} listener should be set`);
+        listener();
+      });
+      cleanup();
+
+      assert.strictEqual(error.callCount(), 0);
+      assert.strictEqual(on.mock.callCount(), signals.length);
+      assert.strictEqual(off.mock.callCount(), signals.length);
+      signals.forEach((signal) =>
+        assert.strictEqual(listeners.has(signal), false),
+      );
     });
-
-    const manifest = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      manifest_version: 2,
-      background: {
-        scripts: ['background.js'],
-        page: 'background.html',
-      },
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      browser_action: {
-        // use one from `otherHtmlEntries`, to ensure we don't duplicate things
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        default_popup: otherHtmlEntries[0],
-      },
-      // images/test.ing.png will be omitted from entry points
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      web_accessible_resources: ['images/test.ing.png', 'testing.js'],
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      content_scripts: [
-        {
-          matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-          js: ['scripts/contentscript.js', 'scripts/inpage.js'],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          run_at: 'document_start',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          all_frames: true,
-        },
-        {
-          matches: ['*://connect.trezor.io/*/popup.html'],
-          js: ['vendor/trezor/content-script.js'],
-        },
-      ],
-    } as helpers.ManifestV2;
-    const { entry, canBeChunked } = helpers.collectEntries(manifest, appRoot);
-    const expectedScripts = {
-      'background.js': {
-        chunkLoading: false,
-        filename: 'background.js',
-        import: join(appRoot, `background.js`),
-      },
-      'scripts/contentscript.js': {
-        chunkLoading: false,
-        filename: 'scripts/contentscript.js',
-        import: join(appRoot, `scripts/contentscript.js`),
-      },
-      'scripts/inpage.js': {
-        chunkLoading: false,
-        filename: 'scripts/inpage.js',
-        import: join(appRoot, `/scripts/inpage.js`),
-      },
-      'vendor/trezor/content-script.js': {
-        chunkLoading: false,
-        filename: 'vendor/trezor/content-script.js',
-        import: join(appRoot, `vendor/trezor/content-script.js`),
-      },
-      'testing.js': {
-        chunkLoading: false,
-        filename: 'testing.js',
-        import: join(appRoot, `testing.js`),
-      },
-    };
-    const expectedHtml = {
-      background: join(htmlPages, `background.html`),
-      one: join(htmlPages, `one.html`),
-      two: join(htmlPages, `two.html`),
-      // notice: three.not-html is NOT included, since it doesn't have an `.html` extension
-    };
-    const expectedEntries = { ...expectedScripts, ...expectedHtml };
-    assert.deepStrictEqual(entry, expectedEntries);
-
-    const jsFiles = Object.keys(entry).filter((key) => key.endsWith('.js'));
-    assert(jsFiles.length > 0, "JS files weren't found in the manifest");
-    jsFiles.forEach((name) => {
-      assert.strictEqual(canBeChunked({ name } as Chunk), false);
-    });
-
-    // scripts that are *not* in our manifest *can* be chunked
-    assert.strictEqual(canBeChunked({ name: 'anything.js' } as Chunk), true);
-  });
-
-  it('should return all entries listed in the manifest and file system for manifest_version 3', () => {
-    const originalReaddirSync = fs.readdirSync;
-    const otherHtmlEntries = ['one.html', 'two.html'];
-    const appRoot = '<app-root>';
-    const htmlPages = join(appRoot, 'html', 'pages');
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mock.method(fs, 'readdirSync', (path: string, options: any) => {
-      if (path === htmlPages) {
-        return [...otherHtmlEntries, 'three.not-html'];
-      }
-      return originalReaddirSync.call(fs, path, options);
-    });
-
-    const manifest = {
-      name: 'MetaMask',
-      version: '1.0.0',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      manifest_version: 3,
-      background: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        service_worker: 'background.js',
-      },
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      web_accessible_resources: [
-        {
-          matches: ['<all_urls>'],
-          // images/test.ing.png will be omitted from entry points
-          resources: ['images/test.ing.png', 'testing.js'],
-        },
-      ],
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      browser_action: {
-        // use one from `otherHtmlEntries`, to ensure we don't duplicate things
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        default_popup: otherHtmlEntries[0],
-      },
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      content_scripts: [
-        {
-          matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-          js: ['scripts/contentscript.js'],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          run_at: 'document_start',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          all_frames: true,
-        },
-        {
-          matches: ['*://connect.trezor.io/*/popup.html'],
-          js: ['vendor/trezor/content-script.js'],
-        },
-      ],
-    } as helpers.ManifestV3;
-    const { entry, canBeChunked } = helpers.collectEntries(manifest, appRoot);
-    const expectedScripts = {
-      'scripts/contentscript.js': {
-        chunkLoading: false,
-        filename: 'scripts/contentscript.js',
-        import: join(appRoot, `scripts/contentscript.js`),
-      },
-      'vendor/trezor/content-script.js': {
-        chunkLoading: false,
-        filename: 'vendor/trezor/content-script.js',
-        import: join(appRoot, `vendor/trezor/content-script.js`),
-      },
-      'background.js': {
-        chunkLoading: 'import-scripts',
-        filename: 'background.js',
-        import: join(appRoot, `background.js`),
-      },
-      'testing.js': {
-        chunkLoading: false,
-        filename: 'testing.js',
-        import: join(appRoot, `testing.js`),
-      },
-    };
-    const expectedHtml = {
-      one: join(htmlPages, `one.html`),
-      two: join(htmlPages, `two.html`),
-      // notice: three.not-html is NOT included, since it doesn't have an `.html` extension
-    };
-    const expectedEntries = {
-      ...expectedScripts,
-      ...expectedHtml,
-    };
-    assert.deepStrictEqual(entry, expectedEntries);
-
-    const jsFiles = Object.keys(entry).filter((key) => key.endsWith('.js'));
-    assert(jsFiles.length > 0, "JS files weren't found in the manifest");
-    jsFiles.forEach((name) => {
-      assert.strictEqual(canBeChunked({ name } as Chunk), false);
-    });
-
-    // scripts that are *not* in our manifest *can* be chunked
-    assert.strictEqual(canBeChunked({ name: 'anything.js' } as Chunk), true);
-  });
-
-  it('should handle manifest.json files with empty sections', () => {
-    const originalReaddirSync = fs.readdirSync;
-    const appRoot = '<app-root>';
-    const htmlPages = join(appRoot, 'html', 'pages');
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mock.method(fs, 'readdirSync', (path: string, options: any) => {
-      if (path === htmlPages) {
-        return [];
-      }
-      return originalReaddirSync.call(fs, path, options);
-    });
-
-    const manifestv2 = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      manifest_version: 2,
-      background: {},
-    } as helpers.ManifestV2;
-    const { entry: entryv2 } = helpers.collectEntries(manifestv2, appRoot);
-    assert.deepStrictEqual(entryv2, {});
-
-    const manifestv3 = {
-      name: 'MetaMask',
-      version: '1.0.0',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      manifest_version: 3,
-      background: {},
-    } as helpers.ManifestV3;
-    const { entry: entryv3 } = helpers.collectEntries(manifestv3, appRoot);
-    assert.deepStrictEqual(entryv3, {});
   });
 
   describe('logStats', () => {
@@ -395,5 +189,205 @@ describe('./utils/helpers.ts', () => {
         }
       });
     }
+  });
+
+  describe('suppressDevServerInfoLogs', () => {
+    it('suppresses webpack-dev-server info logs', () => {
+      let infrastructureLog:
+        | ((name: string, type: string, args?: unknown[]) => true | void)
+        | undefined;
+      const compiler = {
+        hooks: {
+          infrastructureLog: {
+            tap: mock.fn((_name, callback) => {
+              infrastructureLog = callback;
+            }),
+          },
+        },
+      } as unknown as Compiler;
+
+      helpers.suppressDevServerInfoLogs(compiler);
+
+      assert(infrastructureLog, 'infrastructure log callback should be set');
+      assert.strictEqual(
+        infrastructureLog('webpack-dev-server', 'info', [
+          'Project is running at:',
+        ]),
+        true,
+      );
+      assert.strictEqual(
+        infrastructureLog('webpack-dev-server', 'warn', ['test warning']),
+        undefined,
+      );
+      assert.strictEqual(
+        infrastructureLog('webpack.Progress', 'status', ['10%', 'building']),
+        undefined,
+      );
+    });
+  });
+
+  describe('logWatchBuildStats', () => {
+    it('logs stats and the watch message after each completed build', () => {
+      const calls: unknown[] = [];
+      let done: Parameters<Compiler['hooks']['done']['tap']>[1] | undefined;
+      const status = mock.fn(() => calls.push('status'));
+      const doneTap = mock.fn((_name, callback) => {
+        done = callback;
+      });
+      const failedTap = mock.fn();
+      const compiler = {
+        hooks: {
+          done: {
+            tap: doneTap,
+          },
+          failed: {
+            tap: failedTap,
+          },
+        },
+        getInfrastructureLogger: mock.fn(() => ({ status })),
+      } as unknown as Compiler;
+      const stats = {
+        endTime: 1000,
+        startTime: 0,
+        hasErrors: mock.fn(() => false),
+        hasWarnings: mock.fn(() => false),
+        compilation: {
+          options: {
+            mode: 'development',
+            stats: 'none',
+          },
+          compiler: {
+            name: 'test-compiler-name',
+          },
+        } as Compilation,
+        toString: mock.fn((_?: unknown) => 'test-stats'),
+      } as unknown as Stats;
+      mock.method(console, 'error', (message: unknown) => {
+        calls.push(message);
+      });
+
+      helpers.logWatchBuildStats(compiler, 'test message');
+
+      assert(done, 'done callback should be set');
+      assert.deepStrictEqual(
+        doneTap.mock.calls[0].arguments[0],
+        'MetaMaskWatchBuildLogger',
+      );
+      assert.deepStrictEqual(
+        failedTap.mock.calls[0].arguments[0],
+        'MetaMaskWatchBuildLogger',
+      );
+
+      done(stats);
+      done(stats);
+
+      assert.strictEqual(status.mock.callCount(), 2);
+      assert.match(String(calls[1]), /compiled/u);
+      assert.strictEqual(calls[2], 'test message');
+      assert.match(String(calls[4]), /compiled/u);
+      assert.strictEqual(calls[5], 'test message');
+    });
+
+    it('logs fatal watch errors and the watch message', () => {
+      const calls: unknown[] = [];
+      let failed: Parameters<Compiler['hooks']['failed']['tap']>[1] | undefined;
+      const status = mock.fn(() => calls.push('status'));
+      const compiler = {
+        hooks: {
+          done: {
+            tap: mock.fn(),
+          },
+          failed: {
+            tap: mock.fn((_name, callback) => {
+              failed = callback;
+            }),
+          },
+        },
+        getInfrastructureLogger: mock.fn(() => ({ status })),
+      } as unknown as Compiler;
+      const error = new Error('test error');
+      mock.method(console, 'error', (message: unknown) => {
+        calls.push(message);
+      });
+
+      helpers.logWatchBuildStats(compiler, 'test message');
+
+      assert(failed, 'failed callback should be set');
+      failed(error);
+
+      assert.strictEqual(status.mock.callCount(), 1);
+      assert.deepStrictEqual(calls, ['status', error, 'test message']);
+    });
+  });
+
+  describe('getDevServerClientUrl', () => {
+    const parse = (url: string) => {
+      const [base, query] = url.split('?');
+      return { base, params: new URLSearchParams(query) };
+    };
+
+    it('returns the webpack-dev-server client base path', () => {
+      const { base } = parse(helpers.getDevServerClientUrl({}));
+      assert.strictEqual(base, 'webpack-dev-server/client/index');
+    });
+
+    it('always sets protocol=ws (extension pages cannot auto-detect WS protocol)', () => {
+      const { params } = parse(helpers.getDevServerClientUrl({}));
+      assert.strictEqual(params.get('protocol'), 'ws');
+    });
+
+    it('omits hostname/port/hot/live-reload when the corresponding fields are unset', () => {
+      const { params } = parse(helpers.getDevServerClientUrl({}));
+      assert.strictEqual(params.has('hostname'), false);
+      assert.strictEqual(params.has('port'), false);
+      assert.strictEqual(params.has('hot'), false);
+      assert.strictEqual(params.has('live-reload'), false);
+    });
+
+    it('maps `host` to the `hostname` param', () => {
+      const { params } = parse(
+        helpers.getDevServerClientUrl({ host: 'localhost' }),
+      );
+      assert.strictEqual(params.get('hostname'), 'localhost');
+    });
+
+    it('forwards a numeric port as a string', () => {
+      const { params } = parse(helpers.getDevServerClientUrl({ port: 12345 }));
+      assert.strictEqual(params.get('port'), '12345');
+    });
+
+    it("forwards `port: 'auto'` as the string 'auto'", () => {
+      const { params } = parse(helpers.getDevServerClientUrl({ port: 'auto' }));
+      assert.strictEqual(params.get('port'), 'auto');
+    });
+
+    it('forwards `hot` as a string', () => {
+      const hotTrue = parse(helpers.getDevServerClientUrl({ hot: true }));
+      assert.strictEqual(hotTrue.params.get('hot'), 'true');
+
+      const hotFalse = parse(helpers.getDevServerClientUrl({ hot: false }));
+      assert.strictEqual(hotFalse.params.get('hot'), 'false');
+    });
+
+    it('maps `liveReload` to the `live-reload` param', () => {
+      const { params } = parse(
+        helpers.getDevServerClientUrl({ liveReload: true }),
+      );
+      assert.strictEqual(params.get('live-reload'), 'true');
+      assert.strictEqual(params.has('liveReload'), false);
+    });
+
+    it('combines all fields into a single query string', () => {
+      const url = helpers.getDevServerClientUrl({
+        host: 'localhost',
+        port: 8080,
+        hot: false,
+        liveReload: true,
+      });
+      assert.strictEqual(
+        url,
+        'webpack-dev-server/client/index?protocol=ws&hostname=localhost&port=8080&hot=false&live-reload=true',
+      );
+    });
   });
 });

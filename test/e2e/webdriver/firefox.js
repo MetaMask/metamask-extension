@@ -1,3 +1,4 @@
+const { execFileSync } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -10,6 +11,77 @@ const {
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
+const { getOrBuildXpi } = require('../helpers/xpi');
+
+// geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
+// We pin the version as a temporary patch until migration to Playwright (in progress)
+// See: https://github.com/mozilla/geckodriver/releases/tag/v0.37.0
+const PINNED_GECKODRIVER_VERSION = '0.36.0';
+
+/**
+ * Resolve the geckodriver binary to use.
+ *
+ * Resolution order:
+ * 1. `GECKODRIVER_PATH` env var, if set. CI sets this explicitly via the
+ *    "Pin geckodriver" step in `.github/workflows/run-e2e.yml` (also usable as
+ *    a manual override to test a different driver version).
+ * 2. The pinned {@link PINNED_GECKODRIVER_VERSION}, resolved (and downloaded +
+ *    cached cross-platform) via the `selenium-manager` binary that ships with
+ *    `selenium-webdriver`. This is the fallback that fixes local runs without
+ *    requiring any env var.
+ * 3. `undefined` on failure, so Selenium Manager falls back to its default
+ *    auto-resolution rather than hard-failing.
+ *
+ * @returns {string|undefined} Absolute path to the geckodriver binary, or
+ * `undefined` to defer to Selenium Manager's default resolution.
+ */
+function resolveGeckodriverPath() {
+  if (process.env.GECKODRIVER_PATH) {
+    return process.env.GECKODRIVER_PATH;
+  }
+
+  try {
+    const platform =
+      // eslint-disable-next-line no-nested-ternary
+      process.platform === 'darwin'
+        ? 'macos'
+        : process.platform === 'win32'
+          ? 'windows'
+          : 'linux';
+    const binName =
+      process.platform === 'win32'
+        ? 'selenium-manager.exe'
+        : 'selenium-manager';
+    const seleniumManager = path.join(
+      path.dirname(require.resolve('selenium-webdriver')),
+      'bin',
+      platform,
+      binName,
+    );
+
+    const output = execFileSync(
+      seleniumManager,
+      [
+        '--driver',
+        'geckodriver',
+        '--driver-version',
+        PINNED_GECKODRIVER_VERSION,
+        '--output',
+        'json',
+      ],
+      { encoding: 'utf8' },
+    );
+
+    const { result } = JSON.parse(output);
+    return result?.driver_path || undefined;
+  } catch (error) {
+    console.warn(
+      `Could not resolve pinned geckodriver ${PINNED_GECKODRIVER_VERSION}; ` +
+        `falling back to Selenium Manager's default driver resolution. ${error}`,
+    );
+    return undefined;
+  }
+}
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -67,7 +139,7 @@ class FirefoxDriver {
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
       'browser.download.dir',
-      `${process.cwd()}/test-artifacts/downloads`,
+      path.join(process.cwd(), 'test-artifacts', 'downloads'),
     );
 
     if (isHeadless('SELENIUM')) {
@@ -85,7 +157,7 @@ class FirefoxDriver {
     const FF_SNAP_GECKO_PATH = '/snap/bin/geckodriver';
     const service = process.env.FIREFOX_SNAP
       ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
-      : new firefox.ServiceBuilder();
+      : new firefox.ServiceBuilder(resolveGeckodriverPath());
 
     if (port) {
       service.setPort(port);
@@ -93,20 +165,37 @@ class FirefoxDriver {
 
     builder.setFirefoxService(service);
     const driver = builder.build();
-    const fxDriver = new FirefoxDriver(driver);
 
-    const extensionId = await fxDriver.installExtension('dist/firefox');
-    const internalExtensionId = await fxDriver.getInternalId();
+    // Ensure Firefox is cleaned up if anything below fails (XPI build,
+    // extension install, etc.).  Without this, a partial failure orphans
+    // the browser.
+    try {
+      const fxDriver = new FirefoxDriver(driver);
 
-    if (responsive || constrainWindowSize) {
-      await driver.manage().window().setRect({ width: 320, height: 600 });
+      // Pre-build an XPI and cache it across test runs.
+      // Without this, installAddon() zips the 348MB unpacked dir on every call,
+      // adding ~10s of overhead per test.
+      const xpiPath = await getOrBuildXpi('dist/firefox');
+      const installedExtensionId = await fxDriver.installExtension(xpiPath);
+      const internalExtensionId = await fxDriver.getInternalId();
+
+      if (responsive || constrainWindowSize) {
+        await driver.manage().window().setRect({ width: 320, height: 600 });
+      }
+
+      return {
+        driver,
+        extensionId: installedExtensionId,
+        extensionUrl: `moz-extension://${internalExtensionId}`,
+      };
+    } catch (error) {
+      try {
+        await driver.quit();
+      } catch {
+        // best-effort cleanup
+      }
+      throw error;
     }
-
-    return {
-      driver,
-      extensionId,
-      extensionUrl: `moz-extension://${internalExtensionId}`,
-    };
   }
 
   /**

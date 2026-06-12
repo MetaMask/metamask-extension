@@ -18,16 +18,17 @@ import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker-link';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
+import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllNetworkConfigurationsByCaipChainId,
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getInternalAccounts,
-  getSelectedInternalAccount,
   getTokenDetectionSupportNetworkByChainId,
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
@@ -37,6 +38,7 @@ import {
 } from '../../../selectors';
 import {
   addImportedTokens,
+  importCustomAssetsBatch,
   multichainAddAssets,
   clearPendingTokens,
   setPendingTokens,
@@ -77,18 +79,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import {
-  SECURITY_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ASSETS_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
+} from '../../../../shared/lib/hexstring-utils';
+import { addHexPrefix } from '../../../../shared/lib/add-hex-prefix';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
   AssetType,
@@ -116,6 +113,11 @@ import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
+import { getIsAssetsUnifyStateEnabled } from '../../../selectors/assets-unify-state/feature-flags';
+import {
+  getAssetsControllerAssetPreferences,
+  isAssetIdHiddenInPreferencesMap,
+} from '../../../selectors/assets-unify-state/asset-preferences';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -145,8 +147,16 @@ export const ImportTokensModal = ({ onClose }) => {
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
+  const assetsUnifyStateFeatureEnabled = useSelector(
+    getIsAssetsUnifyStateEnabled,
+  );
+  const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
 
   const [selectedNetwork, setSelectedNetwork] = useState(chainId);
+  // Ref so the initialization effect can read the current value without
+  // becoming a reactive dependency (which would cause an infinite loop).
+  const selectedNetworkRef = useRef(selectedNetwork);
+  selectedNetworkRef.current = selectedNetwork;
 
   const allNetworkConfigurations = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -170,9 +180,11 @@ export const ImportTokensModal = ({ onClose }) => {
     enabledNetworksByNamespace,
   );
 
-  // Initialize selected network with current multichain network, handling both EVM and non-EVM
+  // Initialize selected network with current multichain network, handling both EVM and non-EVM.
+  // selectedNetworkRef (not selectedNetwork) is used so that the effect only
+  // re-runs when the chain changes, not whenever the user picks a network.
   useEffect(() => {
-    if (!selectedNetwork || selectedNetwork === chainId) {
+    if (!selectedNetworkRef.current || selectedNetworkRef.current === chainId) {
       // Initialize or update with the current multichain network
       if (currentMultichainChainId) {
         if (isEvmChainId(currentMultichainChainId)) {
@@ -183,12 +195,12 @@ export const ImportTokensModal = ({ onClose }) => {
           // For non-EVM networks, use the chain ID directly
           setSelectedNetwork(currentMultichainChainId);
         }
-      } else if (!selectedNetwork) {
+      } else if (!selectedNetworkRef.current) {
         // Fallback to default EVM chain if no multichain network selected
         setSelectedNetwork(chainId);
       }
     }
-  }, [currentMultichainChainId, chainId]); // This should not be executed when selectedNetwork changes
+  }, [currentMultichainChainId, chainId]);
 
   const useTokenDetection = useSelector(
     ({ metamask }) => metamask.useTokenDetection,
@@ -200,7 +212,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
   const allTokens = useSelector(getAllTokens);
-  const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
+  const tokens = allTokens?.[selectedNetwork]?.[selectedAccount.address] || [];
   const contractExchangeRates = useSelector(getTokenExchangeRates);
 
   // Use the new useTokensWithFiltering hook for getting token data
@@ -288,7 +300,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const infoGetter = useRef(tokenInfoGetter());
 
   // CONFIRMATION MODE
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const pendingTokens = useSelector(getPendingTokens);
 
   // Get accounts for non-EVM chains using the account tree selector
@@ -299,6 +311,10 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const handleAddTokens = useCallback(async () => {
     try {
+      const assetsIds = Object.keys(pendingTokens).map((tokenAddress) => {
+        return toAssetId(tokenAddress, selectedNetwork);
+      });
+
       const addedTokenValues = Object.values(pendingTokens);
 
       if (addedTokenValues.length === 0) {
@@ -359,6 +375,40 @@ export const ImportTokensModal = ({ onClose }) => {
         await dispatch(addImportedTokens(addedTokenValues, clientId));
       }
 
+      if (assetsUnifyStateFeatureEnabled) {
+        const assets = assetsIds.map((assetId) => ({
+          assetId,
+          isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
+        }));
+
+        // Build PendingTokenMetadata keyed by assetId for the batch call.
+        // Uses the same toAssetId call that produced assetsIds so keys match exactly.
+        const pendingMetadataByAssetId = Object.fromEntries(
+          Object.entries(pendingTokens).map(([tokenAddress, token]) => [
+            toAssetId(tokenAddress, selectedNetwork),
+            {
+              address: token.address,
+              symbol: token.symbol,
+              name: token.name ?? token.symbol,
+              decimals: token.decimals,
+              iconUrl: token.image,
+              aggregators: token.aggregators,
+              occurrences: token.occurrences,
+              chainId: token.chainId,
+              unlisted: token.unlisted,
+            },
+          ]),
+        );
+
+        await dispatch(
+          importCustomAssetsBatch(
+            selectedAccount.id,
+            assets,
+            pendingMetadataByAssetId,
+          ),
+        );
+      }
+
       addedTokenValues.forEach((pendingToken) => {
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
@@ -371,7 +421,7 @@ export const ImportTokensModal = ({ onClose }) => {
             source_connection_method: pendingToken.isCustom
               ? MetaMetricsTokenEventSource.Custom
               : MetaMetricsTokenEventSource.List,
-            token_standard: isNonEvm ? TokenStandard.none : TokenStandard.ERC20,
+            token_standard: isNonEvm ? TokenStandard.none : ERC20,
             asset_type: AssetType.token,
           },
         });
@@ -399,6 +449,10 @@ export const ImportTokensModal = ({ onClose }) => {
     trackEvent,
     networkConfigurations,
     getAccountForChain,
+    assetsUnifyStateFeatureEnabled,
+    assetPreferences,
+    selectedAccount?.id,
+    selectedNetwork,
   ]);
 
   useEffect(() => {
@@ -431,19 +485,22 @@ export const ImportTokensModal = ({ onClose }) => {
     setCustomDecimals(initialCustomToken.decimals);
   }, [pendingTokens]);
 
+  const networkConfig = useMemo(() => {
+    // For non-EVM networks, check allNetworks first (they use CAIP chain IDs)
+    // For EVM networks, check networkConfigurations (they use hex chain IDs)
+    return (
+      allNetworks[selectedNetwork] || networkConfigurations[selectedNetwork]
+    );
+  }, [selectedNetwork, allNetworks, networkConfigurations]);
   useEffect(() => {
     if (selectedNetwork) {
-      // For non-EVM networks, check allNetworks first (they use CAIP chain IDs)
-      // For EVM networks, check networkConfigurations (they use hex chain IDs)
-      const networkConfig =
-        allNetworks[selectedNetwork] || networkConfigurations[selectedNetwork];
       if (networkConfig) {
         setNetworkFilter({
           [selectedNetwork]: networkConfig,
         });
       }
     }
-  }, [selectedNetwork, networkConfigurations, allNetworks]);
+  }, [networkConfig, selectedNetwork]);
 
   useEffect(() => {
     setSelectedTokens({});
@@ -692,8 +749,7 @@ export const ImportTokensModal = ({ onClose }) => {
         setShowSymbolAndDecimals(false);
         break;
 
-      case standard === TokenStandard.ERC1155 ||
-        standard === TokenStandard.ERC721:
+      case standard === ERC1155 || standard === ERC721:
         setNftAddressError(
           t('nftAddressError', [
             <ButtonLink
@@ -910,79 +966,77 @@ export const ImportTokensModal = ({ onClose }) => {
                   tabListProps={{ className: 'px-4' }}
                   onTabClick={() => clearAllFormData()}
                 >
-                  {shouldShowSearchTab && (
-                    <Tab
-                      tabKey={TAB_NAMES.SEARCH}
-                      name={t('search')}
-                      className="flex-1"
-                    >
-                      <Box paddingTop={4}>
-                        {!useTokenDetection && (
-                          <Box paddingLeft={4} paddingRight={4}>
-                            <BannerAlert
-                              severity={Severity.Info}
-                              marginBottom={4}
-                              paddingLeft={4}
-                              paddingRight={4}
-                            >
-                              <Text variant={TextVariant.bodyMd} fontSize="16">
-                                {t('enhancedTokenDetectionAlertMessage', [
-                                  networkName,
-                                  <ButtonLink
-                                    key="token-detection-announcement"
-                                    className="import-tokens-modal__autodetect"
-                                    onClick={() => {
-                                      onClose();
-                                      navigate(
-                                        `${SECURITY_ROUTE}#auto-detect-tokens`,
-                                      );
-                                    }}
-                                  >
-                                    {t('enableFromSettings')}
-                                  </ButtonLink>,
-                                ])}
-                              </Text>
-                            </BannerAlert>
-                          </Box>
-                        )}
-
-                        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-                          <TokenSearch
-                            searchClassName="import-tokens-modal__button-search"
-                            onSearch={({ results = [] }) =>
-                              setSearchResults(results)
-                            }
-                            error={tokenSelectorError}
-                            tokenList={tokenListByChain}
-                            networkFilter={networkFilter}
-                            setSearchResults={setSearchResults}
-                            chainId={selectedNetwork}
-                          />
-                        </Box>
-
-                        {searchResults.length === 0 ? (
-                          <Box
+                  <Tab
+                    tabKey={TAB_NAMES.SEARCH}
+                    name={t('search')}
+                    className="flex-1"
+                  >
+                    <Box paddingTop={4}>
+                      {!useTokenDetection && (
+                        <Box paddingLeft={4} paddingRight={4}>
+                          <BannerAlert
+                            severity={Severity.Info}
+                            marginBottom={4}
                             paddingLeft={4}
                             paddingRight={4}
-                            className="token-list__empty-list"
                           >
-                            <TokenListPlaceholder />
-                          </Box>
-                        ) : (
-                          <TokenList
-                            currentNetwork={networkFilter[selectedNetwork]}
-                            testNetworkBackgroundColor={
-                              testNetworkBackgroundColor
-                            }
-                            results={searchResults}
-                            selectedTokens={selectedTokens}
-                            onToggleToken={(token) => handleToggleToken(token)}
-                            accountAddress={accountAddress}
-                          />
-                        )}
+                            <Text variant={TextVariant.bodyMd} fontSize="16">
+                              {t('enhancedTokenDetectionAlertMessage', [
+                                networkName,
+                                <ButtonLink
+                                  key="token-detection-announcement"
+                                  className="import-tokens-modal__autodetect"
+                                  onClick={() => {
+                                    onClose();
+                                    navigate(
+                                      `${ASSETS_ROUTE}#autodetect-tokens`,
+                                    );
+                                  }}
+                                >
+                                  {t('enableFromSettings')}
+                                </ButtonLink>,
+                              ])}
+                            </Text>
+                          </BannerAlert>
+                        </Box>
+                      )}
+
+                      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+                        <TokenSearch
+                          searchClassName="import-tokens-modal__button-search"
+                          onSearch={({ results = [] }) =>
+                            setSearchResults(results)
+                          }
+                          error={tokenSelectorError}
+                          tokenList={tokenListByChain}
+                          networkFilter={networkFilter}
+                          setSearchResults={setSearchResults}
+                          chainId={selectedNetwork}
+                        />
                       </Box>
-                    </Tab>
-                  )}
+
+                      {searchResults.length === 0 ? (
+                        <Box
+                          paddingLeft={4}
+                          paddingRight={4}
+                          className="token-list__empty-list"
+                        >
+                          <TokenListPlaceholder />
+                        </Box>
+                      ) : (
+                        <TokenList
+                          currentNetwork={networkFilter[selectedNetwork]}
+                          testNetworkBackgroundColor={
+                            testNetworkBackgroundColor
+                          }
+                          results={searchResults}
+                          selectedTokens={selectedTokens}
+                          onToggleToken={(token) => handleToggleToken(token)}
+                          accountAddress={accountAddress}
+                        />
+                      )}
+                    </Box>
+                  </Tab>
 
                   {shouldShowCustomTab && (
                     <Tab

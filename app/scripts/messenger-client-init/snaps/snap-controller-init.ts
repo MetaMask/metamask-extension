@@ -1,0 +1,155 @@
+import {
+  SnapController,
+  SnapControllerMessenger,
+} from '@metamask/snaps-controllers';
+import { createDeferredPromise, Json } from '@metamask/utils';
+import { MessengerClientInitFunction } from '../types';
+import {
+  EndowmentPermissions,
+  ExcludedSnapEndowments,
+  ExcludedSnapPermissions,
+} from '../../../../shared/constants/snaps/permissions';
+import { encryptorFactory } from '../../lib/encryptor-factory';
+import { SnapControllerInitMessenger } from '../messengers/snaps';
+import { getBooleanFlag } from '../../lib/util';
+import { OnboardingControllerState } from '../../controllers/onboarding';
+import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
+import { isFlask } from '../../../../shared/lib/build-types';
+
+// Copied from `@metamask/snaps-controllers`, since it is not exported.
+type TrackingEventPayload = {
+  event: string;
+  category: string;
+  properties: Record<string, Json | undefined>;
+};
+
+type TrackEventHook = (event: TrackingEventPayload) => void;
+
+/**
+ * Initialize the Snap controller.
+ *
+ * @param request - The request object.
+ * @param request.initMessenger - The init messenger. This has access to
+ * different functions than the controller messenger, and should be used for
+ * initialization purposes only.
+ * @param request.controllerMessenger - The messenger to use for the controller.
+ * @param request.persistedState - The persisted state of the extension.
+ * @param request.preinstalledSnaps - The list of preinstalled Snaps.
+ * @returns The initialized controller.
+ */
+export const SnapControllerInit: MessengerClientInitFunction<
+  SnapController,
+  SnapControllerMessenger,
+  SnapControllerInitMessenger
+> = ({
+  initMessenger,
+  controllerMessenger,
+  persistedState,
+  preinstalledSnaps,
+}) => {
+  const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
+  const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
+  const rejectInvalidPlatformVersion = getBooleanFlag(
+    process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
+  );
+  const autoUpdatePreinstalledSnaps = getBooleanFlag(
+    process.env.AUTO_UPDATE_PREINSTALLED_SNAPS,
+  );
+  const forcePreinstalledSnaps =
+    isFlask() && getBooleanFlag(process.env.FORCE_PREINSTALLED_SNAPS);
+
+  /**
+   * Get the feature flags for the `SnapController.
+   *
+   * @returns The feature flags.
+   */
+  function getFeatureFlags() {
+    const preferences = initMessenger.call('PreferencesController:getState');
+
+    return {
+      disableSnaps: preferences.useExternalServices === false,
+    };
+  }
+
+  /**
+   * Async function that resolves when onboarding has been completed.
+   *
+   * @returns A promise that resolves when onboarding is complete.
+   */
+  async function ensureOnboardingComplete() {
+    const { completedOnboarding } = initMessenger.call(
+      'OnboardingController:getState',
+    );
+
+    if (completedOnboarding) {
+      return;
+    }
+
+    const { promise, resolve } = createDeferredPromise();
+
+    const listener = (state: OnboardingControllerState) => {
+      if (state.completedOnboarding) {
+        resolve();
+        initMessenger.unsubscribe('OnboardingController:stateChange', listener);
+      }
+    };
+
+    initMessenger.subscribe('OnboardingController:stateChange', listener);
+
+    await promise;
+  }
+
+  const messengerClient = new SnapController({
+    environmentEndowmentPermissions: Object.values(EndowmentPermissions),
+    excludedPermissions: {
+      ...ExcludedSnapPermissions,
+      ...ExcludedSnapEndowments,
+    },
+
+    // @ts-expect-error: `persistedState.SnapController` is not compatible with
+    // the expected type.
+    // TODO: Look into the type mismatch.
+    state: persistedState.SnapController,
+
+    messenger: controllerMessenger,
+    featureFlags: {
+      allowLocalSnaps,
+      requireAllowlist,
+      rejectInvalidPlatformVersion,
+      autoUpdatePreinstalledSnaps,
+      forcePreinstalledSnaps,
+    },
+
+    // @ts-expect-error: `encryptorFactory` is not compatible with the expected
+    // type.
+    // TODO: Look into the type mismatch.
+    encryptor: encryptorFactory(600_000),
+
+    getMnemonicSeed: getMnemonicSeed.bind(null, initMessenger, undefined),
+
+    preinstalledSnaps,
+    getFeatureFlags,
+
+    ensureOnboardingComplete,
+
+    // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
+    // properties, but `MetaMetricsEventPayload` uses `Json`, even though
+    // `undefined` is supported.
+    trackEvent: initMessenger.call.bind(
+      initMessenger,
+      'MetaMetricsController:trackEvent',
+    ) as unknown as TrackEventHook,
+  });
+
+  initMessenger.subscribe('KeyringController:lock', () => {
+    initMessenger.call('SnapController:setClientActive', false);
+  });
+
+  initMessenger.subscribe('KeyringController:unlock', () => {
+    initMessenger.call('SnapController:setClientActive', true);
+  });
+
+  return {
+    messengerClient,
+  };
+};

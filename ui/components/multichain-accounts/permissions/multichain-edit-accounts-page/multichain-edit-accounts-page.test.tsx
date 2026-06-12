@@ -7,6 +7,7 @@ import {
   AccountGroupId,
 } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import {
@@ -16,7 +17,12 @@ import {
 } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockMultichainAccountsState } from '../../../../selectors/multichain-accounts/test-utils';
 import * as assetsSelectors from '../../../../selectors/assets';
-import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
+import {
+  MultichainEditAccountsPage,
+  SnapsPermissionsRequestType,
+} from './multichain-edit-accounts-page';
+
+const { Initial, Existing, None } = SnapsPermissionsRequestType;
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
@@ -91,6 +97,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 0,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -115,6 +122,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 1,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -139,6 +147,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 2,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -157,7 +166,6 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
 
 const createMockState = (overrides = {}) => {
   const accountTreeState = {
-    selectedAccountGroup: MOCK_GROUP_ID_1,
     wallets: {
       [MOCK_WALLET_ID]: {
         id: MOCK_WALLET_ID,
@@ -179,6 +187,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 0,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount1.id, mockSolAccount1.id],
           },
@@ -192,6 +201,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 1,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount2.id, mockSolAccount2.id],
           },
@@ -205,6 +215,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 2,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount3.id, mockSolAccount3.id],
           },
@@ -246,6 +257,8 @@ const createMockState = (overrides = {}) => {
   const mockMultichainState = createMockMultichainAccountsState(
     accountTreeState as unknown as AccountTreeState,
     internalAccountsState as unknown as InternalAccountsState,
+    undefined,
+    MOCK_GROUP_ID_1,
   );
 
   return {
@@ -254,6 +267,14 @@ const createMockState = (overrides = {}) => {
       ...mockMultichainState.metamask,
       keyrings: [],
       defaultHomeActiveTabName: 'activity',
+      preferences: {
+        ...(
+          mockMultichainState.metamask as {
+            preferences?: Record<string, unknown>;
+          }
+        )?.preferences,
+        defaultAddressScope: 'eip155',
+      },
       ...overrides,
     },
     activeTab: {
@@ -270,6 +291,7 @@ const render = (
     defaultSelectedAccountGroups?: AccountGroupId[];
     onSubmit?: (accountGroups: AccountGroupId[]) => void;
     onClose?: () => void;
+    snapsPermissionsRequestType?: SnapsPermissionsRequestType;
   } = {},
   state = {},
 ) => {
@@ -278,6 +300,7 @@ const render = (
   const defaultProps = {
     supportedAccountGroups: createMockAccountGroups(),
     defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
+    snapsPermissionsRequestType: None,
     onSubmit: jest.fn(),
     onClose: jest.fn(),
     ...props,
@@ -303,7 +326,7 @@ describe('MultichainEditAccountsPage', () => {
 
   it('renders modal with correct title', () => {
     const { getByText } = render();
-    expect(getByText('Edit accounts')).toBeInTheDocument();
+    expect(getByText(messages.editAccounts.message)).toBeInTheDocument();
   });
 
   it('renders connect button', () => {
@@ -401,7 +424,7 @@ describe('MultichainEditAccountsPage', () => {
       defaultSelectedAccountGroups: [],
     });
 
-    expect(getByText('Edit accounts')).toBeInTheDocument();
+    expect(getByText(messages.editAccounts.message)).toBeInTheDocument();
   });
 
   it('updates selected accounts when defaultSelectedAccountGroups prop changes', async () => {
@@ -425,6 +448,7 @@ describe('MultichainEditAccountsPage', () => {
         ]}
         onSubmit={jest.fn()}
         onClose={jest.fn()}
+        snapsPermissionsRequestType={None}
       />,
     );
 
@@ -438,6 +462,112 @@ describe('MultichainEditAccountsPage', () => {
       expect(
         getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(MOCK_GROUP_ID_3)),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('snapsPermissionsRequestType', () => {
+    describe('button disabled state', () => {
+      it('disables button when Initial and no accounts selected', () => {
+        const { getByTestId } = render({
+          defaultSelectedAccountGroups: [],
+          snapsPermissionsRequestType: Initial,
+        });
+
+        expect(
+          getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+        ).toBeDisabled();
+      });
+
+      it('enables button when Initial and accounts selected', () => {
+        const { getByTestId } = render({
+          defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
+          snapsPermissionsRequestType: Initial,
+        });
+
+        expect(
+          getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+        ).not.toBeDisabled();
+      });
+
+      it('enables button when Existing and no accounts selected', () => {
+        const { getByTestId } = render({
+          defaultSelectedAccountGroups: [],
+          snapsPermissionsRequestType: Existing,
+        });
+
+        expect(
+          getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+        ).not.toBeDisabled();
+      });
+
+      it('enables button when None and no accounts selected', () => {
+        const { getByTestId } = render({
+          defaultSelectedAccountGroups: [],
+          snapsPermissionsRequestType: None,
+        });
+
+        expect(
+          getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+        ).not.toBeDisabled();
+      });
+    });
+
+    describe('snap CSS class', () => {
+      it('applies snap class when snapsPermissionsRequestType is Initial', () => {
+        const { getByTestId } = render({
+          snapsPermissionsRequestType: Initial,
+        });
+
+        expect(getByTestId('modal-page')).toHaveClass(
+          'multichain-edit-accounts-page--snap',
+        );
+      });
+
+      it('applies snap class when snapsPermissionsRequestType is Existing', () => {
+        const { getByTestId } = render({
+          snapsPermissionsRequestType: Existing,
+        });
+
+        expect(getByTestId('modal-page')).toHaveClass(
+          'multichain-edit-accounts-page--snap',
+        );
+      });
+
+      it('does not apply snap class when snapsPermissionsRequestType is None', () => {
+        const { getByTestId } = render({
+          snapsPermissionsRequestType: None,
+        });
+
+        expect(getByTestId('modal-page')).not.toHaveClass(
+          'multichain-edit-accounts-page--snap',
+        );
+      });
+    });
+
+    describe('header visibility', () => {
+      it('shows header when snapsPermissionsRequestType is None', () => {
+        const { getByTestId } = render({
+          snapsPermissionsRequestType: None,
+        });
+
+        expect(getByTestId(TEST_IDS.BACK_BUTTON)).toBeInTheDocument();
+      });
+
+      it('hides header when snapsPermissionsRequestType is Initial', () => {
+        const { queryByTestId } = render({
+          snapsPermissionsRequestType: Initial,
+        });
+
+        expect(queryByTestId(TEST_IDS.BACK_BUTTON)).not.toBeInTheDocument();
+      });
+
+      it('hides header when snapsPermissionsRequestType is Existing', () => {
+        const { queryByTestId } = render({
+          snapsPermissionsRequestType: Existing,
+        });
+
+        expect(queryByTestId(TEST_IDS.BACK_BUTTON)).not.toBeInTheDocument();
+      });
     });
   });
 });

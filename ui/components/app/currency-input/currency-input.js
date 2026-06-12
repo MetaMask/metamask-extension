@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { Box } from '../../component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
 import {
@@ -13,10 +12,10 @@ import {
 import {
   getProviderConfig,
   getCurrentChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import { getShouldShowFiat } from '../../../selectors';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../shared/lib/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import useTokenExchangeRate from './hooks/useTokenExchangeRate';
@@ -237,8 +236,8 @@ export default function CurrencyInput({
 
   return isSkeleton ? (
     <Box paddingRight={4} className="currency-input__skeleton-container">
-      <Box width={BlockSize.Half} className="currency-input__pulsing-bar" />
-      <Box width={BlockSize.OneThird} className="currency-input__pulsing-bar" />
+      <Box className="w-1/2 currency-input__pulsing-bar" />
+      <Box className="w-1/3 currency-input__pulsing-bar" />
     </Box>
   ) : (
     <UnitInput

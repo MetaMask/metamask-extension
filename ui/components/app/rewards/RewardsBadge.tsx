@@ -1,11 +1,18 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Text, TextVariant } from '@metamask/design-system-react';
-import { Icon, IconName, IconSize } from '../../component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setRewardsBadgeHidden } from '../../../ducks/rewards';
 import { setStorageItem } from '../../../../shared/lib/storage-helpers';
 import { REWARDS_BADGE_HIDDEN } from './utils/constants';
+import { RewardsIcon, RewardsIconVariant } from './RewardsIcon';
 
 export const RewardsBadge = ({
   formattedPoints,
@@ -14,6 +21,7 @@ export const RewardsBadge = ({
   withPointsSuffix = true,
   useAlternativeIconColor = false,
   allowHideBadge = false,
+  startIconName,
   onClick,
 }: {
   formattedPoints: string;
@@ -22,11 +30,11 @@ export const RewardsBadge = ({
   withPointsSuffix?: boolean;
   useAlternativeIconColor?: boolean;
   allowHideBadge?: boolean;
+  startIconName?: IconName;
   onClick?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const [imageLoadError, setImageLoadError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClose = useCallback(() => {
@@ -47,19 +55,14 @@ export const RewardsBadge = ({
       onMouseLeave={allowHideBadge ? () => setIsHovered(false) : undefined}
     >
       <Box className="flex items-center gap-1" onClick={onClick}>
-        {!imageLoadError && (
-          <img
-            src={
-              useAlternativeIconColor
-                ? './images/metamask-rewards-points-alternative.svg'
-                : './images/metamask-rewards-points.svg'
-            }
-            alt={t('rewardsPointsIcon')}
-            width={16}
-            height={16}
-            onError={() => setImageLoadError(true)}
-          />
-        )}
+        <RewardsIcon
+          variant={
+            useAlternativeIconColor
+              ? RewardsIconVariant.Alternative
+              : RewardsIconVariant.Default
+          }
+          startIconName={startIconName}
+        />
         <Text
           variant={TextVariant.BodySm}
           className={textClassName}

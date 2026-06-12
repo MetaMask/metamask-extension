@@ -1,3 +1,5 @@
+import { type CaipChainId, isStrictHexString } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from './network';
 
 export enum EtherDenomination {
@@ -26,14 +28,16 @@ const LINEA_DEFAULT_BLOCK_EXPLORER_URL = 'https://lineascan.build/';
 const LINEA_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'LineaScan';
 const BASE_DEFAULT_BLOCK_EXPLORER_URL = 'https://basescan.org/';
 const BASE_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'BaseScan';
-const SEI_DEFAULT_BLOCK_EXPLORER_URL = 'https://seitrace.com/';
+const SEI_DEFAULT_BLOCK_EXPLORER_URL = 'https://seiscan.io/';
 const SEI_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'SEI Explorer';
 const MONAD_DEFAULT_BLOCK_EXPLORER_URL = 'https://monadscan.com/';
 const MONAD_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'MonadScan';
 const HYPEREVM_DEFAULT_BLOCK_EXPLORER_URL = 'https://hyperevmscan.io/';
 const HYPEREVM_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'HyperEVMScan';
-const MEGAETH_DEFAULT_BLOCK_EXPLORER_URL = 'https://explorer.megaeth.com/';
-const MEGAETH_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'MegaExplorer';
+const MEGAETH_DEFAULT_BLOCK_EXPLORER_URL = 'https://megaeth.blockscout.com/';
+const MEGAETH_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'MegaETH Explorer';
+const TEMPO_DEFAULT_BLOCK_EXPLORER_URL = 'https://explore.tempo.xyz/';
+const TEMPO_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'Tempo Explorer';
 
 type BlockExplorerUrlMap = {
   [key: string]: string;
@@ -54,7 +58,21 @@ export const CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP: BlockExplorerUrlMap = {
   [CHAIN_IDS.MONAD]: MONAD_DEFAULT_BLOCK_EXPLORER_URL,
   [CHAIN_IDS.HYPE]: HYPEREVM_DEFAULT_BLOCK_EXPLORER_URL,
   [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_DEFAULT_BLOCK_EXPLORER_URL,
+  [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_DEFAULT_BLOCK_EXPLORER_URL,
 } as const;
+
+export const CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP = Object.entries(
+  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+).reduce(
+  (acc, [chainId, url]) => {
+    if (isStrictHexString(chainId)) {
+      const caipChainId = toEvmCaipChainId(chainId);
+      acc[caipChainId] = url;
+    }
+    return acc;
+  },
+  {} as Record<CaipChainId, string>,
+);
 
 export const CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP: BlockExplorerUrlMap =
   {
@@ -73,4 +91,5 @@ export const CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP: BlockExplore
     [CHAIN_IDS.HYPE]: HYPEREVM_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL,
     [CHAIN_IDS.MEGAETH_MAINNET]:
       MEGAETH_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL,
+    [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL,
   } as const;

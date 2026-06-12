@@ -1,17 +1,14 @@
 import { Suite } from 'mocha';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { login } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 // BUG #38149 - Request Queuing multiple Dapps and txs on different networks fails with unapproved transaction
 // eslint-disable-next-line
@@ -22,7 +19,7 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({
             eip155: {
               '0x53a': true,
@@ -46,7 +43,7 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open Dapp One
         const testDapp = new TestDapp(driver);
@@ -54,14 +51,18 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         await testDapp.checkPageIsLoaded();
 
         // Connect to dapp 1
-        await testDapp.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
         // Network Selector
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8546',
+        );
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -70,7 +71,7 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);

@@ -7,10 +7,10 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getRpcPrefsForCurrentProvider,
-  getSelectedInternalAccount,
   getNativeCurrencyForChain,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getProviderConfig } from '../../../../shared/lib/selectors/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -51,7 +51,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const accountLink = isEvm
     ? getAccountLink(address, chainId, rpcPrefs)
     : addressLink;
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     symbol,

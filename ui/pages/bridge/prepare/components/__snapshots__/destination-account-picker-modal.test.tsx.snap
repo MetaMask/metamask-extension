@@ -84,11 +84,11 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
             class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item--selected mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
-              class="mm-box"
+              class=""
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -196,11 +196,11 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
             class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
-              class="mm-box"
+              class=""
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -272,13 +272,13 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                 data-testid="first-currency-display"
-                title="USD 0.00"
+                title="USD 3,065.02"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
-                  USD 0.00
+                  USD 3,065.02
                 </span>
               </div>
               <div
@@ -296,11 +296,11 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
             class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
-              class="mm-box"
+              class=""
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -372,13 +372,13 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                 data-testid="first-currency-display"
-                title="USD 0.00"
+                title="USD 2,524.28"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
-                  USD 0.00
+                  USD 2,524.28
                 </span>
               </div>
               <div
@@ -488,11 +488,11 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
             class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
-              class="mm-box"
+              class=""
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -588,11 +588,11 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
             class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
-              class="mm-box"
+              class=""
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -664,13 +664,13 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                 data-testid="first-currency-display"
-                title="USD 0.00"
+                title="USD 3,065.02"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
-                  USD 0.00
+                  USD 3,065.02
                 </span>
               </div>
               <div
@@ -688,11 +688,11 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
             class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
-              class="mm-box"
+              class=""
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -764,13 +764,13 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                 data-testid="first-currency-display"
-                title="USD 0.00"
+                title="USD 2,524.28"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
-                  USD 0.00
+                  USD 2,524.28
                 </span>
               </div>
               <div

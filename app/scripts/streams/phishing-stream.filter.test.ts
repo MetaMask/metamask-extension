@@ -72,7 +72,7 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
-jest.mock('../../../shared/modules/browser-runtime.utils', () => ({
+jest.mock('../../../shared/lib/browser-runtime.utils', () => ({
   checkForLastError: () => null,
 }));
 

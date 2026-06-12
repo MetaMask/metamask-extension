@@ -14,6 +14,9 @@ export default class ShieldDetailPage {
     text,
   });
 
+  private readonly managePlanButton =
+    '[data-testid="shield-detail-manage-plan-button"]';
+
   private readonly cancelButton =
     '[data-testid="shield-tx-membership-cancel-button"]';
 
@@ -86,6 +89,9 @@ export default class ShieldDetailPage {
 
   private readonly resubscribeButton =
     '[data-testid="shield-detail-resubscribe-button"]';
+
+  private readonly renewButtonWhenCancelled =
+    '[data-testid="shield-detail-renew-button"]';
 
   private readonly submitCaseButton =
     '[data-testid="shield-detail-submit-case-button"]';
@@ -164,6 +170,14 @@ export default class ShieldDetailPage {
   }
 
   /**
+   * Click the Manage Plan button
+   */
+  async clickManagePlanButton(): Promise<void> {
+    console.log('Clicking Manage Plan button');
+    await this.driver.clickElement(this.managePlanButton);
+  }
+
+  /**
    * Click the Submit Case button
    */
   async clickSubmitCaseButton(): Promise<void> {
@@ -172,11 +186,20 @@ export default class ShieldDetailPage {
   }
 
   /**
-   * Click the Resubscribe button
+   * Click the Resubscribe button (when cancelAtPeriodEnd is true)
    */
   async clickResubscribeButton(): Promise<void> {
     console.log('Clicking Resubscribe button');
     await this.driver.clickElement(this.resubscribeButton);
+  }
+
+  /**
+   * Click the Renew button (when subscription is fully cancelled)
+   * This navigates to the shield plan page
+   */
+  async clickRenewButtonWhenCancelled(): Promise<void> {
+    console.log('Clicking Renew button when subscription is cancelled');
+    await this.driver.clickElement(this.renewButtonWhenCancelled);
   }
 
   /**
@@ -291,7 +314,7 @@ export default class ShieldDetailPage {
       membershipStatus = 'Active plan',
       nextBillingDate = 'Nov 3',
       charges = '$80',
-      paymentMethod = 'Visa',
+      paymentMethod = 'Card',
       expectTrialTag = true,
     } = options || {};
 

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du må velge en konto!"
   },
-  "activityLog": {
-    "message": "aktivitetshistorikk"
-  },
   "addAcquiredTokens": {
     "message": "Legg til sjetongene du har kjøpt med MetaMask"
   },
@@ -80,9 +77,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Timer for automatisk utlogging (minutter) "
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
   },
   "average": {
     "message": "Gjennomsnitt"
@@ -181,12 +175,6 @@
   "createPassword": {
     "message": "Opprett passord "
   },
-  "currencyConversion": {
-    "message": "Valutakonvertering "
-  },
-  "currentLanguage": {
-    "message": "Nåværende språk "
-  },
   "custom": {
     "message": "Avansert"
   },
@@ -207,9 +195,6 @@
   },
   "done": {
     "message": "Ferdig"
-  },
-  "downloadGoogleChrome": {
-    "message": "Last ned Google Chrome "
   },
   "downloadStateLogs": {
     "message": "Last ned tilstandslogg"
@@ -266,9 +251,6 @@
   "hardwareWallets": {
     "message": "Koble til en hardware-lommebok"
   },
-  "hardwareWalletsMsg": {
-    "message": "Velg maskinvarelommeboken som du vil bruke med MetaMask"
-  },
   "here": {
     "message": "her",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -292,9 +274,6 @@
   "imported": {
     "message": "Importert",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Din opprinnelige transaksjon ble bekreftet av nettverket. Klikk OK for å gå tilbake."
   },
   "insufficientBalance": {
     "message": "Utilstrekkelig saldo."
@@ -336,12 +315,6 @@
   "likeToImportTokens": {
     "message": "Ønsker du å legge til disse tokenene"
   },
-  "links": {
-    "message": "Lenker "
-  },
-  "loadMore": {
-    "message": "Last mer "
-  },
   "loading": {
     "message": "Laster inn ..."
   },
@@ -373,9 +346,6 @@
     "message": "Du må velge en fil å importere.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Kan ikke sende negative beløp av ETH. "
-  },
   "networkName": {
     "message": "Nettverksnavn "
   },
@@ -385,15 +355,9 @@
   "nevermind": {
     "message": "Bare glem det"
   },
-  "newAccount": {
-    "message": "Ny konto "
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Ny kontaktperson"
   },
   "newContract": {
     "message": "Ny kontaktperson"
@@ -403,9 +367,6 @@
   },
   "next": {
     "message": "Neste"
-  },
-  "noConversionRateAvailable": {
-    "message": "Ingen konverteringsrate tilgjengelig "
   },
   "noWebcamFound": {
     "message": "Datamaskinens webkamera ble ikke funnet. Vennligst prøv igjen."
@@ -481,12 +442,6 @@
   "rejectAll": {
     "message": "Avvis alle"
   },
-  "rejectTxsDescription": {
-    "message": "Du er i ferd med å gruppevis avslå transaksjoner på $1."
-  },
-  "rejectTxsN": {
-    "message": "Avslå transaksjoner på $1."
-  },
   "rejected": {
     "message": "Avvist"
   },
@@ -496,9 +451,6 @@
   "removeAccount": {
     "message": "Fjern konto"
   },
-  "removeAccountDescription": {
-    "message": "Denne kontoen blir fjernet fra lommeboken din. Forsikre deg om at du har den originale mnemoniske gjenopprettingsfrasen eller den private nøkkelen for denne importerte kontoen før du fortsetter. Du kan importere eller opprette kontoer igjen fra nedtrekksmenyen."
-  },
   "required": {
     "message": "Påkrevd "
   },
@@ -507,9 +459,6 @@
   },
   "restore": {
     "message": "Gjenopprett"
-  },
-  "revealSeedWords": {
-    "message": "Vis frøord"
   },
   "revealSeedWordsWarning": {
     "message": "Disse ordene kan brukes for å stjele alle kontoene dine. ",
@@ -554,9 +503,6 @@
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på Testnets "
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Velg dette for å vise fiat-konvertering på Testnets"
-  },
   "showHexData": {
     "message": "Vis hex data "
   },
@@ -581,17 +527,11 @@
   "speedUpCancellation": {
     "message": "Fremskynd denne kanselleringen"
   },
-  "speedUpTransaction": {
-    "message": "Utfør denne transaksjonen hurtigere"
-  },
   "stateLogError": {
     "message": "Feil ved henting av tilstandslogger."
   },
   "stateLogs": {
     "message": "Tilstandslogg"
-  },
-  "stateLogsDescription": {
-    "message": "Tilstandslogger inneholder de offentlige kontoadressene og sendte transaksjoner."
   },
   "submitted": {
     "message": "Sendt inn"
@@ -626,38 +566,11 @@
   "transaction": {
     "message": "transaksjon"
   },
-  "transactionCancelAttempted": {
-    "message": "Kansellering av transaksjon forsøkt med en $1 gassavgift på $2."
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaksjon vellykket avbrutt på $2 "
-  },
-  "transactionConfirmed": {
-    "message": "Transaksjon bekreftet på $2."
-  },
-  "transactionCreated": {
-    "message": "Transaksjon opprettet med en verdi på $1 og $2. "
-  },
-  "transactionDropped": {
-    "message": "Transaksjonen falt på $2."
-  },
   "transactionError": {
     "message": "Transaksjonsfeil. Unntak kastet i kontraktskode."
   },
   "transactionErrorNoContract": {
     "message": "Prøver å kontakte en funksjon på en adresse uten kontrakt."
-  },
-  "transactionErrored": {
-    "message": "Det oppsto en feil under transaksjonen."
-  },
-  "transactionResubmitted": {
-    "message": "Transaksjonen som ble sendt inn igjen med bensinavgift økte til $1 på $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transaksjon sendt med datakraftavgift på $1 til $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaksjonen oppdatert på $2."
   },
   "transfer": {
     "message": "Overfør"
@@ -689,12 +602,6 @@
   "usedByClients": {
     "message": "Brukt av en rekke forskjellige klienter"
   },
-  "userName": {
-    "message": "Brukernavn"
-  },
-  "viewContact": {
-    "message": "Se kontrakt"
-  },
   "visitWebSite": {
     "message": "Besøk nettsiden vår "
   },
@@ -703,8 +610,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du må gi kameratilgang for å bruke denne funksjonen."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din private frøfrase"
   }
 }

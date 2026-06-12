@@ -3,6 +3,11 @@ const path = require('node:path');
 const ts = require('typescript');
 const { version: reactVersion } = require('react/package.json');
 
+const {
+  architecturalZones,
+  buildSystemZones,
+} = require('./development/eslint-restricted-paths-zones');
+
 const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
@@ -51,7 +56,7 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       settings: {
-        'import/resolver': {
+        'import-x/resolver': {
           // When determining the location of a `require()` call, use Node's
           // resolution algorithm, then fall back to TypeScript's. This allows
           // TypeScript files (which Node's algorithm doesn't recognize) to be
@@ -100,7 +105,7 @@ module.exports = {
         sourceType: 'module',
       },
       settings: {
-        'import/resolver': {
+        'import-x/resolver': {
           // When determining the location of an `import`, use Node's resolution
           // algorithm, then fall back to TypeScript's. This allows TypeScript
           // files (which Node's algorithm doesn't recognize) to be imported
@@ -125,7 +130,7 @@ module.exports = {
       parserOptions: {
         project: tsconfigPath,
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
-        tsconfigRootDir: path.dirname(tsconfigPath),
+        tsconfigRootDir: __dirname,
       },
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
@@ -148,6 +153,7 @@ module.exports = {
               'Lock',
               'Notification',
               'CSS',
+              'Props',
             ],
           },
         ],
@@ -157,24 +163,13 @@ module.exports = {
         '@typescript-eslint/parameter-properties': 'error',
         // Turn these off, as it's recommended by typescript-eslint.
         // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
-        'import/named': 'off',
-        'import/namespace': 'off',
-        'import/default': 'off',
-        'import/no-named-as-default-member': 'off',
+        'import-x/named': 'off',
+        'import-x/namespace': 'off',
+        'import-x/default': 'off',
+        'import-x/no-named-as-default-member': 'off',
         // Set to ban interfaces due to their incompatibility with Record<string, unknown>.
         // See: <https://github.com/Microsoft/TypeScript/issues/15300#issuecomment-702872440>
         '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-        // Modified to include the 'ignoreRestSiblings' option.
-        // TODO: Migrate this rule change back into `@metamask/eslint-config`
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          {
-            vars: 'all',
-            args: 'all',
-            argsIgnorePattern: '[_]+',
-            ignoreRestSiblings: true,
-          },
-        ],
         // This rule temporarily applies the latest `@typescript-eslint/naming-convention` config found in `@metamask/eslint-config`.
         // TODO: Remove once `@metamask/eslint-config` is updated to `^14.0.0`.
         '@typescript-eslint/naming-convention': [
@@ -186,6 +181,11 @@ module.exports = {
             trailingUnderscore: 'forbid',
           },
           { selector: 'enumMember', format: ['PascalCase'] },
+          {
+            selector: 'function',
+            modifiers: ['exported'],
+            format: ['camelCase', 'PascalCase'],
+          },
           {
             selector: 'import',
             format: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],
@@ -245,9 +245,65 @@ module.exports = {
         ],
         // TODO: Remove once `@metamask/eslint-config-typescript` is updated to a version with this setting.
         'consistent-return': 'off',
+
+        // These rule modifications are removing changes to our shared ESLint config made after
+        // version v9. This is a temporary measure to get us to ESLint v9 compatible versions,
+        // at which point we can restore the intended rules and use error suppression instead.
+        //
+        // TODO: Remove these modifications after the ESLint v9 update
+        '@typescript-eslint/await-thenable': 'off',
+        '@typescript-eslint/consistent-type-exports': 'off',
+        '@typescript-eslint/consistent-type-imports': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/no-base-to-string': 'off',
+        '@typescript-eslint/no-duplicate-type-constituents': 'off',
+        '@typescript-eslint/no-empty-object-type': 'off',
+        '@typescript-eslint/no-floating-promises': 'off',
+        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-redundant-type-constituents': 'off',
+        '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+        '@typescript-eslint/no-unnecessary-type-arguments': 'off',
+        '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
+        '@typescript-eslint/no-unsafe-function-type': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/only-throw-error': 'off',
+        '@typescript-eslint/prefer-enum-initializers': 'off',
+        '@typescript-eslint/prefer-includes': 'off',
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
+        '@typescript-eslint/prefer-optional-chain': 'off',
+        '@typescript-eslint/prefer-promise-reject-errors': 'off',
+        '@typescript-eslint/prefer-readonly': 'off',
+        '@typescript-eslint/prefer-reduce-type-parameter': 'off',
+        '@typescript-eslint/prefer-string-starts-ends-with': 'off',
+        '@typescript-eslint/promise-function-async': 'off',
+        '@typescript-eslint/restrict-plus-operands': 'off',
+        '@typescript-eslint/switch-exhaustiveness-check': 'off',
+        '@typescript-eslint/unbound-method': 'off',
+        'import-x/no-named-as-default': 'off',
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector: 'WithStatement',
+            message: 'With statements are not allowed',
+          },
+          {
+            selector: 'SequenceExpression',
+            message: 'Sequence expressions are not allowed',
+          },
+          // {
+          //   selector: "BinaryExpression[operator='in']",
+          //   message: 'The "in" operator is not allowed',
+          // },
+          // {
+          //   selector:
+          //     "PropertyDefinition[accessibility='private'], MethodDefinition[accessibility='private'], TSParameterProperty[accessibility='private']",
+          //   message: 'Use a hash name instead.',
+          // },
+        ],
       },
       settings: {
-        'import/resolver': {
+        'import-x/resolver': {
           // When determining the location of an `import`, prefer TypeScript's
           // resolution algorithm. Note that due to how we've configured
           // TypeScript in `tsconfig.json`, we are able to import JavaScript
@@ -258,6 +314,12 @@ module.exports = {
             alwaysTryTypes: true,
           },
         },
+      },
+    },
+    {
+      files: ['.agents/**/*.ts'],
+      rules: {
+        'import-x/no-nodejs-modules': 'off',
       },
     },
     /**
@@ -337,7 +399,7 @@ module.exports = {
       plugins: ['react', 'react-compiler'],
       rules: {
         'react-compiler/react-compiler': 'error',
-        'react/no-unused-prop-types': 'warn',
+        'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'warn',
         'react/jsx-boolean-value': 'off',
         'react/jsx-curly-brace-presence': 'off',
@@ -345,10 +407,10 @@ module.exports = {
         'react/default-props-match-prop-types': 'warn',
         'react/jsx-no-duplicate-props': 'warn',
         'react/display-name': 'off',
-        'react/no-unescaped-entities': 'warn',
+        'react/no-unescaped-entities': 'error',
         'react/prop-types': 'off',
         'react/no-children-prop': 'off',
-        'react/jsx-key': 'warn', // TODO - increase this into 'error' level
+        'react/jsx-key': 'error',
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': [
           'warn',
@@ -414,6 +476,13 @@ module.exports = {
 
         // Static hex values are only discouraged in application code, using them in tests is OK.
         '@metamask/design-tokens/color-no-hex': 'off',
+
+        // These rule modifications are removing changes to our shared ESLint config made after
+        // version v9. This is a temporary measure to get us to ESLint v9 compatible versions,
+        // at which point we can restore the intended rules and use error suppression instead.
+        //
+        // TODO: Remove these modifications after the ESLint v9 update
+        'mocha/consistent-spacing-between-blocks': 'off',
       },
     },
     /**
@@ -452,15 +521,15 @@ module.exports = {
         'test/unit-global/*.test.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
-        'shared/lib/error-utils.test.js',
+        'shared/lib/error-utils.test.ts',
       ],
       extends: ['@metamask/eslint-config-jest'],
       parserOptions: {
         sourceType: 'module',
       },
       rules: {
-        'import/unambiguous': 'off',
-        'import/named': 'off',
+        'import-x/unambiguous': 'off',
+        'import-x/named': 'off',
 
         // Static hex values are only discouraged in application code, using them in tests is OK.
         '@metamask/design-tokens/color-no-hex': 'off',
@@ -514,7 +583,7 @@ module.exports = {
       files: ['app/scripts/migrations/*.js'],
       rules: {
         // Disable various rules that our legacy migrations don't follow
-        'import/no-anonymous-default-export': 'off',
+        'import-x/no-anonymous-default-export': 'off',
       },
     },
     /**
@@ -528,8 +597,8 @@ module.exports = {
     {
       files: ['development/**/*.js', 'test/helpers/setup-helper.js'],
       rules: {
-        'node/no-process-exit': 'off',
-        'node/shebang': 'off',
+        'n/no-process-exit': 'off',
+        'n/hashbang': 'off',
       },
     },
     /**
@@ -556,7 +625,7 @@ module.exports = {
       extends: ['plugin:storybook/recommended'],
       rules: {
         // Anonymous object exports are conventional for Storybook files
-        'import/no-anonymous-default-export': [
+        'import-x/no-anonymous-default-export': [
           'error',
           {
             allowObject: true,
@@ -564,6 +633,7 @@ module.exports = {
         ],
         // Static hex values are only discouraged in application code, using them in stories is OK.
         '@metamask/design-tokens/color-no-hex': 'off',
+        'storybook/no-redundant-story-name': 'error',
       },
     },
     /**
@@ -604,6 +674,41 @@ module.exports = {
       },
     },
     /**
+     * Proof files for type-level testing (compile-time assertions, no runtime code)
+     */
+    {
+      files: ['**/*.proof.ts'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {
+            vars: 'all',
+            args: 'after-used',
+            ignoreRestSiblings: true,
+            varsIgnorePattern: '^Describe_',
+          },
+        ],
+        '@typescript-eslint/naming-convention': [
+          'error',
+          {
+            selector: 'typeLike',
+            format: ['PascalCase'],
+            leadingUnderscore: 'allow',
+            filter: { regex: '^Describe_', match: false },
+          },
+          {
+            selector: 'typeLike',
+            format: null,
+            filter: { regex: '^Describe_', match: true },
+          },
+          {
+            selector: 'typeProperty',
+            format: ['camelCase', 'PascalCase'],
+          },
+        ],
+      },
+    },
+    /**
      * TypeScript declaration files.
      *
      * TODO: Move this to `@metamask/eslint-config-typescript`
@@ -611,7 +716,7 @@ module.exports = {
     {
       files: ['**/*.d.ts'],
       rules: {
-        'import/unambiguous': 'off',
+        'import-x/unambiguous': 'off',
       },
     },
     /**
@@ -642,6 +747,189 @@ module.exports = {
               .map((method) => `(${method})`)
               .join('|')}/]`,
             message: 'Avoid using global network selectors in confirmations',
+          },
+        ],
+      },
+    },
+    /**
+     * Route module isolation exemptions (defense-in-depth)
+     *
+     * The router registry (`ui/pages/routes/`) and the top-level
+     * `ui/pages/index.js` must reference every route module by design.
+     * In the current setup the route-isolation zones don't actually
+     * target these files — `routes` is excluded from `ROUTE_ISOLATION_EXEMPT_DIRS`
+     * in `development/eslint-restricted-paths-zones.js`, and `index.js`
+     * sits above any route's `target`. Still, this override re-defines
+     * `import-x/no-restricted-paths` for these paths with **only** the
+     * source-boundary zones so that if the
+     * exemption list is ever changed, the registry's sibling-route
+     * imports continue to be permitted without silently losing the
+     * `ui` <-> `app` and runtime <-> build-system boundaries.
+     * See ADR 0021 (modularize-routes).
+     */
+    {
+      files: ['ui/pages/routes/**/*.{js,ts,tsx}', 'ui/pages/index.js'],
+      rules: {
+        'import-x/no-restricted-paths': [
+          'error',
+          {
+            basePath: './',
+            zones: [...architecturalZones, ...buildSystemZones],
+          },
+        ],
+      },
+    },
+    /**
+     * E2E page objects
+     *
+     * Page objects should declare selectors (fields) alphabetically at the
+     * top, followed by the constructor, then methods in alphabetical order.
+     *
+     * The files listed in `excludedFiles` don't yet comply. They are
+     * temporarily exempt and should be removed from this list as each one is
+     * reordered. Do NOT add new files here — new page objects must comply.
+     *
+     * TODO: Reorder the excluded files and delete them from this list.
+     */
+    {
+      files: ['test/e2e/page-objects/**/*.ts'],
+      excludedFiles: [
+        'test/e2e/page-objects/pages/account-list-page.ts',
+        'test/e2e/page-objects/pages/asset-picker.ts',
+        'test/e2e/page-objects/pages/basic-functionality-off-page.ts',
+        'test/e2e/page-objects/pages/bridge/quote-page.ts',
+        'test/e2e/page-objects/pages/confirmations/accountDetailsModal.ts',
+        'test/e2e/page-objects/pages/confirmations/add-network-confirmations.ts',
+        'test/e2e/page-objects/pages/confirmations/add-token-confirmations.ts',
+        'test/e2e/page-objects/pages/confirmations/advanced-permissions-introduction.ts',
+        'test/e2e/page-objects/pages/confirmations/alert-modal.ts',
+        'test/e2e/page-objects/pages/confirmations/batch-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/connect-account-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/decrypt-message-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/deploy-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/gas-fee-modal.ts',
+        'test/e2e/page-objects/pages/confirmations/gas-fee-token-modal.ts',
+        'test/e2e/page-objects/pages/confirmations/get-encryption-key-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/permit-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/perps-withdraw-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/personal-sign-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/review-permissions-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/sign-typed-data-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/snap-sign-in-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/snap-sign-message-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/snap-sign-transaction-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/snap-transaction-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/speed-up-and-cancel-modal.ts',
+        'test/e2e/page-objects/pages/confirmations/switch-network-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/token-transfer-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/transaction-confirmation.ts',
+        'test/e2e/page-objects/pages/confirmations/update-network-confirmation.ts',
+        'test/e2e/page-objects/pages/critical-error-page.ts',
+        'test/e2e/page-objects/pages/debug-page.ts',
+        'test/e2e/page-objects/pages/deep-link-page.ts',
+        'test/e2e/page-objects/pages/defi-details-page.ts',
+        'test/e2e/page-objects/pages/defi-tab.ts',
+        'test/e2e/page-objects/pages/dialog/account-details-modal.ts',
+        'test/e2e/page-objects/pages/dialog/add-edit-network.ts',
+        'test/e2e/page-objects/pages/dialog/add-network-rpc-url.ts',
+        'test/e2e/page-objects/pages/dialog/add-rpc-provider.ts',
+        'test/e2e/page-objects/pages/dialog/add-tokens.ts',
+        'test/e2e/page-objects/pages/dialog/confirm-alert.ts',
+        'test/e2e/page-objects/pages/dialog/create-contract.ts',
+        'test/e2e/page-objects/pages/dialog/dapp-bar-network-selector-popover.ts',
+        'test/e2e/page-objects/pages/dialog/dapp-connections-network-modal.ts',
+        'test/e2e/page-objects/pages/dialog/edit-connected-accounts-modal.ts',
+        'test/e2e/page-objects/pages/dialog/network-permission-select-modal.ts',
+        'test/e2e/page-objects/pages/dialog/network-switch-modal-confirmation.ts',
+        'test/e2e/page-objects/pages/dialog/select-network.ts',
+        'test/e2e/page-objects/pages/dialog/snap-install-warning.ts',
+        'test/e2e/page-objects/pages/dialog/snap-install.ts',
+        'test/e2e/page-objects/pages/dialog/snap-interactive-dialog.ts',
+        'test/e2e/page-objects/pages/dialog/snap-txinsight.ts',
+        'test/e2e/page-objects/pages/dialog/terms-of-use-update-modal.ts',
+        'test/e2e/page-objects/pages/dialog/update-modal.ts',
+        'test/e2e/page-objects/pages/error-page.ts',
+        'test/e2e/page-objects/pages/hardware-wallet/connect-hardware-wallet-page.ts',
+        'test/e2e/page-objects/pages/hardware-wallet/select-hardware-wallet-account-page.ts',
+        'test/e2e/page-objects/pages/header-navbar.ts',
+        'test/e2e/page-objects/pages/home/activity-list.ts',
+        'test/e2e/page-objects/pages/home/asset-list.ts',
+        'test/e2e/page-objects/pages/home/homepage.ts',
+        'test/e2e/page-objects/pages/home/nft-list.ts',
+        'test/e2e/page-objects/pages/home/transaction-details.ts',
+        'test/e2e/page-objects/pages/login-page.ts',
+        'test/e2e/page-objects/pages/multichain/account-address-modal.ts',
+        'test/e2e/page-objects/pages/multichain/address-list-modal.ts',
+        'test/e2e/page-objects/pages/multichain/multichain-account-details-page.ts',
+        'test/e2e/page-objects/pages/multichain/private-key-modal.ts',
+        'test/e2e/page-objects/pages/network-manager.ts',
+        'test/e2e/page-objects/pages/nft-details-page.ts',
+        'test/e2e/page-objects/pages/notification-details-page.ts',
+        'test/e2e/page-objects/pages/notifications-list-page.ts',
+        'test/e2e/page-objects/pages/onboarding/onboarding-complete-page.ts',
+        'test/e2e/page-objects/pages/onboarding/onboarding-metrics-page.ts',
+        'test/e2e/page-objects/pages/onboarding/onboarding-password-page.ts',
+        'test/e2e/page-objects/pages/onboarding/onboarding-privacy-settings-page.ts',
+        'test/e2e/page-objects/pages/onboarding/onboarding-srp-page.ts',
+        'test/e2e/page-objects/pages/onboarding/secure-wallet-page.ts',
+        'test/e2e/page-objects/pages/onboarding/setup-passkey-page.ts',
+        'test/e2e/page-objects/pages/onboarding/start-onboarding-page.ts',
+        'test/e2e/page-objects/pages/permission/gator-permissions-page.ts',
+        'test/e2e/page-objects/pages/permission/permission-list-page.ts',
+        'test/e2e/page-objects/pages/permission/site-permission-page.ts',
+        'test/e2e/page-objects/pages/perps/perps-activity-page.ts',
+        'test/e2e/page-objects/pages/perps/perps-home-page.ts',
+        'test/e2e/page-objects/pages/perps/perps-market-detail-page.ts',
+        'test/e2e/page-objects/pages/perps/perps-market-list-page.ts',
+        'test/e2e/page-objects/pages/perps/perps-order-entry-page.ts',
+        'test/e2e/page-objects/pages/perps/perps-withdraw-page.ts',
+        'test/e2e/page-objects/pages/phishing-warning-page.ts',
+        'test/e2e/page-objects/pages/reset-password-page.ts',
+        'test/e2e/page-objects/pages/send/bitcoin-review-tx-page.ts',
+        'test/e2e/page-objects/pages/send/send-page.ts',
+        'test/e2e/page-objects/pages/send/solana-confirm-tx-page.ts',
+        'test/e2e/page-objects/pages/send/solana-send-page.ts',
+        'test/e2e/page-objects/pages/send/solana-tx-result-page.ts',
+        'test/e2e/page-objects/pages/settings/about-page.ts',
+        'test/e2e/page-objects/pages/settings/advanced-settings.ts',
+        'test/e2e/page-objects/pages/settings/backup-and-sync-settings.ts',
+        'test/e2e/page-objects/pages/settings/contacts-settings.ts',
+        'test/e2e/page-objects/pages/settings/experimental-settings.ts',
+        'test/e2e/page-objects/pages/settings/notifications-settings-page.ts',
+        'test/e2e/page-objects/pages/settings/preferences-and-display-settings.ts',
+        'test/e2e/page-objects/pages/settings/preinstalled-example-settings.ts',
+        'test/e2e/page-objects/pages/settings/privacy-settings.ts',
+        'test/e2e/page-objects/pages/settings/settings-page.ts',
+        'test/e2e/page-objects/pages/settings/shield/shield-claim-page.ts',
+        'test/e2e/page-objects/pages/settings/shield/shield-claims-list-page.ts',
+        'test/e2e/page-objects/pages/settings/shield/shield-detail-page.ts',
+        'test/e2e/page-objects/pages/settings/shield/shield-plan-page.ts',
+        'test/e2e/page-objects/pages/settings/shield/shield-subscription-approve-page.ts',
+        'test/e2e/page-objects/pages/settings/transactions-settings.ts',
+        'test/e2e/page-objects/pages/snap-list-page.ts',
+        'test/e2e/page-objects/pages/snap-simple-keyring-page.ts',
+        'test/e2e/page-objects/pages/swap/swap-page.ts',
+        'test/e2e/page-objects/pages/test-dapp-mm-connect.ts',
+        'test/e2e/page-objects/pages/test-dapp-multichain.ts',
+        'test/e2e/page-objects/pages/test-dapp-send-eth-with-private-key.ts',
+        'test/e2e/page-objects/pages/test-dapp-solana.ts',
+        'test/e2e/page-objects/pages/test-dapp-tron.ts',
+        'test/e2e/page-objects/pages/test-dapp.ts',
+        'test/e2e/page-objects/pages/test-snaps.ts',
+        'test/e2e/page-objects/pages/token-overview-page.ts',
+        'test/e2e/page-objects/pages/vault-decryptor-page.ts',
+        'test/e2e/page-objects/pages/wallet-details-page.ts',
+      ],
+      rules: {
+        '@typescript-eslint/member-ordering': [
+          'error',
+          {
+            classes: {
+              memberTypes: ['field', 'constructor', 'method'],
+              order: 'alphabetically',
+            },
           },
         ],
       },

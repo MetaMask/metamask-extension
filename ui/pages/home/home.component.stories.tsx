@@ -18,10 +18,8 @@ interface WrapperProps {
 }
 
 // Wrapper component to provide necessary providers
-const Wrapper: React.FC<WrapperProps> = ({ children }) => (
-  <Provider store={store}>
-    {children}
-  </Provider>
+const Wrapper = ({ children }: WrapperProps) => (
+  <Provider store={store}>{children}</Provider>
 );
 
 const meta: Meta<typeof Home> = {
@@ -45,7 +43,6 @@ const meta: Meta<typeof Home> = {
     showTermsOfUsePopup: false,
     firstTimeFlowType: FirstTimeFlowType.import,
     completedOnboarding: true,
-    showWhatsNewPopup: false,
     announcementsToShow: false,
     onboardedInThisUISession: false,
     showMultiRpcModal: false,
@@ -69,8 +66,6 @@ const meta: Meta<typeof Home> = {
     newNetworkAddedName: null,
     editedNetwork: null,
     isSigningQRHardwareTransaction: false,
-    newNftAddedMessage: '',
-    removeNftMessage: '',
     newTokensImported: '',
     newTokensImportedError: '',
     hasAllowedPopupRedirectApprovals: false,
@@ -93,8 +88,6 @@ const meta: Meta<typeof Home> = {
     setRecoveryPhraseReminderLastShown: () => {},
     setTermsOfUseLastAgreed: () => {},
     setOutdatedBrowserWarningLastShown: () => {},
-    setNewNftAddedMessage: () => {},
-    setRemoveNftMessage: () => {},
     attemptCloseNotificationPopup: () => {},
     setNewTokensImported: () => {},
     setNewTokensImportedError: () => {},
@@ -116,8 +109,6 @@ export const Default: Story = {};
 export const NFTNotifications: Story = {
   args: {
     ...Default.args,
-    newNftAddedMessage: 'success',
-    removeNftMessage: 'error',
     newTokensImported: '5',
     newTokensImportedError: 'Failed to import some tokens',
     newNetworkAddedName: 'Arbitrum One',

@@ -1,7 +1,8 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
@@ -29,8 +30,8 @@ describe('MetaMask onboarding', function () {
   it("doesn't make any token price API requests before create new wallet onboarding is completed", async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -93,8 +94,8 @@ describe('MetaMask onboarding', function () {
   it("doesn't make any token price API requests before onboarding by import is completed", async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,

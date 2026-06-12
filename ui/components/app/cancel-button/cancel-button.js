@@ -1,14 +1,14 @@
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { Button, ButtonVariant } from '@metamask/design-system-react';
-import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
+import { getMaximumGasTotalInHexWei } from '../../../../shared/lib/gas.utils';
+import { getConversionRate } from '../../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIncrementedGasFees } from '../../../pages/confirmations/hooks/useIncrementedGasFees';
-import { isBalanceSufficient } from '../../../pages/confirmations/send-legacy/send.utils';
+import { isBalanceSufficient } from '../../../pages/confirmations/send-utils/send.utils';
 import { getSelectedAccount } from '../../../selectors';
 
 export default function CancelButton({
@@ -47,7 +47,7 @@ export default function CancelButton({
     <Tooltip
       title={t('notEnoughGas')}
       data-testid="not-enough-gas__tooltip"
-      position="bottom"
+      placement="bottom"
     >
       <div>{btn}</div>
     </Tooltip>

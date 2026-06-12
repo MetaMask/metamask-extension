@@ -1,14 +1,16 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createSwapsMockStore, fireEvent } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest';
 import {
   setSwapsFromToken,
   navigateBackToPrepareSwap,
 } from '../../../ducks/swaps/swaps';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import CreateNewSwap from '.';
 
 const middleware = [thunk];
@@ -50,7 +52,7 @@ describe('CreateNewSwap', () => {
       <CreateNewSwap {...props} />,
       store,
     );
-    expect(getByText('Create a new swap')).toBeInTheDocument();
+    expect(getByText(messages.makeAnotherSwap.message)).toBeInTheDocument();
   });
 
   it('clicks on the Make another swap link', async () => {
@@ -72,7 +74,7 @@ describe('CreateNewSwap', () => {
       <CreateNewSwap {...props} />,
       store,
     );
-    await fireEvent.click(getByText('Create a new swap'));
+    await fireEvent.click(getByText(messages.makeAnotherSwap.message));
     expect(setSwapFromTokenMock).toHaveBeenCalledTimes(1);
     expect(navigateBackToPrepareSwapMock).toHaveBeenCalledTimes(1);
   });

@@ -10,7 +10,7 @@ import { ALL_POPULAR_NETWORKS } from './with-networks';
  */
 export const withConfirmedTransactions = (from, numEntries) => {
   const networks = Object.keys(ALL_POPULAR_NETWORKS.eip155);
-  const transactions = {};
+  const transactions = [];
 
   networks.forEach((network) => {
     for (let i = 0; i < numEntries; i++) {
@@ -22,52 +22,6 @@ export const withConfirmedTransactions = (from, numEntries) => {
           maxFeePerGas: '0x59682f0c',
           maxPriorityFeePerGas: '0x59682f00',
         },
-        history: [
-          {
-            chainId: network,
-            dappSuggestedGasFees: {
-              gas: '0x5208',
-              maxFeePerGas: '0x59682f0c',
-              maxPriorityFeePerGas: '0x59682f00',
-            },
-            id,
-            loadingDefaults: true,
-            origin: 'https://metamask.github.io',
-            status: 'confirmed',
-            time: Date.now(),
-            txParams: {
-              from,
-              gas: '0x5208',
-              maxFeePerGas: '0x59682f0c',
-              maxPriorityFeePerGas: '0x59682f00',
-              to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
-              value: '0x29a2241af62c0000',
-            },
-            type: 'simpleSend',
-          },
-          [
-            {
-              note: 'Added new confirmed transaction.',
-              op: 'replace',
-              path: '/loadingDefaults',
-              timestamp: Date.now(),
-              value: false,
-            },
-            {
-              op: 'add',
-              path: '/simulationData',
-              value: {
-                error: {
-                  code: 'disabled',
-                  message: 'Simulation disabled',
-                },
-                tokenBalanceChanges: [],
-              },
-              note: 'TransactionController#updateSimulationData - Update simulation data',
-              timestamp: Date.now(),
-            },
-          ],
-        ],
         simulationData: {
           error: {
             code: 'disabled',
@@ -88,10 +42,11 @@ export const withConfirmedTransactions = (from, numEntries) => {
           to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
           value: '0x29a2241af62c0000',
         },
+        history: [],
         type: 'simpleSend',
       };
 
-      transactions[id] = transaction;
+      transactions.push(transaction);
     }
   });
 

@@ -7,10 +7,12 @@ import {
 } from '@metamask/keyring-api';
 import { useSelector } from 'react-redux';
 import {
-  Display,
-  FlexDirection,
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
-  JustifyContent,
   TextVariant,
   IconColor,
   FontWeight,
@@ -23,7 +25,6 @@ import {
   ModalContent,
   ModalHeader,
   Modal,
-  Box,
   Text,
   ModalFooter,
   Button,
@@ -43,17 +44,16 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
-import { getAccountName } from '../../../selectors';
+import { getSelectedAccount } from '../../../selectors';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
-import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import {
-  getInternalAccounts,
   getInternalAccountsObject,
   isNonEvmAccount,
 } from '../../../selectors/accounts';
+import { selectAccountGroupNameByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -61,11 +61,61 @@ import {
   shortenTransactionId,
 } from './helpers';
 
+type Props = {
+  label: string;
+  address?: string;
+  chain: string;
+};
+
+const AccountRow = ({ label, address, chain }: Props) => {
+  const displayName = useSelector((state) =>
+    selectAccountGroupNameByAddress(state, address),
+  );
+
+  if (!address) {
+    return null;
+  }
+
+  return (
+    <Box className="flex" justifyContent={BoxJustifyContent.Between}>
+      <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+        {label}
+      </Text>
+      <Box className="flex" alignItems={BoxAlignItems.Center} gap={1}>
+        <ButtonLink
+          size={ButtonLinkSize.Inherit}
+          textProps={{
+            variant: TextVariant.bodyMd,
+            alignItems: AlignItems.flexStart,
+          }}
+          as="a"
+          externalLink
+          href={getAddressUrl(address, chain)}
+          data-address={address}
+        >
+          {displayName || shortenAddress(address)}
+          <Icon
+            marginLeft={2}
+            name={IconName.Export}
+            size={IconSize.Sm}
+            color={IconColor.primaryDefault}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={() =>
+              navigator.clipboard.writeText(
+                getAddressUrl(address as string, chain),
+              )
+            }
+          />
+        </ButtonLink>
+      </Box>
+    </Box>
+  );
+};
+
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
-  userAddress: string;
-  networkConfig: MultichainProviderConfig;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -73,12 +123,10 @@ export type MultichainTransactionDetailsModalProps = {
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
-  userAddress,
-  networkConfig,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const userAddress = useSelector(getSelectedAccount)?.address;
   const {
     from,
     to,
@@ -90,14 +138,20 @@ export function MultichainTransactionDetailsModal({
     type,
     timestamp,
     id,
-  } = useMultichainTransactionDisplay(transaction, networkConfig);
+  } = useMultichainTransactionDisplay(transaction);
 
-  const internalAccounts = useSelector(getInternalAccounts);
   const internalAccountsById = useSelector(getInternalAccountsObject);
   const txInternalAccount = internalAccountsById?.[transaction.account];
   const nonEvmSenderAddress = isNonEvmAccount(txInternalAccount)
     ? txInternalAccount?.address
     : undefined;
+
+  // Derive addresses
+  const fromAddress =
+    type === TransactionType.Send
+      ? nonEvmSenderAddress || userAddress
+      : from?.address;
+  const toAddress = to?.address;
 
   const getStatusColor = (txStatus: string) => {
     switch (txStatus?.toLowerCase()) {
@@ -112,49 +166,6 @@ export function MultichainTransactionDetailsModal({
     }
   };
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
-
-  const accountComponent = (label: string, address?: string) => {
-    if (!address) {
-      return null;
-    }
-    const accountName = getAccountName(internalAccounts, address);
-    const displayName = accountName || shortenAddress(address);
-
-    return (
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-        <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-          {label}
-        </Text>
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-          <ButtonLink
-            size={ButtonLinkSize.Inherit}
-            textProps={{
-              variant: TextVariant.bodyMd,
-              alignItems: AlignItems.flexStart,
-            }}
-            as="a"
-            externalLink
-            href={getAddressUrl(address, chain)}
-          >
-            {displayName}
-            <Icon
-              marginLeft={2}
-              name={IconName.Export}
-              size={IconSize.Sm}
-              color={IconColor.primaryDefault}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={() =>
-                navigator.clipboard.writeText(
-                  getAddressUrl(address as string, chain),
-                )
-              }
-            />
-          </ButtonLink>
-        </Box>
-      </Box>
-    );
-  };
 
   const amountComponent = (
     asset:
@@ -171,15 +182,11 @@ export function MultichainTransactionDetailsModal({
     }
 
     return (
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+      <Box className="flex" justifyContent={BoxJustifyContent.Between}>
         <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
           {label}
         </Text>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexEnd}
-        >
+        <Box className="flex flex-col items-end">
           <Text variant={TextVariant.bodyMd} data-testid={dataTestId}>
             {asset.amount} {asset.unit}
           </Text>
@@ -209,8 +216,7 @@ export function MultichainTransactionDetailsModal({
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          className: 'flex flex-col',
           padding: 4,
         }}
       >
@@ -231,17 +237,10 @@ export function MultichainTransactionDetailsModal({
           <Divider />
         </Box>
         <Box>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={4}
-          >
+          <Box className="flex flex-col" gap={4}>
             {/* Status */}
             {status && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
+              <Box className="flex" justifyContent={BoxJustifyContent.Between}>
                 <Text
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
@@ -251,6 +250,7 @@ export function MultichainTransactionDetailsModal({
                 <Text
                   variant={TextVariant.bodyMd}
                   color={getStatusColor(status)}
+                  data-testid={`transaction-details-status-${statusKey}`}
                 >
                   {capitalize(t(statusKey))}
                 </Text>
@@ -258,18 +258,11 @@ export function MultichainTransactionDetailsModal({
             )}
 
             {/* Transaction ID */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
+            <Box className="flex" justifyContent={BoxJustifyContent.Between}>
               <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
                 {t('notificationItemTransactionId')}
               </Text>
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={1}
-              >
+              <Box className="flex" alignItems={BoxAlignItems.Center} gap={1}>
                 <ButtonLink
                   size={ButtonLinkSize.Inherit}
                   textProps={{
@@ -303,22 +296,13 @@ export function MultichainTransactionDetailsModal({
             <Divider />
           </Box>
 
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={4}
-          >
+          <Box className="flex flex-col" gap={4}>
             {/* From */}
-            {accountComponent(
-              t('from'),
-              type === TransactionType.Send
-                ? nonEvmSenderAddress || userAddress
-                : from?.address,
-            )}
+            <AccountRow label={t('from')} address={fromAddress} chain={chain} />
 
             {/* Amounts per token */}
             <>
-              {accountComponent(t('to'), to?.address)}
+              <AccountRow label={t('to')} address={toAddress} chain={chain} />
               {amountComponent(
                 type === TransactionType.Swap ? from : to,
                 t('amount'),
@@ -343,6 +327,8 @@ export function MultichainTransactionDetailsModal({
         <ModalFooter>
           <Button
             block
+            data-explorer-url={getTransactionUrl(id, chain)}
+            data-testid="transaction-details-block-explorer"
             size={ButtonSize.Md}
             variant={ButtonVariant.Link}
             onClick={() => {

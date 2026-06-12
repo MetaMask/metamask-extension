@@ -50,9 +50,9 @@ const render = (props = {}) => {
   return renderWithProvider(<AccountListItemMenu {...allProps} />, store);
 };
 
-describe('AccountListItem', () => {
-  it('renders remove icon with isRemovable', () => {
-    const { getByTestId } = render({ isRemovable: true });
-    expect(getByTestId('account-list-menu-remove')).toBeInTheDocument();
+describe('AccountListItemMenu', () => {
+  it('does not render remove account menu item', () => {
+    const { queryByTestId } = render({ isRemovable: true });
+    expect(queryByTestId('account-list-menu-remove')).not.toBeInTheDocument();
   });
 });

@@ -5,12 +5,11 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ImportAccount } from './import-account';
 
 jest.mock('../../../store/actions', () => ({
   importNewAccount: jest.fn(),
-  displayWarning: jest.fn(() => ({ type: 'DISPLAY_WARNING' })),
-  hideWarning: jest.fn(() => ({ type: 'HIDE_WARNING' })),
   checkIsSeedlessPasswordOutdated: jest.fn(),
 }));
 
@@ -38,9 +37,9 @@ describe('ImportAccount', () => {
     it('renders the component with private key import by default', () => {
       const { getByText, getByLabelText } = renderImportAccount();
 
-      expect(getByText('Select type')).toBeInTheDocument();
+      expect(getByText(messages.selectType.message)).toBeInTheDocument();
       expect(
-        getByLabelText('Enter your private key string here:'),
+        getByLabelText(messages.pastePrivateKey.message),
       ).toBeInTheDocument();
     });
 
@@ -48,7 +47,7 @@ describe('ImportAccount', () => {
       const { getByRole } = renderImportAccount();
 
       // Check that the help link is present
-      const helpLink = getByRole('link', { name: 'here' });
+      const helpLink = getByRole('link', { name: messages.here.message });
       expect(helpLink).toBeInTheDocument();
       expect(helpLink).toHaveAttribute(
         'href',
@@ -60,7 +59,7 @@ describe('ImportAccount', () => {
       const { getByLabelText } = renderImportAccount();
 
       expect(
-        getByLabelText('Enter your private key string here:'),
+        getByLabelText(messages.pastePrivateKey.message),
       ).toBeInTheDocument();
     });
   });
@@ -75,42 +74,55 @@ describe('ImportAccount', () => {
 
       await waitFor(() => {
         expect(
-          queryByLabelText('Enter your private key string here:'),
+          queryByLabelText(messages.pastePrivateKey.message),
         ).not.toBeInTheDocument();
         expect(getByTestId('file-input')).toBeInTheDocument();
       });
-
-      expect(mockedActions.hideWarning).toHaveBeenCalled();
     });
 
-    it('hides warning when switching import types', () => {
-      const { getByRole } = renderImportAccount();
+    it('hides warning when switching import types', async () => {
+      // Trigger error by entering private key and attempting import
+      const testError = new Error('Test error');
+      mockedActions.importNewAccount.mockReturnValue(() =>
+        Promise.reject(testError),
+      );
+      const { getByLabelText, getByText, getByRole, queryByText } =
+        renderImportAccount();
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      fireEvent.change(privateKeyInput, {
+        target: { value: '0xabcdef1234567890' },
+      });
+      const importButton = getByText(messages.import.message);
+      fireEvent.click(importButton);
+      // Ensure error is shown
+      await waitFor(() => {
+        expect(queryByText('Test error')).toBeInTheDocument();
+      });
 
       const dropdown = getByRole('combobox');
       fireEvent.change(dropdown, { target: { value: 'JSON File' } });
 
-      expect(mockedActions.hideWarning).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(queryByText('Test error')).not.toBeInTheDocument();
+      });
     });
   });
 
   describe('private key import', () => {
     it('calls importNewAccount with private key strategy', async () => {
-      const mockSelectedAddress = '0x1234567890abcdef';
       mockedActions.importNewAccount.mockReturnValue((() =>
         Promise.resolve({
-          selectedAddress: mockSelectedAddress,
+          internalAccounts: { selectedAccount: 'mock-account-id' },
         })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       const testPrivateKey = '0xabcdef1234567890';
 
       fireEvent.change(privateKeyInput, { target: { value: testPrivateKey } });
 
-      const importButton = getByText('Import');
+      const importButton = getByText(messages.import.message);
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -123,22 +135,19 @@ describe('ImportAccount', () => {
     });
 
     it('calls onActionComplete on successful import', async () => {
-      const mockSelectedAddress = '0x1234567890abcdef';
       mockedActions.importNewAccount.mockReturnValue((() =>
         Promise.resolve({
-          selectedAddress: mockSelectedAddress,
+          internalAccounts: { selectedAccount: 'mock-account-id' },
         })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText('Import');
+      const importButton = getByText(messages.import.message);
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -146,26 +155,26 @@ describe('ImportAccount', () => {
       });
     });
 
-    it('displays warning when import fails without selected address', async () => {
+    it('displays warning when import fails without selected account', async () => {
       mockedActions.importNewAccount.mockReturnValue((() =>
         Promise.resolve({
-          selectedAddress: null,
+          internalAccounts: { selectedAccount: null },
         })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText('Import');
+      const importButton = getByText(messages.import.message);
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(mockedActions.displayWarning).toHaveBeenCalled();
+        expect(
+          queryByText(messages.importAccountError.message),
+        ).toBeInTheDocument();
       });
     });
 
@@ -175,41 +184,37 @@ describe('ImportAccount', () => {
           new Error('Invalid private key'),
         )) as unknown as ReturnType<typeof actions.importNewAccount>);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: 'invalid-key' },
       });
 
-      const importButton = getByText('Import');
+      const importButton = getByText(messages.import.message);
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(mockedActions.displayWarning).toHaveBeenCalled();
+        expect(queryByText('Invalid private key')).toBeInTheDocument();
       });
     });
 
     it('disables import button when private key input is empty', () => {
       const { getByText } = renderImportAccount();
 
-      const importButton = getByText('Import');
+      const importButton = getByText(messages.import.message);
       expect(importButton).toBeDisabled();
     });
 
     it('enables import button when private key is entered', () => {
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText('Import');
+      const importButton = getByText(messages.import.message);
       expect(importButton).not.toBeDisabled();
     });
   });
@@ -218,7 +223,7 @@ describe('ImportAccount', () => {
     it('calls onActionComplete when cancel button is clicked', () => {
       const { getByText } = renderImportAccount();
 
-      const cancelButton = getByText('Cancel');
+      const cancelButton = getByText(messages.cancel.message);
       fireEvent.click(cancelButton);
 
       expect(mockOnActionComplete).toHaveBeenCalled();
@@ -235,22 +240,20 @@ describe('ImportAccount', () => {
         typeof actions.importNewAccount
       >);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText('Import');
+      const importButton = getByText(messages.import.message);
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(mockedActions.displayWarning).toHaveBeenCalledWith(
-          'The account you are trying to import is a duplicate',
-        );
+        expect(
+          queryByText('The account you are trying to import is a duplicate'),
+        ).toBeInTheDocument();
       });
     });
 
@@ -261,22 +264,18 @@ describe('ImportAccount', () => {
         typeof actions.importNewAccount
       >);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText('Import');
+      const importButton = getByText(messages.import.message);
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(mockedActions.displayWarning).toHaveBeenCalledWith(
-          'Some other error',
-        );
+        expect(queryByText('Some other error')).toBeInTheDocument();
       });
     });
 
@@ -289,21 +288,21 @@ describe('ImportAccount', () => {
         typeof actions.importNewAccount
       >);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText('Import');
+      const importButton = getByText(messages.import.message);
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        // The translateWarning function should process the i18n key
-        expect(mockedActions.displayWarning).toHaveBeenCalled();
+        expect(
+          // The translateWarning function should process the i18n key
+          queryByText(messages.importAccountErrorIsSRP.message),
+        ).toBeInTheDocument();
       });
     });
   });

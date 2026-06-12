@@ -30,13 +30,8 @@ import {
   getTransactions,
 } from '../../store/actions';
 import {
-  AWAITING_SIGNATURES_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  LOADING_QUOTES_ROUTE,
-  SWAPS_ERROR_ROUTE,
-  SWAPS_MAINTENANCE_ROUTE,
-  SMART_TRANSACTION_STATUS_ROUTE,
   PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   fetchSwapsFeatureFlags,
@@ -53,29 +48,31 @@ import {
   decimalToHex,
   getValueFromWeiHex,
   hexWEIToDecGWEI,
-} from '../../../shared/modules/conversion.utils';
+} from '../../../shared/lib/conversion.utils';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
-import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
+} from '../../../shared/lib/selectors/networks';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
   getUSDConversionRate,
   getSwapsDefaultToken,
-  isHardwareWallet,
-  getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
-  getSelectedInternalAccount,
   getSelectedNetwork,
   getHDEntropyIndex,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../shared/lib/selectors/keyring';
 import {
   getSmartTransactionsEnabled,
+  getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../shared/modules/selectors';
+} from '../../../shared/lib/selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -102,7 +99,7 @@ import {
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 
@@ -535,7 +532,7 @@ export const navigateBackToPrepareSwap = (navigate) => {
     // TODO: Ensure any fetch in progress is cancelled
     await dispatch(setBackgroundSwapRouteState(''));
     dispatch(navigatedBackToBuildQuote());
-    navigate(PREPARE_SWAP_ROUTE);
+    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
   };
 };
 
@@ -658,7 +655,7 @@ export const fetchQuotesAndSetQuoteState = (
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
     if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
-      await navigate(SWAPS_MAINTENANCE_ROUTE);
+      await navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
@@ -691,7 +688,7 @@ export const fetchQuotesAndSetQuoteState = (
     // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
     if (!pageRedirectionDisabled) {
       await dispatch(setBackgroundSwapRouteState('loading'));
-      navigate(LOADING_QUOTES_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
     }
     dispatch(setFetchingQuotes(true));
 
@@ -783,11 +780,8 @@ export const fetchQuotesAndSetQuoteState = (
     const stablecoinsForChain = StablecoinsByChainId[chainId];
     const isStableTokenPair = Boolean(
       stablecoinsForChain &&
-        checkAddressInSetCaseInsensitive(
-          stablecoinsForChain,
-          fromTokenAddress,
-        ) &&
-        checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
+      checkAddressInSetCaseInsensitive(stablecoinsForChain, fromTokenAddress) &&
+      checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
     );
 
     const slippageForFetch = isStableTokenPair ? Slippage.stable : maxSlippage;
@@ -952,11 +946,15 @@ export const signAndSendSwapsSmartTransaction = ({
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
     const selectedNetwork = getSelectedNetwork(state);
-    const swapsFeatureFlags = getFeatureFlagsByChainId(state);
+    const chainId = getCurrentChainId(state);
+    const featureFlags = getSmartTransactionsFeatureFlagsForChain(
+      state,
+      chainId,
+    );
 
     dispatch(
       setSmartTransactionsRefreshInterval(
-        swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
+        featureFlags?.batchStatusPollingInterval,
       ),
     );
 
@@ -1020,7 +1018,7 @@ export const signAndSendSwapsSmartTransaction = ({
         },
       });
       await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      navigate(SWAPS_ERROR_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
@@ -1100,7 +1098,7 @@ export const signAndSendSwapsSmartTransaction = ({
           }),
         );
       }
-      navigate(SMART_TRANSACTION_STATUS_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
@@ -1144,7 +1142,7 @@ export const signAndSendTransactions = (
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
     if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
-      await navigate(SWAPS_MAINTENANCE_ROUTE);
+      await navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
@@ -1156,7 +1154,7 @@ export const signAndSendTransactions = (
     await dispatch(stopPollingForQuotes());
 
     if (!hardwareWalletUsed) {
-      navigate(AWAITING_SWAP_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
     }
 
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
@@ -1307,16 +1305,16 @@ export const signAndSendTransactions = (
         },
       });
       await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      navigate(SWAPS_ERROR_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
     let finalApproveTxMeta;
 
-    // For hardware wallets we go to the Awaiting Signatures page first and only after a user
-    // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
+    // For hardware wallets we keep users on the unified cross-chain prepare page
+    // while confirmations are in progress.
     if (hardwareWalletUsed) {
-      navigate(AWAITING_SIGNATURES_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
     }
 
     if (approveTxParams) {
@@ -1363,7 +1361,7 @@ export const signAndSendTransactions = (
       } catch (e) {
         debugLog('Approve transaction failed', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-        navigate(SWAPS_ERROR_ROUTE);
+        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
         return;
       }
     }
@@ -1396,14 +1394,14 @@ export const signAndSendTransactions = (
         : SWAP_FAILED_ERROR;
       debugLog('Trade transaction failed', e);
       await dispatch(setSwapsErrorKey(errorKey));
-      navigate(SWAPS_ERROR_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
     // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
-    // we redirect to the Awaiting Swap page.
+    // we redirect back to the unified cross-chain prepare page.
     if (hardwareWalletUsed) {
-      navigate(AWAITING_SWAP_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
     }
 
     await forceUpdateMetamaskState(dispatch);

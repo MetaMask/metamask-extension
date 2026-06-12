@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Ki kell választania egy fiókot!"
   },
-  "activityLog": {
-    "message": "tevékenységi napló"
-  },
   "addAcquiredTokens": {
     "message": "Adja hozzá MetaMask-kal a kapott érméket"
   },
@@ -80,9 +77,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Automatikus kijelentkezés időzítő (perc)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Adja meg a MetaMask automatikus kijelentkezéséig tartó tétlen állapot idejét percekben "
   },
   "average": {
     "message": "Átlag"
@@ -184,12 +178,6 @@
   "createPassword": {
     "message": "Jelszó létrehozása"
   },
-  "currencyConversion": {
-    "message": "Valutaváltás"
-  },
-  "currentLanguage": {
-    "message": "Aktuális nyelv"
-  },
   "custom": {
     "message": "Speciális"
   },
@@ -210,9 +198,6 @@
   },
   "done": {
     "message": "Kész"
-  },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome letöltése"
   },
   "downloadStateLogs": {
     "message": "Állapotnapló letöltése"
@@ -272,9 +257,6 @@
   "hardwareWallets": {
     "message": "Hardveres tárca csatlakoztatása"
   },
-  "hardwareWalletsMsg": {
-    "message": "Válassza ki a MetaMask-kal használni kívánt hardveres pénztárcát"
-  },
   "here": {
     "message": "itt",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -301,9 +283,6 @@
   "imported": {
     "message": "Importált",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Eredeti tranzakciódat jóváhagyta a hálózat. A visszatéréshez kattints az OK-ra."
   },
   "insufficientBalance": {
     "message": "Fedezethiány."
@@ -345,15 +324,6 @@
   "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli teszthálózat"
-  },
-  "links": {
-    "message": "Linkek"
-  },
-  "loadMore": {
-    "message": "Továbbiak betöltése"
-  },
   "loading": {
     "message": "Betöltés..."
   },
@@ -382,9 +352,6 @@
     "message": "Ki kell választania az importálni kívánt fájlt.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nem lehet negatív mennyiségű ETH-t küldeni."
-  },
   "networkName": {
     "message": "Hálózat neve"
   },
@@ -394,15 +361,9 @@
   "nevermind": {
     "message": "Nem fontos"
   },
-  "newAccount": {
-    "message": "Új fiók"
-  },
   "newAccountNumberName": {
     "message": "$1 fiók",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Új kapcsolat"
   },
   "newContract": {
     "message": "Új szerződés"
@@ -412,9 +373,6 @@
   },
   "next": {
     "message": "Következő"
-  },
-  "noConversionRateAvailable": {
-    "message": "Nincs elérhető átváltási díj"
   },
   "noWebcamFound": {
     "message": "Nem található számítógéped webkamerája. Kérünk, próbáld újra."
@@ -490,12 +448,6 @@
   "rejectAll": {
     "message": "Mindet elutasít"
   },
-  "rejectTxsDescription": {
-    "message": "Ezáltal kötegben utasítja el a(z) $1 tranzakciókat."
-  },
-  "rejectTxsN": {
-    "message": "$1 tranzakciók elutasítása"
-  },
   "rejected": {
     "message": "Elutasítva"
   },
@@ -505,9 +457,6 @@
   "removeAccount": {
     "message": "Fiók eltávolítása"
   },
-  "removeAccountDescription": {
-    "message": "Ez a fiók el lesz távolítva pénztárcádból. A folytatás előtt győződj meg róla, hogy rendelkezésedre áll az eredeti kulcsszólánc vagy titkos kulcs. A fiók legördülő menüjéből újból importálhatsz vagy létrehozhatsz fiókokat. "
-  },
   "required": {
     "message": "Kötelező"
   },
@@ -516,9 +465,6 @@
   },
   "restore": {
     "message": "Visszaállítás"
-  },
-  "revealSeedWords": {
-    "message": "Seed szavak megjelenítése"
   },
   "revealSeedWordsWarning": {
     "message": "Ezekkel a szavakkal ellophatóak a fiókjai.",
@@ -566,9 +512,6 @@
   "showFiatConversionInTestnets": {
     "message": "Konverzió mutatása Testnetsen"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Válassza ezt, ha a Testnetsen szeretné megnézni a törvényes fizetőeszközre való átváltást"
-  },
   "showHexData": {
     "message": "Hex adatok mutatása"
   },
@@ -593,17 +536,11 @@
   "speedUpCancellation": {
     "message": "Törlés felgyorsítása"
   },
-  "speedUpTransaction": {
-    "message": "Gyorsítsd fel ezt a tranzakciót"
-  },
   "stateLogError": {
     "message": "Hiba történt az állapotnaplók lekérésekor."
   },
   "stateLogs": {
     "message": "Állapotnapló"
-  },
-  "stateLogsDescription": {
-    "message": "Az állapotnaplóban megtalálhatók nyilvános fiókcímeid és elküldött tranzakcióid."
   },
   "submitted": {
     "message": "Elküldve"
@@ -638,38 +575,11 @@
   "transaction": {
     "message": "tranzakció"
   },
-  "transactionCancelAttempted": {
-    "message": "Tranzakció visszavonást próbáltak végrehajtani $1 üzemanyagköltséggel $2-kor"
-  },
-  "transactionCancelSuccess": {
-    "message": "Tranzakció sikeresen törölve $2-nál"
-  },
-  "transactionConfirmed": {
-    "message": "Tranzakció megerősítve $2-on."
-  },
-  "transactionCreated": {
-    "message": "Egy $1 értékű tranzakció létrehozva $2-kor."
-  },
-  "transactionDropped": {
-    "message": "Tranzakció elvetve: $2."
-  },
   "transactionError": {
     "message": "Tranzakciós hiba.  Kivétel van a szerződés kódjában."
   },
   "transactionErrorNoContract": {
     "message": "Nem-szerződéses címen próbál egy funkciót meghívni."
-  },
-  "transactionErrored": {
-    "message": "Hiba történt a tranzakció során."
-  },
-  "transactionResubmitted": {
-    "message": "A tranzakció újra beküldve $1 / $2 emelt gázdíjjal."
-  },
-  "transactionSubmitted": {
-    "message": "Tranzakció jóváhagyva $1 üzemanyag költséggel $2-kor."
-  },
-  "transactionUpdated": {
-    "message": "Tranzakció frissítve $2-nál"
   },
   "transfer": {
     "message": "Átutalás"
@@ -701,12 +611,6 @@
   "usedByClients": {
     "message": "Számos különböző ügyfél használja"
   },
-  "userName": {
-    "message": "Felhasználónév"
-  },
-  "viewContact": {
-    "message": "Névjegy megtekintése"
-  },
   "visitWebSite": {
     "message": "Látogass el weboldalunkra"
   },
@@ -715,8 +619,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Az ön privát seed mondata"
   }
 }

@@ -2,7 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import SnapInstall from '../pages/dialog/snap-install';
 import SnapInstallWarning from '../pages/dialog/snap-install-warning';
 import { TestSnaps, buttonLocator } from '../pages/test-snaps';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 
 /**
  * Open test snaps page in a new window tab, click on the button.
@@ -30,6 +30,7 @@ export async function openTestSnapClickButtonAndInstall(
   const snapInstallWarning = new SnapInstallWarning(driver);
   const testSnaps = new TestSnaps(driver);
   await testSnaps.openPage(url);
+  await testSnaps.checkPageIsLoaded();
   await testSnaps.scrollAndClickButton(buttonName);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await snapInstall.checkPageIsLoaded();

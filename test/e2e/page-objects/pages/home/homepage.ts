@@ -1,6 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
@@ -15,13 +14,8 @@ class HomePage {
 
   public headerNavbar: HeaderNavbar;
 
-  private readonly activityTab = {
+  protected readonly activityTab = {
     testId: 'account-overview__activity-tab',
-  };
-
-  private readonly backupSecretRecoveryPhraseButton = {
-    text: 'Back up now',
-    css: '.home-notification__accept-button',
   };
 
   private readonly backupRemindMeLaterButton = {
@@ -29,30 +23,55 @@ class HomePage {
     text: 'Remind me later',
   };
 
+  private readonly backupSecretRecoveryPhraseButton = {
+    text: 'Back up now',
+    css: '.home-notification__accept-button',
+  };
+
   private readonly backupSecretRecoveryPhraseNotification = {
     text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
     css: '.home-notification__text',
   };
 
+  // Matches both the EVM (`eth-overview__primary-currency`) and non-EVM
+  // (`coin-overview__primary-currency`) balance containers.
   protected readonly balance: string =
-    '[data-testid="eth-overview__primary-currency"]';
+    '[data-testid$="overview__primary-currency"]';
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
     css: '.mm-banner-base',
   };
 
+  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
+
+  protected readonly buySellButton = { css: 'button', text: 'Buy' };
+
+  private readonly closeSurveyToastBannerButton =
+    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
 
   private readonly closeUseNetworkNotificationModalButton = {
     text: 'Got it',
     tag: 'h6',
   };
 
-  private readonly erc20TokenDropdown = {
-    testId: 'asset-list-control-bar-action-button',
+  private readonly connectionsRemovedModal =
+    '[data-testid="connections-removed-modal"]';
+
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
+  private readonly defaultAddressContainer =
+    '[data-testid="default-address-container"]';
+
+  protected readonly defiTab = {
+    testId: 'account-overview__defi-tab',
   };
+
+  private readonly emptyBalance =
+    '[data-testid="coin-overview-balance-empty-state"]';
 
   private readonly fundYourWalletBanner = {
     text: 'Fund your wallet',
@@ -62,13 +81,11 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
-  private readonly nftTab = {
+  protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
 
-  private readonly defiTab = {
-    testId: 'account-overview__defi-tab',
-  };
+  private readonly overviewBalanceSection = '.wallet-overview__balance';
 
   private readonly popoverBackground = '.popover-bg';
 
@@ -78,27 +95,11 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+  protected readonly receiveButton = { css: 'button', text: 'Receive' };
 
-  protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
+  private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
-  private readonly refreshErc20Tokens = {
-    testId: 'refreshList',
-  };
-
-  private readonly surveyToast = '[data-testid="survey-toast"]';
-
-  private readonly tokensTab = {
-    testId: 'account-overview__asset-tab',
-  };
-
-  private readonly closeSurveyToastBannerButton =
-    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
-
-  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
-
-  private readonly connectionsRemovedModal =
-    '[data-testid="connections-removed-modal"]';
+  protected readonly sendButton = { css: 'button', text: 'Send' };
 
   private readonly shieldEntryModal = '[data-testid="shield-entry-modal"]';
 
@@ -108,10 +109,27 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
-  private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
+  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
-  private readonly emptyBalance =
-    '[data-testid="coin-overview-balance-empty-state"]';
+  private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
+
+  private readonly srpAddedToastCloseButton =
+    '.toast-container button[aria-label="Close"]';
+
+  private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
+
+  private readonly storageErrorToastBackupButton = {
+    text: 'Back up Secret Recovery Phrase',
+    tag: 'span',
+  };
+
+  private readonly surveyToast = '[data-testid="survey-toast"]';
+
+  protected readonly swapButton = { css: 'button', text: 'Swap' };
+
+  protected readonly tokensTab = {
+    testId: 'account-overview__asset-tab',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -121,8 +139,8 @@ class HomePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.sendButton,
         this.activityTab,
+        this.overviewBalanceSection,
         this.tokensTab,
       ]);
     } catch (e) {
@@ -191,6 +209,12 @@ class HomePage {
     }
   }
 
+  async waitForNonEvmAccountsLoaded(): Promise<void> {
+    console.log('Waiting for Non EVM account icons to be visible');
+    await this.driver.waitForSelector(this.solanaAccountIcon);
+    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+  }
+
   async checkPageIsNotLoaded(): Promise<void> {
     console.log('Check home page is not loaded');
     await this.driver.assertElementNotPresent(this.activityTab, {
@@ -214,6 +238,27 @@ class HomePage {
       text: surveyName,
     });
     await this.driver.clickElement(this.closeSurveyToastBannerButton);
+  }
+
+  /**
+   * Checks if the storage error toast is displayed.
+   * This toast appears when storage.local.set() operations fail.
+   */
+  async checkStorageErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check storage error toast is displayed on homepage');
+    await this.driver.waitForSelector(this.storageErrorToast);
+  }
+
+  /**
+   * Clicks the "Back up Secret Recovery Phrase" button on the storage error toast
+   * and verifies navigation to the reveal SRP page.
+   */
+  async clickStorageErrorToastBackupButton(): Promise<void> {
+    console.log(
+      'Click backup button on storage error toast to navigate to reveal SRP page',
+    );
+    await this.driver.clickElement(this.storageErrorToastBackupButton);
+    await this.driver.waitForSelector(this.revealSrpPasswordInput);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {
@@ -259,12 +304,6 @@ class HomePage {
   async openPortfolioPage(): Promise<void> {
     console.log(`Open portfolio page on homepage`);
     await this.driver.clickElement(this.portfolioLink);
-  }
-
-  async refreshErc20TokenList(): Promise<void> {
-    console.log(`Refresh the ERC20 token list`);
-    await this.driver.clickElement(this.erc20TokenDropdown);
-    await this.driver.clickElement(this.refreshErc20Tokens);
   }
 
   async startSendFlow(): Promise<void> {
@@ -313,6 +352,19 @@ class HomePage {
     );
   }
 
+  /**
+   * Checks that balance is displayed with ETH symbol.
+   * We verify the element contains "ETH" rather than exact values since gas fees vary.
+   */
+  async checkBalanceIsDisplayed(): Promise<void> {
+    console.log('Check balance element is displayed on homepage');
+    await this.driver.waitForSelector({
+      css: this.balance,
+      text: 'ETH',
+    });
+    console.log('Balance is displayed in correct format');
+  }
+
   async checkBasicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check if basic functionality off warning message is displayed on homepage',
@@ -347,22 +399,29 @@ class HomePage {
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
+   * @param expectFundYourWalletBanner - When the balance is '0', whether to assert the
+   * "Fund your wallet" banner (EVM behavior).
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout` (10s unless the test overrides `Driver` construction).
    */
   async checkExpectedBalanceIsDisplayed(
     expectedBalance: string = '25',
     symbol: string = 'ETH',
+    expectFundYourWalletBanner: boolean = true,
+    timeout: number = this.driver.timeout,
   ): Promise<void> {
-    if (expectedBalance === '0') {
-      await this.driver.waitForSelector(this.fundYourWalletBanner);
+    if (expectedBalance === '0' && expectFundYourWalletBanner) {
+      await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
       return;
     }
     try {
-      await this.driver.waitForSelector({
-        css: this.balance,
-        text: expectedBalance,
-      });
+      await this.driver.waitForSelector(
+        { css: this.balance, text: expectedBalance },
+        { timeout },
+      );
     } catch (e) {
-      const balance = await this.driver.waitForSelector(this.balance);
+      const balance = await this.driver.waitForSelector(this.balance, {
+        timeout,
+      });
       const currentBalance = parseFloat(await balance.getText());
       const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
       console.log(errorMessage, e);
@@ -384,22 +443,6 @@ class HomePage {
   async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
     console.log('Check balance empty state is displayed on homepage');
     await this.driver.waitForSelector(this.emptyBalance);
-  }
-
-  /**
-   * Checks if the expected token balance is displayed on homepage.
-   *
-   * @param expectedTokenBalance - The expected balance to be displayed.
-   * @param symbol - The symbol of the currency or token.
-   */
-  async checkExpectedTokenBalanceIsDisplayed(
-    expectedTokenBalance: string,
-    symbol: string,
-  ): Promise<void> {
-    await this.driver.waitForSelector({
-      css: '[data-testid="multichain-token-list-item-value"]',
-      text: `${expectedTokenBalance} ${symbol}`,
-    });
   }
 
   /**
@@ -454,7 +497,7 @@ class HomePage {
   }
 
   async checkLocalNodeBalanceIsDisplayed(
-    localNode?: Ganache | Anvil,
+    localNode?: Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
@@ -468,32 +511,17 @@ class HomePage {
     await this.checkExpectedBalanceIsDisplayed(expectedBalance);
   }
 
-  async getSkeleton(): Promise<
-    WebElement & {
-      waitForElementState: (state: string, timeout: number) => Promise<void>;
-    }
-  > {
-    return (await this.driver.waitForSelector('.mm-skeleton', {
-      state: 'visible',
-      timeout: 100,
-      // The `waitForSelector` method returns the wrong type.
-      // We supply that type in the return type, and we don't need to restate it here.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    })) as any;
-  }
-
-  async waitForSkeletonToDisappear(
-    skeleton: WebElement & {
-      waitForElementState: (state: string, timeout: number) => Promise<void>;
-    },
-  ): Promise<void> {
-    await skeleton.waitForElementState('hidden', this.driver.timeout);
-  }
-
-  async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
+  async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
     await this.driver.waitForSelector({
+      css: this.srpAddedToast,
       text: `Wallet ${srpNumber} imported`,
     });
+  }
+
+  async dismissSrpAddedToast(): Promise<void> {
+    console.log('Dismiss SRP added toast');
+    // The toast can take some time to appear
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {
@@ -535,9 +563,24 @@ class HomePage {
     await this.driver.waitForSelector(this.connectionsRemovedModal);
   }
 
+  async checkDefaultAddressIsDisplayed(): Promise<void> {
+    console.log('Check default address is displayed in header on homepage');
+    await this.driver.waitForSelector(this.defaultAddressContainer);
+  }
+
+  async checkDefaultAddressIsNotDisplayed(): Promise<void> {
+    console.log('Check default address is not displayed in header on homepage');
+    await this.driver.assertElementNotPresent(this.defaultAddressContainer);
+  }
+
   async checkShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check shield entry modal is displayed on homepage');
     await this.driver.waitForSelector(this.shieldEntryModal);
+  }
+
+  async clickOnSendButton(): Promise<void> {
+    await this.driver.waitForSelector(this.sendButton);
+    await this.driver.clickElement(this.sendButton);
   }
 
   async clickOnShieldEntryModalGetStarted(): Promise<void> {
@@ -548,6 +591,11 @@ class HomePage {
   async clickOnShieldEntryModalSkip(): Promise<void> {
     console.log('Click on shield entry modal skip');
     await this.driver.clickElement(this.shieldEntryModalSkip);
+  }
+
+  async clickOnSwapButton(): Promise<void> {
+    await this.driver.waitForSelector(this.swapButton);
+    await this.driver.clickElement(this.swapButton);
   }
 
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
