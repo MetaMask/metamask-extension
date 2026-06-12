@@ -6,6 +6,13 @@ import {
 import { LedgerDMKBridgeHandler, serializeLedgerError } from './ledger-dmk';
 import initLegacy from './ledger';
 
+/** Shape of incoming ledger offscreen messages. */
+type LedgerMessage = {
+  target: string;
+  action: LedgerAction;
+  params?: Record<string, unknown>;
+};
+
 /** Interface that both DMK and Legacy handlers share for action dispatch. */
 type LedgerHandler = {
   init(skipMessageListener?: boolean): Promise<void>;
@@ -25,7 +32,7 @@ let currentMode: LedgerHandlerMode | null = null;
 /** Reference to the router's own chrome.runtime.onMessage listener. */
 let messageListener:
   | ((
-      msg: Record<string, unknown>,
+      msg: LedgerMessage,
       sender: unknown,
       sendResponse: (response: unknown) => void,
     ) => boolean)
@@ -39,21 +46,31 @@ let messageListener:
  */
 let initInProgress: Promise<void> | null = null;
 
+function asChromeListener(
+  listener: (
+    msg: LedgerMessage,
+    sender: unknown,
+    sendResponse: (response: unknown) => void,
+  ) => boolean,
+) {
+  return (
+    message: unknown,
+    sender: unknown,
+    sendResponse: (response?: unknown) => void,
+  ) => listener(message as LedgerMessage, sender, sendResponse);
+}
+
 /**
  * Register (or re-register) the central message listener that dispatches
  * every `ledger-offscreen` action to the current active handler.
  */
 function registerMessageListener(): void {
   if (messageListener) {
-    chrome.runtime.onMessage.removeListener(messageListener);
+    chrome.runtime.onMessage.removeListener(asChromeListener(messageListener));
   }
 
   messageListener = (
-    msg: {
-      target: string;
-      action: LedgerAction;
-      params?: Record<string, unknown>;
-    },
+    msg: LedgerMessage,
     _sender: unknown,
     sendResponse: (response: unknown) => void,
   ): boolean => {
@@ -86,10 +103,10 @@ function registerMessageListener(): void {
         });
       });
 
-    return true; // async response
+    return true;
   };
 
-  chrome.runtime.onMessage.addListener(messageListener);
+  chrome.runtime.onMessage.addListener(asChromeListener(messageListener));
 }
 
 /**
