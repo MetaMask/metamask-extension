@@ -1,14 +1,16 @@
 import {
+  createLedgerError,
   GetAppNameAndVersionResponse,
+  isKnownLedgerError,
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   LedgerAction,
-  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
 
@@ -38,15 +40,6 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
   isDeviceConnected = false;
 
   init() {
-    chrome.runtime.onMessage.addListener((msg) => {
-      if (
-        msg.target === OffscreenCommunicationTarget.extension &&
-        msg.event === OffscreenCommunicationEvents.ledgerDeviceConnect
-      ) {
-        this.isDeviceConnected = true;
-      }
-    });
-
     return Promise.resolve();
   }
 
@@ -145,6 +138,15 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
+    return this.#attemptSendMessage<TAction, ResponsePayload>(message, {
+      timeout,
+    });
+  }
+
+  #attemptSendMessage<TAction extends LedgerAction, ResponsePayload>(
+    message: IFrameMessage<TAction>,
+    { timeout }: { timeout?: number } = {},
+  ): Promise<ResponsePayload> {
     return new Promise((resolve, reject) => {
       let responseTimeout: ReturnType<typeof setTimeout>;
 
@@ -161,32 +163,44 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
         },
         (response) => {
           clearTimeout(responseTimeout);
+
+          if (chrome.runtime.lastError) {
+            const chromeError = chrome.runtime.lastError.message;
+            reject(new Error(chromeError));
+            return;
+          }
+
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {
-            // Need to process the payload to get the error
-            // and then reject with the error
             const error = response?.payload?.error;
-
             if (
+              error &&
+              error.name === 'HardwareWalletError' &&
+              typeof error.code === 'number'
+            ) {
+              reject(
+                new HardwareWalletError(error.message, {
+                  code: error.code,
+                  severity: error.severity,
+                  category: error.category,
+                  userMessage: error.userMessage,
+                }),
+              );
+            } else if (
               error &&
               typeof error.statusCode === 'number' &&
               error.statusCode > 0
             ) {
-              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
-              // TransportStatusError will regenerate the error message based on the statusCode
-              const transportStatusError = new TransportStatusError(
-                error.statusCode,
-              );
-              reject(transportStatusError);
+              const statusCodeHex = `0x${error.statusCode.toString(16)}`;
+              if (isKnownLedgerError(statusCodeHex)) {
+                reject(createLedgerError(statusCodeHex));
+              } else {
+                reject(new TransportStatusError(error.statusCode));
+              }
             } else if (error?.message) {
-              // Regenerate the error based on the SerializedLedgerError
-              const newError = new Error(error.message, {
-                cause: error,
-              });
-              reject(newError);
+              reject(new Error(error.message, { cause: error }));
             } else {
-              // Fallback for unknown Ledger errors when error information is not available
               reject(new Error('Unknown Ledger error occurred'));
             }
           }

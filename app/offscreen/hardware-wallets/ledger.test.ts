@@ -5,7 +5,7 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
-import { LedgerOffscreenHandler } from './ledger';
+import { LedgerLegacyHandler } from './ledger';
 
 // Mock functions - defined before jest.mock calls
 const mockTransportClose = jest.fn();
@@ -208,7 +208,7 @@ describe('Ledger Offscreen', () => {
 
   describe('init', () => {
     it('sets up device and message listeners', async () => {
-      const handler = new LedgerOffscreenHandler();
+      const handler = new LedgerLegacyHandler();
       await handler.init();
 
       expect(mockAddEventListener).toHaveBeenCalledWith(
@@ -223,7 +223,7 @@ describe('Ledger Offscreen', () => {
     });
 
     it('notifies extension when Ledger device is already connected', async () => {
-      const handler = new LedgerOffscreenHandler();
+      const handler = new LedgerLegacyHandler();
       await handler.init();
 
       expect(mockSendMessage).toHaveBeenCalledWith({
@@ -236,7 +236,7 @@ describe('Ledger Offscreen', () => {
 
   describe('device events', () => {
     beforeEach(async () => {
-      const handler = new LedgerOffscreenHandler();
+      const handler = new LedgerLegacyHandler();
       await handler.init();
       mockSendMessage.mockClear();
     });
@@ -271,7 +271,7 @@ describe('Ledger Offscreen', () => {
 
   describe('message handling', () => {
     beforeEach(async () => {
-      const handler = new LedgerOffscreenHandler();
+      const handler = new LedgerLegacyHandler();
       await handler.init();
       mockSendMessage.mockClear();
     });
