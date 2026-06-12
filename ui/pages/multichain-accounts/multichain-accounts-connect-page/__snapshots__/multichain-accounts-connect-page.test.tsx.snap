@@ -3,11 +3,11 @@
 exports[`MultichainConnectPage renders correctly 1`] = `
 <div>
   <div
-    class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    class="flex flex-row justify-center bg-default w-full h-full multichain-page multichain-page--has-app-header"
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="flex flex-col bg-default w-full h-full multichain-page__inner-container main-container multichain-connect-page"
       data-testid="connect-page"
     >
       <div
@@ -55,7 +55,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="flex flex-col p-4 pt-0 pr-4 pl-4 bg-transparent w-full h-full multichain-page-content"
         style="overflow: auto;"
       >
         <div
@@ -217,7 +217,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+        class="gap-4 p-4 flex w-full multichain-page-footer"
       >
         <div
           class="flex-col gap-4 flex w-full"
@@ -248,11 +248,11 @@ exports[`MultichainConnectPage renders correctly 1`] = `
 exports[`MultichainConnectPage renders with existing permissions correctly 1`] = `
 <div>
   <div
-    class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    class="flex flex-row justify-center bg-default w-full h-full multichain-page multichain-page--has-app-header"
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="flex flex-col bg-default w-full h-full multichain-page__inner-container main-container multichain-connect-page"
       data-testid="connect-page"
     >
       <div
@@ -300,7 +300,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="flex flex-col p-4 pt-0 pr-4 pl-4 bg-transparent w-full h-full multichain-page-content"
         style="overflow: auto;"
       >
         <div
@@ -462,7 +462,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         </div>
       </div>
       <div
-        class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+        class="gap-4 p-4 flex w-full multichain-page-footer"
       >
         <div
           class="flex-col gap-4 flex w-full"
@@ -493,11 +493,11 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
 exports[`MultichainConnectPage renders with multichain origin request correctly 1`] = `
 <div>
   <div
-    class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    class="flex flex-row justify-center bg-default w-full h-full multichain-page multichain-page--has-app-header"
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="flex flex-col bg-default w-full h-full multichain-page__inner-container main-container multichain-connect-page"
       data-testid="connect-page"
     >
       <div
@@ -545,7 +545,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="flex flex-col p-4 pt-0 pr-4 pl-4 bg-transparent w-full h-full multichain-page-content"
         style="overflow: auto;"
       >
         <div
@@ -707,7 +707,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         </div>
       </div>
       <div
-        class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+        class="gap-4 p-4 flex w-full multichain-page-footer"
       >
         <div
           class="flex-col gap-4 flex w-full"

@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
+import { BoxBackgroundColor } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   IconName,
@@ -11,10 +12,7 @@ import {
   ButtonSecondarySize,
 } from '../../../component-library';
 
-import {
-  BackgroundColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -141,7 +139,7 @@ export const MultichainEditAccountsPage = ({
           snapsPermissionsRequestType === SnapsPermissionsRequestType.Initial ||
           snapsPermissionsRequestType === SnapsPermissionsRequestType.Existing,
       })}
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
       {snapsPermissionsRequestType === SnapsPermissionsRequestType.None && (
         <Header

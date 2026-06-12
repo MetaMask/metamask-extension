@@ -2,7 +2,11 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
-import { Button, ButtonSize } from '@metamask/design-system-react';
+import {
+  BoxFlexDirection,
+  Button,
+  ButtonSize,
+} from '@metamask/design-system-react';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -11,7 +15,6 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
-import { FlexDirection } from '../../../../../helpers/constants/design-system';
 
 type ButtonState = {
   buttonText: string;
@@ -93,7 +96,7 @@ export const SingleActionFooter = ({
   return (
     <PageFooter
       className="confirm-footer_page-footer"
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
     >
       <Button
         className="w-full"

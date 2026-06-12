@@ -3,6 +3,7 @@ import { CaipChainId } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
@@ -20,7 +21,6 @@ import {
 } from '../../../component-library';
 
 import {
-  BackgroundColor,
   IconColor,
   TextColor,
   TextVariant,
@@ -97,7 +97,7 @@ export const MultichainEditNetworksPage = ({
     <Page
       data-testid="modal-page"
       className="main-container multichain-edit-networks-page"
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
       <Header
         textProps={{
@@ -118,7 +118,7 @@ export const MultichainEditNetworksPage = ({
       <Content
         paddingLeft={4}
         paddingRight={4}
-        backgroundColor={BackgroundColor.transparent}
+        backgroundColor={BoxBackgroundColor.Transparent}
       >
         <Box padding={4}>
           <Checkbox
