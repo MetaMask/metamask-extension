@@ -94,11 +94,6 @@ export async function withBtcWalletStandardSnap(
         customDappPaths: [DAPP_PATH.TEST_DAPP_BITCOIN],
       },
       forceBip44Version: false,
-      manifestFlags: {
-        remoteFeatureFlags: {
-          bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
-        },
-      },
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockInitialFullScan(mockServer),
         await mockExchangeRates(mockServer),
