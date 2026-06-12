@@ -2691,6 +2691,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_enforced_simulations: {
     name: 'confirmations_enforced_simulations',
     type: FeatureFlagType.Remote,
@@ -2699,6 +2700,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_extended: {
     name: 'confirmations_pay_extended',
     type: FeatureFlagType.Remote,
@@ -2713,6 +2715,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_tokens: {
     name: 'confirmations_pay_tokens',
     type: FeatureFlagType.Remote,
