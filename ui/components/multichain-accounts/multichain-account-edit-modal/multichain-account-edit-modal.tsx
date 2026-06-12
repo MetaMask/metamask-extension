@@ -2,17 +2,13 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
-  Box,
-  BoxFlexDirection,
-  Button,
-  ButtonVariant,
-  HelpText,
-  HelpTextSeverity,
-  Input,
-  Label,
+  ButtonsAlignment,
+  FormTextField,
+  TextFieldSize,
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from '@metamask/design-system-react';
@@ -38,7 +34,6 @@ export const MultichainAccountEditModal = ({
   );
   const currentAccountName = accountGroup?.metadata.name || '';
   const [accountName, setAccountName] = useState('');
-  const [helpText, setHelpText] = useState('');
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const handleSave = useCallback(async () => {
@@ -51,11 +46,10 @@ export const MultichainAccountEditModal = ({
       if (result) {
         onClose();
       } else {
-        setHelpText(t('accountNameAlreadyInUse'));
         setShowErrorMessage(true);
       }
     }
-  }, [accountName, currentAccountName, accountGroupId, dispatch, onClose, t]);
+  }, [accountName, currentAccountName, accountGroupId, dispatch, onClose]);
 
   const handleKeyDown = useCallback(
     async (e: React.KeyboardEvent) => {
@@ -79,37 +73,31 @@ export const MultichainAccountEditModal = ({
           {t('rename')}
         </ModalHeader>
         <ModalBody>
-          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={4}>
-            <Box>
-              <Label htmlFor="account-name-input">{t('accountName')}</Label>
-              <Input
-                id="account-name-input"
-                aria-label={t('accountName')}
-                data-testid="account-name-input"
-                value={accountName}
-                onChange={(e) => setAccountName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={currentAccountName}
-                aria-invalid={showErrorMessage}
-                autoFocus
-              />
-              {showErrorMessage && (
-                <HelpText severity={HelpTextSeverity.Danger}>
-                  {helpText}
-                </HelpText>
-              )}
-            </Box>
-            <Button
-              variant={ButtonVariant.Secondary}
-              onClick={handleSave}
-              disabled={!accountName.trim()}
-              aria-label={t('confirm')}
-              className="w-full mt-4"
-            >
-              {t('confirm')}
-            </Button>
-          </Box>
+          <FormTextField
+            id="account-name-input"
+            label={t('accountName')}
+            data-testid="account-name-input"
+            value={accountName}
+            onChange={(e) => setAccountName(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={currentAccountName}
+            aria-invalid={showErrorMessage}
+            autoFocus
+            size={TextFieldSize.Lg}
+            isError={showErrorMessage}
+            helpText={
+              showErrorMessage ? t('accountNameAlreadyInUse') : undefined
+            }
+          />
         </ModalBody>
+        <ModalFooter
+          buttonsAlignment={ButtonsAlignment.Vertical}
+          secondaryButtonProps={{
+            disabled: !accountName.trim(),
+            children: t('confirm'),
+            onClick: handleSave,
+          }}
+        />
       </ModalContent>
     </Modal>
   );
