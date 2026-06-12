@@ -79,10 +79,6 @@ export default function TurnOnMetamaskNotifications() {
     });
   };
 
-  const handleHideModal = () => {
-    hideModal();
-  };
-
   useEffect(() => {
     if (isNotificationEnabled && !error) {
       navigate(NOTIFICATIONS_ROUTE);
@@ -111,10 +107,10 @@ export default function TurnOnMetamaskNotifications() {
   );
 
   return (
-    <Modal isOpen onClose={() => handleHideModal()}>
+    <Modal isOpen onClose={hideModal}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={() => handleHideModal()}>
+        <ModalHeader onClose={hideModal}>
           {t('turnOnMetamaskNotifications')}
         </ModalHeader>
         <ModalBody>
