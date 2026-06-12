@@ -7,7 +7,10 @@ import AccountAddressModal from '../pages/multichain/account-address-modal';
 import AddressListModal from '../pages/multichain/address-list-modal';
 import CriticalErrorPage from '../pages/critical-error-page';
 import VaultRecoveryPage from '../pages/vault-recovery-page';
-import { completeCreateNewWalletOnboardingFlow } from './onboarding.flow';
+import {
+  completeCreateNewWalletOnboardingFlow,
+  type OnboardingMetricsFlowOptions,
+} from './onboarding.flow';
 import { lockAndWaitForLoginPage } from './login.flow';
 
 /**
@@ -140,6 +143,7 @@ export async function waitForBackupVault(
  * @param script - The script to run (e.g. corruption script, or simpleReloadScript).
  * @param options - Additional options.
  * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
+ * @param options.optedIn
  * @returns The initial first account's address (before the script ran).
  */
 export async function onboardThenExecuteScript(
@@ -147,9 +151,8 @@ export async function onboardThenExecuteScript(
   script: string,
   {
     participateInMetaMetrics = false,
-  }: {
-    participateInMetaMetrics?: boolean;
-  } = {},
+    optedIn,
+  }: OnboardingMetricsFlowOptions = {},
 ): Promise<string> {
   const initialWindow = await driver.driver.getWindowHandle();
 
@@ -162,6 +165,7 @@ export async function onboardThenExecuteScript(
     driver,
     password: WALLET_PASSWORD,
     participateInMetaMetrics,
+    optedIn,
     skipSRPBackup: true,
   });
 
@@ -209,15 +213,9 @@ export async function onboardThenExecuteScript(
 export async function onboardThenTriggerCorruptionFlow(
   driver: Driver,
   script: string,
-  {
-    participateInMetaMetrics = false,
-  }: {
-    participateInMetaMetrics?: boolean;
-  } = {},
+  options: OnboardingMetricsFlowOptions = {},
 ): Promise<string> {
-  const firstAddress = await onboardThenExecuteScript(driver, script, {
-    participateInMetaMetrics,
-  });
+  const firstAddress = await onboardThenExecuteScript(driver, script, options);
 
   // wait for the background page to reload
   // Since reloading the background restarts the extension the UI isn't
