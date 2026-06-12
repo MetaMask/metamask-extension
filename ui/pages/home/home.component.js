@@ -36,9 +36,7 @@ import { SECOND } from '../../../shared/constants/time';
 import {
   ButtonIcon,
   ButtonIconSize,
-  IconName,
   Box,
-  Icon,
   Modal,
   ModalBody,
   ModalContent,
@@ -47,6 +45,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
+import { Icon, IconName } from '@metamask/design-system-react';
 import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
 import UpdateModal from '../../components/app/update-modal/update-modal';
 import {
@@ -579,7 +578,7 @@ export default class Home extends PureComponent {
           onAutoHide={onAutoHide}
           message={
             <Box display={Display.InlineFlex}>
-              <Icon name={IconName.Danger} marginRight={1} />
+              <Icon name={IconName.Danger} className="mr-1" />
               <Text variant={TextVariant.BodySm} asChild>
                 <h6>{t('importTokensError')}</h6>
               </Text>
