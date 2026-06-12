@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Info renders info section for approve request 1`] = `
 <div>
@@ -254,6 +254,7 @@ exports[`Info renders info section for approve request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -609,6 +610,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -904,6 +906,7 @@ exports[`Info renders info section for personal sign request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -1222,6 +1225,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -1518,6 +1522,7 @@ exports[`Info renders info section for typed sign request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -1637,6 +1642,7 @@ exports[`Info renders info section for typed sign request 1`] = `
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            data-testid="confirmation__message-primary-type"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2221,6 +2227,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
