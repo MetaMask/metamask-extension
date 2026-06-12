@@ -105,7 +105,6 @@ describe('parse', () => {
       path: 'destination-value',
       query: new URLSearchParams(),
     });
-    mockVerify.mockResolvedValue(MISSING);
 
     const urlStr = 'https://example.com/test?foo=bar';
     const result = await parse(new URL(urlStr));
@@ -120,9 +119,10 @@ describe('parse', () => {
       },
       signature: MISSING,
     });
+    expect(mockVerify).not.toHaveBeenCalled();
   });
 
-  it('calls verify with the correct URL', async () => {
+  it('calls verify with the signature and canonical URL', async () => {
     mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
     mockHandler.mockReturnValue({
       path: 'destination-value',
@@ -130,10 +130,13 @@ describe('parse', () => {
     });
     mockVerify.mockResolvedValue(VALID);
 
-    const urlStr = 'https://example.com/test?sig=bar';
+    const urlStr = 'https://example.com/test?b=2&sig=bar&a=1';
     await parse(new URL(urlStr));
 
-    expect(mockVerify).toHaveBeenCalledWith(new URL(urlStr));
+    expect(mockVerify).toHaveBeenCalledWith('bar', expect.any(URL));
+    expect(mockVerify.mock.calls[0][1].toString()).toBe(
+      'https://example.com/test?a=1&b=2',
+    );
   });
 
   it('skips signature verification when verify is false', async () => {

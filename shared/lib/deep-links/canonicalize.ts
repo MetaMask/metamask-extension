@@ -6,9 +6,9 @@ import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
  * and sorting the remaining parameters.
  *
  * @param url - The URL to canonicalize.
- * @returns The canonicalized URL as a string.
+ * @returns The canonicalized URL.
  */
-export function canonicalize(url: URL): string {
+export function canonicalize(url: URL): URL {
   let queryString: string | undefined;
 
   const sigParams = url.searchParams.get(SIG_PARAMS_PARAM);
@@ -41,5 +41,8 @@ export function canonicalize(url: URL): string {
     queryString = params.toString();
   }
 
-  return url.origin + url.pathname + (queryString ? `?${queryString}` : '');
+  const canonicalUrl = new URL(`${url.origin}${url.pathname}`);
+  canonicalUrl.search = queryString ?? '';
+
+  return canonicalUrl;
 }
