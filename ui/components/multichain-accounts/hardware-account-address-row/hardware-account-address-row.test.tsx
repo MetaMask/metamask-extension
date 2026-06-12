@@ -1,58 +1,70 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { ETH_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
 import { tEn } from '../../../../test/lib/i18n-helpers';
+import { MOCK_ETHEREUM_HARDWARE_ADDRESS } from '../../../../test/data/hardware-wallet-accounts';
 import type { HardwareWalletAccountAddress } from './hardware-account-address-row.types';
 import { HardwareAccountAddressRow } from './hardware-account-address-row';
 
-const renderWithProviders = (ui: React.ReactElement) => render(<div>{ui}</div>);
+const renderRow = (address: HardwareWalletAccountAddress) =>
+  render(<HardwareAccountAddressRow address={address} />);
 
 describe('HardwareAccountAddressRow', () => {
-  const baseAddress: HardwareWalletAccountAddress = {
-    id: 'eth-0',
-    networkName: 'Ethereum',
-    address: '0x091234567890123456789012345678901234b272',
-    balance: '$120.00',
-    iconUrl: ETH_TOKEN_IMAGE_URL,
-    iconType: 'network',
-  };
+  describe('rendering', () => {
+    it('renders network name, truncated address, and balance', () => {
+      renderRow(MOCK_ETHEREUM_HARDWARE_ADDRESS);
 
-  it('renders network address details', () => {
-    renderWithProviders(<HardwareAccountAddressRow address={baseAddress} />);
+      expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
+      expect(screen.getByText('0x091...b272')).toBeInTheDocument();
+      expect(screen.getByText('$120.00')).toBeInTheDocument();
+    });
 
-    expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
-    expect(screen.getByText('$120.00')).toBeInTheDocument();
-    expect(screen.getByText('0x091...b272')).toBeInTheDocument();
+    it('renders address type badge when addressType is provided', () => {
+      renderRow({
+        ...MOCK_ETHEREUM_HARDWARE_ADDRESS,
+        networkName: 'Bitcoin',
+        iconType: 'token',
+        addressType: 'Taproot',
+      });
+
+      expect(screen.getByText(tEn('networkNameBitcoin'))).toBeInTheDocument();
+      expect(screen.getByText('Taproot')).toBeInTheDocument();
+    });
+
+    it('omits address type badge when addressType is not provided', () => {
+      renderRow(MOCK_ETHEREUM_HARDWARE_ADDRESS);
+
+      expect(screen.queryByText('Taproot')).not.toBeInTheDocument();
+    });
   });
 
-  it('renders token avatar and address type badge when provided', () => {
-    renderWithProviders(
-      <HardwareAccountAddressRow
-        address={{
-          ...baseAddress,
-          networkName: 'Bitcoin',
-          iconType: 'token',
-          addressType: 'Taproot',
-        }}
-      />,
-    );
+  describe('avatar', () => {
+    it('renders a network avatar when iconType is network', () => {
+      renderRow({ ...MOCK_ETHEREUM_HARDWARE_ADDRESS, iconType: 'network' });
 
-    expect(screen.getByText(tEn('networkNameBitcoin'))).toBeInTheDocument();
-    expect(screen.getByText('Taproot')).toBeInTheDocument();
-  });
+      expect(
+        screen.getByRole('img', { name: tEn('networkNameEthereum') }),
+      ).toBeInTheDocument();
+    });
 
-  it('defaults to network avatar when icon type is omitted', () => {
-    renderWithProviders(
-      <HardwareAccountAddressRow
-        address={{
-          ...baseAddress,
-          iconType: undefined,
-        }}
-      />,
-    );
+    it('renders a token avatar when iconType is token', () => {
+      renderRow({
+        ...MOCK_ETHEREUM_HARDWARE_ADDRESS,
+        networkName: 'Bitcoin',
+        iconType: 'token',
+        iconUrl: './images/bitcoin-logo.svg',
+      });
 
-    expect(
-      screen.getByTestId('hardware-account-address-row'),
-    ).toBeInTheDocument();
+      expect(
+        screen.getByRole('img', { name: tEn('networkNameBitcoin') }),
+      ).toBeInTheDocument();
+    });
+
+    it('defaults to a network avatar when iconType is omitted', () => {
+      renderRow({ ...MOCK_ETHEREUM_HARDWARE_ADDRESS, iconType: undefined });
+
+      expect(
+        screen.getByRole('img', { name: tEn('networkNameEthereum') }),
+      ).toBeInTheDocument();
+    });
   });
 });

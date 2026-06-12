@@ -1,144 +1,145 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { ETH_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
+import { createHardwareWalletAccount } from '../../../../test/data/hardware-wallet-accounts';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import type { HardwareWalletAccount } from './hardware-account-card.types';
+import type { HardwareAccountCardProps } from './hardware-account-card.types';
 import { HardwareAccountCard } from './hardware-account-card';
 
-describe('HardwareAccountCard', () => {
-  const account: HardwareWalletAccount = {
-    id: 'account-0',
-    name: 'Account 1',
-    totalBalance: '$120.00',
-    addresses: [
-      {
-        id: 'eth-0',
-        networkName: 'Ethereum',
-        address: '0x091234567890123456789012345678901234b272',
-        balance: '$120.00',
-        iconUrl: ETH_TOKEN_IMAGE_URL,
-        iconType: 'network',
-      },
-    ],
+const defaultAccount = createHardwareWalletAccount();
+
+const renderCard = (props: Partial<HardwareAccountCardProps> = {}) => {
+  const onToggleSelection = props.onToggleSelection ?? jest.fn();
+
+  return {
+    onToggleSelection,
+    ...renderWithProvider(
+      <HardwareAccountCard
+        account={defaultAccount}
+        isSelected={false}
+        onToggleSelection={onToggleSelection}
+        {...props}
+      />,
+    ),
   };
+};
 
-  it('renders account details and toggles selection from the checkbox', () => {
-    const onToggleSelection = jest.fn();
+describe('HardwareAccountCard', () => {
+  describe('rendering', () => {
+    it('renders account name, total balance, and address rows', () => {
+      renderCard();
 
-    renderWithProvider(
-      <HardwareAccountCard
-        account={account}
-        isSelected={false}
-        onToggleSelection={onToggleSelection}
-      />,
-    );
+      expect(screen.getByText('Account 1')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('hardware-account-card-total-balance'),
+      ).toHaveTextContent('$120.00');
+      expect(
+        screen.getAllByTestId('hardware-account-address-row'),
+      ).toHaveLength(1);
+    });
 
-    expect(screen.getByText('Account 1')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('hardware-account-card-total-balance'),
-    ).toHaveTextContent('$120.00');
+    it('marks the card as selected when isSelected is true', () => {
+      renderCard({ isSelected: true });
 
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
+      expect(screen.getByTestId('hardware-account-card')).toHaveAttribute(
+        'data-selected',
+        'true',
+      );
+    });
 
-    expect(onToggleSelection).toHaveBeenCalledWith('account-0');
+    it('marks the card as unselected when isSelected is false', () => {
+      renderCard({ isSelected: false });
+
+      expect(screen.getByTestId('hardware-account-card')).toHaveAttribute(
+        'data-selected',
+        'false',
+      );
+    });
+
+    it('does not set a tooltip title when the account is selectable', () => {
+      renderCard();
+
+      expect(screen.getByTestId('hardware-account-card')).not.toHaveAttribute(
+        'title',
+      );
+    });
   });
 
-  it('toggles selection when the account header is clicked', () => {
-    const onToggleSelection = jest.fn();
+  describe('selection', () => {
+    it('calls onToggleSelection when the checkbox is clicked', () => {
+      const { onToggleSelection } = renderCard();
 
-    renderWithProvider(
-      <HardwareAccountCard
-        account={account}
-        isSelected={false}
-        onToggleSelection={onToggleSelection}
-      />,
-    );
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
 
-    fireEvent.click(screen.getByTestId('hardware-account-card-header'));
+      expect(onToggleSelection).toHaveBeenCalledTimes(1);
+      expect(onToggleSelection).toHaveBeenCalledWith('account-0');
+    });
 
-    expect(onToggleSelection).toHaveBeenCalledWith('account-0');
+    it('calls onToggleSelection when the header is clicked', () => {
+      const { onToggleSelection } = renderCard();
+
+      fireEvent.click(screen.getByTestId('hardware-account-card-header'));
+
+      expect(onToggleSelection).toHaveBeenCalledTimes(1);
+      expect(onToggleSelection).toHaveBeenCalledWith('account-0');
+    });
+
+    it('calls onToggleSelection when Enter is pressed on the header', () => {
+      const { onToggleSelection } = renderCard();
+
+      fireEvent.keyDown(screen.getByTestId('hardware-account-card-header'), {
+        key: 'Enter',
+      });
+
+      expect(onToggleSelection).toHaveBeenCalledTimes(1);
+      expect(onToggleSelection).toHaveBeenCalledWith('account-0');
+    });
+
+    it('calls onToggleSelection when Space is pressed on the header', () => {
+      const { onToggleSelection } = renderCard();
+
+      fireEvent.keyDown(screen.getByTestId('hardware-account-card-header'), {
+        key: ' ',
+      });
+
+      expect(onToggleSelection).toHaveBeenCalledTimes(1);
+      expect(onToggleSelection).toHaveBeenCalledWith('account-0');
+    });
   });
 
-  it('toggles selection when the account name is clicked', () => {
-    const onToggleSelection = jest.fn();
+  describe('already connected accounts', () => {
+    const connectedAccount = createHardwareWalletAccount({
+      isAlreadyConnected: true,
+    });
 
-    renderWithProvider(
-      <HardwareAccountCard
-        account={account}
-        isSelected={false}
-        onToggleSelection={onToggleSelection}
-      />,
-    );
+    it('disables selection and shows an already connected tooltip', () => {
+      const onToggleSelection = jest.fn();
 
-    fireEvent.click(screen.getByText('Account 1'));
+      renderCard({
+        account: connectedAccount,
+        onToggleSelection,
+      });
 
-    expect(onToggleSelection).toHaveBeenCalledWith('account-0');
-  });
+      expect(
+        screen.getByRole('checkbox', { name: 'Account 1' }),
+      ).toBeDisabled();
+      expect(
+        screen.getByTitle(messages.selectAnAccountAlreadyConnected.message),
+      ).toBeInTheDocument();
 
-  it('applies selected styling when selected', () => {
-    renderWithProvider(
-      <HardwareAccountCard
-        account={account}
-        isSelected
-        onToggleSelection={jest.fn()}
-      />,
-    );
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
+      fireEvent.click(screen.getByTestId('hardware-account-card-header'));
 
-    expect(screen.getByTestId('hardware-account-card')).toHaveAttribute(
-      'data-selected',
-      'true',
-    );
-  });
+      expect(onToggleSelection).not.toHaveBeenCalled();
+    });
 
-  it('disables selection for already connected accounts', () => {
-    const onToggleSelection = jest.fn();
+    it('renders the checkbox as checked even when isSelected is false', () => {
+      renderCard({
+        account: connectedAccount,
+        isSelected: false,
+      });
 
-    renderWithProvider(
-      <HardwareAccountCard
-        account={{ ...account, isAlreadyConnected: true }}
-        isSelected={false}
-        onToggleSelection={onToggleSelection}
-      />,
-    );
-
-    expect(screen.getByRole('checkbox', { name: 'Account 1' })).toBeDisabled();
-    expect(
-      screen.getByTitle(messages.selectAnAccountAlreadyConnected.message),
-    ).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
-    fireEvent.click(screen.getByTestId('hardware-account-card-header'));
-
-    expect(onToggleSelection).not.toHaveBeenCalled();
-  });
-
-  it('does not apply selected styling when unselected', () => {
-    renderWithProvider(
-      <HardwareAccountCard
-        account={account}
-        isSelected={false}
-        onToggleSelection={jest.fn()}
-      />,
-    );
-
-    expect(screen.getByTestId('hardware-account-card')).toHaveAttribute(
-      'data-selected',
-      'false',
-    );
-  });
-
-  it('does not set a title when the account is selectable', () => {
-    renderWithProvider(
-      <HardwareAccountCard
-        account={account}
-        isSelected={false}
-        onToggleSelection={jest.fn()}
-      />,
-    );
-
-    expect(screen.getByTestId('hardware-account-card')).not.toHaveAttribute(
-      'title',
-    );
+      expect(screen.getByRole('checkbox', { name: 'Account 1' })).toBeChecked();
+    });
   });
 });

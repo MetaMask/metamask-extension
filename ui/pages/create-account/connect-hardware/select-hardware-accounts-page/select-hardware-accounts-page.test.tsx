@@ -23,15 +23,15 @@ const defaultProps: SelectHardwareAccountsPageProps = {
   showSettingsButton: true,
 };
 
-const render = (props: Partial<SelectHardwareAccountsPageProps> = {}) => {
-  const mergedProps = {
+const renderPage = (props: Partial<SelectHardwareAccountsPageProps> = {}) => {
+  const mergedProps: SelectHardwareAccountsPageProps = {
     ...defaultProps,
     ...props,
   };
 
   return {
-    ...renderWithProvider(<SelectHardwareAccountsPage {...mergedProps} />),
     props: mergedProps,
+    ...renderWithProvider(<SelectHardwareAccountsPage {...mergedProps} />),
   };
 };
 
@@ -40,154 +40,201 @@ describe('SelectHardwareAccountsPage', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the page title and account cards', () => {
-    render();
+  describe('rendering', () => {
+    it('renders the page title, account cards, footer actions, and show more button', () => {
+      renderPage();
 
-    expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
-    expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
-  });
-
-  it('calls onBack when the back button is clicked', () => {
-    const { props } = render();
-
-    fireEvent.click(
-      screen.getByTestId('select-hardware-accounts-page-back-button'),
-    );
-
-    expect(props.onBack).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onSettingsClick when the settings button is clicked', () => {
-    const { props } = render();
-
-    fireEvent.click(
-      screen.getByTestId('select-hardware-accounts-page-settings-button'),
-    );
-
-    expect(props.onSettingsClick).toHaveBeenCalledTimes(1);
-  });
-
-  it('hides the settings button when showSettingsButton is false', () => {
-    render({ showSettingsButton: false, onSettingsClick: undefined });
-
-    expect(
-      screen.queryByTestId('select-hardware-accounts-page-settings-button'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('updates account selection through onAccountSelectionChange', () => {
-    const onAccountSelectionChange = jest.fn();
-    render({ selectedAccountIds: ['account-0'], onAccountSelectionChange });
-
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Account 2' }));
-
-    expect(onAccountSelectionChange).toHaveBeenCalledWith([
-      'account-0',
-      'account-1',
-    ]);
-  });
-
-  it('removes account from selection when toggled off', () => {
-    const onAccountSelectionChange = jest.fn();
-    render({ selectedAccountIds: ['account-0'], onAccountSelectionChange });
-
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
-
-    expect(onAccountSelectionChange).toHaveBeenCalledWith([]);
-  });
-
-  it('calls onShowMore when the show more button is clicked', () => {
-    const { props } = render({ hasMoreAccounts: true });
-
-    fireEvent.click(
-      screen.getByTestId('select-hardware-accounts-page-show-more-button'),
-    );
-
-    expect(props.onShowMore).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not render the show more button when hasMoreAccounts is false', () => {
-    render({ hasMoreAccounts: false });
-
-    expect(
-      screen.queryByTestId('select-hardware-accounts-page-show-more-button'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('disables continue when no accounts are selected', () => {
-    render({ selectedAccountIds: [] });
-
-    expect(
-      screen.getByTestId('select-hardware-accounts-page-continue-button'),
-    ).toBeDisabled();
-  });
-
-  it('calls onContinue with selected account ids', () => {
-    const { props } = render({
-      selectedAccountIds: ['account-0', 'account-1'],
+      expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
+      expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
+      expect(screen.getByText(tEn('forgetDevice'))).toBeInTheDocument();
+      expect(screen.getByText(tEn('continue'))).toBeInTheDocument();
+      expect(
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      ).toBeInTheDocument();
     });
 
-    fireEvent.click(
-      screen.getByTestId('select-hardware-accounts-page-continue-button'),
-    );
+    it('renders no account cards when accounts is empty', () => {
+      renderPage({ accounts: [] });
 
-    expect(props.onContinue).toHaveBeenCalledWith(['account-0', 'account-1']);
+      expect(
+        screen.queryByTestId('hardware-account-card'),
+      ).not.toBeInTheDocument();
+    });
   });
 
-  it('calls onForgetDevice when the forget device button is clicked', () => {
-    const { props } = render();
+  describe('navigation', () => {
+    it('calls onBack when the back button is clicked', () => {
+      const { props } = renderPage();
 
-    fireEvent.click(
-      screen.getByTestId('select-hardware-accounts-page-forget-device-button'),
-    );
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-back-button'),
+      );
 
-    expect(props.onForgetDevice).toHaveBeenCalledTimes(1);
+      expect(props.onBack).toHaveBeenCalledTimes(1);
+    });
   });
 
-  it('renders footer action labels from translations', () => {
-    render();
+  describe('settings', () => {
+    it('calls onSettingsClick when the settings button is clicked', () => {
+      const { props } = renderPage();
 
-    expect(screen.getByText(tEn('forgetDevice'))).toBeInTheDocument();
-    expect(screen.getByText(tEn('continue'))).toBeInTheDocument();
-  });
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-settings-button'),
+      );
 
-  it('renders multichain address rows including address type badges', () => {
-    render({
-      accounts: createMockHardwareAccounts(1, {
-        includeMultichainAddresses: true,
-      }),
+      expect(props.onSettingsClick).toHaveBeenCalledTimes(1);
     });
 
-    expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
-    expect(screen.getByText(tEn('networkNameSolana'))).toBeInTheDocument();
-    expect(screen.getByText(tEn('networkNameBitcoin'))).toBeInTheDocument();
-    expect(screen.getByText('Taproot')).toBeInTheDocument();
+    it('hides the settings button when showSettingsButton is false', () => {
+      renderPage({ showSettingsButton: false, onSettingsClick: undefined });
+
+      expect(
+        screen.queryByTestId('select-hardware-accounts-page-settings-button'),
+      ).not.toBeInTheDocument();
+    });
   });
 
-  it('shows loading state on the show more button', () => {
-    render({ hasMoreAccounts: true, isLoadingMore: true });
+  describe('account selection', () => {
+    it('adds an account to the selection when toggled on', () => {
+      const onAccountSelectionChange = jest.fn();
+      renderPage({
+        selectedAccountIds: ['account-0'],
+        onAccountSelectionChange,
+      });
 
-    expect(
-      screen.getByTestId('select-hardware-accounts-page-show-more-button'),
-    ).toBeInTheDocument();
-  });
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Account 2' }));
 
-  it('uses default optional props when they are omitted', () => {
-    render({
-      hasMoreAccounts: undefined,
-      isLoadingMore: undefined,
-      showSettingsButton: undefined,
-      onSettingsClick: jest.fn(),
+      expect(onAccountSelectionChange).toHaveBeenCalledTimes(1);
+      expect(onAccountSelectionChange).toHaveBeenCalledWith([
+        'account-0',
+        'account-1',
+      ]);
     });
 
-    expect(
-      screen.queryByTestId('select-hardware-accounts-page-show-more-button'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByTestId('select-hardware-accounts-page-settings-button'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('select-hardware-accounts-page-forget-device-button'),
-    ).toBeInTheDocument();
+    it('removes an account from the selection when toggled off', () => {
+      const onAccountSelectionChange = jest.fn();
+      renderPage({
+        selectedAccountIds: ['account-0'],
+        onAccountSelectionChange,
+      });
+
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
+
+      expect(onAccountSelectionChange).toHaveBeenCalledTimes(1);
+      expect(onAccountSelectionChange).toHaveBeenCalledWith([]);
+    });
+
+    it('updates selection when an account card header is clicked', () => {
+      const onAccountSelectionChange = jest.fn();
+      renderPage({ selectedAccountIds: [], onAccountSelectionChange });
+
+      fireEvent.click(screen.getAllByTestId('hardware-account-card-header')[0]);
+
+      expect(onAccountSelectionChange).toHaveBeenCalledTimes(1);
+      expect(onAccountSelectionChange).toHaveBeenCalledWith(['account-0']);
+    });
+
+    it('disables the already connected account checkbox', () => {
+      renderPage();
+
+      expect(
+        screen.getByRole('checkbox', { name: 'Account 3' }),
+      ).toBeDisabled();
+    });
+  });
+
+  describe('show more', () => {
+    it('calls onShowMore when the show more button is clicked', () => {
+      const { props } = renderPage({ hasMoreAccounts: true });
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      );
+
+      expect(props.onShowMore).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not render the show more button when hasMoreAccounts is false', () => {
+      renderPage({ hasMoreAccounts: false });
+
+      expect(
+        screen.queryByTestId('select-hardware-accounts-page-show-more-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('disables the show more button while loading more accounts', () => {
+      renderPage({ hasMoreAccounts: true, isLoadingMore: true });
+
+      expect(
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      ).toBeDisabled();
+    });
+  });
+
+  describe('footer actions', () => {
+    it('disables continue when no accounts are selected', () => {
+      renderPage({ selectedAccountIds: [] });
+
+      expect(
+        screen.getByTestId('select-hardware-accounts-page-continue-button'),
+      ).toBeDisabled();
+    });
+
+    it('enables continue when at least one account is selected', () => {
+      renderPage({ selectedAccountIds: ['account-0'] });
+
+      expect(
+        screen.getByTestId('select-hardware-accounts-page-continue-button'),
+      ).toBeEnabled();
+    });
+
+    it('calls onContinue with selected account ids', () => {
+      const { props } = renderPage({
+        selectedAccountIds: ['account-0', 'account-1'],
+      });
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-continue-button'),
+      );
+
+      expect(props.onContinue).toHaveBeenCalledTimes(1);
+      expect(props.onContinue).toHaveBeenCalledWith(['account-0', 'account-1']);
+    });
+
+    it('calls onForgetDevice when the forget device button is clicked', () => {
+      const { props } = renderPage();
+
+      fireEvent.click(
+        screen.getByTestId(
+          'select-hardware-accounts-page-forget-device-button',
+        ),
+      );
+
+      expect(props.onForgetDevice).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('default props', () => {
+    it('uses default optional props when they are omitted', () => {
+      renderPage({
+        accounts: createMockHardwareAccounts(1),
+        hasMoreAccounts: undefined,
+        isLoadingMore: undefined,
+        showSettingsButton: undefined,
+        onSettingsClick: jest.fn(),
+      });
+
+      expect(
+        screen.queryByTestId('select-hardware-accounts-page-show-more-button'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('select-hardware-accounts-page-settings-button'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(
+          'select-hardware-accounts-page-forget-device-button',
+        ),
+      ).toBeInTheDocument();
+    });
   });
 });

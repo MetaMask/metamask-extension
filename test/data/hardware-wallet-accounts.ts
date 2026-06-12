@@ -1,14 +1,25 @@
 import { ETH_TOKEN_IMAGE_URL } from '../../shared/constants/network';
+import type { HardwareWalletAccountAddress } from '../../ui/components/multichain-accounts/hardware-account-address-row';
 import type { HardwareWalletAccount } from '../../ui/components/multichain-accounts/hardware-account-card';
 
-const ETHEREUM_ADDRESS = {
+export const MOCK_ETHEREUM_HARDWARE_ADDRESS: HardwareWalletAccountAddress = {
   id: 'eth-0',
   networkName: 'Ethereum',
   address: '0x091234567890123456789012345678901234b272',
   balance: '$120.00',
   iconUrl: ETH_TOKEN_IMAGE_URL,
-  iconType: 'network' as const,
+  iconType: 'network',
 };
+
+export const createHardwareWalletAccount = (
+  overrides: Partial<HardwareWalletAccount> = {},
+): HardwareWalletAccount => ({
+  id: 'account-0',
+  name: 'Account 1',
+  totalBalance: '$120.00',
+  addresses: [MOCK_ETHEREUM_HARDWARE_ADDRESS],
+  ...overrides,
+});
 
 export const createMockHardwareAccounts = (
   count: number,
@@ -23,7 +34,7 @@ export const createMockHardwareAccounts = (
     const accountNumber = index + 1;
     const addresses = includeMultichainAddresses
       ? [
-          ETHEREUM_ADDRESS,
+          MOCK_ETHEREUM_HARDWARE_ADDRESS,
           {
             id: `sol-${index}`,
             networkName: 'Solana',
@@ -42,7 +53,7 @@ export const createMockHardwareAccounts = (
             addressType: 'Taproot',
           },
         ]
-      : [ETHEREUM_ADDRESS];
+      : [MOCK_ETHEREUM_HARDWARE_ADDRESS];
 
     return {
       id: `account-${index}`,
