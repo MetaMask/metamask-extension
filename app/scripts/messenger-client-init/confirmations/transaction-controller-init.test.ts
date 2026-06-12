@@ -152,17 +152,54 @@ describe('Transaction Controller Init', () => {
       preferencesState: {
         advancedGasFee: {
           [CHAIN_ID_MOCK]: {
-            maxBaseFee: '0x1',
-            priorityFee: '0x2',
+            '0xabc': {
+              userFeeLevel: 'custom',
+              maxBaseFee: '0x1',
+              priorityFee: '0x2',
+            },
           },
         },
       },
     });
 
-    expect(getSavedGasFees?.(CHAIN_ID_MOCK)).toStrictEqual({
+    expect(
+      getSavedGasFees?.({
+        chainId: CHAIN_ID_MOCK,
+        txParams: {
+          from: '0xABC',
+        },
+      } as unknown as TransactionMeta),
+    ).toStrictEqual({
+      level: 'custom',
       maxBaseFee: '0x1',
       priorityFee: '0x2',
     });
+  });
+
+  it('does not retrieve saved gas fees for MetaMask Pay transactions', () => {
+    const getSavedGasFees = testConstructorOption('getSavedGasFees', {
+      preferencesState: {
+        advancedGasFee: {
+          [CHAIN_ID_MOCK]: {
+            '0xabc': {
+              userFeeLevel: 'custom',
+              maxBaseFee: '0x1',
+              priorityFee: '0x2',
+            },
+          },
+        },
+      },
+    });
+
+    expect(
+      getSavedGasFees?.({
+        chainId: CHAIN_ID_MOCK,
+        metamaskPay: {},
+        txParams: {
+          from: '0xabc',
+        },
+      } as unknown as TransactionMeta),
+    ).toBeUndefined();
   });
 
   describe('determines incoming transactions is disabled', () => {
