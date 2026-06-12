@@ -121,6 +121,24 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         this.connected = false;
 
         const hwError = toHardwareWalletError(error, HardwareWalletType.Ledger);
+        console.error(
+          '[LedgerAdapter] connect() — connection failed',
+          JSON.stringify(
+            {
+              errorCode: hwError.code,
+              errorMessage: hwError.message,
+              errorSeverity: hwError.severity,
+              errorCategory: hwError.category,
+              errorUserMessage: hwError.userMessage,
+              errorMetadata: hwError.metadata,
+              originalErrorType: error?.constructor?.name,
+              originalErrorMessage:
+                error instanceof Error ? error.message : String(error),
+            },
+            null,
+            '\t',
+          ),
+        );
 
         const deviceEvent = getDeviceEventForError(hwError.code);
 
@@ -221,6 +239,24 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       return true;
     } catch (error) {
       const hwError = toHardwareWalletError(error, HardwareWalletType.Ledger);
+      console.error(
+        '[LedgerAdapter] ensureDeviceReady() — readiness check failed',
+        JSON.stringify(
+          {
+            errorCode: hwError.code,
+            errorMessage: hwError.message,
+            errorSeverity: hwError.severity,
+            errorCategory: hwError.category,
+            errorUserMessage: hwError.userMessage,
+            errorMetadata: hwError.metadata,
+            originalErrorType: error?.constructor?.name,
+            originalErrorMessage:
+              error instanceof Error ? error.message : String(error),
+          },
+          null,
+          '\t',
+        ),
+      );
       // Emit appropriate device events with the properly reconstructed error
       const deviceEvent = getDeviceEventForError(
         hwError.code,
