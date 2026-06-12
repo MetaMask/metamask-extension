@@ -54,7 +54,7 @@ function PreviousButton({
     <ButtonIcon
       iconName={IconName.ArrowLeft}
       ariaLabel={t('back')}
-      size={ButtonIconSize.Sm}
+      size={ButtonIconSize.Md}
       onClick={onBackButtonClick}
       className="confirm_nav__left_btn"
       data-testid="alert-modal-back-button"
