@@ -6,6 +6,10 @@ import type {
 } from '@metamask/transaction-pay-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
+import {
+  ARC_USDC_TOKEN_ADDRESS,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
 import { isTestNetwork } from '../../../helpers/utils/network-helper';
 import { Asset, AssetStandard } from '../types/send';
 
@@ -83,6 +87,17 @@ export function getAvailableTokens({
       // bridges/swaps that don't support them), so exclude testnet tokens
       // from both the Pay-with list and the auto-selected default.
       if (token.chainId && isTestNetwork(token.chainId as Hex)) {
+        return false;
+      }
+
+      // On Arc the USDC ERC20 mirrors the native gas balance (same on-chain
+      // funds, different decimals). Using it as a MetaMask Pay source would
+      // draw down the balance used to pay gas, so it must never be a
+      // selectable or auto-selected default pay token.
+      if (
+        token.chainId === CHAIN_IDS.ARC &&
+        token.address?.toLowerCase() === ARC_USDC_TOKEN_ADDRESS
+      ) {
         return false;
       }
 

@@ -4,7 +4,10 @@ import type {
   TransactionPayRequiredToken,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  ARC_USDC_TOKEN_ADDRESS,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
 import { Asset, AssetStandard } from '../types/send';
 import {
   getTokenTransferData,
@@ -337,6 +340,44 @@ describe('transaction-pay utils', () => {
           address: TOKEN_ADDRESS_MOCK,
           chainId: CHAIN_IDS.SEPOLIA,
           balance: '1000000000000000000',
+        }),
+      ];
+
+      const result = getAvailableTokens({ payToken, tokens });
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('excludes Arc USDC, keeping other Arc tokens', () => {
+      const tokens = [
+        createMockAsset({
+          address: ARC_USDC_TOKEN_ADDRESS as Hex,
+          chainId: CHAIN_IDS.ARC,
+          balance: '1000000',
+        }),
+        createMockAsset({
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_IDS.ARC,
+          balance: '1000000000000000000',
+        }),
+      ];
+
+      const result = getAvailableTokens({ tokens });
+
+      expect(result).toHaveLength(1);
+      expect(result[0].address).toBe(TOKEN_ADDRESS_2_MOCK);
+    });
+
+    it('excludes Arc USDC even when selected as the pay token', () => {
+      const payToken = createMockPaymentToken({
+        address: ARC_USDC_TOKEN_ADDRESS as Hex,
+        chainId: CHAIN_IDS.ARC,
+      });
+      const tokens = [
+        createMockAsset({
+          address: ARC_USDC_TOKEN_ADDRESS as Hex,
+          chainId: CHAIN_IDS.ARC,
+          balance: '1000000',
         }),
       ];
 
