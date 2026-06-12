@@ -158,9 +158,9 @@ describe('SelectHardwareAccountsPage', () => {
       }),
     });
 
-    expect(screen.getByText('Ethereum')).toBeInTheDocument();
-    expect(screen.getByText('Solana')).toBeInTheDocument();
-    expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+    expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
+    expect(screen.getByText(tEn('networkNameSolana'))).toBeInTheDocument();
+    expect(screen.getByText(tEn('networkNameBitcoin'))).toBeInTheDocument();
     expect(screen.getByText('Taproot')).toBeInTheDocument();
   });
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ETH_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
+import { tEn } from '../../../../test/lib/i18n-helpers';
 import type { HardwareWalletAccountAddress } from './hardware-account-address-row.types';
 import { HardwareAccountAddressRow } from './hardware-account-address-row';
 
@@ -19,7 +20,7 @@ describe('HardwareAccountAddressRow', () => {
   it('renders network address details', () => {
     renderWithProviders(<HardwareAccountAddressRow address={baseAddress} />);
 
-    expect(screen.getByText('Ethereum')).toBeInTheDocument();
+    expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
     expect(screen.getByText('$120.00')).toBeInTheDocument();
     expect(screen.getByText('0x091...b272')).toBeInTheDocument();
   });
@@ -36,7 +37,7 @@ describe('HardwareAccountAddressRow', () => {
       />,
     );
 
-    expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+    expect(screen.getByText(tEn('networkNameBitcoin'))).toBeInTheDocument();
     expect(screen.getByText('Taproot')).toBeInTheDocument();
   });
 
