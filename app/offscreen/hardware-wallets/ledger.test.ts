@@ -807,4 +807,46 @@ describe('Ledger Offscreen', () => {
       });
     });
   });
+
+  describe('handleAction (router path)', () => {
+    it('closes transport after a successful action', async () => {
+      mockGetAddress.mockResolvedValue({
+        publicKey: '04abcd1234',
+        address: '0x1234567890abcdef',
+        chainCode: 'chaincode123',
+      });
+
+      const handler = new LedgerLegacyHandler();
+      await handler.init(true);
+
+      await handler.handleAction(LedgerAction.getPublicKey, {
+        hdPath: "m/44'/60'/0'/0/0",
+      });
+
+      expect(mockTransportClose).toHaveBeenCalled();
+    });
+
+    it('closes transport after a failed action', async () => {
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockGetAddress.mockRejectedValue(new Error('Device error'));
+
+      const handler = new LedgerLegacyHandler();
+      await handler.init(true);
+
+      await expect(
+        handler.handleAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/0'/0/0",
+        }),
+      ).rejects.toThrow('Device error');
+
+      expect(mockTransportClose).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+
+    it('does not register a message listener', async () => {
+      expect(mockAddListener).not.toHaveBeenCalled();
+    });
+  });
 });

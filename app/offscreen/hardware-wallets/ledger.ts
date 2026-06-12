@@ -619,7 +619,11 @@ export class LedgerLegacyHandler {
     action: LedgerAction,
     params?: Record<string, unknown>,
   ): Promise<unknown> {
-    return this.handleLedgerAction(action, params);
+    try {
+      return await this.handleLedgerAction(action, params);
+    } finally {
+      await this.closeTransport();
+    }
   }
 
   /**
