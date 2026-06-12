@@ -81,34 +81,35 @@ import {
 } from '../../ducks/history/history';
 import { AppHeader } from '../../components/multichain/app-header';
 import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
+import { MetaMaskReduxState } from '../../store/store';
 import Home from './home.component';
 
 function useCoreHomeState() {
   const selectedAddress = useSelector(
-    (state: any) => getSelectedInternalAccount(state)?.address,
+    (state: MetaMaskReduxState) => getSelectedInternalAccount(state)?.address,
   );
   const forgottenPassword = useSelector(
-    (state: any) => state.metamask.forgottenPassword,
+    (state: MetaMaskReduxState) => state.metamask.forgottenPassword,
   );
   const firstTimeFlowType = useSelector(
-    (state: any) => state.metamask.firstTimeFlowType,
+    (state: MetaMaskReduxState) => state.metamask.firstTimeFlowType,
   );
   const completedOnboarding = useSelector(
-    (state: any) => state.metamask.completedOnboarding,
+    (state: MetaMaskReduxState) => state.metamask.completedOnboarding,
   );
   const seedPhraseBackedUp = useSelector(
-    (state: any) => state.metamask.seedPhraseBackedUp,
+    (state: MetaMaskReduxState) => state.metamask.seedPhraseBackedUp,
   );
   const connectedStatusPopoverHasBeenShown = useSelector(
-    (state: any) => state.metamask.connectedStatusPopoverHasBeenShown,
+    (state: MetaMaskReduxState) => state.metamask.connectedStatusPopoverHasBeenShown,
   );
   const dataCollectionForMarketing = useSelector(
-    (state: any) => state.metamask.dataCollectionForMarketing,
+    (state: MetaMaskReduxState) => state.metamask.dataCollectionForMarketing,
   );
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   // Derive both account and reminder flag inside one selector to avoid a
   // stale closure over the account object.
-  const shouldShowSeedPhraseReminder = useSelector((state: any) => {
+  const shouldShowSeedPhraseReminder = useSelector((state: MetaMaskReduxState) => {
     const account = getSelectedInternalAccount(state);
     return account ? getShouldShowSeedPhraseReminder(state, account) : false;
   });
@@ -141,7 +142,7 @@ function useNetworkState() {
   // Mirrors the short-circuit evaluation from the original mapStateToProps so
   // that getWeb3ShimUsageStateForOrigin is never called when not needed
   // (avoids reading undefined state keys in non-popup environments).
-  const shouldShowWeb3ShimUsageNotification = useSelector((state: any) => {
+  const shouldShowWeb3ShimUsageNotification = useSelector((state: MetaMaskReduxState) => {
     if (getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP) {
       return false;
     }
@@ -170,9 +171,9 @@ function useNetworkState() {
 function useNotificationState() {
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const hasApprovalFlows = useSelector(
-    (state: any) => (getApprovalFlows(state)?.length ?? 0) > 0,
+    (state: MetaMaskReduxState) => (getApprovalFlows(state)?.length ?? 0) > 0,
   );
-  const hasAllowedPopupRedirectApprovals = useSelector((state: any) =>
+  const hasAllowedPopupRedirectApprovals = useSelector((state: MetaMaskReduxState) =>
     hasPendingApprovals(state, [
       SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
       SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
@@ -182,7 +183,7 @@ function useNotificationState() {
   const showRecoveryPhraseReminder = useSelector(getShowRecoveryPhraseReminder);
   const showTermsOfUsePopup = useSelector(getShowTermsOfUse);
   const showOutdatedBrowserWarning = useSelector(
-    (state: any) =>
+    (state: MetaMaskReduxState) =>
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
   );
   const newNetworkAddedName = useSelector(getNewNetworkAdded);
@@ -218,16 +219,16 @@ function useAppUIState() {
   const envType = getEnvironmentType();
 
   const isBasicConfigurationModalOpen = useSelector(
-    (state: any) => state.appState.showBasicFunctionalityModal,
+    (state: MetaMaskReduxState) => state.appState.showBasicFunctionalityModal,
   );
   const newNetworkAddedConfigurationId = useSelector(
-    (state: any) => state.appState.newNetworkAddedConfigurationId,
+    (state: MetaMaskReduxState) => state.appState.newNetworkAddedConfigurationId,
   );
   const onboardedInThisUISession = useSelector(
-    (state: any) => state.appState.onboardedInThisUISession,
+    (state: MetaMaskReduxState) => state.appState.onboardedInThisUISession,
   );
   const showMultiRpcModal = useSelector(
-    (state: any) => state.metamask.preferences.showMultiRpcModal,
+    (state: MetaMaskReduxState) => state.metamask.preferences.showMultiRpcModal,
   );
 
   return {
@@ -245,7 +246,7 @@ function useFeatureState() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const showShieldEntryModal = useSelector(getShowShieldEntryModal);
   const pendingShieldCohort = useSelector(getPendingShieldCohort);
-  const isSignedIn = useSelector((state: any) => state.metamask.isSignedIn);
+  const isSignedIn = useSelector((state: MetaMaskReduxState) => state.metamask.isSignedIn);
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const rewardsModalOpen = useSelector(selectRewardsModalOpen);
   const showPna25Modal = useSelector(selectShowPna25Modal);
