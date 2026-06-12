@@ -56,7 +56,6 @@ export default class CarouselPage {
     console.log(`Dismiss up to ${maxToDismiss} carousel slides`);
 
     for (let i = 0; i < maxToDismiss; i++) {
-
       // Check if the current slide has a close button because some car
       const hasCloseButton = await this.driver.isElementPresentAndVisible(
         this.currentSlideCloseButton,
