@@ -185,11 +185,10 @@ export class TestDappBitcoin {
   }
 
   async verifySignedMessage(signedMessage: string) {
-    const signedMessageElement = await this.driver.waitForSelector(
-      `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`,
-    );
-
-    assert.strictEqual(await signedMessageElement.getText(), signedMessage);
+    await this.driver.waitForSelector({
+      testId: dataTestIds.testPage.signMessage.signedMessage,
+      text: signedMessage,
+    });
   }
 
   async verifySignedPsbt(unsignedPsbt: string) {
