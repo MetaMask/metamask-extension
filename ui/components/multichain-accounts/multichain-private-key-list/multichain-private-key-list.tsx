@@ -10,17 +10,14 @@ import {
   TextVariant,
   Box,
   BoxFlexDirection,
-} from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BlockSize } from '../../../helpers/constants/design-system';
-import {
   Button,
   ButtonSize,
   ButtonVariant,
   TextField,
   TextFieldSize,
   TextFieldType,
-} from '../../component-library';
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import {
@@ -162,9 +159,11 @@ const MultichainPrivateKeyList = ({
             size={TextFieldSize.Lg}
             value={password}
             onChange={handlePasswordChange}
-            error={wrongPassword}
-            width={BlockSize.Full}
-            testId="multichain-private-key-password-input"
+            isError={wrongPassword}
+            className="w-full"
+            inputProps={{
+              'data-testid': 'multichain-private-key-password-input',
+            }}
           />
           {wrongPassword ? (
             <Text
@@ -184,7 +183,7 @@ const MultichainPrivateKeyList = ({
           paddingTop={8}
         >
           <Button
-            block
+            isFullWidth
             data-testid="cancel-button"
             onClick={onCancel}
             size={ButtonSize.Lg}
@@ -193,7 +192,7 @@ const MultichainPrivateKeyList = ({
             {t('cancel')}
           </Button>
           <Button
-            block
+            isFullWidth
             data-testid="confirm-button"
             onClick={onSubmit}
             size={ButtonSize.Lg}
