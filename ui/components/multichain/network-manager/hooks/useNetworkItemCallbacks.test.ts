@@ -1,4 +1,5 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { SolScope } from '@metamask/keyring-api';
 import { renderHook } from '@testing-library/react-hooks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -72,19 +73,20 @@ const optimismNetwork = {
   chainId: toEvmCaipChainId(CHAIN_IDS.OPTIMISM),
   name: 'Optimism',
   isEvm: true,
-};
+} as MultichainNetworkConfiguration;
 
 const customNetwork = {
   chainId: toEvmCaipChainId('0xabc' as `0x${string}`),
   name: 'Custom Network',
   isEvm: true,
-};
+} as MultichainNetworkConfiguration;
 
 const solanaNetwork = {
   chainId: SolScope.Mainnet,
   name: 'Solana',
   isEvm: false,
-};
+  nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
+} as MultichainNetworkConfiguration;
 
 describe('useNetworkItemCallbacks', () => {
   beforeEach(() => {

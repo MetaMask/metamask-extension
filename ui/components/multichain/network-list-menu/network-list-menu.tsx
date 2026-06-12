@@ -46,6 +46,7 @@ import {
   detectNfts,
 } from '../../../store/actions';
 import { isDisableableDefaultNetwork } from '../../../helpers/utils/network-sections';
+import type { NetworkItemCallbacks } from '../network-manager/hooks/useNetworkItemCallbacks';
 import {
   CHAIN_IDS,
   FEATURED_RPCS,
@@ -508,7 +509,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const getItemCallbacks = useCallback(
     (
       network: MultichainNetworkConfiguration,
-    ): Record<string, (() => void) | undefined> => {
+    ): NetworkItemCallbacks => {
       const { chainId, isEvm } = network;
       const hexChainId = isEvm ? convertCaipToHexChainId(chainId) : undefined;
       const isDisableableDefault = isDisableableDefaultNetwork(chainId);
@@ -566,13 +567,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         };
       }
 
+      const evmHexChainId = convertCaipToHexChainId(chainId);
+
       return {
         onDelete,
         onDeleteMenuLabel,
         onEdit: () => {
           dispatch(
             setEditedNetwork({
-              chainId: hexChainId,
+              chainId: evmHexChainId,
               nickname: network.name,
             }),
           );
@@ -584,7 +587,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               setActionMode(ACTION_MODE.SELECT_RPC);
               dispatch(
                 setEditedNetwork({
-                  chainId: hexChainId,
+                  chainId: evmHexChainId,
                 }),
               );
             }
@@ -593,7 +596,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           setActionMode(ACTION_MODE.SELECT_RPC);
           dispatch(
             setEditedNetwork({
-              chainId: hexChainId,
+              chainId: evmHexChainId,
             }),
           );
         },
