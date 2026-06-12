@@ -22,7 +22,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
             data-testid="nft__back"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/arrow-left.svg');"
             />
           </button>
@@ -35,7 +35,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               data-testid="nft-options__button"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/more-vertical.svg');"
               />
             </button>
@@ -127,7 +127,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
                 data-testid="nft-address-copy"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
