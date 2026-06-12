@@ -88,6 +88,13 @@ const solanaNetwork = {
   nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
 } as MultichainNetworkConfiguration;
 
+const solanaDevnetNetwork = {
+  chainId: SolScope.Devnet,
+  name: 'Solana Devnet',
+  isEvm: false,
+  nativeCurrency: `${SolScope.Devnet}/slip44:501`,
+} as MultichainNetworkConfiguration;
+
 describe('useNetworkItemCallbacks', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -144,5 +151,13 @@ describe('useNetworkItemCallbacks', () => {
     callbacks.onDelete?.();
 
     expect(mockDispatch).toHaveBeenCalledWith(removeNetwork(SolScope.Mainnet));
+  });
+
+  it('does not show Delete for non-EVM testnets', () => {
+    const { result } = renderHook(() => useNetworkItemCallbacks());
+    const callbacks = result.current.getItemCallbacks(solanaDevnetNetwork);
+
+    expect(callbacks.onDelete).toBeUndefined();
+    expect(callbacks.onDeleteMenuLabel).toBeUndefined();
   });
 });

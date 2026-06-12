@@ -519,7 +519,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         isUnlocked &&
         (isDisableableDefault
           ? !isEthereumMainnet
-          : chainId !== currentChainId && chainId !== EthScope.Mainnet);
+          : isEvm &&
+            chainId !== currentChainId &&
+            chainId !== EthScope.Mainnet);
 
       let onDeleteMenuLabel: 'disable' | 'delete' | undefined;
       if (canRemoveOrDisable) {
@@ -550,7 +552,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
             dispatch(
               showModal({
                 name: 'CONFIRM_DELETE_NETWORK',
-                target: isEvm ? hexChainId : chainId,
+                target: hexChainId,
                 onConfirm: () => undefined,
               }),
             );

@@ -96,7 +96,9 @@ export const useNetworkItemCallbacks = () => {
         isUnlocked &&
         (isDisableableDefault
           ? !isEthereumMainnet
-          : chainId !== currentChainId && chainId !== EthScope.Mainnet);
+          : isEvm &&
+            chainId !== currentChainId &&
+            chainId !== EthScope.Mainnet);
 
       let onDeleteMenuLabel: 'disable' | 'delete' | undefined;
       if (canRemoveOrDisable) {
@@ -131,7 +133,7 @@ export const useNetworkItemCallbacks = () => {
             dispatch(
               showModal({
                 name: 'CONFIRM_DELETE_NETWORK',
-                target: isEvm ? hexChainId : chainId,
+                target: hexChainId,
                 ...modalProps,
               }),
             );
