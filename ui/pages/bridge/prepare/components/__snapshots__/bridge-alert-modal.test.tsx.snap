@@ -163,7 +163,7 @@ exports[`BridgeAlertModal quote-card should render alert banner when there is a 
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
             >
               <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                 data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >
@@ -282,7 +282,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
             >
               <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                 data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >
@@ -401,7 +401,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
             >
               <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                 data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >
@@ -520,7 +520,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
             >
               <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                 data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >
@@ -668,17 +668,17 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
             >
               <button
                 aria-busy="true"
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full text-default bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default cursor-not-allowed"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full text-default bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default cursor-not-allowed"
                 data-testid="bridge-alert-modal-proceed-button"
                 disabled=""
                 role="button"
               >
                 <span
                   aria-hidden="true"
-                  class="absolute inline-flex items-center"
+                  class="absolute inline-flex items-center gap-x-1"
                 >
                   <svg
-                    class="inline-block w-4 h-4 mr-2 animate-spin text-inherit"
+                    class="inline-block w-5 h-5 animate-spin text-inherit"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
@@ -692,9 +692,14 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
                   />
                 </span>
                 <span
+                  aria-hidden="true"
                   class="invisible inline-flex items-center"
                 >
-                  Proceed
+                  <span
+                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Proceed
+                  </span>
                 </span>
                 <span
                   aria-atomic="true"
@@ -705,7 +710,7 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
                 </span>
               </button>
               <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                 data-testid="bridge-alert-modal-cancel-button"
                 disabled=""
                 role="button"
@@ -896,7 +901,7 @@ exports[`BridgeAlertModal submit-cta should render when there is a price impact 
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
             >
               <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                 data-testid="bridge-alert-modal-proceed-button"
                 role="button"
               >
@@ -907,7 +912,7 @@ exports[`BridgeAlertModal submit-cta should render when there is a price impact 
                 </span>
               </button>
               <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                 data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >

@@ -36,6 +36,7 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
+import { useSelectedAccountComplianceGate } from '../compliance';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -74,6 +75,7 @@ export const PerpsView = () => {
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
   const { isEligible } = usePerpsEligibility();
+  const { gate } = useSelectedAccountComplianceGate();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
   const { track } = usePerpsEventTracking();
@@ -142,21 +144,28 @@ export const PerpsView = () => {
     getPerpsStreamManager().orders.pushData(next);
   }, []);
 
-  const handleCloseAllPositions = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (positions.length === 0) {
-      return;
-    }
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.CLOSE_ALL_TAPPED,
-      [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+  // Compliance gate wraps only the entry point: when the wallet is blocked the
+  // access-restricted modal shows and the confirmation flow never opens. When
+  // it's clear, we keep the pre-existing two-step confirmation (tap -> confirm)
+  // and its analytics. The gate is effectively instant (it reads the prefetched
+  // compliance result), so it adds no latency to opening the modal.
+  const handleCloseAllPositions = useCallback(async () => {
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (positions.length === 0) {
+        return;
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.CLOSE_ALL_TAPPED,
+        [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+      });
+      setIsCloseAllModalOpen(true);
     });
-    setIsCloseAllModalOpen(true);
-  }, [isEligible, positions.length, track]);
+  }, [gate, isEligible, positions.length, track]);
 
   const handleCloseAllCancel = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {

@@ -31,13 +31,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      # for seedless onboarding (social login)
-      - GOOGLE_PROD_CLIENT_ID
-      - APPLE_PROD_CLIENT_ID
-      - TELEGRAM_PROD_CLIENT_ID
-      - GOOGLE_CLIENT_ID_REF: GOOGLE_PROD_CLIENT_ID
-      - APPLE_CLIENT_ID_REF: APPLE_PROD_CLIENT_ID
-      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_PROD_CLIENT_ID
       - PERPS_ENABLED: true
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -64,13 +57,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      # for seedless onboarding (social login)
-      - GOOGLE_BETA_CLIENT_ID
-      - APPLE_BETA_CLIENT_ID
-      - TELEGRAM_BETA_CLIENT_ID
-      - GOOGLE_CLIENT_ID_REF: GOOGLE_BETA_CLIENT_ID
-      - APPLE_CLIENT_ID_REF: APPLE_BETA_CLIENT_ID
-      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_BETA_CLIENT_ID
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -96,13 +82,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      # for seedless onboarding (social login)
-      - GOOGLE_EXPERIMENTAL_CLIENT_ID
-      - APPLE_EXPERIMENTAL_CLIENT_ID
-      - TELEGRAM_EXPERIMENTAL_CLIENT_ID
-      - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
-      - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
-      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_EXPERIMENTAL_CLIENT_ID
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
     isPrerelease: true
@@ -131,13 +110,6 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
-      # for seedless onboarding (social login)
-      - GOOGLE_FLASK_CLIENT_ID
-      - APPLE_FLASK_CLIENT_ID
-      - TELEGRAM_FLASK_CLIENT_ID
-      - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
-      - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
-      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_FLASK_CLIENT_ID
       - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic,token-approval-revocation'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
@@ -441,21 +413,7 @@ env:
   # development and QA only; must remain false for production builds.
   - FORCE_ENFORCED_SIMULATIONS: false
 
-  # OAuth (Social login)
-  - GOOGLE_CLIENT_ID_REF
-  - APPLE_CLIENT_ID_REF
-  - TELEGRAM_CLIENT_ID_REF
   - SEEDLESS_ONBOARDING_ENABLED: 'true'
-  - GOOGLE_CLIENT_ID: ''
-  - APPLE_CLIENT_ID: ''
-  - TELEGRAM_CLIENT_ID: ''
-  # OAuth (Social login) for UAT(QA) builds
-  - GOOGLE_CLIENT_ID_FLASK_UAT: ''
-  - APPLE_CLIENT_ID_FLASK_UAT: ''
-  - TELEGRAM_CLIENT_ID_FLASK_UAT: ''
-  - GOOGLE_CLIENT_ID_UAT: ''
-  - APPLE_CLIENT_ID_UAT: ''
-  - TELEGRAM_CLIENT_ID_UAT: ''
 
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'true'

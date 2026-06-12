@@ -1,5 +1,10 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -12,12 +17,9 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { Box, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -94,10 +96,9 @@ const MetametricsToggle = ({
   return (
     <Box>
       <Box
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        className="flex settings-page__content-row"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
         gap={4}
         data-testid="participate-in-meta-metrics-container"
       >

@@ -8,7 +8,7 @@
 
 import { MockttpServer } from 'mockttp';
 import { login } from '../../page-objects/flows/login.flow';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';

@@ -50,6 +50,11 @@ describe('Token List via StorageService', function () {
         localNodeOptions: {
           chainId: parseInt(chainId, 16),
         },
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
           // Price API
@@ -57,6 +62,44 @@ describe('Token List via StorageService', function () {
           await mockFiatExchangeRates(mockServer),
           await mockSupportedVsCurrencies(mockServer),
           await mockPriceApiSupportedNetworks(mockServer),
+          // Token Search API – /tokens/search
+          await mockServer
+            .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
+            .always()
+            .thenCallback((request) => {
+              const url = new URL(request.url);
+              const query = (url.searchParams.get('query') ?? '')
+                .trim()
+                .toLowerCase();
+
+              const matches =
+                query.length > 0 &&
+                (tokenName.toLowerCase().includes(query) ||
+                  tokenSymbol.toLowerCase().includes(query) ||
+                  tokenAddress.toLowerCase().includes(query));
+
+              const data = matches
+                ? [
+                    {
+                      assetId: `eip155:1/erc20:${tokenAddress}`,
+                      symbol: tokenSymbol,
+                      decimals: 18,
+                      name: tokenName,
+                      iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${tokenAddress}.png`,
+                    },
+                  ]
+                : [];
+
+              return {
+                statusCode: 200,
+                json: {
+                  data,
+                  count: data.length,
+                  totalCount: data.length,
+                  pageInfo: { hasNextPage: false, endCursor: '' },
+                },
+              };
+            }),
           // Price API – /v3/spot-prices
           await mockServer
             .forGet(/https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)

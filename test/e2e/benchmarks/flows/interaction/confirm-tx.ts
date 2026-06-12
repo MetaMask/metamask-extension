@@ -6,7 +6,7 @@
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import { createInternalTransaction } from '../../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../../page-objects/flows/transaction.flow';
 import { Driver } from '../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
 import {

@@ -9,8 +9,8 @@ import {
   TextAlign,
   TextColor,
   twMerge,
+  Skeleton,
 } from '@metamask/design-system-react';
-import { Skeleton } from '../../../component-library/skeleton';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import type { PerpsFiatHeroAmountInputProps } from './perps-fiat-hero-amount-input.types';
 
