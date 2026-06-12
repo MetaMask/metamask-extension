@@ -31,7 +31,7 @@ describe('Send ERC20 - Gas Customization', function () {
   const GAS_LIMIT = '60000';
   const GAS_PRICE = '10';
 
-  it('sends with custom gas from extension TEST', async function () {
+  it('sends with custom gas from extension', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
