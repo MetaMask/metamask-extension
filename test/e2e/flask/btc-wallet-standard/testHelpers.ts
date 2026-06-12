@@ -134,7 +134,3 @@ export async function withBtcWalletStandardSnap(
     },
   );
 }
-
-export const clickConfirmButton = async (driver: Driver): Promise<void> => {
-  await driver.clickElement({ text: 'Approve' });
-};

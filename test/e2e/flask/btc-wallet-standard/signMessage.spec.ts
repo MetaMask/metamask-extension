@@ -3,9 +3,9 @@ import {
   availableConnectionTypes,
 } from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
+import BitcoinDappConfirmation from '../../page-objects/pages/confirmations/bitcoin-dapp-confirmation';
 import { WINDOW_TITLES } from '../../constants';
 import {
-  clickConfirmButton,
   DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
   SIGNED_MESSAGES_MOCK,
   withBtcWalletStandardSnap,
@@ -33,7 +33,8 @@ describe('Bitcoin Wallet Standard - Sign Message - e2e tests', function () {
           await testDapp.signMessage();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await clickConfirmButton(driver);
+          const bitcoinDappConfirmation = new BitcoinDappConfirmation(driver);
+          await bitcoinDappConfirmation.clickApprove();
 
           // 3. Verify the signed message
           await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);

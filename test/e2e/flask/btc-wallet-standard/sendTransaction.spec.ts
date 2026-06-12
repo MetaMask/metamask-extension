@@ -4,9 +4,9 @@ import {
   availableConnectionTypes,
 } from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
+import BitcoinDappConfirmation from '../../page-objects/pages/confirmations/bitcoin-dapp-confirmation';
 import { SECONDARY_BTC_ADDRESS, WINDOW_TITLES } from '../../constants';
 import {
-  clickConfirmButton,
   DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
   txHashShort,
   withBtcWalletStandardSnap,
@@ -36,7 +36,8 @@ describe('Bitcoin Wallet Standard - Send transaction - e2e tests', function () {
 
           // Both sats-connect and wallet-standard require confirmation
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await clickConfirmButton(driver);
+          const bitcoinDappConfirmation = new BitcoinDappConfirmation(driver);
+          await bitcoinDappConfirmation.clickApprove();
 
           if (connectionLibrary === WalletConnectionType.Standard) {
             await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
