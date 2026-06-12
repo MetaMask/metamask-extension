@@ -1,6 +1,7 @@
 import {
   LedgerHandlerMode,
   LedgerAction,
+  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LedgerDMKBridgeHandler, serializeLedgerError } from './ledger-dmk';
@@ -107,7 +108,7 @@ async function createHandler(mode: LedgerHandlerMode): Promise<LedgerHandler> {
     return handler;
   }
 
-  const handler = initLegacy();
+  const handler = await initLegacy();
   await handler.init(true);
   return handler;
 }
@@ -122,7 +123,13 @@ async function createHandler(mode: LedgerHandlerMode): Promise<LedgerHandler> {
 export default async function initLedger(
   mode: LedgerHandlerMode,
 ): Promise<void> {
+  // Signal that an init is in-flight so that switchLedgerHandler can
+  // await it instead of creating a duplicate Legacy handler.
   const promise = (async () => {
+    // Create the new handler first, atomically swap it into activeHandler,
+    // then lazily destroy the old handler. This mirrors switchLedgerHandler's
+    // pattern and prevents handler leaks when initLedger is called with an
+    // existing handler active (Bug 1 guard path, Bug 4 timeout fallback).
     const newHandler = await createHandler(mode);
     const previous = activeHandler;
     activeHandler = newHandler;
@@ -162,10 +169,17 @@ export default async function initLedger(
 export async function switchLedgerHandler(
   mode: LedgerHandlerMode,
 ): Promise<void> {
+  // If an initLedger call is in-flight, wait for it to complete so we
+  // see the correct activeHandler and currentMode. Without this guard,
+  // a racing switchLedgerMode event during bootstrap would see
+  // activeHandler === null and create a duplicate Legacy handler.
   if (initInProgress) {
     await initInProgress;
   }
 
+  // Bug 1 fix: If no handler has been initialised yet, start with Legacy
+  // as the default before switching. This handles the race where
+  // switchLedgerMode arrives during bootstrap before initLedger runs.
   if (!activeHandler) {
     await initLedger(LedgerHandlerMode.Legacy);
   }
@@ -186,12 +200,37 @@ export async function switchLedgerHandler(
 }
 
 /**
+ * Listen for runtime mode switches driven by the remote feature flag.
+ *
+ * When the background's subscription detects a change in the `ledgerDmk`
+ * remote flag it sends a `switchLedgerMode` event. This listener picks
+ * it up and hot-swaps the active handler without reloading the offscreen.
+ */
+function listenForModeSwitches(): void {
+  chrome.runtime.onMessage.addListener((msg: Record<string, unknown>) => {
+    if (
+      msg?.target === OffscreenCommunicationTarget.extension &&
+      msg?.event === OffscreenCommunicationEvents.switchLedgerMode
+    ) {
+      switchLedgerHandler(msg.mode as LedgerHandlerMode).catch(() => {
+        // Switch failed silently — mode will be retried on next event
+      });
+    }
+  });
+}
+
+/**
  * Bootstrap the Ledger handler in the offscreen document.
  *
- * Initialises the Legacy handler immediately as the default. Remote
- * feature-flag driven mode switching is wired in a follow-up PR.
+ * Registers the mode-switch listener first so we do not miss a
+ * `switchLedgerMode` event. Then initialises the Legacy handler
+ * immediately as the default. The background will later push the
+ * correct mode (DMK or Legacy) once the controller is ready —
+ * the mode-switch listener handles that hot-swap.
  */
 export async function bootstrapLedger(): Promise<void> {
+  listenForModeSwitches();
+
   try {
     await initLedger(LedgerHandlerMode.Legacy);
   } catch {

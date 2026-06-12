@@ -383,6 +383,164 @@ describe("LedgerRouter", () => {
       expect(LedgerDMKBridgeHandler).not.toHaveBeenCalled();
     });
 
+    it("registers a switchLedgerMode listener before initialisation completes", async () => {
+      await bootstrapLedger();
+
+      // After bootstrap completes, sending a switchLedgerMode(DMK) event
+      // should hot-swap the handler from Legacy to DMK.
+      const { default: initLegacyFn } = await import("./ledger");
+      initLegacyFn.mockClear();
+      mockLegacyDestroy.mockClear();
+
+      const switchEvent = {
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.switchLedgerMode,
+        mode: LedgerHandlerMode.DMK,
+      };
+
+      for (const listener of capturedListeners) {
+        try {
+          (listener as any)(switchEvent, {}, jest.fn());
+        } catch {
+          // Some listeners may throw if they don't handle this message shape.
+        }
+      }
+
+      await new Promise((r) => setTimeout(r, 10));
+
+      // Legacy handler should have been destroyed by the switch.
+      expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
+    });
+
+    it("switchLedgerMode arriving during bootstrap triggers switch (Bug 1)", async () => {
+      // Bug 1: switchLedgerMode event arrives while bootstrap is
+      // running initLedger(Legacy). switchLedgerHandler is called
+      // with no activeHandler yet — Bug 1 guard initialises Legacy
+      // as default, then proceeds with the switch to DMK.
+      const bootstrapPromise = bootstrapLedger();
+      // Allow listenForModeSwitches to register and initLedger to start.
+      await new Promise((r) => setTimeout(r, 0));
+
+      const { LedgerDMKBridgeHandler } = await import("./ledger-dmk");
+      const initialDmkCalls = LedgerDMKBridgeHandler.mock.calls.length;
+
+      const switchEvent = {
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.switchLedgerMode,
+        mode: LedgerHandlerMode.DMK,
+      };
+
+      for (const listener of capturedListeners) {
+        try {
+          (listener as any)(switchEvent, {}, jest.fn());
+        } catch {
+          // Some listeners may throw
+        }
+      }
+
+      await new Promise((r) => setTimeout(r, 10));
+
+      // DMK handler was created by the switch.
+      expect(LedgerDMKBridgeHandler.mock.calls.length).toBeGreaterThan(initialDmkCalls);
+
+      await bootstrapPromise;
+    });
+
+    it("does NOT create Legacy handler twice when switchLedgerMode races with bootstrap", async () => {
+      // Race condition: bootstrapLedger() calls initLedger(Legacy).
+      // While initLedger is awaiting createHandler(), a switchLedgerMode(DMK)
+      // event arrives.  Without a guard, switchLedgerHandler sees no
+      // activeHandler and calls initLedger(Legacy) AGAIN — creating a
+      // duplicate Legacy handler.  With the fix, switchLedgerHandler waits
+      // for the in-progress initLedger to finish, then switches to DMK.
+      const { default: initLegacyFn } = await import("./ledger");
+      const { LedgerDMKBridgeHandler } = await import("./ledger-dmk");
+
+      // Snapshot current call counts before the test.
+      const legacyCreatesBefore = initLegacyFn.mock.calls.length;
+      const dmkCreatesBefore = LedgerDMKBridgeHandler.mock.calls.length;
+
+      // Defer handler.init(true) so createHandler stays in-flight.
+      // This keeps activeHandler null while the switch event arrives.
+      // Collect all resolvers so we can unblock every pending init.
+      const initResolvers: (() => void)[] = [];
+      mockLegacyInit.mockImplementation(() => {
+        return new Promise<void>((resolve) => {
+          initResolvers.push(resolve);
+        });
+      });
+
+      // Start bootstrap — initLedger(Legacy) blocks inside createHandler
+      // at await handler.init(true).
+      const bootstrapPromise = bootstrapLedger();
+      await new Promise((r) => setTimeout(r, 0));
+
+      // activeHandler is still null because createHandler hasn't resolved.
+
+      // Send switchLedgerMode(DMK) — the racing event.
+      const switchEvent = {
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.switchLedgerMode,
+        mode: LedgerHandlerMode.DMK,
+      };
+      for (const listener of capturedListeners) {
+        try {
+          (listener as any)(switchEvent, {}, jest.fn());
+        } catch {
+          // Some listeners may throw
+        }
+      }
+      // Give the switch handler a tick to enter its await.
+      await new Promise((r) => setTimeout(r, 0));
+
+      // Now resolve ALL deferred inits so both bootstrap and the switch
+      // can complete their createHandler calls.
+      for (const resolve of initResolvers) {
+        resolve();
+      }
+
+      // Wait for everything to settle. The switch's handler may also need
+      // its init resolved (it re-uses the same mock which returns new
+      // deferred promises per call).
+      // Flush all pending microtasks.
+      await bootstrapPromise;
+      await new Promise((r) => setTimeout(r, 10));
+
+      // Legacy handler was created only ONCE (by bootstrap's initLedger).
+      // Without the guard it would be created twice: once by bootstrap and
+      // once by switchLedgerHandler's Bug 1 guard path.
+      const newLegacyCreates = initLegacyFn.mock.calls.length - legacyCreatesBefore;
+      expect(newLegacyCreates).toBe(1);
+
+      // DMK handler was created by the switch — confirming the final
+      // handler is DMK, not the stale Legacy from the racing initLedger.
+      const newDmkCreates = LedgerDMKBridgeHandler.mock.calls.length - dmkCreatesBefore;
+      expect(newDmkCreates).toBe(1);
+
+      // The DMK handler should be the active one routing messages.
+      mockDmkHandleAction.mockResolvedValue("dmk-result");
+      const sendResponse = jest.fn();
+      capturedListener!(
+        {
+          target: OffscreenCommunicationTarget.ledgerOffscreen,
+          action: LedgerAction.getPublicKey,
+        },
+        {},
+        sendResponse,
+      );
+      await new Promise((r) => setTimeout(r, 0));
+      expect(sendResponse).toHaveBeenCalledWith({
+        success: true,
+        payload: "dmk-result",
+      });
+    });
+
+    it("continues when Legacy initialisation throws", async () => {
+      mockLegacyInit.mockReset();
+      mockLegacyInit.mockRejectedValueOnce(new Error("legacy-failed"));
+
+      await expect(bootstrapLedger()).resolves.toBeUndefined();
+    });
   });
 
   // --- initLedger handler cleanup ---

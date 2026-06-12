@@ -2536,6 +2536,47 @@ describe('MetaMaskController', () => {
         });
       });
 
+      describe('getLedgerMode', () => {
+        let remoteFeatureFlags;
+
+        beforeEach(() => {
+          remoteFeatureFlags = {};
+          jest
+            .spyOn(metamaskController.controllerMessenger, 'call')
+            .mockImplementation((action) => {
+              if (action === 'RemoteFeatureFlagController:getState') {
+                return { remoteFeatureFlags };
+              }
+              return {};
+            });
+        });
+
+        it('returns Legacy when the ledgerDmk flag is missing', () => {
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('legacy');
+        });
+
+        it('returns Legacy when ledgerDmk is disabled', () => {
+          remoteFeatureFlags.ledgerDmk = {
+            enabled: false,
+            featureVersion: null,
+            minimumVersion: null,
+          };
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('legacy');
+        });
+
+        it('returns DMK when ledgerDmk is enabled', () => {
+          remoteFeatureFlags.ledgerDmk = {
+            enabled: true,
+            featureVersion: '13.36.0',
+            minimumVersion: '13.36.0',
+          };
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('dmk');
+        });
+      });
+
       describe('setLedgerTransportPreference', () => {
         it('returns the bridge transport update result', async () => {
           const updateTransportMethod = jest.fn().mockResolvedValue(true);

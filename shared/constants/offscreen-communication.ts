@@ -40,6 +40,9 @@ export enum OffscreenCommunicationEvents {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   connectivityChange = 'connectivity-change',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  switchLedgerMode = 'switch-ledger-mode',
 }
 
 /**
@@ -103,7 +106,8 @@ export enum LedgerAction {
  * Selects which Ledger handler implementation the offscreen document should
  * use. `DMK` uses the new `@metamask/eth-ledger-bridge-keyring` package
  * (backed by the Ledger Device Management Kit). `Legacy` uses the historical
- * `TransportWebHID` + `@ledgerhq/hw-app-eth` plumbing.
+ * `TransportWebHID` + `@ledgerhq/hw-app-eth` plumbing. Selection is driven by
+ * the `ledgerDmk` remote feature flag via `getLedgerMode`.
  */
 export enum LedgerHandlerMode {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
