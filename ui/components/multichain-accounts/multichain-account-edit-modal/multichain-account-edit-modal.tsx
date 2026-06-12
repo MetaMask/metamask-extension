@@ -65,6 +65,7 @@ export const MultichainAccountEditModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
+          data-testid="account-edit-modal-header"
           onClose={onClose}
           closeButtonProps={{ ariaLabel: t('close') }}
           onBack={onClose}
