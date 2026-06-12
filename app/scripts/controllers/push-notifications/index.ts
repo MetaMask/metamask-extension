@@ -8,7 +8,7 @@ import ExtensionPlatform from '../../platforms/extension';
 const sw = self as unknown as ServiceWorkerGlobalScope;
 const extensionPlatform = new ExtensionPlatform();
 
-export async function onPushNotificationReceive(
+export async function onPushNotificationReceived(
   _payload: PushAnalyticsPayload,
 ): Promise<void> {
   // The OS renders the banner from the Web Push payload, and core re-fetches
