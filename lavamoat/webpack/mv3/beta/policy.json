@@ -972,6 +972,7 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/hw-wallet-sdk": true,
         "@metamask/utils": true
       }
     },
