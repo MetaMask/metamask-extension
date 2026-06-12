@@ -229,8 +229,7 @@ describe('TransactionListItem', () => {
           activity_type: 'send',
         },
       });
-      const popoverClose = queryByTestId('popover-close');
-      fireEvent.click(popoverClose);
+      fireEvent.click(activityListItem);
       expect(mockTrackEvent).toHaveBeenCalledWith({
         event: MetaMetricsEventName.ActivityDetailsClosed,
         category: MetaMetricsEventCategory.Navigation,
