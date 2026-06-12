@@ -909,7 +909,7 @@ export const getRatesControllerRates = createDeepEqualSelector(
     const result: RatesControllerState['rates'] = {};
 
     for (const [assetId, metadata] of Object.entries(assetsInfo)) {
-      const symbol = metadata.symbol.toLowerCase();
+      const symbol = metadata.symbol?.toLowerCase();
 
       // Skip if we already have an entry for this symbol
       if (result[symbol]) {
