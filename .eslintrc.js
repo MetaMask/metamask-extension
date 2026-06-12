@@ -895,7 +895,6 @@ module.exports = {
         'test/e2e/page-objects/pages/settings/about-page.ts',
         'test/e2e/page-objects/pages/settings/advanced-settings.ts',
         'test/e2e/page-objects/pages/settings/backup-and-sync-settings.ts',
-        'test/e2e/page-objects/pages/settings/change-password-page.ts',
         'test/e2e/page-objects/pages/settings/contacts-settings.ts',
         'test/e2e/page-objects/pages/settings/experimental-settings.ts',
         'test/e2e/page-objects/pages/settings/notifications-settings-page.ts',

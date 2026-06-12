@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.34.1]
+
+### Changed
+
+- Bumped `@lavamoat/webpack` from 2.2.0 to 2.2.3 (#43333)
+
+### Fixed
+
+- Fixed handling of scientific notation in `parseBalanceWithDecimals` to prevent BigInt crash (#43314)
+
 ## [13.34.0]
 
 ### Added
@@ -2452,7 +2462,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...HEAD
+[13.34.1]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...v13.34.1
 [13.34.0]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...v13.34.0
 [13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.33.0
 [13.32.1]: https://github.com/MetaMask/metamask-extension/compare/v13.32.0...v13.32.1

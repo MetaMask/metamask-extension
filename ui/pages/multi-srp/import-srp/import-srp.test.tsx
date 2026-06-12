@@ -20,7 +20,6 @@ jest.mock('../../../store/actions', () => ({
   ),
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
   hideAlert: jest.fn().mockReturnValue({ type: 'ALERT_CLOSE' }),
-  hideWarning: jest.fn().mockReturnValue({ type: 'HIDE_WARNING' }),
 }));
 
 jest.mock('../../../components/ui/toast/toast', () => ({
