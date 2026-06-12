@@ -9,6 +9,7 @@ import {
   selectERC20TokensByChain,
 } from '../../../../selectors';
 import { Token, TokenDisplayInfo, TokenWithFiatAmount } from '../types';
+import { isStellarClassicTrustlineInactiveForDisplay } from '../../../../helpers/stellar/trustline-from-extra';
 import {
   getImageForChainId,
   isChainIdMainnet,
@@ -85,6 +86,13 @@ export const useTokenDisplayInfo = ({
   const isStakeable =
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
+  const isStellarTrustlineInactive = isStellarClassicTrustlineInactiveForDisplay({
+    chainId: token.chainId,
+    assetId: token.assetId,
+    isNative: token.isNative,
+    extra: token.extra,
+  });
+
   if (isEvm) {
     const tokenData = (
       Object.values(
@@ -119,6 +127,7 @@ export const useTokenDisplayInfo = ({
       secondary,
       isStakeable,
       tokenChainImage: tokenChainImage as string,
+      isStellarTrustlineInactive,
     };
   }
 
@@ -134,6 +143,7 @@ export const useTokenDisplayInfo = ({
     secondary: showFiat ? nonEvmSecondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,
+    isStellarTrustlineInactive,
   };
 };
 

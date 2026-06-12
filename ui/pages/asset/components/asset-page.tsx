@@ -23,10 +23,12 @@ import {
   EthMethod,
   SolMethod,
   TrxAccountType,
+  XlmScope,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
+  type CaipChainId,
   Hex,
   isCaipChainId,
   parseCaipAssetType,
@@ -34,6 +36,10 @@ import {
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { getBaseReserveFromExtra } from '../../../helpers/stellar/base-reserve-from-extra';
+import {
+  isStellarClassicTrustlineInactiveForDisplay,
+} from '../../../helpers/stellar/trustline-from-extra';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -49,6 +55,7 @@ import {
 import { ActivityList as ActivityListV2 } from '../../../components/multichain/activity-v2/activity-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
+import { StellarTrustlineInactiveBadge } from '../../../components/app/assets/stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 import { AddressCopyButton } from '../../../components/multichain';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { ActivityList as ActivityListV3 } from '../../activity/activity-list';
@@ -101,6 +108,8 @@ import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
+import { StellarClassicTrustlineActivateCard } from './stellar-classic-trustline-activate-card';
+import { StellarNativeBalanceSection } from './stellar-native-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
@@ -268,7 +277,44 @@ const AssetPage = ({
     accountType: bip44Asset?.accountType,
     assetId: bip44Asset?.assetId ?? assetId,
     rwaData,
+    extra: assetWithBalance?.extra,
   };
+
+  const isStellarChainId =
+    chainId === XlmScope.Pubnet || chainId === XlmScope.Testnet;
+  let isSep41StellarAsset = false;
+  if (assetId && isStellarChainId) {
+    try {
+      isSep41StellarAsset =
+        parseCaipAssetType(assetId as CaipAssetType).assetNamespace === 'sep41';
+    } catch {
+      isSep41StellarAsset = false;
+    }
+  }
+  const isStellarClassicTrustlineTrackedToken =
+    isStellarChainId &&
+    type === AssetType.token &&
+    Boolean(assetId) &&
+    !isSep41StellarAsset;
+  const isStellarTrustlineInactive =
+    isStellarClassicTrustlineInactiveForDisplay({
+      chainId,
+      assetId,
+      isNative: type === AssetType.native,
+      extra: assetWithBalance?.extra,
+    });
+  const showStellarClassicTrustlineActivate =
+    isStellarClassicTrustlineTrackedToken && isStellarTrustlineInactive;
+  const showStellarInactiveAssetHeader =
+    isStellarClassicTrustlineTrackedToken && isStellarTrustlineInactive;
+  const hasStellarClassicTrustlineToRemove =
+    assetWithBalance !== undefined &&
+    !isStellarClassicTrustlineInactiveForDisplay({
+      chainId,
+      assetId,
+      isNative: type === AssetType.native,
+      extra: assetWithBalance.extra,
+    });
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
@@ -292,6 +338,15 @@ const AssetPage = ({
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
   const showTronResources = isTron && type === AssetType.native;
 
+  const stellarNativeBaseReserve =
+    isStellarChainId && type === AssetType.native
+      ? getBaseReserveFromExtra(assetWithBalance?.extra)
+      : undefined;
+  const showStellarNativeBalanceSection =
+    isStellarChainId &&
+    type === AssetType.native &&
+    stellarNativeBaseReserve !== undefined;
+
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
   const isMusdAssetPage =
@@ -308,6 +363,111 @@ const AssetPage = ({
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
   const handleOpenMarketClosedModal = () => {
     setIsMarketClosedModalOpen(true);
+  };
+
+  const renderAssetTitleSection = () => {
+    if (showStellarInactiveAssetHeader) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+          data-testid="stellar-inactive-asset-header"
+        >
+          {assetNameElement}
+          <StellarTrustlineInactiveBadge />
+        </Box>
+      );
+    }
+
+    if (isStockToken) {
+      return (
+        <Box alignItems={BoxAlignItems.Center} gap={2}>
+          {assetNameElement}
+          <StockBadge isMarketClosed={isMarketClosed} />
+        </Box>
+      );
+    }
+
+    return assetNameElement;
+  };
+
+  const renderAssetBalanceSection = () => {
+    if (isMusdAssetPage) {
+      return (
+        <>
+          <MusdPositionSection
+            balanceDisplay={balance ? `${balance} ${t('musdSymbol')}` : '0'}
+            fiatValue={tokenFiatAmount}
+            showFiat={showFiat}
+          />
+          {isMerklClaimingEnabled ? (
+            <>
+              <Box
+                marginTop={5}
+                marginBottom={5}
+                className="asset-page__divider"
+              />
+              <MusdBonusSection
+                chainId={chainId as Hex}
+                tokenAddress={(asset as { address: Hex }).address}
+                positionFiatValue={showFiat ? aggregatedMusdFiat : null}
+                showFiat={showFiat}
+                hasPositiveBalance={hasAnyMusdBalance}
+              />
+              <Box
+                marginTop={5}
+                marginBottom={5}
+                className="asset-page__divider"
+              />
+            </>
+          ) : (
+            <Box
+              marginTop={5}
+              marginBottom={5}
+              className="asset-page__divider"
+            />
+          )}
+          <MusdConvertSection />
+          <Box
+            marginTop={5}
+            marginBottom={5}
+            className="asset-page__divider"
+          />
+        </>
+      );
+    }
+
+    if (showStellarNativeBalanceSection) {
+      return (
+        <StellarNativeBalanceSection
+          totalBalance={String(balance)}
+          symbol={symbol}
+          baseReserve={stellarNativeBaseReserve}
+          fiatValue={showFiat ? tokenFiatAmount : null}
+          showFiat={showFiat}
+        />
+      );
+    }
+
+    return (
+      <>
+        <Text
+          variant={TextVariant.HeadingSm}
+          className="asset-page__balance-heading"
+        >
+          {t('yourBalance')}
+        </Text>
+        {[AssetType.token, AssetType.native].includes(type) && (
+          <TokenCell
+            key={`${symbol}-${address}`}
+            token={tokenWithFiatAmount as TokenWithFiatAmount}
+            safeChains={safeChains}
+            musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
+          />
+        )}
+      </>
+    );
   };
 
   return (
@@ -333,15 +493,15 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       <Box paddingLeft={4}>
-        {isStockToken ? (
-          <Box alignItems={BoxAlignItems.Center} gap={2}>
-            {assetNameElement}
-            <StockBadge isMarketClosed={isMarketClosed} />
-          </Box>
-        ) : (
-          assetNameElement
-        )}
+        {renderAssetTitleSection()}
       </Box>
+      <StellarClassicTrustlineActivateCard
+        visible={showStellarClassicTrustlineActivate}
+        account={selectedAccount}
+        chainId={chainId as CaipChainId}
+        assetId={assetId as CaipAssetType}
+        symbol={symbol}
+      />
       <AssetChart
         chainId={chainId}
         address={address}
@@ -369,6 +529,16 @@ const AssetPage = ({
             token={tokenAsset}
             disableSendForNonEvm
             isMarketClosed={isMarketClosed}
+            stellarClassicTrustlineRemove={
+              isStellarClassicTrustlineTrackedToken
+                ? {
+                    hasTrustline: hasStellarClassicTrustlineToRemove,
+                    accountId: selectedAccount.id,
+                    assetId: assetId as CaipAssetType,
+                    scope: chainId as CaipChainId,
+                  }
+                : undefined
+            }
           />
         ) : null}
         {isMarketClosed && tokenAsset ? (
@@ -392,65 +562,7 @@ const AssetPage = ({
             />
           </Box>
         )}
-        {isMusdAssetPage ? (
-          <>
-            <MusdPositionSection
-              balanceDisplay={balance ? `${balance} ${t('musdSymbol')}` : '0'}
-              fiatValue={tokenFiatAmount}
-              showFiat={showFiat}
-            />
-            {isMerklClaimingEnabled ? (
-              <>
-                <Box
-                  marginTop={5}
-                  marginBottom={5}
-                  className="asset-page__divider"
-                />
-                <MusdBonusSection
-                  chainId={chainId as Hex}
-                  tokenAddress={(asset as { address: Hex }).address}
-                  positionFiatValue={showFiat ? aggregatedMusdFiat : null}
-                  showFiat={showFiat}
-                  hasPositiveBalance={hasAnyMusdBalance}
-                />
-                <Box
-                  marginTop={5}
-                  marginBottom={5}
-                  className="asset-page__divider"
-                />
-              </>
-            ) : (
-              <Box
-                marginTop={5}
-                marginBottom={5}
-                className="asset-page__divider"
-              />
-            )}
-            <MusdConvertSection />
-            <Box
-              marginTop={5}
-              marginBottom={5}
-              className="asset-page__divider"
-            />
-          </>
-        ) : (
-          <>
-            <Text
-              variant={TextVariant.HeadingSm}
-              className="asset-page__balance-heading"
-            >
-              {t('yourBalance')}
-            </Text>
-            {[AssetType.token, AssetType.native].includes(type) && (
-              <TokenCell
-                key={`${symbol}-${address}`}
-                token={tokenWithFiatAmount as TokenWithFiatAmount}
-                safeChains={safeChains}
-                musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
-              />
-            )}
-          </>
-        )}
+        {renderAssetBalanceSection()}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}
         {!isNativeAsset(updatedAsset) &&
           type === AssetType.token &&

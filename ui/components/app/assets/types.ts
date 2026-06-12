@@ -1,6 +1,6 @@
 import { KeyringAccountType } from '@metamask/keyring-api';
+import type { Asset, TokenListToken } from '@metamask/assets-controllers';
 import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
-import { type TokenListToken } from '@metamask/assets-controllers';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
@@ -47,6 +47,7 @@ export type TokenDisplayInfo = TokenDisplayValues & {
   tokenImage: string;
   isStakeable?: boolean;
   tokenChainImage: string;
+  isStellarTrustlineInactive?: boolean;
 };
 
 // Token type that includes fiat amount, balance, and display values
@@ -58,6 +59,7 @@ export type TokenWithFiatAmount = Token &
     rwaData?: TokenListToken['rwaData'];
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
     accountType?: KeyringAccountType;
+    extra?: Asset['extra'];
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;
