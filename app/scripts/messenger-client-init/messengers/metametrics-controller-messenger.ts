@@ -30,6 +30,7 @@ export function getMetaMetricsControllerMessenger(
       'NetworkController:getState',
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
+      'MultichainNetworkController:getState',
       'SeedlessOnboardingController:getState',
     ],
     events: [

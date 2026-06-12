@@ -20,6 +20,7 @@ import {
   SolAccountType,
   TrxAccountType,
 } from '@metamask/keyring-api';
+import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import {
@@ -33,6 +34,7 @@ import {
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
+import { QrKeyring } from '@metamask/eth-qr-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -2436,6 +2438,47 @@ describe('MetaMaskController', () => {
           );
         });
 
+        it('creates the QR keyring before probing reconnect status', async () => {
+          const addNewKeyring = jest.fn().mockResolvedValue(undefined);
+          const setHdPath = jest.fn();
+          const isUnlocked = jest.fn().mockReturnValue(true);
+          const withControllerSpy = jest
+            .spyOn(metamaskController.keyringController, 'withController')
+            .mockImplementation(async (callback) => {
+              return await callback({
+                keyrings: [],
+                addNewKeyring,
+              });
+            });
+          const withKeyringV2Spy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyringV2')
+            .mockImplementation(async (selector, callback) => {
+              expect(selector).toStrictEqual({ type: KeyringTypeV2.Qr });
+
+              return await callback({
+                keyring: {
+                  isUnlocked,
+                  setHdPath,
+                },
+              });
+            });
+
+          try {
+            const status = await metamaskController.checkHardwareStatus(
+              HardwareDeviceNames.qr,
+              `m/44'/60'/0'/0`,
+            );
+
+            expect(status).toStrictEqual(true);
+            expect(addNewKeyring).toHaveBeenCalledWith(QrKeyring.type);
+            expect(setHdPath).toHaveBeenCalledWith(`m/44'/60'/0'/0`);
+            expect(isUnlocked).toHaveBeenCalledTimes(1);
+          } finally {
+            withControllerSpy.mockRestore();
+            withKeyringV2Spy.mockRestore();
+          }
+        });
+
         [HardwareDeviceNames.trezor, HardwareDeviceNames.ledger].forEach(
           (device) => {
             describe(`using ${device}`, () => {
@@ -2464,15 +2507,15 @@ describe('MetaMaskController', () => {
 
           const mockKeyring = {
             bridge: {
+              updateTransportMethod: jest.fn().mockResolvedValue(true),
               getAppConfiguration: jest
                 .fn()
                 .mockResolvedValue(mockConfiguration),
             },
-            updateTransportMethod: jest.fn().mockResolvedValue(undefined),
           };
 
           const withKeyringSpy = jest
-            .spyOn(metamaskController.keyringController, 'withKeyring')
+            .spyOn(metamaskController.keyringController, 'withKeyringV2')
             .mockImplementation(async (_selector, fn) => {
               return await fn({ keyring: mockKeyring });
             });
@@ -2480,6 +2523,9 @@ describe('MetaMaskController', () => {
           try {
             const result = await metamaskController.getLedgerAppConfiguration();
 
+            expect(
+              mockKeyring.bridge.updateTransportMethod,
+            ).toHaveBeenCalledTimes(1);
             expect(
               mockKeyring.bridge.getAppConfiguration,
             ).toHaveBeenCalledTimes(1);
@@ -2490,20 +2536,57 @@ describe('MetaMaskController', () => {
         });
       });
 
+      describe('setLedgerTransportPreference', () => {
+        it('returns the bridge transport update result', async () => {
+          const updateTransportMethod = jest.fn().mockResolvedValue(true);
+
+          const result = await metamaskController.setLedgerTransportPreference({
+            bridge: { updateTransportMethod },
+          });
+
+          expect(updateTransportMethod).toHaveBeenCalledTimes(1);
+          expect(result).toBe(true);
+        });
+
+        it('returns undefined if the bridge does not expose transport updates', async () => {
+          const result = await metamaskController.setLedgerTransportPreference({
+            bridge: {},
+          });
+
+          expect(result).toBeUndefined();
+        });
+
+        it('rethrows errors from the bridge transport update', async () => {
+          const error = new Error('transport failed');
+
+          await expect(
+            metamaskController.setLedgerTransportPreference({
+              bridge: {
+                updateTransportMethod: jest.fn().mockRejectedValue(error),
+              },
+            }),
+          ).rejects.toThrow(error);
+        });
+      });
+
       describe('getHardwareTypeForMetric', () => {
-        it.each(['ledger', 'lattice', 'trezor', 'oneKey', 'qr'])(
-          'should return the correct type for %s',
-          async (type) => {
-            jest
-              .spyOn(metamaskController.keyringController, 'withKeyring')
-              .mockImplementation((_, fn) => fn({ keyring: { type } }));
+        it.each([
+          KeyringTypeV2.Ledger,
+          KeyringTypeV2.Lattice,
+          KeyringTypeV2.Trezor,
+          KeyringTypeV2.OneKey,
+          KeyringTypeV2.Qr,
+        ])('should return the correct type for %s', async (type) => {
+          jest
+            .spyOn(metamaskController.keyringController, 'withKeyringV2')
+            .mockImplementation((_, fn) => fn({ keyring: { type } }));
 
-            const result =
-              await metamaskController.getHardwareTypeForMetric('0x123');
+          const result =
+            await metamaskController.getHardwareTypeForMetric('0x123');
 
-            expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
-          },
-        );
+          expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
+          expect(result).toBeDefined();
+        });
       });
 
       describe('forgetDevice', () => {
@@ -2557,6 +2640,35 @@ describe('MetaMaskController', () => {
 
       describe('unlockHardwareWalletAccount', () => {
         const accountToUnlock = 0;
+
+        it('throws if the keyring does not create an account', async () => {
+          const withKeyringV2Spy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyringV2')
+            .mockImplementation(async (selector, callback) => {
+              expect(selector).toStrictEqual({ type: KeyringTypeV2.Lattice });
+
+              return await callback({
+                keyring: {
+                  entropySource: 'test-entropy-source',
+                  createAccounts: jest.fn().mockResolvedValue([]),
+                  network: null,
+                },
+              });
+            });
+
+          try {
+            await expect(
+              metamaskController.unlockHardwareWalletAccount(
+                accountToUnlock,
+                HardwareDeviceNames.lattice,
+              ),
+            ).rejects.toThrow(
+              `No account created for device: ${HardwareDeviceNames.lattice}`,
+            );
+          } finally {
+            withKeyringV2Spy.mockRestore();
+          }
+        });
 
         [HardwareDeviceNames.trezor, HardwareDeviceNames.ledger].forEach(
           (device) => {
@@ -4848,6 +4960,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4855,6 +4969,8 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4892,6 +5008,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
@@ -4922,6 +5040,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4929,18 +5049,24 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id-1',
+            dataType: 2, // ImportedSrp
           },
           {
             data: new Uint8Array([15, 16, 17, 18]),
             type: 'privateKey',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-pk-id',
+            dataType: 3, // ImportedPrivateKey
           },
           {
             data: new Uint8Array([19, 20, 21, 22]),
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id-2',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4980,6 +5106,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
@@ -5006,6 +5134,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -5013,6 +5143,8 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -5032,6 +5164,57 @@ describe('MetaMaskController', () => {
         await expect(
           metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
         ).rejects.toThrow('Failed to restore seed phrases');
+      });
+    });
+
+    describe('#addNewSeedPhraseBackup', () => {
+      it('should call addNewSecretData with ImportedSrp dataType', async () => {
+        await metamaskController.createNewVaultAndKeychain('test-password');
+
+        // Mock completedOnboarding to allow migration to run
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
+        // Migrations now run via the messenger action. Intercept that single
+        // action and let every other call fall through to the real handler.
+        // Returns false to indicate no migration was performed.
+        const realCall = metamaskController.controllerMessenger.call.bind(
+          metamaskController.controllerMessenger,
+        );
+        jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockImplementation((actionType, ...args) => {
+            if (actionType === 'SeedlessOnboardingController:runMigrations') {
+              return Promise.resolve(false);
+            }
+            return realCall(actionType, ...args);
+          });
+
+        const addNewSecretDataSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'addNewSecretData',
+          )
+          .mockResolvedValue();
+
+        const mockMnemonic =
+          'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+        const mockKeyringId = 'test-keyring-id';
+
+        await metamaskController.addNewSeedPhraseBackup(
+          mockMnemonic,
+          mockKeyringId,
+          true,
+        );
+
+        expect(addNewSecretDataSpy).toHaveBeenCalledWith(
+          expect.any(Uint8Array),
+          2, // EncAccountDataType.ImportedSrp
+          {
+            keyringId: mockKeyringId,
+          },
+        );
       });
     });
 

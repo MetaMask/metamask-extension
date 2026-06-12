@@ -317,6 +317,107 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
       // 1.23456 with 2 decimals → truncated to 1.23 → 123
       expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe('0x7b');
     });
+
+    it('does not crash when amount is in scientific notation (e.g. "1e-18")', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1e-18' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      // Should not throw — 1e-18 ETH = 1 wei = 0x1
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe('0x1');
+    });
+
+    it('does not crash when amount has absurd scientific notation exponent (e.g. "1e-18000000000000000000")', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1e-18000000000000000000' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      // Should not throw — value is sub-unit, rounds to 0x0
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe('0x0');
+    });
+
+    it('correctly parses positive scientific notation (e.g. "1.5e2" with 2 decimals)', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 2 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1.5e2' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      // 1.5e2 = 150 human-readable, with 2 decimals → 15000 base units = 0x3a98
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe(
+        '0x3a98',
+      );
+    });
   });
 });
 
@@ -2101,6 +2202,34 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
       expect(entry.marketData?.circulatingSupply).toBe('1000000000');
       expect(entry.marketData?.marketCap).toBe('1500000000');
       expect(entry.marketData?.totalVolume).toBe('500000000');
+    });
+
+    it('omits non-finite market data fields instead of stringifying them', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          conversionRates: {},
+          assetsPrice: {
+            [solanaTokenAssetId]: makeMockPrice({
+              id: 'sol-usdc',
+              price: 1.5,
+              allTimeHigh: null,
+              allTimeLow: undefined,
+              circulatingSupply: NaN,
+              marketCap: null,
+              totalVolume: Infinity,
+            }),
+          },
+        },
+      };
+      const result = getMultichainAssetsRatesControllerConversionRates(state);
+
+      const { marketData } = result[solanaTokenAssetId];
+      expect(marketData?.allTimeHigh).toBeUndefined();
+      expect(marketData?.allTimeLow).toBeUndefined();
+      expect(marketData?.circulatingSupply).toBeUndefined();
+      expect(marketData?.marketCap).toBeUndefined();
+      expect(marketData?.totalVolume).toBeUndefined();
     });
 
     it('handles empty assetsPrice', () => {

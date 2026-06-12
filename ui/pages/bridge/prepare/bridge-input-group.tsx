@@ -9,13 +9,13 @@ import {
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   Text,
   TextField,
   TextFieldType,
   ButtonLink,
 } from '../../../components/component-library';
-import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
