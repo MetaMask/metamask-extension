@@ -156,7 +156,10 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
       gap={2}
     >
       {renderIcon()}
-      <Text color={TextColor.inherit} data-testid="confirmation__details-origin">
+      <Text
+        color={TextColor.inherit}
+        data-testid="confirmation__details-origin"
+      >
         {urlWithoutProtocol}
       </Text>
     </Box>
