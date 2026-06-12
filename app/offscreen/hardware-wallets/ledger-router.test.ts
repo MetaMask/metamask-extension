@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import {
   LedgerHandlerMode,
   LedgerAction,
-  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
-
-// ---- Mocks ----
+import { LedgerDMKBridgeHandler } from './ledger-dmk';
+import initLegacy from './ledger';
+import initLedger, {
+  switchLedgerHandler,
+  bootstrapLedger,
+} from './ledger-router';
 
 const mockDmkInit = jest.fn();
 const mockDmkDestroy = jest.fn();
@@ -19,26 +18,37 @@ const mockLegacyInit = jest.fn();
 const mockLegacyDestroy = jest.fn();
 const mockLegacyHandleAction = jest.fn();
 
-let mockDmkInstance: { init: jest.Mock; destroy: jest.Mock; handleAction: jest.Mock };
-let mockLegacyInstance: { init: jest.Mock; destroy: jest.Mock; handleAction: jest.Mock };
+type MockHandler = {
+  init: jest.Mock;
+  destroy: jest.Mock;
+  handleAction: jest.Mock;
+};
 
-jest.mock("./ledger-dmk", () => ({
-  LedgerDMKBridgeHandler: jest.fn().mockImplementation(() => {
-    mockDmkInstance = {
-      init: mockDmkInit,
-      destroy: mockDmkDestroy,
-      handleAction: mockDmkHandleAction,
-    };
-    return mockDmkInstance;
-  }),
-  serializeLedgerError: jest.fn((error: unknown) =>
-    error instanceof Error
-      ? { message: error.message, name: error.name }
-      : { message: String(error) },
-  ),
-}));
+let mockDmkInstance: MockHandler;
+let mockLegacyInstance: MockHandler;
 
-jest.mock("./ledger", () => ({
+jest.mock('./ledger-dmk', () => {
+  let dmkCtorCalls = 0;
+  return {
+    LedgerDMKBridgeHandler: jest.fn().mockImplementation(() => {
+      dmkCtorCalls += 1;
+      mockDmkInstance = {
+        init: mockDmkInit,
+        destroy: mockDmkDestroy,
+        handleAction: mockDmkHandleAction,
+      };
+      return mockDmkInstance;
+    }),
+    serializeLedgerError: jest.fn((error: unknown) =>
+      error instanceof Error
+        ? { message: error.message, name: error.name }
+        : { message: String(error) },
+    ),
+  };
+});
+
+jest.mock('./ledger', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn().mockImplementation(() => {
     mockLegacyInstance = {
@@ -50,15 +60,24 @@ jest.mock("./ledger", () => ({
   }),
 }));
 
+const mockedDmkCtor = jest.mocked(LedgerDMKBridgeHandler);
+const mockedLegacyCtor = jest.mocked(initLegacy);
+
 // ---- Chrome Runtime Mock ----
 
-let capturedListener: ((msg: any, sender: any, sendResponse: any) => boolean) | null = null;
-const capturedListeners: Set<(msg: any, sender: any, sendResponse: any) => boolean> = new Set();
-const mockAddListener = jest.fn((callback) => {
+type MessageListener = (
+  msg: Record<string, unknown>,
+  sender: Record<string, unknown>,
+  sendResponse: (response: unknown) => void,
+) => boolean;
+
+let capturedListener: MessageListener | null = null;
+const capturedListeners: Set<MessageListener> = new Set();
+const mockAddListener = jest.fn((callback: MessageListener) => {
   capturedListener = callback;
   capturedListeners.add(callback);
 });
-const mockRemoveListener = jest.fn((callback) => {
+const mockRemoveListener = jest.fn((callback: MessageListener) => {
   capturedListeners.delete(callback);
   if (capturedListener === callback) {
     capturedListener = null;
@@ -67,7 +86,7 @@ const mockRemoveListener = jest.fn((callback) => {
 
 const mockSendMessage = jest.fn();
 
-Object.defineProperty(globalThis, "chrome", {
+Object.defineProperty(globalThis, 'chrome', {
   value: {
     runtime: {
       onMessage: {
@@ -81,147 +100,126 @@ Object.defineProperty(globalThis, "chrome", {
   configurable: true,
 });
 
-// We use a dynamic import so mocks take effect before the module loads
-let initLedger: (mode: LedgerHandlerMode) => Promise<void>;
-let switchLedgerHandler: (mode: LedgerHandlerMode) => Promise<void>;
-let bootstrapLedger: () => Promise<void>;
+// ---- Helpers ----
 
-beforeAll(async () => {
-  const mod = await import("./ledger-router");
-  initLedger = mod.default;
-  // Cast: the module exports initLedger as default; switchLedgerHandler is a named export
-  switchLedgerHandler = (mod as any).switchLedgerHandler;
-  bootstrapLedger = (mod as any).bootstrapLedger;
-});
+function getListener(): MessageListener {
+  if (!capturedListener) {
+    throw new Error('No listener captured');
+  }
+  return capturedListener;
+}
+
+function makeMessage(
+  action: LedgerAction,
+  params?: Record<string, unknown>,
+  target = OffscreenCommunicationTarget.ledgerOffscreen,
+) {
+  return { target, action, params };
+}
+
+function flushAsync() {
+  return new Promise((r) => setTimeout(r, 0));
+}
 
 // ---- Tests ----
 
-describe("LedgerRouter", () => {
+describe('LedgerRouter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     capturedListener = null;
     capturedListeners.clear();
-    mockDmkHandleAction.mockReset();
-    mockLegacyHandleAction.mockReset();
-    // Ensure the Legacy handler mocks have a default resolved implementation.
-    // The factory no longer calls .mockResolvedValue() itself so that tests
-    // can override with .mockImplementation() without being overwritten.
     mockLegacyInit.mockResolvedValue(undefined);
     mockLegacyDestroy.mockResolvedValue(undefined);
     mockDmkInit.mockResolvedValue(undefined);
     mockDmkDestroy.mockResolvedValue(undefined);
   });
 
-  // --- initLedger(mode) ---
-
-  describe("initLedger", () => {
-    it("initialises the DMK handler when mode is DMK", async () => {
+  describe('initLedger', () => {
+    it('initialises the DMK handler when mode is DMK', async () => {
       await initLedger(LedgerHandlerMode.DMK);
 
-      const { LedgerDMKBridgeHandler } = await import("./ledger-dmk");
-      const { default: initLegacyFn } = await import("./ledger");
-
-      expect(LedgerDMKBridgeHandler).toHaveBeenCalledTimes(1);
+      expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
       expect(mockDmkInit).toHaveBeenCalledTimes(1);
-      expect(initLegacyFn).not.toHaveBeenCalled();
+      expect(mockedLegacyCtor).not.toHaveBeenCalled();
     });
 
-    it("initialises the Legacy handler when mode is Legacy", async () => {
+    it('initialises the Legacy handler when mode is Legacy', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
 
-      const { LedgerDMKBridgeHandler } = await import("./ledger-dmk");
-      const { default: initLegacyFn } = await import("./ledger");
-
-      expect(LedgerDMKBridgeHandler).not.toHaveBeenCalled();
-      expect(initLegacyFn).toHaveBeenCalledTimes(1);
+      expect(mockedDmkCtor).not.toHaveBeenCalled();
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
     });
 
-    it("registers a message listener for LedgerOffscreen target", async () => {
+    it('registers a message listener for LedgerOffscreen target', async () => {
       await initLedger(LedgerHandlerMode.DMK);
 
       expect(mockAddListener).toHaveBeenCalledTimes(1);
       expect(capturedListener).not.toBeNull();
     });
 
-    it("does NOT call init() on the Legacy handler itself (router owns init)", async () => {
-      // initLegacy() now just constructs the handler — it does not call
-      // handler.init().  The router's createHandler() calls init(true) to
-      // skip the handler's own message listener while still setting up
-      // device event listeners.  This prevents double-dispatch of messages.
+    it('does NOT call init() on the Legacy handler itself (router owns init)', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
 
-      const { default: initLegacyFn } = await import("./ledger");
-
-      // initLegacy() was called (creates instance) but not init()
-      expect(initLegacyFn).toHaveBeenCalledTimes(1);
-      // The router's createHandler calls handler.init(true) exactly once
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
       expect(mockLegacyInit).toHaveBeenCalledTimes(1);
       expect(mockLegacyInit).toHaveBeenCalledWith(true);
     });
   });
 
-  // --- message routing ---
-
-  describe("message routing", () => {
-    it("routes LedgerOffscreen messages to the DMK handler", async () => {
+  describe('message routing', () => {
+    it('routes LedgerOffscreen messages to the DMK handler', async () => {
       await initLedger(LedgerHandlerMode.DMK);
-      mockDmkHandleAction.mockResolvedValue("dmk-result");
+      mockDmkHandleAction.mockResolvedValue('dmk-result');
 
       const sendResponse = jest.fn();
 
-      const result = capturedListener!(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.getPublicKey,
-          params: { hdPath: "m/44'/60'/0'/0/0" },
-        },
+      const result = getListener()(
+        makeMessage(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/0'/0/0",
+        }),
         {},
         sendResponse,
       );
 
-      // Listener returns true for async response
       expect(result).toBe(true);
-      expect(mockDmkHandleAction).toHaveBeenCalledWith(LedgerAction.getPublicKey, {
-        hdPath: "m/44'/60'/0'/0/0",
-      });
+      expect(mockDmkHandleAction).toHaveBeenCalledWith(
+        LedgerAction.getPublicKey,
+        { hdPath: "m/44'/60'/0'/0/0" },
+      );
 
-      // Wait for async response
-      await new Promise((r) => setTimeout(r, 0));
+      await flushAsync();
       expect(sendResponse).toHaveBeenCalledWith({
         success: true,
-        payload: "dmk-result",
+        payload: 'dmk-result',
       });
     });
 
-    it("routes LedgerOffscreen messages to the Legacy handler", async () => {
+    it('routes LedgerOffscreen messages to the Legacy handler', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
-      mockLegacyHandleAction.mockResolvedValue("legacy-result");
+      mockLegacyHandleAction.mockResolvedValue('legacy-result');
 
       const sendResponse = jest.fn();
 
-      capturedListener!(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.getPublicKey,
-        },
-        {},
-        sendResponse,
+      getListener()(makeMessage(LedgerAction.getPublicKey), {}, sendResponse);
+
+      expect(mockLegacyHandleAction).toHaveBeenCalledWith(
+        LedgerAction.getPublicKey,
+        undefined,
       );
 
-      expect(mockLegacyHandleAction).toHaveBeenCalledWith(LedgerAction.getPublicKey, undefined);
-
-      await new Promise((r) => setTimeout(r, 0));
+      await flushAsync();
       expect(sendResponse).toHaveBeenCalledWith({
         success: true,
-        payload: "legacy-result",
+        payload: 'legacy-result',
       });
     });
 
-    it("ignores messages not targeting LedgerOffscreen", async () => {
+    it('ignores messages not targeting LedgerOffscreen', async () => {
       await initLedger(LedgerHandlerMode.DMK);
 
-      const result = capturedListener!(
-        { target: "other-target", action: "something" },
+      const result = getListener()(
+        // @ts-expect-error - invalid target
+        makeMessage(LedgerAction.getPublicKey, undefined, 'other-target'),
         {},
         jest.fn(),
       );
@@ -230,178 +228,121 @@ describe("LedgerRouter", () => {
       expect(mockDmkHandleAction).not.toHaveBeenCalled();
     });
 
-    it("calls sendResponse with error payload on handler failure", async () => {
+    it('calls sendResponse with error payload on handler failure', async () => {
       await initLedger(LedgerHandlerMode.DMK);
-      mockDmkHandleAction.mockRejectedValue(new Error("bad"));
+      mockDmkHandleAction.mockRejectedValue(new Error('bad'));
 
       const sendResponse = jest.fn();
 
-      capturedListener!(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.getPublicKey,
-        },
-        {},
-        sendResponse,
-      );
+      getListener()(makeMessage(LedgerAction.getPublicKey), {}, sendResponse);
 
-      await new Promise((r) => setTimeout(r, 0));
+      await flushAsync();
       expect(sendResponse).toHaveBeenCalledWith({
         success: false,
-        payload: { error: expect.objectContaining({ message: "bad" }) },
+        payload: { error: expect.objectContaining({ message: 'bad' }) },
       });
     });
   });
 
-  // --- switchLedgerHandler(mode) ---
-
-  describe("switchLedgerHandler", () => {
-    it("switches from Legacy to DMK", async () => {
+  describe('switchLedgerHandler', () => {
+    it('switches from Legacy to DMK', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
       expect(mockLegacyInit).toHaveBeenCalledTimes(1);
-      const { default: initLegacyFn } = await import("./ledger");
-
-      initLegacyFn.mockClear();
-      mockLegacyDestroy.mockClear();
       jest.clearAllMocks();
-
-      // Re-import mocks that got cleared
-      const { LedgerDMKBridgeHandler } = await import("./ledger-dmk");
 
       await switchLedgerHandler(LedgerHandlerMode.DMK);
 
-      // Old handler should be destroyed
       expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
-
-      // New handler should be created
-      expect(LedgerDMKBridgeHandler).toHaveBeenCalledTimes(1);
+      expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
       expect(mockDmkInit).toHaveBeenCalledTimes(1);
     });
 
-    it("switches from DMK to Legacy", async () => {
+    it('switches from DMK to Legacy', async () => {
       await initLedger(LedgerHandlerMode.DMK);
       jest.clearAllMocks();
-
-      const { default: initLegacyFn } = await import("./ledger");
 
       await switchLedgerHandler(LedgerHandlerMode.Legacy);
 
       expect(mockDmkDestroy).toHaveBeenCalledTimes(1);
-      expect(initLegacyFn).toHaveBeenCalledTimes(1);
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
     });
 
-    it("is a no-op when switching to the same mode", async () => {
+    it('is a no-op when switching to the same mode', async () => {
       await initLedger(LedgerHandlerMode.DMK);
       jest.clearAllMocks();
 
       await switchLedgerHandler(LedgerHandlerMode.DMK);
 
       expect(mockDmkDestroy).not.toHaveBeenCalled();
-      const { LedgerDMKBridgeHandler } = await import("./ledger-dmk");
-      expect(LedgerDMKBridgeHandler).not.toHaveBeenCalled();
+      expect(mockedDmkCtor).not.toHaveBeenCalled();
     });
 
-    it("replaces the message listener after switching", async () => {
+    it('replaces the message listener after switching', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
-      mockLegacyHandleAction.mockResolvedValue("old");
+      mockLegacyHandleAction.mockResolvedValue('old');
 
-      // Verify legacy routing works
       const sendResponse = jest.fn();
-      capturedListener!(
-        { target: OffscreenCommunicationTarget.ledgerOffscreen, action: LedgerAction.getPublicKey },
-        {},
-        sendResponse,
-      );
-      await new Promise((r) => setTimeout(r, 0));
+      getListener()(makeMessage(LedgerAction.getPublicKey), {}, sendResponse);
+      await flushAsync();
       expect(sendResponse).toHaveBeenCalledWith({
         success: true,
-        payload: "old",
+        payload: 'old',
       });
 
-      // Switch to DMK
       jest.clearAllMocks();
-      mockDmkHandleAction.mockResolvedValue("new");
+      mockDmkHandleAction.mockResolvedValue('new');
 
       await switchLedgerHandler(LedgerHandlerMode.DMK);
 
-      // The listener should now route to DMK
       const sendResponse2 = jest.fn();
-      capturedListener!(
-        { target: OffscreenCommunicationTarget.ledgerOffscreen, action: LedgerAction.getPublicKey },
-        {},
-        sendResponse2,
-      );
-      await new Promise((r) => setTimeout(r, 0));
+      getListener()(makeMessage(LedgerAction.getPublicKey), {}, sendResponse2);
+      await flushAsync();
       expect(sendResponse2).toHaveBeenCalledWith({
         success: true,
-        payload: "new",
+        payload: 'new',
       });
     });
 
-    it("keeps the old handler alive when createHandler throws", async () => {
+    it('keeps the old handler alive when createHandler throws', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
-      mockLegacyHandleAction.mockResolvedValue("legacy-result");
+      mockLegacyHandleAction.mockResolvedValue('legacy-result');
       jest.clearAllMocks();
 
-      // Force createHandler for DMK to throw
-      mockDmkInit.mockRejectedValueOnce(new Error("dmk-failed"));
+      mockDmkInit.mockRejectedValueOnce(new Error('dmk-failed'));
 
-      await expect(switchLedgerHandler(LedgerHandlerMode.DMK)).rejects.toThrow("dmk-failed");
+      await expect(switchLedgerHandler(LedgerHandlerMode.DMK)).rejects.toThrow(
+        'dmk-failed',
+      );
 
-      // The old handler should NOT have been destroyed
       expect(mockLegacyDestroy).not.toHaveBeenCalled();
 
-      // The old handler should still be active and routing messages
       const sendResponse = jest.fn();
-      capturedListener!(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.getPublicKey,
-        },
-        {},
-        sendResponse,
-      );
-      await new Promise((r) => setTimeout(r, 0));
+      getListener()(makeMessage(LedgerAction.getPublicKey), {}, sendResponse);
+      await flushAsync();
       expect(sendResponse).toHaveBeenCalledWith({
         success: true,
-        payload: "legacy-result",
+        payload: 'legacy-result',
       });
     });
   });
 
-  // --- bootstrapLedger() ---
-
-  describe("bootstrapLedger", () => {
-    it("initialises the Legacy handler", async () => {
+  describe('bootstrapLedger', () => {
+    it('initialises the Legacy handler', async () => {
       await bootstrapLedger();
 
-      const { default: initLegacyFn } = await import("./ledger");
-      const { LedgerDMKBridgeHandler } = await import("./ledger-dmk");
-
-      expect(initLegacyFn).toHaveBeenCalledTimes(1);
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
       expect(mockLegacyInit).toHaveBeenCalledWith(true);
-      expect(LedgerDMKBridgeHandler).not.toHaveBeenCalled();
+      expect(mockedDmkCtor).not.toHaveBeenCalled();
     });
-
   });
 
-  // --- initLedger handler cleanup ---
-
-  describe("initLedger handler lifecycle", () => {
-    it("calls destroy() on the previous handler before overwriting with a new one", async () => {
-      // initLedger should clean up any existing handler to prevent
-      // leaks when called with a handler already active (e.g., the
-      // Bug 1 concurrency case or Bug 4 timeout fallback).
-      //
-      // Note: module state (activeHandler) persists across tests, so
-      // we track call deltas rather than absolute counts.
+  describe('initLedger handler lifecycle', () => {
+    it('calls destroy() on the previous handler before overwriting with a new one', async () => {
       await initLedger(LedgerHandlerMode.DMK);
 
       const dmkDestroyBefore = mockDmkDestroy.mock.calls.length;
       const legacyDestroyBefore = mockLegacyDestroy.mock.calls.length;
 
-      // Calling initLedger again with Legacy should destroy the
-      // existing DMK handler before creating the new one.
       await initLedger(LedgerHandlerMode.Legacy);
       expect(mockDmkDestroy.mock.calls.length).toBe(dmkDestroyBefore + 1);
       expect(mockLegacyDestroy.mock.calls.length).toBe(legacyDestroyBefore);
