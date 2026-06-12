@@ -118,9 +118,9 @@ export const EthereumOnlyAccounts: StoryFn<
   />
 );
 
-export const MultichainAccounts: StoryFn<
-  typeof SelectHardwareAccountsPage
-> = (args) => (
+export const MultichainAccounts: StoryFn<typeof SelectHardwareAccountsPage> = (
+  args,
+) => (
   <SelectHardwareAccountsPageStory
     {...args}
     accounts={createMockHardwareAccounts(3, {
@@ -144,9 +144,9 @@ export const WithAlreadyConnectedAccount: StoryFn<
   />
 );
 
-export const LoadingMoreAccounts: StoryFn<
-  typeof SelectHardwareAccountsPage
-> = (args) => (
+export const LoadingMoreAccounts: StoryFn<typeof SelectHardwareAccountsPage> = (
+  args,
+) => (
   <SelectHardwareAccountsPageStory
     {...args}
     accounts={FIGMA_DEFAULT_ACCOUNTS}
@@ -165,9 +165,9 @@ export const WithoutSettingsButton: StoryFn<
   />
 );
 
-export const FullscreenLayout: StoryFn<
-  typeof SelectHardwareAccountsPage
-> = (args) => (
+export const FullscreenLayout: StoryFn<typeof SelectHardwareAccountsPage> = (
+  args,
+) => (
   <div style={{ width: '100%', minHeight: '100vh' }}>
     <SelectHardwareAccountsPageStory {...args} />
   </div>

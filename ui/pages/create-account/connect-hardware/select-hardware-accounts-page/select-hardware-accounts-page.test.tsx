@@ -123,7 +123,9 @@ describe('SelectHardwareAccountsPage', () => {
   });
 
   it('calls onContinue with selected account ids', () => {
-    const { props } = render({ selectedAccountIds: ['account-0', 'account-1'] });
+    const { props } = render({
+      selectedAccountIds: ['account-0', 'account-1'],
+    });
 
     fireEvent.click(
       screen.getByTestId('select-hardware-accounts-page-continue-button'),

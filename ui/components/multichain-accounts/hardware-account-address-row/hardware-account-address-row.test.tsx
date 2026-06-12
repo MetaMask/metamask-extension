@@ -4,8 +4,7 @@ import { ETH_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
 import type { HardwareWalletAccountAddress } from './hardware-account-address-row.types';
 import { HardwareAccountAddressRow } from './hardware-account-address-row';
 
-const renderWithProviders = (ui: React.ReactElement) =>
-  render(<div>{ui}</div>);
+const renderWithProviders = (ui: React.ReactElement) => render(<div>{ui}</div>);
 
 describe('HardwareAccountAddressRow', () => {
   const baseAddress: HardwareWalletAccountAddress = {
@@ -51,6 +50,8 @@ describe('HardwareAccountAddressRow', () => {
       />,
     );
 
-    expect(screen.getByTestId('hardware-account-address-row')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('hardware-account-address-row'),
+    ).toBeInTheDocument();
   });
 });

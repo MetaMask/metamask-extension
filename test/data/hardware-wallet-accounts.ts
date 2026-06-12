@@ -16,7 +16,8 @@ export const createMockHardwareAccounts = (
     includeMultichainAddresses?: boolean;
   },
 ): HardwareWalletAccount[] => {
-  const includeMultichainAddresses = options?.includeMultichainAddresses ?? false;
+  const includeMultichainAddresses =
+    options?.includeMultichainAddresses ?? false;
 
   return Array.from({ length: count }, (_, index) => {
     const accountNumber = index + 1;

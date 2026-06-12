@@ -53,7 +53,9 @@ export const HardwareAccountCard = ({
       data-testid="hardware-account-card"
       data-selected={isSelected}
       title={
-        isDisabled ? (t('selectAnAccountAlreadyConnected') as string) : undefined
+        isDisabled
+          ? (t('selectAnAccountAlreadyConnected') as string)
+          : undefined
       }
     >
       <Box

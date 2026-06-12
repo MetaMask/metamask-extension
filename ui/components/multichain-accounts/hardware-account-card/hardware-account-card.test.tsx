@@ -102,9 +102,7 @@ describe('HardwareAccountCard', () => {
       />,
     );
 
-    expect(
-      screen.getByRole('checkbox', { name: 'Account 1' }),
-    ).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: 'Account 1' })).toBeDisabled();
     expect(
       screen.getByTitle(messages.selectAnAccountAlreadyConnected.message),
     ).toBeInTheDocument();
