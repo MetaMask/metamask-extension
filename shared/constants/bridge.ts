@@ -19,6 +19,7 @@ export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
   MultichainNetworks.BITCOIN,
   MultichainNetworks.TRON,
+  MultichainNetworks.STELLAR,
 ];
 
 const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
@@ -125,6 +126,7 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
   [MultichainNetworks.TRON]: 'Tron',
+  [MultichainNetworks.STELLAR]: 'Stellar',
 };
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';

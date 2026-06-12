@@ -11,6 +11,7 @@ import {
   validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
+  validateStellarAddress,
 } from './sendValidations';
 
 jest.mock('unicode-confusables');
@@ -197,6 +198,19 @@ describe('SendValidations', () => {
     it('returns error for invalid Bitcoin address', async () => {
       const invalidAddress = 'invalid-address';
       expect(validateBtcAddress(invalidAddress)).toEqual({
+        error: 'invalidAddress',
+      });
+    });
+  });
+
+  describe('validateStellarAddress', () => {
+    it('returns success for valid Stellar account id format', () => {
+      const validAddress = `G${'A'.repeat(55)}`;
+      expect(validateStellarAddress(validAddress)).toEqual({});
+    });
+
+    it('returns error for invalid Stellar address', () => {
+      expect(validateStellarAddress('not-a-stellar-address')).toEqual({
         error: 'invalidAddress',
       });
     });

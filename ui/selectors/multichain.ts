@@ -323,8 +323,6 @@ export function getMultichainIsTestnet(
     return true;
   }
 
-  // TODO: For now we only check for Bitcoin, Solana, and Tron, but we will need to
-  // update this for other non-EVM networks later!
   return [
     MultichainNetworks.BITCOIN_TESTNET,
     MultichainNetworks.BITCOIN_SIGNET,
@@ -332,6 +330,7 @@ export function getMultichainIsTestnet(
     MultichainNetworks.SOLANA_TESTNET,
     MultichainNetworks.TRON_NILE,
     MultichainNetworks.TRON_SHASTA,
+    MultichainNetworks.STELLAR_TESTNET,
   ].includes(providerConfig.chainId as MultichainNetworks);
 }
 
@@ -439,6 +438,7 @@ const SYNTHETIC_MULTICHAIN_CHAIN_IDS: readonly MultichainNetworks[] = [
   MultichainNetworks.TRON,
   MultichainNetworks.TRON_NILE,
   MultichainNetworks.TRON_SHASTA,
+  MultichainNetworks.STELLAR,
 ];
 
 /**

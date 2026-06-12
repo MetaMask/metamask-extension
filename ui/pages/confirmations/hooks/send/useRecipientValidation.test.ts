@@ -5,6 +5,7 @@ import {
   BITCOIN_ASSET,
   EVM_ASSET,
   SOLANA_ASSET,
+  STELLAR_NATIVE_ASSET,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -45,6 +46,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
   });
 
@@ -195,6 +197,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     const mockValidateHexAddress = jest
@@ -215,6 +218,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: true,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     mockUseSendContext.mockReturnValue({
@@ -244,11 +248,50 @@ describe('useRecipientValidation', () => {
     });
   });
 
+  it('validate stellar address for Stellar send type', async () => {
+    const validStellarAddress = `G${'A'.repeat(55)}`;
+
+    mockUseSendType.mockReturnValue({
+      isEvmSendType: false,
+      isSolanaSendType: false,
+      isBitcoinSendType: false,
+      isStellarSendType: true,
+      isTronSendType: false,
+    } as unknown as ReturnType<typeof useSendType>);
+
+    mockUseSendContext.mockReturnValue({
+      asset: STELLAR_NATIVE_ASSET,
+      to: validStellarAddress,
+      chainId: 'stellar:pubnet',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+      validateName: () =>
+        Promise.resolve({
+          error: 'nameResolutionFailedError',
+        }),
+    });
+
+    const mockValidateStellarAddress = jest
+      .spyOn(SendValidationUtils, 'validateStellarAddress')
+      .mockReturnValue({});
+
+    const { result } = renderHook();
+
+    await waitFor(() => {
+      expect(mockValidateStellarAddress).toHaveBeenCalledWith(
+        validStellarAddress,
+      );
+      expect(result.current.recipientError).toBeUndefined();
+    });
+  });
+
   it('validate bitcoin address for Bitcoin send type', async () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: false,
       isBitcoinSendType: true,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     mockUseSendContext.mockReturnValue({
