@@ -10,9 +10,7 @@ import {
 import { getEip7702SupportedChains } from '../../../../shared/lib/eip7702-support-utils';
 import { useConfirmContext } from '../context/confirm';
 import { selectIsEnforcedSimulationsEnabled } from '../selectors/feature-flags';
-
-const EMPTY_RESPONSES: EnforcedSimulationsState['addressSecurityAlertResponses'] =
-  {};
+import { EMPTY_OBJECT } from '../../../selectors/shared';
 
 function selectEip7702SupportedChains(state: {
   metamask: RemoteFeatureFlagControllerState;
@@ -25,7 +23,8 @@ export function useIsEnforcedSimulationsEligible(): boolean {
 
   const addressSecurityAlertResponses = useSelector(
     (state: { metamask: EnforcedSimulationsState }) =>
-      state.metamask.addressSecurityAlertResponses ?? EMPTY_RESPONSES,
+      state.metamask.addressSecurityAlertResponses ??
+        (EMPTY_OBJECT as EnforcedSimulationsState['addressSecurityAlertResponses']),
   );
 
   const eip7702SupportedChains = useSelector(

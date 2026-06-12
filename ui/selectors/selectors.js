@@ -3441,8 +3441,6 @@ export const getHdKeyringOfSelectedAccountOrPrimaryKeyring = createSelector(
  * @returns {object} The subject metadata object.
  */
 
-const EMPTY_SUBJECTS = Object.freeze({});
-
 /**
  * Selector to get the permission subjects object.
  *
@@ -3450,7 +3448,7 @@ const EMPTY_SUBJECTS = Object.freeze({});
  * @returns {object} The permissions subjects object.
  */
 export function getPermissionSubjects(state) {
-  return state.metamask.subjects || EMPTY_SUBJECTS;
+  return state.metamask.subjects || EMPTY_OBJECT;
 }
 
 /**

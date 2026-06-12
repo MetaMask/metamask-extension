@@ -6,6 +6,7 @@
  */
 
 import type { MetaMaskReduxState } from '../../store/store';
+import { EMPTY_ARRAY } from '../shared';
 
 /**
  * Select whether the mUSD conversion education screen has been seen
@@ -16,8 +17,6 @@ export const selectMusdConversionEducationSeen = (
   state: MetaMaskReduxState,
 ): boolean => state.metamask.musdConversionEducationSeen ?? false;
 
-const EMPTY_DISMISSED_CTA_KEYS: readonly string[] = Object.freeze([]);
-
 /**
  * Select the list of dismissed mUSD asset-detail CTA keys (chainId-tokenAddress)
  *
@@ -26,4 +25,5 @@ const EMPTY_DISMISSED_CTA_KEYS: readonly string[] = Object.freeze([]);
 export const selectMusdConversionDismissedCtaKeys = (
   state: MetaMaskReduxState,
 ): readonly string[] =>
-  state.metamask.musdConversionDismissedCtaKeys ?? EMPTY_DISMISSED_CTA_KEYS;
+  state.metamask.musdConversionDismissedCtaKeys ??
+  (EMPTY_ARRAY as readonly string[]);
