@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Dispatch } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
 
 import { connect } from 'react-redux';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -62,6 +62,11 @@ type ModalConfig = {
   disableBackdropClick?: boolean;
   onHide?: () => void;
   customOnHideOpts?: CustomOnHideOpts;
+};
+
+type FadeModalRef = {
+  show: () => void;
+  hide: () => void;
 };
 
 const MODALS: Record<string, ModalConfig> = {
@@ -241,7 +246,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
       dispatch(actions.hideModal());
       if (customOnHideOpts && customOnHideOpts.action) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        dispatch(customOnHideOpts.action(...(customOnHideOpts.args ?? [])) as any);
+        dispatch(customOnHideOpts.action(...(customOnHideOpts.args ?? [])) as AnyAction);
       }
     },
   };
@@ -265,7 +270,7 @@ type ModalProps = {
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
-  const modalRef = useRef<{ show: () => void; hide: () => void }>(null);
+  const modalRef = useRef<FadeModalRef>(null);
 
   useEffect(() => {
     if (active) {
