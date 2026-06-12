@@ -121,11 +121,13 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Signature request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             Review request details before you confirm.
           </p>
@@ -314,11 +316,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Spending cap request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             This site wants permission to spend your tokens.
           </p>
@@ -791,11 +795,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Spending cap request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             This site wants permission to spend your tokens.
           </p>
@@ -1317,11 +1323,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Signature request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             Review request details before you confirm.
           </p>
@@ -2060,11 +2068,13 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Spending cap request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             This site wants permission to spend your tokens.
           </p>
@@ -2477,11 +2487,13 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Signature request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             Review request details before you confirm.
           </p>
@@ -3296,11 +3308,13 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Signature request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             Review request details before you confirm.
           </p>
