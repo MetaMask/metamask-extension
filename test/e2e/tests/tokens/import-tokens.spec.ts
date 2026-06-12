@@ -548,6 +548,11 @@ describe('Import flow', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: importTokensTestMock,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver }) => {
         await login(driver, { validateBalance: false });
@@ -679,6 +684,11 @@ describe('Import flow', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: importTokensTestMock,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver }) => {
         await login(driver, { validateBalance: false });

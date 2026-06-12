@@ -1,12 +1,17 @@
 import { TransactionType } from '@metamask/transaction-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { SWAPS_WRAPPED_TOKENS_ADDRESSES } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { isEqualCaseInsensitive } from '../../string-utils';
-import { parseStandardTokenTransactionData } from '../../transaction.utils';
+import {
+  parseApprovalTransactionData,
+  parseStandardTokenTransactionData,
+  resolveApprovalTokenContractAddress,
+} from '../../transaction.utils';
 import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
-import type { ActivityListItem, TokenAmount } from '../types';
+import type { ActivityFee, ActivityListItem, TokenAmount } from '../types';
 import {
   supplyMethodIds,
   unwrapMethodIds,
@@ -15,8 +20,10 @@ import {
 } from './constants';
 import {
   getKnownTokenMetadata,
+  getLocalTransactionFees,
   getLocalTransactionStatus,
   getNativeAssetSafe,
+  getTokenMetadataFromKnownToken,
   isNftStandard,
 } from './helpers';
 
@@ -30,8 +37,11 @@ export function mapLocalTransaction(
     nativeAssetSymbol?: string;
     contractTokenMetadata?: { symbol?: string; decimals?: number };
     activityStatus?: ActivityListItem['status'];
+    fees?: ActivityFee[];
   },
 ): ActivityListItem {
+  const fees =
+    transactionGroup.fees ?? getLocalTransactionFees(transactionGroup);
   const { initialTransaction, primaryTransaction } = transactionGroup;
   const chainId = toCaipChainId(
     KnownCaipNamespace.Eip155,
@@ -113,6 +123,21 @@ export function mapLocalTransaction(
     };
   };
 
+  const mapApprovalToken = ({
+    amount,
+  }: {
+    amount?: string;
+  } = {}) => {
+    const contractAddress =
+      resolveApprovalTokenContractAddress(initialTransaction);
+    return getContractToken({
+      amount,
+      transaction: initialTransaction,
+      direction: 'out',
+      contractAddress,
+    });
+  };
+
   const getLegacySwapToken = (direction: TokenAmount['direction']) => {
     const key = direction === 'out' ? 'token_from' : 'token_to';
     const initialSwapMetaDataSymbol = initialTransaction.swapMetaData?.[key];
@@ -184,7 +209,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -209,7 +233,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -230,7 +253,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -263,9 +285,9 @@ export function mapLocalTransaction(
           chainId,
           status,
           timestamp,
-          raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
+            from,
             sourceToken,
           },
         };
@@ -276,11 +298,12 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
+          from,
           sourceToken,
           destinationToken,
+          fees,
         },
       };
     }
@@ -295,11 +318,12 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
+          from,
           sourceToken: enrichedSourceToken,
           destinationToken: enrichedDestinationToken,
+          fees,
         },
       };
     }
@@ -316,9 +340,9 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
+          from,
           sourceToken: transactionGroup.sourceToken,
           destinationToken: getContractToken({
             amount: amount?.toString(),
@@ -330,43 +354,104 @@ export function mapLocalTransaction(
       };
     }
 
+    case TransactionType.perpsDeposit:
+    case TransactionType.perpsDepositAndOrder:
+    case TransactionType.perpsWithdraw: {
+      const { metamaskPay } = initialTransaction;
+      const payChainId = metamaskPay?.chainId
+        ? toEvmCaipChainId(metamaskPay.chainId)
+        : undefined;
+
+      const token = payChainId
+        ? getTokenMetadataFromKnownToken(
+            metamaskPay?.tokenAddress,
+            'out',
+            payChainId,
+          )
+        : undefined;
+
+      const fiat = metamaskPay?.targetFiat
+        ? { amount: metamaskPay.targetFiat }
+        : undefined;
+      const networkFee =
+        typeof metamaskPay?.networkFeeFiat === 'string'
+          ? { amount: metamaskPay.networkFeeFiat }
+          : undefined;
+
+      return {
+        type:
+          initialTransaction.type === TransactionType.perpsWithdraw
+            ? 'perpsWithdraw'
+            : 'perpsAddFunds',
+        chainId: payChainId ?? chainId,
+        status,
+        timestamp,
+        data: {
+          hash,
+          from,
+          token,
+          fiat,
+          networkFee,
+        },
+      };
+    }
+
     case TransactionType.bridgeApproval:
     case TransactionType.shieldSubscriptionApprove:
     case TransactionType.swapApproval:
-    case TransactionType.tokenMethodApprove:
     case TransactionType.tokenMethodSetApprovalForAll:
       return {
         type: 'approveSpendingCap',
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
-          token: getContractToken({
-            transaction: initialTransaction,
-            direction: 'out',
-            contractAddress: initialTransaction.txParams.to,
-          }),
+          from,
+          token: mapApprovalToken(),
         },
       };
 
-    case TransactionType.tokenMethodIncreaseAllowance:
+    case TransactionType.tokenMethodApprove: {
+      const approveData = initialTransaction.txParams.data
+        ? parseApprovalTransactionData(
+            initialTransaction.txParams.data as `0x${string}`,
+          )
+        : undefined;
+      const approveAmount = approveData?.amountOrTokenId?.toFixed(0);
+      return {
+        type:
+          approveAmount === '0' ? 'revokeSpendingCap' : 'approveSpendingCap',
+        chainId,
+        status,
+        timestamp,
+        data: {
+          hash,
+          from,
+          token: mapApprovalToken({ amount: approveAmount }),
+        },
+      };
+    }
+
+    case TransactionType.tokenMethodIncreaseAllowance: {
+      const increaseData = initialTransaction.txParams.data
+        ? parseApprovalTransactionData(
+            initialTransaction.txParams.data as `0x${string}`,
+          )
+        : undefined;
+      const increaseAmount = increaseData?.amountOrTokenId?.toFixed(0);
       return {
         type: 'increaseSpendingCap',
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
-          token: getContractToken({
-            transaction: initialTransaction,
-            direction: 'out',
-            contractAddress: initialTransaction.txParams.to,
-          }),
+          from,
+          token: mapApprovalToken({ amount: increaseAmount }),
         },
       };
+    }
 
     case TransactionType.lendingDeposit:
       return {
@@ -374,9 +459,9 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
+          from,
           sourceToken: getContractToken({
             transaction: initialTransaction,
             direction: 'out',
@@ -391,9 +476,9 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
+          from,
           token: getContractToken({
             transaction: initialTransaction,
             direction: 'out',
@@ -408,9 +493,9 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
+          from,
         },
       };
 
@@ -448,9 +533,9 @@ export function mapLocalTransaction(
           chainId,
           status,
           timestamp,
-          raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
+            from,
             token: {
               direction: 'in',
             },
@@ -464,9 +549,9 @@ export function mapLocalTransaction(
           chainId,
           status,
           timestamp,
-          raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
+            from,
             sourceToken: getContractToken({
               amount: BigInt(suppliedTokenBalanceChange.difference).toString(),
               transaction: initialTransaction,
@@ -506,9 +591,9 @@ export function mapLocalTransaction(
           chainId,
           status,
           timestamp,
-          raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
+            from,
             destinationToken,
           },
         };
@@ -529,10 +614,6 @@ export function mapLocalTransaction(
           isEqualCaseInsensitive(to, wrappedTokenAddress)
         ) {
           const normalizedMethodId = methodId.toLowerCase();
-          const activityRaw = {
-            type: 'localTransaction' as const,
-            data: transactionGroup,
-          };
 
           if (wrapMethodIds.has(normalizedMethodId)) {
             const { value: wrapAmount } = initialTransaction.txParams;
@@ -544,9 +625,9 @@ export function mapLocalTransaction(
                   chainId,
                   status,
                   timestamp,
-                  raw: activityRaw,
                   data: {
                     hash,
+                    from,
                     sourceToken: getNativeToken(initialTransaction, 'out'),
                     destinationToken: getContractToken({
                       amount: wrapAmount,
@@ -581,9 +662,9 @@ export function mapLocalTransaction(
               chainId,
               status,
               timestamp,
-              raw: activityRaw,
               data: {
                 hash,
+                from,
                 sourceToken: getContractToken({
                   amount: unwrapAmount,
                   transaction: initialTransaction,
@@ -621,7 +702,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,

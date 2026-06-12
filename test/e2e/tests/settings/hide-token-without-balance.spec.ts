@@ -20,6 +20,11 @@ describe('Hide tokens without balance', function (this: Suite) {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         smartContract,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
