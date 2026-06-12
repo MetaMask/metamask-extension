@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import * as redux from 'react-redux';
@@ -9,8 +9,16 @@ import useTokenListPolling from '../hooks/useTokenListPolling';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
 import useMultichainAssetsRatesPolling from '../hooks/useMultichainAssetsRatesPolling';
-import { AssetPollingProvider } from './assetPolling';
+import {
+  AssetPollingContext,
+  AssetPollingContextValue,
+  AssetPollingProvider,
+} from './assetPolling';
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
 jest.mock('../hooks/useCurrencyRatePolling');
 jest.mock('../hooks/useTokenRatesPolling');
 jest.mock('../hooks/useTokenDetectionPolling');
@@ -18,6 +26,8 @@ jest.mock('../hooks/useTokenListPolling');
 jest.mock('../hooks/useStaticTokensPolling');
 jest.mock('../hooks/defi/useDeFiPolling');
 jest.mock('../hooks/useMultichainAssetsRatesPolling');
+
+const mockUseSelector = jest.mocked(redux.useSelector);
 
 const mockUseCurrencyRatePolling = jest.mocked(useCurrencyRatePolling);
 const mockUseTokenRatesPolling = jest.mocked(useTokenRatesPolling);
@@ -30,7 +40,7 @@ const mockUseMultichainAssetsRatesPolling = jest.mocked(
 );
 
 const renderProvider = (isAssetsUnifyStateEnabled: boolean) => {
-  jest.spyOn(redux, 'useSelector').mockReturnValue(isAssetsUnifyStateEnabled);
+  mockUseSelector.mockReturnValue(isAssetsUnifyStateEnabled);
 
   return render(
     <AssetPollingProvider>
@@ -95,6 +105,37 @@ describe('AssetPollingProvider', () => {
       expect(mockUseTokenRatesPolling).not.toHaveBeenCalled();
       expect(mockUseTokenDetectionPolling).not.toHaveBeenCalled();
       expect(mockUseMultichainAssetsRatesPolling).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('context value memoization', () => {
+    it('provides a stable context value object across re-renders', () => {
+      jest.spyOn(redux, 'useSelector').mockReturnValue(false);
+
+      const capturedValues: AssetPollingContextValue[] = [];
+
+      const TestConsumer = () => {
+        const ctx = useContext(AssetPollingContext);
+        useEffect(() => {
+          capturedValues.push(ctx);
+        });
+        return null;
+      };
+
+      const { rerender } = render(
+        <AssetPollingProvider>
+          <TestConsumer />
+        </AssetPollingProvider>,
+      );
+
+      rerender(
+        <AssetPollingProvider>
+          <TestConsumer />
+        </AssetPollingProvider>,
+      );
+
+      expect(capturedValues.length).toBeGreaterThanOrEqual(2);
+      expect(capturedValues[0]).toBe(capturedValues[1]);
     });
   });
 });
