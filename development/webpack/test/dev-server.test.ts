@@ -658,10 +658,14 @@ describe('./utils/dev-server', () => {
       const socket = new FakeWebSocket('ws://localhost:12345/ws');
       const onClose = mock.fn();
       let fallback: (() => void) | undefined;
-      mock.method(globalThis, 'setTimeout', (callback) => {
-        fallback = callback as () => void;
-        return 1 as unknown as ReturnType<typeof setTimeout>;
-      });
+      mock.method(
+        globalThis,
+        'setTimeout',
+        (callback: Parameters<typeof setTimeout>[0]) => {
+          fallback = callback as () => void;
+          return 1 as unknown as ReturnType<typeof setTimeout>;
+        },
+      );
       mock.method(globalThis, 'clearTimeout', () => undefined);
 
       closeSocket(socket as unknown as WebSocket, onClose);
@@ -696,7 +700,7 @@ describe('./utils/dev-server', () => {
       const { mock: setTimeoutMock } = mock.method(
         globalThis,
         'setTimeout',
-        (callback) => {
+        (callback: Parameters<typeof setTimeout>[0]) => {
           fallback = callback as () => void;
           return 1 as unknown as ReturnType<typeof setTimeout>;
         },
