@@ -1938,6 +1938,9 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeAgain": {
+    "message": "Bridge again"
+  },
   "bridgeAllowSwappingOf": {
     "message": "Allow exact access to $1 $2 on $3 for bridging",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -1967,6 +1970,9 @@
   },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
+  },
+  "bridgeExplorerPopupDescription": {
+    "message": "This transaction lives on two networks. One link shows the source, the other shows the destination once confirmed."
   },
   "bridgeFee": {
     "message": "Bridge fee"
@@ -3109,6 +3115,9 @@
   "dateCreated": {
     "message": "Date created"
   },
+  "day": {
+    "message": "Day"
+  },
   "debitCreditPurchaseOptions": {
     "message": "Debit or credit card purchase options"
   },
@@ -3140,6 +3149,12 @@
   },
   "decryptRequest": {
     "message": "Decrypt request"
+  },
+  "deepLinkQrPredictDescription": {
+    "message": "To access MetaMask Prediction Markets, scan the QR code with your mobile device."
+  },
+  "deepLinkQrPredictTitle": {
+    "message": "Open Prediction Markets on mobile"
   },
   "deepLink_Caution": {
     "message": "Proceed with caution"
@@ -9963,6 +9978,9 @@
   "swapAdjustSlippage": {
     "message": "Adjust slippage"
   },
+  "swapAgain": {
+    "message": "Swap again"
+  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -10425,6 +10443,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalAmount": {
+    "message": "Total amount"
   },
   "totalReceived": {
     "message": "Total received"
