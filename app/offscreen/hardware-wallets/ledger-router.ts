@@ -6,13 +6,6 @@ import {
 import { LedgerDMKBridgeHandler, serializeLedgerError } from './ledger-dmk';
 import initLegacy from './ledger';
 
-/** Shape of incoming ledger offscreen messages. */
-type LedgerMessage = {
-  target: string;
-  action: LedgerAction;
-  params?: Record<string, unknown>;
-};
-
 /** Interface that both DMK and Legacy handlers share for action dispatch. */
 type LedgerHandler = {
   init(skipMessageListener?: boolean): Promise<void>;
@@ -29,14 +22,12 @@ let activeHandler: LedgerHandler | null = null;
 /** The active mode, used to avoid unnecessary re-initialisation on switch. */
 let currentMode: LedgerHandlerMode | null = null;
 
+type ChromeMessageListener = Parameters<
+  typeof chrome.runtime.onMessage.addListener
+>[0];
+
 /** Reference to the router's own chrome.runtime.onMessage listener. */
-let messageListener:
-  | ((
-      msg: LedgerMessage,
-      sender: unknown,
-      sendResponse: (response: unknown) => void,
-    ) => boolean)
-  | null = null;
+let messageListener: ChromeMessageListener | null = null;
 
 /**
  * Tracks the in-flight `initLedger` call.  When `switchLedgerHandler` is
@@ -46,35 +37,24 @@ let messageListener:
  */
 let initInProgress: Promise<void> | null = null;
 
-function asChromeListener(
-  listener: (
-    msg: LedgerMessage,
-    sender: unknown,
-    sendResponse: (response: unknown) => void,
-  ) => boolean,
-) {
-  return (
-    message: unknown,
-    sender: unknown,
-    sendResponse: (response?: unknown) => void,
-  ) => listener(message as LedgerMessage, sender, sendResponse);
-}
-
 /**
  * Register (or re-register) the central message listener that dispatches
  * every `ledger-offscreen` action to the current active handler.
  */
 function registerMessageListener(): void {
   if (messageListener) {
-    chrome.runtime.onMessage.removeListener(asChromeListener(messageListener));
+    chrome.runtime.onMessage.removeListener(messageListener);
   }
 
   messageListener = (
-    msg: LedgerMessage,
+    msg: Record<string, unknown>,
     _sender: unknown,
-    sendResponse: (response: unknown) => void,
+    sendResponse: (response?: unknown) => void,
   ): boolean => {
-    if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
+    if (
+      msg.target !== OffscreenCommunicationTarget.ledgerOffscreen ||
+      typeof msg.action !== 'string'
+    ) {
       return false;
     }
 
@@ -86,8 +66,14 @@ function registerMessageListener(): void {
       return true;
     }
 
+    const action = msg.action as LedgerAction;
+    const params =
+      msg.params && typeof msg.params === 'object'
+        ? (msg.params as Record<string, unknown>)
+        : undefined;
+
     activeHandler
-      .handleAction(msg.action, msg.params)
+      .handleAction(action, params)
       .then((result) => {
         sendResponse({
           success: true,
@@ -106,7 +92,7 @@ function registerMessageListener(): void {
     return true;
   };
 
-  chrome.runtime.onMessage.addListener(asChromeListener(messageListener));
+  chrome.runtime.onMessage.addListener(messageListener);
 }
 
 /**

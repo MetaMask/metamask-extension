@@ -157,6 +157,18 @@ describe('LedgerRouter', () => {
       expect(capturedListener).not.toBeNull();
     });
 
+    it('removes the previous listener before re-registering', async () => {
+      await initLedger(LedgerHandlerMode.Legacy);
+      const firstListener = capturedListener;
+      expect(capturedListeners.size).toBe(1);
+
+      await initLedger(LedgerHandlerMode.DMK);
+
+      expect(mockRemoveListener).toHaveBeenCalledWith(firstListener);
+      expect(capturedListeners.size).toBe(1);
+      expect(capturedListener).not.toBe(firstListener);
+    });
+
     it('does NOT call init() on the Legacy handler itself (router owns init)', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
 
