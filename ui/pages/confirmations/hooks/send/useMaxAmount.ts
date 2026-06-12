@@ -223,9 +223,7 @@ export const useMaxAmount = () => {
   // this as one async call avoids a second state update per render.
   const { value: gasData } = useAsyncResult(async () => {
     const layer1GasFees =
-      !isEvmNativeSendType ||
-      asset?.chainId === CHAIN_IDS.MAINNET ||
-      !from
+      !isEvmNativeSendType || asset?.chainId === CHAIN_IDS.MAINNET || !from
         ? '0x0'
         : await getLayer1GasFees({
             asset: asset as Asset,
