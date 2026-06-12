@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../../contexts/i18n';
 import classnames from 'clsx';
-
 import { isHexString } from '@metamask/utils';
+import { I18nContext } from '../../../../../contexts/i18n';
 import { addHexPrefix } from '../../../../../../shared/lib/add-hex-prefix';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import {

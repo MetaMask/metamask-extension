@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -6,6 +5,7 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { I18nContext } from '../../../contexts/i18n';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { ButtonLink, ButtonLinkSize, Text } from '../../component-library';

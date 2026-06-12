@@ -13,6 +13,7 @@ import {
   BoxJustifyContent,
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
+import { I18nContext } from '../../../../contexts/i18n';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
   FontWeight,

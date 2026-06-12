@@ -143,6 +143,9 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
 
   static propTypes = {
     t: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
+    bufferedTrace: PropTypes.func.isRequired,
+    bufferedEndTrace: PropTypes.func.isRequired,
     /**
      * navigate function for redirect after action
      */
