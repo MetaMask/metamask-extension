@@ -520,6 +520,137 @@ describe('TokenManagementPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('hides the Arc USDC ERC20 from the token list while keeping the native token', () => {
+    const arcNativeToken = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId: '0x0000000000000000000000000000000000000000',
+      address: '0x0000000000000000000000000000000000000000',
+      chainId: '0x13b2',
+      image: '',
+      name: 'Arc Native USDC',
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: true,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+    const arcUsdcErc20Token = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId: '0x3600000000000000000000000000000000000000',
+      address: '0x3600000000000000000000000000000000000000',
+      chainId: '0x13b2',
+      image: '',
+      name: 'Arc USDC ERC20',
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: false,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x13b2': true,
+        },
+        accountGroupAssets: {
+          '0x13b2': [arcNativeToken, arcUsdcErc20Token],
+        },
+      }),
+    );
+
+    expect(screen.getByText('Arc Native USDC')).toBeInTheDocument();
+    expect(screen.queryByText('Arc USDC ERC20')).not.toBeInTheDocument();
+  });
+
+  it('hides the Arc USDC ERC20 when stored with a CAIP chain id and address only in the assetId', () => {
+    const arcNativeToken = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId: 'eip155:5042/slip44:60',
+      chainId: 'eip155:5042',
+      image: '',
+      name: 'Arc Native USDC',
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: true,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+    const arcUsdcErc20Token = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId:
+        'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
+      chainId: 'eip155:5042',
+      image: '',
+      name: 'Arc USDC ERC20',
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: false,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x13b2': true,
+        },
+        accountGroupAssets: {
+          '0x13b2': [arcNativeToken, arcUsdcErc20Token],
+        },
+      }),
+    );
+
+    expect(screen.getByText('Arc Native USDC')).toBeInTheDocument();
+    expect(screen.queryByText('Arc USDC ERC20')).not.toBeInTheDocument();
+  });
+
+  it('hides the Arc USDC ERC20 from API browse results', () => {
+    const arcUsdcErc20AssetId =
+      'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
+    const otherArcTokenAssetId =
+      'eip155:5042/erc20:0x0000000000000000000000000000000000000abc';
+    setTokenSearchState({
+      results: [
+        {
+          assetId: arcUsdcErc20AssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'Arc USDC ERC20',
+        },
+        {
+          assetId: otherArcTokenAssetId,
+          symbol: 'ARC',
+          decimals: 18,
+          name: 'Arc Other Token',
+        },
+      ],
+    });
+
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x13b2': true,
+        },
+      }),
+    );
+
+    expect(
+      screen.queryByTestId(
+        `token-management-cell-search-${arcUsdcErc20AssetId}`,
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId(
+        `token-management-cell-search-${otherArcTokenAssetId}`,
+      ),
+    ).toBeInTheDocument();
+  });
+
   it('enables API browse results for EVM and non-EVM networks when the page opens', () => {
     renderPage(
       createState({
