@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import { connectToDevServer } from './connect-to-dev-server';
+import { closeSocket, connectToDevServer } from './connect-to-dev-server';
 import { BACKGROUND_RELOAD_MESSAGE_TYPE } from './reload-protocol';
 
 // `__resourceQuery` is the query string of the request that pulled this module
@@ -77,10 +77,9 @@ async function onFingerprint(
   }
   reloading = true;
   console.info('[webpack-dev-server] Background updated. Reloading...');
-  // Close first so the impending teardown isn't logged as an unexpected
-  // disconnect, then reload the whole extension.
-  socket.close();
-  browser.runtime.reload();
+  // Wait for the close handshake so the impending teardown is not reported as
+  // an unexpected disconnect by the dev server.
+  closeSocket(socket, () => browser.runtime.reload());
 }
 
 if (socketUrl) {

@@ -74,3 +74,51 @@ export function connectToDevServer(
 
   connect(0);
 }
+
+/**
+ * Starts a normal WebSocket close handshake. When `onClose` is provided, it
+ * runs after the socket reports `close`; the timeout keeps callers from
+ * hanging if the close event never arrives.
+ *
+ * @param socket - The WebSocket to close.
+ * @param onClose - Optional callback to run after the socket closes.
+ * @param options - Optional close behavior overrides.
+ * @param options.timeoutMs - Fallback delay before running the callback without a close event.
+ * @param options.closureCode - The WebSocket closure code to use.
+ */
+export function closeSocket(
+  socket: WebSocket,
+  onClose?: () => void,
+  {
+    timeoutMs = 1000,
+    closureCode = 1000,
+  }: {
+    timeoutMs?: number;
+    closureCode?: number;
+  } = {},
+): void {
+  let complete = false;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  function finish(): void {
+    if (complete) {
+      return;
+    }
+    complete = true;
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+    }
+    onClose?.();
+  }
+
+  if (onClose) {
+    timeoutId = setTimeout(finish, timeoutMs);
+    socket.addEventListener('close', finish, { once: true });
+  }
+
+  try {
+    socket.close(closureCode);
+  } catch {
+    finish();
+  }
+}

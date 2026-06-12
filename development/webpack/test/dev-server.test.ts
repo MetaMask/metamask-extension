@@ -12,7 +12,10 @@ import {
   setupUiReload,
 } from '../utils/dev-server/ui-reload';
 import { setupBackgroundReload } from '../utils/dev-server/background-reload';
-import { connectToDevServer } from '../utils/dev-server/connect-to-dev-server';
+import {
+  closeSocket,
+  connectToDevServer,
+} from '../utils/dev-server/connect-to-dev-server';
 import {
   BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
   BACKGROUND_RELOAD_MESSAGE_TYPE,
@@ -619,6 +622,98 @@ describe('./utils/dev-server', () => {
         FakeWebSocket.sockets[1].dispatch('close');
         assert.strictEqual(setTimeoutMock.callCount(), 1);
       });
+    });
+  });
+
+  describe('closeSocket', () => {
+    it('waits for the socket close event before running the callback', () => {
+      const socket = new FakeWebSocket('ws://localhost:12345/ws');
+      const onClose = mock.fn();
+      const { mock: setTimeoutMock } = mock.method(
+        globalThis,
+        'setTimeout',
+        () => 1 as unknown as ReturnType<typeof setTimeout>,
+      );
+      const { mock: clearTimeoutMock } = mock.method(
+        globalThis,
+        'clearTimeout',
+        () => undefined,
+      );
+
+      closeSocket(socket as unknown as WebSocket, onClose);
+
+      assert.strictEqual(socket.close.mock.callCount(), 1);
+      assert.deepStrictEqual(socket.close.mock.calls[0].arguments, [1000]);
+      assert.strictEqual(onClose.mock.callCount(), 0);
+      socket.dispatch('close');
+      socket.dispatch('close');
+
+      assert.strictEqual(setTimeoutMock.callCount(), 1);
+      assert.strictEqual(setTimeoutMock.calls[0].arguments[1], 1000);
+      assert.strictEqual(onClose.mock.callCount(), 1);
+      assert.strictEqual(clearTimeoutMock.callCount(), 1);
+    });
+
+    it('runs the callback after the fallback timeout if the socket close event does not fire', () => {
+      const socket = new FakeWebSocket('ws://localhost:12345/ws');
+      const onClose = mock.fn();
+      let fallback: (() => void) | undefined;
+      mock.method(globalThis, 'setTimeout', (callback) => {
+        fallback = callback as () => void;
+        return 1 as unknown as ReturnType<typeof setTimeout>;
+      });
+      mock.method(globalThis, 'clearTimeout', () => undefined);
+
+      closeSocket(socket as unknown as WebSocket, onClose);
+
+      assert.strictEqual(onClose.mock.callCount(), 0);
+      assert(fallback, 'fallback callback should be registered');
+      fallback();
+      socket.dispatch('close');
+
+      assert.strictEqual(onClose.mock.callCount(), 1);
+    });
+
+    it('closes the socket without scheduling a callback when none is provided', () => {
+      const socket = new FakeWebSocket('ws://localhost:12345/ws');
+      const { mock: setTimeoutMock } = mock.method(
+        globalThis,
+        'setTimeout',
+        () => 1 as unknown as ReturnType<typeof setTimeout>,
+      );
+
+      closeSocket(socket as unknown as WebSocket);
+
+      assert.strictEqual(socket.close.mock.callCount(), 1);
+      assert.deepStrictEqual(socket.close.mock.calls[0].arguments, [1000]);
+      assert.strictEqual(setTimeoutMock.callCount(), 0);
+    });
+
+    it('uses custom timeout and closure code options', () => {
+      const socket = new FakeWebSocket('ws://localhost:12345/ws');
+      const onClose = mock.fn();
+      let fallback: (() => void) | undefined;
+      const { mock: setTimeoutMock } = mock.method(
+        globalThis,
+        'setTimeout',
+        (callback) => {
+          fallback = callback as () => void;
+          return 1 as unknown as ReturnType<typeof setTimeout>;
+        },
+      );
+      mock.method(globalThis, 'clearTimeout', () => undefined);
+
+      closeSocket(socket as unknown as WebSocket, onClose, {
+        timeoutMs: 250,
+        closureCode: 3001,
+      });
+
+      assert.deepStrictEqual(socket.close.mock.calls[0].arguments, [3001]);
+      assert.strictEqual(setTimeoutMock.calls[0].arguments[1], 250);
+      assert(fallback, 'fallback callback should be registered');
+      fallback();
+
+      assert.strictEqual(onClose.mock.callCount(), 1);
     });
   });
 

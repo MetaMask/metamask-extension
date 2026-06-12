@@ -1,4 +1,4 @@
-import { connectToDevServer } from './connect-to-dev-server';
+import { closeSocket, connectToDevServer } from './connect-to-dev-server';
 import { UI_RELOAD_MESSAGE_TYPE } from './reload-protocol';
 
 // `__resourceQuery` is the query string of the request that pulled this module
@@ -75,10 +75,9 @@ function onHash(hash: string, socket: WebSocket): void {
   }
   reloading = true;
   console.info('[webpack-dev-server] UI updated. Reloading...');
-  // Close first so the navigation isn't logged as an unexpected
-  // disconnect, then reload the tab.
-  socket.close();
-  self.location.reload();
+  // Wait for the close handshake so the navigation is not reported as an
+  // unexpected disconnect by the dev server.
+  closeSocket(socket, () => self.location.reload());
 }
 
 if (socketUrl) {
