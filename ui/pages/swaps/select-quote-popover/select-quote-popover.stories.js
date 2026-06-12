@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '../../../components/ui/button';
+import { Button } from '../../../components/component-library';
 import mockQuoteData from './mock-quote-data';
 import SelectQuotePopover from '.';
 
