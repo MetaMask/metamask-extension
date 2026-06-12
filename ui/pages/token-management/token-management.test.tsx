@@ -1416,7 +1416,9 @@ describe('TokenManagementPage', () => {
     it('leaves manageable token toggles enabled when no ARC USDC token is present', () => {
       renderPage();
 
-      expect(getMainnetTokenToggle()).not.toHaveClass('toggle-button--disabled');
+      expect(getMainnetTokenToggle()).not.toHaveClass(
+        'toggle-button--disabled',
+      );
     });
 
     it('disables manageable token toggles when an ARC USDC token (bare address) is present', () => {
@@ -1460,7 +1462,9 @@ describe('TokenManagementPage', () => {
         }),
       );
 
-      expect(getMainnetTokenToggle()).not.toHaveClass('toggle-button--disabled');
+      expect(getMainnetTokenToggle()).not.toHaveClass(
+        'toggle-button--disabled',
+      );
     });
   });
 });

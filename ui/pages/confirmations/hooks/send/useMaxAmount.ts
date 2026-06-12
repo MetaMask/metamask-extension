@@ -217,27 +217,33 @@ export const useMaxAmount = () => {
     return undefined;
   });
 
-  const { value: layer1GasFees } = useAsyncResult(async () => {
-    if (!isEvmNativeSendType || asset?.chainId === CHAIN_IDS.MAINNET || !from) {
-      return '0x0';
-    }
-    return await getLayer1GasFees({
-      asset: asset as Asset,
-      chainId: chainId as Hex,
-      from: from as Hex,
-      value: (value ?? '0') as string,
-    });
-  }, [asset, chainId, from, value]);
+  // A single async result resolves both the layer-1 gas fee (default flow) and,
+  // for Arc, the suggested fee fetched directly from the gas API (the gas-fee
+  // controller may not be polling Arc into state during the send flow). Keeping
+  // this as one async call avoids a second state update per render.
+  const { value: gasData } = useAsyncResult(async () => {
+    const layer1GasFees =
+      !isEvmNativeSendType ||
+      asset?.chainId === CHAIN_IDS.MAINNET ||
+      !from
+        ? '0x0'
+        : await getLayer1GasFees({
+            asset: asset as Asset,
+            chainId: chainId as Hex,
+            from: from as Hex,
+            value: (value ?? '0') as string,
+          });
 
-  // The gas-fee controller may not be polling Arc into state during the send
-  // flow, so fetch the suggested fee directly from the gas API for the Arc
-  // flow and fall back to any estimates already in state.
-  const { value: arcSuggestedMaxFeePerGas } = useAsyncResult(async () => {
-    if (!isArcNativeMirror || !chainId) {
-      return undefined;
-    }
-    return await fetchSuggestedMaxFeePerGas(chainId);
-  }, [isArcNativeMirror, chainId]);
+    const arcSuggestedMaxFeePerGas =
+      isArcNativeMirror && chainId
+        ? await fetchSuggestedMaxFeePerGas(chainId)
+        : undefined;
+
+    return { layer1GasFees, arcSuggestedMaxFeePerGas };
+  }, [asset, chainId, from, value, isArcNativeMirror, isEvmNativeSendType]);
+
+  const layer1GasFees = gasData?.layer1GasFees;
+  const arcSuggestedMaxFeePerGas = gasData?.arcSuggestedMaxFeePerGas;
 
   const getMaxAmount = useCallback(() => {
     if (isArcNativeMirror) {
