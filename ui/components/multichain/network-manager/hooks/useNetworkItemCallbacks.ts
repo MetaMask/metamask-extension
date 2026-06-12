@@ -84,9 +84,7 @@ export const useNetworkItemCallbacks = () => {
   );
 
   const getItemCallbacks = useCallback(
-    (
-      network: MultichainNetworkConfiguration,
-    ): NetworkItemCallbacks => {
+    (network: MultichainNetworkConfiguration): NetworkItemCallbacks => {
       const { chainId, isEvm } = network;
       const hexChainId = isEvm ? convertCaipToHexChainId(chainId) : undefined;
       const isDisableableDefault = isDisableableDefaultNetwork(chainId);
