@@ -2,6 +2,7 @@ import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
 import { isObject } from '@metamask/utils';
 import {
+  OFFSCREEN_LEDGER_INIT_TIMEOUT,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
@@ -34,25 +35,19 @@ async function init(): Promise<void> {
   initTrezor();
   initLattice();
 
-  // Signal that the offscreen document is booted.  The background's
-  // createOffscreen() isBooted handler resolves on this message.
-  // bootstrapLedger() starts the Legacy handler immediately; the
-  // background pushes the correct mode (DMK or Legacy) via
-  // switchLedgerMode once the controller is ready.
-  chrome.runtime.sendMessage({
-    target: OffscreenCommunicationTarget.extensionMain,
-    isBooted: true,
+  try {
+    const ledgerInitTimeout = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error('Ledger initialization timed out'));
+      }, OFFSCREEN_LEDGER_INIT_TIMEOUT);
+    });
+    await Promise.race([bootstrapLedger(), ledgerInitTimeout]);
+  } catch (error) {
+    console.error('Ledger initialization failed:', error);
+  }
+}
 
-    // This message is being sent from the Offscreen Document to the Service Worker.
-    // The Service Worker has no way to query `navigator.webdriver`, so we send it here.
-    webdriverPresent: navigator.webdriver === true,
-  });
-
-  await bootstrapLedger();
-
-  // The background broadcasts `metamaskBackgroundReady` only after its
-  // initialize() function returns, which happens after the controller is
-  // built. So registering the test listener here cannot miss the event.
+init().then(() => {
   if (process.env.IN_TEST) {
     chrome.runtime.onMessage.addListener((message) => {
       if (
@@ -67,7 +62,14 @@ async function init(): Promise<void> {
     });
   }
 
-  initConnectivityDetection();
-}
+  chrome.runtime.sendMessage({
+    target: OffscreenCommunicationTarget.extensionMain,
+    isBooted: true,
 
-init();
+    // This message is being sent from the Offscreen Document to the Service Worker.
+    // The Service Worker has no way to query `navigator.webdriver`, so we send it here.
+    webdriverPresent: navigator.webdriver === true,
+  });
+
+  initConnectivityDetection();
+});

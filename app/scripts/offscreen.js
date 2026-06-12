@@ -91,14 +91,11 @@ export async function createOffscreen() {
     return;
   }
 
-  // If the offscreen document fails to boot (e.g. crashes during init),
-  // loadPromise never resolves and createOffscreen() would hang forever.
-  // The race ensures we continue after a timeout, and the finally block
-  // cleans up the listener in both cases to prevent it from leaking and
-  // firing on subsequent boots.
+  // In case we are in a bad state where the offscreen document is not loading, timeout and let execution continue.
   const timeoutPromise = new Promise((resolve) => {
     setTimeout(resolve, OFFSCREEN_LOAD_TIMEOUT);
   });
+
   await Promise.race([loadPromise, timeoutPromise]);
 
   console.debug('Offscreen iframe loaded');

@@ -149,12 +149,6 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
-    console.debug('[LedgerBridge] #sendMessage', JSON.stringify({
-      action: message.action,
-      hasParams: Boolean(message.params),
-      timeout: timeout ?? 'none',
-    }));
-
     return this.#attemptSendMessage<TAction, ResponsePayload>(
       message,
       { timeout },
@@ -170,10 +164,6 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
 
       if (timeout) {
         responseTimeout = setTimeout(() => {
-          console.warn('[LedgerBridge] message timed out', JSON.stringify({
-            action: message.action,
-            timeout,
-          }));
           reject(new Error('Ledger iframe timeout'));
         }, timeout);
       }
@@ -188,11 +178,6 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
 
           if (chrome.runtime.lastError) {
             const chromeError = chrome.runtime.lastError.message;
-            console.error('[LedgerBridge] chrome.runtime.lastError set', JSON.stringify({
-              action: message.action,
-              lastError: chromeError,
-              responseReceived: response !== undefined,
-            }));
             reject(new Error(chromeError));
             return;
           }
@@ -201,16 +186,6 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
             resolve(response.payload || response.success);
           } else {
             const error = response?.payload?.error;
-            console.error('[LedgerBridge] offscreen responded with error', JSON.stringify({
-              action: message.action,
-              hasResponse: response !== undefined,
-              responseSuccess: response?.success,
-              errorStatusCode: error?.statusCode ?? null,
-              errorMessage: error?.message ?? null,
-              errorName: error?.name ?? null,
-              errorExtra: error?.extra ?? null,
-              rawResponse: response,
-            }, null, 2));
             if (
               error &&
               error.name === 'HardwareWalletError' &&

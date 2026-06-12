@@ -238,9 +238,7 @@ const frameIdMapping = {};
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
     persistenceManager,
-    {
-      validateVault: false,
-    },
+    { validateVault: false },
   );
 }
 
@@ -810,10 +808,6 @@ async function initialize(backup) {
   // This is fire-and-forget - we don't await it to avoid blocking initialization
   initInstallType();
 
-  // The offscreen document boots in parallel with controller construction.
-  // createOffscreen resolves once the offscreen sends isBooted. The
-  // offscreen always starts in Legacy mode — the correct mode is pushed
-  // via switchLedgerMode after the controller is ready.
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
   // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
@@ -900,8 +894,8 @@ async function initialize(backup) {
         event: OffscreenCommunicationEvents.switchLedgerMode,
         mode: initialMode,
       });
-    } catch (error) {
-      console.error('[LedgerMode] Failed to push initial mode:', error);
+    } catch {
+      // noop
     }
   }
 
@@ -921,8 +915,8 @@ async function initialize(backup) {
             event: OffscreenCommunicationEvents.switchLedgerMode,
             mode,
           });
-        } catch (error) {
-          console.warn('Failed to send switchLedgerMode to offscreen:', error);
+        } catch {
+          // noop
         }
       },
       (state) =>
@@ -1940,9 +1934,7 @@ export function setupController(
       ) {
         const portStreamForCookieHandlerPage = new ExtensionPortStream(
           remotePort,
-          {
-            chunkSize: 0,
-          },
+          { chunkSize: 0 },
         );
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,

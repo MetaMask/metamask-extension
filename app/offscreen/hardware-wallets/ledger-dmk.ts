@@ -266,27 +266,6 @@ export class LedgerDMKBridgeHandler {
         ),
       ),
     );
-    console.debug(
-      '[LedgerDMK] Session ready',
-      JSON.stringify({
-        sessionId: this.sessionId,
-        deviceModelId: sessionState.deviceModelId,
-        deviceName: sessionState.deviceName,
-        currentApp: sessionState.currentApp
-          ? {
-              name: sessionState.currentApp.name,
-              version: sessionState.currentApp.version,
-            }
-          : undefined,
-        firmwareVersion: sessionState.firmwareVersion,
-        batteryStatus: sessionState.batteryStatus
-          ? {
-              level: sessionState.batteryStatus.level,
-              status: sessionState.batteryStatus.status,
-            }
-          : undefined,
-      }),
-    );
 
     // Subscribe to disconnect events so we tear down the bridge when the
     // device is unplugged.
@@ -308,10 +287,7 @@ export class LedgerDMKBridgeHandler {
     this.sessionStateSubscription = bridge.onSessionStateChange.subscribe({
       next: ({ connected }) => {
         if (!connected) {
-          console.debug('[LedgerDMK] Device disconnected, destroying bridge');
-          this.destroy().catch((e) => {
-            console.warn('[LedgerDMK] Error destroying bridge:', e);
-          });
+          this.destroy().catch(() => {});
         }
       },
     });
@@ -346,9 +322,6 @@ export class LedgerDMKBridgeHandler {
    */
   private setupDeviceEventListeners(): void {
     if (!isWebHIDSupported()) {
-      console.warn(
-        '[LedgerDMK] WebHID not supported, skipping device event listeners',
-      );
       return;
     }
 
@@ -377,7 +350,6 @@ export class LedgerDMKBridgeHandler {
    * Sets up the message listener for handling Ledger actions from the offscreen bridge.
    */
   private setupMessageListener(): void {
-    console.debug('[LedgerDMK] Setting up message listener');
     this.messageListenerFn = (
       msg: Record<string, unknown>,
       _sender: unknown,
@@ -396,20 +368,8 @@ export class LedgerDMKBridgeHandler {
           ? (msg.params as Record<string, unknown>)
           : undefined;
 
-      console.debug(
-        '[LedgerDMK] Received message',
-        JSON.stringify({
-          action,
-          hasParams: Boolean(params),
-        }),
-      );
-
       this.handleAction(action, params)
         .then((result) => {
-          console.debug(
-            '[LedgerDMK] Action succeeded',
-            JSON.stringify({ action }),
-          );
           sendResponse({
             success: true,
             payload: result,
@@ -550,18 +510,13 @@ export class LedgerDMKBridgeHandler {
    * router (ledger-router.ts) manages the listener instead.
    */
   async init(skipMessageListener = false): Promise<void> {
-    console.debug('[LedgerDMK] init() — starting');
     this.setupDeviceEventListeners();
     if (!skipMessageListener) {
       this.setupMessageListener();
     }
-    console.debug('[LedgerDMK] init() — listeners registered');
 
     // Notify extension if a Ledger is already permitted
     if (!isWebHIDSupported()) {
-      console.warn(
-        '[LedgerDMK] WebHID not supported, Ledger functionality will be limited',
-      );
       return;
     }
 
@@ -584,7 +539,6 @@ export class LedgerDMKBridgeHandler {
         error,
       );
     }
-    console.debug('[LedgerDMK] init() — complete');
   }
 
   /**
@@ -603,8 +557,8 @@ export class LedgerDMKBridgeHandler {
     if (this.bridge) {
       try {
         await this.bridge.destroy();
-      } catch (error) {
-        console.warn('[LedgerDMK] Error destroying bridge:', error);
+      } catch {
+        // Bridge cleanup failed; nothing to recover here.
       }
       this.bridge = null;
     }

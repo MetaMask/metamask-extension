@@ -123,11 +123,6 @@ async function createHandler(mode: LedgerHandlerMode): Promise<LedgerHandler> {
 export default async function initLedger(
   mode: LedgerHandlerMode,
 ): Promise<void> {
-  console.debug(
-    '[LedgerOffscreen] Module init() — creating handler',
-    JSON.stringify({ mode }),
-  );
-
   // Signal that an init is in-flight so that switchLedgerHandler can
   // await it instead of creating a duplicate Legacy handler.
   const promise = (async () => {
@@ -186,20 +181,12 @@ export async function switchLedgerHandler(
   // as the default before switching. This handles the race where
   // switchLedgerMode arrives during bootstrap before initLedger runs.
   if (!activeHandler) {
-    console.debug(
-      '[LedgerOffscreen] switchLedgerHandler() — no active handler, initialising Legacy as default',
-    );
     await initLedger(LedgerHandlerMode.Legacy);
   }
 
   if (mode === currentMode) {
     return;
   }
-
-  console.debug(
-    '[LedgerOffscreen] switchLedgerHandler() — switching mode',
-    JSON.stringify({ from: currentMode, to: mode }),
-  );
 
   const newHandler = await createHandler(mode);
   const previous = activeHandler;
@@ -225,15 +212,8 @@ function listenForModeSwitches(): void {
       msg?.target === OffscreenCommunicationTarget.extension &&
       msg?.event === OffscreenCommunicationEvents.switchLedgerMode
     ) {
-      console.debug(
-        '[LedgerOffscreen] Received switchLedgerMode event',
-        JSON.stringify({ mode: msg.mode }),
-      );
-      switchLedgerHandler(msg.mode as LedgerHandlerMode).catch((error) => {
-        console.log(
-          '[LedgerOffscreen] Failed to switch Ledger handler:',
-          error,
-        );
+      switchLedgerHandler(msg.mode as LedgerHandlerMode).catch(() => {
+        // Switch failed silently — mode will be retried on next event
       });
     }
   });
@@ -253,7 +233,7 @@ export async function bootstrapLedger(): Promise<void> {
 
   try {
     await initLedger(LedgerHandlerMode.Legacy);
-  } catch (error) {
-    console.log('Ledger initialization failed:', error);
+  } catch {
+    // Initialization failed — Ledger will not be available
   }
 }
