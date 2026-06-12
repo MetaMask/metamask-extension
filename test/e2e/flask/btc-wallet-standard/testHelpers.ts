@@ -2,10 +2,9 @@ import { Mockttp } from 'mockttp';
 import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import { addMultichainAccounts } from '../../page-objects/flows/add-account.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder-v2';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import Homepage from '../../page-objects/pages/home/homepage';
-import AccountListPage from '../../page-objects/pages/account-list-page';
 import {
   mockExchangeRates,
   mockInitialFullScan,
@@ -129,20 +128,7 @@ export async function withBtcWalletStandardSnap(
 
       await driver.delay(regularDelayMs); // workaround to avoid flakiness
 
-      const accountListPage = new AccountListPage(driver);
-      const homepage = new Homepage(driver);
-      await homepage.checkExpectedBalanceIsDisplayed();
-
-      for (let i = 0; i < numberOfAccounts; i++) {
-        if (i === 0) {
-          await homepage.headerNavbar.openAccountMenu();
-        }
-
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.addMultichainAccount();
-      }
-
-      await accountListPage.selectAccount('Account 1');
+      await addMultichainAccounts({ driver, numberOfAccounts });
 
       await test(driver, mockServer);
     },

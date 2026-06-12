@@ -35,3 +35,38 @@ export const addAccount = async ({
     await accountListPage.closeMultichainAccountsPage();
   }
 };
+
+/**
+ * Opens the account menu once, creates the given number of multichain
+ * accounts, then selects the requested account.
+ *
+ * @param options - Flow options.
+ * @param options.driver - The webdriver instance.
+ * @param options.numberOfAccounts - Number of multichain accounts to create. Defaults to 1.
+ * @param options.accountToSelect - Account label to select once creation is done. Defaults to 'Account 1'.
+ */
+export const addMultichainAccounts = async ({
+  driver,
+  numberOfAccounts = 1,
+  accountToSelect = 'Account 1',
+}: {
+  driver: Driver;
+  numberOfAccounts?: number;
+  accountToSelect?: string;
+}): Promise<void> => {
+  const homepage = new HomePage(driver);
+  const accountListPage = new AccountListPage(driver);
+
+  await homepage.checkExpectedBalanceIsDisplayed();
+
+  for (let i = 0; i < numberOfAccounts; i++) {
+    if (i === 0) {
+      await homepage.headerNavbar.openAccountMenu();
+    }
+
+    await accountListPage.checkPageIsLoaded();
+    await accountListPage.addMultichainAccount();
+  }
+
+  await accountListPage.selectAccount(accountToSelect);
+};
