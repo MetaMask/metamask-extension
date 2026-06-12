@@ -162,6 +162,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@grpc/grpc-js": "^1.9.16",
     "@metamask/bridge-controller": "73.2.0",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "32.0.0",
