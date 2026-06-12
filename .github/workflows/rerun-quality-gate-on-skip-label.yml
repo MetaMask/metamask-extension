@@ -1,0 +1,52 @@
+name: Rerun quality gate on skip label
+
+# Companion to the skip-benchmark-gate escape hatch in run-benchmarks.yml.
+# Adding the label to a PR re-runs any failed quality-gate jobs for the PR's
+# head commit (both pull_request and push runs on release/* branches), where
+# the skip-check step then reads the label at run time and skips the gate.
+# Without this, the label only takes effect on the next push to the branch,
+# or after manually locating and re-running the failed job.
+#
+# pull_request_target is required (not pull_request) so the token has
+# actions: write on fork PRs. Safe here: no PR code is checked out and the
+# only event inputs used are the label name, head SHA, and run/job IDs
+# resolved through the API.
+
+on:
+  pull_request_target:
+    types:
+      - labeled
+
+permissions: {}
+
+jobs:
+  rerun-quality-gate:
+    name: Rerun failed quality-gate jobs
+    if: ${{ github.event.label.name == 'skip-benchmark-gate' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Rerun failed quality-gate jobs for the PR head commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          RUN_IDS=$(gh api "repos/$REPO/actions/runs?head_sha=$HEAD_SHA&status=completed" --jq '.workflow_runs[].id')
+          if [ -z "$RUN_IDS" ]; then
+            echo "No completed workflow runs found for $HEAD_SHA — nothing to re-run."
+            echo "In-progress runs read the label at gate time and need no re-run."
+            exit 0
+          fi
+          for run_id in $RUN_IDS; do
+            JOB_IDS=$(gh api "repos/$REPO/actions/runs/$run_id/jobs?per_page=100" --paginate \
+              --jq '.jobs[] | select((.name | endswith("quality-gate")) and .conclusion == "failure") | .id')
+            for job_id in $JOB_IDS; do
+              echo "Re-running quality-gate job $job_id in run $run_id"
+              gh api -X POST "repos/$REPO/actions/jobs/$job_id/rerun" ||
+                echo "Could not re-run job $job_id (already re-running or expired) — skipping."
+            done
+          done
+        shell: bash
