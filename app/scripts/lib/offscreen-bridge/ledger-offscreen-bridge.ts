@@ -3,6 +3,8 @@ import {
   GetAppNameAndVersionResponse,
   isKnownLedgerError,
   LedgerBridge,
+  LedgerSignDelegationAuthorizationParams,
+  LedgerSignDelegationAuthorizationResponse,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
@@ -134,13 +136,23 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
     });
   }
 
+  deviceSignDelegationAuthorization(
+    params: LedgerSignDelegationAuthorizationParams,
+  ): Promise<LedgerSignDelegationAuthorizationResponse> {
+    return this.#sendMessage({
+      action: LedgerAction.signEip7702Authorization,
+      params,
+    });
+  }
+
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
-    return this.#attemptSendMessage<TAction, ResponsePayload>(message, {
-      timeout,
-    });
+    return this.#attemptSendMessage<TAction, ResponsePayload>(
+      message,
+      { timeout },
+    );
   }
 
   #attemptSendMessage<TAction extends LedgerAction, ResponsePayload>(
