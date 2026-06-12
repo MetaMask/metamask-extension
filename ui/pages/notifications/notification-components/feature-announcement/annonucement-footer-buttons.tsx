@@ -19,6 +19,16 @@ import {
 } from '../../../../helpers/utils/resolve-deep-link-href';
 import { FeatureAnnouncementNotification } from './types';
 
+type ResolvedHref = {
+  href: string;
+  sourceUrl: string;
+};
+
+type PendingResolvedHref = {
+  promise: Promise<string>;
+  sourceUrl: string;
+};
+
 function shouldUseDefaultLinkNavigation(
   event: React.MouseEvent<HTMLElement>,
 ): boolean {
@@ -100,62 +110,94 @@ export const ExternalLinkButton = (props: {
 
   const { externalLink } = notification.data;
   const externalLinkUrl = externalLink?.externalLinkUrl;
-  const [resolvedHref, setResolvedHref] = useState<string | undefined>();
-  const resolvedHrefRef = useRef<string | undefined>();
-  const pendingResolvedHrefRef = useRef<Promise<string> | undefined>();
+  const [resolvedHref, setResolvedHref] = useState<ResolvedHref | undefined>();
+  const resolvedHrefRef = useRef<ResolvedHref | undefined>();
+  const pendingResolvedHrefRef = useRef<PendingResolvedHref | undefined>();
 
   useEffect(() => {
     resolvedHrefRef.current = resolvedHref;
   }, [resolvedHref]);
 
-  const resolveHref = useCallback(async (): Promise<string> => {
+  const resolveHref = useCallback((): Promise<string> => {
     const linkUrl = externalLinkUrl;
 
     if (!linkUrl) {
-      return '';
+      return Promise.resolve('');
     }
 
-    if (resolvedHrefRef.current) {
-      return resolvedHrefRef.current;
+    const resolvedHrefForLink = resolvedHrefRef.current;
+    if (resolvedHrefForLink?.sourceUrl === linkUrl) {
+      return Promise.resolve(resolvedHrefForLink.href);
     }
 
-    if (!pendingResolvedHrefRef.current) {
-      pendingResolvedHrefRef.current = resolveTrustedDeepLinkHref(
-        linkUrl,
-      ).catch((error) => {
-        console.error(
-          '[ExternalLinkButton] error resolving external link',
-          error,
-        );
-        return linkUrl;
-      });
+    const pendingResolvedHref = pendingResolvedHrefRef.current;
+    if (pendingResolvedHref?.sourceUrl === linkUrl) {
+      return pendingResolvedHref.promise;
     }
 
-    return await pendingResolvedHrefRef.current;
+    const promise = resolveTrustedDeepLinkHref(linkUrl).catch((error) => {
+      console.error(
+        '[ExternalLinkButton] error resolving external link',
+        error,
+      );
+      return linkUrl;
+    });
+
+    pendingResolvedHrefRef.current = {
+      promise,
+      sourceUrl: linkUrl,
+    };
+
+    return promise;
   }, [externalLinkUrl]);
 
   useEffect(() => {
     if (!externalLinkUrl) {
+      resolvedHrefRef.current = undefined;
+      pendingResolvedHrefRef.current = undefined;
+      setResolvedHref(undefined);
       return;
     }
 
     let isMounted = true;
+    const sourceUrl = externalLinkUrl;
 
-    pendingResolvedHrefRef.current = undefined;
-    setResolvedHref(undefined);
-    resolveHref()
+    if (resolvedHrefRef.current?.sourceUrl !== sourceUrl) {
+      resolvedHrefRef.current = undefined;
+    }
+
+    setResolvedHref((currentResolvedHref) =>
+      currentResolvedHref?.sourceUrl === sourceUrl
+        ? currentResolvedHref
+        : undefined,
+    );
+
+    const pendingResolvedHref = resolveHref();
+    pendingResolvedHref
       .then((href) => {
         if (isMounted) {
-          setResolvedHref(href);
+          const nextResolvedHref = { href, sourceUrl };
+          resolvedHrefRef.current = nextResolvedHref;
+          setResolvedHref(nextResolvedHref);
         }
       })
       .finally(() => {
-        pendingResolvedHrefRef.current = undefined;
+        if (
+          pendingResolvedHrefRef.current?.sourceUrl === sourceUrl &&
+          pendingResolvedHrefRef.current.promise === pendingResolvedHref
+        ) {
+          pendingResolvedHrefRef.current = undefined;
+        }
       });
 
     return () => {
       isMounted = false;
-      pendingResolvedHrefRef.current = undefined;
+      if (
+        pendingResolvedHrefRef.current?.sourceUrl === sourceUrl &&
+        pendingResolvedHrefRef.current.promise === pendingResolvedHref
+      ) {
+        pendingResolvedHrefRef.current = undefined;
+      }
     };
   }, [externalLinkUrl, resolveHref]);
 
@@ -164,6 +206,8 @@ export const ExternalLinkButton = (props: {
   }
 
   const { externalLinkText } = externalLink;
+  const resolvedHrefForExternalLink =
+    resolvedHref?.sourceUrl === externalLinkUrl ? resolvedHref.href : undefined;
 
   const openResolvedLink = async () => {
     const href = await resolveHref();
@@ -197,8 +241,12 @@ export const ExternalLinkButton = (props: {
     <NotificationDetailButton
       variant={ButtonVariant.Secondary}
       text={externalLinkText}
-      href={resolvedHref ?? externalLinkUrl}
-      isExternal={resolvedHref ? !isInternalRouteHref(resolvedHref) : false}
+      href={resolvedHrefForExternalLink ?? externalLinkUrl}
+      isExternal={
+        resolvedHrefForExternalLink
+          ? !isInternalRouteHref(resolvedHrefForExternalLink)
+          : false
+      }
       onClick={onClick}
     />
   );
