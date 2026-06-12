@@ -40,7 +40,6 @@ import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { Tag } from '../../component-library';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -107,7 +106,6 @@ export function useGlobalMenuSections(
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
@@ -150,18 +148,6 @@ export function useGlobalMenuSections(
       !hasThirdPartyNotifySnaps && !isMetamaskNotificationsEnabled;
 
     if (shouldShowEnableModal) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationsActivationFlow,
-        event: MetaMetricsEventName.NotificationsActivated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          action_type: 'started',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_profile_syncing_enabled: isBackupAndSyncEnabled,
-        },
-      });
       dispatch(showConfirmTurnOnMetamaskNotifications());
       onClose();
       return;
@@ -186,7 +172,6 @@ export function useGlobalMenuSections(
     hasThirdPartyNotifySnaps,
     isMetamaskNotificationsEnabled,
     trackEvent,
-    isBackupAndSyncEnabled,
     dispatch,
     onClose,
     navigate,

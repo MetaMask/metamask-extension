@@ -1,10 +1,5 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import {
   NotificationsSettingsBox,
@@ -25,6 +20,7 @@ type NotificationsSettingsPerAccountProps = {
   disabledSwitch?: boolean;
   refetchAccountSettings: () => Promise<void>;
   refetchNotificationPreferences?: () => Promise<unknown>;
+  onToggle?: (newState: boolean) => void;
 };
 
 function useUpdateAccountSetting(
@@ -57,6 +53,7 @@ function useUpdateAccountSetting(
       refetch,
       refetchAccountSettings,
       refetchNotificationPreferences,
+      setLoading,
       switchAccountNotifications,
     ],
   );
@@ -72,9 +69,8 @@ export const NotificationsSettingsPerAccount = ({
   disabledSwitch,
   refetchAccountSettings,
   refetchNotificationPreferences,
+  onToggle,
 }: NotificationsSettingsPerAccountProps) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
-
   const {
     toggleAccount,
     loading: isUpdatingAccount,
@@ -91,23 +87,10 @@ export const NotificationsSettingsPerAccount = ({
   const error = accountError;
 
   const handleToggleAccountNotifications = useCallback(async () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationSettings,
-      event: MetaMetricsEventName.NotificationsSettingsUpdated,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_type: 'account_notifications',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        old_value: isEnabled,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_value: !isEnabled,
-      },
-    });
-    await toggleAccount(!isEnabled);
-  }, [address, isEnabled, toggleAccount, trackEvent]);
+    const newState = !isEnabled;
+    await toggleAccount(newState);
+    onToggle?.(newState);
+  }, [isEnabled, onToggle, toggleAccount]);
 
   const checksumAddress = toChecksumHexAddress(address);
   const shortenedAddress = shortenAddress(checksumAddress);

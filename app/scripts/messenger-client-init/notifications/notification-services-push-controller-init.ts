@@ -7,7 +7,6 @@ import {
   deleteRegToken,
   createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
-import { hasProperty } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import type {
   NotificationServicesPushControllerMessenger,
@@ -16,7 +15,7 @@ import type {
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   onPushNotificationClicked,
-  onPushNotificationReceived,
+  onPushNotificationReceive,
 } from '../../controllers/push-notifications';
 import {
   MetaMetricsEventCategory,
@@ -66,7 +65,7 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
         deleteRegToken,
         subscribeToPushNotifications: createSubscribeToPushNotifications({
           messenger: controllerMessenger,
-          onReceivedHandler: onPushNotificationReceived,
+          onReceivedHandler: onPushNotificationReceive,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClickHandler: onPushNotificationClicked,
@@ -80,52 +79,21 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
   });
 
   initMessenger.subscribe(
-    'NotificationServicesPushController:onNewNotifications',
-    (notification) => {
-      const chainId = hasProperty(notification, 'chain_id')
-        ? (notification.chain_id as number)
-        : null;
-
-      initMessenger.call('MetaMetricsController:trackEvent', {
-        category: MetaMetricsEventCategory.PushNotifications,
-        event: MetaMetricsEventName.PushNotificationReceived,
-        properties: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          notification_id: notification.id,
-          notification_type: notification.type,
-          chain_id: chainId,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
-    },
-  );
-
-  initMessenger.subscribe(
     'NotificationServicesPushController:pushNotificationClicked',
     (notification) => {
-      const otherNotificationProperties = () => {
-        if (
-          'notification_type' in notification &&
-          notification.notification_type === 'on-chain' &&
-          notification.payload?.chain_id
-        ) {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          return { chain_id: notification.payload.chain_id };
-        }
-
-        return undefined;
-      };
-
       initMessenger.call('MetaMetricsController:trackEvent', {
         category: MetaMetricsEventCategory.PushNotifications,
         event: MetaMetricsEventName.PushNotificationClicked,
         properties: {
           /* eslint-disable @typescript-eslint/naming-convention */
-          notification_id: notification.id,
-          notification_type: notification.type,
-          ...otherNotificationProperties(),
-          data: notification, // data blob for feature teams to analyse their notification shapes
+          notification_id: notification.notification_id,
+          notification_type: notification.notification_type,
+          notification_subtype: notification.notification_subtype,
+          deeplink: `#notifications/${notification.notification_id}`,
+          ...(notification.profile_id && {
+            profile_id: notification.profile_id,
+          }),
+          ...(notification.chain_id && { chain_id: notification.chain_id }),
           /* eslint-enable @typescript-eslint/naming-convention */
         },
       });

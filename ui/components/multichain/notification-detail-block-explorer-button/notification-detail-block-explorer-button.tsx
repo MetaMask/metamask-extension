@@ -1,6 +1,9 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { OnChainRawNotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  getNotificationSubtype,
+  type OnChainRawNotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { toHex } from '@metamask/controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { ButtonVariant } from '../../component-library';
@@ -12,6 +15,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getNetworkDetailsFromNotifPayload } from '../../../helpers/utils/notification.util';
+import { useNotificationAnalyticsProperties } from '../../../pages/notifications/notification-hooks/use-notification-analytics-properties';
 
 type NotificationDetailBlockExplorerButtonProps = {
   notification: OnChainRawNotification;
@@ -26,6 +30,7 @@ export const NotificationDetailBlockExplorerButton = ({
 }: NotificationDetailBlockExplorerButtonProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
+  const { profile_id: profileId } = useNotificationAnalyticsProperties();
 
   const chainIdHex = toHex(chainId);
   const { network } = notification.payload;
@@ -59,21 +64,17 @@ export const NotificationDetailBlockExplorerButton = ({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationDetailClicked,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+        /* eslint-disable @typescript-eslint/naming-convention */
         notification_id: notification.id,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         notification_type: notification.type,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+        notification_subtype: getNotificationSubtype(notification),
+        ...(profileId && { profile_id: profileId }),
         chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         clicked_item: 'block_explorer',
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
-  }, [chainId, notification.id, notification.type, trackEvent]);
+  }, [chainId, notification, profileId, trackEvent]);
 
   if (!blockExplorerUrl) {
     return null;

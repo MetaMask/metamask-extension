@@ -13,11 +13,11 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsBackupAndSyncEnabled } from '../../../../selectors/identity/backup-and-sync';
 import {
   useEnableNotifications,
   useSafeState,
 } from '../../../../hooks/metamask-notifications/useNotifications';
+import { useNotificationAnalyticsProperties } from '../../../../pages/notifications/notification-hooks/use-notification-analytics-properties';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
@@ -48,6 +48,7 @@ export default function TurnOnMetamaskNotifications() {
   const t = useContext(I18nContext);
   const { trackEvent } = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
+  const { profile_id: profileId } = useNotificationAnalyticsProperties();
 
   const isNotificationEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
@@ -55,8 +56,6 @@ export default function TurnOnMetamaskNotifications() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-
   const [isLoading, setIsLoading] = useSafeState<boolean>(
     isUpdatingMetamaskNotifications,
   );
@@ -65,36 +64,22 @@ export default function TurnOnMetamaskNotifications() {
 
   const handleTurnOnNotifications = async () => {
     setIsLoading(true);
+    await enableNotifications();
     trackEvent({
-      category: MetaMetricsEventCategory.NotificationsActivationFlow,
-      event: MetaMetricsEventName.NotificationsActivated,
+      category: MetaMetricsEventCategory.NotificationSettings,
+      event: MetaMetricsEventName.NotificationsSettingsUpdated,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_profile_syncing_enabled: true,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        action_type: 'activated',
+        /* eslint-disable @typescript-eslint/naming-convention */
+        settings_type: 'master',
+        notification_channel: 'all',
+        enabled: true,
+        ...(profileId && { profile_id: profileId }),
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
-    await enableNotifications();
   };
 
   const handleHideModal = () => {
-    if (!isLoading) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationsActivationFlow,
-        event: MetaMetricsEventName.NotificationsActivated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_profile_syncing_enabled: isBackupAndSyncEnabled,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          action_type: 'dismissed',
-        },
-      });
-    }
     hideModal();
   };
 

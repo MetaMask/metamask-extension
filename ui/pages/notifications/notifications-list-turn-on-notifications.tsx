@@ -29,11 +29,13 @@ import {
   TextVariant,
   BorderRadius,
 } from '../../helpers/constants/design-system';
+import { useNotificationAnalyticsProperties } from './notification-hooks/use-notification-analytics-properties';
 
 export const NotificationsListTurnOnNotifications = () => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
+  const { profile_id: profileId } = useNotificationAnalyticsProperties();
 
   const { enableNotifications, error: errorEnableNotifications } =
     useEnableNotifications();
@@ -55,13 +57,15 @@ export const NotificationsListTurnOnNotifications = () => {
   const handleTurnOnNotifications = async () => {
     await enableNotifications();
     trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationsActivated,
+      category: MetaMetricsEventCategory.NotificationSettings,
+      event: MetaMetricsEventName.NotificationsSettingsUpdated,
       properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        action_type: 'completed',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_profile_syncing_enabled: true,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        settings_type: 'master',
+        notification_channel: 'all',
+        enabled: true,
+        ...(profileId && { profile_id: profileId }),
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
     if (!error && !isUpdatingMetamaskNotifications) {

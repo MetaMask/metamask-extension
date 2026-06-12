@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -27,12 +28,14 @@ import type {
 } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { selectSessionData } from '../../selectors/identity/authentication';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 import type { NotificationWalletGroup } from './notifications-settings-helpers';
 import type { NotificationsSettingsSectionConfig } from './notifications-settings-types';
 
 type WalletActivityAccount =
   NotificationPreferences['walletActivity']['accounts'][number];
+type SectionType = NotificationsSettingsSectionConfig['type'];
 
 type AccountSettingsProps = {
   data?: Record<string, boolean>;
@@ -73,6 +76,12 @@ const getWalletActivityAccountsByAddress = (
     ),
   );
 
+const SETTINGS_TYPE_BY_SECTION: Record<SectionType, string> = {
+  walletActivity: 'wallet_activity',
+  perps: 'perps',
+  marketing: 'marketing',
+};
+
 const WalletActivitySectionContent = ({
   preferences,
   notificationAccountGroups,
@@ -81,6 +90,9 @@ const WalletActivitySectionContent = ({
 }: SectionContentProps) => {
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
+  const { trackEvent } = React.useContext(MetaMetricsContext);
+  const sessionData = useSelector(selectSessionData);
+  const profileId = sessionData?.profile.profileId;
   const { onChange: switchAccountNotifications, error: accountToggleError } =
     useSwitchAccountNotificationsChange();
   const [updatingAllAccounts, setUpdatingAllAccounts] = useSafeState(false);
@@ -119,6 +131,37 @@ const WalletActivitySectionContent = ({
     [accountAddresses, isAccountEnabled],
   );
 
+  const trackWalletActivityAggregateToggle = useCallback(
+    (enabled: boolean) => {
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationSettings,
+        event: MetaMetricsEventName.NotificationsSettingsUpdated,
+        properties: {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_type: 'wallet_activity',
+          notification_channel: 'all',
+          enabled,
+          ...(profileId && { profile_id: profileId }),
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+      });
+    },
+    [profileId, trackEvent],
+  );
+
+  const handleAccountActivityToggle = useCallback(
+    (newState: boolean) => {
+      const enabledCount = accountAddresses.filter(isAccountEnabled).length;
+      const flippedOn = newState && enabledCount === 0;
+      const flippedOff = !newState && enabledCount === 1;
+
+      if (flippedOn || flippedOff) {
+        trackWalletActivityAggregateToggle(newState);
+      }
+    },
+    [accountAddresses, isAccountEnabled, trackWalletActivityAggregateToggle],
+  );
+
   const toggleAllAccounts = useCallback(async () => {
     if (accountAddresses.length === 0) {
       return;
@@ -126,9 +169,11 @@ const WalletActivitySectionContent = ({
 
     setUpdatingAllAccounts(true);
     try {
-      await switchAccountNotifications(accountAddresses, !hasEnabledAccount);
+      const newState = !hasEnabledAccount;
+      await switchAccountNotifications(accountAddresses, newState);
       await refetchAccountSettings();
       await refetchNotificationPreferences();
+      trackWalletActivityAggregateToggle(newState);
       listNotifications();
     } finally {
       setUpdatingAllAccounts(false);
@@ -141,6 +186,7 @@ const WalletActivitySectionContent = ({
     refetchNotificationPreferences,
     setUpdatingAllAccounts,
     switchAccountNotifications,
+    trackWalletActivityAggregateToggle,
   ]);
 
   if (notificationAccountGroups.length === 0) {
@@ -227,6 +273,7 @@ const WalletActivitySectionContent = ({
                   refetchNotificationPreferences={
                     refetchNotificationPreferences
                   }
+                  onToggle={handleAccountActivityToggle}
                 />
               ))}
             </Box>
@@ -275,6 +322,8 @@ export function NotificationSettingsSection({
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
   const { trackEvent } = React.useContext(MetaMetricsContext);
+  const sessionData = useSelector(selectSessionData);
+  const profileId = sessionData?.profile.profileId;
   const [preferenceError, setPreferenceError] = useSafeState<string | null>(
     null,
   );
@@ -293,15 +342,13 @@ export function NotificationSettingsSection({
           category: MetaMetricsEventCategory.NotificationSettings,
           event: MetaMetricsEventName.NotificationsSettingsUpdated,
           properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            settings_type: `${section.type}_${key}`,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            old_value: oldValue,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_value: newValue,
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_type: SETTINGS_TYPE_BY_SECTION[section.type],
+            notification_channel:
+              key === 'pushNotificationsEnabled' ? 'push' : 'in_app',
+            enabled: newValue,
+            ...(profileId && { profile_id: profileId }),
+            /* eslint-enable @typescript-eslint/naming-convention */
           },
         });
         listNotifications();
@@ -315,6 +362,7 @@ export function NotificationSettingsSection({
     },
     [
       listNotifications,
+      profileId,
       section.type,
       sectionPreferences,
       setPreferenceError,
