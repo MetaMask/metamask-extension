@@ -1,8 +1,5 @@
-'use no memo';
-// TODO: Enable React Compiler once this has been migrated to a functional component.
-
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { AnyAction, Dispatch } from 'redux';
 
 import { connect } from 'react-redux';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -51,7 +48,28 @@ const modalContainerMobileStyle = {
   top: '12.5%',
 };
 
-const MODALS = {
+type CustomOnHideOpts = {
+  action?: (...args: unknown[]) => unknown;
+  args?: unknown[];
+};
+
+type ModalConfig = {
+  contents: React.ReactNode;
+  mobileModalStyle: React.CSSProperties;
+  laptopModalStyle: React.CSSProperties;
+  contentStyle?: React.CSSProperties;
+  testId?: string;
+  disableBackdropClick?: boolean;
+  onHide?: () => void;
+  customOnHideOpts?: CustomOnHideOpts;
+};
+
+type FadeModalRef = {
+  show: () => void;
+  hide: () => void;
+};
+
+const MODALS: Record<string, ModalConfig> = {
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
     testId: 'hide-token-confirmation-modal',
@@ -64,9 +82,9 @@ const MODALS = {
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '400px' : '449px',
       top: 'calc(33% + 45px)',
       paddingLeft:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
       paddingRight:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
     },
   },
 
@@ -210,83 +228,88 @@ const BACKDROPSTYLE = {
   backgroundColor: 'var(--color-overlay-default)',
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: {
+  appState: { modal: { open: boolean; modalState: { name?: string } } };
+}) {
   return {
     active: state.appState.modal.open,
     modalState: state.appState.modal.modalState,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    hideModal: (customOnHideOpts) => {
+    hideModal: (customOnHideOpts?: {
+      action?: (...args: unknown[]) => unknown;
+      args?: unknown[];
+    }) => {
       dispatch(actions.hideModal());
       if (customOnHideOpts && customOnHideOpts.action) {
-        dispatch(customOnHideOpts.action(...customOnHideOpts.args));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        dispatch(
+          customOnHideOpts.action(
+            ...(customOnHideOpts.args ?? []),
+          ) as AnyAction,
+        );
       }
     },
   };
 }
 
+type ModalProps = {
+  active: boolean;
+  hideModal: (opts?: CustomOnHideOpts) => void;
+  modalState: { name?: string };
+};
+
 /**
+ * @param options0
+ * @param options0.active
+ * @param options0.hideModal
+ * @param options0.modalState
  * @deprecated The `<Modal />` and the dispatch method of displaying modals has been deprecated in favor of local state and the `<Modal>` component from the component-library.
  * Please update your code to use the new `<Modal>` component instead, which can be found at ui/components/component-library/modal/modal.tsx.
  * You can find documentation for the new Modal component in the MetaMask Storybook:
  * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-modal--docs}
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
-class Modal extends Component {
-  static propTypes = {
-    active: PropTypes.bool.isRequired,
-    hideModal: PropTypes.func.isRequired,
-    modalState: PropTypes.object.isRequired,
-  };
+export function Modal({ active, hideModal, modalState }: ModalProps) {
+  const modalRef = useRef<FadeModalRef>(null);
 
-  hide() {
-    this.modalRef.hide();
-  }
-
-  show() {
-    this.modalRef.show();
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps, _) {
-    if (nextProps.active) {
-      this.show();
-    } else if (this.props.active) {
-      this.hide();
+  useEffect(() => {
+    if (active) {
+      modalRef.current?.show();
+    } else {
+      modalRef.current?.hide();
     }
-  }
+  }, [active]);
 
-  render() {
-    const modal = MODALS[this.props.modalState.name || 'DEFAULT'];
-    const { contents: children, disableBackdropClick = false, testId } = modal;
-    const modalStyle =
-      modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
-    const contentStyle = modal.contentStyle || {};
+  const modal = MODALS[modalState.name ?? 'DEFAULT'];
+  const { contents: children, disableBackdropClick = false, testId } = modal;
+  const modalStyle =
+    modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
+  const contentStyle = modal.contentStyle ?? {};
 
-    return (
-      <FadeModal
-        keyboard={false}
-        onHide={() => {
-          if (modal.onHide) {
-            modal.onHide();
-          }
-          this.props.hideModal(modal.customOnHideOpts);
-        }}
-        ref={(ref) => {
-          this.modalRef = ref;
-        }}
-        modalStyle={modalStyle}
-        contentStyle={contentStyle}
-        backdropStyle={BACKDROPSTYLE}
-        closeOnClick={!disableBackdropClick}
-        testId={testId}
-      >
-        {children}
-      </FadeModal>
-    );
-  }
+  return (
+    <FadeModal
+      keyboard={false}
+      onHide={() => {
+        if (modal.onHide) {
+          modal.onHide();
+        }
+        hideModal(modal.customOnHideOpts);
+      }}
+      // @ts-expect-error FadeModal is a JS class component without TS type declarations
+      ref={modalRef}
+      modalStyle={modalStyle}
+      contentStyle={contentStyle}
+      backdropStyle={BACKDROPSTYLE}
+      closeOnClick={!disableBackdropClick}
+      testId={testId}
+    >
+      {children}
+    </FadeModal>
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal);
