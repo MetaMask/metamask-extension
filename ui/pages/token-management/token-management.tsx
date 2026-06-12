@@ -619,18 +619,12 @@ export const TokenManagementPage = () => {
     return enabledCaipChainIds;
   }, [enabledCaipChainIds]);
 
-  const isArcUsdc = useMemo(() => {
-    return visibleTokens.some((token) => {
-      const identifier = (
-        ('address' in token && token.address ? token.address : token.assetId) ??
-        ''
-      ).toLowerCase();
-      return (
-        identifier === ARC_USDC_ADDRESS ||
-        identifier === ARC_USDC_ASSET_ID.toLowerCase()
-      );
-    });
-  }, [visibleTokens]);
+  // Matches the Arc USDC asset specifically (by bare address or full CAIP id)
+  // so only that token is disabled, not every token on the Arc network.
+  const isArcUsdcIdentifier = useCallback((identifier?: string) => {
+    const id = (identifier ?? '').toLowerCase();
+    return id === ARC_USDC_ADDRESS || id === ARC_USDC_ASSET_ID.toLowerCase();
+  }, []);
 
   const {
     data: searchResponse,
@@ -1113,6 +1107,9 @@ export const TokenManagementPage = () => {
         !isNativeToken &&
         ((isEvmToken && 'address' in token) ||
           (!isEvmToken && Boolean(token.assetId) && Boolean(token.accountId)));
+      const isArcUsdc = isArcUsdcIdentifier(
+        'address' in token && token.address ? token.address : token.assetId,
+      );
       return (
         <TokenManagementCell
           symbol={token.symbol}
@@ -1138,7 +1135,7 @@ export const TokenManagementPage = () => {
       handleToggle,
       pendingKeys,
       stagedHideKeys,
-      isArcUsdc,
+      isArcUsdcIdentifier,
     ],
   );
 
@@ -1185,6 +1182,9 @@ export const TokenManagementPage = () => {
         (evmImportedKey ? ignoredEvmAssetIds.has(evmImportedKey) : false) ||
         isIgnoredMultichainAsset;
       const isPending = pendingKeys.has(lowerAssetId);
+      const isArcUsdc =
+        isArcUsdcIdentifier(payload.assetId) ||
+        isArcUsdcIdentifier(payload.assetReference);
 
       return (
         <TokenManagementCell
@@ -1221,7 +1221,7 @@ export const TokenManagementPage = () => {
       networkConfigurations,
       pendingKeys,
       stagedHideKeys,
-      isArcUsdc,
+      isArcUsdcIdentifier,
     ],
   );
 

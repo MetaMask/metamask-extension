@@ -1421,7 +1421,7 @@ describe('TokenManagementPage', () => {
       );
     });
 
-    it('disables manageable token toggles when an ARC USDC token (bare address) is present', () => {
+    it('disables only the ARC USDC token toggle, leaving other tokens enabled', () => {
       renderPage(
         createState({
           accountGroupAssets: {
@@ -1431,10 +1431,21 @@ describe('TokenManagementPage', () => {
       );
 
       expect(screen.getByText('ARC USD Coin')).toBeInTheDocument();
-      expect(getMainnetTokenToggle()).toHaveClass('toggle-button--disabled');
+
+      // The ARC USDC token itself is disabled...
+      expect(
+        screen
+          .getByTestId(`token-management-cell-0x1:${arcUsdcAddress}-toggle`)
+          .closest('.toggle-button'),
+      ).toHaveClass('toggle-button--disabled');
+
+      // ...but other manageable tokens on the page remain enabled.
+      expect(getMainnetTokenToggle()).not.toHaveClass(
+        'toggle-button--disabled',
+      );
     });
 
-    it('disables manageable token toggles when an ARC USDC token (full CAIP-19 id) is present', () => {
+    it('leaves other tokens enabled when an ARC USDC token (full CAIP-19 id) is present', () => {
       renderPage(
         createState({
           accountGroupAssets: {
@@ -1443,7 +1454,10 @@ describe('TokenManagementPage', () => {
         }),
       );
 
-      expect(getMainnetTokenToggle()).toHaveClass('toggle-button--disabled');
+      expect(screen.getByText('ARC USD Coin')).toBeInTheDocument();
+      expect(getMainnetTokenToggle()).not.toHaveClass(
+        'toggle-button--disabled',
+      );
     });
 
     it('does not flag a same-shaped non-ARC token as ARC USDC', () => {
