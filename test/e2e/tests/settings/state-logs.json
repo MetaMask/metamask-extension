@@ -1077,6 +1077,7 @@
     "analyticsId": "string",
     "optedIn": "boolean",
     "methodData": {},
+    "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {

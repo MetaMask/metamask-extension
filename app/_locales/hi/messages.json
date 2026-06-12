@@ -607,6 +607,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "खुला लॉन्ग"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "शॉर्ट ओपन नहीं हो पाया"
   },
@@ -661,22 +662,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "फंडिंग फीस प्राप्त हुआ"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "विदड्रॉवल नहीं हो पाया"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "विदड्रॉवल नहीं हो पाया"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "फंड विदड्रॉ किया जा रहा है"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "फंड विदड्रॉ किया जा रहा है"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "पर्प्स विदड्रॉवल"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "पर्प्स विदड्रॉवल"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -3447,9 +3448,6 @@
   },
   "enabled": {
     "message": "चालू किया गया"
-  },
-  "enabledNetworks": {
-    "message": "चालू किए गए नेटवर्क"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 आपकी पब्लिक एन्क्रिप्शन की (key) चाहता है। सहमति देने पर, यह साइट आपके लिए एन्क्रिप्ट किए गए मैसेज लिख पाएगी।",
@@ -10069,9 +10067,6 @@
   },
   "termsOfUseTitle": {
     "message": "हमारी उपयोग की शर्तों की समीक्षा करें"
-  },
-  "testNetworks": {
-    "message": "टेस्ट नेटवर्क्स"
   },
   "testnets": {
     "message": "Testnets"

@@ -17,14 +17,14 @@ const generateDeterministicRandomNumberMock = jest.mocked(
   generateDeterministicRandomNumber,
 );
 
-const MOCK_METAMETRICS_ID =
+const MOCK_ANALYTICS_ID =
   '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420';
 
 describe('shouldCreateRpcServiceEvents', () => {
   describe('if not given an error', () => {
     const error = undefined;
 
-    describe('if given a MetaMetrics ID', () => {
+    describe('if given an analytics ID', () => {
       // @ts-expect-error The Mocha types are incorrect.
       describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
         'if the environment is %s',
@@ -42,7 +42,7 @@ describe('shouldCreateRpcServiceEvents', () => {
                 expect(
                   shouldCreateRpcServiceEvents({
                     error,
-                    metaMetricsId: MOCK_METAMETRICS_ID,
+                    analyticsId: MOCK_ANALYTICS_ID,
                   }),
                 ).toBe(true);
               });
@@ -62,7 +62,7 @@ describe('shouldCreateRpcServiceEvents', () => {
                 expect(
                   shouldCreateRpcServiceEvents({
                     error,
-                    metaMetricsId: MOCK_METAMETRICS_ID,
+                    analyticsId: MOCK_ANALYTICS_ID,
                   }),
                 ).toBe(false);
               });
@@ -81,7 +81,7 @@ describe('shouldCreateRpcServiceEvents', () => {
             expect(
               shouldCreateRpcServiceEvents({
                 error,
-                metaMetricsId: MOCK_METAMETRICS_ID,
+                analyticsId: MOCK_ANALYTICS_ID,
               }),
             ).toBe(true);
           });
@@ -96,7 +96,7 @@ describe('shouldCreateRpcServiceEvents', () => {
             expect(
               shouldCreateRpcServiceEvents({
                 error,
-                metaMetricsId: MOCK_METAMETRICS_ID,
+                analyticsId: MOCK_ANALYTICS_ID,
               }),
             ).toBe(false);
           });
@@ -104,27 +104,27 @@ describe('shouldCreateRpcServiceEvents', () => {
       });
     });
 
-    describe('if the MetaMetrics ID is undefined', () => {
-      const metaMetricsId = undefined;
+    describe('if the analytics ID is undefined', () => {
+      const analyticsId = undefined;
 
       it('returns false', async () => {
         expect(
           shouldCreateRpcServiceEvents({
             error: undefined,
-            metaMetricsId,
+            analyticsId,
           }),
         ).toBe(false);
       });
     });
 
-    describe('if the MetaMetrics ID is null', () => {
-      const metaMetricsId = null;
+    describe('if the analytics ID is null', () => {
+      const analyticsId = null;
 
       it('returns false', async () => {
         expect(
           shouldCreateRpcServiceEvents({
             error: undefined,
-            metaMetricsId,
+            analyticsId,
           }),
         ).toBe(false);
       });
@@ -134,7 +134,7 @@ describe('shouldCreateRpcServiceEvents', () => {
   describe('if given a non-connection error', () => {
     const error = new Error('some error');
 
-    describe('if given a MetaMetrics ID', () => {
+    describe('if given an analytics ID', () => {
       // @ts-expect-error The Mocha types are incorrect.
       describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
         'if the environment is %s',
@@ -152,7 +152,7 @@ describe('shouldCreateRpcServiceEvents', () => {
                 expect(
                   shouldCreateRpcServiceEvents({
                     error,
-                    metaMetricsId: MOCK_METAMETRICS_ID,
+                    analyticsId: MOCK_ANALYTICS_ID,
                   }),
                 ).toBe(true);
               });
@@ -172,7 +172,7 @@ describe('shouldCreateRpcServiceEvents', () => {
                 expect(
                   shouldCreateRpcServiceEvents({
                     error,
-                    metaMetricsId: MOCK_METAMETRICS_ID,
+                    analyticsId: MOCK_ANALYTICS_ID,
                   }),
                 ).toBe(false);
               });
@@ -191,7 +191,7 @@ describe('shouldCreateRpcServiceEvents', () => {
             expect(
               shouldCreateRpcServiceEvents({
                 error,
-                metaMetricsId: MOCK_METAMETRICS_ID,
+                analyticsId: MOCK_ANALYTICS_ID,
               }),
             ).toBe(true);
           });
@@ -206,7 +206,7 @@ describe('shouldCreateRpcServiceEvents', () => {
             expect(
               shouldCreateRpcServiceEvents({
                 error,
-                metaMetricsId: MOCK_METAMETRICS_ID,
+                analyticsId: MOCK_ANALYTICS_ID,
               }),
             ).toBe(false);
           });
@@ -214,27 +214,27 @@ describe('shouldCreateRpcServiceEvents', () => {
       });
     });
 
-    describe('if the MetaMetrics ID is undefined', () => {
-      const metaMetricsId = undefined;
+    describe('if the analytics ID is undefined', () => {
+      const analyticsId = undefined;
 
       it('returns false', async () => {
         expect(
           shouldCreateRpcServiceEvents({
             error: undefined,
-            metaMetricsId,
+            analyticsId,
           }),
         ).toBe(false);
       });
     });
 
-    describe('if the MetaMetrics ID is null', () => {
-      const metaMetricsId = null;
+    describe('if the analytics ID is null', () => {
+      const analyticsId = null;
 
       it('returns false', async () => {
         expect(
           shouldCreateRpcServiceEvents({
             error: undefined,
-            metaMetricsId,
+            analyticsId,
           }),
         ).toBe(false);
       });
@@ -248,7 +248,7 @@ describe('shouldCreateRpcServiceEvents', () => {
       expect(
         shouldCreateRpcServiceEvents({
           error,
-          metaMetricsId: MOCK_METAMETRICS_ID,
+          analyticsId: MOCK_ANALYTICS_ID,
         }),
       ).toBe(false);
     });

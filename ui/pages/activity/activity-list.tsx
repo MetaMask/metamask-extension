@@ -15,7 +15,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { LegacyDetails } from './legacy-details';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { TransactionDetailsModal } from '../details/transaction-details-modal';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
@@ -24,6 +25,7 @@ import {
   groupActivityListItems,
   type ActivityListFilter,
 } from './helpers';
+import { useActivityScreenOpened } from './useActivityScreenOpened';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
@@ -36,11 +38,12 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const { trackEvent } = useContext(MetaMetricsContext);
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
-  const [networks, setNetworks] = useState<string[]>([]);
+  // null = not yet initialised by AssetListControlBar; [] = no filter applied
+  const [networks, setNetworks] = useState<string[] | null>(null);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
   );
-  const filters = filter ?? { networks };
+  const filters = filter ?? { networks: networks ?? [] };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
@@ -63,6 +66,15 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     [evmItems, groupedItems],
   );
 
+  useActivityScreenOpened({
+    filter,
+    isSettled: networks !== null && !isInitialLoading,
+    isEmpty: groupedItems.length === 0,
+    pendingLength: [...localItems, ...nonEvmItems].filter(
+      (item) => item.status === 'pending',
+    ).length,
+  });
+
   const itemRef = useItemInView({
     targetIndex: lastEvmItemIndex,
     root: scrollContainerRef?.current ?? null,
@@ -70,6 +82,10 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   });
 
   const handleClick = (item: ActivityListItem) => {
+    if (!item.data.hash) {
+      return;
+    }
+
     trackEvent({
       event: MetaMetricsEventName.ActivityDetailsOpened,
       category: MetaMetricsEventCategory.Navigation,
@@ -143,7 +159,12 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         }}
       />
 
-      <LegacyDetails item={selectedItem} onClose={handleClose} />
+      <TransactionDetailsModal
+        isOpen={Boolean(selectedItem?.data.hash)}
+        chainId={selectedItem?.chainId}
+        txIdentifier={selectedItem?.data.hash}
+        onClose={handleClose}
+      />
     </PendingTransactionCancelSpeedUpProvider>
   );
 }

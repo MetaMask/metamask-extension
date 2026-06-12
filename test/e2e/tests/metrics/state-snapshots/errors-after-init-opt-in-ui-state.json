@@ -53,8 +53,7 @@
     "singleExceptions": "object",
     "smartTransactionsError": null,
     "smartTransactionsErrorMessageDismissed": "boolean",
-    "txId": null,
-    "warning": "undefined"
+    "txId": null
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -246,6 +245,7 @@
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
     "methodData": "object",
+    "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": "object",
     "musdConversionDismissedCtaKeys": "object",
