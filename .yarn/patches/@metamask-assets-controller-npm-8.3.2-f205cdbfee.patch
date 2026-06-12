@@ -1,5 +1,5 @@
 diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
-index 7869c149db4678616dd467723a686b722629ec96..2745120fa5ab3014e64cc18529e6a9dceb5473d8 100644
+index 7869c149db4678616dd467723a686b722629ec96..6a27b9953164fea3352a3f17246aad9e93a1b475 100644
 --- a/dist/AssetsController.cjs
 +++ b/dist/AssetsController.cjs
 @@ -13,7 +13,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
@@ -62,13 +62,16 @@ index 7869c149db4678616dd467723a686b722629ec96..2745120fa5ab3014e64cc18529e6a9dc
  }, _AssetsController_resolveNativeAssetIds = function _AssetsController_resolveNativeAssetIds(chains) {
      const nativeAssetMap = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetMap).call(this);
      const ids = [];
-@@ -1405,6 +1417,22 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+@@ -1405,6 +1417,25 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
                      }
                  }
              }
 +            // Reconcile & self-heal stale asset "types" (e.g. erc20 -> native)
-+            // Important to dynamically update as we start receiving new chain native token changes
-+            const assetsInfoAssetIdsSet = new Set(Object.keys(response.assetsInfo ?? {}));
++            // using IDs from new response assetInfo and assetBalance
++            const assetsInfoAssetIdsSet = new Set([
++                ...Object.keys(normalizedResponse.assetsInfo ?? {}),
++                ...Object.values(normalizedResponse.assetsBalance ?? {}).flatMap((accountBalances) => Object.keys(accountBalances)),
++            ]);
 +            for (const assetId of assetsInfoAssetIdsSet) {
 +                const entry = metadata[assetId];
 +                if (!entry) {
@@ -85,7 +88,7 @@ index 7869c149db4678616dd467723a686b722629ec96..2745120fa5ab3014e64cc18529e6a9dc
              if (normalizedResponse.assetsBalance) {
                  for (const [accountId, accountBalances] of Object.entries(normalizedResponse.assetsBalance)) {
                      const previousBalances = previousState.assetsBalance[accountId] ?? {};
-@@ -1887,7 +1915,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+@@ -1887,7 +1918,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
          }
      }
      return result;
@@ -95,7 +98,7 @@ index 7869c149db4678616dd467723a686b722629ec96..2745120fa5ab3014e64cc18529e6a9dc
  // EVENT HANDLERS
  // ============================================================================
 diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
-index 7552c96a765368243d30f099187c739b88c838c2..e914a5d59331d2312136f525b7dff9cd967af8bb 100644
+index 7552c96a765368243d30f099187c739b88c838c2..2ee3f81f5a58fd6502f0858bb98982e55a8b1ef5 100644
 --- a/dist/AssetsController.mjs
 +++ b/dist/AssetsController.mjs
 @@ -9,7 +9,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
@@ -158,13 +161,16 @@ index 7552c96a765368243d30f099187c739b88c838c2..e914a5d59331d2312136f525b7dff9cd
  }, _AssetsController_resolveNativeAssetIds = function _AssetsController_resolveNativeAssetIds(chains) {
      const nativeAssetMap = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetMap).call(this);
      const ids = [];
-@@ -1398,6 +1410,22 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+@@ -1398,6 +1410,25 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
                      }
                  }
              }
 +            // Reconcile & self-heal stale asset "types" (e.g. erc20 -> native)
-+            // Important to dynamically update as we start receiving new chain native token changes
-+            const assetsInfoAssetIdsSet = new Set(Object.keys(response.assetsInfo ?? {}));
++            // using IDs from new response assetInfo and assetBalance
++            const assetsInfoAssetIdsSet = new Set([
++                ...Object.keys(normalizedResponse.assetsInfo ?? {}),
++                ...Object.values(normalizedResponse.assetsBalance ?? {}).flatMap((accountBalances) => Object.keys(accountBalances)),
++            ]);
 +            for (const assetId of assetsInfoAssetIdsSet) {
 +                const entry = metadata[assetId];
 +                if (!entry) {
@@ -181,7 +187,7 @@ index 7552c96a765368243d30f099187c739b88c838c2..e914a5d59331d2312136f525b7dff9cd
              if (normalizedResponse.assetsBalance) {
                  for (const [accountId, accountBalances] of Object.entries(normalizedResponse.assetsBalance)) {
                      const previousBalances = previousState.assetsBalance[accountId] ?? {};
-@@ -1880,7 +1908,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+@@ -1880,7 +1911,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
          }
      }
      return result;
