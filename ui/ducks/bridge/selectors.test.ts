@@ -23,8 +23,8 @@ import {
 } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
-import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20';
+import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
 import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';

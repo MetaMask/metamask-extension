@@ -14,7 +14,7 @@ import {
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';

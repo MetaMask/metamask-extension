@@ -1,4 +1,6 @@
-[
+import { QuoteResponseV1, toQuoteResponseV1, toQuoteResponseV2, validateQuoteResponseV1 } from "@metamask/bridge-controller";
+
+const  mockQuotes =[
   {
     "quote": {
       "requestId": "90ae8e69-f03a-4cf6-bab7-ed4e3431eb37",
@@ -12,8 +14,6 @@
         "name": "USD Coin",
         "decimals": 6,
         "icon": "https://media.socket.tech/tokens/all/USDC",
-        "logoURI": "https://media.socket.tech/tokens/all/USDC",
-        "chainAgnosticId": null
       },
       "srcTokenAmount": "14000000",
       "destChainId": 137,
@@ -25,8 +25,6 @@
         "name": "Native USD Coin (POS)",
         "decimals": 6,
         "icon": "https://media.socket.tech/tokens/all/USDC",
-        "logoURI": "https://media.socket.tech/tokens/all/USDC",
-        "chainAgnosticId": "USDC"
       },
       "destTokenAmount": "13984280",
       "feeData": {
@@ -35,6 +33,7 @@
           "asset": {
             "chainId": 10,
             "address": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+            assetId: "eip155:10/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
             "symbol": "USDC",
             "name": "USD Coin",
             "decimals": 6,
@@ -134,6 +133,7 @@
       "srcAsset": {
         "chainId": 10,
         "address": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+        assetId: "eip155:10/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
         "symbol": "USDC",
         "name": "USD Coin",
         "decimals": 6,
@@ -161,6 +161,7 @@
           "asset": {
             "chainId": 10,
             "address": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+            assetId: "eip155:10/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
             "symbol": "USDC",
             "name": "USD Coin",
             "decimals": 6,
@@ -253,3 +254,7 @@
     "estimatedProcessingTimeInSeconds": 1560
   }
 ]
+
+mockQuotes.map(validateQuoteResponseV1);
+
+export default mockQuotes.map(toQuoteResponseV2);

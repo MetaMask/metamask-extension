@@ -1,4 +1,6 @@
-[
+import { getNativeAssetForChainId, toQuoteResponseV2, validateQuoteResponseV1 } from "@metamask/bridge-controller";
+
+const mockQuotes=[
   {
     "quote": {
       "requestId": "381c23bc-e3e4-48fe-bc53-257471e388ad",
@@ -8,6 +10,7 @@
         "address": "0x0000000000000000000000000000000000000000",
         "symbol": "ETH",
         "name": "Ethereum",
+        "assetId": getNativeAssetForChainId(10).assetId,
         "decimals": 18,
         "icon": "https://media.socket.tech/tokens/all/ETH",
         "logoURI": "https://media.socket.tech/tokens/all/ETH",
@@ -16,7 +19,7 @@
       "srcTokenAmount": "9912500000000000",
       "destChainId": 137,
       "destAsset": {
-        "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "assetId": "eip155:10/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "chainId": 137,
         "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "symbol": "USDC",
@@ -39,7 +42,8 @@
             "decimals": 18,
             "icon": "https://media.socket.tech/tokens/all/ETH",
             "logoURI": "https://media.socket.tech/tokens/all/ETH",
-            "chainAgnosticId": null
+            "chainAgnosticId": null,
+            "assetId": getNativeAssetForChainId(10).assetId,
           }
         }
       },
@@ -66,7 +70,7 @@
           },
           "destAsset": {
             "address": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
-            "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+            "assetId": "eip155:10/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "chainAgnosticId": null,
             "chainId": 10,
             "decimals": 6,
@@ -98,7 +102,7 @@
             "chainAgnosticId": null
           },
           "destAsset": {
-            "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+            "assetId": "eip155:10/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "chainId": 137,
             "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "symbol": "USDC",
@@ -129,7 +133,7 @@
           "decimals": 18
         },
         "destAsset": {
-          "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+          "assetId": "eip155:10/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
           "chainId": 137,
           "address": "0x0000000000000000000000000000000000000000",
           "symbol": "MATIC",
@@ -163,6 +167,7 @@
         "symbol": "ETH",
         "name": "Ethereum",
         "decimals": 18,
+        assetId:getNativeAssetForChainId(10).assetId,
         "icon": "https://media.socket.tech/tokens/all/ETH",
         "logoURI": "https://media.socket.tech/tokens/all/ETH",
         "chainAgnosticId": null
@@ -170,7 +175,7 @@
       "srcTokenAmount": "9912500000000000",
       "destChainId": 137,
       "destAsset": {
-        "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "assetId": "eip155:10/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "chainId": 137,
         "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "symbol": "USDC",
@@ -190,6 +195,7 @@
             "address": "0x0000000000000000000000000000000000000000",
             "symbol": "ETH",
             "name": "Ethereum",
+            "assetId": getNativeAssetForChainId(10).assetId,
             "decimals": 18,
             "icon": "https://media.socket.tech/tokens/all/ETH",
             "logoURI": "https://media.socket.tech/tokens/all/ETH",
@@ -219,7 +225,7 @@
             "chainAgnosticId": null
           },
           "destAsset": {
-            "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+            "assetId": "eip155:10/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "chainId": 10,
             "address": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
             "symbol": "USDC",
@@ -252,7 +258,7 @@
             "chainAgnosticId": null
           },
           "destAsset": {
-            "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+            "assetId": "eip155:10/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "chainId": 137,
             "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "symbol": "USDC",
@@ -283,7 +289,7 @@
           "decimals": 18
         },
         "destAsset": {
-          "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+          "assetId": "eip155:10/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
           "chainId": 137,
           "address": "0x0000000000000000000000000000000000000000",
           "symbol": "MATIC",
@@ -308,3 +314,7 @@
     "estimatedProcessingTimeInSeconds": 15
   }
 ]
+
+mockQuotes.map(validateQuoteResponseV1);
+
+export default mockQuotes.map(toQuoteResponseV2);

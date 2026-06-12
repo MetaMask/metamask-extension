@@ -1,4 +1,6 @@
-[
+import { getNativeAssetForChainId, toQuoteResponseV2, validateQuoteResponseV1 } from "@metamask/bridge-controller";
+
+const mockQuotes=[
   {
     "quote": {
       "requestId": "34c4136d-8558-4d87-bdea-eef8d2d30d6d",
@@ -10,6 +12,7 @@
         "symbol": "ETH",
         "decimals": 18,
         "name": "ETH",
+        assetId:getNativeAssetForChainId(1).assetId,
         "coinKey": "ETH",
         "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
         "priceUSD": "3145.41",
@@ -23,6 +26,7 @@
         "chainId": 42161,
         "symbol": "USDC",
         "decimals": 6,
+        assetId: 'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
         "name": "USD Coin",
         "coinKey": "USDC",
         "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
@@ -37,6 +41,7 @@
             "chainId": 1,
             "symbol": "ETH",
             "decimals": 18,
+            "assetId": getNativeAssetForChainId(1).assetId,
             "name": "ETH",
             "coinKey": "ETH",
             "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
@@ -64,12 +69,13 @@
             "decimals": 18,
             "name": "ETH",
             "coinKey": "ETH",
+            assetId:getNativeAssetForChainId(1).assetId,
             "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
             "priceUSD": "3145.41",
             "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
           },
           "destAsset": {
-            "assetId": "asset:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            "assetId": "eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
             "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "chainId": 1,
             "symbol": "USDC",
@@ -140,6 +146,7 @@
         "chainId": 1,
         "symbol": "ETH",
         "decimals": 18,
+        assetId:getNativeAssetForChainId(1).assetId,
         "name": "ETH",
         "coinKey": "ETH",
         "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
@@ -150,7 +157,7 @@
       "destTokenAmount": "3104601473",
       "minDestTokenAmount": "3004601473",
       "destAsset": {
-        "assetId": "asset:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+        "assetId": "eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
         "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
         "chainId": 42161,
         "symbol": "USDC",
@@ -169,6 +176,7 @@
             "chainId": 1,
             "symbol": "ETH",
             "decimals": 18,
+            assetId:getNativeAssetForChainId(1).assetId,
             "name": "ETH",
             "coinKey": "ETH",
             "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
@@ -194,6 +202,7 @@
             "chainId": 1,
             "symbol": "ETH",
             "decimals": 18,
+            assetId:getNativeAssetForChainId(1).assetId,
             "name": "ETH",
             "coinKey": "ETH",
             "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
@@ -201,7 +210,7 @@
             "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
           },
           "destAsset": {
-            "assetId": "asset:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            "assetId": "eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
             "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "chainId": 1,
             "symbol": "USDC",
@@ -262,3 +271,7 @@
     "estimatedProcessingTimeInSeconds": 1029.717
   }
 ]
+
+mockQuotes.map(validateQuoteResponseV1);
+
+export default mockQuotes.map(toQuoteResponseV2);

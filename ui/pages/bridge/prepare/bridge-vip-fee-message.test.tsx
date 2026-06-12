@@ -9,7 +9,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';

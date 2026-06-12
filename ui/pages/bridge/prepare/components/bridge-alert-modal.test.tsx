@@ -8,7 +8,7 @@ import {
 import { zeroAddress } from 'ethereumjs-util';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
-import mockBridgeQuotesNativeErc20 from '../../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockBridgeQuotesNativeErc20 from '../../../../../test/data/bridge/mock-quotes-native-erc20';
 import { DummyQuotesNoApproval } from '../../../../../test/data/bridge/dummy-quotes';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';

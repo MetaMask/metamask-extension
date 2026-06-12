@@ -13,7 +13,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import mockBridgeQuotesErc20Erc20 from '../../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import mockBridgeQuotesErc20Erc20 from '../../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createTestProviderTools } from '../../../../../test/stub/provider';
 import { setBackgroundConnection } from '../../../../store/background-connection';
 import configureStore from '../../../../store/store';

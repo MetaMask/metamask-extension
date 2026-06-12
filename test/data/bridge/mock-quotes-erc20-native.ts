@@ -1,4 +1,6 @@
-[
+import { toQuoteResponseV2 } from "@metamask/bridge-controller";
+
+ const mockQuotes=[
   {
     "quote": {
       "requestId": "a63df72a-75ae-4416-a8ab-aff02596c75c",
@@ -897,4 +899,6 @@
     },
     "estimatedProcessingTimeInSeconds": 20
   }
-]
+].map(toQuoteResponseV2)
+
+export default mockQuotes;
