@@ -24,7 +24,7 @@ export function useIsEnforcedSimulationsEligible(): boolean {
   const addressSecurityAlertResponses = useSelector(
     (state: { metamask: EnforcedSimulationsState }) =>
       state.metamask.addressSecurityAlertResponses ??
-        (EMPTY_OBJECT as EnforcedSimulationsState['addressSecurityAlertResponses']),
+      (EMPTY_OBJECT as EnforcedSimulationsState['addressSecurityAlertResponses']),
   );
 
   const eip7702SupportedChains = useSelector(
