@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
 import {
   activeTabHasPermissions,
@@ -85,9 +86,6 @@ import { MetaMaskReduxState } from '../../store/store';
 import Home from './home.component';
 
 function useCoreHomeState() {
-  const selectedAddress = useSelector(
-    (state: MetaMaskReduxState) => getSelectedInternalAccount(state)?.address,
-  );
   const forgottenPassword = useSelector(
     (state: MetaMaskReduxState) => state.metamask.forgottenPassword,
   );
@@ -97,11 +95,9 @@ function useCoreHomeState() {
   const completedOnboarding = useSelector(
     (state: MetaMaskReduxState) => state.metamask.completedOnboarding,
   );
-  const seedPhraseBackedUp = useSelector(
-    (state: MetaMaskReduxState) => state.metamask.seedPhraseBackedUp,
-  );
   const connectedStatusPopoverHasBeenShown = useSelector(
-    (state: MetaMaskReduxState) => state.metamask.connectedStatusPopoverHasBeenShown,
+    (state: MetaMaskReduxState) =>
+      state.metamask.connectedStatusPopoverHasBeenShown,
   );
   const dataCollectionForMarketing = useSelector(
     (state: MetaMaskReduxState) => state.metamask.dataCollectionForMarketing,
@@ -109,24 +105,24 @@ function useCoreHomeState() {
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   // Derive both account and reminder flag inside one selector to avoid a
   // stale closure over the account object.
-  const shouldShowSeedPhraseReminder = useSelector((state: MetaMaskReduxState) => {
-    const account = getSelectedInternalAccount(state);
-    return account ? getShouldShowSeedPhraseReminder(state, account) : false;
-  });
+  const shouldShowSeedPhraseReminder = useSelector(
+    (state: MetaMaskReduxState) => {
+      const account = getSelectedInternalAccount(state);
+      return account ? getShouldShowSeedPhraseReminder(state, account) : false;
+    },
+  );
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
 
   return {
-    selectedAddress,
     forgottenPassword,
-    firstTimeFlowType,
+    firstTimeFlowType: firstTimeFlowType ?? undefined,
     completedOnboarding,
-    seedPhraseBackedUp,
     connectedStatusPopoverHasBeenShown,
     dataCollectionForMarketing,
-    participateInMetaMetrics,
+    participateInMetaMetrics: participateInMetaMetrics ?? undefined,
     shouldShowSeedPhraseReminder,
     isPrimarySeedPhraseBackedUp,
     isSeedlessPasswordOutdated,
@@ -142,22 +138,24 @@ function useNetworkState() {
   // Mirrors the short-circuit evaluation from the original mapStateToProps so
   // that getWeb3ShimUsageStateForOrigin is never called when not needed
   // (avoids reading undefined state keys in non-popup environments).
-  const shouldShowWeb3ShimUsageNotification = useSelector((state: MetaMaskReduxState) => {
-    if (getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP) {
-      return false;
-    }
-    if (!getWeb3ShimUsageAlertEnabledness(state)) {
-      return false;
-    }
-    if (!activeTabHasPermissions(state)) {
-      return false;
-    }
-    const origin = getOriginOfCurrentTab(state);
-    return (
-      getWeb3ShimUsageStateForOrigin(state, origin) ===
-      Web3ShimUsageAlertStates.recorded
-    );
-  });
+  const shouldShowWeb3ShimUsageNotification = useSelector(
+    (state: MetaMaskReduxState) => {
+      if (getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP) {
+        return false;
+      }
+      if (!getWeb3ShimUsageAlertEnabledness(state)) {
+        return false;
+      }
+      if (!activeTabHasPermissions(state)) {
+        return false;
+      }
+      const origin = getOriginOfCurrentTab(state);
+      return (
+        getWeb3ShimUsageStateForOrigin(state, origin) ===
+        Web3ShimUsageAlertStates.recorded
+      );
+    },
+  );
 
   return {
     isMainnet,
@@ -173,12 +171,13 @@ function useNotificationState() {
   const hasApprovalFlows = useSelector(
     (state: MetaMaskReduxState) => (getApprovalFlows(state)?.length ?? 0) > 0,
   );
-  const hasAllowedPopupRedirectApprovals = useSelector((state: MetaMaskReduxState) =>
-    hasPendingApprovals(state, [
-      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
-      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-    ]),
+  const hasAllowedPopupRedirectApprovals = useSelector(
+    (state: MetaMaskReduxState) =>
+      hasPendingApprovals(state, [
+        SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation as ApprovalType,
+        SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval as ApprovalType,
+        SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect as ApprovalType,
+      ]),
   );
   const showRecoveryPhraseReminder = useSelector(getShowRecoveryPhraseReminder);
   const showTermsOfUsePopup = useSelector(getShowTermsOfUse);
@@ -222,7 +221,8 @@ function useAppUIState() {
     (state: MetaMaskReduxState) => state.appState.showBasicFunctionalityModal,
   );
   const newNetworkAddedConfigurationId = useSelector(
-    (state: MetaMaskReduxState) => state.appState.newNetworkAddedConfigurationId,
+    (state: MetaMaskReduxState) =>
+      state.appState.newNetworkAddedConfigurationId,
   );
   const onboardedInThisUISession = useSelector(
     (state: MetaMaskReduxState) => state.appState.onboardedInThisUISession,
@@ -246,7 +246,9 @@ function useFeatureState() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const showShieldEntryModal = useSelector(getShowShieldEntryModal);
   const pendingShieldCohort = useSelector(getPendingShieldCohort);
-  const isSignedIn = useSelector((state: MetaMaskReduxState) => state.metamask.isSignedIn);
+  const isSignedIn = useSelector(
+    (state: MetaMaskReduxState) => state.metamask.isSignedIn,
+  );
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const rewardsModalOpen = useSelector(selectRewardsModalOpen);
   const showPna25Modal = useSelector(selectShowPna25Modal);
@@ -271,48 +273,57 @@ function useFeatureState() {
 function useHomeActions() {
   const dispatch = useDispatch();
 
-  return {
-    setDataCollectionForMarketing: (val: boolean) =>
-      dispatch(setDataCollectionForMarketing(val)),
-    // Not dispatched — calls background directly
-    attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
-    setConnectedStatusPopoverHasBeenShown: () =>
-      dispatch(setConnectedStatusPopoverHasBeenShown()),
-    // Not dispatched — calls background directly
-    setWeb3ShimUsageAlertDismissed: (origin: string) =>
-      setWeb3ShimUsageAlertDismissed(origin),
-    // Not dispatched — calls background directly
-    disableWeb3ShimUsageAlert: () =>
-      setAlertEnabledness(AlertTypes.web3ShimUsage, false),
-    setRecoveryPhraseReminderHasBeenShown: () =>
-      dispatch(setRecoveryPhraseReminderHasBeenShown()),
-    setRecoveryPhraseReminderLastShown: (lastShown: number) =>
-      dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
-    setTermsOfUseLastAgreed: (lastAgreed: number) =>
-      dispatch(setTermsOfUseLastAgreed(lastAgreed)),
-    setOutdatedBrowserWarningLastShown: (lastShown: number) =>
-      dispatch(setOutdatedBrowserWarningLastShown(lastShown)),
-    setNewTokensImported: (newTokens: string) =>
-      dispatch(setNewTokensImported(newTokens)),
-    setNewTokensImportedError: (msg: string) =>
-      dispatch(setNewTokensImportedError(msg)),
-    clearNewNetworkAdded: () => dispatch(setNewNetworkAdded({})),
-    clearEditedNetwork: () => dispatch(setEditedNetwork()),
-    setActiveNetwork: (networkConfigurationId: string) =>
-      dispatch(setActiveNetwork(networkConfigurationId)),
-    setBasicFunctionalityModalOpen: () =>
-      dispatch(openBasicFunctionalityModal()),
-    fetchBuyableChains: () => dispatch(fetchBuyableChains()),
-    setRedirectAfterDefaultPage: (redirect: object) =>
-      dispatch(setRedirectAfterDefaultPage(redirect)),
-    clearRedirectAfterDefaultPage: () =>
-      dispatch(clearRedirectAfterDefaultPage()),
-    lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
-    setPendingShieldCohort: (cohort: string) =>
-      dispatch(setPendingShieldCohort(cohort)),
-    clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
-    clearLastVisitedPerpsRoute: () => dispatch(setLastVisitedPerpsRoute(null)),
-  };
+  return useMemo(
+    () => ({
+      setDataCollectionForMarketing: (val: boolean) =>
+        dispatch(setDataCollectionForMarketing(val)),
+      // Not dispatched — calls background directly
+      attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
+      setConnectedStatusPopoverHasBeenShown: () =>
+        dispatch(setConnectedStatusPopoverHasBeenShown()),
+      // Not dispatched — calls background directly
+      setWeb3ShimUsageAlertDismissed: (origin: string) =>
+        setWeb3ShimUsageAlertDismissed(origin),
+      // Not dispatched — calls background directly
+      disableWeb3ShimUsageAlert: () =>
+        setAlertEnabledness(AlertTypes.web3ShimUsage, false),
+      setRecoveryPhraseReminderHasBeenShown: () =>
+        dispatch(setRecoveryPhraseReminderHasBeenShown()),
+      setRecoveryPhraseReminderLastShown: (lastShown: number) =>
+        dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+      setTermsOfUseLastAgreed: (lastAgreed: number) =>
+        dispatch(setTermsOfUseLastAgreed(lastAgreed)),
+      setOutdatedBrowserWarningLastShown: (lastShown: number) =>
+        dispatch(setOutdatedBrowserWarningLastShown(lastShown)),
+      setNewTokensImported: (newTokens: string) =>
+        dispatch(setNewTokensImported(newTokens)),
+      setNewTokensImportedError: (msg: string) =>
+        dispatch(setNewTokensImportedError(msg)),
+      clearNewNetworkAdded: () =>
+        dispatch(
+          setNewNetworkAdded(
+            {} as { networkConfigurationId: string; nickname: string },
+          ),
+        ),
+      clearEditedNetwork: () => dispatch(setEditedNetwork()),
+      setActiveNetwork: (networkConfigurationId: string) =>
+        dispatch(setActiveNetwork(networkConfigurationId)),
+      setBasicFunctionalityModalOpen: () =>
+        dispatch(openBasicFunctionalityModal()),
+      fetchBuyableChains: () => dispatch(fetchBuyableChains()),
+      setRedirectAfterDefaultPage: (redirect: object) =>
+        dispatch(setRedirectAfterDefaultPage(redirect)),
+      clearRedirectAfterDefaultPage: () =>
+        dispatch(clearRedirectAfterDefaultPage()),
+      lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
+      setPendingShieldCohort: (cohort: string) =>
+        dispatch(setPendingShieldCohort(cohort)),
+      clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
+      clearLastVisitedPerpsRoute: () =>
+        dispatch(setLastVisitedPerpsRoute(null)),
+    }),
+    [dispatch],
+  );
 }
 
 export default function HomeContainer() {

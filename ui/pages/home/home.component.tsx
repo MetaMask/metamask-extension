@@ -771,11 +771,9 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
             onClose={handleClose}
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
-            fontWeight={FontWeight.Bold}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
             gap={4}
-            size={18}
             paddingBottom={0}
           >
             {t('onboardedMetametricsTitle')}
@@ -1002,7 +1000,7 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
           {showRewardsModal && <RewardsModal />}
-          {showDeepLinkQrCodeModal ? (
+          {showDeepLinkQrCodeModal && deepLinkQrCode ? (
             <Modal
               data-testid="deeplink-qrcode-modal"
               isOpen
@@ -1052,8 +1050,10 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
           <div className="home__main-view">
             <AccountOverview
               onSupportLinkClick={this.onSupportLinkClick}
-              useExternalServices={useExternalServices}
-              setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
+              useExternalServices={useExternalServices ?? false}
+              setBasicFunctionalityModalOpen={
+                setBasicFunctionalityModalOpen ?? (() => undefined)
+              }
             />
             {(isBeta() || isFlask()) && (
               <div className="home__support">
