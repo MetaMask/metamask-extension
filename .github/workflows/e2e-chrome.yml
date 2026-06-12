@@ -15,8 +15,6 @@ on:
         type: string
         description: The matrix for the E2E jobs
     secrets:
-      PR_COMMENT_TOKEN:
-        required: false
       INFURA_PROJECT_ID:
         required: false
 

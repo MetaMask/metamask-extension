@@ -19,7 +19,6 @@ import AssetList from '../../page-objects/pages/home/asset-list';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
-const hexAbbreviatedAddress = '0x2f318...5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
 
 describe('Send - Hex Address Normalization', function () {
@@ -50,7 +49,7 @@ describe('Send - Hex Address Normalization', function () {
 
           // Verify address in activity log
           await transactionDetailsPage.checkAddressInActivityLog(
-            hexAbbreviatedAddress,
+            hexPrefixedAddress.toLowerCase(),
           );
         },
       );
@@ -132,7 +131,7 @@ describe('Send - Hex Address Normalization', function () {
 
           // Verify address in activity log
           await transactionDetailsPage.checkAddressInActivityLog(
-            hexAbbreviatedAddress,
+            hexPrefixedAddress.toLowerCase(),
           );
         },
       );
