@@ -1,6 +1,8 @@
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
+  CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
   TEST_CHAINS,
 } from '../../../shared/constants/network';
@@ -62,6 +64,33 @@ export function getNetworkSectionKey(chainId: string): NetworkSectionKey {
   }
 
   return 'custom';
+}
+
+const FEATURED_NON_EVM_MAINNET_CHAIN_IDS: readonly CaipChainId[] = [
+  SolScope.Mainnet,
+  BtcScope.Mainnet,
+  TrxScope.Mainnet,
+];
+
+/**
+ * Returns whether a network is a featured default network that can be disabled
+ * (without confirmation) rather than deleted.
+ * @param chainId
+ */
+export function isDisableableDefaultNetwork(chainId: string): boolean {
+  if (getNetworkSectionKey(chainId) === 'test') {
+    return false;
+  }
+
+  const normalizedChainId = normalizeChainId(chainId);
+  if (isHexChainId(normalizedChainId)) {
+    return (
+      FEATURED_NETWORK_CHAIN_IDS.includes(normalizedChainId) &&
+      normalizedChainId !== CHAIN_IDS.MAINNET
+    );
+  }
+
+  return FEATURED_NON_EVM_MAINNET_CHAIN_IDS.includes(chainId as CaipChainId);
 }
 
 export function getNetworkSections<TNetwork extends { chainId: string }>(

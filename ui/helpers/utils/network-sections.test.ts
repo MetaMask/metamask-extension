@@ -1,4 +1,9 @@
-import { getNetworkSections } from './network-sections';
+import { SolScope } from '@metamask/keyring-api';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  getNetworkSections,
+  isDisableableDefaultNetwork,
+} from './network-sections';
 
 describe('getNetworkSections', () => {
   it('assigns section titles even when only one section is present', () => {
@@ -23,5 +28,29 @@ describe('getNetworkSections', () => {
     expect(sections).toHaveLength(2);
     expect(sections[0].titleKey).toBe('defaultNetworks');
     expect(sections[1].titleKey).toBe('customNetworks');
+  });
+});
+
+describe('isDisableableDefaultNetwork', () => {
+  it('returns true for featured EVM networks except mainnet', () => {
+    expect(isDisableableDefaultNetwork('0xa')).toBe(true);
+    expect(isDisableableDefaultNetwork('eip155:10')).toBe(true);
+  });
+
+  it('returns false for Ethereum mainnet', () => {
+    expect(isDisableableDefaultNetwork('0x1')).toBe(false);
+    expect(isDisableableDefaultNetwork('eip155:1')).toBe(false);
+  });
+
+  it('returns true for featured non-EVM mainnets', () => {
+    expect(isDisableableDefaultNetwork(SolScope.Mainnet)).toBe(true);
+  });
+
+  it('returns false for custom networks', () => {
+    expect(isDisableableDefaultNetwork('0xabc')).toBe(false);
+  });
+
+  it('returns false for testnets', () => {
+    expect(isDisableableDefaultNetwork(CHAIN_IDS.SEPOLIA)).toBe(false);
   });
 });
