@@ -3,6 +3,7 @@ import { render, screen, fireEvent, act, within } from '@testing-library/react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { SnapUIDateTimePicker } from './snap-ui-date-time-picker';
 
 const mockHandleInputChange = jest.fn();
@@ -15,7 +16,9 @@ jest.mock('../../../../contexts/snaps', () => ({
   }),
 }));
 
-const MOCK_TODAY = DateTime.fromISO('2026-06-02T21:43:00.000Z');
+const MOCK_TODAY = DateTime.fromISO(
+  '2026-06-02T21:43:00.000Z',
+) as DateTime<true>;
 
 function renderPicker(
   props: Partial<React.ComponentProps<typeof SnapUIDateTimePicker>> = {},
@@ -97,7 +100,9 @@ describe('SnapUIDateTimePicker', () => {
         </LocalizationProvider>,
       );
       expect(getByText('Pick a date')).toBeInTheDocument();
-      expect(getByText('Something went wrong')).toBeInTheDocument();
+      expect(
+        getByText(messages.hardwareWalletErrorUnknownErrorTitle.message),
+      ).toBeInTheDocument();
     });
   });
 
