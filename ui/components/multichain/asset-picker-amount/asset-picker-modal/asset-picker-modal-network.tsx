@@ -7,6 +7,12 @@ import {
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
 import {
+  FontWeight,
+  Text as DsText,
+  TextColor as DsTextColor,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
+import {
   Display,
   FlexDirection,
   BlockSize,
@@ -20,6 +26,7 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  ModalBody,
   Modal,
   Box,
   ButtonLink,
@@ -174,6 +181,8 @@ export const AssetPickerModalNetwork = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
+      isClosedOnEscapeKey
+      isClosedOnOutsideClick
       className="multichain-asset-picker__network-modal"
     >
       <ModalOverlay />
@@ -235,28 +244,31 @@ export const AssetPickerModalNetwork = ({
             </ButtonLink>
           </Box>
         )}
-        <Box
-          className="multichain-asset-picker__network-list"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          style={{ minHeight: 0, overflowY: 'auto' }}
+        <ModalBody
+          paddingLeft={0}
+          paddingRight={0}
+          className="multichain-asset-picker__network-list flex min-h-0 flex-1 flex-col overflow-auto"
         >
-          {networkSections.map((section) => (
+          {networkSections.map((section, index) => (
             <Box
               key={section.key}
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               width={BlockSize.Full}
+              className="flex flex-col"
             >
+              {index > 0 ? (
+                <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
+              ) : null}
               {section.titleKey ? (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                  padding={4}
-                  paddingBottom={2}
+                <DsText
+                  variant={DsTextVariant.BodyMd}
+                  color={DsTextColor.TextAlternative}
+                  fontWeight={FontWeight.Medium}
+                  className="px-4 pb-2 pt-4"
                 >
                   {t(section.titleKey)}
-                </Text>
+                </DsText>
               ) : null}
               {section.items.map((networkConfig) => {
                 const { name, chainId } = networkConfig;
@@ -312,7 +324,7 @@ export const AssetPickerModalNetwork = ({
               })}
             </Box>
           ))}
-        </Box>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );

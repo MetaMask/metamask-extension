@@ -107,12 +107,15 @@ export const ContactNetworks = ({
           flexDirection={BoxFlexDirection.Column}
           className="flex min-h-0 w-full flex-1 flex-col overflow-auto"
         >
-          {networkSections.map((section) => (
+          {networkSections.map((section, index) => (
             <Box
               key={section.key}
               flexDirection={BoxFlexDirection.Column}
               className="flex w-full flex-col"
             >
+              {index > 0 ? (
+                <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
+              ) : null}
               {section.titleKey ? (
                 <Text
                   variant={TextVariant.BodyMd}

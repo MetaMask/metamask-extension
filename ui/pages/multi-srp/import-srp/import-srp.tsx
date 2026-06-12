@@ -12,7 +12,6 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  hideWarning,
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
 } from '../../../store/actions';
@@ -45,14 +44,6 @@ export const ImportSrp = () => {
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
   const { trackEvent } = useContext(MetaMetricsContext);
-
-  // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
-  // We want to hide the warning when the component unmounts
-  useEffect(() => {
-    return () => {
-      dispatch(hideWarning());
-    };
-  }, [dispatch]);
 
   async function importWallet() {
     try {
