@@ -15,7 +15,7 @@ import type {
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   onPushNotificationClicked,
-  onPushNotificationReceive,
+  onPushNotificationReceived,
 } from '../../controllers/push-notifications';
 import {
   MetaMetricsEventCategory,
@@ -65,7 +65,7 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
         deleteRegToken,
         subscribeToPushNotifications: createSubscribeToPushNotifications({
           messenger: controllerMessenger,
-          onReceivedHandler: onPushNotificationReceive,
+          onReceivedHandler: onPushNotificationReceived,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClickHandler: onPushNotificationClicked,
