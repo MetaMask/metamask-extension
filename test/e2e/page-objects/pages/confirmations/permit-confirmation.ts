@@ -31,9 +31,15 @@ export default class PermitConfirmation extends Confirmation {
     text,
   });
 
-  private readonly origin = (text: string): RawLocator => ({ text });
+  private readonly origin = (text: string): RawLocator => ({
+    testId: 'confirmation__details-origin',
+    text,
+  });
 
-  private readonly primaryType = (text: string): RawLocator => ({ text });
+  private readonly primaryType = (text: string): RawLocator => ({
+    testId: 'confirmation__message-primary-type',
+    text,
+  });
 
   constructor(driver: Driver) {
     super(driver);

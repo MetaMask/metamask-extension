@@ -257,6 +257,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -625,6 +626,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -819,6 +821,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -938,6 +941,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            data-testid="confirmation__message-primary-type"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1513,6 +1517,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -1632,6 +1637,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            data-testid="confirmation__message-primary-type"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1964,6 +1970,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -2083,6 +2090,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            data-testid="confirmation__message-primary-type"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
