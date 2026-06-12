@@ -1,7 +1,7 @@
 import { Hex, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import {
   GenericQuoteRequest,
-  QuoteResponse,
+  QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import {
   NetworkClientId,
@@ -69,7 +69,7 @@ export function getQuotesForConfirmation({
   dappSwapMetricsFlag,
 }: {
   req: DappSwapMiddlewareRequest<JsonRpcParams>;
-  fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
+  fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponseV1[]>;
   setDappSwapComparisonData: (
     uniqueId: string,
     info: DappSwapComparisonData,
