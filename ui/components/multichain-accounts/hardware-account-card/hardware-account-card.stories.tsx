@@ -1,44 +1,15 @@
 import React, { useState } from 'react';
 import type { Meta, StoryFn } from '@storybook/react';
-import { ETH_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
+import {
+  createHardwareWalletAccount,
+  createMockHardwareAccounts,
+} from '../../../../test/data/hardware-wallet-accounts';
 import { HardwareAccountCard } from './hardware-account-card';
-import type {
-  HardwareAccountCardProps,
-  HardwareWalletAccount,
-} from './hardware-account-card.types';
+import type { HardwareAccountCardProps } from './hardware-account-card.types';
 
-const account: HardwareWalletAccount = {
-  id: 'account-0',
-  name: 'Account 1',
-  totalBalance: '$360.00',
-  addresses: [
-    {
-      id: 'eth-0',
-      networkName: 'Ethereum',
-      address: '0x091234567890123456789012345678901234b272',
-      balance: '$120.00',
-      iconUrl: ETH_TOKEN_IMAGE_URL,
-      iconType: 'network',
-    },
-    {
-      id: 'sol-0',
-      networkName: 'Solana',
-      address: '6dk7RD1234567890abcdefghijklmnopqrstuvDEtXQ',
-      balance: '$120.00',
-      iconUrl: './images/solana-logo.svg',
-      iconType: 'network',
-    },
-    {
-      id: 'btc-0',
-      networkName: 'Bitcoin',
-      address: 'bc1qea1234567890abcdefghijklmnopqrstuvwer2fx',
-      balance: '$120.00',
-      iconUrl: './images/bitcoin-logo.svg',
-      iconType: 'token',
-      addressType: 'Taproot',
-    },
-  ],
-};
+const account = createMockHardwareAccounts(1, {
+  includeMultichainAddresses: true,
+})[0];
 
 type HardwareAccountCardStoryProps = Omit<
   HardwareAccountCardProps,
@@ -84,14 +55,7 @@ export const Unchecked: StoryFn<HardwareAccountCardStoryProps> = (args) => (
 );
 
 export const EthereumOnly: StoryFn<HardwareAccountCardStoryProps> = (args) => (
-  <HardwareAccountCardStory
-    {...args}
-    account={{
-      ...account,
-      totalBalance: '$120.00',
-      addresses: [account.addresses[0]],
-    }}
-  />
+  <HardwareAccountCardStory {...args} account={createHardwareWalletAccount()} />
 );
 
 export const AlreadyConnected: StoryFn<HardwareAccountCardStoryProps> = (

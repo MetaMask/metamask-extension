@@ -1,23 +1,13 @@
 import React from 'react';
 import type { Meta, StoryFn } from '@storybook/react';
-import { ETH_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
+import { MOCK_ETHEREUM_HARDWARE_ADDRESS } from '../../../../test/data/hardware-wallet-accounts';
 import { HardwareAccountAddressRow } from './hardware-account-address-row';
-import type { HardwareWalletAccountAddress } from './hardware-account-address-row.types';
-
-const baseAddress: HardwareWalletAccountAddress = {
-  id: 'eth-0',
-  networkName: 'Ethereum',
-  address: '0x091234567890123456789012345678901234b272',
-  balance: '$120.00',
-  iconUrl: ETH_TOKEN_IMAGE_URL,
-  iconType: 'network',
-};
 
 export default {
   title: 'Components/MultichainAccounts/HardwareAccountAddressRow',
   component: HardwareAccountAddressRow,
   args: {
-    address: baseAddress,
+    address: MOCK_ETHEREUM_HARDWARE_ADDRESS,
   },
 } as Meta<typeof HardwareAccountAddressRow>;
 
@@ -33,7 +23,8 @@ export const WithAddressType: StoryFn<typeof HardwareAccountAddressRow> = (
   <HardwareAccountAddressRow
     {...args}
     address={{
-      ...baseAddress,
+      ...MOCK_ETHEREUM_HARDWARE_ADDRESS,
+      id: 'btc-0',
       networkName: 'Bitcoin',
       address: 'bc1qea1234567890abcdefghijklmnopqrstuvwer2fx',
       iconUrl: './images/bitcoin-logo.svg',

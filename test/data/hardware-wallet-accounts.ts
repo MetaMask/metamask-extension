@@ -11,6 +11,29 @@ export const MOCK_ETHEREUM_HARDWARE_ADDRESS: HardwareWalletAccountAddress = {
   iconType: 'network',
 };
 
+const createMultichainAddresses = (
+  index: number,
+): HardwareWalletAccountAddress[] => [
+  MOCK_ETHEREUM_HARDWARE_ADDRESS,
+  {
+    id: `sol-${index}`,
+    networkName: 'Solana',
+    address: '6dk7RD1234567890abcdefghijklmnopqrstuvDEtXQ',
+    balance: '$120.00',
+    iconUrl: './images/solana-logo.svg',
+    iconType: 'network',
+  },
+  {
+    id: `btc-${index}`,
+    networkName: 'Bitcoin',
+    address: 'bc1qea1234567890abcdefghijklmnopqrstuvwer2fx',
+    balance: '$120.00',
+    iconUrl: './images/bitcoin-logo.svg',
+    iconType: 'token',
+    addressType: 'Taproot',
+  },
+];
+
 export const createHardwareWalletAccount = (
   overrides: Partial<HardwareWalletAccount> = {},
 ): HardwareWalletAccount => ({
@@ -21,38 +44,20 @@ export const createHardwareWalletAccount = (
   ...overrides,
 });
 
+type CreateMockHardwareAccountsOptions = {
+  includeMultichainAddresses?: boolean;
+};
+
 export const createMockHardwareAccounts = (
   count: number,
-  options?: {
-    includeMultichainAddresses?: boolean;
-  },
+  options: CreateMockHardwareAccountsOptions = {},
 ): HardwareWalletAccount[] => {
-  const includeMultichainAddresses =
-    options?.includeMultichainAddresses ?? false;
+  const { includeMultichainAddresses = false } = options;
 
   return Array.from({ length: count }, (_, index) => {
     const accountNumber = index + 1;
     const addresses = includeMultichainAddresses
-      ? [
-          MOCK_ETHEREUM_HARDWARE_ADDRESS,
-          {
-            id: `sol-${index}`,
-            networkName: 'Solana',
-            address: '6dk7RD1234567890abcdefghijklmnopqrstuvDEtXQ',
-            balance: '$120.00',
-            iconUrl: './images/solana-logo.svg',
-            iconType: 'network' as const,
-          },
-          {
-            id: `btc-${index}`,
-            networkName: 'Bitcoin',
-            address: 'bc1qea1234567890abcdefghijklmnopqrstuvwer2fx',
-            balance: '$120.00',
-            iconUrl: './images/bitcoin-logo.svg',
-            iconType: 'token' as const,
-            addressType: 'Taproot',
-          },
-        ]
+      ? createMultichainAddresses(index)
       : [MOCK_ETHEREUM_HARDWARE_ADDRESS];
 
     return {
