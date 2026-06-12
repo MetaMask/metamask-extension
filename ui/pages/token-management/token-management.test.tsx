@@ -582,8 +582,7 @@ describe('TokenManagementPage', () => {
     const arcUsdcErc20Token = {
       accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       accountType: 'eip155:eoa',
-      assetId:
-        'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
+      assetId: 'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
       chainId: 'eip155:5042',
       image: '',
       name: 'Arc USDC ERC20',
