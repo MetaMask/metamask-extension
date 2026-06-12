@@ -1,5 +1,5 @@
 diff --git a/dist/constants/bridge.cjs b/dist/constants/bridge.cjs
-index 2ea1286fa1c8cdf6a318453f20f6b72eaf8e32b6..4ef2641abb90348ec935f03a68bd46aa7f248930 100644
+index 0517b445b42a8ee400b90cedb79a03399cdd6c49..6d6dae2f797b5b77680f84e1b24295e5438aca26 100644
 --- a/dist/constants/bridge.cjs
 +++ b/dist/constants/bridge.cjs
 @@ -18,6 +18,7 @@ exports.ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -19,7 +19,7 @@ index 2ea1286fa1c8cdf6a318453f20f6b72eaf8e32b6..4ef2641abb90348ec935f03a68bd46aa
  ];
  exports.DEFAULT_FEATURE_FLAG_CONFIG = {
 diff --git a/dist/constants/bridge.mjs b/dist/constants/bridge.mjs
-index 4c64328b17c130c1177a9d3f63c977f0bb5a0b7e..05153e69d647259ea0737e7bea4bf10e389648c6 100644
+index 2120212d2050cc961e22aa61e035ffcc1f55d58f..ec9a80709949a49e058339bde08ca0466b06f5da 100644
 --- a/dist/constants/bridge.mjs
 +++ b/dist/constants/bridge.mjs
 @@ -15,6 +15,7 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -95,7 +95,7 @@ index 5fb754d746dc2efc8fc296939315eb113a8496ba..7ee901ab24e6a182c946db01ea38f98c
  //# sourceMappingURL=chains.mjs.map
 \ No newline at end of file
 diff --git a/dist/constants/tokens.cjs b/dist/constants/tokens.cjs
-index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc0001f5df739 100644
+index 57f207adbd3a0323a50c5288a2971ad785c29501..8322f8bdd5f36f5fa149567496dec2f224c36de6 100644
 --- a/dist/constants/tokens.cjs
 +++ b/dist/constants/tokens.cjs
 @@ -34,6 +34,7 @@ const CURRENCY_SYMBOLS = {
@@ -132,12 +132,12 @@ index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc000
      TRX: 'slip44:195',
      MON: 'slip44:268435779',
      HYPE: 'slip44:2457',
-+    USDC: 'erc20:0x0000000000000000000000000000000000000000',
++    'USDC': 'erc20:0x0000000000000000000000000000000000000000',
  };
  //# sourceMappingURL=tokens.cjs.map
 \ No newline at end of file
 diff --git a/dist/constants/tokens.mjs b/dist/constants/tokens.mjs
-index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44e97030f8 100644
+index 8764f757f3e41a6614dac2095038e26eba641d9a..861b2af661decf142f446e80483585592ae9bc65 100644
 --- a/dist/constants/tokens.mjs
 +++ b/dist/constants/tokens.mjs
 @@ -31,6 +31,7 @@ const CURRENCY_SYMBOLS = {
@@ -174,12 +174,12 @@ index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44
      TRX: 'slip44:195',
      MON: 'slip44:268435779',
      HYPE: 'slip44:2457',
-+    USDC: 'erc20:0x0000000000000000000000000000000000000000',
++    'USDC': 'erc20:0x0000000000000000000000000000000000000000',
  };
  //# sourceMappingURL=tokens.mjs.map
 \ No newline at end of file
 diff --git a/dist/types.cjs b/dist/types.cjs
-index 945d50d380f98144e12d308e331f0a25a9ac054c..5160b927ead302db4470ad06496e88e384605cb6 100644
+index cfe08e3204d27255b4334c79fc69d4e0031d1692..5ba05d1c2c614f8e272ed05d2c284dd2f66cdff8 100644
 --- a/dist/types.cjs
 +++ b/dist/types.cjs
 @@ -52,6 +52,7 @@ var ChainId;
@@ -191,7 +191,7 @@ index 945d50d380f98144e12d308e331f0a25a9ac054c..5160b927ead302db4470ad06496e88e3
  var RequestStatus;
  (function (RequestStatus) {
 diff --git a/dist/types.mjs b/dist/types.mjs
-index 6b8ff6303061d23601ab02e41c96192bf09791f5..ea799db2d867d34c0d9b31b1060c7a34050edef4 100644
+index a1d7d1d121cda1e288a27c0ebfcc3fd8c2885e8d..87a000c3acd8b843b389421ad846968edcb3d82a 100644
 --- a/dist/types.mjs
 +++ b/dist/types.mjs
 @@ -49,6 +49,7 @@ export var ChainId;
