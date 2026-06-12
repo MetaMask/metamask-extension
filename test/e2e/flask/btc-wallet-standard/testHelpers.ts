@@ -97,7 +97,6 @@ export async function withBtcWalletStandardSnap(
       manifestFlags: {
         remoteFeatureFlags: {
           bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          sendRedesign: { enabled: true },
         },
       },
       testSpecificMock: async (mockServer: Mockttp) => [
