@@ -1456,7 +1456,7 @@ export const TokenManagementPage = () => {
       <ButtonIcon
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
         data-testid="token-management-header-back-button"
       />
     </Link>
