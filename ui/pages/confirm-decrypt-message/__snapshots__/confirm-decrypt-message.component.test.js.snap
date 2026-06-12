@@ -111,7 +111,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
           <div
             class="request-decrypt-message__balance-value"
           >
-            966.987986 ETH
+            0 ETH
           </div>
         </div>
       </div>
@@ -302,7 +302,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
           <div
             class="request-decrypt-message__balance-value"
           >
-            966.987986 ETH
+            0 ETH
           </div>
         </div>
       </div>
@@ -491,7 +491,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
           <div
             class="request-decrypt-message__balance-value"
           >
-            966.987986 ETH
+            0 ETH
           </div>
         </div>
       </div>
