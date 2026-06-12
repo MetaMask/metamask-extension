@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { I18nContext } from '../../../contexts/i18n';
 import copyToClipboard from 'copy-to-clipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 
@@ -24,9 +25,7 @@ class SelectedAccount extends Component {
     copied: false,
   };
 
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   static propTypes = {
     selectedAccount: PropTypes.object.isRequired,
@@ -44,7 +43,7 @@ class SelectedAccount extends Component {
   }
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
     const { selectedAccount } = this.props;
 
     const checksummedAddress = toChecksumHexAddress(selectedAccount.address);

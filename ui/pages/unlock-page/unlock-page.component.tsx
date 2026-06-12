@@ -7,6 +7,7 @@ import React, {
   FormEvent,
   ChangeEvent,
   MutableRefObject,
+  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
@@ -53,7 +54,8 @@ import { isFlask, isBeta } from '../../../shared/lib/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { withMetaMetrics } from '../../contexts/metametrics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { I18nContext } from '../../contexts/i18n';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -66,7 +68,7 @@ import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
 
-type UnlockPageProps = {
+type UnlockPageProps = UnlockPageContext & {
   navigate: NavigateFunction;
   location: RouterLocation;
   isUnlocked: boolean;
@@ -85,7 +87,7 @@ type UnlockPageProps = {
   loginWithDifferentMethod: () => Promise<void>;
   firstTimeFlowType: string | null;
   isPopup: boolean;
-  accountTypeForMetrics: string;
+  accountTypeForMetrics?: string;
   isWalletResetInProgress: boolean;
   passkeyAutoUnlockSuppressed: boolean;
   /** When true, passkey ceremony must run in a browser tab (sidepanel + incompatible AAGUID). */
@@ -133,19 +135,14 @@ const FoxAppearAnimation = lazy(
     }>,
 );
 
-class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
+class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
   private get ctx(): UnlockPageContext {
-    return this.context as UnlockPageContext;
+    const { t, trackEvent, bufferedTrace, bufferedEndTrace } = this.props;
+    return { t, trackEvent, bufferedTrace, bufferedEndTrace };
   }
 
-  static contextTypes = {
-    trackEvent: PropTypes.func,
-    bufferedTrace: PropTypes.func,
-    bufferedEndTrace: PropTypes.func,
-    t: PropTypes.func,
-  };
-
   static propTypes = {
+    t: PropTypes.func.isRequired,
     /**
      * navigate function for redirect after action
      */
@@ -861,8 +858,21 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   }
 }
 
-export default withMetaMetrics(
-  UnlockPage as unknown as React.ComponentType<
-    React.PropsWithChildren<Record<string, unknown>>
-  >,
-);
+function UnlockPage(props: React.PropsWithChildren<Record<string, unknown>>) {
+  const t = useContext(I18nContext);
+  const { trackEvent, bufferedTrace, bufferedEndTrace } =
+    useContext(MetaMetricsContext);
+  return (
+    <UnlockPageBase
+      {...(props as unknown as UnlockPageProps)}
+      t={t}
+      trackEvent={trackEvent as UnlockPageContext['trackEvent']}
+      bufferedTrace={bufferedTrace as UnlockPageContext['bufferedTrace']}
+      bufferedEndTrace={
+        bufferedEndTrace as UnlockPageContext['bufferedEndTrace']
+      }
+    />
+  );
+}
+
+export default UnlockPage;

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   Box,
   BoxAlignItems,
@@ -10,12 +11,10 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 import { ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 
 export default class PermissionsConnectFooter extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
     return (
       <Box
         className="flex"

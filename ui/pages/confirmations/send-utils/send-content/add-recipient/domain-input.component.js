@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { I18nContext } from '../../../../../contexts/i18n';
 import classnames from 'clsx';
 
 import { isHexString } from '@metamask/utils';
@@ -24,10 +25,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-    metricsEvent: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   static propTypes = {
     className: PropTypes.string,
@@ -101,7 +99,7 @@ export default class DomainInput extends Component {
   };
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
     const { className, selectedAddress, selectedName, userInput } = this.props;
 
     const hasSelectedAddress = Boolean(selectedAddress);

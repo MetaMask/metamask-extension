@@ -1,8 +1,10 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { I18nContext } from '../../contexts/i18n';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -91,13 +93,10 @@ function shouldCloseNotificationPopup({
   return shouldClose;
 }
 
-export default class Home extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
-  };
-
+class HomeBase extends PureComponent {
   static propTypes = {
+    t: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
     navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
     isNotification: PropTypes.bool,
@@ -397,7 +396,7 @@ export default class Home extends PureComponent {
   onAcceptTermsOfUse = () => {
     const { setTermsOfUseLastAgreed } = this.props;
     setTermsOfUseLastAgreed(new Date().getTime());
-    this.context.trackEvent({
+    this.props.trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.TermsOfUseAccepted,
       properties: {
@@ -408,7 +407,7 @@ export default class Home extends PureComponent {
 
   onSupportLinkClick = () => {
     if (isMain()) {
-      this.context.trackEvent(
+      this.props.trackEvent(
         {
           category: MetaMetricsEventCategory.Home,
           event: MetaMetricsEventName.SupportLinkClicked,
@@ -437,7 +436,7 @@ export default class Home extends PureComponent {
   };
 
   renderNotifications() {
-    const { t } = this.context;
+    const { t } = this.props;
 
     const {
       navigate,
@@ -672,12 +671,11 @@ export default class Home extends PureComponent {
   }
 
   renderOnboardingPopover = () => {
-    const { t } = this.context;
-    const { setDataCollectionForMarketing } = this.props;
+    const { t, trackEvent, setDataCollectionForMarketing } = this.props;
 
     const handleClose = () => {
       setDataCollectionForMarketing(false);
-      this.context.trackEvent({
+      trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -689,7 +687,7 @@ export default class Home extends PureComponent {
 
     const handleConsent = (consent) => {
       setDataCollectionForMarketing(consent);
-      this.context.trackEvent({
+      trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -765,8 +763,7 @@ export default class Home extends PureComponent {
   };
 
   renderPopover = () => {
-    const { setConnectedStatusPopoverHasBeenShown } = this.props;
-    const { t } = this.context;
+    const { setConnectedStatusPopoverHasBeenShown, t } = this.props;
     return (
       <Popover
         title={t('whatsThis')}
@@ -811,7 +808,7 @@ export default class Home extends PureComponent {
   };
 
   render() {
-    const { t } = this.context;
+    const { t } = this.props;
     const { deepLinkQrCode } = this.state;
     const {
       useExternalServices,
@@ -1006,3 +1003,11 @@ export default class Home extends PureComponent {
     );
   }
 }
+
+function Home(props) {
+  const t = useContext(I18nContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
+  return <HomeBase {...props} t={t} trackEvent={trackEvent} />;
+}
+
+export default Home;

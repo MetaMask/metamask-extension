@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { I18nContext } from '../../../../contexts/i18n';
 import { SubjectType } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
@@ -45,12 +46,10 @@ export default class PermissionPageContainerContent extends PureComponent {
     selectedCaipChainIds: null,
   };
 
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
 
     const {
       selectedPermissions,

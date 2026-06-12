@@ -10,11 +10,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import configureStore from '../../ui/store/store';
-import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import {
-  MetaMetricsContext,
-  LegacyMetaMetricsProvider,
-} from '../../ui/contexts/metametrics';
+import { I18nContext } from '../../ui/contexts/i18n';
+import { MetaMetricsContext } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
 import {
@@ -129,17 +126,13 @@ export function createProviderWrapper(
     return (
       <MemoryRouter>
         <I18nProvider currentLocale="en" current={en} en={en}>
-          <LegacyI18nProvider>
-            <UIMessengerProvider value={uiMessenger}>
-              <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-                <LegacyMetaMetricsProvider>
-                  <QueryClientProvider client={queryClient}>
-                    {content}
-                  </QueryClientProvider>
-                </LegacyMetaMetricsProvider>
-              </MetaMetricsContext.Provider>
-            </UIMessengerProvider>
-          </LegacyI18nProvider>
+          <UIMessengerProvider value={uiMessenger}>
+            <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+              <QueryClientProvider client={queryClient}>
+                {content}
+              </QueryClientProvider>
+            </MetaMetricsContext.Provider>
+          </UIMessengerProvider>
         </I18nProvider>
       </MemoryRouter>
     );
@@ -244,7 +237,7 @@ export const renderHookWithProviderTyped = (
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (
     <I18nProvider currentLocale="en" current={en} en={en}>
-      <LegacyI18nProvider>{children}</LegacyI18nProvider>
+      {children}
     </I18nProvider>
   );
 
