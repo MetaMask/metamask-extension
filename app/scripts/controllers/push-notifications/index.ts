@@ -2,53 +2,33 @@
 // eslint-disable-next-line spaced-comment
 /// <reference lib="webworker" />
 
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { PushAnalyticsPayload } from '@metamask/notification-services-controller/push-services';
 import ExtensionPlatform from '../../platforms/extension';
-import { getNotificationImage } from './get-notification-image';
-import { createNotificationMessage } from './get-notification-message';
-
-type INotification = NotificationServicesController.Types.INotification;
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
 const extensionPlatform = new ExtensionPlatform();
 
-export async function onPushNotificationReceived(
-  notification: INotification,
+export async function onPushNotificationReceive(
+  _payload: PushAnalyticsPayload,
 ): Promise<void> {
-  const notificationMessage = createNotificationMessage(notification);
-  if (!notificationMessage) {
-    return;
-  }
-
-  const registration = sw?.registration;
-  if (!registration) {
-    return;
-  }
-
-  const iconUrl = await getNotificationImage();
-
-  await registration.showNotification(notificationMessage.title, {
-    body: notificationMessage.description,
-    icon: iconUrl,
-    tag: notification?.id,
-    data: notification,
-  });
+  // The OS renders the banner from the Web Push payload, and core re-fetches
+  // the inbox when it receives the push message.
 }
 
 export async function onPushNotificationClicked(
   event: NotificationEvent,
-  notification?: INotification,
+  payload?: PushAnalyticsPayload,
 ) {
   // Close notification
   event.notification.close();
 
   // Get Data
-  const data: INotification = notification ?? event?.notification?.data;
+  const data: PushAnalyticsPayload = payload ?? event?.notification?.data;
 
   // Navigate
   const destination = `${extensionPlatform.getExtensionURL(
     null,
     null,
-  )}#notifications/${data.id}`;
+  )}#notifications/${data.notification_id}`;
   event.waitUntil(sw.clients.openWindow(destination));
 }

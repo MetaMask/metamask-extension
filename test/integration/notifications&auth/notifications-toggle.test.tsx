@@ -121,12 +121,16 @@ describe('Notifications Toggle', () => {
           (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
         );
 
-      expect(disableNotificationsCall?.[0]).toBe(
-        'disableMetamaskNotifications',
-      );
-
-      expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
-        'fetchAndUpdateMetamaskNotifications',
+      await verifyMetametricsEvent(
+        MetaMetricsEventName.NotificationsSettingsUpdated,
+        MetaMetricsEventCategory.NotificationSettings,
+        {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_type: 'master',
+          notification_channel: 'all',
+          enabled: false,
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
       );
     });
 
@@ -196,13 +200,15 @@ describe('Notifications Toggle', () => {
           (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
         );
 
-      expect(putNotificationPreferencesCall?.[0]).toBe(
-        'putNotificationPreferences',
-      );
-      expect(putNotificationPreferencesCall?.[1]?.[0]).toMatchObject({
-        marketing: {
-          pushNotificationsEnabled: false,
-          inAppNotificationsEnabled: true,
+      await verifyMetametricsEvent(
+        MetaMetricsEventName.NotificationsSettingsUpdated,
+        MetaMetricsEventCategory.NotificationSettings,
+        {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_type: 'marketing',
+          notification_channel: 'in_app',
+          enabled: true,
+          /* eslint-enable @typescript-eslint/naming-convention */
         },
       });
       expect(putNotificationPreferencesCall?.[1]?.[1]).toBe('extension');

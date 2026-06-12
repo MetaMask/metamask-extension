@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -26,13 +27,15 @@ import type {
   NotificationPreferences,
 } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
-import { useAnalytics } from '../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { selectSessionData } from '../../selectors/identity/authentication';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 import type { NotificationWalletGroup } from './notifications-settings-helpers';
 import type { NotificationsSettingsSectionConfig } from './notifications-settings-types';
 
 type WalletActivityAccount =
   NotificationPreferences['walletActivity']['accounts'][number];
+type SectionType = NotificationsSettingsSectionConfig['type'];
 
 type AccountSettingsProps = {
   data?: Record<string, boolean>;
@@ -73,9 +76,10 @@ const getWalletActivityAccountsByAddress = (
     ),
   );
 
-type PendingAccountToggle = {
-  value: boolean;
-  generation: number;
+const SETTINGS_TYPE_BY_SECTION: Record<SectionType, string> = {
+  walletActivity: 'wallet_activity',
+  perps: 'perps',
+  marketing: 'marketing',
 };
 
 const WalletActivitySectionContent = ({
@@ -86,14 +90,12 @@ const WalletActivitySectionContent = ({
 }: SectionContentProps) => {
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
+  const { trackEvent } = React.useContext(MetaMetricsContext);
+  const sessionData = useSelector(selectSessionData);
+  const profileId = sessionData?.profile.profileId;
   const { onChange: switchAccountNotifications, error: accountToggleError } =
     useSwitchAccountNotificationsChange();
   const [updatingAllAccounts, setUpdatingAllAccounts] = useSafeState(false);
-  const [pendingAccountToggles, setPendingAccountToggles] = useState<
-    Record<string, PendingAccountToggle>
-  >({});
-  const accountToggleGenerationRef = useRef<Record<string, number>>({});
-  const accountToggleWriteChainRef = useRef<Promise<void>>(Promise.resolve());
 
   const walletAccountsByAddress = useMemo(
     () => getWalletActivityAccountsByAddress(preferences),
@@ -124,19 +126,40 @@ const WalletActivitySectionContent = ({
     [accountSettingsProps.data, walletAccountsByAddress],
   );
 
-  const getAccountEnabledValue = useCallback(
-    (address: string) => {
-      const lowerAddress = address.toLowerCase();
-      return (
-        pendingAccountToggles[lowerAddress]?.value ?? isAccountEnabled(address)
-      );
-    },
-    [isAccountEnabled, pendingAccountToggles],
+  const hasEnabledAccount = useMemo(
+    () => accountAddresses.some(isAccountEnabled),
+    [accountAddresses, isAccountEnabled],
   );
 
-  const hasEnabledAccount = useMemo(
-    () => accountAddresses.some(getAccountEnabledValue),
-    [accountAddresses, getAccountEnabledValue],
+  const trackWalletActivityAggregateToggle = useCallback(
+    (enabled: boolean) => {
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationSettings,
+        event: MetaMetricsEventName.NotificationsSettingsUpdated,
+        properties: {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_type: 'wallet_activity',
+          notification_channel: 'all',
+          enabled,
+          ...(profileId && { profile_id: profileId }),
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+      });
+    },
+    [profileId, trackEvent],
+  );
+
+  const handleAccountActivityToggle = useCallback(
+    (newState: boolean) => {
+      const enabledCount = accountAddresses.filter(isAccountEnabled).length;
+      const flippedOn = newState && enabledCount === 0;
+      const flippedOff = !newState && enabledCount === 1;
+
+      if (flippedOn || flippedOff) {
+        trackWalletActivityAggregateToggle(newState);
+      }
+    },
+    [accountAddresses, isAccountEnabled, trackWalletActivityAggregateToggle],
   );
 
   const toggleAllAccounts = useCallback(async () => {
@@ -146,9 +169,11 @@ const WalletActivitySectionContent = ({
 
     setUpdatingAllAccounts(true);
     try {
-      await switchAccountNotifications(accountAddresses, !hasEnabledAccount);
+      const newState = !hasEnabledAccount;
+      await switchAccountNotifications(accountAddresses, newState);
       await refetchAccountSettings();
       await refetchNotificationPreferences();
+      trackWalletActivityAggregateToggle(newState);
       listNotifications();
     } finally {
       setUpdatingAllAccounts(false);
@@ -161,48 +186,8 @@ const WalletActivitySectionContent = ({
     refetchNotificationPreferences,
     setUpdatingAllAccounts,
     switchAccountNotifications,
+    trackWalletActivityAggregateToggle,
   ]);
-
-  const handleToggleAccountNotifications = useCallback(
-    async (address: string, nextValue: boolean) => {
-      const lowerAddress = address.toLowerCase();
-      const generation =
-        (accountToggleGenerationRef.current[lowerAddress] ?? 0) + 1;
-      accountToggleGenerationRef.current[lowerAddress] = generation;
-      setPendingAccountToggles((current) => ({
-        ...current,
-        [lowerAddress]: { value: nextValue, generation },
-      }));
-
-      const persistWrite = accountToggleWriteChainRef.current.then(async () => {
-        await switchAccountNotifications([address], nextValue);
-        await refetchAccountSettings();
-        await refetchNotificationPreferences();
-        listNotifications();
-      });
-      accountToggleWriteChainRef.current = persistWrite.catch(() => undefined);
-
-      try {
-        await persistWrite;
-      } finally {
-        setPendingAccountToggles((current) => {
-          if (current[lowerAddress]?.generation !== generation) {
-            return current;
-          }
-
-          const next = { ...current };
-          delete next[lowerAddress];
-          return next;
-        });
-      }
-    },
-    [
-      listNotifications,
-      refetchAccountSettings,
-      refetchNotificationPreferences,
-      switchAccountNotifications,
-    ],
-  );
 
   if (notificationAccountGroups.length === 0) {
     return null;
@@ -210,10 +195,6 @@ const WalletActivitySectionContent = ({
 
   const shouldDisableAccountSwitches =
     accountSettingsProps.initialLoading || updatingAllAccounts;
-  const shouldDisableToggleAllAccounts =
-    shouldDisableAccountSwitches ||
-    accountSettingsProps.accountsBeingUpdated.length > 0 ||
-    Object.keys(pendingAccountToggles).length > 0;
 
   return (
     <>
@@ -224,44 +205,35 @@ const WalletActivitySectionContent = ({
         gap={4}
         data-testid="notifications-settings-per-account"
       >
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Stretch}
-            gap={4}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          gap={4}
+        >
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
+          >
+            {t('notificationsSettingsSelectAccounts')}
+          </Text>
+          <button
+            className="border-0 bg-transparent p-0 text-primary-default cursor-pointer"
+            data-testid="notifications-settings-toggle-all-accounts"
+            disabled={shouldDisableAccountSwitches}
+            onClick={toggleAllAccounts}
           >
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
+              color={TextColor.PrimaryDefault}
             >
-              {t('notificationsSettingsSelectAccounts')}
+              {hasEnabledAccount
+                ? t('notificationsSettingsDeselectAll')
+                : t('selectAll')}
             </Text>
-            <button
-              className="border-0 bg-transparent p-0 text-primary-default cursor-pointer"
-              data-testid="notifications-settings-toggle-all-accounts"
-              disabled={shouldDisableToggleAllAccounts}
-              onClick={toggleAllAccounts}
-            >
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.PrimaryDefault}
-              >
-                {hasEnabledAccount
-                  ? t('notificationsSettingsDeselectAll')
-                  : t('selectAll')}
-              </Text>
-            </button>
-          </Box>
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Regular}
-            color={TextColor.TextAlternative}
-          >
-            {t('notificationsSettingsSelectAccountsDescription')}
-          </Text>
+          </button>
         </Box>
         {accountToggleError && (
           <Text color={TextColor.ErrorDefault}>
@@ -293,18 +265,15 @@ const WalletActivitySectionContent = ({
                   address={account.address}
                   name={account.name}
                   disabledSwitch={shouldDisableAccountSwitches}
-                  isLoading={
-                    Boolean(
-                      pendingAccountToggles[account.address.toLowerCase()],
-                    ) ||
-                    accountSettingsProps.accountsBeingUpdated.includes(
-                      account.address,
-                    )
+                  isLoading={accountSettingsProps.accountsBeingUpdated.includes(
+                    account.address,
+                  )}
+                  isEnabled={isAccountEnabled(account.address)}
+                  refetchAccountSettings={refetchAccountSettings}
+                  refetchNotificationPreferences={
+                    refetchNotificationPreferences
                   }
-                  isEnabled={getAccountEnabledValue(account.address)}
-                  onToggle={(nextValue: boolean) =>
-                    handleToggleAccountNotifications(account.address, nextValue)
-                  }
+                  onToggle={handleAccountActivityToggle}
                 />
               ))}
             </Box>
@@ -352,18 +321,14 @@ export function NotificationSettingsSection({
 }: NotificationSettingsSectionProps) {
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = React.useContext(MetaMetricsContext);
+  const sessionData = useSelector(selectSessionData);
+  const profileId = sessionData?.profile.profileId;
   const [preferenceError, setPreferenceError] = useSafeState<string | null>(
     null,
   );
 
-  // TODO: type casting until agentic cli preferences are not optional (next release)
-  const sectionPreferences =
-    section.type === 'agenticCli'
-      ? (preferences[section.type] as NonNullable<
-          (typeof preferences)['agenticCli']
-        >)
-      : preferences[section.type];
+  const sectionPreferences = preferences[section.type];
   const SectionContent = SECTION_CONTENT_BY_TYPE[section.type];
 
   const handleTogglePreference = useCallback(
@@ -371,24 +336,21 @@ export function NotificationSettingsSection({
       setPreferenceError(null);
       const oldValue = Boolean(sectionPreferences[key]);
       const newValue = !oldValue;
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationSettings,
+        event: MetaMetricsEventName.NotificationsSettingsUpdated,
+        properties: {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_type: SETTINGS_TYPE_BY_SECTION[section.type],
+          notification_channel:
+            key === 'pushNotificationsEnabled' ? 'push' : 'in_app',
+          enabled: newValue,
+          ...(profileId && { profile_id: profileId }),
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+      });
       try {
         await updatePreference(section.type, key, newValue);
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
-            .addCategory(MetaMetricsEventCategory.NotificationSettings)
-            .addProperties({
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              settings_type: `${section.type}_${key}`,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              old_value: oldValue,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              new_value: newValue,
-            })
-            .build(),
-        );
         listNotifications();
       } catch (error) {
         setPreferenceError(
@@ -399,8 +361,8 @@ export function NotificationSettingsSection({
       }
     },
     [
-      createEventBuilder,
       listNotifications,
+      profileId,
       section.type,
       sectionPreferences,
       setPreferenceError,
@@ -418,6 +380,26 @@ export function NotificationSettingsSection({
       gap={6}
       data-testid={`notifications-settings-section-content-${section.type}`}
     >
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text
+          variant={TextVariant.HeadingSm}
+          fontWeight={FontWeight.Bold}
+          color={TextColor.TextDefault}
+        >
+          {section.title}
+        </Text>
+      </Box>
+      <Text
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Regular}
+        color={TextColor.TextAlternative}
+      >
+        {section.description}
+      </Text>
+
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Stretch}
