@@ -4,7 +4,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { StatusTypes } from '@metamask/bridge-controller';
+import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
 import type { Transaction as KeyringTransaction } from '@metamask/keyring-api';
@@ -24,9 +24,12 @@ import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts'
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
+import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
+import { Status } from '../../shared/lib/activity/types';
+import { getInternalAccountsObject } from './accounts';
 import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
 import { getAssetsMetadata } from './assets';
 import {
@@ -125,6 +128,36 @@ export const selectProtectedLocalTransactions = createSelector(
   },
 );
 
+export const selectLocalTransactionsByHash = createSelector(
+  selectLocalTransactions,
+  (transactionGroups) => {
+    const transactionsByHash = new Map<string, TransactionGroup>();
+
+    for (const transactionGroup of transactionGroups) {
+      for (const transaction of [
+        transactionGroup.primaryTransaction,
+        transactionGroup.initialTransaction,
+      ]) {
+        // Index by tx hash when available (confirmed/submitted transactions)
+        const hash = transaction.hash?.toLowerCase();
+        if (hash) {
+          transactionsByHash.set(hash, transactionGroup);
+        }
+
+        // Also index by id so signing/queued transactions (no hash yet) can be
+        // looked up — the activity adapter sets data.hash = primaryTransaction.id
+        // as a fallback when no real tx hash exists.
+        const id = transaction.id?.toLowerCase();
+        if (id && !transactionsByHash.has(id)) {
+          transactionsByHash.set(id, transactionGroup);
+        }
+      }
+    }
+
+    return transactionsByHash;
+  },
+);
+
 export const selectNonEvmTransactionsForActivity = createSelector(
   [
     selectCurrentAccountNonEvmTransactions,
@@ -157,14 +190,36 @@ export const selectNonEvmTransactionsForActivity = createSelector(
 );
 
 export const selectNonEvmActivityItems = createSelector(
-  [selectNonEvmTransactionsForActivity, getAssetsMetadata],
-  (transactions, assetsMetadata) =>
+  [
+    selectNonEvmTransactionsForActivity,
+    getAssetsMetadata,
+    getInternalAccountsObject,
+  ],
+  (transactions, assetsMetadata, internalAccountsById) =>
     transactions.map((transaction) =>
       mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
+        subjectAddress: internalAccountsById?.[transaction.account]?.address,
       }),
     ),
+);
+
+export const selectNonEvmActivityItemsById = createSelector(
+  selectNonEvmActivityItems,
+  (items) => {
+    const itemsById = new Map<string, (typeof items)[number]>();
+
+    for (const item of items) {
+      const id = item.data.hash?.toLowerCase();
+
+      if (id) {
+        itemsById.set(id, item);
+      }
+    }
+
+    return itemsById;
+  },
 );
 
 function patchKeyringTransaction(
@@ -281,20 +336,32 @@ function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
   };
 }
 
-function getBridgeActivityStatus(bridgeHistoryItem?: BridgeHistoryItem) {
-  if (bridgeHistoryItem?.status.status === StatusTypes.FAILED) {
-    return 'failed' as const;
+function getBridgeActivityStatus(
+  bridgeHistoryItem?: BridgeHistoryItem,
+): Status | undefined {
+  if (!bridgeHistoryItem) {
+    return undefined;
   }
 
-  if (bridgeHistoryItem?.status.status === StatusTypes.COMPLETE) {
-    return 'success' as const;
+  const {
+    quote,
+    status: { status },
+  } = bridgeHistoryItem;
+
+  if (status === StatusTypes.FAILED) {
+    return 'failed';
+  }
+
+  if (status === StatusTypes.COMPLETE) {
+    return 'success';
   }
 
   if (
-    bridgeHistoryItem?.status.status === StatusTypes.PENDING ||
-    bridgeHistoryItem?.status.status === StatusTypes.SUBMITTED
+    // Same-chain swaps can leave bridge status pending after the local tx confirms
+    isCrossChain(quote.srcChainId, quote.destChainId) &&
+    (status === StatusTypes.PENDING || status === StatusTypes.SUBMITTED)
   ) {
-    return 'pending' as const;
+    return 'pending';
   }
 
   return undefined;
@@ -413,12 +480,14 @@ export const selectLocalActivityItems = createSelector(
           transactionGroup,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
+        const fees = getLocalTransactionFees(transactionGroup);
 
         return enrichLocalMusdClaimActivity(
           mapLocalTransaction({
             ...transactionGroup,
             ...getSwapTokens(bridgeHistoryItem),
             ...(activityStatus ? { activityStatus } : {}),
+            fees,
             nativeAssetSymbol,
             contractTokenMetadata,
           }),
@@ -436,6 +505,23 @@ export const selectLocalActivityItems = createSelector(
         transactionGroup,
       );
     });
+  },
+);
+
+export const selectLocalActivityItemsByIdentifier = createSelector(
+  selectLocalActivityItems,
+  (items) => {
+    const itemsByIdentifier = new Map();
+
+    for (const item of items) {
+      const hash = item.data.hash?.toLowerCase();
+
+      if (hash) {
+        itemsByIdentifier.set(hash, item);
+      }
+    }
+
+    return itemsByIdentifier;
   },
 );
 

@@ -7,7 +7,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import {
   createDappTransaction,
   createInternalTransaction,
-} from '../../page-objects/flows/transaction';
+} from '../../page-objects/flows/transaction.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';

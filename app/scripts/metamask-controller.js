@@ -122,11 +122,16 @@ import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controlle
 
 import {
   SeedlessOnboardingControllerErrorMessage,
+  SeedlessOnboardingMigrationVersion,
   SecretType,
   RecoveryError,
+  EncAccountDataType,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
+import { KeyringType } from '@metamask/keyring-api/v2';
+import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
+import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
   findAtomicBatchSupportForChain,
@@ -146,6 +151,7 @@ import {
   HardwareDeviceNames,
   LedgerTransportTypes,
   KEYRING_DEVICE_PROPERTY_MAP,
+  LEDGER_LIVE_PATH,
 } from '../../shared/constants/hardware-wallets';
 import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
@@ -375,6 +381,7 @@ import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
+import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
 import {
   OAuthServiceInit,
   SeedlessOnboardingControllerInit,
@@ -427,7 +434,6 @@ import { AlertControllerInit } from './messenger-client-init/alert-controller-in
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { ApprovalControllerInit } from './messenger-client-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
@@ -450,6 +456,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
+import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -470,6 +477,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import('@metamask/seedless-onboarding-controller').SecretMetadata} SecretMetadata
  */
 
 // Types of APIs
@@ -489,6 +497,12 @@ const PHISHING_SAFELIST = 'metamask-phishing-safelist';
  * Wallet lock bypasses this grace — see {@link MetamaskController._onLock}.
  */
 const PERPS_DISCONNECT_GRACE_MS = 60 * 1000;
+
+function isKeyringV2NotSupportedError(error) {
+  return error?.message?.includes(
+    KeyringControllerErrorMessage.KeyringV2NotSupported,
+  );
+}
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -539,6 +553,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
+      showApprovalRequest: this.opts.showUserConfirmation,
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -610,7 +625,6 @@ export default class MetamaskController extends EventEmitter {
 
     /** @type {import('./messenger-client-init/utils').InitFunctions} */
     const messengerClientInitFunctions = {
-      ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
@@ -683,6 +697,7 @@ export default class MetamaskController extends EventEmitter {
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
+      SnapAccountService: SnapAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
@@ -738,11 +753,12 @@ export default class MetamaskController extends EventEmitter {
     this.messengerClientsByName = messengerClientsByName;
 
     // Backwards compatibility for existing references
-    this.approvalController = messengerClientsByName.ApprovalController;
+    this.approvalController = this.wallet.getInstance('ApprovalController');
     this.loggingController = messengerClientsByName.LoggingController;
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
     this.keyringController = this.wallet.getInstance('KeyringController');
+    this.snapAccountService = messengerClientsByName.SnapAccountService;
     this.accountsController = messengerClientsByName.AccountsController;
     this.addressBookController = messengerClientsByName.AddressBookController;
     this.alertController = messengerClientsByName.AlertController;
@@ -1800,58 +1816,6 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  /**
-   * Get the snap keyring instance if available.
-   *
-   * @returns {SnapKeyring}
-   */
-  getSnapKeyringIfAvailable() {
-    // Check if the controller has been unlocked, otherwise this will throw.
-    if (this.keyringController.isUnlocked()) {
-      // TODO: Use `withKeyring` instead
-      const [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
-      );
-
-      return snapKeyring;
-    }
-    return undefined;
-  }
-
-  /**
-   * Forward currently selected account group to the Snap keyring.
-   *
-   * @param snapKeyring - Snap keyring instance or undefined if not available.
-   * @param groupId - Currently selected account group.
-   */
-  async forwardSelectedAccountGroupToSnapKeyring(snapKeyring, groupId) {
-    if (!snapKeyring) {
-      // Nothing to forward if the Snap keyring is not available.
-      return;
-    }
-
-    if (groupId) {
-      const group = this.accountTreeController.getAccountGroupObject(groupId);
-      if (group) {
-        // FIXME: For now, only our non-EVM Snaps support this `keyring_setSelectedAccounts`
-        // method. There's also no way to know which optional method is supported on an
-        // account management Snap for now.
-        // Calling this on the SSK has an undesired side-effect on the Snap itself, to avoid
-        // making it fail, we ONLY scope this call to "multichain account groups" which are
-        // backed by non-EVM Snaps.
-        const hasNonEvmAccounts = group.accounts.some((id) => {
-          const account = this.accountsController.getAccount(id);
-
-          return Boolean(account) && !isEvmAccountType(account.type);
-        });
-
-        if (hasNonEvmAccounts) {
-          await snapKeyring.setSelectedAccounts(group.accounts);
-        }
-      }
-    }
-  }
-
   trackInsightSnapView(snapId) {
     this.metaMetricsController.trackEvent({
       event: MetaMetricsEventName.InsightSnapViewed,
@@ -2130,7 +2094,7 @@ export default class MetamaskController extends EventEmitter {
     // wallet_notify for multichain accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      (groupId) => {
+      () => {
         const authorizationsByOrigin = getAuthorizedScopesByOrigin(
           this.permissionController.state,
         );
@@ -2141,14 +2105,6 @@ export default class MetamaskController extends EventEmitter {
         ] of authorizationsByOrigin.entries()) {
           this._notifyAuthorizationChange(origin, authorization);
         }
-
-        // TODO: Move this logic to the SnapKeyring directly.
-        // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-        // eslint-disable-next-line no-void
-        void this.forwardSelectedAccountGroupToSnapKeyring(
-          this.getSnapKeyringIfAvailable(),
-          groupId,
-        );
 
         NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
           ({ network, accountType, notificationProperty, chains }) => {
@@ -2201,23 +2157,6 @@ export default class MetamaskController extends EventEmitter {
             }
           },
         );
-      },
-    );
-
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    this.controllerMessenger.subscribe(
-      `${this.multichainAccountService.name}:multichainAccountGroupUpdated`,
-      (group) => {
-        // If the current group gets updated, then maybe there are more accounts being "selected"
-        // now, so we have to forward them to the Snap keyring too!
-        if (this.accountTreeController.getSelectedAccountGroup() === group.id) {
-          // eslint-disable-next-line no-void
-          void this.forwardSelectedAccountGroupToSnapKeyring(
-            this.getSnapKeyringIfAvailable(),
-            group.id,
-          );
-        }
       },
     );
 
@@ -3647,6 +3586,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
       ),
+      updateBatchSellTrades: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
+      ),
 
       // Bridge Tx submission
       submitTx: this.controllerMessenger.call.bind(
@@ -3656,6 +3599,10 @@ export default class MetamaskController extends EventEmitter {
       submitIntent: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitIntent'}`,
+      ),
+      submitBatchSell: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitBatchSell'}`,
       ),
 
       // Smart Transactions
@@ -4062,7 +4009,7 @@ export default class MetamaskController extends EventEmitter {
 
   async exportAccount(address, password) {
     await this.verifyPassword(password);
-    return this.keyringController.exportAccount(password, address);
+    return this.keyringController.exportAccount({ password }, address);
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
@@ -4367,6 +4314,11 @@ export default class MetamaskController extends EventEmitter {
       );
       createSeedPhraseBackupSuccess = true;
 
+      // Set migration version for new users so migration never runs
+      this.seedlessOnboardingController.setMigrationVersion(
+        SeedlessOnboardingMigrationVersion.V1,
+      );
+
       await this.syncKeyringEncryptionKey();
     } catch (error) {
       this.controllerMessenger?.captureException?.(
@@ -4387,10 +4339,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Fetches and restores all the backed-up Secret Data (SRPs and Private keys)
+   * Fetches all backed-up Secret Data (SRPs and Private keys) from the server.
    *
    * @param {string} password - The user's password.
-   * @returns {Promise<Buffer[]>} The seed phrase.
+   * @returns {Promise<SecretMetadata[]>} Array of secret metadata items.
    */
   async fetchAllSecretData(password) {
     let fetchAllSeedPhrasesSuccess = false;
@@ -4840,9 +4792,13 @@ export default class MetamaskController extends EventEmitter {
           name: TraceName.OnboardingAddSrp,
           op: TraceOperation.OnboardingSecurityOp,
         });
+
+        // Run data type migration before adding new SRP to ensure data consistency.
+        await runSeedlessOnboardingMigrations(this.controllerMessenger);
+
         await this.seedlessOnboardingController.addNewSecretData(
           seedPhraseAsUint8Array,
-          SecretType.Mnemonic,
+          EncAccountDataType.ImportedSrp,
           {
             keyringId,
           },
@@ -4982,14 +4938,13 @@ export default class MetamaskController extends EventEmitter {
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
       // there are some account migration happening in that function).
       await this.accountsController.updateAccounts();
+
       // Then we can build the initial tree.
       this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await getSnapKeyring(this.controllerMessenger),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
+
+      // We "force-create" the Snap keyring right after now to ensure it is available as soon
+      // as possible after vault creation (enabling faster keyring access for future operations).
+      await getSnapKeyring(this.controllerMessenger);
 
       return primaryKeyring;
     } finally {
@@ -5103,7 +5058,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         });
 
-      const [newAccountAddress] = await this.keyringController.withKeyring(
+      const [newAccount] = await this.keyringController.withKeyringV2(
         { id },
         async ({ keyring }) => keyring.getAccounts(),
       );
@@ -5119,15 +5074,16 @@ export default class MetamaskController extends EventEmitter {
         } catch (err) {
           await this.multichainAccountService.removeMultichainAccountWallet(
             id,
-            newAccountAddress,
+            newAccount.address,
           );
           throw err;
         }
       }
 
       if (shouldSelectAccount) {
-        const account =
-          this.accountsController.getAccountByAddress(newAccountAddress);
+        const account = this.accountsController.getAccountByAddress(
+          newAccount.address,
+        );
         this.accountsController.setSelectedAccount(account.id);
       }
 
@@ -5163,11 +5119,9 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Restores an array of seed phrases to the vault and updates the SocialBackupMetadataState if import is successful.
+   * Restores an array of seed phrases to the vault.
    *
-   * This method is used to restore seed phrases from the Social Backup.
-   *
-   * @param {{data: Uint8Array, type: SecretType, timestamp: number, version: number}[]} secretDatas - The seed phrases to restore.
+   * @param {SecretMetadata[]} secretDatas - The secret metadata items to restore.
    * @returns {Promise<void>}
    */
   async restoreSeedPhrasesToVault(secretDatas) {
@@ -5336,18 +5290,15 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await getSnapKeyring(this.controllerMessenger),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
+
+      // We "force-create" the Snap keyring right after now to ensure it is available as soon
+      // as possible after vault creation (enabling faster keyring access for future operations).
+      await getSnapKeyring(this.controllerMessenger);
 
       if (completedOnboarding) {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
         if (useExternalServices) {
-          await getSnapKeyring(this.controllerMessenger);
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         }
         await this.discoverAndCreateAccounts(id);
@@ -5383,10 +5334,10 @@ export default class MetamaskController extends EventEmitter {
     // walk through all the keyrings and import the solana accounts for the HD keyrings
     for (const { metadata } of keyrings) {
       // check if the keyring is an HD keyring
-      const isHdKeyring = await this.keyringController.withKeyring(
+      const isHdKeyring = await this.keyringController.withKeyringV2(
         { id: metadata.id },
         async ({ keyring }) => {
-          return keyring.type === KeyringTypes.hd;
+          return keyring.type === KeyringType.Hd;
         },
       );
       if (isHdKeyring) {
@@ -5492,6 +5443,8 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
+    // Re-create accounts in the accounts-controller, after the keyring-controller gets
+    // unlocked.
     await this.accountsController.updateAccounts();
 
     // Init multichain accounts after creating internal accounts.
@@ -5500,17 +5453,9 @@ export default class MetamaskController extends EventEmitter {
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
 
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    // It is not necessary to await this since it is just expected for the snap to receive
-    // the information without blocking the login flow. Despite not awaiting for
-    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
-    // getSnapKeyring to ensure the Snap keyring is available.
-    // eslint-disable-next-line no-void
-    void this.forwardSelectedAccountGroupToSnapKeyring(
-      await getSnapKeyring(this.controllerMessenger),
-      this.accountTreeController.getSelectedAccountGroup(),
-    );
+    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
+    // available as soon as possible (enabling faster keyring access for future operations).
+    await getSnapKeyring(this.controllerMessenger);
 
     const resyncAndAlignAccounts = async () => {
       // READ THIS CAREFULLY:
@@ -5649,8 +5594,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
+    // This is the first-time setup path for a hardware wallet; the keyring
+    // may not exist yet, so allow creation here. Every other caller of
+    // `#withKeyringForDevice` operates on an already-paired device.
     return this.#withKeyringForDevice(
-      { name: deviceName, hdPath },
+      { name: deviceName, hdPath, create: true },
       async (keyring) => {
         let accounts = [];
         switch (page) {
@@ -5678,7 +5626,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async checkHardwareStatus(deviceName, hdPath) {
     return this.#withKeyringForDevice(
-      { name: deviceName, hdPath },
+      {
+        name: deviceName,
+        hdPath,
+        create: deviceName === HardwareDeviceNames.qr,
+      },
       async (keyring) => {
         return keyring.isUnlocked();
       },
@@ -5726,10 +5678,17 @@ export default class MetamaskController extends EventEmitter {
    * @returns {HardwareKeyringType} Keyring hardware type
    */
   async getHardwareTypeForMetric(address) {
-    return await this.keyringController.withKeyring(
-      { address },
-      ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
-    );
+    try {
+      return await this.keyringController.withKeyringV2(
+        { address },
+        ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
+      );
+    } catch (error) {
+      if (isKeyringV2NotSupportedError(error)) {
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -5740,14 +5699,16 @@ export default class MetamaskController extends EventEmitter {
    */
   async forgetDevice(deviceName) {
     return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      for (const address of await keyring.getAccounts()) {
+      // V2 wrappers return `KeyringAccount[]` from `getAccounts()`; the
+      // remove-handler downstream expects raw addresses.
+      for (const account of await keyring.getAccounts()) {
         this.controllerMessenger.call(
           'LegacyBackgroundApiService:onAccountRemoved',
-          address,
+          account.address,
         );
       }
 
-      keyring.forgetDevice();
+      await keyring.forgetDevice();
 
       return true;
     });
@@ -5761,18 +5722,27 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
+    // `getAccountKeyringType` returns the legacy keyring `.type` string
+    // ('Ledger Hardware', etc). For hardware cases the V2-keyed
+    // `KEYRING_DEVICE_PROPERTY_MAP` is indexed via the matching V2 enum
+    // value so the legacy lookup and rekeyed map stay aligned without
+    // requiring a V2 builder for snap accounts.
     const keyringType =
       await this.keyringController.getAccountKeyringType(address);
     switch (keyringType) {
-      case KeyringType.trezor:
-      case KeyringType.oneKey:
-      case KeyringType.lattice:
-      case KeyringType.qr:
-      case KeyringType.ledger:
-        return KEYRING_DEVICE_PROPERTY_MAP[keyringType];
-      case KeyringType.imported:
+      case KeyringTypes.trezor:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Trezor];
+      case KeyringTypes.oneKey:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.OneKey];
+      case KeyringTypes.lattice:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Lattice];
+      case KeyringTypes.qr:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Qr];
+      case KeyringTypes.ledger:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Ledger];
+      case KeyringTypes.imported:
         return 'imported';
-      case KeyringType.snap:
+      case KeyringTypes.snap:
         return 'snap';
       default:
         return 'MetaMask';
@@ -5788,26 +5758,33 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
-    return this.keyringController.withKeyring(
-      { address },
-      async ({ keyring }) => {
-        switch (keyring.type) {
-          case KeyringType.trezor:
-          case KeyringType.oneKey:
-            return keyring.getModel();
-          case KeyringType.qr:
-            return keyring.getName();
-          case KeyringType.ledger:
-            // TODO: get model after ledger keyring exposes method
-            return HardwareDeviceNames.ledger;
-          case KeyringType.lattice:
-            // TODO: get model after lattice keyring exposes method
-            return HardwareDeviceNames.lattice;
-          default:
-            return undefined;
-        }
-      },
-    );
+    try {
+      return await this.keyringController.withKeyringV2(
+        { address },
+        async ({ keyring }) => {
+          switch (keyring.type) {
+            case KeyringType.Trezor:
+            case KeyringType.OneKey:
+              return keyring.getModel();
+            case KeyringType.Qr:
+              return keyring.getName();
+            case KeyringType.Ledger:
+              // TODO: get model after ledger keyring exposes method
+              return HardwareDeviceNames.ledger;
+            case KeyringType.Lattice:
+              // TODO: get model after lattice keyring exposes method
+              return HardwareDeviceNames.lattice;
+            default:
+              return undefined;
+          }
+        },
+      );
+    } catch (error) {
+      if (isKeyringV2NotSupportedError(error)) {
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -5842,10 +5819,77 @@ export default class MetamaskController extends EventEmitter {
     const { address: unlockedAccount } = await this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
-        keyring.setAccountToUnlock(index);
-        const [address] = await keyring.addAccounts(1);
+        const { entropySource } = keyring;
+        // Callers may omit `hdPath` and rely on the keyring's currently
+        // configured base path (the legacy V1 surface implicitly did this
+        // via `keyring.setAccountToUnlock` + `addAccounts`). Fall back to
+        // the keyring's `hdPath` so V2 `createAccounts` builds a valid
+        // derivation path.
+        const effectiveHdPath = hdPath ?? keyring.hdPath;
+        let createdAccount;
+
+        switch (deviceName) {
+          case HardwareDeviceNames.ledger: {
+            // Ledger Live mode uses a per-account hardened third segment;
+            // Legacy and BIP-44 modes are `${hdPath}/${index}`.
+            const derivationPath =
+              effectiveHdPath === LEDGER_LIVE_PATH
+                ? `m/44'/60'/${index}'/0/0`
+                : `${effectiveHdPath}/${index}`;
+            [createdAccount] = await keyring.createAccounts({
+              type: 'bip44:derive-path',
+              entropySource,
+              derivationPath,
+            });
+            break;
+          }
+          case HardwareDeviceNames.trezor:
+          case HardwareDeviceNames.oneKey: {
+            [createdAccount] = await keyring.createAccounts({
+              type: 'bip44:derive-path',
+              entropySource,
+              derivationPath: `${effectiveHdPath}/${index}`,
+            });
+            break;
+          }
+          case HardwareDeviceNames.qr: {
+            // QR devices are HD or Account-mode; legacy `setAccountToUnlock +
+            // addAccounts` worked for both because the inner keyring routed
+            // by mode internally. The V2 wrapper splits the two paths.
+            const isAccountMode = keyring.getMode() === 'account';
+            [createdAccount] = isAccountMode
+              ? await keyring.createAccounts({
+                  type: 'custom',
+                  entropySource,
+                  addressIndex: index,
+                })
+              : await keyring.createAccounts({
+                  type: 'bip44:derive-index',
+                  entropySource,
+                  groupIndex: index,
+                });
+            break;
+          }
+          case HardwareDeviceNames.lattice: {
+            [createdAccount] = await keyring.createAccounts({
+              type: 'custom',
+              entropySource,
+              addressIndex: index,
+            });
+            break;
+          }
+          default:
+            throw new Error(
+              `MetamaskController:unlockHardwareWalletAccount - Unknown device: ${deviceName}`,
+            );
+        }
+
+        if (!createdAccount) {
+          throw new Error(`No account created for device: ${deviceName}`);
+        }
+
         return {
-          address: normalize(address),
+          address: normalize(createdAccount.address),
           label: this.getAccountLabel(
             deviceName === HardwareDeviceNames.qr
               ? keyring.getName()
@@ -6662,7 +6706,7 @@ export default class MetamaskController extends EventEmitter {
   getHDEntropyIndex() {
     const selectedAccount = this.accountsController.getSelectedAccount();
     const hdKeyrings = this.keyringController.state.keyrings.filter(
-      (keyring) => keyring.type === KeyringTypes.hd,
+      (keyring) => keyring.type === KeyringTypes.hdKeyTree,
     );
     const index = hdKeyrings.findIndex((keyring) =>
       keyring.accounts.includes(selectedAccount.address),
@@ -6839,15 +6883,17 @@ export default class MetamaskController extends EventEmitter {
 
   setUpCookieHandlerCommunication({ connectionStream }) {
     const {
-      metaMetricsId,
+      analyticsId,
       dataCollectionForMarketing,
-      participateInMetaMetrics,
+      completedMetaMetricsOnboarding,
+      optedIn,
     } = this.getState();
 
     if (
-      metaMetricsId &&
+      analyticsId &&
       dataCollectionForMarketing &&
-      participateInMetaMetrics
+      completedMetaMetricsOnboarding &&
+      optedIn
     ) {
       // setup multiplexing
       const mux = setupMultiplex(connectionStream);
@@ -7467,6 +7513,7 @@ export default class MetamaskController extends EventEmitter {
         this.phishingController,
         this.preferencesController,
         this.getPermittedAccounts.bind(this),
+        sender?.url,
       ),
     );
 
@@ -8482,16 +8529,25 @@ export default class MetamaskController extends EventEmitter {
    * @param keyring
    * @deprecated This method is deprecated and will be removed in the future.
    * Only webhid connections are supported in chrome and u2f in firefox.
+   * @returns {Promise<boolean | undefined>} The bridge result if available,
+   * otherwise `undefined`.
    */
   async setLedgerTransportPreference(keyring) {
     const transportType = window.navigator.hid
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f;
 
-    if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(transportType).catch((e) => {
-        throw e;
-      });
+    // TODO: Expose `updateTransportMethod` directly on the V2 `LedgerKeyring`
+    // wrapper in `@metamask/eth-ledger-bridge-keyring/v2` so callers don't
+    // need to reach through `bridge`. The V2 wrapper currently exposes the
+    // bridge instance but not this top-level method.
+    //
+    // Use `await` (not `.then`/`.catch`) so callers tolerate any bridge whose
+    // `updateTransportMethod` is synchronous (e.g. older test stubs that
+    // returned a raw value before being aligned with the real bridge's
+    // Promise contract).
+    if (keyring?.bridge?.updateTransportMethod) {
+      return await keyring.bridge.updateTransportMethod(transportType);
     }
 
     return undefined;
@@ -9322,21 +9378,27 @@ export default class MetamaskController extends EventEmitter {
    */
   async #withKeyringForDevice(options, callback) {
     let keyringType = null;
+    let v2KeyringType = null;
     switch (options.name) {
       case HardwareDeviceNames.trezor:
         keyringType = TrezorKeyring.type;
+        v2KeyringType = KeyringType.Trezor;
         break;
       case HardwareDeviceNames.oneKey:
         keyringType = OneKeyKeyring.type;
+        v2KeyringType = KeyringType.OneKey;
         break;
       case HardwareDeviceNames.ledger:
         keyringType = LedgerKeyring.type;
+        v2KeyringType = KeyringType.Ledger;
         break;
       case HardwareDeviceNames.qr:
         keyringType = QrKeyring.type;
+        v2KeyringType = KeyringType.Qr;
         break;
       case HardwareDeviceNames.lattice:
         keyringType = LatticeKeyring.type;
+        v2KeyringType = KeyringType.Lattice;
         break;
       default:
         throw new Error(
@@ -9344,15 +9406,26 @@ export default class MetamaskController extends EventEmitter {
         );
     }
 
-    return this.keyringController.withKeyring(
-      { type: keyringType },
+    // `withKeyringV2` has no `createIfMissing` option. The connect-device
+    // flow and QR reconnect status probe may legitimately create a hardware
+    // keyring; every other caller operates on a keyring that should already
+    // exist, and should let the controller throw `KeyringNotFound` if it
+    // doesn't.
+    // `withController` runs the check-and-create as a mutually exclusive
+    // transaction so a concurrent caller can't slip in between.
+    if (options.create) {
+      await this.keyringController.withController(async (controller) => {
+        if (!controller.keyrings.some(({ type }) => type === keyringType)) {
+          await controller.addNewKeyring(keyringType);
+        }
+      });
+    }
+
+    return this.keyringController.withKeyringV2(
+      { type: v2KeyringType },
       async ({ keyring }) => {
         if (options.hdPath && keyring.setHdPath) {
           keyring.setHdPath(options.hdPath);
-        }
-
-        if (options.name === HardwareDeviceNames.lattice) {
-          keyring.appName = 'MetaMask';
         }
 
         if (options.name === HardwareDeviceNames.ledger) {
@@ -9367,14 +9440,17 @@ export default class MetamaskController extends EventEmitter {
           this.appStateController.setTrezorModel(model);
         }
 
-        keyring.network = getProviderConfig({
-          metamask: this.networkController.state,
-        }).type;
+        if (options.name === HardwareDeviceNames.lattice) {
+          // `network` is cleared by `_resetDefaults` (called from `forgetDevice`) and depends on
+          // runtime state, so we keep tracking it on every entry. The
+          // GridPlus SDK Client reads it on `_initSession` to target
+          // the right chain.
+          keyring.network = getProviderConfig({
+            metamask: this.networkController.state,
+          }).type;
+        }
 
         return await callback(keyring);
-      },
-      {
-        createIfMissing: true,
       },
     );
   }

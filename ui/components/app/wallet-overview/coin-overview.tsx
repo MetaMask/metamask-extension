@@ -53,6 +53,7 @@ import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { BalanceEmptyState } from '../balance-empty-state';
 import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
+import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -200,6 +201,9 @@ export const CoinOverview = ({
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const isTestnet = useSelector(getMultichainIsTestnet);
 
+  const period = '1d';
+  const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay(period);
+
   useRewardsModal();
 
   // Only show empty state when Receive can act (selectedAccountGroup exists);
@@ -208,7 +212,8 @@ export const CoinOverview = ({
     Boolean(selectedAccountGroup) &&
     !isTestnet &&
     !balanceIsCached &&
-    !hasBalance;
+    !hasBalance &&
+    !balanceIsLoading;
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
@@ -273,7 +278,7 @@ export const CoinOverview = ({
     return (
       <Box className="wallet-overview__currency-wrapper">
         <AccountGroupBalanceChange
-          period="1d"
+          period={period}
           trailingChild={renderPercentageAndAmountChangeTrail}
         />
       </Box>

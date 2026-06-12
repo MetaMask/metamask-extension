@@ -1,4 +1,5 @@
 import { MultichainAccountService } from '@metamask/multichain-account-service';
+import { SnapAccountService } from '@metamask/snap-account-service';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -222,6 +223,7 @@ export type MessengerClient =
   | WebSocketService
   | BackendWebSocketService
   | AccountActivityService
+  | SnapAccountService
   | MultichainAccountService
   | NetworkEnablementController
   | ClaimsService

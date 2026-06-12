@@ -30,6 +30,7 @@ export function getBridgeStatusControllerMessenger(
       'AccountsController:getAccountByAddress',
       'AuthenticationController:getBearerToken',
       'NetworkController:getNetworkClientById',
+      'BridgeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getState',
       'KeyringController:signTypedMessage',
