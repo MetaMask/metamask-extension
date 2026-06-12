@@ -192,12 +192,15 @@ export class TestDappBitcoin {
   }
 
   async verifySignedPsbt(unsignedPsbt: string) {
-    const signedPsbtElement = await this.driver.waitForSelector(
-      `[data-testid="${dataTestIds.testPage.signTransaction.signedPsbt}"]`,
-    );
+    // Wait until the element is populated with base64 PSBT data (it starts
+    // with the "cHNidP" magic prefix) so we never read a stale or empty
+    // element before asserting it differs from the unsigned input.
+    const signedPsbtElement = await this.driver.waitForSelector({
+      testId: dataTestIds.testPage.signTransaction.signedPsbt,
+      text: 'cHNidP',
+    });
     const signedPsbt = await signedPsbtElement.getText();
 
-    assert.match(signedPsbt, /^cHNidP/u, 'Signed PSBT is not base64 PSBT data');
     assert.notStrictEqual(
       signedPsbt,
       unsignedPsbt,
