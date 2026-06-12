@@ -67,6 +67,7 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   selectShowPrivacyPolicyToast,
+  selectNewPrivacyPolicyToastShownDate,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
@@ -142,8 +143,10 @@ export function ToastMaster() {
 function PrivacyPolicyToast() {
   const t = useI18nContext();
 
-  const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
-    useSelector(selectShowPrivacyPolicyToast);
+  const showPrivacyPolicyToast = useSelector(selectShowPrivacyPolicyToast);
+  const newPrivacyPolicyToastShownDate = useSelector(
+    selectNewPrivacyPolicyToastShownDate,
+  );
 
   // If the privacy policy toast is shown, and there is no date set, set it
   if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {

@@ -15,6 +15,10 @@ import {
   AssetPollingProvider,
 } from './assetPolling';
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
 jest.mock('../hooks/useCurrencyRatePolling');
 jest.mock('../hooks/useTokenRatesPolling');
 jest.mock('../hooks/useTokenDetectionPolling');
@@ -22,6 +26,8 @@ jest.mock('../hooks/useTokenListPolling');
 jest.mock('../hooks/useStaticTokensPolling');
 jest.mock('../hooks/defi/useDeFiPolling');
 jest.mock('../hooks/useMultichainAssetsRatesPolling');
+
+const mockUseSelector = jest.mocked(redux.useSelector);
 
 const mockUseCurrencyRatePolling = jest.mocked(useCurrencyRatePolling);
 const mockUseTokenRatesPolling = jest.mocked(useTokenRatesPolling);
@@ -34,7 +40,7 @@ const mockUseMultichainAssetsRatesPolling = jest.mocked(
 );
 
 const renderProvider = (isAssetsUnifyStateEnabled: boolean) => {
-  jest.spyOn(redux, 'useSelector').mockReturnValue(isAssetsUnifyStateEnabled);
+  mockUseSelector.mockReturnValue(isAssetsUnifyStateEnabled);
 
   return render(
     <AssetPollingProvider>
