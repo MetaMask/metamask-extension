@@ -408,6 +408,7 @@ import {
   SubscriptionServiceInit,
 } from './messenger-client-init/subscription';
 import { ConnectivityControllerInit } from './messenger-client-init/connectivity';
+import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './messenger-client-init/remote-feature-flag-controller-init';
@@ -710,6 +711,7 @@ export default class MetamaskController extends EventEmitter {
       SubscriptionController: SubscriptionControllerInit,
       SubscriptionService: SubscriptionServiceInit,
       ConnectivityController: ConnectivityControllerInit,
+      NetworkConnectionBannerController: NetworkConnectionBannerControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       ClaimsController: ClaimsControllerInit,
@@ -3331,10 +3333,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       addMusdConversionDismissedCtaKey:
         appStateController.addMusdConversionDismissedCtaKey.bind(
-          appStateController,
-        ),
-      updateNetworkConnectionBanner:
-        appStateController.updateNetworkConnectionBanner.bind(
           appStateController,
         ),
       setShowShieldEntryModalOnce:

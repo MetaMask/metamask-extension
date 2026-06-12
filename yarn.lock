@@ -7490,6 +7490,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/network-connection-banner-controller@npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-7507a11":
+  version: 0.1.0-preview-7507a11
+  resolution: "@metamask-previews/network-connection-banner-controller@npm:0.1.0-preview-7507a11"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/connectivity-controller": "npm:^0.2.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/network-controller": "npm:^32.0.0"
+    "@metamask/network-enablement-controller": "npm:^5.3.0"
+    "@metamask/utils": "npm:^11.9.0"
+    ip-regex: "npm:^4.3.0"
+    psl: "npm:^1.15.0"
+  checksum: 10/a3a8bb5f0e14aa503c72ed4d0b16ebd1763817bbdf3fb04f5dc4c6156ca8c0f02284fe73989676043b48fc198c366b6171f369fbafd1ceb906b397ccc22dcd11
+  languageName: node
+  linkType: hard
+
 "@metamask/network-controller@npm:32.0.0":
   version: 32.0.0
   resolution: "@metamask/network-controller@npm:32.0.0"
@@ -33574,6 +33590,7 @@ __metadata:
     "@metamask/multichain-network-controller": "npm:^3.1.0"
     "@metamask/multichain-transactions-controller": "npm:^7.1.0"
     "@metamask/name-controller": "npm:^9.1.0"
+    "@metamask/network-connection-banner-controller": "npm:^0.1.0"
     "@metamask/network-controller": "npm:^32.0.0"
     "@metamask/network-enablement-controller": "npm:^5.3.0"
     "@metamask/notification-services-controller": "npm:^23.1.0"
@@ -33872,7 +33889,6 @@ __metadata:
     prettier-plugin-sort-json: "npm:^4.1.1"
     process: "npm:^0.11.10"
     prop-types: "npm:^15.6.1"
-    psl: "npm:^1.15.0"
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
     qrcode-generator: "npm:^2.0.4"
