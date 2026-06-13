@@ -19,6 +19,15 @@ const render = (state: Record<string, unknown> = defaultState) => {
   return renderWithConfirmContextProvider(<AdvancedDetailsButton />, store);
 };
 
+const getShieldSubscriptionApproveState = () => {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return getMockConfirmStateForTransaction({
+    ...base,
+    type: TransactionType.shieldSubscriptionApprove,
+    origin: 'metamask',
+  } as TransactionMeta);
+};
+
 const getPerpsWithdrawState = () => {
   const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
   return getMockConfirmStateForTransaction({
@@ -35,8 +44,8 @@ describe('<AdvancedDetailsButton />', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('hides the button visually for perpsWithdraw transactions', () => {
-    const { getByTestId } = render(getPerpsWithdrawState());
+  it('hides the button visually for shield subscription approval transactions', () => {
+    const { getByTestId } = render(getShieldSubscriptionApproveState());
 
     const button = getByTestId('header-advanced-details-button');
     expect(button.closest('[style*="visibility"]')).toHaveStyle({
@@ -46,6 +55,13 @@ describe('<AdvancedDetailsButton />', () => {
 
   it('keeps the button visible for non-hidden transaction types', () => {
     const { getByTestId } = render();
+
+    const button = getByTestId('header-advanced-details-button');
+    expect(button.closest('[style*="visibility"]')).toBeNull();
+  });
+
+  it('keeps the button visible for MetaMask Pay transactions', () => {
+    const { getByTestId } = render(getPerpsWithdrawState());
 
     const button = getByTestId('header-advanced-details-button');
     expect(button.closest('[style*="visibility"]')).toBeNull();

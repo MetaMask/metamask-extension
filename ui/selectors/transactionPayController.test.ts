@@ -8,6 +8,7 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
+  selectTransactionPayQuoteValidationErrorByTransactionId,
   TransactionPayState,
 } from './transactionPayController';
 
@@ -29,6 +30,12 @@ const MOCK_PAYMENT_TOKEN = {
 };
 
 const MOCK_SOURCE_AMOUNTS = [{ amount: '1000', targetTokenAddress: '0x123' }];
+
+const MOCK_QUOTE_VALIDATION_ERROR = {
+  code: 'quote_simulation_failed',
+  message: 'raw revert reason',
+  strategy: 'relay',
+};
 
 function createMockState(
   transactionData: Record<string, unknown> = {},
@@ -255,6 +262,32 @@ describe('transactionPayController selectors', () => {
       );
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('selectTransactionPayQuoteValidationErrorByTransactionId', () => {
+    it('returns quote validation error for given transaction ID', () => {
+      const state = createMockState({
+        quoteValidationError: MOCK_QUOTE_VALIDATION_ERROR,
+      });
+
+      const result = selectTransactionPayQuoteValidationErrorByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toStrictEqual(MOCK_QUOTE_VALIDATION_ERROR);
+    });
+
+    it('returns undefined when no quote validation error exists', () => {
+      const state = createMockState();
+
+      const result = selectTransactionPayQuoteValidationErrorByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBeUndefined();
     });
   });
 });

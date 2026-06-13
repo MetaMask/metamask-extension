@@ -330,19 +330,37 @@ function useIsResultReady() {
 }
 
 function AlertMessage() {
-  const { alertMessage } = useTransactionCustomAmountAlerts();
+  const { alertDetails, alertMessage } = useTransactionCustomAmountAlerts();
 
   if (!alertMessage) {
     return null;
   }
 
   return (
-    <Text
-      variant={TextVariant.bodySm}
-      color={TextColor.errorDefault}
-      textAlign={TextAlign.Center}
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.center}
+      gap={1}
     >
-      {alertMessage}
-    </Text>
+      <Text
+        variant={TextVariant.bodySm}
+        color={TextColor.errorDefault}
+        textAlign={TextAlign.Center}
+      >
+        {alertMessage}
+      </Text>
+      {alertDetails && (
+        <Text
+          variant={TextVariant.bodyXs}
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Center}
+          style={{ overflowWrap: 'anywhere' }}
+          data-testid="custom-amount-alert-details"
+        >
+          {alertDetails}
+        </Text>
+      )}
+    </Box>
   );
 }

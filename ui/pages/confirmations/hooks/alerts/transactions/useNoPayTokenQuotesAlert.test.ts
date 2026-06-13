@@ -11,6 +11,7 @@ import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
+  useTransactionPayQuoteValidationError,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
 } from '../../pay/useTransactionPayData';
@@ -60,6 +61,9 @@ describe('useNoPayTokenQuotesAlert', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useTransactionPayQuoteValidationErrorMock = jest.mocked(
+    useTransactionPayQuoteValidationError,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -74,6 +78,7 @@ describe('useNoPayTokenQuotesAlert', () => {
     useTransactionPayQuotesMock.mockReturnValue(undefined);
     useTransactionPaySourceAmountsMock.mockReturnValue([SOURCE_AMOUNT_MOCK]);
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);
+    useTransactionPayQuoteValidationErrorMock.mockReturnValue(undefined);
   });
 
   it('returns alert if pay token selected and no quotes available', () => {
@@ -137,6 +142,16 @@ describe('useNoPayTokenQuotesAlert', () => {
         skipIfBalance: true,
       },
     ]);
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns no alerts if a quote validation error is available', () => {
+    useTransactionPayQuoteValidationErrorMock.mockReturnValue({
+      message: 'raw revert reason',
+    });
 
     const { result } = runHook();
 

@@ -5,6 +5,14 @@ export type TransactionPayState = {
   metamask: TransactionPayControllerState;
 };
 
+type TransactionPayQuoteValidationError = {
+  message: string;
+};
+
+type TransactionPayDataWithQuoteValidationError = {
+  quoteValidationError?: TransactionPayQuoteValidationError;
+};
+
 export const selectTransactionDataByTransactionId = createSelector(
   (state: TransactionPayState) => state,
   (_state: TransactionPayState, transactionId: string) => transactionId,
@@ -49,3 +57,11 @@ export const selectTransactionPayIsMaxAmountByTransactionId = createSelector(
     (transactionData as { isMaxAmount?: boolean } | undefined)?.isMaxAmount ??
     false,
 );
+
+export const selectTransactionPayQuoteValidationErrorByTransactionId =
+  createSelector(
+    selectTransactionDataByTransactionId,
+    (transactionData) =>
+      (transactionData as TransactionPayDataWithQuoteValidationError | undefined)
+        ?.quoteValidationError,
+  );

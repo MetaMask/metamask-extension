@@ -41,6 +41,7 @@ export function getTransactionPayControllerMessenger(
       'CurrencyRateController:getState',
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getNetworkConfigurationByChainId' as never,
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
       'TokenBalancesController:getState',

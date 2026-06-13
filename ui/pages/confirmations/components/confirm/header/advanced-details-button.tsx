@@ -46,9 +46,7 @@ export const AdvancedDetailsButton = () => {
       // header layout is not affected
       style={
         currentConfirmation?.type ===
-          TransactionType.shieldSubscriptionApprove ||
-        currentConfirmation?.type === TransactionType.perpsDeposit ||
-        currentConfirmation?.type === TransactionType.perpsWithdraw
+        TransactionType.shieldSubscriptionApprove
           ? { visibility: 'hidden' }
           : {}
       }

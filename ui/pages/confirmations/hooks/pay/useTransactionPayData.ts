@@ -4,6 +4,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
+  selectTransactionPayQuoteValidationErrorByTransactionId,
   selectTransactionPayQuotesByTransactionId,
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayTokensByTransactionId,
@@ -36,6 +37,12 @@ export function useTransactionPayTotals() {
 
 export function useTransactionPayIsMaxAmount() {
   return useTransactionPayData(selectTransactionPayIsMaxAmountByTransactionId);
+}
+
+export function useTransactionPayQuoteValidationError() {
+  return useTransactionPayData(
+    selectTransactionPayQuoteValidationErrorByTransactionId,
+  );
 }
 
 export function useTransactionPayPrimaryRequiredToken() {

@@ -1406,6 +1406,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "Wallet not supported"
   },
+  "alertPayQuoteValidationTitle": {
+    "message": "Quote validation failed"
+  },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
   },

@@ -83,10 +83,12 @@ const MOCK_AVAILABLE_TOKEN = {
 };
 
 const DEFAULT_ALERTS_HOOK_RETURN: {
+  alertDetails?: string;
   alertMessage?: string;
   hideResults: boolean;
   disableUpdate: boolean;
 } = {
+  alertDetails: undefined,
   alertMessage: undefined,
   hideResults: false,
   disableUpdate: false,
@@ -412,6 +414,22 @@ describe('CustomAmountInfo', () => {
     expect(
       getByText(messages.alertNoPayTokenQuotesMessage.message),
     ).toBeInTheDocument();
+  });
+
+  it('renders advanced alert details when provided', () => {
+    const { getByTestId, getByText } = render({
+      alertsHookReturn: {
+        alertDetails: 'execution reverted',
+        alertMessage: 'Quote validation failed',
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(getByText('Quote validation failed')).toBeInTheDocument();
+    expect(getByTestId('custom-amount-alert-details')).toHaveTextContent(
+      'execution reverted',
+    );
   });
 
   describe('overrideCenterContent', () => {

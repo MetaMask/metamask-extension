@@ -3,10 +3,12 @@ import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/co
 import useAlerts from '../../../../hooks/useAlerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { useTransactionPayQuoteValidationError } from '../pay/useTransactionPayData';
 import { AlertsName } from '../alerts/constants';
 import { useTransactionCustomAmountAlerts } from './useTransactionCustomAmountAlerts';
 
 jest.mock('../../../../hooks/useAlerts');
+jest.mock('../pay/useTransactionPayData');
 
 const createMockAlert = (overrides: Partial<Alert> = {}): Alert =>
   ({
@@ -39,8 +41,18 @@ const createMockUseAlertsReturnValue = (
     ...overrides,
   }) as unknown as ReturnType<typeof useAlerts>;
 
-function runHook() {
-  const state = getMockConfirmState();
+function runHook({
+  showAdvancedDetails = false,
+}: {
+  showAdvancedDetails?: boolean;
+} = {}) {
+  const state = getMockConfirmState({
+    metamask: {
+      preferences: {
+        showConfirmationAdvancedDetails: showAdvancedDetails,
+      },
+    },
+  });
 
   return renderHookWithConfirmContextProvider(
     () => useTransactionCustomAmountAlerts(),
@@ -50,10 +62,14 @@ function runHook() {
 
 describe('useTransactionCustomAmountAlerts', () => {
   const useAlertsMock = jest.mocked(useAlerts);
+  const useTransactionPayQuoteValidationErrorMock = jest.mocked(
+    useTransactionPayQuoteValidationError,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
     useAlertsMock.mockReturnValue(createMockUseAlertsReturnValue());
+    useTransactionPayQuoteValidationErrorMock.mockReturnValue(undefined);
   });
 
   it('returns base state when no alerts', () => {
@@ -108,6 +124,60 @@ describe('useTransactionCustomAmountAlerts', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual({
+      disableUpdate: false,
+      hideResults: true,
+    });
+  });
+
+  it('uses quote validation state as the custom amount alert summary', () => {
+    useTransactionPayQuoteValidationErrorMock.mockReturnValue({
+      chainId: '0x1',
+      code: 'quote_simulation_failed',
+      message: 'Quote simulation failed - raw revert reason',
+      strategy: 'relay',
+      tokenAddress: '0x123',
+    } as never);
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.InsufficientPayTokenBalance,
+            reason: 'Insufficient funds',
+            message: 'Add less or use a different token.',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertDetails: undefined,
+      alertMessage: 'Quote validation failed',
+      disableUpdate: false,
+      hideResults: true,
+    });
+  });
+
+  it('includes quote validation details when advanced details are open', () => {
+    useTransactionPayQuoteValidationErrorMock.mockReturnValue({
+      chainId: '0x1',
+      code: 'quote_simulation_failed',
+      message: 'raw revert reason',
+      strategy: 'relay',
+      tokenAddress: '0x123',
+    } as never);
+
+    const { result } = runHook({ showAdvancedDetails: true });
+
+    expect(result.current).toStrictEqual({
+      alertDetails: 'raw revert reason',
+      alertMessage: 'Quote validation failed',
       disableUpdate: false,
       hideResults: true,
     });

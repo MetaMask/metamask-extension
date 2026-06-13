@@ -2,9 +2,13 @@
 
 import { useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { useSelector } from 'react-redux';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useConfirmContext } from '../../context/confirm';
+import { useTransactionPayQuoteValidationError } from '../pay/useTransactionPayData';
 import { AlertsName } from '../alerts/constants';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
 
 const ALERTS_HIDE_RESULTS: string[] = [
   AlertsName.InsufficientPayTokenBalance,
@@ -17,12 +21,18 @@ const ALERTS_DISABLE_UPDATE: string[] = [
   AlertsName.SigningOrSubmitting,
 ];
 
+const QUOTE_SIMULATION_FAILED_PREFIX = /^Quote simulation failed\s*[-:]\s*/iu;
+
 export function useTransactionCustomAmountAlerts(): {
+  alertDetails?: string;
   alertMessage?: string;
   hideResults: boolean;
   disableUpdate: boolean;
 } {
+  const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const quoteValidationError = useTransactionPayQuoteValidationError();
+  const showAdvancedDetails = useSelector(selectConfirmationAdvancedDetailsOpen);
   const transactionId = currentConfirmation?.id ?? '';
   const { alerts: confirmationAlerts } = useAlerts(transactionId);
 
@@ -40,6 +50,17 @@ export function useTransactionCustomAmountAlerts(): {
     () => blockingAlerts.some((a) => ALERTS_DISABLE_UPDATE.includes(a.key)),
     [blockingAlerts],
   );
+
+  if (quoteValidationError) {
+    return {
+      alertDetails: showAdvancedDetails
+        ? formatQuoteValidationDetails(quoteValidationError.message)
+        : undefined,
+      alertMessage: t('alertPayQuoteValidationTitle'),
+      hideResults: true,
+      disableUpdate,
+    };
+  }
 
   const firstAlert = blockingAlerts?.[0];
 
@@ -59,4 +80,8 @@ export function useTransactionCustomAmountAlerts(): {
     hideResults,
     disableUpdate,
   };
+}
+
+function formatQuoteValidationDetails(message: string): string {
+  return message.replace(QUOTE_SIMULATION_FAILED_PREFIX, '');
 }

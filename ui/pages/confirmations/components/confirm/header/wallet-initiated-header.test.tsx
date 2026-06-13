@@ -112,16 +112,14 @@ describe('<WalletInitiatedHeader />', () => {
     expect(getByText(tEn('perpsDepositFundsTitle'))).toBeInTheDocument();
   });
 
-  it('hides AdvancedDetailsButton visually for perpsDeposit', () => {
+  it('shows AdvancedDetailsButton for perpsDeposit', () => {
     const { getByTestId } = render(getPerpsDepositState());
 
     const advancedButton = getByTestId('header-advanced-details-button');
-    expect(advancedButton.closest('[style*="visibility"]')).toHaveStyle({
-      visibility: 'hidden',
-    });
+    expect(advancedButton.closest('[style*="visibility"]')).toBeNull();
   });
 
-  it('shows AdvancedDetailsButton for non-perpsDeposit transactions', () => {
+  it('shows AdvancedDetailsButton for non-MetaMask Pay transactions', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('header-advanced-details-button')).toBeInTheDocument();
@@ -149,12 +147,10 @@ describe('<WalletInitiatedHeader />', () => {
     expect(getByText(tEn('perpsWithdrawFundsTitle'))).toBeInTheDocument();
   });
 
-  it('hides AdvancedDetailsButton visually for perpsWithdraw', () => {
+  it('shows AdvancedDetailsButton for perpsWithdraw', () => {
     const { getByTestId } = render(getPerpsWithdrawState());
 
     const advancedButton = getByTestId('header-advanced-details-button');
-    expect(advancedButton.closest('[style*="visibility"]')).toHaveStyle({
-      visibility: 'hidden',
-    });
+    expect(advancedButton.closest('[style*="visibility"]')).toBeNull();
   });
 });

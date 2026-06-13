@@ -9,6 +9,7 @@ import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
+  useTransactionPayQuoteValidationError,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
 } from '../../pay/useTransactionPayData';
@@ -21,6 +22,7 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
   const isQuotesLoading = useIsTransactionPayLoading();
   const sourceAmounts = useTransactionPaySourceAmounts();
   const requiredTokens = useTransactionPayRequiredTokens();
+  const quoteValidationError = useTransactionPayQuoteValidationError();
 
   const isOptionalOnly = (sourceAmounts ?? []).every(
     (sourceAmount) =>
@@ -34,6 +36,7 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
     !isQuotesLoading &&
     sourceAmounts?.length &&
     !quotes?.length &&
+    !quoteValidationError &&
     !isOptionalOnly;
 
   return useMemo(() => {
