@@ -94,6 +94,7 @@ export const MultichainAccountEditModal = ({
         <ModalFooter
           buttonsAlignment={ButtonsAlignment.Vertical}
           secondaryButtonProps={{
+            'data-testid': 'account-name-confirm-button',
             disabled: !accountName.trim(),
             children: t('confirm'),
             onClick: handleSave,
