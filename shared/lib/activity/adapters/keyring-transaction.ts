@@ -121,8 +121,8 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
         from,
         to,
         token,
@@ -137,8 +137,8 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
         from,
         to,
         token: getToken(transaction.to, 'in'),
@@ -153,8 +153,8 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
         from,
         destinationToken: getToken(transaction.to, 'in'),
         sourceToken: getToken(transaction.from, 'out'),
@@ -168,8 +168,8 @@ export function mapKeyringTransaction({
     chainId,
     status,
     timestamp,
+    hash: transaction.id,
     data: {
-      hash: transaction.id,
       from,
       to,
       fees: getFees(transaction),

@@ -48,9 +48,9 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1778593067000,
+      hash: undefined,
       data: {
         from: subjectAddress,
-        hash: undefined,
         to: baseRecipientAddress,
         token: {
           direction: 'out',
@@ -78,10 +78,10 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1778074371000,
+      hash: transaction.hash,
       data: {
         from: senderAddress,
         to: recipientAddress,
-        hash: transaction.hash,
         token: {
           direction: 'out',
           amount: '419402',
@@ -126,9 +126,9 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:137',
       status: 'success',
       timestamp: 1779218832000,
+      hash: '0x64d2f26c261178252fcad9dbb665cf40337b827a582066553dd6634eaeea9f0a',
       data: {
         from: subjectAddress,
-        hash: '0x64d2f26c261178252fcad9dbb665cf40337b827a582066553dd6634eaeea9f0a',
         to: polygonRecipientAddress,
         token: {
           amount: '100000000000000000',
@@ -178,8 +178,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1779888027000,
+      hash: '0x91f89897197afcc09ad98ec4282366fd7938d8a9609e4fc2a0aa2d070664bc27',
       data: {
-        hash: '0x91f89897197afcc09ad98ec4282366fd7938d8a9609e4fc2a0aa2d070664bc27',
         token: {
           direction: 'out',
           symbol: 'USDC',
@@ -256,9 +256,9 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1777983327000,
+      hash: undefined,
       data: {
         from: lineaSenderAddress,
-        hash: undefined,
         to: subjectAddress,
         token: {
           direction: 'in',
@@ -295,8 +295,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1778003873000,
+      hash: undefined,
       data: {
-        hash: undefined,
         sourceToken: {
           direction: 'out',
           symbol: 'mUSD',
@@ -352,8 +352,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1779930229000,
+      hash: '0x80b974d5834e1047a78332369de3d4b988f0237ff8a418c9464217e55c542f2f',
       data: {
-        hash: '0x80b974d5834e1047a78332369de3d4b988f0237ff8a418c9464217e55c542f2f',
         sourceToken: {
           amount: '10000',
           decimals: 6,
@@ -414,9 +414,9 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1771884263000,
+      hash: undefined,
       data: {
         from: subjectAddress,
-        hash: undefined,
         to: nftRecipientAddress,
         token: {
           direction: 'out',
@@ -440,8 +440,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1780601507000,
+      hash: '0x8719dadd883779624845106e61fd94af234411c30d73184a72f4daf1425c4595',
       data: {
-        hash: '0x8719dadd883779624845106e61fd94af234411c30d73184a72f4daf1425c4595',
         from: '0x107b2e855528f344556f8c766a6187326a2c2fa6',
         to: nftBuyerAddress,
         token: {
@@ -483,8 +483,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1778682863000,
+      hash: '0x25805d4ae16935e6fa92add9dcee97db0127749d4244032a79489098a880210c',
       data: {
-        hash: '0x25805d4ae16935e6fa92add9dcee97db0127749d4244032a79489098a880210c',
         from: zeroAddress,
         to: subjectAddress,
         token: {
@@ -535,8 +535,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1778643089000,
+      hash: '0x08d14578168f22001e95503469c63613bd9f3d3f60e81dbbf204fbd21f484bd9',
       data: {
-        hash: '0x08d14578168f22001e95503469c63613bd9f3d3f60e81dbbf204fbd21f484bd9',
         sourceToken: {
           amount: '100000',
           decimals: 6,
@@ -595,8 +595,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1779893234000,
+      hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
       data: {
-        hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
         sourceToken: {
           amount: '100000',
           decimals: 6,
@@ -646,8 +646,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1778593067000,
+      hash: '0xabc123deposit00000000000000000000000000000000000000000000000001',
       data: {
-        hash: '0xabc123deposit00000000000000000000000000000000000000000000000001',
         token: {
           amount: '1000000000000000000',
           decimals: 18,
@@ -704,8 +704,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1779975743000,
+      hash: '0x6e448f5b8cf55534507770c1cb90ba14e723d03b4a46b4919a5847eb8d13b7b5',
       data: {
-        hash: '0x6e448f5b8cf55534507770c1cb90ba14e723d03b4a46b4919a5847eb8d13b7b5',
         sourceToken: {
           amount: '1000000000000',
           decimals: 18,
@@ -769,8 +769,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1779977700000,
+      hash: '0x8f2a1c9e4b7d30651234567890abcdef1234567890abcdef1234567890abcdef',
       data: {
-        hash: '0x8f2a1c9e4b7d30651234567890abcdef1234567890abcdef1234567890abcdef',
         sourceToken: {
           amount: '1000000000000',
           decimals: 18,
@@ -820,8 +820,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1778633325000,
+      hash: '0x875ded271a40278391fca5d71892231afd0cb9592f31bdf3b7c949906cb982c4',
       data: {
-        hash: '0x875ded271a40278391fca5d71892231afd0cb9592f31bdf3b7c949906cb982c4',
         from: subjectAddress,
         token: {
           direction: 'in',
@@ -882,8 +882,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1779941611000,
+      hash: '0x9f81163d00374094411f44732738c6dea194551e4500bde9fd7ee60319aac766',
       data: {
-        hash: '0x9f81163d00374094411f44732738c6dea194551e4500bde9fd7ee60319aac766',
         fees: [
           {
             amount: '4426155589787',
@@ -936,9 +936,9 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:56',
       status: 'success',
       timestamp: 1778601880000,
+      hash: undefined,
       data: {
         from: bscContractCallerAddress,
-        hash: undefined,
         methodId: '0x174dea71',
         to: bscUniversalRouter,
         transactionCategory: 'CONTRACT_CALL',
@@ -983,9 +983,9 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1777642787000,
+      hash: '0xd206cc6c16974409bae072ce4cd1559743041af40c2bae84775a0bbb4dff5fee',
       data: {
         from: subjectAddress,
-        hash: '0xd206cc6c16974409bae072ce4cd1559743041af40c2bae84775a0bbb4dff5fee',
         methodId: '0xe9ae5c53',
         to: subjectAddress,
         transactionCategory: 'CONTRACT_CALL',

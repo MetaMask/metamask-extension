@@ -34,8 +34,8 @@ describe('mapKeyringTransaction', () => {
       chainId: MultichainNetworks.SOLANA,
       status: 'success',
       timestamp: 1716367781000,
+      hash: 'send-id',
       data: {
-        hash: 'send-id',
         from: 'from-address',
         to: 'to-address',
         token: {
@@ -89,8 +89,8 @@ describe('mapKeyringTransaction', () => {
       chainId: MultichainNetworks.SOLANA,
       status: 'pending',
       timestamp: 1716367781000,
+      hash: 'swap-id',
       data: {
-        hash: 'swap-id',
         sourceToken: {
           amount: '1',
           assetId: `${MultichainNetworks.SOLANA}/slip44:501`,

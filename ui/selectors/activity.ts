@@ -145,7 +145,7 @@ export const selectLocalTransactionsByHash = createSelector(
         }
 
         // Also index by id so signing/queued transactions (no hash yet) can be
-        // looked up — the activity adapter sets data.hash = primaryTransaction.id
+        // looked up — the activity adapter sets hash = primaryTransaction.id
         // as a fallback when no real tx hash exists.
         const id = transaction.id?.toLowerCase();
         if (id && !transactionsByHash.has(id)) {
@@ -211,7 +211,7 @@ export const selectNonEvmActivityItemsById = createSelector(
     const itemsById = new Map<string, (typeof items)[number]>();
 
     for (const item of items) {
-      const id = item.data.hash?.toLowerCase();
+      const id = item.hash?.toLowerCase();
 
       if (id) {
         itemsById.set(id, item);
@@ -514,7 +514,7 @@ export const selectLocalActivityItemsByIdentifier = createSelector(
     const itemsByIdentifier = new Map();
 
     for (const item of items) {
-      const hash = item.data.hash?.toLowerCase();
+      const hash = item.hash?.toLowerCase();
 
       if (hash) {
         itemsByIdentifier.set(hash, item);
