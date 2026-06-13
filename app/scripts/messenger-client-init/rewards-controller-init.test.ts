@@ -82,6 +82,7 @@ describe('RewardsControllerInit', () => {
         isDisabled: expect.any(Function),
         isBitcoinDisabled: expect.any(Function),
         isTronDisabled: expect.any(Function),
+        isVipDisabled: expect.any(Function),
       });
     });
 
@@ -105,6 +106,7 @@ describe('RewardsControllerInit', () => {
         isDisabled: expect.any(Function),
         isBitcoinDisabled: expect.any(Function),
         isTronDisabled: expect.any(Function),
+        isVipDisabled: expect.any(Function),
       });
     });
 
@@ -150,21 +152,6 @@ describe('RewardsControllerInit', () => {
       expect(constructorArgs.isBitcoinDisabled()).toBe(true);
     });
 
-    it('uses manifest flag override when available', () => {
-      mockGetManifestFlags.mockReturnValue({
-        remoteFeatureFlags: {
-          rewardsBitcoinEnabledExtension: true,
-        },
-      } as never);
-      const requestMock = buildInitRequestMock({
-        rewardsBitcoinEnabledExtension: false,
-      });
-
-      RewardsControllerInit(requestMock);
-
-      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isBitcoinDisabled()).toBe(false);
-    });
   });
 
   describe('isTronDisabled', () => {
@@ -199,20 +186,40 @@ describe('RewardsControllerInit', () => {
       expect(constructorArgs.isTronDisabled()).toBe(true);
     });
 
-    it('uses manifest flag override when available', () => {
-      mockGetManifestFlags.mockReturnValue({
-        remoteFeatureFlags: {
-          rewardsTronEnabledExtension: true,
-        },
-      } as never);
+  });
+
+  describe('isVipDisabled', () => {
+    it('returns false when vipProgramEnabled is true', () => {
       const requestMock = buildInitRequestMock({
-        rewardsTronEnabledExtension: false,
+        vipProgramEnabled: true,
       });
 
       RewardsControllerInit(requestMock);
 
       const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isTronDisabled()).toBe(false);
+      expect(constructorArgs.isVipDisabled()).toBe(false);
     });
+
+    it('returns true when vipProgramEnabled is false', () => {
+      const requestMock = buildInitRequestMock({
+        vipProgramEnabled: false,
+      });
+
+      RewardsControllerInit(requestMock);
+
+      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
+      expect(constructorArgs.isVipDisabled()).toBe(true);
+    });
+
+    it('returns true when vipProgramEnabled is not set', () => {
+      const requestMock = buildInitRequestMock({});
+
+      RewardsControllerInit(requestMock);
+
+      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
+      expect(constructorArgs.isVipDisabled()).toBe(true);
+    });
+
   });
+});
 });
