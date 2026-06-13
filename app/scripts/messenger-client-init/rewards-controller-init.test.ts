@@ -1,5 +1,5 @@
 import { RewardsController } from '../controllers/rewards/rewards-controller';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import * as ManifestFlags from '../../../shared/lib/manifestFlags';
 import {
   RewardsControllerMessenger,
   RewardsControllerState,
@@ -15,10 +15,7 @@ import type { RewardsControllerInitMessenger } from './messengers/rewards-contro
 import type { MessengerClientInitRequest } from './types';
 
 jest.mock('../controllers/rewards/rewards-controller');
-jest.mock('../../../shared/lib/manifestFlags');
 jest.mock('../../../shared/lib/feature-flags/version-gating');
-
-const mockGetManifestFlags = jest.mocked(getManifestFlags);
 
 function buildInitRequestMock(
   remoteFeatureFlags?: Record<string, unknown>,
@@ -59,7 +56,7 @@ describe('RewardsControllerInit', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-    mockGetManifestFlags.mockReturnValue({
+    jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
       remoteFeatureFlags: undefined,
     } as never);
   });
