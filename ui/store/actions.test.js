@@ -2848,7 +2848,7 @@ describe('Actions', () => {
       expect(setShowHoldToReveal).toHaveBeenCalledWith(true);
     });
 
-    it('returns invalidPassword error when password validation fails', async () => {
+    it('returns invalidPassword error when password validation failes', async () => {
       const store = mockStore();
       const verifyPasswordStub = sinon.stub().rejects(new Error('error'));
       background.getApi.returns({

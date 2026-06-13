@@ -87,7 +87,6 @@ export const StackCard = ({
             variant={TextVariant.bodySmMedium}
             color={TextColor.textDefault}
             className="carousel-card__title"
-            data-testid="carousel-slide-title"
           >
             {isContentfulContent ? slide.title : t(slide.title)}
           </Text>
@@ -112,7 +111,6 @@ export const StackCard = ({
             variant={TextVariant.bodyXsMedium}
             color={TextColor.textAlternative}
             className="carousel-card__description"
-            data-testid="carousel-slide-description"
           >
             {isContentfulContent ? slide.description : t(slide.description)}
           </Text>

@@ -1219,11 +1219,7 @@
       "coverageResults": {},
       "orderedTransactionHistory": []
     },
-    "SnapController": {
-      "unencryptedSnapStates": {
-        "npm:@metamask/solana-wallet-snap": "{\"keyringAccounts\":{\"688e01b8-3134-4ef4-80e6-8772bab38ef7\":{\"id\":\"688e01b8-3134-4ef4-80e6-8772bab38ef7\",\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/501'/0'/0'\",\"index\":0,\"type\":\"solana:data-account\",\"address\":\"4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer\",\"scopes\":[\"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp\",\"solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z\",\"solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1\"],\"options\":{\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/501'/0'/0'\",\"index\":0},\"methods\":[\"signAndSendTransaction\",\"signTransaction\",\"signMessage\",\"signIn\"]}},\"mapInterfaceNameToId\":{},\"transactions\":{},\"signatures\":{},\"assetEntities\":{},\"tokenPrices\":{},\"subscriptions\":{},\"webSocketConnections\":{\"closeWebSocketConnectionsBackgroundEventId\":null}}"
-      }
-    },
+    "SnapController": {},
     "SnapInterfaceController": {
       "interfaces": {}
     },

@@ -121,7 +121,7 @@ export const commonSolanaAddress =
 export const commonSolanaTxConfirmedDetailsFixture = {
   status: 'confirmed',
   amount: '-0.007079 SOL',
-  networkFeeFiat: '<$0.01',
+  networkFee: '0.000005 SOL',
   fromAddress: 'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
   toAddress: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
   txHash:
@@ -131,7 +131,7 @@ export const commonSolanaTxConfirmedDetailsFixture = {
 export const commonSolanaTxFailedDetailsFixture = {
   status: 'failed',
   amount: '0.000000005 SOL',
-  networkFeeFiat: '<$0.01',
+  networkFee: '-0.000005',
   fromAddress: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
   toAddress: 'AL9Z5JgZdeCKnaYg6jduy9PQGzo3moo7vZYVSTJwnSEq',
   txHash:

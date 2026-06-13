@@ -36,7 +36,9 @@ describe('Transaction activity list', function (this: Suite) {
         await activityList.checkNoFailedTransactions();
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
-        await transactionDetails.checkTransactionStatus('success');
+        await transactionDetails.checkTransactionStatus(
+          commonSolanaTxConfirmedDetailsFixture.status,
+        );
         await transactionDetails.checkTransactionAmount(
           commonSolanaTxConfirmedDetailsFixture.amount,
         );
@@ -87,7 +89,7 @@ describe('Transaction activity list', function (this: Suite) {
         );
         await transactionDetails.checkTransactionViewDetailsLink();
         await transactionDetails.checkTransactionBaseFee(
-          commonSolanaTxFailedDetailsFixture.networkFeeFiat,
+          commonSolanaTxFailedDetailsFixture.networkFee,
         );
       },
     );
