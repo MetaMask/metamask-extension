@@ -27,10 +27,9 @@ describe('getTransactionPayControllerMessenger', () => {
       handler,
     );
 
-    const callTransactionPayController = transactionPayControllerMessenger.call as (
-      method: string,
-      chainId: string,
-    ) => unknown;
+    const callTransactionPayController = transactionPayControllerMessenger.call.bind(
+      transactionPayControllerMessenger,
+    ) as (method: string, chainId: string) => unknown;
 
     callTransactionPayController(
       'NetworkController:getNetworkConfigurationByChainId' as never,
