@@ -294,6 +294,7 @@
     "nanoid@npm:3.3.3": "^3.3.11",
     "protobufjs": "^7.5.8",
     "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
+    "esbuild": "0.28.1",
     "@metamask/snaps-controllers": "^20.0.5",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
@@ -801,7 +802,7 @@
     "terser-webpack-plugin": "^5.3.16",
     "thread-loader": "^4.0.4",
     "through2": "^4.0.2",
-    "tsx": "^4.21.0",
+    "tsx": "^4.22.4",
     "tweetnacl": "^1.0.3",
     "typescript": "~5.6.0",
     "unzipper": "^0.12.3",
@@ -833,7 +834,6 @@
       "$root$": true,
       "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false,
-      "@storybook/test-runner>@storybook/core-common>esbuild": false,
       "@google/genai>protobufjs": false,
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
@@ -852,7 +852,7 @@
       "core-js-pure#3.49.0": true,
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
-      "tsx>esbuild#0.27.7": true,
+      "tsx>esbuild#0.28.1": true,
       "ethereumjs-util>ethereum-cryptography>secp256k1#4.0.4": false
     }
   },
