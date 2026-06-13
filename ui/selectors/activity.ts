@@ -24,12 +24,10 @@ import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts'
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
-import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { Status } from '../../shared/lib/activity/types';
-import { getInternalAccountsObject } from './accounts';
 import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
 import { getAssetsMetadata } from './assets';
 import {
@@ -190,36 +188,14 @@ export const selectNonEvmTransactionsForActivity = createSelector(
 );
 
 export const selectNonEvmActivityItems = createSelector(
-  [
-    selectNonEvmTransactionsForActivity,
-    getAssetsMetadata,
-    getInternalAccountsObject,
-  ],
-  (transactions, assetsMetadata, internalAccountsById) =>
+  [selectNonEvmTransactionsForActivity, getAssetsMetadata],
+  (transactions, assetsMetadata) =>
     transactions.map((transaction) =>
       mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
-        subjectAddress: internalAccountsById?.[transaction.account]?.address,
       }),
     ),
-);
-
-export const selectNonEvmActivityItemsById = createSelector(
-  selectNonEvmActivityItems,
-  (items) => {
-    const itemsById = new Map<string, (typeof items)[number]>();
-
-    for (const item of items) {
-      const id = item.data.hash?.toLowerCase();
-
-      if (id) {
-        itemsById.set(id, item);
-      }
-    }
-
-    return itemsById;
-  },
 );
 
 function patchKeyringTransaction(
@@ -480,14 +456,12 @@ export const selectLocalActivityItems = createSelector(
           transactionGroup,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
-        const fees = getLocalTransactionFees(transactionGroup);
 
         return enrichLocalMusdClaimActivity(
           mapLocalTransaction({
             ...transactionGroup,
             ...getSwapTokens(bridgeHistoryItem),
             ...(activityStatus ? { activityStatus } : {}),
-            fees,
             nativeAssetSymbol,
             contractTokenMetadata,
           }),
@@ -505,23 +479,6 @@ export const selectLocalActivityItems = createSelector(
         transactionGroup,
       );
     });
-  },
-);
-
-export const selectLocalActivityItemsByIdentifier = createSelector(
-  selectLocalActivityItems,
-  (items) => {
-    const itemsByIdentifier = new Map();
-
-    for (const item of items) {
-      const hash = item.data.hash?.toLowerCase();
-
-      if (hash) {
-        itemsByIdentifier.set(hash, item);
-      }
-    }
-
-    return itemsByIdentifier;
   },
 );
 

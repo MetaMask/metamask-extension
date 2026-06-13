@@ -1,5 +1,5 @@
 diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
-index 7869c149db4678616dd467723a686b722629ec96..5cfd5dcbf3a2b6a2a63914f32b453bc742abe02e 100644
+index 7869c149db4678616dd467723a686b722629ec96..6a27b9953164fea3352a3f17246aad9e93a1b475 100644
 --- a/dist/AssetsController.cjs
 +++ b/dist/AssetsController.cjs
 @@ -13,7 +13,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
@@ -36,6 +36,15 @@ index 7869c149db4678616dd467723a686b722629ec96..5cfd5dcbf3a2b6a2a63914f32b453bc7
          }), "f");
          __classPrivateFieldSet(this, _AssetsController_priceDataSource, new PriceDataSource_1.PriceDataSource({
              queryApiClient,
+@@ -1172,7 +1174,7 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+             });
+         }
+     }
+-}, _AssetsController_executeMiddlewares = 
++}, _AssetsController_executeMiddlewares =
+ // ============================================================================
+ // MIDDLEWARE EXECUTION
+ // ============================================================================
 @@ -1280,6 +1282,16 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
          return true;
      }
@@ -53,8 +62,43 @@ index 7869c149db4678616dd467723a686b722629ec96..5cfd5dcbf3a2b6a2a63914f32b453bc7
  }, _AssetsController_resolveNativeAssetIds = function _AssetsController_resolveNativeAssetIds(chains) {
      const nativeAssetMap = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetMap).call(this);
      const ids = [];
+@@ -1405,6 +1417,25 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+                     }
+                 }
+             }
++            // Reconcile & self-heal stale asset "types" (e.g. erc20 -> native)
++            // using IDs from new response assetInfo and assetBalance
++            const assetsInfoAssetIdsSet = new Set([
++                ...Object.keys(normalizedResponse.assetsInfo ?? {}),
++                ...Object.values(normalizedResponse.assetsBalance ?? {}).flatMap((accountBalances) => Object.keys(accountBalances)),
++            ]);
++            for (const assetId of assetsInfoAssetIdsSet) {
++                const entry = metadata[assetId];
++                if (!entry) {
++                    continue;
++                }
++                const correctType = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getAssetType).call(this, assetId);
++                if (entry.type !== correctType) {
++                    metadata[assetId] = { ...entry, type: correctType };
++                    if (!changedMetadata.includes(assetId)) {
++                        changedMetadata.push(assetId);
++                    }
++                }
++            }
+             if (normalizedResponse.assetsBalance) {
+                 for (const [accountId, accountBalances] of Object.entries(normalizedResponse.assetsBalance)) {
+                     const previousBalances = previousState.assetsBalance[accountId] ?? {};
+@@ -1887,7 +1918,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+         }
+     }
+     return result;
+-}, _AssetsController_handleAccountGroupChanged = 
++}, _AssetsController_handleAccountGroupChanged =
+ // ============================================================================
+ // EVENT HANDLERS
+ // ============================================================================
 diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
-index 7552c96a765368243d30f099187c739b88c838c2..8e420a3e1ed51c3cbed5f58c2c854ba20e61e25a 100644
+index 7552c96a765368243d30f099187c739b88c838c2..2ee3f81f5a58fd6502f0858bb98982e55a8b1ef5 100644
 --- a/dist/AssetsController.mjs
 +++ b/dist/AssetsController.mjs
 @@ -9,7 +9,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
@@ -91,6 +135,15 @@ index 7552c96a765368243d30f099187c739b88c838c2..8e420a3e1ed51c3cbed5f58c2c854ba2
          }), "f");
          __classPrivateFieldSet(this, _AssetsController_priceDataSource, new PriceDataSource({
              queryApiClient,
+@@ -1165,7 +1167,7 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+             });
+         }
+     }
+-}, _AssetsController_executeMiddlewares = 
++}, _AssetsController_executeMiddlewares =
+ // ============================================================================
+ // MIDDLEWARE EXECUTION
+ // ============================================================================
 @@ -1273,6 +1275,16 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
          return true;
      }
@@ -108,6 +161,41 @@ index 7552c96a765368243d30f099187c739b88c838c2..8e420a3e1ed51c3cbed5f58c2c854ba2
  }, _AssetsController_resolveNativeAssetIds = function _AssetsController_resolveNativeAssetIds(chains) {
      const nativeAssetMap = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetMap).call(this);
      const ids = [];
+@@ -1398,6 +1410,25 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+                     }
+                 }
+             }
++            // Reconcile & self-heal stale asset "types" (e.g. erc20 -> native)
++            // using IDs from new response assetInfo and assetBalance
++            const assetsInfoAssetIdsSet = new Set([
++                ...Object.keys(normalizedResponse.assetsInfo ?? {}),
++                ...Object.values(normalizedResponse.assetsBalance ?? {}).flatMap((accountBalances) => Object.keys(accountBalances)),
++            ]);
++            for (const assetId of assetsInfoAssetIdsSet) {
++                const entry = metadata[assetId];
++                if (!entry) {
++                    continue;
++                }
++                const correctType = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getAssetType).call(this, assetId);
++                if (entry.type !== correctType) {
++                    metadata[assetId] = { ...entry, type: correctType };
++                    if (!changedMetadata.includes(assetId)) {
++                        changedMetadata.push(assetId);
++                    }
++                }
++            }
+             if (normalizedResponse.assetsBalance) {
+                 for (const [accountId, accountBalances] of Object.entries(normalizedResponse.assetsBalance)) {
+                     const previousBalances = previousState.assetsBalance[accountId] ?? {};
+@@ -1880,7 +1911,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+         }
+     }
+     return result;
+-}, _AssetsController_handleAccountGroupChanged = 
++}, _AssetsController_handleAccountGroupChanged =
+ // ============================================================================
+ // EVENT HANDLERS
+ // ============================================================================
 diff --git a/dist/data-sources/BackendWebsocketDataSource.cjs b/dist/data-sources/BackendWebsocketDataSource.cjs
 index 88f557ab6b2b6add5e3ca3620d230d01745bf168..9ab917c4cbe720e5e14fcc23ce7d1dfe9912ef28 100644
 --- a/dist/data-sources/BackendWebsocketDataSource.cjs
