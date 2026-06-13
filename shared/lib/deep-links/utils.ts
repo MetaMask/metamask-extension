@@ -69,6 +69,7 @@ export async function getDeferredDeepLinkRoute(
       return {
         type: DeferredDeepLinkRouteType.Redirect,
         url: destination.redirectTo.toString(),
+        signature,
       };
     }
 
@@ -78,6 +79,7 @@ export async function getDeferredDeepLinkRoute(
       return {
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery: url.pathname + url.search,
+        signature,
       };
     }
 

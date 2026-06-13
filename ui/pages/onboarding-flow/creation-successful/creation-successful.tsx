@@ -68,6 +68,7 @@ import {
   getDeferredDeepLinkRoute,
   buildInterstitialRoute,
 } from '../../../../shared/lib/deep-links/utils';
+import { createEvent } from '../../../../shared/lib/deep-links/metrics';
 import {
   DeferredDeepLink,
   DeferredDeepLinkRoute,
@@ -207,14 +208,23 @@ export default function CreationSuccessful() {
   }, [navigate, t]);
 
   const handleOnDoneNavigation = useCallback(
-    (
+    async (
       deferredDeepLinkResult: DeferredDeepLinkRoute,
-      hasDeferredDeepLink: boolean,
+      deferredDeepLinkToUse: DeferredDeepLink | null,
       completedWithSidePanelFlow: boolean,
     ) => {
       // Clean up deferred deep link from the state (both: expired or active)
-      if (hasDeferredDeepLink) {
+      if (deferredDeepLinkToUse) {
         dispatch(removeDeferredDeepLink());
+      }
+
+      if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+        await trackEvent(
+          createEvent({
+            signature: deferredDeepLinkResult.signature,
+            url: new URL(deferredDeepLinkToUse.referringLink),
+          }),
+        );
       }
 
       if (deferredDeepLinkResult) {
@@ -247,7 +257,7 @@ export default function CreationSuccessful() {
         navigate(DEFAULT_ROUTE);
       }
     },
-    [dispatch, navigate],
+    [dispatch, navigate, trackEvent],
   );
 
   const onDone = useCallback(async () => {
@@ -340,9 +350,9 @@ export default function CreationSuccessful() {
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
 
-            handleOnDoneNavigation(
+            await handleOnDoneNavigation(
               deferredDeepLinkResult,
-              Boolean(deferredDeepLink),
+              deferredDeepLink,
               true,
             );
 
@@ -357,9 +367,9 @@ export default function CreationSuccessful() {
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
 
-    handleOnDoneNavigation(
+    await handleOnDoneNavigation(
       deferredDeepLinkResult,
-      Boolean(deferredDeepLink),
+      deferredDeepLink,
       false,
     );
   }, [

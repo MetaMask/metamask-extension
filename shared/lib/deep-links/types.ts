@@ -39,7 +39,11 @@ export enum DeferredDeepLinkRouteType {
  * Represents the result of parsing a deferred deep link.
  */
 export type DeferredDeepLinkRoute =
-  | { type: DeferredDeepLinkRouteType.Redirect; url: string }
+  | {
+      type: DeferredDeepLinkRouteType.Redirect;
+      url: string;
+      signature: SignatureStatus;
+    }
   | {
       type: DeferredDeepLinkRouteType.Navigate;
       route: string;
@@ -52,5 +56,6 @@ export type DeferredDeepLinkRoute =
        * Format: /path?query (e.g., /buy?address=0x...)
        */
       urlPathAndQuery: string;
+      signature: SignatureStatus;
     }
   | null;

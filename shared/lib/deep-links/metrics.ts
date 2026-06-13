@@ -2,8 +2,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   type MetaMetricsEventPayload,
-} from '../../../../shared/constants/metametrics';
-import type { SignatureStatus } from '../../../../shared/lib/deep-links/verify';
+} from '../../constants/metametrics';
+import type { SignatureStatus } from './verify';
 
 type UTMParameter =
   | 'utm_campaign'
