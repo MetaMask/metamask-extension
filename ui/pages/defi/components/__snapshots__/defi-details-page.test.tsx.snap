@@ -14,7 +14,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
         data-testid="defi-details-page-back-button"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/arrow-left.svg');"
         />
       </button>

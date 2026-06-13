@@ -591,6 +591,15 @@ export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
 }
 
+export function getMaybeSelectedInternalAccount(state) {
+  // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
+  // - This might happen during the onboarding
+  const accountId = state.metamask.internalAccounts?.selectedAccount;
+  return accountId
+    ? state.metamask.internalAccounts?.accounts[accountId]
+    : undefined;
+}
+
 export function checkIfMethodIsEnabled(state, methodName) {
   const internalAccount = getSelectedInternalAccount(state);
   return Boolean(internalAccount.methods.includes(methodName));
@@ -1086,21 +1095,24 @@ export const getTokenExchangeRates = createSelector(
   },
 );
 
-export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = getTokenRatesControllerMarketData(state) ?? {};
+export const getCrossChainTokenExchangeRates = createSelector(
+  getTokenRatesControllerMarketData,
+  (contractMarketData) => {
+    const marketData = contractMarketData ?? {};
 
-  return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
-    acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
-      (innerAcc, innerKey) => {
-        innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
-        return innerAcc;
-      },
-      {},
-    );
+    return Object.keys(marketData).reduce((acc, topLevelKey) => {
+      acc[topLevelKey] = Object.keys(marketData[topLevelKey]).reduce(
+        (innerAcc, innerKey) => {
+          innerAcc[innerKey] = marketData[topLevelKey][innerKey]?.price;
+          return innerAcc;
+        },
+        {},
+      );
 
-    return acc;
-  }, {});
-};
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Get market data for tokens on the current chain
@@ -1180,21 +1192,21 @@ export function getAccountName(accounts, accountAddress) {
   return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
-export function accountsWithSendEtherInfoSelector(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const internalAccounts = getInternalAccounts(state);
-
-  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
-    (internalAccount) => {
-      return {
-        ...internalAccount,
-        ...accounts[internalAccount.address],
-      };
-    },
-  );
-
-  return accountsWithSendEtherInfo;
-}
+export const accountsWithSendEtherInfoSelector = createSelector(
+  getMetaMaskAccounts,
+  getInternalAccounts,
+  (accounts, internalAccounts) => {
+    const accountsWithSendEtherInfo = internalAccounts.map(
+      (internalAccount) => {
+        return {
+          ...internalAccount,
+          ...accounts[internalAccount.address],
+        };
+      },
+    );
+    return accountsWithSendEtherInfo;
+  },
+);
 
 export const getAccountsWithLabels = createSelector(
   getMetaMaskAccountsOrdered,
@@ -1219,16 +1231,22 @@ export const getAccountsWithLabels = createSelector(
   },
 );
 
-export function getCurrentAccountWithSendEtherInfo(state) {
-  const { address: currentAddress } = getSelectedInternalAccount(state);
-  const accounts = accountsWithSendEtherInfoSelector(state);
+export const getCurrentAccountWithSendEtherInfo = createSelector(
+  getSelectedInternalAccount,
+  accountsWithSendEtherInfoSelector,
+  ({ address: currentAddress }, accounts) => {
+    return getAccountByAddress(accounts, currentAddress);
+  },
+);
 
-  return getAccountByAddress(accounts, currentAddress);
-}
-export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
-  const accounts = accountsWithSendEtherInfoSelector(state);
-  return getAccountByAddress(accounts, targetAddress);
-}
+export const getTargetAccountWithSendEtherInfo =
+  createParameterizedShallowEqualSelector(10)(
+    accountsWithSendEtherInfoSelector,
+    (_, targetAddress) => targetAddress,
+    (accounts, targetAddress) => {
+      return getAccountByAddress(accounts, targetAddress);
+    },
+  );
 
 export function getCurrentEthBalance(state) {
   return getCurrentAccountWithSendEtherInfo(state)?.balance;
@@ -3445,7 +3463,7 @@ export const getHdKeyringOfSelectedAccountOrPrimaryKeyring = createSelector(
  * @returns {object} The permissions subjects object.
  */
 export function getPermissionSubjects(state) {
-  return state.metamask.subjects || {};
+  return state.metamask.subjects || EMPTY_OBJECT;
 }
 
 /**
