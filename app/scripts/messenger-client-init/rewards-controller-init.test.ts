@@ -222,4 +222,3 @@ describe('RewardsControllerInit', () => {
 
   });
 });
-});
