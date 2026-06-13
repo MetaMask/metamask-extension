@@ -92,7 +92,7 @@ export const useValidateReferralCode = (
       try {
         const { valid } = (await dispatch(
           validateRewardsReferralCode(refinedCode),
-        )) as unknown as { valid: boolean };
+        )) as unknown as { valid: boolean; isVipCode: boolean };
 
         if (!valid) {
           return REFERRAL_CODE_INVALID_ERROR;
