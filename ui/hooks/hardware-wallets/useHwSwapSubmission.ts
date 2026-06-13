@@ -20,7 +20,7 @@ const RETRY_RPC_TIMEOUT_MS = 120_000;
  * @param options.signatureState - The current hardware-wallet signature state-machine state.
  * @param options.dispatchSignatureEvent - Dispatcher for signature state-machine events.
  * @param options.submitBridgeTransaction - Function that submits a bridge transaction given a quote and optional RPC timeout.
- * @param options.firstSignatureDoneRef
+ * @param options.firstSignatureDoneRef - Ref tracking whether the first of two hardware-wallet confirmations has completed; used to skip the approval step on retry when the first signature already succeeded.
  * @returns An object containing:
  * - `submitActiveQuote` — callback to submit the current locked quote.
  * - `retrySubmission` — callback to retry submission with an extended timeout.
