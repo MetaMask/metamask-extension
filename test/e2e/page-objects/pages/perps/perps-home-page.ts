@@ -21,6 +21,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-balance-dropdown-withdraw',
   };
 
+  private readonly exploreSection = {
+    testId: 'perps-explore-section',
+  };
+
   private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
 
   private readonly geoBlockModalDismiss = {
@@ -77,7 +81,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors(
-      [this.perpsView, this.perpsBalanceDropdown],
+      [this.perpsView, this.perpsBalanceDropdown, this.exploreSection],
       { timeout: 20000 },
     );
   }

@@ -52,6 +52,8 @@ async function openPerpsWithdrawConfirmation(
   await perpsHomePage.navigateToPerpsHome();
   await perpsHomePage.checkPageIsLoaded();
   await perpsHomePage.waitForBalanceSection();
+  await perpsHomePage.waitForEmptyActivitySection();
+  await driver.delay(5000);
   await perpsHomePage.clickWithdraw();
 
   const withdrawConfirmation = new PerpsWithdrawConfirmation(driver);
@@ -75,6 +77,7 @@ describe('Perps Withdraw', function (this: Suite) {
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
+        await perpsHomePage.waitForEmptyActivitySection();
         await perpsHomePage.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
@@ -96,6 +99,7 @@ describe('Perps Withdraw', function (this: Suite) {
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
+        await perpsHomePage.waitForEmptyActivitySection();
         await perpsHomePage.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
@@ -120,6 +124,7 @@ describe('Perps Withdraw', function (this: Suite) {
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
+        await perpsHomePage.waitForEmptyActivitySection();
         await perpsHomePage.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
@@ -142,6 +147,7 @@ describe('Perps Withdraw', function (this: Suite) {
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
+        await perpsHomePage.waitForEmptyActivitySection();
         await perpsHomePage.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
