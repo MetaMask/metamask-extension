@@ -65,6 +65,15 @@ export const useBalance = () => {
       };
     }
 
+    if (nonEvmBalance.isSupported) {
+      return {
+        balance: '0',
+        decimals: asset?.decimals ?? 0,
+        fullBalance: '0',
+        rawBalanceNumeric: new Numeric('0', 10),
+      };
+    }
+
     return getBalance(asset);
   }, [asset, nonEvmBalance]);
 
@@ -72,6 +81,9 @@ export const useBalance = () => {
     balance,
     decimals,
     fullBalance,
+    isBalanceLoaded: nonEvmBalance.isLoaded,
+    isBalanceLoading: nonEvmBalance.isSupported && !nonEvmBalance.isLoaded,
+    isBalanceSupported: nonEvmBalance.isSupported,
     rawBalanceNumeric,
   };
 };

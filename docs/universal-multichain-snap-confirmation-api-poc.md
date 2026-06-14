@@ -127,6 +127,7 @@ Renders the native confirmation.
 - Converts client display-unit multichain balances into raw units before comparing against the raw Snap confirmation payload.
 - Displays non-EVM native Send balances at full token precision because the Max button is hidden and truncated balance text can leave hidden dust that covers fees during QA.
 - Adds a POC `useNonEvmBalance` hook that queries Accounts API v5 directly for Solana balances, proving Send validation and native confirmation alerts do not require Snap-owned balance retrieval.
+- For supported Solana balances, Send and universal confirmation wait for Accounts API balance data instead of falling back to Snap-backed balance state.
 
 #### Send Flow Integration
 

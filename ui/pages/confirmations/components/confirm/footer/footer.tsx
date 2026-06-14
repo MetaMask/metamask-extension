@@ -34,6 +34,7 @@ import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEn
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useDappSwapActions } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapActions';
+import { useUniversalTransactionBalanceAlert } from '../../../hooks/alerts/transactions/useUniversalTransactionBalanceAlert';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import {
   isAddEthereumChainType,
@@ -245,6 +246,8 @@ const Footer = () => {
   const currentConfirmationId = currentConfirmation?.id;
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
+  const { isLoading: isUniversalTransactionBalanceLoading } =
+    useUniversalTransactionBalanceAlert();
 
   const { from: fromAddress } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
@@ -304,7 +307,9 @@ const Footer = () => {
   ]);
 
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
+    (!isScrollToBottomCompleted && !isSignature) ||
+    isGaslessLoading ||
+    isUniversalTransactionBalanceLoading;
 
   const shouldShowReconnectButton =
     shouldRunHardwareWalletPreflight &&

@@ -69,7 +69,7 @@ function useTransactionAlerts(): Alert[] {
   const suggestedGasFeeHighAlert = useSuggestedGasFeeHighAlert();
   const tokenContractAlert = useTokenContractAlert();
   const tokenTrustSignalAlerts = useTokenTrustSignalAlerts();
-  const universalTransactionBalanceAlerts =
+  const { alerts: universalTransactionBalanceAlerts } =
     useUniversalTransactionBalanceAlert();
 
   return useMemo(

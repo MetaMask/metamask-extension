@@ -498,7 +498,7 @@ describe('useAmountValidation', () => {
     expect(error).toEqual(undefined);
   });
 
-  it('returns error when non-EVM account has zero balance', async () => {
+  it('does not return an error while non-EVM balance is loading', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: {
         isNative: true,
@@ -514,8 +514,8 @@ describe('useAmountValidation', () => {
       () => useAmountValidation(),
       mockState,
     );
-    await waitFor(() =>
-      expect(result.current.amountError).toEqual('Insufficient funds'),
-    );
+
+    await waitFor(() => expect(result.current.amountError).toEqual(undefined));
+    expect(result.current.isBalanceLoading).toBe(true);
   });
 });

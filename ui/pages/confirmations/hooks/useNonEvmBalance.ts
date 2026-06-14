@@ -27,6 +27,8 @@ export type NonEvmBalance = {
 // POC only: fetches Solana balances directly from Accounts API to prove non-EVM
 // balance retrieval does not need to be owned by the Snap. Production should move
 // this into a controller/service and expose cached state through selectors.
+// Supported Solana balances intentionally do not fall back to Snap-backed
+// controller state; callers wait for this hook before validating/confirming.
 export function useNonEvmBalance({
   accountAddress,
   assetId,

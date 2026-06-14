@@ -14,7 +14,7 @@ import { useBalance } from './useBalance';
 export const useAmountValidation = () => {
   const t = useI18nContext();
   const { asset, value } = useSendContext();
-  const { rawBalanceNumeric } = useBalance();
+  const { isBalanceLoading, rawBalanceNumeric } = useBalance();
   const [amountError, setAmountError] = useState<string | undefined>(undefined);
 
   const setAndReturnError = useCallback((errorMessage: string | undefined) => {
@@ -24,6 +24,10 @@ export const useAmountValidation = () => {
 
   const validateAmountAsync = useCallback(async () => {
     if (!value) {
+      return setAndReturnError(undefined);
+    }
+
+    if (isBalanceLoading) {
       return setAndReturnError(undefined);
     }
 
@@ -57,6 +61,7 @@ export const useAmountValidation = () => {
     return setAndReturnError(undefined);
   }, [
     asset,
+    isBalanceLoading,
     rawBalanceNumeric,
     t,
     value,
@@ -72,7 +77,7 @@ export const useAmountValidation = () => {
     validateAmountAsync();
   }, [validateAmountAsync]);
 
-  return { amountError, validateNonEvmAmountAsync };
+  return { amountError, isBalanceLoading, validateNonEvmAmountAsync };
 };
 
 export function validateERC1155Balance(

@@ -29,7 +29,12 @@ type BalanceOverrides = {
   transferBalanceRaw?: string;
 };
 
-export function useUniversalTransactionBalanceAlert(): Alert[] {
+type UniversalTransactionBalanceAlertState = {
+  alerts: Alert[];
+  isLoading: boolean;
+};
+
+export function useUniversalTransactionBalanceAlert(): UniversalTransactionBalanceAlertState {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<{ type?: string }>();
   const data = useUniversalTransactionDataOptional();
@@ -48,47 +53,86 @@ export function useUniversalTransactionBalanceAlert(): Alert[] {
   });
   const isUniversalTransaction =
     currentConfirmation?.type === UNIVERSAL_TRANSACTION_APPROVAL_TYPE;
+  const transferBalanceRaw = transferBalance.balanceRaw;
+  const transferBalanceIsLoaded = transferBalance.isLoaded;
+  const transferBalanceIsSupported = transferBalance.isSupported;
+  const feeBalanceRaw = feeBalance.balanceRaw;
+  const feeBalanceIsLoaded = feeBalance.isLoaded;
+  const feeBalanceIsSupported = feeBalance.isSupported;
 
   return useMemo(() => {
     if (!isUniversalTransaction || !data) {
-      return [];
+      return { alerts: [], isLoading: false };
+    }
+
+    if (
+      !areStrictBalancesLoaded({
+        feeBalanceIsLoaded,
+        feeBalanceIsSupported,
+        transferBalanceIsLoaded,
+        transferBalanceIsSupported,
+      })
+    ) {
+      return { alerts: [], isLoading: true };
     }
 
     const balanceAlert = getBalanceAlert(data, balances, t, {
       transferBalanceRaw:
-        transferBalance.isLoaded && transferBalance.balanceRaw !== undefined
-          ? transferBalance.balanceRaw
+        transferBalanceIsLoaded && transferBalanceRaw !== undefined
+          ? transferBalanceRaw
           : undefined,
       feeBalanceRaw:
-        feeBalance.isLoaded && feeBalance.balanceRaw !== undefined
-          ? feeBalance.balanceRaw
+        feeBalanceIsLoaded && feeBalanceRaw !== undefined
+          ? feeBalanceRaw
           : undefined,
     });
 
     if (!balanceAlert) {
-      return [];
+      return { alerts: [], isLoading: false };
     }
 
-    return [
-      {
-        field: RowAlertKey.EstimatedFee,
-        isBlocking: true,
-        key: AlertsName.UniversalTransactionInsufficientBalance,
-        message: balanceAlert.message,
-        reason: t('alertReasonInsufficientBalance'),
-        severity: Severity.Danger,
-      },
-    ];
+    return {
+      alerts: [
+        {
+          field: RowAlertKey.EstimatedFee,
+          isBlocking: true,
+          key: AlertsName.UniversalTransactionInsufficientBalance,
+          message: balanceAlert.message,
+          reason: t('alertReasonInsufficientBalance'),
+          severity: Severity.Danger,
+        },
+      ],
+      isLoading: false,
+    };
   }, [
     balances,
     data,
-    feeBalance.balanceRaw,
-    feeBalance.isLoaded,
+    feeBalanceIsLoaded,
+    feeBalanceIsSupported,
+    feeBalanceRaw,
     isUniversalTransaction,
     t,
-    transferBalance.balanceRaw,
-    transferBalance.isLoaded,
+    transferBalanceIsLoaded,
+    transferBalanceIsSupported,
+    transferBalanceRaw,
   ]);
+}
+
+function areStrictBalancesLoaded({
+  feeBalanceIsLoaded,
+  feeBalanceIsSupported,
+  transferBalanceIsLoaded,
+  transferBalanceIsSupported,
+}: {
+  feeBalanceIsLoaded: boolean;
+  feeBalanceIsSupported: boolean;
+  transferBalanceIsLoaded: boolean;
+  transferBalanceIsSupported: boolean;
+}) {
+  return (
+    (!transferBalanceIsSupported || transferBalanceIsLoaded) &&
+    (!feeBalanceIsSupported || feeBalanceIsLoaded)
+  );
 }
 
 function getBalanceAlert(

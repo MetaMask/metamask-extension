@@ -32,7 +32,8 @@ export const AmountRecipient = () => {
   const [shouldSubmitOnAcknowledge, setShouldSubmitOnAcknowledge] =
     useState(false);
   const { asset, toResolved, nonEVMSubmitError } = useSendContext();
-  const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
+  const { amountError, isBalanceLoading, validateNonEvmAmountAsync } =
+    useAmountValidation();
   const { isNonEvmSendType } = useSendType();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
@@ -50,6 +51,7 @@ export const AmountRecipient = () => {
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError);
   const isDisabled = hasBlockingError || !toResolved || isNetworkUnreliable;
+  const isSubmitDisabled = isDisabled || isBalanceLoading;
 
   const proceedWithSubmit = useCallback(async () => {
     if (isNonEvmSendType) {
@@ -119,7 +121,7 @@ export const AmountRecipient = () => {
       </Box>
       <Button
         data-testid="send-continue-button"
-        disabled={isDisabled}
+        disabled={isSubmitDisabled}
         onClick={onClick}
         size={ButtonSize.Lg}
         className={`mb-4 min-h-12 ${hasBlockingError ? 'bg-error-default' : ''}`}
