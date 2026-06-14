@@ -148,6 +148,26 @@ Provides the first consumer.
 - Existing `ApprovalController` and Confirm UI architecture can support universal multichain transaction confirmations.
 - Core controller state can bridge async Snap requests to React UI without moving protocol transaction construction into extension.
 
+## Balance Centralization Is Separate
+
+This POC is about native confirmation UX ownership, not balance retrieval ownership.
+
+Non-EVM balance centralization can be solved independently: clients can own balance retrieval/caching through assets and balances controllers, then pass the relevant native/token balances to existing Snap-rendered confirmations so the Snap can gate its own confirm button without fetching balances itself.
+
+The Send flow balance check is also separable from this POC. Today the client calls the Snap `onAmountInput` path to validate non-EVM amounts before creating the send request. That can be removed without native confirmations: Send can validate entered amounts against client-owned balance state, then the Snap can still render its existing confirmation and use client-provided balances only to check final fee affordability.
+
+One possible balance-centralization path:
+
+- Ensure clients/controllers refresh and cache non-EVM balances before Send uses them.
+- Remove Send form calls to Snap `onAmountInput` for amount validation.
+- Validate Send amount locally against `MultichainBalancesController` / assets-controller state.
+- Pass only the relevant client-owned balances to the Snap when creating the send request: native balance, and selected token balance when sending a token.
+- Let the Snap continue constructing the protocol transaction and calculating fee / protocol-specific required native amount.
+- Let existing Snap-rendered confirmations use those client-provided balances to gate their own confirm button.
+- Later, move final affordability checks into client-owned native confirmations once the universal confirmation path is ready for broader adoption.
+
+Native confirmations make client-owned balance alerts cleaner because the client owns the confirmation footer and blocking alerts. They are not required just to remove duplicate balance fetching from Snaps.
+
 ## What This POC Does Not Cover
 
 - Final API naming or payload schema.
@@ -157,3 +177,4 @@ Provides the first consumer.
 - Production feature gating.
 - Full test coverage.
 - Full replacement of hardcoded fee UI with payload data.
+- Full non-EVM balance centralization; see the separate Obsidian note `[[Non-EVM Balance Centralization]]`.
