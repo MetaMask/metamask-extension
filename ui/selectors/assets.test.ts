@@ -34,6 +34,7 @@ import {
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   getAssetsBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroupIncludingHidden,
   getAsset,
   getAllIgnoredAssets,
   selectAggregatedBalanceForSelectedAccount,
@@ -678,6 +679,46 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
       });
     });
   });
+
+  describe('when account is undefined and selectedAccountGroup is null', () => {
+    it('should return null without crashing (deeplink guard)', () => {
+      const mockStateNoGroup = cloneDeep(mockState);
+      mockStateNoGroup.metamask.selectedAccountGroup =
+        null as unknown as string;
+      mockStateNoGroup.metamask.internalAccounts.selectedAccount =
+        '5132883f-598e-482c-a02b-84eeaa352f5b';
+
+      const result = getTokenByAccountAndAddressAndChainId(
+        mockStateNoGroup,
+        undefined,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('when account is undefined and no account in the group matches the non-EVM chainId', () => {
+    it('should return null without crashing', () => {
+      const mockStateNoMatchingAccount = cloneDeep(mockState);
+      mockStateNoMatchingAccount.metamask.internalAccounts.selectedAccount =
+        '5132883f-598e-482c-a02b-84eeaa352f5b';
+      // Override the Solana account's scopes so it no longer matches the queried chain
+      mockStateNoMatchingAccount.metamask.internalAccounts.accounts[
+        '5132883f-598e-482c-a02b-84eeaa352f5b'
+      ].scopes = [EthScope.Eoa] as unknown as SolScope[];
+
+      const result = getTokenByAccountAndAddressAndChainId(
+        mockStateNoMatchingAccount,
+        undefined,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+
+      expect(result).toBeNull();
+    });
+  });
 });
 
 describe('getMultichainNativeAssetType', () => {
@@ -1247,6 +1288,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
         ...baseState,
         networkConfigurationsByChainId: networks,
         multichainNetworkConfigurationsByChainId: {},
+        snaps: {},
       } as unknown as BalanceCalculationState['metamask'],
     };
   };
@@ -1286,6 +1328,9 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
         ...baseState,
         networkConfigurationsByChainId: {},
         multichainNetworkConfigurationsByChainId: multichainNetworks,
+        snaps: {
+          'npm:@metamask/solana-wallet-snap': { enabled: true },
+        },
       } as unknown as BalanceCalculationState['metamask'],
     };
   };
@@ -1560,6 +1605,48 @@ describe('getAssetsBySelectedAccountGroup', () => {
     const result = getAssetsBySelectedAccountGroup(mockState);
 
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
+    expect(result).toStrictEqual(selectorMockResult);
+  });
+});
+
+describe('getAssetsBySelectedAccountGroupIncludingHidden', () => {
+  beforeEach(() => {
+    getAssetsBySelectedAccountGroupIncludingHidden.clearCache();
+    getAssetsBySelectedAccountGroupIncludingHidden.memoizedResultFunc.clearCache();
+  });
+
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      allIgnoredAssets: 'mockAllIgnoredAssets',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('calls the imported selector with ignored assets cleared', () => {
+    const selectorMock = jest.mocked(selectAssetsBySelectedAccountGroup);
+    const selectorMockResult = {};
+    selectorMock.mockReturnValueOnce(selectorMockResult);
+
+    const result = getAssetsBySelectedAccountGroupIncludingHidden(mockState);
+
+    expect(selectorMock).toHaveBeenCalledWith({
+      ...mockState.metamask,
+      allIgnoredTokens: {},
+      allIgnoredAssets: {},
+    });
     expect(result).toStrictEqual(selectorMockResult);
   });
 });

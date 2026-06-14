@@ -15,8 +15,7 @@ export default class ShieldClaimPage {
     text: accountName,
   });
 
-  private readonly backButton =
-    '[data-testid="settings-v2-header-back-button"]';
+  private readonly backButton = '[data-testid="settings-header-back-button"]';
 
   private readonly claimErrorToast = '[data-testid="claim-submit-toast-error"]';
 

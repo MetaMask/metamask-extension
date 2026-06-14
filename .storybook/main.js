@@ -36,13 +36,13 @@ module.exports = {
     config.resolve.alias['webextension-polyfill'] = require.resolve(
       '../ui/__mocks__/webextension-polyfill.js',
     );
-    config.resolve.alias['../../../../store/actions'] = require.resolve(
+    config.resolve.alias['../../../../store/actions$'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
-    config.resolve.alias['../../../../../../store/actions'] = require.resolve(
+    config.resolve.alias['../../../../../../store/actions$'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
-    config.resolve.alias['../../../store/actions'] = require.resolve(
+    config.resolve.alias['../../../store/actions$'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
     config.resolve.fallback = {
@@ -77,6 +77,7 @@ module.exports = {
           loader: 'postcss-loader',
           options: {
             postcssOptions: {
+              config: false,
               plugins: ['tailwindcss', 'autoprefixer'],
             },
           },

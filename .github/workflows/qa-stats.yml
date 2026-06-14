@@ -25,7 +25,7 @@ jobs:
         run: echo "RUN_ID_TO_COLLECT=${{ vars.RUN_ID_TO_COLLECT }}" >> "$GITHUB_ENV"
 
       - name: Collect QA stats
-        run: yarn tsx .github/scripts/collect-qa-stats.ts
+        run: yarn tsx .github/scripts/collect-qa-stats.mts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}

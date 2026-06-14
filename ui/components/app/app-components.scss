@@ -1,5 +1,6 @@
 /** Please import your files in alphabetical order **/
 @import 'account-list-item/index';
+@import 'activity-list-item-avatar/index';
 @import 'app-loading-spinner/index';
 @import 'alerts/alerts';
 @import 'alert-system/alert-modal/index';
@@ -10,6 +11,7 @@
 @import 'assets/nfts/nft-options/index';
 @import 'connected-accounts-list/index';
 @import 'connected-accounts-permissions/index';
+@import 'change-password/index';
 @import 'connected-sites-list/index';
 @import 'create-new-vault/create-new-vault.scss';
 @import 'flask/experimental-area/index';
@@ -44,6 +46,7 @@
 @import 'permissions-connect-permission-list/index';
 @import 'permission-cell/index';
 @import 'recovery-phrase-reminder/index';
+@import 'reveal-srp-list/index';
 @import 'rewards/onboarding/onboarding-modal';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';

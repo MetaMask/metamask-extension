@@ -3,18 +3,23 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { getAddressSecurityAlertResponse } from '../../../selectors';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useConfirmContext } from '../../confirmations/context/confirm';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isSignatureTransactionType } from '../../confirmations/utils';
 import type {
   Confirmation,
   SignatureRequestType,
+  // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 } from '../../confirmations/types/confirm';
 import {
   ResultType,
   createCacheKey,
   mapChainIdToSupportedEVMChain,
 } from '../../../../shared/lib/trust-signals';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTransactionEventFragment } from '../../confirmations/hooks/useTransactionEventFragment';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useSignatureEventFragment } from '../../confirmations/hooks/useSignatureEventFragment';
 
 export type TrustSignalMetricsProperties = {

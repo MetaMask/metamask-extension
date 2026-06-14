@@ -62,6 +62,11 @@ const setupPermissionBackgroundApiMethods = (
         multichainNetworkConfigurationsByChainId: {},
       },
     },
+    snapController: {
+      state: {
+        snaps: {},
+      },
+    },
     ...overrides,
   };
 
@@ -330,6 +335,131 @@ describe('permission background API methods', () => {
           isMultichainOrigin: true,
         },
       );
+    });
+
+    it('invokes onPermittedAccountsAdded when a new CAIP account id is added', () => {
+      const onPermittedAccountsAdded = jest.fn();
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: ['eip155:1:0x1'],
+              },
+            },
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: '0x2',
+          scopes: ['eip155:1'],
+        }),
+        state: {
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
+        },
+      };
+
+      MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
+        { 'eip155:1': MOCK_NETWORK_CONFIG },
+      );
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+        accountsController,
+        onPermittedAccountsAdded,
+      }).addPermittedAccount('foo.com', '0x2');
+
+      expect(onPermittedAccountsAdded).toHaveBeenCalledWith({
+        origin: 'foo.com',
+        newCaipAccountIds: ['eip155:1:0x2'],
+      });
+    });
+
+    it('does not invoke onPermittedAccountsAdded when the account was already permitted', () => {
+      const onPermittedAccountsAdded = jest.fn();
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: ['eip155:1:0x2'],
+              },
+            },
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: '0x2',
+          scopes: ['eip155:1'],
+        }),
+        state: {
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
+        },
+      };
+
+      MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
+        { 'eip155:1': MOCK_NETWORK_CONFIG },
+      );
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+        accountsController,
+        onPermittedAccountsAdded,
+      }).addPermittedAccount('foo.com', '0x2');
+
+      expect(onPermittedAccountsAdded).not.toHaveBeenCalled();
+    });
+
+    it('does not invoke onPermittedAccountsAdded when caveat address casing differs from internal account', () => {
+      const onPermittedAccountsAdded = jest.fn();
+      const mixedCaseAddress = '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed';
+      const lowerCasePermittedId = `eip155:1:${mixedCaseAddress.toLowerCase()}`;
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: [lowerCasePermittedId],
+              },
+            },
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      const accountsController = {
+        getAccountByAddress: jest.fn().mockReturnValue({
+          address: mixedCaseAddress,
+          scopes: ['eip155:1'],
+        }),
+        state: {
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
+        },
+      };
+
+      MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
+        { 'eip155:1': MOCK_NETWORK_CONFIG },
+      );
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+        accountsController,
+        onPermittedAccountsAdded,
+      }).addPermittedAccount('foo.com', mixedCaseAddress);
+
+      expect(onPermittedAccountsAdded).not.toHaveBeenCalled();
     });
   });
 

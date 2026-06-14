@@ -32,12 +32,12 @@ import { isDigitsOnlyInput } from '../../utils';
  * @param props.maxLeverage - Maximum allowed leverage
  * @param props.minLeverage - Minimum allowed leverage (default: 1)
  */
-export const LeverageSlider: React.FC<LeverageSliderProps> = ({
+export const LeverageSlider = ({
   leverage,
   onLeverageChange,
   maxLeverage,
   minLeverage = 1,
-}) => {
+}: LeverageSliderProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const [inputValue, setInputValue] = useState<string>(String(leverage));
@@ -47,7 +47,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   }, [leverage]);
 
   const handleSliderChange = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event | React.SyntheticEvent, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
       onLeverageChange(newValue);
       setInputValue(String(newValue));
@@ -56,7 +56,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   );
 
   const handleSliderChangeCommitted = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event | React.SyntheticEvent, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
       if (newValue !== leverage) {
         track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -74,8 +74,8 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
       const { value } = event.target;
       if (value === '' || isDigitsOnlyInput(value)) {
         setInputValue(value);
-        const num = parseInt(value, 10);
-        if (!isNaN(num) && num >= minLeverage && num <= maxLeverage) {
+        const num = Number.parseInt(value, 10);
+        if (!Number.isNaN(num) && num >= minLeverage && num <= maxLeverage) {
           onLeverageChange(num);
         }
       }
@@ -84,8 +84,8 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   );
 
   const handleInputBlur = useCallback(() => {
-    const num = parseInt(inputValue, 10);
-    if (isNaN(num) || num < minLeverage) {
+    const num = Number.parseInt(inputValue, 10);
+    if (Number.isNaN(num) || num < minLeverage) {
       onLeverageChange(minLeverage);
       setInputValue(String(minLeverage));
     } else if (num > maxLeverage) {
@@ -96,6 +96,40 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
       setInputValue(String(num));
     }
   }, [inputValue, onLeverageChange, minLeverage, maxLeverage]);
+
+  const handleInputFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      event.target.select();
+    },
+    [],
+  );
+
+  const handleInputKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      // Leverage is a secondary control — Enter must not submit the outer
+      // order-entry form. Swallow it so the native form-submit path only
+      // fires from primary inputs (size/limit price).
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        return;
+      }
+      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
+        return;
+      }
+      event.preventDefault();
+      const step = event.key === 'ArrowUp' ? 1 : -1;
+      // Read the current value straight from the DOM input so rapid consecutive
+      // presses cannot batch against a stale local-state capture in this
+      // closure. Falls back to `leverage` (the parent-owned source of truth)
+      // when the input is empty or non-numeric.
+      const rawCurrent = Number.parseInt(event.currentTarget.value, 10);
+      const base = Number.isNaN(rawCurrent) ? leverage : rawCurrent;
+      const next = Math.min(maxLeverage, Math.max(minLeverage, base + step));
+      setInputValue(String(next));
+      onLeverageChange(next);
+    },
+    [leverage, onLeverageChange, minLeverage, maxLeverage],
+  );
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -117,12 +151,13 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             markInterval={5}
           />
         </Box>
-        <Box className="shrink-0 w-20">
+        <Box className="shrink-0" style={{ width: '4.5rem' }}>
           <TextField
             size={TextFieldSize.Sm}
             value={inputValue}
             onChange={handleInputChange}
             onBlur={handleInputBlur}
+            onFocus={handleInputFocus}
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}
@@ -130,7 +165,8 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             data-testid="leverage-input"
             inputProps={{
               inputMode: 'numeric',
-              style: { textAlign: 'center' },
+              style: { textAlign: 'right' },
+              onKeyDown: handleInputKeyDown,
             }}
             endAccessory={
               <Text
@@ -147,7 +183,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
       <Box
         flexDirection={BoxFlexDirection.Row}
         className="px-3 justify-between"
-        style={{ marginRight: 'calc(80px + 8px)' }}
+        style={{ marginRight: 'calc(72px + 8px)' }}
       >
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {minLeverage}x

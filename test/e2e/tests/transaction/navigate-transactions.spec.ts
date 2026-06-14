@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { createDappTransaction } from '../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../page-objects/flows/transaction.flow';
 import { withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';

@@ -1,6 +1,8 @@
-import { AccountsController } from '@metamask/accounts-controller';
+import {
+  AccountsController,
+  AccountsControllerMessenger,
+} from '@metamask/accounts-controller';
 import { MessengerClientInitFunction } from './types';
-import { AccountsControllerMessenger } from './messengers';
 
 /**
  * Initialize the accounts controller.

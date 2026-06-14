@@ -74,6 +74,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     jest.resetAllMocks();
     useHasInsufficientBalanceMock.mockReturnValue({
       hasInsufficientBalance: true,
+      isNativeBalanceKnown: true,
       nativeCurrency: 'ETH',
     });
     updateSelectedGasFeeTokenMock.mockResolvedValue();
@@ -106,6 +107,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       {
         properties: {
+          gas_insufficient_native_asset: true,
           gas_payment_token_default: true,
           gas_payment_token_default_symbol: GAS_FEE_TOKEN_MOCK.symbol,
         },
@@ -208,6 +210,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       {
         properties: {
+          gas_insufficient_native_asset: true,
           gas_payment_token_default: true,
           gas_payment_token_default_symbol: GAS_FEE_TOKEN_MOCK.symbol,
         },
@@ -235,6 +238,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
   it('does not select first gas fee token if sufficient balance', async () => {
     useHasInsufficientBalanceMock.mockReturnValue({
       hasInsufficientBalance: false,
+      isNativeBalanceKnown: true,
       nativeCurrency: 'ETH',
     });
 
@@ -250,6 +254,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
   it('selects first gas fee token when insufficient balance appears after first render', async () => {
     let balanceInfo = {
       hasInsufficientBalance: false,
+      isNativeBalanceKnown: true,
       nativeCurrency: 'ETH',
     };
     useHasInsufficientBalanceMock.mockImplementation(() => balanceInfo);
@@ -270,6 +275,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
 
     balanceInfo = {
       hasInsufficientBalance: true,
+      isNativeBalanceKnown: true,
       nativeCurrency: 'ETH',
     };
 
@@ -288,12 +294,55 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       {
         properties: {
+          gas_insufficient_native_asset: true,
           gas_payment_token_default: true,
           gas_payment_token_default_symbol: GAS_FEE_TOKEN_MOCK.symbol,
         },
       },
       expect.any(String),
     );
+  });
+
+  it('does not select first gas fee token until native balance is known', async () => {
+    let balanceInfo = {
+      hasInsufficientBalance: true,
+      isNativeBalanceKnown: false,
+      nativeCurrency: 'ETH',
+    };
+    useHasInsufficientBalanceMock.mockImplementation(() => balanceInfo);
+
+    const { rerender, store } = runHook({
+      selectedGasFeeToken: undefined,
+    });
+
+    if (!store) {
+      throw new Error('Expected store to be defined');
+    }
+
+    await flushAsyncUpdates();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
+    expect(mockUpdateTransactionEventFragment).not.toHaveBeenCalled();
+
+    balanceInfo = {
+      hasInsufficientBalance: true,
+      isNativeBalanceKnown: true,
+      nativeCurrency: 'ETH',
+    };
+
+    rerender();
+
+    await flushAsyncUpdates();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledWith(
+      expect.any(String),
+      GAS_FEE_TOKEN_MOCK.tokenAddress,
+    );
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(1);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledWith(store.dispatch);
+    expect(mockUpdateTransactionEventFragment).toHaveBeenCalledTimes(1);
   });
 
   it('does not select first gas fee token after firstCheck is set to false', async () => {
@@ -410,6 +459,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       {
         properties: {
+          gas_insufficient_native_asset: true,
           gas_payment_token_default: true,
           gas_payment_token_default_symbol: GAS_FEE_TOKEN_MOCK.symbol,
         },

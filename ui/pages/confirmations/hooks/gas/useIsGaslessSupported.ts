@@ -2,7 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { isHardwareWallet } from '../../../../selectors';
+import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import { useConfirmContext } from '../../context/confirm';
 import { isRelaySupported } from '../../../../store/actions';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
@@ -57,15 +57,15 @@ export function useIsGaslessSupported() {
 
   const is7702Supported = Boolean(
     !isHardwareWalletAccount &&
-      relaySupportsChain &&
-      // contract deployments can't be delegated
-      transactionMeta?.txParams?.to !== undefined,
+    relaySupportsChain &&
+    // contract deployments can't be delegated
+    transactionMeta?.txParams?.to !== undefined,
   );
 
   const isSupported = Boolean(
     !isHardwareWalletAccount &&
-      !isDowngradeTransaction &&
-      (isSmartTransactionAndBundleSupported || is7702Supported),
+    !isDowngradeTransaction &&
+    (isSmartTransactionAndBundleSupported || is7702Supported),
   );
 
   const isPending =

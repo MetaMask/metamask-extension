@@ -93,9 +93,10 @@ describe('Notifications Toggle', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          participateInMetaMetrics: true,
+          analyticsId: 'test-metametrics-id',
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
           dataCollectionForMarketing: false,
-          metaMetricsId: 'test-metametrics-id',
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -160,7 +161,8 @@ describe('Notifications Toggle', () => {
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: true,
           dataCollectionForMarketing: false,
-          participateInMetaMetrics: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });

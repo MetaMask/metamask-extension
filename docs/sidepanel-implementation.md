@@ -13,8 +13,9 @@ The MetaMask extension supports Chrome's Side Panel API, allowing users to acces
 5. [UI Implementation](#ui-implementation)
 6. [State Management](#state-management)
 7. [User Preferences](#user-preferences)
-8. [Browser Compatibility](#browser-compatibility)
-9. [Key Files](#key-files)
+8. [Product Decisions](#product-decisions)
+9. [Browser Compatibility](#browser-compatibility)
+10. [Key Files](#key-files)
 
 ---
 
@@ -50,7 +51,7 @@ The `getIsSidePanelFeatureEnabled()` function (located in `shared/lib/environmen
 
 **Supported Browsers:**
 
-- ✅ Chrome 115+ (Manifest V3)
+- ✅ Chrome 123+ (Manifest V3)
 - ✅ Edge (Chromium-based)
 - ✅ Brave (Chromium-based)
 
@@ -75,7 +76,7 @@ The `useBrowserSupportsSidePanel()` hook (located in `ui/hooks/useBrowserSupport
 The sidepanel is configured in the Chrome Manifest V3 (`app/manifest/v3/chrome.json`) with `side_panel.default_path` set to `"sidepanel.html"`. This configuration:
 
 - Defines `sidepanel.html` as the entry point
-- Requires Chrome 115+ (specified by `minimum_chrome_version`)
+- Requires Chrome 123+ (specified by `minimum_chrome_version`)
 - Only applies to Manifest V3 builds (Chrome/Edge/Brave, not Opera)
 
 ### Sidepanel HTML Entry Point
@@ -140,7 +141,7 @@ During onboarding (in `ui/pages/onboarding-flow/creation-successful/creation-suc
 
 ### Sidepanel-Specific Styling
 
-The routes component applies `app--sidepanel` CSS class when running in sidepanel context. The settings page (`ui/pages/settings/index.scss`) includes sidepanel-specific styles that apply popup layout regardless of viewport width and handle back button, close button, and logo display.
+The routes component applies `app--sidepanel` CSS class when running in sidepanel context.
 
 ---
 
@@ -189,6 +190,16 @@ When `useSidePanelAsDefault` is `false`:
 
 - Clicking the extension icon opens the popup (default behavior)
 - Background script calls `browser.sidePanel.setPanelBehavior({ openPanelOnActionClick: false })`
+
+---
+
+## Product Decisions
+
+### Dapp Connection Requests During Swaps
+
+Dapp connection requests do not render on top of an active Swaps flow in sidepanel. This is intentional product behavior.
+
+Do not change request routing, z-index, modal priority, or sidepanel navigation to force dapp connection requests above Swaps unless Product explicitly changes this decision.
 
 ---
 

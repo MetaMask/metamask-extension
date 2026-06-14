@@ -1,9 +1,9 @@
-import { DeFiPositionsController } from '@metamask/assets-controllers';
-import { MessengerClientInitFunction } from '../types';
 import {
+  DeFiPositionsController,
   DeFiPositionsControllerMessenger,
-  DeFiPositionsControllerInitMessenger,
-} from '../messengers/defi-positions';
+} from '@metamask/assets-controllers';
+import { MessengerClientInitFunction } from '../types';
+import { DeFiPositionsControllerInitMessenger } from '../messengers/defi-positions';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
@@ -32,9 +32,9 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
       const assetsDefiPositionsEnabled = Boolean(
         initMessenger.call('RemoteFeatureFlagController:getState')
           ?.remoteFeatureFlags?.[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
-          DEFAULT_FEATURE_FLAG_VALUES[
-            FeatureFlagNames.AssetsDefiPositionsEnabled
-          ],
+        DEFAULT_FEATURE_FLAG_VALUES[
+          FeatureFlagNames.AssetsDefiPositionsEnabled
+        ],
       );
 
       return (

@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
@@ -16,6 +17,7 @@ import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/mu
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { Driver } from '../../webdriver/driver';
 import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const SECOND_ACCOUNT_NAME = 'Account 2';
 const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
@@ -98,6 +100,14 @@ describe('Add account', function () {
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
         await resetPasswordPage.waitForPasswordInputToNotBeVisible();
 
+        // Assert passkey setup is shown for chrome
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+        if (!isFirefox) {
+          const setupPasskeyPage = new SetupPasskeyPage(driver);
+          await setupPasskeyPage.checkPageIsLoaded();
+          await setupPasskeyPage.skipPasskeySetup();
+        }
+
         // Check wallet balance for both accounts
         await homePage.checkPageIsLoaded();
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
@@ -129,11 +139,7 @@ describe('Add account', function () {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.addNewImportedAccount(
-          TEST_PRIVATE_KEY,
-          undefined,
-          { isMultichainAccountsState2Enabled: true },
-        );
+        await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
 
         await accountListPage.checkPageIsLoaded();
         await accountListPage.openMultichainAccountMenu({
@@ -211,9 +217,7 @@ describe('Add account', function () {
         await accountDetailsPage.navigateBack();
 
         // Create 3rd account with private key
-        await accountListPage.addNewImportedAccount(testPrivateKey, undefined, {
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.addNewImportedAccount(testPrivateKey);
 
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,

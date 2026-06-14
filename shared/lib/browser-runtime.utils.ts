@@ -5,7 +5,11 @@
 import Bowser from 'bowser';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { PLATFORM_FIREFOX } from '../constants/app';
+import {
+  PLATFORM_BRAVE,
+  PLATFORM_EDGE,
+  PLATFORM_FIREFOX,
+} from '../constants/app';
 import {
   BROKEN_PRERENDER_BROWSER_VERSIONS,
   FIXED_PRERENDER_BROWSER_VERSIONS,
@@ -113,4 +117,71 @@ export function isFirefoxBrowser(
   ...args: Parameters<typeof getBrowserName>
 ): boolean {
   return getBrowserName(...args) === PLATFORM_FIREFOX;
+}
+
+/**
+ * Camera settings URL for Chromium-based browsers (Chrome, Brave, Edge).
+ *
+ * @param args - Same optional `[bowser, navigator]` accepted by {@link getBrowserName}.
+ * @returns `chrome://`, `brave://`, or `edge://` settings path for camera permissions.
+ */
+export function getChromiumCameraSettingsUrl(
+  ...args: Parameters<typeof getBrowserName>
+): string {
+  const name = getBrowserName(...args);
+  if (name === PLATFORM_BRAVE) {
+    return 'brave://settings/content/camera';
+  }
+  // Bowser reports "Microsoft Edge"; PLATFORM_EDGE is the short analytics id "Edge".
+  if (name === PLATFORM_EDGE || name === 'Microsoft Edge') {
+    return 'edge://settings/content/camera';
+  }
+  return 'chrome://settings/content/camera';
+}
+
+/**
+ * Chromium-family browsers URL that opens **this extension's** site settings.
+ * Uses {@link browser.runtime.getURL} so the `site` query parameter always matches the running build.
+ *
+ * @param args - Same optional `[bowser, navigator]` accepted by {@link getBrowserName}.
+ * @returns `chrome://`, `brave://`, or `edge://` site-details URL with encoded `chrome-extension://…/` site.
+ */
+export function getChromiumExtensionCameraSiteSettingsUrl(
+  ...args: Parameters<typeof getBrowserName>
+): string {
+  const extensionRootUrl = browser.runtime.getURL('/');
+  const site = encodeURIComponent(extensionRootUrl);
+  const name = getBrowserName(...args);
+  if (name === PLATFORM_BRAVE) {
+    return `brave://settings/content/siteDetails?site=${site}`;
+  }
+  if (name === PLATFORM_EDGE || name === 'Microsoft Edge') {
+    return `edge://settings/content/siteDetails?site=${site}`;
+  }
+  return `chrome://settings/content/siteDetails?site=${site}`;
+}
+
+/**
+ * Shortened `moz-extension://…` origin so users can match Firefox camera
+ * permission entries. Only meaningful on Firefox; on other browsers the
+ * `moz-extension://` URL scheme is not used and this returns an empty string.
+ *
+ * @returns Display string, or empty string if unavailable.
+ */
+export function getMozExtensionOriginForDisplay(): string {
+  try {
+    const url = browser.runtime.getURL('');
+    const match = /^moz-extension:\/\/([^/]+)/u.exec(url);
+    if (!match) {
+      return url;
+    }
+    const uuid = match[1];
+    const compact = uuid.replaceAll('-', '');
+    if (compact.length <= 15) {
+      return `moz-extension://${uuid}`;
+    }
+    return `moz-extension://${compact.slice(0, 8)}…${compact.slice(-7)}`;
+  } catch {
+    return '';
+  }
 }

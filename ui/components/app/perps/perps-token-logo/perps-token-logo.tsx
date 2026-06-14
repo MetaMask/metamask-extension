@@ -1,8 +1,17 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Skeleton,
+  twMerge,
+} from '@metamask/design-system-react';
 import { getDisplaySymbol, getAssetIconUrls } from '../utils';
-import { Skeleton } from '../../../component-library/skeleton';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
+import { useTheme } from '../../../../hooks/useTheme';
+import { ThemeType } from '../../../../../shared/constants/preferences';
+import {
+  ASSETS_REQUIRING_DARK_BG,
+  ASSETS_REQUIRING_LIGHT_BG,
+} from './perps-asset-bg-config';
 
 export type PerpsTokenLogoProps = {
   /** Asset symbol (e.g., "BTC", "ETH", "xyz:TSLA") */
@@ -22,13 +31,33 @@ const AVATAR_SIZE_CLASS: Record<AvatarTokenSize, string> = {
   [AvatarTokenSize.Xl]: 'h-12 w-12',
 };
 
-export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
+export const PerpsTokenLogo = ({
   symbol,
   size = AvatarTokenSize.Md,
   className,
-}) => {
+}: PerpsTokenLogoProps) => {
   const displaySymbol = useMemo(() => getDisplaySymbol(symbol), [symbol]);
   const sanitizedSymbol = symbol.replace(/:/gu, '-');
+  const theme = useTheme();
+  const bgClass = useMemo(() => {
+    const upperSymbol = displaySymbol.toUpperCase();
+
+    if (
+      theme === ThemeType.dark &&
+      ASSETS_REQUIRING_LIGHT_BG.has(upperSymbol)
+    ) {
+      return 'bg-white';
+    }
+
+    if (
+      theme === ThemeType.light &&
+      ASSETS_REQUIRING_DARK_BG.has(upperSymbol)
+    ) {
+      return 'bg-icon-default';
+    }
+
+    return '';
+  }, [displaySymbol, theme]);
   const [resolvedSrc, setResolvedSrc] = useState<string | undefined>(undefined);
   const [isResolving, setIsResolving] = useState(true);
 
@@ -82,8 +111,7 @@ export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
   if (isResolving) {
     return (
       <Skeleton
-        className={`shrink-0 ${AVATAR_SIZE_CLASS[size]} ${className ?? ''}`}
-        borderRadius={BorderRadius.full}
+        className={`shrink-0 rounded-full ${AVATAR_SIZE_CLASS[size]} ${className ?? ''}`}
         data-testid={`perps-token-logo-${sanitizedSymbol}`}
       />
     );
@@ -94,7 +122,7 @@ export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
       name={displaySymbol}
       src={resolvedSrc}
       size={size}
-      className={className}
+      className={twMerge(bgClass, className)}
       data-testid={`perps-token-logo-${sanitizedSymbol}`}
     />
   );

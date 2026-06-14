@@ -3,11 +3,31 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { mockAccountState } from '../mocks';
+import { mockAccountState, mockPositions } from '../mocks';
 import {
   PerpsBalanceDropdown,
   invokePerpsBalanceAction,
 } from './perps-balance-dropdown';
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
 
 jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
@@ -208,6 +228,30 @@ describe('PerpsBalanceDropdown', () => {
 
     expect(screen.getByText(/\+\$375/u)).toBeInTheDocument();
     expect(screen.getByText(/7\.32%/u)).toBeInTheDocument();
+  });
+
+  it('uses the single position RoE when provided', () => {
+    mockUsePerpsLiveAccount.mockReturnValueOnce({
+      account: {
+        ...mockAccountState,
+        returnOnEquity: '1',
+      },
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(
+      <PerpsBalanceDropdown
+        hasPositions
+        singlePosition={{
+          ...mockPositions[0],
+          returnOnEquity: '0.42',
+        }}
+      />,
+      mockStore,
+    );
+
+    expect(screen.getByText(/42\.00%/u)).toBeInTheDocument();
+    expect(screen.queryByText(/1\.00%/u)).not.toBeInTheDocument();
   });
 
   describe('geo-blocking', () => {

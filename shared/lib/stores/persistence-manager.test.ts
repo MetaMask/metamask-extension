@@ -6,6 +6,7 @@ import log from 'loglevel';
 import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { PersistenceManager } from './persistence-manager';
+import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
 
@@ -48,6 +49,15 @@ describe('PersistenceManager', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
+  });
+
+  describe('open', () => {
+    it('serializes concurrent open calls so the backup IndexedDB open runs once', async () => {
+      const openSpy = jest.spyOn(IndexedDBStore.prototype, 'open');
+      await Promise.all([manager.open(), manager.open(), manager.open()]);
+      expect(openSpy).toHaveBeenCalledTimes(1);
+      openSpy.mockRestore();
+    });
   });
 
   describe('events', () => {
@@ -283,6 +293,56 @@ describe('PersistenceManager', () => {
       );
     });
   });
+
+  describe('getBackup', () => {
+    it('returns all backed up controller state', async () => {
+      await manager.open();
+      await manager.reset();
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+
+      mockStoreSet.mockResolvedValueOnce(undefined);
+
+      const [result, error] = await manager.set({
+        KeyringController: {
+          vault: 'encrypted-vault',
+        },
+        AppMetadataController: {
+          currentAppVersion: '13.34.0',
+        },
+        MetaMetricsController: {
+          completedMetaMetricsOnboarding: true,
+        },
+        AnalyticsController: {
+          analyticsId: '0xabc123',
+          optedIn: true,
+        },
+      } as unknown as MetaMaskStateType);
+
+      expect(result).toBe(true);
+      expect(error).toBeUndefined();
+      /* eslint-disable-next-line jest/prefer-strict-equal -- IndexedDB structuredClone can change object prototypes */
+      expect(await manager.getBackup()).toEqual({
+        KeyringController: {
+          vault: 'encrypted-vault',
+        },
+        AppMetadataController: {
+          currentAppVersion: '13.34.0',
+        },
+        MetaMetricsController: {
+          completedMetaMetricsOnboarding: true,
+        },
+        AnalyticsController: {
+          analyticsId: '0xabc123',
+          optedIn: true,
+        },
+        meta: {
+          version: 10,
+        },
+      });
+    });
+  });
+
   describe('persist', () => {
     it('throws if storageKind is not split', async () => {
       manager.storageKind = 'data';

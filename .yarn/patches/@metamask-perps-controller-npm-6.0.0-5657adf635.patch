@@ -1,0 +1,286 @@
+diff --git a/dist/providers/HyperLiquidProvider.cjs b/dist/providers/HyperLiquidProvider.cjs
+index 35cee8b516923112eb4524377bfa2dd502a2aaf2..2e771bed8979b73eb5383306714f6ccb7dac2e9e 100644
+--- a/dist/providers/HyperLiquidProvider.cjs
++++ b/dist/providers/HyperLiquidProvider.cjs
+@@ -44,6 +44,14 @@ const standaloneInfoClient_1 = require("../utils/standaloneInfoClient.cjs");
+  * @returns The result of the operation.
+  */
+ const isStatusObject = (status) => typeof status === 'object' && status !== null;
++const MIGRATABLE_ABSTRACTION_MODES = new Set([
++    'dexAbstraction',
++    'default',
++    'disabled',
++]);
++const shouldDeferUnifiedAccountSetup = (currentMode, allowUserSigning) => !allowUserSigning &&
++    currentMode !== undefined &&
++    MIGRATABLE_ABSTRACTION_MODES.has(currentMode);
+ /**
+  * HyperLiquid provider implementation
+  *
+@@ -143,7 +151,7 @@ class HyperLiquidProvider {
+          * - Builder fee approval (required for orders)
+          * - Referral code setup (attribution)
+          *
+-         * These operations are DEFERRED from ensureReady() to avoid QR popup spam
++         * These operations are DEFERRED from ensureReady() to avoid hardware wallet prompt spam
+          * when users are just viewing the Perps section (critical for hardware wallets).
+          *
+          * Call this method before any trading operation (placeOrder, cancelOrder, etc.)
+@@ -3863,7 +3871,8 @@ async function _HyperLiquidProvider_ensureUnifiedAccountEnabled(options) {
+     const userAddress = await __classPrivateFieldGet(this, _HyperLiquidProvider_walletService, "f").getUserAddressWithDefault();
+     const network = __classPrivateFieldGet(this, _HyperLiquidProvider_clientService, "f").isTestnetMode() ? 'testnet' : 'mainnet';
+     // Check global cache first to avoid repeated signing requests
+-    // This is CRITICAL for hardware wallets to prevent QR popup spam
++    // This is CRITICAL for hardware wallets to prevent repeated signing prompts
++    // while browsing.
+     const cachedStatus = TradingReadinessCache_1.TradingReadinessCache.get(network, userAddress);
+     if (cachedStatus?.attempted) {
+         __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('HyperLiquidProvider: Unified Account setup already attempted (from global cache)', {
+@@ -3928,12 +3937,12 @@ async function _HyperLiquidProvider_ensureUnifiedAccountEnabled(options) {
+             completeInFlight();
+             return;
+         }
+-        // Defer the user-signed transition until the user attempts an action.
++        // Defer signing-backed transitions until the user attempts an action.
+         // Cache is intentionally left untouched so the next entry re-evaluates;
+         // the read-only userAbstraction call is cheap and gated by the in-flight
+         // lock, preventing concurrent prompts.
+-        if (currentMode === 'dexAbstraction' && !allowUserSigning) {
+-            __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('HyperLiquidProvider: Deferring dexAbstraction → unifiedAccount migration to action time', { user: userAddress, network });
++        if (shouldDeferUnifiedAccountSetup(currentMode, allowUserSigning)) {
++            __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('HyperLiquidProvider: Deferring unified account migration to action time', { user: userAddress, network, mode: currentMode });
+             completeInFlight();
+             return;
+         }
+@@ -4082,10 +4091,10 @@ async function _HyperLiquidProvider_ensureReady() {
+             await __classPrivateFieldGet(this, _HyperLiquidProvider_instances, "m", _HyperLiquidProvider_buildAssetMapping).call(this);
+         }
+         // Attempt Unified Account migration as early as possible so users aren't
+-        // blocked when they try to trade. Software-wallet dexAbstraction users can
+-        // complete the one-time EIP-712 migration during initial setup so the first
+-        // trade sees the unified balance. Hardware wallets remain deferred to
+-        // action time to avoid QR / Ledger prompt spam while browsing.
++        // blocked when they try to trade. Software wallets can complete the
++        // signing-backed migration during initial setup so the first trade sees
++        // the unified balance. Hardware wallets remain deferred to action time to
++        // avoid repeated signing prompts while browsing.
+         await __classPrivateFieldGet(this, _HyperLiquidProvider_instances, "m", _HyperLiquidProvider_ensureUnifiedAccountEnabled).call(this, {
+             allowUserSigning: !__classPrivateFieldGet(this, _HyperLiquidProvider_walletService, "f").isSelectedHardwareWallet(),
+         });
+@@ -5158,10 +5167,11 @@ async function _HyperLiquidProvider_ensureBuilderFeeApproval() {
+     const userAddress = await __classPrivateFieldGet(this, _HyperLiquidProvider_walletService, "f").getUserAddressWithDefault();
+     const cacheKey = __classPrivateFieldGet(this, _HyperLiquidProvider_instances, "m", _HyperLiquidProvider_getCacheKey).call(this, network, userAddress);
+     // Check GLOBAL cache first to avoid repeated signing requests across reconnections
+-    // This is CRITICAL for hardware wallets to prevent QR popup spam
++    // This is CRITICAL for hardware wallets to prevent repeated signing prompts
++    // while browsing.
+     const globalCached = TradingReadinessCache_1.PerpsSigningCache.getBuilderFee(network, userAddress);
+     if (globalCached?.attempted) {
+-        __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('[ensureBuilderFeeApproval] Using global cache (prevents QR popup spam)', { network, success: globalCached.success });
++        __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('[ensureBuilderFeeApproval] Using global cache (prevents hardware wallet prompt spam)', { network, success: globalCached.success });
+         if (globalCached.success) {
+             __classPrivateFieldGet(this, _HyperLiquidProvider_builderFeeCheckCache, "f").set(cacheKey, true);
+         }
+@@ -6054,7 +6064,7 @@ async function _HyperLiquidProvider_ensureReferralSet() {
+     // Check GLOBAL cache first
+     const globalCached = TradingReadinessCache_1.PerpsSigningCache.getReferral(network, userAddress);
+     if (globalCached?.attempted) {
+-        __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('[ensureReferralSet] Using global cache (prevents QR popup spam)', { network, success: globalCached.success });
++        __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('[ensureReferralSet] Using global cache (prevents hardware wallet prompt spam)', { network, success: globalCached.success });
+         return;
+     }
+     // Check if another provider is currently attempting this
+diff --git a/dist/providers/HyperLiquidProvider.mjs b/dist/providers/HyperLiquidProvider.mjs
+index 038c521e490fcf33656e18f9825771f1c0bf341c..99a6eefc7e5abeed649dfa11b7374671df7d5358 100644
+--- a/dist/providers/HyperLiquidProvider.mjs
++++ b/dist/providers/HyperLiquidProvider.mjs
+@@ -41,6 +41,14 @@ import { createStandaloneInfoClient, queryStandaloneClearinghouseStates, querySt
+  * @returns The result of the operation.
+  */
+ const isStatusObject = (status) => typeof status === 'object' && status !== null;
++const MIGRATABLE_ABSTRACTION_MODES = new Set([
++    'dexAbstraction',
++    'default',
++    'disabled',
++]);
++const shouldDeferUnifiedAccountSetup = (currentMode, allowUserSigning) => !allowUserSigning &&
++    currentMode !== undefined &&
++    MIGRATABLE_ABSTRACTION_MODES.has(currentMode);
+ /**
+  * HyperLiquid provider implementation
+  *
+@@ -140,7 +148,7 @@ export class HyperLiquidProvider {
+          * - Builder fee approval (required for orders)
+          * - Referral code setup (attribution)
+          *
+-         * These operations are DEFERRED from ensureReady() to avoid QR popup spam
++         * These operations are DEFERRED from ensureReady() to avoid hardware wallet prompt spam
+          * when users are just viewing the Perps section (critical for hardware wallets).
+          *
+          * Call this method before any trading operation (placeOrder, cancelOrder, etc.)
+@@ -3859,7 +3867,8 @@ async function _HyperLiquidProvider_ensureUnifiedAccountEnabled(options) {
+     const userAddress = await __classPrivateFieldGet(this, _HyperLiquidProvider_walletService, "f").getUserAddressWithDefault();
+     const network = __classPrivateFieldGet(this, _HyperLiquidProvider_clientService, "f").isTestnetMode() ? 'testnet' : 'mainnet';
+     // Check global cache first to avoid repeated signing requests
+-    // This is CRITICAL for hardware wallets to prevent QR popup spam
++    // This is CRITICAL for hardware wallets to prevent repeated signing prompts
++    // while browsing.
+     const cachedStatus = TradingReadinessCache.get(network, userAddress);
+     if (cachedStatus?.attempted) {
+         __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('HyperLiquidProvider: Unified Account setup already attempted (from global cache)', {
+@@ -3924,12 +3933,12 @@ async function _HyperLiquidProvider_ensureUnifiedAccountEnabled(options) {
+             completeInFlight();
+             return;
+         }
+-        // Defer the user-signed transition until the user attempts an action.
++        // Defer signing-backed transitions until the user attempts an action.
+         // Cache is intentionally left untouched so the next entry re-evaluates;
+         // the read-only userAbstraction call is cheap and gated by the in-flight
+         // lock, preventing concurrent prompts.
+-        if (currentMode === 'dexAbstraction' && !allowUserSigning) {
+-            __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('HyperLiquidProvider: Deferring dexAbstraction → unifiedAccount migration to action time', { user: userAddress, network });
++        if (shouldDeferUnifiedAccountSetup(currentMode, allowUserSigning)) {
++            __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('HyperLiquidProvider: Deferring unified account migration to action time', { user: userAddress, network, mode: currentMode });
+             completeInFlight();
+             return;
+         }
+@@ -4078,10 +4087,10 @@ async function _HyperLiquidProvider_ensureReady() {
+             await __classPrivateFieldGet(this, _HyperLiquidProvider_instances, "m", _HyperLiquidProvider_buildAssetMapping).call(this);
+         }
+         // Attempt Unified Account migration as early as possible so users aren't
+-        // blocked when they try to trade. Software-wallet dexAbstraction users can
+-        // complete the one-time EIP-712 migration during initial setup so the first
+-        // trade sees the unified balance. Hardware wallets remain deferred to
+-        // action time to avoid QR / Ledger prompt spam while browsing.
++        // blocked when they try to trade. Software wallets can complete the
++        // signing-backed migration during initial setup so the first trade sees
++        // the unified balance. Hardware wallets remain deferred to action time to
++        // avoid repeated signing prompts while browsing.
+         await __classPrivateFieldGet(this, _HyperLiquidProvider_instances, "m", _HyperLiquidProvider_ensureUnifiedAccountEnabled).call(this, {
+             allowUserSigning: !__classPrivateFieldGet(this, _HyperLiquidProvider_walletService, "f").isSelectedHardwareWallet(),
+         });
+@@ -5154,10 +5163,11 @@ async function _HyperLiquidProvider_ensureBuilderFeeApproval() {
+     const userAddress = await __classPrivateFieldGet(this, _HyperLiquidProvider_walletService, "f").getUserAddressWithDefault();
+     const cacheKey = __classPrivateFieldGet(this, _HyperLiquidProvider_instances, "m", _HyperLiquidProvider_getCacheKey).call(this, network, userAddress);
+     // Check GLOBAL cache first to avoid repeated signing requests across reconnections
+-    // This is CRITICAL for hardware wallets to prevent QR popup spam
++    // This is CRITICAL for hardware wallets to prevent repeated signing prompts
++    // while browsing.
+     const globalCached = PerpsSigningCache.getBuilderFee(network, userAddress);
+     if (globalCached?.attempted) {
+-        __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('[ensureBuilderFeeApproval] Using global cache (prevents QR popup spam)', { network, success: globalCached.success });
++        __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('[ensureBuilderFeeApproval] Using global cache (prevents hardware wallet prompt spam)', { network, success: globalCached.success });
+         if (globalCached.success) {
+             __classPrivateFieldGet(this, _HyperLiquidProvider_builderFeeCheckCache, "f").set(cacheKey, true);
+         }
+@@ -6050,7 +6060,7 @@ async function _HyperLiquidProvider_ensureReferralSet() {
+     // Check GLOBAL cache first
+     const globalCached = PerpsSigningCache.getReferral(network, userAddress);
+     if (globalCached?.attempted) {
+-        __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('[ensureReferralSet] Using global cache (prevents QR popup spam)', { network, success: globalCached.success });
++        __classPrivateFieldGet(this, _HyperLiquidProvider_deps, "f").debugLogger.log('[ensureReferralSet] Using global cache (prevents hardware wallet prompt spam)', { network, success: globalCached.success });
+         return;
+     }
+     // Check if another provider is currently attempting this
+diff --git a/dist/services/HyperLiquidWalletService.cjs b/dist/services/HyperLiquidWalletService.cjs
+index f78a8dec164326bb8998138609c5f6bee070a68a..0785638df2fe2605dc88928a0b32e42b083d8cbf 100644
+--- a/dist/services/HyperLiquidWalletService.cjs
++++ b/dist/services/HyperLiquidWalletService.cjs
+@@ -21,6 +21,9 @@ const accountUtils_1 = require("../utils/accountUtils.cjs");
+ // service portable between mobile and the core monorepo.
+ const HARDWARE_KEYRING_TYPES = new Set([
+     'Ledger Hardware',
++    'Trezor Hardware',
++    'OneKey Hardware',
++    'Lattice Hardware',
+     'QR Hardware Wallet Device',
+ ]);
+ /**
+@@ -49,7 +52,7 @@ class HyperLiquidWalletService {
+     /**
+      * Check whether the selected EVM account is backed by hardware.
+      *
+-     * @returns True for Ledger / QR hardware keyrings; false for software accounts.
++     * @returns True for MetaMask hardware keyrings; false for software accounts.
+      */
+     isSelectedHardwareWallet() {
+         const selectedEvmAccount = (0, accountUtils_1.findEvmAccount)(__classPrivateFieldGet(this, _HyperLiquidWalletService_messenger, "f").call('AccountTreeController:getAccountsFromSelectedAccountGroup'));
+diff --git a/dist/services/HyperLiquidWalletService.mjs b/dist/services/HyperLiquidWalletService.mjs
+index 29a1830812dad0e13ca0aa956a3b2f2d4f2505be..e0fde6b3d672844f7272af14f0c6d352120556df 100644
+--- a/dist/services/HyperLiquidWalletService.mjs
++++ b/dist/services/HyperLiquidWalletService.mjs
+@@ -18,6 +18,9 @@ import { findEvmAccount, getSelectedEvmAccount } from "../utils/accountUtils.mjs
+ // service portable between mobile and the core monorepo.
+ const HARDWARE_KEYRING_TYPES = new Set([
+     'Ledger Hardware',
++    'Trezor Hardware',
++    'OneKey Hardware',
++    'Lattice Hardware',
+     'QR Hardware Wallet Device',
+ ]);
+ /**
+@@ -46,7 +49,7 @@ export class HyperLiquidWalletService {
+     /**
+      * Check whether the selected EVM account is backed by hardware.
+      *
+-     * @returns True for Ledger / QR hardware keyrings; false for software accounts.
++     * @returns True for MetaMask hardware keyrings; false for software accounts.
+      */
+     isSelectedHardwareWallet() {
+         const selectedEvmAccount = findEvmAccount(__classPrivateFieldGet(this, _HyperLiquidWalletService_messenger, "f").call('AccountTreeController:getAccountsFromSelectedAccountGroup'));
+diff --git a/dist/services/TradingReadinessCache.cjs b/dist/services/TradingReadinessCache.cjs
+index f84747bca53e0b15339465c69985dceb3085e970..dbc68bcbabc77288d532ee4fccfc3f96f8c5d585 100644
+--- a/dist/services/TradingReadinessCache.cjs
++++ b/dist/services/TradingReadinessCache.cjs
+@@ -3,7 +3,8 @@
+  * Global singleton cache for Perps signing operations
+  *
+  * This cache persists across provider reconnections to prevent repeated
+- * signing requests for hardware wallets. Critical for preventing QR popup spam.
++ * signing requests for hardware wallets. Critical for preventing repeated
++ * hardware wallet signing prompts.
+  *
+  * Cache is intentionally kept separate from provider instances because providers
+  * are recreated on account/network changes, which would reset instance-level caches.
+diff --git a/dist/services/TradingReadinessCache.d.cts b/dist/services/TradingReadinessCache.d.cts
+index c98693b75994c1cece9a43a582e018ab4008a740..e1fee98eaeb428cd58393ec4185d90e7980ed89f 100644
+--- a/dist/services/TradingReadinessCache.d.cts
++++ b/dist/services/TradingReadinessCache.d.cts
+@@ -2,7 +2,8 @@
+  * Global singleton cache for Perps signing operations
+  *
+  * This cache persists across provider reconnections to prevent repeated
+- * signing requests for hardware wallets. Critical for preventing QR popup spam.
++ * signing requests for hardware wallets. Critical for preventing repeated
++ * hardware wallet signing prompts.
+  *
+  * Cache is intentionally kept separate from provider instances because providers
+  * are recreated on account/network changes, which would reset instance-level caches.
+diff --git a/dist/services/TradingReadinessCache.d.mts b/dist/services/TradingReadinessCache.d.mts
+index 6e8c146afe7dca1815c234846f29ebfce5869bf4..2bb772c2aa3ed1050f2575309d157333ad1f8de2 100644
+--- a/dist/services/TradingReadinessCache.d.mts
++++ b/dist/services/TradingReadinessCache.d.mts
+@@ -2,7 +2,8 @@
+  * Global singleton cache for Perps signing operations
+  *
+  * This cache persists across provider reconnections to prevent repeated
+- * signing requests for hardware wallets. Critical for preventing QR popup spam.
++ * signing requests for hardware wallets. Critical for preventing repeated
++ * hardware wallet signing prompts.
+  *
+  * Cache is intentionally kept separate from provider instances because providers
+  * are recreated on account/network changes, which would reset instance-level caches.
+diff --git a/dist/services/TradingReadinessCache.mjs b/dist/services/TradingReadinessCache.mjs
+index 3a8dc05ec88af6757b9b21bc983e6a732041d1f3..c4d23d558ed5565078c20b6fd2983d781c9e8cd1 100644
+--- a/dist/services/TradingReadinessCache.mjs
++++ b/dist/services/TradingReadinessCache.mjs
+@@ -2,7 +2,8 @@
+  * Global singleton cache for Perps signing operations
+  *
+  * This cache persists across provider reconnections to prevent repeated
+- * signing requests for hardware wallets. Critical for preventing QR popup spam.
++ * signing requests for hardware wallets. Critical for preventing repeated
++ * hardware wallet signing prompts.
+  *
+  * Cache is intentionally kept separate from provider instances because providers
+  * are recreated on account/network changes, which would reset instance-level caches.

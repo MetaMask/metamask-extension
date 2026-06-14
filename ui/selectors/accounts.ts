@@ -1,4 +1,3 @@
-import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   EthAccountType,
   BtcAccountType,
@@ -12,16 +11,16 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { createSelector } from 'reselect';
 
+import {
+  type AccountsState,
+  getSelectedInternalAccount,
+} from '../../shared/lib/selectors/accounts';
 import { EMPTY_OBJECT } from './shared';
-
-export type AccountsState = {
-  metamask: AccountsControllerState;
-};
 
 export function isBitcoinAccount(account: InternalAccount) {
   return Boolean(
     account &&
-      Object.values(BtcAccountType).includes(account.type as BtcAccountType),
+    Object.values(BtcAccountType).includes(account.type as BtcAccountType),
   );
 }
 
@@ -70,25 +69,6 @@ export const getInternalAccountByAddress = createSelector(
   },
 );
 
-export function getSelectedInternalAccount(state: AccountsState) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
-}
-
-/**
- * Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
- * - This might happen during the onboarding
- *
- * @param state - The accounts state
- * @returns The selected internal account or undefined
- */
-export function getMaybeSelectedInternalAccount(state: AccountsState) {
-  const accountId = state.metamask.internalAccounts?.selectedAccount;
-  return accountId
-    ? state.metamask.internalAccounts?.accounts[accountId]
-    : undefined;
-}
-
 export const isSelectedInternalAccountEth = createSelector(
   getSelectedInternalAccount,
   (account) => {
@@ -108,11 +88,6 @@ export const selectEvmAddress = createSelector(
 export const isSelectedInternalAccountSolana = createSelector(
   getSelectedInternalAccount,
   (account) => isSolanaAccount(account),
-);
-
-export const hasCreatedSolanaAccount = createSelector(
-  getInternalAccounts,
-  (accounts) => accounts.some((account) => isSolanaAccount(account)),
 );
 
 /**

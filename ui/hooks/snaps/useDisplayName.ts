@@ -2,6 +2,7 @@ import {
   CaipChainId,
   KnownCaipNamespace,
   CaipNamespace,
+  Hex,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
@@ -14,6 +15,10 @@ import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import { decimalToHex } from '../../../shared/lib/conversion.utils';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+import {
+  EXPERIENCES_TYPE,
+  FIRST_PARTY_CONTRACT_NAMES,
+} from '../../../shared/constants/first-party-contracts';
 
 export type UseDisplayNameParams = {
   chain: {
@@ -52,13 +57,23 @@ export const useDisplayName = (
     getAccountNameFromState(state, parsedAddress),
   );
 
+  const hexChainId = `0x${decimalToHex(isEip155 ? reference : `0`)}` as Hex;
+
   const addressBookEntry = useSelector((state: AddressBookMetaMaskState) =>
-    getAddressBookEntryByNetwork(
-      state,
-      parsedAddress,
-      `0x${decimalToHex(isEip155 ? reference : `0`)}`,
-    ),
+    getAddressBookEntryByNetwork(state, parsedAddress, hexChainId),
   );
+
+  const contractNames = Object.keys(
+    FIRST_PARTY_CONTRACT_NAMES,
+  ) as EXPERIENCES_TYPE[];
+
+  const firstPartyContractName =
+    isEip155 &&
+    contractNames.find((contractName) => {
+      return (
+        FIRST_PARTY_CONTRACT_NAMES[contractName][hexChainId] === parsedAddress
+      );
+    });
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -66,6 +81,7 @@ export const useDisplayName = (
     accountGroupName ||
     accountName ||
     (isEip155 && addressBookEntry?.name) ||
+    firstPartyContractName ||
     undefined
   );
 };

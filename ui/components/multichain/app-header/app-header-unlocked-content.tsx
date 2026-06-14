@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -25,23 +25,13 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
-import {
-  getSelectedInternalAccount,
-  getIsDefaultAddressEnabled,
-} from '../../../selectors';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { getIsDefaultAddressEnabled } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
-import {
-  getShowSupportDataConsentModal,
-  setShowCopyAddressToast,
-} from '../../../ducks/app/app';
+import { getShowSupportDataConsentModal } from '../../../ducks/app/app';
 import {
   getAccountListStats,
   getMultichainAccountGroupById,
@@ -73,21 +63,7 @@ export const AppHeaderUnlockedContent = ({
   const accountListStats = useSelector(getAccountListStats);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
 
-  // Used for account picker
-  const internalAccount = useSelector(getSelectedInternalAccount);
   const accountName = selectedMultichainAccount?.metadata.name ?? '';
-
-  // During onboarding there is no selected internal account
-  const currentAddress = internalAccount?.address;
-
-  // Passing non-evm address to checksum function will throw an error
-  const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
-
-  // useCopyToClipboard analysis: Copies a public address
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [copied, _, resetCopyState] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
 
   const showSupportDataConsentModal = useSelector(
     getShowSupportDataConsentModal,
@@ -99,21 +75,6 @@ export const AppHeaderUnlockedContent = ({
       return prev;
     });
   }, [setSearchParams]);
-
-  // Reset copy state when a switching accounts
-  useEffect(() => {
-    if (normalizedCurrentAddress) {
-      resetCopyState();
-    }
-  }, [normalizedCurrentAddress, resetCopyState]);
-
-  useEffect(() => {
-    if (copied) {
-      dispatch(setShowCopyAddressToast(true));
-    } else {
-      dispatch(setShowCopyAddressToast(false));
-    }
-  }, [copied, dispatch]);
 
   const handleMainMenuToggle = useCallback(() => {
     const isMenuOpen = !accountOptionsMenuOpen;

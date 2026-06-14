@@ -43,13 +43,13 @@ assemble_performance_data() {
         exit 1
     fi
 
-    # Startup benchmarks run on ALL browser/buildType combinations (chrome/firefox × browserify/webpack).
+    # Startup benchmarks run on chrome/firefox × webpack (test build).
     # They are merged under the historical preset key "pageLoad" (legacy name in performance_data.json),
     # with entries keyed as "{browser}-{buildType}-{presetName}"
-    # (e.g. "chrome-browserify-startupStandardHome").
+    # (e.g. "chrome-webpack-startupStandardHome").
     #
-    # Interaction, user journey, and dapp page load presets only run on chrome-browserify (the canonical
-    # production target) and are stored under their own preset key (e.g. "interactionUserActions",
+    # Interaction, user journey, and dapp page load presets only run on chrome-webpack (CI test build)
+    # and are stored under their own preset key (e.g. "interactionUserActions",
     # "userJourneyAssets", "pageLoadBenchmark").
     local STARTUP_PRESETS=("startupStandardHome" "startupPowerUserHome")
 
@@ -69,7 +69,7 @@ assemble_performance_data() {
 
         # Filename format: benchmark-{browser}-{buildType}-{preset}.json
         # browser:   chrome | firefox
-        # buildType: browserify | webpack
+        # buildType: webpack (CI benchmark artifacts)
         local base_name browser build_type preset_name
         base_name=$(basename "${file}" .json | sed 's/^benchmark-//')
         browser=$(echo "${base_name}" | cut -d'-' -f1)
@@ -97,12 +97,12 @@ assemble_performance_data() {
                 --arg key "${startup_key}" \
                 --argjson data "${preset_data}" \
                 '. + {($key): $data}')
-        elif [[ "${browser}" == "chrome" && "${build_type}" == "browserify" ]]; then
-            # For interaction, user journey, and dapp page load presets, only store chrome-browserify —
+        elif [[ "${browser}" == "chrome" && "${build_type}" == "webpack" ]]; then
+            # For interaction, user journey, and dapp page load presets, only store chrome-webpack —
             # that is what the PR comment displays.
             local preset_data
             preset_data=$(jq . "${file}")
-            echo "  Adding preset '${preset_name}' (chrome-browserify)" >&2
+            echo "  Adding preset '${preset_name}' (chrome-webpack)" >&2
             presets_json=$(echo "${presets_json}" | jq \
                 --arg key "${preset_name}" \
                 --argjson data "${preset_data}" \
@@ -122,15 +122,21 @@ assemble_performance_data() {
 
     # Merge the startup group into presets (only if any startup files were found).
     if [[ "${page_load_json}" != "{}" ]]; then
-        presets_json=$(echo "${presets_json}" | jq --argjson pl "${page_load_json}" '. + {"pageLoad": $pl}')
+        # Keep large JSON off argv (ARG_MAX): presets_json via stdin, page_load_json
+        # via a temp file read with --slurpfile.
+        pl_file="$(mktemp)"
+        printf '%s' "${page_load_json}" >"${pl_file}"
+        presets_json=$(printf '%s' "${presets_json}" | jq --slurpfile pl "${pl_file}" '. + {"pageLoad": $pl[0]}')
+        rm -f "${pl_file}"
     fi
 
     echo "Collected ${file_count} preset(s)" >&2
 
-    jq -n \
+    # presets_json can exceed ARG_MAX; pass it via stdin instead of as a jq argument
+    # (a too-large argv makes the kernel fail to exec jq with "Argument list too long").
+    printf '%s' "${presets_json}" | jq \
         --argjson timestamp "$(date +%s000)" \
-        --argjson presets "${presets_json}" \
-        '{ timestamp: $timestamp, presets: $presets }'
+        '{ timestamp: $timestamp, presets: . }'
 }
 
 # Resolve stats file and assemble data
@@ -191,8 +197,14 @@ fi
 
 TEMP_FILE="${STATS_FILE}.tmp"
 
-jq --arg sha "${HEAD_COMMIT_HASH}" --argjson data "${COMMIT_DATA}" \
-    '. + {($sha): $data}' "${STATS_FILE}" > "${TEMP_FILE}"
+# COMMIT_DATA wraps presets_json and is strictly larger, so it can exceed
+# ARG_MAX too. Read it via --slurpfile from a temp file rather than passing
+# the blob on argv.
+data_file="$(mktemp)"
+printf '%s' "${COMMIT_DATA}" >"${data_file}"
+jq --arg sha "${HEAD_COMMIT_HASH}" --slurpfile data "${data_file}" \
+    '. + {($sha): $data[0]}' "${STATS_FILE}" > "${TEMP_FILE}"
+rm -f "${data_file}"
 mv "${TEMP_FILE}" "${STATS_FILE}"
 
 git add "${STATS_FILE}"

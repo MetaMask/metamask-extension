@@ -1,6 +1,7 @@
 /**
- * NOTE: Requires `ENABLE_ENFORCED_SIMULATIONS=1` in `.metamaskrc` to render.
- * Without it, the eligibility check returns false and the component is empty.
+ * NOTE: Requires the `confirmations_enforced_simulations` remote feature
+ * flag to have `enabled: true` to render. Without it, the eligibility
+ * check returns false and the component is empty.
  */
 import { Meta } from '@storybook/react';
 import React from 'react';

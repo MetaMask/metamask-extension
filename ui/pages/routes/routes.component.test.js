@@ -1,9 +1,13 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { render as rtlRender, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockSendState from '../../../test/data/mock-send-state.json';
@@ -12,7 +16,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
-import Routes from '.';
+import Routes, { TokenManagementFeatureRoute } from '.';
 
 const middlewares = [thunk];
 
@@ -251,13 +255,50 @@ describe('Routes Component', () => {
       expect(container.querySelector('.app')).toBeInTheDocument();
     });
   });
+
+  it('redirects token management route to home when the feature flag is disabled', async () => {
+    const store = configureMockStore(middlewares)({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          extensionUxTokenManagementFilter: { enabled: false },
+        },
+      },
+    });
+    const router = createMemoryRouter(
+      [
+        {
+          path: TOKEN_MANAGEMENT_ROUTE,
+          element: <TokenManagementFeatureRoute />,
+        },
+        {
+          path: DEFAULT_ROUTE,
+          element: <div data-testid="home-route" />,
+        },
+      ],
+      { initialEntries: [TOKEN_MANAGEMENT_ROUTE] },
+    );
+
+    rtlRender(
+      <Provider store={store}>
+        <RouterProvider
+          router={router}
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        />
+      </Provider>,
+    );
+
+    expect(await screen.findByTestId('home-route')).toBeInTheDocument();
+  });
 });
 
 describe('toast display', () => {
   const getToastDisplayTestState = (date) => ({
     ...mockState,
     rewards: {
-      onboardingModalOpen: false,
+      rewardsModalOpen: false,
     },
     metamask: {
       ...mockState.metamask,

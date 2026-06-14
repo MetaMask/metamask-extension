@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Czas automatycznego wylogowania (w minutach)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Ustaw czas bezczynności w minutach, po którym MetaMask wyloguje Cię automatycznie"
-  },
   "average": {
     "message": "Średnia"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "Utwórz hasło"
   },
-  "currencyConversion": {
-    "message": "Przeliczanie walut"
-  },
-  "currentLanguage": {
-    "message": "Obecny język"
-  },
   "custom": {
     "message": "Zaawansowane"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "Gotowe"
-  },
-  "downloadGoogleChrome": {
-    "message": "Ściągnij Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Załaduj logi stanów"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Podłącz sprzętowy portfel"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Wybierz portfel sprzętowy, którego chcesz użyć z MetaMaskiem"
   },
   "here": {
     "message": "tutaj",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
-  "lineaGoerli": {
-    "message": "Sieć testowa Linea Goerli"
-  },
-  "links": {
-    "message": "Łącza"
-  },
   "loading": {
     "message": "Ładowanie..."
   },
@@ -381,9 +360,6 @@
   },
   "nevermind": {
     "message": "Nie ważne"
-  },
-  "newAccount": {
-    "message": "Nowe konto"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -487,9 +463,6 @@
   "restore": {
     "message": "Przywróć"
   },
-  "revealSeedWords": {
-    "message": "Pokaż słowa seed"
-  },
   "revealSeedWordsWarning": {
     "message": "Te słowa mogą być użyte żeby ukraść Twoje konta.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -536,9 +509,6 @@
   "showFiatConversionInTestnets": {
     "message": "Pokaż przeliczanie w sieciach testowych"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Wybierz tę opcję, aby wyświetlać przeliczanie waluty fiat w sieciach testowych"
-  },
   "showHexData": {
     "message": "Pokaż dane hex"
   },
@@ -568,9 +538,6 @@
   },
   "stateLogs": {
     "message": "Logi stanów"
-  },
-  "stateLogsDescription": {
-    "message": "Logi stanów zawierają Twoje publiczne adresy kont i wykonanych transakcji."
   },
   "submitted": {
     "message": "Wysłane"

@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getUseExternalServices } from '../../../selectors';
@@ -15,14 +16,9 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import {
-  Display,
-  IconColor,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
 import {
-  Box,
   Icon,
   IconName,
   IconSize,
@@ -30,6 +26,7 @@ import {
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 import { Asset } from '../types/asset';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
@@ -50,6 +47,9 @@ const TokenButtons = ({
   const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
+  const shouldShowSendButton = Boolean(
+    token.balance?.value && token.balance.value !== '0',
+  );
 
   const currentChainId = token.chainId;
 
@@ -125,11 +125,7 @@ const TokenButtons = ({
   }, [token, openBridgeExperience]);
 
   return (
-    <Box
-      display={Display.Flex}
-      gap={3}
-      justifyContent={JustifyContent.spaceEvenly}
-    >
+    <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
       <IconButton
         className="token-overview__button"
         Icon={
@@ -147,23 +143,25 @@ const TokenButtons = ({
         disabled={token.isERC721 || !isBuyableChain}
       />
 
-      <IconButton
-        className="token-overview__button"
-        onClick={handleSendOnClick}
-        Icon={
-          <Icon
-            name={IconName.Send}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        label={t('send')}
-        data-testid="eth-overview-send"
-        disabled={
-          token.isERC721 ||
-          (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
-        }
-      />
+      {shouldShowSendButton ? (
+        <IconButton
+          className="token-overview__button"
+          onClick={handleSendOnClick}
+          Icon={
+            <Icon
+              name={IconName.Send}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          label={t('send')}
+          data-testid="eth-overview-send"
+          disabled={
+            token.isERC721 ||
+            (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+          }
+        />
+      ) : null}
 
       <IconButton
         className="token-overview__button"

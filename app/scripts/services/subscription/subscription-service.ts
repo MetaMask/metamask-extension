@@ -5,6 +5,7 @@ import {
   PRODUCT_TYPES,
   StartSubscriptionRequest,
   Subscription,
+  type SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
   SubscriptionServiceError,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
@@ -60,6 +61,10 @@ const MESSENGER_EXPOSED_METHODS = [
   'submitSubscriptionSponsorshipIntent',
   'linkRewardToExistingSubscription',
 ] as const;
+
+type ShieldSubscriptionCryptoApprovalTransactionMeta = Parameters<
+  SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction['handler']
+>[0];
 
 export class SubscriptionService {
   // Required for modular initialisation.
@@ -468,7 +473,7 @@ export class SubscriptionService {
 
       await this.#messenger.call(
         'SubscriptionController:submitShieldSubscriptionCryptoApproval',
-        txMeta,
+        txMeta as ShieldSubscriptionCryptoApprovalTransactionMeta,
         isSponsored,
         rewardAccountId,
       );

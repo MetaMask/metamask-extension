@@ -16,7 +16,7 @@ import {
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 
-import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { Tab, Tabs } from '../../../../../components/ui/tabs';

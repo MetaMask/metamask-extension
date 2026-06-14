@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Brojač za automatsko odjavljivanje (minute)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Postavite stanje u mirovanju u minutama prije nego što se MetaMask automatski odjavi"
-  },
   "average": {
     "message": "Prosječno"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "Stvori lozinku"
   },
-  "currencyConversion": {
-    "message": "Konverzija valute"
-  },
-  "currentLanguage": {
-    "message": "Trenutačni jezik"
-  },
   "custom": {
     "message": "Napredno"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "Gotovo"
-  },
-  "downloadGoogleChrome": {
-    "message": "Preuzmi preglednik Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Preuzmi zapisnike stanja"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Poveži hardverski novčanik"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Odaberite hardverski novčanik koji biste željeli upotrebljavati s uslugom MetaMask"
   },
   "here": {
     "message": "ovdje",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Želite li dodati ove tokene?"
   },
-  "lineaGoerli": {
-    "message": "Testna mreža Linea Goerli"
-  },
-  "links": {
-    "message": "Poveznice"
-  },
   "loading": {
     "message": "Učitavanje..."
   },
@@ -381,9 +360,6 @@
   },
   "nevermind": {
     "message": "Zanemari"
-  },
-  "newAccount": {
-    "message": "Novi račun"
   },
   "newAccountNumberName": {
     "message": "Račun $1",
@@ -490,9 +466,6 @@
   "restore": {
     "message": "Vrati"
   },
-  "revealSeedWords": {
-    "message": "Otkrij početne riječi"
-  },
   "revealSeedWordsWarning": {
     "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -539,9 +512,6 @@
   "showFiatConversionInTestnets": {
     "message": "Prikaži konverziju na usluzi Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Odaberite ovu stavku za prikaz ravne konverzije na usluzi Testnets"
-  },
   "showHexData": {
     "message": "Prikaži podatke Hex"
   },
@@ -571,9 +541,6 @@
   },
   "stateLogs": {
     "message": "Zapisnici stanja"
-  },
-  "stateLogsDescription": {
-    "message": "U zapisnicima se stanja nalaze javne adrese računa i poslane transakcije."
   },
   "submitted": {
     "message": "Poslano"

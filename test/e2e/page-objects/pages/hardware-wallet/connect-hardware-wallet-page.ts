@@ -3,24 +3,27 @@ import { Driver } from '../../../webdriver/driver';
 /**
  * Represents the page for connecting hardware wallets.
  * This page allows users to initiate connections with various hardware wallet types.
+ * Clicking a wallet option directly initiates the connection flow.
  */
 class ConnectHardwareWalletPage {
   private driver: Driver;
 
   private readonly connectHardwareWalletPageTitle = {
     text: 'Connect a hardware wallet',
-    tag: 'h3',
+    tag: 'h4',
   };
 
-  private readonly connectLatticeButton = '[data-testid="connect-lattice-btn"]';
+  private readonly connectLatticeButton =
+    '[data-testid="connect-hardware-wallet-lattice"]';
 
-  private readonly connectLedgerButton = '[data-testid="connect-ledger-btn"]';
+  private readonly connectLedgerButton =
+    '[data-testid="connect-hardware-wallet-ledger"]';
 
-  private readonly connectTrezorButton = '[data-testid="connect-trezor-btn"]';
+  private readonly connectTrezorButton =
+    '[data-testid="connect-hardware-wallet-trezor"]';
 
-  private readonly connectQrButton = '[data-testid="connect-qr-btn"]';
-
-  private readonly continueButton = { testId: 'connect-hardware-continue-btn' };
+  private readonly connectQrButton =
+    '[data-testid="connect-hardware-wallet-other-qr"]';
 
   private readonly closeButton = '[data-testid="hardware-connect-close-btn"]';
 
@@ -47,18 +50,11 @@ class ConnectHardwareWalletPage {
   async openConnectLatticePage(): Promise<void> {
     console.log(`Open connect lattice page`);
     await this.driver.clickElement(this.connectLatticeButton);
-    await this.driver.clickElement(this.continueButton);
   }
 
   async clickConnectLedgerButton(): Promise<void> {
     console.log(`Click connect Ledger button`);
     await this.driver.clickElement(this.connectLedgerButton);
-  }
-
-  async clickContinueButton(): Promise<void> {
-    console.log(`Click continue button`);
-    await this.driver.waitForSelector(this.continueButton);
-    await this.driver.clickElementAndWaitToDisappear(this.continueButton);
   }
 
   async clickCloseButton(): Promise<void> {
@@ -69,12 +65,10 @@ class ConnectHardwareWalletPage {
   async openConnectTrezorPage(): Promise<void> {
     console.log(`Open connect trezor page`);
     await this.driver.clickElement(this.connectTrezorButton);
-    await this.driver.clickElement(this.continueButton);
   }
 
   async openConnectQrPage(): Promise<void> {
     await this.driver.clickElement(this.connectQrButton);
-    await this.driver.clickElement(this.continueButton);
   }
 
   async checkFirefoxNotSupportedIsDisplayed(): Promise<void> {
@@ -82,13 +76,6 @@ class ConnectHardwareWalletPage {
     await this.driver.waitForSelector({
       text: 'Firefox Not Supported',
     });
-
-    // Continue button should be disabled
-    const continueButton = await this.driver.findElement(this.continueButton);
-    const isDisabled = (await continueButton.getAttribute('disabled')) !== null;
-    if (!isDisabled) {
-      throw new Error('Continue button should be disabled in Firefox');
-    }
   }
 }
 

@@ -24,6 +24,8 @@ export const createBuilderRequest = (
     getParticipateInMetrics: jest.fn().mockReturnValue(true),
     getTokenStandardAndDetails: jest.fn(),
     getTransaction: jest.fn(),
+    getTransactionPayData: jest.fn(),
+    getAllTransactions: jest.fn().mockReturnValue([]),
     provider: {} as any,
     snapAndHardwareMessenger: {} as any,
     trackEvent: jest.fn(),
@@ -37,7 +39,7 @@ export const createBuilderRequest = (
     getNetworkRpcUrl: jest
       .fn()
       .mockReturnValue('https://rpc.test.example/path'),
-    getFeatureFlags: jest.fn().mockReturnValue({ extensionUxPna25: true }),
+    getFeatureFlags: jest.fn().mockReturnValue({}),
     getPna25Acknowledged: jest.fn().mockReturnValue(true),
     getAddressSecurityAlertResponse: jest.fn(),
     getSecurityAlertsEnabled: jest.fn().mockReturnValue(true),

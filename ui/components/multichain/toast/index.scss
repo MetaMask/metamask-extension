@@ -37,7 +37,15 @@
 .toast-container {
   view-transition-name: toast;
 
+  /* Matches default duration of 300ms minus 70ms for exit animation delay */
+  transition: bottom 230ms cubic-bezier(0.21, 1.02, 0.73, 1);
+
   [role=status] {
     justify-content: flex-start;
   }
+}
+
+/* Lift the toaster above fixed CTA footers */
+:root:has(.cta-footer, .multichain-page-footer, .dapp-connection-control-bar) {
+  --toaster-bottom-offset: 80px;
 }

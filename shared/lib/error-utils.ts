@@ -1,9 +1,14 @@
 import { memoize, escape as lodashEscape } from 'lodash';
 import type { ErrorLike } from '../constants/errors';
 import type { I18NMessageDict } from './i18n';
-import { fetchLocale, loadRelativeTimeFormatLocaleData } from './i18n';
+import {
+  fetchLocale,
+  getMessage,
+  loadRelativeTimeFormatLocaleData,
+} from './i18n';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
+import { REINSTALL_METAMASK_RECOVERY_LINK } from './ui-utils';
 
 const defaultLocale = 'en';
 
@@ -14,6 +19,10 @@ const defaultLocale = 'en';
 export type LocaleContext = {
   preferredLocale: string;
   t: (key: string) => string | undefined;
+  /** Current locale messages; used with {@link getMessage} for substituted strings. */
+  localeMessages: I18NMessageDict;
+  /** English fallback messages; used with {@link getMessage} for substituted strings. */
+  enLocaleMessages: I18NMessageDict;
 };
 
 const _setupLocale = async (
@@ -64,16 +73,19 @@ export const getLocaleContext = (
   };
 };
 
+export function criticalErrorWarningIconMarkup(): string {
+  return `<div class="critical-error__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+          </svg>
+        </div>`;
+}
+
 export function getErrorHtmlBase(errorBody: string): string {
   return `
     <div class="critical-error__container">
       <div class="critical-error">
-        <div class="critical-error__icon">
-          <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path d="m443 342l-126-241c-16-32-40-50-65-50-26 0-50 18-66 50l-126 241c-16 30-18 60-5 83 13 23 38 36 71 36l251 0c33 0 58-13 71-36 13-23 11-53-5-83z m-206-145c0-8 6-15 15-15 8 0 14 7 14 15l0 105c0 8-6 15-14 15-9 0-15-7-15-15z m28 182c-1 1-2 2-3 3-1 0-2 1-3 1-1 1-2 1-4 2-1 0-2 0-3 0-2 0-3 0-4 0-2-1-3-1-4-2-1 0-2-1-3-1-1-1-2-2-3-3-4-4-6-9-6-15 0-5 2-11 6-15 1 0 2-1 3-2 1-1 2-2 3-2 1-1 2-1 4-1 2-1 5-1 7 0 2 0 3 0 4 1 1 0 2 1 3 2 1 1 2 2 3 2 4 4 6 10 6 15 0 6-2 11-6 15z"/>
-          </svg>
-        </div>
-        <div>
+        <div class="critical-error__inner">
           ${errorBody}
         </div>
       </div>
@@ -94,7 +106,7 @@ export function getErrorHtmlBase(errorBody: string): string {
  * Does not throw.
  *
  * @param currentLocale - The current locale
- * @returns A promise that resolves to an object containing the preferred locale and a translation function.
+ * @returns A promise that resolves to an object containing the preferred locale, translation function, and message dicts for getMessage when needed.
  */
 export async function maybeGetLocaleContext(
   currentLocale?: string,
@@ -105,10 +117,20 @@ export async function maybeGetLocaleContext(
     const response = await setupLocale(preferredLocale);
     const { currentLocaleMessages, enLocaleMessages } = response;
     const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
-    return { preferredLocale, t };
+    return {
+      preferredLocale,
+      t,
+      localeMessages: currentLocaleMessages,
+      enLocaleMessages,
+    };
   } catch (error) {
     console.error('Error setting up locale:', error);
-    return { preferredLocale: preferredLocale ?? 'en', t: (value) => value };
+    return {
+      preferredLocale: preferredLocale ?? 'en',
+      t: (value) => value,
+      localeMessages: {},
+      enLocaleMessages: {},
+    };
   }
 }
 
@@ -119,6 +141,7 @@ export async function maybeGetLocaleContext(
  * @param error - The error object to log.
  * @param localeContext - The MetaMask state containing the current locale and translation function.
  * @param supportLink - The support link to include in the footer.
+ * @param hasBackup - Whether a vault backup exists in IndexedDB.
  * @returns The HTML string for the critical error message.
  */
 export function getErrorHtml(
@@ -126,9 +149,11 @@ export function getErrorHtml(
   error: ErrorLike | undefined,
   localeContext: LocaleContext,
   supportLink?: string,
+  hasBackup = false,
 ): string {
   switchDirectionForPreferredLocale(localeContext.preferredLocale);
-  const { t } = localeContext;
+  const { t, preferredLocale, localeMessages, enLocaleMessages } =
+    localeContext;
 
   const legalText = `
     <span>${lodashEscape(t('errorLegalTextSummary'))}</span>
@@ -137,26 +162,90 @@ export function getErrorHtml(
     <span>${lodashEscape(t('errorLegalTextNoPersonalInfo'))}</span>
 `;
 
-  const footer = supportLink
-    ? `
-      <p class="critical-error__footer">
-        <span>${lodashEscape(t('stillGettingMessage'))}</span>
-        <a
-          href="${lodashEscape(supportLink)}"
-          class="critical-error__link"
-          target="_blank"
-          rel="noopener noreferrer">
-            ${lodashEscape(t('errorPageContactSupport'))}
-        </a>
-      </p>
-    `
+  const attemptRecoveryButton = hasBackup
+    ? `<button
+          id="critical-error-restore-link"
+          type="button"
+          class="critical-error__button-secondary button">
+          ${lodashEscape(t('criticalErrorAttemptRecovery'))}
+        </button>`
     : '';
 
-  let detailsRawHtml = '';
-  if (error?.message) {
-    detailsRawHtml += `<strong>${lodashEscape(t('errorDetails'))}</strong>\n`;
-    detailsRawHtml += `<p class="critical-error__details"><code>${lodashEscape(error?.message)}</code></p>`;
+  const externalIconSvg = `<svg
+    class="critical-error__external-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true">
+    <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.11.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z"/>
+  </svg>`;
+
+  const reinstallButton = `<a
+        id="critical-error-reinstall-link"
+        href="${lodashEscape(REINSTALL_METAMASK_RECOVERY_LINK)}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="critical-error__button-secondary button">
+        ${lodashEscape(t('criticalErrorReinstallMetamask'))}
+        ${externalIconSvg}
+      </a>`;
+
+  const dividerSection = `<div class="critical-error__divider">
+        <span>${lodashEscape(t('criticalErrorStillHavingIssues'))}</span>
+      </div>`;
+
+  const secondaryActions = `
+      ${dividerSection}
+      ${attemptRecoveryButton}
+      ${reinstallButton}
+    `;
+
+  let footer = '';
+  if (supportLink) {
+    const contactSupportLabel = (
+      t('errorPageContactSupport') ?? ''
+    ).toLowerCase();
+    const supportLinkAnchor = `<a
+        href="${lodashEscape(supportLink)}"
+        class="critical-error__link"
+        target="_blank"
+        rel="noopener noreferrer">${lodashEscape(contactSupportLabel)}</a>`;
+
+    let footerContent: string | null | undefined;
+    try {
+      footerContent =
+        (getMessage(
+          preferredLocale,
+          localeMessages,
+          'criticalErrorFooterContactSupport',
+          [supportLinkAnchor],
+        ) as string | null) ||
+        (getMessage(
+          'en',
+          enLocaleMessages,
+          'criticalErrorFooterContactSupport',
+          [supportLinkAnchor],
+        ) as string | null);
+    } catch {
+      footerContent = null;
+    }
+
+    if (!footerContent) {
+      footerContent = `If none of the above works, ${supportLinkAnchor}`;
+    }
+
+    footer = `
+      <p class="critical-error__footer">
+        ${footerContent}
+      </p>
+    `;
   }
+
+  const detailsContent = error?.message
+    ? `<p class="critical-error__details"><code>${lodashEscape(error?.message)}</code></p>`
+    : '';
 
   /**
    * The pattern ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
@@ -165,33 +254,40 @@ export function getErrorHtml(
    * see the string and will not be able to check if the locale key exists.
    */
   return getErrorHtmlBase(`
-      <h1>${lodashEscape(t('troubleStartingTitle'))}</h1>
-      <p>
-        ${errorKey === 'troubleStarting' ? t('troubleStartingMessage') : ''}
-        ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
-      </p>
-      ${detailsRawHtml}
-      <label class="critical-error__report">
-        <input
-        id="critical-error-checkbox"
-          type="checkbox"
-          checked
-          class="critical-error__report-checkbox"
-        />
-        <span class="critical-error__report-text">
-          ${lodashEscape(t('reportThisError'))}
-        </span>
-        <button
-          id="critical-error-tip-anchor"
-          popovertarget="critical-error-legal-text"
-          type="button"
-          class="critical-error__info"
-        >
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="critical-error__info-icon">
-            <path d="m11 17h2v-6h-2zm1-8c.2833 0 .5208-.09583.7125-.2875s.2875-.42917.2875-.7125-.0958-.52083-.2875-.7125-.4292-.2875-.7125-.2875-.5208.09583-.7125.2875-.2875.42917-.2875.7125.0958.52083.2875.7125.4292.2875.7125.2875zm0 13c-1.3833 0-2.68333-.2625-3.9-.7875s-2.275-1.2375-3.175-2.1375-1.6125-1.9583-2.1375-3.175-.7875-2.5167-.7875-3.9.2625-2.68333.7875-3.9 1.2375-2.275 2.1375-3.175 1.95833-1.6125 3.175-2.1375 2.5167-.7875 3.9-.7875 2.6833.2625 3.9.7875 2.275 1.2375 3.175 2.1375 1.6125 1.95833 2.1375 3.175.7875 2.5167.7875 3.9-.2625 2.6833-.7875 3.9-1.2375 2.275-2.1375 3.175-1.9583 1.6125-3.175 2.1375-2.5167.7875-3.9.7875zm0-2c2.2333 0 4.125-.775 5.675-2.325s2.325-3.4417 2.325-5.675c0-2.23333-.775-4.125-2.325-5.675s-3.4417-2.325-5.675-2.325c-2.23333 0-4.125.775-5.675 2.325s-2.325 3.44167-2.325 5.675c0 2.2333.775 4.125 2.325 5.675s3.44167 2.325 5.675 2.325z"/>
-          </svg>
-        </button>
-      </label>
+      <div class="critical-error__header">
+        ${criticalErrorWarningIconMarkup()}
+        <h1 class="critical-error__title">${lodashEscape(t('troubleStartingTitle'))}</h1>
+      </div>
+      <div class="critical-error__body">
+        <p class="critical-error__intro">
+          ${errorKey === 'troubleStarting' ? t('troubleStartingMessage') : ''}
+          ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
+        </p>
+        <div class="critical-error__error-section">
+          ${detailsContent}
+          <label class="critical-error__report">
+            <input
+              id="critical-error-checkbox"
+              type="checkbox"
+              checked
+              class="critical-error__report-checkbox"
+            />
+            <span class="critical-error__report-text">
+              ${lodashEscape(t('reportThisError'))}
+            </span>
+            <button
+              id="critical-error-tip-anchor"
+              popovertarget="critical-error-legal-text"
+              type="button"
+              class="critical-error__info"
+            >
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="critical-error__info-icon">
+                <path d="m11 17h2v-6h-2zm1-8c.2833 0 .5208-.09583.7125-.2875s.2875-.42917.2875-.7125-.0958-.52083-.2875-.7125-.4292-.2875-.7125-.2875-.5208.09583-.7125.2875-.2875.42917-.2875.7125.0958.52083.2875.7125.4292.2875.7125.2875zm0 13c-1.3833 0-2.68333-.2625-3.9-.7875s-2.275-1.2375-3.175-2.1375-1.6125-1.9583-2.1375-3.175-.7875-2.5167-.7875-3.9.2625-2.68333.7875-3.9 1.2375-2.275 2.1375-3.175 1.95833-1.6125 3.175-2.1375 2.5167-.7875 3.9-.7875 2.6833.2625 3.9.7875 2.275 1.2375 3.175 2.1375 1.6125 1.95833 2.1375 3.175.7875 2.5167.7875 3.9-.2625 2.6833-.7875 3.9-1.2375 2.275-2.1375 3.175-1.9583 1.6125-3.175 2.1375-2.5167.7875-3.9.7875zm0-2c2.2333 0 4.125-.775 5.675-2.325s2.325-3.4417 2.325-5.675c0-2.23333-.775-4.125-2.325-5.675s-3.4417-2.325-5.675-2.325c-2.23333 0-4.125.775-5.675 2.325s-2.325 3.44167-2.325 5.675c0 2.2333.775 4.125 2.325 5.675s3.44167 2.325 5.675 2.325z"/>
+              </svg>
+            </button>
+          </label>
+        </div>
+      </div>
       <div
         popover
         anchor="critical-error-tip-anchor"
@@ -200,12 +296,15 @@ export function getErrorHtml(
       >
         ${legalText}
       </div>
-      <button
-        id="critical-error-button"
-        class="critical-error__button-restore button btn-primary"
-        title="Report this error and restart MetaMask">
-        ${lodashEscape(t('restartMetamask'))}
-      </button>
-      ${footer}
+      <div class="critical-error__footer-actions">
+        <button
+          id="critical-error-button"
+          class="critical-error__button-restore button btn-primary"
+          title="Report this error and restart MetaMask">
+          ${lodashEscape(t('restartMetamask'))}
+        </button>
+        ${secondaryActions}
+        ${footer}
+      </div>
     `);
 }

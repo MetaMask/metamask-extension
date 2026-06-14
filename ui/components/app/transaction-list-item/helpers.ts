@@ -65,6 +65,7 @@ export function mapTransactionTypeToCategory(
     case TransactionType.musdClaim:
     case TransactionType.musdConversion:
     case TransactionType.perpsDeposit:
+    case TransactionType.perpsWithdraw:
     case TransactionType.simpleSend: {
       return GroupCategory.send;
     }

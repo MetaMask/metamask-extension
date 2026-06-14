@@ -4,12 +4,12 @@ import { waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getSlides,
   getUseExternalServices,
   getShowDownloadMobileAppSlide,
-  getRemoteFeatureFlags,
 } from '../../selectors';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentLocale } from '../../ducks/locale/locale';
 import { updateSlides } from '../../store/actions';
 import type { CarouselSlide } from '../../../shared/constants/app-state';

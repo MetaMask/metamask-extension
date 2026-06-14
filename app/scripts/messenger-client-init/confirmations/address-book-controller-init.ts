@@ -1,6 +1,8 @@
-import { AddressBookController } from '@metamask/address-book-controller';
+import {
+  AddressBookController,
+  AddressBookControllerMessenger,
+} from '@metamask/address-book-controller';
 import { MessengerClientInitFunction } from '../types';
-import { AddressBookControllerMessenger } from '../messengers';
 
 /**
  * Initialize the address book controller.

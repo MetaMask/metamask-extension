@@ -90,6 +90,48 @@ export function filterLocalNotInApi(
   });
 }
 
+/**
+ * Overlay richer local TransactionController fields onto matching API view
+ * models. The Accounts API doesn't return on-chain revert reasons or full
+ * `txParams.data`, so when the wallet originated the transaction we copy the
+ * local `TransactionMeta`'s `error`, `revert`, and `txParams.data` onto the
+ * API view model. Pairing is by hash, mirroring `filterLocalNotInApi`.
+ *
+ * @param apiTransactions - View models built from the Accounts API response.
+ * @param localGroups - Local transaction groups from the TransactionController.
+ * @returns The API view models, with local fields overlaid where a matching
+ * local entry exists. Entries without a local match are returned unchanged.
+ */
+export function enrichApiWithLocal(
+  apiTransactions: TransactionViewModel[],
+  localGroups: TransactionGroup[],
+): TransactionViewModel[] {
+  const localByHash = new Map<string, TransactionGroup['primaryTransaction']>();
+  for (const group of localGroups) {
+    const hash = group.primaryTransaction.hash?.toLowerCase();
+    if (hash) {
+      localByHash.set(hash, group.primaryTransaction);
+    }
+  }
+
+  return apiTransactions.map((tx) => {
+    const hash = tx.hash?.toLowerCase();
+    const local = hash ? localByHash.get(hash) : undefined;
+    if (!local) {
+      return tx;
+    }
+    return {
+      ...tx,
+      ...(local.error ? { error: local.error } : {}),
+      ...(local.revert ? { revert: local.revert } : {}),
+      txParams: {
+        ...tx.txParams,
+        ...(local.txParams?.data ? { data: local.txParams.data } : {}),
+      },
+    };
+  });
+}
+
 type MergedItem =
   | { type: 'local'; group: TransactionGroup; time: number; nonce: number }
   | { type: 'completed'; tx: TransactionViewModel; time: number; nonce: number }
@@ -270,20 +312,6 @@ export function matchesNonEvmTransaction(
     }
     return 'id' in entry.asset && entry.asset.id.toLowerCase().includes(addr);
   });
-}
-
-export function calculateFiatFromMarketRates(
-  amount: string | undefined,
-  token: Token | undefined,
-  marketRates: Record<number, Record<string, number>>,
-) {
-  if (amount === undefined || !token) {
-    return undefined;
-  }
-
-  const parsed = parseFloat(amount);
-  const rate = marketRates[parseInt(token.chainId, 16)]?.[token.address];
-  return rate === undefined ? undefined : parsed * rate;
 }
 
 // Map API transactionCategory to TransactionType for legacy modal

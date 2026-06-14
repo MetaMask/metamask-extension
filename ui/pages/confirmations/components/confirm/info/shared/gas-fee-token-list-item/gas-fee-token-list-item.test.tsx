@@ -105,7 +105,7 @@ describe('GasFeeTokenListItem', () => {
         store,
       );
 
-      expect(result.getByText('$0.04')).toBeInTheDocument();
+      expect(result.getByText('$0.07')).toBeInTheDocument();
     });
 
     it('renders fiat balance', () => {
@@ -123,7 +123,7 @@ describe('GasFeeTokenListItem', () => {
         store,
       );
 
-      expect(result.getByText('0.000066 ETH')).toBeInTheDocument();
+      expect(result.getByText('0.000125 ETH')).toBeInTheDocument();
     });
   });
 });

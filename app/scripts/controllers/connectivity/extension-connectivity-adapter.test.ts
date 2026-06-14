@@ -14,19 +14,19 @@ describe('ExtensionConnectivityAdapter', () => {
   });
 
   describe('getStatus', () => {
-    it('returns online by default', () => {
-      expect(adapter.getStatus()).toBe(CONNECTIVITY_STATUSES.Online);
+    it('returns online by default', async () => {
+      expect(await adapter.getStatus()).toBe(CONNECTIVITY_STATUSES.Online);
     });
 
-    it('returns offline after setStatus(offline)', () => {
+    it('returns offline after setStatus(offline)', async () => {
       adapter.setStatus(CONNECTIVITY_STATUSES.Offline);
-      expect(adapter.getStatus()).toBe(CONNECTIVITY_STATUSES.Offline);
+      expect(await adapter.getStatus()).toBe(CONNECTIVITY_STATUSES.Offline);
     });
 
-    it('returns online after setStatus(online)', () => {
+    it('returns online after setStatus(online)', async () => {
       adapter.setStatus(CONNECTIVITY_STATUSES.Offline);
       adapter.setStatus(CONNECTIVITY_STATUSES.Online);
-      expect(adapter.getStatus()).toBe(CONNECTIVITY_STATUSES.Online);
+      expect(await adapter.getStatus()).toBe(CONNECTIVITY_STATUSES.Online);
     });
   });
 

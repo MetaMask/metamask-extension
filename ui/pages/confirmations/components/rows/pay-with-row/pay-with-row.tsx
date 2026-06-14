@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 import {
   Box,
@@ -21,14 +21,11 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
-  TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
@@ -48,10 +45,7 @@ type PayWithRowContentProps = {
   canEdit: boolean;
   from: string | undefined;
   onOpenModal: () => void;
-};
-
-type PayWithRowPillProps = PayWithRowContentProps & {
-  balanceUsdFormatted: string;
+  isPerpsWithdraw: boolean;
 };
 
 export type PayWithRowProps = {
@@ -82,12 +76,11 @@ export const PayWithRowSkeleton = () => {
 };
 
 export function PayWithRow({
-  variant = ConfirmInfoRowSize.Default,
-}: PayWithRowProps) {
+  variant = ConfirmInfoRowSize.Small,
+}: PayWithRowProps = {}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
-  const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const from = currentConfirmation?.txParams?.from;
@@ -97,6 +90,8 @@ export function PayWithRow({
   );
 
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
+
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const handleOpenModal = useCallback(() => {
     if (canEdit) {
@@ -109,48 +104,35 @@ export function PayWithRow({
   }, []);
 
   const firstRequiredToken = requiredTokens?.[0];
-  const displayToken = payToken ?? firstRequiredToken;
-
-  const balanceUsdFormatted = useMemo(
-    () =>
-      fiatFormatter(new BigNumber(displayToken?.balanceUsd ?? '0').toNumber()),
-    [fiatFormatter, displayToken?.balanceUsd],
-  );
+  const displayToken =
+    payToken ?? (isPerpsWithdraw ? undefined : firstRequiredToken);
 
   if (!displayToken?.chainId) {
+    if (isPerpsWithdraw) {
+      return <PayWithRowSkeleton />;
+    }
     return null;
   }
-
-  const contentProps: PayWithRowContentProps = {
-    displayToken: {
-      chainId: displayToken.chainId,
-      address: displayToken.address,
-      symbol: displayToken.symbol,
-      balanceUsd: displayToken.balanceUsd,
-    },
-    canEdit,
-    from,
-    onOpenModal: handleOpenModal,
-  };
-
-  const isSmall = variant === ConfirmInfoRowSize.Small;
 
   return (
     <>
       {isModalOpen && (
         <PayWithModal isOpen={isModalOpen} onClose={handleCloseModal} />
       )}
-      {isSmall ? (
-        <PayWithRowPill
-          {...contentProps}
-          balanceUsdFormatted={balanceUsdFormatted}
-        />
-      ) : (
-        <PayWithRowInline
-          {...contentProps}
-          ownerId={currentConfirmation?.id ?? ''}
-        />
-      )}
+      <PayWithRowInline
+        displayToken={{
+          chainId: displayToken.chainId,
+          address: displayToken.address,
+          symbol: displayToken.symbol,
+          balanceUsd: displayToken.balanceUsd,
+        }}
+        canEdit={canEdit}
+        from={from}
+        onOpenModal={handleOpenModal}
+        isPerpsWithdraw={isPerpsWithdraw}
+        ownerId={currentConfirmation?.id ?? ''}
+        rowVariant={variant}
+      />
     </>
   );
 }
@@ -161,7 +143,12 @@ function PayWithRowInline({
   from,
   onOpenModal,
   ownerId,
-}: PayWithRowContentProps & { ownerId: string }) {
+  isPerpsWithdraw,
+  rowVariant,
+}: PayWithRowContentProps & {
+  ownerId: string;
+  rowVariant: ConfirmInfoRowSize;
+}) {
   const t = useI18nContext();
 
   return (
@@ -169,8 +156,8 @@ function PayWithRowInline({
       alertKey={RowAlertKey.PayWith}
       ownerId={ownerId}
       data-testid="pay-with-row"
-      label={t('payWith')}
-      rowVariant={ConfirmInfoRowSize.Default}
+      label={isPerpsWithdraw ? t('withdrawTo') : t('payWith')}
+      rowVariant={rowVariant}
     >
       <Box
         data-testid="pay-with-pill"
@@ -197,6 +184,7 @@ function PayWithRowInline({
           <TokenIcon
             chainId={displayToken.chainId as `0x${string}`}
             tokenAddress={displayToken.address as `0x${string}`}
+            symbol={displayToken.symbol}
             size="xs"
           />
         </Box>
@@ -210,63 +198,5 @@ function PayWithRowInline({
         )}
       </Box>
     </ConfirmInfoAlertRow>
-  );
-}
-
-function PayWithRowPill({
-  displayToken,
-  balanceUsdFormatted,
-  canEdit,
-  from,
-  onOpenModal,
-}: PayWithRowPillProps) {
-  const t = useI18nContext();
-
-  return (
-    <Box
-      data-testid="pay-with-row"
-      onClick={canEdit ? onOpenModal : undefined}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      borderRadius={BorderRadius.pill}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      gap={3}
-      paddingTop={2}
-      paddingBottom={2}
-      paddingLeft={2}
-      paddingRight={4}
-      style={{
-        cursor: canEdit ? 'pointer' : 'default',
-      }}
-    >
-      <TokenIcon
-        chainId={displayToken.chainId as `0x${string}`}
-        tokenAddress={displayToken.address as `0x${string}`}
-      />
-      <Text
-        variant={TextVariant.bodyMdMedium}
-        color={TextColor.textDefault}
-        data-testid="pay-with-symbol"
-      >
-        {`${t('payWith')} ${displayToken.symbol}`}
-      </Text>
-      <Text
-        variant={TextVariant.bodyMdMedium}
-        color={TextColor.textAlternative}
-        data-testid="pay-with-balance"
-      >
-        {balanceUsdFormatted}
-      </Text>
-      {canEdit && from && (
-        <Icon
-          data-testid="pay-with-arrow"
-          name={IconName.ArrowDown}
-          size={IconSize.Sm}
-          color={IconColor.iconAlternative}
-        />
-      )}
-    </Box>
   );
 }

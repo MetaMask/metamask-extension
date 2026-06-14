@@ -9,8 +9,8 @@ import {
   TextAlign,
   TextColor,
   twMerge,
+  Skeleton,
 } from '@metamask/design-system-react';
-import { Skeleton } from '../../../component-library/skeleton';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import type { PerpsFiatHeroAmountInputProps } from './perps-fiat-hero-amount-input.types';
 
@@ -87,11 +87,12 @@ function getHeroAmountTextColor(
   return TextColor.TextDefault;
 }
 
-export const PerpsFiatHeroAmountSkeleton: React.FC = () => (
+export const PerpsFiatHeroAmountSkeleton = () => (
   <Box
     flexDirection={BoxFlexDirection.Row}
     justifyContent={BoxJustifyContent.Center}
     alignItems={BoxAlignItems.Center}
+    className="w-full"
     style={{ minHeight: '70px' }}
     data-testid="perps-fiat-hero-amount-skeleton"
   >
@@ -99,53 +100,84 @@ export const PerpsFiatHeroAmountSkeleton: React.FC = () => (
   </Box>
 );
 
-export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
-  React.memo(
-    ({
-      value,
-      onChange,
-      disabled = false,
-      hasAlert = false,
-      isLoading = false,
-    }) => {
-      const fiatSymbol = getCurrencySymbol('USD');
-      const amountLength = value.length;
+export const PerpsFiatHeroAmountInput = React.memo(
+  ({
+    value,
+    onChange,
+    autoFocus = false,
+    disabled = false,
+    hasAlert = false,
+    isLoading = false,
+  }: PerpsFiatHeroAmountInputProps) => {
+    const fiatSymbol = getCurrencySymbol('USD');
+    const amountLength = value.length;
 
-      const handleChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-          const next = e.target.value;
-          if (isValidPartialFiatAmountInput(next)) {
-            onChange(next);
-          }
-        },
-        [onChange],
-      );
+    const handleChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const next = e.target.value;
+        if (isValidPartialFiatAmountInput(next)) {
+          onChange(next);
+        }
+      },
+      [onChange],
+    );
 
-      if (isLoading) {
-        return <PerpsFiatHeroAmountSkeleton />;
-      }
+    if (isLoading) {
+      return <PerpsFiatHeroAmountSkeleton />;
+    }
 
-      const fontSize = getFontSize(amountLength);
-      const lineHeight = getLineHeight(amountLength);
-      const textColor = getHeroAmountTextColor(hasAlert, disabled);
+    const fontSize = getFontSize(amountLength);
+    const lineHeight = getLineHeight(amountLength);
+    const textColor = getHeroAmountTextColor(hasAlert, disabled);
 
-      return (
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Center}
-          alignItems={BoxAlignItems.Center}
-          style={{ minHeight: '70px' }}
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
+        className="w-full"
+        style={{ minHeight: '70px' }}
+      >
+        <Text
+          data-testid="perps-fiat-hero-amount-symbol"
+          textAlign={TextAlign.Right}
+          fontWeight={FontWeight.Medium}
+          color={textColor}
+          style={{ fontSize, lineHeight }}
         >
-          <Text
-            data-testid="perps-fiat-hero-amount-symbol"
-            textAlign={TextAlign.Right}
-            fontWeight={FontWeight.Medium}
-            color={textColor}
-            style={{ fontSize, lineHeight }}
+          {fiatSymbol}
+        </Text>
+        {/*
+         * Absolute-overlay pattern: the hidden clone (white-space:pre) drives
+         * the outer span's width to the exact rendered text width, while the
+         * absolutely-positioned input fills that same box.  Absolute children
+         * are out-of-flow so they don't affect the parent's max-content width,
+         * avoiding the circular-dependency that broke the inline-grid approach.
+         * Works in Chrome, Firefox, and Safari (unlike field-sizing:content).
+         */}
+        <span
+          style={{
+            position: 'relative',
+            width: 'max-content',
+            minWidth: '1ch',
+          }}
+        >
+          <span
+            aria-hidden="true"
+            style={{
+              display: 'block',
+              visibility: 'hidden',
+              whiteSpace: 'pre',
+              fontSize,
+              lineHeight,
+              fontWeight: 500,
+              minWidth: '1ch',
+            }}
           >
-            {fiatSymbol}
-          </Text>
+            {value || '0'}
+          </span>
           <input
+            autoFocus={autoFocus && !disabled}
             data-testid="perps-fiat-hero-amount-input"
             type="text"
             inputMode="decimal"
@@ -157,16 +189,16 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
               'border-none bg-transparent text-left outline-none',
               disabled ? 'cursor-default' : 'cursor-text',
             )}
-            style={
-              {
-                fontSize,
-                lineHeight,
-                fontWeight: 500,
-                width: `${Math.max(1, amountLength)}ch`,
-              } as React.CSSProperties
-            }
+            style={{
+              position: 'absolute',
+              inset: 0,
+              fontSize,
+              lineHeight,
+              fontWeight: 500,
+            }}
           />
-        </Box>
-      );
-    },
-  );
+        </span>
+      </Box>
+    );
+  },
+);

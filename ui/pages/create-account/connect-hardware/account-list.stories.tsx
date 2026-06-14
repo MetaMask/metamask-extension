@@ -60,9 +60,7 @@ export default {
         balance: '0x176e5b6f173ebe66',
       },
     ],
-    connectedAccounts: [
-      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-    ],
+    connectedAccounts: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
     chainId: '0x1',
     rpcPrefs: {},
     selectedAccounts: [],
@@ -76,7 +74,10 @@ export default {
         },
       ],
       trezor: [
-        { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: `m/44'/60'/0'/0` },
+        {
+          name: `BIP44 Standard (e.g. MetaMask, Trezor)`,
+          value: `m/44'/60'/0'/0`,
+        },
         { name: `Legacy (Ledger / MEW / MyCrypto)`, value: `m/44'/60'/0'` },
         { name: `Trezor Testnets`, value: `m/44'/1'/0'/0` },
       ],

@@ -2,11 +2,14 @@ import { useMemo, useState } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
+import {
+  getCurrentChainId,
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../shared/lib/selectors/networks';
 import {
   getCrossChainTokenExchangeRates,
   selectConversionRateByChainId,
-  selectNetworkConfigurationByChainId,
 } from '../../../../selectors';
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
@@ -34,8 +37,9 @@ export default function useTokenExchangeRate(
   const currentChainId = useSelector(getCurrentChainId);
   const chainId = overrideChainId ?? currentChainId;
 
-  const networkConfig = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfig = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
   const nativeCurrency = networkConfig?.nativeCurrency;
 
@@ -57,7 +61,10 @@ export default function useTokenExchangeRate(
       return undefined;
     }
 
-    const nativeConversionRate = new Numeric(selectedNativeConversionRate, 10);
+    const nativeConversionRate = new Numeric(
+      String(selectedNativeConversionRate),
+      10,
+    );
 
     if (!tokenAddress) {
       return nativeConversionRate;
@@ -103,7 +110,9 @@ export default function useTokenExchangeRate(
       return undefined;
     }
 
-    return new Numeric(contractExchangeRate, 10).times(nativeConversionRate);
+    return new Numeric(String(contractExchangeRate), 10).times(
+      nativeConversionRate,
+    );
   }, [
     exchangeRates,
     chainId,

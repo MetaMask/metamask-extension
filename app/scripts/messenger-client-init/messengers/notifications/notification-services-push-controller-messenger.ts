@@ -11,10 +11,6 @@ import type {
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 
-type Actions = MessengerActions<NotificationServicesPushControllerMessenger>;
-
-type Events = MessengerEvents<NotificationServicesPushControllerMessenger>;
-
 /**
  * Create a messenger restricted to the allowed actions and events of the
  * notification services push controller.
@@ -24,17 +20,16 @@ type Events = MessengerEvents<NotificationServicesPushControllerMessenger>;
  * @returns The restricted messenger.
  */
 export function getNotificationServicesPushControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<NotificationServicesPushControllerMessenger>,
+    MessengerEvents<NotificationServicesPushControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'NotificationServicesPushController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
-    namespace: 'NotificationServicesPushController',
-    parent: messenger,
-  });
+  const controllerMessenger: NotificationServicesPushControllerMessenger =
+    new Messenger({
+      namespace: 'NotificationServicesPushController',
+      parent: messenger,
+    });
   messenger.delegate({
     messenger: controllerMessenger,
     actions: ['AuthenticationController:getBearerToken'],

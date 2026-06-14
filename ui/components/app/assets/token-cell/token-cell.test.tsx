@@ -9,12 +9,14 @@ import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getTokenList,
-  getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
   getUseSafeChainsListValidation,
   getEnabledNetworksByNamespace,
+  getAllTokens,
+  selectERC20TokensByChain,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
@@ -230,6 +232,26 @@ describe('Token Cell', () => {
     if (selector === getEnabledNetworksByNamespace) {
       return {
         '0x1': true,
+      };
+    }
+    if (selector === getAllTokens) {
+      return {};
+    }
+    if (selector === selectERC20TokensByChain) {
+      // Keyed by chainId → { data: { [lowercaseAddress]: tokenEntry } }
+      // so useTokenDisplayInfo can resolve the tokenImage from it.
+      return {
+        '0x1': {
+          data: {
+            '0xanothertoken': {
+              iconUrl: './images/test_image.svg',
+              symbol: 'TEST',
+              name: 'TEST',
+              decimals: 18,
+              address: '0xAnotherToken',
+            },
+          },
+        },
       };
     }
     return undefined;

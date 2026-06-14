@@ -20,7 +20,7 @@ describe('Test Snap WASM', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         // Navigate to test snaps page and connect to wasm snap

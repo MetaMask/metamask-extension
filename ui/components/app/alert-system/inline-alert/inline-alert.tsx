@@ -1,22 +1,14 @@
 import classnames from 'clsx';
 import React from 'react';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
-  AlignItems,
-  BorderRadius,
-  Display,
   IconColor,
   Severity,
   TextColor,
   TextVariant,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../../component-library';
 
 export type InlineAlertProps = {
   /** The key of the alert */
@@ -70,15 +62,13 @@ export default function InlineAlert({
   );
 
   return (
-    <Box display={Display.Flex}>
+    <Box className="flex">
       <Box
         data-testid="inline-alert"
         {...(alertKey && { 'data-alert-key': alertKey })}
-        borderRadius={BorderRadius.SM}
         gap={1}
-        display={Display.InlineFlex}
-        alignItems={AlignItems.center}
         className={classnames({
+          'inline-flex rounded-sm': true,
           'inline-alert': true,
           'inline-alert__info': severity === Severity.Info,
           'inline-alert__warning': severity === Severity.Warning,
@@ -88,9 +78,12 @@ export default function InlineAlert({
           'inline-alert__pill': pill,
           'inline-alert__transparent-background': !textOverride,
         })}
-        backgroundColor={backgroundColor}
+        alignItems={BoxAlignItems.Center}
         style={{
           cursor: onClick ? 'pointer' : 'default',
+          ...(backgroundColor && {
+            backgroundColor: `var(--color-${backgroundColor})`,
+          }),
           ...style,
         }}
         onClick={onClick}

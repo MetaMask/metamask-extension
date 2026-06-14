@@ -16,7 +16,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getUseExternalServices } from '../../selectors';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import {
   hasNotificationSubscriptionExpired,
@@ -158,7 +158,9 @@ export function useEnableNotificationsByDefaultEffect() {
   ]);
 }
 
-export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
+export const MetamaskNotificationsProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
 

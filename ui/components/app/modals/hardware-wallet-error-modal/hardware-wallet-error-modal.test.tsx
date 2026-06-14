@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention, camelcase -- Segment analytics payload keys use snake_case */
 import React from 'react';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -15,14 +16,51 @@ import {
   type HardwareWalletError as HardwareWalletErrorType,
 } from '@metamask/hw-wallet-sdk';
 import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
+import {
+  MetaMetricsEventName,
+  MetaMetricsHardwareWalletDeviceType,
+  MetaMetricsHardwareWalletRecoveryErrorType,
+} from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import configureStore from '../../../../store/store';
+import {
+  getChromiumExtensionCameraSiteSettingsUrl,
+  isFirefoxBrowser,
+} from '../../../../../shared/lib/browser-runtime.utils';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
 const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: jest.fn(() => 'fullscreen'),
+}));
+const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
+
+jest.mock('../../../../../shared/lib/browser-runtime.utils', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../../../shared/lib/browser-runtime.utils')
+  >('../../../../../shared/lib/browser-runtime.utils');
+  return {
+    ...actual,
+    isFirefoxBrowser: jest.fn(() => false),
+    getChromiumExtensionCameraSiteSettingsUrl: jest.fn(
+      () =>
+        'chrome://settings/content/siteDetails?site=chrome-extension%3A%2F%2Fmock%2F',
+    ),
+    getMozExtensionOriginForDisplay: jest.fn(
+      () => 'moz-extension://mock-display',
+    ),
+  };
+});
+
+const mockIsFirefoxBrowser = jest.mocked(isFirefoxBrowser);
+const mockGetChromiumExtensionCameraSiteSettingsUrl = jest.mocked(
+  getChromiumExtensionCameraSiteSettingsUrl,
+);
 
 const mockHideModal = jest.fn();
 jest.mock('../../../../hooks/useModalProps', () => ({
@@ -36,11 +74,14 @@ const mockEnsureDeviceReady = jest.fn();
 const mockClearError = jest.fn();
 const mockSetConnectionReady = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
+const mockHandleContinueWithPermissionCheck = jest.fn();
 jest.mock('../../../../contexts/hardware-wallets', () => {
   const actual = jest.requireActual('../../../../contexts/hardware-wallets');
 
   return {
     ...actual,
+    handleContinueWithPermissionCheck: (...args: unknown[]) =>
+      mockHandleContinueWithPermissionCheck(...args),
     useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
     useHardwareWalletActions: () => ({
       ensureDeviceReady: mockEnsureDeviceReady,
@@ -55,12 +96,9 @@ const createTestError = (
   code: ErrorCode,
   message: string,
   userMessage?: string,
+  walletType: HardwareWalletType = HardwareWalletType.Ledger,
 ): HardwareWalletErrorType => {
-  return createHardwareWalletError(
-    code,
-    'ledger' as HardwareWalletType,
-    userMessage || message,
-  );
+  return createHardwareWalletError(code, walletType, userMessage || message);
 };
 
 const metricsProviderValue = {
@@ -117,9 +155,19 @@ describe('HardwareWalletErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockEnsureDeviceReady.mockResolvedValue(true);
+    mockHandleContinueWithPermissionCheck.mockImplementation(
+      async (onRetry: () => Promise<void>) => {
+        await onRetry();
+      },
+    );
     mockUseHardwareWalletConfig.mockReturnValue({
       walletType: HardwareWalletType.Ledger,
     });
+    mockIsFirefoxBrowser.mockReturnValue(false);
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+    mockGetChromiumExtensionCameraSiteSettingsUrl.mockReturnValue(
+      'chrome://settings/content/siteDetails?site=chrome-extension%3A%2F%2Fmock%2F',
+    );
   });
 
   describe('Error Display', () => {
@@ -351,6 +399,83 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
+    it('renders the repair link as an accessible button', async () => {
+      const error = createTestError(
+        ErrorCode.DeviceDisconnected,
+        'Device disconnected',
+        'Device not found.',
+      );
+      const onRepairDevice = jest.fn();
+
+      const { getByRole } = renderWithMetrics(
+        <HardwareWalletErrorModal
+          error={error}
+          onRepairDevice={onRepairDevice}
+        />,
+      );
+
+      const repairButton = getByRole('button', {
+        name: '[hardwareWalletRepairLink]',
+      });
+
+      expect(repairButton).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(repairButton);
+      });
+
+      expect(onRepairDevice).toHaveBeenCalledTimes(1);
+      expect(onRepairDevice).toHaveBeenCalledWith(HardwareWalletType.Ledger);
+      expect(
+        mockTrackEvent.mock.calls.some(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
+        ),
+      ).toBe(true);
+      expect(
+        mockTrackEvent.mock.calls.some(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+        ),
+      ).toBe(false);
+    });
+
+    it('does not render or track the repair link when onRepairDevice is not provided', async () => {
+      const error = createTestError(
+        ErrorCode.DeviceDisconnected,
+        'Device disconnected',
+        'Device not found.',
+      );
+
+      const { getByText, queryByRole } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(
+        getByText('[hardwareWalletErrorRecoveryConnection1]'),
+      ).toBeInTheDocument();
+      expect(
+        queryByRole('button', {
+          name: '[hardwareWalletRepairLink]',
+        }),
+      ).not.toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+      });
+
+      expect(mockEnsureDeviceReady).toHaveBeenCalledTimes(1);
+      expect(
+        mockTrackEvent.mock.calls.some(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
+        ),
+      ).toBe(false);
+    });
+
     it('displays unlock instructions for ConnectionClosed', () => {
       const error = createTestError(
         ErrorCode.ConnectionClosed,
@@ -387,6 +512,261 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         getByText('[hardwareWalletErrorUnknownErrorDescription]'),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('QR camera permission errors', () => {
+    it('renders blocked camera content when permission is denied', () => {
+      const error = createTestError(
+        ErrorCode.PermissionCameraDenied,
+        'Camera denied',
+        'Camera access denied.',
+      );
+
+      const { getByTestId, queryByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(getByTestId('qr-camera-access-blocked')).toBeInTheDocument();
+      expect(
+        queryByText('[hardwareWalletErrorReconnectButton]'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('opens Chromium camera settings when Open settings is clicked', async () => {
+      const openTabSpy = jest
+        .spyOn(global.platform, 'openTab')
+        .mockResolvedValue({ id: 1 } as Awaited<
+          ReturnType<typeof global.platform.openTab>
+        >);
+      const error = createTestError(
+        ErrorCode.PermissionCameraDenied,
+        'Camera denied',
+        'Camera access denied.',
+      );
+
+      const { getByTestId } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      await act(async () => {
+        fireEvent.click(getByTestId('qr-camera-open-settings'));
+      });
+
+      expect(mockGetChromiumExtensionCameraSiteSettingsUrl).toHaveBeenCalled();
+      expect(openTabSpy).toHaveBeenCalledWith({
+        url: 'chrome://settings/content/siteDetails?site=chrome-extension%3A%2F%2Fmock%2F',
+      });
+
+      openTabSpy.mockRestore();
+    });
+
+    it('renders needed camera content when the permission prompt was dismissed (Chromium)', () => {
+      mockIsFirefoxBrowser.mockReturnValue(false);
+      const error = createTestError(
+        ErrorCode.PermissionCameraPromptDismissed,
+        'Prompt dismissed',
+        'Prompt dismissed.',
+      );
+
+      const { getByTestId } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(getByTestId('qr-camera-access-needed')).toBeInTheDocument();
+    });
+
+    it('renders blocked Firefox instructions when prompt was dismissed in Firefox', () => {
+      mockIsFirefoxBrowser.mockReturnValue(true);
+      const error = createTestError(
+        ErrorCode.PermissionCameraPromptDismissed,
+        'Prompt dismissed',
+        'Prompt dismissed.',
+      );
+
+      const { getByTestId, queryByTestId } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(getByTestId('qr-camera-access-blocked')).toBeInTheDocument();
+      expect(getByTestId('qr-camera-firefox-instructions')).toBeInTheDocument();
+      expect(queryByTestId('qr-camera-access-needed')).not.toBeInTheDocument();
+    });
+
+    it('renders Firefox instructions when blocked and browser is Firefox', () => {
+      mockIsFirefoxBrowser.mockReturnValue(true);
+      const error = createTestError(
+        ErrorCode.PermissionCameraDenied,
+        'Camera denied',
+        'Camera access denied.',
+      );
+
+      const { getByTestId } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(getByTestId('qr-camera-firefox-instructions')).toBeInTheDocument();
+    });
+
+    describe('MetaMetrics tracking', () => {
+      it('tracks PermissionCameraDenied with CameraPermissionDenied error_type', async () => {
+        mockUseHardwareWalletConfig.mockReturnValue({
+          walletType: HardwareWalletType.Qr,
+        });
+        const error = createTestError(
+          ErrorCode.PermissionCameraDenied,
+          'Camera denied',
+          'Camera access denied.',
+          HardwareWalletType.Qr,
+        );
+
+        renderWithMetrics(<HardwareWalletErrorModal error={error} />);
+
+        await waitFor(() => {
+          const modalViewed = mockTrackEvent.mock.calls.filter(
+            (call) =>
+              call[0].event ===
+              MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+          );
+          expect(modalViewed).toHaveLength(1);
+          expect(modalViewed[0][0].properties).toMatchObject({
+            device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+            error_type:
+              MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionDenied,
+            error_code: 'PermissionCameraDenied',
+            error_type_view_count: 1,
+          });
+        });
+      });
+
+      it('tracks PermissionCameraPromptDismissed with CameraPermissionPromptDismissed error_type', async () => {
+        mockUseHardwareWalletConfig.mockReturnValue({
+          walletType: HardwareWalletType.Qr,
+        });
+        const error = createTestError(
+          ErrorCode.PermissionCameraPromptDismissed,
+          'Prompt dismissed',
+          'Prompt dismissed.',
+          HardwareWalletType.Qr,
+        );
+
+        renderWithMetrics(<HardwareWalletErrorModal error={error} />);
+
+        await waitFor(() => {
+          const modalViewed = mockTrackEvent.mock.calls.filter(
+            (call) =>
+              call[0].event ===
+              MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+          );
+          expect(modalViewed).toHaveLength(1);
+          expect(modalViewed[0][0].properties).toMatchObject({
+            device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+            error_type:
+              MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionPromptDismissed,
+            error_code: 'PermissionCameraPromptDismissed',
+            error_type_view_count: 1,
+          });
+        });
+      });
+
+      it('tracks CTA clicked with correct QR camera error_type on retry', async () => {
+        mockUseHardwareWalletConfig.mockReturnValue({
+          walletType: HardwareWalletType.Qr,
+        });
+        const error = createTestError(
+          ErrorCode.PermissionCameraDenied,
+          'Camera denied',
+          'Camera access denied.',
+          HardwareWalletType.Qr,
+        );
+
+        const { getByTestId } = renderWithMetrics(
+          <HardwareWalletErrorModal error={error} />,
+        );
+
+        await act(async () => {
+          fireEvent.click(getByTestId('qr-camera-blocked-continue'));
+        });
+
+        await waitFor(() => {
+          const ctaClicked = mockTrackEvent.mock.calls.filter(
+            (call) =>
+              call[0].event ===
+              MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+          );
+          expect(ctaClicked).toHaveLength(1);
+          expect(ctaClicked[0][0].properties).toMatchObject({
+            device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+            error_type:
+              MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionDenied,
+            error_code: 'PermissionCameraDenied',
+          });
+        });
+      });
+    });
+
+    describe('Continue button delegates to handleContinueWithPermissionCheck', () => {
+      it('calls handleContinueWithPermissionCheck for needed variant', async () => {
+        const error = createTestError(
+          ErrorCode.PermissionCameraPromptDismissed,
+          'Prompt dismissed',
+          'Prompt dismissed.',
+        );
+
+        const { getByTestId } = renderWithMetrics(
+          <HardwareWalletErrorModal error={error} />,
+        );
+
+        await act(async () => {
+          fireEvent.click(getByTestId('qr-camera-access-needed-continue'));
+        });
+
+        expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledTimes(1);
+        expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledWith(
+          expect.any(Function),
+          null,
+        );
+      });
+
+      it('calls handleContinueWithPermissionCheck for blocked variant', async () => {
+        const error = createTestError(
+          ErrorCode.PermissionCameraDenied,
+          'Camera denied',
+          'Camera access denied.',
+        );
+
+        const { getByTestId } = renderWithMetrics(
+          <HardwareWalletErrorModal error={error} />,
+        );
+
+        await act(async () => {
+          fireEvent.click(getByTestId('qr-camera-blocked-continue'));
+        });
+
+        expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledTimes(1);
+        expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledWith(
+          expect.any(Function),
+          null,
+        );
+      });
+
+      it('wires onRetry callback to handleRetry (which calls ensureDeviceReady)', async () => {
+        const error = createTestError(
+          ErrorCode.PermissionCameraPromptDismissed,
+          'Prompt dismissed',
+          'Prompt dismissed.',
+        );
+
+        const { getByTestId } = renderWithMetrics(
+          <HardwareWalletErrorModal error={error} />,
+        );
+
+        await act(async () => {
+          fireEvent.click(getByTestId('qr-camera-access-needed-continue'));
+        });
+
+        expect(mockEnsureDeviceReady).toHaveBeenCalledTimes(1);
+      });
     });
   });
 

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { getPreferences } from '../../../../../selectors';
+import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import SortControl from './sort-control';
 

@@ -1,5 +1,6 @@
 import path from 'path';
 import { promises as fs, existsSync } from 'fs';
+import { merge } from 'lodash';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
 import {
   ConsoleErrorBuffer,
@@ -7,6 +8,7 @@ import {
   waitForExtensionUiReady,
 } from '@metamask/client-mcp-core';
 import type { ExtensionReadinessConfig } from '@metamask/client-mcp-core';
+import type { ManifestFlags } from '../../../../shared/lib/manifestFlags';
 import {
   CONNECT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -23,9 +25,11 @@ import type {
   LauncherContext,
   NetworkConfig,
 } from './launcher-types';
+import { resolveRepoRoot } from './resolve-repo-root';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
+const REPO_ROOT = resolveRepoRoot();
 
 // Routes that indicate a confirmation screen when matched against the sidepanel URL hash.
 const SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES: string[] = [
@@ -60,6 +64,7 @@ type ResolvedOptions = {
   stateMode: 'default' | 'onboarding' | 'custom';
   network: NetworkConfig;
   proxyServer?: string;
+  manifestFlags?: Partial<ManifestFlags>;
 };
 
 export function buildChromiumLaunchArgs(
@@ -95,12 +100,14 @@ export class MetaMaskExtensionLauncher {
 
   private userDataDir: string;
 
+  private manifestBackupPath?: string;
+
   private consoleErrorBuffer = new ConsoleErrorBuffer(100);
 
   constructor(options: LauncherLaunchOptions = {}) {
     this.options = {
       extensionPath:
-        options.extensionPath ?? path.join(process.cwd(), 'dist', 'chrome'),
+        options.extensionPath ?? path.join(REPO_ROOT, 'dist', 'chrome'),
       headless: Boolean(options.headless),
       userDataDir: options.userDataDir ?? '',
       viewportWidth: options.viewportWidth ?? 1280,
@@ -108,13 +115,14 @@ export class MetaMaskExtensionLauncher {
       slowMo: options.slowMo ?? 0,
       screenshotDir:
         options.screenshotDir ??
-        path.join(process.cwd(), 'test-artifacts', 'screenshots'),
+        path.join(REPO_ROOT, 'test-artifacts', 'screenshots'),
       stateMode: options.stateMode ?? 'default',
       network: options.network ?? {
         mode: 'localhost',
         chainId: DEFAULT_CHAIN_ID,
       },
       proxyServer: options.proxyServer,
+      manifestFlags: options.manifestFlags,
     };
     this.userDataDir = '';
 
@@ -127,7 +135,7 @@ export class MetaMaskExtensionLauncher {
   }
 
   private ensureDependenciesInstalled(): void {
-    const nodeModulesPath = path.join(process.cwd(), 'node_modules');
+    const nodeModulesPath = path.join(REPO_ROOT, 'node_modules');
     if (!existsSync(nodeModulesPath)) {
       throw new Error(
         'Dependencies not installed. The node_modules directory was not found.\n\n' +
@@ -149,10 +157,7 @@ export class MetaMaskExtensionLauncher {
           `Configuration error: network.mode '${mode}' requires a valid 'rpcUrl' to be provided.`,
         );
       }
-      try {
-        // eslint-disable-next-line no-new
-        new URL(rpcUrl);
-      } catch {
+      if (!URL.canParse(rpcUrl)) {
         throw new Error(
           `Configuration error: network.rpcUrl '${rpcUrl}' is not a valid URL. ` +
             `Expected format: http://localhost:8545 or https://eth.llamarpc.com`,
@@ -177,15 +182,49 @@ export class MetaMaskExtensionLauncher {
     }
   }
 
+  private getManifestPath(): string {
+    return path.join(this.options.extensionPath, 'manifest.json');
+  }
+
+  private async backupManifest(): Promise<void> {
+    const manifestPath = this.getManifestPath();
+    const backupPath = `${manifestPath}.backup`;
+    await fs.copyFile(manifestPath, backupPath);
+    this.manifestBackupPath = backupPath;
+  }
+
+  private async patchManifestFlags(
+    flags: Partial<ManifestFlags>,
+  ): Promise<void> {
+    const manifestPath = this.getManifestPath();
+    const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf-8'));
+    manifest._flags = merge({}, manifest._flags ?? {}, flags);
+    await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+  }
+
+  private async restoreManifest(): Promise<void> {
+    if (!this.manifestBackupPath || !existsSync(this.manifestBackupPath)) {
+      return;
+    }
+    await fs.copyFile(this.manifestBackupPath, this.getManifestPath());
+    await fs.rm(this.manifestBackupPath, { force: true });
+    this.manifestBackupPath = undefined;
+  }
+
   async launch(): Promise<LauncherContext> {
     await this.validateExtensionExists();
 
     await this.ensureDirectories();
 
+    if (this.options.manifestFlags) {
+      await this.backupManifest();
+      await this.patchManifestFlags(this.options.manifestFlags);
+    }
+
     try {
       this.userDataDir =
         this.options.userDataDir ||
-        path.join(process.cwd(), `temp-llm-workflow-${Date.now()}`);
+        path.join(REPO_ROOT, `temp-llm-workflow-${Date.now()}`);
       await fs.mkdir(this.userDataDir, { recursive: true });
 
       const launchArgs = buildChromiumLaunchArgs(
@@ -504,25 +543,28 @@ export class MetaMaskExtensionLauncher {
   }
 
   async cleanup(): Promise<void> {
-    if (this.context) {
-      try {
-        await this.context.close();
-      } catch (e) {
-        console.warn('Failed to close browser context:', e);
+    try {
+      if (this.context) {
+        try {
+          await this.context.close();
+        } catch (e) {
+          console.warn('Failed to close browser context:', e);
+        }
+        this.context = undefined;
       }
-      this.context = undefined;
-    }
 
-    if (this.userDataDir && !this.options.userDataDir) {
-      try {
-        await fs.rm(this.userDataDir, { recursive: true, force: true });
-      } catch {
-        console.warn('Failed to clean up user data directory');
+      if (this.userDataDir && !this.options.userDataDir) {
+        try {
+          await fs.rm(this.userDataDir, { recursive: true, force: true });
+        } catch {
+          console.warn('Failed to clean up user data directory');
+        }
       }
+    } finally {
+      await this.restoreManifest();
+      this.extensionPage = undefined;
+      this.extensionId = undefined;
     }
-
-    this.extensionPage = undefined;
-    this.extensionId = undefined;
   }
 }
 

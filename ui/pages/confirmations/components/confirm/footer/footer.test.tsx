@@ -49,6 +49,7 @@ jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
 jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
   useIsTransactionPayLoading: jest.fn(() => false),
+  useTransactionPayPrimaryRequiredToken: jest.fn(() => undefined),
   useTransactionPayRequiredTokens: jest.fn(() => []),
 }));
 
@@ -88,7 +89,8 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
 }));
-jest.mock('../../../../../../app/scripts/lib/util', () => ({
+jest.mock('../../../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../../../shared/lib/environment-type'),
   getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
 }));
 jest.mock('../../../../../store/background-connection', () => ({
@@ -298,6 +300,8 @@ describe('ConfirmFooter', () => {
       loading: false,
       subscriptions: [],
       error: undefined,
+      customerId: undefined,
+      lastSubscription: undefined,
     });
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
   });
@@ -685,6 +689,26 @@ describe('ConfirmFooter', () => {
   });
 
   describe('hardware wallet handling', () => {
+    it('renders confirm button when hardware wallet transport is connected', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Connected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: true,
+      });
+
+      const { getByTestId, queryByTestId } = render();
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+    });
+
     it('renders confirm button when hardware wallet is ready', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,

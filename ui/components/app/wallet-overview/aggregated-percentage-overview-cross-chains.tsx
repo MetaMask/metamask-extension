@@ -4,30 +4,30 @@ import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
+import { Box, Skeleton } from '@metamask/design-system-react';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getPreferences,
   getMarketData,
   getChainIdsToPoll,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
+import {
+  formatValue,
+  isValidAmount,
+} from '../../../../shared/lib/format-value';
 import { useFormatters } from '../../../hooks/useFormatters';
 import {
-  Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, SensitiveText } from '../../component-library';
+import { SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
-import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { TokenWithBalance } from '../../multichain/asset-picker-amount/asset-picker-modal/types';
 
@@ -161,12 +161,12 @@ export const AggregatedPercentageOverviewCrossChains = ({
 
   return (
     <Skeleton
-      isLoading={
+      hideChildren={
         !anyEnabledNetworksAreAvailable &&
         isZeroAmount(formattedAmountChangeCrossChains)
       }
     >
-      <Box display={Display.Flex} className="gap-1">
+      <Box className="flex gap-1">
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}

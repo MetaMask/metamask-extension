@@ -11,7 +11,10 @@ export {
   useHardwareWalletError,
 } from './HardwareWalletErrorProvider';
 export { ConnectionState } from './connectionState';
-export { useHardwareFooter } from './useHardwareFooter';
+export {
+  useHardwareFooter,
+  isHardwareConnectionReadyForConfirmFooter,
+} from './useHardwareFooter';
 export type { SubmitPreflightCheckOptions } from './useHardwareFooter';
 export { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 export * from './errors';

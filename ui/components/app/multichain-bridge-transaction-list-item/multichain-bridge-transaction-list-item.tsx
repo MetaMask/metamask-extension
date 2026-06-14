@@ -5,21 +5,19 @@ import { BigNumber } from 'bignumber.js';
 import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
+import { Box } from '@metamask/design-system-react';
 import {
   isBridgeComplete,
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
-import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import { ActivityListItem } from '../../multichain/activity-list-item/activity-list-item';
 import Segment from '../../../pages/bridge/transaction-details/segment';
 import {
   Display,
-  FlexDirection,
-  BlockSize,
   TextColor,
   FontWeight,
   TextAlign,
@@ -27,7 +25,6 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
   Text,
   BadgeWrapper,
   AvatarNetwork,
@@ -38,7 +35,10 @@ import {
   MULTICHAIN_NETWORK_TO_NICKNAME,
   MULTICHAIN_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/multichain/networks';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import {
+  TransactionGroupCategory,
+  TransactionGroupStatus,
+} from '../../../../shared/constants/transaction';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { formatAmount } from '../../../pages/confirmations/components/simulation-details/formatAmount';
@@ -59,9 +59,11 @@ type MultichainBridgeTransactionListItemProps = {
  * @param options0.bridgeHistoryItem - The bridge history item data to display
  * @param options0.toggleShowDetails - Function to call when the item is clicked
  */
-const MultichainBridgeTransactionListItem: React.FC<
-  MultichainBridgeTransactionListItemProps
-> = ({ transaction, bridgeHistoryItem, toggleShowDetails }) => {
+const MultichainBridgeTransactionListItem = ({
+  transaction,
+  bridgeHistoryItem,
+  toggleShowDetails,
+}: MultichainBridgeTransactionListItemProps) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 
@@ -112,11 +114,19 @@ const MultichainBridgeTransactionListItem: React.FC<
     ? `${t('bridgeTo')} ${displayChainName}`
     : capitalize(type);
 
+  let status = TransactionStatus.Unconfirmed;
+  if (isBridgeFullyComplete) {
+    status = TransactionStatus.Confirmed;
+  } else if (isBridgeFailedOrSourceFailed) {
+    status = TransactionStatus.Failed;
+  }
+
   return (
     <ActivityListItem
       className="multichain-bridge-transaction-list-item"
-      data-testid="multichain-bridge-activity-item"
+      status={KEYRING_TRANSACTION_STATUS_KEY[status]}
       onClick={() => toggleShowDetails(transaction)}
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       icon={
         <BadgeWrapper
           anchorElementShape={BadgeWrapperAnchorElementShape.circular}
@@ -143,17 +153,17 @@ const MultichainBridgeTransactionListItem: React.FC<
           />
         </BadgeWrapper>
       }
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       rightContent={
         <>
           <Text
-            className="activity-list-item__primary-currency"
+            className="activity-list-item__primary-currency text-s-body-md @compact:text-s-body-sm"
             color={TextColor.textDefault}
             data-testid="transaction-list-item-primary-currency"
             ellipsis
             fontWeight={FontWeight.Medium}
             textAlign={TextAlign.Right}
             title="Primary Currency"
-            variant={TextVariant.bodyMdMedium}
           >
             {(() => {
               if (sourceAsset?.fungible) {
@@ -169,18 +179,13 @@ const MultichainBridgeTransactionListItem: React.FC<
         </>
       }
       title={title}
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       subtitle={
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={1}
-        >
+        <Box className="flex flex-col" gap={1}>
           {isTerminalState ? (
             <TransactionStatusLabel
-              date={formatTimestamp(transaction.timestamp)}
               error={{}}
               status={KEYRING_TRANSACTION_STATUS_KEY[transaction.status]}
-              statusOnly
               className={
                 isBridgeFullyComplete
                   ? 'transaction-status-label--confirmed'
@@ -188,20 +193,14 @@ const MultichainBridgeTransactionListItem: React.FC<
               }
             />
           ) : (
-            <Box
-              marginTop={0}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={1}
-              width={BlockSize.Full}
-            >
+            <Box marginTop={0} className="flex flex-col w-full" gap={1}>
               <Text
                 color={TextColor.textAlternative}
                 variant={TextVariant.bodySm}
               >
                 {t('bridgeTransactionProgress', [txIndex])}
               </Text>
-              <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
+              <Box className="flex w-full" gap={2}>
                 <Segment type={srcSegmentStatus} />
                 <Segment type={destSegmentStatus} />
               </Box>

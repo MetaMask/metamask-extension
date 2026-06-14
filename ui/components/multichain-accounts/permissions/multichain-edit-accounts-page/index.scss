@@ -52,5 +52,11 @@
     position: relative;
     z-index: 1;
   }
-}
 
+  .multichain-account-list-item {
+    &:hover,
+    &:focus-within {
+      background: var(--color-background-default);
+    }
+  }
+}

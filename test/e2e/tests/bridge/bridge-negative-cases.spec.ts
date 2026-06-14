@@ -163,12 +163,14 @@ describe('Bridge functionality', function (this: Suite) {
         const bridgePage = await enterBridgeQuote(driver);
 
         await bridgePage.submitQuote();
-        await driver.clickElement({ text: 'View activity' });
+        await bridgePage.approveModalIfPresent();
+        await driver.clickElementSafe({ text: 'View activity' });
+        await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkPendingBridgeTransactionActivity();
         await activityList.checkBridgeTransactionDetails(
-          'Bridged to Linea',
+          'Bridging ETH',
           true,
           'pending',
           '1',
@@ -209,7 +211,7 @@ describe('Bridge functionality', function (this: Suite) {
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
         await activityList.checkBridgeTransactionDetails(
-          'Bridged to Linea',
+          'Bridge failed',
           true,
           'failed',
           '1',
@@ -250,7 +252,7 @@ describe('Bridge functionality', function (this: Suite) {
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
         await activityList.checkBridgeTransactionDetails(
-          'Bridged to Linea',
+          'Bridge failed',
           true,
           'failed',
           '1',

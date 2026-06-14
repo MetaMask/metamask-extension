@@ -12,7 +12,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
-import { trackEarlySegmentEvent } from './segment/early-segment-tracking';
+import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
 
 const platform = new ExtensionPlatform();
 
@@ -77,7 +77,7 @@ globalThis.stateHooks.getPersistedState = async function () {
  * @returns The backup state, or null if unavailable.
  */
 globalThis.stateHooks.getBackupState = async function () {
-  return await persistenceManager.getBackup();
+  return (await persistenceManager.getBackup()) ?? null;
 };
 
 const persistedStateMask = {

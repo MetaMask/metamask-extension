@@ -19,20 +19,24 @@ export const useIsTxSubmittable = () => {
   const {
     isInsufficientBalance,
     isInsufficientGasBalance,
+    isInsufficientNativeReserve,
     isInsufficientGasForQuote,
+    isNetworkFeeUnavailable,
     isTxAlertPresent,
     isTxAlertLoading,
   } = useSelector(getValidationErrors, shallowEqual);
 
   return Boolean(
     fromToken &&
-      toToken &&
-      fromChainId &&
-      fromAmount &&
-      activeQuote &&
-      !isInsufficientBalance &&
-      !isInsufficientGasBalance &&
-      !isInsufficientGasForQuote &&
-      !(isTxAlertLoading || isTxAlertPresent),
+    toToken &&
+    fromChainId &&
+    fromAmount &&
+    activeQuote &&
+    !isInsufficientBalance &&
+    !isInsufficientGasBalance &&
+    !isInsufficientGasForQuote &&
+    !isInsufficientNativeReserve &&
+    !isNetworkFeeUnavailable &&
+    !(isTxAlertLoading || isTxAlertPresent),
   );
 };

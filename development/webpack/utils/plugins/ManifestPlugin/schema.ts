@@ -1,5 +1,10 @@
 import { ExtendedJSONSchema } from 'json-schema-to-ts';
 import { Browsers } from '../../helpers';
+import {
+  DEFAULT_ZIP_MTIME,
+  ZIP_MTIME_EXCLUSIVE_MAXIMUM,
+  ZIP_MTIME_MINIMUM,
+} from './zip-mtime';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -81,12 +86,10 @@ export const schema = {
           type: 'number',
           // Zip files use FAT file timestamps, which have a limited range.
           // Datetimes before 1980-01-01 are invalid in standard Zip files.
-          minimum: Date.UTC(1980, 0, 1),
-          // datetimes after 2099-12-31 are invalid in zip files
-          exclusiveMaximum: Date.UTC(2100, 0, 1),
-          get default() {
-            return Date.now();
-          },
+          minimum: ZIP_MTIME_MINIMUM,
+          // Datetimes after 2099-12-31 are invalid in zip files.
+          exclusiveMaximum: ZIP_MTIME_EXCLUSIVE_MAXIMUM,
+          default: DEFAULT_ZIP_MTIME,
         },
         excludeExtensions: {
           description: 'File extensions to exclude from zip.',
@@ -115,6 +118,39 @@ export const schema = {
       description:
         'Whether to set a build ID in the emitted manifest. The build ID is a hash of the build contents that can be used to identify the build and detect when it has changed.',
       type: 'boolean',
+    },
+    stats: {
+      description: 'Optional bundle-size reporting configuration.',
+      anyOf: [
+        {
+          type: 'object',
+          required: ['outFile', 'classifyEntrypoint'],
+          properties: {
+            outFile: {
+              description:
+                'Output file path template for the emitted bundle-size summary relative to webpack output. Must include `[browser]` and end with `.json`, for example `bundle-size/[browser].json`.',
+              type: 'string',
+              pattern: '^.*\\[browser\\].*\\.json$',
+            },
+            debug: {
+              description:
+                'Whether to emit a sibling debug artifact with the classified entrypoint graph.',
+              type: 'boolean',
+            },
+            classifyEntrypoint: {
+              description:
+                'Classifies a webpack entrypoint by runtime surface for bundle-size reporting.',
+              instanceof: 'Function',
+              tsType:
+                "((name: string) => 'background' | 'ui' | 'other' | 'contentScripts' | null)",
+            },
+          },
+          additionalProperties: false,
+        },
+        {
+          const: false,
+        },
+      ],
     },
   },
   additionalProperties: false,

@@ -29,7 +29,6 @@ const Template = (args) => <ActivityListItem {...args} />;
 
 export const DefaultStory = Template.bind({});
 DefaultStory.args = {
-  'data-testid': 'activity-list-item',
   onClick: () => undefined,
   className: 'custom-class',
   title: 'Activity Title',
@@ -55,11 +54,9 @@ DefaultStory.args = {
   ),
   subtitle: (
     <TransactionStatusLabel
-      statusOnly
       isPending
       isEarliestNonce
       error={{}}
-      date={new Date().toDateString()}
       status="pending"
     />
   ),

@@ -166,6 +166,23 @@ export class PerpsStreamBridge {
         if (!this.#activated && this.#isConnectionAlive()) {
           this.#activate();
         }
+        // Prime the controller's per-provider market/user caches so a
+        // subsequent popup cold-mount can hydrate the UI synchronously from
+        // `state.metamask.cachedMarketDataByProvider`/`cachedUserDataByProvider`
+        // and skip the loading skeleton. The controller throttles repeat
+        // calls (preloadGuardMs), so this is cheap to invoke on every init.
+        // Wrap in `Promise.resolve` so a sync throw, an async rejection,
+        // or a sync return all funnel into the same `.catch` — the
+        // controller method may be sync or async, and either failure mode
+        // would otherwise escape as an unhandled rejection in MV3.
+        Promise.resolve()
+          .then(() => this.#controller.startMarketDataPreload())
+          .catch((error) => {
+            console.debug(
+              '[PerpsStreamBridge] startMarketDataPreload failed',
+              error,
+            );
+          });
         return result;
       },
       perpsDisconnect: async (...args: unknown[]) => {

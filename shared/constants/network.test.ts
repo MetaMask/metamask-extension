@@ -22,6 +22,8 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.LINEA_MAINNET]).toBe('Linea');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM]).toBe('OP');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON]).toBe('Polygon');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.TEMPO_MAINNET]).toBe('Tempo');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARC]).toBe('Arc');
   });
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
@@ -38,6 +40,8 @@ describe('NetworkConstants', () => {
         Monad: CHAIN_IDS.MONAD,
         HyperEVM: CHAIN_IDS.HYPE,
         MegaETH: CHAIN_IDS.MEGAETH_MAINNET,
+        Tempo: CHAIN_IDS.TEMPO_MAINNET,
+        Arc: CHAIN_IDS.ARC,
       };
 
       FEATURED_RPCS.forEach((rpc) => {
@@ -82,11 +86,11 @@ describe('NetworkConstants', () => {
       expect(polygonRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
-    it('zkSync Era entry should not use Infura', () => {
+    it('zkSync Era entry should use Infura', () => {
       const [zksyncEraRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.ZKSYNC_ERA,
       );
-      expect(zksyncEraRpc.rpcEndpoints[0].url).not.toContain('infura.io');
+      expect(zksyncEraRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
     it('base entry should use Infura', () => {

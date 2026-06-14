@@ -14,24 +14,9 @@ class EditConnectedAccountsModal {
     text: 'Add account',
   };
 
-  private readonly disconnectButton = {
-    testId: 'disconnect-accounts-button',
-  };
-
   private readonly editAccountsModalTitle = {
     text: 'Edit accounts',
     tag: 'h4',
-  };
-
-  private readonly ethereumAccountButton = {
-    text: 'Ethereum account',
-    tag: 'button',
-  };
-
-  private readonly selectAllAccountsCheckbox = 'input[title="Select all"]';
-
-  private readonly submitAddAccountButton = {
-    testId: 'submit-add-account-with-name',
   };
 
   private readonly connectAccountsButton = {
@@ -110,7 +95,11 @@ class EditConnectedAccountsModal {
     );
     const checkboxes = await this.driver.findElements(this.accountCheckbox);
     const accountCheckbox = checkboxes[accountIndex - 1];
-    await accountCheckbox.click();
+    const checkboxId = await accountCheckbox.getAttribute('id');
+    // Design-system Checkbox renders the native input with opacity-0 behind a
+    // visual div, so clicking the input directly causes ElementClickInterceptedError.
+    // Click the associated label instead (same pattern as hardware-wallet account picker).
+    await this.driver.clickElement(`label[for="${checkboxId}"]`);
   }
 
   /**

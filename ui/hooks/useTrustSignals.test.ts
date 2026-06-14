@@ -23,6 +23,11 @@ jest.mock('../selectors', () => ({
   getAddressSecurityAlertResponse: jest.fn(),
 }));
 
+jest.mock('./useI18nContext', () => ({
+  useI18nContext: () => (key: string) =>
+    key === 'nameModalTitleMalicious' ? 'Malicious Address' : key,
+}));
+
 jest.mock('../../shared/lib/trust-signals', () => {
   const actual = jest.requireActual('../../shared/lib/trust-signals');
   return {

@@ -9,6 +9,7 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import { userStorageHostMock } from '../../mocks/performance-mocks';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
 import {
   BENCHMARK_PERSONA,
@@ -42,7 +43,6 @@ async function measurePagePowerUser(
       ).build(),
       manifestFlags: {
         testing: {
-          disableSync: true,
           infuraProjectId: process.env.INFURA_PROJECT_ID,
         },
       },
@@ -51,6 +51,7 @@ async function measurePagePowerUser(
       extendedTimeoutMultiplier: 3,
       testSpecificMock: async (server: Mockttp) => {
         await mockNotificationServices(server);
+        await userStorageHostMock(server);
       },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
@@ -63,6 +64,9 @@ async function measurePagePowerUser(
         // Confirm the number of accounts in the account list
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
+
+        // Wait for Account Sync to finish.
+        await accountListPage.waitUntilSyncingIsCompleted();
         await accountListPage.checkNumberOfAvailableAccounts(
           WITH_STATE_POWER_USER.withAccounts,
         );

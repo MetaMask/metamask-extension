@@ -55,12 +55,14 @@ type NavigateQuizToPasswordScreenArgs = {
   getByText: (id: string | RegExp) => HTMLElement;
   queryByTestId: (id: string) => HTMLElement | null;
   fireEvent: typeof fireEvent;
+  landingTestId?: string;
 };
 
 async function navigateQuizToPasswordScreen({
   getByText,
   queryByTestId,
   fireEvent: fireEventFn,
+  landingTestId = 'input-password',
 }: NavigateQuizToPasswordScreenArgs) {
   fireEventFn.click(getByText(messages.srpSecurityQuizGetStarted.message));
 
@@ -85,7 +87,7 @@ async function navigateQuizToPasswordScreen({
   fireEventFn.click(queryByTestId('srp-quiz-continue') as HTMLElement);
 
   await waitFor(() => {
-    expect(queryByTestId('input-password')).toBeInTheDocument();
+    expect(queryByTestId(landingTestId)).toBeInTheDocument();
   });
 }
 
@@ -503,7 +505,7 @@ describe('Reveal Seed Page', () => {
     });
   });
 
-  describe('dapp scan warning', () => {
+  describe('malicious site block', () => {
     function setupDappScanTest(
       scanResult: {
         recommendedAction: RecommendedAction;
@@ -513,7 +515,7 @@ describe('Reveal Seed Page', () => {
       mockScanUrlForPhishing.mockReset().mockResolvedValue(scanResult);
     }
 
-    it('does not show dapp scan warning when scan returns no result', async () => {
+    it('shows the generic warning and no block when site is not malicious', async () => {
       setupDappScanTest();
       const { queryByTestId, getByText } = renderWithProvider(
         <RevealSeedPage />,
@@ -530,11 +532,14 @@ describe('Reveal Seed Page', () => {
         expect(mockScanUrlForPhishing).toHaveBeenCalled();
       });
 
-      expect(queryByTestId('dapp-scan-warning')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('reveal-seed-malicious-block'),
+      ).not.toBeInTheDocument();
       expect(queryByTestId('reveal-seed-warning')).toBeInTheDocument();
+      expect(queryByTestId('input-password')).toBeInTheDocument();
     });
 
-    it('shows dapp scan warning and hides generic warning when site is malicious', async () => {
+    it('shows the v2 block and hides password input when site is malicious', async () => {
       setupDappScanTest({
         recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
@@ -549,23 +554,41 @@ describe('Reveal Seed Page', () => {
         getByText,
         queryByTestId,
         fireEvent,
+        landingTestId: 'reveal-seed-malicious-block',
       });
 
-      await waitFor(() => {
-        expect(queryByTestId('dapp-scan-warning')).toBeInTheDocument();
-      });
+      expect(
+        queryByTestId('reveal-seed-malicious-block-heading'),
+      ).toHaveTextContent(messages.srpRevealMaliciousBlockHeading.message);
+      expect(
+        queryByTestId('reveal-seed-malicious-block-body'),
+      ).toHaveTextContent(
+        messages.srpRevealMaliciousBlockBody.message.replace('$1', 'evil.com'),
+      );
+      expect(
+        queryByTestId('reveal-seed-malicious-block-dismiss'),
+      ).toHaveTextContent(messages.srpRevealMaliciousBlockDismiss.message);
 
+      expect(queryByTestId('input-password')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('reveal-seed-password-continue'),
+      ).not.toBeInTheDocument();
       expect(queryByTestId('reveal-seed-warning')).not.toBeInTheDocument();
     });
 
-    it('shows acknowledgment checkbox when site is malicious', async () => {
+    it('navigates back when the Got it button is clicked on the block', async () => {
       setupDappScanTest({
         recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
       });
 
+      const { context: metricsContext, mockTrackEvent } =
+        createMockMetaMetricsContext();
+
       const { queryByTestId, getByText } = renderWithProvider(
-        <RevealSeedPage />,
+        <MetaMetricsContext.Provider value={metricsContext}>
+          <RevealSeedPage />
+        </MetaMetricsContext.Provider>,
         mockStore,
       );
 
@@ -573,53 +596,27 @@ describe('Reveal Seed Page', () => {
         getByText,
         queryByTestId,
         fireEvent,
+        landingTestId: 'reveal-seed-malicious-block',
       });
-
-      await waitFor(() => {
-        expect(
-          queryByTestId('dapp-scan-acknowledge-checkbox'),
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('continue button is disabled until checkbox is acknowledged on malicious site', async () => {
-      setupDappScanTest({
-        recommendedAction: RecommendedAction.Block,
-        hostname: 'evil.com',
-      });
-
-      const { queryByTestId, getByText } = renderWithProvider(
-        <RevealSeedPage />,
-        mockStore,
-      );
-
-      await navigateQuizToPasswordScreen({
-        getByText,
-        queryByTestId,
-        fireEvent,
-      });
-
-      await waitFor(() => {
-        expect(queryByTestId('dapp-scan-warning')).toBeInTheDocument();
-      });
-
-      fireEvent.change(queryByTestId('input-password') as HTMLElement, {
-        target: { value: password },
-      });
-
-      const continueButton = queryByTestId(
-        'reveal-seed-password-continue',
-      ) as HTMLElement;
-      expect(continueButton).toBeDisabled();
 
       fireEvent.click(
-        queryByTestId('dapp-scan-acknowledge-checkbox') as HTMLElement,
+        queryByTestId('reveal-seed-malicious-block-dismiss') as HTMLElement,
       );
 
-      expect(continueButton).toBeEnabled();
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealBackButtonClicked,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          screen: 'PASSWORD_PROMPT_SCREEN',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: 0,
+        },
+      });
     });
 
-    it('fires SrpRevealMaliciousSiteDetected metric only when site is malicious', async () => {
+    it('fires SrpRevealMaliciousSiteDetected when site is malicious', async () => {
       setupDappScanTest({
         recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
@@ -649,7 +646,7 @@ describe('Reveal Seed Page', () => {
       });
     });
 
-    it('does not fire metric event when site is not malicious', async () => {
+    it('does not fire SrpRevealMaliciousSiteDetected when site is not malicious', async () => {
       setupDappScanTest({
         recommendedAction: RecommendedAction.None,
         hostname: 'safe-site.com',

@@ -42,9 +42,15 @@ import {
 } from '../../../../../shared/constants/perps-events';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
+import {
+  formatPerpsLiquidationPrice,
+  isPerpsLiquidationPriceValid,
+  PERPS_LIQUIDATION_PRICE_FALLBACK,
+} from '../utils/formatPerpsDisplayPrice';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
@@ -85,7 +91,7 @@ export type EditMarginModalContentProps = {
  * @param options0.onSaveEnabledChange
  * @param options0.onSavingChange
  */
-export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
+export const EditMarginModalContent = ({
   position,
   account,
   currentPrice,
@@ -95,9 +101,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   onSaveRef,
   onSaveEnabledChange,
   onSavingChange,
-}) => {
+}: EditMarginModalContentProps) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
+  const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
@@ -128,23 +135,27 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     [marginAmount],
   );
   const showLiquidationComparison = amountNumForDisplay > 0;
+  const hasValidAnchorLiquidationPrice = isPerpsLiquidationPriceValid(
+    anchorLiquidationPrice,
+  );
+  const hasValidEstimatedLiquidationPrice = isPerpsLiquidationPriceValid(
+    estimatedLiquidationPrice,
+  );
 
   const liquidationPriceDisplay = useMemo(() => {
-    if (
-      anchorLiquidationPrice === null ||
-      !Number.isFinite(anchorLiquidationPrice)
-    ) {
+    const displayAnchorLiquidationPrice = anchorLiquidationPrice ?? 0;
+    if (!hasValidAnchorLiquidationPrice) {
       return (
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          -
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          data-testid="perps-edit-margin-liquidation-price-value"
+        >
+          {PERPS_LIQUIDATION_PRICE_FALLBACK}
         </Text>
       );
     }
-    if (
-      showLiquidationComparison &&
-      estimatedLiquidationPrice !== null &&
-      Number.isFinite(estimatedLiquidationPrice)
-    ) {
+    if (showLiquidationComparison && hasValidEstimatedLiquidationPrice) {
       return (
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -153,7 +164,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           className="max-w-[65%] flex-wrap justify-end"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {formatPerpsFiat(anchorLiquidationPrice, {
+            {formatPerpsFiat(displayAnchorLiquidationPrice, {
               ranges: PRICE_RANGES_UNIVERSAL,
             })}
           </Text>
@@ -166,9 +177,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             fontWeight={FontWeight.Medium}
             data-testid="perps-edit-margin-liquidation-price-value"
           >
-            {formatPerpsFiat(estimatedLiquidationPrice ?? 0, {
-              ranges: PRICE_RANGES_UNIVERSAL,
-            })}
+            {formatPerpsLiquidationPrice(estimatedLiquidationPrice)}
           </Text>
         </Box>
       );
@@ -180,17 +189,18 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         fontWeight={FontWeight.Medium}
         data-testid="perps-edit-margin-liquidation-price-value"
       >
-        {formatPerpsFiat(
-          estimatedLiquidationPrice ?? anchorLiquidationPrice ?? 0,
-          {
-            ranges: PRICE_RANGES_UNIVERSAL,
-          },
+        {formatPerpsLiquidationPrice(
+          showLiquidationComparison
+            ? estimatedLiquidationPrice
+            : anchorLiquidationPrice,
         )}
       </Text>
     );
   }, [
     anchorLiquidationPrice,
     estimatedLiquidationPrice,
+    hasValidAnchorLiquidationPrice,
+    hasValidEstimatedLiquidationPrice,
     showLiquidationComparison,
   ]);
 
@@ -202,9 +212,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     return Math.min(100, Math.round((n / maxAmount) * 100));
   }, [marginAmount, maxAmount]);
 
-  const formatLiquidationDistance = useCallback((distance: number) => {
-    if (!Number.isFinite(distance)) {
-      return '-';
+  const formatLiquidationDistance = useCallback((distance: number | null) => {
+    if (distance === null || !Number.isFinite(distance)) {
+      return PERPS_LIQUIDATION_PRICE_FALLBACK;
     }
     // Match mobile's adjust-margin view: liquidation distance is rounded to a whole percent.
     return `${distance.toFixed(0)}%`;
@@ -228,7 +238,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   );
 
   const handleSliderChange = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event, value: number | number[]) => {
       if (maxAmount <= 0) {
         return;
       }
@@ -249,109 +259,113 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   );
 
   const handleSaveMargin = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!isValid) {
-      return;
-    }
-
-    const rawMarginAmount = marginAmount.replaceAll(',', '');
-    const amountNum = Number.parseFloat(rawMarginAmount) || 0;
-    if (amountNum <= 0) {
-      return;
-    }
-
-    setIsSaving(true);
-    onSavingChange?.(true);
-
-    try {
-      const signedAmount =
-        marginMode === 'add' ? rawMarginAmount : `-${rawMarginAmount}`;
-
-      const result = await submitRequestToBackground<PerpsBackgroundResult>(
-        'perpsUpdateMargin',
-        [
-          {
-            symbol: position.symbol,
-            amount: signedAmount,
-          },
-        ],
-      );
-
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to update margin');
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!isValid) {
+        return;
       }
 
-      const riskType =
-        marginMode === 'add'
-          ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-          : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-      track(MetaMetricsEventName.PerpsRiskManagement, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-        [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-      });
+      const rawMarginAmount = marginAmount.replaceAll(',', '');
+      const amountNum = Number.parseFloat(rawMarginAmount) || 0;
+      if (amountNum <= 0) {
+        return;
+      }
 
-      const streamManager = getPerpsStreamManager();
-      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
-        'perpsGetPositions',
-        [{ skipCache: true }],
-      );
-      streamManager.pushPositionsWithOverrides(freshPositions);
-      const displaySymbol = getDisplayName(position.symbol);
+      setIsSaving(true);
+      onSavingChange?.(true);
 
-      replacePerpsToastByKey({
-        key:
-          marginMode === 'add'
-            ? PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS
-            : PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS,
-        messageParams: [`$${marginAmount}`, displaySymbol],
-      });
+      try {
+        const signedAmount =
+          marginMode === 'add' ? rawMarginAmount : `-${rawMarginAmount}`;
 
-      setMarginAmount('');
-      onClose();
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'An unknown error occurred';
-
-      const riskType =
-        marginMode === 'add'
-          ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-          : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-      track(MetaMetricsEventName.PerpsRiskManagement, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-        [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-        [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-      });
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-      });
-
-      const normalizedErrorMessage = errorMessage.trim();
-      const shouldUseFallbackDescription =
-        normalizedErrorMessage.length === 0 ||
-        MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-          pattern.test(normalizedErrorMessage),
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsUpdateMargin',
+          [
+            {
+              symbol: position.symbol,
+              amount: signedAmount,
+            },
+          ],
         );
 
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
-        description: shouldUseFallbackDescription
-          ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
-          : normalizedErrorMessage,
-      });
-    } finally {
-      setIsSaving(false);
-      onSavingChange?.(false);
-    }
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to update margin');
+        }
+
+        const riskType =
+          marginMode === 'add'
+            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
+            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
+        track(MetaMetricsEventName.PerpsRiskManagement, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
+          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
+        });
+
+        const streamManager = getPerpsStreamManager();
+        const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+          'perpsGetPositions',
+          [{ skipCache: true }],
+        );
+        streamManager.pushPositionsWithOverrides(freshPositions);
+        const displaySymbol = getDisplayName(position.symbol);
+
+        replacePerpsToastByKey({
+          key:
+            marginMode === 'add'
+              ? PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS
+              : PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS,
+          messageParams: [`$${marginAmount}`, displaySymbol],
+        });
+
+        setMarginAmount('');
+        onClose();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'An unknown error occurred';
+
+        const riskType =
+          marginMode === 'add'
+            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
+            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
+        track(MetaMetricsEventName.PerpsRiskManagement, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
+          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
+        });
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+        });
+
+        const normalizedErrorMessage = errorMessage.trim();
+        const shouldUseFallbackDescription =
+          normalizedErrorMessage.length === 0 ||
+          MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+            pattern.test(normalizedErrorMessage),
+          );
+
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+          description: shouldUseFallbackDescription
+            ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
+            : normalizedErrorMessage,
+        });
+      } finally {
+        setIsSaving(false);
+        onSavingChange?.(false);
+      }
+    });
   }, [
+    gate,
     isEligible,
     marginMode,
     marginAmount,
@@ -445,14 +459,36 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           <Box className="shrink-0">
             <TextField
               size={TextFieldSize.Md}
+              data-testid="perps-edit-margin-amount-input"
               value={marginAmount}
               onChange={handleAmountChange}
+              onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+                event.target.select()
+              }
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
               borderWidth={0}
               backgroundColor={BackgroundColor.backgroundMuted}
               disabled={isSaving}
-              inputProps={{ inputMode: 'decimal', size: 10 }}
+              autoFocus
+              inputProps={{
+                inputMode: 'decimal',
+                size: 10,
+                onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (
+                    event.key !== 'Enter' ||
+                    event.shiftKey ||
+                    event.nativeEvent.isComposing ||
+                    confirmDisabled
+                  ) {
+                    return;
+                  }
+                  event.preventDefault();
+                  handleSaveMargin().catch(() => {
+                    // Errors are surfaced via the perps toast system.
+                  });
+                },
+              }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -490,7 +526,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           </Text>
           {showLiquidationComparison &&
           estimatedLiquidationDistance !== null &&
-          Number.isFinite(estimatedLiquidationDistance) ? (
+          Number.isFinite(estimatedLiquidationDistance) &&
+          hasValidAnchorLiquidationPrice &&
+          hasValidEstimatedLiquidationPrice ? (
             <Box
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
@@ -525,7 +563,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               fontWeight={FontWeight.Medium}
               data-testid="perps-edit-margin-liquidation-distance-value"
             >
-              {formatLiquidationDistance(anchorLiquidationDistance)}
+              {showLiquidationComparison || !hasValidAnchorLiquidationPrice
+                ? PERPS_LIQUIDATION_PRICE_FALLBACK
+                : formatLiquidationDistance(anchorLiquidationDistance)}
             </Text>
           )}
         </Box>

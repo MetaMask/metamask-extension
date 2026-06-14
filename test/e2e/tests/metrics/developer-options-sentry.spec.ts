@@ -35,7 +35,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryError,
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -61,7 +61,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -83,7 +83,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {

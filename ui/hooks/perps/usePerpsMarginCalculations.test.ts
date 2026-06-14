@@ -11,19 +11,47 @@ describe('usePerpsMarginCalculations', () => {
   const account = mockAccountState;
 
   describe('add mode', () => {
-    it('returns available balance as maxAmount', () => {
+    const accountWithTradeableBalance = {
+      ...mockAccountState,
+      spendableBalance: '10125.00',
+      withdrawableBalance: '9000.00',
+    };
+
+    const accountWithoutTradeableBalance = {
+      ...mockAccountState,
+      spendableBalance: '10125.00',
+      withdrawableBalance: '10125.00',
+    };
+
+    it('returns tradeable balance as maxAmount when available', () => {
       const { result } = renderHook(() =>
         usePerpsMarginCalculations({
           position,
           currentPrice,
-          account,
+          account: accountWithTradeableBalance,
           mode: 'add',
           amount: '0',
         }),
       );
 
       expect(result.current.maxAmount).toBe(
-        parseFloat(mockAccountState.availableBalance),
+        Number.parseFloat(accountWithTradeableBalance.withdrawableBalance),
+      );
+    });
+
+    it('uses withdrawableBalance as maxAmount when both balances match', () => {
+      const { result } = renderHook(() =>
+        usePerpsMarginCalculations({
+          position,
+          currentPrice,
+          account: accountWithoutTradeableBalance,
+          mode: 'add',
+          amount: '0',
+        }),
+      );
+
+      expect(result.current.maxAmount).toBe(
+        Number.parseFloat(accountWithoutTradeableBalance.withdrawableBalance),
       );
     });
 
@@ -201,5 +229,29 @@ describe('usePerpsMarginCalculations', () => {
 
       expect(result.current.estimatedLiquidationPrice).toBeNull();
     });
+  });
+
+  describe('with position that has a non-positive liquidation price', () => {
+    for (const liquidationPrice of ['0', '-1']) {
+      it(`returns fallback values when liquidation price is ${liquidationPrice}`, () => {
+        const { result } = renderHook(() =>
+          usePerpsMarginCalculations({
+            position: {
+              ...position,
+              liquidationPrice,
+            },
+            currentPrice,
+            account,
+            mode: 'add',
+            amount: '100',
+          }),
+        );
+
+        expect(result.current.anchorLiquidationPrice).toBeNull();
+        expect(result.current.estimatedLiquidationPrice).toBeNull();
+        expect(result.current.anchorLiquidationDistance).toBe(0);
+        expect(result.current.estimatedLiquidationDistance).toBeNull();
+      });
+    }
   });
 });

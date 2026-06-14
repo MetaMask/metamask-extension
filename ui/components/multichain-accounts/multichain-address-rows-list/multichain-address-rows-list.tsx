@@ -21,8 +21,7 @@ import { TextFieldSearch, TextFieldSearchSize } from '../../component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 
 // Priority networks that should appear first (using CAIP chain IDs)
 const PRIORITY_CHAIN_IDS: CaipChainId[] = [
@@ -130,7 +129,7 @@ export const MultichainAddressRowsList = ({
         normalizedAddress: string;
       },
       index: number,
-    ): React.JSX.Element => {
+    ): JSX.Element => {
       const handleCopyClick = () => {
         handleCopy(item.normalizedAddress);
       };

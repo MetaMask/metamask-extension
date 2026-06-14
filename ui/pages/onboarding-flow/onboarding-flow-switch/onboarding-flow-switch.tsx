@@ -14,10 +14,10 @@ import {
 import {
   getCompletedOnboarding,
   getIsInitialized,
-  getIsUnlocked,
   getIsWalletResetInProgress,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import {

@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import {
   useIsTransactionPayLoading,
-  useTransactionPayRequiredTokens,
+  useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 
@@ -33,51 +33,46 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayLoading();
-  const requiredTokens = useTransactionPayRequiredTokens();
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
     [alerts],
   );
 
-  const hasAmount = useMemo(
-    () =>
-      (requiredTokens ?? [])
-        .filter((token) => !token.skipIfBalance)
-        .reduce(
-          (acc, token) => acc.plus(new BigNumber(token.amountUsd ?? 0)),
-          new BigNumber(0),
-        )
-        .gt(0),
-    [requiredTokens],
-  );
-
   return useMemo(() => {
-    const isLoadingState = isGaslessLoading || isPayLoading;
     const i18nKey =
       (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
     const defaultButtonText = t(i18nKey);
 
-    const hasBlockingAlerts = blockingAlerts.length > 0;
-    const isDisabled = hasBlockingAlerts || !hasAmount;
+    const isAwaitingRequiredToken = !primaryRequiredToken;
 
+    const hasBlockingAlerts = blockingAlerts.length > 0;
     const firstAlert = blockingAlerts[0];
     const alertText =
       firstAlert?.reason ?? (firstAlert?.message as string | undefined);
 
-    const buttonText =
-      hasBlockingAlerts && alertText ? alertText : defaultButtonText;
+    const hasAmount = primaryRequiredToken
+      ? new BigNumber(primaryRequiredToken.amountUsd ?? 0).gt(0)
+      : false;
 
-    return {
-      buttonText,
-      isDisabled,
-      isLoading: isLoadingState,
-    };
+    const buttonText =
+      !isAwaitingRequiredToken && hasBlockingAlerts && alertText
+        ? alertText
+        : defaultButtonText;
+
+    const isDisabled =
+      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount;
+
+    const isLoading =
+      isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
+
+    return { buttonText, isDisabled, isLoading };
   }, [
     blockingAlerts,
-    hasAmount,
     isGaslessLoading,
     isPayLoading,
+    primaryRequiredToken,
     transactionType,
     t,
   ]);
@@ -104,7 +99,7 @@ export const SingleActionFooter = ({
         className="w-full"
         data-testid="confirm-footer-button"
         disabled={isDisabled}
-        isLoading={isLoading && !isDisabled}
+        isLoading={isLoading}
         onClick={isLoading ? undefined : onSubmit}
         size={ButtonSize.Lg}
       >

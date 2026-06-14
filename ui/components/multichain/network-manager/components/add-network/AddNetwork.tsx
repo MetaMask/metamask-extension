@@ -1,8 +1,8 @@
 import { UpdateNetworkFields } from '@metamask/network-controller';
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { NetworksForm } from '../../../../../pages/settings/networks-tab/networks-form/networks-form';
-import { useNetworkFormState } from '../../../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import { NetworksForm } from '../../../networks-form/networks-form';
+import { useNetworkFormState } from '../../../networks-form/networks-form-state';
 
 type AddNetworkProps = {
   networkFormState: ReturnType<typeof useNetworkFormState>;
@@ -10,11 +10,11 @@ type AddNetworkProps = {
   isEdit?: boolean;
 };
 
-export const AddNetwork: React.FC<AddNetworkProps> = ({
+export const AddNetwork = ({
   networkFormState,
   network,
   isEdit = false,
-}) => {
+}: AddNetworkProps) => {
   const [, setSearchParams] = useSearchParams();
   return (
     <NetworksForm
