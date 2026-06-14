@@ -138,7 +138,7 @@ describe('BTC Account - Activity', function (this: Suite) {
 
         const details = new BitcoinTransactionDetailsPage(driver);
         await details.checkPageIsLoaded();
-        await details.checkTitle('Send');
+        await details.checkTitle('Sending BTC');
         await details.checkTime();
         await details.checkStatus('Pending');
         await details.checkAmount(`-${sendAmount} BTC`);
