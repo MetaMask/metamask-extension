@@ -3,19 +3,22 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
+import { isFlask } from '../../../../shared/lib/build-types';
 
 /**
  * The origins of the Portfolio dapp.
  */
 const PORTFOLIO_ORIGINS: string[] = [
-  'http://localhost:3000',
-  'https://portfolio.metamask.io',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  'https://dev.portfolio.metamask.io',
-  'https://stage.portfolio.metamask.io',
-  'https://ramps-dev.portfolio.metamask.io',
-  'https://portfolio-builds.metafi-dev.codefi.network',
-  ///: END:ONLY_INCLUDE_IF
+  'https://app.metamask.io',
+  // Add the following to the list only if the build is Flask
+  ...(isFlask()
+    ? [
+        'https://dev.app.metamask.io',
+        'https://stage.app.metamask.io',
+        'https://ramps-dev.app.metamask.io',
+        'https://portfolio-builds.metafi-dev.codefi.network',
+      ]
+    : []),
 ];
 
 /**
@@ -25,18 +28,15 @@ const METAMASK_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
   KeyringRpcMethod.CreateAccount,
-  KeyringRpcMethod.GetAccountBalances,
+  KeyringRpcMethod.CreateAccounts,
   KeyringRpcMethod.FilterAccountChains,
-  KeyringRpcMethod.UpdateAccount,
   KeyringRpcMethod.DeleteAccount,
-  KeyringRpcMethod.ExportAccount,
   KeyringRpcMethod.ListRequests,
   KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.SubmitRequest,
-  KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
-  KeyringRpcMethod.ListAccountTransactions,
-  KeyringRpcMethod.ListAccountAssets,
+  KeyringRpcMethod.ResolveAccountAddress,
+  KeyringRpcMethod.SetSelectedAccounts,
 ];
 
 /**
@@ -54,11 +54,8 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ExportAccount,
   KeyringRpcMethod.ListRequests,
   KeyringRpcMethod.GetRequest,
-  KeyringRpcMethod.SubmitRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
-  KeyringRpcMethod.ListAccountTransactions,
-  KeyringRpcMethod.ListAccountAssets,
 ];
 
 /**
@@ -67,19 +64,8 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
 const PORTFOLIO_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
-  KeyringRpcMethod.CreateAccount,
   KeyringRpcMethod.GetAccountBalances,
-  KeyringRpcMethod.FilterAccountChains,
-  KeyringRpcMethod.UpdateAccount,
-  KeyringRpcMethod.DeleteAccount,
-  KeyringRpcMethod.ExportAccount,
-  KeyringRpcMethod.ListRequests,
-  KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.SubmitRequest,
-  KeyringRpcMethod.ApproveRequest,
-  KeyringRpcMethod.RejectRequest,
-  KeyringRpcMethod.ListAccountTransactions,
-  KeyringRpcMethod.ListAccountAssets,
 ];
 
 /**
@@ -87,9 +73,8 @@ const PORTFOLIO_ALLOWED_METHODS: string[] = [
  */
 const ALLOWED_PROTOCOLS: string[] = [
   'https:',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  'http:',
-  ///: END:ONLY_INCLUDE_IF
+  // Add the following to the list only if the build is Flask
+  ...(isFlask() ? ['http:'] : []),
 ];
 
 /**
