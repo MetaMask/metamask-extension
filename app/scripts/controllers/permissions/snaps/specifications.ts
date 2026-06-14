@@ -10,6 +10,7 @@ import type { AssetsControllerGetStateAction } from '@metamask/assets-controller
 import type { MultichainTransactionsControllerActions } from '@metamask/multichain-transactions-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import {
   SnapControllerClearSnapStateAction,
   SnapControllerGetSnapAction,
@@ -53,16 +54,14 @@ import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/li
 
 type ConfirmTransactionParams = {
   accountId: string;
-  assetDecimals: number;
-  assetSymbol: string;
-  assetType: string;
-  chain: string;
-  chainNamespace: 'solana' | 'bip122' | 'tron';
-  feeAssetType?: string;
-  feeRaw?: string;
-  from: string;
+  amount: string;
+  assetId?: CaipAssetType;
+  chainId: CaipChainId;
+  fee?: {
+    amount: string;
+    assetId?: CaipAssetType;
+  };
   to: string;
-  value: string;
 };
 
 export type SnapPermissionSpecificationsActions =
@@ -216,17 +215,12 @@ export function getSnapPermissionSpecifications(
             'MultichainTransactionsController:addPendingTransaction',
             {
               approvalId,
-              chainNamespace: params.chainNamespace,
-              chain: params.chain,
+              chainId: params.chainId,
               accountId: params.accountId,
-              from: params.from,
               to: params.to,
-              value: params.value,
-              assetType: params.assetType,
-              assetSymbol: params.assetSymbol,
-              assetDecimals: params.assetDecimals,
-              feeRaw: params.feeRaw,
-              feeAssetType: params.feeAssetType,
+              amount: params.amount,
+              assetId: params.assetId,
+              fee: params.fee,
               origin: snapId,
               createdAt: Date.now(),
             },
@@ -241,11 +235,10 @@ export function getSnapPermissionSpecifications(
                 type: UNIVERSAL_TRANSACTION_APPROVAL_TYPE as ApprovalType,
                 requestData: {
                   approvalId,
-                  chainNamespace: params.chainNamespace,
+                  chainId: params.chainId,
                   txParams: {
-                    from: params.from,
                     to: params.to,
-                    value: params.value,
+                    value: params.amount,
                   },
                 },
               },

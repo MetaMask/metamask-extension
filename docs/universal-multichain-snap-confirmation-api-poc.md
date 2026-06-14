@@ -8,7 +8,7 @@ The API is protocol-agnostic. The Solana wallet snap is only the first consumer 
 
 ## Architecture Summary
 
-The Snap owns protocol-specific transaction construction and execution. The extension owns user confirmation UX. Core provides short-lived pending transaction state so the extension UI can render the Snap-provided transaction details while the approval is active.
+Snaps Platform defines and validates the Snap API. Extension implements the client hook and approval flow. Core stores pending confirmation display data. Extension UI renders the native confirmation. The Solana wallet snap is the first consumer.
 
 Runtime flow:
 
@@ -16,7 +16,7 @@ Runtime flow:
 2. Snap calls `snap_confirmTransaction`.
 3. Snaps Platform validates the request and invokes the confirmation hook.
 4. Extension receives the Snap API request through that hook.
-5. Extension stores display data in `MultichainTransactionsController.pendingTransactions`.
+5. Extension stores the lean transaction payload in `MultichainTransactionsController.pendingTransactions`.
 6. Extension creates an `ApprovalController` request with type `universalTransaction`.
 7. Extension Confirm UI renders the approval using the pending transaction data.
 8. User approves or rejects.
@@ -53,76 +53,93 @@ sequenceDiagram
   Snap->>Snap: Sign and submit if approved
 ```
 
-## Functional Components
+## Changes By Repository And Package
 
-### Snap API: `snap_confirmTransaction`
+### MetaMask/snaps
 
-Added a new Snap-facing confirmation API path.
+#### `@metamask/snaps-rpc-methods`
 
-The API accepts protocol-agnostic transaction display data and returns a boolean approval result. It is the boundary between protocol-specific Snap execution and native extension confirmation UX.
+Defines the new restricted method.
 
-The API is defined in the Snaps monorepo as a restricted method. It validates the request payload, requires the `snap_confirmTransaction` permission in the Snap manifest, and delegates rendering to a client-provided `showUniversalTransactionConfirmation` hook.
+- Adds `snap_confirmTransaction`.
+- Defines `ConfirmTransactionParams` with `chainId`, `accountId`, `to`, `amount`, optional `assetId`, and optional `fee`.
+- Validates the protocol-agnostic payload, including CAIP chain and asset IDs.
+- Registers the method in the restricted method registry.
+- Declares the `showUniversalTransactionConfirmation` hook.
+- Returns a boolean approval result to the Snap.
 
-The POC adds the method to the restricted method registry, the Snap permission types, manifest validation, and the Snap controller restricted-method allowlist.
+#### `@metamask/snaps-sdk`
 
-This POC does not finalize naming, schema, access model, or production gating.
+Exposes the permission in Snap developer-facing types.
 
-### Solana Wallet Snap
+- Adds `snap_confirmTransaction: EmptyObject` to `InitialPermissions`.
+- Allows Snap manifests and Snap code to type-check when requesting the new permission.
 
-Uses the new Snap API as the first consumer.
+#### `@metamask/snaps-utils`
 
-`SendService` builds the Solana transaction, prepares display metadata, and calls `snap_confirmTransaction` before signing or submitting. If approval returns `true`, it continues with `SolMethod.SignAndSendTransaction`. If approval returns `false`, it stops.
+Adds manifest validation support.
 
-This proves Solana transaction mechanics can stay in the Snap while confirmation UX moves to the extension.
+- Adds `snap_confirmTransaction` to manifest permission validation.
+- Allows Snaps to declare `"snap_confirmTransaction": {}` in `initialPermissions`.
 
-### Extension Service Worker
+#### `@metamask/snaps-controllers`
 
-Implements the restricted method handler behind `snap_confirmTransaction`.
+Allows the permission through Snap installation and permission handling.
 
-The handler creates an approval ID, writes the Snap payload into pending multichain transaction state, creates an `ApprovalController` request, waits for the user decision, cleans up pending state, and resolves the Snap request.
+- Adds `snap_confirmTransaction` to `ALLOWED_PERMISSIONS`.
+- Ensures the restricted method permission is accepted by Snap controller permission handling.
 
-### Core `MultichainTransactionsController`
+### MetaMask/core
 
-Adds short-lived pending universal transaction state.
+#### `@metamask/multichain-transactions-controller`
 
-`pendingTransactions` is keyed by `approvalId` and stores the transaction display payload needed by the UI. It is non-persisted and removed when the approval resolves.
+Provides the temporary Snap-to-UI state bridge.
 
-Added actions:
+- Adds non-persisted `pendingTransactions` keyed by `approvalId`.
+- Adds `PendingMultichainTransaction`.
+- Adds messenger actions: `addPendingTransaction`, `updatePendingTransaction`, `removePendingTransaction`, and `getPendingTransaction`.
+- Lets the extension UI read the Snap-provided display payload while the approval is active.
 
-- `addPendingTransaction`
-- `updatePendingTransaction`
-- `removePendingTransaction`
-- `getPendingTransaction`
+### MetaMask/metamask-extension
 
-Added/exported type:
+#### Snaps Platform Integration
 
-- `PendingMultichainTransaction`
+Connects the Snaps Platform hook to extension approval infrastructure.
 
-### Approval Controller Integration
+- Implements `showUniversalTransactionConfirmation`.
+- Creates an `approvalId`.
+- Writes the lean Snap payload into `MultichainTransactionsController.pendingTransactions`.
+- Creates an `ApprovalController` request with type `universalTransaction`.
+- Resolves the Snap API request based on approval or rejection.
+- Cleans up pending transaction state after resolution.
 
-Uses the existing approval system for the user decision lifecycle.
+#### Confirmation UI
 
-The extension creates an approval request with type `universalTransaction`. This allows the normal Confirm page infrastructure to route and resolve the request, rather than creating a separate Snap-specific confirmation flow.
+Renders the native confirmation.
 
-### Extension Confirmation UI
+- Routes `universalTransaction` approvals to universal confirmation UI.
+- Reads pending transaction data by `approvalId`.
+- Renders heading, From, To, Network, and Network Fee rows.
+- Reuses wallet-initiated header so Advanced Details works.
+- Matches EVM Send loading and fee-row visual behavior.
 
-Adds a universal transaction confirmation view inside the existing Confirm page.
+#### Send Flow Integration
 
-The UI reads pending transaction data by approval ID, then renders:
+Aligns non-EVM Send loading with EVM Send.
 
-- Transaction heading
-- From row
-- To row
-- Network row
-- Network Fee row
+- Navigates to Confirm with `loader=Send` while Snap approval is being prepared.
+- Replaces the old Send loader screen with the EVM-style Confirm skeleton.
 
-It also reuses the wallet-initiated header so universal confirmations get Advanced Details. Network fee layout was adjusted to match EVM patterns, including right alignment, token icon placement, and advanced fee sub-line behavior.
+### MetaMask/snap-solana-wallet
 
-### Send Flow Loading
+#### `@metamask/solana-wallet-snap`
 
-Updates non-EVM Send submission loading to match EVM.
+Provides the first consumer.
 
-Instead of showing the old Send loader screen while the Snap prepares the approval, the flow navigates to the Confirm page with `loader=Send`. This shows the same confirmation skeleton EVM Send uses until the universal approval becomes active.
+- `SendService` builds the Solana transaction.
+- Calls `snap_confirmTransaction` before signing or submitting.
+- Passes account, recipient, chain ID, raw amount, optional asset ID, and optional raw fee amount.
+- Continues with `SolMethod.SignAndSendTransaction` only if approved.
 
 ## What This POC Proves
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { SOLANA_TOKEN_IMAGE_URL } from '../../../../../../../../shared/constants/multichain/networks';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
 import {
   AvatarToken,
@@ -22,10 +21,6 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useUniversalTransactionDataOptional } from '../../../../../hooks/transactions/useUniversalTransactionData';
 
-const FEE_ASSET_IMAGE_BY_SYMBOL: Record<string, string> = {
-  SOL: SOLANA_TOKEN_IMAGE_URL,
-};
-
 export function UniversalTransactionFeeRow() {
   const t = useI18nContext();
   const data = useUniversalTransactionDataOptional();
@@ -33,14 +28,11 @@ export function UniversalTransactionFeeRow() {
     selectConfirmationAdvancedDetailsOpen,
   );
 
-  if (!data) {
+  if (!data?.formattedFee || !data.feeAssetSymbol) {
     return null;
   }
 
-  const feeAssetSymbol = 'SOL';
-  const feeImageUrl = FEE_ASSET_IMAGE_BY_SYMBOL[feeAssetSymbol];
-  const feeFiat = '< $0.01';
-  const feeNative = '0.000005';
+  const collapsedFee = data.formattedFeeFiat ?? data.formattedFee;
 
   const amountWithIcon = (amountText: string) => (
     <Box
@@ -52,11 +44,11 @@ export function UniversalTransactionFeeRow() {
     >
       <Text color={TextColor.textDefault}>{amountText}</Text>
       <AvatarToken
-        name={feeAssetSymbol}
-        src={feeImageUrl}
+        name={data.feeAssetSymbol}
+        src={data.feeAssetImageUrl}
         size={AvatarTokenSize.Xs}
       />
-      <Text color={TextColor.textDefault}>{feeAssetSymbol}</Text>
+      <Text color={TextColor.textDefault}>{data.feeAssetSymbol}</Text>
     </Box>
   );
 
@@ -68,17 +60,19 @@ export function UniversalTransactionFeeRow() {
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.flexEnd}
         >
-          {amountWithIcon(feeNative)}
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
-            textAlign={TextAlign.Right}
-          >
-            {feeFiat}
-          </Text>
+          {amountWithIcon(data.formattedFee)}
+          {data.formattedFeeFiat ? (
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodySm}
+              textAlign={TextAlign.Right}
+            >
+              {data.formattedFeeFiat}
+            </Text>
+          ) : null}
         </Box>
       ) : (
-        amountWithIcon(feeFiat)
+        amountWithIcon(collapsedFee)
       )}
     </ConfirmInfoRow>
   );
