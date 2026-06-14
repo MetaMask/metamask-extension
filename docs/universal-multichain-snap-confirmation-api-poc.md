@@ -14,20 +14,21 @@ Runtime flow:
 
 1. Snap builds a protocol transaction.
 2. Snap calls `snap_confirmTransaction`.
-3. Extension receives the Snap API request.
-4. Extension stores display data in `MultichainTransactionsController.pendingTransactions`.
-5. Extension creates an `ApprovalController` request with type `universalTransaction`.
-6. Extension Confirm UI renders the approval using the pending transaction data.
-7. User approves or rejects.
-8. Extension resolves the Snap API request.
-9. Snap signs/submits only if approved.
+3. Snaps Platform validates the request and invokes the confirmation hook.
+4. Extension receives the Snap API request through that hook.
+5. Extension stores display data in `MultichainTransactionsController.pendingTransactions`.
+6. Extension creates an `ApprovalController` request with type `universalTransaction`.
+7. Extension Confirm UI renders the approval using the pending transaction data.
+8. User approves or rejects.
+9. Extension resolves the Snap API request.
+10. Snap signs/submits only if approved.
 
 ## Flow Diagram
 
 ```mermaid
 sequenceDiagram
   participant Snap as Snap
-  participant SnapAPI as snap_confirmTransaction
+  participant SnapAPI as Snaps Platform snap_confirmTransaction
   participant Extension as Extension service worker
   participant Core as MultichainTransactionsController
   participant Approval as ApprovalController
@@ -36,7 +37,8 @@ sequenceDiagram
 
   Snap->>Snap: Build protocol transaction
   Snap->>SnapAPI: Request native confirmation
-  SnapAPI->>Extension: Invoke restricted method handler
+  SnapAPI->>SnapAPI: Validate params and permission
+  SnapAPI->>Extension: Invoke showUniversalTransactionConfirmation hook
   Extension->>Core: addPendingTransaction(approvalId, payload)
   Extension->>Approval: addRequest(type: universalTransaction)
   Approval->>UI: Activate confirmation
@@ -58,6 +60,10 @@ sequenceDiagram
 Added a new Snap-facing confirmation API path.
 
 The API accepts protocol-agnostic transaction display data and returns a boolean approval result. It is the boundary between protocol-specific Snap execution and native extension confirmation UX.
+
+The API is defined in the Snaps monorepo as a restricted method. It validates the request payload, requires the `snap_confirmTransaction` permission in the Snap manifest, and delegates rendering to a client-provided `showUniversalTransactionConfirmation` hook.
+
+The POC adds the method to the restricted method registry, the Snap permission types, manifest validation, and the Snap controller restricted-method allowlist.
 
 This POC does not finalize naming, schema, access model, or production gating.
 
