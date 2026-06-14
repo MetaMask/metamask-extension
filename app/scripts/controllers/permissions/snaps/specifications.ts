@@ -53,10 +53,10 @@ import {
 } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
 
-const activeUniversalTransactionConfirmations = new Map<string, string>();
-
 function getUniversalTransactionConfirmationKey(snapId: string, id: string) {
-  return `${snapId}:${id}`;
+  const encodedId = encodeURIComponent(`${snapId}:${id}`).replace(/%/gu, '.');
+
+  return `snap-confirm-tx:${encodedId}`;
 }
 
 export type SnapPermissionSpecificationsActions =
@@ -205,26 +205,9 @@ export function getSnapPermissionSpecifications(
             throw rpcErrors.methodNotSupported();
           }
 
-          const approvalId = nanoid();
-          const confirmationKey = params.id
+          const approvalId = params.id
             ? getUniversalTransactionConfirmationKey(snapId, params.id)
-            : undefined;
-
-          if (
-            confirmationKey &&
-            activeUniversalTransactionConfirmations.has(confirmationKey)
-          ) {
-            throw rpcErrors.invalidParams(
-              'A transaction confirmation with this id is already active.',
-            );
-          }
-
-          if (confirmationKey) {
-            activeUniversalTransactionConfirmations.set(
-              confirmationKey,
-              approvalId,
-            );
-          }
+            : nanoid();
 
           messenger.call(
             'MultichainTransactionsController:addPendingTransaction',
@@ -267,10 +250,6 @@ export function getSnapPermissionSpecifications(
           } catch (_err) {
             return false;
           } finally {
-            if (confirmationKey) {
-              activeUniversalTransactionConfirmations.delete(confirmationKey);
-            }
-
             messenger.call(
               'MultichainTransactionsController:removePendingTransaction',
               approvalId,
@@ -286,15 +265,10 @@ export function getSnapPermissionSpecifications(
             throw rpcErrors.methodNotSupported();
           }
 
-          const approvalId = activeUniversalTransactionConfirmations.get(
-            getUniversalTransactionConfirmationKey(snapId, params.id),
+          const approvalId = getUniversalTransactionConfirmationKey(
+            snapId,
+            params.id,
           );
-
-          if (!approvalId) {
-            throw rpcErrors.invalidParams(
-              'No active transaction confirmation found for this id.',
-            );
-          }
 
           const patch = {
             ...(params.custom === undefined ? {} : { custom: params.custom }),
