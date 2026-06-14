@@ -47,7 +47,6 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
   KeyringRpcMethod.CreateAccount,
-  KeyringRpcMethod.GetAccountBalances,
   KeyringRpcMethod.FilterAccountChains,
   KeyringRpcMethod.UpdateAccount,
   KeyringRpcMethod.DeleteAccount,
