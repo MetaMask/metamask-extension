@@ -97,7 +97,7 @@ Provides the temporary Snap-to-UI state bridge.
 
 - Adds non-persisted `pendingTransactions` keyed by `approvalId`.
 - Adds `PendingMultichainTransaction`.
-- Adds messenger actions: `addPendingTransaction`, `updatePendingTransaction`, `removePendingTransaction`, and `getPendingTransaction`.
+- Adds messenger actions: `addPendingTransaction`, `updatePendingTransaction`, and `removePendingTransaction`; reads should use standard controller state.
 - Lets the extension UI read the Snap-provided display payload while the approval is active.
 
 ### MetaMask/metamask-extension

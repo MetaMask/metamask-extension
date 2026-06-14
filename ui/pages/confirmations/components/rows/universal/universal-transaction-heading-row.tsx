@@ -6,13 +6,13 @@ import {
   AvatarTokenSize,
   Box,
   Text,
-} from '../../../../../../../components/component-library';
+} from '../../../../../components/component-library';
 import {
   TextColor,
   TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
-import { useUniversalTransactionDataOptional } from '../../../../../hooks/transactions/useUniversalTransactionData';
-import SendHeadingLayout from '../../shared/send-heading-layout/send-heading-layout';
+} from '../../../../../helpers/constants/design-system';
+import SendHeadingLayout from '../../confirm/info/shared/send-heading-layout/send-heading-layout';
+import { useUniversalTransactionDataOptional } from '../../../hooks/transactions/useUniversalTransactionData';
 
 export function UniversalTransactionHeadingRow() {
   const data = useUniversalTransactionDataOptional();

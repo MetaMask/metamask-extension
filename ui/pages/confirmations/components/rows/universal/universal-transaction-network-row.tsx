@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row/row';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   Text,
-} from '../../../../../../../components/component-library';
+} from '../../../../../components/component-library';
 import {
   AlignItems,
   BlockSize,
@@ -14,9 +14,9 @@ import {
   FlexWrap,
   TextColor,
   TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { useUniversalTransactionDataOptional } from '../../../../../hooks/transactions/useUniversalTransactionData';
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useUniversalTransactionDataOptional } from '../../../hooks/transactions/useUniversalTransactionData';
 
 export function UniversalTransactionNetworkRow() {
   const t = useI18nContext();

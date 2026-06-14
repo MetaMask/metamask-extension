@@ -5,13 +5,13 @@ import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useSolanaTransactionData } from '../../../../hooks/transactions/useSolanaTransactionData';
 import { useUniversalTransactionDataOptional } from '../../../../hooks/transactions/useUniversalTransactionData';
+import { SolanaTestCountRow } from '../../../rows/solana/solana-test-count-row';
+import { UniversalTransactionFeeRow } from '../../../rows/universal/universal-transaction-fee-row';
+import { UniversalTransactionFromRow } from '../../../rows/universal/universal-transaction-from-row';
+import { UniversalTransactionHeadingRow } from '../../../rows/universal/universal-transaction-heading-row';
+import { UniversalTransactionNetworkRow } from '../../../rows/universal/universal-transaction-network-row';
+import { UniversalTransactionToRow } from '../../../rows/universal/universal-transaction-to-row';
 import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
-import { SolanaTestCountRow } from './rows/solana-test-count-row';
-import { UniversalTransactionFeeRow } from './rows/universal-transaction-fee-row';
-import { UniversalTransactionFromRow } from './rows/universal-transaction-from-row';
-import { UniversalTransactionHeadingRow } from './rows/universal-transaction-heading-row';
-import { UniversalTransactionNetworkRow } from './rows/universal-transaction-network-row';
-import { UniversalTransactionToRow } from './rows/universal-transaction-to-row';
 
 function UniversalTransactionInfo() {
   const data = useUniversalTransactionDataOptional();
@@ -37,10 +37,10 @@ function UniversalTransactionInfo() {
       <ConfirmInfoSection>
         <UniversalTransactionNetworkRow />
       </ConfirmInfoSection>
-      <SolanaSection />
       <ConfirmInfoSection>
         <UniversalTransactionFeeRow />
       </ConfirmInfoSection>
+      <SolanaSection />
     </>
   );
 }

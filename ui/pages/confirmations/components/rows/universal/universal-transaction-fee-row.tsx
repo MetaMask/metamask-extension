@@ -1,14 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import {
   AvatarToken,
   AvatarTokenSize,
   Box,
   Text,
-} from '../../../../../../../components/component-library';
+} from '../../../../../components/component-library';
 import {
   AlignItems,
   Display,
@@ -17,11 +17,11 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
-import { useUniversalTransactionDataOptional } from '../../../../../hooks/transactions/useUniversalTransactionData';
-import { useConfirmationId } from '../../../../../hooks/useConfirmationId';
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useConfirmationId } from '../../../hooks/useConfirmationId';
+import { useUniversalTransactionDataOptional } from '../../../hooks/transactions/useUniversalTransactionData';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 
 export function UniversalTransactionFeeRow() {
   const t = useI18nContext();

@@ -11,21 +11,21 @@ import {
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
-import { PreferredAvatar } from '../../../../../../../components/app/preferred-avatar';
-import { FlexDirection } from '../../../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { selectAccountGroupNameByInternalAccount } from '../../../../../selectors/accounts';
-import { useUniversalTransactionDataOptional } from '../../../../../hooks/transactions/useUniversalTransactionData';
+import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row/row';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
+import { FlexDirection } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useUniversalTransactionDataOptional } from '../../../hooks/transactions/useUniversalTransactionData';
+import { selectAccountGroupNameByInternalAccount } from '../../../selectors/accounts';
 import { truncateUniversalAddress } from './truncate-universal-address';
 
-export function UniversalTransactionFromRow() {
+export function UniversalTransactionToRow() {
   const t = useI18nContext();
   const data = useUniversalTransactionDataOptional();
   const accountGroupName = useSelector((state) =>
     selectAccountGroupNameByInternalAccount(
       state as Parameters<typeof selectAccountGroupNameByInternalAccount>[0],
-      data?.from,
+      data?.to,
     ),
   );
 
@@ -33,11 +33,11 @@ export function UniversalTransactionFromRow() {
     return null;
   }
 
-  const display = accountGroupName ?? truncateUniversalAddress(data.from);
+  const display = accountGroupName ?? truncateUniversalAddress(data.to);
 
   return (
     <ConfirmInfoRow
-      label={t('from')}
+      label={t('to')}
       style={{ flexDirection: FlexDirection.Column, width: '100%' }}
     >
       <Box
@@ -57,7 +57,7 @@ export function UniversalTransactionFromRow() {
           </Text>
         </Box>
         <PreferredAvatar
-          address={data.from}
+          address={data.to}
           size={AvatarAccountSize.Md}
           style={{ flexShrink: 0 }}
         />
