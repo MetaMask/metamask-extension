@@ -1,1 +1,0 @@
-/Users/matthewwalsh/dev/metamask-extension-universal-tx/shared/constants/confirmations.ts:6:export const USE_UNIVERSAL_MULTICHAIN_CONFIRMATION = true;
