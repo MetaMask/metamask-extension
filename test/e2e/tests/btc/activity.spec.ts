@@ -54,6 +54,8 @@ async function broadcastBitcoinSend(
   amount: string,
 ): Promise<void> {
   const homePage = await landOnBitcoinHomepage(driver);
+  const assetList = new AssetListPage(driver);
+  await assetList.checkTokenAmountIsDisplayed(`${DEFAULT_BTC_BALANCE} BTC`);
   const sendPage = new SendPage(driver);
   await homePage.startSendFlow();
   await sendPage.selectToken(BTC_CHAIN_ID, 'BTC');
