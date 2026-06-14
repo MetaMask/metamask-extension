@@ -126,6 +126,7 @@ Renders the native confirmation.
 - Uses an alert row for Network Fee so universal affordability alerts render inline instead of only blocking the footer.
 - Converts client display-unit multichain balances into raw units before comparing against the raw Snap confirmation payload.
 - Displays non-EVM native Send balances at full token precision because the Max button is hidden and truncated balance text can leave hidden dust that covers fees during QA.
+- Adds a POC `useNonEvmBalance` hook that queries Accounts API v5 directly for Solana balances, proving Send validation and native confirmation alerts do not require Snap-owned balance retrieval.
 
 #### Send Flow Integration
 
