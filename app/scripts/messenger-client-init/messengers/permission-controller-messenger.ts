@@ -111,6 +111,7 @@ export function getPermissionControllerInitMessenger(
       'MultichainRoutingService:getSupportedAccounts',
       'MultichainTransactionsController:addPendingTransaction',
       'MultichainTransactionsController:removePendingTransaction',
+      'MultichainTransactionsController:updatePendingTransaction',
       'NetworkController:findNetworkClientIdByChainId',
       'PhishingController:maybeUpdateState',
       'PhishingController:testOrigin',

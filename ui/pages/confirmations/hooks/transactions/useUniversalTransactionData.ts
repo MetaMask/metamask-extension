@@ -1,4 +1,6 @@
 import { BigNumber } from 'bignumber.js';
+import type { Json } from '@metamask/utils';
+import type { PendingMultichainTransaction } from '@metamask/multichain-transactions-controller';
 import { useSelector } from 'react-redux';
 
 import {
@@ -23,21 +25,6 @@ import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getAssetsMetadata, getAssetsRates } from '../../../../selectors/assets';
 import { formatAmount } from '../../components/simulation-details/formatAmount';
 import { useConfirmationId } from '../useConfirmationId';
-
-type PendingUniversalTransaction = {
-  approvalId: string;
-  chainId: string;
-  accountId: string;
-  to: string;
-  amount: string;
-  assetId?: string;
-  fee?: {
-    amount: string;
-    assetId?: string;
-  };
-  origin: string;
-  createdAt: number;
-};
 
 type AssetDisplayMetadata = {
   assetId: string;
@@ -66,6 +53,7 @@ export type UniversalTransactionData = {
   feeAssetSymbol?: string;
   feeAssetDecimals?: number;
   feeAssetImageUrl?: string;
+  custom?: Record<string, Json>;
   origin: string;
   formattedAmount: string;
   formattedFee?: string;
@@ -73,9 +61,13 @@ export type UniversalTransactionData = {
 };
 
 function selectPendingUniversalTransactionById(
-  state: { metamask: { pendingTransactions?: Record<string, PendingUniversalTransaction> } },
+  state: {
+    metamask: {
+      pendingTransactions?: Record<string, PendingMultichainTransaction>;
+    };
+  },
   id: string | undefined,
-): PendingUniversalTransaction | undefined {
+): PendingMultichainTransaction | undefined {
   return id ? state.metamask.pendingTransactions?.[id] : undefined;
 }
 
@@ -269,6 +261,7 @@ export function useUniversalTransactionDataOptional():
     feeAssetSymbol: feeAssetMetadata?.symbol,
     feeAssetDecimals: feeAssetMetadata?.decimals,
     feeAssetImageUrl: feeAssetMetadata?.imageUrl,
+    custom: pendingTx.custom,
     origin: pendingTx.origin,
     formattedAmount,
     formattedFee,

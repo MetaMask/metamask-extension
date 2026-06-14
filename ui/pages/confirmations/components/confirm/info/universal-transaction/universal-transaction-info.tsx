@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Box } from '@metamask/design-system-react';
 import React from 'react';
 
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { useSolanaTransactionData } from '../../../../hooks/transactions/useSolanaTransactionData';
 import { useUniversalTransactionDataOptional } from '../../../../hooks/transactions/useUniversalTransactionData';
 import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
+import { SolanaTestCountRow } from './rows/solana-test-count-row';
 import { UniversalTransactionFeeRow } from './rows/universal-transaction-fee-row';
 import { UniversalTransactionFromRow } from './rows/universal-transaction-from-row';
 import { UniversalTransactionHeadingRow } from './rows/universal-transaction-heading-row';
@@ -34,10 +37,25 @@ function UniversalTransactionInfo() {
       <ConfirmInfoSection>
         <UniversalTransactionNetworkRow />
       </ConfirmInfoSection>
+      <SolanaSection />
       <ConfirmInfoSection>
         <UniversalTransactionFeeRow />
       </ConfirmInfoSection>
     </>
+  );
+}
+
+function SolanaSection() {
+  const data = useSolanaTransactionData();
+
+  if (!data) {
+    return null;
+  }
+
+  return (
+    <ConfirmInfoSection>
+      <SolanaTestCountRow />
+    </ConfirmInfoSection>
   );
 }
 

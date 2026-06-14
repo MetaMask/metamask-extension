@@ -1,7 +1,9 @@
 import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
+  type ConfirmTransactionParams,
   RestrictedMethodMessenger,
+  type UpdateConfirmTransactionParams,
 } from '@metamask/snaps-rpc-methods';
 import { ControllerGetStateAction } from '@metamask/base-controller';
 import { ApprovalType } from '@metamask/controller-utils';
@@ -10,7 +12,6 @@ import type { AssetsControllerGetStateAction } from '@metamask/assets-controller
 import type { MultichainTransactionsControllerActions } from '@metamask/multichain-transactions-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import {
   SnapControllerClearSnapStateAction,
   SnapControllerGetSnapAction,
@@ -52,17 +53,11 @@ import {
 } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
 
-type ConfirmTransactionParams = {
-  accountId: string;
-  amount: string;
-  assetId?: CaipAssetType;
-  chainId: CaipChainId;
-  fee?: {
-    amount: string;
-    assetId?: CaipAssetType;
-  };
-  to: string;
-};
+const activeUniversalTransactionConfirmations = new Map<string, string>();
+
+function getUniversalTransactionConfirmationKey(snapId: string, id: string) {
+  return `${snapId}:${id}`;
+}
 
 export type SnapPermissionSpecificationsActions =
   | AppStateControllerGetUnlockPromiseAction
@@ -211,6 +206,26 @@ export function getSnapPermissionSpecifications(
           }
 
           const approvalId = nanoid();
+          const confirmationKey = params.id
+            ? getUniversalTransactionConfirmationKey(snapId, params.id)
+            : undefined;
+
+          if (
+            confirmationKey &&
+            activeUniversalTransactionConfirmations.has(confirmationKey)
+          ) {
+            throw rpcErrors.invalidParams(
+              'A transaction confirmation with this id is already active.',
+            );
+          }
+
+          if (confirmationKey) {
+            activeUniversalTransactionConfirmations.set(
+              confirmationKey,
+              approvalId,
+            );
+          }
+
           messenger.call(
             'MultichainTransactionsController:addPendingTransaction',
             {
@@ -220,6 +235,7 @@ export function getSnapPermissionSpecifications(
               to: params.to,
               amount: params.amount,
               assetId: params.assetId,
+              custom: params.custom,
               fee: params.fee,
               origin: snapId,
               createdAt: Date.now(),
@@ -251,11 +267,45 @@ export function getSnapPermissionSpecifications(
           } catch (_err) {
             return false;
           } finally {
+            if (confirmationKey) {
+              activeUniversalTransactionConfirmations.delete(confirmationKey);
+            }
+
             messenger.call(
               'MultichainTransactionsController:removePendingTransaction',
               approvalId,
             );
           }
+        },
+
+        updateUniversalTransactionConfirmation: async (
+          snapId: string,
+          params: UpdateConfirmTransactionParams,
+        ) => {
+          if (!USE_UNIVERSAL_MULTICHAIN_CONFIRMATION) {
+            throw rpcErrors.methodNotSupported();
+          }
+
+          const approvalId = activeUniversalTransactionConfirmations.get(
+            getUniversalTransactionConfirmationKey(snapId, params.id),
+          );
+
+          if (!approvalId) {
+            throw rpcErrors.invalidParams(
+              'No active transaction confirmation found for this id.',
+            );
+          }
+
+          const patch = {
+            ...(params.custom === undefined ? {} : { custom: params.custom }),
+            ...(params.fee === undefined ? {} : { fee: params.fee }),
+          };
+
+          messenger.call(
+            'MultichainTransactionsController:updatePendingTransaction',
+            approvalId,
+            patch,
+          );
         },
 
         getSnapKeyring: async () => {

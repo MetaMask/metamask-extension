@@ -128,6 +128,7 @@ Renders the native confirmation.
 - Displays non-EVM native Send balances at full token precision because the Max button is hidden and truncated balance text can leave hidden dust that covers fees during QA.
 - Adds a POC `useNonEvmBalance` hook that queries Accounts API v5 directly for Solana balances, proving Send validation and native confirmation alerts do not require Snap-owned balance retrieval.
 - For supported Solana balances, Send and universal confirmation wait for Accounts API balance data instead of falling back to Snap-backed balance state.
+- Supports Snap-provided `custom` confirmation data and `snap_updateConfirmTransaction` updates, demonstrated by a Solana-only test count row.
 
 #### Send Flow Integration
 
