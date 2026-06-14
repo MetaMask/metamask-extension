@@ -47,13 +47,9 @@
         "@babel/plugin-proposal-object-rest-spread": true,
         "@babel/plugin-proposal-optional-chaining": true,
         "@babel/plugin-transform-class-properties": true,
-        "@babel/preset-env>@babel/plugin-transform-class-properties": true,
-        "@babel/preset-env>@babel/plugin-transform-class-static-block": true,
         "@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/plugin-transform-private-methods": true,
-        "@babel/preset-env>@babel/plugin-transform-private-methods": true,
         "@babel/plugin-transform-private-property-in-object": true,
-        "@babel/preset-env>@babel/plugin-transform-private-property-in-object": true,
         "@babel/plugin-transform-runtime": true,
         "@babel/preset-env": true,
         "@babel/preset-react": true,
@@ -2280,7 +2276,7 @@
         "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>es-object-atoms": true,
-        "jsdom>form-data>es-set-tostringtag": true,
+        "axios>form-data>es-set-tostringtag": true,
         "string.prototype.matchall>es-abstract>es-to-primitive": true,
         "string.prototype.matchall>es-abstract>function.prototype.name": true,
         "string.prototype.matchall>get-intrinsic": true,
@@ -2310,7 +2306,7 @@
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true,
         "string.prototype.matchall>es-errors": true,
-        "jsdom>form-data>es-set-tostringtag": true,
+        "axios>form-data>es-set-tostringtag": true,
         "string.prototype.matchall>get-intrinsic": true,
         "eslint-plugin-react>es-iterator-helpers>globalthis": true,
         "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true,
@@ -2325,11 +2321,11 @@
         "string.prototype.matchall>es-errors": true
       }
     },
-    "jsdom>form-data>es-set-tostringtag": {
+    "axios>form-data>es-set-tostringtag": {
       "packages": {
         "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true,
         "eslint-plugin-react>hasown": true
       }
     },
@@ -2488,7 +2484,7 @@
       "packages": {
         "eslint-import-resolver-typescript>@nolyfill/is-core-module": true,
         "nock>debug": true,
-        "eslint-plugin-n>get-tsconfig": true,
+        "tsx>get-tsconfig": true,
         "eslint-import-resolver-typescript>is-bun-module": true,
         "eslint-import-resolver-typescript>stable-hash": true,
         "copy-webpack-plugin>tinyglobby": true,
@@ -2531,7 +2527,7 @@
         "nock>debug": true,
         "eslint>doctrine": true,
         "eslint": true,
-        "eslint-plugin-n>get-tsconfig": true,
+        "tsx>get-tsconfig": true,
         "del>is-glob": true,
         "eslint-plugin-import-x>minimatch": true,
         "semver": true,
@@ -2600,7 +2596,7 @@
         "eslint>@eslint-community/eslint-utils": true,
         "webpack>enhanced-resolve": true,
         "eslint-plugin-n>eslint-plugin-es-x": true,
-        "eslint-plugin-n>get-tsconfig": true,
+        "tsx>get-tsconfig": true,
         "eslint-plugin-n>globals": true,
         "eslint-plugin-n>globrex": true,
         "eslint>ignore": true,
@@ -3154,7 +3150,7 @@
         "pumpify>pump": true
       }
     },
-    "eslint-plugin-n>get-tsconfig": {
+    "tsx>get-tsconfig": {
       "builtin": {
         "fs": true,
         "node:fs": true,
@@ -3174,7 +3170,7 @@
         "process.platform": true
       },
       "packages": {
-        "eslint-plugin-n>get-tsconfig>resolve-pkg-maps": true
+        "tsx>get-tsconfig>resolve-pkg-maps": true
       }
     },
     "eslint>glob-parent": {
@@ -3448,7 +3444,7 @@
         "string.prototype.matchall>call-bind>es-define-property": true
       }
     },
-    "jsdom>form-data>es-set-tostringtag>has-tostringtag": {
+    "axios>form-data>es-set-tostringtag>has-tostringtag": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
       }
@@ -3589,7 +3585,7 @@
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
-        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "gulp-zip>plugin-error>extend-shallow>is-extendable": {
@@ -3632,7 +3628,7 @@
       "packages": {
         "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>gopd": true,
-        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true,
         "eslint-plugin-react>hasown": true
       }
     },
@@ -3644,7 +3640,7 @@
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
-        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": {
