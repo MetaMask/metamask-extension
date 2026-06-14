@@ -99,6 +99,49 @@ describe('useNavigateOnQrScanComplete', () => {
     );
   });
 
+  it('navigates to default route when QR scan completes successfully and transaction status page is skipped', async () => {
+    const store = createBridgeMockStore({
+      metamaskStateOverrides: {
+        activeQrCodeScanRequest: mockQrScanRequest,
+        lastQrScanCompletedSuccessfully: null,
+      },
+    });
+
+    mockUseSelectorOverrides = {
+      getActiveQrCodeScanRequest: mockQrScanRequest,
+      getExtensionSkipTransactionStatusPage: true,
+      getLastQrScanCompletedSuccessfully: null,
+    };
+    const { rerender } = renderHookWithProvider(
+      () => useNavigateOnQrScanComplete(),
+      store,
+    );
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+
+    mockUseSelectorOverrides = {
+      getActiveQrCodeScanRequest: null,
+      getExtensionSkipTransactionStatusPage: true,
+      getLastQrScanCompletedSuccessfully: true,
+    };
+    await act(async () => {
+      rerender();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
+
+    await waitFor(
+      () => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+          state: { stayOnHomePage: true },
+        });
+      },
+      { timeout: 3000 },
+    );
+  });
+
   it('navigates back to prepare when QR scan is rejected/cancelled (lastQrScanCompletedSuccessfully false)', async () => {
     const store = createBridgeMockStore();
 
