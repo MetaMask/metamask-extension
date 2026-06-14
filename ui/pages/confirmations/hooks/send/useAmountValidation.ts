@@ -9,20 +9,11 @@ import {
 } from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { Asset, AssetStandard } from '../../types/send';
-import { useSendType } from './useSendType';
-import { useSnapAmountOnInput } from './useSnapAmountOnInput';
 import { useBalance } from './useBalance';
-
-type SnapOnAmountInputResult = {
-  valid: boolean;
-  errors: { code: string }[];
-};
 
 export const useAmountValidation = () => {
   const t = useI18nContext();
-  const { isNonEvmSendType } = useSendType();
   const { asset, value } = useSendContext();
-  const { validateAmountWithSnap } = useSnapAmountOnInput();
   const { rawBalanceNumeric } = useBalance();
   const [amountError, setAmountError] = useState<string | undefined>(undefined);
 
@@ -30,35 +21,6 @@ export const useAmountValidation = () => {
     setAmountError(errorMessage);
     return errorMessage;
   }, []);
-
-  const validateNonEvmAmount = useCallback(
-    async (amount: string): Promise<string | undefined> => {
-      if (!isNonEvmSendType) {
-        return undefined;
-      }
-
-      if (rawBalanceNumeric.isZero()) {
-        return t('insufficientFundsSend');
-      }
-
-      try {
-        console.log('[useAmountValidation] calling validateAmountWithSnap with amount:', amount || '0');
-        const result = (await validateAmountWithSnap(
-          amount || '0',
-        )) as SnapOnAmountInputResult;
-        console.log('[useAmountValidation] snap result:', result);
-
-        if (result.errors?.length > 0) {
-          return mapSnapErrorCodeIntoTranslation(result.errors[0].code, t);
-        }
-        return undefined;
-      } catch (error) {
-        console.error('[useAmountValidation] snap RPC threw error:', error);
-        return t('invalidValue');
-      }
-    },
-    [t, validateAmountWithSnap, isNonEvmSendType, rawBalanceNumeric],
-  );
 
   const validateAmountAsync = useCallback(async () => {
     if (!value) {
@@ -68,24 +30,26 @@ export const useAmountValidation = () => {
     const normalizedValue = normalizeAmount(value);
 
     const validations = [
-      { name: 'validatePositiveNumericString', fn: () => validatePositiveNumericString(normalizedValue, t) },
-      { name: 'validateERC1155Balance', fn: () => validateERC1155Balance(asset as Asset, normalizedValue, t) },
-      { name: 'validateTokenBalance', fn: () =>
-        validateTokenBalance(
-          normalizedValue,
-          rawBalanceNumeric,
-          asset?.decimals,
-          t,
-        ),
+      {
+        fn: () => validatePositiveNumericString(normalizedValue, t),
       },
-      { name: 'validateNonEvmAmount', fn: () => validateNonEvmAmount(normalizedValue) },
+      {
+        fn: () => validateERC1155Balance(asset as Asset, normalizedValue, t),
+      },
+      {
+        fn: () =>
+          validateTokenBalance(
+            normalizedValue,
+            rawBalanceNumeric,
+            asset?.decimals,
+            t,
+          ),
+      },
     ];
 
     for (const validation of validations) {
       const error = await Promise.resolve(validation.fn());
-      console.log(`[useAmountValidation] ${validation.name} result:`, error ?? 'OK', '| rawBalanceNumeric:', rawBalanceNumeric?.toString(), '| decimals:', asset?.decimals);
       if (error) {
-        console.error(`[useAmountValidation] BLOCKED by ${validation.name}:`, error);
         return setAndReturnError(error);
       }
     }
@@ -96,15 +60,13 @@ export const useAmountValidation = () => {
     rawBalanceNumeric,
     t,
     value,
-    validateNonEvmAmount,
     setAndReturnError,
   ]);
 
   // This callback is needed for non-EVM validation when nothing is typed into amount
   const validateNonEvmAmountAsync = useCallback(async () => {
-    const error = await validateNonEvmAmount(normalizeAmount(value));
-    return setAndReturnError(error);
-  }, [value, validateNonEvmAmount, setAndReturnError]);
+    return await validateAmountAsync();
+  }, [validateAmountAsync]);
 
   useEffect(() => {
     validateAmountAsync();
@@ -151,7 +113,6 @@ export function validatePositiveNumericString(
   t: ReturnType<typeof useI18nContext>,
 ): string | undefined {
   const valid = isValidPositiveNumericString(value);
-  console.log('[useAmountValidation] validatePositiveNumericString value:', JSON.stringify(value), 'valid:', valid);
   if (!valid) {
     return t('invalidValue');
   }

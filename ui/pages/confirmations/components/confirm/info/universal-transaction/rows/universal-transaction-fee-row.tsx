@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -20,10 +21,12 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useUniversalTransactionDataOptional } from '../../../../../hooks/transactions/useUniversalTransactionData';
+import { useConfirmationId } from '../../../../../hooks/useConfirmationId';
 
 export function UniversalTransactionFeeRow() {
   const t = useI18nContext();
   const data = useUniversalTransactionDataOptional();
+  const confirmationId = useConfirmationId();
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
@@ -53,7 +56,11 @@ export function UniversalTransactionFeeRow() {
   );
 
   return (
-    <ConfirmInfoRow label={t('networkFee')}>
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.EstimatedFee}
+      ownerId={confirmationId ?? data.approvalId}
+      label={t('networkFee')}
+    >
       {showAdvancedDetails ? (
         <Box
           display={Display.Flex}
@@ -74,6 +81,6 @@ export function UniversalTransactionFeeRow() {
       ) : (
         amountWithIcon(collapsedFee)
       )}
-    </ConfirmInfoRow>
+    </ConfirmInfoAlertRow>
   );
 }

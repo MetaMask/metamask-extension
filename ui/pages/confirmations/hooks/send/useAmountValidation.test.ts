@@ -1,4 +1,4 @@
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -346,7 +346,7 @@ describe('useAmountValidation', () => {
 
   it('accepts valid decimal amount', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x1bc16d674ec80000' },
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
       value: '0.5',
@@ -361,7 +361,7 @@ describe('useAmountValidation', () => {
 
   it('accepts "." as zero without reporting invalid amount', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x1bc16d674ec80000' },
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
       value: '.',
@@ -480,7 +480,7 @@ describe('useAmountValidation', () => {
 
   it('validateNonEvmAmountAsync can be called manually', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: EVM_NATIVE_ASSET,
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x1bc16d674ec80000' },
       from: MOCK_ADDRESS_1,
       value: '1',
     } as unknown as SendContext.SendContextType);
@@ -490,7 +490,11 @@ describe('useAmountValidation', () => {
       mockState,
     );
 
-    const error = await result.current.validateNonEvmAmountAsync();
+    let error: string | undefined;
+    await act(async () => {
+      error = await result.current.validateNonEvmAmountAsync();
+    });
+
     expect(error).toEqual(undefined);
   });
 

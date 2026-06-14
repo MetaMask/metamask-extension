@@ -32,6 +32,7 @@ import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
 import { useAddEthereumChainAlerts } from './alerts/useAddEthereumChainAlerts';
 import { useBurnAddressAlert } from './alerts/transactions/useBurnAddressAlert';
 import { useTokenContractAlert } from './alerts/transactions/useTokenContractAlert';
+import { useUniversalTransactionBalanceAlert } from './alerts/transactions/useUniversalTransactionBalanceAlert';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -68,6 +69,8 @@ function useTransactionAlerts(): Alert[] {
   const suggestedGasFeeHighAlert = useSuggestedGasFeeHighAlert();
   const tokenContractAlert = useTokenContractAlert();
   const tokenTrustSignalAlerts = useTokenTrustSignalAlerts();
+  const universalTransactionBalanceAlerts =
+    useUniversalTransactionBalanceAlert();
 
   return useMemo(
     () => [
@@ -93,6 +96,7 @@ function useTransactionAlerts(): Alert[] {
       ...suggestedGasFeeHighAlert,
       ...tokenContractAlert,
       ...tokenTrustSignalAlerts,
+      ...universalTransactionBalanceAlerts,
     ],
     [
       accountTypeUpgradeAlerts,
@@ -117,6 +121,7 @@ function useTransactionAlerts(): Alert[] {
       suggestedGasFeeHighAlert,
       tokenContractAlert,
       tokenTrustSignalAlerts,
+      universalTransactionBalanceAlerts,
     ],
   );
 }

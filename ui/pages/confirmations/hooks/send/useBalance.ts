@@ -11,18 +11,18 @@ const getBalance = (asset?: Asset) => {
     return {
       balance: '0',
       decimals: 0,
+      fullBalance: '0',
       rawBalanceNumeric: new Numeric('0', 10),
     };
   }
 
   const rawBalanceHex = asset?.rawBalance ?? '0x0';
+  const fullBalance = toTokenMinimalUnit(rawBalanceHex, asset.decimals);
 
   return {
-    balance: formatToFixedDecimals(
-      toTokenMinimalUnit(rawBalanceHex, asset.decimals),
-      asset.decimals,
-    ),
+    balance: formatToFixedDecimals(fullBalance, asset.decimals),
     decimals: asset.decimals,
+    fullBalance,
     rawBalanceNumeric: new Numeric(rawBalanceHex, 16).toBase(10),
   };
 };
@@ -30,12 +30,13 @@ const getBalance = (asset?: Asset) => {
 export const useBalance = () => {
   const { asset } = useSendContext();
 
-  const { balance, decimals, rawBalanceNumeric } = useMemo(() => {
+  const { balance, decimals, fullBalance, rawBalanceNumeric } = useMemo(() => {
     if (asset?.standard === ERC1155) {
       const bal = asset?.balance ?? '0';
       return {
         balance: bal,
         decimals: 0,
+        fullBalance: bal,
         rawBalanceNumeric: new Numeric(bal, 10),
       };
     }
@@ -45,6 +46,7 @@ export const useBalance = () => {
   return {
     balance,
     decimals,
+    fullBalance,
     rawBalanceNumeric,
   };
 };

@@ -23,22 +23,3 @@ export async function sendMultichainTransactionForReview(
     },
   });
 }
-
-export async function validateAmountMultichain(
-  fromAccount: InternalAccount,
-  params: {
-    value: string;
-    accountId: string;
-    assetId: CaipAssetType;
-  },
-) {
-  return await handleSnapRequest({
-    snapId: fromAccount.metadata?.snap?.id as SnapId,
-    origin: 'metamask',
-    handler: HandlerType.OnClientRequest,
-    request: {
-      method: 'onAmountInput',
-      params,
-    },
-  });
-}

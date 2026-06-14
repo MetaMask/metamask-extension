@@ -39,7 +39,7 @@ export const Amount = ({
   const t = useI18nContext();
   const { asset, updateValue, value } = useSendContext();
   const [amount, setAmount] = useState(value ?? '');
-  const { balance } = useBalance();
+  const { balance, fullBalance } = useBalance();
   const [fiatMode, setFiatMode] = useState(false);
   const {
     conversionSupportedForAsset,
@@ -62,7 +62,7 @@ export const Amount = ({
       fiatMode
         ? `${formatToFixedDecimals(value, 5)} ${asset?.symbol}`
         : getFiatDisplayValue(amount),
-    [amount, fiatMode, getFiatDisplayValue, value],
+    [amount, asset?.symbol, fiatMode, getFiatDisplayValue, value],
   );
 
   const onChange = useCallback(
@@ -137,15 +137,19 @@ export const Amount = ({
       return `${balance}${displayName} ${t('available')}`;
     }
 
-    // For other tokens, use symbol
-    return `${balance} ${asset?.symbol} ${t('available')}`;
+    // Non-EVM native sends hide Max, so display full precision for manual entry.
+    const displayBalance = isNonEvmNativeSendType ? fullBalance : balance;
+
+    return `${displayBalance} ${asset?.symbol} ${t('available')}`;
   }, [
     fiatMode,
     getFiatDisplayValue,
     balance,
+    fullBalance,
     asset?.symbol,
     asset?.name,
     asset?.standard,
+    isNonEvmNativeSendType,
     t,
   ]);
 

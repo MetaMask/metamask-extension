@@ -122,6 +122,10 @@ Renders the native confirmation.
 - Renders heading, From, To, Network, and Network Fee rows.
 - Reuses wallet-initiated header so Advanced Details works.
 - Matches EVM Send loading and fee-row visual behavior.
+- Blocks confirmation with standard danger alerts when client-side multichain balances cannot cover the raw transfer amount plus any Snap-provided aggregate fee requirement.
+- Uses an alert row for Network Fee so universal affordability alerts render inline instead of only blocking the footer.
+- Converts client display-unit multichain balances into raw units before comparing against the raw Snap confirmation payload.
+- Displays non-EVM native Send balances at full token precision because the Max button is hidden and truncated balance text can leave hidden dust that covers fees during QA.
 
 #### Send Flow Integration
 
@@ -129,6 +133,8 @@ Aligns non-EVM Send loading with EVM Send.
 
 - Navigates to Confirm with `loader=Send` while Snap approval is being prepared.
 - Replaces the old Send loader screen with the EVM-style Confirm skeleton.
+- Removes Send-time Snap `onAmountInput` validation for non-EVM sends.
+- Validates Send amount against client balance state before the Snap builds the transaction.
 
 ### MetaMask/snap-solana-wallet
 
@@ -139,6 +145,7 @@ Provides the first consumer.
 - `SendService` builds the Solana transaction.
 - Calls `snap_confirmTransaction` before signing or submitting.
 - Passes account, recipient, chain ID, raw amount, optional asset ID, and optional raw fee amount.
+- Treats the fee amount as the aggregate execution fee / required amount for the fee asset, not a protocol-specific rent or account-creation field.
 - Continues with `SolMethod.SignAndSendTransaction` only if approved.
 
 ## What This POC Proves
@@ -154,17 +161,17 @@ This POC is about native confirmation UX ownership, not balance retrieval owners
 
 Non-EVM balance centralization can be solved independently: clients can own balance retrieval/caching through assets and balances controllers, then pass the relevant native/token balances to existing Snap-rendered confirmations so the Snap can gate its own confirm button without fetching balances itself.
 
-The Send flow balance check is also separable from this POC. Today the client calls the Snap `onAmountInput` path to validate non-EVM amounts before creating the send request. That can be removed without native confirmations: Send can validate entered amounts against client-owned balance state, then the Snap can still render its existing confirmation and use client-provided balances only to check final fee affordability.
+The Send flow balance check is also separable from this POC. The client no longer calls the Snap `onAmountInput` path to validate non-EVM amounts before creating the send request. Send validates entered amounts against client-owned balance state, then the native universal confirmation performs the final affordability check against the Snap-provided raw amount and aggregate fee requirement.
 
 One possible balance-centralization path:
 
 - Ensure clients/controllers refresh and cache non-EVM balances before Send uses them.
-- Remove Send form calls to Snap `onAmountInput` for amount validation.
+- Remove Send form calls to Snap `onAmountInput` for amount validation. This POC now does this for the universal confirmation path.
 - Validate Send amount locally against `MultichainBalancesController` / assets-controller state.
 - Pass only the relevant client-owned balances to the Snap when creating the send request: native balance, and selected token balance when sending a token.
 - Let the Snap continue constructing the protocol transaction and calculating fee / protocol-specific required native amount.
 - Let existing Snap-rendered confirmations use those client-provided balances to gate their own confirm button.
-- Later, move final affordability checks into client-owned native confirmations once the universal confirmation path is ready for broader adoption.
+- For native universal confirmations, use client-owned blocking alerts for final affordability checks.
 
 Native confirmations make client-owned balance alerts cleaner because the client owns the confirmation footer and blocking alerts. They are not required just to remove duplicate balance fetching from Snaps.
 
@@ -176,5 +183,4 @@ Native confirmations make client-owned balance alerts cleaner because the client
 - Validation with protocols beyond Solana.
 - Production feature gating.
 - Full test coverage.
-- Full replacement of hardcoded fee UI with payload data.
 - Full non-EVM balance centralization; see the separate Obsidian note `[[Non-EVM Balance Centralization]]`.
