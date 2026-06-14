@@ -254,7 +254,7 @@
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },
     "ShieldController": "object",
-    "SnapController": { "unencryptedSnapStates": "object" },
+    "SnapController": {},
     "SnapInterfaceController": { "interfaces": "object" },
     "SubjectMetadataController": {},
     "SubscriptionController": "object",

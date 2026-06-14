@@ -45,7 +45,6 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
-  TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
@@ -245,9 +244,6 @@ const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 const HardwareWalletRepair = mmLazy(
   () => import('../hardware-wallet-repair/index.ts'),
-);
-const TransactionDetailsRoute = mmLazy(
-  () => import('../details/transaction-details-route.tsx'),
 );
 // End Lazy Routes
 
@@ -458,10 +454,6 @@ export const routeConfig = [
       {
         path: DEFAULT_ROUTE,
         element: <Home />,
-      },
-      {
-        path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
-        element: <TransactionDetailsRoute />,
       },
       {
         element: <RequireBasicFunctionality />,

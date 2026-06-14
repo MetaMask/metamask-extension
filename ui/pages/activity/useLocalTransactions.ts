@@ -4,15 +4,11 @@ import {
   isTransactionEarliestNonce,
   useEarliestNonceByChain,
 } from '../../hooks/useEarliestNonceByChain';
-import {
-  selectLocalActivityItems,
-  selectLocalTransactionsByHash,
-} from '../../selectors/activity';
+import { selectLocalActivityItems } from '../../selectors/activity';
 import { activityMatchesAssetId, type ActivityListFilter } from './helpers';
 
 export function useLocalTransactions(filters: ActivityListFilter) {
   const localItems = useSelector(selectLocalActivityItems);
-  const localTransactionsByHash = useSelector(selectLocalTransactionsByHash);
   const assetId = 'assetId' in filters ? filters.assetId : undefined;
   const networks = 'networks' in filters ? filters.networks : undefined;
 
@@ -31,31 +27,21 @@ export function useLocalTransactions(filters: ActivityListFilter) {
 
   const localTransactionGroups = useMemo(
     () =>
-      filteredLocalItems.flatMap((item) => {
-        const hash = item.data.hash?.toLowerCase();
-        const transactionGroup = hash
-          ? localTransactionsByHash.get(hash)
-          : undefined;
-
-        return transactionGroup ? [transactionGroup] : [];
-      }),
-    [filteredLocalItems, localTransactionsByHash],
+      filteredLocalItems.flatMap((item) =>
+        item.raw?.type === 'localTransaction' ? [item.raw.data] : [],
+      ),
+    [filteredLocalItems],
   );
   const earliestNonceByChain = useEarliestNonceByChain(localTransactionGroups);
 
   return useMemo(
     () =>
       filteredLocalItems.map((item) => {
-        const hash = item.data.hash?.toLowerCase();
-        const transactionGroup = hash
-          ? localTransactionsByHash.get(hash)
-          : undefined;
-
-        if (!transactionGroup) {
+        if (item.raw?.type !== 'localTransaction') {
           return item;
         }
 
-        const { nonce, initialTransaction } = transactionGroup;
+        const { nonce, initialTransaction } = item.raw.data;
 
         return {
           ...item,
@@ -66,6 +52,6 @@ export function useLocalTransactions(filters: ActivityListFilter) {
           ),
         };
       }),
-    [earliestNonceByChain, filteredLocalItems, localTransactionsByHash],
+    [earliestNonceByChain, filteredLocalItems],
   );
 }

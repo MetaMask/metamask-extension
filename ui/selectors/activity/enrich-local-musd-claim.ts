@@ -1,5 +1,4 @@
 import type { CaipChainId } from '@metamask/utils';
-import { TransactionType } from '@metamask/transaction-controller';
 import { getTokenMetadataFromKnownToken } from '../../../shared/lib/activity/adapters/helpers';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import type {
@@ -87,7 +86,7 @@ export function buildMusdClaimActivityToken({
     MUSD_TOKEN_ADDRESS;
   const claimAmount = resolveMusdClaimAmount({
     data: initialTransaction.txParams?.data,
-    from: initialTransaction.txParams?.from,
+    from: initialTransaction.txParams.from,
     transferInformation:
       initialTransaction.transferInformation ??
       primaryTransaction.transferInformation,
@@ -124,7 +123,7 @@ export function enrichLocalMusdClaimActivity(
 ): ActivityListItem {
   if (
     activity.type !== 'claimMusdBonus' ||
-    transactionGroup.initialTransaction?.type !== TransactionType.musdClaim
+    activity.raw?.type !== 'localTransaction'
   ) {
     return activity;
   }

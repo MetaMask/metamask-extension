@@ -137,7 +137,6 @@ export const Carousel = React.forwardRef(
         <Box
           className={`carousel-container ${className}`}
           ref={ref}
-          data-testid="carousel-container"
           {...(props as BoxProps<'div'>)}
         >
           <div className="carousel-cards-wrapper">
@@ -165,7 +164,6 @@ export const Carousel = React.forwardRef(
       <Box
         className={`carousel-container ${className}`}
         ref={ref}
-        data-testid="carousel-container"
         {...(props as BoxProps<'div'>)}
       >
         <div className="carousel-cards-wrapper">
