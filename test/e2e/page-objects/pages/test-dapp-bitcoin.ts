@@ -16,7 +16,7 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappBitcoin {
   private readonly bitcoinChainDisplay = {
-    selector: dataTestIds.testPage.header.network,
+    css: `[data-testid="${dataTestIds.testPage.header.network}"]`,
     value: 'bitcoin:mainnet',
   };
 
@@ -70,10 +70,7 @@ export class TestDappBitcoin {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      const element = await this.driver.waitForSelector({
-        testId: this.bitcoinChainDisplay.selector,
-      });
-      await element.getAttribute('value');
+      await this.driver.waitForSelector(this.bitcoinChainDisplay);
     } catch (e) {
       console.log(
         'Timeout while waiting for Bitcoin Test Dapp page to be loaded',
