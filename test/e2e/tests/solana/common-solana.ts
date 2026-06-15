@@ -442,9 +442,11 @@ export async function mockMultiCoinPrice(mockServer: Mockttp) {
 export async function mockSolanaBalanceQuote({
   mockServer,
   balance = SOL_BALANCE,
+  once = false,
 }: {
   mockServer: Mockttp;
   balance?: number;
+  once?: boolean;
 }) {
   const response = {
     statusCode: 200,
@@ -460,15 +462,15 @@ export async function mockSolanaBalanceQuote({
       },
     },
   };
-  return await mockServer
+  const builder = mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getBalance',
-    })
-    .always()
-    .thenCallback(() => {
-      return response;
     });
+  const maybeOnce = once ? builder.once() : builder;
+  return await maybeOnce.thenCallback(() => {
+    return response;
+  });
 }
 
 export async function mockGetMinimumBalanceForRentExemption(
@@ -2118,7 +2120,22 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
     if (!isExecutedSwapScenario) {
       mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
     }
-    mockList.push(await mockSolanaBalanceQuote({ mockServer, balance }));
+    mockList.push(await mockSolanaBalanceQuote({ mockServer, balance, once: true }));
+
+    // TODO: migrate to withSolanaFixtures for proper live-balance testing
+    // After a successful send the wallet polls getBalance again; register a
+    // second mock (LIFO priority, consumed once) so the post-send poll returns
+    // an updated value instead of the same hardcoded initial balance.
+    if (mockGetTransactionSuccess) {
+      // 0.1 SOL sent (100_000_000 lamports); fee omitted for simplicity — balance rounded to 49.9 SOL
+      const POST_SEND_BALANCE = 49_900_000_000;
+      mockList.push(
+        await mockSolanaBalanceQuote({
+          mockServer,
+          balance: POST_SEND_BALANCE,
+        }),
+      );
+    }
 
     mockList.push(
       await mockGetMinimumBalanceForRentExemption(mockServer),
