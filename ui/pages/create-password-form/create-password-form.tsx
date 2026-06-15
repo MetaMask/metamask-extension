@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import {
   Button,
   Box,
@@ -16,6 +16,7 @@ import {
   BoxBackgroundColor,
   IconColor,
 } from '@metamask/design-system-react';
+import log from 'loglevel';
 import PasswordForm from '../../components/app/password-form/password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -25,6 +26,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useBoolean } from '../../hooks/useBoolean';
+import { getGeolocation } from '../../store/actions';
 
 type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
@@ -32,6 +34,8 @@ type CreatePasswordFormProps = {
   onBack: (event: React.MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
 };
+
+const USA_COUNTRY_CODE = 'US';
 
 const CreatePasswordForm = ({
   isSocialLoginFlow,
@@ -41,9 +45,44 @@ const CreatePasswordForm = ({
 }: CreatePasswordFormProps) => {
   const t = useI18nContext();
   const [password, setPassword] = useState('');
-  const { value: termsChecked, toggle } = useBoolean();
+  const { value: termsChecked, setValue: setTermsChecked, toggle } =
+    useBoolean();
+  const hasUserInteractedWithTermsRef = useRef(false);
 
   const { trackEvent } = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    if (!isSocialLoginFlow) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const setMarketingTermsDefault = async () => {
+      try {
+        const geolocation = await getGeolocation();
+
+        if (cancelled || hasUserInteractedWithTermsRef.current) {
+          return;
+        }
+
+        setTermsChecked(geolocation === USA_COUNTRY_CODE);
+      } catch (error) {
+        if (!cancelled) {
+          log.debug(
+            'Failed to fetch geolocation for social login marketing terms default',
+            error,
+          );
+        }
+      }
+    };
+
+    setMarketingTermsDefault();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isSocialLoginFlow, setTermsChecked]);
 
   const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -149,7 +188,10 @@ const CreatePasswordForm = ({
               className="items-start"
               isSelected={termsChecked}
               isDisabled={loading}
-              onChange={toggle}
+              onChange={() => {
+                hasUserInteractedWithTermsRef.current = true;
+                toggle();
+              }}
               label={
                 <Text
                   asChild

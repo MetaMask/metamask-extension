@@ -872,6 +872,7 @@ export default class MetamaskController extends EventEmitter {
         'MetaMetricsController:trackEvent',
       ),
     });
+    this.geolocationController = messengerClientsByName.GeolocationController;
 
     // Record installation info if this is the first time the extension is running.
     // This captures the version and date when MetaMask was first installed.
@@ -3379,6 +3380,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       getMarketingConsent: this.oauthService.getMarketingConsent.bind(
         this.oauthService,
+      ),
+      getGeolocation: this.geolocationController.getGeolocation.bind(
+        this.geolocationController,
       ),
 
       // SeedlessOnboardingController

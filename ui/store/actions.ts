@@ -4617,6 +4617,16 @@ export async function getMarketingConsent() {
   }
 }
 
+export async function getGeolocation() {
+  try {
+    const res = await submitRequestToBackground('getGeolocation');
+    return res;
+  } catch (error) {
+    logErrorWithMessage(getErrorMessage(error));
+    return null;
+  }
+}
+
 export function setAvatarType(value: string) {
   return setPreference('avatarType', value);
 }

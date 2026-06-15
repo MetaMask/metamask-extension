@@ -66,6 +66,7 @@ describe('Onboarding Create Password', () => {
 
   beforeEach(() => {
     setBackgroundConnection(backgroundConnectionMock as never);
+    jest.spyOn(Actions, 'getGeolocation').mockResolvedValue('CA');
   });
 
   afterEach(() => {
@@ -215,7 +216,7 @@ describe('Onboarding Create Password', () => {
   describe('Password Validation Checks', () => {
     it('should show password as text when click Show under password', () => {
       const mockStore = configureMockStore([thunk])(mockState);
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, getByRole } = renderWithProvider(
         <CreatePassword
           createNewAccount={mockCreateNewAccount}
           importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
@@ -242,7 +243,7 @@ describe('Onboarding Create Password', () => {
 
     it('should disable create new account button and show short password error with password length of 7', () => {
       const mockStore = configureMockStore([thunk])(mockState);
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, getByRole } = renderWithProvider(
         <CreatePassword
           createNewAccount={mockCreateNewAccount}
           importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
@@ -321,7 +322,7 @@ describe('Onboarding Create Password', () => {
 
     it('should not create new wallet without terms checked when its social login flow', () => {
       const mockStore = configureMockStore([thunk])(mockState);
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, getByRole } = renderWithProvider(
         <CreatePassword
           createNewAccount={mockCreateNewAccount}
           importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
@@ -365,7 +366,7 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('should create new wallet without marketing checked when its social login flow', () => {
+    it('should create new wallet with marketing unchecked by default for non-USA social login flow', async () => {
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -404,6 +405,10 @@ describe('Onboarding Create Password', () => {
         confirmPasswordEvent,
       );
 
+      await waitFor(() => {
+        expect(Actions.getGeolocation).toHaveBeenCalled();
+      });
+
       const terms = queryByTestId('create-password-terms');
 
       expect(terms).not.toBeChecked();
@@ -413,6 +418,57 @@ describe('Onboarding Create Password', () => {
       expect(createNewWalletButton).toBeEnabled();
 
       fireEvent.click(createNewWalletButton as HTMLElement);
+
+      expect(mockCreateNewAccount).toHaveBeenCalled();
+    });
+
+    it('should create new wallet with marketing checked by default for USA social login flow', async () => {
+      jest.spyOn(Actions, 'getGeolocation').mockResolvedValueOnce('US');
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { queryByTestId, getByRole } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
+
+      const createPasswordInput = queryByTestId('create-password-new-input');
+      const confirmPasswordInput = queryByTestId(
+        'create-password-confirm-input',
+      );
+
+      const createPasswordEvent = {
+        target: {
+          value: '12345678',
+        },
+      };
+      const confirmPasswordEvent = {
+        target: {
+          value: '12345678',
+        },
+      };
+
+      fireEvent.change(createPasswordInput as HTMLElement, createPasswordEvent);
+      fireEvent.change(
+        confirmPasswordInput as HTMLElement,
+        confirmPasswordEvent,
+      );
+
+      await waitFor(() => {
+        expect(Actions.getGeolocation).toHaveBeenCalled();
+        expect(getByRole('checkbox')).toBeChecked();
+      });
+
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
 
       expect(mockCreateNewAccount).toHaveBeenCalled();
     });
