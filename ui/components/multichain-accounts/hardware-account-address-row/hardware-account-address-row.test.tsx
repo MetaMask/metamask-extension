@@ -2,7 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import { MOCK_ETHEREUM_HARDWARE_ADDRESS } from '../../../../test/data/hardware-wallet-accounts';
-import type { HardwareWalletAccountAddress } from './hardware-account-address-row.types';
+import {
+  HardwareWalletAddressIconTypes,
+  type HardwareWalletAccountAddress,
+} from './hardware-account-address-row.types';
 import { HardwareAccountAddressRow } from './hardware-account-address-row';
 
 const renderRow = (address: HardwareWalletAccountAddress) =>
@@ -22,7 +25,7 @@ describe('HardwareAccountAddressRow', () => {
       renderRow({
         ...MOCK_ETHEREUM_HARDWARE_ADDRESS,
         networkName: 'Bitcoin',
-        iconType: 'token',
+        iconType: HardwareWalletAddressIconTypes.Token,
         addressType: 'Taproot',
       });
 
@@ -39,7 +42,10 @@ describe('HardwareAccountAddressRow', () => {
 
   describe('avatar', () => {
     it('renders a network avatar when iconType is network', () => {
-      renderRow({ ...MOCK_ETHEREUM_HARDWARE_ADDRESS, iconType: 'network' });
+      renderRow({
+        ...MOCK_ETHEREUM_HARDWARE_ADDRESS,
+        iconType: HardwareWalletAddressIconTypes.Network,
+      });
 
       expect(
         screen.getByRole('img', { name: tEn('networkNameEthereum') }),
@@ -50,7 +56,7 @@ describe('HardwareAccountAddressRow', () => {
       renderRow({
         ...MOCK_ETHEREUM_HARDWARE_ADDRESS,
         networkName: 'Bitcoin',
-        iconType: 'token',
+        iconType: HardwareWalletAddressIconTypes.Token,
         iconUrl: './images/bitcoin-logo.svg',
       });
 

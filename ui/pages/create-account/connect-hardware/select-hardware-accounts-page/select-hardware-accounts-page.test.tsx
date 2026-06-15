@@ -92,6 +92,14 @@ describe('SelectHardwareAccountsPage', () => {
         screen.queryByTestId('select-hardware-accounts-page-settings-button'),
       ).not.toBeInTheDocument();
     });
+
+    it('hides the settings button when onSettingsClick is not provided', () => {
+      renderPage({ onSettingsClick: undefined, showSettingsButton: undefined });
+
+      expect(
+        screen.queryByTestId('select-hardware-accounts-page-settings-button'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('account selection', () => {

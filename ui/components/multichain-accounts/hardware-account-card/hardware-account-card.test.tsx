@@ -133,6 +133,21 @@ describe('HardwareAccountCard', () => {
       expect(onToggleSelection).not.toHaveBeenCalled();
     });
 
+    it('does not toggle selection when Enter is pressed on a disabled header', () => {
+      const onToggleSelection = jest.fn();
+
+      renderCard({
+        account: connectedAccount,
+        onToggleSelection,
+      });
+
+      fireEvent.keyDown(screen.getByTestId('hardware-account-card-header'), {
+        key: 'Enter',
+      });
+
+      expect(onToggleSelection).not.toHaveBeenCalled();
+    });
+
     it('renders the checkbox as checked even when isSelected is false', () => {
       renderCard({
         account: connectedAccount,

@@ -1,27 +1,31 @@
 import { ETH_TOKEN_IMAGE_URL } from '../../shared/constants/network';
-import type { HardwareWalletAccountAddress } from '../../ui/components/multichain-accounts/hardware-account-address-row';
+import {
+  HardwareWalletAddressIconTypes,
+  type HardwareWalletAccountAddress,
+} from '../../ui/components/multichain-accounts/hardware-account-address-row';
 import type { HardwareWalletAccount } from '../../ui/components/multichain-accounts/hardware-account-card';
 
+/** Default Ethereum address fixture for hardware wallet tests and stories. */
 export const MOCK_ETHEREUM_HARDWARE_ADDRESS: HardwareWalletAccountAddress = {
   id: 'eth-0',
   networkName: 'Ethereum',
   address: '0x091234567890123456789012345678901234b272',
   balance: '$120.00',
   iconUrl: ETH_TOKEN_IMAGE_URL,
-  iconType: 'network',
+  iconType: HardwareWalletAddressIconTypes.Network,
 };
 
 const createMultichainAddresses = (
   index: number,
 ): HardwareWalletAccountAddress[] => [
-  MOCK_ETHEREUM_HARDWARE_ADDRESS,
+  { ...MOCK_ETHEREUM_HARDWARE_ADDRESS, id: `eth-${index}` },
   {
     id: `sol-${index}`,
     networkName: 'Solana',
     address: '6dk7RD1234567890abcdefghijklmnopqrstuvDEtXQ',
     balance: '$120.00',
     iconUrl: './images/solana-logo.svg',
-    iconType: 'network',
+    iconType: HardwareWalletAddressIconTypes.Network,
   },
   {
     id: `btc-${index}`,
@@ -29,11 +33,15 @@ const createMultichainAddresses = (
     address: 'bc1qea1234567890abcdefghijklmnopqrstuvwer2fx',
     balance: '$120.00',
     iconUrl: './images/bitcoin-logo.svg',
-    iconType: 'token',
+    iconType: HardwareWalletAddressIconTypes.Token,
     addressType: 'Taproot',
   },
 ];
 
+/**
+ * Creates a single hardware wallet account fixture with optional overrides.
+ * @param overrides
+ */
 export const createHardwareWalletAccount = (
   overrides: Partial<HardwareWalletAccount> = {},
 ): HardwareWalletAccount => ({
@@ -48,6 +56,11 @@ type CreateMockHardwareAccountsOptions = {
   includeMultichainAddresses?: boolean;
 };
 
+/**
+ * Creates a list of hardware wallet account fixtures for tests and stories.
+ * @param count
+ * @param options
+ */
 export const createMockHardwareAccounts = (
   count: number,
   options: CreateMockHardwareAccountsOptions = {},
@@ -70,4 +83,5 @@ export const createMockHardwareAccounts = (
   });
 };
 
+/** Default list of five hardware wallet accounts for page-level tests. */
 export const MOCK_HARDWARE_ACCOUNTS = createMockHardwareAccounts(5);

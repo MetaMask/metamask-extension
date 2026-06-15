@@ -14,7 +14,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { shortenString } from '../../../helpers/utils/util';
-import type { HardwareAccountAddressRowProps } from './hardware-account-address-row.types';
+import {
+  HardwareWalletAddressIconTypes,
+  type HardwareAccountAddressRowProps,
+} from './hardware-account-address-row.types';
 
 /**
  * Address row for a hardware wallet account card.
@@ -32,7 +35,7 @@ export const HardwareAccountAddressRow = ({
   });
 
   const avatar =
-    address.iconType === 'token' ? (
+    address.iconType === HardwareWalletAddressIconTypes.Token ? (
       <AvatarToken
         name={address.networkName}
         src={address.iconUrl}

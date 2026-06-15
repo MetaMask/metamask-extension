@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryFn } from '@storybook/react';
 import { MOCK_ETHEREUM_HARDWARE_ADDRESS } from '../../../../test/data/hardware-wallet-accounts';
+import { HardwareWalletAddressIconTypes } from './hardware-account-address-row.types';
 import { HardwareAccountAddressRow } from './hardware-account-address-row';
 
 export default {
@@ -28,7 +29,7 @@ export const WithAddressType: StoryFn<typeof HardwareAccountAddressRow> = (
       networkName: 'Bitcoin',
       address: 'bc1qea1234567890abcdefghijklmnopqrstuvwer2fx',
       iconUrl: './images/bitcoin-logo.svg',
-      iconType: 'token',
+      iconType: HardwareWalletAddressIconTypes.Token,
       addressType: 'Taproot',
     }}
   />

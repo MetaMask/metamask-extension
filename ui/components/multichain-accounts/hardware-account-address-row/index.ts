@@ -1,6 +1,7 @@
 export { HardwareAccountAddressRow } from './hardware-account-address-row';
-export type {
-  HardwareAccountAddressRowProps,
-  HardwareWalletAccountAddress,
-  HardwareWalletAddressIconType,
+export {
+  HardwareWalletAddressIconTypes,
+  type HardwareAccountAddressRowProps,
+  type HardwareWalletAccountAddress,
+  type HardwareWalletAddressIconType,
 } from './hardware-account-address-row.types';
