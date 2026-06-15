@@ -186,7 +186,6 @@
         }
       ],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
       "completedMetaMetricsOnboarding": false,
       "tracesBeforeMetricsOptIn": [

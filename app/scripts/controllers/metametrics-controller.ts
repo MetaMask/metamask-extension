@@ -180,12 +180,6 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  latestNonAnonymousEventTimestamp: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   fragments: {
     includeInStateLogs: true,
     persist: true,
@@ -228,7 +222,6 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
  * The state that MetaMetricsController stores.
  *
  * @property completedMetaMetricsOnboarding - Whether the user has completed the metrics participation prompt (onboarding/settings).
- * @property latestNonAnonymousEventTimestamp - The timestamp at which the latest analytics event submission was attempted.
  * @property fragments - Object keyed by UUID with stored fragments as values.
  * @property eventsBeforeMetricsOptIn - Array of queued events added before a user opts into metrics.
  * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
@@ -252,7 +245,6 @@ type SegmentPagePayload = {
 
 export type MetaMetricsControllerState = {
   completedMetaMetricsOnboarding: boolean;
-  latestNonAnonymousEventTimestamp: number;
   fragments: Record<string, MetaMetricsEventFragment>;
   eventsBeforeMetricsOptIn: MetaMetricsEventPayload[];
   tracesBeforeMetricsOptIn: BufferedTrace[];
@@ -333,7 +325,6 @@ export const getDefaultMetaMetricsControllerState =
     completedMetaMetricsOnboarding: false,
     dataCollectionForMarketing: null,
     marketingCampaignCookieId: null,
-    latestNonAnonymousEventTimestamp: 0,
     eventsBeforeMetricsOptIn: [],
     tracesBeforeMetricsOptIn: [],
     traits: {},
@@ -885,10 +876,6 @@ export class MetaMetricsController extends BaseController<
       this.#applyAnonymousEventOptions(eventPayload, options);
       this.#applyLegacyEventOptions(eventPayload, options);
 
-      if (!this.#isAnonymousTrackEvent(eventPayload)) {
-        this.#updateLatestAnalyticsEventTimestamp();
-      }
-
       const properties = this.#removeUtmPropertiesWithoutMarketingConsent(
         eventPayload.properties,
       );
@@ -937,8 +924,6 @@ export class MetaMetricsController extends BaseController<
         return;
       }
 
-      this.#updateLatestAnalyticsEventTimestamp();
-
       this.messenger.call(
         'AnalyticsController:identify',
         identifyPayload,
@@ -963,8 +948,6 @@ export class MetaMetricsController extends BaseController<
       }
 
       const pagePayload = this.#buildTrackPagePayload(payload);
-
-      this.#updateLatestAnalyticsEventTimestamp();
 
       this.messenger.call(
         'AnalyticsController:trackView',
@@ -1291,12 +1274,6 @@ export class MetaMetricsController extends BaseController<
 
     const { analyticsId, optedIn } = this.#analyticsGetState();
     return optedIn && analyticsId.length > 0;
-  }
-
-  #updateLatestAnalyticsEventTimestamp(): void {
-    this.update((state) => {
-      state.latestNonAnonymousEventTimestamp = Date.now();
-    });
   }
 
   #enrichWithABTestAnalytics(
@@ -1759,8 +1736,6 @@ export class MetaMetricsController extends BaseController<
     if (analyticsId.length === 0 || getPlatform() === PLATFORM_FIREFOX) {
       return;
     }
-
-    this.#updateLatestAnalyticsEventTimestamp();
 
     trackSegmentEventWhileOptedOut({
       analyticsId,
