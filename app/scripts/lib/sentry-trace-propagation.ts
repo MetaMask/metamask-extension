@@ -44,7 +44,10 @@ export const BACKEND_TRACE_PROPAGATION_TARGETS: RegExp[] = [
 
 let requestIdProvider: () => string = () => uuidv4();
 let currentConsensysRequestId: string | undefined;
-const requestIdByTraceId = new Map<string, string>();
+// `null` marks a trace that fanned out to more than one request id: a
+// trace-level Sentry error can't be attributed to a single outbound request, so
+// the tag is suppressed rather than attaching a misleading last-write-wins id.
+const requestIdByTraceId = new Map<string, string | null>();
 const MAX_TRACE_REQUEST_ID_ENTRIES = 100;
 
 /**
@@ -226,6 +229,16 @@ function getTraceIdFromTraceparent(traceparent: string): string | undefined {
 }
 
 function setRequestIdForTraceId(traceId: string, requestId: string): void {
+  if (requestIdByTraceId.has(traceId)) {
+    // A trace can fan out to multiple outbound requests, each with its own id.
+    // Once a second distinct id arrives, mark the trace ambiguous (`null`) so
+    // `processEvent` suppresses `consensysRequestId` rather than reporting a
+    // wrong one; a per-operation request-id provider removes the ambiguity.
+    if (requestIdByTraceId.get(traceId) !== requestId) {
+      requestIdByTraceId.set(traceId, null);
+    }
+    return;
+  }
   requestIdByTraceId.set(traceId, requestId);
   if (requestIdByTraceId.size <= MAX_TRACE_REQUEST_ID_ENTRIES) {
     return;
