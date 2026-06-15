@@ -165,12 +165,11 @@ export class TronNode {
         }
       }
 
-      await this.initializeTrc10Balances(resolvedOptions.trc10Balances ?? {});
-      await this.initializeTrc20Balances(resolvedOptions.trc20Balances ?? {});
-
-      await this.initializeStakedTrxBalances(
-        resolvedOptions.stakedTrxBalances ?? {},
-      );
+      await Promise.all([
+        this.initializeTrc10Balances(resolvedOptions.trc10Balances ?? {}),
+        this.initializeTrc20Balances(resolvedOptions.trc20Balances ?? {}),
+        this.initializeStakedTrxBalances(resolvedOptions.stakedTrxBalances ?? {}),
+      ]);
       // `trc721Balances` and `trc1155Balances` are accepted and ignored — see the
       // JSDoc on TronLocalNodeOptions.
     } catch (error) {
@@ -635,16 +634,25 @@ export class TronNode {
         symbol as TronTrc10Symbol,
         totalSupply,
       );
-      for (const [address, balances] of Object.entries(balancesByAddress)) {
-        const amount = balances[symbol as TronTrc10Symbol];
-        if (amount) {
-          await this.transferTrc10Token(token, address, amount);
-          this.#trc10Balances[address] = {
-            ...this.#trc10Balances[address],
-            [symbol]: amount,
-          };
-        }
-      }
+      // Java-Tron uses expiration-based (not nonce-based) sequencing; concurrent
+      // transfers from the genesis account are expected to succeed. If flakiness
+      // appears, serialize this back to a sequential for...of loop.
+      await Promise.all(
+        Object.entries(balancesByAddress).flatMap(([address, balances]) => {
+          const amount = balances[symbol as TronTrc10Symbol];
+          if (!amount) {
+            return [];
+          }
+          return [
+            this.transferTrc10Token(token, address, amount).then(() => {
+              this.#trc10Balances[address] = {
+                ...this.#trc10Balances[address],
+                [symbol]: amount,
+              };
+            }),
+          ];
+        }),
+      );
     }
   }
 
@@ -666,13 +674,22 @@ export class TronNode {
 
     for (const symbol of Object.keys(totals) as TronTrc20Symbol[]) {
       const token = await this.deployTrc20Token(symbol, totals[symbol]);
-      for (const [address, balances] of Object.entries(balancesByAddress)) {
-        const amount = balances[symbol];
-        if (amount) {
-          await this.transferTrc20Token(token, address, amount);
-          this.recordTrc20Balance(address, symbol, amount);
-        }
-      }
+      // Java-Tron uses expiration-based (not nonce-based) sequencing; concurrent
+      // transfers from the genesis account are expected to succeed. If flakiness
+      // appears, serialize this back to a sequential for...of loop.
+      await Promise.all(
+        Object.entries(balancesByAddress).flatMap(([address, balances]) => {
+          const amount = balances[symbol];
+          if (!amount) {
+            return [];
+          }
+          return [
+            this.transferTrc20Token(token, address, amount).then(() => {
+              this.recordTrc20Balance(address, symbol, amount);
+            }),
+          ];
+        }),
+      );
     }
   }
 
