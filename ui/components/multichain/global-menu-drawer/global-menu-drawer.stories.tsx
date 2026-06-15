@@ -134,19 +134,3 @@ const WithGlobalMenuListWrapper = () => {
 export const WithGlobalMenuList: Story = {
   render: WithGlobalMenuListWrapper,
 };
-
-export const OpenState: Story = {
-  render: () => (
-    <div style={{ height: 300, position: 'relative' }}>
-      <GlobalMenuDrawer
-        isOpen
-        onClose={() => undefined}
-        title="Menu"
-      >
-        <div className="p-4">
-          <Text>Drawer content</Text>
-        </div>
-      </GlobalMenuDrawer>
-    </div>
-  ),
-};
