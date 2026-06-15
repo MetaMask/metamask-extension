@@ -34,7 +34,7 @@ const createMultichainAddresses = (
 
 /**
  * Creates a single hardware wallet account fixture with optional overrides.
- * @param overrides
+ * @param overrides - Optional account field overrides.
  */
 export const createHardwareWalletAccount = (
   overrides: Partial<HardwareWalletAccount> = {},
@@ -52,8 +52,8 @@ type CreateMockHardwareAccountsOptions = {
 
 /**
  * Creates a list of hardware wallet account fixtures for tests and stories.
- * @param count
- * @param options
+ * @param count - Number of accounts to create.
+ * @param options - Optional fixture configuration.
  */
 export const createMockHardwareAccounts = (
   count: number,
