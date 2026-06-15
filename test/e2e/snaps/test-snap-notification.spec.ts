@@ -113,8 +113,7 @@ describe('Test Snap Notification', function () {
         await notificationDetailsPage.checkNotificationContent({
           avatarInitial: 'N',
           heading: 'Hello World!',
-          markdownText:
-            'Hello from MetaMask, click here for an expanded view!',
+          markdownText: 'Hello from MetaMask, click here for an expanded view!',
           snapName: 'Notifications Example Snap',
         });
       },
