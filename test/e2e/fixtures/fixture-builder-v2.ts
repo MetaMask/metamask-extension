@@ -127,8 +127,14 @@ type TransactionControllerFixtureInput = Partial<
 };
 
 type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
+  /** @deprecated Patches `AnalyticsController` via shim. Prefer `optedIn`. */
   participateInMetaMetrics?: boolean | null;
+  /** @deprecated Patches `AnalyticsController` via shim. Prefer `analyticsId`. */
   metaMetricsId?: string | null;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  analyticsId?: string | null;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  optedIn?: boolean;
 };
 
 type StorageServiceNamespaceMap = {
@@ -296,6 +302,8 @@ class FixtureBuilderV2 {
     const {
       participateInMetaMetrics,
       metaMetricsId,
+      analyticsId,
+      optedIn,
       ...metaMetricsControllerPatch
     } = data;
 
@@ -307,7 +315,21 @@ class FixtureBuilderV2 {
       });
     }
 
-    if (participateInMetaMetrics !== undefined || metaMetricsId !== undefined) {
+    let resolvedAnalyticsId: string | null | undefined;
+    if (analyticsId === undefined) {
+      resolvedAnalyticsId = metaMetricsId;
+    } else {
+      resolvedAnalyticsId = analyticsId;
+    }
+
+    let resolvedOptedIn: boolean | undefined;
+    if (optedIn !== undefined) {
+      resolvedOptedIn = optedIn;
+    } else if (participateInMetaMetrics !== undefined) {
+      resolvedOptedIn = participateInMetaMetrics === true;
+    }
+
+    if (resolvedAnalyticsId !== undefined || resolvedOptedIn !== undefined) {
       const fixtureData = this.fixture.data as Record<string, unknown>;
       if (!fixtureData.AnalyticsController) {
         fixtureData.AnalyticsController = {};
@@ -317,11 +339,11 @@ class FixtureBuilderV2 {
         unknown
       >;
       const analyticsPatch: Record<string, unknown> = {};
-      if (typeof metaMetricsId === 'string') {
-        analyticsPatch.analyticsId = metaMetricsId;
+      if (resolvedAnalyticsId !== undefined) {
+        analyticsPatch.analyticsId = resolvedAnalyticsId;
       }
-      if (participateInMetaMetrics !== undefined) {
-        analyticsPatch.optedIn = participateInMetaMetrics === true;
+      if (resolvedOptedIn !== undefined) {
+        analyticsPatch.optedIn = resolvedOptedIn;
       }
       merge(analyticsController, analyticsPatch);
     }

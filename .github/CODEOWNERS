@@ -270,3 +270,8 @@ app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platfor
 ui/hooks/gator-permissions                           @MetaMask/delegation
 app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
 shared/lib/gator-permissions                         @MetaMask/delegation
+
+# Snapshots – no code owners assigned
+# This allows anyone with write access to approve changes to any *.snap files.
+# ⚠️ Note: Leaving this rule unassigned disables Code Owner review enforcement for snapshot files.
+**/*.snap

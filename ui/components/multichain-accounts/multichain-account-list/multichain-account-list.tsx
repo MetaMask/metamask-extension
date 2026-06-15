@@ -17,6 +17,7 @@ import { parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
   BoxBackgroundColor,
+  Checkbox,
   FontWeight,
   Icon,
   IconColor,
@@ -26,7 +27,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Checkbox } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountCell } from '../multichain-account-cell';
 import {
@@ -326,9 +326,10 @@ export const MultichainAccountList = ({
             }
             startAccessory={
               showAccountCheckbox ? (
-                <Box>
+                <Box onClick={(event) => event.stopPropagation()}>
                   <Checkbox
-                    isChecked={selectedAccountGroupsSet.has(
+                    id={`multichain-account-checkbox-${groupId}`}
+                    isSelected={selectedAccountGroupsSet.has(
                       groupId as AccountGroupId,
                     )}
                     onChange={() => {
