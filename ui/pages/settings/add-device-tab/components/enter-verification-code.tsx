@@ -173,7 +173,7 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
           {t('enter_verification_code_desc')}
         </Text>
       </Box>
-      <Box className="flex flex-row items-center justify-between gap-2 px-6 w-[80%] mx-auto">
+      <Box className="flex flex-row items-center justify-between gap-2 mx-auto">
         {code.map((digit, index) => (
           <Input
             // The list is a fixed-length set of positional inputs, so the

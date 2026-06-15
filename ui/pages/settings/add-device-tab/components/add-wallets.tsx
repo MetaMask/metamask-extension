@@ -24,7 +24,11 @@ const AddWallets = (_props: AddWalletsProps) => {
   const { wallets } = useSelector(getAccountTree);
   const [selectedAccountGroups, setSelectedAccountGroups] = useState<
     AccountGroupId[]
-  >([]);
+  >(() =>
+    Object.values(wallets).flatMap(
+      (wallet) => Object.keys(wallet.groups) as AccountGroupId[],
+    ),
+  );
 
   const handleAccountClick = useCallback((accountGroupId: AccountGroupId) => {
     setSelectedAccountGroups((prev) =>
