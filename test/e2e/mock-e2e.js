@@ -384,17 +384,23 @@ async function setupMocking(
     });
 
   // SENTRY_DSN_PERFORMANCE
+  // Intercept with a canned 200 rather than passing through to real sentry.io.
+  // v10 tracing emits hundreds of performance envelopes per test (~800 in a
+  // failing multichain run); the real-network round-trips starve startup and
+  // flake the non-EVM account render, and consume the metamask-performance
+  // quota from CI. The log is kept for request accounting.
   await server
     .forPost('https://sentry.io/api/4510302346608640/envelope/')
-    .thenPassThrough({
-      beforeRequest: (req) => {
-        console.log(
-          'Request going to Sentry metamask-performance ============',
-          req.url,
-          false,
-        );
-        return {};
-      },
+    .thenCallback((req) => {
+      console.log(
+        'Request going to Sentry metamask-performance ============',
+        req.url,
+        false,
+      );
+      return {
+        statusCode: 200,
+        json: {},
+      };
     });
 
   await server
