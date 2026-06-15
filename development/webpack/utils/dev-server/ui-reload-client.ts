@@ -58,6 +58,9 @@ let reloading = false;
  * @param socket - The WebSocket the announcement arrived on.
  */
 function onHash(hash: string, socket: WebSocket): void {
+  if (reloading) {
+    return;
+  }
   const stored = getStoredHash();
   // Re-check `reloading`: another announcement may have begun
   // a reload while this one was reading storage.

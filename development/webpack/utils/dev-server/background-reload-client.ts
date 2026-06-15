@@ -58,6 +58,9 @@ async function onFingerprint(
   fingerprint: string,
   socket: WebSocket,
 ): Promise<void> {
+  if (reloading) {
+    return;
+  }
   const stored = await getStoredFingerprint();
   // Re-check `reloading`: another announcement may have begun
   // a reload while this one was reading storage.
