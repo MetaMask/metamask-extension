@@ -11,6 +11,7 @@ import {
   getNativeAssetSafe,
   getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
+  isNftStandard,
   parseValueTransfers,
   withFallbackTokenAssetId,
   type ValueTransfer,
@@ -158,6 +159,7 @@ export function mapApiEvmTransactions({
             from: receivedNftTransfer.from,
             to: receivedNftTransfer.to,
             token: getToken(receivedNftTransfer, 'in'),
+            paymentToken: getToken(sentNativeTransfer, 'out'),
           },
         };
       }
@@ -177,6 +179,22 @@ export function mapApiEvmTransactions({
     }
 
     if (sentNftTransfer) {
+      if (receivedTransfer && !isNftStandard(receivedTransfer.transferType)) {
+        return {
+          type: 'nftSell',
+          chainId,
+          status,
+          timestamp,
+          data: {
+            hash,
+            from: sentNftTransfer.from,
+            to: sentNftTransfer.to,
+            token: getToken(sentNftTransfer, 'out'),
+            paymentToken: getToken(receivedTransfer, 'in'),
+          },
+        };
+      }
+
       return {
         type: 'send',
         chainId,

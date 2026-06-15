@@ -414,7 +414,7 @@ describe('mapEvmTransactions', () => {
     });
   });
 
-  it('maps an NFT sale with received native value to a Send activity', () => {
+  it('maps an NFT sale with received native ETH to a Sell activity', () => {
     const nftRecipientAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
     const nftBuyerAddress = '0x78c87da124bb36a914ff1c0f2d642f47870c997c';
     const transaction = {
@@ -449,7 +449,7 @@ describe('mapEvmTransactions', () => {
     });
 
     expect(item).toMatchObject({
-      type: 'send',
+      type: 'nftSell',
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1771884263000,
@@ -457,6 +457,78 @@ describe('mapEvmTransactions', () => {
         from: subjectAddress,
         hash: undefined,
         to: nftRecipientAddress,
+        token: {
+          direction: 'out',
+          symbol: 'BAE',
+        },
+        paymentToken: {
+          direction: 'in',
+          symbol: 'ETH',
+        },
+      },
+    });
+  });
+
+  it('maps an OpenSea NFT sale paid in WETH to a Sell activity', () => {
+    const sellerAddress = '0xe321bd63cde8ea046b382f82964575f2a5586474';
+
+    const item = mapApiEvmTransactions({
+      subjectAddress: sellerAddress,
+      transaction:
+        apiResponses.openseaNftSaleWeth as unknown as V1TransactionByHashResponse,
+    });
+
+    expect(item).toMatchObject({
+      type: 'nftSell',
+      chainId: 'eip155:8453',
+      status: 'success',
+      timestamp: 1768427429000,
+      data: {
+        hash: '0x0e7f29fa4af73f3708a7383a2fa8d0e09f6c6bf8a176bccf3a6b3259e2886bae',
+        from: sellerAddress,
+        to: '0xbaf3ad6542f932cc0e0b54983e82e0cfb7c5a5a1',
+        token: {
+          direction: 'out',
+          // name takes precedence over symbol for NFTs
+          symbol: 'The Warplets',
+        },
+        paymentToken: {
+          direction: 'in',
+          symbol: 'WETH',
+        },
+      },
+    });
+  });
+
+  it('maps a plain NFT send with no payment to a Send activity', () => {
+    const nftRecipientAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
+    const transaction = {
+      timestamp: '2026-02-23T22:04:23.000Z',
+      chainId: Number(CHAIN_IDS.MAINNET),
+      from: subjectAddress,
+      to: nftRecipientAddress,
+      transactionCategory: 'TRANSFER',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: nftRecipientAddress,
+          amount: 1,
+          tokenId: '984',
+          symbol: 'BAE',
+          transferType: 'erc1155',
+        },
+      ],
+    } as unknown as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+
+    expect(item).toMatchObject({
+      type: 'send',
+      chainId: 'eip155:1',
+      data: {
         token: {
           direction: 'out',
           symbol: 'BAE',
@@ -486,6 +558,10 @@ describe('mapEvmTransactions', () => {
         token: {
           direction: 'in',
           symbol: 'FLUF World: Scenes and Sounds',
+        },
+        paymentToken: {
+          direction: 'out',
+          symbol: 'ETH',
         },
       },
     });

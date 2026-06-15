@@ -3,6 +3,7 @@ import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { ApprovalDetails } from './approval-details';
 import { BridgeDetails } from './bridge-details';
 import { DefaultDetails } from './default-details';
+import { NftDetails } from './nft-details';
 import { PerpsDetails } from './perps-details';
 import { SendDetails } from './send-details';
 import { SwapDetails } from './swap-details';
@@ -17,6 +18,9 @@ export function TemplateLoader({ item }: Props) {
   }
 
   switch (item.type) {
+    case 'nftBuy':
+    case 'nftSell':
+      return <NftDetails item={item} />;
     case 'send':
     case 'receive':
       return <SendDetails item={item} />;
