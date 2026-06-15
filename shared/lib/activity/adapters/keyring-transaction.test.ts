@@ -136,6 +136,128 @@ describe('mapKeyringTransaction', () => {
     });
   });
 
+  it('maps token approve with amount ≤15 digits to approveSpendingCap preserving the amount', () => {
+    const item = mapKeyringTransaction({
+      transaction: {
+        id: 'approve-id',
+        chain: MultichainNetworks.SOLANA,
+        account: '00000000-0000-4000-8000-000000000000',
+        status: TransactionStatus.Confirmed,
+        timestamp: 1716367781,
+        type: TransactionType.TokenApprove,
+        from: [
+          {
+            address: 'owner-address',
+            asset: {
+              fungible: true,
+              type: `${MultichainNetworks.SOLANA}/token:usdc`,
+              unit: 'USDC',
+              amount: '999999999999999', // 15 digits — kept
+            },
+          },
+        ],
+        to: [{ address: 'spender-address', asset: null }],
+        fees: [],
+        events: [],
+      },
+    });
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      chainId: MultichainNetworks.SOLANA,
+      status: 'success',
+      timestamp: 1716367781000,
+      data: {
+        hash: 'approve-id',
+        from: 'owner-address',
+        token: {
+          amount: '999999999999999',
+          assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
+          direction: 'out',
+          symbol: 'USDC',
+        },
+      },
+    });
+  });
+
+  it('strips token amount for approve with >15 digit integer part (uint256.max)', () => {
+    const uint256Max =
+      '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+    const item = mapKeyringTransaction({
+      transaction: {
+        id: 'unlimited-approve-id',
+        chain: MultichainNetworks.SOLANA,
+        account: '00000000-0000-4000-8000-000000000000',
+        status: TransactionStatus.Confirmed,
+        timestamp: 1716367781,
+        type: TransactionType.TokenApprove,
+        from: [
+          {
+            address: 'owner-address',
+            asset: {
+              fungible: true,
+              type: `${MultichainNetworks.SOLANA}/token:usdc`,
+              unit: 'USDC',
+              amount: uint256Max,
+            },
+          },
+        ],
+        to: [{ address: 'spender-address', asset: null }],
+        fees: [],
+        events: [],
+      },
+    });
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      data: {
+        hash: 'unlimited-approve-id',
+        token: {
+          assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
+          symbol: 'USDC',
+          direction: 'out',
+          amount: undefined,
+        },
+      },
+    });
+  });
+
+  it('strips token amount when integer part has exactly 16 digits (boundary)', () => {
+    const item = mapKeyringTransaction({
+      transaction: {
+        id: 'boundary-approve-id',
+        chain: MultichainNetworks.SOLANA,
+        account: '00000000-0000-4000-8000-000000000000',
+        status: TransactionStatus.Confirmed,
+        timestamp: 1716367781,
+        type: TransactionType.TokenApprove,
+        from: [
+          {
+            address: 'owner-address',
+            asset: {
+              fungible: true,
+              type: `${MultichainNetworks.SOLANA}/token:usdc`,
+              unit: 'USDC',
+              amount: '1000000000000000', // 16 digits — stripped
+            },
+          },
+        ],
+        to: [{ address: 'spender-address', asset: null }],
+        fees: [],
+        events: [],
+      },
+    });
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      data: {
+        token: {
+          amount: undefined,
+        },
+      },
+    });
+  });
+
   it('maps bitcoin send from account address and to output address', () => {
     const item = mapKeyringTransaction({
       subjectAddress: 'bc1qcj8v4ft5uvt59jjrxd856a48xegclwne78h0ye',
