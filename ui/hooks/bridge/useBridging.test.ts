@@ -193,6 +193,8 @@ describe('useBridging', () => {
               token_symbol_source: token?.symbol ?? 'ETH',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: '',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
             },
           ],
           [UnifiedSwapBridgeEventName.PageViewed, {}],
@@ -527,6 +529,8 @@ describe('useBridging', () => {
               token_symbol_destination: '',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_source: token?.symbol ?? 'ETH',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
             },
           ],
           [UnifiedSwapBridgeEventName.PageViewed, {}],
