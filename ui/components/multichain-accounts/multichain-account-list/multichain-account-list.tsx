@@ -72,6 +72,7 @@ export type MultichainAccountListProps = {
   showAccountCheckbox?: boolean;
   showConnectionStatus?: boolean;
   showDefaultAddress?: boolean;
+  showAddAccount?: boolean;
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
@@ -106,6 +107,7 @@ export const MultichainAccountList = ({
   showAccountCheckbox = false,
   showConnectionStatus = false,
   showDefaultAddress = false,
+  showAddAccount = true,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox;
 
@@ -424,7 +426,11 @@ export const MultichainAccountList = ({
         },
       );
 
-      if (!isInSearchMode && walletData.type === AccountWalletType.Entropy) {
+      if (
+        showAddAccount &&
+        !isInSearchMode &&
+        walletData.type === AccountWalletType.Entropy
+      ) {
         accounts.push({
           type: 'add-account',
           key: `add-${walletId}`,
@@ -486,6 +492,7 @@ export const MultichainAccountList = ({
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
     showDefaultAddress,
+    showAddAccount,
     t,
   ]);
 
