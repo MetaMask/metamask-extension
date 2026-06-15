@@ -4,8 +4,8 @@
  *
  * Listed Augmentations:
  * - Arc does not show the ERC20 token in the UI, instead the ERC20 token is synced with its native token.
- *   - USDC ERC20: 0x0000000000000000000000000000000000000000
- *   - USDC Native: 0x3600000000000000000000000000000000000000
+ * - USDC ERC20: 0x0000000000000000000000000000000000000000
+ * - USDC Native: 0x3600000000000000000000000000000000000000
  */
 const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
 const ARC_NATIVE_HEX_CHAIN_ID = '0x13b2';
@@ -41,7 +41,7 @@ function isArcErc20USDCAsset(asset: {
 }
 
 export function filterOutArcErc20USDCAsset<
-  T extends { chainId?: string; isNative?: boolean },
->(assets: T[]): T[] {
+  TAsset extends { chainId?: string; isNative?: boolean },
+>(assets: TAsset[]): TAsset[] {
   return assets.filter((asset) => !isArcErc20USDCAsset(asset));
 }
