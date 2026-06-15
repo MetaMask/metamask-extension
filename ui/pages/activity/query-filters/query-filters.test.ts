@@ -185,7 +185,6 @@ describe('query filters', () => {
         chainId: 'eip155:1',
         status: 'success',
         timestamp: 1778593067000,
-        raw: { type: 'apiEvmTransaction', data: validTransaction },
         data: {
           from: subjectAddress,
           to: otherAddress,

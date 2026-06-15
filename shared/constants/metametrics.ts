@@ -989,6 +989,8 @@ export enum MetaMetricsEventName {
   RpcServiceDegraded = 'RPC Service Degraded',
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
+  SeedlessOnboardingMigrationCompleted = 'Seedless Onboarding Migration Completed',
+  SeedlessOnboardingMigrationFailed = 'Seedless Onboarding Migration Failed',
   SettingsUpdated = 'Settings Updated',
   SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
@@ -1176,6 +1178,7 @@ export enum MetaMetricsEventName {
   HardwareWalletRecoverySuccessModalViewed = 'Hardware Wallet Recovery Success Modal Viewed',
   HardwareWalletRecoveryCtaClicked = 'Hardware Wallet Recovery CTA Clicked',
   HardwareWalletRecoveryRepairCtaClicked = 'Hardware Wallet Recovery Repair CTA Clicked',
+  QrHardwareScanFailed = 'QR Hardware Scan Failed',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',

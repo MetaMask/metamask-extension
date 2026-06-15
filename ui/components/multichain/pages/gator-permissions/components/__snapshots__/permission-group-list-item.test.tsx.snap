@@ -15,7 +15,7 @@ exports[`Permission List Item render renders correctly 1`] = `
         class="items-start mr-2"
       >
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-[10px] h-10 w-10"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-[10px] h-10 w-10"
           data-testid="permission-group-list-item__avatar-network"
           style="border-radius: 50%;"
         >

@@ -19,6 +19,7 @@ import {
   getIsSocialLoginFlow,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
+  getDeferredDeepLinkParameters,
   getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
@@ -76,6 +77,7 @@ export default function CreatePassword({
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
+  const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const isParticipateInMetaMetricsSet = useSelector(
@@ -201,6 +203,7 @@ export default function CreatePassword({
         new_wallet: false,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: accountTypeForMetrics,
+        ...utmProperties,
       },
     });
 
@@ -255,6 +258,7 @@ export default function CreatePassword({
         new_wallet: true,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: accountTypeForMetrics,
+        ...utmProperties,
       },
     });
     if (isSocialLoginFlow) {

@@ -478,6 +478,9 @@ describe('MetaMetricsController', function () {
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
       const spy = jest.spyOn(segmentMock, 'identify');
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {
+        return undefined;
+      });
       await withController(({ controller }) => {
         controller.identify({
           ...MOCK_TRAITS,
@@ -490,6 +493,15 @@ describe('MetaMetricsController', function () {
             traits: MOCK_TRAITS,
           }),
           undefined,
+        );
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          1,
+          'MetaMetricsController: "test_null" value is not a valid trait type',
+        );
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          2,
+          'MetaMetricsController: "test_array_multi_types" value is not a valid trait type',
         );
       });
     });
@@ -532,9 +544,21 @@ describe('MetaMetricsController', function () {
 
     it('should not call segment.identify if there are no valid traits to identify', async function () {
       const spy = jest.spyOn(segmentMock, 'identify');
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {
+        return undefined;
+      });
       await withController(({ controller }) => {
         controller.identify(MOCK_INVALID_TRAITS);
         expect(spy).toHaveBeenCalledTimes(0);
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          1,
+          'MetaMetricsController: "test_null" value is not a valid trait type',
+        );
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          2,
+          'MetaMetricsController: "test_array_multi_types" value is not a valid trait type',
+        );
       });
     });
   });
@@ -631,8 +655,9 @@ describe('MetaMetricsController', function () {
             names: {
               ethereumAddress: {},
             },
-            participateInMetaMetrics: true,
-            metaMetricsId: TEST_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
+            analyticsId: TEST_ANALYTICS_ID,
             currentCurrency: 'usd',
             dataCollectionForMarketing: false,
             preferences: {
@@ -831,6 +856,119 @@ describe('MetaMetricsController', function () {
           spy.mock.calls[0][1],
         );
       });
+    });
+
+    it('removes UTM properties when marketing consent is not granted', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              dataCollectionForMarketing: false,
+            },
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+          controller.trackEvent({
+            event: 'Fake Event',
+            category: 'Unit Test',
+            properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_source: 'newsletter',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: '1',
+            },
+            sensitiveProperties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_campaign: 'spring-sale',
+              foo: 'bar',
+            },
+          });
+
+          expect(spy).toHaveBeenCalledTimes(2);
+          expect(spy).toHaveBeenNthCalledWith(
+            1,
+            expect.objectContaining({
+              event: 'Fake Event',
+              userId: TEST_ANALYTICS_ID,
+              context: DEFAULT_TEST_CONTEXT,
+              properties: expect.objectContaining({
+                ...DEFAULT_EVENT_PROPERTIES,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: '1',
+              }),
+            }),
+            undefined,
+          );
+          expect(spy.mock.calls[0][0].properties).not.toHaveProperty(
+            'utm_source',
+          );
+
+          expect(spy).toHaveBeenNthCalledWith(
+            2,
+            expect.objectContaining({
+              event: 'Fake Event',
+              userId: TEST_ANALYTICS_ID,
+              context: DEFAULT_TEST_CONTEXT,
+              properties: expect.objectContaining({
+                foo: 'bar',
+                ...DEFAULT_EVENT_PROPERTIES,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: '1',
+                [ANONYMOUS_EVENT_PROPERTY]: true,
+              }),
+            }),
+            undefined,
+          );
+          expect(spy.mock.calls[1][0].properties).not.toHaveProperty(
+            'utm_campaign',
+          );
+        },
+      );
+    });
+
+    it('preserves UTM properties when marketing consent is granted', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              dataCollectionForMarketing: true,
+            },
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+          controller.trackEvent({
+            event: 'Fake Event',
+            category: 'Unit Test',
+            properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_source: 'newsletter',
+            },
+            sensitiveProperties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_campaign: 'spring-sale',
+            },
+          });
+
+          expect(spy).toHaveBeenCalledTimes(2);
+          expect(spy.mock.calls[0][0].properties).toHaveProperty(
+            'utm_source',
+            'newsletter',
+          );
+          expect(spy.mock.calls[1][0].properties).toHaveProperty(
+            'utm_campaign',
+            'spring-sale',
+          );
+        },
+      );
     });
 
     it('uses current time for latest analytics event state', async function () {
@@ -1667,8 +1805,9 @@ describe('MetaMetricsController', function () {
       },
       currentCurrency: 'usd',
       securityAlertsEnabled: false,
-      participateInMetaMetrics: true,
-      metaMetricsId: null,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
+      analyticsId: '',
       dataCollectionForMarketing: false,
       preferences: {
         privacyMode: false,
@@ -1858,8 +1997,9 @@ describe('MetaMetricsController', function () {
               },
             },
           },
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
           preferences: {
@@ -1956,8 +2096,9 @@ describe('MetaMetricsController', function () {
             theme: 'default' as ThemeType,
             useTokenDetection: true,
             allNfts: {},
-            participateInMetaMetrics: true,
-            metaMetricsId: TEST_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
+            analyticsId: TEST_ANALYTICS_ID,
             dataCollectionForMarketing: false,
             preferences: {
               privacyMode: false,
@@ -2011,8 +2152,9 @@ describe('MetaMetricsController', function () {
             theme: 'default' as ThemeType,
             useTokenDetection: true,
             allNfts: {},
-            participateInMetaMetrics: true,
-            metaMetricsId: TEST_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
+            analyticsId: TEST_ANALYTICS_ID,
             dataCollectionForMarketing: false,
             preferences: {
               privacyMode: false,
@@ -2079,8 +2221,9 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
           preferences: {
             privacyMode: true,
@@ -2146,8 +2289,9 @@ describe('MetaMetricsController', function () {
           },
           currentCurrency: 'usd',
           allNfts: {},
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
           preferences: {
             privacyMode: true,
@@ -2230,8 +2374,9 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
           preferences: {
             privacyMode: true,
@@ -2297,8 +2442,9 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
           preferences: {
             privacyMode: true,

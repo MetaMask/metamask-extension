@@ -12,7 +12,10 @@ import {
   KeyringTypes,
 } from '@metamask/keyring-controller';
 import { add0x, hexToBytes } from '@metamask/utils';
-import { SecretType } from '@metamask/seedless-onboarding-controller';
+import {
+  EncAccountDataType,
+  SecretType,
+} from '@metamask/seedless-onboarding-controller';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
@@ -681,21 +684,21 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'KeyringController:withKeyring',
-          jest.fn().mockImplementation(({ _address }, callback) =>
-            callback({
+          'KeyringController:withKeyringV2',
+          jest.fn().mockImplementation(({ address }, callback) => {
+            expect(address).toBe('0x123');
+            return callback({
               keyring: {
-                exportAccount: jest
-                  .fn()
-                  .mockResolvedValue(
+                exportAccount: jest.fn().mockResolvedValue({
+                  privateKey:
                     '0000000000000000000000000000000000000000000000000000000000000001',
-                  ),
+                }),
               },
               metadata: {
                 id: 'foo',
               },
-            }),
-          ),
+            });
+          }),
         );
 
         rootMessenger.registerActionHandler(
@@ -705,6 +708,24 @@ describe('LegacyBackgroundApiService', () => {
 
         rootMessenger.registerActionHandler(
           'AccountsController:setSelectedAccount',
+          jest.fn(),
+        );
+
+        const runMigrationsHandler = jest.fn().mockResolvedValue(false);
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:runMigrations',
+          runMigrationsHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({ migrationVersion: 0 }),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:trackEvent',
           jest.fn(),
         );
 
@@ -719,10 +740,13 @@ describe('LegacyBackgroundApiService', () => {
         ).resolves.toBeUndefined();
 
         expect(callSpy).toHaveBeenCalledWith(
-          'KeyringController:withKeyring',
+          'KeyringController:withKeyringV2',
           { address: '0x123' },
           expect.any(Function),
         );
+
+        // Migrations run before adding the new secret data.
+        expect(runMigrationsHandler).toHaveBeenCalledTimes(1);
 
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:addNewSecretData',
@@ -731,7 +755,7 @@ describe('LegacyBackgroundApiService', () => {
               '0000000000000000000000000000000000000000000000000000000000000001',
             ),
           ),
-          SecretType.PrivateKey,
+          EncAccountDataType.ImportedPrivateKey,
           { keyringId: 'foo' },
         );
 
@@ -795,21 +819,21 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'KeyringController:withKeyring',
-          jest.fn().mockImplementation(({ _address }, callback) =>
-            callback({
+          'KeyringController:withKeyringV2',
+          jest.fn().mockImplementation(({ address }, callback) => {
+            expect(address).toBe('0x123');
+            return callback({
               keyring: {
-                exportAccount: jest
-                  .fn()
-                  .mockResolvedValue(
+                exportAccount: jest.fn().mockResolvedValue({
+                  privateKey:
                     '0000000000000000000000000000000000000000000000000000000000000001',
-                  ),
+                }),
               },
               metadata: {
                 id: 'foo',
               },
-            }),
-          ),
+            });
+          }),
         );
 
         rootMessenger.registerActionHandler(
@@ -820,6 +844,12 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'KeyringController:removeAccount',
           jest.fn(),
+        );
+
+        // Onboarding is not yet complete, so migrations are skipped.
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
         );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -855,21 +885,21 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'KeyringController:withKeyring',
-          jest.fn().mockImplementation(({ _address }, callback) =>
-            callback({
+          'KeyringController:withKeyringV2',
+          jest.fn().mockImplementation(({ address }, callback) => {
+            expect(address).toBe('0x123');
+            return callback({
               keyring: {
-                exportAccount: jest
-                  .fn()
-                  .mockResolvedValue(
+                exportAccount: jest.fn().mockResolvedValue({
+                  privateKey:
                     '0000000000000000000000000000000000000000000000000000000000000001',
-                  ),
+                }),
               },
               metadata: {
                 id: 'foo',
               },
-            }),
-          ),
+            });
+          }),
         );
 
         rootMessenger.registerActionHandler(
@@ -1230,7 +1260,7 @@ function getMessenger(
       'NetworkController:resetConnection',
       'KeyringController:importAccountWithStrategy',
       'OnboardingController:getIsSocialLoginFlow',
-      'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2',
       'KeyringController:removeAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:setSelectedAccount',
@@ -1241,6 +1271,9 @@ function getMessenger(
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
+      'SeedlessOnboardingController:getState',
+      'SeedlessOnboardingController:runMigrations',
+      'MetaMetricsController:trackEvent',
     ],
   });
 
