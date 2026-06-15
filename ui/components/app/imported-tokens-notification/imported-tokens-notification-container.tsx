@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -10,24 +10,23 @@ import {
   setNewTokensImported,
   setNewTokensImportedError,
 } from '../../../store/actions';
-import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import {
-  Box,
+  BannerAlert,
+  BannerAlertSeverity,
   ButtonIcon,
   ButtonIconSize,
   Icon,
   IconName,
 } from '../../component-library';
-import { Display } from '../../../helpers/constants/design-system';
 import { SECOND } from '../../../../shared/constants/time';
+
+const AUTO_HIDE_DELAY = 5 * SECOND;
 
 export function ImportedTokensNotificationContainer() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const newTokensImported = useSelector(getNewTokensImported);
   const newTokensImportedError = useSelector(getNewTokensImportedError);
-
-  const autoHideDelay = 5 * SECOND;
 
   const onDismissImport = useCallback(() => {
     dispatch(setNewTokensImported(''));
@@ -42,6 +41,14 @@ export function ImportedTokensNotificationContainer() {
     dispatch(setNewTokensImportedError(''));
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!newTokensImported && !newTokensImportedError) {
+      return undefined;
+    }
+    const timer = setTimeout(onAutoHide, AUTO_HIDE_DELAY);
+    return () => clearTimeout(timer);
+  }, [newTokensImported, newTokensImportedError, onAutoHide]);
+
   if (!newTokensImported && !newTokensImportedError) {
     return null;
   }
@@ -49,62 +56,54 @@ export function ImportedTokensNotificationContainer() {
   return (
     <>
       {newTokensImported ? (
-        <ActionableMessage
-          type="success"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
+        <BannerAlert
+          severity={BannerAlertSeverity.Success}
           className="home__new-tokens-imported-notification"
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
-              <Box>
-                <Text
-                  className="home__new-tokens-imported-notification-title"
-                  variant={TextVariant.BodySm}
-                  asChild
-                >
-                  <h6>{t('newTokensImportedTitle')}</h6>
-                </Text>
-                <Text
-                  className="home__new-tokens-imported-notification-message"
-                  variant={TextVariant.BodySm}
-                  asChild
-                >
-                  <h6>{t('newTokensImportedMessage', [newTokensImported])}</h6>
-                </Text>
-              </Box>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onDismissImport}
-                className="home__new-tokens-imported-notification-close"
-              />
-            </Box>
+          actionButtonLabel={
+            <ButtonIcon
+              iconName={IconName.Close}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('close')}
+              onClick={onDismissImport}
+              className="home__new-tokens-imported-notification-close"
+            />
           }
-        />
+        >
+          <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
+          <Text
+            className="home__new-tokens-imported-notification-title"
+            variant={TextVariant.BodySm}
+            asChild
+          >
+            <h6>{t('newTokensImportedTitle')}</h6>
+          </Text>
+          <Text
+            className="home__new-tokens-imported-notification-message"
+            variant={TextVariant.BodySm}
+            asChild
+          >
+            <h6>{t('newTokensImportedMessage', [newTokensImported])}</h6>
+          </Text>
+        </BannerAlert>
       ) : null}
       {newTokensImportedError ? (
-        <ActionableMessage
-          type="danger"
+        <BannerAlert
+          severity={BannerAlertSeverity.Error}
           className="home__new-tokens-imported-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <Icon name={IconName.Danger} marginRight={1} />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('importTokensError')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onDismissError}
-              />
-            </Box>
+          actionButtonLabel={
+            <ButtonIcon
+              iconName={IconName.Close}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('close')}
+              onClick={onDismissError}
+            />
           }
-        />
+        >
+          <Icon name={IconName.Danger} marginRight={1} />
+          <Text variant={TextVariant.BodySm} asChild>
+            <h6>{t('importTokensError')}</h6>
+          </Text>
+        </BannerAlert>
       ) : null}
     </>
   );

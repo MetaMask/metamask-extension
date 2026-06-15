@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { clearHomeDeepLinkQrCode } from '../../ducks/app/app';
 import { DeeplinkQrCodeModalContainer } from './deeplink-qrcode-modal-container';
 import type { HomeDeepLinkQrCode } from './HomeDeepLinkActions';
@@ -35,29 +36,33 @@ const mockStore = configureMockStore([thunk]);
 
 function buildState({
   homeDeepLinkQrCode = null as HomeDeepLinkQrCode | null,
-  canSeeModals = true,
-  showTermsOfUse = false,
-  showMultiRpcEditModal = false,
-  displayUpdateModal = false,
   isSeedlessPasswordOutdated = false,
   showShieldEntryModal = false,
-  showRecoveryPhrase = false,
 } = {}) {
   return {
     appState: {
       homeDeepLinkQrCode,
-      showBasicFunctionalityModal: false,
-      externalServicesOnboardingToggleState: true,
+      // Required by selectCanSeeModals
+      onboardedInThisUISession: false,
+      newNetworkAddedConfigurationId: '',
+      showUpdateModal: false,
+      // Required by getShowShieldEntryModal
+      shieldEntryModal: showShieldEntryModal ? { show: true } : undefined,
     },
     metamask: {
+      // Required by selectCanSeeModals
       completedOnboarding: true,
+      firstTimeFlowType: 'import',
+      preferences: {},
+      // Required by selectShowTermsOfUse (false = no popup)
       termsOfUseLastAgreed: Date.now(),
-      seedPhraseBackedUp: true,
-      showRecoveryPhrase,
-      shieldEntryModal: showShieldEntryModal ? { show: true } : undefined,
-      isSeedlessOnboarding: isSeedlessPasswordOutdated,
+      remoteFeatureFlags: {},
+      // Required by getIsSeedlessPasswordOutdated
+      passwordOutdatedCache: { isExpiredPwd: isSeedlessPasswordOutdated },
+      // Required by selectShowRecoveryPhrase (recent = reminder suppressed)
+      recoveryPhraseReminderHasBeenShown: false,
+      recoveryPhraseReminderLastShown: Date.now(),
     },
-    appState2: {},
   };
 }
 
@@ -99,7 +104,7 @@ describe('DeeplinkQrCodeModalContainer', () => {
       store,
     );
 
-    fireEvent.click(getByText('Done'));
+    fireEvent.click(getByText(messages.done.message));
 
     expect(store.getActions()).toContainEqual(clearHomeDeepLinkQrCode());
   });

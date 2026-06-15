@@ -11,6 +11,12 @@ import {
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
 import {
+  getIsPrimarySeedPhraseBackedUp,
+  getWeb3ShimUsageAlertEnabledness,
+} from '../../ducks/metamask/metamask';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
+import {
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
   setOutdatedBrowserWarningLastShown,
@@ -18,7 +24,6 @@ import {
   setActiveNetwork,
   setEditedNetwork,
 } from '../../store/actions';
-import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/lib/mv3.utils';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
@@ -28,17 +33,14 @@ import {
   AlertTypes,
 } from '../../../shared/constants/alerts';
 import { SECOND } from '../../../shared/constants/time';
-import { FontWeight, Display } from '../../helpers/constants/design-system';
+import { FontWeight } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import { SeedPhraseBackupNotificationContainer } from '../../components/app/recovery-phrase-reminder';
 import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Box,
+  BannerAlert,
+  BannerAlertSeverity,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import type { MetaMaskReduxState } from '../../store/store';
@@ -70,6 +72,16 @@ export const HomeNotificationsContainer = memo(function () {
   const showOutdatedBrowserWarning = useSelector(
     (state: MetaMaskReduxState) =>
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
+  );
+
+  const isPrimarySeedPhraseBackedUp = useSelector(
+    getIsPrimarySeedPhraseBackedUp,
+  );
+  const shouldShowSeedPhraseReminder = useSelector(
+    (state: MetaMaskReduxState) => {
+      const account = getSelectedInternalAccount(state);
+      return account ? getShouldShowSeedPhraseReminder(state, account) : false;
+    },
   );
 
   const shouldShowWeb3ShimUsageNotification = useSelector(
@@ -106,10 +118,17 @@ export const HomeNotificationsContainer = memo(function () {
     [dispatch],
   );
 
-  const onEditedNetworkAutoHide = useCallback(
-    () => clearEditedNetwork(),
-    [clearEditedNetwork],
-  );
+  // Auto-dismiss the "edited network" banner after AUTO_HIDE_DELAY.
+  const editedNetworkVisible = Boolean(editedNetwork?.editCompleted);
+  useEffect(() => {
+    if (!editedNetworkVisible) {
+      return undefined;
+    }
+    const timeout = setTimeout(() => {
+      clearEditedNetwork();
+    }, AUTO_HIDE_DELAY);
+    return () => clearTimeout(timeout);
+  }, [editedNetworkVisible, clearEditedNetwork]);
 
   const onOutdatedBrowserWarningClose = useCallback(() => {
     dispatch(setOutdatedBrowserWarningLastShown(new Date().getTime()));
@@ -143,56 +162,36 @@ export const HomeNotificationsContainer = memo(function () {
 
   const notificationItems = [
     newNetworkAddedName ? (
-      <ActionableMessage
+      <BannerAlert
         key="new-network-added"
-        type="success"
+        severity={BannerAlertSeverity.Success}
         className="home__new-network-notification"
-        message={
-          <Box display={Display.InlineFlex}>
-            <i className="fa fa-check-circle home__new-network-notification-icon" />
-            <Text variant={TextVariant.BodySm} asChild>
-              <h6>{t('newNetworkAdded', [newNetworkAddedName])}</h6>
-            </Text>
-            <ButtonIcon
-              iconName={IconName.Close}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('close')}
-              onClick={clearNewNetworkAdded}
-              className="home__new-network-notification-close"
-            />
-          </Box>
-        }
-      />
+        onClose={clearNewNetworkAdded}
+      >
+        <Text variant={TextVariant.BodySm} asChild>
+          <h6>{t('newNetworkAdded', [newNetworkAddedName])}</h6>
+        </Text>
+      </BannerAlert>
     ) : null,
     editedNetwork?.editCompleted ? (
-      <ActionableMessage
+      <BannerAlert
         key="edited-network"
-        type="success"
+        severity={BannerAlertSeverity.Success}
         className="home__new-tokens-imported-notification"
-        autoHideTime={AUTO_HIDE_DELAY}
-        onAutoHide={onEditedNetworkAutoHide}
-        message={
-          <Box display={Display.InlineFlex}>
-            <i className="fa fa-check-circle home__new-network-notification-icon" />
-            <Text variant={TextVariant.BodySm} asChild>
-              <h6>
-                {editedNetwork.newNetwork
-                  ? t('newNetworkAdded', [editedNetwork.nickname])
-                  : t('newNetworkEdited', [editedNetwork.nickname])}
-              </h6>
-            </Text>
-            <ButtonIcon
-              iconName={IconName.Close}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('close')}
-              onClick={clearEditedNetwork}
-              className="home__new-network-notification-close"
-            />
-          </Box>
-        }
-      />
+        onClose={clearEditedNetwork}
+      >
+        <Text variant={TextVariant.BodySm} asChild>
+          <h6>
+            {editedNetwork.newNetwork
+              ? t('newNetworkAdded', [editedNetwork.nickname])
+              : t('newNetworkEdited', [editedNetwork.nickname])}
+          </h6>
+        </Text>
+      </BannerAlert>
     ) : null,
-    <SeedPhraseBackupNotificationContainer key="show-seed-phrase-reminder" />,
+    !isPrimarySeedPhraseBackedUp && shouldShowSeedPhraseReminder ? (
+      <SeedPhraseBackupNotificationContainer key="show-seed-phrase-reminder" />
+    ) : null,
     shouldShowWeb3ShimUsageNotification ? (
       <HomeNotification
         key="show-web3-shim"

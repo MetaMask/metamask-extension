@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   selectCanShowLowPriorityModal,
   getHomeDeepLinkQrCode,
-} from '../../../../selectors';
+} from '../../../../selectors/home-modals';
 import { selectShowPna25Modal } from '../../toast-master/selectors';
 import { selectRewardsModalOpen } from '../../../../ducks/rewards/selectors';
 import Pna25Modal from './pna25-modal';

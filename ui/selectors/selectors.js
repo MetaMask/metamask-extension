@@ -142,7 +142,6 @@ import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/co
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
   DEVICE_TYPE,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -156,10 +155,6 @@ import {
   isAddressLedger,
   getIsUnlocked,
 } from '../ducks/metamask/base-selectors';
-import {
-  getIsPrimarySeedPhraseBackedUp,
-  getIsSeedlessPasswordOutdated,
-} from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
@@ -2410,20 +2405,6 @@ export function getShowRecoveryPhraseReminder(state) {
 }
 
 /**
- * Returns true when the recovery phrase reminder modal should be displayed.
- * Combines the timing-based reminder flag with the seed phrase backup status
- * so callers only need a single boolean for modal priority guard checks.
- *
- * @param state - Redux state object.
- * @returns Whether the recovery phrase reminder modal should be shown.
- */
-export const selectShowRecoveryPhrase = createSelector(
-  [getShowRecoveryPhraseReminder, getIsPrimarySeedPhraseBackedUp],
-  (showRecoveryPhraseReminder, isPrimarySeedPhraseBackedUp) =>
-    showRecoveryPhraseReminder && !isPrimarySeedPhraseBackedUp,
-);
-
-/**
  * Retrieves the number of unapproved transactions and messages
  *
  * @param state - Redux state object.
@@ -2604,134 +2585,6 @@ export function getShowTermsOfUse(state) {
     new Date(TERMS_OF_USE_LAST_UPDATED).getTime()
   );
 }
-
-/**
- * Returns true when the Terms of Use popup should be shown.
- * Combines all four conditions into a single boolean so the Home parent
- * only needs to track one value for modal priority guard checks.
- *
- * @param state - Redux state object.
- * @returns Whether the Terms of Use popup should be shown.
- */
-export const selectShowTermsOfUse = createSelector(
-  [
-    (state) => state.metamask.completedOnboarding,
-    (state) => state.appState.onboardedInThisUISession,
-    getShowTermsOfUse,
-    getIsSocialLoginFlow,
-  ],
-  (
-    completedOnboarding,
-    onboardedInThisUISession,
-    showTermsOfUsePopup,
-    isSocialLoginFlow,
-  ) =>
-    Boolean(completedOnboarding) &&
-    !onboardedInThisUISession &&
-    showTermsOfUsePopup &&
-    !isSocialLoginFlow,
-);
-
-/**
- * Returns true when the user has completed onboarding and the modal system is
- * allowed to show modals. Equivalent to the `canSeeModals` local variable that
- * was previously computed in the Home component render method.
- *
- * @param state - Redux state object.
- * @returns Whether modals can be shown.
- */
-export const selectCanSeeModals = createSelector(
-  [
-    (state) => state.metamask.completedOnboarding,
-    (state) => state.appState.onboardedInThisUISession,
-    (state) => state.metamask.firstTimeFlowType,
-    (state) => state.appState.newNetworkAddedConfigurationId,
-  ],
-  (
-    completedOnboarding,
-    onboardedInThisUISession,
-    firstTimeFlowType,
-    newNetworkAddedConfigurationId,
-  ) =>
-    Boolean(completedOnboarding) &&
-    (!onboardedInThisUISession ||
-      firstTimeFlowType === FirstTimeFlowType.import) &&
-    !newNetworkAddedConfigurationId,
-);
-
-/**
- * Returns true when the Multi-RPC edit modal should be shown.
- *
- * @param state - Redux state object.
- * @returns Whether the Multi-RPC edit modal should be shown.
- */
-export const selectShowMultiRpcEditModal = createSelector(
-  [
-    selectCanSeeModals,
-    (state) => state.metamask.preferences?.showMultiRpcModal,
-  ],
-  (canSeeModals, showMultiRpcModal) =>
-    canSeeModals && Boolean(showMultiRpcModal) && !process.env.IN_TEST,
-);
-
-/**
- * Returns true when the update modal should be shown.
- *
- * @param state - Redux state object.
- * @returns Whether the update modal should be shown.
- */
-export const selectDisplayUpdateModal = createSelector(
-  [selectCanSeeModals, selectShowMultiRpcEditModal, getShowUpdateModal],
-  (canSeeModals, showMultiRpcEditModal, showUpdateModal) =>
-    canSeeModals && showUpdateModal && !showMultiRpcEditModal,
-);
-
-/**
- * Returns the home deep-link QR code data from Redux state, or null when none
- * is pending. Set by HomeDeepLinkActions when a predict deep-link fires.
- *
- * @param state - Redux state object.
- * @returns The QR code payload or null.
- */
-export function getHomeDeepLinkQrCode(state) {
-  return state.appState.homeDeepLinkQrCode ?? null;
-}
-
-/**
- * Shared "base" priority guard used by Rewards, PNA25, and DeepLink QR code
- * modals. Returns true only when the lower-priority modals (Terms, MultiRpc,
- * Update, PasswordOutdated, Shield, RecoveryPhrase) are all inactive.
- *
- * @param state - Redux state object.
- * @returns Whether it is safe to show a low-priority modal.
- */
-export const selectCanShowLowPriorityModal = createSelector(
-  [
-    selectCanSeeModals,
-    selectShowTermsOfUse,
-    selectShowMultiRpcEditModal,
-    selectDisplayUpdateModal,
-    getIsSeedlessPasswordOutdated,
-    getShowShieldEntryModal,
-    selectShowRecoveryPhrase,
-  ],
-  (
-    canSeeModals,
-    showTermsOfUse,
-    showMultiRpcEditModal,
-    displayUpdateModal,
-    isSeedlessPasswordOutdated,
-    showShieldEntryModal,
-    showRecoveryPhrase,
-  ) =>
-    canSeeModals &&
-    !showTermsOfUse &&
-    !showMultiRpcEditModal &&
-    !displayUpdateModal &&
-    !isSeedlessPasswordOutdated &&
-    !showShieldEntryModal &&
-    !showRecoveryPhrase,
-);
 
 export function getLastViewedUserSurvey(state) {
   return state.metamask.lastViewedUserSurvey;

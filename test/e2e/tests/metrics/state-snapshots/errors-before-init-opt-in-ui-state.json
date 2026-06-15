@@ -54,8 +54,9 @@
       "newPrivacyPolicyToastShownDate": "number",
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "string",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -202,6 +203,7 @@
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
+        "gasSponsorshipOptOutByChainId": "object",
         "hideZeroBalanceTokens": false,
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
@@ -299,5 +301,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 213 }
+  "meta": { "storageKind": "split", "version": 215 }
 }

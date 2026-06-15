@@ -2,17 +2,17 @@ import type { HomeDeepLinkQrCode } from '../pages/home/HomeDeepLinkActions';
 import {
   selectCanShowLowPriorityModal,
   getHomeDeepLinkQrCode,
-} from './selectors';
+} from './home-modals';
 
-// Minimal state builder that satisfies all selector inputs for
-// selectCanShowLowPriorityModal. By default every guard condition is "off" so
-// the selector returns true.
 function buildState({
   completedOnboarding = true,
   onboardedInThisUISession = false,
+  // 'import' lets onboardedInThisUISession=true pass the selectCanSeeModals guard;
+  // 'create' blocks it (tests the onboardedInThisUISession code path directly).
+  // 'create' also makes getIsPrimarySeedPhraseBackedUp return false, so combine
+  // with recoveryPhraseReminderLastShown=0 to exercise selectShowRecoveryPhrase.
+  firstTimeFlowType = 'import' as string,
   newNetworkAddedConfigurationId = '',
-  // selectShowRecoveryPhrase inputs
-  seedPhraseBackedUp = true,
   recoveryPhraseReminderLastShown = Date.now(),
   // selectShowTermsOfUse inputs (false by default = no popup)
   showTermsOfUsePopup = false,
@@ -25,11 +25,10 @@ function buildState({
   return {
     metamask: {
       completedOnboarding,
-      // firstTimeFlowType != 'create' means seed phrase is considered backed up.
-      firstTimeFlowType: seedPhraseBackedUp ? 'import' : 'create',
+      firstTimeFlowType,
       preferences: {},
       termsOfUseLastAgreed: showTermsOfUsePopup ? 0 : Date.now(),
-      isSeedlessOnboarding: isSeedlessPasswordOutdated,
+      passwordOutdatedCache: { isExpiredPwd: isSeedlessPasswordOutdated },
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown,
       remoteFeatureFlags: {},
@@ -55,13 +54,33 @@ describe('selectCanShowLowPriorityModal', () => {
     ).toBe(false);
   });
 
-  it('returns false when onboardedInThisUISession is true', () => {
-    // onboardedInThisUISession=true with a non-import flow blocks modals.
-    // We must also set completedOnboarding so selectCanSeeModals is true up to
-    // the onboardedInThisUISession check. Since onboardedInThisUISession only
-    // blocks when firstTimeFlowType is not 'import', we leave it as default
-    // ('import') and just verify the guard passes for imports; then we can
-    // only observe this via the new-network guard instead.
+  it('returns false when onboardedInThisUISession is true and flow is not import', () => {
+    // onboardedInThisUISession=true only suppresses modals for non-import flows.
+    // firstTimeFlowType='create' is required to exercise the blocking branch of
+    // `(!onboardedInThisUISession || firstTimeFlowType === 'import')`.
+    expect(
+      selectCanShowLowPriorityModal(
+        buildState({
+          onboardedInThisUISession: true,
+          firstTimeFlowType: 'create',
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('returns true when onboardedInThisUISession is true but flow is import', () => {
+    // Import flow is allowed even when onboardedInThisUISession=true.
+    expect(
+      selectCanShowLowPriorityModal(
+        buildState({
+          onboardedInThisUISession: true,
+          firstTimeFlowType: 'import',
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false when a new network was just added', () => {
     expect(
       selectCanShowLowPriorityModal(
         buildState({ newNetworkAddedConfigurationId: 'abc-123' }),
@@ -69,10 +88,10 @@ describe('selectCanShowLowPriorityModal', () => {
     ).toBe(false);
   });
 
-  it('returns false when a new network was just added', () => {
+  it('returns false when the seedless password is outdated', () => {
     expect(
       selectCanShowLowPriorityModal(
-        buildState({ newNetworkAddedConfigurationId: 'abc-123' }),
+        buildState({ isSeedlessPasswordOutdated: true }),
       ),
     ).toBe(false);
   });
@@ -84,14 +103,14 @@ describe('selectCanShowLowPriorityModal', () => {
   });
 
   it('returns false when the recovery phrase reminder is active', () => {
-    // Set recoveryPhraseReminderLastShown=0 so currentTime - lastShown >= 2 days,
-    // making getShowRecoveryPhraseReminder return true.
-    // With firstTimeFlowType=create, getIsPrimarySeedPhraseBackedUp returns false,
+    // recoveryPhraseReminderLastShown=0 makes getShowRecoveryPhraseReminder true
+    // (currentTime - 0 exceeds the 2-day threshold).
+    // firstTimeFlowType='create' makes getIsPrimarySeedPhraseBackedUp false,
     // so selectShowRecoveryPhrase = true → selectCanShowLowPriorityModal = false.
     expect(
       selectCanShowLowPriorityModal(
         buildState({
-          seedPhraseBackedUp: false,
+          firstTimeFlowType: 'create',
           recoveryPhraseReminderLastShown: 0,
         }),
       ),

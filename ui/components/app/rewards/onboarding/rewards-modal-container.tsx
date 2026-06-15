@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   selectCanShowLowPriorityModal,
   getHomeDeepLinkQrCode,
-} from '../../../../selectors';
+} from '../../../../selectors/home-modals';
 import { selectRewardsEnabled } from '../../../../ducks/rewards/selectors';
 import RewardsModal from './RewardsModal';
 

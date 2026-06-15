@@ -1,11 +1,22 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  Button,
+  ButtonVariant,
+  ButtonSize,
+} from '@metamask/design-system-react';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { setConnectedStatusPopoverHasBeenShown } from '../../store/actions';
-import Popover from '../../components/ui/popover';
-import Button from '../../components/ui/button';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '../../components/component-library';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import type { MetaMaskReduxState } from '../../store/store';
 
@@ -28,23 +39,22 @@ export function ConnectedStatusPopoverContainer() {
   }
 
   return (
-    <Popover
-      title={t('whatsThis')}
+    <Modal
+      isOpen
       onClose={onDismiss}
       className="home__connected-status-popover"
-      showArrow
-      CustomBackground={(bgProps: { onClose: () => void }) => {
-        return (
-          <div
-            className="home__connected-status-popover-bg-container"
-            onClick={bgProps.onClose}
-          >
-            <div className="home__connected-status-popover-bg" />
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader onClose={onDismiss}>{t('whatsThis')}</ModalHeader>
+        <ModalBody>
+          <div className="home__connect-status-text">
+            <div>{t('metaMaskConnectStatusParagraphOne')}</div>
+            <div>{t('metaMaskConnectStatusParagraphTwo')}</div>
+            <div>{t('metaMaskConnectStatusParagraphThree')}</div>
           </div>
-        );
-      }}
-      footer={
-        <>
+        </ModalBody>
+        <ModalFooter>
           <a
             href={ZENDESK_URLS.USER_GUIDE_DAPPS}
             target="_blank"
@@ -52,17 +62,15 @@ export function ConnectedStatusPopoverContainer() {
           >
             {t('learnMoreUpperCase')}
           </a>
-          <Button type="primary" onClick={onDismiss}>
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Md}
+            onClick={onDismiss}
+          >
             {t('dismiss')}
           </Button>
-        </>
-      }
-    >
-      <main className="home__connect-status-text">
-        <div>{t('metaMaskConnectStatusParagraphOne')}</div>
-        <div>{t('metaMaskConnectStatusParagraphTwo')}</div>
-        <div>{t('metaMaskConnectStatusParagraphThree')}</div>
-      </main>
-    </Popover>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }

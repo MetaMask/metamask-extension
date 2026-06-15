@@ -5,7 +5,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { selectShowTermsOfUse } from '../../../selectors';
+import { selectShowTermsOfUse } from '../../../selectors/home-modals';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import TermsOfUsePopup from './terms-of-use-popup';
 

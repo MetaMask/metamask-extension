@@ -16,7 +16,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   getHomeDeepLinkQrCode,
   selectCanShowLowPriorityModal,
-} from '../../selectors';
+} from '../../selectors/home-modals';
 import { clearHomeDeepLinkQrCode } from '../../ducks/app/app';
 
 export function DeeplinkQrCodeModalContainer() {
