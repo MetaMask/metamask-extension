@@ -4491,14 +4491,14 @@ describe('getDeferredDeepLinkParameters', () => {
     });
   });
 
-  it('returns an empty object when deferredDeepLink is not set', () => {
+  it('returns null when deferredDeepLink is not set', () => {
     const state = {
       metamask: {
         deferredDeepLink: undefined,
       },
     };
 
-    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual({});
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual(null);
   });
 });
 
