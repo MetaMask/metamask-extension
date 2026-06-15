@@ -1,5 +1,5 @@
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { SOLANA_MAINNET_SCOPE } from '../../constants';
@@ -27,8 +27,8 @@ describe('Send Solana', function () {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const sendPage = new SendPage(driver);
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );
