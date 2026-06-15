@@ -16,6 +16,7 @@ import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
 import * as Actions from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import CreatePassword from './create-password';
 
 jest.mock('../../../../shared/lib/passkey', () => ({
@@ -42,6 +43,13 @@ const getWalletSetupCompletedEvent = (mockTrackEvent: jest.Mock) => {
   )?.[0];
 };
 
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
+
 describe('Onboarding Create Password', () => {
   const mockState = {
     metamask: {
@@ -55,6 +63,10 @@ describe('Onboarding Create Password', () => {
 
   const mockCreateNewAccount = jest.fn().mockResolvedValue('');
   const mockImportWithRecoveryPhrase = jest.fn().mockResolvedValue('');
+
+  beforeEach(() => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+  });
 
   afterEach(() => {
     jest.clearAllMocks();

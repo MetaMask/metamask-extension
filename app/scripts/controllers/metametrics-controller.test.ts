@@ -478,6 +478,9 @@ describe('MetaMetricsController', function () {
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
       const spy = jest.spyOn(segmentMock, 'identify');
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {
+        return undefined;
+      });
       await withController(({ controller }) => {
         controller.identify({
           ...MOCK_TRAITS,
@@ -490,6 +493,15 @@ describe('MetaMetricsController', function () {
             traits: MOCK_TRAITS,
           }),
           undefined,
+        );
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          1,
+          'MetaMetricsController: "test_null" value is not a valid trait type',
+        );
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          2,
+          'MetaMetricsController: "test_array_multi_types" value is not a valid trait type',
         );
       });
     });
@@ -532,9 +544,21 @@ describe('MetaMetricsController', function () {
 
     it('should not call segment.identify if there are no valid traits to identify', async function () {
       const spy = jest.spyOn(segmentMock, 'identify');
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {
+        return undefined;
+      });
       await withController(({ controller }) => {
         controller.identify(MOCK_INVALID_TRAITS);
         expect(spy).toHaveBeenCalledTimes(0);
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          1,
+          'MetaMetricsController: "test_null" value is not a valid trait type',
+        );
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          2,
+          'MetaMetricsController: "test_array_multi_types" value is not a valid trait type',
+        );
       });
     });
   });
