@@ -24,7 +24,7 @@ import { CaveatTypes } from '../../../../shared/constants/permissions';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
@@ -206,10 +206,10 @@ async function validateBalanceAndActivity(
 
   // Ensure there's an activity entry of "Sent" and "Confirmed"
   if (expectedActivityEntries) {
-    const activityList = new ActivityListPage(driver);
-    await activityList.goToActivityList();
-    await activityList.checkTxAction({ action: 'Sent ETH' });
-    await activityList.checkConfirmedTxNumberDisplayedInActivity(
+    const activityTab = new ActivityTab(driver);
+    await activityTab.goToActivityList();
+    await activityTab.checkTxAction({ action: 'Sent ETH' });
+    await activityTab.checkConfirmedTxNumberDisplayedInActivity(
       expectedActivityEntries,
     );
   }

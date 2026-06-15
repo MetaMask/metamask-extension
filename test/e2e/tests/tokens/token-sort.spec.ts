@@ -5,7 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from './utils/mocks';
 
@@ -56,25 +56,25 @@ describe('Token List Sorting', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           mainnetChainId,
           customTokenAddress,
           customTokenSymbol,
         );
-        await assetListPage.dismissTokenImportedMessage();
+        await tokensTab.dismissTokenImportedMessage();
 
-        await assetListPage.checkTokenExistsInList('Ethereum');
-        await assetListPage.sortTokenList('alphabetically');
-        await assetListPage.checkTokenPositionInList({
+        await tokensTab.checkTokenExistsInList('Ethereum');
+        await tokensTab.sortTokenList('alphabetically');
+        await tokensTab.checkTokenPositionInList({
           position: 1,
           tokenName: customTokenSymbol,
         });
 
-        await assetListPage.sortTokenList('decliningBalance');
-        await assetListPage.checkTokenPositionInList({
+        await tokensTab.sortTokenList('decliningBalance');
+        await tokensTab.checkTokenPositionInList({
           position: 1,
           tokenName: 'Ethereum',
         });

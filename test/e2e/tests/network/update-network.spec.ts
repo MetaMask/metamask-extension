@@ -7,7 +7,7 @@ import { Mockttp } from '../../mock-e2e';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -139,9 +139,9 @@ describe('Update Network:', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         const originalFilterLabel =
-          await assetListPage.getNetworksFilterLabel();
+          await tokensTab.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -167,7 +167,7 @@ describe('Update Network:', function (this: Suite) {
         await editNetworkModal.clickBackButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
+        await tokensTab.waitUntilFilterLabelIs(originalFilterLabel);
 
         // Re-open the network menu and go back to edit the network
         await headerNavbar.openGlobalNetworksMenu();
@@ -234,9 +234,9 @@ describe('Update Network:', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         const originalFilterLabel =
-          await assetListPage.getNetworksFilterLabel();
+          await tokensTab.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -269,7 +269,7 @@ describe('Update Network:', function (this: Suite) {
         await editNetworkModal.clickBackButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
+        await tokensTab.waitUntilFilterLabelIs(originalFilterLabel);
 
         // Re-open the network menu and go back to edit the network
         await headerNavbar.openGlobalNetworksMenu();

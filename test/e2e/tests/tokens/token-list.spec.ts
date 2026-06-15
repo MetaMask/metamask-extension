@@ -7,7 +7,7 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
@@ -50,19 +50,19 @@ describe('Token List', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           chainId,
           tokenAddress,
           symbol,
         );
 
-        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
+        await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           zeroAddress(),
         );
-        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
+        await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           tokenAddress,
         );
       },
@@ -106,20 +106,20 @@ describe('Token List', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           chainId,
           tokenAddress,
           symbol,
         );
-        await assetListPage.dismissTokenImportedMessage();
-        await assetListPage.checkTokenGeneralChangePercentage(
+        await tokensTab.dismissTokenImportedMessage();
+        await tokensTab.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',
         );
-        await assetListPage.checkTokenGeneralChangePercentage(
+        await tokensTab.checkTokenGeneralChangePercentage(
           tokenAddress,
           '+0.05%',
         );
