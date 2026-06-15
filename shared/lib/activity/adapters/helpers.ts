@@ -4,8 +4,12 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { Hex } from 'viem';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
+import {
+  BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
+} from '../../../constants/bridge';
 import { CHAIN_IDS } from '../../../constants/network';
 import {
   IN_PROGRESS_TRANSACTION_STATUSES,
@@ -16,11 +20,100 @@ import {
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
-import type { Status, TokenAmount } from '../types';
+import type { ActivityFee, Status, TokenAmount } from '../types';
 
 export type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
 >[number];
+
+export function isNftStandard(value?: string) {
+  return value === 'erc721' || value === 'erc1155';
+}
+
+/**
+ * Looks up the native asset for a chain, returning `undefined` instead of
+ * throwing when the chain is outside the bridge swaps registry
+ *
+ * @param chainId - Hex, numeric, or CAIP chain id.
+ * @returns The native asset metadata, or `undefined` if unsupported.
+ */
+export function getNativeAssetSafe(chainId: string | number) {
+  try {
+    return getNativeAssetForChainId(chainId);
+  } catch {
+    return undefined;
+  }
+}
+
+const nativeTokenDecimals = 18;
+
+function toNetworkFeeAmount(
+  gasUsed: string | number | undefined,
+  gasPrice: string | number | undefined,
+): string | undefined {
+  if (gasUsed === undefined || gasPrice === undefined) {
+    return undefined;
+  }
+
+  try {
+    return String(BigInt(gasUsed) * BigInt(gasPrice));
+  } catch {
+    return undefined;
+  }
+}
+
+function buildBaseNetworkFee(
+  amount: string,
+  chainId: string | number,
+): ActivityFee {
+  const nativeAsset = getNativeAssetSafe(chainId);
+
+  return {
+    type: 'base',
+    amount,
+    ...(nativeAsset?.decimals === undefined
+      ? { decimals: nativeTokenDecimals }
+      : { decimals: nativeAsset.decimals }),
+    ...(nativeAsset?.symbol ? { symbol: nativeAsset.symbol } : {}),
+    ...(nativeAsset?.assetId ? { assetId: nativeAsset.assetId } : {}),
+  };
+}
+
+function getNetworkFee(
+  transaction: V1TransactionByHashResponse,
+  chainId: string,
+): ActivityFee | undefined {
+  const amount = toNetworkFeeAmount(
+    transaction.gasUsed,
+    transaction.effectiveGasPrice,
+  );
+
+  return amount ? buildBaseNetworkFee(amount, chainId) : undefined;
+}
+
+export function getFees(
+  transaction: V1TransactionByHashResponse,
+  chainId: string,
+): ActivityFee[] | undefined {
+  const networkFee = getNetworkFee(transaction, chainId);
+
+  return networkFee ? [networkFee] : undefined;
+}
+
+export function getLocalTransactionFees(
+  transactionGroup: Pick<TransactionGroup, 'primaryTransaction'>,
+): ActivityFee[] | undefined {
+  const { primaryTransaction } = transactionGroup;
+  const amount = toNetworkFeeAmount(
+    primaryTransaction.txReceipt?.gasUsed,
+    primaryTransaction.txReceipt?.effectiveGasPrice ??
+      primaryTransaction.txParams?.gasPrice,
+  );
+
+  return amount
+    ? [buildBaseNetworkFee(amount, primaryTransaction.chainId)]
+    : undefined;
+}
 
 const resolveAssetId = (
   chainId: CaipChainId,
@@ -131,9 +224,10 @@ export function getKnownTokenMetadata(
     (chainId === CHAIN_IDS.MAINNET || assetId?.startsWith('eip155:1/')
       ? STATIC_MAINNET_TOKEN_LIST[contractAddress.toLowerCase()]
       : undefined) ??
-    Object.values(BRIDGE_CHAINID_COMMON_TOKEN_PAIR).find(
-      (token) => token?.assetId === assetId,
-    );
+    [
+      ...Object.values(BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN),
+      ...Object.values(BRIDGE_CHAINID_COMMON_TOKEN_PAIR),
+    ].find((token) => token?.assetId === assetId);
 
   return tokenMetadata
     ? { ...tokenMetadata, ...(assetId ? { assetId } : {}) }
@@ -166,12 +260,19 @@ export function getTokenAmountFromTransfer(
   direction: TokenAmount['direction'],
   chainId: CaipChainId,
 ) {
-  if (!transfer?.symbol && transfer?.amount === undefined) {
+  if (!transfer) {
     return undefined;
   }
 
-  const isNftTransfer =
-    transfer?.transferType === 'erc721' || transfer?.transferType === 'erc1155';
+  const { transferType, amount } = transfer;
+  const isNftTransfer = isNftStandard(transferType);
+  const symbol = isNftTransfer
+    ? transfer.name || transfer.symbol
+    : transfer.symbol;
+
+  if (!symbol && amount === undefined) {
+    return undefined;
+  }
 
   const assetId =
     transfer && !isNftTransfer
@@ -181,13 +282,14 @@ export function getTokenAmountFromTransfer(
         })
       : undefined;
 
+  const hasTransferAmount =
+    !isNftTransfer && amount !== null && amount !== undefined;
+
   return {
     direction,
-    ...(transfer.amount === null || transfer.amount === undefined
-      ? {}
-      : { amount: String(transfer.amount) }),
+    ...(hasTransferAmount ? { amount: String(amount) } : {}),
     ...(transfer.decimal === undefined ? {} : { decimals: transfer.decimal }),
-    ...(transfer.symbol ? { symbol: transfer.symbol } : {}),
+    ...(symbol ? { symbol } : {}),
     ...(assetId ? { assetId } : {}),
   };
 }

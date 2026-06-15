@@ -7,6 +7,11 @@ import { CHAIN_IDS } from '../../../constants/network';
 import { WETH_CONTRACT_ADDRESS } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
+import {
+  buildApproveTransactionData,
+  buildPermit2ApproveTransactionData,
+} from '../../../../test/data/confirmations/token-approve';
+import { localStateFixtures } from './fixtures/local-state';
 import { mapLocalTransaction } from './local-transaction';
 
 const from = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
@@ -67,10 +72,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'pending',
@@ -116,10 +119,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1338',
       status: 'success',
@@ -170,10 +171,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'pending',
@@ -220,10 +219,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'success',
@@ -319,21 +316,105 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'approveSpendingCap',
       chainId: 'eip155:59144',
       status: 'pending',
       timestamp: 1716367881000,
       data: {
         hash: '0xretry',
+        from,
         token: {
           assetId:
             'eip155:59144/erc20:0x239FD4B0c4DB49Fa8660E65B97619D43D0E0A79d',
           direction: 'out',
           symbol: 'TDN',
+        },
+      },
+    });
+  });
+
+  it('resolves Permit2 approval token address from calldata', () => {
+    const permit2Address = '0x000000000022D473030F116dDEE9FD8b9aFE764ad8';
+    const spender = '0x80181d3ba89220cdb80234fc7aa19d5cc56229cc';
+    const transaction = {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      id: 'permit2-approve-id',
+      hash: '0xpermit2approve',
+      status: TransactionStatus.confirmed,
+      time: 1716367781000,
+      type: TransactionType.tokenMethodApprove,
+      txParams: {
+        from,
+        to: permit2Address,
+        data: buildPermit2ApproveTransactionData(lineaMusd, spender, 1000, 123),
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x4',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction({
+      ...transactionGroup,
+      contractTokenMetadata: { symbol: 'mUSD', decimals: 18 },
+    });
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      data: {
+        token: {
+          direction: 'out',
+          symbol: 'mUSD',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
+        },
+      },
+    });
+  });
+
+  it('falls back to transferInformation when txParams.to is not a valid address', () => {
+    const spender = '0x80181d3ba89220cdb80234fc7aa19d5cc56229cc';
+    const transaction = {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      id: 'invalid-to-approve-id',
+      hash: '0xinvalidtoapprove',
+      status: TransactionStatus.confirmed,
+      time: 1716367781000,
+      transferInformation: {
+        contractAddress: lineaMusd,
+        decimals: 18,
+        symbol: 'mUSD',
+      },
+      type: TransactionType.tokenMethodApprove,
+      txParams: {
+        from,
+        to: '0x23',
+        data: buildApproveTransactionData(spender, 1000),
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x5',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      data: {
+        token: {
+          direction: 'out',
+          symbol: 'mUSD',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
         },
       },
     });
@@ -372,16 +453,15 @@ describe('mapLocalTransaction', () => {
         symbol: 'DAI',
       },
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'convert',
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1779805800000,
       data: {
         hash: '0xmusdconversion',
+        from,
         sourceToken: {
           assetId: toAssetId(lineaDai, 'eip155:59144'),
           decimals: 18,
@@ -393,6 +473,65 @@ describe('mapLocalTransaction', () => {
           assetId: toAssetId(lineaMusd, 'eip155:59144'),
           decimals: 6,
           direction: 'in',
+          symbol: 'mUSD',
+        },
+      },
+    });
+  });
+
+  it('maps a Perps withdrawal local transaction to a Perps withdraw funds activity', () => {
+    const transactionGroup = localStateFixtures.perpsWithdraw
+      .transactionGroup as unknown as TransactionGroup;
+    const item = mapLocalTransaction(transactionGroup);
+
+    expect(item).toMatchObject({
+      type: 'perpsWithdraw',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1780690942752,
+      data: {
+        hash: '0xd5dbb4421d123fd16d16485c394a68b5a28d9b5da9d9973554258a9fd2e9ebf6',
+        fiat: {
+          amount: '0.714705',
+        },
+        networkFee: {
+          amount: '0',
+        },
+        token: {
+          assetId: toAssetId(
+            '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+            'eip155:1',
+          ),
+          decimals: 6,
+          direction: 'out',
+          symbol: 'mUSD',
+        },
+      },
+    });
+  });
+
+  it('maps a Perps deposit local transaction to a Perps add funds activity', () => {
+    const transactionGroup = localStateFixtures.perpsDeposit
+      .transactionGroup as unknown as TransactionGroup;
+    const item = mapLocalTransaction(transactionGroup);
+
+    expect(item).toMatchObject({
+      type: 'perpsAddFunds',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1781185241609,
+      data: {
+        hash: '0x3073fa67020abb1931ed043d7a8b6b020aa1004c9d0dd9ebd43ca5b9c10e9503',
+        fiat: {
+          amount: '1.000169',
+        },
+        networkFee: {
+          amount: '0.04143764111397638042',
+        },
+        token: {
+          assetId: toAssetId(lineaMusd, 'eip155:1'),
+          decimals: 6,
+          direction: 'out',
           symbol: 'mUSD',
         },
       },
@@ -444,16 +583,15 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'lendingDeposit',
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1779892154611,
       data: {
         hash: '0x093844dd6200984f0e27d3c3a76b7a63b360bfb2136213237d693afd2cd69740',
+        from,
         sourceToken: {
           amount: '100000',
           assetId: toAssetId(baseUsdc, 'eip155:8453'),
@@ -497,16 +635,15 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'lendingWithdrawal',
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1779912434153,
       data: {
         hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
+        from,
         destinationToken: {
           amount: '200000',
           assetId: toAssetId(baseUsdc, 'eip155:8453'),
@@ -558,16 +695,15 @@ describe('mapLocalTransaction', () => {
         symbol: 'MUSD',
       },
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'swap',
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1779392463306,
       data: {
         hash: '0xbridgeswap',
+        from,
         sourceToken: {
           amount: '10000000000000',
           assetId: 'eip155:1/slip44:60',
@@ -617,6 +753,68 @@ describe('mapLocalTransaction', () => {
     expect(item.status).toBe('failed');
   });
 
+  it('maps a local bridge network fee from the transaction receipt', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.ARBITRUM,
+      id: 'bridge-fee-id',
+      hash: '0xbridgefee',
+      status: TransactionStatus.confirmed,
+      time: 1779392463306,
+      type: TransactionType.bridge,
+      txParams: {
+        from,
+        to,
+        value: '0x0',
+      },
+      txReceipt: {
+        gasUsed: '0x24405',
+        effectiveGasPrice: '0x6fc23ac1d',
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x3',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction({
+      ...transactionGroup,
+      sourceToken: {
+        amount: '99130000000000',
+        assetId: 'eip155:42161/slip44:60',
+        decimals: 18,
+        direction: 'out',
+        symbol: 'ETH',
+      },
+      destinationToken: {
+        amount: '141592',
+        assetId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/spl-token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        decimals: 6,
+        direction: 'in',
+        symbol: 'USDC',
+      },
+    });
+
+    expect(item).toMatchObject({
+      type: 'bridge',
+      data: {
+        fees: [
+          {
+            type: 'base',
+            amount: String(BigInt('0x24405') * BigInt('0x6fc23ac1d')),
+            assetId: 'eip155:42161/slip44:60',
+            decimals: 18,
+            symbol: 'ETH',
+          },
+        ],
+      },
+    });
+  });
+
   it('maps swap metadata token symbols to a Swap activity', () => {
     const transaction = {
       chainId: CHAIN_IDS.BASE,
@@ -647,16 +845,15 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'swap',
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1716367781000,
       data: {
         hash: '0xswap',
+        from,
         sourceToken: {
           assetId: 'eip155:8453/slip44:60',
           direction: 'out',
@@ -695,16 +892,15 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'wrap',
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1716367781000,
       data: {
         hash: '0xwrap',
+        from,
         sourceToken: {
           amount: '0x3782dace9d900000',
           assetId: 'eip155:1/slip44:60',
@@ -750,16 +946,15 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'unwrap',
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1716367781000,
       data: {
         hash: '0xunwrap',
+        from,
         sourceToken: {
           amount: unwrapAmount,
           assetId: toAssetId(WETH_CONTRACT_ADDRESS, 'eip155:1'),
@@ -803,10 +998,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'contractInteraction',
       chainId: 'eip155:1',
       status: 'success',
@@ -828,7 +1021,28 @@ describe('mapLocalTransaction', () => {
     });
   });
 
-  it('maps musdClaim to claimMusdBonus with hash only', () => {
+  it('maps a local contract interaction with an incoming NFT simulation change to an NFT buy', () => {
+    const item = mapLocalTransaction(
+      localStateFixtures.nftPurchaseErc1155
+        .transactionGroup as unknown as TransactionGroup,
+    );
+
+    expect(item).toStrictEqual({
+      type: 'nftBuy',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1780606867763,
+      data: {
+        hash: '0x2fda37c5b591c30367649c3c317621429bb5c59ff6a77b0a8cd48b56897168bc',
+        from,
+        token: {
+          direction: 'in',
+        },
+      },
+    });
+  });
+
+  it('maps musdClaim to claimMusdBonus with from address', () => {
     const transaction = {
       chainId: CHAIN_IDS.LINEA_MAINNET,
       id: 'musd-claim-id',
@@ -853,16 +1067,15 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'claimMusdBonus',
       chainId: 'eip155:59144',
       status: 'pending',
       timestamp: 1778633325000,
       data: {
         hash: '0xmusdclaim',
+        from,
       },
     });
   });

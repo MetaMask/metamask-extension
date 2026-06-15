@@ -134,9 +134,12 @@ export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
   '/encryption-public-key-request';
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
+export const TX_DETAILS_ROUTE = '/tx';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
+export const HARDWARE_WALLET_SIGNATURES_ROUTE =
+  '/swaps/hardware-wallet-signatures';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -157,7 +160,9 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
-
+export const BATCH_SELL_ROOT_ROUTE = '/batch-sell';
+export const BATCH_SELL_SELECT_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/select`;
+export const BATCH_SELL_REVIEW_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/review`;
 export const DEEP_LINK_ROUTE = '/link';
 
 /** Shown when Basic Functionality is off and user opens a route that requires it (e.g. swap, rewards). */
@@ -184,6 +189,11 @@ export const REWARDS_ROUTE = '/rewards';
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
+  {
+    path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
+    label: 'Transaction Details',
+    trackInAnalytics: true,
+  },
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
@@ -635,6 +645,11 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
+    path: HARDWARE_WALLET_SIGNATURES_ROUTE,
+    label: 'Swaps Hardware Wallet Signatures',
+    trackInAnalytics: false,
+  },
+  {
     path: INITIALIZE_EXPERIMENTAL_AREA,
     label: 'Initialize Experimental Area',
     trackInAnalytics: false,
@@ -663,6 +678,16 @@ export const ROUTES = [
     path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
+  },
+  {
+    path: BATCH_SELL_SELECT_ROUTE,
+    label: 'Batch Sell Select',
+    trackInAnalytics: true,
+  },
+  {
+    path: BATCH_SELL_REVIEW_ROUTE,
+    label: 'Batch Sell Review',
+    trackInAnalytics: true,
   },
   {
     path: HARDWARE_WALLET_REPAIR_ROUTE,

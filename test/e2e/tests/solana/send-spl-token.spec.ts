@@ -327,7 +327,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAction({ action: 'Sent USDC' });
 
         if (isUnifiedAssetsEnabled) {
           await driver.waitForSelector({
@@ -413,7 +413,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
         await activityList.checkTxAction({
-          action: 'Interaction',
+          action: 'Interaction failed',
           confirmedTx: 0,
         });
       },

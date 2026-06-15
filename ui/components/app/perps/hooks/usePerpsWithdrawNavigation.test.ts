@@ -8,7 +8,7 @@ import {
   PERPS_WITHDRAW_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
-import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import { getSelectedEvmInternalAccount } from '../../../../selectors';
 import { createPerpsWithdrawTransaction } from './createPerpsWithdrawTransaction';
 import { usePerpsWithdrawNavigation } from './usePerpsWithdrawNavigation';
 
@@ -19,8 +19,9 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../../../shared/lib/selectors/accounts', () => ({
-  getSelectedInternalAccount: jest.fn(),
+jest.mock('../../../../selectors', () => ({
+  ...jest.requireActual('../../../../selectors'),
+  getSelectedEvmInternalAccount: jest.fn(),
 }));
 
 jest.mock(
@@ -36,7 +37,9 @@ jest.mock('./createPerpsWithdrawTransaction', () => ({
   createPerpsWithdrawTransaction: jest.fn(),
 }));
 
-const getSelectedInternalAccountMock = jest.mocked(getSelectedInternalAccount);
+const getSelectedEvmInternalAccountMock = jest.mocked(
+  getSelectedEvmInternalAccount,
+);
 const mockCreatePerpsWithdrawTransaction = jest.mocked(
   createPerpsWithdrawTransaction,
 );
@@ -76,10 +79,9 @@ function renderUsePerpsWithdrawNavigation(
 ) {
   const store = createMockStore(state);
   const wrapper = ({ children }: { children: React.ReactNode }) =>
-    React.createElement(
-      Provider,
-      { store: store as never },
-      React.createElement(
+    React.createElement(Provider, {
+      store: store as never,
+      children: React.createElement(
         MemoryRouter,
         {
           initialEntries: [pathname],
@@ -92,7 +94,7 @@ function renderUsePerpsWithdrawNavigation(
         },
         children,
       ),
-    );
+    });
 
   return renderHook(hook, { wrapper });
 }
@@ -100,7 +102,7 @@ function renderUsePerpsWithdrawNavigation(
 describe('usePerpsWithdrawNavigation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    getSelectedInternalAccountMock.mockReturnValue({
+    getSelectedEvmInternalAccountMock.mockReturnValue({
       address: MOCK_ACCOUNT_ADDRESS,
     } as never);
     mockCreatePerpsWithdrawTransaction.mockResolvedValue({
@@ -248,7 +250,7 @@ describe('usePerpsWithdrawNavigation', () => {
   });
 
   it('returns null when there is no selected account', async () => {
-    getSelectedInternalAccountMock.mockReturnValue(undefined as never);
+    getSelectedEvmInternalAccountMock.mockReturnValue(undefined as never);
 
     const { result } = renderUsePerpsWithdrawNavigation(
       () => usePerpsWithdrawNavigation(),

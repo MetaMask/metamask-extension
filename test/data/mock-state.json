@@ -29,8 +29,7 @@
       "previousModalState": {
         "name": null
       }
-    },
-    "warning": null
+    }
   },
   "confirmAlerts": {
     "alerts": [],
@@ -65,7 +64,8 @@
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
     "useMultiAccountBalanceChecker": false,
-    "participateInMetaMetrics": false,
+    "completedMetaMetricsOnboarding": true,
+    "optedIn": false,
     "passkeyRecord": null,
     "gasEstimateType": "fee-market",
     "pendingExtensionVersion": null,

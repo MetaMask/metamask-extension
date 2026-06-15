@@ -11,8 +11,7 @@ class ActivityListPage extends HomePage {
 
   private readonly bridgeTransactionCompleted = '[data-tx-status="confirmed"]';
 
-  private readonly bridgeTransactionPending =
-    '.bridge-transaction-details__segment--pending';
+  private readonly bridgeTransactionPending = '[data-tx-status="pending"]';
 
   private readonly cancelTransactionButton = '[data-testid="cancel-button"]';
 
@@ -40,8 +39,6 @@ class ActivityListPage extends HomePage {
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
-  private readonly speedupModalButton = '[data-testid="speedup-button"]';
-
   private readonly tooltip = '.tippy-tooltip-content';
 
   private readonly transactionAmountsInActivity =
@@ -50,15 +47,23 @@ class ActivityListPage extends HomePage {
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
 
-  private readonly transactionStatusLabel = '.transaction-status-label';
+  private readonly transactionStatusLabel = (status: string) => ({
+    testId: `transaction-details-status-${status}`,
+  });
+
+  private readonly transactionBreakdownRowValue = (rowIndex: number) => ({
+    css: `[data-testid="transaction-breakdown-row"]:nth-child(${
+      2 + rowIndex
+    }) [data-testid="transaction-breakdown-row-value"]`,
+  });
 
   private readonly popoverClose = '[data-testid="popover-close"]';
 
-  private readonly backButton = '.mm-button-icon';
+  private readonly backButton =
+    '[data-testid="transaction-details-back-button"]';
 
   private readonly viewTransactionOnExplorerButton = {
-    text: 'View on block explorer',
-    tag: 'button',
+    testId: 'transaction-details-block-explorer',
   };
 
   /**
@@ -100,10 +105,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} completed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.completedTransactions,
-      );
-      return completedTxs.length === expectedNumber;
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.completedTransactions,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 10000);
     console.log(
       `${expectedNumber} completed transactions found in activity list on homepage`,
@@ -124,10 +133,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const confirmedTxs = await this.driver.findElements(
-        this.confirmedTransactions,
-      );
-      return confirmedTxs.length === expectedNumber;
+      try {
+        const confirmedTxs = await this.driver.findElements(
+          this.confirmedTransactions,
+        );
+        return confirmedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
@@ -177,8 +190,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const failedTxs = await this.driver.findElements(this.failedTransactions);
-      return failedTxs.length === expectedNumber;
+      try {
+        const failedTxs = await this.driver.findElements(
+          this.failedTransactions,
+        );
+        return failedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
@@ -199,10 +218,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} pending transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const pendingTxs = await this.driver.findElements(
-        this.pendingTransactionItems,
-      );
-      return pendingTxs.length === expectedNumber;
+      try {
+        const pendingTxs = await this.driver.findElements(
+          this.pendingTransactionItems,
+        );
+        return pendingTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 10000);
     console.log(
       `${expectedNumber} pending transactions found in activity list on homepage`,
@@ -255,13 +278,17 @@ class ActivityListPage extends HomePage {
     if (confirmedTx) {
       await this.checkConfirmedTxNumberDisplayedInActivity(confirmedTx);
     }
-    const transactionActions = await this.driver.findElements(
-      this.activityListAction,
-    );
     await this.driver.wait(async () => {
-      const transactionActionText =
-        await transactionActions[txIndex - 1].getText();
-      return transactionActionText === action;
+      try {
+        const transactionActions = await this.driver.findElements(
+          this.activityListAction,
+        );
+        const transactionActionText =
+          await transactionActions[txIndex - 1]?.getText();
+        return transactionActionText === action;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
@@ -280,10 +307,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} Bridge pending transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.bridgeTransactionPending,
-      );
-      return completedTxs.length === expectedNumber;
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.bridgeTransactionPending,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
@@ -304,10 +335,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} Bridge completed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.bridgeTransactionCompleted,
-      );
-      return completedTxs.length === expectedNumber;
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.bridgeTransactionCompleted,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
@@ -340,55 +375,31 @@ class ActivityListPage extends HomePage {
       text: action,
     });
     await completedTx.click();
-    await this.driver.waitForUrlContaining({
-      url: '/cross-chain/tx-details',
-    });
-    await this.driver.waitForSelector({
-      text: `${isBridge ? 'Bridge' : 'Swap'} details`,
-    });
+    await this.driver.waitForSelector({ text: action });
 
     console.log('Checking scanner links');
-    const scannerLinks = await this.driver.findElements({
-      tag: 'button',
-      text: 'View on',
-    });
-    assert.equal(
-      scannerLinks.length,
-      isBridge && expectedStatus === 'success' ? 2 : 1,
-      'Scanner links are displayed',
+    const scannerLinks = await this.driver.findElements(
+      '[data-testid="transaction-details-block-explorer"]',
     );
+    assert.equal(scannerLinks.length, 1, 'Scanner links are displayed');
 
     console.log(`Checking ${isBridge ? 'bridge' : 'swap'} status`);
-    const BRIDGE_STATUSES = {
-      success: 'complete',
-      failed: 'failed',
-      pending: 'pending',
-    };
-    const SWAP_STATUSES = {
-      success: 'confirmed',
-      failed: 'failed',
-      pending: 'pending',
-    };
-    const expectedStatusText = isBridge
-      ? BRIDGE_STATUSES[expectedStatus]
-      : SWAP_STATUSES[expectedStatus];
-    const statusElement = await this.driver.findElement({
-      text: expectedStatusText,
-    });
-    assert.equal(
-      (await statusElement.getText()).toLowerCase(),
-      expectedStatusText,
-      `Status is displayed as ${expectedStatusText}`,
+    await this.driver.waitForSelector(
+      this.transactionStatusLabel(expectedStatus),
     );
 
-    console.log('Checking displayed amounts');
-    await this.driver.waitForSelector({
-      text: `${expectedSrcAmount} ${expectedSrcToken} on`,
-    });
-    if (expectedDestAmount) {
-      await this.driver.waitForSelector({
-        text: `${expectedDestAmount} ${expectedDestToken}`,
-      });
+    if (!isBridge) {
+      console.log('Checking displayed amounts');
+      if (expectedSrcAmount) {
+        await this.driver.waitForSelector({
+          text: `${expectedSrcAmount} ${expectedSrcToken}`,
+        });
+      }
+      if (expectedDestAmount) {
+        await this.driver.waitForSelector({
+          text: `${expectedDestAmount} ${expectedDestToken}`,
+        });
+      }
     }
 
     console.log('Navigating back to activity list');
@@ -479,6 +490,19 @@ class ActivityListPage extends HomePage {
     });
   }
 
+  async checkTransactionBreakdownRowValue(
+    rowIndex: number,
+    expectedText: string,
+  ): Promise<void> {
+    console.log(
+      `Check transaction breakdown row ${rowIndex} value is ${expectedText}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.transactionBreakdownRowValue(rowIndex).css,
+      text: expectedText,
+    });
+  }
+
   async checkNoFailedTransactions(): Promise<void> {
     try {
       await this.driver.findElement(this.failedTransactions, 1);
@@ -520,7 +544,7 @@ class ActivityListPage extends HomePage {
   }
 
   async clickSpeedUpTransaction() {
-    await this.driver.clickElement(this.speedupModalButton);
+    await this.driver.clickElement(this.speedupInlineButton);
   }
 
   /**
@@ -590,11 +614,6 @@ class ActivityListPage extends HomePage {
     });
 
     await this.driver.clickElement({ tag: 'p', text: swapLabel });
-
-    await this.driver.waitForSelector({
-      css: this.transactionStatusLabel,
-      text: 'Confirmed',
-    });
 
     await this.driver.waitForSelector({
       css: this.transactionBreakdownAmount,

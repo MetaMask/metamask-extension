@@ -6,6 +6,7 @@ import type { AccountTreeControllerState } from '@metamask/account-tree-controll
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type {
+  AccountTrackerControllerState,
   CurrencyRateState,
   MultichainAssetsRatesControllerState,
   NftControllerState,
@@ -125,6 +126,17 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
+type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
+  /** @deprecated Patches `AnalyticsController` via shim. Prefer `optedIn`. */
+  participateInMetaMetrics?: boolean | null;
+  /** @deprecated Patches `AnalyticsController` via shim. Prefer `analyticsId`. */
+  metaMetricsId?: string | null;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  analyticsId?: string | null;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  optedIn?: boolean;
+};
+
 type StorageServiceNamespaceMap = {
   [STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER]: {
     key: string;
@@ -187,6 +199,15 @@ class FixtureBuilderV2 {
 
   withAccountTreeController(data: Partial<AccountTreeControllerState>): this {
     merge(this.fixture.data.AccountTreeController, data);
+    return this;
+  }
+
+  withAccountTracker(data: Partial<AccountTrackerControllerState>): this {
+    const fixtureData = this.fixture.data as Record<string, unknown>;
+    if (!fixtureData.AccountTracker) {
+      fixtureData.AccountTracker = { accountsByChainId: {} };
+    }
+    merge(fixtureData.AccountTracker as AccountTrackerControllerState, data);
     return this;
   }
 
@@ -277,8 +298,56 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
-    merge(this.fixture.data.MetaMetricsController, data);
+  withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
+    const {
+      participateInMetaMetrics,
+      metaMetricsId,
+      analyticsId,
+      optedIn,
+      ...metaMetricsControllerPatch
+    } = data;
+
+    merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
+
+    if (participateInMetaMetrics !== undefined) {
+      merge(this.fixture.data.MetaMetricsController, {
+        completedMetaMetricsOnboarding: participateInMetaMetrics !== null,
+      });
+    }
+
+    let resolvedAnalyticsId: string | null | undefined;
+    if (analyticsId === undefined) {
+      resolvedAnalyticsId = metaMetricsId;
+    } else {
+      resolvedAnalyticsId = analyticsId;
+    }
+
+    let resolvedOptedIn: boolean | undefined;
+    if (optedIn !== undefined) {
+      resolvedOptedIn = optedIn;
+    } else if (participateInMetaMetrics !== undefined) {
+      resolvedOptedIn = participateInMetaMetrics === true;
+    }
+
+    if (resolvedAnalyticsId !== undefined || resolvedOptedIn !== undefined) {
+      const fixtureData = this.fixture.data as Record<string, unknown>;
+      if (!fixtureData.AnalyticsController) {
+        fixtureData.AnalyticsController = {};
+      }
+      const analyticsController = fixtureData.AnalyticsController as Record<
+        string,
+        unknown
+      >;
+      const analyticsPatch: Record<string, unknown> = {};
+      if (resolvedAnalyticsId !== undefined) {
+        analyticsPatch.analyticsId = resolvedAnalyticsId;
+      }
+      if (resolvedOptedIn !== undefined) {
+        analyticsPatch.optedIn = resolvedOptedIn;
+      }
+      merge(analyticsController, analyticsPatch);
+    }
+
     return this;
   }
 

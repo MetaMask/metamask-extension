@@ -1,9 +1,9 @@
 /**
- * The QR scan error category determines which title + body copy to show.
+ * QR scan error category that determines which title and body copy to show.
  *
- * - `NonUrQrCode` — scanned data does not start with `ur:` (State 3).
- * - `WrongUrType` — valid UR, but the UR type is not expected for this flow (State 4).
- * - `UrDecodeError` — `urDecoder.isError()` returned `true` (State 5).
+ * - `NonUrQrCode` - scanned data does not start with `ur:`.
+ * - `WrongUrType` - valid UR whose type does not match the current flow.
+ * - `UrDecodeError` - the UR decoder failed to reassemble frames.
  */
 export const QrErrorType = {
   NonUrQrCode: 'nonUrQrCode',
@@ -14,8 +14,8 @@ export const QrErrorType = {
 export type QrErrorType = (typeof QrErrorType)[keyof typeof QrErrorType];
 
 /**
- * The flow context controls whether pairing- or signing-specific copy is used.
- * State 5 (`UrDecodeError`) ignores this — its copy is universal.
+ * Flow context that controls whether pairing or signing copy is used.
+ * `UrDecodeError` ignores this value because its copy is universal.
  */
 export const QrErrorFlowContext = {
   Pairing: 'pairing',

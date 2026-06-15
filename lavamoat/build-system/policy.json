@@ -47,9 +47,13 @@
         "@babel/plugin-proposal-object-rest-spread": true,
         "@babel/plugin-proposal-optional-chaining": true,
         "@babel/plugin-transform-class-properties": true,
+        "@babel/preset-env>@babel/plugin-transform-class-properties": true,
+        "@babel/preset-env>@babel/plugin-transform-class-static-block": true,
         "@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/plugin-transform-private-methods": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods": true,
         "@babel/plugin-transform-private-property-in-object": true,
+        "@babel/preset-env>@babel/plugin-transform-private-property-in-object": true,
         "@babel/plugin-transform-runtime": true,
         "@babel/preset-env": true,
         "@babel/preset-react": true,
@@ -2484,7 +2488,7 @@
       "packages": {
         "eslint-import-resolver-typescript>@nolyfill/is-core-module": true,
         "nock>debug": true,
-        "tsx>get-tsconfig": true,
+        "eslint-plugin-n>get-tsconfig": true,
         "eslint-import-resolver-typescript>is-bun-module": true,
         "eslint-import-resolver-typescript>stable-hash": true,
         "copy-webpack-plugin>tinyglobby": true,
@@ -2527,7 +2531,7 @@
         "nock>debug": true,
         "eslint>doctrine": true,
         "eslint": true,
-        "tsx>get-tsconfig": true,
+        "eslint-plugin-n>get-tsconfig": true,
         "del>is-glob": true,
         "eslint-plugin-import-x>minimatch": true,
         "semver": true,
@@ -2596,7 +2600,7 @@
         "eslint>@eslint-community/eslint-utils": true,
         "webpack>enhanced-resolve": true,
         "eslint-plugin-n>eslint-plugin-es-x": true,
-        "tsx>get-tsconfig": true,
+        "eslint-plugin-n>get-tsconfig": true,
         "eslint-plugin-n>globals": true,
         "eslint-plugin-n>globrex": true,
         "eslint>ignore": true,
@@ -3150,7 +3154,7 @@
         "pumpify>pump": true
       }
     },
-    "tsx>get-tsconfig": {
+    "eslint-plugin-n>get-tsconfig": {
       "builtin": {
         "fs": true,
         "node:fs": true,
@@ -3170,7 +3174,7 @@
         "process.platform": true
       },
       "packages": {
-        "tsx>get-tsconfig>resolve-pkg-maps": true
+        "eslint-plugin-n>get-tsconfig>resolve-pkg-maps": true
       }
     },
     "eslint>glob-parent": {

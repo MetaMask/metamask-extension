@@ -104,7 +104,7 @@ export function ClaimableBonusRow({
       <Text
         variant={TextVariant.BodyMd}
         fontWeight={isSmall ? undefined : FontWeight.Medium}
-        color={TextColor.TextAlternative}
+        color={TextColor.SuccessDefault}
         data-testid="claimable-bonus-value"
       >
         {`${MUSD_CONVERSION_APY}%`}
