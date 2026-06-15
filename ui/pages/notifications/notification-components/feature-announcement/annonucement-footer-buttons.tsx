@@ -1,10 +1,12 @@
 import React, { useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getNotificationSubtype } from '@metamask/notification-services-controller/notification-services';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useNotificationAnalyticsProperties } from '../../notification-hooks/use-notification-analytics-properties';
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
 import {
@@ -14,29 +16,28 @@ import {
 import { FeatureAnnouncementNotification } from './types';
 
 const useAnalyticEventCallback = (props: {
-  id: string;
-  type: string;
-  clickType: 'external_link' | 'internal_link';
+  notification: FeatureAnnouncementNotification;
+  clickType: 'cta_button';
 }) => {
   const { trackEvent } = useContext(MetaMetricsContext);
+  const { profile_id: profileId } = useNotificationAnalyticsProperties();
+  const { notification, clickType } = props;
 
   const analyticsEvent = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationDetailClicked,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        notification_id: props.id,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        notification_type: props.type,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        clicked_item: props.clickType,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        notification_id: notification.id,
+        notification_type: notification.type,
+        notification_subtype: getNotificationSubtype(notification),
+        ...(profileId && { profile_id: profileId }),
+        clicked_item: clickType,
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
-  }, [props.clickType, props.id, props.type, trackEvent]);
+  }, [clickType, notification, profileId, trackEvent]);
 
   return analyticsEvent;
 };
@@ -46,9 +47,8 @@ export const ExtensionLinkButton = (props: {
 }) => {
   const { notification } = props;
   const onClick = useAnalyticEventCallback({
-    id: notification.id,
-    type: notification.type,
-    clickType: 'internal_link',
+    notification,
+    clickType: 'cta_button',
   });
 
   if (!notification.data.extensionLink) {
@@ -74,9 +74,8 @@ export const ExternalLinkButton = (props: {
   const navigate = useNavigate();
   const { notification } = props;
   const analyticCallback = useAnalyticEventCallback({
-    id: notification.id,
-    type: notification.type,
-    clickType: 'external_link',
+    notification,
+    clickType: 'cta_button',
   });
 
   if (!notification.data.externalLink) {

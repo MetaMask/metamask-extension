@@ -21,6 +21,7 @@ import {
   TRIGGER_TYPES,
   hasNotificationComponents,
 } from './notification-components';
+import { useNotificationAnalyticsProperties } from './notification-hooks/use-notification-analytics-properties';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -32,6 +33,7 @@ export function NotificationsListItem({
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { setNotificationTimeout } = useSnapNotificationTimeouts();
+  const { profile_id: profileId } = useNotificationAnalyticsProperties();
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
@@ -58,9 +60,9 @@ export function NotificationsListItem({
         /* eslint-disable @typescript-eslint/naming-convention */
         notification_id: notification.id,
         notification_type: notification.type,
+        notification_subtype: notification.notification_subtype,
+        ...(profileId && { profile_id: profileId }),
         ...otherNotificationProperties(),
-        previously_read: notification.isRead,
-        data: notification, // data blob for feature teams to analyse their notification shapes
         /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
@@ -91,6 +93,7 @@ export function NotificationsListItem({
   }, [
     trackEvent,
     notification,
+    profileId,
     markNotificationAsRead,
     navigate,
     setNotificationTimeout,

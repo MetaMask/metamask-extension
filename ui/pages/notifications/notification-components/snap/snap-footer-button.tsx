@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
+import { getNotificationSubtype } from '@metamask/notification-services-controller/notification-services';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning';
 import { NotificationDetailButton } from '../../../../components/multichain';
@@ -8,10 +9,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { useNotificationAnalyticsProperties } from '../../notification-hooks/use-notification-analytics-properties';
 import { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {
   const { trackEvent } = useContext(MetaMetricsContext);
+  const { profile_id: profileId } = useNotificationAnalyticsProperties();
   const { handleSnapNavigate } = useSnapNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const data = props.notification.data as DetailedViewData;
@@ -28,15 +31,13 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         category: MetaMetricsEventCategory.NotificationInteraction,
         event: MetaMetricsEventName.NotificationDetailClicked,
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          /* eslint-disable @typescript-eslint/naming-convention */
           notification_id: props.notification.id,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_type: props.notification.type,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          notification_subtype: getNotificationSubtype(props.notification),
+          ...(profileId && { profile_id: profileId }),
           clicked_item: isExternal ? 'external_link' : 'internal_link',
+          /* eslint-enable @typescript-eslint/naming-convention */
         },
       });
 
@@ -49,8 +50,8 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
     },
     [
       handleSnapNavigate,
-      props.notification.id,
-      props.notification.type,
+      profileId,
+      props.notification,
       trackEvent,
     ],
   );
