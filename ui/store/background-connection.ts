@@ -63,6 +63,10 @@ const messengerEventSubscriptions = new Map<
   NamespacedName,
   MessengerEventSubscription
 >();
+// Tracks whether the router is attached to the current background reference.
+// setBackgroundConnection resets it so the router reattaches to the new
+// connection on the next subscribe.
+let notificationRouterAttached = false;
 
 function routeMessengerEventNotification(
   notification: JsonRpcNotification<[string, Json]>,
@@ -95,8 +99,7 @@ function routeMessengerEventNotification(
  *
  * Clears any in-memory subscription state because subscriptions registered
  * against the previous background connection are stale once the connection
- * has been replaced, then attaches the notification router to the new
- * connection.
+ * has been replaced.
  *
  * @param backgroundConnection
  */
@@ -105,7 +108,7 @@ export async function setBackgroundConnection(
 ) {
   background = backgroundConnection;
   messengerEventSubscriptions.clear();
-  background.onNotification(routeMessengerEventNotification);
+  notificationRouterAttached = false;
 }
 
 /**
@@ -143,6 +146,11 @@ export async function subscribeToMessengerEvent<Data extends Json>(
   if (subscription) {
     subscription.callbacks.add(looselyTypedCallback);
   } else {
+    if (!notificationRouterAttached) {
+      background.onNotification(routeMessengerEventNotification);
+      notificationRouterAttached = true;
+    }
+
     const subscribePromise = submitRequestToBackground<void>(
       'messengerSubscribe',
       [event],
