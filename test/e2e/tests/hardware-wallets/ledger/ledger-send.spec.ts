@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { sendRedesignedTransactionToAddress } from '../../../page-objects/flows/send-transaction.flow';
 import { login } from '../../../page-objects/flows/login.flow';
@@ -38,9 +38,9 @@ describe('Ledger Hardware', function (this: Suite) {
         });
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
-        await activityList.checkTxAmountInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+        await activityTab.checkTxAmountInActivity();
       },
     );
   });
@@ -72,9 +72,9 @@ describe('Ledger Hardware', function (this: Suite) {
         });
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
-        await activityList.checkTxAmountInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+        await activityTab.checkTxAmountInActivity();
       },
     );
   });

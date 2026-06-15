@@ -15,7 +15,7 @@ import { convertETHToHexGwei, withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { login } from '../../../page-objects/flows/login.flow';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
@@ -540,7 +540,7 @@ describe('Multichain API', function () {
             const homePage = new HomePage(driver);
             await homePage.checkPageIsLoaded();
             await homePage.goToActivityList();
-            await new ActivityListPage(
+            await new ActivityTab(
               driver,
             ).checkConfirmedTxNumberDisplayedInActivity();
 
