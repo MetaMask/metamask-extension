@@ -17,6 +17,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedWalletBalance,
   expectedSwapTokens,
   expectedDestAmount,
+  expectedDetailsDestAmount,
   expectedActivityAmount,
 }: {
   driver: Driver;
@@ -26,6 +27,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedWalletBalance?: string;
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount?: string;
+  expectedDetailsDestAmount?: string;
   expectedActivityAmount?: string;
 }) => {
   const homePage = new HomePage(driver);
@@ -47,7 +49,7 @@ export const verifySubmittedSwapTransaction = async ({
 
   if (quote.unapproved) {
     action = isBridge
-      ? `Bridged ${expectedDestToken}`
+      ? `Bridged ${expectedSrcToken}`
       : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
     await activityList.checkTxAction({
       action,
@@ -60,7 +62,7 @@ export const verifySubmittedSwapTransaction = async ({
     });
   } else {
     action = isBridge
-      ? `Bridged ${expectedDestToken}`
+      ? `Bridged ${expectedSrcToken}`
       : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
     await activityList.checkTxAction({
       action,
@@ -76,9 +78,9 @@ export const verifySubmittedSwapTransaction = async ({
     action,
     isBridge,
     expectedStatus,
-    quote.amount,
+    undefined,
     expectedSrcToken,
-    expectedDestAmount,
+    expectedDetailsDestAmount ?? expectedDestAmount,
     expectedDestToken,
   );
 
@@ -101,6 +103,7 @@ export const verifySubmittedSwapTransaction = async ({
  * @param testParams.expectedWalletBalance - The expected wallet balance after the transaction
  * @param testParams.expectedSwapTokens - The expected swap tokens shown in the activity list
  * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
+ * @param testParams.expectedDetailsDestAmount - The expected destination amount shown in the transaction details
  * @param testParams.expectedActivityAmount - The expected destination amount shown in the activity list
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  * @param testParams.expectedStatus - The expected state of the transaction
@@ -114,6 +117,7 @@ export const bridgeTransaction = async ({
   expectedWalletBalance,
   expectedSwapTokens,
   expectedDestAmount,
+  expectedDetailsDestAmount,
   expectedActivityAmount,
   submitDelay,
   skipStatusPage,
@@ -125,6 +129,7 @@ export const bridgeTransaction = async ({
   expectedWalletBalance?: string;
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount: string;
+  expectedDetailsDestAmount?: string;
   expectedActivityAmount?: string;
   submitDelay?: number;
   skipStatusPage?: boolean;
@@ -158,6 +163,7 @@ export const bridgeTransaction = async ({
     expectedWalletBalance,
     expectedSwapTokens,
     expectedDestAmount,
+    expectedDetailsDestAmount,
     expectedActivityAmount,
   });
 };

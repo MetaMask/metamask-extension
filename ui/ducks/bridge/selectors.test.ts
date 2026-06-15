@@ -73,6 +73,7 @@ import {
   getIsStockMarketClosed,
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
+  resolveMinimumBalanceToKeep,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -517,7 +518,7 @@ describe('Bridge selectors', () => {
       });
       const result = getToChains(state as never);
 
-      expect(result).toHaveLength(16);
+      expect(result).toHaveLength(17);
       expect(result.map(({ name, chainId }) => ({ name, chainId })))
         .toMatchInlineSnapshot(`
         [
@@ -580,6 +581,10 @@ describe('Bridge selectors', () => {
           {
             "chainId": "eip155:4326",
             "name": "MegaETH",
+          },
+          {
+            "chainId": "eip155:5042",
+            "name": "Arc",
           },
           {
             "chainId": "eip155:324",
@@ -4053,10 +4058,7 @@ describe('Bridge selectors', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: {
-                ...quote.quote.priceData,
-                priceImpact: undefined,
-              },
+              priceData: { ...quote.quote.priceData, priceImpact: undefined },
             },
           })) as unknown as QuoteResponse[],
         },
@@ -4302,10 +4304,7 @@ describe('Bridge selectors', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: {
-                ...quote.quote.priceData,
-                priceImpact: '0.07',
-              },
+              priceData: { ...quote.quote.priceData, priceImpact: '0.07' },
             },
           })) as unknown as QuoteResponse[],
           quoteRequest: {
@@ -4426,6 +4425,32 @@ describe('Bridge selectors', () => {
       });
       const result = getBridgeUnavailableQuoteReason(state as never);
       expect(result).toBe('noOptionsAvailableMessage');
+    });
+  });
+
+  describe('resolveMinimumBalanceToKeep', () => {
+    const SOL_RESERVE = '890880';
+
+    it('returns the SOL rent-exemption reserve for a Solana chain id', () => {
+      expect(resolveMinimumBalanceToKeep(SolScope.Mainnet, SOL_RESERVE)).toBe(
+        SOL_RESERVE,
+      );
+    });
+
+    it("returns '0' for a non-Solana EVM chain id", () => {
+      expect(resolveMinimumBalanceToKeep(CHAIN_IDS.MAINNET, SOL_RESERVE)).toBe(
+        '0',
+      );
+    });
+
+    it("returns '0' for a non-Solana non-EVM (Bitcoin) chain id", () => {
+      expect(
+        resolveMinimumBalanceToKeep(MultichainNetworks.BITCOIN, SOL_RESERVE),
+      ).toBe('0');
+    });
+
+    it("returns '0' when the chain id is undefined", () => {
+      expect(resolveMinimumBalanceToKeep(undefined, SOL_RESERVE)).toBe('0');
     });
   });
 });

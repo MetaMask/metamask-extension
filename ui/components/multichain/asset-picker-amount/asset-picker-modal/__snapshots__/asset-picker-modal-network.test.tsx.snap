@@ -50,15 +50,14 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
             </div>
           </header>
           <div
-            class="mm-box multichain-asset-picker__network-list mm-box--display-flex mm-box--flex-direction-column"
-            style="min-height: 0; overflow-y: auto;"
+            class="mm-box mm-modal-body multichain-asset-picker__network-list flex min-h-0 flex-1 flex-col overflow-auto mm-box--padding-right-0 mm-box--padding-left-0"
           />
         </section>
       </div>
@@ -122,19 +121,23 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
             </div>
           </header>
           <div
-            class="mm-box multichain-asset-picker__network-list mm-box--display-flex mm-box--flex-direction-column"
-            style="min-height: 0; overflow-y: auto;"
+            class="mm-box mm-modal-body multichain-asset-picker__network-list flex min-h-0 flex-1 flex-col overflow-auto mm-box--padding-right-0 mm-box--padding-left-0"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+              class="mm-box flex flex-col mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default px-4 pb-2 pt-4"
+              >
+                Default networks
+              </p>
               <div
                 class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                 data-testid="network-list-item-0x1"
@@ -272,7 +275,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/arrow-left.svg');"
                 />
               </button>
@@ -295,19 +298,23 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
             </div>
           </header>
           <div
-            class="mm-box multichain-asset-picker__network-list mm-box--display-flex mm-box--flex-direction-column"
-            style="min-height: 0; overflow-y: auto;"
+            class="mm-box mm-modal-body multichain-asset-picker__network-list flex min-h-0 flex-1 flex-col overflow-auto mm-box--padding-right-0 mm-box--padding-left-0"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+              class="mm-box flex flex-col mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default px-4 pb-2 pt-4"
+              >
+                Default networks
+              </p>
               <div
                 class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-background-muted"
                 data-testid="network-list-item-0x1"
