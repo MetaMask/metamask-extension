@@ -98,7 +98,7 @@ exports[`PersonalSignInfo handle reverse string properly 1`] = `
         style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
         />
       </button>
@@ -109,7 +109,7 @@ exports[`PersonalSignInfo handle reverse string properly 1`] = `
         style="cursor: pointer; position: absolute; right: 8px;"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/collapse.svg');"
         />
       </button>
@@ -243,7 +243,7 @@ exports[`PersonalSignInfo renders correctly for personal sign request 1`] = `
         style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
         />
       </button>
@@ -254,7 +254,7 @@ exports[`PersonalSignInfo renders correctly for personal sign request 1`] = `
         style="cursor: pointer; position: absolute; right: 8px;"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/collapse.svg');"
         />
       </button>

@@ -30,15 +30,14 @@ function createStore() {
 function makeWrapper() {
   const store = createStore();
   return function wrapper({ children }: { children: React.ReactNode }) {
-    return React.createElement(
-      Provider,
-      { store },
-      React.createElement(
+    return React.createElement(Provider, {
+      store,
+      children: React.createElement(
         MetaMetricsContext.Provider,
         { value: mockMetaMetrics },
         children,
       ),
-    );
+    });
   };
 }
 
