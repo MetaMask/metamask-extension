@@ -148,7 +148,13 @@ export function mapApiEvmTransactions({
         };
       }
 
-      if (sentNativeTransfer) {
+      const sentFungibleTransfer =
+        sentNativeTransfer ??
+        (sentTransfer && !isNftStandard(sentTransfer.transferType)
+          ? sentTransfer
+          : undefined);
+
+      if (sentFungibleTransfer) {
         return {
           type: 'nftBuy',
           chainId,
@@ -159,7 +165,7 @@ export function mapApiEvmTransactions({
             from: receivedNftTransfer.from,
             to: receivedNftTransfer.to,
             token: getToken(receivedNftTransfer, 'in'),
-            paymentToken: getToken(sentNativeTransfer, 'out'),
+            paymentToken: getToken(sentFungibleTransfer, 'out'),
           },
         };
       }

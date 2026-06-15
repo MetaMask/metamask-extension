@@ -567,6 +567,57 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps an NFT purchase paid in WETH (ERC-20) to an nftBuy activity', () => {
+    const nftBuyerAddress = '0x699e414873f56c7bb60e54ad63d3bb7b283874df';
+    const nftSellerAddress = '0x107b2e855528f344556f8c766a6187326a2c2fa6';
+    const transaction = {
+      timestamp: '2026-06-04T19:31:47.000Z',
+      chainId: Number(CHAIN_IDS.MAINNET),
+      from: nftBuyerAddress,
+      to: '0x0000000000000068f116a894984e2db1123eb395',
+      transactionCategory: 'CONTRACT_CALL',
+      valueTransfers: [
+        {
+          from: nftSellerAddress,
+          to: nftBuyerAddress,
+          amount: 1,
+          tokenId: '57',
+          contractAddress: '0x6fad73936527d2a82aea5384d252462941b44042',
+          name: 'FLUF World: Scenes and Sounds',
+          transferType: 'erc1155',
+        },
+        {
+          from: nftBuyerAddress,
+          to: nftSellerAddress,
+          amount: '89992880000000',
+          decimal: 18,
+          symbol: 'WETH',
+          contractAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          transferType: 'erc20',
+        },
+      ],
+    } as unknown as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress: nftBuyerAddress,
+      transaction,
+    });
+
+    expect(item).toMatchObject({
+      type: 'nftBuy',
+      data: {
+        token: {
+          direction: 'in',
+          symbol: 'FLUF World: Scenes and Sounds',
+        },
+        paymentToken: {
+          direction: 'out',
+          symbol: 'WETH',
+        },
+      },
+    });
+  });
+
   it('maps an NFT mint transfer to an nftMint activity without assetId', () => {
     const nftContractAddress = '0x239fd4b0c4db49fa8660e65b97619d43d0e0a79d';
     const transaction = {
