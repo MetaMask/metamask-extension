@@ -859,7 +859,11 @@ describe('Reveal Seed Page', () => {
         store,
       );
 
-      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWordsWithPasskey).toHaveBeenCalledWith(
@@ -881,7 +885,11 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       await waitFor(() => {
         expect(queryByTestId('input-password')).toBeInTheDocument();
@@ -902,7 +910,11 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       await waitFor(() => {
         expect(
@@ -929,7 +941,11 @@ describe('Reveal Seed Page', () => {
         store,
       );
 
-      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWordsWithPasskey).toHaveBeenCalledWith(
@@ -949,7 +965,11 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       await waitFor(() => {
         expect(queryByTestId('input-password')).toBeInTheDocument();
@@ -969,7 +989,11 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       await waitFor(() => {
         expect(
@@ -990,7 +1014,11 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       await waitFor(() => {
         expect(queryByTestId('input-password')).toBeInTheDocument();
@@ -1010,7 +1038,11 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       await waitFor(() => {
         expect(queryByTestId('input-password')).toBeInTheDocument();
