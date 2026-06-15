@@ -1,5 +1,4 @@
 import React, { PureComponent, useContext } from 'react';
-import PropTypes from 'prop-types';
 import {
   Navigate,
   type NavigateFunction,
@@ -109,12 +108,9 @@ type DeepLinkQrCodeData = {
   deeplinkUrl: string;
 };
 
-type HomeContext = {
-  t: (key: string, args?: unknown[]) => string;
-  trackEvent: UITrackEventMethod;
-};
-
 export type HomeProps = {
+  t: (key: string, ...args: unknown[]) => string;
+  trackEvent: UITrackEventMethod;
   navigate?: NavigateFunction;
   forgottenPassword?: boolean;
   isNotification?: boolean;
@@ -223,80 +219,6 @@ function shouldCloseNotificationPopup({
 }
 
 class HomeBase extends PureComponent<HomeProps, HomeState> {
-  static propTypes = {
-    t: PropTypes.func.isRequired,
-    trackEvent: PropTypes.func.isRequired,
-    navigate: PropTypes.func,
-    forgottenPassword: PropTypes.bool,
-    isNotification: PropTypes.bool,
-    hasApprovalFlows: PropTypes.bool,
-    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
-    shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
-    isPopup: PropTypes.bool,
-    connectedStatusPopoverHasBeenShown: PropTypes.bool,
-    showRecoveryPhraseReminder: PropTypes.bool.isRequired,
-    showTermsOfUsePopup: PropTypes.bool.isRequired,
-    firstTimeFlowType: PropTypes.string,
-    completedOnboarding: PropTypes.bool,
-    onboardedInThisUISession: PropTypes.bool,
-    showMultiRpcModal: PropTypes.bool.isRequired,
-    showUpdateModal: PropTypes.bool.isRequired,
-    newNetworkAddedConfigurationId: PropTypes.string,
-    totalUnapprovedCount: PropTypes.number.isRequired,
-    participateInMetaMetrics: PropTypes.bool,
-    setDataCollectionForMarketing: PropTypes.func.isRequired,
-    dataCollectionForMarketing: PropTypes.bool,
-    location: PropTypes.object,
-    shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
-    setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
-    originOfCurrentTab: PropTypes.string,
-    disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    infuraBlocked: PropTypes.bool.isRequired,
-    setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
-    setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
-    setTermsOfUseLastAgreed: PropTypes.func.isRequired,
-    showOutdatedBrowserWarning: PropTypes.bool.isRequired,
-    setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
-    newNetworkAddedName: PropTypes.string,
-    editedNetwork: PropTypes.object,
-    isSigningQRHardwareTransaction: PropTypes.bool,
-    isHardwareWalletErrorModalVisible: PropTypes.bool,
-    attemptCloseNotificationPopup: PropTypes.func.isRequired,
-    newTokensImported: PropTypes.string,
-    newTokensImportedError: PropTypes.string,
-    setNewTokensImported: PropTypes.func.isRequired,
-    setNewTokensImportedError: PropTypes.func.isRequired,
-    clearNewNetworkAdded: PropTypes.func,
-    clearEditedNetwork: PropTypes.func,
-    setActiveNetwork: PropTypes.func,
-    useExternalServices: PropTypes.bool,
-    setBasicFunctionalityModalOpen: PropTypes.func,
-    fetchBuyableChains: PropTypes.func.isRequired,
-    redirectAfterDefaultPage: PropTypes.object,
-    setRedirectAfterDefaultPage: PropTypes.func,
-    clearRedirectAfterDefaultPage: PropTypes.func,
-    isSeedlessPasswordOutdated: PropTypes.bool,
-    isPrimarySeedPhraseBackedUp: PropTypes.bool,
-    showShieldEntryModal: PropTypes.bool,
-    isSocialLoginFlow: PropTypes.bool,
-    lookupSelectedNetworks: PropTypes.func.isRequired,
-    evaluateCohortEligibility: PropTypes.func,
-    pendingShieldCohort: PropTypes.string,
-    setPendingShieldCohort: PropTypes.func,
-    isSignedIn: PropTypes.bool,
-    rewardsEnabled: PropTypes.bool,
-    rewardsModalOpen: PropTypes.bool,
-    showPna25Modal: PropTypes.bool.isRequired,
-    envType: PropTypes.string,
-    pendingRedirectRoute: PropTypes.object,
-    clearPendingRedirectRoute: PropTypes.func,
-    lastVisitedPerpsRoute: PropTypes.shape({
-      path: PropTypes.string.isRequired,
-      timestamp: PropTypes.number.isRequired,
-    }),
-    clearLastVisitedPerpsRoute: PropTypes.func,
-  };
-
   state: HomeState = {
     canShowBlockageNotification: true,
     deepLinkQrCode: null,
@@ -1130,7 +1052,7 @@ class HomeBase extends PureComponent<HomeProps, HomeState> {
   }
 }
 
-function Home(props) {
+function Home(props: Omit<HomeProps, 't' | 'trackEvent'>) {
   const t = useContext(I18nContext);
   const { trackEvent } = useContext(MetaMetricsContext);
   return <HomeBase {...props} t={t} trackEvent={trackEvent} />;
