@@ -1997,6 +1997,8 @@
         "os.release": true,
         "path.basename": true,
         "path.relative": true,
+        "path.resolve": true,
+        "path.win32.basename": true,
         "url.fileURLToPath": true
       },
       "globals": {
