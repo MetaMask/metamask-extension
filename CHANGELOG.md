@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.35.1]
 
+### Uncategorized
+
+- Bump version to 13.35.1 (#43533)
+
 ### Added
 
 - Added Arc network integration (#43509)
