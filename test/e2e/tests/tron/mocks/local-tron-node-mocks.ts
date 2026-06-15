@@ -252,13 +252,13 @@ function buildTransactionInfo(tx: CapturedTx): Record<string, unknown> {
  *
  * @param mockServer - The mockttp server instance
  * @param localNode - Local Tron node instance, or its base URL.
- * @param accountAddress - Tron account address used to scope history endpoints
+ * @param accountAddresses - Tron account addresses used to scope history endpoints
  * @returns Array of registered MockedEndpoints
  */
 export async function proxyTronBlockchainCalls(
   mockServer: Mockttp,
   localNode: TronNodeLike | string,
-  accountAddress: string,
+  accountAddresses: string[],
 ): Promise<MockedEndpoint[]> {
   const localNodeUrl =
     typeof localNode === 'string' ? localNode : localNode.baseUrl;
@@ -454,70 +454,76 @@ export async function proxyTronBlockchainCalls(
 
         return result;
       }),
+  );
 
-    await mockServer
-      .forGet(tronProviderUrl(`/v1/accounts/${accountAddress}`))
-      .always()
-      .thenCallback(async () => {
-        if (typeof localNode !== 'string') {
+  for (const accountAddress of accountAddresses) {
+    endpoints.push(
+      await mockServer
+        .forGet(tronProviderUrl(`/v1/accounts/${accountAddress}`))
+        .always()
+        .thenCallback(async () => {
+          if (typeof localNode !== 'string') {
+            return {
+              statusCode: 200,
+              json: await localNode.getTronGridAccountResponse(accountAddress),
+            };
+          }
+
+          const { json: account } = await proxyPost(
+            localNodeUrl,
+            '/wallet/getaccount',
+            JSON.stringify({ address: accountAddress, visible: true }),
+          );
           return {
             statusCode: 200,
-            json: await localNode.getTronGridAccountResponse(accountAddress),
+            json: createTronGridAccountResponse({
+              address: accountAddress,
+              nativeAccount: account as TronNativeAccount,
+            }),
           };
-        }
+        }),
 
-        const { json: account } = await proxyPost(
-          localNodeUrl,
-          '/wallet/getaccount',
-          JSON.stringify({ address: accountAddress, visible: true }),
-        );
-        return {
-          statusCode: 200,
-          json: createTronGridAccountResponse({
-            address: accountAddress,
-            nativeAccount: account as TronNativeAccount,
-          }),
-        };
-      }),
+      await mockServer
+        .forGet(tronProviderUrl(`/v1/accounts/${accountAddress}/transactions`))
+        .always()
+        .thenCallback(async () => {
+          const nativeTxs = captured.filter(
+            (tx) => tx.contractType !== 'TriggerSmartContract',
+          );
+          const data = nativeTxs.map((tx) => {
+            tx.pollsObserved += 1;
+            return buildHistoryEntry(tx, 'Confirmed');
+          });
+          const base = createEmptyTronGridTransactionsResponse();
+          return {
+            statusCode: 200,
+            json: { ...base, data },
+          };
+        }),
 
-    await mockServer
-      .forGet(tronProviderUrl(`/v1/accounts/${accountAddress}/transactions`))
-      .always()
-      .thenCallback(async () => {
-        const nativeTxs = captured.filter(
-          (tx) => tx.contractType !== 'TriggerSmartContract',
-        );
-        const data = nativeTxs.map((tx) => {
-          tx.pollsObserved += 1;
-          return buildHistoryEntry(tx, 'Confirmed');
-        });
-        const base = createEmptyTronGridTransactionsResponse();
-        return {
-          statusCode: 200,
-          json: { ...base, data },
-        };
-      }),
-
-    await mockServer
-      .forGet(
-        tronProviderUrl(`/v1/accounts/${accountAddress}/transactions/trc20`),
-      )
-      .always()
-      .thenCallback(async () => {
-        const trc20Txs = captured.filter(
-          (tx) => tx.contractType === 'TriggerSmartContract',
-        );
-        const data = trc20Txs.map((tx) => {
-          tx.pollsObserved += 1;
-          return buildHistoryEntry(tx, 'Confirmed');
-        });
-        const base = createEmptyTronGridTransactionsResponse();
-        return {
-          statusCode: 200,
-          json: { ...base, data },
-        };
-      }),
-  );
+      await mockServer
+        .forGet(
+          tronProviderUrl(
+            `/v1/accounts/${accountAddress}/transactions/trc20`,
+          ),
+        )
+        .always()
+        .thenCallback(async () => {
+          const trc20Txs = captured.filter(
+            (tx) => tx.contractType === 'TriggerSmartContract',
+          );
+          const data = trc20Txs.map((tx) => {
+            tx.pollsObserved += 1;
+            return buildHistoryEntry(tx, 'Confirmed');
+          });
+          const base = createEmptyTronGridTransactionsResponse();
+          return {
+            statusCode: 200,
+            json: { ...base, data },
+          };
+        }),
+    );
+  }
 
   return endpoints;
 }

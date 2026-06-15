@@ -59,7 +59,7 @@ describe('Send Tron (local blockchain)', function (this: Suite) {
             ...(await proxyTronBlockchainCalls(
               mockServer,
               tronNode,
-              TRON_ACCOUNT_ADDRESS,
+              [TRON_ACCOUNT_ADDRESS, TRON_RECIPIENT_ADDRESS],
             )),
           ];
         },

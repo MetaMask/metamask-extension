@@ -57,7 +57,7 @@ describe('Send Tron', function () {
             ...(await proxyTronBlockchainCalls(
               mockServer,
               tronNode,
-              TRON_ACCOUNT_ADDRESS,
+              [TRON_ACCOUNT_ADDRESS, TRON_RECIPIENT_ADDRESS],
             )),
           ];
         },

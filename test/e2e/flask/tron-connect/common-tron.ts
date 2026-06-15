@@ -111,7 +111,7 @@ export const withTronAccountSnap = async (
           ...(await proxyTronBlockchainCalls(
             mockServer,
             tronNode,
-            'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
+            ['TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3'],
           )),
         ];
       },

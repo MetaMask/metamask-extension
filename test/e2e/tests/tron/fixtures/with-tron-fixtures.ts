@@ -13,6 +13,7 @@ import { TronNode } from '../../../seeder/tron/node';
 import { TronSeeder } from '../../../seeder/tron/tron-seeder';
 import {
   TRON_ACCOUNT_ADDRESS,
+  TRON_RECIPIENT_ADDRESS,
   mockExchangeRates,
   mockFiatExchangeRates,
   mockTronFeatureFlags,
@@ -226,11 +227,15 @@ async function mockTronFixtureApis(
   const accountByAddress = new Map(
     accounts.map((account) => [account.address, account]),
   );
-  const primaryAddress = accounts[0]?.address ?? TRON_ACCOUNT_ADDRESS;
   const fixtureHistoryEndpoints = await mockFixtureTransactionHistory(
     mockServer,
     accounts,
   );
+
+  const allAddresses = [
+    ...accounts.map((a) => a.address),
+    TRON_RECIPIENT_ADDRESS,
+  ].filter((v, i, arr) => arr.indexOf(v) === i);
 
   return [
     await mockTronFeatureFlags(mockServer),
@@ -239,7 +244,7 @@ async function mockTronFixtureApis(
     await mockTronFixtureSpotPrices(mockServer, accounts, tronNode),
     await mockTronFixtureAssets(mockServer, accounts, tronNode),
     ...fixtureHistoryEndpoints,
-    ...(await proxyTronBlockchainCalls(mockServer, tronNode, primaryAddress)),
+    ...(await proxyTronBlockchainCalls(mockServer, tronNode, allAddresses)),
     await mockWildcardTronAccountApis(mockServer, tronNode, accountByAddress),
   ];
 }
