@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { I18nContext } from '../../../../contexts/i18n';
 import { SubjectType } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,

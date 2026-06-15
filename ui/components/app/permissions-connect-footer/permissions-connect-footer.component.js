@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { I18nContext } from '../../../contexts/i18n';
 import {
   Box,
   BoxAlignItems,

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { I18nContext } from '../../../contexts/i18n';
 import copyToClipboard from 'copy-to-clipboard';
 import { I18nContext } from '../../../contexts/i18n';
 import { shortenAddress } from '../../../helpers/utils/util';
