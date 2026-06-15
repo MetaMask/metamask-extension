@@ -102,6 +102,8 @@ jest.mock('@metamask/perps-controller', () => ({
     clearPendingTransactionRequests: jest.fn(),
     saveOrderBookGrouping: jest.fn(),
     getOrderBookGrouping: jest.fn(),
+    getMaxSlippage: jest.fn(),
+    setMaxSlippage: jest.fn(),
     getActiveProvider: jest.fn().mockReturnValue({
       getUserHistory: jest.fn(),
       getUserNonFundingLedgerUpdates: jest.fn(),
@@ -581,6 +583,8 @@ describe('PerpsControllerInit', () => {
       ],
       ['perpsSaveOrderBookGrouping', 'saveOrderBookGrouping'],
       ['perpsGetOrderBookGrouping', 'getOrderBookGrouping'],
+      ['perpsGetMaxSlippage', 'getMaxSlippage'],
+      ['perpsSetMaxSlippage', 'setMaxSlippage'],
       ['perpsClearDepositResult', 'clearDepositResult'],
       ['perpsClearWithdrawResult', 'clearWithdrawResult'],
       ['perpsGetBlockExplorerUrl', 'getBlockExplorerUrl'],

@@ -7,12 +7,6 @@
     "message": "Pemuatan memerlukan waktu lebih lama dari biasanya.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Kesalahan"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Data transaksi tidak sesuai. Harap periksa detail transaksi."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Tidak ada akun lainnya. Jika Anda ingin mengakses akun lain yang tidak terdaftar di bawah ini, harap hubungkan kembali dompet perangkat keras Anda dan pilih."
   },
@@ -607,6 +601,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Long terbuka"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "Pembukaan posisi short gagal"
   },
@@ -661,22 +656,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Biaya pendanaan diterima"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Penarikan gagal"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Penarikan gagal"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Menarik dana"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Menarik dana"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Penarikan Perp"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Penarikan Perp"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -3447,9 +3442,6 @@
   },
   "enabled": {
     "message": "Diaktifkan"
-  },
-  "enabledNetworks": {
-    "message": "Jaringan yang diaktifkan"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 menginginkan kunci enkripsi publik Anda. Dengan menyetujui, situs ini akan dapat membuat pesan terenkripsi untuk Anda.",
@@ -10077,9 +10069,6 @@
   },
   "termsOfUseTitle": {
     "message": "Syarat Penggunaan kami telah diperbarui"
-  },
-  "testNetworks": {
-    "message": "Jaringan pengujian"
   },
   "testnets": {
     "message": "Testnet"

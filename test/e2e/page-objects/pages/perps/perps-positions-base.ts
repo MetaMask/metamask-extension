@@ -2,7 +2,7 @@ import HomePage from '../home/homepage';
 
 /**
  * Base class with shared position-related selectors and methods
- * used by PerpsHomePage.
+ * used by PerpsTab.
  */
 export class PerpsPositionsBase extends HomePage {
   protected readonly accountOverviewPerpsTab = {

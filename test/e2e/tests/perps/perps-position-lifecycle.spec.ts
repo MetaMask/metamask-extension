@@ -19,7 +19,7 @@ import WebSocketRegistry from '../../websocket/registry';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
+import { PerpsTab } from '../../page-objects/pages/home/perps-tab';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
 import { PerpsActivityPage } from '../../page-objects/pages/perps/perps-activity-page';
@@ -49,9 +49,9 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
 
         const marketListPage = new PerpsMarketListPage(driver);
         await marketListPage.navigateToMarketList();
@@ -123,9 +123,9 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
 
         const marketListPage = new PerpsMarketListPage(driver);
         await marketListPage.navigateToMarketList();
@@ -194,12 +194,12 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
 
-        await perpsHomePage.clickPositionCard('ETH');
+        await perpsTab.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
@@ -243,9 +243,9 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         const activityPageAfterPartial = new PerpsActivityPage(driver);
         await activityPageAfterPartial.clickHeaderBack();
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCardSize('ETH', '1.25 ETH');
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCardSize('ETH', '1.25 ETH');
       },
     );
   });
@@ -259,12 +259,12 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
 
-        await perpsHomePage.clickPositionCard('ETH');
+        await perpsTab.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
@@ -311,9 +311,9 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         const activityPageAfterReduce = new PerpsActivityPage(driver);
         await activityPageAfterReduce.clickHeaderBack();
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCardSize('ETH', '2.25 ETH');
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCardSize('ETH', '2.25 ETH');
       },
     );
   });
@@ -328,11 +328,11 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
-        await perpsHomePage.clickPositionCard('ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
+        await perpsTab.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
@@ -363,9 +363,9 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.checkPositionSizeValue('2.5667 ETH');
         await marketDetailPage.checkPositionLeverage('Long 3x');
         await marketDetailPage.clickBack();
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCardSize('ETH', '2.5667 ETH');
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCardSize('ETH', '2.5667 ETH');
       },
     );
   });
@@ -386,11 +386,11 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
-        await perpsHomePage.clickPositionCard('ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
+        await perpsTab.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
@@ -424,10 +424,10 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.checkPositionLeverage('Short 3x');
 
         await marketDetailPage.clickBack();
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCardContains('ETH', '3x short');
-        await perpsHomePage.waitForPositionCardSize('ETH', '2.5 ETH');
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCardContains('ETH', '3x short');
+        await perpsTab.waitForPositionCardSize('ETH', '2.5 ETH');
       },
     );
   });
@@ -442,11 +442,11 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('BTC');
-        await perpsHomePage.clickPositionCard('BTC');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('BTC');
+        await perpsTab.clickPositionCard('BTC');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
@@ -480,10 +480,10 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         await marketDetailPage.checkPositionLeverage('Long 15x');
 
         await marketDetailPage.clickBack();
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCardContains('BTC', '15x long');
-        await perpsHomePage.waitForPositionCardSize('BTC', '0.5 BTC');
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCardContains('BTC', '15x long');
+        await perpsTab.waitForPositionCardSize('BTC', '0.5 BTC');
       },
     );
   });
@@ -499,11 +499,11 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
-        await perpsHomePage.clickPositionCard('ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
+        await perpsTab.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
@@ -552,11 +552,11 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
-        await perpsHomePage.clickPositionCard('ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
+        await perpsTab.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
@@ -606,11 +606,11 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
-        await perpsHomePage.waitForPositionCardSize('ETH', '2.5 ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
+        await perpsTab.waitForPositionCardSize('ETH', '2.5 ETH');
       },
     );
   });
@@ -624,12 +624,12 @@ describe('Perps Position Lifecycle', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
 
-        await perpsHomePage.clickPositionCard('ETH');
+        await perpsTab.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();

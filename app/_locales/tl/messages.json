@@ -7,12 +7,6 @@
     "message": "Masyadong matagal ang paglo-load kaysa sa karaniwan.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Error"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Hindi tugmang data ng transaksyon. Pakisuri ang mga detalye ng transaksyon."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Wala nang mga account. Kung gusto mong mag-access ng iba pang account na hindi nakalista sa ibaba, pakikonektang muli ang wallet na hardware mo at piliin ito."
   },
@@ -607,6 +601,7 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Bukas na long"
   },
+
   "activity_perpsOpenShort_failed_description": {
     "message": "Nabigong buksan ang short"
   },
@@ -661,22 +656,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Natanggap ang bayad sa pagpopondo"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Pumalya ang pag-withdraw"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Pumalya ang pag-withdraw"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Wini-withdraw ang mga pondo"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Wini-withdraw ang mga pondo"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Pagwi-withdraw ng perps"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Pagwi-withdraw ng perps"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -3447,9 +3442,6 @@
   },
   "enabled": {
     "message": "Pinagana"
-  },
-  "enabledNetworks": {
-    "message": "Naka-enable na mga network"
   },
   "encryptionPublicKeyNotice": {
     "message": "Kailangan ng $1 ang iyong pampublikong encryption key. Sa pamamagitan ng pagbibigay ng pahintulot, makakagawa ang site na ito ng mga naka-encrypt na mensahe para sa iyo.",
@@ -10069,9 +10061,6 @@
   },
   "termsOfUseTitle": {
     "message": "Na-update ang aming Mga Tuntunin sa Paggamit"
-  },
-  "testNetworks": {
-    "message": "Suriin ang mga network"
   },
   "testnets": {
     "message": "Mga Testnet"
