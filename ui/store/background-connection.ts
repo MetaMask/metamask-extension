@@ -51,7 +51,7 @@ export function submitRequestToBackground<R>(
   return background[method](...rpcArgs) as unknown as Promise<R>;
 }
 
-type EventEntry = {
+type MessengerEventSubscription = {
   // Callbacks are identified by reference. Subscribing the same function twice
   // to the same event collapses to a single entry, and the first matching
   // unsubscribe removes it for both callers — mirrors `Set` semantics.
@@ -59,27 +59,29 @@ type EventEntry = {
   subscribePromise: Promise<void>;
 };
 
-const eventEntries = new Map<NamespacedName, EventEntry>();
-// Tracks whether the router is attached to the *current* `background`
-// reference. `setBackgroundConnection` resets it to false because the
-// previous connection's listener is unreachable from the new connection.
-let notificationRouterAttached = false;
+const messengerEventSubscriptions = new Map<
+  NamespacedName,
+  MessengerEventSubscription
+>();
 
-function notificationRouter(notification: JsonRpcNotification<[string, Json]>) {
-  if (notification.method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
+function routeMessengerEventNotification(
+  notification: JsonRpcNotification<[string, Json]>,
+) {
+  if (
+    notification.method !== MESSENGER_SUBSCRIPTION_NOTIFICATION ||
+    !notification.params
+  ) {
     return;
   }
-  const { params } = notification;
-  if (!params) {
-    return;
-  }
-  const [eventName, payload] = params;
+  const [eventName, payload] = notification.params;
   // `eventName` is `string` from the notification params; mismatches are caught by the entry-not-found check below.
-  const entry = eventEntries.get(eventName as NamespacedName);
-  if (!entry) {
+  const subscription = messengerEventSubscriptions.get(
+    eventName as NamespacedName,
+  );
+  if (!subscription) {
     return;
   }
-  for (const callback of entry.callbacks) {
+  for (const callback of subscription.callbacks) {
     try {
       callback(payload);
     } catch (error) {
@@ -93,7 +95,8 @@ function notificationRouter(notification: JsonRpcNotification<[string, Json]>) {
  *
  * Clears any in-memory subscription state because subscriptions registered
  * against the previous background connection are stale once the connection
- * has been replaced.
+ * has been replaced, then attaches the notification router to the new
+ * connection.
  *
  * @param backgroundConnection
  */
@@ -101,8 +104,8 @@ export async function setBackgroundConnection(
   backgroundConnection: BackgroundRpcClient,
 ) {
   background = backgroundConnection;
-  eventEntries.clear();
-  notificationRouterAttached = false;
+  messengerEventSubscriptions.clear();
+  background.onNotification(routeMessengerEventNotification);
 }
 
 /**
@@ -135,50 +138,45 @@ export async function subscribeToMessengerEvent<Data extends Json>(
   // `Data extends Json` but `(data: Data) => void` is not assignable to `(data: Json) => void` due to contravariant function parameters; the cast is safe because all callbacks receive `Json`-shaped data at runtime.
   const looselyTypedCallback = callback as (data: Json) => void;
 
-  let entry = eventEntries.get(event);
+  let subscription = messengerEventSubscriptions.get(event);
 
-  if (entry) {
-    entry.callbacks.add(looselyTypedCallback);
+  if (subscription) {
+    subscription.callbacks.add(looselyTypedCallback);
   } else {
-    if (!notificationRouterAttached) {
-      background.onNotification(notificationRouter);
-      notificationRouterAttached = true;
-    }
-
     const subscribePromise = submitRequestToBackground<void>(
       'messengerSubscribe',
       [event],
     );
 
-    entry = {
+    subscription = {
       callbacks: new Set([looselyTypedCallback]),
       subscribePromise,
     };
-    eventEntries.set(event, entry);
+    messengerEventSubscriptions.set(event, subscription);
 
     // Side-effect handler: clear the entry on rejection so future subscribe
-    // attempts retry cleanly. Do NOT reassign `entry.subscribePromise` here —
-    // the original promise must retain its rejection so awaiters below still
-    // see it.
+    // attempts retry cleanly. Do NOT reassign `subscription.subscribePromise`
+    // here — the original promise must retain its rejection so awaiters below
+    // still see it.
     subscribePromise.catch(() => {
-      eventEntries.delete(event);
+      messengerEventSubscriptions.delete(event);
     });
   }
 
-  await entry.subscribePromise;
+  await subscription.subscribePromise;
 
   return async () => {
-    const currentEntry = eventEntries.get(event);
-    if (!currentEntry) {
+    const currentSubscription = messengerEventSubscriptions.get(event);
+    if (!currentSubscription) {
       return;
     }
 
-    const removed = currentEntry.callbacks.delete(looselyTypedCallback);
-    if (!removed || currentEntry.callbacks.size > 0) {
+    const removed = currentSubscription.callbacks.delete(looselyTypedCallback);
+    if (!removed || currentSubscription.callbacks.size > 0) {
       return;
     }
 
-    eventEntries.delete(event);
+    messengerEventSubscriptions.delete(event);
     await submitRequestToBackground('messengerUnsubscribe', [event]);
   };
 }
