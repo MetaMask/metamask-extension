@@ -1,11 +1,15 @@
 import { BaseController } from '@metamask/base-controller';
 import {
   type IKVStore,
+  type SessionRequest,
   type ISessionStore,
   SessionStore,
   WebSocketTransport,
 } from '@metamask/mobile-wallet-protocol-core';
-import { DappClient } from '@metamask/mobile-wallet-protocol-dapp-client';
+import {
+  DappClient,
+  type OtpRequiredPayload,
+} from '@metamask/mobile-wallet-protocol-dapp-client';
 
 import { QR_SYNC_CONTROLLER_NAME, QrSyncActionTypes, QrSyncMessageVersion } from './constants';
 import type { KeyManager } from './key-manager';
@@ -39,6 +43,10 @@ export class QrSyncController extends BaseController<
   #mwpDappClient: DappClient | null = null;
 
   #sessionStore: ISessionStore | null = null;
+
+  #otpSubmitCallback: ((otp: string) => Promise<void>) | null = null;
+
+  #otpCancelCallback: (() => void) | null = null;
 
   constructor({
     keyManager,
@@ -99,7 +107,7 @@ export class QrSyncController extends BaseController<
         keymanager: this.#keyManager,
       });
 
-      // TODO: Register MWP transport/session lifecycle handlers here.
+      this.#registerClientEventHandlers(this.#mwpDappClient);
       this.#transitionPhase('awaiting-connection', 'connected');
     } catch (error) {
       this.#setError({
@@ -130,12 +138,6 @@ export class QrSyncController extends BaseController<
       await this.#mwpDappClient.connect({
         initialPayload: this.#generateInitialPayload(),
         mode: 'untrusted',
-      });
-
-      // TODO: Populate the QR payload from the MWP session handshake.
-      this.update((state) => {
-        state.phase = 'displaying-qr';
-        state.createdAt = state.createdAt ?? Date.now();
       });
     } catch (error) {
       this.#setError({
@@ -173,6 +175,11 @@ export class QrSyncController extends BaseController<
 
   async submitOtp(_otp: string): Promise<void> {
     this.#assertPhase(['awaiting-otp-input']);
+    const otp = _otp.trim();
+
+    if (!this.#otpSubmitCallback) {
+      throw new Error('OTP submit callback is not available.');
+    }
 
     this.#setInFlightState({
       actionType: QrSyncActionTypes.OTP_DISPLAY_GRANT,
@@ -182,13 +189,30 @@ export class QrSyncController extends BaseController<
       canRetry: false,
     });
 
-    // TODO: Validate the OTP against the sync channel/session.
-    this.update((state) => {
-      state.otpAttempts += 1;
-      state.otpValidated = true;
-      state.phase = 'awaiting-sync-offer';
-    });
-    this.#finishSubmission();
+    try {
+      await this.#otpSubmitCallback(otp);
+
+      this.update((state) => {
+        state.otpAttempts += 1;
+        state.otpValidated = true;
+        state.phase = 'awaiting-sync-offer';
+        state.updatedAt = Date.now();
+      });
+    } catch (error) {
+      this.update((state) => {
+        state.otpAttempts += 1;
+        state.error = {
+          code: 'OTP_INVALID',
+          message:
+            error instanceof Error ? error.message : 'Failed to validate OTP',
+          retryable: true,
+        };
+        state.updatedAt = Date.now();
+      });
+      throw error;
+    } finally {
+      this.#finishSubmission();
+    }
   }
 
   selectAccounts(
@@ -224,7 +248,10 @@ export class QrSyncController extends BaseController<
   }
 
   async cancelSync(reason?: string): Promise<void> {
-    // TODO: Send a cancellation signal to the sync channel when supported.
+    this.#otpCancelCallback?.();
+    this.#otpSubmitCallback = null;
+    this.#otpCancelCallback = null;
+
     this.update((state) => {
       state.phase = 'cancelled';
       state.isSubmitting = false;
@@ -314,6 +341,83 @@ export class QrSyncController extends BaseController<
       type: QrSyncActionTypes.INIT_SYNC_SESSION,
       version: QrSyncMessageVersion.V1,
     };
+  }
+
+  #registerClientEventHandlers(client: DappClient): void {
+    client.on('session_request', (request) => {
+      this.#handleSessionRequest(request);
+    });
+
+    client.on('otp_required', (payload) => {
+      this.#handleOtpRequired(payload).catch((error) => {
+        this.#setError({
+          code: 'OTP_INVALID',
+          message:
+            error instanceof Error
+              ? error.message
+              : 'Failed to handle OTP requirement',
+          retryable: true,
+        });
+      });
+    });
+
+    client.on('connected', () => {
+      this.update((state) => {
+        state.connectionStatus = 'connected';
+        state.updatedAt = Date.now();
+      });
+    });
+
+    client.on('disconnected', () => {
+      this.#setError({
+        code: 'CHANNEL_DISCONNECTED',
+        message: 'The sync channel disconnected.',
+        retryable: true,
+      });
+    });
+
+    client.on('error', (error) => {
+      this.#setError({
+        code: 'UNKNOWN',
+        message: error.message,
+        retryable: true,
+      });
+    });
+  }
+
+  #handleSessionRequest(request: SessionRequest): void {
+    this.update((state) => {
+      state.sessionId = request.id;
+      state.qrPayload = this.#generateQrCode(request);
+      state.phase = 'displaying-qr';
+      state.connectionStatus = 'connecting';
+      state.createdAt = state.createdAt ?? Date.now();
+      state.updatedAt = Date.now();
+      state.expiresAt = request.expiresAt;
+      state.canCancel = true;
+      state.canRetry = false;
+      state.error = null;
+    });
+  }
+
+  async #handleOtpRequired(payload: OtpRequiredPayload): Promise<void> {
+    this.#otpSubmitCallback = payload.submit;
+    this.#otpCancelCallback = payload.cancel;
+
+    this.update((state) => {
+      state.phase = 'awaiting-otp-display';
+      state.otpRequired = true;
+      state.otpValidated = false;
+      state.updatedAt = Date.now();
+      state.expiresAt = payload.deadline;
+      state.error = null;
+    });
+
+    await this.grantOtpDisplay();
+  }
+
+  #generateQrCode(request: SessionRequest): string {
+    return JSON.stringify(request);
   }
 
   #assertDappClientInitialized(value: unknown): asserts value is DappClient {
