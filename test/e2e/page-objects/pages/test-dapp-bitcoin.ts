@@ -16,8 +16,7 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappBitcoin {
   private readonly bitcoinChainDisplay = {
-    css: `[data-testid="${dataTestIds.testPage.header.network}"]`,
-    value: 'bitcoin:mainnet',
+    testId: dataTestIds.testPage.header.network,
   };
 
   private readonly connectButtonSelector = {
