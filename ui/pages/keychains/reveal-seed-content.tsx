@@ -2,14 +2,14 @@ import React, { useState, useCallback } from 'react';
 import qrCode from 'qrcode-generator';
 import {
   IconName,
-  IconColor,
-  TextButton,
   Icon,
   Box,
   BoxAlignItems,
   BoxJustifyContent,
   BoxFlexDirection,
   BoxBackgroundColor,
+  Button,
+  ButtonVariant,
 } from '@metamask/design-system-react';
 import { lightTheme } from '@metamask/design-tokens';
 import { Tab, Tabs } from '../../components/ui/tabs';
@@ -137,19 +137,17 @@ export function RevealSeedContent({
             revealPhrase={onRevealPhrase}
             recoveryPhraseChipsContainerClassName="recovery-phrase-chips-container"
           />
-          <TextButton
-            onClick={phraseRevealed ? onCopy : undefined}
+          <Button
+            variant={ButtonVariant.Secondary}
+            onClick={onCopy}
             data-testid="reveal-seed-copy-button"
-            aria-disabled={!phraseRevealed}
-            className="hover:bg-transparent flex justify-center items-center w-full active:bg-transparent"
+            startAccessory={<Icon name={IconName.Copy} className="mr-2" />}
+            className="mt-4"
+            isFullWidth
+            isDisabled={!phraseRevealed}
           >
-            <Icon
-              name={IconName.Copy}
-              color={IconColor.PrimaryDefault}
-              className="mr-2"
-            />
             {t('copyToClipboard')}
-          </TextButton>
+          </Button>
         </Tab>
         <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp" className="flex-1">
           <Box
