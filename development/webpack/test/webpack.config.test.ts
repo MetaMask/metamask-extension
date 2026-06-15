@@ -464,6 +464,7 @@ inquire('long');
     assert.deepStrictEqual(manifestPlugin.options.html, [
       { directory: join('html', 'ui'), category: 'ui' },
       { directory: join('html', 'background'), category: 'background' },
+      { directory: join('html', 'other'), category: 'other' },
     ]);
 
     const htmlBundlerPlugin = instance.options.plugins.find(

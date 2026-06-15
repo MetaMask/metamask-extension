@@ -620,6 +620,7 @@ describe('ManifestPlugin', () => {
         html: [
           { directory: join('html', 'ui'), category: 'ui' },
           { directory: join('html', 'background'), category: 'background' },
+          { directory: join('html', 'other'), category: 'other' },
         ],
         ...getZipOptions(zip),
         ...(stats
@@ -645,10 +646,10 @@ describe('ManifestPlugin', () => {
         chromeSummaryAssetPath,
       );
       assert.deepStrictEqual(summary, {
-        background: 790,
-        ui: 450,
-        common: 250,
-        other: 0,
+        background: 650,
+        ui: 550,
+        common: 150,
+        other: 140,
         contentScripts: 400,
         zip: compilation.assets['chrome/extension.zip'].size(),
         timestamp: summary.timestamp,
@@ -721,7 +722,7 @@ describe('ManifestPlugin', () => {
             join(
               entrypointsStatsFixtureContext,
               'html',
-              'background',
+              'other',
               'offscreen.html',
             ),
           ],
@@ -734,10 +735,10 @@ describe('ManifestPlugin', () => {
         chromeSummaryAssetPath,
       );
       assert.deepStrictEqual(summary, {
-        background: 100,
+        background: 0,
         ui: 50,
         common: 0,
-        other: 0,
+        other: 100,
         contentScripts: 0,
         timestamp: summary.timestamp,
       });
@@ -746,12 +747,12 @@ describe('ManifestPlugin', () => {
         entrypoints: Record<string, unknown>;
       }>(compilation, chromeDebugAssetPath);
       assert.deepStrictEqual(debugArtifact.entrypoints.offscreen, {
-        categories: ['background'],
+        categories: ['other'],
         initialFiles: [{ name: 'runtime.js', size: 10 }],
         asyncFiles: [],
       });
       assert.deepStrictEqual(debugArtifact.entrypoints['offscreen.1'], {
-        categories: ['background'],
+        categories: ['other'],
         initialFiles: [
           { name: 'runtime.js', size: 10 },
           { name: 'offscreen.js', size: 20 },
@@ -1516,6 +1517,7 @@ describe('ManifestPlugin', () => {
     const html = [
       { directory: join('html', 'ui'), category: 'ui' },
       { directory: join('html', 'background'), category: 'background' },
+      { directory: join('html', 'other'), category: 'other' },
     ] as const;
 
     function mockEntrypoint(...files: string[]) {

@@ -1256,6 +1256,7 @@ function renderHtmlFile({
   const htmlFilePath = [
     `./app/html/ui/${htmlName}.html`,
     `./app/html/background/${htmlName}.html`,
+    `./app/html/other/${htmlName}.html`,
   ].find((filePath) => existsSync(filePath));
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 

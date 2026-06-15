@@ -100,6 +100,7 @@ const manifestPlugin = new ManifestPlugin({
   html: [
     { directory: join('html', 'ui'), category: 'ui' },
     { directory: join('html', 'background'), category: 'background' },
+    { directory: join('html', 'other'), category: 'other' },
   ],
   web_accessible_resources: webAccessibleResources,
   manifest_version: MANIFEST_VERSION,
