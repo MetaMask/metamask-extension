@@ -36,7 +36,6 @@ import {
 import {
   getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
-  getFirstTimeFlowType,
   getOptedIn,
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
@@ -46,7 +45,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   getCompletedOnboarding,
   getIsInitialized,
@@ -91,7 +89,6 @@ export default function CreationSuccessful() {
     getBackupAndSyncOnboardingToggleState,
   );
   const { trackEvent } = useContext(MetaMetricsContext);
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const isOptedIn = useSelector(getOptedIn);
@@ -270,26 +267,6 @@ export default function CreationSuccessful() {
       deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
       deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Interstitial;
 
-    // Track onboarding completion event
-    if (!isOnboardingCompleted) {
-      const isNewWallet =
-        firstTimeFlowType === FirstTimeFlowType.create ||
-        firstTimeFlowType === FirstTimeFlowType.socialCreate;
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type: firstTimeFlowType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: isNewWallet,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_basic_functionality_enabled: externalServicesOnboardingToggleState,
-        },
-      });
-    }
-
     await dispatch(
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
@@ -372,7 +349,6 @@ export default function CreationSuccessful() {
     isSidePanelEnabled,
     navigate,
     isFromSettingsSecurity,
-    firstTimeFlowType,
     trackEvent,
     isOptedIn,
     handleOnDoneNavigation,

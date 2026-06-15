@@ -5,10 +5,6 @@ import mockMetaMaskState from '../data/onboarding-completion-route.json';
 import { integrationTestRender } from '../../lib/render-helpers';
 import * as backgroundConnection from '../../../ui/store/background-connection';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import {
   clickElementById,
   createMockImplementation,
   waitForElementByText,
@@ -90,46 +86,15 @@ describe('Import Wallet Events', () => {
     await waitForElementByText('Your wallet is ready!');
     await clickElementById('onboarding-complete-done');
 
-    // Verify both completeOnboarding and ExtensionPinned event are called
     let completeOnboardingCall;
-    let extensionPinnedEvent;
 
     await waitFor(() => {
-      // Check for completeOnboarding call
       completeOnboardingCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'completeOnboarding',
         );
 
-      // Check for ExtensionPinned tracking event
-      extensionPinnedEvent =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
-        );
-
       expect(completeOnboardingCall?.[0]).toBe('completeOnboarding');
-      expect(extensionPinnedEvent?.[0]).toBe('trackMetaMetricsEvent');
     });
-
-    // Verify ExtensionPinned event has correct properties for import flow
-    expect(extensionPinnedEvent?.[1]).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingCompleted,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            wallet_setup_type: 'import',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_wallet: false,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_basic_functionality_enabled: true,
-          },
-        }),
-      ]),
-    );
   });
 });

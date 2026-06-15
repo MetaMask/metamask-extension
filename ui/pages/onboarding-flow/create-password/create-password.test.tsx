@@ -43,6 +43,12 @@ const getWalletSetupCompletedEvent = (mockTrackEvent: jest.Mock) => {
   )?.[0];
 };
 
+const getOnboardingCompletedEvent = (mockTrackEvent: jest.Mock) => {
+  return mockTrackEvent.mock.calls.find(
+    (args) => args[0]?.event === MetaMetricsEventName.OnboardingCompleted,
+  )?.[0];
+};
+
 const backgroundConnectionMock = new Proxy(
   {},
   {
@@ -587,6 +593,23 @@ describe('Onboarding Create Password', () => {
         },
       });
       expect(walletSetupCompletedEvent.properties).not.toHaveProperty('foo');
+
+      const onboardingCompletedEvent =
+        getOnboardingCompletedEvent(mockTrackEvent);
+      expect(onboardingCompletedEvent).toMatchObject({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          wallet_setup_type: 'new',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_wallet: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          implementation_type: 'extension',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          onboarding_type: 'seed_phrase',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          utm_source: 'newsletter',
+        },
+      });
     });
   });
 
@@ -755,6 +778,23 @@ describe('Onboarding Create Password', () => {
           utm_content: 'hero-banner',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           utm_term: 'wallet',
+        },
+      });
+
+      const onboardingCompletedEvent =
+        getOnboardingCompletedEvent(mockTrackEvent);
+      expect(onboardingCompletedEvent).toMatchObject({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          wallet_setup_type: 'import',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_wallet: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          implementation_type: 'extension',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          onboarding_type: 'seed_phrase',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          utm_source: 'partner',
         },
       });
       expect(walletSetupCompletedEvent.properties).not.toHaveProperty('foo');

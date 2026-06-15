@@ -41,6 +41,7 @@ import {
 } from '../../../store/actions';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
+import { getOnboardingCompletedAnalyticsProps } from '../../../../shared/lib/analytics/onboardingCompletedAnalytics';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CreatePasswordForm } from '../../create-password-form';
 
@@ -191,18 +192,28 @@ export default function CreatePassword({
       },
     });
 
+    const walletSetupCompletedProps = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      wallet_setup_type: 'import' as const,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      new_wallet: false,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      account_type: accountTypeForMetrics,
+      ...utmProperties,
+    };
+
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupCompleted,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        wallet_setup_type: 'import',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_wallet: false,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountTypeForMetrics,
-        ...utmProperties,
-      },
+      properties: walletSetupCompletedProps,
+    });
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingCompleted,
+      properties: getOnboardingCompletedAnalyticsProps(
+        walletSetupCompletedProps,
+        isSocialLoginFlow,
+      ),
     });
 
     if (isPasskeyFeatureAvailable) {
@@ -246,18 +257,28 @@ export default function CreatePassword({
       },
     });
 
+    const walletSetupCompletedProps = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      wallet_setup_type: 'new' as const,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      new_wallet: true,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      account_type: accountTypeForMetrics,
+      ...utmProperties,
+    };
+
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupCompleted,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        wallet_setup_type: 'new',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_wallet: true,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountTypeForMetrics,
-        ...utmProperties,
-      },
+      properties: walletSetupCompletedProps,
+    });
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingCompleted,
+      properties: getOnboardingCompletedAnalyticsProps(
+        walletSetupCompletedProps,
+        isSocialLoginFlow,
+      ),
     });
     if (isSocialLoginFlow) {
       // track analytics preference selected event for social login users
