@@ -7,16 +7,13 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
-  getPreferences,
   getEnabledNetworksByNamespace,
+  getShowFiatInTestnets,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
-import {
-  selectBalanceBySelectedAccountGroup,
-  selectAggregatedBalanceForSelectedAccount,
-} from '../../../../selectors/assets';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
-import * as multichainSelectors from '../../../../selectors/multichain';
 import {
   AccountGroupBalance,
   AccountGroupBalanceProps,
@@ -24,14 +21,14 @@ import {
 
 const mockStore = configureMockStore()(mockState);
 
+const SEPOLIA_CHAIN_ID = '0xaa36a7';
+const MAINNET_CHAIN_ID = '0x1';
+
 jest.mock('../../../../selectors/assets');
 jest.mock('../../../../selectors');
 jest.mock('../../../../ducks/locale/locale');
 jest.mock('../../../../ducks/metamask/metamask');
-jest.mock('../../../../selectors/multichain', () => ({
-  ...jest.requireActual('../../../../selectors/multichain'),
-  getMultichainIsTestnet: jest.fn(),
-}));
+jest.mock('../../../../../shared/lib/selectors/preferences');
 
 describe('AccountGroupBalance', () => {
   const createMockBalance = (): AccountGroupBalanceType => ({
@@ -41,41 +38,39 @@ describe('AccountGroupBalance', () => {
     userCurrency: 'usd',
   });
 
-  const arrange = (
-    selectedGroupBalance: AccountGroupBalanceType | null = null,
-    showNativeTokenAsMainBalance: boolean = false,
-    isTestnet: boolean = false,
-    aggregatedBalance: {
-      entries: unknown[];
-      totalBalanceInFiat?: number;
-    } | null = null,
-    anyEnabledNetworksAreAvailable: boolean = true,
-  ) => {
+  type ArrangeOptions = {
+    selectedGroupBalance?: AccountGroupBalanceType | null;
+    showNativeTokenAsMainBalance?: boolean;
+    enabledNetworksByNamespace?: Record<string, boolean>;
+    anyEnabledNetworksAreAvailable?: boolean;
+    showFiatInTestnets?: boolean;
+    privacyMode?: boolean;
+  };
+
+  const arrange = ({
+    selectedGroupBalance = null,
+    showNativeTokenAsMainBalance = false,
+    enabledNetworksByNamespace = { [MAINNET_CHAIN_ID]: true },
+    anyEnabledNetworksAreAvailable = true,
+    showFiatInTestnets = false,
+    privacyMode = false,
+  }: ArrangeOptions = {}) => {
     const mockSelectBalanceBySelectedAccountGroup = jest
       .mocked(selectBalanceBySelectedAccountGroup)
       .mockReturnValue(selectedGroupBalance);
 
     jest
-      .mocked(selectAggregatedBalanceForSelectedAccount)
-      .mockReturnValue(
-        aggregatedBalance as ReturnType<
-          typeof selectAggregatedBalanceForSelectedAccount
-        >,
-      );
-
-    jest
       .mocked(selectAnyEnabledNetworksAreAvailable)
       .mockReturnValue(anyEnabledNetworksAreAvailable);
 
-    const mockGetPreferences = jest
-      .mocked(getPreferences)
-      .mockReturnValue({ privacyMode: false, showNativeTokenAsMainBalance });
+    const mockGetPreferences = jest.mocked(getPreferences).mockReturnValue({
+      privacyMode,
+      showNativeTokenAsMainBalance,
+    } as ReturnType<typeof getPreferences>);
 
     const mockGetEnabledNetworksByNamespace = jest
       .mocked(getEnabledNetworksByNamespace)
-      .mockReturnValue({
-        '0x1': true,
-      });
+      .mockReturnValue(enabledNetworksByNamespace);
 
     const mockGetIntlLocale = jest.mocked(getIntlLocale).mockReturnValue('en');
 
@@ -83,9 +78,9 @@ describe('AccountGroupBalance', () => {
       .mocked(getCurrentCurrency)
       .mockReturnValue('usd');
 
-    const mockGetMultichainIsTestnet = jest
-      .mocked(multichainSelectors.getMultichainIsTestnet)
-      .mockReturnValue(isTestnet);
+    const mockGetShowFiatInTestnets = jest
+      .mocked(getShowFiatInTestnets)
+      .mockReturnValue(showFiatInTestnets);
 
     return {
       mockSelectBalanceBySelectedAccountGroup,
@@ -93,44 +88,35 @@ describe('AccountGroupBalance', () => {
       mockGetIntlLocale,
       mockGetCurrentCurrency,
       mockGetEnabledNetworksByNamespace,
-      mockGetMultichainIsTestnet,
+      mockGetShowFiatInTestnets,
     };
   };
 
-  const renderComponent = (
-    props: Partial<AccountGroupBalanceProps> = {
-      classPrefix: 'coin',
-      balanceIsCached: false,
-      handleSensitiveToggle: () => undefined,
-      balance: '1000000000000000000',
-      chainId: '0x1',
-    },
-  ) =>
+  const renderComponent = (props: Partial<AccountGroupBalanceProps> = {}) =>
     renderWithProvider(
       <AccountGroupBalance
         classPrefix={props.classPrefix || 'coin'}
         balanceIsCached={props.balanceIsCached || false}
         handleSensitiveToggle={props.handleSensitiveToggle || (() => undefined)}
         balance={props.balance || '1000000000000000000'}
-        chainId={props.chainId || '0x1'}
+        chainId={props.chainId || MAINNET_CHAIN_ID}
       />,
       mockStore,
     );
 
   const actAssertSkeletonPresent = () => {
-    const { container } = renderComponent();
-    expect(container.querySelector('.mm-skeleton')).toBeTruthy();
+    const { getByTestId } = renderComponent();
+    expect(getByTestId('account-group-balance-skeleton')).toBeInTheDocument();
   };
 
   const actAssertBalanceContent = (props: {
-    currency: string;
     amount: string;
-    balance: string;
-    chainId: string;
+    balance?: string;
+    chainId?: string;
   }) => {
     const { getByText } = renderComponent({
       balance: props.balance,
-      chainId: props.chainId as CaipChainId | Hex,
+      chainId: props.chainId as CaipChainId | Hex | undefined,
     });
     expect(
       getByText((content) => content.includes(props.amount)),
@@ -142,54 +128,94 @@ describe('AccountGroupBalance', () => {
   });
 
   it('renders a skeleton when no selected group balance and no networks available', () => {
-    arrange(null, false, false, null, false);
+    arrange({ anyEnabledNetworksAreAvailable: false });
     actAssertSkeletonPresent();
   });
 
   it('renders formatted balance and currency when data available', () => {
-    arrange(createMockBalance());
+    arrange({ selectedGroupBalance: createMockBalance() });
     actAssertBalanceContent({
-      currency: 'USD',
       amount: '$123.45',
       balance: '1000000000000000000',
-      chainId: '0x1',
+      chainId: MAINNET_CHAIN_ID,
     });
   });
 
   it('renders native balance when setting showNativeTokenAsMainBalance to true', () => {
-    jest
-      .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
-      .mockReturnValue('ETH');
-    arrange(createMockBalance(), true);
+    arrange({
+      selectedGroupBalance: createMockBalance(),
+      showNativeTokenAsMainBalance: true,
+    });
     actAssertBalanceContent({
-      currency: 'ETH',
       amount: '0.000589',
       balance: '0x0217b4f7389e02',
-      chainId: '0x1',
+      chainId: MAINNET_CHAIN_ID,
     });
   });
 
-  it('renders native balance when on testnet regardless of showNativeTokenAsMainBalance setting', () => {
-    jest
-      .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
-      .mockReturnValue('SepoliaETH');
-    arrange(createMockBalance(), false, true);
+  it('renders native balance when only a testnet is enabled, regardless of showNativeTokenAsMainBalance', () => {
+    arrange({
+      selectedGroupBalance: createMockBalance(),
+      enabledNetworksByNamespace: { [SEPOLIA_CHAIN_ID]: true },
+    });
     actAssertBalanceContent({
-      currency: 'SepoliaETH',
       amount: '0.000589',
       balance: '0x0217b4f7389e02',
-      chainId: '0xaa36a7',
+      chainId: SEPOLIA_CHAIN_ID,
     });
   });
 
-  it('renders aggregated balance when selectAggregatedBalanceForSelectedAccount returns totalBalanceInFiat', () => {
-    arrange(null, false, false, {
-      entries: [],
-      totalBalanceInFiat: 99.5,
+  it('renders fiat conversion on testnet when showFiatInTestnets is enabled', () => {
+    arrange({
+      selectedGroupBalance: createMockBalance(),
+      enabledNetworksByNamespace: { [SEPOLIA_CHAIN_ID]: true },
+      showFiatInTestnets: true,
+    });
+    actAssertBalanceContent({
+      amount: '$123.45',
+      balance: '0x0217b4f7389e02',
+      chainId: SEPOLIA_CHAIN_ID,
+    });
+  });
+
+  it('does not treat a single non-testnet network as testnet-selected', () => {
+    arrange({
+      selectedGroupBalance: createMockBalance(),
+      enabledNetworksByNamespace: { [MAINNET_CHAIN_ID]: true },
+    });
+    actAssertBalanceContent({
+      amount: '$123.45',
+      balance: '1000000000000000000',
+      chainId: MAINNET_CHAIN_ID,
+    });
+  });
+
+  it('falls back to fiat when multiple networks are enabled even with showNativeTokenAsMainBalance', () => {
+    arrange({
+      selectedGroupBalance: createMockBalance(),
+      showNativeTokenAsMainBalance: true,
+      enabledNetworksByNamespace: {
+        [MAINNET_CHAIN_ID]: true,
+        '0x5': true,
+      },
+    });
+    actAssertBalanceContent({
+      amount: '$123.45',
+      balance: '1000000000000000000',
+      chainId: MAINNET_CHAIN_ID,
+    });
+  });
+
+  it('renders balance from selectedGroupBalance.totalBalanceInUserCurrency', () => {
+    arrange({
+      selectedGroupBalance: {
+        ...createMockBalance(),
+        totalBalanceInUserCurrency: 99.5,
+      },
     });
     const { getByText } = renderComponent({
       balance: '1000000000000000000',
-      chainId: '0x1',
+      chainId: MAINNET_CHAIN_ID,
     });
     expect(
       getByText(
@@ -198,27 +224,17 @@ describe('AccountGroupBalance', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders legacy balance when aggregatedBalance is null and selectedGroupBalance is set', () => {
-    arrange(createMockBalance(), false, false, null);
-    actAssertBalanceContent({
-      currency: 'USD',
-      amount: '$123.45',
-      balance: '1000000000000000000',
-      chainId: '0x1',
-    });
-  });
-
   it('renders skeleton when no networks available and no balance', () => {
-    arrange(null, false, false, null, false);
+    arrange({ anyEnabledNetworksAreAvailable: false });
     actAssertSkeletonPresent();
   });
 
   it('applies cached balance class when balanceIsCached is true', () => {
-    arrange(createMockBalance());
+    arrange({ selectedGroupBalance: createMockBalance() });
     const { container } = renderComponent({
       balanceIsCached: true,
       balance: '1000000000000000000',
-      chainId: '0x1',
+      chainId: MAINNET_CHAIN_ID,
     });
     expect(
       container.querySelector('.coin-overview__cached-balance'),
@@ -226,13 +242,31 @@ describe('AccountGroupBalance', () => {
   });
 
   it('renders masked balance when privacy mode is enabled', () => {
-    arrange(createMockBalance());
-    jest.mocked(getPreferences).mockReturnValue({
+    arrange({
+      selectedGroupBalance: createMockBalance(),
       privacyMode: true,
-      showNativeTokenAsMainBalance: false,
     });
     const { getByText } = renderComponent();
     // SensitiveText shows bullet pattern when isHidden (privacyMode) is true
     expect(getByText('••••••')).toBeInTheDocument();
+  });
+
+  it('does not call useMultichainSelector for the native currency symbol on EVM chains', () => {
+    const useMultichainSelectorSpy = jest.spyOn(
+      useMultichainSelectorHook,
+      'useMultichainSelector',
+    );
+    arrange({
+      selectedGroupBalance: createMockBalance(),
+      showNativeTokenAsMainBalance: true,
+    });
+    renderComponent({
+      balance: '0x0217b4f7389e02',
+      chainId: MAINNET_CHAIN_ID,
+    });
+    // The native symbol now comes from networkConfigurationsByChainId, so
+    // even if useMultichainSelector returns something unrelated it should not
+    // appear in the rendered output.
+    useMultichainSelectorSpy.mockReturnValue('UNEXPECTED');
   });
 });

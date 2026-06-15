@@ -36,7 +36,7 @@ export default {
     docs: {
       description: {
         component:
-          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [`Box` from `@metamask/design-system-react`](https://metamask.github.io/metamask-design-system/?path=/docs/react-components-box--docs) instead. See the [Migration Guide](https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#box-component) for layout prop guidance.',
       },
     },
   },

@@ -33,7 +33,7 @@ import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { withTransactionEnvelopeTypeFixtures } from '../confirmations/helpers';
 
 const DEFAULT_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
@@ -174,6 +174,7 @@ describe('Send ETH', function () {
           },
           fixtures: new FixtureBuilderV2()
             .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+            .withEnabledNetworks({ eip155: { '0x1': true } })
             .withSnapsPrivacyWarningAlreadyShown()
             .build(),
           title: this.test?.fullTitle(),

@@ -46,8 +46,8 @@ describe('Edit Networks Permissions', function () {
         // Disconnect Mainnet
         await sitePermissionPage.editPermissionsForNetwork(['Ethereum']);
 
-        // Default Chains Connected: Linea, Base, Arbitrum, BSC, Optimism, Polygon, Solana, BTC, Tron, Sei
-        await sitePermissionPage.checkConnectedNetworksNumber(10);
+        // Default Chains Connected: Linea, Base, Arbitrum, BSC, Optimism, Polygon, Monad, Solana, BTC, Tron
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
       },
     );
   });

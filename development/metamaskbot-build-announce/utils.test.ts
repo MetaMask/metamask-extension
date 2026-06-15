@@ -1,3 +1,4 @@
+import { BENCHMARK_BUILD_TYPES } from '../../shared/constants/benchmarks';
 import {
   buildSectionWithFallback,
   postCommentWithMetamaskBot,
@@ -7,6 +8,7 @@ import {
   buildArtifactUrl,
   resolveBaseline,
   extractPresetFromArtifactName,
+  extractBrowserFromArtifactFilename,
   resolveBaselineFromArtifactName,
 } from './utils';
 import type { HistoricalBaselineReference } from './historical-comparison';
@@ -150,23 +152,27 @@ describe('postCommentWithMetamaskBot', () => {
 });
 
 describe('artifact utilities', () => {
-  it('builds combo, entry key, filename and URL', () => {
-    expect(buildCombo('chrome', 'browserify')).toBe('chrome-browserify');
-    expect(buildEntryKey('loadNewAccount', 'chrome', 'browserify')).toBe(
-      'loadNewAccount|chrome-browserify',
+  it('builds combo, entry key, filename and URL (defaults to webpack)', () => {
+    expect(buildCombo('chrome')).toBe('chrome-webpack');
+    expect(buildEntryKey('loadNewAccount', 'chrome')).toBe(
+      'loadNewAccount|chrome-webpack',
     );
     expect(
-      buildArtifactFilename('chrome', 'browserify', 'interactionUserActions'),
-    ).toBe('benchmark-chrome-browserify-interactionUserActions.json');
+      buildArtifactFilename(
+        'chrome',
+        BENCHMARK_BUILD_TYPES.WEBPACK,
+        'interactionUserActions',
+      ),
+    ).toBe('benchmark-chrome-webpack-interactionUserActions.json');
     expect(
       buildArtifactUrl(
         'https://ci.example.com',
         'chrome',
-        'browserify',
+        BENCHMARK_BUILD_TYPES.WEBPACK,
         'interactionUserActions',
       ),
     ).toBe(
-      'https://ci.example.com/benchmarks/benchmark-chrome-browserify-interactionUserActions.json',
+      'https://ci.example.com/benchmarks/benchmark-chrome-webpack-interactionUserActions.json',
     );
   });
 });
@@ -175,12 +181,12 @@ describe('extractPresetFromArtifactName', () => {
   it('extracts preset from artifact names', () => {
     expect(
       extractPresetFromArtifactName(
-        'benchmark-chrome-browserify-interactionUserActions',
+        'benchmark-chrome-webpack-interactionUserActions',
       ),
     ).toBe('interactionUserActions');
     expect(
       extractPresetFromArtifactName(
-        'benchmark-chrome-browserify-userJourneyOnboardingImport',
+        'benchmark-chrome-webpack-userJourneyOnboardingImport',
       ),
     ).toBe('userJourneyOnboardingImport');
   });
@@ -188,13 +194,34 @@ describe('extractPresetFromArtifactName', () => {
   it('maps startup presets to pageLoad', () => {
     expect(
       extractPresetFromArtifactName(
-        'benchmark-chrome-browserify-startupStandardHome',
+        'benchmark-chrome-webpack-startupStandardHome',
       ),
     ).toBe('pageLoad');
   });
 
   it('returns undefined for invalid artifact names', () => {
     expect(extractPresetFromArtifactName('invalid-name')).toBeUndefined();
+  });
+});
+
+describe('extractBrowserFromArtifactFilename', () => {
+  it('parses chrome or firefox from benchmark artifact basenames', () => {
+    expect(
+      extractBrowserFromArtifactFilename(
+        'benchmark-chrome-webpack-interactionUserActions',
+      ),
+    ).toBe('chrome');
+    expect(
+      extractBrowserFromArtifactFilename(
+        'benchmark-firefox-webpack-userJourneyOnboardingImport',
+      ),
+    ).toBe('firefox');
+  });
+
+  it('returns undefined for invalid names', () => {
+    expect(
+      extractBrowserFromArtifactFilename('not-a-benchmark'),
+    ).toBeUndefined();
   });
 });
 
@@ -212,7 +239,7 @@ describe('resolveBaseline', () => {
         p95: 1900,
       },
     },
-    'pageLoad/chrome-browserify-startupStandardHome': {
+    'pageLoad/chrome-webpack-startupStandardHome': {
       uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
     },
     'pageLoad/firefox-webpack-startupPowerUserHome': {
@@ -234,12 +261,33 @@ describe('resolveBaseline', () => {
     ).toBe(1100);
   });
 
+  it('resolves firefox user journey baseline via prefixed inner key', () => {
+    const baseline: HistoricalBaselineReference = {
+      'userJourneyOnboardingImport/firefox-webpack-onboardingImportWallet': {
+        importWalletToSocialScreen: {
+          mean: 1200,
+          stdDev: 55,
+          p75: 1500,
+          p95: 2000,
+        },
+      },
+    };
+    expect(
+      resolveBaseline(
+        baseline,
+        'userJourneyOnboardingImport',
+        'onboardingImportWallet',
+        'firefox',
+      )?.importWalletToSocialScreen.mean,
+    ).toBe(1200);
+  });
+
   it('maps startup preset to pageLoad and resolves platform-specific baseline', () => {
     expect(
       resolveBaseline(
         mockBaseline,
         'startupStandardHome',
-        'chrome-browserify-startupStandardHome',
+        'chrome-webpack-startupStandardHome',
       )?.uiStartup.mean,
     ).toBe(1400);
     expect(
@@ -259,7 +307,7 @@ describe('resolveBaseline', () => {
       resolveBaseline(
         mockBaseline,
         'startupStandardHome',
-        'firefox-browserify-startupStandardHome',
+        'firefox-webpack-startupStandardHome',
       ),
     ).toBeUndefined();
   });
@@ -270,7 +318,7 @@ describe('resolveBaselineFromArtifactName', () => {
     'interactionUserActions/loadNewAccount': {
       load_new_account: { mean: 500, p75: 540, p95: 600 },
     },
-    'pageLoad/chrome-browserify-startupStandardHome': {
+    'pageLoad/chrome-webpack-startupStandardHome': {
       uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
     },
     'userJourneyOnboardingImport/onboardingImportWallet': {
@@ -283,21 +331,21 @@ describe('resolveBaselineFromArtifactName', () => {
       resolveBaselineFromArtifactName(
         mockBaseline,
         'loadNewAccount',
-        'benchmark-chrome-browserify-interactionUserActions',
+        'benchmark-chrome-webpack-interactionUserActions',
       )?.load_new_account.mean,
     ).toBe(500);
     expect(
       resolveBaselineFromArtifactName(
         mockBaseline,
         'onboardingImportWallet',
-        'benchmark-chrome-browserify-userJourneyOnboardingImport',
+        'benchmark-chrome-webpack-userJourneyOnboardingImport',
       )?.importWalletToSocialScreen.mean,
     ).toBe(1100);
     expect(
       resolveBaselineFromArtifactName(
         mockBaseline,
-        'chrome-browserify-startupStandardHome',
-        'benchmark-chrome-browserify-startupStandardHome',
+        'chrome-webpack-startupStandardHome',
+        'benchmark-chrome-webpack-startupStandardHome',
       )?.uiStartup.mean,
     ).toBe(1400);
   });
@@ -314,110 +362,91 @@ describe('resolveBaselineFromArtifactName', () => {
       resolveBaselineFromArtifactName(
         mockBaseline,
         'unknown',
-        'benchmark-chrome-browserify-unknownPreset',
+        'benchmark-chrome-webpack-unknownPreset',
       ),
     ).toBeUndefined();
   });
 });
 
 describe('multi-platform scenarios', () => {
-  it('handles interaction on all 4 platform combos with shared baseline', () => {
+  it('handles interaction on chrome and firefox webpack with shared baseline', () => {
     const baseline: HistoricalBaselineReference = {
       'interactionUserActions/loadNewAccount': {
         load_new_account: { mean: 500, p75: 540, p95: 600 },
       },
     };
 
-    const chromeBrowserify = resolveBaselineFromArtifactName(
-      baseline,
-      'loadNewAccount',
-      'benchmark-chrome-browserify-interactionUserActions',
-    );
-    const chromeWebpack = resolveBaselineFromArtifactName(
+    const chrome = resolveBaselineFromArtifactName(
       baseline,
       'loadNewAccount',
       'benchmark-chrome-webpack-interactionUserActions',
     );
-    const firefoxBrowserify = resolveBaselineFromArtifactName(
-      baseline,
-      'loadNewAccount',
-      'benchmark-firefox-browserify-interactionUserActions',
-    );
-    const firefoxWebpack = resolveBaselineFromArtifactName(
+    const firefox = resolveBaselineFromArtifactName(
       baseline,
       'loadNewAccount',
       'benchmark-firefox-webpack-interactionUserActions',
     );
 
-    expect(chromeBrowserify).toBeDefined();
-    expect(chromeWebpack).toStrictEqual(chromeBrowserify);
-    expect(firefoxBrowserify).toStrictEqual(chromeBrowserify);
-    expect(firefoxWebpack).toStrictEqual(chromeBrowserify);
+    expect(chrome).toBeDefined();
+    expect(firefox).toStrictEqual(chrome);
   });
 
-  it('handles user journey with chrome-browserify and chrome-webpack sharing baseline', () => {
+  it('resolves user journey baseline from webpack artifact name', () => {
     const baseline: HistoricalBaselineReference = {
       'userJourneyOnboardingImport/onboardingImportWallet': {
         importWalletToSocialScreen: { mean: 1100, p75: 1400, p95: 1900 },
       },
     };
 
-    const chromeBrowserify = resolveBaselineFromArtifactName(
-      baseline,
-      'onboardingImportWallet',
-      'benchmark-chrome-browserify-userJourneyOnboardingImport',
-    );
-    const chromeWebpack = resolveBaselineFromArtifactName(
+    const resolved = resolveBaselineFromArtifactName(
       baseline,
       'onboardingImportWallet',
       'benchmark-chrome-webpack-userJourneyOnboardingImport',
     );
 
-    expect(chromeBrowserify).toBeDefined();
-    expect(chromeWebpack).toStrictEqual(chromeBrowserify);
+    expect(resolved).toBeDefined();
+    expect(resolved?.importWalletToSocialScreen.mean).toBe(1100);
   });
 
-  it('handles startup with platform-specific baselines for each of 4 combos', () => {
+  it('resolves firefox user journey baseline from artifact name', () => {
     const baseline: HistoricalBaselineReference = {
-      'pageLoad/chrome-browserify-startupStandardHome': {
-        uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
-      },
-      'pageLoad/chrome-webpack-startupStandardHome': {
-        uiStartup: { mean: 1450, p75: 1750, p95: 2150 },
-      },
-      'pageLoad/firefox-browserify-startupStandardHome': {
-        uiStartup: { mean: 1600, p75: 1900, p95: 2400 },
-      },
-      'pageLoad/firefox-webpack-startupStandardHome': {
-        uiStartup: { mean: 1650, p75: 1950, p95: 2450 },
+      'userJourneyOnboardingImport/firefox-webpack-onboardingImportWallet': {
+        importWalletToSocialScreen: { mean: 1200, p75: 1500, p95: 2000 },
       },
     };
 
-    const chromeBrowserify = resolveBaseline(
+    const resolved = resolveBaselineFromArtifactName(
       baseline,
-      'startupStandardHome',
-      'chrome-browserify-startupStandardHome',
+      'onboardingImportWallet',
+      'benchmark-firefox-webpack-userJourneyOnboardingImport',
     );
-    const chromeWebpack = resolveBaseline(
+
+    expect(resolved?.importWalletToSocialScreen.mean).toBe(1200);
+  });
+
+  it('handles startup with platform-specific baselines for chrome and firefox webpack', () => {
+    const baseline: HistoricalBaselineReference = {
+      'pageLoad/chrome-webpack-startupStandardHome': {
+        uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+      },
+      'pageLoad/firefox-webpack-startupStandardHome': {
+        uiStartup: { mean: 1600, p75: 1900, p95: 2400 },
+      },
+    };
+
+    const chrome = resolveBaseline(
       baseline,
       'startupStandardHome',
       'chrome-webpack-startupStandardHome',
     );
-    const firefoxBrowserify = resolveBaseline(
-      baseline,
-      'startupStandardHome',
-      'firefox-browserify-startupStandardHome',
-    );
-    const firefoxWebpack = resolveBaseline(
+    const firefox = resolveBaseline(
       baseline,
       'startupStandardHome',
       'firefox-webpack-startupStandardHome',
     );
 
-    expect(chromeBrowserify?.uiStartup.mean).toBe(1400);
-    expect(chromeWebpack?.uiStartup.mean).toBe(1450);
-    expect(firefoxBrowserify?.uiStartup.mean).toBe(1600);
-    expect(firefoxWebpack?.uiStartup.mean).toBe(1650);
+    expect(chrome?.uiStartup.mean).toBe(1400);
+    expect(firefox?.uiStartup.mean).toBe(1600);
   });
 });
 /* eslint-enable @typescript-eslint/naming-convention */

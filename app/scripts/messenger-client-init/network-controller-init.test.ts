@@ -234,6 +234,24 @@ describe('NetworkControllerInit', () => {
               },
             ],
           },
+          "0x8f": {
+            "blockExplorerUrls": [
+              "https://monadscan.com",
+            ],
+            "chainId": "0x8f",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "Monad",
+            "nativeCurrency": "MON",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "monad-mainnet",
+                "type": "infura",
+                "url": "https://monad-mainnet.infura.io/v3/{infuraProjectId}",
+              },
+            ],
+          },
           "0xa": {
             "blockExplorerUrls": [
               "https://optimistic.etherscan.io",

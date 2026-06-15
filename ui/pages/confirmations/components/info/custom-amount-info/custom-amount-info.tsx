@@ -30,23 +30,37 @@ import {
   PercentageButtons,
   PercentageButtonsSkeleton,
 } from '../../percentage-buttons';
+import { ReceiveRow } from '../../rows/receive-row/receive-row';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
-import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useConfirmContext } from '../../../context/confirm';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
 export type CustomAmountInfoProps = {
+  /**
+   * Optional caller-provided balance (USD) used as the source for the
+   * percentage buttons. Takes precedence over the default `payToken.balanceUsd`.
+   * Used by flows (e.g. Perps Withdraw) whose balance comes from a different
+   * source than the selected pay token.
+   */
+  balanceUsdOverride?: number;
   children?: ReactNode;
+  /**
+   * When true, focuses the input on mount and selects the value so typing replaces it
+   */
+  autoFocusAmount?: boolean;
   currency?: string;
   /**
    * When true, it prevents automatic selection of payment token based on balance and feature flags
@@ -58,14 +72,20 @@ export type CustomAmountInfoProps = {
   disablePay?: boolean;
   hasMax?: boolean;
   hidePayTokenAmount?: boolean;
+  /**
+   * When true, pre-fills the amount field with the max balance on load.
+   */
+  prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
   overrideBottomContent?: ReactNode;
   overrideCenterContent?: (amountHuman: string) => ReactNode;
 };
 
-export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
+export const CustomAmountInfo = React.memo(
   ({
+    balanceUsdOverride,
     children,
+    autoFocusAmount = false,
     currency,
     disableAutomaticToken,
     disablePay,
@@ -73,8 +93,9 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
+    prefillMaxOnLoad,
     preferredToken,
-  }) => {
+  }: CustomAmountInfoProps) => {
     useAutomaticTransactionPayToken({
       disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
       preferredToken,
@@ -82,9 +103,10 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     useTransactionPayMetrics();
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-    const { isNative: isNativePayToken } = useTransactionPayToken();
     const availableTokens = useTransactionPayAvailableTokens();
     const hasTokens = availableTokens.length > 0;
+    const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+    const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
 
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
@@ -93,7 +115,12 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
       amountHuman,
       updatePendingAmount,
       updatePendingAmountPercentage,
-    } = useTransactionCustomAmount({ currency, disableUpdate });
+    } = useTransactionCustomAmount({
+      balanceUsdOverride,
+      currency,
+      disableUpdate,
+      prefillMaxOnLoad,
+    });
 
     const handleAmountChange = useCallback(
       (value: string) => {
@@ -109,7 +136,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
       [updatePendingAmountPercentage],
     );
 
-    if (!currentConfirmation) {
+    if (!currentConfirmation || isAwaitingRequiredToken) {
       return <CustomAmountInfoSkeleton />;
     }
 
@@ -121,11 +148,12 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
         data-testid="custom-amount-info"
       >
         <CenterContainer
+          autoFocusAmount={autoFocusAmount}
           amountFiat={amountFiat}
           amountHuman={amountHuman}
           currency={currency}
           disablePay={disablePay}
-          hasMax={hasMax && !isNativePayToken}
+          hasMax={hasMax}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
           onAmountChange={handleAmountChange}
@@ -134,7 +162,14 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
         >
           {children}
         </CenterContainer>
-        {overrideBottomContent ?? <BottomContainer />}
+        <AlertMessage />
+        {overrideBottomContent ?? (
+          <BottomContainer
+            amountFiat={amountFiat}
+            disablePay={disablePay}
+            hasTokens={hasTokens}
+          />
+        )}
       </Box>
     );
   },
@@ -149,11 +184,13 @@ export function CustomAmountInfoSkeleton() {
       data-testid="custom-amount-info-skeleton"
     >
       <CenterContainerSkeleton />
+      <PayWithRowSkeleton />
     </Box>
   );
 }
 
 type CenterContainerProps = {
+  autoFocusAmount: boolean;
   amountFiat: string;
   amountHuman: string;
   children?: ReactNode;
@@ -168,6 +205,7 @@ type CenterContainerProps = {
 };
 
 function CenterContainer({
+  autoFocusAmount,
   amountFiat,
   amountHuman,
   children,
@@ -191,6 +229,7 @@ function CenterContainer({
     >
       <CustomAmount
         amountFiat={amountFiat}
+        autoFocus={autoFocusAmount}
         currency={currency}
         disabled={!hasTokens}
         onChange={onAmountChange}
@@ -209,17 +248,12 @@ function CenterContainer({
             <PayTokenAmount amountHuman={amountHuman} disabled={!hasTokens} />
           )}
           {children}
-          {disablePay !== true && hasTokens && (
-            <PayWithRow variant={ConfirmInfoRowSize.Small} />
-          )}
         </Box>
       )}
 
       {hasTokens && hasMax && (
         <PercentageButtons onPercentageClick={onPercentageClick} />
       )}
-
-      <AlertMessage />
     </Box>
   );
 }
@@ -235,27 +269,27 @@ function CenterContainerSkeleton() {
       style={{ flex: 1 }}
     >
       <CustomAmountSkeleton />
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        gap={2}
-      >
-        <PayTokenAmountSkeleton />
-        <PayWithRowSkeleton />
-      </Box>
+      <PayTokenAmountSkeleton />
       <PercentageButtonsSkeleton />
     </Box>
   );
 }
 
-function BottomContainer() {
+function BottomContainer({
+  amountFiat,
+  disablePay,
+  hasTokens,
+}: {
+  amountFiat: string;
+  disablePay?: boolean;
+  hasTokens: boolean;
+}) {
+  const t = useI18nContext();
   const isResultReady = useIsResultReady();
   const { hideResults } = useTransactionCustomAmountAlerts();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  if (!isResultReady || hideResults) {
-    return null;
-  }
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   return (
     <Box
@@ -264,9 +298,26 @@ function BottomContainer() {
       gap={2}
       paddingBottom={4}
     >
-      <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
-      <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-      <TotalRow variant={ConfirmInfoRowSize.Small} />
+      {disablePay !== true && hasTokens && <PayWithRow />}
+      {isResultReady && !hideResults && (
+        <>
+          <BridgeFeeRow
+            variant={ConfirmInfoRowSize.Small}
+            tooltipDescription={
+              isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
+            }
+          />
+          <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+          {isPerpsWithdraw ? (
+            <ReceiveRow
+              inputAmountUsd={amountFiat}
+              variant={ConfirmInfoRowSize.Small}
+            />
+          ) : (
+            <TotalRow variant={ConfirmInfoRowSize.Small} />
+          )}
+        </>
+      )}
     </Box>
   );
 }

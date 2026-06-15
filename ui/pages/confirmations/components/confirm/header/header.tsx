@@ -27,6 +27,7 @@ const CONFIRMATIONS_WITH_ALT_HEADER = [
   ...SIMPLE_HEADER_TYPES,
   TransactionType.musdClaim,
   TransactionType.perpsDeposit,
+  TransactionType.perpsWithdraw,
   TransactionType.simpleSend,
   TransactionType.shieldSubscriptionApprove,
   TransactionType.tokenMethodSafeTransferFrom,

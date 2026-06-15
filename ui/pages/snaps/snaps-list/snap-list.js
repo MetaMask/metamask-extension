@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import SnapListItem from '../../../components/app/snaps/snap-list-item';
@@ -22,7 +22,6 @@ import {
   PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getAllSnapAvailableUpdates, getSnapsList } from '../../../selectors';
-import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import {
   Box,
   BannerTip,
@@ -43,7 +42,6 @@ import { getSnapRoute } from '../../../helpers/utils/util';
 
 const SnapList = () => {
   const t = useI18nContext();
-  const settingsRef = useRef();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -60,10 +58,6 @@ const SnapList = () => {
   const onClick = (snap) => {
     navigate(getSnapRoute(snap.id));
   };
-
-  useEffect(() => {
-    handleSettingsRefs(t, t('snaps'), settingsRef);
-  }, [settingsRef, t]);
 
   const snapsList = useSelector(getSnapsList);
   const snapUpdateMap = useSelector(getAllSnapAvailableUpdates);

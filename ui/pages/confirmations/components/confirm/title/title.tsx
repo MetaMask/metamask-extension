@@ -42,6 +42,7 @@ const TRANSACTION_TYPES_HIDE_BANNER: string[] = [
   TransactionType.musdClaim,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
+  TransactionType.perpsWithdraw,
   TransactionType.predictDeposit,
   TransactionType.predictWithdraw,
 ];
@@ -268,7 +269,7 @@ export function TitleSkeleton() {
   );
 }
 
-const ConfirmTitle: React.FC = memo(() => {
+const ConfirmTitle = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();

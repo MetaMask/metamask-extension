@@ -14,6 +14,8 @@ jest.mock('../../../hooks/send/useSendTokens', () => ({
 
 const CHAIN_ID = '0x1';
 const TOKEN_ADDRESS = '0xtoken123';
+const FROM_ADDRESS = '0x123';
+const ACCOUNT_NAME = 'Account 1';
 
 const mockStore = configureMockStore([]);
 
@@ -22,8 +24,14 @@ function createMockState(includeToken = false) {
     metamask: {
       transactions: [],
       internalAccounts: {
-        accounts: {},
-        selectedAccount: '',
+        accounts: {
+          'account-1': {
+            id: 'account-1',
+            address: FROM_ADDRESS,
+            metadata: { name: ACCOUNT_NAME },
+          },
+        },
+        selectedAccount: 'account-1',
       },
       allTokens: includeToken
         ? {
@@ -72,7 +80,7 @@ function createMockTransactionMeta(
     time: Date.now(),
     type,
     txParams: {
-      from: '0x123',
+      from: FROM_ADDRESS,
       to: '0x456',
     },
     ...(includeMetamaskPay && {
@@ -208,6 +216,20 @@ describe('TransactionDetails', () => {
       expect(
         getByTestId('transaction-details-account-row'),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('summary section visibility', () => {
+    it('renders summary section for perpsDeposit transactions', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(getByTestId('transaction-details-summary')).toBeInTheDocument();
+    });
+
+    it('hides summary section for perpsWithdraw transactions', () => {
+      const { queryByTestId } = render(TransactionType.perpsWithdraw, true);
+      expect(
+        queryByTestId('transaction-details-summary'),
+      ).not.toBeInTheDocument();
     });
   });
 });

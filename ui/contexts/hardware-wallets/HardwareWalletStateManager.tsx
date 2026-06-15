@@ -2,9 +2,9 @@ import { useState, useRef, useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
-  AccountsState,
+  type AccountsState,
   getMaybeSelectedInternalAccount,
-} from '../../selectors';
+} from '../../../shared/lib/selectors/accounts';
 import {
   HardwareConnectionPermissionState,
   HardwareWalletType,

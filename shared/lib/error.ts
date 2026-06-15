@@ -32,6 +32,15 @@ export function logErrorWithMessage(error: unknown) {
   log.error(isErrorWithMessage(error) ? getErrorMessage(error) : error);
 }
 
+export function getErrorBodyMessage(body: unknown) {
+  if (!body || typeof body !== 'object' || !('message' in body)) {
+    return undefined;
+  }
+
+  const { message } = body as { message?: unknown };
+  return typeof message === 'string' ? message : undefined;
+}
+
 export enum OAuthErrorMessages {
   // Error message for Authentication Server when failed to get the auth token
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

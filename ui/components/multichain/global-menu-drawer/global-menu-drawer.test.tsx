@@ -5,18 +5,19 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   GATOR_PERMISSIONS,
+  NETWORKS_ROUTE,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 
-// eslint-disable-next-line import-x/no-restricted-paths
-const getEnvironmentType = jest.requireMock('../../../../app/scripts/lib/util')
-  .getEnvironmentType as jest.Mock;
+const getEnvironmentType = jest.requireMock(
+  '../../../../shared/lib/environment-type',
+).getEnvironmentType as jest.Mock;
 
-jest.mock('../../../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../../../app/scripts/lib/util'),
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
 }));
 
@@ -141,6 +142,32 @@ describe('GlobalMenuDrawer', () => {
     );
 
     expect(queryByTestId('global-menu-drawer')).not.toBeInTheDocument();
+  });
+
+  it('networks item navigates to the dedicated networks page', async () => {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        transactions: [],
+      },
+    });
+    const { getByTestId } = renderWithProvider(
+      <GlobalMenuDrawerWithList
+        isOpen
+        onClose={() => undefined}
+        data-testid="global-menu-drawer"
+      />,
+      store,
+      '/',
+    );
+
+    await waitFor(() => {
+      const link = getByTestId('global-menu-networks');
+      expect(link).toBeInTheDocument();
+      expect(link.getAttribute('href')).toContain(NETWORKS_ROUTE);
+      expect(link.getAttribute('href')).toContain('drawerOpen=true');
+    });
   });
 });
 

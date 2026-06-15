@@ -30,7 +30,6 @@ import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profil
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { isBeta } from '../../../shared/lib/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -63,8 +62,8 @@ import {
 import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
+import type { Preferences } from '../../../shared/types/preferences';
 import type {
-  Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
@@ -110,7 +109,6 @@ export type AppStateControllerState = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   canTrackWalletFundsObtained: boolean;
-  isRampCardClosed: boolean;
   pendingExtensionVersion: string | null;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
@@ -120,7 +118,6 @@ export type AppStateControllerState = {
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   pna25Acknowledged: boolean;
-  nftsDetectionNoticeDismissed: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
   onboardingDate: number | null;
@@ -130,16 +127,10 @@ export type AppStateControllerState = {
   productTour?: string;
   recoveryPhraseReminderHasBeenShown: boolean;
   recoveryPhraseReminderLastShown: number;
-  showAccountBanner: boolean;
-  showBetaHeader: boolean;
   showDownloadMobileAppSlide: boolean;
-  showNetworkBanner: boolean;
-  showPermissionsTour: boolean;
-  showTestnetMessageInDropdown: boolean;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
-  surveyLinkLastClickedOrClosed: number | null;
   shieldSubscriptionError: ShieldSubscriptionError | null;
   shieldEndingToastLastClickedOrClosed: number | null;
   shieldPausedToastLastClickedOrClosed: number | null;
@@ -157,6 +148,12 @@ export type AppStateControllerState = {
    * If this is set, next time default page is loaded, the redirect will be applied.
    */
   pendingRedirectRoute: PendingRedirectRoute | null;
+  /**
+   * The last visited feature route together with the timestamp it was recorded.
+   * Used by feature flows that resume a recent in-extension route after a brief
+   * close/reopen, then clear the entry once inspected.
+   */
+  lastVisitedRoute: { name: string; path: string; timestamp: number } | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -182,6 +179,12 @@ export type AppStateControllerState = {
    * Used to show specific error messages (e.g., disk space vs general error).
    */
   storageWriteErrorType: StorageWriteErrorType | null;
+
+  /**
+   * When true, unlock UI must not auto-start biometrics unlock (cross-surface).
+   * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
+   */
+  passkeyAutoUnlockSuppressed: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -279,7 +282,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   canTrackWalletFundsObtained: true,
-  isRampCardClosed: false,
   pendingExtensionVersion: null,
   lastUpdatedAt: null,
   lastUpdatedFromVersion: null,
@@ -287,7 +289,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
   pna25Acknowledged: false,
-  nftsDetectionNoticeDismissed: false,
   notificationGasPollTokens: [],
   onboardingDate: null,
   outdatedBrowserWarningLastShown: null,
@@ -296,14 +297,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   productTour: 'accountIcon',
   recoveryPhraseReminderHasBeenShown: false,
   recoveryPhraseReminderLastShown: new Date().getTime(),
-  showAccountBanner: true,
-  showBetaHeader: isBeta(),
   showDownloadMobileAppSlide: true,
-  showNetworkBanner: true,
-  showPermissionsTour: true,
-  showTestnetMessageInDropdown: true,
   slides: [],
-  surveyLinkLastClickedOrClosed: null,
   shieldSubscriptionError: null,
   shieldEndingToastLastClickedOrClosed: null,
   shieldPausedToastLastClickedOrClosed: null,
@@ -316,11 +311,13 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
   pendingRedirectRoute: null,
+  lastVisitedRoute: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
+  passkeyAutoUnlockSuppressed: false,
   ...getInitialStateOverrides(),
 });
 
@@ -412,12 +409,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: false,
   },
-  isRampCardClosed: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   pendingExtensionVersion: {
     includeInStateLogs: true,
     persist: false,
@@ -471,12 +462,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
-  },
-  nftsDetectionNoticeDismissed: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
   },
   nftsDropdownState: {
     includeInStateLogs: true,
@@ -532,41 +517,11 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  showAccountBanner: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  showBetaHeader: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   showDownloadMobileAppSlide: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
-  },
-  showNetworkBanner: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  showPermissionsTour: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  showTestnetMessageInDropdown: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
   },
   signatureSecurityAlertResponses: {
     includeInStateLogs: true,
@@ -581,12 +536,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   snapsInstallPrivacyWarningShown: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  surveyLinkLastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -670,6 +619,18 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  lastVisitedRoute: {
+    // Scrubbed from shared state logs — feature paths can reveal portfolio or
+    // activity details when a user shares a support log.
+    includeInStateLogs: false,
+    // Memory-only, like `pendingRedirectRoute` — the "brief close/reopen"
+    // the feature targets happens within the MV3 service worker's
+    // in-memory lifetime and a 5-minute TTL, so disk persistence is not
+    // needed and would leave stale paths in persisted state indefinitely.
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   pendingShieldCohort: {
     includeInStateLogs: true,
     persist: true,
@@ -707,6 +668,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   storageWriteErrorType: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  passkeyAutoUnlockSuppressed: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -759,6 +726,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setLastUpdatedAt',
   'setLastUpdatedFromVersion',
   'setLastViewedUserSurvey',
+  'setLastVisitedRoute',
   'setMusdConversionEducationSeen',
   'setNewPrivacyPolicyToastClickedOrClosed',
   'setNewPrivacyPolicyToastShownDate',
@@ -769,22 +737,15 @@ const MESSENGER_EXPOSED_METHODS = [
   'setPendingShieldCohort',
   'setPna25Acknowledged',
   'setProductTour',
-  'setRampCardClosed',
   'setRecoveryPhraseReminderHasBeenShown',
   'setRecoveryPhraseReminderLastShown',
   'setShieldEndingToastLastClickedOrClosed',
   'setShieldPausedToastLastClickedOrClosed',
   'setShieldSubscriptionError',
   'setShieldSubscriptionMetricsProps',
-  'setShowAccountBanner',
-  'setShowBetaHeader',
-  'setShowNetworkBanner',
-  'setShowPermissionsTour',
   'setShowShieldEntryModalOnce',
-  'setShowTestnetMessageInDropdown',
   'setSnapsInstallPrivacyWarningShownStatus',
   'setStorageWriteErrorType',
-  'setSurveyLinkLastClickedOrClosed',
   'setTermsOfUseLastAgreed',
   'setTrezorModel',
   'setUpdateModalLastDismissedAt',
@@ -833,6 +794,18 @@ export class AppStateController extends BaseController<
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
+
+    // Clearing an alarm does not remove the listeners, so we only need to register the listener once.
+    if (isManifestV3) {
+      this.#extension.alarms.onAlarm.addListener(
+        (alarmInfo: { name: string }) => {
+          if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
+            this.#onInactiveTimeout();
+            this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+          }
+        },
+      );
+    }
 
     this.waitingForUnlock = [];
 
@@ -950,12 +923,6 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setSurveyLinkLastClickedOrClosed(time: number): void {
-    this.update((state) => {
-      state.surveyLinkLastClickedOrClosed = time;
-    });
-  }
-
   setOnboardingDate(): void {
     this.update((state) => {
       state.onboardingDate = Date.now();
@@ -968,9 +935,14 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setRampCardClosed(): void {
+  /**
+   * Sets whether the unlock screen should suppress automatic passkey WebAuthn.
+   *
+   * @param suppressed - When true, auto passkey unlock is suppressed.
+   */
+  setPasskeyAutoUnlockSuppressed(suppressed: boolean): void {
     this.update((state) => {
-      state.isRampCardClosed = true;
+      state.passkeyAutoUnlockSuppressed = suppressed;
     });
   }
 
@@ -1209,9 +1181,9 @@ export class AppStateController extends BaseController<
     }
 
     // This is a temporary fix until we add a state migration.
-    // Due to a bug in ui/pages/settings/advanced-tab/advanced-tab.component.js,
-    // it was possible for timeoutMinutes to be saved as a string, as explained
-    // in PR 25109. `alarms.create` will fail in that case. We are
+    // Due to a historical bug in the (now-removed) legacy advanced settings
+    // tab, it was possible for timeoutMinutes to be saved as a string, as
+    // explained in PR 25109. `alarms.create` will fail in that case. We are
     // converting this to a number here to prevent that failure. Once
     // we add a migration to update the malformed state to the right type,
     // we will remove this conversion.
@@ -1222,14 +1194,6 @@ export class AppStateController extends BaseController<
         delayInMinutes: timeoutToSet,
         periodInMinutes: timeoutToSet,
       });
-      this.#extension.alarms.onAlarm.addListener(
-        (alarmInfo: { name: string }) => {
-          if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
-            this.#onInactiveTimeout();
-            this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
-          }
-        },
-      );
     } else {
       this.#timer = setTimeout(
         () => this.#onInactiveTimeout(),
@@ -1339,39 +1303,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether the testnet dismissal link should be shown in the network dropdown
-   *
-   * @param showTestnetMessageInDropdown
-   */
-  setShowTestnetMessageInDropdown(showTestnetMessageInDropdown: boolean): void {
-    this.update((state) => {
-      state.showTestnetMessageInDropdown = showTestnetMessageInDropdown;
-    });
-  }
-
-  /**
-   * Sets whether the beta notification heading on the home page
-   *
-   * @param showBetaHeader
-   */
-  setShowBetaHeader(showBetaHeader: boolean): void {
-    this.update((state) => {
-      state.showBetaHeader = showBetaHeader;
-    });
-  }
-
-  /**
-   * Sets whether the permissions tour should be shown to the user
-   *
-   * @param showPermissionsTour
-   */
-  setShowPermissionsTour(showPermissionsTour: boolean): void {
-    this.update((state) => {
-      state.showPermissionsTour = showPermissionsTour;
-    });
-  }
-
-  /**
    * Sets whether the multichain intro modal has been shown to the user
    *
    * @param hasShown - Whether the modal has been shown
@@ -1419,17 +1350,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether the Network Banner should be shown
-   *
-   * @param showNetworkBanner
-   */
-  setShowNetworkBanner(showNetworkBanner: boolean): void {
-    this.update((state) => {
-      state.showNetworkBanner = showNetworkBanner;
-    });
-  }
-
-  /**
    * Updates the network connection banner state
    *
    * @param networkConnectionBanner - The new banner state
@@ -1439,17 +1359,6 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.networkConnectionBanner = networkConnectionBanner;
-    });
-  }
-
-  /**
-   * Sets whether the Account Banner should be shown
-   *
-   * @param showAccountBanner
-   */
-  setShowAccountBanner(showAccountBanner: boolean): void {
-    this.update((state) => {
-      state.showAccountBanner = showAccountBanner;
     });
   }
 
@@ -1482,8 +1391,8 @@ export class AppStateController extends BaseController<
    */
   updateNftDropDownState(nftsDropdownState: Json): void {
     this.update((state) => {
-      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-      state.nftsDropdownState = nftsDropdownState;
+      const appState = state as unknown as AppStateControllerState;
+      appState.nftsDropdownState = nftsDropdownState;
     });
   }
 
@@ -1739,6 +1648,24 @@ export class AppStateController extends BaseController<
   setPendingRedirectRoute(route: PendingRedirectRoute | null): void {
     this.update((state) => {
       state.pendingRedirectRoute = route;
+    });
+  }
+
+  /**
+   * Records the last visited feature route with the current timestamp, or
+   * clears it. Feature UIs read this on home page mount to resume a recent
+   * route after a brief close/reopen.
+   *
+   * @param name - The feature route namespace.
+   * @param path - The route path to persist, or `null` to clear.
+   */
+  setLastVisitedRoute(name: string, path: string | null): void {
+    this.update((state) => {
+      if (path) {
+        state.lastVisitedRoute = { name, path, timestamp: Date.now() };
+      } else if (state.lastVisitedRoute?.name === name) {
+        state.lastVisitedRoute = null;
+      }
     });
   }
 

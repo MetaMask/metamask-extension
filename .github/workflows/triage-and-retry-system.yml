@@ -1,7 +1,7 @@
 # Classify and retry failed main.yml workflow runs.
 #
 # Triggered by `workflow_run` on every main.yml completion. Skips successes
-# and fork runs at the job level.
+# and cross-repo runs at the job level.
 #
 # For failures, it:
 #   1. Classifies each failed job (jobRetryable) and derives an overall
@@ -72,7 +72,7 @@ jobs:
     #
     # Pseudocode:
     #   if run.conclusion not in ['failure','cancelled'] → skip
-    #   if run.repo != run.head_repo          → skip (fork — no permissions)
+    #   if run.repo != run.head_repo          → skip (cross-repo — no permissions)
     #   if run.event == 'merge_group'         → run  (label-gated retry via PR)
     #   if run.event == 'pull_request'        → run  (label-gated retry via PR)
     #   if run.event == 'push'

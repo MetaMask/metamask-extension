@@ -40,19 +40,9 @@ class OnboardingPrivacySettingsPage {
     tag: 'p',
   };
 
-  private readonly addCustomNetworkFormMessage = {
-    text: 'Add a custom network',
-    tag: 'h4',
-  };
-
   private readonly addRpcUrlButton = {
     text: 'Add RPC URL',
     tag: 'button',
-  };
-
-  private readonly addRpcUrlDialogMessage = {
-    text: 'Add RPC URL',
-    tag: 'h4',
   };
 
   private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
@@ -121,14 +111,18 @@ class OnboardingPrivacySettingsPage {
     await this.navigateToGeneralSettings();
     console.log('Adding custom network');
     await this.driver.clickElement(this.addCustomNetworkButton);
-    await this.driver.waitForSelector(this.addCustomNetworkFormMessage);
+    await this.driver.waitForMultipleSelectors([
+      this.networkNameInput,
+      this.chainIdInput,
+      this.addRpcUrlDropDown,
+    ]);
     await this.driver.fill(this.networkNameInput, networkName);
     await this.driver.fill(this.chainIdInput, chainId.toString());
     await this.driver.fill(this.currencySymbolInput, currencySymbol);
     // Add rpc url
     await this.driver.clickElement(this.addRpcUrlDropDown);
     await this.driver.clickElement(this.addRpcUrlButton);
-    await this.driver.waitForSelector(this.addRpcUrlDialogMessage);
+    await this.driver.waitForSelector(this.rpcUrlInput);
     await this.driver.fill(this.rpcUrlInput, networkUrl);
     await this.driver.clickElement(this.confirmAddRpcUrlButton);
     await this.driver.clickElementAndWaitToDisappear(

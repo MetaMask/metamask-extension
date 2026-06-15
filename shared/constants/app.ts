@@ -181,12 +181,12 @@ export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
   showSnapAccountRedirect: 'snap_manageAccounts:showSnapAccountRedirect',
-};
+} as const;
 
 export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
   showSmartTransactionStatusPage:
     'smartTransaction:showSmartTransactionStatusPage',
-};
+} as const;
 
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',

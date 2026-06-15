@@ -1,43 +1,24 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import { Interface } from '@ethersproject/abi';
-import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { getSelectedInternalAccount } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { DeveloperButton } from '../developer-button';
 import { MAINNET_MUSD } from '../../../constants/musd';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../../hooks/useConfirmationNavigation';
-
-const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
-const erc20Interface = new Interface(ERC20_ABI);
-
-const generateERC20TransferData = (
-  recipient: Hex,
-  amount: string,
-  decimals: number,
-): Hex => {
-  const multiplier = new BigNumber(10).pow(decimals);
-  const amountRaw = new BigNumber(amount).times(multiplier);
-
-  return erc20Interface.encodeFunctionData('transfer', [
-    recipient,
-    `0x${amountRaw.toString(16)}`,
-  ]) as Hex;
-};
+import { generateERC20TransferData } from '../utils';
 
 export const MusdConversionButton = () => {
   const { navigateToTransaction } = useConfirmationNavigation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const [hasTriggered, setHasTriggered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTrigger = useCallback(async () => {
@@ -72,8 +53,6 @@ export const MusdConversionButton = () => {
         },
       );
 
-      setHasTriggered(true);
-
       navigateToTransaction(txMeta.id, {
         loader: ConfirmationLoader.CustomAmount,
       });
@@ -87,10 +66,7 @@ export const MusdConversionButton = () => {
   return (
     <DeveloperButton
       title="MUSD Conversion"
-      description="Triggers a MUSD conversion confirmation."
-      buttonLabel={isLoading ? 'Loading...' : 'Trigger'}
       onPress={handleTrigger}
-      hasTriggered={hasTriggered}
       disabled={isLoading}
     />
   );

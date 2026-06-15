@@ -60,6 +60,34 @@ describe('TransactionBreakdown', () => {
     });
   });
 
+  describe('with a typical transaction without nonce', () => {
+    it('renders properly', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          transaction={{
+            txParams: {
+              gas: '0xb72a', // 46,890
+              gasPrice: '0x930c19db', // 2,467,043,803
+              value: '0x2386f26fc10000', // 10,000,000,000,000,000
+            },
+          }}
+          primaryCurrency="-0.01 ETH"
+        />,
+        store,
+      );
+
+      expect(
+        getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
+      ).toStrictEqual([
+        // No nonce visible
+        ['Amount', '-0.01 ETH'],
+        ['Gas limit (units)', '46890'],
+        ['Gas price', '2.467043803'],
+        ['Total', '0.01011568ETH'],
+      ]);
+    });
+  });
+
   describe('with a typical EIP-1559 transaction', () => {
     it('renders properly', () => {
       const { getAllByTestId } = renderWithProvider(

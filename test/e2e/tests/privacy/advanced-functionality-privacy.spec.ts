@@ -5,6 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import {
@@ -15,15 +16,47 @@ import {
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+  // Register the chain-1 specific mock BEFORE the catch-all so it wins
+  // Mockttp's FIFO rule-matching order. The catch-all (registered after)
+  // handles all other chain IDs but must not steal chain-1 requests that
+  // the "toggle on" assertion checks.
+  const tokenListChain1Mock = await mockServer
+    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        // Must include a valid `address` field — TokenListService passes this
+        // response through buildTokenListMap which calls token.address.toLowerCase().
+        // Without a valid address the queryFn throws, TanStack Query marks the
+        // entry as failed, and every subsequent fetchTokensByChainId call
+        // re-fetches from the network instead of returning the cached result.
+        json: [
+          {
+            address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+            symbol: 'BAT',
+            decimals: 18,
+            name: 'Basic Attention Token',
+            aggregators: [],
+          },
+        ],
+      };
+    });
+
+  // The unified-assets feature prefetches token lists for all popular chains
+  // via the old token-list API regardless of the privacy toggles.
+  // Mock every chainId variant to prevent real network requests, but do not
+  // include this endpoint in the returned array so it is not subject to the
+  // "0 requests when privacy is off / 1 request when privacy is on" assertions.
+  await mockServer
+    .forGet(/https:\/\/token\.api\.cx\.metamask\.io\/tokens\/\d+/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
   return [
-    await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [{ fakedata: true }],
-        };
-      }),
+    tokenListChain1Mock,
     await mockServer
       .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
       .thenCallback(() => {
@@ -100,12 +133,19 @@ describe('MetaMask onboarding ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed();
-        await homePage.refreshErc20TokenList();
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
 
         for (const m of mockedEndpoint) {
           const mockUrl = m.toString();
           if (mockUrl.includes('chainid.network')) {
+            continue;
+          }
+          // unified-assets always prefetches /tokens/1 regardless of the
+          // privacy toggle — exclude it from the "0 requests" check here;
+          // the "toggle on" test verifies it is called when enabled.
+          if (mockUrl.includes('token\\.api\\.cx\\.metamask\\.io/tokens/1')) {
             continue;
           }
           const requests = await m.getSeenRequests();
@@ -140,7 +180,8 @@ describe('MetaMask onboarding ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
-        await homePage.refreshErc20TokenList();
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();
         await new AccountList(driver).checkPageIsLoaded();
@@ -163,19 +204,29 @@ describe('MetaMask onboarding ', function () {
             continue;
           }
 
-          // Spot-prices endpoint may be called multiple times (initial load + refresh)
+          // spot-prices may be called more than once (initial load + refresh).
           if (mockUrl.includes('spot-prices')) {
             assert.ok(
               requests.length >= 1,
               `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
             );
-          } else {
-            assert.equal(
-              requests.length,
-              1,
-              `${m} should make requests after onboarding`,
-            );
+            continue;
           }
+
+          // token api may be called more than once (initial load + mUSD added by default)
+          if (mockUrl.includes('token\\.api\\.cx\\.metamask\\.io/tokens/1')) {
+            assert.ok(
+              requests.length >= 1,
+              `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
+            );
+            continue;
+          }
+
+          assert.equal(
+            requests.length,
+            1,
+            `${m} should make requests after onboarding`,
+          );
         }
       },
     );

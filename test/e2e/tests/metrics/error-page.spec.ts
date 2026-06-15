@@ -41,7 +41,7 @@ describe('Error Page', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -81,7 +81,7 @@ describe('Error Page', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

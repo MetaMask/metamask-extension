@@ -7,6 +7,7 @@ import { setEditedNetwork } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { NetworkConnectionBanner } from './network-connection-banner';
 
 jest.mock('../../../store/actions', () => ({
@@ -114,7 +115,7 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           trackRpcUpdateFromBanner: true,
         });
-        expect(mockUseNavigate).toHaveBeenCalledWith('/settings/networks');
+        expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
       });
 
       it('creates a metrics event', () => {
@@ -230,7 +231,7 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           trackRpcUpdateFromBanner: true,
         });
-        expect(mockUseNavigate).toHaveBeenCalledWith('/settings/networks');
+        expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
       });
 
       it('creates a metrics event', () => {

@@ -3,7 +3,7 @@ import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from './i18n';
-import { SUPPORT_LINK } from './ui-utils';
+import { REINSTALL_METAMASK_RECOVERY_LINK, SUPPORT_LINK } from './ui-utils';
 import {
   maybeGetLocaleContext,
   getErrorHtml,
@@ -41,14 +41,18 @@ const enMessages: I18NMessageDict = {
   },
   somethingIsWrong: { message: 'Something is wrong.' },
   restartMetamask: { message: 'Restart MetaMask' },
-  stillGettingMessage: { message: 'Still getting this message?' },
   errorPageContactSupport: { message: 'Contact support' },
-  errorDetails: { message: 'Error details' },
   reportThisError: { message: 'Report this error' },
   errorLegalTextSummary: { message: 'Legal summary' },
   errorLegalTextFirstInfo: { message: 'First legal info' },
   errorLegalTextSecondInfo: { message: 'Second legal info' },
   errorLegalTextNoPersonalInfo: { message: 'No personal info' },
+  criticalErrorAttemptRecovery: { message: 'Attempt recovery' },
+  criticalErrorReinstallMetamask: { message: 'Reinstall MetaMask' },
+  criticalErrorStillHavingIssues: { message: 'Still having issues?' },
+  criticalErrorFooterContactSupport: {
+    message: 'If none of the above works, $1',
+  },
 };
 
 describe('Error utils Tests', function () {
@@ -193,6 +197,7 @@ describe('Error utils Tests', function () {
     it('wraps content in the critical-error container markup', () => {
       const html = getErrorHtmlBase('<p>test body</p>');
       expect(html).toContain('critical-error__container');
+      expect(html).toContain('critical-error__inner');
       expect(html).toContain('critical-error');
       expect(html).toContain('<p>test body</p>');
     });
@@ -216,9 +221,15 @@ describe('Error utils Tests', function () {
 
       expect(html).toContain(enMessages.troubleStartingTitle.message);
       expect(html).toContain(enMessages.troubleStartingMessage.message);
+      expect(html).toContain('critical-error__body');
+      expect(html).toContain('critical-error__footer-actions');
+      expect(html).toContain('width="20"');
+      expect(html).toContain('height="20"');
       expect(html).toContain(enMessages.restartMetamask.message);
-      expect(html).toContain(enMessages.stillGettingMessage.message);
-      expect(html).toContain(enMessages.errorPageContactSupport.message);
+      expect(html).toContain('If none of the above works,');
+      expect(html).toContain(
+        enMessages.errorPageContactSupport.message.toLowerCase(),
+      );
       expect(html).toContain('Test error');
     });
 
@@ -243,8 +254,8 @@ describe('Error utils Tests', function () {
       const localeContext = await maybeGetLocaleContext('en');
       const html = getErrorHtml('troubleStarting', undefined, localeContext);
 
-      expect(html).not.toContain('critical-error__footer');
-      expect(html).not.toContain(enMessages.stillGettingMessage.message);
+      expect(html).not.toContain('class="critical-error__footer"');
+      expect(html).not.toContain('If none of the above works,');
     });
 
     it('omits the error details section when error has no message', async () => {
@@ -271,6 +282,90 @@ describe('Error utils Tests', function () {
 
       expect(html).toContain('critical-error__details');
       expect(html).toContain('Something broke');
+    });
+
+    it('includes attempt recovery button when hasBackup is true', async () => {
+      jest.mocked(fetchLocale).mockResolvedValue(enMessages);
+      jest
+        .mocked(loadRelativeTimeFormatLocaleData)
+        .mockResolvedValue(undefined);
+
+      const error = new Error('Test error');
+      const localeContext = await maybeGetLocaleContext('en');
+      const html = getErrorHtml(
+        'troubleStarting',
+        error,
+        localeContext,
+        SUPPORT_LINK,
+        true,
+      );
+
+      expect(html).toContain('critical-error-restore-link');
+      expect(html).toContain(enMessages.criticalErrorAttemptRecovery.message);
+      expect(html).toContain('critical-error__button-secondary');
+    });
+
+    it('omits the attempt recovery button when hasBackup is false', async () => {
+      jest.mocked(fetchLocale).mockResolvedValue(enMessages);
+      jest
+        .mocked(loadRelativeTimeFormatLocaleData)
+        .mockResolvedValue(undefined);
+
+      const localeContext = await maybeGetLocaleContext('en');
+      const html = getErrorHtml(
+        'troubleStarting',
+        undefined,
+        localeContext,
+        SUPPORT_LINK,
+        false,
+      );
+
+      expect(html).not.toContain('critical-error-restore-link');
+      expect(html).not.toContain(
+        enMessages.criticalErrorAttemptRecovery.message,
+      );
+    });
+
+    it('always renders the reinstall MetaMask button with the SRP recovery link', async () => {
+      jest.mocked(fetchLocale).mockResolvedValue(enMessages);
+      jest
+        .mocked(loadRelativeTimeFormatLocaleData)
+        .mockResolvedValue(undefined);
+
+      const localeContext = await maybeGetLocaleContext('en');
+      const html = getErrorHtml(
+        'troubleStarting',
+        undefined,
+        localeContext,
+        SUPPORT_LINK,
+        false,
+      );
+
+      expect(html).toContain('critical-error-reinstall-link');
+      expect(html).toContain(enMessages.criticalErrorReinstallMetamask.message);
+      expect(html).toContain(REINSTALL_METAMASK_RECOVERY_LINK);
+      expect(html).toContain('target="_blank"');
+      expect(html).toContain('rel="noopener noreferrer"');
+      expect(html).toContain('critical-error__external-icon');
+    });
+
+    it('renders the "Still having issues?" divider above the secondary actions', async () => {
+      jest.mocked(fetchLocale).mockResolvedValue(enMessages);
+      jest
+        .mocked(loadRelativeTimeFormatLocaleData)
+        .mockResolvedValue(undefined);
+
+      const localeContext = await maybeGetLocaleContext('en');
+      const html = getErrorHtml(
+        'troubleStarting',
+        undefined,
+        localeContext,
+        SUPPORT_LINK,
+        false,
+      );
+
+      expect(html).toContain('critical-error__divider');
+      expect(html).toContain(enMessages.criticalErrorStillHavingIssues.message);
     });
   });
 });

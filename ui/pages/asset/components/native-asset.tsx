@@ -7,9 +7,9 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getRpcPrefsForCurrentProvider,
-  getSelectedInternalAccount,
   getNativeCurrencyForChain,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getProviderConfig } from '../../../../shared/lib/selectors/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';

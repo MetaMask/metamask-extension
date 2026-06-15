@@ -20,6 +20,7 @@ import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
+  PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import {
   PERPS_EVENT_PROPERTY,
@@ -41,6 +42,7 @@ import { submitRequestToBackground } from '../../../../store/background-connecti
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position, PerpsBackgroundResult } from '../types';
 import {
   normalizeTpslPrices,
@@ -52,13 +54,24 @@ import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  isStopLossSafeFromLiquidation,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
+  getStopLossLiquidationErrorDirection,
 } from '../utils/tpslValidation';
+import {
+  applyDefaultStopLossSign,
+  isSignedDecimalInput,
+} from '../utils/tpslInput';
 
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [5, 10, 25, 50];
+
+const formatSignedRoePercent = (value: number): string => {
+  const formatted = formatRoePercent(value);
+  return value > 0 && formatted !== '0' ? `+${formatted}` : formatted;
+};
 
 export type UpdateTPSLSubmitState = {
   onSubmit: () => void;
@@ -86,15 +99,16 @@ export type UpdateTPSLModalContentProps = {
  * @param options0.onClose
  * @param options0.onSubmitStateChange
  */
-export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
+export const UpdateTPSLModalContent = ({
   position,
   currentPrice,
   onClose,
   onSubmitStateChange,
-}) => {
+}: UpdateTPSLModalContentProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const { isEligible } = usePerpsEligibility();
+  const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: position.symbol,
@@ -119,6 +133,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   // Exact preset percent values, kept until the user manually edits a field
   const [tpPresetPercent, setTpPresetPercent] = useState<string | null>(null);
   const [slPresetPercent, setSlPresetPercent] = useState<string | null>(null);
+  const tpPercentInputRef = useRef<HTMLInputElement | null>(null);
+  const slPercentInputRef = useRef<HTMLInputElement | null>(null);
+  const pendingPercentSelectRef = useRef<'tp' | 'sl' | null>(null);
 
   const entryPriceForEdit = useMemo(() => {
     if (position?.entryPrice) {
@@ -139,10 +156,30 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     return Number.parseFloat(position.size) >= 0 ? 'long' : 'short';
   }, [position]);
 
-  const formatEditPrice = useCallback(
-    (value: number): string => value.toFixed(2),
-    [],
-  );
+  const liquidationPrice = useMemo(() => {
+    if (!position.liquidationPrice) {
+      return null;
+    }
+    const parsed = Number.parseFloat(
+      position.liquidationPrice.replaceAll(',', ''),
+    );
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  }, [position.liquidationPrice]);
+
+  // Presets populate the input with a raw numeric string (the `$` renders as a
+  // sibling icon). Use PRICE_RANGES_UNIVERSAL so BTC collapses to no decimals
+  // ("78975") while PUMP keeps 6 ("0.001824") — matches mobile's preset output
+  // and avoids the `.toFixed(2)` behaviour that produced "$0.00" for sub-cent
+  // assets and 2-decimal BTC prices.
+  const formatEditPrice = useCallback((value: number): string => {
+    if (!Number.isFinite(value) || value <= 0) {
+      return '';
+    }
+    return formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }).replace(
+      /[$,]/gu,
+      '',
+    );
+  }, []);
 
   /**
    * Convert a target price to a signed RoE% for display.
@@ -163,7 +200,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       const diff = priceNum - entryPriceForEdit;
       const percentChange = (diff / entryPriceForEdit) * leverageForEdit * 100;
       // For long: positive when price > entry (profit). For short: negate (profit when price < entry).
-      return formatRoePercent(
+      return formatSignedRoePercent(
         positionDirection === 'long' ? percentChange : -percentChange,
       );
     },
@@ -246,11 +283,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     () =>
       Boolean(
         editingTpPrice.replaceAll(',', '').trim() &&
-          currentPrice > 0 &&
-          !isValidTakeProfitPrice(editingTpPrice, {
-            currentPrice,
-            direction: positionDirection,
-          }),
+        currentPrice > 0 &&
+        !isValidTakeProfitPrice(editingTpPrice, {
+          currentPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingTpPrice, currentPrice, positionDirection],
   );
@@ -259,16 +296,42 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     () =>
       Boolean(
         editingSlPrice.replaceAll(',', '').trim() &&
-          currentPrice > 0 &&
-          !isValidStopLossPrice(editingSlPrice, {
-            currentPrice,
-            direction: positionDirection,
-          }),
+        currentPrice > 0 &&
+        !isValidStopLossPrice(editingSlPrice, {
+          currentPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingSlPrice, currentPrice, positionDirection],
   );
 
-  const hasInvalidTPSL = isTpInvalid || isSlInvalid;
+  const isSlLiquidationInvalid = useMemo(
+    () =>
+      Boolean(
+        editingSlPrice.trim() &&
+        !isStopLossSafeFromLiquidation(editingSlPrice, {
+          liquidationPrice,
+          direction: positionDirection,
+        }),
+      ),
+    [editingSlPrice, liquidationPrice, positionDirection],
+  );
+
+  const hasInvalidTPSL = isTpInvalid || isSlInvalid || isSlLiquidationInvalid;
+
+  useLayoutEffect(() => {
+    const pendingInput = pendingPercentSelectRef.current;
+    if (!pendingInput) {
+      return;
+    }
+
+    pendingPercentSelectRef.current = null;
+    const input =
+      pendingInput === 'tp'
+        ? tpPercentInputRef.current
+        : slPercentInputRef.current;
+    input?.select();
+  });
 
   useEffect(() => {
     return () => {
@@ -283,7 +346,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       setEditingTpPrice(newPrice);
       // Preserve the exact preset value for display — avoids round-trip drift
       // caused by the price being rounded to 2 decimal places
-      const presetStr = String(percent);
+      const presetStr = formatSignedRoePercent(percent);
       setRawTpPercent(presetStr);
       setTpPresetPercent(presetStr);
     },
@@ -306,7 +369,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const handleTpPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[+-]?\d*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || isSignedDecimalInput(value)) {
         setRawTpPercent(value);
         setTpPresetPercent(null);
         const numValue = Number.parseFloat(value);
@@ -322,6 +385,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   const handleTpPercentFocus = useCallback(() => {
+    pendingPercentSelectRef.current = 'tp';
     setRawTpPercent(tpPresetPercent ?? editingTpPercent);
     setIsTpPercentFocused(true);
   }, [tpPresetPercent, editingTpPercent]);
@@ -334,8 +398,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleSlPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      if (value === '' || /^[+-]?\d*(?:\.\d*)?$/u.test(value)) {
+      const value = applyDefaultStopLossSign(event.target.value, rawSlPercent);
+      if (value === '' || isSignedDecimalInput(value)) {
         setRawSlPercent(value);
         setSlPresetPercent(null);
         const numValue = Number.parseFloat(value);
@@ -347,10 +411,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         }
       }
     },
-    [percentToPriceForEdit],
+    [percentToPriceForEdit, rawSlPercent],
   );
 
   const handleSlPercentFocus = useCallback(() => {
+    pendingPercentSelectRef.current = 'sl';
     setRawSlPercent(slPresetPercent ?? editingSlPercent);
     setIsSlPercentFocused(true);
   }, [slPresetPercent, editingSlPercent]);
@@ -380,119 +445,123 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [editingSlPrice, formatEditPrice]);
 
   const handleSave = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!position) {
-      return;
-    }
-    setIsSaving(true);
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!position) {
+        return;
+      }
+      setIsSaving(true);
 
-    const { takeProfitPrice: cleanTpPrice, stopLossPrice: cleanSlPrice } =
-      normalizeTpslPrices({
-        takeProfitPrice: editingTpPrice,
-        stopLossPrice: editingSlPrice,
-      });
+      const { takeProfitPrice: cleanTpPrice, stopLossPrice: cleanSlPrice } =
+        normalizeTpslPrices({
+          takeProfitPrice: editingTpPrice,
+          stopLossPrice: editingSlPrice,
+        });
 
-    try {
-      const result = await submitRequestToBackground<PerpsBackgroundResult>(
-        'perpsUpdatePositionTPSL',
-        [
-          {
-            symbol: position.symbol,
-            takeProfitPrice: cleanTpPrice,
-            stopLossPrice: cleanSlPrice,
-          },
-        ],
-      );
-      const derivedTpslType = deriveTpslType({
-        takeProfitPrice: cleanTpPrice,
-        stopLossPrice: cleanSlPrice,
-        hasExistingTpsl: Boolean(
-          position.takeProfitPrice || position.stopLossPrice,
-        ),
-      });
+      try {
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsUpdatePositionTPSL',
+          [
+            {
+              symbol: position.symbol,
+              takeProfitPrice: cleanTpPrice,
+              stopLossPrice: cleanSlPrice,
+            },
+          ],
+        );
+        const derivedTpslType = deriveTpslType({
+          takeProfitPrice: cleanTpPrice,
+          stopLossPrice: cleanSlPrice,
+          hasExistingTpsl: Boolean(
+            position.takeProfitPrice || position.stopLossPrice,
+          ),
+        });
 
-      if (!result.success) {
-        const failMessage = result.error || 'Failed to update TP/SL';
+        if (!result.success) {
+          const failMessage = result.error || 'Failed to update TP/SL';
+          track(MetaMetricsEventName.PerpsRiskManagement, {
+            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+            [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
+            [PERPS_EVENT_PROPERTY.SIZE]: position.size,
+          });
+          track(MetaMetricsEventName.PerpsError, {
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+          });
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+            description: failMessage,
+          });
+          return;
+        }
         track(MetaMetricsEventName.PerpsRiskManagement, {
           [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
           [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
           [PERPS_EVENT_PROPERTY.SIZE]: position.size,
         });
+        const streamManager = getPerpsStreamManager();
+        streamManager.setOptimisticTPSL(
+          position.symbol,
+          cleanTpPrice,
+          cleanSlPrice,
+        );
+        const currentPositions = streamManager.positions.getCachedData();
+        const optimisticallyUpdatedPositions = currentPositions.map((p) =>
+          p.symbol === position.symbol
+            ? {
+                ...p,
+                takeProfitPrice: cleanTpPrice,
+                stopLossPrice: cleanSlPrice,
+              }
+            : p,
+        );
+        streamManager.positions.pushData(optimisticallyUpdatedPositions);
+
+        setTimeout(async () => {
+          try {
+            const freshPositions = await submitRequestToBackground<
+              PerpsPosition[]
+            >('perpsGetPositions', [{ skipCache: true }]);
+            streamManager.pushPositionsWithOverrides(freshPositions);
+          } catch (e) {
+            console.warn('[Perps] Delayed TP/SL refetch failed:', e);
+          }
+        }, 2500);
+
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
+        });
+        onClose();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'An unknown error occurred';
         track(MetaMetricsEventName.PerpsError, {
           [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_FAILED,
-          description: failMessage,
+          description: errorMessage,
         });
-        return;
-      }
-      track(MetaMetricsEventName.PerpsRiskManagement, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
-        [PERPS_EVENT_PROPERTY.SIZE]: position.size,
-      });
-      const streamManager = getPerpsStreamManager();
-      streamManager.setOptimisticTPSL(
-        position.symbol,
-        cleanTpPrice,
-        cleanSlPrice,
-      );
-      const currentPositions = streamManager.positions.getCachedData();
-      const optimisticallyUpdatedPositions = currentPositions.map((p) =>
-        p.symbol === position.symbol
-          ? {
-              ...p,
-              takeProfitPrice: cleanTpPrice,
-              stopLossPrice: cleanSlPrice,
-            }
-          : p,
-      );
-      streamManager.positions.pushData(optimisticallyUpdatedPositions);
-
-      setTimeout(async () => {
-        try {
-          const freshPositions = await submitRequestToBackground<
-            PerpsPosition[]
-          >('perpsGetPositions', [{ skipCache: true }]);
-          streamManager.pushPositionsWithOverrides(freshPositions);
-        } catch (e) {
-          console.warn('[Perps] Delayed TP/SL refetch failed:', e);
+      } finally {
+        if (isMountedRef.current) {
+          setIsSaving(false);
         }
-      }, 2500);
-
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
-      });
-      onClose();
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-      });
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.UPDATE_FAILED,
-        description: errorMessage,
-      });
-    } finally {
-      if (isMountedRef.current) {
-        setIsSaving(false);
       }
-    }
+    });
   }, [
     editingSlPrice,
     editingTpPrice,
+    gate,
     isEligible,
     onClose,
     position,
@@ -500,14 +569,34 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     track,
   ]);
 
+  const isSubmitDisabled = isSaving || hasInvalidTPSL;
+
   useLayoutEffect(() => {
     onSubmitStateChange?.({
       onSubmit: handleSave,
       isSaving,
-      submitDisabled: isSaving || hasInvalidTPSL,
+      submitDisabled: isSubmitDisabled,
       submitButtonTitle: undefined,
     });
-  }, [onSubmitStateChange, handleSave, isSaving, hasInvalidTPSL, t]);
+  }, [onSubmitStateChange, handleSave, isSaving, isSubmitDisabled, t]);
+
+  const handleInputEnterKey = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (
+        event.key !== 'Enter' ||
+        event.shiftKey ||
+        event.nativeEvent.isComposing ||
+        isSubmitDisabled
+      ) {
+        return;
+      }
+      event.preventDefault();
+      handleSave().catch(() => {
+        // Errors are surfaced via the perps toast system.
+      });
+    },
+    [handleSave, isSubmitDisabled],
+  );
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -556,6 +645,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
                   setTpPresetPercent(null);
                 }
               }}
+              onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+                event.target.select()
+              }
               onBlur={handleTpPriceBlur}
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
@@ -563,6 +655,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              autoFocus
+              testId="perps-update-tpsl-tp-price-input"
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -590,6 +685,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-tp-percent-input"
+              inputRef={tpPercentInputRef}
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               endAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -639,7 +737,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           </Text>
         )}
       </Box>
-
       {/* Stop Loss */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text
@@ -685,6 +782,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
                   setSlPresetPercent(null);
                 }
               }}
+              onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+                event.target.select()
+              }
               onBlur={handleSlPriceBlur}
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
@@ -692,6 +792,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-sl-price-input"
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -719,6 +821,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-sl-percent-input"
+              inputRef={slPercentInputRef}
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               endAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -755,16 +860,20 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             </Text>
           </Box>
         )}
-        {isSlInvalid && (
+        {(isSlInvalid || isSlLiquidationInvalid) && (
           <Text
             variant={TextVariant.BodyXs}
             color={TextColor.ErrorDefault}
             data-testid="sl-validation-error"
           >
-            {t('perpsStopLossInvalidPrice', [
-              getStopLossErrorDirection(positionDirection),
-              'current',
-            ])}
+            {isSlInvalid
+              ? t('perpsStopLossInvalidPrice', [
+                  getStopLossErrorDirection(positionDirection),
+                  'current',
+                ])
+              : t('perpsStopLossInvalidLiquidationPrice', [
+                  getStopLossLiquidationErrorDirection(positionDirection),
+                ])}
           </Text>
         )}
       </Box>

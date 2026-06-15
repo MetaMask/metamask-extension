@@ -1,9 +1,14 @@
 import React from 'react';
 
-import { Text } from '../../../../../components/component-library';
-import { TextColor } from '../../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../../../components/component-library';
+import {
+  Display,
+  FlexWrap,
+  TextColor,
+} from '../../../../../helpers/constants/design-system';
 import { MusdConversionButton } from '../musd-conversion-button';
 import { PerpsDepositButton } from '../perps-deposit-button';
+import { PerpsWithdrawButton } from '../perps-withdraw-button';
 
 export const ConfirmationsDeveloperOptions = () => {
   return (
@@ -19,12 +24,20 @@ export const ConfirmationsDeveloperOptions = () => {
         color={TextColor.textAlternative}
         paddingTop={4}
       >
-        Example Confirmations
+        Test Confirmations
       </Text>
-      <div className="settings-page__content-padded">
-        <MusdConversionButton />
+      <Box
+        display={Display.Flex}
+        flexWrap={FlexWrap.Wrap}
+        gap={2}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingTop={4}
+      >
         <PerpsDepositButton />
-      </div>
+        <PerpsWithdrawButton />
+        <MusdConversionButton />
+      </Box>
     </>
   );
 };

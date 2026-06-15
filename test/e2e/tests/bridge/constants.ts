@@ -55,7 +55,7 @@ export const LOCATOR = {
     `[data-testid="import-tokens-modal-${suffix}"]`,
 };
 
-export const ETH_CONVERSION_RATE_USD = 3010;
+export const ETH_CONVERSION_RATE_USD = 1;
 export const MOCK_CURRENCY_RATES = {
   currencyRates: {
     ETH: {
@@ -65,6 +65,42 @@ export const MOCK_CURRENCY_RATES = {
     },
   },
 };
+
+const ETH_ASSET_PRICE_ENTRY = (ethConversionRate: number) => ({
+  allTimeHigh: 4946.05,
+  allTimeLow: 0.432979,
+  assetPriceType: 'fungible' as const,
+  circulatingSupply: 120691953.6332311,
+  dilutedMarketCap: 254092339264,
+  high1d: 2200.03,
+  id: 'ethereum',
+  lastUpdated: 1773438429871,
+  low1d: 2056.83,
+  marketCap: 254092339264,
+  marketCapPercentChange1d: 2.18596,
+  price: ethConversionRate,
+  priceChange1d: 43.82,
+  pricePercentChange14d: 9.421731338592206,
+  pricePercentChange1d: 2.126621077867312,
+  pricePercentChange1h: -0.3841700831496128,
+  pricePercentChange1y: 13.959581118344246,
+  pricePercentChange200d: -51.8482496460765,
+  pricePercentChange30d: 7.7834713430167195,
+  pricePercentChange7d: 6.25337717882139,
+  totalVolume: 29988506301,
+  usdPrice: ethConversionRate,
+});
+
+export const getMockAssetsPrice = (
+  ethConversionRate: number = ETH_CONVERSION_RATE_USD,
+) => ({
+  'eip155:1/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  'eip155:59144/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  'eip155:8453/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  'eip155:42161/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+});
+
+export const MOCK_ASSETS_PRICE = getMockAssetsPrice();
 
 export const TOP_ASSETS_API_LINEA_MOCK_RESULT = [
   {
@@ -144,6 +180,12 @@ export const GET_QUOTE_INVALID_RESPONSE = [
         totalFromAmountUsd: '0.9913',
         totalToAmountUsd: '0.6160',
         priceImpact: '0.3785937657621305',
+      },
+      priceData: {
+        totalFromAmountUsd: '0.9913',
+        totalToAmountUsd: '0.6160',
+        priceImpact: '0.3785937657621305',
+        totalFeeAmountUsd: '0.3753',
       },
     },
     trade: {
@@ -668,6 +710,12 @@ export const MOCK_BRIDGE_ETH_TO_ETH_LINEA = [
         totalToAmountUsd: '2043.9300',
         priceImpact: '0.005828070462159734',
       },
+      priceData: {
+        totalFromAmountUsd: '2055.9120',
+        totalToAmountUsd: '2043.9300',
+        priceImpact: '0.005828070462159734',
+        totalFeeAmountUsd: '11.982',
+      },
     },
     trade: {
       chainId: 1,
@@ -816,6 +864,12 @@ export const MOCK_BRIDGE_NATIVE_L2_TO_MAINNET = [
         totalToAmountUsd: '1558.7284',
         priceImpact: '0.0014556687898987402',
       },
+      priceData: {
+        totalFromAmountUsd: '1561.0007',
+        totalToAmountUsd: '1558.7284',
+        priceImpact: '0.0014556687898987402',
+        totalFeeAmountUsd: '2.2723',
+      },
     },
     trade: {
       chainId: 59144,
@@ -963,6 +1017,12 @@ export const MOCK_BRIDGE_NATIVE_L2_TO_L2 = [
         totalFromAmountUsd: '1561.8333',
         totalToAmountUsd: '1556.7553',
         priceImpact: '0.0032513072938065634',
+      },
+      priceData: {
+        totalFromAmountUsd: '1561.8333',
+        totalToAmountUsd: '1556.7553',
+        priceImpact: '0.0032513072938065634',
+        totalFeeAmountUsd: '5.078',
       },
     },
     trade: {
@@ -1203,6 +1263,12 @@ export const MOCK_BRIDGE_DAI_L2_TO_L2 = [
         totalFromAmountUsd: '9.9120',
         totalToAmountUsd: '9.9041',
         priceImpact: '0.000797013720742648',
+      },
+      priceData: {
+        totalFromAmountUsd: '9.9120',
+        totalToAmountUsd: '9.9041',
+        priceImpact: '0.000797013720742648',
+        totalFeeAmountUsd: '0.0079',
       },
     },
     approval: {
@@ -1467,6 +1533,12 @@ export const MOCK_BRIDGE_DAI_L2_TO_MAINNET = [
         totalToAmountUsd: '9.6693',
         priceImpact: '0.024485472154963783',
       },
+      priceData: {
+        totalFromAmountUsd: '9.9120',
+        totalToAmountUsd: '9.6693',
+        priceImpact: '0.024485472154963783',
+        totalFeeAmountUsd: '0.2427',
+      },
     },
     approval: {
       chainId: 59144,
@@ -1638,6 +1710,12 @@ export const MOCK_BRIDGE_ETH_TO_WETH_LINEA = [
         totalFromAmountUsd: '44452.4206',
         totalToAmountUsd: '44371.7199',
         priceImpact: '0.0018154399447934955',
+      },
+      priceData: {
+        totalFromAmountUsd: '44452.4206',
+        totalToAmountUsd: '44371.7199',
+        priceImpact: '0.0018154399447934955',
+        totalFeeAmountUsd: '80.7007',
       },
     },
     trade: {
@@ -1919,6 +1997,12 @@ export const MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM = [
         totalFromAmountUsd: '1643.4330',
         totalToAmountUsd: '1642.1685',
         priceImpact: '0.0007694259516512071',
+      },
+      priceData: {
+        totalFromAmountUsd: '1643.4330',
+        totalToAmountUsd: '1642.1685',
+        priceImpact: '0.0007694259516512071',
+        totalFeeAmountUsd: '1.2645',
       },
     },
     trade: {
@@ -2203,6 +2287,12 @@ export const MOCK_BRIDGE_DAI_TO_ETH_LINEA = [
         totalFromAmountUsd: '24.7813',
         totalToAmountUsd: '24.8720',
         priceImpact: '-0.003660017836029515',
+      },
+      priceData: {
+        totalFromAmountUsd: '24.7813',
+        totalToAmountUsd: '24.8720',
+        priceImpact: '-0.003660017836029515',
+        totalFeeAmountUsd: '-0.0907',
       },
     },
     approval: {
@@ -2588,6 +2678,12 @@ export const MOCK_BRIDGE_USDC_TO_DAI_LINEA = [
         totalFromAmountUsd: '9.9124',
         totalToAmountUsd: '9.8991',
         priceImpact: '0.0013417537629634802',
+      },
+      priceData: {
+        totalFromAmountUsd: '9.9124',
+        totalToAmountUsd: '9.8991',
+        priceImpact: '0.0013417537629634802',
+        totalFeeAmountUsd: '0.0133',
       },
     },
     approval: {

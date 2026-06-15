@@ -19,17 +19,18 @@ jest.mock('fs', () => ({
 }));
 
 function makeBenchmarkResults(
+  metricId: string,
   overrides: Partial<BenchmarkResults> = {},
 ): BenchmarkResults {
   return {
     testTitle: 'test',
     persona: 'standard',
-    mean: { uiStartup: 1500 },
-    min: { uiStartup: 1000 },
-    max: { uiStartup: 2000 },
-    stdDev: { uiStartup: 200 },
-    p75: { uiStartup: 1800 },
-    p95: { uiStartup: 2200 },
+    mean: { [metricId]: 1500 },
+    min: { [metricId]: 1000 },
+    max: { [metricId]: 2000 },
+    stdDev: { [metricId]: 200 },
+    p75: { [metricId]: 1800 },
+    p95: { [metricId]: 2200 },
     ...overrides,
   };
 }
@@ -47,13 +48,16 @@ describe('compare-benchmarks', () => {
     it('passes when results are within thresholds', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
-            onboardingImportWallet: makeBenchmarkResults({
-              p75: { importWalletToSocialScreen: 1500 },
-              p95: { importWalletToSocialScreen: 2000 },
-              mean: { importWalletToSocialScreen: 1200 },
-            }),
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 1500 },
+                p95: { importWalletToSocialScreen: 2000 },
+                mean: { importWalletToSocialScreen: 1200 },
+              },
+            ),
           },
         },
       ];
@@ -66,30 +70,34 @@ describe('compare-benchmarks', () => {
     it('sets source from artifact filename', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
-            onboardingImportWallet: makeBenchmarkResults({
-              p75: { importWalletToSocialScreen: 1500 },
-              p95: { importWalletToSocialScreen: 2000 },
-              mean: { importWalletToSocialScreen: 1200 },
-            }),
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 1500 },
+                p95: { importWalletToSocialScreen: 2000 },
+                mean: { importWalletToSocialScreen: 1200 },
+              },
+            ),
           },
         },
       ];
 
       const result = runComparison(benchmarks, {});
-      expect(result.comparisons[0].source).toBe('chrome-browserify');
+      expect(result.comparisons[0].source).toBe('chrome-webpack');
     });
 
-    it('fails when p75 exceeds fail threshold', () => {
+    it('fails when an allowlisted metric exceeds its fail threshold', () => {
+      // startupStandardHome.uiStartup IS in GATED_METRICS — fail breach blocks.
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-browserify-startupStandardHome',
           data: {
-            onboardingImportWallet: makeBenchmarkResults({
-              p75: { importWalletToSocialScreen: 99999 },
-              p95: { importWalletToSocialScreen: 99999 },
-              mean: { importWalletToSocialScreen: 99999 },
+            startupStandardHome: makeBenchmarkResults('uiStartup', {
+              p75: { uiStartup: 99999 },
+              p95: { uiStartup: 99999 },
+              mean: { uiStartup: 99999 },
             }),
           },
         },
@@ -97,18 +105,52 @@ describe('compare-benchmarks', () => {
 
       const result = runComparison(benchmarks, {});
       expect(result.anyFailed).toBe(true);
+      expect(result.comparisons[0].absoluteFailed).toBe(true);
+    });
+
+    it('does not fail when a non-allowlisted metric exceeds its fail threshold', () => {
+      // onboardingImportWallet.importWalletToSocialScreen is NOT in GATED_METRICS —
+      // fail breach is downgraded to warn and does not affect anyFailed.
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
+          data: {
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 99999 },
+                p95: { importWalletToSocialScreen: 99999 },
+                mean: { importWalletToSocialScreen: 99999 },
+              },
+            ),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      expect(result.anyFailed).toBe(false);
+      expect(result.comparisons[0].absoluteFailed).toBe(false);
+      expect(
+        result.comparisons[0].absoluteViolations.every(
+          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+        ),
+      ).toBe(true);
+      expect(result.comparisons[0].hasWarning).toBe(true);
     });
 
     it('includes relative metrics when baseline is available', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
-            onboardingImportWallet: makeBenchmarkResults({
-              p75: { importWalletToSocialScreen: 1500 },
-              p95: { importWalletToSocialScreen: 2000 },
-              mean: { importWalletToSocialScreen: 1200 },
-            }),
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 1500 },
+                p95: { importWalletToSocialScreen: 2000 },
+                mean: { importWalletToSocialScreen: 1200 },
+              },
+            ),
           },
         },
       ];
@@ -142,9 +184,9 @@ describe('compare-benchmarks', () => {
     it('resolves page-load baseline for startup benchmarks', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-startupStandardHome',
+          name: 'benchmark-chrome-webpack-startupStandardHome',
           data: {
-            startupStandardHome: makeBenchmarkResults({
+            startupStandardHome: makeBenchmarkResults('uiStartup', {
               p75: { uiStartup: 1800 },
               p95: { uiStartup: 2200 },
               mean: { uiStartup: 1500 },
@@ -172,12 +214,115 @@ describe('compare-benchmarks', () => {
       ).toBe(1700);
     });
 
+    it('applies CV-adaptive widening when the derived CV is in the adaptive band', () => {
+      const originalCI = process.env.CI;
+      process.env.CI = 'true';
+      try {
+        // startupPowerUserHome.uiStartup: warn=4000, fail=4700, ciMultiplier=2.0.
+        // mean=3000, stdDev=1200 → CV=40 → adjustment=1.2.
+        // Effective fail = 4700 × 2.0 × 1.2 = 11280; p75=12000 exceeds it.
+        const benchmarks = [
+          {
+            name: 'benchmark-chrome-webpack-startupPowerUserHome',
+            data: {
+              startupPowerUserHome: makeBenchmarkResults('uiStartup', {
+                persona: 'powerUser',
+                mean: { uiStartup: 3000 },
+                stdDev: { uiStartup: 1200 },
+                p75: { uiStartup: 12000 },
+                p95: { uiStartup: 12000 },
+              }),
+            },
+          },
+        ];
+
+        const result = runComparison(benchmarks, {});
+        const violation = result.comparisons[0].absoluteViolations.find(
+          (v) => v.metricId === 'uiStartup' && v.percentile === 'p75',
+        );
+        expect(violation).toBeDefined();
+        // CV widening (cvAdjustment, threshold) is recorded by
+        // validateResultThresholds before gating; the gating policy then
+        // downgrades severity since startupPowerUserHome.uiStartup is not
+        // allowlisted, so anyFailed stays false.
+        expect(violation?.cvAdjustment).toBeCloseTo(1.2);
+        expect(violation?.threshold).toBeCloseTo(11280);
+        expect(violation?.severity).toBe(THRESHOLD_SEVERITY.Warn);
+        expect(result.anyFailed).toBe(false);
+      } finally {
+        process.env.CI = originalCI;
+      }
+    });
+
+    it('does not record cvAdjustment when the derived CV is outside the adaptive band', () => {
+      const originalCI = process.env.CI;
+      process.env.CI = 'true';
+      try {
+        // mean=3000, stdDev=300 → CV=10 — below the 25% floor, no adjustment.
+        const benchmarks = [
+          {
+            name: 'benchmark-chrome-webpack-startupPowerUserHome',
+            data: {
+              startupPowerUserHome: makeBenchmarkResults('uiStartup', {
+                persona: 'powerUser',
+                mean: { uiStartup: 3000 },
+                stdDev: { uiStartup: 300 },
+                p75: { uiStartup: 12000 },
+                p95: { uiStartup: 12000 },
+              }),
+            },
+          },
+        ];
+
+        const result = runComparison(benchmarks, {});
+        const violation = result.comparisons[0].absoluteViolations.find(
+          (v) => v.metricId === 'uiStartup' && v.percentile === 'p75',
+        );
+        expect(violation).toBeDefined();
+        expect(violation?.cvAdjustment).toBeUndefined();
+      } finally {
+        process.env.CI = originalCI;
+      }
+    });
+
+    it('routes non-allowlisted breach into the WARN section of printReport', () => {
+      // End-to-end: runComparison + printReport. A non-gated fail should
+      // surface in WARN, not FAIL, and not change the overall PASS verdict.
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          data: {
+            onboardingImportWallet: makeBenchmarkResults(
+              'importWalletToSocialScreen',
+              {
+                p75: { importWalletToSocialScreen: 99999 },
+                p95: { importWalletToSocialScreen: 99999 },
+                mean: { importWalletToSocialScreen: 99999 },
+              },
+            ),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      try {
+        printReport(result);
+        const allCalls = consoleSpy.mock.calls.flat().join('\n');
+        expect(allCalls).toContain('WARN  onboardingImportWallet');
+        expect(allCalls).not.toMatch(/FAIL\s+onboardingImportWallet/u);
+        expect(allCalls).toContain('PASS — all benchmarks within constant');
+      } finally {
+        consoleSpy.mockRestore();
+      }
+    });
+
     it('skips entries with no matching threshold config', () => {
       const benchmarks = [
         {
           name: 'unknown-benchmark',
           data: {
-            'unknown-benchmark': makeBenchmarkResults(),
+            'unknown-benchmark': makeBenchmarkResults('uiStartup'),
           },
         },
       ];
@@ -189,7 +334,7 @@ describe('compare-benchmarks', () => {
     it('skips entries from failed benchmark runs (missing p75/p95)', () => {
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-startupStandardHome',
+          name: 'benchmark-chrome-webpack-startupStandardHome',
           data: {
             startupStandardHome: { error: 'Browser crashed' } as never,
           },
@@ -298,7 +443,7 @@ describe('printReport', () => {
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
-          source: 'chrome-browserify',
+          source: 'chrome-webpack',
           absoluteFailed: false,
         }),
       ],
@@ -308,7 +453,7 @@ describe('printReport', () => {
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
     expect(allCalls).toContain('1 benchmarks within thresholds');
     expect(allCalls).toContain('loadNewAccount');
-    expect(allCalls).toContain('chrome-browserify');
+    expect(allCalls).toContain('chrome-webpack');
   });
 
   it('shows failing comparison with source label and FAIL prefix', () => {
@@ -347,7 +492,7 @@ describe('printReport', () => {
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
-          source: 'chrome-browserify',
+          source: 'chrome-webpack',
           relativeMetrics: [
             {
               metric: 'uiStartup',
@@ -367,7 +512,7 @@ describe('printReport', () => {
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
     expect(allCalls).toContain('1 benchmarks within thresholds');
-    expect(allCalls).toContain('standardHome: chrome-browserify');
+    expect(allCalls).toContain('standardHome: chrome-webpack');
     expect(allCalls).not.toContain('[Show logs]');
   });
 
@@ -382,7 +527,7 @@ describe('printReport', () => {
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
-          source: 'chrome-browserify',
+          source: 'chrome-webpack',
           absoluteFailed: true,
           absoluteViolations: [
             {
@@ -399,7 +544,7 @@ describe('printReport', () => {
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
-    expect(allCalls).toContain('FAIL  standardHome [chrome-browserify]');
+    expect(allCalls).toContain('FAIL  standardHome [chrome-webpack]');
     expect(allCalls).toContain('uiStartup');
     expect(allCalls).toContain(SEV.Regression.icon);
   });
@@ -440,11 +585,11 @@ describe('printReport', () => {
       comparisons: [
         makeComparison({
           benchmarkName: 'startupStandardHome',
-          source: 'chrome-browserify',
+          source: 'chrome-webpack',
         }),
         makeComparison({
           benchmarkName: 'startupStandardHome',
-          source: 'firefox-browserify',
+          source: 'firefox-webpack',
         }),
       ],
       anyFailed: false,
@@ -453,7 +598,7 @@ describe('printReport', () => {
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
     expect(allCalls).toContain('2 benchmarks within thresholds');
     expect(allCalls).toContain(
-      'startupStandardHome: chrome-browserify, firefox-browserify',
+      'startupStandardHome: chrome-webpack, firefox-webpack',
     );
   });
 });

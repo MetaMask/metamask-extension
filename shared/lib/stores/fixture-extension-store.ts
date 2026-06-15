@@ -1,14 +1,33 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import getFetchWithTimeout from '../fetch-with-timeout';
+import { getManifestFlags } from '../manifestFlags';
 import ExtensionStore from './extension-store';
 import type { MetaMaskStorageStructure } from './base-store';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
 const FIXTURE_SERVER_HOST = 'localhost';
-const FIXTURE_SERVER_PORT = 12345;
-const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}/state.json`;
+const DEFAULT_FIXTURE_SERVER_PORT = 12345;
+
+function resolveFixtureServerPort(): number {
+  try {
+    const flags = getManifestFlags();
+    const port = flags.testing?.fixtureServerPort;
+
+    if (typeof port === 'number' && port > 0 && port <= 65535) {
+      return port;
+    }
+  } catch {
+    // Defense-in-depth for early extension/service-worker initialization.
+  }
+
+  return DEFAULT_FIXTURE_SERVER_PORT;
+}
+
+function getFixtureServerUrl(): string {
+  return `http://${FIXTURE_SERVER_HOST}:${resolveFixtureServerPort()}/state.json`;
+}
 
 /**
  * Derived class of ExtensionStore that initializes the store using the fixture server.
@@ -60,7 +79,7 @@ export class FixtureExtensionStore extends ExtensionStore {
    */
   async #init() {
     try {
-      const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
+      const response = await fetchWithTimeout(getFixtureServerUrl());
 
       if (response.ok) {
         const state = await response.json();

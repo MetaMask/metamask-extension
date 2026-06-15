@@ -168,9 +168,6 @@
   "networks": {
     "message": "नेटवर्क"
   },
-  "newAccount": {
-    "message": "नया खाता"
-  },
   "newAccountNumberName": {
     "message": "नया खाता $1",
     "description": "Default name of next account to be created on create account screen"
@@ -216,9 +213,6 @@
   "required": {
     "message": "आवश्यक"
   },
-  "revealSeedWords": {
-    "message": "बीज शब्द प्रकट करें"
-  },
   "revealSeedWordsWarning": {
     "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -246,9 +240,6 @@
   },
   "stateLogs": {
     "message": "स्थिति संदेश"
-  },
-  "stateLogsDescription": {
-    "message": "स्थिति संदेश में आपका सार्वजनिक खाता, पतों और भेजे गए लेनदेन, होते हैं।"
   },
   "supportCenter": {
     "message": "हमारे सहायता केंद्र पर जाएं"

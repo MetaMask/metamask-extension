@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars -- ESLint is confused here */
 /* global jest */
 import React, { useMemo, useState } from 'react';
-import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
@@ -17,6 +16,13 @@ import {
 } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
+import {
+  LegacyRouteMessengerProvider,
+  RouteMessengerContext,
+} from '../../ui/contexts/route-messenger';
+import { UIMessengerProvider } from '../../ui/contexts/ui-messenger';
+import { MetaMaskTestReduxProvider } from './redux-test-provider';
+import { createMockUIMessenger } from './mock-ui-messenger';
 
 // Re-export en messages for tests that need direct access
 export const en = enLocaleMessages;
@@ -31,6 +37,13 @@ const createMockMetaMetricsContext = (
   onboardingParentContext: { current: null },
 });
 
+/**
+ * @param {object} props
+ * @param {string} [props.currentLocale]
+ * @param {object} [props.current]
+ * @param {object} [props.en]
+ * @param {import('react').ReactNode} [props.children]
+ */
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
 
@@ -49,16 +62,23 @@ I18nProvider.propTypes = {
   currentLocale: PropTypes.string,
   current: PropTypes.object,
   en: PropTypes.object,
-  children: PropTypes.node,
 };
 
 I18nProvider.defaultProps = {
   children: undefined,
 };
 
+/**
+ * @param {object} [options]
+ * @param {string[]} [options.initialEntries]
+ * @param {import('redux').Store} [options.store]
+ * @param {string} [options.routePath]
+ * @returns {import('react').FC<{ children?: import('react').ReactNode }>}
+ */
 export function createMemoryRouterWrapper(options = {}) {
   const { initialEntries = ['/'], store, routePath = '*' } = options;
 
+  /** @param {{ children?: import('react').ReactNode }} props */
   function Wrapper({ children }) {
     const router = createMemoryRouter(
       [
@@ -77,12 +97,14 @@ export function createMemoryRouterWrapper(options = {}) {
       />
     );
 
-    return store ? <Provider store={store}>{container}</Provider> : container;
+    return store ? (
+      <MetaMaskTestReduxProvider store={store}>
+        {container}
+      </MetaMaskTestReduxProvider>
+    ) : (
+      container
+    );
   }
-
-  Wrapper.propTypes = {
-    children: PropTypes.node,
-  };
 
   return Wrapper;
 }
@@ -91,6 +113,8 @@ export function createProviderWrapper(
   store,
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
+  uiMessenger = createMockUIMessenger(),
+  routeMessenger = null,
 ) {
   const mockMetaMetricsContext =
     createMockMetaMetricsContext(getMockTrackEvent);
@@ -105,17 +129,27 @@ export function createProviderWrapper(
   });
 
   function Wrapper({ children }) {
+    const content = routeMessenger ? (
+      <RouteMessengerContext.Provider value={routeMessenger}>
+        <LegacyRouteMessengerProvider>{children}</LegacyRouteMessengerProvider>
+      </RouteMessengerContext.Provider>
+    ) : (
+      children
+    );
+
     return (
       <MemoryRouter>
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
-            <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-              <LegacyMetaMetricsProvider>
-                <QueryClientProvider client={queryClient}>
-                  {children}
-                </QueryClientProvider>
-              </LegacyMetaMetricsProvider>
-            </MetaMetricsContext.Provider>
+            <UIMessengerProvider value={uiMessenger}>
+              <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+                <LegacyMetaMetricsProvider>
+                  <QueryClientProvider client={queryClient}>
+                    {content}
+                  </QueryClientProvider>
+                </LegacyMetaMetricsProvider>
+              </MetaMetricsContext.Provider>
+            </UIMessengerProvider>
           </LegacyI18nProvider>
         </I18nProvider>
       </MemoryRouter>
@@ -134,11 +168,15 @@ export function renderWithProvider(
   pathname = '/',
   renderer = render,
   getMockTrackEvent,
+  uiMessenger = createMockUIMessenger(),
+  routeMessenger = null,
 ) {
   const wrapper = createProviderWrapper(
     store,
     pathname,
     getMockTrackEvent ?? (() => jest.fn().mockResolvedValue(undefined)),
+    uiMessenger,
+    routeMessenger,
   );
 
   return renderer(component, { wrapper });
@@ -150,13 +188,17 @@ export function renderHookWithProvider(
   pathname = '/',
   Container,
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
+  uiMessenger = createMockUIMessenger(),
+  routeMessenger = null,
 ) {
-  const store = state ? configureStore(state) : undefined;
+  const store = configureStore(state ?? {});
 
   const ProviderWrapper = createProviderWrapper(
     store,
     pathname,
     getMockTrackEvent,
+    uiMessenger,
+    routeMessenger,
   );
 
   const wrapper = Container
@@ -187,7 +229,9 @@ export function renderHookWithProvider(
  * @param [pathname] - The initial pathname for the history.
  * @param [Container] - An optional container component.
  * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
- * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
+ * @param {UIMessenger} [uiMessenger] - An optional mock UI messenger instance.
+ * @param {RouteMessenger | null} [routeMessenger] - An optional mock route messenger instance. If not provided, the RouteMessengerContext will not be included in the provider tree.
+ * @returns {RenderHookResult & { history: History, store: ReturnType<import('../../ui/store/store').default> }} The result of the rendered hook, the history object, and the store.
  */
 export const renderHookWithProviderTyped = (
   hook,
@@ -195,8 +239,18 @@ export const renderHookWithProviderTyped = (
   pathname = '/',
   Container,
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
+  uiMessenger = createMockUIMessenger(),
+  routeMessenger = null,
 ) =>
-  renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent);
+  renderHookWithProvider(
+    hook,
+    state,
+    pathname,
+    Container,
+    getMockTrackEvent,
+    uiMessenger,
+    routeMessenger,
+  );
 
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (

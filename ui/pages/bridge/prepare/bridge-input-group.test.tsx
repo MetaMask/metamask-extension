@@ -3,7 +3,7 @@ import {
   RequestStatus,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { CaipAssetType } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -378,7 +378,7 @@ describe('BridgeInputGroup', () => {
       undefined,
       getFromChains,
       false,
-      { expectedDefaultToken: 'ETH', expectedNetworkCount: 7 },
+      { expectedDefaultToken: 'ETH', expectedNetworkCount: 6 },
     ],
     [
       'destination',
@@ -390,7 +390,7 @@ describe('BridgeInputGroup', () => {
       },
       getToChains,
       true,
-      { expectedDefaultToken: 'mUSD', expectedNetworkCount: 8 },
+      { expectedDefaultToken: 'mUSD', expectedNetworkCount: 7 },
     ],
   ])(
     'should render %s networks',
@@ -416,6 +416,7 @@ describe('BridgeInputGroup', () => {
           enabledNetworkMap,
         },
         featureFlagOverrides: {
+          extensionUxNetworkManagement: true,
           bridgeConfig: {
             chainRanking: [
               { chainId: MultichainNetworks.SOLANA },
@@ -457,20 +458,29 @@ describe('BridgeInputGroup', () => {
       });
 
       expect(networkPickerPopover).toMatchSnapshot();
-      expect(
-        networkPickerPopover.getElementsByTagName('p').length,
-      ).toStrictEqual(expectedNetworkCount);
 
-      await act(async () => {
-        await userEvent.click(
-          networkPickerPopover.getElementsByTagName('p')[1],
-        );
-      });
+      const networkItems = screen.getAllByTestId(
+        /bridge-network-picker-popover-item-/u,
+      );
+      expect(networkItems).toHaveLength(expectedNetworkCount);
+
+      const solanaNetworkItem = screen.getByTestId(
+        'network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+      // `mousedown` reproduces the real-browser sequence: the asset picker's
+      // outside-click handler runs on `mousedown` (before `click`) and must not
+      // close the asset picker when selecting a network.
+      fireEvent.mouseDown(solanaNetworkItem);
+      fireEvent.click(solanaNetworkItem);
       await waitFor(() => {
-        expect(networkPickerPopover).not.toBeVisible();
+        // The asset picker stays open; only the network picker closes.
+        expect(getByTestId('bridge-asset-picker-modal')).toBeVisible();
+        expect(
+          screen.queryByTestId('bridge-network-picker-popover'),
+        ).not.toBeInTheDocument();
         expect(mockUsePopularTokens.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',
@@ -484,6 +494,8 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'SOL',
                 tokenFiatAmount: 210.8493,
+                isVerified: undefined,
+                securityData: undefined,
               },
               {
                 accountType: 'solana:data-account',
@@ -498,14 +510,16 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'USDC',
                 tokenFiatAmount: 2.04284978478,
+                isVerified: undefined,
+                securityData: undefined,
               },
             ],
-            chainIds: new Set(['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']),
+            fetchTokens: expect.any(Function),
           }),
         ]);
         expect(mockUseTokenSearchResults.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',

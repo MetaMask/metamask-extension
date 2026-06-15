@@ -12,8 +12,12 @@ import {
   BridgeStatusControllerStateChangeEvent,
 } from '@metamask/bridge-status-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { GasFeeControllerFetchGasFeeEstimatesAction } from '@metamask/gas-fee-controller';
 import {
+  KeyringControllerGetKeyringForAccountAction,
+  KeyringControllerGetStateAction,
   KeyringControllerSignEip7702AuthorizationAction,
+  KeyringControllerSignTransactionAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import {
@@ -25,11 +29,17 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetNetworkClientRegistryAction,
+  NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
+import {
+  SmartTransactionsControllerGetFeesAction,
+  SmartTransactionsControllerSmartTransactionEvent,
+  SmartTransactionsControllerSubmitSignedTransactionsAction,
+} from '@metamask/smart-transactions-controller';
 import { SubscriptionControllerActions } from '@metamask/subscription-controller';
 import {
   TransactionControllerAddTransactionAction,
@@ -53,34 +63,27 @@ import {
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import {
+  TransactionPayControllerGetDelegationTransactionAction,
   TransactionPayControllerGetStateAction,
   TransactionPayControllerGetStrategyAction,
 } from '@metamask/transaction-pay-controller';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
+import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
 import { SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
-
-type AllowedActions = MessengerActions<TransactionControllerMessenger>;
-
-type AllowedEvents = MessengerEvents<TransactionControllerMessenger>;
-
-export type TransactionControllerInitMessenger = ReturnType<
-  typeof getTransactionControllerInitMessenger
->;
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export function getTransactionControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-): TransactionControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'TransactionController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<TransactionControllerMessenger>,
+    MessengerEvents<TransactionControllerMessenger>
+  >,
+) {
+  const controllerMessenger: TransactionControllerMessenger = new Messenger({
     namespace: 'TransactionController',
     parent: messenger,
   });
@@ -90,9 +93,15 @@ export function getTransactionControllerMessenger(
       'AccountsController:getSelectedAccount',
       'AccountsController:getState',
       `ApprovalController:addRequest`,
+      'GasFeeController:fetchGasFeeEstimates',
+      'KeyringController:getState',
       'KeyringController:signEip7702Authorization',
+      'KeyringController:signTransaction',
       'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getEIP1559Compatibility',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkClientRegistry',
+      'NetworkController:getState',
       'RemoteFeatureFlagController:getState',
     ],
     events: [
@@ -106,24 +115,38 @@ export function getTransactionControllerMessenger(
   return controllerMessenger;
 }
 
+export type TransactionControllerInitMessenger = ReturnType<
+  typeof getTransactionControllerInitMessenger
+>;
+
 type InitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
   | AccountTrackerControllerGetStateAction
   | ApprovalControllerActions
   | AppStateControllerGetStateAction
+  | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | BridgeStatusControllerActions
   | CurrencyRateControllerActions
   | DelegationControllerSignDelegationAction
+  | GasFeeControllerFetchGasFeeEstimatesAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
+  | KeyringControllerGetKeyringForAccountAction
+  | KeyringControllerGetStateAction
   | KeyringControllerSignEip7702AuthorizationAction
+  | KeyringControllerSignTransactionAction
   | KeyringControllerSignTypedMessageAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkClientRegistryAction
+  | NetworkControllerGetStateAction
+  | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
+  | SmartTransactionsControllerGetFeesAction
+  | SmartTransactionsControllerSubmitSignedTransactionsAction
   | SubscriptionControllerActions
   | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | TransactionControllerAddTransactionAction
@@ -133,6 +156,7 @@ type InitMessengerActions =
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
+  | TransactionPayControllerGetDelegationTransactionAction
   | TransactionPayControllerGetStateAction
   | TransactionPayControllerGetStrategyAction;
 
@@ -189,6 +213,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
       'AppStateController:getState',
+      'AppStateController:setDefaultHomeActiveTabName',
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
@@ -196,12 +221,18 @@ export function getTransactionControllerInitMessenger(
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
+      'KeyringController:getKeyringForAccount',
+      'KeyringController:getState',
       'KeyringController:signEip7702Authorization',
       'KeyringController:signTypedMessage',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getEIP1559Compatibility',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkClientRegistry',
+      'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
+      'SmartTransactionsController:getFees',
+      'SmartTransactionsController:submitSignedTransactions',
       'SubscriptionController:getSubscriptionByProduct',
       'SubscriptionService:submitSubscriptionSponsorshipIntent',
       'TransactionController:addTransaction',
@@ -211,6 +242,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
+      'TransactionPayController:getDelegationTransaction',
       'TransactionPayController:getState',
       'TransactionPayController:getStrategy',
     ],

@@ -51,7 +51,6 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           .build(),
         manifestFlags: {
           testing: {
-            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },

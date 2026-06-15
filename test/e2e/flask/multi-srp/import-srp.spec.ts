@@ -6,16 +6,16 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WALLET_PASSWORD as testPassword } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
+import {
+  importAdditionalSecretRecoveryPhrase,
+  SECOND_TEST_E2E_SRP,
+} from '../../page-objects/flows/multi-srp.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import {
-  SECOND_TEST_E2E_SRP,
-  mockActiveNetworks,
-  withMultiSrp,
-} from './common-multi-srp';
+import { mockActiveNetworks } from './common-multi-srp';
 
 const TEST_SRP_WORDS_FOR_UI_TEST = [
   'ghost',
@@ -34,12 +34,15 @@ const TEST_SRP_WORDS_FOR_UI_TEST = [
 
 describe('Multi SRP - Import SRP', function (this: Suite) {
   it('successfully imports a new srp', async function () {
-    await withMultiSrp(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockActiveNetworks,
       },
-      async (driver: Driver) => {
+      async ({ driver }) => {
+        await login(driver);
+        await importAdditionalSecretRecoveryPhrase(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkAccountBelongsToSrp('Account 1', 2);
       },
@@ -47,12 +50,15 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
   });
 
   it('successfully imports a new srp and it matches the srp imported', async function () {
-    await withMultiSrp(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockActiveNetworks,
       },
-      async (driver: Driver) => {
+      async ({ driver }) => {
+        await login(driver);
+        await importAdditionalSecretRecoveryPhrase(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);

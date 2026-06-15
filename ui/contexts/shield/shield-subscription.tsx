@@ -29,7 +29,7 @@ import {
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { captureException } from '../../../shared/lib/sentry';
@@ -68,7 +68,9 @@ export const useShieldSubscriptionContext = () => {
  * @param props - Component props
  * @param props.children - Child elements to render
  */
-export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
+export const ShieldSubscriptionProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),

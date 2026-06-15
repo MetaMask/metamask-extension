@@ -21,12 +21,14 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-balance-dropdown-withdraw',
   };
 
-  private readonly perpsBalanceDropdown = {
-    testId: 'perps-balance-dropdown',
+  private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
+
+  private readonly geoBlockModalDismiss = {
+    testId: 'perps-geo-block-modal-dismiss',
   };
 
-  private readonly perpsView = {
-    testId: 'perps-view',
+  private readonly perpsBalanceDropdown = {
+    testId: 'perps-balance-dropdown',
   };
 
   private readonly perpsExploreMarketsRow = {
@@ -51,6 +53,22 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly perpsTutorialModal = { testId: 'perps-tutorial-modal' };
 
+  private readonly perpsView = {
+    testId: 'perps-view',
+  };
+
+  private readonly perpsRecentActivityEmpty = {
+    testId: 'perps-recent-activity-empty',
+  };
+
+  private readonly perpsWatchlist = { testId: 'perps-watchlist' };
+
+  private readonly perpsWatchlistMarket = (symbol: string) => {
+    return {
+      testId: `perps-watchlist-${symbol}`,
+    };
+  };
+
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
   /**
@@ -58,10 +76,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * The main Perps tab shows PerpsView (balance dropdown, positions, explore).
    */
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.perpsView,
-      this.perpsBalanceDropdown,
-    ]);
+    await this.driver.waitForMultipleSelectors(
+      [this.perpsView, this.perpsBalanceDropdown],
+      { timeout: 20000 },
+    );
   }
 
   /**
@@ -89,7 +107,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Requires at least one perps transaction so the non-empty list and See All are shown.
+   * Shown for both the populated list header and the empty-state header.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
@@ -137,6 +155,13 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
+   * Waits for the "Explore markets" row to be visible on the Perps home.
+   */
+  async waitForExploreMarketsRow(): Promise<void> {
+    await this.driver.waitForSelector(this.perpsExploreMarketsRow);
+  }
+
+  /**
    * Waits until the number of position cards equals `expectedCount` (uses waitUntil to avoid race conditions).
    *
    * @param expectedCount - Expected number of position cards.
@@ -163,5 +188,66 @@ export class PerpsHomePage extends PerpsPositionsBase {
    */
   async waitForRecentActivitySection(): Promise<void> {
     await this.driver.waitForSelector(this.perpsRecentActivity);
+  }
+
+  /**
+   * Dismisses the geo-block modal by clicking the "Got it" button.
+   */
+  async dismissGeoBlockModal(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.geoBlockModalDismiss);
+  }
+
+  /**
+   * Waits for the geo-block modal to be visible.
+   * The modal appears when an ineligible (geo-blocked) user attempts a restricted action.
+   */
+  async waitForGeoBlockModal(): Promise<void> {
+    await this.driver.waitForSelector(this.geoBlockModal);
+  }
+
+  /**
+   * Waits for the geo-block modal to be absent (dismissed or not yet triggered).
+   */
+  async waitForGeoBlockModalDismissed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.geoBlockModal);
+  }
+
+  /**
+   * Waits for the empty activity state to be visible.
+   * Shown when the user has no perps transaction history.
+   */
+  async waitForEmptyActivitySection(): Promise<void> {
+    await this.driver.waitForSelector(this.perpsRecentActivityEmpty);
+  }
+
+  /**
+   * Waits for a specific market to appear in the watchlist section.
+   *
+   * @param symbol - Market symbol, e.g. 'ETH'.
+   */
+  async waitForWatchlistMarket(symbol: string): Promise<void> {
+    await this.driver.waitForSelector(this.perpsWatchlistMarket(symbol));
+  }
+
+  /**
+   * Asserts that a market is NOT present in the watchlist section.
+   *
+   * @param symbol - Market symbol, e.g. 'ETH'.
+   */
+  async checkMarketNotInWatchlist(symbol: string): Promise<void> {
+    await this.driver.assertElementNotPresent(
+      this.perpsWatchlistMarket(symbol),
+      { waitAtLeastGuard: 1000 },
+    );
+  }
+
+  /**
+   * Asserts that the watchlist section is completely absent from the DOM.
+   * The section renders null when there are no watched markets.
+   */
+  async checkWatchlistSectionGone(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.perpsWatchlist, {
+      waitAtLeastGuard: 1000,
+    });
   }
 }

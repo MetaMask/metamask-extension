@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { getRemoteFeatureFlags } from '../remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 /**
  * Get the state of the `rwaTokensEnabled` remote feature flag.

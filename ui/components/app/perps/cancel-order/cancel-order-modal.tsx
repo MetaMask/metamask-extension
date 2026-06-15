@@ -28,8 +28,11 @@ import {
   ModalBody,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
+import {
+  formatPerpsFiatMinimal,
+  formatPerpsFiatUniversal,
+} from '../utils/formatPerpsDisplayPrice';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
@@ -60,13 +63,12 @@ export type CancelOrderModalProps = {
  * @param options0.onClose - Callback to close the modal
  * @param options0.order - The order to display and potentially cancel
  */
-export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
+export const CancelOrderModal = ({
   isOpen,
   onClose,
   order,
-}) => {
+}: CancelOrderModalProps) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const currentLocale = useSelector(getCurrentLocale);
   const { replacePerpsToastByKey } = usePerpsToast();
   const { isEligible } = usePerpsEligibility();
@@ -100,17 +102,17 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 
   const formattedPrice = useMemo(() => {
     const price = parseFloat(order.price) || 0;
-    return formatCurrencyWithMinThreshold(price, 'USD');
-  }, [order.price, formatCurrencyWithMinThreshold]);
+    return formatPerpsFiatUniversal(price);
+  }, [order.price]);
 
   const orderValueUsd = useMemo(() => {
     const size = parseFloat(order.size) || 0;
     const price = parseFloat(order.price) || 0;
     if (size > 0 && price > 0) {
-      return formatCurrencyWithMinThreshold(size * price, 'USD');
+      return formatPerpsFiatMinimal(size * price);
     }
     return null;
-  }, [order.size, order.price, formatCurrencyWithMinThreshold]);
+  }, [order.size, order.price]);
 
   const modalTitle = useMemo(() => {
     const orderTypeLabel = formatOrderType(order.orderType);

@@ -5,7 +5,7 @@ import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import * as browserRuntimeUtils from '../shared/lib/browser-runtime.utils';
 import * as actions from './store/actions';
 import * as selectors from './selectors';
-import * as metamaskSelectors from './ducks/metamask/metamask';
+import * as metamaskBaseSelectors from './ducks/metamask/base-selectors';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { getCleanAppState, runInitialActions } from '.';
 
@@ -55,8 +55,8 @@ jest.mock('./selectors', () => ({
   getIsSocialLoginFlow: jest.fn(),
 }));
 
-jest.mock('./ducks/metamask/metamask', () => ({
-  ...jest.requireActual('./ducks/metamask/metamask'),
+jest.mock('./ducks/metamask/base-selectors', () => ({
+  ...jest.requireActual('./ducks/metamask/base-selectors'),
   getIsUnlocked: jest.fn(),
 }));
 
@@ -138,7 +138,7 @@ describe('Index Tests', () => {
         .spyOn(browserRuntimeUtils, 'getBrowserName')
         .mockReturnValue('chrome');
       selectors.getNetworkToAutomaticallySwitchTo.mockReturnValue(undefined);
-      metamaskSelectors.getIsUnlocked.mockImplementation(
+      metamaskBaseSelectors.getIsUnlocked.mockImplementation(
         (state) => state.metamask.isUnlocked,
       );
       selectors.getFirstTimeFlowType.mockImplementation(

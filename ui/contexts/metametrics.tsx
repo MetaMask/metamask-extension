@@ -20,9 +20,7 @@ import type { Span } from '@sentry/types';
 import { omit } from 'lodash';
 
 import { captureException, captureMessage } from '../../shared/lib/sentry';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   PATH_NAME_MAP,
   getPaths,
@@ -37,11 +35,12 @@ import {
   type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
-import { getMetaMetricsId, getParticipateInMetaMetrics } from '../selectors';
 import {
-  generateActionId,
-  submitRequestToBackground,
-} from '../store/background-connection';
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
+} from '../selectors';
+import { submitRequestToBackground } from '../store/background-connection';
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 import type {
   TraceName,
@@ -144,10 +143,16 @@ type MetaMetricsProviderProps = {
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
-  const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  // Buffer events until the background has minted the MetaMetrics ID used to submit them.
-  const canTrackImmediately = isMetricsEnabled && Boolean(metaMetricsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const analyticsId = useSelector(getAnalyticsId);
+  const isMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const canTrackImmediately = isMetricsEnabled && Boolean(analyticsId);
+  // Buffer events until we know whether or not we can submit them.
+  const canMaybeTrackLater =
+    !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
 
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
@@ -185,14 +190,18 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       ) {
         // If metrics are enabled, track immediately
         trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
-      } else {
-        // If metrics are not enabled, buffer the event
+      } else if (canMaybeTrackLater) {
         await submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          { ...fullPayload, actionId: generateActionId() },
+          fullPayload,
         ]);
       }
     },
-    [addContextPropsIntoEventProperties, canTrackImmediately, context],
+    [
+      addContextPropsIntoEventProperties,
+      canMaybeTrackLater,
+      canTrackImmediately,
+      context,
+    ],
   );
 
   const bufferedTrace: UITraceMethod = useCallback((request, fn) => {
@@ -257,23 +266,15 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       const { pattern, params } = match;
       const { path } = pattern;
       const name = PATH_NAME_MAP.get(path as AppRoutes['path']);
-      trackMetaMetricsPage(
-        {
-          name,
-          // We do not want to send addresses or accounts in any events
-          // Some routes include these as params.
-          params: omit(params, ['account', 'address']) as Record<
-            string,
-            string
-          >,
-          environmentType: environmentType as EnvironmentType,
-          page: context.page,
-          referrer: context.referrer,
-        },
-        {
-          isOptInPath: location.pathname.startsWith('/initialize'),
-        },
-      );
+      trackMetaMetricsPage({
+        name,
+        // We do not want to send addresses or accounts in any events
+        // Some routes include these as params.
+        params: omit(params, ['account', 'address']) as Record<string, string>,
+        environmentType: environmentType as EnvironmentType,
+        page: context.page,
+        referrer: context.referrer,
+      });
     }
     previousMatch.current = match?.pattern?.path;
   }, [
@@ -355,8 +356,10 @@ export type WithMetaMetricsProps = MetaMetricsContextValue;
  * @returns Wrapped component with MetaMetrics context
  */
 export function withMetaMetrics<Props extends Record<string, unknown>>(
-  WrappedComponent: ComponentType<Props>,
-): ComponentType<Omit<Props, keyof WithMetaMetricsProps>> {
+  WrappedComponent: ComponentType<React.PropsWithChildren<Props>>,
+): ComponentType<
+  React.PropsWithChildren<Omit<Props, keyof WithMetaMetricsProps>>
+> {
   const WithMetaMetrics = (props: Omit<Props, keyof WithMetaMetricsProps>) => {
     const {
       trackEvent,

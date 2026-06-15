@@ -36,10 +36,9 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 | `pageLoadBenchmark`            | Dapp page load (Playwright)     | `dapp-page-load/`                                                |
 | `all`                          | All benchmarks                  | Everything above                                                 |
 
-### User journey benchmarks: browserify vs webpack
+### User journey benchmarks
 
-- **PRs:** User journey benchmarks run on **Chrome + Browserify** only.
-- **Push to main/release:** User journey benchmarks also run on **Chrome + Webpack** (extra `benchmarks` matrix rows with `mainOnly: true` in `run-benchmarks.yml`) so we can compare build systems before releasing webpack to production.
+- User journey presets run on **Chrome and Firefox** with the **Webpack** test build (`build-test-webpack` / `build-test-mv2-webpack` in CI), same as startup and interaction benchmarks in `run-benchmarks.yml`.
 
 ### Special CI Requirements
 
@@ -103,7 +102,7 @@ const MY_BENCHMARK: ThresholdConfig = {
   myTimerId: {
     p75: { warn: 1000, fail: 1500 },
     p95: { warn: 2000, fail: 3000 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 };
 
@@ -116,6 +115,10 @@ const BENCHMARK_THRESHOLDS = {
 The key must be **camelCase matching the filename**: `my-benchmark.ts` → `myBenchmark`.
 
 For startup benchmarks, use the `startup` prefix: `standard-home.ts` → `startupStandardHome`.
+
+**Quality Gate enforcement:**
+
+`test/e2e/benchmarks/utils/gated-metrics.ts` lists which metrics block PRs on regression. Metrics in that file fail the `quality-gate` CI job when their threshold is breached; metrics not listed surface as warnings in the PR comment but do not fail the gate. Edit that file to graduate or demote a metric — its module JSDoc covers the mechanics. Both that file and `thresholds.ts` are co-owned by `@MetaMask/qa` and `@MetaMask/extension-platform`; either team can approve.
 
 ### 3. Add to a preset (optional)
 

@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import { formatPerpsFiatUniversal } from '../../../components/app/perps/utils/formatPerpsDisplayPrice';
 import {
   usePerpsLiveMarketData,
   type UsePerpsLiveMarketDataReturn,
@@ -76,7 +77,9 @@ export function usePerpsLiveMarketListData(
 
       return {
         ...market,
-        price: liveUpdate.price ?? market.price,
+        price: liveUpdate.price
+          ? formatPerpsFiatUniversal(liveUpdate.price)
+          : market.price,
         change24hPercent:
           liveUpdate.percentChange24h ?? market.change24hPercent,
       };

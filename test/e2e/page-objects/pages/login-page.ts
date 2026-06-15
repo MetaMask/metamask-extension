@@ -35,10 +35,45 @@ class LoginPage {
     testId: 'login-error-modal-button',
   };
 
+  private readonly passkeyUnlockButton: object = {
+    testId: 'unlock-passkey-button',
+  };
+
+  private readonly unlockWithPasskeyButton: object = {
+    testId: 'unlock-with-passkey',
+  };
+
+  private readonly usePasswordButton: object = {
+    testId: 'unlock-use-password-button',
+  };
+
   private readonly unlockButton: object = { testId: 'unlock-submit' };
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkPasskeyUnlockPageIsLoaded(): Promise<void> {
+    console.log('Checking if passkey unlock page is loaded');
+    await this.driver.waitForSelector(this.passkeyUnlockButton);
+    await this.driver.waitForSelector(this.usePasswordButton);
+  }
+
+  async clickPasskeyUnlock(): Promise<void> {
+    console.log('Clicking passkey unlock button');
+    await this.driver.clickElement(this.passkeyUnlockButton);
+  }
+
+  async clickUnlockWithPasskey(): Promise<void> {
+    console.log('Clicking unlock with passkey button');
+    await this.driver.waitForSelector(this.unlockWithPasskeyButton);
+    await this.driver.clickElement(this.unlockWithPasskeyButton);
+  }
+
+  async clickUsePassword(): Promise<void> {
+    console.log('Clicking use password button to switch to password form');
+    await this.driver.waitForSelector(this.usePasswordButton);
+    await this.driver.clickElement(this.usePasswordButton);
   }
 
   async checkPageIsLoaded(): Promise<void> {

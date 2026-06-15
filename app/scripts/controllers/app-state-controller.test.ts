@@ -50,6 +50,42 @@ const extensionMock = {
 } as unknown as jest.Mocked<Browser>;
 
 describe('AppStateController', () => {
+  describe('updateNftDropDownState', () => {
+    it('updates the NFT dropdown state', async () => {
+      await withController(({ controller }) => {
+        const nftsDropdownState = {
+          account: {
+            '0x1': true,
+          },
+        };
+
+        controller.updateNftDropDownState(nftsDropdownState);
+
+        expect(controller.state.nftsDropdownState).toStrictEqual(
+          nftsDropdownState,
+        );
+      });
+    });
+  });
+
+  describe('setPasskeyAutoUnlockSuppressed', () => {
+    it('updates passkeyAutoUnlockSuppressed', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          false,
+        );
+        controller.setPasskeyAutoUnlockSuppressed(true);
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          true,
+        );
+        controller.setPasskeyAutoUnlockSuppressed(false);
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          false,
+        );
+      });
+    });
+  });
+
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
       await withController(({ controller }) => {
@@ -199,6 +235,49 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setLastVisitedRoute', () => {
+    it('stores the route namespace, path, and current timestamp', async () => {
+      await withController(({ controller }) => {
+        const before = Date.now();
+        controller.setLastVisitedRoute('perps', '/perps/market/BTC');
+        const after = Date.now();
+
+        expect(controller.state.lastVisitedRoute).not.toBeNull();
+        expect(controller.state.lastVisitedRoute?.name).toBe('perps');
+        expect(controller.state.lastVisitedRoute?.path).toBe(
+          '/perps/market/BTC',
+        );
+        const { timestamp } = controller.state.lastVisitedRoute ?? {
+          timestamp: 0,
+        };
+        expect(timestamp).toBeGreaterThanOrEqual(before);
+        expect(timestamp).toBeLessThanOrEqual(after);
+      });
+    });
+
+    it('clears the stored route when passed null', async () => {
+      await withController(({ controller }) => {
+        controller.setLastVisitedRoute('perps', '/perps/trade/ETH');
+        expect(controller.state.lastVisitedRoute).not.toBeNull();
+
+        controller.setLastVisitedRoute('perps', null);
+        expect(controller.state.lastVisitedRoute).toBeNull();
+      });
+    });
+
+    it('does not clear a route stored for another namespace', async () => {
+      await withController(({ controller }) => {
+        controller.setLastVisitedRoute('bridge', '/bridge');
+
+        controller.setLastVisitedRoute('perps', null);
+
+        expect(controller.state.lastVisitedRoute).toStrictEqual(
+          expect.objectContaining({ name: 'bridge', path: '/bridge' }),
+        );
+      });
+    });
+  });
+
   describe('setConnectedStatusPopoverHasBeenShown', () => {
     it('sets connected status popover as shown', async () => {
       await withController(({ controller }) => {
@@ -321,34 +400,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setShowTestnetMessageInDropdown', () => {
-    it('sets whether the testnet dismissal link should be shown in the network dropdown', async () => {
-      await withController(({ controller }) => {
-        controller.setShowTestnetMessageInDropdown(true);
-
-        expect(controller.state.showTestnetMessageInDropdown).toBe(true);
-
-        controller.setShowTestnetMessageInDropdown(false);
-
-        expect(controller.state.showTestnetMessageInDropdown).toBe(false);
-      });
-    });
-  });
-
-  describe('setShowBetaHeader', () => {
-    it('sets whether the beta notification heading on the home page', async () => {
-      await withController(({ controller }) => {
-        controller.setShowBetaHeader(true);
-
-        expect(controller.state.showBetaHeader).toBe(true);
-
-        controller.setShowBetaHeader(false);
-
-        expect(controller.state.showBetaHeader).toBe(false);
-      });
-    });
-  });
-
   describe('setCurrentPopupId', () => {
     it('sets the currentPopupId in the appState', async () => {
       await withController(({ controller }) => {
@@ -410,20 +461,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setSurveyLinkLastClickedOrClosed', () => {
-    it('set the surveyLinkLastClickedOrClosed time', async () => {
-      await withController(({ controller }) => {
-        const mockParams = Date.now();
-
-        controller.setSurveyLinkLastClickedOrClosed(mockParams);
-
-        expect(controller.state.surveyLinkLastClickedOrClosed).toStrictEqual(
-          mockParams,
-        );
-      });
-    });
-  });
-
   describe('setOnboardingDate', () => {
     it('set the onboardingDate', async () => {
       await withController(({ controller }) => {
@@ -445,16 +482,6 @@ describe('AppStateController', () => {
         controller.setLastViewedUserSurvey(mockParams);
 
         expect(controller.state.lastViewedUserSurvey).toStrictEqual(mockParams);
-      });
-    });
-  });
-
-  describe('setRampCardClosed', () => {
-    it('set isRampCardClosed to true', async () => {
-      await withController(({ controller }) => {
-        controller.setRampCardClosed();
-
-        expect(controller.state.isRampCardClosed).toStrictEqual(true);
       });
     });
   });
@@ -794,7 +821,6 @@ describe('AppStateController', () => {
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
-              "isRampCardClosed": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -805,15 +831,16 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "lastVisitedRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
-              "nftsDetectionNoticeDismissed": false,
               "nftsDropdownState": {},
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -826,19 +853,13 @@ describe('AppStateController', () => {
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
               "shieldSubscriptionError": null,
-              "showAccountBanner": true,
-              "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
-              "showNetworkBanner": true,
-              "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
-              "showTestnetMessageInDropdown": true,
               "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
               "storageWriteErrorType": null,
-              "surveyLinkLastClickedOrClosed": null,
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "timeoutMinutes": 0,
@@ -888,7 +909,6 @@ describe('AppStateController', () => {
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
-              "isRampCardClosed": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -903,11 +923,11 @@ describe('AppStateController', () => {
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
-              "nftsDetectionNoticeDismissed": false,
               "nftsDropdownState": {},
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -920,19 +940,13 @@ describe('AppStateController', () => {
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
               "shieldSubscriptionError": null,
-              "showAccountBanner": true,
-              "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
-              "showNetworkBanner": true,
-              "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
-              "showTestnetMessageInDropdown": true,
               "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
               "storageWriteErrorType": null,
-              "surveyLinkLastClickedOrClosed": null,
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "timeoutMinutes": 0,
@@ -977,7 +991,6 @@ describe('AppStateController', () => {
               "defaultHomeActiveTabName": null,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
-              "isRampCardClosed": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -992,7 +1005,6 @@ describe('AppStateController', () => {
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
-              "nftsDetectionNoticeDismissed": false,
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "pendingShieldCohort": null,
@@ -1003,16 +1015,10 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
-              "showAccountBanner": true,
-              "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
-              "showNetworkBanner": true,
-              "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
-              "showTestnetMessageInDropdown": true,
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
-              "surveyLinkLastClickedOrClosed": null,
               "termsOfUseLastAgreed": 1000,
               "timeoutMinutes": 0,
               "trezorModel": null,
@@ -1061,7 +1067,6 @@ describe('AppStateController', () => {
               "defaultHomeActiveTabName": null,
               "fullScreenGasPollTokens": [],
               "hasShownMultichainAccountsIntroModal": false,
-              "isRampCardClosed": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -1072,6 +1077,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "lastVisitedRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "networkConnectionBanner": {
@@ -1083,6 +1089,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -1095,18 +1102,13 @@ describe('AppStateController', () => {
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
               "shieldSubscriptionError": null,
-              "showAccountBanner": true,
-              "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
-              "showNetworkBanner": true,
-              "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
               "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
               "storageWriteErrorType": null,
-              "surveyLinkLastClickedOrClosed": null,
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "updateModalLastDismissedAt": null,

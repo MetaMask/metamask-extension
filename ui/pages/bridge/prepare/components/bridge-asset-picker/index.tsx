@@ -7,14 +7,13 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  ButtonIconSize,
   Icon,
   IconColor,
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
-import { uniqBy } from 'lodash';
+import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
@@ -25,6 +24,7 @@ import {
   ModalContent,
   ModalBody,
   ModalHeader,
+  ButtonIconSize,
   PickerNetwork,
   TextField,
   ModalContentSize,
@@ -41,10 +41,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
 import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
-import { getBridgeSortedAssets } from '../../../../../ducks/bridge/asset-selectors';
-import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
-import { toBridgeToken } from '../../../../../ducks/bridge/utils';
 import { MarketClosedModal } from '../../../../../components/app/assets/market-closed-modal';
 import { useRWAToken } from '../../../hooks/useRWAToken';
 import { NetworkPicker } from './network-picker';
@@ -77,17 +74,25 @@ export const BridgeAssetPicker = ({
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );
-  const assetsWithBalance = useSelector((state: BridgeAppState) =>
-    getBridgeSortedAssets(state, accountGroup?.id),
-  );
 
   const t = useI18nContext();
+  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const { isStockToken, isTokenTradingOpen } = useRWAToken();
   const [showMarketClosedModal, setShowMarketClosedModal] = useState(false);
   const closeFromMarketCloseRef = useRef(false);
 
   const networkPickerButtonRef = useRef<HTMLButtonElement>(null);
   const [isNetworkPickerOpen, setIsNetworkPickerOpen] = useState(false);
+  // Mirrors `isNetworkPickerOpen` for the asset picker's outside-click handler.
+  // `ModalContent` registers its document `mousedown` listener once on mount,
+  // so it captures a stale `isClosedOnOutsideClick`. Selecting a network in the
+  // nested network modal fires `mousedown` before `click`, which would close the
+  // asset picker before the selection applies. Reading this ref in `handleClose`
+  // lets us ignore that close while the network picker is open.
+  const isNetworkPickerOpenRef = useRef(false);
+  useEffect(() => {
+    isNetworkPickerOpenRef.current = isNetworkPickerOpen;
+  }, [isNetworkPickerOpen]);
   // This is the network that the user has selected from the dropdown
   const [selectedChainId, setSelectedChainId] = useState<CaipChainId | null>(
     null,
@@ -105,27 +110,6 @@ export const BridgeAssetPicker = ({
   const chainIdsSet = useMemo(() => {
     return new Set(chainIdsList);
   }, [chainIdsList]);
-
-  const assetsToInclude = useMemo(
-    () =>
-      uniqBy(
-        assetsWithBalance.filter((token) => {
-          const matchesChainIdFilter = chainIdsSet.has(token.chainId);
-
-          return matchesChainIdFilter;
-        }),
-        (a) => a.assetId?.toLowerCase(),
-      ).map((token) => toBridgeToken(token)),
-    // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
-    [chainIdsSet, accountGroup?.id, accountAddress],
-  );
-
-  const { popularTokensList, isLoading: isPopularTokensLoading } =
-    usePopularTokens({
-      assetsToInclude,
-      accountAddress,
-      chainIds: chainIdsSet,
-    });
 
   const selectedNetworkName = selectedChainId
     ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]
@@ -153,6 +137,12 @@ export const BridgeAssetPicker = ({
   }, [isOpen]);
 
   const handleClose = useCallback(() => {
+    // Ignore close attempts (e.g. the parent modal's stale outside-click
+    // handler) while the network picker is open. The network picker manages
+    // its own close, so the asset picker should stay open underneath it.
+    if (isNetworkPickerOpenRef.current) {
+      return;
+    }
     if (closeFromMarketCloseRef.current) {
       closeFromMarketCloseRef.current = false;
       return;
@@ -231,7 +221,11 @@ export const BridgeAssetPicker = ({
               style={{ minHeight: 32 }}
             />
             <NetworkPicker
-              buttonElement={networkPickerButtonRef.current}
+              buttonElement={
+                isNetworkManagementEnabled
+                  ? undefined
+                  : networkPickerButtonRef.current
+              }
               isOpen={isNetworkPickerOpen}
               chains={chains}
               selectedChainId={selectedChainId}
@@ -276,15 +270,12 @@ export const BridgeAssetPicker = ({
               }
             />
 
-            {!isNetworkPickerOpen && (
+            {isNetworkManagementEnabled || !isNetworkPickerOpen ? (
               <BridgeAssetList
-                assetsToInclude={assetsToInclude}
+                accountGroupId={accountGroup?.id}
                 chainIds={chainIdsSet}
-                accountAddress={accountAddress}
                 searchQuery={searchQuery.trim()}
                 selectedAssetId={selectedAsset.assetId}
-                popularTokensList={popularTokensList}
-                isPopularTokensLoading={isPopularTokensLoading}
                 onAssetChange={(asset: BridgeToken) => {
                   if (isStockToken(asset) && !isTokenTradingOpen(asset)) {
                     closeFromMarketCloseRef.current = true;
@@ -300,7 +291,7 @@ export const BridgeAssetPicker = ({
                 }}
                 {...assetListProps}
               />
-            )}
+            ) : null}
           </ModalBody>
         </ModalContent>
       </Modal>

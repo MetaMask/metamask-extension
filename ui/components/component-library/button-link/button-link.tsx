@@ -21,6 +21,9 @@ import { ButtonLinkSize, ButtonLinkComponent } from './button-link.types';
  * Standalone: `<Button variant={ButtonVariant.Tertiary}>Forgot password?</Button>`
  *
  * This component will be removed in a future release.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#button-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-textbutton--docs | TextButton Storybook Documentation}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-button--docs | Button Storybook Documentation}
  */
 export const ButtonLink: ButtonLinkComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

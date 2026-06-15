@@ -5,7 +5,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { selectSingleTokenByAddressAndChainId } from '../../../../selectors/assets';
-import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import {
   getNativeTokenCachedBalanceByChainIdSelector,
   getNativeTokenInfo,

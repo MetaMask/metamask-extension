@@ -19,29 +19,7 @@ import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/ro
 import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
-import {
-  useGetTitle,
-  usePrefetchTransactions,
-  useTransactionsQuery,
-} from './hooks';
-
-const mockUseInfiniteQuery = jest.fn();
-const mockUseQueryClient = jest.fn();
-const mockGetV4MultiAccountTransactionsInfiniteQueryOptions = jest.fn();
-
-jest.mock('@tanstack/react-query', () => ({
-  useInfiniteQuery: (...args: unknown[]) => mockUseInfiniteQuery(...args),
-  useQueryClient: () => mockUseQueryClient(),
-}));
-
-jest.mock('../../../helpers/api-client', () => ({
-  apiClient: {
-    accounts: {
-      getV4MultiAccountTransactionsInfiniteQueryOptions: (...args: unknown[]) =>
-        mockGetV4MultiAccountTransactionsInfiniteQueryOptions(...args),
-    },
-  },
-}));
+import { useGetTitle } from './hooks';
 
 const mockUseNavigate = jest.fn();
 
@@ -77,7 +55,9 @@ const store = configureMockStore()({
 
 function renderHook<Result>(callback: () => Result) {
   return renderHookBase(callback, {
-    wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    wrapper: ({ children }: React.PropsWithChildren) => (
+      <Provider store={store}>{children}</Provider>
+    ),
   });
 }
 
@@ -86,6 +66,7 @@ describe('useGetTitle', () => {
     jest
       .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
       .mockReturnValue({
+        bridgeHistoryItem: undefined,
         isBridgeTx: false,
         isBridgeComplete: false,
         isBridgeFailed: false,
@@ -187,7 +168,7 @@ describe('useGetTitle', () => {
     } as unknown as TransactionViewModel;
 
     const { result } = renderHookBase(() => useGetTitle(tx), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={flaggedStore}>{children}</Provider>
       ),
     });
@@ -395,6 +376,7 @@ describe('useGetTitle', () => {
     jest
       .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
       .mockReturnValue({
+        bridgeHistoryItem: undefined,
         isBridgeTx: true,
         isBridgeComplete: false,
         isBridgeFailed: false,
@@ -611,116 +593,12 @@ describe('useGetTitle', () => {
     } as unknown as TransactionViewModel;
 
     const { result } = renderHookBase(() => useGetTitle(tx), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={senderStore}>{children}</Provider>
       ),
     });
 
     expect(result.current).toBe('sentSpecifiedTokens:NFT');
-  });
-});
-
-describe('Query hooks', () => {
-  const expectedEvmAddress = selectedAddress;
-  const expectedNetworks = ['eip155:1'];
-  const mockStore = configureMockStore()({
-    localeMessages: {
-      currentLocale: 'en_GB',
-    },
-    metamask: {
-      useExternalServices: true,
-      enabledNetworkMap: {
-        eip155: {
-          '0x1': true,
-        },
-      },
-      transactions: [],
-      internalAccounts: {
-        selectedAccount: '1',
-        accounts: {
-          '1': {
-            address: selectedAddress,
-            type: 'eip155:eoa',
-          },
-        },
-      },
-    },
-  });
-
-  function renderQueryHook<Result>(callback: () => Result) {
-    return renderHookBase(callback, {
-      wrapper: ({ children }) => (
-        <Provider store={mockStore}>{children}</Provider>
-      ),
-    });
-  }
-
-  beforeEach(() => {
-    mockUseInfiniteQuery.mockReturnValue({ data: undefined });
-    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue({
-      queryKey: ['transactions'],
-      queryFn: jest.fn(),
-      getNextPageParam: jest.fn(),
-      enabled: true,
-    });
-    mockUseQueryClient.mockReturnValue({
-      getQueryData: jest.fn().mockReturnValue(undefined),
-      isFetching: jest.fn().mockReturnValue(0),
-      prefetchInfiniteQuery: jest.fn().mockResolvedValue(undefined),
-    });
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('useTransactionsQuery composes query options and delegates to useInfiniteQuery', () => {
-    renderQueryHook(() => useTransactionsQuery());
-
-    expect(
-      mockGetV4MultiAccountTransactionsInfiniteQueryOptions,
-    ).toHaveBeenCalledWith({
-      accountAddresses: [`eip155:0:${expectedEvmAddress}`],
-      networks: expectedNetworks,
-      includeTxMetadata: true,
-      lang: 'en',
-    });
-    expect(mockUseInfiniteQuery).toHaveBeenCalledWith(
-      expect.objectContaining({
-        select: expect.any(Function),
-        enabled: true,
-        staleTime: 300000,
-      }),
-    );
-  });
-
-  it('usePrefetchTransactions prefetches when query is not cached and not fetching', () => {
-    const mockQueryClient = {
-      getQueryData: jest.fn().mockReturnValue(undefined),
-      isFetching: jest.fn().mockReturnValue(0),
-      prefetchInfiniteQuery: jest.fn().mockResolvedValue(undefined),
-    };
-    const queryOptions = {
-      queryKey: ['transactions'],
-      queryFn: jest.fn(),
-      getNextPageParam: jest.fn(),
-      enabled: true,
-    };
-
-    mockUseQueryClient.mockReturnValue(mockQueryClient);
-    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue(
-      queryOptions,
-    );
-
-    const { result } = renderQueryHook(() => usePrefetchTransactions());
-
-    act(() => {
-      result.current();
-    });
-
-    expect(mockQueryClient.prefetchInfiniteQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ ...queryOptions, staleTime: 300000 }),
-    );
   });
 });
 
@@ -768,7 +646,7 @@ describe('useBridgeTxHistoryData', () => {
           } as never,
         }),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={bridgeStore}>{children}</Provider>
         ),
       },
@@ -810,7 +688,7 @@ describe('useBridgeTxHistoryData', () => {
           } as never,
         }),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={intentStore}>{children}</Provider>
         ),
       },
@@ -819,6 +697,9 @@ describe('useBridgeTxHistoryData', () => {
     expect(result.current.isBridgeFailed).toBe(true);
     expect(result.current.isBridgeComplete).toBe(false);
     expect(result.current.showBridgeTxDetails).toEqual(expect.any(Function));
+    expect(result.current.bridgeHistoryItem).toMatchObject({
+      originalTransactionId: 'intent-tx-meta-id',
+    });
 
     act(() => result.current.showBridgeTxDetails?.());
 

@@ -35,7 +35,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
@@ -46,10 +46,12 @@ import {
   TokenFiatDisplayInfo,
   type TokenWithFiatAmount,
 } from '../../../components/app/assets/types';
-import { ActivityList } from '../../../components/multichain/activity-v2/activity-list';
+import { ActivityList as ActivityListV2 } from '../../../components/multichain/activity-v2/activity-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { ActivityList as ActivityListV3 } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -69,6 +71,7 @@ import {
   getAssetsBySelectedAccountGroup,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
+import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
 import {
   getImageForChainId,
   getMultichainIsTestnet,
@@ -81,9 +84,10 @@ import {
   selectIsMerklClaimingEnabled,
   selectIsMusdConversionFlowEnabled,
 } from '../../../selectors/musd';
-import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
+import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import {
   useMusdCtaVisibility,
@@ -153,6 +157,9 @@ const AssetPage = ({
 
   const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
   const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
+  const isActivityListRedesignEnabled = useSelector(
+    getIsActivityListRedesignEnabled,
+  );
 
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
@@ -202,8 +209,8 @@ const AssetPage = ({
         '',
         'asset_page',
         metaMetricsId,
-        isMetaMetricsEnabled,
-        isMarketingEnabled,
+        isMetaMetricsEnabled === true,
+        isMarketingEnabled === true,
         selectedAccount.address,
         'spending-caps',
       ),
@@ -218,6 +225,7 @@ const AssetPage = ({
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const caipAssetId = toAssetId(address, caipChainId);
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
@@ -570,18 +578,26 @@ const AssetPage = ({
             >
               {t('yourActivity')}
             </Text>
-            <ActivityList
-              filter={{
-                chainId: caipChainId,
-                assetScope:
-                  type === AssetType.native
-                    ? {
-                        kind: 'native',
-                        ...(!isEvm && { caipAssetType: address }),
-                      }
-                    : { kind: 'token', tokenAddress: address },
-              }}
-            />
+            {isActivityListRedesignEnabled && caipAssetId ? (
+              <ActivityListV3
+                filter={{
+                  assetId: caipAssetId,
+                }}
+              />
+            ) : (
+              <ActivityListV2
+                filter={{
+                  chainId: caipChainId,
+                  assetScope:
+                    type === AssetType.native
+                      ? {
+                          kind: 'native',
+                          ...(!isEvm && { caipAssetType: address }),
+                        }
+                      : { kind: 'token', tokenAddress: address },
+                }}
+              />
+            )}
           </Box>
         </Box>
       </Box>

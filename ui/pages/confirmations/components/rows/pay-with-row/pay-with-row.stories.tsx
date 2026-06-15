@@ -33,7 +33,7 @@ const createMockState = (hasPaymentToken = true) => {
         [transaction.id]: {
           id: transaction.id,
           type: ApprovalType.Transaction,
-          time: transaction.time, // Required for sorting in oldestPendingConfirmationSelector
+          time: transaction.time, // Required for sorting in firstPendingConfirmationSelector
         },
       },
       transactions: [transaction],

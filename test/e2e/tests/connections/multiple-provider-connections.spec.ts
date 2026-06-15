@@ -18,6 +18,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   OPTIMISM_DISPLAY_NAME,
+  MONAD_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -27,10 +28,8 @@ import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flo
 import { getPermissionsPageForHost } from '../../page-objects/flows/permissions.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import {
-  connectSolanaTestDapp,
-  account1 as SOLANA_ADDRESS_ONE,
-} from '../../flask/solana-wallet-standard/testHelpers';
+import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
+import { account1 as SOLANA_ADDRESS_ONE } from '../../flask/solana-wallet-standard/testHelpers';
 import { Driver } from '../../webdriver/driver';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
@@ -289,7 +288,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(10);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -302,6 +301,7 @@ describe('Multiple Standard Dapp Connections', function () {
             BSC_DISPLAY_NAME,
             POLYGON_DISPLAY_NAME,
             OPTIMISM_DISPLAY_NAME,
+            MONAD_DISPLAY_NAME,
             'Solana',
             'Bitcoin',
             'Tron',
@@ -319,6 +319,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPermissionControllerConnectedToTestDapp({
             scopes: SOLANA_PERMISSIONS,
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
@@ -344,7 +345,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(1);
-        await sitePermissionPage.checkConnectedNetworksNumber(10);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -357,6 +358,7 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             ARBITRUM_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
+            MONAD_DISPLAY_NAME,
             'Bitcoin',
             'Solana',
             'Tron',
@@ -418,7 +420,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(10);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -431,6 +433,7 @@ describe('Multiple Standard Dapp Connections', function () {
             BSC_DISPLAY_NAME,
             POLYGON_DISPLAY_NAME,
             OPTIMISM_DISPLAY_NAME,
+            MONAD_DISPLAY_NAME,
             'Solana',
             'Bitcoin',
             'Tron',
@@ -448,6 +451,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPermissionControllerConnectedToTestDapp({
             scopes: SOLANA_PERMISSIONS,
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },

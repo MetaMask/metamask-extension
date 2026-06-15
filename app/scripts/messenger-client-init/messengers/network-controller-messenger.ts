@@ -13,10 +13,8 @@ import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
 } from '@metamask/remote-feature-flag-controller';
-import {
-  MetaMetricsControllerGetMetaMetricsIdAction,
-  MetaMetricsControllerTrackEventAction,
-} from '../../controllers/metametrics-controller-method-action-types';
+import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 /**
@@ -26,14 +24,12 @@ import { RootMessenger } from '../../lib/messenger';
  * @returns The restricted messenger.
  */
 export function getNetworkControllerMessenger(
-  messenger: RootMessenger,
-): NetworkControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'NetworkController',
+  messenger: RootMessenger<
     MessengerActions<NetworkControllerMessenger>,
-    MessengerEvents<NetworkControllerMessenger>,
-    RootMessenger
-  >({
+    MessengerEvents<NetworkControllerMessenger>
+  >,
+): NetworkControllerMessenger {
+  const controllerMessenger: NetworkControllerMessenger = new Messenger({
     namespace: 'NetworkController',
     parent: messenger,
   });
@@ -46,7 +42,7 @@ export function getNetworkControllerMessenger(
 }
 
 type AllowedInitializationActions =
-  | MetaMetricsControllerGetMetaMetricsIdAction
+  | AnalyticsControllerGetStateAction
   | MetaMetricsControllerTrackEventAction
   | RemoteFeatureFlagControllerGetStateAction;
 
@@ -87,7 +83,7 @@ export function getNetworkControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
-      'MetaMetricsController:getMetaMetricsId',
+      'AnalyticsController:getState',
       'MetaMetricsController:trackEvent',
       'RemoteFeatureFlagController:getState',
     ],

@@ -82,9 +82,6 @@
   "autoLockTimeLimit": {
     "message": "مؤقت تسجيل الخروج التلقائي (بالدقائق)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "اضبط مهلة السكون بالدقائق التي يقوم MetaMask بتسجيل الخروج بعدها تلقائيًا"
-  },
   "average": {
     "message": "المتوسط"
   },
@@ -185,12 +182,6 @@
   "createPassword": {
     "message": "إنشاء كلمة مرور"
   },
-  "currencyConversion": {
-    "message": "تحويل العملات"
-  },
-  "currentLanguage": {
-    "message": "اللغة الحالية"
-  },
   "custom": {
     "message": "إعدادات متقدمة"
   },
@@ -211,9 +202,6 @@
   },
   "done": {
     "message": "تم"
-  },
-  "downloadGoogleChrome": {
-    "message": "تنزيل جوجل كروم"
   },
   "downloadStateLogs": {
     "message": "تنزيل سجلات الحالة"
@@ -272,9 +260,6 @@
   },
   "hardwareWallets": {
     "message": "الاتصال بمحفظة hardware wallet"
-  },
-  "hardwareWalletsMsg": {
-    "message": "حدد محفظة أجهزة ترغب في استخدامها مع MetaMask"
   },
   "here": {
     "message": "هنا",
@@ -343,12 +328,6 @@
   "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
-  "lineaGoerli": {
-    "message": "شبكة اختبار Linea Goerli"
-  },
-  "links": {
-    "message": "الروابط"
-  },
   "loading": {
     "message": "جارٍ التحميل..."
   },
@@ -385,9 +364,6 @@
   },
   "nevermind": {
     "message": "لا يهم"
-  },
-  "newAccount": {
-    "message": "حساب جديد"
   },
   "newAccountNumberName": {
     "message": "حساب $1",
@@ -494,9 +470,6 @@
   "restore": {
     "message": "استعادة"
   },
-  "revealSeedWords": {
-    "message": "كشف كلمات عبارات الأمان"
-  },
   "revealSeedWordsWarning": {
     "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -543,9 +516,6 @@
   "showFiatConversionInTestnets": {
     "message": "عرض التحويل على Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "حدد هذا لإظهار تحويل fiat على Testnets"
-  },
   "showHexData": {
     "message": "إظهار بيانات Hex"
   },
@@ -575,9 +545,6 @@
   },
   "stateLogs": {
     "message": "سجلات الحالة"
-  },
-  "stateLogsDescription": {
-    "message": "تحتوي سجلات الحالة على عناوين حسابك العامة والمعاملات المرسلة."
   },
   "submitted": {
     "message": "المقدمة"

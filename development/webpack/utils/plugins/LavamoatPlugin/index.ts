@@ -23,7 +23,7 @@ export const lavamoatPlugin = (args: Args) =>
     policyLocation: join(
       'lavamoat',
       'webpack',
-      `mv${args.manifest_version}`,
+      `mv${args.manifestVersion}`,
       args.type,
     ),
     diagnosticsVerbosity: 0,
@@ -123,6 +123,8 @@ export const lavamoatPlugin = (args: Args) =>
         'Promise',
         'JSON',
         'Date',
+        // Selenium atoms construct regexes while locating elements.
+        'RegExp',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',

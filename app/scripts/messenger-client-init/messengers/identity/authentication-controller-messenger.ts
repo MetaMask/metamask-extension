@@ -4,6 +4,7 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import type { AuthenticationControllerProfileSignInEvent } from '@metamask/profile-sync-controller/auth';
 import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
@@ -13,6 +14,7 @@ type MessengerActions =
   | SnapControllerHandleRequestAction;
 
 type MessengerEvents =
+  | AuthenticationControllerProfileSignInEvent
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent;
 

@@ -30,12 +30,13 @@ export function getBridgeStatusControllerMessenger(
       'AccountsController:getAccountByAddress',
       'AuthenticationController:getBearerToken',
       'NetworkController:getNetworkClientById',
+      'BridgeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getState',
       'KeyringController:signTypedMessage',
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
-      'GasFeeController:getState',
+      'RemoteFeatureFlagController:getState',
       'SnapController:handleRequest',
       'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
@@ -43,10 +44,7 @@ export function getBridgeStatusControllerMessenger(
       'TransactionController:estimateGasFee',
       'TransactionController:updateTransaction',
     ],
-    events: [
-      'TransactionController:transactionFailed',
-      'TransactionController:transactionConfirmed',
-    ],
+    events: ['TransactionController:transactionStatusUpdated'],
   });
   return controllerMessenger;
 }

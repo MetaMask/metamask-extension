@@ -7,21 +7,40 @@ import { t } from '../../../../shared/lib/translate';
 import { CustomNetworks } from './components/custom-networks';
 import { DefaultNetworks } from './components/default-networks';
 
+type NetworkTabsProps = {
+  initialTab: string;
+  showHeader?: boolean;
+  onClose?: () => void;
+  isPage?: boolean;
+};
+
 // Network tabs component
-export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
+export const NetworkTabs = ({
+  initialTab,
+  showHeader = true,
+  onClose,
+  isPage = false,
+}: NetworkTabsProps) => {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(initialTab);
   const handleClose = useCallback(() => {
+    if (onClose) {
+      onClose();
+      return;
+    }
+
     dispatch(hideModal());
-  }, [dispatch]);
+  }, [dispatch, onClose]);
   return (
     <Box>
-      <ModalHeader
-        onClose={handleClose}
-        closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-      >
-        {t('bridgeSelectNetwork') ?? 'Select network'}
-      </ModalHeader>
+      {showHeader ? (
+        <ModalHeader
+          onClose={handleClose}
+          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+        >
+          {t('bridgeSelectNetwork') ?? 'Select network'}
+        </ModalHeader>
+      ) : null}
       <ModalBody style={{ padding: 0 }}>
         <Tabs
           style={{ padding: 0 }}
@@ -31,7 +50,9 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
             className: 'network-manager__tab-list px-4',
           }}
           tabContentProps={{
-            className: 'network-manager__tab-content',
+            className: `network-manager__tab-content ${
+              isPage ? 'network-manager__tab-content--page' : ''
+            }`,
           }}
         >
           <Tab

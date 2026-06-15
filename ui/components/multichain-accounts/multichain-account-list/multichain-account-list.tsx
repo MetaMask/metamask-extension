@@ -17,6 +17,7 @@ import { parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
   BoxBackgroundColor,
+  Checkbox,
   FontWeight,
   Icon,
   IconColor,
@@ -26,7 +27,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Checkbox } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountCell } from '../multichain-account-cell';
 import {
@@ -48,8 +48,8 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
-  getPreferences,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
@@ -128,7 +128,9 @@ export const MultichainAccountList = ({
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
 
-  const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
+  const [renameAccountGroupId, setRenameAccountGroupId] = useState<
+    string | undefined
+  >(undefined);
 
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
@@ -181,7 +183,7 @@ export const MultichainAccountList = ({
   }, [setIsAccountRenameModalOpen, setRenameAccountGroupId]);
 
   const handleAccountRenameAction = useCallback(
-    (accountGroupId) => {
+    (accountGroupId: string) => {
       setRenameAccountGroupId(accountGroupId);
       setIsAccountRenameModalOpen(true);
       setOpenMenuAccountId(null);
@@ -324,9 +326,10 @@ export const MultichainAccountList = ({
             }
             startAccessory={
               showAccountCheckbox ? (
-                <Box>
+                <Box onClick={(event) => event.stopPropagation()}>
                   <Checkbox
-                    isChecked={selectedAccountGroupsSet.has(
+                    id={`multichain-account-checkbox-${groupId}`}
+                    isSelected={selectedAccountGroupsSet.has(
                       groupId as AccountGroupId,
                     )}
                     onChange={() => {

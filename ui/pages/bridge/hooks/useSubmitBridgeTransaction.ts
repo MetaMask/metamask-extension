@@ -7,8 +7,8 @@ import {
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
-import { isHardwareWallet } from '../../../../shared/lib/selectors';
 import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
@@ -20,17 +20,19 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getToToken,
   getWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
+import { useHasSufficientGasForQuoteForMetrics } from '../../../hooks/bridge/useHasSufficientGasForQuoteForMetrics';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../contexts/hardware-wallets/HardwareWalletContext';
-import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../../store/store';
+import { isHardwareWalletUserRejection } from '../utils/hardware-wallet-errors';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -46,23 +48,6 @@ export const isApprovalTxError = (error: unknown): boolean => {
   return errorMessage.includes(APPROVAL_TX_ERROR);
 };
 
-const isHardwareWalletUserRejection = (error: unknown): boolean => {
-  if (isUserRejectedHardwareWalletError(error)) {
-    return true;
-  }
-
-  const errorMessage = (error as Error).message?.toLowerCase() ?? '';
-
-  return (
-    (errorMessage.includes('trezor') &&
-      (errorMessage.includes('cancelled') ||
-        errorMessage.includes('rejected'))) ||
-    (errorMessage.includes('lattice') && errorMessage.includes('rejected')) ||
-    errorMessage.includes('user rejected') ||
-    errorMessage.includes('user cancelled')
-  );
-};
-
 export default function useSubmitBridgeTransaction() {
   const navigate = useNavigate();
   const { navigateToBridgePage, navigateToHwSigningPage } =
@@ -73,12 +58,14 @@ export default function useSubmitBridgeTransaction() {
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
+  const toToken = useSelector(getToToken);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
     shallowEqual,
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+  const getHasSufficientGasForQuote = useHasSufficientGasForQuoteForMetrics();
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
@@ -131,6 +118,7 @@ export default function useSubmitBridgeTransaction() {
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
       } else {
@@ -141,12 +129,13 @@ export default function useSubmitBridgeTransaction() {
             smartTransactionsEnabled,
             getQuotesReceivedProperties(
               quoteResponse,
-              // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
               warnings,
               true,
               recommendedQuote,
               fromTokenBalanceInUsd,
+              getHasSufficientGasForQuote(quoteResponse),
             ),
+            toToken?.securityData?.type ?? null,
           ),
         );
       }

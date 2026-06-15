@@ -71,7 +71,7 @@ export function ContactsListPage() {
     () =>
       Boolean(
         completeAddressBook?.length &&
-          hasDuplicateContacts(completeAddressBook, internalAccounts ?? []),
+        hasDuplicateContacts(completeAddressBook, internalAccounts ?? []),
       ),
     [completeAddressBook, internalAccounts],
   );

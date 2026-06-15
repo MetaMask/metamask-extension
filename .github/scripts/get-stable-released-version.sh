@@ -27,7 +27,7 @@ if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
   exit 1
 fi
 
-# Same rule as .github/scripts/shared/utils.ts isValidVersionFormat (stable-sync branch names expect x.y.z).
+# Same rule as .github/scripts/shared/utils.mts isValidVersionFormat (stable-sync branch names expect x.y.z).
 if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Invalid version in ${PACKAGE_JSON}: ${VERSION} (expected numeric x.y.z)" >&2
   exit 1

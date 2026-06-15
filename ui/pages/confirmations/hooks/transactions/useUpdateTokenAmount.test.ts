@@ -208,7 +208,7 @@ describe('useUpdateTokenAmount', () => {
       expect(calledData).toContain('1bc16d674ec80000');
     });
 
-    it('uses 18 decimals as default when no required token found', () => {
+    it('does nothing when no primary required token resolves decimals', () => {
       const transactionMeta = createMockTransactionMeta();
       const { result } = runHook({
         transactionMeta,
@@ -219,7 +219,23 @@ describe('useUpdateTokenAmount', () => {
         result.current.updateTokenAmount('2');
       });
 
-      expect(updateEditableParamsMock).toHaveBeenCalled();
+      expect(updateEditableParamsMock).not.toHaveBeenCalled();
+      expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when only skipIfBalance required tokens are present', () => {
+      const transactionMeta = createMockTransactionMeta();
+      const { result } = runHook({
+        transactionMeta,
+        requiredTokens: [{ decimals: MOCK_DECIMALS, skipIfBalance: true }],
+      });
+
+      act(() => {
+        result.current.updateTokenAmount('2');
+      });
+
+      expect(updateEditableParamsMock).not.toHaveBeenCalled();
+      expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
     });
   });
 

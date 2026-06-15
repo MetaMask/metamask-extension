@@ -8,7 +8,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import * as DappSwapContext from '../../../context/dapp-swap';
@@ -64,7 +64,7 @@ jest.mock(
   }),
 );
 
-jest.mock('../../../../../selectors/remote-feature-flags');
+jest.mock('../../../../../../shared/lib/selectors/remote-feature-flags');
 
 const quote = {
   quote: {

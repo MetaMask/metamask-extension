@@ -1,42 +1,18 @@
+import { ClaimsControllerMessenger } from '@metamask/claims-controller';
 import {
   Messenger,
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import {
-  ClaimsControllerMessenger,
-  ClaimsServiceFetchClaimsConfigurationsAction,
-  ClaimsServiceGenerateMessageForClaimSignatureAction,
-  ClaimsServiceGetClaimsAction,
-  ClaimsServiceGetClaimsApiUrlAction,
-  ClaimsServiceGetRequestHeadersAction,
-} from '@metamask/claims-controller';
-import { KeyringControllerSignPersonalMessageAction } from '@metamask/keyring-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
-type AllowedActions =
-  | MessengerActions<ClaimsControllerMessenger>
-  | ClaimsServiceFetchClaimsConfigurationsAction
-  | ClaimsServiceGetRequestHeadersAction
-  | ClaimsServiceGetClaimsApiUrlAction
-  | ClaimsServiceGenerateMessageForClaimSignatureAction
-  | ClaimsServiceGetClaimsAction
-  | KeyringControllerSignPersonalMessageAction;
-type AllowedEvents = MessengerEvents<ClaimsControllerMessenger>;
-
-export type ClaimsControllerMessengerType = ReturnType<
-  typeof getClaimsControllerMessenger
->;
-
 export function getClaimsControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-): ClaimsControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'ClaimsController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<ClaimsControllerMessenger>,
+    MessengerEvents<ClaimsControllerMessenger>
+  >,
+) {
+  const controllerMessenger: ClaimsControllerMessenger = new Messenger({
     namespace: 'ClaimsController',
     parent: messenger,
   });

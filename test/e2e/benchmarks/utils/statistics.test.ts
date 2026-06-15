@@ -19,6 +19,7 @@ import {
   validateTimerThreshold,
   validateThresholds,
   getEffectiveThreshold,
+  computeCvAdjustment,
   calculateWebVitalsStatistics,
   aggregateWebVitals,
   MAX_METRIC_DURATION_MS,
@@ -298,6 +299,61 @@ describe('Statistics Utils', () => {
       process.env.CI = 'true';
       expect(getEffectiveThreshold(1000)).toBe(1000);
     });
+
+    it('does not apply CV adjustment when CV is below the adaptive band', () => {
+      process.env.CI = 'true';
+      expect(getEffectiveThreshold(1000, 1.5, 20)).toBe(1500);
+    });
+
+    it('does not apply CV adjustment when CV is above the adaptive band', () => {
+      process.env.CI = 'true';
+      expect(getEffectiveThreshold(1000, 1.5, 60)).toBe(1500);
+    });
+
+    it('stacks CV adjustment multiplicatively over CI multiplier', () => {
+      process.env.CI = 'true';
+      // CV=50 ⇒ 1 + 50/200 = 1.25; 1000 × 1.5 × 1.25 = 1875
+      expect(getEffectiveThreshold(1000, 1.5, 50)).toBeCloseTo(1875);
+    });
+
+    it('applies CV adjustment even when not in CI', () => {
+      delete process.env.CI;
+      // No CI multiplier outside CI; CV=30 ⇒ 1 + 30/200 = 1.15
+      expect(getEffectiveThreshold(1000, 1.5, 30)).toBeCloseTo(1150);
+    });
+  });
+
+  describe('computeCvAdjustment', () => {
+    it('returns undefined when CV is omitted', () => {
+      expect(computeCvAdjustment()).toBeUndefined();
+    });
+
+    // @ts-expect-error '.each' is missing from type definitions
+    it.each([0, 10, 24.9])(
+      'returns undefined for CV below 25 (%s)',
+      (cv: number) => {
+        expect(computeCvAdjustment(cv)).toBeUndefined();
+      },
+    );
+
+    // @ts-expect-error '.each' is missing from type definitions
+    it.each([50.1, 75, 200])(
+      'returns undefined for CV above 50 (%s)',
+      (cv: number) => {
+        expect(computeCvAdjustment(cv)).toBeUndefined();
+      },
+    );
+
+    // @ts-expect-error '.each' is missing from type definitions
+    it.each([
+      [25, 1.125],
+      [30, 1.15],
+      [37.5, 1.1875],
+      [40, 1.2],
+      [50, 1.25],
+    ])('returns %s/200 + 1 for CV %s', (cv: number, expected: number) => {
+      expect(computeCvAdjustment(cv)).toBeCloseTo(expected);
+    });
   });
 
   describe('validateTimerThreshold', () => {
@@ -329,6 +385,45 @@ describe('Statistics Utils', () => {
       const violations = validateTimerThreshold(stats, thresholds);
       expect(violations).toHaveLength(1);
       expect(violations[0].severity).toBe('fail');
+    });
+
+    it('widens thresholds and records cvAdjustment when CV is in the adaptive band', () => {
+      const originalCI = process.env.CI;
+      process.env.CI = 'true';
+      try {
+        // p75=1100, base warn=900, CI multiplier 1.2 → 1080; CV=40 adds 1.2× → 1296
+        // So with CV widening, 1100 is under the warn threshold (no violation).
+        // Without widening (base 1.2 only), 1100 > 1080 → warn violation.
+        const stats = createMockStats({ cv: 40 });
+        const thresholds = {
+          p75: { warn: 900, fail: 1500 },
+          ciMultiplier: 1.2,
+        };
+        const widened = validateTimerThreshold(stats, thresholds);
+        expect(widened).toHaveLength(0);
+
+        // With a higher p75, warn triggers and the violation carries adjustment metadata.
+        const triggered = validateTimerThreshold(
+          createMockStats({ cv: 40, p75: 1400 }),
+          thresholds,
+        );
+        expect(triggered).toHaveLength(1);
+        expect(triggered[0].severity).toBe('warn');
+        expect(triggered[0].cvAdjustment).toBeCloseTo(1.2);
+        expect(triggered[0].threshold).toBeCloseTo(1296);
+      } finally {
+        process.env.CI = originalCI;
+      }
+    });
+
+    it('does not record cvAdjustment when CV is outside the adaptive band', () => {
+      const stats = createMockStats({ cv: 10, p75: 2000 });
+      const thresholds = {
+        p75: { warn: 900, fail: 1500 },
+      };
+      const violations = validateTimerThreshold(stats, thresholds);
+      expect(violations).toHaveLength(1);
+      expect(violations[0].cvAdjustment).toBeUndefined();
     });
   });
 

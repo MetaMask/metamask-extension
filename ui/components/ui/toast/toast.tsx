@@ -24,7 +24,7 @@ const statusMap = {
 export function Toaster() {
   const t = useI18nContext();
 
-  if (!isInteractiveUI() || process.env.IN_TEST) {
+  if (!isInteractiveUI()) {
     return null;
   }
 
@@ -32,6 +32,10 @@ export function Toaster() {
     <ToasterBase
       position="bottom-center"
       containerClassName="toast-container"
+      containerStyle={{
+        display: 'var(--toast-display, flex)',
+        bottom: 'var(--toaster-bottom-offset, 16px)',
+      }}
       toastOptions={{
         className: 'w-[360px] max-w-[360px] border border-border-muted',
         style: {
@@ -47,6 +51,7 @@ export function Toaster() {
           {({ message }) => (
             <>
               <StatusIcon
+                className="shrink-0"
                 state={
                   statusMap[item.type as keyof typeof statusMap] ??
                   statusMap.loading
@@ -71,16 +76,28 @@ export function Toaster() {
 
 export const ToastContent = ({
   title,
+  description,
   actionText,
   onActionClick,
+  dataTestId,
 }: {
   title: string;
+  description?: string;
   actionText?: string;
+  dataTestId?: string;
   onActionClick?: () => void;
 }) => {
   return (
-    <div>
-      <p className="text-m-body-md">{title}</p>
+    <div data-testid={dataTestId}>
+      <div className="flex min-w-0 flex-col">
+        <p className="text-m-body-md font-bold">{title}</p>
+
+        {description && (
+          <p className="mt-1 text-s-body-sm text-text-alternative">
+            {description}
+          </p>
+        )}
+      </div>
 
       {onActionClick && (
         <Button

@@ -36,6 +36,7 @@ jest.mock('../../../store/actions.ts', () => {
       });
       return Promise.resolve([value]);
     }),
+    setPna25Acknowledged: jest.fn(() => () => Promise.resolve()),
   };
 });
 
@@ -84,7 +85,7 @@ describe('Onboarding Metametrics Component', () => {
       messages.onboardingMetametricCheckboxTitleOne.message,
     );
     const description = queryByText(
-      messages.onboardingMetametricCheckboxDescriptionOne.message,
+      messages.onboardingMetametricCheckboxDescriptionOneUpdated.message,
     );
 
     expect(title).toBeInTheDocument();
@@ -119,7 +120,7 @@ describe('Onboarding Metametrics Component', () => {
       messages.onboardingMetametricCheckboxTitleOne.message,
     );
     const description = queryByText(
-      messages.onboardingMetametricCheckboxDescriptionOne.message,
+      messages.onboardingMetametricCheckboxDescriptionOneUpdated.message,
     );
 
     expect(title).toBeInTheDocument();

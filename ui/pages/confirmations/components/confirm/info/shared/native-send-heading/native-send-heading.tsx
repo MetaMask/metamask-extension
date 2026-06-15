@@ -19,10 +19,8 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../../../share
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import {
-  getPreferences,
-  selectConversionRateByChainId,
-} from '../../../../../../../selectors';
+import { selectConversionRateByChainId } from '../../../../../../../selectors';
+import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
@@ -32,12 +30,13 @@ const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { chainId } = transactionMeta;
+  const { chainId, txParams, txParamsOriginal } = transactionMeta;
 
-  const nativeAssetTransferValue = calcTokenAmount(
-    transactionMeta.txParams.value as string,
-    18,
-  );
+  // Prefer the original `value` so that container wrapping (e.g. enforced
+  // simulations) does not zero out the displayed send amount.
+  const displayValue = (txParamsOriginal?.value ?? txParams.value) as string;
+
+  const nativeAssetTransferValue = calcTokenAmount(displayValue, 18);
 
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),

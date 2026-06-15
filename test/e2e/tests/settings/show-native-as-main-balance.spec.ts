@@ -7,17 +7,18 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         'eip155:1/slip44:60': {
           id: 'ethereum',
-          price: 1,
+          price: 1700,
           marketCap: 112500000,
           totalVolume: 4500000,
           dilutedMarketCap: 120000000,
@@ -94,7 +95,7 @@ describe('Settings: Show native token as main balance', function () {
         await settingsPage.goToAssetsSettings();
         await assetsSettings.checkAssetsPageIsLoaded();
         await assetsSettings.toggleShowNativeTokenAsMainBalance();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         // assert amount displayed
         const assetListPage = new AssetListPage(driver);
@@ -128,12 +129,12 @@ describe('Settings: Show native token as main balance', function () {
         await settingsPage.goToAssetsSettings();
         await assetsSettings.checkAssetsPageIsLoaded();
         await assetsSettings.toggleShowNativeTokenAsMainBalance();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         // go to setting and back to home page and make sure popover is not shown again
         await homePage.headerNavbar.openSettingsPage();
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
         await homePage.checkPageIsLoaded();
       },
     );

@@ -22,10 +22,10 @@ import type {
  * @param props.direction - Currently selected direction
  * @param props.onDirectionChange - Callback when direction changes
  */
-export const DirectionTabs: React.FC<DirectionTabsProps> = ({
+export const DirectionTabs = ({
   direction,
   onDirectionChange,
-}) => {
+}: DirectionTabsProps) => {
   const t = useI18nContext();
 
   const handleDirectionClick = (newDirection: OrderDirection) => {
@@ -58,12 +58,13 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
       data-testid="direction-tabs"
     >
       <ButtonBase
+        type="button"
         className={longTabStyles}
         onClick={() => handleDirectionClick('long')}
         data-testid="direction-tab-long"
       >
         <Text
-          variant={TextVariant.BodySm}
+          variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           className={twMerge(
             'w-full',
@@ -75,12 +76,13 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
       </ButtonBase>
 
       <ButtonBase
+        type="button"
         className={shortTabStyles}
         onClick={() => handleDirectionClick('short')}
         data-testid="direction-tab-short"
       >
         <Text
-          variant={TextVariant.BodySm}
+          variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           className={twMerge(
             'w-full',

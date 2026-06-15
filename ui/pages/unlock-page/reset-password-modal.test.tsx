@@ -1,10 +1,20 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { SUPPORT_LINK } from '../../helpers/constants/common';
+import {
+  DEFAULT_ROUTE,
+  RESTORE_VAULT_ROUTE,
+} from '../../helpers/constants/routes';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { isPopupOrSidePanelEnvironment } from '../../../shared/lib/environment-type';
 import ResetPasswordModal from './reset-password-modal';
 
 const mockNavigate = jest.fn();
@@ -13,9 +23,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const mockResetWallet = jest.fn(() => () => Promise.resolve());
+const mockMarkPasswordForgotten = jest.fn(() => Promise.resolve());
+const mockResetWallet = jest.fn(() => Promise.resolve());
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
+  markPasswordForgotten: () => mockMarkPasswordForgotten,
   resetWallet: () => mockResetWallet,
 }));
 
@@ -26,146 +38,182 @@ jest.mock('../../selectors', () => ({
     mockGetIsSocialLoginFlow(...args),
 }));
 
-const buildStore = (metamask: Record<string, unknown> = {}) =>
-  configureMockStore([thunk])({ metamask });
+jest.mock('../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../shared/lib/environment-type'),
+  isPopupOrSidePanelEnvironment: jest.fn(),
+}));
 
-const defaultProps = {
-  onClose: jest.fn(),
-  onRestore: jest.fn(),
-};
+const mockIsPopupOrSidePanelEnvironment = jest.mocked(
+  isPopupOrSidePanelEnvironment,
+);
+
+const buildStore = () => configureMockStore([thunk])({ metamask: {} });
 
 function renderModal(
-  props: Partial<typeof defaultProps> = {},
-  metamask: Record<string, unknown> = {},
+  props: Partial<React.ComponentProps<typeof ResetPasswordModal>> = {},
+  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
-  const store = buildStore(metamask);
+  const store = buildStore();
+
   return renderWithProvider(
-    <ResetPasswordModal {...defaultProps} {...props} />,
+    <ResetPasswordModal onClose={jest.fn()} {...props} />,
     store,
+    '/',
+    undefined,
+    getMockTrackEvent,
   );
 }
 
 describe('ResetPasswordModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetIsSocialLoginFlow.mockReturnValue(false);
+    mockIsPopupOrSidePanelEnvironment.mockReturnValue(false);
+
+    // @ts-expect-error mocking platform
+    globalThis.platform = {
+      openExtensionInBrowser: jest.fn(),
+    };
   });
 
   describe('initial render', () => {
-    it('renders the modal with the forgot-password title', () => {
-      const { getByText } = renderModal();
+    it('renders the SRP recovery content by default', () => {
+      renderModal();
+
       expect(
-        getByText(messages.forgotPasswordModalTitle.message),
+        screen.getByText(messages.forgotPasswordModalTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.forgotPasswordModalDescription1.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.forgotPasswordModalDescription2.message),
       ).toBeInTheDocument();
     });
 
-    it('does not show the danger icon or back button on initial view', () => {
-      const { queryByTestId } = renderModal();
-      expect(queryByTestId('reset-password-modal')).toBeInTheDocument();
-      const backBtn = document
-        .querySelector('[data-testid="reset-password-modal"]')
-        ?.querySelector('[aria-label="Back"]');
-      if (backBtn) {
-        expect(backBtn).toHaveStyle({ display: 'none' });
-      }
-    });
-  });
-
-  describe('SRP login flow (isSocialLoginEnabled = false)', () => {
-    it('renders SRP description paragraphs', () => {
-      const { getByText } = renderModal();
-      expect(
-        getByText(messages.forgotPasswordModalDescription1.message),
-      ).toBeInTheDocument();
-      expect(
-        getByText(messages.forgotPasswordModalDescription2.message),
-      ).toBeInTheDocument();
-    });
-
-    it('renders the contact support link', () => {
-      const { getByText } = renderModal();
-      expect(
-        getByText(messages.forgotPasswordModalContactSupportLink.message),
-      ).toBeInTheDocument();
-    });
-
-    it('calls onRestore when "Import wallet" button is clicked', () => {
-      const onRestore = jest.fn();
-      const { getByTestId } = renderModal({ onRestore });
-      fireEvent.click(getByTestId('reset-password-modal-button'));
-      expect(onRestore).toHaveBeenCalledTimes(1);
-    });
-
-    it('switches to reset-wallet view when "I don\'t know my Phrase" is clicked', () => {
-      const { getByTestId, getByText } = renderModal();
-      fireEvent.click(getByTestId('reset-password-modal-button-link'));
-      expect(getByText(messages.resetWalletTitle.message)).toBeInTheDocument();
-    });
-  });
-
-  describe('social login flow (isSocialLoginEnabled = true)', () => {
-    const socialLoginMeta = { firstTimeFlowType: 'socialImport' };
-
-    beforeEach(() => {
+    it('renders the social recovery content when social login is enabled', () => {
       mockGetIsSocialLoginFlow.mockReturnValue(true);
-    });
 
-    afterEach(() => {
-      mockGetIsSocialLoginFlow.mockReturnValue(false);
-    });
+      renderModal();
 
-    it('renders the social-login description when isSocialLoginEnabled is true', () => {
-      const { getByText } = renderModal({}, socialLoginMeta);
       expect(
-        getByText(messages.forgotPasswordModalContactSupportLink.message),
+        screen.getByText(messages.forgotPasswordSocialStep1Biometrics.message),
       ).toBeInTheDocument();
-    });
-
-    it('renders the "Import wallet" and "I don\'t know my Phrase" buttons in social flow', () => {
-      const { getByTestId } = renderModal({}, socialLoginMeta);
-      expect(getByTestId('reset-password-modal-button')).toBeInTheDocument();
       expect(
-        getByTestId('reset-password-modal-button-link'),
+        screen.getByText(messages.secretRecoveryPhrase.message),
       ).toBeInTheDocument();
-    });
-
-    it('calls onRestore when "Import wallet" is clicked in social flow', () => {
-      const onRestore = jest.fn();
-      const { getByTestId } = renderModal({ onRestore }, socialLoginMeta);
-      fireEvent.click(getByTestId('reset-password-modal-button'));
-      expect(onRestore).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('reset-wallet confirmation view', () => {
-    function renderAndOpenResetView(props = {}) {
-      const result = renderModal(props);
-      fireEvent.click(result.getByTestId('reset-password-modal-button-link'));
-      return result;
+  describe('restore wallet action', () => {
+    it('tracks the reset event, dispatches markPasswordForgotten, and navigates in fullscreen', async () => {
+      const mockTrackEvent = jest.fn();
+
+      renderModal({}, () => mockTrackEvent);
+
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith({
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.ResetWallet,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: 'metamask',
+          },
+        });
+        expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
+        expect(mockNavigate).toHaveBeenCalledWith(RESTORE_VAULT_ROUTE, {
+          replace: true,
+        });
+      });
+
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+    });
+
+    it('opens the extension in full screen when restoring from popup', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+
+      renderModal();
+
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
+
+      await waitFor(() => {
+        expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          RESTORE_VAULT_ROUTE,
+        );
+      });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('opens the extension in full screen when restoring from side panel', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+
+      renderModal();
+
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
+
+      await waitFor(() => {
+        expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          RESTORE_VAULT_ROUTE,
+        );
+      });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('tracks the social account type when social login is enabled', async () => {
+      const mockTrackEvent = jest.fn();
+      mockGetIsSocialLoginFlow.mockReturnValue(true);
+
+      renderModal({}, () => mockTrackEvent);
+
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith({
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.ResetWallet,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: 'social',
+          },
+        });
+      });
+    });
+  });
+
+  describe('reset wallet confirmation view', () => {
+    function openResetWalletView() {
+      renderModal();
+
+      fireEvent.click(screen.getByTestId('reset-password-modal-button-link'));
     }
 
-    it('shows reset-wallet title after clicking "I don\'t know my Phrase"', () => {
-      const { getByText } = renderAndOpenResetView();
-      expect(getByText(messages.resetWalletTitle.message)).toBeInTheDocument();
-    });
+    it('switches to the reset wallet confirmation view and back', () => {
+      openResetWalletView();
 
-    it('shows "Yes, reset wallet" danger button in reset-wallet view', () => {
-      const { getByText } = renderAndOpenResetView();
-      expect(getByText(messages.resetWalletButton.message)).toBeInTheDocument();
-    });
-
-    it('hides SRP description paragraphs in reset-wallet view', () => {
-      const { queryByText, getByTestId } = renderAndOpenResetView();
       expect(
-        queryByText(messages.forgotPasswordModalDescription1.message),
-      ).toBeNull();
-      expect(getByTestId('reset-password-modal-button')).toBeInTheDocument();
+        screen.getByText(messages.resetWalletTitle.message),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByLabelText(messages.back.message));
+
+      expect(
+        screen.getByText(messages.forgotPasswordModalTitle.message),
+      ).toBeInTheDocument();
     });
 
-    it('calls onClose, dispatches resetWallet, and navigates to DEFAULT_ROUTE on confirm', async () => {
+    it('closes the modal, dispatches resetWallet, and navigates in fullscreen', async () => {
       const onClose = jest.fn();
-      const { getByTestId } = renderAndOpenResetView({ onClose });
 
-      fireEvent.click(getByTestId('reset-password-modal-button'));
+      renderModal({ onClose });
+
+      fireEvent.click(screen.getByTestId('reset-password-modal-button-link'));
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
 
       await waitFor(() => {
         expect(onClose).toHaveBeenCalledTimes(1);
@@ -174,48 +222,83 @@ describe('ResetPasswordModal', () => {
           replace: true,
         });
       });
+
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
     });
 
-    it('goes back to forgot-password view when back button is clicked', () => {
-      const { getByTestId, getByText, queryByText } = renderAndOpenResetView();
-      expect(getByText(messages.resetWalletTitle.message)).toBeInTheDocument();
+    it('opens the extension in browser after reset from popup', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
 
-      const backBtn = getByTestId('reset-password-modal')
-        .closest('[role="dialog"]')
-        ?.querySelector('button[aria-label="Back"]');
+      renderModal();
 
-      if (backBtn) {
-        fireEvent.click(backBtn);
-        expect(
-          queryByText(messages.forgotPasswordModalTitle.message),
-        ).toBeInTheDocument();
-      }
+      fireEvent.click(screen.getByTestId('reset-password-modal-button-link'));
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
+
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+        );
+      });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('opens the extension in browser after reset from side panel', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+
+      renderModal();
+
+      fireEvent.click(screen.getByTestId('reset-password-modal-button-link'));
+      fireEvent.click(screen.getByTestId('reset-password-modal-button'));
+
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+        );
+      });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('support link', () => {
+    it('tracks the support link click', () => {
+      const mockTrackEvent = jest.fn();
+
+      renderModal({}, () => mockTrackEvent);
+
+      fireEvent.click(
+        screen.getByText(
+          messages.forgotPasswordModalContactSupportLink.message,
+        ),
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        {
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.SupportLinkClicked,
+          properties: {
+            url: SUPPORT_LINK,
+          },
+        },
+        {
+          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+        },
+      );
     });
   });
 
   describe('modal close', () => {
-    it('calls onClose when the modal close button is clicked', () => {
+    it('calls onClose when the close button is clicked', () => {
       const onClose = jest.fn();
-      const { getByTestId } = renderModal({ onClose });
-      const closeBtn = getByTestId('reset-password-modal')
-        .closest('[role="dialog"]')
-        ?.querySelector('button[aria-label="Close"]');
 
-      if (closeBtn) {
-        fireEvent.click(closeBtn);
-        expect(onClose).toHaveBeenCalledTimes(1);
-      }
-    });
-  });
+      renderModal({ onClose });
 
-  describe('MetaMetrics tracking', () => {
-    it('fires a trackEvent when the contact support link is clicked', () => {
-      const { getByText } = renderModal();
-      expect(() =>
-        fireEvent.click(
-          getByText(messages.forgotPasswordModalContactSupportLink.message),
-        ),
-      ).not.toThrow();
+      fireEvent.click(screen.getByLabelText(messages.close.message));
+
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
   });
 });

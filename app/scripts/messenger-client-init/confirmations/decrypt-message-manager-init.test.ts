@@ -1,10 +1,10 @@
-import { DecryptMessageManager } from '@metamask/message-manager';
+import {
+  DecryptMessageManager,
+  DecryptMessageManagerMessenger,
+} from '@metamask/message-manager';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  getDecryptMessageManagerMessenger,
-  DecryptMessageManagerMessenger,
-} from '../messengers';
+import { getDecryptMessageManagerMessenger } from '../messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import { DecryptMessageManagerInit } from './decrypt-message-manager-init';
 

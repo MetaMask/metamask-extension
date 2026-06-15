@@ -5,11 +5,13 @@ import {
   BridgeControllerState,
   getNativeAssetForChainId,
   ChainId,
+  GenericQuoteRequest,
+  DEFAULT_BRIDGE_CONTROLLER_STATE,
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { zeroAddress } from 'ethereumjs-util';
-import { type CaipChainId } from '@metamask/utils';
+import type { Hex, CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
@@ -173,7 +175,10 @@ export const MOCK_EXTERNAL_SOLANA_ADDRESS =
   '8sKQHfjNhvmAw94PhfvfMcytmqW6jmxvwieYyzXCCPu';
 
 export const createBridgeMockStore = ({
-  featureFlagOverrides = { bridgeConfig: {} },
+  featureFlagOverrides = {
+    bridgeConfig: {},
+    gasFeesSponsoredNetwork: {},
+  },
   bridgeSliceOverrides = {},
   bridgeStateOverrides = {},
   bridgeStatusStateOverrides = {},
@@ -185,8 +190,15 @@ export const createBridgeMockStore = ({
       chainRanking?: { chainId: CaipChainId; name?: string }[];
     };
     smartTransactionsNetworks?: SmartTransactionsNetworks;
+    gasFeesSponsoredNetwork?: { [chainId: Hex]: boolean };
   };
-  bridgeStateOverrides?: Partial<BridgeControllerState>;
+  bridgeStateOverrides?: Partial<
+    Omit<BridgeControllerState, 'quoteRequest'>
+  > & {
+    quoteRequest?:
+      | Partial<GenericQuoteRequest>[]
+      | Partial<GenericQuoteRequest>;
+  };
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
   // TODO replace these with correct types
@@ -729,6 +741,13 @@ export const createBridgeMockStore = ({
       },
       ...bridgeStateOverrides,
       ...bridgeStatusStateOverrides,
+      ...(bridgeStateOverrides?.quoteRequest
+        ? {
+            quoteRequest: Array.isArray(bridgeStateOverrides?.quoteRequest)
+              ? bridgeStateOverrides?.quoteRequest
+              : [bridgeStateOverrides?.quoteRequest],
+          }
+        : { quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest }),
     },
     DNS: {
       resolutions: [],

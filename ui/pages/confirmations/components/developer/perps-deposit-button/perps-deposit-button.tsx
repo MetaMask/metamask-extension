@@ -1,15 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import { Interface } from '@ethersproject/abi';
-import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { getSelectedInternalAccount } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { DeveloperButton } from '../developer-button';
 import {
@@ -20,28 +18,11 @@ import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../../hooks/useConfirmationNavigation';
-
-const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
-const erc20Interface = new Interface(ERC20_ABI);
-
-const generateERC20TransferData = (
-  recipient: Hex,
-  amount: string,
-  decimals: number,
-): Hex => {
-  const multiplier = new BigNumber(10).pow(decimals);
-  const amountRaw = new BigNumber(amount).times(multiplier);
-
-  return erc20Interface.encodeFunctionData('transfer', [
-    recipient,
-    `0x${amountRaw.toString(16)}`,
-  ]) as Hex;
-};
+import { generateERC20TransferData } from '../utils';
 
 export const PerpsDepositButton = () => {
   const { navigateToTransaction } = useConfirmationNavigation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const [hasTriggered, setHasTriggered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTrigger = useCallback(async () => {
@@ -76,8 +57,6 @@ export const PerpsDepositButton = () => {
         },
       );
 
-      setHasTriggered(true);
-
       navigateToTransaction(txMeta.id, {
         loader: ConfirmationLoader.CustomAmount,
       });
@@ -91,10 +70,7 @@ export const PerpsDepositButton = () => {
   return (
     <DeveloperButton
       title="Perps Deposit"
-      description="Triggers a Perps deposit confirmation."
-      buttonLabel={isLoading ? 'Loading...' : 'Trigger'}
       onPress={handleTrigger}
-      hasTriggered={hasTriggered}
       disabled={isLoading}
     />
   );

@@ -21,7 +21,7 @@ describe('Test Snap Background Events', function () {
         testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 
@@ -70,7 +70,7 @@ describe('Test Snap Background Events', function () {
         // try to click on the Ok button and pass test if window closes
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Close',
-          tag: 'span',
+          tag: 'button',
         });
       },
     );
@@ -144,7 +144,7 @@ describe('Test Snap Background Events', function () {
         // try to click on the Ok button and pass test if window closes
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Close',
-          tag: 'span',
+          tag: 'button',
         });
       },
     );

@@ -5,7 +5,10 @@ import { buildPerformanceBenchmarksSection } from './performance-benchmarks';
 import { buildTestPlanSection } from './test-plan';
 import { buildSectionWithFallback, postCommentWithMetamaskBot } from './utils';
 
-start().catch(console.error);
+start().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
 async function start(): Promise<void> {
   const {
@@ -15,7 +18,7 @@ async function start(): Promise<void> {
     RUN_ID,
     PR_NUMBER,
     HEAD_COMMIT_HASH,
-    MERGE_BASE_COMMIT_HASH,
+    BUNDLE_SIZE_BASELINE_COMMIT_HASHES,
     HOST_URL,
     BUILDS_FROM_SHA,
     BUILDS_FROM_RUN,
@@ -35,11 +38,10 @@ async function start(): Promise<void> {
     !REPOSITORY ||
     !RUN_ID ||
     !HEAD_COMMIT_HASH ||
-    !MERGE_BASE_COMMIT_HASH ||
     !HOST_URL
   ) {
     throw new Error(
-      'Missing required environment variables: PR_COMMENT_TOKEN, OWNER, REPOSITORY, RUN_ID, HEAD_COMMIT_HASH, MERGE_BASE_COMMIT_HASH, HOST_URL',
+      'Missing required environment variables: PR_COMMENT_TOKEN, OWNER, REPOSITORY, RUN_ID, HEAD_COMMIT_HASH, HOST_URL',
     );
   }
 
@@ -68,7 +70,8 @@ async function start(): Promise<void> {
   );
 
   commentBody += await buildSectionWithFallback(
-    () => buildBundleSizeDiffSection(artifacts, MERGE_BASE_COMMIT_HASH),
+    () =>
+      buildBundleSizeDiffSection(artifacts, BUNDLE_SIZE_BASELINE_COMMIT_HASHES),
     'Bundle size diffs',
   );
 

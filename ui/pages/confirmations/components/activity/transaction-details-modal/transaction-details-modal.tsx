@@ -40,6 +40,8 @@ export function TransactionDetailsModal({
         return t('musdConversionTitle');
       case TransactionType.perpsDeposit:
         return t('perpsDepositTitle');
+      case TransactionType.perpsWithdraw:
+        return t('perpsWithdrawFundsTitle');
       default:
         return t('transaction');
     }
