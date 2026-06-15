@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   Box,
   Text,
@@ -11,8 +11,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AddDeviceSettingsStep } from '../constant';
 
 const CODE_LENGTH = 6;
-const DIGITS_REGEX = /[^0-9]/gu;
+const NON_DIGITS_REGEX = /\D/gu;
+const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
 const TEMP_VERIFICATION_CODE = '123456';
+
+const createEmptyCode = () => Array<string>(CODE_LENGTH).fill('');
 
 type EnterVerificationCodeProps = {
   onContinue: (type: AddDeviceSettingsStep) => void;
@@ -21,99 +24,132 @@ type EnterVerificationCodeProps = {
 const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
   const t = useI18nContext();
   const [isError, setIsError] = useState(false);
-  const [code, setCode] = useState<string[]>(() => Array(CODE_LENGTH).fill(''));
-  const inputRefs = useRef<(HTMLInputElement | null)[]>(
-    Array(CODE_LENGTH).fill(null),
-  );
+  const [code, setCode] = useState<string[]>(createEmptyCode);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const focusInput = useCallback((index: number) => {
-    const target = inputRefs.current[index];
-    if (target) {
-      target.focus();
-      target.select();
-    }
+    const clampedIndex = Math.max(0, Math.min(index, CODE_LENGTH - 1));
+    const target = inputRefs.current[clampedIndex];
+    target?.focus();
+    target?.select();
   }, []);
 
-  const handleChange = useCallback(
-    (rawValue: string, index: number) => {
-      const sanitized = rawValue.replace(DIGITS_REGEX, '');
+  // Single place that persists a new code and reacts to completion, so the
+  // change/paste/keydown handlers never duplicate validation or error resets.
+  const commitCode = useCallback(
+    (nextCode: string[]) => {
+      setCode(nextCode);
       setIsError(false);
 
-      if (!sanitized) {
-        setCode((prev) => {
-          const next = [...prev];
-          next[index] = '';
-          return next;
-        });
+      const joined = nextCode.join('');
+      if (joined.length < CODE_LENGTH) {
         return;
       }
 
-      // Support pasting / multi-character input by spreading across boxes.
-      setCode((prev) => {
-        const next = [...prev];
-        for (let i = 0; i < sanitized.length && index + i < CODE_LENGTH; i++) {
-          next[index + i] = sanitized[i];
-        }
-        return next;
-      });
-
-      const nextIndex = Math.min(index + sanitized.length, CODE_LENGTH - 1);
-      focusInput(nextIndex);
+      if (joined === TEMP_VERIFICATION_CODE) {
+        onContinue(AddDeviceSettingsStep.EnterPassword);
+      } else {
+        setIsError(true);
+      }
     },
-    [focusInput],
+    [onContinue],
+  );
+
+  // Writes one or more digits starting at `startIndex` (typing or pasting),
+  // then moves focus to the box following the last digit written.
+  const writeDigits = useCallback(
+    (startIndex: number, digits: string) => {
+      const nextCode = [...code];
+      let cursor = startIndex;
+      for (const digit of digits) {
+        if (cursor >= CODE_LENGTH) {
+          break;
+        }
+        nextCode[cursor] = digit;
+        cursor += 1;
+      }
+
+      commitCode(nextCode);
+      focusInput(cursor);
+    },
+    [code, commitCode, focusInput],
+  );
+
+  const clearDigit = useCallback(
+    (index: number) => {
+      const nextCode = [...code];
+      nextCode[index] = '';
+      commitCode(nextCode);
+    },
+    [code, commitCode],
+  );
+
+  const handleChange = useCallback(
+    (rawValue: string, index: number) => {
+      const sanitized = rawValue.replace(NON_DIGITS_REGEX, '');
+      if (sanitized) {
+        writeDigits(index, sanitized);
+      } else {
+        clearDigit(index);
+      }
+    },
+    [writeDigits, clearDigit],
   );
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
       const { key } = event;
 
-      if (key === 'Backspace') {
-        if (code[index]) {
-          setCode((prev) => {
-            const next = [...prev];
-            next[index] = '';
-            return next;
-          });
-          return;
-        }
-        if (index > 0) {
+      // Re-typing into a filled box must be handled here: the browser won't
+      // fire onChange because the box is already at maxLength and the
+      // controlled value is unchanged when the same digit is entered again.
+      if (SINGLE_DIGIT_REGEX.test(key) && code[index]) {
+        event.preventDefault();
+        writeDigits(index, key);
+        return;
+      }
+
+      switch (key) {
+        case 'Backspace':
+          // Owning Backspace prevents the native delete from also firing
+          // onChange and clearing the box a second time.
           event.preventDefault();
-          setCode((prev) => {
-            const next = [...prev];
-            next[index - 1] = '';
-            return next;
-          });
+          if (code[index]) {
+            clearDigit(index);
+          } else if (index > 0) {
+            const nextCode = [...code];
+            nextCode[index - 1] = '';
+            commitCode(nextCode);
+            focusInput(index - 1);
+          }
+          break;
+        case 'ArrowLeft':
+          event.preventDefault();
           focusInput(index - 1);
-        }
-        return;
-      }
-
-      if (key === 'ArrowLeft' && index > 0) {
-        event.preventDefault();
-        focusInput(index - 1);
-        return;
-      }
-
-      if (key === 'ArrowRight' && index < CODE_LENGTH - 1) {
-        event.preventDefault();
-        focusInput(index + 1);
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          focusInput(index + 1);
+          break;
+        default:
+          break;
       }
     },
-    [code, focusInput],
+    [code, writeDigits, clearDigit, commitCode, focusInput],
   );
 
   const handlePaste = useCallback(
     (event: React.ClipboardEvent<HTMLInputElement>, index: number) => {
       const pasted = event.clipboardData
         .getData('text')
-        .replace(DIGITS_REGEX, '');
+        .replace(NON_DIGITS_REGEX, '');
       if (!pasted) {
         return;
       }
       event.preventDefault();
-      handleChange(pasted, index);
+      writeDigits(index, pasted);
     },
-    [handleChange],
+    [writeDigits],
   );
 
   const handleFocus = useCallback(
@@ -122,16 +158,6 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
     },
     [],
   );
-
-  useEffect(() => {
-    if (code.every((digit) => digit.length === 1)) {
-      if (code.join('') === TEMP_VERIFICATION_CODE) {
-        onContinue(AddDeviceSettingsStep.EnterPassword);
-      } else {
-        setIsError(true);
-      }
-    }
-  }, [code, onContinue]);
 
   return (
     <Box className="p-4 flex flex-1 flex-col gap-6">
@@ -150,7 +176,10 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
       <Box className="flex flex-row items-center justify-between gap-2 px-6 w-[80%] mx-auto">
         {code.map((digit, index) => (
           <Input
-            key={index}
+            // The list is a fixed-length set of positional inputs, so the
+            // index is a stable identity here.
+            // eslint-disable-next-line react/no-array-index-key
+            key={`verification-code-${index}`}
             ref={(ref) => {
               inputRefs.current[index] = ref;
             }}
