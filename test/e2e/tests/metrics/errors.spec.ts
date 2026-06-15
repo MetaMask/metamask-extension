@@ -110,6 +110,9 @@ const removedBackgroundFields = [
   // Populated by the Home page mount, so captured as `null` or a string
   // depending on whether the mount wins the race before the error fires.
   'AppStateController.pendingShieldCohort',
+  // Present only once the SRP/account-sync session is established, so its
+  // capture is timing-dependent across runs.
+  'AuthenticationController.srpSessionData',
   // PhishingController properties (except urlScanCache which is masked)
   'PhishingController.c2DomainBlocklistLastFetched',
   'PhishingController.hotlistLastFetched',
