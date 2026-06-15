@@ -8,8 +8,9 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getLatestMetricsEventTimestamp,
 } from '../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
@@ -29,10 +30,13 @@ describe('DeleteMetaMetricsDataButton', () => {
   beforeEach(() => {
     useDispatchMock.mockReturnValue(mockDispatch);
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
         return true;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getOptedIn) {
+        return true;
+      }
+      if (selector === getAnalyticsId) {
         return 'fake-metrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -88,10 +92,13 @@ describe('DeleteMetaMetricsDataButton', () => {
       if (selector === getMetaMetricsDataDeletionStatus) {
         return 'INITIALIZED';
       }
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
         return true;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getOptedIn) {
+        return true;
+      }
+      if (selector === getAnalyticsId) {
         return 'fake-metrics-id';
       }
       return undefined;
@@ -115,7 +122,10 @@ describe('DeleteMetaMetricsDataButton', () => {
   // if user does not opt in to participate in metrics or for backup and sync, metametricsId will not be created.
   it('should disable the data deletion button when there is metametrics id not available', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
+        return true;
+      }
+      if (selector === getOptedIn) {
         return false;
       }
       return undefined;
@@ -144,7 +154,7 @@ describe('DeleteMetaMetricsDataButton', () => {
   // particilapteInMetrics will be false before the deletion is performed, this way no further data will be recorded after deletion.
   it('should disable the data deletion button after a deletion task is performed and no data is recoded after the deletion', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getMetaMetricsId) {
+      if (selector === getAnalyticsId) {
         return 'fake-metrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -177,7 +187,7 @@ describe('DeleteMetaMetricsDataButton', () => {
   // particilapteInMetrics will be false before the deletion is performed, this way no further data will be recorded after deletion.
   it('should disable the data deletion button after a deletion task is performed and no data is recoded after the deletion', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getMetaMetricsId) {
+      if (selector === getAnalyticsId) {
         return 'fake-metrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {

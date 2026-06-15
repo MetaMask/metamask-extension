@@ -8,7 +8,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   mockCurrencyExchangeRates,
@@ -219,13 +219,13 @@ describe('Token List via StorageService', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
-        await assetListPage.importTokenBySearch({
+        await tokensTab.importTokenBySearch({
           tokenName,
           networkName: MAINNET_DISPLAY_NAME,
         });
-        await assetListPage.checkTokenExistsInList(tokenName);
+        await tokensTab.checkTokenExistsInList(tokenName);
       },
     );
   });

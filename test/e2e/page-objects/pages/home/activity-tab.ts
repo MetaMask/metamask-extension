@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import HomePage from './homepage';
 
-class ActivityListPage extends HomePage {
+class ActivityTab extends HomePage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
 
@@ -624,4 +624,4 @@ class ActivityListPage extends HomePage {
   }
 }
 
-export default ActivityListPage;
+export default ActivityTab;

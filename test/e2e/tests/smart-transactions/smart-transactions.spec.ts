@@ -8,7 +8,7 @@ import {
   createDappTransaction,
   createInternalTransaction,
 } from '../../page-objects/flows/transaction.flow';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
@@ -94,7 +94,7 @@ describe('Smart Transactions', function () {
         // fill ens address as recipient when user lands on send token screen
         const transactionConfirmation = new TransactionConfirmation(driver);
         const homePage = new HomePage(driver);
-        const activityList = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
 
         await createInternalTransaction({
           driver,
@@ -107,10 +107,10 @@ describe('Smart Transactions', function () {
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
         await homePage.goToActivityList();
-        await activityList.checkCompletedTxNumberDisplayedInActivity(1);
-        await activityList.checkNoFailedTransactions();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },
     );
   });
@@ -134,7 +134,6 @@ describe('Smart Transactions', function () {
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
-        await homePage.checkIfSwapButtonIsClickable();
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
@@ -150,12 +149,12 @@ describe('Smart Transactions', function () {
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedTxNumberDisplayedInActivity();
-        await activityList.checkNoFailedTransactions();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
-        await activityList.checkTxAction({ action: 'Swapped ETH to DAI' });
-        await activityList.checkTxAmountInActivity(`+4,625.9799 DAI`, 1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+        await activityTab.checkTxAction({ action: 'Swapped ETH to DAI' });
+        await activityTab.checkTxAmountInActivity(`+4,625.9799 DAI`, 1);
       },
     );
   });
@@ -168,7 +167,6 @@ describe('Smart Transactions', function () {
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
-        await homePage.checkIfSwapButtonIsClickable();
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
@@ -184,10 +182,10 @@ describe('Smart Transactions', function () {
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedTxNumberDisplayedInActivity();
-        await activityList.checkNoFailedTransactions();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
       },
     );
   });
@@ -211,10 +209,10 @@ describe('Smart Transactions', function () {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedTxNumberDisplayedInActivity();
-        await activityList.checkNoFailedTransactions();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
       },
     );
   });

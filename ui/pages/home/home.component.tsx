@@ -130,7 +130,7 @@ export type HomeProps = {
   showUpdateModal: boolean;
   newNetworkAddedConfigurationId?: string;
   totalUnapprovedCount: number;
-  participateInMetaMetrics?: boolean;
+  isMetaMetricsEnabled?: boolean;
   setDataCollectionForMarketing: (val: boolean) => void;
   dataCollectionForMarketing?: boolean | null;
   location?: RouterLocation;
@@ -879,7 +879,7 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
-      participateInMetaMetrics,
+      isMetaMetricsEnabled,
       dataCollectionForMarketing,
       connectedStatusPopoverHasBeenShown,
       isPopup,
@@ -983,8 +983,7 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
     return (
       <ScrollContainer className="main-container main-container--has-shadow">
         <div className="home__container">
-          {dataCollectionForMarketing === null &&
-          participateInMetaMetrics === true
+          {dataCollectionForMarketing === null && isMetaMetricsEnabled === true
             ? this.renderOnboardingPopover()
             : null}
           {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}

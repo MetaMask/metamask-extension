@@ -4,7 +4,7 @@ import { Browser } from 'selenium-webdriver';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
@@ -164,9 +164,9 @@ describe('MetaMask Responsive UI', function (this: Suite) {
 
         // check confirmed transaction is displayed in activity list
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAmountInActivity('-1 ETH');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAmountInActivity('-1 ETH');
       },
     );
   });
