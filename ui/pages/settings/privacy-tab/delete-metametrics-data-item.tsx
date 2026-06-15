@@ -14,8 +14,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getLatestMetricsEventTimestamp,
 } from '../../../selectors';
 import { Toast, ToastContainer } from '../../../components/multichain/toast';
@@ -35,7 +36,7 @@ export const DeleteMetametricsDataItem = () => {
   const [showDataDeletionSuccessToast, setShowDataDeletionSuccessToast] =
     useState(false);
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const analyticsId = useSelector(getAnalyticsId);
   const metaMetricsDataDeletionStatus: DeleteRegulationStatus = useSelector(
     getMetaMetricsDataDeletionStatus,
   );
@@ -45,14 +46,18 @@ export const DeleteMetametricsDataItem = () => {
   const latestMetricsEventTimestamp = useSelector(
     getLatestMetricsEventTimestamp,
   );
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled =
-    useSelector(getParticipateInMetaMetrics) && Boolean(metaMetricsId);
+    completedMetaMetricsOnboarding && isOptedIn && Boolean(analyticsId);
 
   const hasNoPendingDataToDelete =
     metaMetricsDataDeletionTimestamp > latestMetricsEventTimestamp;
 
   const isDataDeletionInProgress =
-    Boolean(metaMetricsId) &&
+    Boolean(analyticsId) &&
     DATA_DELETION_REQUESTED_STATUSES.includes(metaMetricsDataDeletionStatus) &&
     hasNoPendingDataToDelete;
 

@@ -7,12 +7,6 @@
     "message": "로딩이 평소보다 오래 걸립니다.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "오류"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "일치하지 않는 트랜잭션 데이터. 트랜잭션 세부 정보를 확인하세요."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "더 이상 계정이 없습니다. 아래 목록에 없는 다른 계정에 액세스하려면 하드웨어 지갑을 다시 연결하고 선택하세요."
   },

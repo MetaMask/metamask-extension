@@ -16,6 +16,7 @@ exports[`ConfirmInfoRowUrl renders HTTP warning badge for HTTP URLs when trust s
     </p>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      data-testid="confirmation__details-origin"
     >
       www.example.com/
     </p>
