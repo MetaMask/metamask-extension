@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.35.1]
 
+### Added
+
+- Added Arc network integration (#43509)
+
+### Changed
+
+- Removed trailing slash from Arc explorer URL (#43546)
+- Bumped multiple audit packages (#43572)
+
+### Fixed
+
+- Fixed Arc Native USDC being shown in swaps, now filters in favor of ERC-20 asset (#43550)
+- Fixed send flow displaying incorrect balances, wrong gas fees, and false "insufficient funds" alerts when Network Manager selection differs from transaction chain (#43371)
+
 ## [13.35.0]
 
 ### Added
