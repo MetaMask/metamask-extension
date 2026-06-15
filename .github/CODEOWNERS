@@ -196,21 +196,21 @@ test/e2e/benchmarks/utils/gated-metrics.ts                            @MetaMask/
 test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/qa @MetaMask/extension-platform
 
 # Wallet Integrations
-app/scripts/lib/rpc-method-middleware                                 @MetaMask/wallet-integrations
-shared/lib/caip25-caveat-merger.ts                                    @MetaMask/wallet-integrations
-test/e2e/page-objects/benchmark                                       @MetaMask/wallet-integrations
-test/e2e/playwright/benchmark                                         @MetaMask/wallet-integrations
-test/e2e/flask/multichain-api                                         @MetaMask/wallet-integrations
+test/e2e/page-objects/benchmark                                       @MetaMask/core-platform
+test/e2e/playwright/benchmark                                         @MetaMask/core-platform
+app/scripts/lib/createDefiReferralMiddleware.ts                       @MetaMask/core-platform
+app/scripts/lib/rpc-method-middleware                                 @MetaMask/core-platform
+shared/lib/caip25-caveat-merger.ts                                    @MetaMask/core-platform
+test/e2e/flask/multichain-api                                         @MetaMask/core-platform
 # TODO CONSOLIDATE THE MIDDLEWARE BELOW INTO THE RPC-METHOD-MIDDLEWARE FOLDER
-app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/wallet-integrations
-app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/wallet-integrations
-app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/wallet-integrations
-app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/wallet-integrations
-app/scripts/lib/createDefiReferralMiddleware.ts                @MetaMask/wallet-integrations
-app/scripts/lib/middleware/                                           @MetaMask/wallet-integrations
-app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/wallet-integrations
-app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/wallet-integrations
-app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/wallet-integrations
+app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/core-platform
+app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/core-platform
+app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/core-platform
+app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/core-platform
+app/scripts/lib/middleware/                                           @MetaMask/core-platform
+app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/core-platform
+app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/core-platform
+app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/core-platform
 
 # mUSD
 **/musd/** @MetaMask/earn
