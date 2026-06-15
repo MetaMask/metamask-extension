@@ -20,7 +20,17 @@ export class TestDappBitcoin {
     value: 'bitcoin:mainnet',
   };
 
+  private readonly connectButtonSelector = {
+    testId: dataTestIds.testPage.header.connect,
+    tag: 'button',
+  };
+
   private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
+
+  private readonly disconnectButtonSelector = {
+    testId: dataTestIds.testPage.header.disconnect,
+    tag: 'button',
+  };
 
   private readonly driver: Driver;
 
@@ -32,6 +42,26 @@ export class TestDappBitcoin {
   private readonly headerConnectionStateSelector = {
     css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
     text: 'Connected',
+  };
+
+  private readonly metamaskWalletOptionSelector = {
+    testId: dataTestIds.testPage.walletSelectionModal.walletOption,
+    text: 'MetaMask',
+  };
+
+  private readonly satsConnectV3ButtonSelector = {
+    testId: dataTestIds.testPage.walletSelectionModal.satsConnectV3Button,
+    tag: 'button',
+  };
+
+  private readonly satsConnectV4ButtonSelector = {
+    testId: dataTestIds.testPage.walletSelectionModal.satsConnectV4Button,
+    tag: 'button',
+  };
+
+  private readonly standardButtonSelector = {
+    testId: dataTestIds.testPage.walletSelectionModal.standardButton,
+    tag: 'button',
   };
 
   constructor(driver: Driver) {
@@ -57,39 +87,21 @@ export class TestDappBitcoin {
   async connectToWallet(
     lib: WalletConnectionType = WalletConnectionType.SatsConnectV3,
   ) {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.connect,
-      tag: 'button',
-    });
+    await this.driver.clickElement(this.connectButtonSelector);
 
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.walletSelectionModal.walletOption,
-      text: 'MetaMask',
-    });
+    await this.driver.clickElement(this.metamaskWalletOptionSelector);
 
     if (lib === WalletConnectionType.SatsConnectV3) {
-      await this.driver.clickElement({
-        testId: dataTestIds.testPage.walletSelectionModal.satsConnectV3Button,
-        tag: 'button',
-      });
+      await this.driver.clickElement(this.satsConnectV3ButtonSelector);
     } else if (lib === WalletConnectionType.SatsConnectV4) {
-      await this.driver.clickElement({
-        testId: dataTestIds.testPage.walletSelectionModal.satsConnectV4Button,
-        tag: 'button',
-      });
+      await this.driver.clickElement(this.satsConnectV4ButtonSelector);
     } else {
-      await this.driver.clickElement({
-        testId: dataTestIds.testPage.walletSelectionModal.standardButton,
-        tag: 'button',
-      });
+      await this.driver.clickElement(this.standardButtonSelector);
     }
   }
 
   async disconnect() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.disconnect,
-      tag: 'button',
-    });
+    await this.driver.clickElement(this.disconnectButtonSelector);
   }
 
   async findConnectedAccount(account: string) {
