@@ -133,16 +133,22 @@ export const MultichainAccounts: StoryFn<typeof SelectHardwareAccountsPage> = (
 
 export const WithAlreadyConnectedAccount: StoryFn<
   typeof SelectHardwareAccountsPage
-> = (args) => (
-  <SelectHardwareAccountsPageStory
-    {...args}
-    accounts={createMockHardwareAccounts(2, {
-      includeMultichainAddresses: true,
-    })}
-    selectedAccountIds={['account-0']}
-    hasMoreAccounts={true}
-  />
-);
+> = (args) => {
+  const accounts = createMockHardwareAccounts(2, {
+    includeMultichainAddresses: true,
+  }).map((account, index) =>
+    index === 1 ? { ...account, isAlreadyConnected: true } : account,
+  );
+
+  return (
+    <SelectHardwareAccountsPageStory
+      {...args}
+      accounts={accounts}
+      selectedAccountIds={['account-0']}
+      hasMoreAccounts={true}
+    />
+  );
+};
 
 export const LoadingMoreAccounts: StoryFn<typeof SelectHardwareAccountsPage> = (
   args,
