@@ -313,6 +313,9 @@ describe('config-registry selectors', () => {
     });
 
     it('skips entries with malformed chainId and falls back to FEATURED_RPCS when no valid entries remain', () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation();
       const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
@@ -349,9 +352,14 @@ describe('config-registry selectors', () => {
       expect(() => getFeaturedEvmNetworks(state)).not.toThrow();
       const result = getFeaturedEvmNetworks(state);
       expect(result).toBe(FEATURED_RPCS);
+      expect(consoleErrorSpy).toHaveBeenCalled();
+      consoleErrorSpy.mockRestore();
     });
 
     it('skips malformed chainId entries but includes valid ones', () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation();
       const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
@@ -414,6 +422,8 @@ describe('config-registry selectors', () => {
       expect(sei?.name).toBe('Sei Network');
       const bad = result.find((n) => n.name === 'Bad Network');
       expect(bad).toBeUndefined();
+      expect(consoleErrorSpy).toHaveBeenCalled();
+      consoleErrorSpy.mockRestore();
     });
 
     it('returns FEATURED_RPCS when featured EVM network has non-https RPC URL', () => {
