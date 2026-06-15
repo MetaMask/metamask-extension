@@ -1772,7 +1772,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://explorer.arc.io/'],
+    blockExplorerUrls: ['https://explorer.arc.io'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];
