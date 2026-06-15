@@ -102,17 +102,19 @@ export const SnapUIDateTimePicker: FunctionComponent<
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
   const initialValue = getValue(name, form) as string | undefined | null;
-  const initialParsed = parseInitialIsoValue(initialValue, type);
 
-  const [value, setValue] = React.useState<DateTime | null>(initialParsed);
+  const [value, setValue] = React.useState<DateTime | null>(() =>
+    parseInitialIsoValue(initialValue, type),
+  );
 
   useEffect(() => {
-    if (initialParsed !== null) {
-      setValue(initialParsed);
+    const parsed = parseInitialIsoValue(initialValue, type);
+    if (parsed !== null) {
+      setValue(parsed);
     }
   }, [initialValue, type]);
 
-  const draftRef = useRef<DateTime | null>(initialParsed);
+  const draftRef = useRef<DateTime | null>(null);
 
   // Re-assigned each render so the stable CustomActionBar reads current state.
   const actionsRef = useRef({
