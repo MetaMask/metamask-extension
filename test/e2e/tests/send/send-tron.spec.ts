@@ -33,10 +33,7 @@ describe('Send Tron', function () {
 
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
-        await tokensTab.checkExpectedTokenBalanceIsDisplayed(
-          '6.072',
-          'TRX',
-        );
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('6.072', 'TRX');
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );

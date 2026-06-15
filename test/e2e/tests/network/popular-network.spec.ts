@@ -75,8 +75,7 @@ describe('Popular Networks', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const tokensTab = new TokensTab(driver);
-        const originalFilterLabel =
-          await tokensTab.getNetworksFilterLabel();
+        const originalFilterLabel = await tokensTab.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 

@@ -320,9 +320,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await homePage.goToActivityList();
 
         // Check for transaction
-        await new ActivityTab(
-          driver,
-        ).checkConfirmedTxNumberDisplayedInActivity(1);
+        await new ActivityTab(driver).checkConfirmedTxNumberDisplayedInActivity(
+          1,
+        );
       },
     );
   });

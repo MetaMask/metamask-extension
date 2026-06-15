@@ -95,11 +95,9 @@ describe('Send ERC20 - Gas Customization', function () {
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
-        await tokensTab.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('9'),
-          { amountTimeout: 20000 },
-        );
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('9'), {
+          amountTimeout: 20000,
+        });
       },
     );
   });
@@ -173,11 +171,9 @@ describe('Send ERC20 - Gas Customization', function () {
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
-        await tokensTab.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('8.5'),
-          { amountTimeout: 20000 },
-        );
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'), {
+          amountTimeout: 20000,
+        });
       },
     );
   });
@@ -243,11 +239,9 @@ describe('Send ERC20 - Gas Customization', function () {
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
-        await tokensTab.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('8.5'),
-          { amountTimeout: 20000 },
-        );
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'), {
+          amountTimeout: 20000,
+        });
       },
     );
   });

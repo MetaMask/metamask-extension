@@ -36,10 +36,7 @@ export async function importAdditionalSecretRecoveryPhrase(
   await homePage.dismissSrpAddedToast();
   await homePage.checkPageIsLoaded();
   const tokensTab = new TokensTab(driver);
-  await tokensTab.checkExpectedTokenBalanceIsDisplayed(
-    expectedBalance,
-    'ETH',
-  );
+  await tokensTab.checkExpectedTokenBalanceIsDisplayed(expectedBalance, 'ETH');
 }
 
 export async function verifySrp(

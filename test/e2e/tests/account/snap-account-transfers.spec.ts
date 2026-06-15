@@ -216,9 +216,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
 
         // check the transaction is failed in MetaMask activity list
         await new HomePage(driver).checkPageIsLoaded();
-        await new ActivityTab(
-          driver,
-        ).checkFailedTxNumberDisplayedInActivity();
+        await new ActivityTab(driver).checkFailedTxNumberDisplayedInActivity();
       },
     );
   });

@@ -110,12 +110,8 @@ describe('View NFT details', function () {
         await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
         await nftsTab.checkNumberOfNftsDisplayed(2);
 
-        await nftsTab.checkNftNameIsDisplayed(
-          'Test Dapp NFTs #1 on mainnet',
-        );
-        await nftsTab.checkNftNameIsDisplayed(
-          'Test Dapp NFTs #2 on mainnet',
-        );
+        await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #1 on mainnet');
+        await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #2 on mainnet');
 
         // Show All NFTs
         await networkManager.openNetworkManager();
@@ -125,12 +121,8 @@ describe('View NFT details', function () {
 
         await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #1');
 
-        await nftsTab.checkNftNameIsDisplayed(
-          'Test Dapp NFTs #1 on mainnet',
-        );
-        await nftsTab.checkNftNameIsDisplayed(
-          'Test Dapp NFTs #2 on mainnet',
-        );
+        await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #1 on mainnet');
+        await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #2 on mainnet');
       },
     );
   });

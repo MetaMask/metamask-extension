@@ -550,9 +550,7 @@ describe('Swap on Solana', function () {
         if (isUnifiedAssetsEnabled) {
           // BUG: The activity text or amount may not fully reflect the swap details
           // under unified state (e.g. missing destination token name or incorrect fiat value).
-          await activityTab.checkTransactionActivityByText(
-            'Swapped SOL to',
-          );
+          await activityTab.checkTransactionActivityByText('Swapped SOL to');
         } else {
           await activityTab.checkTransactionActivityByText(
             'Swapped SOL to USDC',
@@ -662,9 +660,7 @@ describe('Swap on Solana', function () {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAmountInActivity('+0.005904 SOL', 1);
         await activityTab.checkWaitForTransactionStatus('confirmed');
-        await activityTab.checkTransactionActivityByText(
-          'Swapped USDC to SOL',
-        );
+        await activityTab.checkTransactionActivityByText('Swapped USDC to SOL');
       },
     );
   });

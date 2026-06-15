@@ -52,17 +52,10 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-        );
+        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
         await tokensTab.dismissTokenImportedMessage();
         await tokensTab.openTokenDetails(symbol);
-        await tokensTab.checkTokenSymbolAndAddressDetails(
-          symbol,
-          tokenAddress,
-        );
+        await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
       },
     );
   });
@@ -118,17 +111,10 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-        );
+        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
         await tokensTab.dismissTokenImportedMessage();
         await tokensTab.openTokenDetails(symbol);
-        await tokensTab.checkTokenSymbolAndAddressDetails(
-          symbol,
-          tokenAddress,
-        );
+        await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
 
         await tokensTab.checkTokenPriceAndMarketCap(
           expectedPrice,
