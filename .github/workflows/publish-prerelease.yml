@@ -3,8 +3,6 @@ name: Publish prerelease
 on:
   workflow_call:
     secrets:
-      PR_COMMENT_TOKEN:
-        required: true
       E2E_OPENAI_API_KEY:
         required: false
       E2E_CLAUDE_API_KEY:
@@ -109,8 +107,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
+    permissions:
+      contents: read
+      id-token: write
     env:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       RUN_ID: ${{ github.run_id }}
@@ -188,6 +188,17 @@ jobs:
             echo "EOF"
           } >> "${GITHUB_ENV}"
 
+      - name: Get token
+        id: token
+        if: ${{ env.PR_NUMBER && vars.AWS_CLOUDFRONT_URL }}
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            pull_requests: write
+
       - name: Publish prerelease
-        if: ${{ env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
+        if: ${{ env.PR_NUMBER && steps.token.outputs.token && vars.AWS_CLOUDFRONT_URL }}
+        env:
+          PR_COMMENT_TOKEN: ${{ steps.token.outputs.token }}
         run: yarn tsx ./development/metamaskbot-build-announce/index.ts

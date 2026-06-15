@@ -8,16 +8,14 @@ import {
   IconName,
   IconSize,
   IconColor,
+  Skeleton,
 } from '@metamask/design-system-react';
-
-import { Skeleton } from '../../../component-library/skeleton';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
 
 /**
  * PerpsDetailPageSkeleton component displays a loading skeleton for the market detail page
  * Matches the layout of PerpsMarketDetailPage
  */
-export const PerpsDetailPageSkeleton: React.FC = () => {
+export const PerpsDetailPageSkeleton = () => {
   return (
     <Box
       className="main-container asset__container"
@@ -43,10 +41,7 @@ export const PerpsDetailPageSkeleton: React.FC = () => {
         </Box>
 
         {/* Token Logo Skeleton */}
-        <Skeleton
-          className="h-10 w-10 shrink-0"
-          borderRadius={BorderRadius.pill}
-        />
+        <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
 
         {/* Header Content Skeleton */}
         <Box flexDirection={BoxFlexDirection.Column} gap={1}>
@@ -76,7 +71,7 @@ export const PerpsDetailPageSkeleton: React.FC = () => {
 
       {/* Chart Skeleton */}
       <Box paddingLeft={4} paddingRight={4}>
-        <Skeleton className="h-[250px] w-full" borderRadius={BorderRadius.LG} />
+        <Skeleton className="h-[250px] w-full rounded-lg" />
       </Box>
 
       {/* Period Selector Skeleton */}
@@ -89,11 +84,7 @@ export const PerpsDetailPageSkeleton: React.FC = () => {
         paddingRight={4}
       >
         {['1m', '5m', '15m', '1h', '4h', '1d'].map((period) => (
-          <Skeleton
-            key={period}
-            className="h-8 w-10"
-            borderRadius={BorderRadius.MD}
-          />
+          <Skeleton key={period} className="h-8 w-10 rounded-md" />
         ))}
       </Box>
 
@@ -140,10 +131,7 @@ export const PerpsDetailPageSkeleton: React.FC = () => {
               alignItems={BoxAlignItems.Center}
               gap={4}
             >
-              <Skeleton
-                className="h-8 w-8 shrink-0"
-                borderRadius={BorderRadius.pill}
-              />
+              <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Start}
@@ -181,8 +169,8 @@ export const PerpsDetailPageSkeleton: React.FC = () => {
         paddingBottom={4}
       >
         <Box flexDirection={BoxFlexDirection.Row} gap={3}>
-          <Skeleton className="h-12 flex-1" borderRadius={BorderRadius.LG} />
-          <Skeleton className="h-12 flex-1" borderRadius={BorderRadius.LG} />
+          <Skeleton className="h-12 flex-1 rounded-lg" />
+          <Skeleton className="h-12 flex-1 rounded-lg" />
         </Box>
       </Box>
     </Box>

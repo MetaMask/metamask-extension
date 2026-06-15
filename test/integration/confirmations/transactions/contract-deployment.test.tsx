@@ -47,9 +47,10 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
 }) => {
   return {
     ...mockMetaMaskState,
-    participateInMetaMetrics: true,
+    analyticsId: 'test-metametrics-id',
+    completedMetaMetricsOnboarding: true,
+    optedIn: true,
     dataCollectionForMarketing: false,
-    metaMetricsId: 'test-metametrics-id',
     preferences: {
       ...mockMetaMaskState.preferences,
       showConfirmationAdvancedDetails,
@@ -293,7 +294,7 @@ describe('Contract Deployment Confirmation', () => {
 
     const firstGasField =
       await within(editGasFeesRow).findByTestId('first-gas-field');
-    expect(firstGasField).toHaveTextContent('0.0001');
+    expect(firstGasField).toHaveTextContent('0.0023');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
     );

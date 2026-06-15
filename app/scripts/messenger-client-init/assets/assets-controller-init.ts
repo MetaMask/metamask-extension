@@ -7,7 +7,6 @@ import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { type MessengerClientInitFunction } from '../types';
 import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
-import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 
 /**
@@ -106,13 +105,21 @@ function getApiClient(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger - The init messenger to use for the controller.
+ * @param request.getMessengerClient - The function to get a messenger client.
  * @returns The initialized controller.
  */
 export const AssetsControllerInit: MessengerClientInitFunction<
   AssetsController,
   AssetsControllerMessenger,
   AssetsControllerInitMessenger
-> = ({ controllerMessenger, persistedState, initMessenger }) => {
+> = ({
+  controllerMessenger,
+  persistedState,
+  initMessenger,
+  getMessengerClient,
+}) => {
+  const clientController = () => getMessengerClient('ClientController');
+
   // Get token detection preference
   const tokenDetectionEnabled = safeGetTokenDetectionEnabled(initMessenger);
 
@@ -153,7 +160,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   const messengerClient = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
-    isEnabled: () => true,
+    isEnabled: () => clientController().state.isUiOpen,
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
@@ -169,7 +176,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
       pollInterval: 30_000,
       enabled: false,
     },
-    trace: traceAsControllerCallback,
     isOnboarded: () => {
       try {
         const { completedOnboarding } = initMessenger.call(

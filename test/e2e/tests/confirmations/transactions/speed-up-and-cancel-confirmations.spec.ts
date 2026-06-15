@@ -5,7 +5,7 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import SpeedUpAndCancelModal from '../../../page-objects/pages/confirmations/speed-up-and-cancel-modal';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -58,7 +58,6 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
 
           await activityListPage.checkSpeedUpInlineButtonIsPresent();
-          await activityListPage.clickTransactionListItem();
           await activityListPage.clickSpeedUpTransaction();
 
           const speedUpCancelModal = new SpeedUpAndCancelModal(driver);

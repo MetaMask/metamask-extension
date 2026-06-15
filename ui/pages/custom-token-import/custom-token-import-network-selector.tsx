@@ -1,12 +1,7 @@
 import React from 'react';
 import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
   FontWeight,
   Text,
   TextColor,
@@ -21,9 +16,11 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
+import { NetworkListItem } from '../../components/multichain';
 import { isEvmChainId } from '../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';
+import { getNetworkSections } from '../../helpers/utils/network-sections';
 
 export type CustomTokenImportNetworkOption = {
   chainId: string;
@@ -39,51 +36,6 @@ export type CustomTokenImportNetworkSelectorProps = {
   onSelectNetwork: (network: CustomTokenImportNetworkOption) => void;
 };
 
-const NetworkRow = ({
-  network,
-  isSelected,
-  onSelect,
-}: {
-  network: CustomTokenImportNetworkOption;
-  isSelected: boolean;
-  onSelect: () => void;
-}) => (
-  <Box
-    asChild
-    flexDirection={BoxFlexDirection.Row}
-    alignItems={BoxAlignItems.Center}
-    gap={4}
-    paddingHorizontal={4}
-    paddingVertical={3}
-    backgroundColor={
-      isSelected ? BoxBackgroundColor.BackgroundMuted : undefined
-    }
-    className="w-full text-left transition-colors hover:bg-muted-hover active:bg-muted-pressed"
-  >
-    <button
-      type="button"
-      data-testid={`select-network-item-${network.chainId}`}
-      aria-current={isSelected ? 'true' : undefined}
-      onClick={onSelect}
-    >
-      <AvatarNetwork
-        name={network.name}
-        src={getImageForChainId(network.chainId)}
-        size={AvatarNetworkSize.Sm}
-      />
-      <Text
-        asChild
-        variant={TextVariant.BodyMd}
-        color={TextColor.TextDefault}
-        fontWeight={isSelected ? FontWeight.Medium : FontWeight.Regular}
-        ellipsis
-      >
-        <span className="min-w-0 flex-1">{network.name}</span>
-      </Text>
-    </button>
-  </Box>
-);
-
 export const CustomTokenImportNetworkSelector = ({
   isOpen,
   networks,
@@ -93,6 +45,7 @@ export const CustomTokenImportNetworkSelector = ({
   onSelectNetwork,
 }: CustomTokenImportNetworkSelectorProps) => {
   const t = useI18nContext();
+  const networkSections = getNetworkSections(networks);
 
   return (
     <Modal
@@ -103,25 +56,52 @@ export const CustomTokenImportNetworkSelector = ({
       data-testid="custom-token-import-network-selector"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent
+        padding={0}
+        modalDialogProps={{ padding: 0, height: '100%' }}
+      >
         <ModalHeader onBack={onBack} onClose={onClose}>
           {t('networkMenuHeading')}
         </ModalHeader>
-        <ModalBody paddingLeft={0} paddingRight={0}>
-          {networks.map((network) => {
-            const chainIdRef = network.chainId as CaipChainId;
-            const isSelected = isEvmChainId(chainIdRef)
-              ? formatChainIdToHex(chainIdRef) === selectedNetwork
-              : network.chainId === selectedNetwork;
-            return (
-              <NetworkRow
-                key={network.chainId}
-                network={network}
-                isSelected={isSelected}
-                onSelect={() => onSelectNetwork(network)}
-              />
-            );
-          })}
+        <ModalBody
+          paddingLeft={0}
+          paddingRight={0}
+          className="flex min-h-0 flex-1 flex-col overflow-auto"
+        >
+          {networkSections.map((section, index) => (
+            <Box key={section.key} className="flex flex-col">
+              {index > 0 ? (
+                <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
+              ) : null}
+              {section.titleKey ? (
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                  fontWeight={FontWeight.Medium}
+                  className="px-4 pb-2 pt-4"
+                >
+                  {t(section.titleKey)}
+                </Text>
+              ) : null}
+              {section.items.map((network) => {
+                const chainIdRef = network.chainId as CaipChainId;
+                const isSelected = isEvmChainId(chainIdRef)
+                  ? formatChainIdToHex(chainIdRef) === selectedNetwork
+                  : network.chainId === selectedNetwork;
+                return (
+                  <NetworkListItem
+                    key={network.chainId}
+                    chainId={network.chainId}
+                    name={network.name}
+                    iconSrc={getImageForChainId(network.chainId)}
+                    selected={isSelected}
+                    onClick={() => onSelectNetwork(network)}
+                    focus={false}
+                  />
+                );
+              })}
+            </Box>
+          ))}
         </ModalBody>
       </ModalContent>
     </Modal>

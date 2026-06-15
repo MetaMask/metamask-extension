@@ -21,6 +21,15 @@ jest.mock('../../../hooks/useAsync', () => ({
   useAsyncResult: () => ({ value: null, pending: false, error: undefined }),
 }));
 
+jest.mock('./send/useAddressPoisoningDetection', () => ({
+  useAddressPoisoningDetection: () => ({
+    isPoisoningSuspect: false,
+    bestMatch: null,
+    matches: [],
+    pending: false,
+  }),
+}));
+
 describe('useConfirmationAlerts', () => {
   it('returns empty array if no alerts', () => {
     const { result } = renderHookWithConfirmContextProvider(

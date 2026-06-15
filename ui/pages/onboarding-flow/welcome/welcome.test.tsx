@@ -42,8 +42,15 @@ jest.mock('./metamask-wordmark-animation', () => ({
   }: {
     setIsAnimationComplete: (isAnimationComplete: boolean) => void;
   }) => {
-    // Simulate animation completion immediately using setTimeout
-    setTimeout(() => setIsAnimationComplete(true), 0);
+    const reactModule = jest.requireActual('react');
+
+    reactModule.useEffect(() => {
+      // Simulate animation completion immediately while cleaning up on unmount
+      const timeoutId = setTimeout(() => setIsAnimationComplete(true), 0);
+
+      return () => clearTimeout(timeoutId);
+    }, [setIsAnimationComplete]);
+
     return <div data-testid="metamask-wordmark-animation" />;
   },
 }));
@@ -442,9 +449,6 @@ describe('Welcome Page', () => {
       jest
         .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
         .mockReturnValue(true);
-      jest
-        .spyOn(Environment, 'getIsTelegramLoginFeatureEnabled')
-        .mockReturnValue(true);
       const noopThunk = () => Promise.resolve();
       jest
         .spyOn(Actions, 'setParticipateInMetaMetrics')
@@ -498,7 +502,8 @@ describe('Welcome Page', () => {
     };
 
     const expectOutdatedAppEventTracked = () => {
-      expect(mockTrackEvent).toHaveBeenCalledWith({
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.SocialLoginFailed,
         properties: {

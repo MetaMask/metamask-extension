@@ -8,14 +8,13 @@ import {
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   LOCALHOST_NETWORK_CLIENT_ID,
   MM_CONNECT_EVM_CHAINS,
-  WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import { connectSolanaTestDapp } from '../../flask/solana-wallet-standard/testHelpers';
+import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
+import { approveConnect } from '../../page-objects/flows/connect.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
@@ -45,19 +44,6 @@ const EVM_AND_SOLANA_FIXTURE_SCOPES_WITHOUT_EIP1193_COMPATIBLE = {
 };
 
 // ── Shared helpers ─────────────────────────────────────────────────────────
-
-/**
- * Approve the MetaMask connect dialog opened by the dapp. Caller is
- * responsible for triggering the connect action on the dapp first.
- *
- * @param driver - Selenium driver
- */
-async function approveConnectFromDialog(driver: Driver): Promise<void> {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const confirmation = new ConnectAccountConfirmation(driver);
-  await confirmation.checkPageIsLoaded();
-  await confirmation.confirmConnect();
-}
 
 /**
  * Open the MetaMask popup with the test dapp as `activeTabOrigin`. The
@@ -96,7 +82,7 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
           // chain-agnostic-permission middleware converts into a CAIP-25
           // caveat with `eip1193-compatible: true`.
           await testDapp.connectLegacy();
-          await approveConnectFromDialog(driver);
+          await approveConnect(driver);
           await testDapp.switchTo();
           await testDapp.checkLegacyCardVisible();
 
@@ -125,7 +111,7 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
           // sessionProperties['eip1193-compatible'] = true in its
           // wallet_createSession call.
           await testDapp.connectWagmi();
-          await approveConnectFromDialog(driver);
+          await approveConnect(driver);
           await testDapp.switchTo();
           await testDapp.checkWagmiCardVisible();
 
@@ -158,7 +144,7 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
             MM_CONNECT_EVM_CHAINS.POLYGON,
           ]);
           await testDapp.clickConnect();
-          await approveConnectFromDialog(driver);
+          await approveConnect(driver);
           await testDapp.switchTo();
           await testDapp.checkConnectionStatus('connected');
 
@@ -212,7 +198,7 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
           // 1. Pure Multichain connection — eip1193-compatible NOT set.
           await testDapp.selectNetworks([MM_CONNECT_EVM_CHAINS.LOCALHOST]);
           await testDapp.clickConnect();
-          await approveConnectFromDialog(driver);
+          await approveConnect(driver);
           await testDapp.switchTo();
           await testDapp.checkConnectionStatus('connected');
 
@@ -228,7 +214,7 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
           // the picker must become visible.
           await testDapp.switchTo();
           await testDapp.connectWindowEthereum();
-          await approveConnectFromDialog(driver);
+          await approveConnect(driver);
           await testDapp.switchTo();
           await testDapp.checkLegacyCardVisible();
 

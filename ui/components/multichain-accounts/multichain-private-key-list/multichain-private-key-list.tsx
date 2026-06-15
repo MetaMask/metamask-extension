@@ -4,15 +4,16 @@ import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  Display,
-  FlexDirection,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
-import {
+  Text,
+  TextColor,
+  TextVariant,
   Box,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { BlockSize } from '../../../helpers/constants/design-system';
+import {
   Button,
   ButtonSize,
   ButtonVariant,
@@ -176,8 +177,8 @@ const MultichainPrivateKeyList = ({
           ) : null}
         </Box>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
+          className="flex"
+          flexDirection={BoxFlexDirection.Row}
           gap={4}
           paddingBottom={2}
           paddingTop={8}
@@ -214,7 +215,7 @@ const MultichainPrivateKeyList = ({
         networkName: string;
       },
       index: number,
-    ): React.JSX.Element => {
+    ): JSX.Element => {
       const privateKey = privateKeys[item.account.address];
       if (!privateKey) {
         return <></>;
@@ -256,8 +257,8 @@ const MultichainPrivateKeyList = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-private-keyring-list"
     >
       {reveal ? renderedRows : renderedPasswordInput}

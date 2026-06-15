@@ -157,6 +157,123 @@ describe('Setup Sentry', () => {
       rewriteReport(testReport);
       expect(testReport.message).toStrictEqual('This is a simple report');
     });
+
+    it('removes Solana addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Solana address 7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Solana address ** in this message',
+      );
+    });
+
+    it('removes Tron addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Tron address TJRyWwFs9wTFGZg3JbrVriFbNfCug5tDeC in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Tron address ** in this message',
+      );
+    });
+
+    it('removes Stellar (XLM) addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Stellar address GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Stellar address ** in this message',
+      );
+    });
+
+    it('removes Bitcoin bech32 addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Bitcoin address bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Bitcoin address ** in this message',
+      );
+    });
+
+    it('removes Bitcoin legacy addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Bitcoin address 17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Bitcoin address ** in this message',
+      );
+    });
+
+    it('removes multiple EVM addresses from a single error message', () => {
+      const testReport = {
+        message:
+          'Addresses 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 and 0x1234567890123456789012345678901234567890 failed',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'Addresses 0x** and 0x** failed',
+      );
+    });
+
+    it('removes addresses from report.extra parameters', () => {
+      const testReport = {
+        message: 'An error occurred',
+        extra: {
+          accountAddress: '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+          nested: {
+            evmAddress: '0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+          },
+        },
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.extra.accountAddress).toStrictEqual('**');
+      expect(testReport.extra.nested.evmAddress).toStrictEqual('0x**');
+    });
+
+    it('removes addresses from an array shared across multiple properties', () => {
+      const sharedAddresses = ['7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs'];
+      const testReport = {
+        message: 'An error occurred',
+        extra: {
+          first: sharedAddresses,
+          second: sharedAddresses,
+        },
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.extra.first).toStrictEqual(['**']);
+      expect(testReport.extra.second).toStrictEqual(['**']);
+    });
+
+    it('removes addresses from report.contexts parameters', () => {
+      const testReport = {
+        message: 'An error occurred',
+        contexts: {
+          account: {
+            address: 'TJRyWwFs9wTFGZg3JbrVriFbNfCug5tDeC',
+          },
+        },
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.contexts.account.address).toStrictEqual('**');
+    });
   });
 
   describe('shouldCreateSpanForRequest', () => {
@@ -186,6 +303,34 @@ describe('Setup Sentry', () => {
       ).toStrictEqual(false);
     });
 
+    it('should return false for root content-hashed json fetches (preinstalled snap bundles)', () => {
+      // These are the webpack `asset/resource` preinstalled-snap bundles that
+      // sit at the extension root and slipped past the old `/snaps/` regex.
+      expect(
+        shouldCreateSpanForRequest('chrome-extension://abc/deadbeef.json'),
+      ).toStrictEqual(false);
+      expect(
+        shouldCreateSpanForRequest('moz-extension://abc/deadbeef.json'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return true for other local extension file fetches (only hashed json is blocked)', () => {
+      // Non-hashed local fetches still get spans — the block is scoped to the
+      // content-hashed preinstalled-snap bundles, not all local files.
+      expect(
+        shouldCreateSpanForRequest('chrome-extension://abc/home.html'),
+      ).toStrictEqual(true);
+      expect(
+        shouldCreateSpanForRequest(
+          'chrome-extension://abcdefg/scripts/ppom-validator.wasm',
+        ),
+      ).toStrictEqual(true);
+      // A non-hex-named root json (e.g. a config file) is also still traced.
+      expect(
+        shouldCreateSpanForRequest('chrome-extension://abc/manifest.json'),
+      ).toStrictEqual(true);
+    });
+
     it('should return false for sentry.io domains', () => {
       expect(
         shouldCreateSpanForRequest('https://sentry.io/api/123'),
@@ -195,15 +340,26 @@ describe('Setup Sentry', () => {
       ).toStrictEqual(false);
     });
 
-    it('should return true for other local extension file fetches', () => {
+    it('should return false for segment.io domains', () => {
+      expect(
+        shouldCreateSpanForRequest('https://api.segment.io/v1/batch'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for static config domains', () => {
+      expect(
+        shouldCreateSpanForRequest('https://chainid.network/chains.json'),
+      ).toStrictEqual(false);
       expect(
         shouldCreateSpanForRequest(
-          'chrome-extension://abcdefg/scripts/ppom-validator.wasm',
+          'https://acl.execution.metamask.io/latest/registry.json',
         ),
-      ).toStrictEqual(true);
+      ).toStrictEqual(false);
       expect(
-        shouldCreateSpanForRequest('chrome-extension://abcdefg/home.html'),
-      ).toStrictEqual(true);
+        shouldCreateSpanForRequest(
+          'https://acl.execution.metamask.io/latest/signature.json',
+        ),
+      ).toStrictEqual(false);
     });
 
     it('should return true for external API URLs', () => {
@@ -212,6 +368,19 @@ describe('Setup Sentry', () => {
       ).toStrictEqual(true);
       expect(
         shouldCreateSpanForRequest('https://api.coingecko.com/v3/simple/price'),
+      ).toStrictEqual(true);
+      expect(
+        shouldCreateSpanForRequest('https://example.com/foo'),
+      ).toStrictEqual(true);
+      // Other cx.metamask.io APIs are real calls — still traced (only the static
+      // `acl.execution.metamask.io` config is excluded, not all of metamask.io).
+      expect(
+        shouldCreateSpanForRequest(
+          'https://accounts.api.cx.metamask.io/v2/supportedNetworks',
+        ),
+      ).toStrictEqual(true);
+      expect(
+        shouldCreateSpanForRequest('https://token.api.cx.metamask.io/tokens/1'),
       ).toStrictEqual(true);
     });
   });
@@ -297,6 +466,59 @@ describe('Setup Sentry', () => {
         to: '',
         from: 'chrome-extension://abcefg/home.html',
       });
+    });
+
+    it('removes addresses from the breadcrumb message', () => {
+      const testBreadcrumb = {
+        message:
+          'Selected account 7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+        data: {
+          address: '0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+        },
+      };
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      expect(rewrittenBreadcrumb.message).toStrictEqual('Selected account **');
+    });
+
+    it('removes addresses from the breadcrumb data', () => {
+      const testBreadcrumb = {
+        message:
+          'Selected account 7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+        data: {
+          address: '0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+        },
+      };
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      expect(rewrittenBreadcrumb.data.address).toStrictEqual('0x**');
+    });
+
+    it('redacts the breadcrumb data without mutating the live source objects', () => {
+      const liveError = new Error(
+        'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+      );
+      const liveArgs = [
+        liveError,
+        '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+      ];
+      const testBreadcrumb = {
+        message: 'console.error',
+        data: { arguments: liveArgs, logger: 'console' },
+      };
+
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+
+      // The breadcrumb sent to Sentry is redacted...
+      expect(rewrittenBreadcrumb.data.arguments[0].message).toStrictEqual(
+        'Failed for 0x**',
+      );
+      expect(rewrittenBreadcrumb.data.arguments[1]).toStrictEqual('**');
+      // ...but the live Error and array the extension still holds are untouched.
+      expect(liveError.message).toStrictEqual(
+        'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+      );
+      expect(liveArgs[1]).toStrictEqual(
+        '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+      );
     });
   });
 });

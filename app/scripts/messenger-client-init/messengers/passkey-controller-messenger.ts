@@ -1,9 +1,10 @@
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { PasskeyControllerMessenger } from '@metamask/passkey-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-export type PasskeyControllerMessenger = ReturnType<
-  typeof getPasskeyControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -13,10 +14,14 @@ export type PasskeyControllerMessenger = ReturnType<
  * messenger.
  */
 export function getPasskeyControllerMessenger(
-  messenger: RootMessenger<never, never>,
-) {
-  return new Messenger<'PasskeyController', never, never, typeof messenger>({
+  messenger: RootMessenger<
+    MessengerActions<PasskeyControllerMessenger>,
+    MessengerEvents<PasskeyControllerMessenger>
+  >,
+): PasskeyControllerMessenger {
+  const controllerMessenger: PasskeyControllerMessenger = new Messenger({
     namespace: 'PasskeyController',
     parent: messenger,
   });
+  return controllerMessenger;
 }

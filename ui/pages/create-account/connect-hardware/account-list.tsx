@@ -160,13 +160,6 @@ const AccountList = ({
         <h3>{t('selectAnAccount')}</h3>
       </Text>
       {shouldShowHDPaths ? renderHdPathSelector() : null}
-      <Text
-        asChild
-        variant={TextVariant.HeadingSm}
-        className="hw-connect__hdPath__title"
-      >
-        <h3>{t('selectAnAccount')}</h3>
-      </Text>
     </Box>
   );
 

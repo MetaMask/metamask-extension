@@ -1,7 +1,7 @@
 import {
   Messenger,
-  MessengerActions,
-  MessengerEvents,
+  type MessengerActions,
+  type MessengerEvents,
 } from '@metamask/messenger';
 import type { AssetsControllerMessenger } from '@metamask/assets-controller';
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
@@ -11,6 +11,7 @@ import {
   OnboardingControllerStateChangeEvent,
 } from '../../../controllers/onboarding';
 import { RootMessenger } from '../../../lib/messenger';
+import type { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 
 /**
  * Messenger type for AssetsController initialization.
@@ -82,14 +83,6 @@ export function getAssetsControllerMessenger(
 
   return controllerMessenger;
 }
-
-/**
- * PreferencesController:getState action.
- */
-type PreferencesControllerGetStateAction = {
-  type: 'PreferencesController:getState';
-  handler: () => { useTokenDetection: boolean; [key: string]: unknown };
-};
 
 /**
  * Actions needed during AssetsController initialization.

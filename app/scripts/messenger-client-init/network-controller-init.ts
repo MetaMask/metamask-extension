@@ -275,9 +275,8 @@ export const NetworkControllerInit: MessengerClientInitFunction<
           initMessenger,
           'MetaMetricsController:trackEvent',
         ),
-        metaMetricsId: initMessenger.call(
-          'MetaMetricsController:getMetaMetricsId',
-        ),
+        analyticsId: initMessenger.call('AnalyticsController:getState')
+          .analyticsId,
       });
     },
   );
@@ -307,9 +306,8 @@ export const NetworkControllerInit: MessengerClientInitFunction<
           initMessenger,
           'MetaMetricsController:trackEvent',
         ),
-        metaMetricsId: initMessenger.call(
-          'MetaMetricsController:getMetaMetricsId',
-        ),
+        analyticsId: initMessenger.call('AnalyticsController:getState')
+          .analyticsId,
         type,
       });
     },
