@@ -109,7 +109,7 @@ export class TestDappBitcoin {
   }
 
   async findHeaderConnectedState() {
-    await this.driver.findElement(this.headerConnectionStateSelector);
+    await this.driver.waitForSelector(this.headerConnectionStateSelector);
   }
 
   async findHeaderNotConnectedState() {
