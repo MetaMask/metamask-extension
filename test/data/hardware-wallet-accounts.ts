@@ -1,8 +1,5 @@
 import { ETH_TOKEN_IMAGE_URL } from '../../shared/constants/network';
-import {
-  HardwareWalletAddressIconTypes,
-  type HardwareWalletAccountAddress,
-} from '../../ui/components/multichain-accounts/hardware-account-address-row';
+import type { HardwareWalletAccountAddress } from '../../ui/components/multichain-accounts/hardware-account-address-row';
 import type { HardwareWalletAccount } from '../../ui/components/multichain-accounts/hardware-account-card';
 
 /** Default Ethereum address fixture for hardware wallet tests and stories. */
@@ -12,7 +9,6 @@ export const MOCK_ETHEREUM_HARDWARE_ADDRESS: HardwareWalletAccountAddress = {
   address: '0x091234567890123456789012345678901234b272',
   balance: '$120.00',
   iconUrl: ETH_TOKEN_IMAGE_URL,
-  iconType: HardwareWalletAddressIconTypes.Network,
 };
 
 const createMultichainAddresses = (
@@ -25,7 +21,6 @@ const createMultichainAddresses = (
     address: '6dk7RD1234567890abcdefghijklmnopqrstuvDEtXQ',
     balance: '$120.00',
     iconUrl: './images/solana-logo.svg',
-    iconType: HardwareWalletAddressIconTypes.Network,
   },
   {
     id: `btc-${index}`,
@@ -33,7 +28,6 @@ const createMultichainAddresses = (
     address: 'bc1qea1234567890abcdefghijklmnopqrstuvwer2fx',
     balance: '$120.00',
     iconUrl: './images/bitcoin-logo.svg',
-    iconType: HardwareWalletAddressIconTypes.Token,
     addressType: 'Taproot',
   },
 ];

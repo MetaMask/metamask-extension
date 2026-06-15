@@ -2,8 +2,6 @@ import React from 'react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
@@ -14,10 +12,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { shortenString } from '../../../helpers/utils/util';
-import {
-  HardwareWalletAddressIconTypes,
-  type HardwareAccountAddressRowProps,
-} from './hardware-account-address-row.types';
+import type { HardwareAccountAddressRowProps } from './hardware-account-address-row.types';
 
 /**
  * Address row for a hardware wallet account card.
@@ -34,21 +29,6 @@ export const HardwareAccountAddressRow = ({
     skipCharacterInEnd: false,
   });
 
-  const avatar =
-    address.iconType === HardwareWalletAddressIconTypes.Token ? (
-      <AvatarToken
-        name={address.networkName}
-        src={address.iconUrl}
-        size={AvatarTokenSize.Lg}
-      />
-    ) : (
-      <AvatarNetwork
-        name={address.networkName}
-        src={address.iconUrl}
-        size={AvatarNetworkSize.Lg}
-      />
-    );
-
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -57,7 +37,11 @@ export const HardwareAccountAddressRow = ({
       className="min-h-[46px] w-full"
       data-testid="hardware-account-address-row"
     >
-      {avatar}
+      <AvatarNetwork
+        name={address.networkName}
+        src={address.iconUrl}
+        size={AvatarNetworkSize.Lg}
+      />
       <Box flexDirection={BoxFlexDirection.Column} className="min-w-0 flex-1">
         <Box
           flexDirection={BoxFlexDirection.Row}

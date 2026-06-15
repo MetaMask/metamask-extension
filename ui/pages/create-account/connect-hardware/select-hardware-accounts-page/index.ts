@@ -9,5 +9,4 @@ export type {
 export type {
   HardwareAccountAddressRowProps,
   HardwareWalletAccountAddress,
-  HardwareWalletAddressIconType,
 } from '../../../../components/multichain-accounts/hardware-account-address-row/hardware-account-address-row.types';
