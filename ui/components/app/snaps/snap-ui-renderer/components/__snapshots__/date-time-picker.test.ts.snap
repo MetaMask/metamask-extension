@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SnapUIDateTimePicker can show an error 1`] = `
+exports[`SnapUIDateTimePicker snapshot can show an error 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -56,7 +56,7 @@ exports[`SnapUIDateTimePicker can show an error 1`] = `
 </div>
 `;
 
-exports[`SnapUIDateTimePicker renders a date picker 1`] = `
+exports[`SnapUIDateTimePicker snapshot renders a date picker 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -101,7 +101,7 @@ exports[`SnapUIDateTimePicker renders a date picker 1`] = `
 </div>
 `;
 
-exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
+exports[`SnapUIDateTimePicker snapshot renders a date time picker 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -146,7 +146,7 @@ exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
 </div>
 `;
 
-exports[`SnapUIDateTimePicker renders a time picker 1`] = `
+exports[`SnapUIDateTimePicker snapshot renders a time picker 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -191,7 +191,7 @@ exports[`SnapUIDateTimePicker renders a time picker 1`] = `
 </div>
 `;
 
-exports[`SnapUIDateTimePicker renders inside a field 1`] = `
+exports[`SnapUIDateTimePicker snapshot renders inside a field 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"

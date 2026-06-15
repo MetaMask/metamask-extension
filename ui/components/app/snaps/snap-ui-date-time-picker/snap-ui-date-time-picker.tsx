@@ -16,9 +16,6 @@ import { DateTime } from 'luxon';
 import { HelpText, HelpTextSeverity, Label } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
-/**
- * The props for the SnapUIDateTimePicker component.
- */
 export type SnapUIDateTimePickerProps = {
   name: string;
   type: 'date' | 'time' | 'datetime';
@@ -31,6 +28,8 @@ export type SnapUIDateTimePickerProps = {
   disabled?: boolean;
 };
 
+// MUI action identifiers — not display text. MUI resolves these to translated
+// labels via the localeText passed to LocalizationProvider in snap-ui-renderer.
 const PICKER_ACTION_BAR_ACTIONS = ['clear', 'cancel', 'accept'] as const;
 
 /**
