@@ -574,16 +574,16 @@ describe('ManifestPlugin', () => {
       compilation.entrypoints = new Map(
         Object.entries(entrypoints),
       ) as typeof compilation.entrypoints;
-      const entryModules = new Map<object, { resource?: string }>();
+      const entryModules = new Map<object, object>();
       const entryDependencies = new Map<string, object>();
       const incomingConnections = new Map<
-        { resource?: string },
-        { originModule: { resource: string } }[]
+        object,
+        { originModule: { nameForCondition: () => string } }[]
       >();
       compilation.entries = new Map(
         Object.keys(entrypoints).map((name) => {
           const dependency = {};
-          const module = { resource: join(context, `${name}.js`) };
+          const module = {};
           entryDependencies.set(name, dependency);
           entryModules.set(dependency, module);
           return [name, { dependencies: [dependency] }];
@@ -599,7 +599,7 @@ describe('ManifestPlugin', () => {
           incomingConnections.set(
             module,
             issuerResources.map((resource) => ({
-              originModule: { resource },
+              originModule: { nameForCondition: () => resource },
             })),
           );
         }
@@ -607,7 +607,7 @@ describe('ManifestPlugin', () => {
 
       compilation.moduleGraph = {
         getModule: (dependency: object) => entryModules.get(dependency),
-        getIncomingConnections: (module: { resource?: string }) =>
+        getIncomingConnections: (module: object) =>
           incomingConnections.get(module) ?? [],
       } as typeof compilation.moduleGraph;
       const manifestPlugin = new ManifestPlugin({

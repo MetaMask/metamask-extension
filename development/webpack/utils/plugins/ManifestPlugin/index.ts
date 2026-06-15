@@ -9,7 +9,6 @@ import {
   type Compiler,
   type Asset,
   type EntryOptions,
-  type Module,
 } from 'webpack';
 import { validate } from 'schema-utils';
 import {
@@ -82,13 +81,12 @@ function addToSetMap<TKey, TValue>(
   key: TKey,
   value: TValue,
 ): void {
-  const values = map.get(key) ?? new Set<TValue>();
-  values.add(value);
-  map.set(key, values);
-}
-
-function getModuleResource(module: Module | undefined): string | undefined {
-  return (module as (Module & { resource?: string }) | undefined)?.resource;
+  const values = map.get(key);
+  if (values) {
+    values.add(value);
+    return;
+  }
+  map.set(key, new Set([value]));
 }
 
 /**
@@ -114,15 +112,15 @@ export class ManifestPlugin<Z extends boolean> {
     DEV_SERVER_CLIENT_ENTRY_NAME,
   ]);
 
-  private bundleSizeCategories: Map<string, Set<BundleSizeCategory>> =
-    new Map();
-
-  private htmlBundleSizeCategoriesByResource: Map<
+  private bundleSizeCategoriesByEntrypoint: Map<
     string,
     Set<BundleSizeCategory>
   > = new Map();
 
-  private backgroundHtmlFiles: Set<string> = new Set();
+  private bundleSizeCategoriesByHtmlResource: Map<
+    string,
+    Set<BundleSizeCategory>
+  > = new Map();
 
   /**
    * Returns `true` if the given entrypoint can be split into chunks.
@@ -214,11 +212,9 @@ export class ManifestPlugin<Z extends boolean> {
     compilation: Compilation,
     entrypointName: string,
   ): Set<BundleSizeCategory> {
-    const categories = new Set(this.bundleSizeCategories.get(entrypointName));
-
-    if (this.htmlBundleSizeCategoriesByResource.size === 0) {
-      return categories;
-    }
+    const categories = new Set(
+      this.bundleSizeCategoriesByEntrypoint.get(entrypointName),
+    );
 
     const entryData = compilation.entries.get(entrypointName);
     for (const dependency of entryData?.dependencies ?? []) {
@@ -227,20 +223,17 @@ export class ManifestPlugin<Z extends boolean> {
         continue;
       }
 
-      for (const connection of compilation.moduleGraph.getIncomingConnections(
-        module,
-      )) {
-        if (!connection.originModule) {
+      for (const {
+        originModule,
+      } of compilation.moduleGraph.getIncomingConnections(module)) {
+        const originResource = originModule?.nameForCondition();
+        if (!originResource) {
           continue;
         }
 
-        const issuerResource = getModuleResource(connection.originModule);
-        if (!issuerResource) {
-          continue;
-        }
-
-        for (const category of
-          this.htmlBundleSizeCategoriesByResource.get(issuerResource) ?? []) {
+        for (const category of this.bundleSizeCategoriesByHtmlResource.get(
+          originResource,
+        ) ?? []) {
           categories.add(category);
         }
       }
@@ -664,9 +657,8 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private resetBundleSizeEntrypointMetadata(): void {
-    this.bundleSizeCategories = new Map();
-    this.htmlBundleSizeCategoriesByResource = new Map();
-    this.backgroundHtmlFiles = new Set();
+    this.bundleSizeCategoriesByEntrypoint = new Map();
+    this.bundleSizeCategoriesByHtmlResource = new Map();
   }
 
   private addManifestScript = ({
@@ -680,11 +672,10 @@ export class ManifestPlugin<Z extends boolean> {
     entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
     opts?: EntryDescriptionNormalized;
-    category?: BundleSizeCategory;
+    category: BundleSizeCategory;
   }) => {
-    if (category) {
-      addToSetMap(this.bundleSizeCategories, filename, category);
-    }
+    addToSetMap(this.bundleSizeCategoriesByEntrypoint, filename, category);
+
     if (this.addedScripts.has(filename)) return;
     this.addedScripts.add(filename);
     this.selfContainedScripts.add(filename);
@@ -714,8 +705,12 @@ export class ManifestPlugin<Z extends boolean> {
   }) => {
     const parsedFileName = path.parse(filename).name;
     const filePath = path.join(compiler.context, directory, filename);
-    addToSetMap(this.bundleSizeCategories, parsedFileName, category);
-    addToSetMap(this.htmlBundleSizeCategoriesByResource, filePath, category);
+    addToSetMap(
+      this.bundleSizeCategoriesByEntrypoint,
+      parsedFileName,
+      category,
+    );
+    addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
     entries[parsedFileName] = { import: [filePath], ...opts };
   };
 
@@ -739,9 +734,6 @@ export class ManifestPlugin<Z extends boolean> {
       }
 
       if (manifest.manifest_version === 2) {
-        if (manifest.background?.page) {
-          this.backgroundHtmlFiles.add(path.basename(manifest.background.page));
-        }
         // collect MV2 background scripts
         for (const script of manifest.background?.scripts ?? []) {
           this.addManifestScript({
@@ -754,7 +746,12 @@ export class ManifestPlugin<Z extends boolean> {
         // collect MV2 web accessible resources
         for (const resource of manifest.web_accessible_resources ?? []) {
           if (resource.endsWith('.js')) {
-            this.addManifestScript({ compiler, entries, filename: resource });
+            this.addManifestScript({
+              compiler,
+              entries,
+              filename: resource,
+              category: 'other',
+            });
           }
         }
       } else if (manifest.manifest_version === 3) {
@@ -772,42 +769,44 @@ export class ManifestPlugin<Z extends boolean> {
         for (const resource of manifest.web_accessible_resources ?? []) {
           for (const filename of resource.resources) {
             if (filename.endsWith('.js')) {
-              this.addManifestScript({ compiler, entries, filename });
+              this.addManifestScript({
+                compiler,
+                entries,
+                filename,
+                category: 'other',
+              });
             }
           }
         }
       }
     }
 
-    if (this.options.html) {
-      for (const { directory, category } of this.options.html) {
-        let htmlFiles: string[] = [];
-        try {
-          htmlFiles = readdirSync(path.join(compiler.context, directory));
-        } catch {
-          // directory doesn't exist, no HTML pages to add
-        }
+    for (const { directory, category } of this.options.html ?? []) {
+      let htmlFiles: string[] = [];
+      try {
+        htmlFiles = readdirSync(path.join(compiler.context, directory));
+      } catch {
+        // directory doesn't exist, no HTML pages to add
+      }
 
-        for (const filename of htmlFiles) {
-          // ignore non-htm/html files
-          if (/\.html?$/iu.test(filename)) {
-            // ignore background.html for MV3 extensions.
-            if (
-              this.options.manifest_version === 3 &&
-              (filename === 'background.html' ||
-                this.backgroundHtmlFiles.has(filename))
-            ) {
-              continue;
-            }
-            // ignore offscreen.html for MV2 extensions.
-            if (
-              this.options.manifest_version === 2 &&
-              filename === 'offscreen.html'
-            ) {
-              continue;
-            }
-            this.addHtml({ compiler, entries, directory, filename, category });
+      for (const filename of htmlFiles) {
+        // ignore non-htm/html files
+        if (/\.html?$/iu.test(filename)) {
+          // ignore background.html for MV3 extensions.
+          if (
+            this.options.manifest_version === 3 &&
+            filename === 'background.html'
+          ) {
+            continue;
           }
+          // ignore offscreen.html for MV2 extensions.
+          if (
+            this.options.manifest_version === 2 &&
+            filename === 'offscreen.html'
+          ) {
+            continue;
+          }
+          this.addHtml({ compiler, entries, directory, filename, category });
         }
       }
     }
