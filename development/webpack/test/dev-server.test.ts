@@ -641,14 +641,10 @@ describe('./utils/dev-server', () => {
       withFakeWebSocket(() => {
         const reconnects: (() => void)[] = [];
         const messages: string[] = [];
-        mock.method(
-          globalThis,
-          'setTimeout',
-          (callback: () => void) => {
-            reconnects.push(callback);
-            return undefined as unknown as ReturnType<typeof setTimeout>;
-          },
-        );
+        mock.method(globalThis, 'setTimeout', (callback: () => void) => {
+          reconnects.push(callback);
+          return undefined as unknown as ReturnType<typeof setTimeout>;
+        });
 
         connectToDevServer(
           'ws://localhost:12345/ws',
