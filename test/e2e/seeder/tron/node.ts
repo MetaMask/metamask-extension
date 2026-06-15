@@ -211,6 +211,12 @@ export class TronNode {
         cwd: runtimeDirectory,
         detached: process.platform !== 'win32',
         stdio: ['ignore', 'pipe', 'pipe'],
+        // Reduce JVM startup overhead: pre-size heap to avoid resize pauses,
+        // and enable tiered compilation for faster initial bytecode execution.
+        env: {
+          ...process.env,
+          JAVA_TOOL_OPTIONS: '-Xmx512m -Xms512m -XX:+TieredCompilation',
+        },
       },
     );
     this.#nodeProcess = nodeProcess;
