@@ -57,7 +57,7 @@ let reloading = false;
  * @param hash - The announced hash of the server's latest UI build.
  * @param socket - The WebSocket the announcement arrived on.
  */
-function onHash(hash: string, socket: WebSocket): void {
+async function onHash(hash: string, socket: WebSocket): Promise<void> {
   if (reloading) {
     return;
   }
@@ -80,7 +80,8 @@ function onHash(hash: string, socket: WebSocket): void {
   console.info('[webpack-dev-server] UI updated. Reloading...');
   // Wait for the close handshake so the navigation is not reported as an
   // unexpected disconnect by the dev server.
-  closeSocket(socket, () => self.location.reload());
+  await closeSocket(socket);
+  self.location.reload();
 }
 
 if (socketUrl) {
@@ -89,7 +90,7 @@ if (socketUrl) {
     () => reloading,
     (type, data, socket) => {
       if (type === UI_RELOAD_MESSAGE_TYPE && typeof data === 'string') {
-        onHash(data, socket);
+        void onHash(data, socket);
       }
     },
   );

@@ -80,7 +80,8 @@ async function onFingerprint(
   console.info('[webpack-dev-server] Background updated. Reloading...');
   // Wait for the close handshake so the impending teardown is not reported as
   // an unexpected disconnect by the dev server.
-  closeSocket(socket, () => browser.runtime.reload());
+  await closeSocket(socket);
+  browser.runtime.reload();
 }
 
 if (socketUrl) {
@@ -89,7 +90,7 @@ if (socketUrl) {
     () => reloading,
     (type, data, socket) => {
       if (type === BACKGROUND_RELOAD_MESSAGE_TYPE && typeof data === 'string') {
-        onFingerprint(data, socket);
+        void onFingerprint(data, socket);
       }
     },
   );

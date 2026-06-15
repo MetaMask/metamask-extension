@@ -680,9 +680,8 @@ describe('./utils/dev-server', () => {
   });
 
   describe('closeSocket', () => {
-    it('waits for the socket close event before running the callback', () => {
+    it('waits for the socket close event before resolving', async () => {
       const socket = new FakeWebSocket('ws://localhost:12345/ws');
-      const onClose = mock.fn();
       const { mock: setTimeoutMock } = mock.method(
         globalThis,
         'setTimeout',
@@ -694,23 +693,28 @@ describe('./utils/dev-server', () => {
         () => undefined,
       );
 
-      closeSocket(socket as unknown as WebSocket, onClose);
+      let resolved = false;
+      const closePromise = closeSocket(socket as unknown as WebSocket).then(
+        () => {
+          resolved = true;
+        },
+      );
 
       assert.strictEqual(socket.close.mock.callCount(), 1);
       assert.deepStrictEqual(socket.close.mock.calls[0].arguments, [1000]);
-      assert.strictEqual(onClose.mock.callCount(), 0);
+      assert.strictEqual(resolved, false);
       socket.dispatch('close');
       socket.dispatch('close');
+      await closePromise;
 
       assert.strictEqual(setTimeoutMock.callCount(), 1);
       assert.strictEqual(setTimeoutMock.calls[0].arguments[1], 1000);
-      assert.strictEqual(onClose.mock.callCount(), 1);
+      assert.strictEqual(resolved, true);
       assert.strictEqual(clearTimeoutMock.callCount(), 1);
     });
 
-    it('runs the callback after the fallback timeout if the socket close event does not fire', () => {
+    it('resolves after the fallback timeout if the socket close event does not fire', async () => {
       const socket = new FakeWebSocket('ws://localhost:12345/ws');
-      const onClose = mock.fn();
       let fallback: (() => void) | undefined;
       mock.method(
         globalThis,
@@ -722,34 +726,24 @@ describe('./utils/dev-server', () => {
       );
       mock.method(globalThis, 'clearTimeout', () => undefined);
 
-      closeSocket(socket as unknown as WebSocket, onClose);
+      let resolved = false;
+      const closePromise = closeSocket(socket as unknown as WebSocket).then(
+        () => {
+          resolved = true;
+        },
+      );
 
-      assert.strictEqual(onClose.mock.callCount(), 0);
+      assert.strictEqual(resolved, false);
       assert(fallback, 'fallback callback should be registered');
       fallback();
       socket.dispatch('close');
+      await closePromise;
 
-      assert.strictEqual(onClose.mock.callCount(), 1);
+      assert.strictEqual(resolved, true);
     });
 
-    it('closes the socket without scheduling a callback when none is provided', () => {
+    it('uses custom timeout and closure code options', async () => {
       const socket = new FakeWebSocket('ws://localhost:12345/ws');
-      const { mock: setTimeoutMock } = mock.method(
-        globalThis,
-        'setTimeout',
-        () => 1 as unknown as ReturnType<typeof setTimeout>,
-      );
-
-      closeSocket(socket as unknown as WebSocket);
-
-      assert.strictEqual(socket.close.mock.callCount(), 1);
-      assert.deepStrictEqual(socket.close.mock.calls[0].arguments, [1000]);
-      assert.strictEqual(setTimeoutMock.callCount(), 0);
-    });
-
-    it('uses custom timeout and closure code options', () => {
-      const socket = new FakeWebSocket('ws://localhost:12345/ws');
-      const onClose = mock.fn();
       let fallback: (() => void) | undefined;
       const { mock: setTimeoutMock } = mock.method(
         globalThis,
@@ -761,7 +755,7 @@ describe('./utils/dev-server', () => {
       );
       mock.method(globalThis, 'clearTimeout', () => undefined);
 
-      closeSocket(socket as unknown as WebSocket, onClose, {
+      const closePromise = closeSocket(socket as unknown as WebSocket, {
         timeoutMs: 250,
         closureCode: 3001,
       });
@@ -770,8 +764,7 @@ describe('./utils/dev-server', () => {
       assert.strictEqual(setTimeoutMock.calls[0].arguments[1], 250);
       assert(fallback, 'fallback callback should be registered');
       fallback();
-
-      assert.strictEqual(onClose.mock.callCount(), 1);
+      await closePromise;
     });
   });
 
