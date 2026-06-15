@@ -9,7 +9,12 @@ import useTokenListPolling from '../hooks/useTokenListPolling';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
 import useMultichainAssetsRatesPolling from '../hooks/useMultichainAssetsRatesPolling';
-import { AssetPollingProvider } from './assetPolling';
+import { useArcDefaultTokens } from '../hooks/useArcDefaultTokens';
+import {
+  AssetPollingContext,
+  AssetPollingContextValue,
+  AssetPollingProvider,
+} from './assetPolling';
 
 jest.mock('../hooks/useCurrencyRatePolling');
 jest.mock('../hooks/useTokenRatesPolling');
@@ -18,6 +23,7 @@ jest.mock('../hooks/useTokenListPolling');
 jest.mock('../hooks/useStaticTokensPolling');
 jest.mock('../hooks/defi/useDeFiPolling');
 jest.mock('../hooks/useMultichainAssetsRatesPolling');
+jest.mock('../hooks/useArcDefaultTokens');
 
 const mockUseCurrencyRatePolling = jest.mocked(useCurrencyRatePolling);
 const mockUseTokenRatesPolling = jest.mocked(useTokenRatesPolling);
@@ -28,6 +34,7 @@ const mockUseDeFiPolling = jest.mocked(useDeFiPolling);
 const mockUseMultichainAssetsRatesPolling = jest.mocked(
   useMultichainAssetsRatesPolling,
 );
+const mockUseArcDefaultTokens = jest.mocked(useArcDefaultTokens);
 
 const renderProvider = (isAssetsUnifyStateEnabled: boolean) => {
   jest.spyOn(redux, 'useSelector').mockReturnValue(isAssetsUnifyStateEnabled);
@@ -53,6 +60,7 @@ describe('AssetPollingProvider', () => {
     (mockUseMultichainAssetsRatesPolling as jest.Mock).mockImplementation(
       () => undefined,
     );
+    mockUseArcDefaultTokens.mockImplementation(() => undefined);
   });
 
   it('always renders children regardless of feature flag', () => {
@@ -78,6 +86,7 @@ describe('AssetPollingProvider', () => {
       expect(mockUseDeFiPolling).toHaveBeenCalledTimes(1);
       expect(mockUseMultichainAssetsRatesPolling).toHaveBeenCalledTimes(1);
       expect(mockUseStaticTokensPollingHook).toHaveBeenCalledTimes(1);
+      expect(mockUseArcDefaultTokens).not.toHaveBeenCalled();
     });
   });
 
@@ -90,6 +99,7 @@ describe('AssetPollingProvider', () => {
       expect(mockUseTokenListPolling).toHaveBeenCalledTimes(1);
       expect(mockUseDeFiPolling).toHaveBeenCalledTimes(1);
       expect(mockUseStaticTokensPollingHook).toHaveBeenCalledTimes(1);
+      expect(mockUseArcDefaultTokens).toHaveBeenCalledTimes(1);
 
       expect(mockUseCurrencyRatePolling).not.toHaveBeenCalled();
       expect(mockUseTokenRatesPolling).not.toHaveBeenCalled();
