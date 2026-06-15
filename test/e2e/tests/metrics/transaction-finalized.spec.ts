@@ -15,20 +15,19 @@ import HomePage from '../../page-objects/pages/home/homepage';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
-const isHexString = (str: unknown): boolean =>
-  typeof str === 'string' && /^0x[0-9A-Fa-f]+$/u.test(str);
-const isFloatString = (str: unknown): boolean =>
-  typeof str === 'string' && /^[0-9.]+$/u.test(str);
-
 /**
- * mocks the segment api multiple times for specific payloads that we expect to
- * see when these tests are run. In this case we are looking for
- * 'Transaction Submitted' and 'Transaction Finalized'. In addition on the
- * first event of each series we require a field that should only appear in the
- * anonymized events so that we can guarantee order of seenRequests and can
- * properly make assertions. Do not use the constants from the metrics
- * constants files, because if these change we want a strong indicator to our
- * data team that the shape of data will change.
+ * Mocks the Segment API for the events we expect to see in this test. After
+ * the migration of sensitive transaction-event properties to the public
+ * properties bag, the only Anon transaction event that still fires for a
+ * simple-send flow is `Transaction Finalized Anon` (because finalized still
+ * emits a small set of sensitive fields such as `completion_time` and the
+ * on-chain `status` override). The Submitted/Added/Approved Anon variants no
+ * longer fire and must not be mocked, otherwise `getEventPayloads` would
+ * block waiting for requests that never arrive.
+ *
+ * Do not use the constants from the metrics constants files, because if these
+ * change we want a strong indicator to our data team that the shape of data
+ * will change.
  *
  * @param mockServer
  */
@@ -58,21 +57,6 @@ async function testSpecificMock(mockServer: Mockttp) {
             type: 'track',
             event: 'Transaction Submitted',
             properties: { status: 'submitted' },
-          },
-        ],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [
-          {
-            type: 'track',
-            event: 'Transaction Submitted Anon',
           },
         ],
       })
@@ -186,33 +170,6 @@ describe('Transaction Finalized Event', function (this: Suite) {
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
-        const transactionSubmittedWithSensitivePropertiesAssertions = [
-          hasNonEmptyMessageId,
-          eventDoesNotIncludeUserId,
-          eventHasZeroAddressAnonymousId,
-          (payload: EventPayload) =>
-            // Check key properties for submitted transaction with sensitive data
-            payload.properties?.status === 'submitted' &&
-            payload.properties?.chain_id === '0x539' &&
-            payload.properties?.network === '1337' &&
-            payload.properties?.referrer === 'metamask' &&
-            payload.properties?.source === 'user' &&
-            payload.properties?.transaction_type === 'simpleSend' &&
-            payload.properties?.asset_type === 'NATIVE' &&
-            payload.properties?.token_standard === 'NONE' &&
-            payload.properties?.account_type === 'MetaMask' &&
-            payload.properties?.transaction_speed_up === false &&
-            payload.properties?.gas_edit_type === 'none' &&
-            payload.properties?.gas_edit_attempted === 'none' &&
-            payload.properties?.category === 'Transactions' &&
-            payload.properties?.locale === 'en' &&
-            payload.properties?.environment_type === 'background' &&
-            // Sensitive properties (only in anon events)
-            payload.properties?.transaction_envelope_type === 'fee-market' &&
-            isHexString(payload.properties?.gas_limit) &&
-            isFloatString(payload.properties?.default_gas),
-        ];
-
         const transactionSubmittedWithoutSensitivePropertiesAssertions = [
           hasNonEmptyMessageId,
           eventHasUserIdWithoutAnonymousId,
@@ -242,7 +199,6 @@ describe('Transaction Finalized Event', function (this: Suite) {
           eventDoesNotIncludeUserId,
           eventHasZeroAddressAnonymousId,
           (payload: EventPayload) =>
-            // Check key properties for finalized transaction with sensitive data
             payload.properties?.status === 'confirmed' &&
             payload.properties?.chain_id === '0x539' &&
             payload.properties?.network === '1337' &&
@@ -258,12 +214,6 @@ describe('Transaction Finalized Event', function (this: Suite) {
             payload.properties?.category === 'Transactions' &&
             payload.properties?.locale === 'en' &&
             payload.properties?.environment_type === 'background' &&
-            // Sensitive properties (only in anon events)
-            payload.properties?.transaction_envelope_type === 'fee-market' &&
-            isHexString(payload.properties?.gas_limit) &&
-            isFloatString(payload.properties?.default_gas) &&
-            // Finalized-specific properties
-            typeof payload.properties?.gas_used === 'string' &&
             typeof payload.properties?.completion_time === 'string',
         ];
 
@@ -289,7 +239,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
             payload.properties?.environment_type === 'background',
         ];
 
-        const [event1, event2, event3, event4] = events;
+        const [event1, event2, event3] = events;
 
         // Find the finalized events (they have transaction_hash)
         const eventsWithHash = events.filter(
@@ -310,9 +260,8 @@ describe('Transaction Finalized Event', function (this: Suite) {
 
         assert.ok(
           assertInAnyOrder(
-            [event1, event2, event3, event4],
+            [event1, event2, event3],
             [
-              transactionSubmittedWithSensitivePropertiesAssertions,
               transactionSubmittedWithoutSensitivePropertiesAssertions,
               transactionFinalizedWithSensitivePropertiesAssertions,
               transactionFinalizedWithoutSensitivePropertiesAssertions,

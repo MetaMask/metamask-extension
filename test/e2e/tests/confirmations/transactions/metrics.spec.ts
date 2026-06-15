@@ -89,11 +89,9 @@ describe('Metrics', function () {
         await driver.wait(async () => {
           const currentEvents = await getEventPayloads(driver, mockedEndpoints);
           const addedEvents = currentEvents.filter(
-            (event: MetricsEvent) =>
-              event.event === 'Transaction Added' ||
-              event.event === 'Transaction Added Anon',
+            (event: MetricsEvent) => event.event === 'Transaction Added',
           );
-          return addedEvents.length >= 4; // Wait for 4 "Added" events (2 deployment + 2 contract interaction)
+          return addedEvents.length >= 2; // Wait for 2 "Added" events (1 deployment + 1 contract interaction)
         }, 10000);
 
         // enable the advanced view
@@ -113,83 +111,47 @@ describe('Metrics', function () {
 
         // This is left for debugging purposes
         console.log(events);
-        assert.equal(events.length, 16);
+        assert.equal(events.length, 10);
 
         // deployment tx -- no ui_customizations
-        assert.equal(
-          events[0].event,
-          AnonymousTransactionMetaMetricsEvent.added,
-        );
+        assert.equal(events[0].event, TransactionMetaMetricsEvent.added);
         assert.equal(events[0].properties.ui_customizations, null);
         assert.equal(events[0].properties.transaction_advanced_view, false);
-        assert.equal(events[1].event, TransactionMetaMetricsEvent.added);
+        assert.equal(events[1].event, TransactionMetaMetricsEvent.submitted);
         assert.equal(events[1].properties.ui_customizations, null);
         assert.equal(events[1].properties.transaction_advanced_view, false);
-        assert.equal(
-          events[2].event,
-          AnonymousTransactionMetaMetricsEvent.submitted,
-        );
+        assert.equal(events[2].event, TransactionMetaMetricsEvent.approved);
         assert.equal(events[2].properties.ui_customizations, null);
         assert.equal(events[2].properties.transaction_advanced_view, false);
-        assert.equal(events[3].event, TransactionMetaMetricsEvent.submitted);
+        assert.equal(
+          events[3].event,
+          AnonymousTransactionMetaMetricsEvent.finalized,
+        );
         assert.equal(events[3].properties.ui_customizations, null);
         assert.equal(events[3].properties.transaction_advanced_view, false);
-        assert.equal(
-          events[4].event,
-          AnonymousTransactionMetaMetricsEvent.approved,
-        );
+        assert.equal(events[4].event, TransactionMetaMetricsEvent.finalized);
         assert.equal(events[4].properties.ui_customizations, null);
         assert.equal(events[4].properties.transaction_advanced_view, false);
-        assert.equal(events[5].event, TransactionMetaMetricsEvent.approved);
-        assert.equal(events[5].properties.ui_customizations, null);
-        assert.equal(events[5].properties.transaction_advanced_view, false);
-        assert.equal(
-          events[6].event,
-          AnonymousTransactionMetaMetricsEvent.finalized,
-        );
-        assert.equal(events[6].properties.ui_customizations, null);
-        assert.equal(events[6].properties.transaction_advanced_view, false);
-        assert.equal(events[7].event, TransactionMetaMetricsEvent.finalized);
-        assert.equal(events[7].properties.ui_customizations, null);
-        assert.equal(events[7].properties.transaction_advanced_view, false);
 
         // deposit tx (contract interaction)
+        assert.equal(events[5].event, TransactionMetaMetricsEvent.added);
+        assert.equal(events[5].properties.ui_customizations, null);
+        assert.equal(events[5].properties.transaction_advanced_view, false);
+        assert.equal(events[6].event, TransactionMetaMetricsEvent.submitted);
+        assert.equal(events[6].properties.ui_customizations, null);
+        assert.equal(events[6].properties.transaction_advanced_view, true);
+        assert.equal(events[7].event, TransactionMetaMetricsEvent.approved);
+        assert.equal(events[7].properties.ui_customizations, null);
+        assert.equal(events[7].properties.transaction_advanced_view, true);
         assert.equal(
           events[8].event,
-          AnonymousTransactionMetaMetricsEvent.added,
-        );
-        assert.equal(events[8].properties.ui_customizations, null);
-        assert.equal(events[8].properties.transaction_advanced_view, false);
-        assert.equal(events[9].event, TransactionMetaMetricsEvent.added);
-        assert.equal(events[9].properties.ui_customizations, null);
-        assert.equal(events[9].properties.transaction_advanced_view, false);
-        assert.equal(
-          events[10].event,
-          AnonymousTransactionMetaMetricsEvent.submitted,
-        );
-        assert.equal(events[10].properties.ui_customizations, null);
-        assert.equal(events[10].properties.transaction_advanced_view, true);
-        assert.equal(events[11].event, TransactionMetaMetricsEvent.submitted);
-        assert.equal(events[11].properties.ui_customizations, null);
-        assert.equal(events[11].properties.transaction_advanced_view, true);
-        assert.equal(
-          events[12].event,
-          AnonymousTransactionMetaMetricsEvent.approved,
-        );
-        assert.equal(events[12].properties.ui_customizations, null);
-        assert.equal(events[12].properties.transaction_advanced_view, true);
-        assert.equal(events[13].event, TransactionMetaMetricsEvent.approved);
-        assert.equal(events[13].properties.ui_customizations, null);
-        assert.equal(events[13].properties.transaction_advanced_view, true);
-        assert.equal(
-          events[14].event,
           AnonymousTransactionMetaMetricsEvent.finalized,
         );
-        assert.equal(events[14].properties.ui_customizations, null);
-        assert.equal(events[14].properties.transaction_advanced_view, true);
-        assert.equal(events[15].event, TransactionMetaMetricsEvent.finalized);
-        assert.equal(events[15].properties.ui_customizations, null);
-        assert.equal(events[15].properties.transaction_advanced_view, true);
+        assert.equal(events[8].properties.ui_customizations, null);
+        assert.equal(events[8].properties.transaction_advanced_view, true);
+        assert.equal(events[9].event, TransactionMetaMetricsEvent.finalized);
+        assert.equal(events[9].properties.ui_customizations, null);
+        assert.equal(events[9].properties.transaction_advanced_view, true);
       },
     );
   });
@@ -206,21 +168,11 @@ async function mockedTrackedEvent(mockServer: MockttpServer, event: string) {
 
 async function mocks(server: MockttpServer) {
   return [
-    // deployment tx
-    await mockedTrackedEvent(
-      server,
-      AnonymousTransactionMetaMetricsEvent.added,
-    ),
+    // deployment tx — Added/Submitted/Approved Anon variants no longer fire
+    // after the sensitive-property migration; only Finalized still emits a
+    // sensitive bag, so only its Anon variant is mocked.
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.added),
-    await mockedTrackedEvent(
-      server,
-      AnonymousTransactionMetaMetricsEvent.submitted,
-    ),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.submitted),
-    await mockedTrackedEvent(
-      server,
-      AnonymousTransactionMetaMetricsEvent.approved,
-    ),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.approved),
     await mockedTrackedEvent(
       server,
@@ -228,20 +180,8 @@ async function mocks(server: MockttpServer) {
     ),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.finalized),
     // deposit tx
-    await mockedTrackedEvent(
-      server,
-      AnonymousTransactionMetaMetricsEvent.added,
-    ),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.added),
-    await mockedTrackedEvent(
-      server,
-      AnonymousTransactionMetaMetricsEvent.submitted,
-    ),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.submitted),
-    await mockedTrackedEvent(
-      server,
-      AnonymousTransactionMetaMetricsEvent.approved,
-    ),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.approved),
     await mockedTrackedEvent(
       server,
