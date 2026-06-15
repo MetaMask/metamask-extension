@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useEffect, useState } from 'react';
 
 import {
@@ -32,13 +31,13 @@ const NAV_BUTTON_ICON_CLASSNAME =
 
 const NAV_ICON_PROPS = { size: IconSize.Sm };
 
-function PreviousButton({
+const PreviousButton = ({
   safeIndex,
   onBack,
 }: {
   safeIndex: number;
   onBack: () => void;
-}) {
+}) => {
   const t = useI18nContext();
   if (safeIndex === 0) {
     return null;
@@ -53,9 +52,9 @@ function PreviousButton({
       data-testid="send-alert-modal-prev-button"
     />
   );
-}
+};
 
-function NextButton({
+const NextButton = ({
   safeIndex,
   alertsLength,
   onNext,
@@ -63,7 +62,7 @@ function NextButton({
   safeIndex: number;
   alertsLength: number;
   onNext: () => void;
-}) {
+}) => {
   const t = useI18nContext();
   if (safeIndex >= alertsLength - 1) {
     return null;
@@ -78,15 +77,15 @@ function NextButton({
       data-testid="send-alert-modal-next-button"
     />
   );
-}
+};
 
-function PageNumber({
+const PageNumber = ({
   safeIndex,
   alertsLength,
 }: {
   safeIndex: number;
   alertsLength: number;
-}) {
+}) => {
   const t = useI18nContext();
   return (
     <Text
@@ -98,9 +97,9 @@ function PageNumber({
       {`${safeIndex + 1} ${t('ofTextNofM')} ${alertsLength}`}
     </Text>
   );
-}
+};
 
-function PageNavigation({
+const PageNavigation = ({
   alertsLength,
   safeIndex,
   onBack,
@@ -110,7 +109,7 @@ function PageNavigation({
   safeIndex: number;
   onBack: () => void;
   onNext: () => void;
-}) {
+}) => {
   if (alertsLength <= 1) {
     return null;
   }
@@ -125,7 +124,7 @@ function PageNavigation({
       />
     </Box>
   );
-}
+};
 
 export const SendAlertModal = ({
   isOpen,
