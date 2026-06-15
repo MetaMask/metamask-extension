@@ -107,7 +107,9 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const [value, setValue] = React.useState<DateTime | null>(initialParsed);
 
   useEffect(() => {
-    setValue(parseInitialIsoValue(initialValue, type));
+    if (initialParsed !== null) {
+      setValue(initialParsed);
+    }
   }, [initialValue, type]);
 
   const draftRef = useRef<DateTime | null>(initialParsed);

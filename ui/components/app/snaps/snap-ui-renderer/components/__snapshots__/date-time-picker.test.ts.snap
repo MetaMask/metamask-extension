@@ -1,5 +1,106 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SnapUIDateTimePicker can show an error 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker snap-ui-renderer__field"
+        >
+          <label
+            class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            for="date-time-picker"
+          >
+            Select date and time
+          </label>
+          <div
+            class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--datetime css-n5zogd-MuiFormControl-root-MuiTextField-root"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+            >
+              <input
+                aria-invalid="false"
+                aria-label="Choose date, selected date is Jun 15, 2026"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id=":ri:"
+                inputmode="text"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+          </div>
+          <p
+            class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--margin-top-1 mm-box--color-error-default"
+          >
+            This is an error
+          </p>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIDateTimePicker renders a date picker 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker"
+        >
+          <div
+            class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--date css-n5zogd-MuiFormControl-root-MuiTextField-root"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+            >
+              <input
+                aria-invalid="false"
+                aria-label="Choose date, selected date is Jun 15, 2026"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id=":r6:"
+                inputmode="text"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
 exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
 <div>
   <div
@@ -23,10 +124,106 @@ exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
             >
               <input
                 aria-invalid="false"
-                aria-label="Choose date, selected date is Jun 2, 2026"
+                aria-label="Choose date, selected date is Jun 15, 2026"
                 autocomplete="off"
                 class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
-                id="mui-1"
+                id=":r2:"
+                inputmode="text"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIDateTimePicker renders a time picker 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker"
+        >
+          <div
+            class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--time css-n5zogd-MuiFormControl-root-MuiTextField-root"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+            >
+              <input
+                aria-invalid="false"
+                aria-label="Choose time, selected time is 11:40 AM"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id=":ra:"
+                inputmode="text"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIDateTimePicker renders inside a field 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker snap-ui-renderer__field"
+        >
+          <label
+            class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            for="date-time-picker"
+          >
+            Select date and time
+          </label>
+          <div
+            class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--datetime css-n5zogd-MuiFormControl-root-MuiTextField-root"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+            >
+              <input
+                aria-invalid="false"
+                aria-label="Choose date, selected date is Jun 15, 2026"
+                autocomplete="off"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                id=":re:"
                 inputmode="text"
                 readonly=""
                 type="text"
