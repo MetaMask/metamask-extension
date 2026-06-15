@@ -33,13 +33,17 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
+import log from 'loglevel';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
   getProviderConfig,
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
+  selectNetworkConfigurationByChainId,
+  selectDefaultRpcEndpointByChainId,
 } from '../../shared/lib/selectors/networks';
+import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -55,11 +59,7 @@ import {
 } from '../../shared/lib/passkey';
 import { getIsPasskeyFeatureEnabled } from '../../shared/lib/environment';
 import { isFirefoxBrowser } from '../../shared/lib/browser-runtime.utils';
-// TODO: Fix circular dependency
-// To avoid import evaluating as `undefined` due to circular dependency,
-// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import-x/order
-import { getRemoteFeatureFlags } from './remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
@@ -73,9 +73,13 @@ import {
   getIsTronTestnetSupportEnabled,
 } from './multichain/feature-flags';
 
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
+import {
+  addHexPrefix,
+  getDeviceType,
+  // eslint-disable-next-line import-x/no-restricted-paths
+} from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   MAINNET_DISPLAY_NAME,
@@ -134,11 +138,12 @@ import {
   sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates/approval-types';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
+  DEVICE_TYPE,
   ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
@@ -149,7 +154,7 @@ import {
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
-} from '../ducks/metamask/metamask';
+} from '../ducks/metamask/base-selectors';
 import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
@@ -175,26 +180,23 @@ import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/lib/feature-flags';
-// eslint-disable-next-line import-x/order
-import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-  getInternalAccountByAddress,
-} from './accounts';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
-import { getIsSocialLoginFlow } from './first-time-flow';
-import { getHasShieldEntryModalShownOnce } from './subscription';
-import { getApprovalRequestsByType } from './approvals';
+import { UTM_PARAMETERS } from '../../shared/types/metametrics';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import {
+  getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
+} from './transactions';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
   getMultichainNetwork,
 } from './multichain/networks';
-import {
-  getUnapprovedTransactions,
-  getCurrentNetworkTransactions,
-} from './transactions';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import { getApprovalRequestsByType } from './approvals';
+import { getHasShieldEntryModalShownOnce } from './subscription';
+import { getIsSocialLoginFlow } from './first-time-flow';
+import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -312,6 +314,10 @@ export function getExternalServicesOnboardingToggleState(state) {
   return state.appState.externalServicesOnboardingToggleState;
 }
 
+export function getBackupAndSyncOnboardingToggleState(state) {
+  return state.appState.backupAndSyncOnboardingToggleState;
+}
+
 export function getShowDeleteMetaMetricsDataModal(state) {
   return state.appState.showDeleteMetaMetricsDataModal;
 }
@@ -366,9 +372,17 @@ export function getNetworkIdentifier(state) {
   return nickname || rpcUrl || type;
 }
 
+export function getAnalyticsId(state) {
+  const { analyticsId } = state.metamask;
+  return analyticsId;
+}
+
+/**
+ * @param state
+ * @deprecated Use `getAnalyticsId` instead.
+ */
 export function getMetaMetricsId(state) {
-  const { metaMetricsId } = state.metamask;
-  return metaMetricsId;
+  return getAnalyticsId(state);
 }
 
 export function isCurrentProviderCustom(state) {
@@ -389,16 +403,6 @@ export function getIsSigningQRHardwareTransaction(state) {
     activeQrCodeScanRequest &&
     activeQrCodeScanRequest.type === QrScanRequestType.SIGN
   );
-}
-
-export function getCurrentKeyring(state) {
-  const internalAccount = getSelectedInternalAccount(state);
-
-  if (!internalAccount) {
-    return null;
-  }
-
-  return internalAccount.metadata?.keyring;
 }
 
 /**
@@ -422,67 +426,6 @@ export function checkNetworkAndAccountSupports1559(state, networkClientId) {
 export function checkNetworkOrAccountNotSupports1559(state) {
   const networkNotSupports1559 = isNotEIP1559Network(state);
   return networkNotSupports1559;
-}
-
-/**
- * Checks if the current wallet is a hardware wallet.
- *
- * @param {object} state
- * @returns {boolean}
- */
-export function isHardwareWallet(state) {
-  const keyring = getCurrentKeyring(state);
-  return Boolean(keyring?.type?.includes('Hardware'));
-}
-
-/**
- * Checks if the account supports smart transactions.
- *
- * @param {object} state - The state object.
- * @returns {boolean}
- */
-export function accountSupportsSmartTx(state) {
-  const accountType = getAccountType(state);
-  return Boolean(accountType !== 'snap');
-}
-
-/**
- * Get a HW wallet type, e.g. "Ledger Hardware"
- *
- * @param {object} state
- * @returns {string | undefined}
- */
-export function getHardwareWalletType(state) {
-  const keyring = getCurrentKeyring(state);
-  return isHardwareWallet(state) ? keyring.type : undefined;
-}
-
-export function getAccountType(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  return getAccountTypeForKeyring(currentKeyring);
-}
-
-export function getAccountTypeForKeyring(keyring) {
-  if (!keyring) {
-    return '';
-  }
-
-  const { type } = keyring;
-
-  switch (type) {
-    case KeyringType.trezor:
-    case KeyringType.oneKey:
-    case KeyringType.ledger:
-    case KeyringType.lattice:
-    case KeyringType.qr:
-      return 'hardware';
-    case KeyringType.imported:
-      return 'imported';
-    case KeyringType.snap:
-      return 'snap';
-    default:
-      return 'default';
-  }
 }
 
 /**
@@ -648,6 +591,15 @@ const getMetaMaskAccountsWithoutBalance = createSelector(
  */
 export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
+}
+
+export function getMaybeSelectedInternalAccount(state) {
+  // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
+  // - This might happen during the onboarding
+  const accountId = state.metamask.internalAccounts?.selectedAccount;
+  return accountId
+    ? state.metamask.internalAccounts?.accounts[accountId]
+    : undefined;
 }
 
 export function checkIfMethodIsEnabled(state, methodName) {
@@ -1145,21 +1097,24 @@ export const getTokenExchangeRates = createSelector(
   },
 );
 
-export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = getTokenRatesControllerMarketData(state) ?? {};
+export const getCrossChainTokenExchangeRates = createSelector(
+  getTokenRatesControllerMarketData,
+  (contractMarketData) => {
+    const marketData = contractMarketData ?? {};
 
-  return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
-    acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
-      (innerAcc, innerKey) => {
-        innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
-        return innerAcc;
-      },
-      {},
-    );
+    return Object.keys(marketData).reduce((acc, topLevelKey) => {
+      acc[topLevelKey] = Object.keys(marketData[topLevelKey]).reduce(
+        (innerAcc, innerKey) => {
+          innerAcc[innerKey] = marketData[topLevelKey][innerKey]?.price;
+          return innerAcc;
+        },
+        {},
+      );
 
-    return acc;
-  }, {});
-};
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Get market data for tokens on the current chain
@@ -1239,21 +1194,21 @@ export function getAccountName(accounts, accountAddress) {
   return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
-export function accountsWithSendEtherInfoSelector(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const internalAccounts = getInternalAccounts(state);
-
-  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
-    (internalAccount) => {
-      return {
-        ...internalAccount,
-        ...accounts[internalAccount.address],
-      };
-    },
-  );
-
-  return accountsWithSendEtherInfo;
-}
+export const accountsWithSendEtherInfoSelector = createSelector(
+  getMetaMaskAccounts,
+  getInternalAccounts,
+  (accounts, internalAccounts) => {
+    const accountsWithSendEtherInfo = internalAccounts.map(
+      (internalAccount) => {
+        return {
+          ...internalAccount,
+          ...accounts[internalAccount.address],
+        };
+      },
+    );
+    return accountsWithSendEtherInfo;
+  },
+);
 
 export const getAccountsWithLabels = createSelector(
   getMetaMaskAccountsOrdered,
@@ -1278,16 +1233,22 @@ export const getAccountsWithLabels = createSelector(
   },
 );
 
-export function getCurrentAccountWithSendEtherInfo(state) {
-  const { address: currentAddress } = getSelectedInternalAccount(state);
-  const accounts = accountsWithSendEtherInfoSelector(state);
+export const getCurrentAccountWithSendEtherInfo = createSelector(
+  getSelectedInternalAccount,
+  accountsWithSendEtherInfoSelector,
+  ({ address: currentAddress }, accounts) => {
+    return getAccountByAddress(accounts, currentAddress);
+  },
+);
 
-  return getAccountByAddress(accounts, currentAddress);
-}
-export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
-  const accounts = accountsWithSendEtherInfoSelector(state);
-  return getAccountByAddress(accounts, targetAddress);
-}
+export const getTargetAccountWithSendEtherInfo =
+  createParameterizedShallowEqualSelector(10)(
+    accountsWithSendEtherInfoSelector,
+    (_, targetAddress) => targetAddress,
+    (accounts, targetAddress) => {
+      return getAccountByAddress(accounts, targetAddress);
+    },
+  );
 
 export function getCurrentEthBalance(state) {
   return getCurrentAccountWithSendEtherInfo(state)?.balance;
@@ -1305,28 +1266,6 @@ export const getNetworkConfigurationIdByChainId = createSelector(
       },
       {},
     ),
-);
-
-/**
- * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
- */
-export const selectNetworkConfigurationByChainId = createSelector(
-  getNetworkConfigurationsByChainId,
-  (_state, chainId) => chainId,
-  (networkConfigurationsByChainId, chainId) =>
-    networkConfigurationsByChainId[chainId],
-);
-
-export const selectDefaultRpcEndpointByChainId = createSelector(
-  selectNetworkConfigurationByChainId,
-  (networkConfiguration) => {
-    if (!networkConfiguration) {
-      return undefined;
-    }
-
-    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
-    return rpcEndpoints[defaultRpcEndpointIndex];
-  },
 );
 
 /**
@@ -1454,9 +1393,6 @@ export function getIsLineaMainnet(state) {
 export function getIsTestnet(state) {
   const chainId = getCurrentChainId(state);
   return TEST_CHAINS.includes(chainId);
-}
-export function getPreferences({ metamask }) {
-  return metamask.preferences ?? {};
 }
 
 export function getShowTestNetworks(state) {
@@ -2970,6 +2906,16 @@ export function getIsPasskeyRegistered(state) {
 }
 
 /**
+ * Passkey vault wrapping key derivation method from the enrolled record.
+ *
+ * @param {object} state - Redux state
+ * @returns {'prf' | 'userHandle' | undefined}
+ */
+export function getPasskeyDerivationMethod(state) {
+  return state.metamask?.passkeyRecord?.keyDerivation?.method;
+}
+
+/**
  * True when the enrolled passkey's AAGUID is in the sidepanel-incompatible set
  * (defer passkey flows to a normal browser tab when also in sidepanel).
  *
@@ -2993,7 +2939,8 @@ export function getIsPasskeyFeatureAvailable(state) {
     getIsPasskeyFeatureEnabled() &&
     isWebAuthnSupported() &&
     !getIsSocialLoginFlow(state) &&
-    !isFirefoxBrowser()
+    !isFirefoxBrowser() &&
+    getDeviceType() !== DEVICE_TYPE.MOBILE
   );
 }
 
@@ -3518,7 +3465,7 @@ export const getHdKeyringOfSelectedAccountOrPrimaryKeyring = createSelector(
  * @returns {object} The permissions subjects object.
  */
 export function getPermissionSubjects(state) {
-  return state.metamask.subjects || {};
+  return state.metamask.subjects || EMPTY_OBJECT;
 }
 
 /**
@@ -4045,4 +3992,34 @@ export function getLastVisitedPerpsRoute(state) {
  */
 export function getDeferredDeepLink(state) {
   return state.metamask?.deferredDeepLink || null;
+}
+
+/**
+ * Retrieves the deferred deep link parameters from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {Record<string, string>} The deferred deep link parameters if available, empty object otherwise.
+ */
+export function getDeferredDeepLinkParameters(state) {
+  const deferredDeepLink = getDeferredDeepLink(state);
+  if (!deferredDeepLink) {
+    return null;
+  }
+
+  const utmProperties = {};
+  try {
+    const url = new URL(deferredDeepLink.referringLink);
+
+    for (const utmParam of UTM_PARAMETERS) {
+      const value = url.searchParams.get(utmParam);
+      if (value) {
+        utmProperties[utmParam] = value;
+      }
+    }
+  } catch (error) {
+    log.error('Failed to parse deferred deep link:', deferredDeepLink, error);
+    return null;
+  }
+
+  return utmProperties;
 }

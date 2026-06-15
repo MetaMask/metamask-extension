@@ -1,44 +1,25 @@
 import { DelegationController } from '@metamask/delegation-controller';
-import {
-  type TransactionMeta,
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import { type Hex } from '../../../../shared/lib/delegation/utils';
+import { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { MessengerClientInitRequest } from '../types';
-import {
-  type DelegationControllerMessenger,
-  type DelegationControllerInitMessenger,
-  getDelegationControllerMessenger,
-  getDelegationControllerInitMessenger,
-} from '../messengers/delegation/delegation-controller-messenger';
+import { getDelegationControllerMessenger } from '../messengers/delegation/delegation-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
-import {
-  DelegationControllerInit,
-  awaitDeleteDelegationEntry,
-} from './delegation-controller-init';
+import { DelegationControllerInit } from './delegation-controller-init';
 
 jest.mock('@metamask/delegation-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  MessengerClientInitRequest<
-    DelegationControllerMessenger,
-    DelegationControllerInitMessenger
-  >
+  MessengerClientInitRequest<DelegationControllerMessenger>
 > {
   const baseControllerMessenger = getRootMessenger();
   const controllerMessenger = getDelegationControllerMessenger(
-    baseControllerMessenger,
-  );
-  const initMessenger = getDelegationControllerInitMessenger(
     baseControllerMessenger,
   );
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger,
-    initMessenger,
+    initMessenger: undefined,
   };
 }
 
@@ -63,7 +44,6 @@ describe('DelegationControllerInit', () => {
     expect(DelegationControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.DelegationController,
-      hashDelegation: expect.any(Function),
       getDelegationEnvironment: expect.any(Function),
     });
   });
@@ -74,167 +54,6 @@ describe('DelegationControllerInit', () => {
 
     expect(result.api).toEqual({
       signDelegation: expect.any(Function),
-      storeDelegationEntry: expect.any(Function),
-      listDelegationEntries: expect.any(Function),
-      getDelegationEntry: expect.any(Function),
-      getDelegationEntryChain: expect.any(Function),
-      deleteDelegationEntry: expect.any(Function),
-      awaitDeleteDelegationEntry: expect.any(Function),
     });
-  });
-});
-
-describe('DelegationController:awaitDeleteDelegationEntry', () => {
-  const mockHash = '0x123' as Hex;
-  let messengerClient: DelegationController;
-  let initMessenger: DelegationControllerInitMessenger;
-  let subscribeHandler:
-    | ((event: { transactionMeta: TransactionMeta }) => void)
-    | undefined;
-
-  const createMockTransactionMeta = (
-    overrides: Partial<TransactionMeta>,
-  ): TransactionMeta => ({
-    id: '123',
-    chainId: '0x1',
-    networkClientId: '1',
-    time: Date.now(),
-    txParams: {
-      from: '0x123',
-      to: '0x456',
-      value: '0x0',
-      data: '0x',
-    },
-    status: TransactionStatus.unapproved,
-    type: TransactionType.contractInteraction,
-    ...overrides,
-  });
-
-  beforeEach(() => {
-    messengerClient = new DelegationController({
-      messenger: getDelegationControllerMessenger(getRootMessenger()),
-      state: {},
-      hashDelegation: () => '0x123' as Hex,
-      getDelegationEnvironment: () => ({
-        DelegationManager: '0x123',
-        EntryPoint: '0x456',
-        SimpleFactory: '0x789',
-        implementations: {},
-        caveatEnforcers: {},
-      }),
-    });
-
-    // Create a mock messenger with jest.fn() for subscribe and unsubscribe
-    initMessenger = {
-      subscribe: jest.fn((_event, handler) => {
-        subscribeHandler = handler;
-      }),
-      unsubscribe: jest.fn(),
-    } as unknown as DelegationControllerInitMessenger;
-  });
-
-  it('subscribes to transaction status updates', () => {
-    const txMeta = createMockTransactionMeta({});
-
-    awaitDeleteDelegationEntry(messengerClient, initMessenger, {
-      hash: mockHash,
-      txMeta,
-    });
-
-    expect(initMessenger.subscribe).toHaveBeenCalledWith(
-      'TransactionController:transactionStatusUpdated',
-      expect.any(Function),
-    );
-  });
-
-  it('deletes delegation when transaction is confirmed', () => {
-    const txMeta = createMockTransactionMeta({});
-    const deleteSpy = jest.spyOn(messengerClient, 'delete');
-
-    awaitDeleteDelegationEntry(messengerClient, initMessenger, {
-      hash: mockHash,
-      txMeta,
-    });
-
-    expect(subscribeHandler).toBeDefined();
-    subscribeHandler?.({
-      transactionMeta: createMockTransactionMeta({
-        status: TransactionStatus.confirmed,
-      }),
-    });
-
-    expect(deleteSpy).toHaveBeenCalledWith(mockHash);
-    expect(initMessenger.unsubscribe).toHaveBeenCalled();
-  });
-
-  it('unsubscribes when transaction is dropped', () => {
-    const txMeta = createMockTransactionMeta({});
-    const deleteSpy = jest.spyOn(messengerClient, 'delete');
-
-    awaitDeleteDelegationEntry(messengerClient, initMessenger, {
-      hash: mockHash,
-      txMeta,
-    });
-
-    expect(subscribeHandler).toBeDefined();
-    subscribeHandler?.({
-      transactionMeta: createMockTransactionMeta({
-        status: TransactionStatus.dropped,
-      }),
-    });
-
-    expect(deleteSpy).not.toHaveBeenCalled();
-    expect(initMessenger.unsubscribe).toHaveBeenCalled();
-  });
-
-  it('follows transaction chain when replaced', () => {
-    const txMeta = createMockTransactionMeta({});
-    const deleteSpy = jest.spyOn(messengerClient, 'delete');
-
-    awaitDeleteDelegationEntry(messengerClient, initMessenger, {
-      hash: mockHash,
-      txMeta,
-    });
-
-    expect(subscribeHandler).toBeDefined();
-
-    // Transaction gets replaced
-    subscribeHandler?.({
-      transactionMeta: createMockTransactionMeta({
-        status: TransactionStatus.dropped,
-        replacedById: '456',
-      }),
-    });
-
-    // New transaction confirms
-    subscribeHandler?.({
-      transactionMeta: createMockTransactionMeta({
-        id: '456',
-        status: TransactionStatus.confirmed,
-      }),
-    });
-
-    expect(deleteSpy).toHaveBeenCalledWith(mockHash);
-    expect(initMessenger.unsubscribe).toHaveBeenCalled();
-  });
-
-  it('unsubscribes when transaction is cancelled', () => {
-    const txMeta = createMockTransactionMeta({});
-    const deleteSpy = jest.spyOn(messengerClient, 'delete');
-
-    awaitDeleteDelegationEntry(messengerClient, initMessenger, {
-      hash: mockHash,
-      txMeta,
-    });
-
-    expect(subscribeHandler).toBeDefined();
-    subscribeHandler?.({
-      transactionMeta: createMockTransactionMeta({
-        type: TransactionType.cancel,
-      }),
-    });
-
-    expect(deleteSpy).not.toHaveBeenCalled();
-    expect(initMessenger.unsubscribe).toHaveBeenCalled();
   });
 });

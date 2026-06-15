@@ -19,6 +19,7 @@ import { Numeric } from '../../../shared/lib/Numeric';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
 } from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
@@ -83,29 +84,6 @@ export const getHexMaxGasLimit = (gasLimit: number) => {
     new BigNumber(gasLimit).toString(),
     10,
   ).toPrefixedHexString() as Hex;
-};
-/**
- * Converts basis points (BPS) to percentage
- * 1 BPS = 0.01%
- *
- * @param bps - The value in basis points (e.g., "87.5" or 87.5)
- * @returns The percentage value as a string (e.g., "0.875")
- */
-export const bpsToPercentage = (
-  bps: string | number | undefined,
-): string | undefined => {
-  if (bps === undefined || bps === null) {
-    return undefined;
-  }
-
-  const bpsValue = typeof bps === 'string' ? parseFloat(bps) : bps;
-
-  if (isNaN(bpsValue)) {
-    return undefined;
-  }
-
-  // BPS to percentage: divide by 100
-  return (bpsValue / 100).toString();
 };
 
 const fetchTokenExchangeRates = async (
@@ -236,6 +214,18 @@ export const toBridgeToken = (
   };
 };
 
+export const getDefaultFromToken = (fromChainId: CaipChainId) => {
+  const defaultFromTokenForChain =
+    BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN[fromChainId];
+  // If commonPair is defined and is not the same as the fromToken, return it
+  if (defaultFromTokenForChain) {
+    return toBridgeToken(defaultFromTokenForChain);
+  }
+
+  // Last resort: native token
+  return toBridgeToken(getNativeAssetForChainId(fromChainId));
+};
+
 export const getDefaultToToken = (
   toChainId: CaipChainId,
   fromAssetId: CaipAssetType,
@@ -249,8 +239,13 @@ export const getDefaultToToken = (
     return toBridgeToken(commonPair);
   }
 
-  // Last resort: native token
-  return toBridgeToken(getNativeAssetForChainId(toChainId));
+  /**
+   * Our current "from" asset is our default "to" token.
+   * Hence we can make our "to" token be the default "from" token.
+   * It will still fallback to native (original behavior).
+   * We know fromChainId === toChainId because of the assetId clash.
+   */
+  return getDefaultFromToken(toChainId);
 };
 
 /**

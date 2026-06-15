@@ -13,9 +13,31 @@ import {
   mockHip3Markets,
   mockTransactions,
 } from '../../components/app/perps/mocks';
+import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../components/app/compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
+
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -74,6 +96,15 @@ jest.mock('@metamask/perps-controller', () => ({
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
   },
+  MARKET_CATEGORIES: [
+    'crypto',
+    'stock',
+    'pre-ipo',
+    'index',
+    'etf',
+    'commodity',
+    'forex',
+  ],
 }));
 
 // Mock lightweight-charts to prevent DOM rendering issues in tests
@@ -246,6 +277,10 @@ const mockLivePositions = jest.fn(() => ({
   positions: mockPositions,
   isInitialLoading: false,
 }));
+const mockLiveMarketData = jest.fn(() => ({
+  markets: [...mockCryptoMarkets, ...mockHip3Markets],
+  isInitialLoading: false,
+}));
 
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
@@ -255,10 +290,7 @@ jest.mock('../../hooks/perps/stream', () => ({
     isInitialLoading: false,
   }),
   usePerpsLiveAccount: () => mockLiveAccount(),
-  usePerpsLiveMarketData: () => ({
-    markets: [...mockCryptoMarkets, ...mockHip3Markets],
-    isInitialLoading: false,
-  }),
+  usePerpsLiveMarketData: () => mockLiveMarketData(),
   usePerpsLiveCandles: () => ({
     candleData: {
       symbol: 'ETH',
@@ -382,6 +414,10 @@ describe('PerpsMarketDetailPage', () => {
     });
     mockLivePositions.mockReturnValue({
       positions: mockPositions,
+      isInitialLoading: false,
+    });
+    mockLiveMarketData.mockReturnValue({
+      markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
     });
     mockUsePerpsMarketFills.mockReturnValue({
@@ -558,6 +594,33 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText('ETH-USD')).toBeInTheDocument();
     });
 
+    it('displays the market max leverage pill in the header', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-market-max-leverage')).toHaveTextContent('20x');
+    });
+
+    it('omits the market max leverage pill when max leverage is unavailable', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [
+          {
+            ...mockCryptoMarkets[1],
+            maxLeverage: '',
+          },
+        ],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(
+        screen.queryByTestId('perps-market-max-leverage'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders market detail page for BTC', async () => {
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
@@ -578,7 +641,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates back in history when back button is clicked', async () => {
+    it('navigates to wallet Perps tab when back button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -586,7 +649,10 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: '/',
+        search: 'tab=perps',
+      });
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {
@@ -693,6 +759,20 @@ describe('PerpsMarketDetailPage', () => {
       expect(priceLines.find((l) => l.label === 'Liq')).toBeUndefined();
     });
 
+    it('displays a fallback when the position liquidationPrice is not positive', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: [{ ...mockPositions[0], liquidationPrice: '-1' }],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-position-liquidation-value')).toHaveTextContent(
+        PERPS_LIQUIDATION_PRICE_FALLBACK,
+      );
+    });
+
     it('displays favorite button', async () => {
       const store = mockStore(createMockState(true));
 
@@ -703,7 +783,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders HIP-3 equity market (TSLA)', async () => {
+    it('renders HIP-3 stock market (TSLA)', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:TSLA' });
       const store = mockStore(createMockState(true));
 
@@ -829,7 +909,7 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText(messages.perpsLearnBasics.message)).toBeInTheDocument();
     });
 
-    it('opens Modify menu with Add exposure and Reduce exposure when Modify button is clicked', async () => {
+    it('opens Modify menu with Add exposure, Reduce exposure, and Reverse position when Modify button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
@@ -846,8 +926,8 @@ describe('PerpsMarketDetailPage', () => {
         screen.getByTestId('perps-modify-menu-reduce-exposure'),
       ).toBeInTheDocument();
       expect(
-        screen.queryByTestId('perps-modify-menu-reverse-position'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-modify-menu-reverse-position'),
+      ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsAddExposure.message),
       ).toBeInTheDocument();
@@ -944,7 +1024,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('does not show Reverse position option in Modify menu (temporarily disabled)', async () => {
+    it('opens Reverse position modal when Reverse position is clicked in Modify menu', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
@@ -952,11 +1032,14 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
 
       expect(
-        screen.queryByTestId('perps-modify-menu-reverse-position'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-modify-menu-reverse-position'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('perps-modify-menu-reverse-position'));
+
       expect(
-        screen.queryByTestId('perps-reverse-position-modal'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-reverse-position-modal'),
+      ).toBeInTheDocument();
     });
 
     it('opens Add margin modal from Margin menu', async () => {
@@ -1386,8 +1469,8 @@ describe('PerpsMarketDetailPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
@@ -1667,6 +1750,44 @@ describe('PerpsMarketDetailPage', () => {
       await waitFor(() => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('orders section spacing (TAT-3264)', () => {
+    it('renders the orders section header with the same top spacing token as the stats section header', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      const ordersHeader = screen.getByTestId('perps-orders-section-header');
+      const statsHeader = screen.getByTestId('perps-stats-section-header');
+
+      // Both adjacent section headers must use the page's section-spacing token
+      // (paddingTop={4} → 16px → `pt-4`). Before the fix the orders header had no
+      // paddingTop, so it sat flush against the preceding block.
+      expect(ordersHeader).toHaveClass('pt-4');
+      expect(statsHeader).toHaveClass('pt-4');
+    });
+
+    it('does not render the orders section when there are no open orders (empty-state, no regression)', () => {
+      const savedOrders = mockOrders.splice(0, mockOrders.length);
+      mockLivePositions.mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+      try {
+        const store = mockStore(createMockState(true));
+        renderWithProvider(<PerpsMarketDetailPage />, store);
+
+        expect(
+          screen.queryByTestId('perps-orders-section-header'),
+        ).not.toBeInTheDocument();
+        // The rest of the page still renders correctly.
+        expect(
+          screen.getByTestId('perps-stats-section-header'),
+        ).toBeInTheDocument();
+      } finally {
+        mockOrders.push(...savedOrders);
+      }
     });
   });
 });

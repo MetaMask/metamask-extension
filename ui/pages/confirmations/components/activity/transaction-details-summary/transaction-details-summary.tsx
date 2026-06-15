@@ -22,7 +22,10 @@ import { useTransactionDetails } from '../transaction-details-context';
 import { formatTransactionDateTime } from '../utils';
 import { getTransactions } from '../../../../../selectors/transactions';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
-import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../../shared/lib/selectors/networks';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
@@ -160,8 +163,9 @@ function RelayDepositSummaryLine({
     tokenChainId ?? chainId,
   );
 
-  const networkConfig = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfig = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const tokenSymbol = token?.symbol;
@@ -245,8 +249,9 @@ function ReceiveSummaryLine({
       : null,
   );
 
-  const networkConfig = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfig = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const tokenSymbol = token?.symbol;

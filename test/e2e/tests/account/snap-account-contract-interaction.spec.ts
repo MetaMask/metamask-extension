@@ -9,11 +9,10 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
-import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
@@ -55,7 +54,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
       }: {
         driver: Driver;
         contractRegistry: ContractAddressRegistry;
-        localNodes: Anvil[] | Ganache[] | undefined[];
+        localNodes: Anvil[] | undefined[];
       }) => {
         await login(driver, { localNode: localNodes[0] });
         await installSnapSimpleKeyring(driver);
@@ -92,9 +91,9 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
-        await activityList.checkTxAmountInActivity('-4 ETH');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+        await activityTab.checkTxAmountInActivity('-4 ETH');
       },
     );
   });

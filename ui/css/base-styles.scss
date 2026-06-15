@@ -33,14 +33,24 @@ html[data-theme] {
   background-color: var(--color-background-alternative);
 }
 
-/* stylelint-disable */
-#app-content, #critical-error-content {
+#app-content,
+#critical-error-content {
   overflow-x: hidden;
   height: 100%;
   display: flex;
   flex-direction: column;
 }
-/* stylelint-enable */
+
+/* Overlay scrim, dialog top-aligned in panel. */
+#critical-error-content {
+  justify-content: flex-start;
+  background-color:
+    color-mix(
+      in srgb,
+      var(--brand-colors-grey-grey400) 20%,
+      transparent
+    );
+}
 
 a {
   text-decoration: none;

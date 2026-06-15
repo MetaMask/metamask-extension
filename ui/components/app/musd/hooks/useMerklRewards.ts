@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import type { Hex } from '@metamask/utils';
-import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { useMusdGeoBlocking } from '../../../../hooks/musd/useMusdGeoBlocking';
 import { useTokenFiatRate } from '../../../../pages/confirmations/hooks/tokens/useTokenFiatRates';
 import { ELIGIBLE_TOKENS } from '../constants';

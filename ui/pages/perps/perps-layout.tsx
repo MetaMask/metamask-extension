@@ -3,6 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import { PROVIDER_CONFIG } from '@metamask/perps-controller';
 import { PerpsToastProvider } from '../../components/app/perps';
+import { AccessRestrictedProvider } from '../../components/app/compliance';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -12,7 +13,7 @@ import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager'
 import {
   getSelectedInternalAccount,
   type AccountsState,
-} from '../../selectors/accounts';
+} from '../../../shared/lib/selectors/accounts';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
@@ -154,8 +155,10 @@ export default function PerpsLayout() {
   }, []);
 
   return (
-    <PerpsToastProvider>
-      <Outlet />
-    </PerpsToastProvider>
+    <AccessRestrictedProvider>
+      <PerpsToastProvider>
+        <Outlet />
+      </PerpsToastProvider>
+    </AccessRestrictedProvider>
   );
 }

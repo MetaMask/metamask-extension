@@ -11,6 +11,8 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/transactions-and-gas/gas-fees/?utm_source=extension',
   HARDWARE_CONNECTION:
     'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/?utm_source=extension',
+  HARDWARE_QR_WALLETS:
+    'https://support.metamask.io/more-web3/wallets/hardware-wallet-hub/?utm_source=extension#qr-codeair-gapped-wallets',
   HARDWARE_CONNECTION_TREZOR_LEDGER:
     'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/?utm_source=extension',
   IMPORT_ACCOUNT_MOBILE:
@@ -27,6 +29,8 @@ const ZENDESK_URLS = {
     'https://support.ledger.com/hc/en-us/articles/10371387758493-MetaMask-Firefox-Ledger-Integration-Issue?support=true',
   LEGACY_WEB3:
     'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/?utm_source=extension',
+  PASSKEYS:
+    'https://support.metamask.io/configure/wallet/passkeys/?utm_source=extension',
   PASSWORD_ARTICLE:
     'https://support.metamask.io/configure/wallet/passwords-and-metamask/?utm_source=extension',
   PASSWORD_AND_SRP_ARTICLE:

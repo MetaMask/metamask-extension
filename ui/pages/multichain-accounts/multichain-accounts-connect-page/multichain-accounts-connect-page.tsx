@@ -24,6 +24,13 @@ import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 
 import { Tooltip } from 'react-tippy';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissions } from '../../../selectors';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
@@ -32,7 +39,6 @@ import {
   AvatarBaseSize,
   AvatarFavicon,
   AvatarFaviconSize,
-  Box,
   Button,
   ButtonLink,
   ButtonSize,
@@ -51,10 +57,7 @@ import {
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
-  BorderRadius,
   Display,
-  FlexDirection,
   IconColor,
   JustifyContent,
   TextColor,
@@ -80,7 +83,7 @@ import { useAccountGroupsForPermissions } from '../../../hooks/useAccountGroupsF
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
-} from '../../permissions-connect/connect-page/utils';
+} from '../../../helpers/utils/caip25-permissions';
 import { MultichainSiteCell } from '../../../components/multichain-accounts/multichain-site-cell/multichain-site-cell';
 import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
@@ -120,15 +123,13 @@ export enum MultichainAccountsConnectPageMode {
   EditAccounts = 'edit-accounts',
 }
 
-export const MultichainAccountsConnectPage: React.FC<
-  MultichainConnectPageProps
-> = ({
+export const MultichainAccountsConnectPage = ({
   request,
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
   targetSubjectMetadata,
-}) => {
+}: MultichainConnectPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
@@ -552,8 +553,8 @@ export const MultichainAccountsConnectPage: React.FC<
     >
       <Header paddingTop={8} paddingBottom={4}>
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
+          className="flex"
+          justifyContent={BoxJustifyContent.Center}
           marginBottom={8}
         >
           {targetSubjectMetadata.iconUrl ? (
@@ -578,9 +579,9 @@ export const MultichainAccountsConnectPage: React.FC<
           )}
         </Box>
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
+          className="flex"
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
           gap={2}
           marginBottom={1}
         >
@@ -620,7 +621,7 @@ export const MultichainAccountsConnectPage: React.FC<
             </Tooltip>
           )}
         </Box>
-        <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+        <Box className="flex" justifyContent={BoxJustifyContent.Center}>
           <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
           </Text>
@@ -640,18 +641,16 @@ export const MultichainAccountsConnectPage: React.FC<
           >
             <Box marginTop={4}>
               <Box
-                backgroundColor={BackgroundColor.backgroundDefault}
-                borderRadius={BorderRadius.XL}
+                backgroundColor={BoxBackgroundColor.BackgroundDefault}
+                className="rounded-xl"
               >
                 {selectedAccountGroupIds.map(renderAccountCell)}
               </Box>
               {selectedAccountGroupIds.length === 0 && (
                 <Box
-                  className="connect-page__accounts-empty"
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.flexStart}
-                  alignItems={AlignItems.center}
-                  borderRadius={BorderRadius.XL}
+                  className="flex multichain-connect-page__accounts-empty rounded-xl"
+                  justifyContent={BoxJustifyContent.Start}
+                  alignItems={BoxAlignItems.Center}
                 >
                   <ButtonLink
                     onClick={setModeToEditAccounts}
@@ -663,19 +662,17 @@ export const MultichainAccountsConnectPage: React.FC<
               )}
               {selectedAccountGroupIds.length > 0 && (
                 <Box
+                  className="flex"
                   marginTop={4}
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.flexStart}
+                  justifyContent={BoxJustifyContent.Start}
                   padding={4}
                 >
                   <Box
-                    className="connect-page__edit-icon"
+                    className="flex multichain-connect-page__edit-icon rounded-md"
                     marginRight={4}
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.center}
-                    backgroundColor={BackgroundColor.infoMuted}
-                    borderRadius={BorderRadius.MD}
+                    alignItems={BoxAlignItems.Center}
+                    justifyContent={BoxJustifyContent.Center}
+                    backgroundColor={BoxBackgroundColor.InfoMuted}
                     padding={2}
                   >
                     <Icon
@@ -719,12 +716,11 @@ export const MultichainAccountsConnectPage: React.FC<
       </Content>
       <Footer>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           gap={4}
-          width={BlockSize.Full}
+          className="flex w-full"
         >
-          <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
+          <Box gap={4} className="flex w-full">
             <Button
               block
               variant={ButtonVariant.Secondary}

@@ -1,10 +1,14 @@
 import { useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   staticAssetsStartPolling,
   staticAssetsStopPollingByPollingToken,
 } from '../store/actions';
 import { getEnabledChainIds } from '../selectors/multichain/networks';
-import { getSelectedAccount } from '../selectors';
+import {
+  getSelectedAccountGroup,
+  getInternalAccountsFromGroupById,
+} from '../selectors/multichain-accounts/account-tree';
 import useMultiPolling from './useMultiPolling';
 
 /**
@@ -14,7 +18,12 @@ import useMultiPolling from './useMultiPolling';
  */
 export const useStaticTokensPolling = () => {
   const enabledChainIds = useSelector(getEnabledChainIds);
-  const account = useSelector(getSelectedAccount);
+  const selectedGroupId = useSelector(getSelectedAccountGroup);
+  const evmAccount = useSelector((state) =>
+    getInternalAccountsFromGroupById(state, selectedGroupId)?.find((a) =>
+      isEvmAccountType(a.type),
+    ),
+  );
 
   useMultiPolling({
     startPolling: staticAssetsStartPolling,
@@ -24,7 +33,8 @@ export const useStaticTokensPolling = () => {
     input: [
       {
         chainIds: enabledChainIds ?? [],
-        selectedAccountAddress: account?.address ?? '',
+        selectedAccountAddress: evmAccount?.address ?? '',
+        selectedAccountId: evmAccount?.id ?? '',
       },
     ],
   });

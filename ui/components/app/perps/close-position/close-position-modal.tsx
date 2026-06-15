@@ -15,6 +15,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { ClosePositionParams } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   formatPnl,
@@ -45,10 +46,12 @@ import {
   getDisplayName,
   getPositionDirection,
   getPositionPnlRatio,
+  buildPerpsVipTrackingData,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { CloseAmountSection } from '../order-entry';
 import {
   PERPS_TOAST_KEYS,
@@ -56,14 +59,9 @@ import {
   type PerpsToastKeyConfig,
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position } from '../types';
-
-type ClosePositionParams = {
-  symbol: string;
-  orderType: 'market';
-  currentPrice: number;
-  size?: string;
-};
+import { useVipTier } from '../../../../hooks/rewards/useVipTier';
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
 
@@ -86,17 +84,20 @@ const buildCloseRequestParams = ({
   currentPrice,
   isPartialClose,
   closeSize,
+  position,
 }: {
   symbol: string;
   currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
+  position: Position;
 }): ClosePositionParams => {
   if (!isPartialClose) {
     return {
       symbol,
       orderType: 'market',
       currentPrice,
+      position,
     };
   }
 
@@ -105,6 +106,7 @@ const buildCloseRequestParams = ({
     orderType: 'market',
     currentPrice,
     size: closeSize.toString(),
+    position,
   };
 };
 
@@ -242,15 +244,16 @@ export type ClosePositionModalProps = {
   sizeDecimals?: number;
 };
 
-export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
+export const ClosePositionModal = ({
   isOpen,
   onClose,
   position,
   currentPrice,
   sizeDecimals,
-}) => {
+}: ClosePositionModalProps) => {
   const t = useI18nContext() as CloseToastTranslation;
   const { isEligible } = usePerpsEligibility();
+  const { gate } = useSelectedAccountComplianceGate();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({
@@ -270,6 +273,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }),
     [],
   );
+
+  const vipTier = useVipTier();
 
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -302,10 +307,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [closeSize, currentPrice],
   );
 
-  const { feeRate } = usePerpsOrderFees({
-    symbol: position.symbol,
-    orderType: 'market',
-  });
+  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: position.symbol,
+      orderType: 'market',
+    });
 
   const margin = useMemo(() => {
     const totalMargin = parseFloat(position.marginUsed) || 0;
@@ -320,6 +326,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const estimatedFees = useMemo(
     () => closeNotionalUsd * (feeRate ?? 0),
     [closeNotionalUsd, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () => closeNotionalUsd * (undiscountedFeeRate ?? 0),
+    [closeNotionalUsd, undiscountedFeeRate],
   );
 
   const isPriceValid = useMemo(
@@ -345,6 +356,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [estimatedFees],
   );
 
+  const roundedOriginalFees = useMemo(
+    () => Math.round(originalEstimatedFees * 100) / 100,
+    [originalEstimatedFees],
+  );
+
   // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
   // add unrealizedPnl separately (that would double-count).
   const youWillReceive = useMemo(
@@ -363,107 +379,117 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     if (isSubmitDisabled) {
       return;
     }
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
 
-    setIsSubmitting(true);
-    setError(null);
+      setIsSubmitting(true);
+      setError(null);
 
-    replacePerpsToastByKey(
-      getCloseInProgressToastConfig({
-        isPartialClose,
-        positionSize: position.size,
-        closeSize,
-        displayName,
-        t,
-        formatNumber,
-      }),
-    );
+      replacePerpsToastByKey(
+        getCloseInProgressToastConfig({
+          isPartialClose,
+          positionSize: position.size,
+          closeSize,
+          displayName,
+          t,
+          formatNumber,
+        }),
+      );
 
-    try {
-      onClose();
-      const result = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsClosePosition', [
-        buildCloseRequestParams({
+      try {
+        onClose();
+        const closeRequestParams = buildCloseRequestParams({
           symbol: position.symbol,
           currentPrice,
           isPartialClose,
           closeSize,
-        }),
-      ]);
-      if (!result.success) {
-        const message = result.error || 'Failed to close position';
+          position,
+        });
+        closeRequestParams.trackingData = buildPerpsVipTrackingData({
+          totalFee: estimatedFees,
+          marketPrice: currentPrice,
+          vipTier,
+          vipDiscount: metamaskFeeRateDiscountPercentage,
+        });
+        const result = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsClosePosition', [closeRequestParams]);
+        if (!result.success) {
+          const message = result.error || 'Failed to close position';
+          track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+            [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+            [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+          });
+          track(MetaMetricsEventName.PerpsError, {
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          });
+          const { errorMessage, toast } = getCloseFailureToastConfig({
+            error: new Error(message),
+            isPartialClose,
+            t,
+            formatFiat,
+          });
+          setError(errorMessage);
+          replacePerpsToastByKey(toast);
+          return;
+        }
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
+          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+        });
+        replacePerpsToastByKey(
+          getCloseSuccessToastConfig({
+            isPartialClose,
+            position,
+            t,
+            formatPercentWithMinThreshold,
+          }),
+        );
+      } catch (err) {
+        const errMessage =
+          err instanceof Error ? err.message : 'An unknown error occurred';
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
           [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
           [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
         });
         track(MetaMetricsEventName.PerpsError, {
           [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
         });
+
         const { errorMessage, toast } = getCloseFailureToastConfig({
-          error: new Error(message),
+          error: err,
           isPartialClose,
           t,
           formatFiat,
         });
         setError(errorMessage);
         replacePerpsToastByKey(toast);
-        return;
+      } finally {
+        setIsSubmitting(false);
       }
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
-        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-      });
-      replacePerpsToastByKey(
-        getCloseSuccessToastConfig({
-          isPartialClose,
-          position,
-          t,
-          formatPercentWithMinThreshold,
-        }),
-      );
-    } catch (err) {
-      const errMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
-        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-      });
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
-      });
-
-      const { errorMessage, toast } = getCloseFailureToastConfig({
-        error: err,
-        isPartialClose,
-        t,
-        formatFiat,
-      });
-      setError(errorMessage);
-      replacePerpsToastByKey(toast);
-    } finally {
-      setIsSubmitting(false);
-    }
+    });
   }, [
     isSubmitDisabled,
+    gate,
     isEligible,
     replacePerpsToastByKey,
     isPartialClose,
@@ -480,6 +506,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     onClose,
     formatPercentWithMinThreshold,
     formatFiat,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {
@@ -610,13 +638,17 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                   >
                     {t('perpsFees')}
                   </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                    data-testid="perps-close-summary-fees-value"
-                  >
-                    -{formatFiat(roundedFees)}
-                  </Text>
+                  <PerpsFeesDisplay
+                    metamaskFeeRateDiscountPercentage={
+                      feeRate === undefined
+                        ? undefined
+                        : metamaskFeeRateDiscountPercentage
+                    }
+                    originalFee={roundedOriginalFees}
+                    fee={roundedFees}
+                    feeTextFontWeight={FontWeight.Medium}
+                    feeTextTestId="perps-close-summary-fees-value"
+                  />
                 </Box>
 
                 {/* You'll receive */}

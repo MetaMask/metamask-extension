@@ -6,9 +6,13 @@ import { login } from '../../page-objects/flows/login.flow';
 import { importAdditionalSecretRecoveryPhrase } from '../../page-objects/flows/multi-srp.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { mockActiveNetworks } from './common-multi-srp';
 
 const addAccountToSrp = async (driver: Driver, srpIndex: number) => {
+  // Dismiss any lingering toast so it cannot overlay the add-account button.
+  await new HomePage(driver).dismissSrpAddedToast();
+
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.openAccountMenu();
 

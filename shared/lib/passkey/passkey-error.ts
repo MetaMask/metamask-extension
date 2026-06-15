@@ -1,5 +1,7 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 
+import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
+
 /**
  * Stable programmatic codes for passkey-related errors thrown by the extension.
  */
@@ -52,12 +54,34 @@ export function getPasskeyControllerErrorCode(error: unknown): string | null {
   return null;
 }
 
+/**
+ * Analytics-oriented passkey ceremony failure: `timeout`, WebAuthn `not_allowed` /
+ * `aborted`, else {@link getPasskeyControllerErrorCode}, else `unknown`.
+ *
+ * @param err - Thrown value from a passkey ceremony.
+ */
+export function getPasskeyErrorCode(err: unknown): string {
+  if (err instanceof PasskeyCeremonyTimeoutError) {
+    return 'timeout';
+  }
+  if (err instanceof Error) {
+    if (err.name === 'NotAllowedError') {
+      return 'not_allowed';
+    }
+    if (err.name === 'AbortError') {
+      return 'aborted';
+    }
+  }
+  return getPasskeyControllerErrorCode(err) ?? 'unknown';
+}
+
 function translatePasskeyCode(
   code: string,
-  t: (key: string) => string,
+  t: (key: string, substitutions?: string[]) => string,
+  authMethodLabel: string,
 ): string | null {
   const i18nKey = PASSKEY_ERROR_CODE_TO_I18N_KEY[code];
-  return i18nKey === undefined ? null : t(i18nKey);
+  return i18nKey === undefined ? null : t(i18nKey, [authMethodLabel]);
 }
 
 function getCauseCode(data: unknown): unknown {
@@ -87,18 +111,22 @@ function getCauseCode(data: unknown): unknown {
  * Resolution order:
  * 1. String `code` on the rejection when it matches a known entry in the map above.
  * 2. `data.cause.code` for MetaRPC-wrapped rejections.
- * 3. Otherwise `null` — callers typically use `?? t('passkeyUnlockFailed')`.
+ * 3. Otherwise `null` — callers typically use `?? t('passkeyUnlockFailed', [authMethodLabel])`.
  *
  * @param error - Thrown value from background or in-page passkey flows.
  * @param t - The extension i18n translation function from `useI18nContext()`.
+ * @param authMethodLabel - OS-specific passkey auth-method noun ("Biometrics" /
+ * "Touch ID" / "Windows Hello"); UI typically passes
+ * `t(getPasskeyAuthMethodKey())` (same noun as buttons / toasts, not the `{ specific: true }` variant).
  */
 export function translatePasskeyError(
   error: unknown,
-  t: (key: string) => string,
+  t: (key: string, substitutions?: string[]) => string,
+  authMethodLabel: string,
 ): string | null {
   const code = getPasskeyControllerErrorCode(error);
   if (code === null) {
     return null;
   }
-  return translatePasskeyCode(code, t);
+  return translatePasskeyCode(code, t, authMethodLabel);
 }

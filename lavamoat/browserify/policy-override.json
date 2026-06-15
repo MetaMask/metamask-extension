@@ -71,7 +71,19 @@
         "crypto.getRandomValues": true
       }
     },
+    "@emotion/react>@emotion/cache": {
+      "globals": {
+        "document": true
+      }
+    },
     "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
+    },
+    "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "document": false,
         "document.visibilityState": true,
@@ -137,6 +149,13 @@
         "WebSocketPair": false,
         "WorkerGlobalScope": false,
         "importScripts": false
+      }
+    },
+    "@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
       }
     }
   }

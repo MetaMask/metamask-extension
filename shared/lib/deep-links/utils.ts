@@ -1,5 +1,4 @@
 import log from 'loglevel';
-import browser from 'webextension-polyfill';
 import {
   DeferredDeepLink,
   DeferredDeepLinkRoute,
@@ -20,60 +19,6 @@ import { DEEP_LINK_ROUTE } from './routes/route';
 export function buildInterstitialRoute(urlPathAndQuery: string): string {
   const params = new URLSearchParams({ u: urlPathAndQuery });
   return `${DEEP_LINK_ROUTE}?${params.toString()}`;
-}
-
-/**
- * Extracts the deferred deep link cookie value.
- *
- * @returns The parsed deferred deep link data or null if not found.
- */
-export async function getDeferredDeepLinkFromCookie(): Promise<DeferredDeepLink | null> {
-  try {
-    const cookie = await browser.cookies.get({
-      url: 'https://metamask.io/',
-      name: 'deferred_deeplink',
-    });
-
-    if (!cookie) {
-      return null;
-    }
-
-    try {
-      const cookieData = JSON.parse(cookie.value);
-
-      // Validate the parsed data
-      if (
-        !cookieData.referringLink ||
-        typeof cookieData.referringLink !== 'string'
-      ) {
-        log.error('Invalid referringLink in deferred_deeplink cookie.');
-        return null;
-      }
-
-      // Validate if createdAt is a valid number (timestamp)
-      if (
-        typeof cookieData.createdAt !== 'number' ||
-        !Number.isFinite(cookieData.createdAt)
-      ) {
-        log.error('Invalid createdAt value in deferred_deeplink cookie.');
-        return null;
-      }
-
-      return {
-        createdAt: cookieData.createdAt,
-        referringLink: cookieData.referringLink,
-      };
-    } catch (error) {
-      log.error('Failed to parse deferred_deeplink cookie.', error);
-      return null;
-    }
-  } catch (error) {
-    log.error(
-      'Failed to use browser API for deferred deep link cookies.',
-      error,
-    );
-    return null;
-  }
 }
 
 /**

@@ -28,11 +28,8 @@ import {
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../../../shared/lib/selectors/networks';
-import {
-  getIsMainnet,
-  getSelectedInternalAccount,
-  getOpenSeaEnabled,
-} from '../../../selectors';
+import { getIsMainnet, getOpenSeaEnabled } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getImageForChainId } from '../../../selectors/multichain';
 import {
   addNftVerifyOwnership,

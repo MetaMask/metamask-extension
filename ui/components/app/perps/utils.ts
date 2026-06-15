@@ -12,6 +12,12 @@ import {
   PERPS_CONSTANTS,
 } from './constants';
 
+// Re-exported here because callers importing `'../../components/app/perps/utils'`
+// resolve to this file (TypeScript prefers sibling `utils.ts` over the
+// `utils/index.ts` barrel). Keep the surface area in sync with `utils/index.ts`.
+export { willFlipPosition } from './utils/orderUtils';
+export { buildPerpsVipTrackingData } from './utils/trackingData';
+
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
  * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
@@ -459,7 +465,7 @@ export const filterMarketsByQuery = (
 };
 
 /**
- * Check if a market is an allowed HIP-3 market (stocks, commodities, forex)
+ * Check if a market is an allowed HIP-3 market
  *
  * HIP-3 markets are identified by having a marketSource that matches one of
  * the allowed HIP-3 DEX providers from the feature flag.

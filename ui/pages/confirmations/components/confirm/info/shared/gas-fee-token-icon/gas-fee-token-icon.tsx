@@ -2,7 +2,6 @@ import {
   AvatarToken,
   AvatarTokenSize,
   AvatarAccountSize,
-  Box,
 } from '@metamask/design-system-react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
@@ -11,10 +10,11 @@ import { useSelector } from 'react-redux';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { PreferredAvatar } from '../../../../../../../components/app/preferred-avatar';
+import { selectERC20TokensByChain } from '../../../../../../../selectors';
 import {
-  selectERC20TokensByChain,
   selectNetworkConfigurationByChainId,
-} from '../../../../../../../selectors';
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../../../../shared/lib/selectors/networks';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 export enum GasFeeTokenIconSize {
@@ -34,8 +34,9 @@ export function GasFeeTokenIcon({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId } = currentConfirmation ?? {};
 
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfiguration = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
@@ -49,28 +50,21 @@ export function GasFeeTokenIcon({
     erc20TokensByChain?.[variation]?.data?.[tokenAddress] ?? {};
 
   if (tokenAddress !== NATIVE_TOKEN_ADDRESS) {
-    return (
-      <Box data-testid="token-icon">
-        {image ? (
-          <AvatarToken
-            src={image}
-            size={
-              size === GasFeeTokenIconSize.Md
-                ? AvatarTokenSize.Md
-                : AvatarTokenSize.Xs
-            }
-          />
-        ) : (
-          <PreferredAvatar
-            address={tokenAddress}
-            size={
-              size === GasFeeTokenIconSize.Md
-                ? AvatarAccountSize.Md
-                : AvatarAccountSize.Xs
-            }
-          />
-        )}
-      </Box>
+    const avatarSize =
+      size === GasFeeTokenIconSize.Md ? AvatarTokenSize.Md : AvatarTokenSize.Xs;
+
+    return image ? (
+      <AvatarToken data-testid="token-icon" src={image} size={avatarSize} />
+    ) : (
+      <PreferredAvatar
+        data-testid="token-icon"
+        address={tokenAddress}
+        size={
+          size === GasFeeTokenIconSize.Md
+            ? AvatarAccountSize.Md
+            : AvatarAccountSize.Xs
+        }
+      />
     );
   }
 
@@ -80,16 +74,15 @@ export function GasFeeTokenIcon({
     CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];
 
   return (
-    <Box data-testid="native-icon">
-      <AvatarToken
-        src={source}
-        name={nativeCurrency}
-        size={
-          size === GasFeeTokenIconSize.Md
-            ? AvatarTokenSize.Md
-            : AvatarTokenSize.Xs
-        }
-      />
-    </Box>
+    <AvatarToken
+      data-testid="native-icon"
+      src={source}
+      name={nativeCurrency}
+      size={
+        size === GasFeeTokenIconSize.Md
+          ? AvatarTokenSize.Md
+          : AvatarTokenSize.Xs
+      }
+    />
   );
 }

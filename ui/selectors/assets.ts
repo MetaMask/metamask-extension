@@ -1,4 +1,5 @@
 import {
+  AccountGroupAssets,
   AssetListState,
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
@@ -41,7 +42,11 @@ import type {
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
-import { TEST_CHAINS } from '../../shared/constants/network';
+import {
+  ARC_USDC_TOKEN_ADDRESS,
+  CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
@@ -74,7 +79,9 @@ import {
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
 import { traceAsControllerCallback } from '../../shared/lib/trace';
-import { getSelectedInternalAccount, getAccountIdByAddress } from './accounts';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../shared/lib/selectors/preferences';
+import { getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
@@ -84,7 +91,6 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getMarketData,
   getNativeTokenCachedBalanceByChainIdSelector,
-  getPreferences,
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
@@ -127,6 +133,7 @@ export type BalanceCalculationState = {
     MultichainNetworkControllerState['metamask'] &
     RatesState['metamask'] & {
       networkConfigurationsByChainId: NetworkState['metamask']['networkConfigurationsByChainId'];
+      snaps: Record<string, { enabled: boolean }>;
     };
 };
 
@@ -813,12 +820,37 @@ const selectAccountsStateForBalances = createSelector(
   }),
 );
 
+const ARC_USDC_ERC20_ADDRESS = ARC_USDC_TOKEN_ADDRESS.toLowerCase();
+
 /**
  * Wraps token balances for core balance computations.
  */
 const selectTokenBalancesStateForBalances = createSelector(
   [getTokenBalances],
-  (tokenBalances) => ({ tokenBalances }),
+  (tokenBalances) => {
+    // Strip the Arc USDC ERC20 (0x3600…) so it is excluded from the aggregated
+    // balance — the native token already reflects the USDC balance on Arc and
+    // is the source of truth, so counting both would double the balance.
+    const result = Object.fromEntries(
+      Object.entries(tokenBalances).map(([account, chainMap]) => [
+        account,
+        Object.fromEntries(
+          Object.entries(chainMap).map(([chainId, addressMap]) => [
+            chainId,
+            chainId === CHAIN_IDS.ARC
+              ? Object.fromEntries(
+                  Object.entries(addressMap).filter(
+                    ([address]) =>
+                      address.toLowerCase() !== ARC_USDC_ERC20_ADDRESS,
+                  ),
+                )
+              : addressMap,
+          ]),
+        ),
+      ]),
+    ) as typeof tokenBalances;
+    return { tokenBalances: result };
+  },
 );
 
 /**
@@ -892,14 +924,6 @@ const selectCurrencyRateStateForBalances = createSelector(
 );
 
 /**
- * Returns the enabled network map as-is for filtering and eligibility checks.
- */
-const selectEnabledNetworkMapForBalances = createSelector(
-  [getEnabledNetworks],
-  (map) => map,
-);
-
-/**
  * Aggregates balances for all wallets and groups using core pure function.
  * Only the minimal controller state is composed to keep this selector lean.
  *
@@ -917,7 +941,7 @@ export const selectBalanceForAllWallets = createSelector(
     selectMultichainAssetsStateForBalances,
     selectTokensStateForBalances,
     selectCurrencyRateStateForBalances,
-    selectEnabledNetworkMapForBalances,
+    getEnabledNetworks,
     getNetworkConfigurationsByChainId,
   ],
   (
@@ -968,7 +992,7 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
       selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
+      getEnabledNetworks,
     ],
     (
       accountTreeState,
@@ -1028,7 +1052,7 @@ export const selectBalanceChangeByAccountGroup = (
       selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
+      getEnabledNetworks,
     ],
     (
       accountTreeState,
@@ -1088,7 +1112,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
+      getEnabledNetworks,
     ],
     (
       accountTreeState,
@@ -1455,11 +1479,49 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   } as AssetListState;
 };
 
+/**
+ * Removes the Arc USDC ERC20 (0x3600…) from the per-chain asset map so it never
+ * appears as a duplicate of the native token on Arc. The native token (zero
+ * address) is kept, as it is the source of truth for USDC on Arc.
+ *
+ * @param assets - Per-chain map of assets keyed by chain ID.
+ * @returns The asset map with the Arc USDC ERC20 removed from the Arc entry.
+ */
+function filterArcUsdcErc20Token(
+  assets: AccountGroupAssets,
+): AccountGroupAssets {
+  const arcAssets = assets[CHAIN_IDS.ARC];
+  if (!arcAssets) {
+    return assets;
+  }
+  return {
+    ...assets,
+    [CHAIN_IDS.ARC]: arcAssets.filter(
+      (asset) =>
+        !('address' in asset) ||
+        asset.address?.toLowerCase() !== ARC_USDC_ERC20_ADDRESS,
+    ),
+  };
+}
+
 export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
-    selectAssetsBySelectedAccountGroup(assetListState),
+    filterArcUsdcErc20Token(selectAssetsBySelectedAccountGroup(assetListState)),
 );
+
+export const getAssetsBySelectedAccountGroupIncludingHidden =
+  createDeepEqualSelector(
+    getStateForAssetSelector,
+    (assetListState: AssetListState) =>
+      filterArcUsdcErc20Token(
+        selectAssetsBySelectedAccountGroup({
+          ...assetListState,
+          allIgnoredTokens: EMPTY_OBJECT,
+          allIgnoredAssets: EMPTY_OBJECT,
+        }),
+      ),
+  );
 
 export const selectAccountSupportsEnabledNetworks = createSelector(
   [getSelectedInternalAccount, getAllEnabledNetworksForAllNamespaces],

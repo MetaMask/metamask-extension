@@ -252,14 +252,14 @@ export async function displayCriticalErrorMessage(
       await handleRestartAction(error, shouldReport);
     });
 
-    // Restore accounts link: trigger vault recovery flow.
+    // Attempt recovery button: trigger vault recovery flow.
     if (canTriggerRestore) {
-      const restoreLink =
-        criticalErrorContainer.querySelector<HTMLAnchorElement>(
+      const restoreButton =
+        criticalErrorContainer.querySelector<HTMLButtonElement>(
           '#critical-error-restore-link',
         );
 
-      restoreLink?.addEventListener('click', (event: Event) => {
+      restoreButton?.addEventListener('click', (event: Event) => {
         event.preventDefault();
         // eslint-disable-next-line no-alert
         const confirmed = confirm(

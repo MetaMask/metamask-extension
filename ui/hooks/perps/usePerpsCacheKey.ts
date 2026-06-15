@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   selectPerpsActiveProvider,
   selectPerpsIsTestnet,

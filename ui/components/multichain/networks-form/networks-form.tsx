@@ -304,14 +304,12 @@ export const NetworksForm = ({
         };
 
         if (existingNetwork) {
-          const options = toggleNetworkMenuAfterSubmit
-            ? {
-                replacementSelectedRpcEndpointIndex:
-                  chainIdHex === existingNetwork.chainId
-                    ? rpcUrls?.defaultRpcEndpointIndex
-                    : undefined,
-              }
-            : {};
+          const options = {
+            replacementSelectedRpcEndpointIndex:
+              chainIdHex === existingNetwork.chainId
+                ? rpcUrls?.defaultRpcEndpointIndex
+                : undefined,
+          };
           await dispatch(updateNetwork(networkPayload, options));
           if (
             toggleNetworkMenuAfterSubmit &&
@@ -792,11 +790,7 @@ export const NetworksForm = ({
         className={`networks-form__footer${
           usePageFooterStyle ? ' networks-form__footer--page' : ''
         }`}
-        backgroundColor={
-          usePageFooterStyle
-            ? BackgroundColor.transparent
-            : BackgroundColor.backgroundDefault
-        }
+        backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
         width={BlockSize.Full}
       >

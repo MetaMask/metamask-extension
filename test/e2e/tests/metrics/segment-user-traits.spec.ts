@@ -95,6 +95,8 @@ describe('Segment User Traits', function () {
           is_metrics_opted_in: true,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           has_marketing_consent: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'metamask',
         });
       },
     );
@@ -122,6 +124,8 @@ describe('Segment User Traits', function () {
           is_metrics_opted_in: true,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           has_marketing_consent: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'metamask',
         });
       },
     );
@@ -181,6 +185,8 @@ describe('Segment User Traits', function () {
           is_metrics_opted_in: true,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           has_marketing_consent: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'metamask',
         });
       },
     );
@@ -218,6 +224,8 @@ describe('Segment User Traits', function () {
           is_metrics_opted_in: true,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           has_marketing_consent: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'metamask',
         });
       },
     );

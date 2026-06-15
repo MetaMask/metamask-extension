@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -26,6 +26,7 @@ import {
 import { TextVariant as LegacyTextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  ACCOUNT_LIST_PAGE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
@@ -59,6 +60,7 @@ import type { WalletTypeOption } from './choose-new-wallet-type-page.types';
 export const ChooseNewWalletTypePage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const institutionalWalletsEnabled = useSelector(
@@ -68,6 +70,26 @@ export const ChooseNewWalletTypePage = () => {
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
+
+  // When opened in a fresh tab (e.g. redirected from side panel/popup),
+  // there is no browser history to go back to. Navigate to account list
+  // with replace and propagate fromFreshTab so upstream pages also use
+  // explicit routing instead of history-based back navigation.
+  const isFreshTab =
+    location.key === 'default' ||
+    (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
+      true;
+
+  const handleBack = useCallback(() => {
+    if (isFreshTab) {
+      navigate(ACCOUNT_LIST_PAGE_ROUTE, {
+        replace: true,
+        state: { fromFreshTab: true },
+      });
+    } else {
+      navigate(PREVIOUS_ROUTE);
+    }
+  }, [isFreshTab, navigate]);
 
   const handleImportWallet = useCallback(() => {
     trackEvent({
@@ -231,7 +253,7 @@ export const ChooseNewWalletTypePage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(PREVIOUS_ROUTE)}
+            onClick={handleBack}
             data-testid="back-button"
           />
         }

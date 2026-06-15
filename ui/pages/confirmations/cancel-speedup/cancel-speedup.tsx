@@ -36,11 +36,11 @@ import {
 } from '../context/gas-fee-modal';
 import { ConfirmInfoRow } from '../../../components/app/confirm/info/row';
 import GasTiming from '../components/gas-timing/gas-timing.component';
+import { getAppIsLoading, getShouldShowFiat } from '../../../selectors';
 import {
-  getAppIsLoading,
-  getShouldShowFiat,
   selectNetworkConfigurationByChainId,
-} from '../../../selectors';
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../shared/lib/selectors/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../shared/constants/network';
 import { ConfirmInfoSection } from '../../../components/app/confirm/info/row/section';
 import { useEIP1559TxFees } from '../components/confirm/info/hooks/useEIP1559TxFees';
@@ -85,8 +85,9 @@ const NetworkFeeRow = ({
 }: NetworkFeeRowProps) => {
   const t = useI18nContext();
 
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfiguration = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const source =
@@ -144,6 +145,7 @@ const NetworkFeeRow = ({
 
 type SpeedRowProps = {
   chainId: string;
+  networkClientId?: string;
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
   userFeeLevelOverride?: string;
@@ -151,6 +153,7 @@ type SpeedRowProps = {
 
 const SpeedRow = ({
   chainId,
+  networkClientId,
   maxFeePerGas,
   maxPriorityFeePerGas,
   userFeeLevelOverride,
@@ -161,6 +164,7 @@ const SpeedRow = ({
       <Box alignItems={BoxAlignItems.Center} className="flex">
         <GasTiming
           chainId={chainId}
+          networkClientId={networkClientId}
           maxFeePerGas={maxFeePerGas}
           maxPriorityFeePerGas={maxPriorityFeePerGas}
           userFeeLevelOverride={userFeeLevelOverride}
@@ -196,6 +200,7 @@ const GasFeesSection = ({ transaction }: GasFeesSectionProps) => {
 
       <SpeedRow
         chainId={transaction.chainId}
+        networkClientId={transaction.networkClientId}
         maxFeePerGas={maxFeePerGas}
         maxPriorityFeePerGas={maxPriorityFeePerGas}
         userFeeLevelOverride={transaction.userFeeLevel}

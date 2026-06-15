@@ -320,7 +320,11 @@ describe('useShieldRewards', () => {
     expect(result.current.pending).toBe(false);
   });
 
-  it('surfaces seasonError when getRewardsSeasonMetadata throws a non-season-metadata error', async () => {
+  // useShieldRewards now hard-returns disabled state without invoking
+  // getRewardsSeasonMetadata or estimateRewardsPoints, so the cases below
+  // (which depend on those throwing/resolving) are skipped until rewards
+  // points estimation is re-enabled.
+  it.skip('surfaces seasonError when getRewardsSeasonMetadata throws a non-season-metadata error', async () => {
     const consoleSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
@@ -351,27 +355,7 @@ describe('useShieldRewards', () => {
     consoleSpy.mockRestore();
   });
 
-  it('returns isRewardsSeason true when season metadata is valid and current time is within range', async () => {
-    mockGetRewardsSeasonMetadata.mockImplementation(() => async () => ({
-      id: 'season-1',
-      name: 'Season 1',
-      startDate: Date.now() - 1000,
-      endDate: Date.now() + 100000,
-      tiers: [],
-    }));
-
-    const { result, waitForNextUpdate } = renderHookWithProvider(
-      () => useShieldRewards(),
-      shieldState,
-    );
-
-    await waitForNextUpdate();
-
-    expect(result.current.isRewardsSeason).toBe(true);
-    expect(result.current.pending).toBe(false);
-  });
-
-  it('returns null points when estimateRewardsPoints throws', async () => {
+  it.skip('returns null points when estimateRewardsPoints throws', async () => {
     // Set up keyrings and accounts so caipAccountId is non-null and estimateRewardsPoints runs
     const stateWithKeyrings = cloneDeep(
       mockState,

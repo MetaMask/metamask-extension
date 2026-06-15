@@ -16,7 +16,8 @@ import {
 import {
   getLedgerTransportType,
   isAddressLedger,
-} from '../../../ducks/metamask/metamask';
+} from '../../../ducks/metamask/base-selectors';
+import type { MetaMaskSlice } from '../../../ducks/metamask/types';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
@@ -34,7 +35,7 @@ const useLedgerConnection = () => {
     currentConfirmation?.msgParams?.from ?? currentConfirmation?.txParams?.from;
 
   const isLedgerWallet = useSelector(
-    (state) => from && isAddressLedger(state, from),
+    (state: MetaMaskSlice) => from && isAddressLedger(state, from),
   );
 
   useEffect(() => {

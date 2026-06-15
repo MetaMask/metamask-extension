@@ -62,6 +62,11 @@ const setupPermissionBackgroundApiMethods = (
         multichainNetworkConfigurationsByChainId: {},
       },
     },
+    snapController: {
+      state: {
+        snaps: {},
+      },
+    },
     ...overrides,
   };
 

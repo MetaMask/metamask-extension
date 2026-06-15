@@ -81,9 +81,6 @@
   "create": {
     "message": "สร้าง"
   },
-  "currencyConversion": {
-    "message": "การแปลงสกุลเงิน"
-  },
   "decimal": {
     "message": "ตำแหน่งของทศนิยม"
   },
@@ -204,9 +201,6 @@
   "networks": {
     "message": "เครือข่าย"
   },
-  "newAccount": {
-    "message": "บัญชีใหม่"
-  },
   "newAccountNumberName": {
     "message": "บัญชี $1",
     "description": "Default name of next account to be created on create account screen"
@@ -258,9 +252,6 @@
   "required": {
     "message": "จำเป็น"
   },
-  "revealSeedWords": {
-    "message": "เปิดเผยกลุ่มคำชีด"
-  },
   "revealSeedWordsWarning": {
     "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -300,9 +291,6 @@
   },
   "stateLogs": {
     "message": "บันทึกของสถานะ"
-  },
-  "stateLogsDescription": {
-    "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"

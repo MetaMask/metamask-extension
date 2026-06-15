@@ -34,6 +34,7 @@ import {
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   getAssetsBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroupIncludingHidden,
   getAsset,
   getAllIgnoredAssets,
   selectAggregatedBalanceForSelectedAccount,
@@ -1287,6 +1288,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
         ...baseState,
         networkConfigurationsByChainId: networks,
         multichainNetworkConfigurationsByChainId: {},
+        snaps: {},
       } as unknown as BalanceCalculationState['metamask'],
     };
   };
@@ -1326,6 +1328,9 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
         ...baseState,
         networkConfigurationsByChainId: {},
         multichainNetworkConfigurationsByChainId: multichainNetworks,
+        snaps: {
+          'npm:@metamask/solana-wallet-snap': { enabled: true },
+        },
       } as unknown as BalanceCalculationState['metamask'],
     };
   };
@@ -1601,6 +1606,94 @@ describe('getAssetsBySelectedAccountGroup', () => {
 
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
     expect(result).toStrictEqual(selectorMockResult);
+  });
+
+  it('hides the Arc USDC ERC20 while keeping the native token and other assets', () => {
+    const arcNative = {
+      address: '0x0000000000000000000000000000000000000000',
+      isNative: true,
+    };
+    const arcUsdcErc20 = {
+      address: '0x3600000000000000000000000000000000000000',
+      isNative: false,
+    };
+    const otherToken = {
+      address: '0x1111111111111111111111111111111111111111',
+      isNative: false,
+    };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValueOnce({
+      '0x13b2': [arcNative, arcUsdcErc20, otherToken],
+      '0x1': [arcUsdcErc20],
+    } as unknown as ReturnType<typeof selectAssetsBySelectedAccountGroup>);
+
+    const result = getAssetsBySelectedAccountGroup(mockState);
+
+    // Arc USDC ERC20 removed, native + other token kept.
+    expect(result['0x13b2']).toStrictEqual([arcNative, otherToken]);
+    // The same address on a non-Arc chain is untouched.
+    expect(result['0x1']).toStrictEqual([arcUsdcErc20]);
+  });
+});
+
+describe('getAssetsBySelectedAccountGroupIncludingHidden', () => {
+  beforeEach(() => {
+    getAssetsBySelectedAccountGroupIncludingHidden.clearCache();
+    getAssetsBySelectedAccountGroupIncludingHidden.memoizedResultFunc.clearCache();
+  });
+
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      allIgnoredAssets: 'mockAllIgnoredAssets',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('calls the imported selector with ignored assets cleared', () => {
+    const selectorMock = jest.mocked(selectAssetsBySelectedAccountGroup);
+    const selectorMockResult = {};
+    selectorMock.mockReturnValueOnce(selectorMockResult);
+
+    const result = getAssetsBySelectedAccountGroupIncludingHidden(mockState);
+
+    expect(selectorMock).toHaveBeenCalledWith({
+      ...mockState.metamask,
+      allIgnoredTokens: {},
+      allIgnoredAssets: {},
+    });
+    expect(result).toStrictEqual(selectorMockResult);
+  });
+
+  it('hides the Arc USDC ERC20 from the including-hidden list', () => {
+    const arcNative = {
+      address: '0x0000000000000000000000000000000000000000',
+      isNative: true,
+    };
+    const arcUsdcErc20 = {
+      address: '0x3600000000000000000000000000000000000000',
+      isNative: false,
+    };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValueOnce({
+      '0x13b2': [arcNative, arcUsdcErc20],
+    } as unknown as ReturnType<typeof selectAssetsBySelectedAccountGroup>);
+
+    const result = getAssetsBySelectedAccountGroupIncludingHidden(mockState);
+
+    expect(result['0x13b2']).toStrictEqual([arcNative]);
   });
 });
 

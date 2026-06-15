@@ -2,7 +2,7 @@ import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import type { TransactionData } from '@metamask/transaction-pay-controller';
 import type { Hex } from 'viem';
 import {
   PaymentType,
@@ -18,8 +18,20 @@ import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyrin
 import { ShieldMetricsSourceEnum } from '../constants/subscriptions';
 import type { ScanAddressResponse } from '../lib/trust-signals';
 
-// TODO: Replace with direct `TransactionData` import once exported from @metamask/transaction-pay-controller
-type TransactionData = TransactionPayControllerState['transactionData'][string];
+export type UTMParameter =
+  | 'utm_campaign'
+  | 'utm_content'
+  | 'utm_medium'
+  | 'utm_source'
+  | 'utm_term';
+
+export const UTM_PARAMETERS = new Set([
+  'utm_campaign',
+  'utm_content',
+  'utm_medium',
+  'utm_source',
+  'utm_term',
+]) as Set<UTMParameter> & { has: (key: string) => key is UTMParameter };
 
 export type TransactionFrameContext = {
   frameId?: number;

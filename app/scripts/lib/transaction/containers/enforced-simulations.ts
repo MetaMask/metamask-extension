@@ -10,6 +10,7 @@ import {
   createERC20BalanceChangeTerms,
   createERC721BalanceChangeTerms,
   createNativeBalanceChangeTerms,
+  BalanceChangeType,
 } from '@metamask/delegation-core';
 import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { getEnforcedSimulationsSlippage } from '../../../../../shared/lib/transaction/enforced-simulations';
@@ -211,15 +212,10 @@ function generateCaveats(
   return caveats;
 }
 
-enum BalanceChangeType {
-  INCREASE = 0,
-  DECREASE = 1,
-}
-
 function getBalanceChangeType(enforceDecrease: boolean): BalanceChangeType {
   return enforceDecrease
-    ? BalanceChangeType.DECREASE
-    : BalanceChangeType.INCREASE;
+    ? BalanceChangeType.Decrease
+    : BalanceChangeType.Increase;
 }
 
 function applySlippage(

@@ -5,6 +5,8 @@ import {
   BridgeControllerState,
   getNativeAssetForChainId,
   ChainId,
+  GenericQuoteRequest,
+  DEFAULT_BRIDGE_CONTROLLER_STATE,
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
@@ -190,7 +192,13 @@ export const createBridgeMockStore = ({
     smartTransactionsNetworks?: SmartTransactionsNetworks;
     gasFeesSponsoredNetwork?: { [chainId: Hex]: boolean };
   };
-  bridgeStateOverrides?: Partial<BridgeControllerState>;
+  bridgeStateOverrides?: Partial<
+    Omit<BridgeControllerState, 'quoteRequest'>
+  > & {
+    quoteRequest?:
+      | Partial<GenericQuoteRequest>[]
+      | Partial<GenericQuoteRequest>;
+  };
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
   // TODO replace these with correct types
@@ -733,6 +741,13 @@ export const createBridgeMockStore = ({
       },
       ...bridgeStateOverrides,
       ...bridgeStatusStateOverrides,
+      ...(bridgeStateOverrides?.quoteRequest
+        ? {
+            quoteRequest: Array.isArray(bridgeStateOverrides?.quoteRequest)
+              ? bridgeStateOverrides?.quoteRequest
+              : [bridgeStateOverrides?.quoteRequest],
+          }
+        : { quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest }),
     },
     DNS: {
       resolutions: [],

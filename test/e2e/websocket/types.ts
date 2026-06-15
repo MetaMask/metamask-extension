@@ -6,8 +6,11 @@
 export type WebSocketMessageMock = {
   /** String(s) that the message should include to trigger this mock */
   messageIncludes: string | string[];
-  /** The JSON response to send back, or a getter called at send time (e.g. for fresh timestamps) */
-  response: object | (() => object);
+  /**
+   * The JSON response to send back, or a getter called at send time (e.g. for fresh timestamps).
+   * Optional when `dynamicResponse` is provided instead.
+   */
+  response?: object | (() => object);
   /** Delay before sending the response (in milliseconds) */
   delay?: number;
   /** Custom log message for this mock */
@@ -16,4 +19,15 @@ export type WebSocketMessageMock = {
   followUpResponse?: object;
   /** Delay before sending the follow-up response (in milliseconds) */
   followUpDelay?: number;
+  /**
+   * Dynamic response built from the raw incoming message string.
+   * When present, takes precedence over `response`.
+   * Return null to skip sending a response.
+   */
+  dynamicResponse?: (message: string) => object | null;
+  /**
+   * Dynamic follow-up built from the raw incoming message string.
+   * When present, takes precedence over `followUpResponse`.
+   */
+  dynamicFollowUp?: (message: string) => object | null;
 };

@@ -9,12 +9,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  getSelectedInternalAccount,
   getLastViewedUserSurvey,
   getUseExternalServices,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';

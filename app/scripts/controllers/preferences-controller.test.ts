@@ -73,10 +73,9 @@ const setupController = ({
     messenger: accountsControllerMessenger,
     events: [
       'KeyringController:stateChange',
-      'SnapController:stateChange',
-      'SnapKeyring:accountAssetListUpdated',
-      'SnapKeyring:accountBalancesUpdated',
-      'SnapKeyring:accountTransactionsUpdated',
+      'SnapAccountService:accountAssetListUpdated',
+      'SnapAccountService:accountBalancesUpdated',
+      'SnapAccountService:accountTransactionsUpdated',
       'MultichainNetworkController:networkDidChange',
     ],
   });

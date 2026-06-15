@@ -2519,10 +2519,9 @@
       "metadata": {
         "name": "Filecoin Wallet",
         "author": {
-          "name": "Protocol Labs",
-          "website": "https://protocol.ai/"
+          "name": "Filecoin Foundation",
+          "website": "https://fil.org/"
         },
-        "website": "https://filsnap.dev",
         "summary": "Manage Filecoin accounts, send FIL to Native and FEVM accounts, and enable FEVM transaction insights.",
         "description": "Connect to Filecoin dapps using MetaMask. Manage Filecoin accounts, send FIL to Native and FEVM accounts and enable FEVM transaction insights.\n\nEnhances MetaMask with native Filecoin address support (e.g. f1 addresses). (Not needed for the Filecoin EVM.)\n\nAfter installing the Snap, visit the website to connect with MetaMask and start using the Snap.",
         "audits": [
@@ -2543,6 +2542,9 @@
         ]
       },
       "versions": {
+        "1.10.3": {
+          "checksum": "3bfToqdHv7n4Ya42gWJGo+ZPkHOi/4jPs74fq1Ew/JI="
+        },
         "1.6.1": {
           "checksum": "VONwyW7mDv4wtak2iBXko7u2WuJ50bC2t1YM/UfftRs="
         },
@@ -2946,6 +2948,9 @@
         ]
       },
       "versions": {
+        "0.1.5": {
+          "checksum": "oipnBy/oZ5Beu1hJ20uASyk9rdscPn9+KsiadsRaqM4="
+        },
         "0.1.4": {
           "checksum": "dMNPliBnqJJ3Rb+O9Xz4/7nXSetXsk4w6lJwf7du5K8="
         }
@@ -4084,6 +4089,12 @@
         },
         "2.0.0": {
           "checksum": "bFMN5hlkguPBHNaiusJPWZh6yhFnTShcY1mu0Ko5YMM="
+        },
+        "2.0.1": {
+          "checksum": "TfeKGNKMSPQqAKQ/IrnOaziMcLqC6tWSjKRWo5YHMLs="
+        },
+        "2.1.0": {
+          "checksum": "V1nc4Dr3tA6lrG2DKSmEzecmlFXsny+wcxz2SmVfJyY="
         }
       }
     },
@@ -5141,11 +5152,8 @@
         "sourceCode": "https://github.com/coti-io/coti-snap"
       },
       "versions": {
-        "1.0.46-0a9f13": {
-          "checksum": "JlM8Sdy5U7WZi4QEDTKIS+qup9xEjVLzvd6TP6bmIxY="
-        },
-        "1.0.19-8ac5b7": {
-          "checksum": "wDTIPDrIKcHDWSKwZwJ6v8sUE5OUtmTMFcurappFqXM="
+        "1.0.52-eeccdb": {
+          "checksum": "frm3bxp1Wf6YRW+fNZo8MaF/DkpV2bAjyB3qwHZN6/Y="
         }
       }
     },
@@ -5520,6 +5528,29 @@
         }
       }
     },
+    "npm:@quantumshield-js/snap": {
+      "id": "npm:@quantumshield-js/snap",
+      "metadata": {
+        "name": "QuantumShield PQC",
+        "author": {
+          "name": "QuantumShield",
+          "website": "https://quantumshield.xyz/"
+        },
+        "summary": "Generates post-quantum key pairs and creates ECDSA + ML-DSA-65 hybrid signatures for QuantumShield L2",
+        "description": "QuantumShield PQC Snap brings post-quantum cryptography to MetaMask. It implements ML-DSA-65 (NIST FIPS 204, Security Level 3) — a lattice-based digital signature algorithm standardized by NIST in August 2024 to resist attacks from both classical and quantum computers. Quantum computers running Shor's algorithm will eventually break the ECDSA signatures that secure every Ethereum wallet today. QuantumShield prepares users for this threat by adding a second, quantum-resistant signature layer on top of the existing ECDSA infrastructure.\n\nWhat this Snap does:\nKey Generation — Generates ML-DSA-65 key pairs (1,952-byte public key, 4,032-byte private key) inside the Snap's isolated storage. Private keys never leave the Snap environment. Users can generate multiple labeled key pairs and manage them independently.\nHybrid Signing — Creates dual signatures that combine ECDSA (classical) and ML-DSA-65 (post-quantum) into a single 3,375-byte payload. A transaction is only valid when both signatures verify. This means security is maintained even if either algorithm is compromised individually.\nPQC-Only Signing — For scenarios where ECDSA is considered compromised, the Snap can produce ML-DSA-65-only signatures (3,310 bytes) that bypass ECDSA entirely.\nSignature Verification — Verifies the ML-DSA-65 component of both hybrid and PQC-only signatures locally within the Snap.\nKey Management — List, inspect, export, and delete key pairs. Key import is supported with automatic integrity verification (sign-and-verify check on import). Public key export enables on-chain registration with QuantumShield L2 smart accounts.\n\nThis Snap is designed for use with QuantumShield L2, an OP Stack-based Layer 2 that includes an on-chain ML-DSA-65 verification precompile. However, the key generation and signing functionality works independently — any dApp can integrate post-quantum signatures by calling the Snap's RPC methods.\n\nPermissions used:\nsnap_dialog (user confirmation before key generation, signing, and export), snap_manageState (encrypted key storage), snap_notify (operation notifications), endowment:rpc (dApp communication).\n\nNo network access is required. All cryptographic operations are performed locally using the @noble/post-quantum library, a JavaScript implementation audited and maintained by Paul Miller.",
+        "category": "interoperability",
+        "support": {
+          "contact": "mailto:develop@superlabs.studio",
+          "knowledgeBase": "https://quantumshield.xyz/snap"
+        },
+        "sourceCode": "https://github.com/quantumshield-xyz/snap"
+      },
+      "versions": {
+        "0.1.5": {
+          "checksum": "b9iaMZN7D9Bv2hUqTv7+/Hfn/5K0YRXMKyegKoXPtSM="
+        }
+      }
+    },
     "npm:@yigitkara/chain-guardian": {
       "id": "npm:@yigitkara/chain-guardian",
       "metadata": {
@@ -5540,6 +5571,28 @@
       "versions": {
         "0.1.3": {
           "checksum": "z1Z5zz7zI8qpGLFErKa+xvx+fHaO60ny8CTY5WI+rvU="
+        }
+      }
+    },
+    "npm:@txfort/snap": {
+      "id": "npm:@txfort/snap",
+      "metadata": {
+        "name": "TxFort: Security Shield",
+        "author": {
+          "name": "TxFort",
+          "website": "https://txfort.com/"
+        },
+        "summary": "Real-time transaction analysis, safety warnings, and clear descriptions before you sign.",
+        "description": "TxFort: Security Shield is a professional transaction analysis tool designed to bring clarity and security to your MetaMask experience. Our goal is to empower users with human-readable insights, ensuring you know exactly what a transaction does before you sign it.\n\nBy providing a clear breakdown of smart contract interactions, TxFort helps prevent mistakes and protects your digital assets across multiple blockchain networks.\n\nKey Features:\n\n1. Clear Transaction Descriptions\nTxFort transforms complex blockchain data into plain English. Whether you are swapping tokens, interacting with a DeFi protocol, or minting an NFT, we provide a natural language summary of the transaction's purpose and its expected outcome.\n\n2. Comprehensive Security Insights\nOur analysis engine identifies potential risks within the transaction data. TxFort highlights dangerous contract permissions—such as broad token approvals—and provides warnings for suspicious transaction patterns that could lead to asset loss.\n\n3. Token and Permission Tracking\nSee exactly which assets are involved in a transaction. TxFort explicitly calls out token transfers and permission requests, ensuring you never inadvertently grant control of your wallet to an unverified contract.\n\n4. Seamless Multi-Chain Coverage\nSecurity should be consistent across all your activities. TxFort supports a wide range of EVM-compatible chains, including Ethereum, Polygon, Arbitrum, Optimism, and more, offering the same level of protection regardless of the network.\n\n5. Integrated User Experience\nTxFort insights are displayed directly within your MetaMask wallet. There is no need to visit external websites or use separate tools; your security analysis is available right where you need it most—at the moment of signing.\n\nHow to Use:\n\n1. Install the Snap: Add TxFort: Security Shield to your MetaMask wallet.\n2. Activate your Profile: Visit https://txfort.com/metamask to connect and initialize your account.\n3. Transact Securely: Every time you initiate a transaction, the TxFort tab in MetaMask will automatically provide you with detailed analysis and security indicators.\n\nProtect your assets and gain confidence in your blockchain interactions with TxFort. Visit https://txfort.com for support and more information.",
+        "category": "transaction insights",
+        "support": {
+          "contact": "https://www.txfort.com/contact"
+        },
+        "sourceCode": "https://github.com/txfort/txfort-snap"
+      },
+      "versions": {
+        "1.0.4": {
+          "checksum": "Kw9QHUASDr8/dwY3ciZ+rG7bIPISDYZ0CGnApeNXs4E="
         }
       }
     },

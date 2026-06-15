@@ -1,6 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import { useAppSelector } from '../store/store';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../shared/constants/metametrics';
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -9,7 +9,7 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../helpers/constants/routes';
 import { getUnapprovedTransaction } from '../selectors';
-import { internalSelectUnapprovedMessage } from '../selectors/signatures';
+import { selectUnapprovedSignatureRequestById } from '../selectors/signatures';
 
 const SWAP_FLOW_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
   TransactionType.swap,
@@ -28,14 +28,14 @@ export function useHardwareWalletRecoveryLocation(): MetaMetricsHardwareWalletRe
   const { pathname } = useLocation();
   const { id: confirmationId } = useParams();
 
-  const transaction = useSelector((state) =>
+  const transaction = useAppSelector((state) =>
     confirmationId
       ? getUnapprovedTransaction(state, confirmationId)
       : undefined,
   );
-  const message = useSelector((state) =>
+  const message = useAppSelector((state) =>
     confirmationId
-      ? internalSelectUnapprovedMessage(state, confirmationId)
+      ? selectUnapprovedSignatureRequestById(state, confirmationId)
       : undefined,
   );
 

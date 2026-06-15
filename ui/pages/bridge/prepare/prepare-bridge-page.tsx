@@ -6,10 +6,12 @@ import {
   formatChainIdToCaip,
   isValidQuoteRequest,
   isNativeAddress,
+  isSolanaChainId,
   UnifiedSwapBridgeEventName,
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -36,7 +38,6 @@ import {
   getToToken,
   getWasTxDeclined,
   getFromAmountInCurrency,
-  getValidationErrors,
   getIsToOrFromNonEvm,
   getFromAccount,
   getIsStxEnabled,
@@ -44,19 +45,17 @@ import {
   getValidatedFromValue,
   getIsSrcAssetPickerOpen,
   getIsDestAssetPickerOpen,
-  getBridgeUnavailableQuoteReason,
+  getQuoteRequestInsufficientBal,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
-  Box,
   ButtonIcon,
   IconName,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
-  Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -64,7 +63,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Column } from '../layout';
-import { getCurrentKeyring } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -135,8 +134,9 @@ const PrepareBridgePage = ({
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
-  const { isInsufficientBalance, isInsufficientNativeReserve } =
-    useSelector(getValidationErrors);
+  const isQuoteRequestInsufficientBal = useSelector(
+    getQuoteRequestInsufficientBal,
+  );
   const { securityWarnings } = useSecurityAlerts(toToken);
   const { confirmationAlerts, alertsById } = useBridgeAlerts();
 
@@ -157,7 +157,8 @@ const PrepareBridgePage = ({
 
   const shouldShowMaxButton =
     fromToken && isNativeAddress(fromToken.assetId)
-      ? effectiveGasIncluded || effectiveGasIncluded7702
+      ? !isSolanaChainId(fromToken.chainId) &&
+        (effectiveGasIncluded || effectiveGasIncluded7702)
       : true;
   const locale = useSelector(getIntlLocale);
 
@@ -225,7 +226,7 @@ const PrepareBridgePage = ({
       // balance is less than the tenderly balance
       insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
         ? true
-        : isInsufficientBalance || isInsufficientNativeReserve,
+        : isQuoteRequestInsufficientBal,
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
@@ -244,8 +245,7 @@ const PrepareBridgePage = ({
     providerConfig?.rpcUrl,
     effectiveGasIncluded,
     effectiveGasIncluded7702,
-    isInsufficientBalance,
-    isInsufficientNativeReserve,
+    isQuoteRequestInsufficientBal,
   ]);
 
   // `useRef` is used here to manually memoize a function reference.
@@ -396,9 +396,8 @@ const PrepareBridgePage = ({
           }}
         >
           <Box
-            className="prepare-bridge-page__switch-tokens"
-            display={Display.Flex}
-            backgroundColor={BackgroundColor.backgroundSection}
+            className="prepare-bridge-page__switch-tokens flex"
+            backgroundColor={BoxBackgroundColor.BackgroundSection}
             style={{
               position: 'absolute',
               top: '-20px',
@@ -490,7 +489,7 @@ const PrepareBridgePage = ({
           </Box>
 
           <Box
-            paddingInline={4}
+            className="px-4"
             style={{
               borderTop: '1px solid var(--color-border-muted)',
               marginTop: '-16px',

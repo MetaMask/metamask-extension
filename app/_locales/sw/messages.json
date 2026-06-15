@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Kihesabu Muda wa Kuondoka Kwenye Akaunti Kiotomatiki (dakika)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Weka muda katika dakika kabla MetaMask haijaondoa kwenye akaunti kiotomatiki."
-  },
   "average": {
     "message": "Wastani"
   },
@@ -175,12 +172,6 @@
   "createPassword": {
     "message": "Unda Nenosiri"
   },
-  "currencyConversion": {
-    "message": "Ubadilishaji Fedha"
-  },
-  "currentLanguage": {
-    "message": "Lugha ya Sasa"
-  },
   "custom": {
     "message": "Mipangilio ya kina"
   },
@@ -201,9 +192,6 @@
   },
   "done": {
     "message": "Imekamilika"
-  },
-  "downloadGoogleChrome": {
-    "message": "Pakua Google chrome"
   },
   "downloadStateLogs": {
     "message": "Pakua Kumbukumbu za Hali"
@@ -262,9 +250,6 @@
   },
   "hardwareWallets": {
     "message": "Unganisha waleti ya programu maunzi"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Chagua waleti ya programu maunzi ambayo ungependa kutumia kwenye MetaMask"
   },
   "here": {
     "message": "hapa",
@@ -330,12 +315,6 @@
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
-  "lineaGoerli": {
-    "message": "Mtandao wa Majaribio wa Linea Goerli"
-  },
-  "links": {
-    "message": "Viungo"
-  },
   "loading": {
     "message": "Inapakia..."
   },
@@ -366,9 +345,6 @@
   },
   "nevermind": {
     "message": "Usijali"
-  },
-  "newAccount": {
-    "message": "Akaunti Mpya"
   },
   "newAccountNumberName": {
     "message": "Akaunti $1",
@@ -475,9 +451,6 @@
   "restore": {
     "message": "Rejesha"
   },
-  "revealSeedWords": {
-    "message": "Onyesha Maneno ya Kianzio"
-  },
   "revealSeedWordsWarning": {
     "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -524,9 +497,6 @@
   "showFiatConversionInTestnets": {
     "message": "Onyesha Ubadilishaji kwenye Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Chagua hii ili uonyeshe ubadilishaji wa fiat kwenye Testnets"
-  },
   "showHexData": {
     "message": "Onyesha Data za Hex"
   },
@@ -556,9 +526,6 @@
   },
   "stateLogs": {
     "message": "Kumbukumbu za Hali"
-  },
-  "stateLogsDescription": {
-    "message": "Kumbukumbu za hali zinajumusiha anwani zako za akaunti za umma na miamala iliyotumwa."
   },
   "submitted": {
     "message": "Imewasilishwa"

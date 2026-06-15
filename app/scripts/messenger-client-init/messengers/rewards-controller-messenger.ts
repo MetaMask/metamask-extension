@@ -41,6 +41,7 @@ export function getRewardsControllerMessenger(
       'RewardsDataService:getSeasonMetadata',
       'RewardsDataService:getDiscoverSeasons',
       'RewardsDataService:generateChallenge',
+      'RewardsDataService:getVipFees',
       'SnapController:handleRequest',
     ],
     events: [

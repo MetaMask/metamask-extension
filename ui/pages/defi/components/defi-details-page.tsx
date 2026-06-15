@@ -2,14 +2,15 @@ import React, { useMemo } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
-  Display,
-  FlexDirection,
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   IconColor,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -21,7 +22,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
-import { getPreferences, getSelectedAccount } from '../../../selectors';
+import { getSelectedAccount } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
@@ -89,10 +91,9 @@ const DeFiPage = () => {
   return (
     <Box className="main-container asset__container">
       <Box
+        className="flex pt-4 sticky top-0 z-10 bg-background-default"
         paddingLeft={2}
-        display={Display.Flex}
         paddingBottom={4}
-        className="pt-4 sticky top-0 z-10 bg-background-default"
       >
         <ButtonIcon
           data-testid="defi-details-page-back-button"
@@ -106,9 +107,9 @@ const DeFiPage = () => {
       </Box>
 
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
         paddingRight={4}
       >
         <Text
@@ -144,7 +145,7 @@ const DeFiPage = () => {
       <Box paddingLeft={4} paddingBottom={4} paddingRight={4}>
         <hr style={{ border: '1px solid var(--border-muted, #858B9A33)' }} />
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box className="flex" flexDirection={BoxFlexDirection.Column}>
         {Object.keys(PositionTypeLabels).map((positionType) =>
           protocolPosition.positionTypes[positionType as PositionTypeKeys] ? (
             <DefiDetailsList

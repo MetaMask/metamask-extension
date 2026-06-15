@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Časovač automatického odhlásenia (minúty)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Nastavte čas nečinnosti v minútach skôr, než sa MetaMask automaticky odhlási"
-  },
   "average": {
     "message": "Priemerný"
   },
@@ -175,12 +172,6 @@
   "createPassword": {
     "message": "Vytvoriť heslo"
   },
-  "currencyConversion": {
-    "message": "Prepočet meny"
-  },
-  "currentLanguage": {
-    "message": "Aktuálny jazyk"
-  },
   "custom": {
     "message": "Rozšírené"
   },
@@ -201,9 +192,6 @@
   },
   "done": {
     "message": "Hotovo"
-  },
-  "downloadGoogleChrome": {
-    "message": "Stiahnuť Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Stáhnout stavové protokoly"
@@ -262,9 +250,6 @@
   },
   "hardwareWallets": {
     "message": "Pripojiť hardvérovú peňaženku"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s MetaMask"
   },
   "here": {
     "message": "zde",
@@ -326,12 +311,6 @@
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
-  "lineaGoerli": {
-    "message": "Testovacia sieť Linea Goerli"
-  },
-  "links": {
-    "message": "Odkazy"
-  },
   "loading": {
     "message": "Načítám..."
   },
@@ -359,9 +338,6 @@
   },
   "nevermind": {
     "message": "Nevadí"
-  },
-  "newAccount": {
-    "message": "Nový účet"
   },
   "newAccountNumberName": {
     "message": "Účet $1",
@@ -465,9 +441,6 @@
   "restore": {
     "message": "Obnoviť"
   },
-  "revealSeedWords": {
-    "message": "Zobrazit slova klíčové fráze"
-  },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -514,9 +487,6 @@
   "showFiatConversionInTestnets": {
     "message": "Zobraziť konverziu na Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Vyberte túto voľbu, ak chcete zobraziť konverziu fiat na Testnets"
-  },
   "showHexData": {
     "message": "Zobraziť údaje Hex"
   },
@@ -546,9 +516,6 @@
   },
   "stateLogs": {
     "message": "Stavové protokoly"
-  },
-  "stateLogsDescription": {
-    "message": "Stavové protokoly obsahují vaše veřejné adresy účtů a odeslané transakce."
   },
   "submitted": {
     "message": "Odesláno"

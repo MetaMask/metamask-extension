@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { usePerpsEligibility } from '../../hooks/perps';
-import * as accountsSelectors from '../../selectors/accounts';
+import * as accountsSelectors from '../../../shared/lib/selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
@@ -14,6 +14,7 @@ import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import PerpsWithdrawPage from './perps-withdraw-page';
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   HYPERLIQUID_ASSET_CONFIGS: {
     usdc: {
       mainnet: 'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
@@ -220,7 +221,7 @@ describe('PerpsWithdrawPage', () => {
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
     mockUsePerpsLiveAccount.mockReturnValue({
-      account: { availableBalance: '100' } as never,
+      account: { spendableBalance: '100' } as never,
       isInitialLoading: false,
     });
     mockSubmit.mockImplementation((method: string) => {
@@ -510,8 +511,8 @@ describe('PerpsWithdrawPage', () => {
     const user = userEvent.setup();
     mockUsePerpsLiveAccount.mockReturnValue({
       account: {
-        availableBalance: '0',
-        availableToTradeBalance: '100',
+        spendableBalance: '0',
+        withdrawableBalance: '100',
       } as never,
       isInitialLoading: false,
     });

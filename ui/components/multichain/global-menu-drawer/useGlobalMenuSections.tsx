@@ -19,7 +19,6 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
-  // SETTINGS_V2_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
@@ -43,9 +42,7 @@ import {
 } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { Tag } from '../../component-library';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -66,8 +63,9 @@ import {
   getAnySnapUpdateAvailable,
   getThirdPartyNotifySnaps,
   getUseExternalServices,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getDataCollectionForMarketing,
 } from '../../../selectors';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
@@ -140,8 +138,12 @@ export function useGlobalMenuSections(
     ],
   );
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const supportText =
@@ -282,9 +284,9 @@ export function useGlobalMenuSections(
         const url = getPortfolioUrl(
           'explore/tokens',
           'ext_portfolio_button',
-          metaMetricsId,
-          isMetaMetricsEnabled,
-          isMarketingEnabled,
+          analyticsId,
+          isMetaMetricsEnabled === true,
+          isMarketingEnabled === true,
         );
         global.platform.openTab({ url });
         trackEvent({
@@ -400,21 +402,6 @@ export function useGlobalMenuSections(
           },
           disabled: hasUnapprovedTransactions,
         },
-        // Uncomment to view Settings V2 in Hamburger Menu
-        // {
-        //   id: 'global-menu-settings-v2',
-        //   iconName: IconName.Setting,
-        //   label: `${t('settings')} (V2)`,
-        //   to: SETTINGS_V2_ROUTE,
-        //   onClick: () => {
-        //     trackEvent({
-        //       category: MetaMetricsEventCategory.Navigation,
-        //       event: MetaMetricsEventName.NavSettingsOpened,
-        //       properties: { location: METRICS_LOCATION },
-        //     });
-        //   },
-        //   disabled: hasUnapprovedTransactions,
-        // },
         {
           id: 'global-menu-support',
           iconName: IconName.MessageQuestion,
@@ -454,7 +441,7 @@ export function useGlobalMenuSections(
           iconName: IconName.Lock,
           iconColor: IconColor.ErrorDefault,
           textColor: TextColor.ErrorDefault,
-          label: t('logOut'),
+          label: t('lock'),
           onClick: async () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
@@ -495,7 +482,7 @@ export function useGlobalMenuSections(
     onClose,
     dispatch,
     trackEvent,
-    metaMetricsId,
+    analyticsId,
     isMetaMetricsEnabled,
     isMarketingEnabled,
     browserSupportsSidePanel,

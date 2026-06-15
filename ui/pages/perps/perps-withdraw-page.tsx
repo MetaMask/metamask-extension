@@ -33,7 +33,7 @@ import {
 } from '@metamask/perps-controller';
 import { isValidPerpsWithdrawAmount } from '../../components/app/perps/constants';
 import { Content, Footer, Page } from '../../components/multichain/pages/page';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { FlexDirection } from '../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../helpers/utils/accounts';
 import {
@@ -79,7 +79,7 @@ function parsePerpsAmountInput(raw: string): number {
  * The Perps tab opens this page by default; confirmations-backed withdraw remains
  * gated by the Pay post-quote feature flag.
  */
-const PerpsWithdrawPage: React.FC = () => {
+const PerpsWithdrawPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { formatCurrency } = useFormatters();
@@ -96,7 +96,7 @@ const PerpsWithdrawPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const availableBalance =
-    account?.availableToTradeBalance ?? account?.availableBalance ?? '0';
+    account?.withdrawableBalance ?? account?.spendableBalance ?? '0';
   const availableNum = parseFloat(availableBalance) || 0;
 
   const usdcAssetId = useMemo(

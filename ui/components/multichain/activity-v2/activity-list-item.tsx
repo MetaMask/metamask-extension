@@ -6,7 +6,9 @@ import TransactionStatusLabel from '../../app/transaction-status-label/transacti
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
+import { isProtectedByEnforcedSimulations } from '../../../pages/confirmations/utils/confirm';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { getPrimaryAmount } from './helpers';
 import { useGetTitle, useFiatAmount } from './hooks';
@@ -18,6 +20,7 @@ type Props = {
 };
 
 export const ActivityListItem = ({ transaction, onClick }: Props) => {
+  const t = useI18nContext();
   const { formatTokenAmount, formatCurrencyWithMinThreshold } = useFormatters();
   const currentCurrency = useSelector(getCurrentCurrency);
   const title = useGetTitle(transaction);
@@ -36,11 +39,20 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       ? TransactionStatus.failed
       : TransactionStatus.confirmed;
 
+  const isProtected = isProtectedByEnforcedSimulations(transaction);
+
+  const failureMessage =
+    transactionStatus === TransactionStatus.failed
+      ? transaction.error?.message
+      : undefined;
+  const failureError = failureMessage ? { message: failureMessage } : undefined;
+
   return (
     <Box
       className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover activity-list-item"
       onClick={onClick}
       data-testid="activity-list-item"
+      data-tx-status={transactionStatus}
     >
       <div className="flex gap-4 items-center">
         <div className="flex-shrink-0">
@@ -52,13 +64,25 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         {/* Left side - Action and Details */}
         <div className="flex-1 min-w-0">
           <Text
-            className="font-medium truncate"
+            className="font-medium truncate text-s-body-md @compact:text-s-body-sm"
             data-testid="activity-list-item-action"
           >
             {title}
           </Text>
-          <div className="text-s-body-sm font-medium">
-            <TransactionStatusLabel status={transactionStatus} statusOnly />
+          <div
+            className="text-s-body-sm font-medium"
+            data-testid="activity-list-item-protected-status"
+          >
+            <TransactionStatusLabel
+              status={transactionStatus}
+              error={failureError}
+              label={isProtected ? t('cancelled') : undefined}
+              tooltip={
+                isProtected
+                  ? t('transactionProtectedByEnforcedSimulations')
+                  : undefined
+              }
+            />
           </div>
         </div>
 
@@ -66,7 +90,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         <div className="flex flex-col items-end">
           {amount && token && (
             <Text
-              className="font-medium"
+              className="font-medium text-s-body-md @compact:text-s-body-sm"
               data-testid="transaction-list-item-primary-currency"
             >
               {formatTokenAmount(amount, token.symbol)}

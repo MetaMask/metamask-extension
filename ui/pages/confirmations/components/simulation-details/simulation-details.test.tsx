@@ -5,6 +5,7 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import { screen } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
@@ -21,6 +22,7 @@ import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
 
 const TRANSACTION_ID_MOCK = 'testTransactionId';
+const ERC20_TOKEN_STANDARD = TokenStandard.ERC20;
 
 const BALANCE_CHANGES_MOCK = [
   { amount: new BigNumber(-123) },
@@ -70,10 +72,24 @@ const renderSimulationDetails = (
   // Extract smartTransactionStatus from transactionMetadata
   const { smartTransactionStatus, ...txMetadata } = transactionMetadata || {};
 
+  if (txMetadata.revert) {
+    const preferences = state.metamask.preferences as Record<string, unknown>;
+
+    preferences.showConfirmationAdvancedDetails = true;
+  }
+
+  state.metamask.pendingApprovals = {
+    [TRANSACTION_ID_MOCK]: {
+      id: TRANSACTION_ID_MOCK,
+      type: ApprovalType.Transaction,
+    },
+  } as never;
+
   if (txMetadata && Object.keys(txMetadata).length > 0) {
     state.metamask.transactions.push({
       id: TRANSACTION_ID_MOCK,
       simulationData,
+      status: TransactionStatus.unapproved,
       ...txMetadata,
     } as never);
   }
@@ -137,6 +153,25 @@ describe('SimulationDetails', () => {
     expect(
       screen.getByText(/transaction is likely to fail/u),
     ).toBeInTheDocument();
+  });
+
+  it('renders simulation revert reason when advanced details are open', () => {
+    renderSimulationDetails(
+      { error: { code: SimulationErrorCode.Reverted, message: '' } },
+      false,
+      [],
+      {
+        revert: {
+          simulation: {
+            message: 'ERC20: transfer amount exceeds balance',
+          },
+        },
+      },
+    );
+
+    expect(
+      screen.getByTestId('simulation-details-revert-reason-message'),
+    ).toHaveTextContent('ERC20: transfer amount exceeds balance');
   });
 
   it('renders no content when simulation error is due to unsupported chain', () => {
@@ -375,7 +410,7 @@ describe('SimulationDetails', () => {
             asset: {
               address: '0x123',
               chainId: '0x321',
-              standard: TokenStandard.ERC20,
+              standard: ERC20_TOKEN_STANDARD,
             },
             amount: new BigNumber(123),
             fiatAmount: 456,
@@ -411,7 +446,7 @@ describe('SimulationDetails', () => {
             asset: {
               address: '0x123',
               chainId: '0x321',
-              standard: TokenStandard.ERC20,
+              standard: ERC20_TOKEN_STANDARD,
             },
             amount: new BigNumber(123),
             fiatAmount: 456,
@@ -447,7 +482,7 @@ describe('SimulationDetails', () => {
             asset: {
               address: '0x123',
               chainId: '0x321',
-              standard: TokenStandard.ERC20,
+              standard: ERC20_TOKEN_STANDARD,
             },
             amount: new BigNumber(123),
             fiatAmount: 456,

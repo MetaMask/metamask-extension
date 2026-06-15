@@ -7,12 +7,12 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getShouldShowFiat,
   txDataSelector,
-  getCurrentKeyring,
   getTokenExchangeRates,
-  getPreferences,
   selectConversionRateByChainId,
-  selectNetworkConfigurationByChainId,
 } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { selectNetworkConfigurationByChainId } from '../../../../shared/lib/selectors/networks';
 
 import {
   getCustomMaxFeePerGas,

@@ -44,6 +44,7 @@ describe('Critical errors', function (this: Suite) {
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
         await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateReinstallMetamaskLink();
         await criticalErrorPage.validateErrorMessage(
           'Background connection unresponsive',
         );
@@ -76,6 +77,7 @@ describe('Critical errors', function (this: Suite) {
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
         await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateReinstallMetamaskLink();
         await criticalErrorPage.validateErrorMessage(
           'Background connection unresponsive',
         );
@@ -102,6 +104,7 @@ describe('Critical errors', function (this: Suite) {
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
         await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateReinstallMetamaskLink();
         await criticalErrorPage.validateErrorMessage(
           'Background initialization timeout',
         );
@@ -147,6 +150,7 @@ describe('Critical errors', function (this: Suite) {
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
         await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateReinstallMetamaskLink();
         await criticalErrorPage.validateErrorMessage(
           'Background state sync timeout',
         );

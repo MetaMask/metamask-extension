@@ -12,7 +12,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
-import { updateTransactionGasFees } from '../../../../store/actions';
+import { updateTransactionGasFees } from '../../../../store/actions/update-transaction-gas-fees';
 import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { toHumanEstimatedTimeRange } from '../../utils/time';

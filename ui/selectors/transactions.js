@@ -28,7 +28,7 @@ import {
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
 import { firstPendingConfirmationSelector } from '../pages/confirmations/selectors/confirm';
-import { getSelectedInternalAccount } from './accounts';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
   hasPendingApprovals,
   getApprovalRequestsByType,

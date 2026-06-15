@@ -9,10 +9,8 @@ import {
 } from '../selectors';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 
 /**

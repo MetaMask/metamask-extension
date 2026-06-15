@@ -6,6 +6,8 @@ import {
 import {
   isBatchTransaction,
   hasTransactionType,
+  getPostQuoteWithdrawTransactionType,
+  isPostQuoteWithdrawTransaction,
   isPerpsWithdrawTransaction,
 } from './transactions.utils';
 
@@ -148,6 +150,53 @@ describe('Transactions utils', () => {
 
     it('returns false when transactionMeta is undefined', () => {
       expect(isPerpsWithdrawTransaction(undefined)).toBe(false);
+    });
+  });
+
+  describe('getPostQuoteWithdrawTransactionType', () => {
+    it('returns perpsWithdraw when type is perpsWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsWithdraw,
+      } as TransactionMeta;
+
+      expect(getPostQuoteWithdrawTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsWithdraw,
+      );
+    });
+
+    it('returns perpsWithdraw when a nested transaction is perpsWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.perpsWithdraw }],
+      } as unknown as TransactionMeta;
+
+      expect(getPostQuoteWithdrawTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsWithdraw,
+      );
+    });
+
+    it('returns undefined for unrelated transaction types', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+      } as TransactionMeta;
+
+      expect(getPostQuoteWithdrawTransactionType(transactionMeta)).toBe(
+        undefined,
+      );
+    });
+  });
+
+  describe('isPostQuoteWithdrawTransaction', () => {
+    it('returns true when the transaction has a post-quote withdraw type', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsWithdraw,
+      } as TransactionMeta;
+
+      expect(isPostQuoteWithdrawTransaction(transactionMeta)).toBe(true);
+    });
+
+    it('returns false when transactionMeta is undefined', () => {
+      expect(isPostQuoteWithdrawTransaction(undefined)).toBe(false);
     });
   });
 });

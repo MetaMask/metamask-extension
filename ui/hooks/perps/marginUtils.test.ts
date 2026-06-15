@@ -35,9 +35,10 @@ describe('marginUtils (mobile parity)', () => {
       expect(liquidationDistancePercent(0, 80000)).toBe(0);
     });
 
-    it('returns 0 when liq is null or 0', () => {
+    it('returns 0 when liq is null or non-positive', () => {
       expect(liquidationDistancePercent(100000, null)).toBe(0);
       expect(liquidationDistancePercent(100000, 0)).toBe(0);
+      expect(liquidationDistancePercent(100000, -1)).toBe(0);
     });
   });
 
