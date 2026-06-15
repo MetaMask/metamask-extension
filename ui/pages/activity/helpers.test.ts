@@ -1,9 +1,5 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import {
-  dedupeItems,
-  groupActivityListItems,
-  shouldShowPlusSign,
-} from './helpers';
+import { dedupeItems, groupActivityListItems } from './helpers';
 
 function makeItem(
   overrides: Partial<ActivityListItem> & {
@@ -22,16 +18,6 @@ function makeItem(
     ...overrides,
   } as ActivityListItem;
 }
-
-describe('shouldShowPlusSign', () => {
-  it('disables plus for approval activities', () => {
-    expect(shouldShowPlusSign('approveSpendingCap')).toBe(false);
-  });
-
-  it('enables plus for send activities', () => {
-    expect(shouldShowPlusSign('send')).toBe(true);
-  });
-});
 
 describe('dedupeItems', () => {
   it('does not let contractInteraction replace a more specific item with the same hash', () => {

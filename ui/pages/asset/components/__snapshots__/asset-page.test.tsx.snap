@@ -375,7 +375,7 @@ exports[`AssetPage should render a native asset 1`] = `
                   data-testid="asset-network"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
                   >
                     <img
                       alt="Ethereum"
@@ -717,7 +717,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                   data-testid="asset-network"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
                   >
                     <img
                       alt="Ethereum"
@@ -1138,7 +1138,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                   data-testid="asset-network"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
                   >
                     <img
                       alt="Ethereum"

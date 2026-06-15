@@ -124,7 +124,6 @@ function createMockState(overrides?: Record<string, unknown>) {
         modalState: { name: null, props: {} },
         previousModalState: { name: null },
       },
-      warning: null,
       chainId: '0x1',
       rpcPrefs: null,
       accounts: [],

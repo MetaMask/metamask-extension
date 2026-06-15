@@ -97,6 +97,13 @@ jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+// By default the compliance gate is a passthrough (wallet not blocked): it runs
+// the wrapped action. Individual tests can override it to simulate a block.
+const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
+jest.mock('../compliance', () => ({
+  useSelectedAccountComplianceGate: () => ({ gate: mockComplianceGate }),
+}));
+
 jest.mock('./perps-tutorial-modal', () => ({
   PerpsTutorialModal: () => null,
 }));
@@ -164,6 +171,9 @@ describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockComplianceGate.mockImplementation(async (action: () => unknown) =>
+      action(),
+    );
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
       positions: mocks.mockPositions,
@@ -439,6 +449,24 @@ describe('PerpsView', () => {
       expect(
         screen.getByTestId('perps-close-all-positions-modal'),
       ).toBeInTheDocument();
+    });
+
+    it('does not open the confirmation modal when the compliance gate blocks', async () => {
+      // Simulate a blocked wallet: the gate short-circuits and never runs the
+      // wrapped action that opens the confirmation modal.
+      mockComplianceGate.mockImplementationOnce(async () => undefined);
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+
+      await waitFor(() => expect(mockComplianceGate).toHaveBeenCalled());
+      expect(
+        screen.queryByTestId('perps-close-all-positions-modal'),
+      ).not.toBeInTheDocument();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsClosePositions',
+        expect.anything(),
+      );
     });
 
     it('calls batch close after confirmation and applies a single positions snapshot', async () => {
