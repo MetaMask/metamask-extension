@@ -4,16 +4,18 @@
  *
  * Listed Augmentations:
  * - Arc does not show the ERC20 token in the UI, instead the ERC20 token is synced with its native token.
- * - USDC ERC20: 0x0000000000000000000000000000000000000000
- * - USDC Native: 0x3600000000000000000000000000000000000000
+ * - E.g. USDC ERC20: 0x0000000000000000000000000000000000000000
+ * - E.g. USDC Native: 0x3600000000000000000000000000000000000000
+ *
+ * - Exception to showing ERC20 token in the UI: Swaps/Bridge flow - as the router has been validated for this token only.
  */
 const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
 const ARC_NATIVE_HEX_CHAIN_ID = '0x13b2';
-const ARC_ERC20_USDC_ASSET_ID =
-  'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
-const ARC_ERC20_USDC_ADDRESS = '0x3600000000000000000000000000000000000000';
+const ARC_NATIVE_ASSET_ID =
+  'eip155:5042/erc20:0x0000000000000000000000000000000000000000';
+const ARC_NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-function isArcErc20USDCAsset(asset: {
+function isNativeArcAsset(asset: {
   address?: string;
   assetId?: string;
   chainId?: string;
@@ -25,14 +27,14 @@ function isArcErc20USDCAsset(asset: {
   if (
     isArcChainId &&
     'address' in asset &&
-    asset.address?.toLowerCase() === ARC_ERC20_USDC_ADDRESS
+    asset.address?.toLowerCase() === ARC_NATIVE_ADDRESS
   ) {
     return true;
   }
   if (
     isArcChainId &&
     'assetId' in asset &&
-    asset.assetId?.toLowerCase() === ARC_ERC20_USDC_ASSET_ID
+    asset.assetId?.toLowerCase() === ARC_NATIVE_ASSET_ID
   ) {
     return true;
   }
@@ -40,8 +42,14 @@ function isArcErc20USDCAsset(asset: {
   return false;
 }
 
-export function filterOutArcErc20USDCAsset<
+/**
+ * Filters our Arc Native Asset.
+ * Only used for Swaps/Bridge UI - everywhere else uses the ERC20 USDC Asset.
+ * @param assets
+ * @returns assets without the Arc Native Asset.
+ */
+export function filterOutArcNativeAsset<
   TAsset extends { chainId?: string; isNative?: boolean },
 >(assets: TAsset[]): TAsset[] {
-  return assets.filter((asset) => !isArcErc20USDCAsset(asset));
+  return assets.filter((asset) => !isNativeArcAsset(asset));
 }
