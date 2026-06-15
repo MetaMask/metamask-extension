@@ -503,7 +503,7 @@ const TransactionShield = () => {
                 ) : (
                   <TextButton
                     data-testid="shield-detail-manage-plan-button"
-                    className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative hover:bg-transparent"
+                    className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative flex gap-1 items-center"
                     onClick={() => {
                       navigate(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
                     }}
@@ -571,7 +571,7 @@ const TransactionShield = () => {
             ) : (
               <TextButton
                 data-testid="shield-detail-view-benefits-button"
-                className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative hover:bg-transparent"
+                className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative flex gap-1 items-center"
                 onClick={() => {
                   handleViewFullBenefitsClicked();
                 }}
