@@ -8440,13 +8440,15 @@ export default class MetamaskController extends EventEmitter {
       getSecurityAlertsEnabled: () => {
         return this.preferencesController?.state?.securityAlertsEnabled;
       },
-      getTransactionFrameContext: (transactionId) => {
+      getTransactionFrameContext: (transactionRequestId) => {
         return this.appStateController?.getTransactionFrameContext(
-          transactionId,
+          transactionRequestId,
         );
       },
-      removeTransactionFrameContext: (transactionId) => {
-        this.appStateController?.removeTransactionFrameContext(transactionId);
+      removeTransactionFrameContext: (transactionRequestId) => {
+        this.appStateController?.removeTransactionFrameContext(
+          transactionRequestId,
+        );
       },
     };
 

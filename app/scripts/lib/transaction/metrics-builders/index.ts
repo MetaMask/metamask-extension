@@ -102,14 +102,14 @@ export async function getBuilderMetrics({
     } as TransactionMetrics,
   );
 
-  // Release any client-side state keyed by transaction id once we hit a
-  // terminal lifecycle event. Bounded by session anyway (state is
-  // non-persisted), but explicit cleanup keeps memory tight for long
+  // Release any client-side state keyed by the dapp request id (`actionId`)
+  // once we hit a terminal lifecycle event. Bounded by session anyway (state
+  // is non-persisted), but explicit cleanup keeps memory tight for long
   // background sessions.
-  if (TERMINAL_LIFECYCLE_EVENTS.has(eventName) && transactionMeta?.id) {
+  if (TERMINAL_LIFECYCLE_EVENTS.has(eventName) && transactionMeta?.actionId) {
     try {
       transactionMetricsRequest.removeTransactionFrameContext(
-        transactionMeta.id,
+        transactionMeta.actionId,
       );
     } catch (error) {
       log('Failed to release transaction frame context', error);

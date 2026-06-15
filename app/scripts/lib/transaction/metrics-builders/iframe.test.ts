@@ -20,14 +20,14 @@ describe('iframe builder', () => {
       transactionMetricsRequest,
       transactionMeta: {
         ...baseRequest.transactionMeta,
-        id: 'tx-1',
+        actionId: 'request-1',
         origin: 'https://iframe.example',
       } as any,
     });
 
     expect(
       transactionMetricsRequest.getTransactionFrameContext,
-    ).toHaveBeenCalledWith('tx-1');
+    ).toHaveBeenCalledWith('request-1');
     expect(result.properties).toStrictEqual({
       is_iframe: true,
       is_cross_origin_iframe: true,
@@ -51,7 +51,7 @@ describe('iframe builder', () => {
       transactionMetricsRequest,
       transactionMeta: {
         ...baseRequest.transactionMeta,
-        id: 'tx-2',
+        actionId: 'request-2',
         origin: 'https://dapp.example',
       } as any,
     });
@@ -76,11 +76,33 @@ describe('iframe builder', () => {
       transactionMetricsRequest,
       transactionMeta: {
         ...baseRequest.transactionMeta,
-        id: 'tx-3',
+        actionId: 'request-3',
         origin: 'https://dapp.example',
       } as any,
     });
 
+    expect(result.properties).toStrictEqual({});
+    expect(result.sensitiveProperties).toStrictEqual({});
+  });
+
+  it('returns no properties and does not read context when actionId is absent', async () => {
+    const baseRequest = createBuilderRequest();
+    const getTransactionFrameContext = jest.fn();
+
+    const result = await getIframeMetricsProperties({
+      ...baseRequest,
+      transactionMetricsRequest: {
+        ...baseRequest.transactionMetricsRequest,
+        getTransactionFrameContext,
+      },
+      transactionMeta: {
+        ...baseRequest.transactionMeta,
+        actionId: undefined,
+        origin: 'https://dapp.example',
+      } as any,
+    });
+
+    expect(getTransactionFrameContext).not.toHaveBeenCalled();
     expect(result.properties).toStrictEqual({});
     expect(result.sensitiveProperties).toStrictEqual({});
   });
@@ -110,12 +132,12 @@ describe('iframe builder', () => {
         },
         transactionMeta: {
           ...baseRequest.transactionMeta,
-          id: 'tx-4',
+          actionId: 'request-4',
           origin: 'https://iframe.example',
         } as any,
       });
 
-      expect(getTransactionFrameContext).toHaveBeenCalledWith('tx-4');
+      expect(getTransactionFrameContext).toHaveBeenCalledWith('request-4');
     });
   });
 });

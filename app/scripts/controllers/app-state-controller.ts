@@ -1433,14 +1433,22 @@ export class AppStateController extends BaseController<
    * Records iframe context for a transaction so the metrics builder can
    * attach iframe properties to all lifecycle events for that transaction.
    *
+   * Keyed by the dapp request id (`actionId`) rather than the
+   * controller-generated transaction id, because the context is recorded
+   * before `transactionController.addTransaction` returns (and therefore
+   * before the transaction id is known) so that it is already available when
+   * the synchronous "Transaction Added" metrics event fires. The `actionId`
+   * is present on the `TransactionMeta` for every lifecycle event.
+   *
    * No-op when neither `frameId` nor `mainFrameOrigin` is present, so
    * non-iframe transactions never allocate state.
    *
-   * @param transactionId - The transaction id to associate the context with.
+   * @param transactionRequestId - The dapp request id (`actionId`) to
+   * associate the context with.
    * @param context - The iframe context captured from the dapp request.
    */
   setTransactionFrameContext(
-    transactionId: string,
+    transactionRequestId: string,
     context: TransactionFrameContext,
   ): void {
     const hasFrameId = typeof context.frameId === 'number';
@@ -1451,7 +1459,7 @@ export class AppStateController extends BaseController<
     }
 
     this.update((state) => {
-      state.transactionFrameContexts[transactionId] = {
+      state.transactionFrameContexts[transactionRequestId] = {
         ...(hasFrameId ? { frameId: context.frameId } : {}),
         ...(hasMainFrameOrigin
           ? { mainFrameOrigin: context.mainFrameOrigin }
@@ -1461,18 +1469,18 @@ export class AppStateController extends BaseController<
   }
 
   getTransactionFrameContext(
-    transactionId: string,
+    transactionRequestId: string,
   ): TransactionFrameContext | undefined {
-    return this.state.transactionFrameContexts[transactionId];
+    return this.state.transactionFrameContexts[transactionRequestId];
   }
 
-  removeTransactionFrameContext(transactionId: string): void {
-    if (!this.state.transactionFrameContexts[transactionId]) {
+  removeTransactionFrameContext(transactionRequestId: string): void {
+    if (!this.state.transactionFrameContexts[transactionRequestId]) {
       return;
     }
 
     this.update((state) => {
-      delete state.transactionFrameContexts[transactionId];
+      delete state.transactionFrameContexts[transactionRequestId];
     });
   }
 

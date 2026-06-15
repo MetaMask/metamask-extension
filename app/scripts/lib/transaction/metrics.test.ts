@@ -113,6 +113,7 @@ describe('transaction metrics handlers', () => {
 
     await handleTransactionApproved(request, {
       transactionMeta: createTxMeta({
+        actionId: 'request-approved',
         status: TransactionStatus.approved,
         origin: 'https://iframe.example',
       }),
@@ -149,6 +150,7 @@ describe('transaction metrics handlers', () => {
       mainFrameOrigin: 'https://top-level.example',
     });
     const transactionMeta = createTxMeta({
+      actionId: 'request-rejected',
       status: TransactionStatus.rejected,
       origin: 'https://iframe.example',
     });
@@ -167,7 +169,7 @@ describe('transaction metrics handlers', () => {
       }),
     );
     expect(request.removeTransactionFrameContext).toHaveBeenCalledWith(
-      transactionMeta.id,
+      transactionMeta.actionId,
     );
   });
 

@@ -138,19 +138,29 @@ export async function addDappTransaction(
     },
   };
 
-  const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
-    addTransactionRequest,
-  );
+  // Record iframe context *before* adding the transaction so it is already
+  // available when the synchronous "Transaction Added" metrics event fires
+  // from within `transactionController.addTransaction`. Keyed by the dapp
+  // request id (`actionId`), which is present on the `TransactionMeta` for
+  // every lifecycle event, giving the metrics builder a single uniform read
+  // path. No-op (no state allocated) for non-iframe requests.
+  appStateController.setTransactionFrameContext(actionId, {
+    frameId: typeof frameId === 'number' ? frameId : undefined,
+    mainFrameOrigin:
+      typeof mainFrameOrigin === 'string' ? mainFrameOrigin : undefined,
+  });
 
-  // Record iframe context once we have a transaction id, so the metrics
-  // builder can attach iframe properties to every lifecycle event for this
-  // transaction. Skipped (no-op) for non-iframe requests.
-  if (transactionMeta?.id) {
-    appStateController.setTransactionFrameContext(transactionMeta.id, {
-      frameId: typeof frameId === 'number' ? frameId : undefined,
-      mainFrameOrigin:
-        typeof mainFrameOrigin === 'string' ? mainFrameOrigin : undefined,
-    });
+  let waitForHash: () => Promise<string | undefined>;
+  try {
+    ({ waitForHash } = await addTransactionOrUserOperation(
+      addTransactionRequest,
+    ));
+  } catch (error) {
+    // The transaction was never added (e.g. validation failure), so no
+    // terminal lifecycle event will fire to release the recorded context.
+    // Release it here to avoid leaking the entry.
+    appStateController.removeTransactionFrameContext(actionId);
+    throw error;
   }
 
   const hash = (await waitForHash()) as string;

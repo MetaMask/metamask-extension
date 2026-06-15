@@ -93,9 +93,9 @@ export type TransactionMetricsRequest = {
   ) => ScanAddressResponse | undefined;
   getSecurityAlertsEnabled: () => boolean;
   getTransactionFrameContext: (
-    transactionId: string,
+    transactionRequestId: string,
   ) => TransactionFrameContext | undefined;
-  removeTransactionFrameContext: (transactionId: string) => void;
+  removeTransactionFrameContext: (transactionRequestId: string) => void;
 };
 
 export type TransactionEventPayload = {
