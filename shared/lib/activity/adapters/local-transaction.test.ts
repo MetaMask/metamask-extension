@@ -486,7 +486,7 @@ describe('mapLocalTransaction', () => {
 
     expect(item).toMatchObject({
       type: 'perpsWithdraw',
-      chainId: 'eip155:1',
+      chainId: 'eip155:42161',
       status: 'success',
       timestamp: 1780690942752,
       data: {
@@ -517,7 +517,7 @@ describe('mapLocalTransaction', () => {
 
     expect(item).toMatchObject({
       type: 'perpsAddFunds',
-      chainId: 'eip155:1',
+      chainId: 'eip155:42161',
       status: 'success',
       timestamp: 1781185241609,
       data: {

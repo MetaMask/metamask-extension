@@ -1,4 +1,5 @@
 import React from 'react';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { PerpsFiatRows } from '../components/amounts-section';
 import { Footer, Section } from '../components/shared';
@@ -21,7 +22,10 @@ export function PerpsDetails({
       </div>
 
       <Footer>
-        <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
+        <BlockExplorerButton
+          chainId={CHAIN_IDS.HYPERLIQUID}
+          txHash={item.data.hash}
+        />
       </Footer>
     </div>
   );

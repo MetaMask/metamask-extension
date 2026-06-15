@@ -383,7 +383,7 @@ export function mapLocalTransaction(
           initialTransaction.type === TransactionType.perpsWithdraw
             ? 'perpsWithdraw'
             : 'perpsAddFunds',
-        chainId: payChainId ?? chainId,
+        chainId,
         status,
         timestamp,
         data: {
