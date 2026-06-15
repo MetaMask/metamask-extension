@@ -16,7 +16,10 @@ import {
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS,
+  BRIDGE_ASSET_PICKER_HIDDEN_ASSETS,
+} from '../../../shared/constants/bridge';
 import { isTronSpecialAsset, toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getAccountTrackerControllerAccountsByChainId,
@@ -355,7 +358,9 @@ const getBridgeAssetsForAccountGroupId = createSelector(
           .toNumber(),
       }));
 
-    return nonEvmAssetsWithFiatBalances.concat(evmAssetsWithFiatBalances);
+    return nonEvmAssetsWithFiatBalances
+      .concat(evmAssetsWithFiatBalances)
+      .filter((item) => !BRIDGE_ASSET_PICKER_HIDDEN_ASSETS.has(item.assetId));
   },
 );
 

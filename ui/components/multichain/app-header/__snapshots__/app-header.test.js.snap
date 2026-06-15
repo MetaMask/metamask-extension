@@ -250,7 +250,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               data-testid="account-options-menu-button"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/menu.svg');"
               />
             </button>
