@@ -281,7 +281,7 @@
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
     "pendingRevocations": "object",
-    "pendingShieldCohort": null,
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "permissionActivityLog": "object",
     "permissionHistory": "object",
