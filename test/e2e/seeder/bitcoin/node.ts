@@ -661,7 +661,25 @@ export class BitcoinRegtestNode {
   }
 
   async broadcastTransaction(rawTransaction: string): Promise<string> {
-    return await this.#rpc<string>('sendrawtransaction', [rawTransaction]);
+    const txid = await this.#rpc<string>('sendrawtransaction', [rawTransaction]);
+    await this.mineBlocks(1);
+    return txid;
+  }
+
+  async mineBlocks(count: number = 1): Promise<void> {
+    if (count < 1 || !Number.isInteger(count)) {
+      throw new Error(`mineBlocks: count must be a positive integer, got ${count}`);
+    }
+    // trimStdout: true is required — getnewaddress returns address with trailing newline
+    const miningAddress = await this.#runBitcoinCli(
+      ['-rpcwallet=e2e', 'getnewaddress'],
+      { trimStdout: true },
+    );
+    await this.#runBitcoinCli([
+      'generatetoaddress',
+      count.toString(),
+      miningAddress,
+    ]);
   }
 
   getFeeEstimates(): Record<string, number> {
