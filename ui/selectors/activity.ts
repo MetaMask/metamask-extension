@@ -25,6 +25,7 @@ import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/ne
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
+import { selectBridgeHistoryItemForTxHash } from '../ducks/bridge-status/selectors';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
@@ -49,6 +50,7 @@ import {
 } from './selectors';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
+// @deprecated - Migrate to selectBridgeHistoryItem
 const selectBridgeHistory = (state: MetaMaskReduxState) =>
   (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
     string,
@@ -189,20 +191,26 @@ export const selectNonEvmTransactionsForActivity = createSelector(
   },
 );
 
+const selectBridgeHistoryItem = createSelector(
+  [(state: MetaMaskReduxState) => state],
+  (state) => (txHash?: string) =>
+    txHash ? selectBridgeHistoryItemForTxHash(state, txHash) : undefined,
+);
+
 export const selectNonEvmActivityItems = createSelector(
   [
     selectNonEvmTransactionsForActivity,
     getAssetsMetadata,
     getInternalAccountsObject,
-    selectBridgeHistory,
+    selectBridgeHistoryItem,
   ],
-  (transactions, assetsMetadata, internalAccountsById, bridgeHistory) =>
+  (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
     transactions.map((transaction) =>
       mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
         subjectAddress: internalAccountsById?.[transaction.account]?.address,
-        bridgeHistory: getBridgeHistoryItemByKey(bridgeHistory, transaction.id),
+        bridgeHistory: getBridgeHistory(transaction.id),
       }),
     ),
 );
@@ -271,7 +279,7 @@ function normalizeBridgeHistoryLookupKey(value: unknown) {
     : undefined;
 }
 
-// @deprecated - Migrate to getBridgeHistoryItemByKey
+// @deprecated - Migrate to selectBridgeHistoryItem
 function getBridgeHistoryItem(
   bridgeHistory: Record<string, BridgeHistoryItem>,
   transactionGroup: TransactionGroup,
@@ -312,42 +320,6 @@ function getBridgeHistoryItem(
       return itemLookupValues.some((value) => lookupValueSet.has(value));
     })
   );
-}
-
-function getBridgeHistoryItemByKey(
-  bridgeHistory: Record<string, BridgeHistoryItem>,
-  key: string,
-) {
-  if (!key) {
-    return undefined;
-  }
-
-  const normalizedKey = normalizeBridgeHistoryLookupKey(key);
-  const directEntry =
-    bridgeHistory[key] ??
-    (normalizedKey ? bridgeHistory[normalizedKey] : undefined);
-
-  if (directEntry) {
-    return directEntry;
-  }
-
-  const lookupValueSet = new Set(normalizedKey ? [normalizedKey] : []);
-
-  return Object.values(bridgeHistory).find((item) => {
-    const itemLookupValues = [
-      item.txMetaId,
-      item.actionId,
-      item.originalTransactionId,
-      item.approvalTxId,
-      item.status.srcChain?.txHash,
-      item.status.destChain?.txHash,
-    ].flatMap((value) => {
-      const normalizedValue = normalizeBridgeHistoryLookupKey(value);
-      return normalizedValue ? [normalizedValue] : [];
-    });
-
-    return itemLookupValues.some((value) => lookupValueSet.has(value));
-  });
 }
 
 function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {

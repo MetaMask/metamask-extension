@@ -145,7 +145,7 @@ export function mapKeyringTransaction({
       return {
         type: 'bridge',
         chainId,
-        status: mapBridgeStatus(bridgeStatus) ?? status,
+        status: mapBridgeStatus(bridgeStatus),
         timestamp,
         data: {
           hash: transaction.id,
