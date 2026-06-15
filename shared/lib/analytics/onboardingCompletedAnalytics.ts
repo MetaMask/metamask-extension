@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention, camelcase -- Segment event properties use snake_case */
 export const ONBOARDING_IMPLEMENTATION_TYPE_EXTENSION = 'extension' as const;
 
 export const ONBOARDING_TYPE_SEED_PHRASE = 'seed_phrase' as const;
@@ -7,7 +8,7 @@ export type OnboardingType =
   | typeof ONBOARDING_TYPE_SEED_PHRASE
   | typeof ONBOARDING_TYPE_SOCIAL_LOGIN;
 
-export interface WalletSetupCompletedAnalyticsProps {
+export type WalletSetupCompletedAnalyticsProps = {
   wallet_setup_type: 'new' | 'import';
   new_wallet: boolean;
   account_type: string;
@@ -17,7 +18,7 @@ export interface WalletSetupCompletedAnalyticsProps {
   utm_term?: string;
   utm_content?: string;
   attribution_id?: string;
-}
+};
 
 export type OnboardingCompletedAnalyticsProps =
   WalletSetupCompletedAnalyticsProps & {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention, camelcase -- Segment-shaped assertions match analytics schema */
 import {
   getOnboardingCompletedAnalyticsProps,
   ONBOARDING_IMPLEMENTATION_TYPE_EXTENSION,
@@ -16,7 +17,7 @@ describe('getOnboardingCompletedAnalyticsProps', () => {
   it('returns wallet setup completed props with extension implementation and seed_phrase onboarding type', () => {
     expect(
       getOnboardingCompletedAnalyticsProps(walletSetupCompletedProps, false),
-    ).toEqual({
+    ).toStrictEqual({
       ...walletSetupCompletedProps,
       implementation_type: ONBOARDING_IMPLEMENTATION_TYPE_EXTENSION,
       onboarding_type: ONBOARDING_TYPE_SEED_PHRASE,
@@ -26,7 +27,7 @@ describe('getOnboardingCompletedAnalyticsProps', () => {
   it('returns wallet setup completed props with extension implementation and social_login onboarding type', () => {
     expect(
       getOnboardingCompletedAnalyticsProps(walletSetupCompletedProps, true),
-    ).toEqual({
+    ).toStrictEqual({
       ...walletSetupCompletedProps,
       implementation_type: ONBOARDING_IMPLEMENTATION_TYPE_EXTENSION,
       onboarding_type: ONBOARDING_TYPE_SOCIAL_LOGIN,
