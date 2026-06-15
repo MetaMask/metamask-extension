@@ -41,11 +41,12 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
             transaction_contract_method_4byte: context.contractMethod4Byte,
           }
         : {}),
+      ...finalizedExtras,
     };
 
     return {
       properties,
-      sensitiveProperties: finalizedExtras,
+      sensitiveProperties: {},
     };
   };
 

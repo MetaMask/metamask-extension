@@ -18,12 +18,10 @@ const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 /**
  * Mocks the Segment API for the events we expect to see in this test. After
  * the migration of sensitive transaction-event properties to the public
- * properties bag, the only Anon transaction event that still fires for a
- * simple-send flow is `Transaction Finalized Anon` (because finalized still
- * emits a small set of sensitive fields such as `completion_time` and the
- * on-chain `status` override). The Submitted/Added/Approved Anon variants no
- * longer fire and must not be mocked, otherwise `getEventPayloads` would
- * block waiting for requests that never arrive.
+ * properties bag, the transaction metrics builders no longer emit any
+ * sensitive properties for a simple-send flow, so the Anon variants of
+ * Submitted/Added/Approved/Finalized must not be mocked — otherwise
+ * `getEventPayloads` would block waiting for requests that never arrive.
  *
  * Do not use the constants from the metrics constants files, because if these
  * change we want a strong indicator to our data team that the shape of data
@@ -81,21 +79,6 @@ async function testSpecificMock(mockServer: Mockttp) {
           statusCode: 200,
         };
       }),
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [
-          {
-            type: 'track',
-            event: 'Transaction Finalized Anon',
-          },
-        ],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
   ];
 }
 
@@ -111,27 +94,9 @@ type EventPayload = {
 const hasNonEmptyMessageId = (payload: EventPayload): boolean =>
   typeof payload.messageId === 'string' && payload.messageId.length > 0;
 
-/**
- * Assert that the events with sensitive data do not contain a userId (the
- * random anonymous id generated when a user opts into metametrics)
- *
- * @param payload
- */
-const eventDoesNotIncludeUserId = (payload: EventPayload): boolean =>
-  typeof payload.userId === 'undefined';
-
 const eventHasUserIdWithoutAnonymousId = (payload: EventPayload): boolean =>
   typeof payload.userId === 'string' &&
   typeof payload.anonymousId === 'undefined';
-
-/**
- * Assert that the events with sensitive data have anonymousId set to
- * 0x0000000000000000 which is our universal anonymous record
- *
- * @param payload
- */
-const eventHasZeroAddressAnonymousId = (payload: EventPayload): boolean =>
-  payload.anonymousId === '0x0000000000000000';
 
 describe('Transaction Finalized Event', function (this: Suite) {
   it('Successfully tracked when sending a transaction', async function () {
@@ -194,10 +159,9 @@ describe('Transaction Finalized Event', function (this: Suite) {
 
         await driver.delay(10000);
 
-        const transactionFinalizedWithSensitivePropertiesAssertions = [
+        const transactionFinalizedAssertions = [
           hasNonEmptyMessageId,
-          eventDoesNotIncludeUserId,
-          eventHasZeroAddressAnonymousId,
+          eventHasUserIdWithoutAnonymousId,
           (payload: EventPayload) =>
             payload.properties?.status === 'confirmed' &&
             payload.properties?.chain_id === '0x539' &&
@@ -217,37 +181,14 @@ describe('Transaction Finalized Event', function (this: Suite) {
             typeof payload.properties?.completion_time === 'string',
         ];
 
-        const transactionFinalizedWithoutSensitivePropertiesAssertions = [
-          hasNonEmptyMessageId,
-          eventHasUserIdWithoutAnonymousId,
-          (payload: EventPayload) =>
-            // Check key properties for finalized transaction without sensitive data
-            payload.properties?.status === 'confirmed' &&
-            payload.properties?.chain_id === '0x539' &&
-            payload.properties?.network === '1337' &&
-            payload.properties?.referrer === 'metamask' &&
-            payload.properties?.source === 'user' &&
-            payload.properties?.transaction_type === 'simpleSend' &&
-            payload.properties?.asset_type === 'NATIVE' &&
-            payload.properties?.token_standard === 'NONE' &&
-            payload.properties?.account_type === 'MetaMask' &&
-            payload.properties?.transaction_speed_up === false &&
-            payload.properties?.gas_edit_type === 'none' &&
-            payload.properties?.gas_edit_attempted === 'none' &&
-            payload.properties?.category === 'Transactions' &&
-            payload.properties?.locale === 'en' &&
-            payload.properties?.environment_type === 'background',
-        ];
+        const [event1, event2] = events;
 
-        const [event1, event2, event3] = events;
-
-        // Find the finalized events (they have transaction_hash)
         const eventsWithHash = events.filter(
           (event) => event?.properties?.transaction_hash,
         );
         assert.ok(
-          eventsWithHash.length === 2,
-          `Expected 2 events with transaction_hash, got ${eventsWithHash.length}`,
+          eventsWithHash.length === 1,
+          `Expected 1 event with transaction_hash, got ${eventsWithHash.length}`,
         );
 
         // Verify the transaction_hash matches the actual tx hash from the activity
@@ -260,11 +201,10 @@ describe('Transaction Finalized Event', function (this: Suite) {
 
         assert.ok(
           assertInAnyOrder(
-            [event1, event2, event3],
+            [event1, event2],
             [
               transactionSubmittedWithoutSensitivePropertiesAssertions,
-              transactionFinalizedWithSensitivePropertiesAssertions,
-              transactionFinalizedWithoutSensitivePropertiesAssertions,
+              transactionFinalizedAssertions,
             ],
           ),
           'Events should match all assertion arrays',

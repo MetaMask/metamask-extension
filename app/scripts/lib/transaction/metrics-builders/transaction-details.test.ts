@@ -4,7 +4,7 @@ import { getTransactionDetailsMetricsProperties } from './transaction-details';
 import { createBuilderRequest } from './test-utils';
 
 describe('transaction-details builder', () => {
-  it('exposes migrated contract details on properties and keeps completion_time as a sensitive finalized field', async () => {
+  it('exposes migrated contract details and completion_time on properties on finalized', async () => {
     const result = await getTransactionDetailsMetricsProperties(
       createBuilderRequest({
         eventName: TransactionMetaMetricsEvent.finalized,
@@ -31,9 +31,8 @@ describe('transaction-details builder', () => {
     expect(result.properties.transaction_contract_method_4byte).toBe(
       '0xa9059cbb',
     );
-    expect(result.sensitiveProperties.completion_time).toEqual(
-      expect.any(String),
-    );
+    expect(result.properties.completion_time).toEqual(expect.any(String));
+    expect(result.sensitiveProperties).toStrictEqual({});
   });
 
   it('forwards transactionEventPayload.error to properties on finalized', async () => {

@@ -158,7 +158,7 @@ describe('transaction metrics handlers', () => {
     expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
   });
 
-  it('tracks finalized event for confirmed and keeps status + completion_time as sensitive', async () => {
+  it('tracks finalized event for confirmed and exposes status + completion_time on properties', async () => {
     const request = createRequest();
     const now = Date.now();
     await handleTransactionConfirmed(request, {
@@ -172,10 +172,8 @@ describe('transaction metrics handlers', () => {
 
     const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
     expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
-    expect(payload.sensitiveProperties.status).toBe('failed on-chain');
-    expect(payload.sensitiveProperties.completion_time).toEqual(
-      expect.any(String),
-    );
+    expect(payload.properties.status).toBe('failed on-chain');
+    expect(payload.properties.completion_time).toEqual(expect.any(String));
   });
 
   it('includes transaction hash when pna25 requirements are met', async () => {

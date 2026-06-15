@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { strict as assert } from 'assert';
 import { MockedEndpoint, MockttpServer } from 'mockttp';
-import {
-  AnonymousTransactionMetaMetricsEvent,
-  TransactionMetaMetricsEvent,
-} from '../../../../../shared/constants/transaction';
+import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
 import { Driver } from '../../../webdriver/driver';
 import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../../constants';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -111,7 +108,7 @@ describe('Metrics', function () {
 
         // This is left for debugging purposes
         console.log(events);
-        assert.equal(events.length, 10);
+        assert.equal(events.length, 8);
 
         // deployment tx -- no ui_customizations
         assert.equal(events[0].event, TransactionMetaMetricsEvent.added);
@@ -123,35 +120,23 @@ describe('Metrics', function () {
         assert.equal(events[2].event, TransactionMetaMetricsEvent.approved);
         assert.equal(events[2].properties.ui_customizations, null);
         assert.equal(events[2].properties.transaction_advanced_view, false);
-        assert.equal(
-          events[3].event,
-          AnonymousTransactionMetaMetricsEvent.finalized,
-        );
+        assert.equal(events[3].event, TransactionMetaMetricsEvent.finalized);
         assert.equal(events[3].properties.ui_customizations, null);
         assert.equal(events[3].properties.transaction_advanced_view, false);
-        assert.equal(events[4].event, TransactionMetaMetricsEvent.finalized);
-        assert.equal(events[4].properties.ui_customizations, null);
-        assert.equal(events[4].properties.transaction_advanced_view, false);
 
         // deposit tx (contract interaction)
-        assert.equal(events[5].event, TransactionMetaMetricsEvent.added);
+        assert.equal(events[4].event, TransactionMetaMetricsEvent.added);
+        assert.equal(events[4].properties.ui_customizations, null);
+        assert.equal(events[4].properties.transaction_advanced_view, false);
+        assert.equal(events[5].event, TransactionMetaMetricsEvent.submitted);
         assert.equal(events[5].properties.ui_customizations, null);
-        assert.equal(events[5].properties.transaction_advanced_view, false);
-        assert.equal(events[6].event, TransactionMetaMetricsEvent.submitted);
+        assert.equal(events[5].properties.transaction_advanced_view, true);
+        assert.equal(events[6].event, TransactionMetaMetricsEvent.approved);
         assert.equal(events[6].properties.ui_customizations, null);
         assert.equal(events[6].properties.transaction_advanced_view, true);
-        assert.equal(events[7].event, TransactionMetaMetricsEvent.approved);
+        assert.equal(events[7].event, TransactionMetaMetricsEvent.finalized);
         assert.equal(events[7].properties.ui_customizations, null);
         assert.equal(events[7].properties.transaction_advanced_view, true);
-        assert.equal(
-          events[8].event,
-          AnonymousTransactionMetaMetricsEvent.finalized,
-        );
-        assert.equal(events[8].properties.ui_customizations, null);
-        assert.equal(events[8].properties.transaction_advanced_view, true);
-        assert.equal(events[9].event, TransactionMetaMetricsEvent.finalized);
-        assert.equal(events[9].properties.ui_customizations, null);
-        assert.equal(events[9].properties.transaction_advanced_view, true);
       },
     );
   });
@@ -168,25 +153,16 @@ async function mockedTrackedEvent(mockServer: MockttpServer, event: string) {
 
 async function mocks(server: MockttpServer) {
   return [
-    // deployment tx — Added/Submitted/Approved Anon variants no longer fire
-    // after the sensitive-property migration; only Finalized still emits a
-    // sensitive bag, so only its Anon variant is mocked.
+    // deployment tx — transaction metrics builders no longer emit sensitive
+    // properties, so the Anon variants no longer fire.
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.added),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.submitted),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.approved),
-    await mockedTrackedEvent(
-      server,
-      AnonymousTransactionMetaMetricsEvent.finalized,
-    ),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.finalized),
     // deposit tx
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.added),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.submitted),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.approved),
-    await mockedTrackedEvent(
-      server,
-      AnonymousTransactionMetaMetricsEvent.finalized,
-    ),
     await mockedTrackedEvent(server, TransactionMetaMetricsEvent.finalized),
   ];
 }
