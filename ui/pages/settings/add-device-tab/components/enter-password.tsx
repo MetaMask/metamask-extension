@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useCallback, useState } from 'react';
 import {
   Box,
   Text,
@@ -13,6 +13,7 @@ import {
   FormTextFieldSize,
   TextFieldType,
 } from '../../../../components/component-library';
+import { verifyPassword } from '../../../../store/actions';
 import { AddDeviceSettingsStep } from '../constant';
 
 type EnterPasswordProps = {
@@ -21,7 +22,19 @@ type EnterPasswordProps = {
 
 const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
   const [password, setPassword] = useState('');
+  const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
+    useState(false);
   const t = useI18nContext();
+
+  const onSubmit = useCallback(async () => {
+    try {
+      await verifyPassword(password);
+      onContinue(AddDeviceSettingsStep.AddWallets);
+    } catch (error) {
+      setIsIncorrectPasswordError(true);
+    }
+  }, [password, onContinue]);
+
   return (
     <Box className="p-4 flex flex-1 flex-col gap-4">
       <Text
@@ -34,16 +47,30 @@ const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('enter_your_password_desc')}
       </Text>
-      <FormTextField
-        value={password}
-        type={TextFieldType.Password}
-        onChange={(e) => setPassword(e.target.value)}
-        size={FormTextFieldSize.Lg}
-      />
-      <Button
-        className="w-full mt-auto"
-        onClick={() => onContinue(AddDeviceSettingsStep.AddWallets)}
-      >
+      <Box asChild>
+        <form
+          onSubmit={(e: FormEvent<HTMLElement>) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+        >
+          <FormTextField
+            value={password}
+            type={TextFieldType.Password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setIsIncorrectPasswordError(false);
+            }}
+            size={FormTextFieldSize.Lg}
+            error={isIncorrectPasswordError}
+            helpText={
+              isIncorrectPasswordError ? t('unlockPageIncorrectPassword') : null
+            }
+            autoFocus
+          />
+        </form>
+      </Box>
+      <Button className="w-full mt-auto" onClick={onSubmit}>
         {t('continue')}
       </Button>
     </Box>

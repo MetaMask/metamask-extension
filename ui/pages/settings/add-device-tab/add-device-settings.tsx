@@ -22,7 +22,7 @@ import { AddDeviceSettingsStep } from './constant';
 const AddDeviceSettings = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const [step, setStep] = useState(AddDeviceSettingsStep.EnterPassword);
+  const [step, setStep] = useState(AddDeviceSettingsStep.ScanQrCode);
 
   const handleNextStep = (type: AddDeviceSettingsStep) => {
     setStep(type);
@@ -30,24 +30,20 @@ const AddDeviceSettings = () => {
 
   const renderStep = () => {
     switch (step) {
+      case AddDeviceSettingsStep.ScanQrCode:
+        return <QrCodeScan onScanSuccess={handleNextStep} />;
+      case AddDeviceSettingsStep.EnterVerificationCode:
+        return <EnterVerificationCode onContinue={handleNextStep} />;
       case AddDeviceSettingsStep.EnterPassword:
         return <EnterPassword onContinue={handleNextStep} />;
       case AddDeviceSettingsStep.AddWallets:
         return <AddWallets onAddWallets={handleNextStep} />;
-      case AddDeviceSettingsStep.ScanQrCode:
-        return <QrCodeScan onScanSuccess={handleNextStep} />;
-      case AddDeviceSettingsStep.EnterVerificationCode:
-        return <EnterVerificationCode />;
       default:
         return null;
     }
   };
 
-  return (
-    <>
-      {renderStep()}
-    </>
-  );
+  return <>{renderStep()}</>;
 };
 
 export default AddDeviceSettings;

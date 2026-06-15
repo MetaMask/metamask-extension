@@ -7,18 +7,21 @@ import {
   FontWeight,
   Input,
 } from '@metamask/design-system-react';
-import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { AddDeviceSettingsStep } from '../constant';
 
 const CODE_LENGTH = 6;
 const DIGITS_REGEX = /[^0-9]/gu;
+const TEMP_VERIFICATION_CODE = '123456';
 
-const EnterVerificationCode = () => {
+type EnterVerificationCodeProps = {
+  onContinue: (type: AddDeviceSettingsStep) => void;
+};
+
+const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
   const t = useI18nContext();
-  const navigate = useNavigate();
-  const [code, setCode] = useState<string[]>(() =>
-    Array(CODE_LENGTH).fill(''),
-  );
+  const [isError, setIsError] = useState(false);
+  const [code, setCode] = useState<string[]>(() => Array(CODE_LENGTH).fill(''));
   const inputRefs = useRef<(HTMLInputElement | null)[]>(
     Array(CODE_LENGTH).fill(null),
   );
@@ -34,6 +37,7 @@ const EnterVerificationCode = () => {
   const handleChange = useCallback(
     (rawValue: string, index: number) => {
       const sanitized = rawValue.replace(DIGITS_REGEX, '');
+      setIsError(false);
 
       if (!sanitized) {
         setCode((prev) => {
@@ -53,10 +57,7 @@ const EnterVerificationCode = () => {
         return next;
       });
 
-      const nextIndex = Math.min(
-        index + sanitized.length,
-        CODE_LENGTH - 1,
-      );
+      const nextIndex = Math.min(index + sanitized.length, CODE_LENGTH - 1);
       focusInput(nextIndex);
     },
     [focusInput],
@@ -124,9 +125,13 @@ const EnterVerificationCode = () => {
 
   useEffect(() => {
     if (code.every((digit) => digit.length === 1)) {
-      navigate(-1);
+      if (code.join('') === TEMP_VERIFICATION_CODE) {
+        onContinue(AddDeviceSettingsStep.EnterPassword);
+      } else {
+        setIsError(true);
+      }
     }
-  }, [code, navigate]);
+  }, [code, onContinue]);
 
   return (
     <Box className="p-4 flex flex-1 flex-col gap-6">
@@ -164,6 +169,11 @@ const EnterVerificationCode = () => {
           />
         ))}
       </Box>
+      {isError && (
+        <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+          {t('enter_verification_code_error')}
+        </Text>
+      )}
     </Box>
   );
 };

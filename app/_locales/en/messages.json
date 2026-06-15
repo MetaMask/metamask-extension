@@ -3702,18 +3702,21 @@
   "enter_verification_code_desc": {
     "message": "For security, enter the code shown in the MetaMask app on your device."
   },
+  "enter_verification_code_error": {
+    "message": "Incorrect code. Please try again."
+  },
   "enter_your_password": {
     "message": "Enter your password"
   },
   "enter_your_password_desc": {
     "message": "For account security, enter your password to view the QR code."
   },
+  "enteredMalicious": {
+    "message": "The Address You Entered"
+  },
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "enteredMalicious": {
-    "message": "The Address You Entered"
   },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
