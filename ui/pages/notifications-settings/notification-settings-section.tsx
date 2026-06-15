@@ -336,21 +336,21 @@ export function NotificationSettingsSection({
       setPreferenceError(null);
       const oldValue = Boolean(sectionPreferences[key]);
       const newValue = !oldValue;
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationSettings,
+        event: MetaMetricsEventName.NotificationsSettingsUpdated,
+        properties: {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_type: SETTINGS_TYPE_BY_SECTION[section.type],
+          notification_channel:
+            key === 'pushNotificationsEnabled' ? 'push' : 'in_app',
+          enabled: newValue,
+          ...(profileId && { profile_id: profileId }),
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+      });
       try {
         await updatePreference(section.type, key, newValue);
-        trackEvent({
-          category: MetaMetricsEventCategory.NotificationSettings,
-          event: MetaMetricsEventName.NotificationsSettingsUpdated,
-          properties: {
-            /* eslint-disable @typescript-eslint/naming-convention */
-            settings_type: SETTINGS_TYPE_BY_SECTION[section.type],
-            notification_channel:
-              key === 'pushNotificationsEnabled' ? 'push' : 'in_app',
-            enabled: newValue,
-            ...(profileId && { profile_id: profileId }),
-            /* eslint-enable @typescript-eslint/naming-convention */
-          },
-        });
         listNotifications();
       } catch (error) {
         setPreferenceError(
