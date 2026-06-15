@@ -33,6 +33,7 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
+import log from 'loglevel';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
@@ -4002,16 +4003,22 @@ export function getDeferredDeepLink(state) {
 export function getDeferredDeepLinkParameters(state) {
   const deferredDeepLink = getDeferredDeepLink(state);
   if (!deferredDeepLink) {
-    return {};
+    return null;
   }
-  const url = new URL(deferredDeepLink.referringLink);
-  const utmProperties = {};
 
-  for (const utmParam of UTM_PARAMETERS) {
-    const value = url.searchParams.get(utmParam);
-    if (value) {
-      utmProperties[utmParam] = value;
+  const utmProperties = {};
+  try {
+    const url = new URL(deferredDeepLink.referringLink);
+
+    for (const utmParam of UTM_PARAMETERS) {
+      const value = url.searchParams.get(utmParam);
+      if (value) {
+        utmProperties[utmParam] = value;
+      }
     }
+  } catch (error) {
+    log.error('Failed to parse deferred deep link:', deferredDeepLink, error);
+    return null;
   }
 
   return utmProperties;
