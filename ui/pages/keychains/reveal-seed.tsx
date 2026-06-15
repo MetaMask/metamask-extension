@@ -274,7 +274,12 @@ function RevealSeedPage() {
 
   const handleRevealWithPasskey = useCallback(
     async (authenticationResponse: PasskeyAuthenticationResponse) => {
-      const startedAt = Date.now();
+      // Auto-run passkey may finish before the phishing scan sets isMalicious.
+      if (isMalicious) {
+        setScreen(PASSWORD_PROMPT_SCREEN);
+        return false;
+      }
+
       trace({ name: TraceName.RevealSeed });
       trackEvent({
         category: MetaMetricsEventCategory.Keys,
@@ -303,8 +308,6 @@ function RevealSeedPage() {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             verification_method: MetaMetricsEventVerificationMethod.Passkey,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - startedAt,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: hdEntropyIndex,
           },
         });
@@ -325,8 +328,6 @@ function RevealSeedPage() {
             verification_method: MetaMetricsEventVerificationMethod.Passkey,
             reason: errorCode,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - startedAt,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: hdEntropyIndex,
           },
         });
@@ -340,7 +341,7 @@ function RevealSeedPage() {
         endTrace({ name: TraceName.RevealSeed });
       }
     },
-    [dispatch, keyringId, trackEvent, hdEntropyIndex],
+    [dispatch, keyringId, trackEvent, hdEntropyIndex, isMalicious],
   );
 
   const handleUsePassword = useCallback(() => {
@@ -475,6 +476,14 @@ function RevealSeedPage() {
       );
     }
     if (screen === VERIFY_PASSKEY_SCREEN) {
+      if (isMalicious) {
+        return (
+          <RevealSeedMaliciousBlock
+            onDismiss={handleBack}
+            hostname={scanResult?.hostname ?? undefined}
+          />
+        );
+      }
       return (
         <PasskeyVerification
           flow="reveal-seed"

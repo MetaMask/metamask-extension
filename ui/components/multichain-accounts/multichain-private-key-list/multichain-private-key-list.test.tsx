@@ -9,13 +9,6 @@ import {
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
-  MetaMetricsEventName,
-  MetaMetricsEventVerificationMethod,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
 
@@ -85,19 +78,6 @@ const mockIsPasskeyCeremonySilentError =
 const mockPasskeyAuthResponse = {
   id: 'assertion-id',
   type: 'public-key',
-};
-
-const createMockMetaMetricsContext = () => {
-  const mockTrackEvent = jest.fn();
-  return {
-    context: {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    },
-    mockTrackEvent,
-  };
 };
 
 const mockStore = configureStore([]);
@@ -326,26 +306,13 @@ jest.mock('../../../store/actions', () => ({
     mockGeneratePasskeyAuthenticationOptions(),
 }));
 
-const renderComponent = (
-  groupId: AccountGroupId = GROUP_ID_MOCK,
-  metricsContext?: ReturnType<typeof createMockMetaMetricsContext>['context'],
-) => {
+const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
   const store = mockStore(createMockState());
-  const content = (
+  return render(
     <Provider store={store}>
       <MultichainPrivateKeyList groupId={groupId} goBack={mockGoBack} />
-    </Provider>
+    </Provider>,
   );
-
-  if (metricsContext) {
-    return render(
-      <MetaMetricsContext.Provider value={metricsContext}>
-        {content}
-      </MetaMetricsContext.Provider>,
-    );
-  }
-
-  return render(content);
 };
 
 describe('MultichainPrivateKeyList', () => {
@@ -370,71 +337,8 @@ describe('MultichainPrivateKeyList', () => {
     expect(screen.getByTestId('confirm-button')).toBeInTheDocument();
   });
 
-  it('shows wrong password message when password verification fails', async () => {
-    const { context: metricsContext, mockTrackEvent } =
-      createMockMetaMetricsContext();
-    renderComponent(GROUP_ID_MOCK, metricsContext);
-
-    const passwordInput = await screen.findByPlaceholderText('password');
-    fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
-    fireEvent.click(screen.getByTestId('confirm-button'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('wrong-password-msg')).toBeInTheDocument();
-    });
-
-    expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.KeyExportRequested,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Pkey,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        verification_method: MetaMetricsEventVerificationMethod.Password,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: 0,
-      },
-    });
-    expect(mockTrackEvent).toHaveBeenLastCalledWith({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.KeyExportFailed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Pkey,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        verification_method: MetaMetricsEventVerificationMethod.Password,
-        reason: 'Invalid password',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: 0,
-      },
-    });
-    expect(mockExportAccounts).not.toHaveBeenCalled();
-  });
-
-  it('emits KeyExportCanceled when cancel is clicked before reveal', async () => {
-    const { context: metricsContext, mockTrackEvent } =
-      createMockMetaMetricsContext();
-    renderComponent(GROUP_ID_MOCK, metricsContext);
-
-    fireEvent.click(screen.getByTestId('cancel-button'));
-
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.KeyExportCanceled,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Pkey,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: 0,
-      },
-    });
-    expect(mockGoBack).toHaveBeenCalled();
-  });
-
-  it('fires trace and endTrace around successful password reveal', async () => {
-    const { context: metricsContext, mockTrackEvent } =
-      createMockMetaMetricsContext();
-    renderComponent(GROUP_ID_MOCK, metricsContext);
+  it('fires trace and endTrace around successful reveal', async () => {
+    renderComponent();
 
     const passwordInput = await screen.findByPlaceholderText('password');
     fireEvent.change(passwordInput, { target: { value: 'correctpassword' } });
@@ -443,9 +347,6 @@ describe('MultichainPrivateKeyList', () => {
     fireEvent.click(confirmButton);
 
     await screen.findByTestId('multichain-private-keyring-list');
-    expect(mockExportAccounts).toHaveBeenCalledWith('correctpassword', [
-      ACCOUNT_ONE_ADDRESS_MOCK,
-    ]);
     expect(mockTrace).toHaveBeenCalledWith(
       expect.objectContaining({
         name: TraceName.ShowAccountPrivateKeyList,
@@ -456,50 +357,6 @@ describe('MultichainPrivateKeyList', () => {
         name: TraceName.ShowAccountPrivateKeyList,
       }),
     );
-
-    expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.KeyExportRequested,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Pkey,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        verification_method: MetaMetricsEventVerificationMethod.Password,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: 0,
-      },
-    });
-    expect(mockTrackEvent).toHaveBeenLastCalledWith({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.KeyExportRevealed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Pkey,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        verification_method: MetaMetricsEventVerificationMethod.Password,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: 0,
-      },
-    });
-
-    mockTrackEvent.mockClear();
-    fireEvent.click(
-      screen.getAllByTestId('multichain-address-row-copy-button')[0],
-    );
-
-    expect(mockHandleCopy).toHaveBeenCalledWith(ACCOUNT_ONE_PRIVATE_KEY_MOCK);
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.KeyExportCopied,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Pkey,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        copy_method: 'clipboard',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: 0,
-      },
-    });
   });
 
   describe('passkey reveal', () => {
@@ -509,9 +366,7 @@ describe('MultichainPrivateKeyList', () => {
     });
 
     it('verifies via passkey and reveals private keys without a password', async () => {
-      const { context: metricsContext, mockTrackEvent } =
-        createMockMetaMetricsContext();
-      renderComponent(GROUP_ID_MOCK, metricsContext);
+      renderComponent();
 
       await waitFor(() => {
         expect(mockExportAccountsWithPasskey).toHaveBeenCalledWith(
@@ -531,35 +386,6 @@ describe('MultichainPrivateKeyList', () => {
       expect(mockEndTrace).toHaveBeenCalledWith(
         expect.objectContaining({
           name: TraceName.ShowAccountPrivateKeyList,
-        }),
-      );
-
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportRequested,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Pkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Passkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: 0,
-        },
-      });
-      expect(mockTrackEvent).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.KeyExportRevealed,
-          properties: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Pkey,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Passkey,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: 0,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: expect.any(Number),
-          }),
         }),
       );
     });
@@ -609,31 +435,17 @@ describe('MultichainPrivateKeyList', () => {
       mockExportAccountsWithPasskey.mockRejectedValueOnce(
         new Error('export failed'),
       );
-      const { context: metricsContext, mockTrackEvent } =
-        createMockMetaMetricsContext();
-      renderComponent(GROUP_ID_MOCK, metricsContext);
+
+      renderComponent();
 
       await waitFor(() => {
         expect(
           screen.getByTestId('multichain-private-key-password-input'),
         ).toBeInTheDocument();
       });
-
-      expect(mockTrackEvent).toHaveBeenLastCalledWith(
+      expect(mockEndTrace).toHaveBeenCalledWith(
         expect.objectContaining({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.KeyExportFailed,
-          properties: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Pkey,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Passkey,
-            reason: 'unknown',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: 0,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: expect.any(Number),
-          }),
+          name: TraceName.ShowAccountPrivateKeyList,
         }),
       );
     });

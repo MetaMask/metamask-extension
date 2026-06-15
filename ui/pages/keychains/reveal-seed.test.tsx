@@ -105,6 +105,11 @@ jest.mock('../../../shared/lib/environment-type', () => ({
   getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
+
 type NavigateQuizToPasswordScreenArgs = {
   getByText: (id: string | RegExp) => HTMLElement;
   queryByTestId: (id: string) => HTMLElement | null;
@@ -145,13 +150,14 @@ async function navigateQuizToPasswordScreen({
   });
 }
 
-async function completeQuiz({
+async function navigateQuizForPasskeyReveal({
   getByText,
   queryByTestId,
   fireEvent: fireEventFn,
 }: Omit<NavigateQuizToPasswordScreenArgs, 'landingTestId'>) {
   fireEventFn.click(getByText(messages.srpSecurityQuizGetStarted.message));
 
+  // Q1: click the correct-answer button (data-testid avoids i18n/apostrophe issues)
   await waitFor(() => {
     expect(queryByTestId('srp-quiz-right-answer')).toBeInTheDocument();
   });
@@ -161,6 +167,7 @@ async function completeQuiz({
   });
   fireEventFn.click(queryByTestId('srp-quiz-continue') as HTMLElement);
 
+  // Q2: click the correct-answer button
   await waitFor(() => {
     expect(queryByTestId('srp-quiz-right-answer')).toBeInTheDocument();
   });
@@ -852,7 +859,7 @@ describe('Reveal Seed Page', () => {
         store,
       );
 
-      await completeQuiz({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWordsWithPasskey).toHaveBeenCalledWith(
@@ -874,7 +881,7 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await completeQuiz({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
 
       await waitFor(() => {
         expect(queryByTestId('input-password')).toBeInTheDocument();
@@ -895,7 +902,7 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await completeQuiz({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
 
       await waitFor(() => {
         expect(
@@ -922,7 +929,7 @@ describe('Reveal Seed Page', () => {
         store,
       );
 
-      await completeQuiz({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWordsWithPasskey).toHaveBeenCalledWith(
@@ -930,6 +937,49 @@ describe('Reveal Seed Page', () => {
           keyringId,
         );
       });
+    });
+
+    it('falls back to the password prompt when passkey export fails', async () => {
+      mockRequestRevealSeedWordsWithPasskey.mockReturnValue(() =>
+        Promise.reject(new Error('export failed')),
+      );
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+
+      await waitFor(() => {
+        expect(queryByTestId('input-password')).toBeInTheDocument();
+      });
+      expect(mockRequestRevealSeedWordsWithPasskey).toHaveBeenCalled();
+      expect(queryByTestId('recovery-phrase-chips')).not.toBeInTheDocument();
+    });
+
+    it('shows the malicious site block instead of passkey verification', async () => {
+      mockScanUrlForPhishing.mockReset().mockResolvedValue({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('reveal-seed-malicious-block'),
+        ).toBeInTheDocument();
+      });
+      expect(
+        queryByTestId('reveal-seed-passkey-verifying'),
+      ).not.toBeInTheDocument();
+      expect(mockRequestRevealSeedWordsWithPasskey).not.toHaveBeenCalled();
     });
 
     it('uses the password prompt for social-login wallets even when a passkey is enrolled', async () => {
@@ -940,7 +990,7 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await completeQuiz({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
 
       await waitFor(() => {
         expect(queryByTestId('input-password')).toBeInTheDocument();
@@ -960,7 +1010,7 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
-      await completeQuiz({ getByText, queryByTestId, fireEvent });
+      await navigateQuizForPasskeyReveal({ getByText, queryByTestId, fireEvent });
 
       await waitFor(() => {
         expect(queryByTestId('input-password')).toBeInTheDocument();

@@ -239,7 +239,6 @@ const MultichainPrivateKeyList = ({
 
   const handleRevealWithPasskey = useCallback(
     async (authenticationResponse: PasskeyAuthenticationResponse) => {
-      const startedAt = Date.now();
       trackEvent({
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRequested,
@@ -277,8 +276,6 @@ const MultichainPrivateKeyList = ({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             verification_method: MetaMetricsEventVerificationMethod.Passkey,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - startedAt,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: hdEntropyIndex,
           },
         });
@@ -293,14 +290,15 @@ const MultichainPrivateKeyList = ({
             verification_method: MetaMetricsEventVerificationMethod.Passkey,
             reason: getPasskeyErrorCode(error),
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - startedAt,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: hdEntropyIndex,
           },
         });
         captureException(
           createSentryError('Export private keys with passkey failed', error),
         );
+        endTrace({
+          name: TraceName.ShowAccountPrivateKeyList,
+        });
         // Fall back to password verification on any passkey reveal failure.
         setScreen(VERIFY_PASSWORD_SCREEN);
       }
