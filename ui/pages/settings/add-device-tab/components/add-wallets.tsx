@@ -54,6 +54,7 @@ const AddWallets = (_props: AddWalletsProps) => {
           selectedAccountGroups={selectedAccountGroups}
           handleAccountClick={handleAccountClick}
           showAccountCheckbox={true}
+          showHeaderCheckbox={true}
           showAddAccount={false}
         />
       </ScrollContainer>

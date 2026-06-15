@@ -784,6 +784,131 @@ describe('MultichainAccountList', () => {
     });
   });
 
+  describe('Header checkbox functionality', () => {
+    it('does not display header checkboxes when showHeaderCheckbox is false', () => {
+      renderComponent({
+        selectedAccountGroups: [],
+        showHeaderCheckbox: false,
+      });
+
+      expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+    });
+
+    it('displays one header checkbox per wallet section when showHeaderCheckbox is true', () => {
+      renderComponent({
+        selectedAccountGroups: [],
+        showHeaderCheckbox: true,
+      });
+
+      // Account checkboxes are disabled, so the only checkboxes are the
+      // section headers (one per wallet).
+      expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+    });
+
+    it('checks the header checkbox only when every account in the section is selected', () => {
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showHeaderCheckbox: true,
+      });
+
+      const checkboxes = screen.getAllByRole('checkbox');
+      expect(checkboxes[0]).toBeChecked();
+      expect(checkboxes[1]).not.toBeChecked();
+    });
+
+    it('selects all accounts in the section when clicking an unchecked header checkbox', () => {
+      const handleAccountClick = jest.fn();
+
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showHeaderCheckbox: true,
+        handleAccountClick,
+      });
+
+      // Wallet two header checkbox is unchecked.
+      fireEvent.click(screen.getAllByRole('checkbox')[1]);
+
+      expect(handleAccountClick).toHaveBeenCalledTimes(1);
+      expect(handleAccountClick).toHaveBeenCalledWith(walletTwoGroupId);
+    });
+
+    it('deselects all accounts in the section when clicking a checked header checkbox', () => {
+      const handleAccountClick = jest.fn();
+
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showHeaderCheckbox: true,
+        handleAccountClick,
+      });
+
+      // Wallet one header checkbox is checked.
+      fireEvent.click(screen.getAllByRole('checkbox')[0]);
+
+      expect(handleAccountClick).toHaveBeenCalledTimes(1);
+      expect(handleAccountClick).toHaveBeenCalledWith(walletOneGroupId);
+    });
+
+    it('toggles every unselected account in a multi-account section', () => {
+      const secondGroupId = `${walletOneId}/1` as AccountGroupId;
+      const multiGroupWallets = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+            },
+            [secondGroupId]: {
+              id: secondGroupId,
+              type: AccountGroupType.MultichainAccount,
+              metadata: {
+                name: 'Account 2 from wallet 1',
+                pinned: false,
+                hidden: false,
+              },
+              accounts: ['784225f4-d30b-4e77-a900-c8bbce735b88'],
+            },
+          },
+        },
+      } as AccountTreeWallets;
+
+      const handleAccountClick = jest.fn();
+
+      renderComponent({
+        wallets: multiGroupWallets,
+        selectedAccountGroups: [],
+        showHeaderCheckbox: true,
+        handleAccountClick,
+      });
+
+      fireEvent.click(screen.getAllByRole('checkbox')[0]);
+
+      expect(handleAccountClick).toHaveBeenCalledTimes(2);
+      expect(handleAccountClick).toHaveBeenCalledWith(walletOneGroupId);
+      expect(handleAccountClick).toHaveBeenCalledWith(secondGroupId);
+    });
+
+    it('does not toggle section expand/collapse when clicking the header checkbox', () => {
+      const handleAccountClick = jest.fn();
+
+      renderComponent({
+        selectedAccountGroups: [],
+        showHeaderCheckbox: true,
+        handleAccountClick,
+      });
+
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getAllByRole('checkbox')[0]);
+
+      // The section remains expanded, so the account cell is still visible.
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe('Connection Status', () => {
     it('does not show connection status when showConnectionStatus is false', () => {
       renderComponent({
