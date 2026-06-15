@@ -63,7 +63,7 @@ const handleNumericFocusSelectAll = (
  * @param options0.usdPlaceholder
  * @param options0.usdInputRef
  */
-export const AmountInput: React.FC<AmountInputProps> = ({
+export const AmountInput = ({
   amount,
   onAmountChange,
   balancePercent,
@@ -78,7 +78,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   autoFocus = false,
   usdPlaceholder = '0.00',
   usdInputRef,
-}) => {
+}: AmountInputProps) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
   const [percentInputValue, setPercentInputValue] = useState<string>(
@@ -145,8 +145,15 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     return `${formatPositionSize(totalPositionSize, szDecimals)} ${getDisplaySymbol(asset)}`;
   }, [asset, currentPositionSize, szDecimals]);
 
+  // Floor to 2 decimals instead of rounding. At 100% the size is computed as
+  // availableBalance * leverage; rounding up (toFixed) could push the amount
+  // above that budget, so marginRequired (amount / leverage) exceeded the
+  // available balance by a sub-cent and the order form showed a false
+  // "Insufficient funds" error. Flooring guarantees the amount never exceeds
+  // availableBalance * leverage, mirroring mobile's Math.floor in
+  // usePerpsOrderForm (handlePercentageAmount / handleMaxAmount).
   const formatAmount = useCallback(
-    (value: number): string => value.toFixed(2),
+    (value: number): string => (Math.floor(value * 100) / 100).toFixed(2),
     [],
   );
 
@@ -253,7 +260,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   }, []);
 
   const handleSliderChange = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event, value: number | number[]) => {
       const percent = Array.isArray(value) ? value[0] : value;
       onBalancePercentChange(percent);
       setPercentInputValue(String(percent));

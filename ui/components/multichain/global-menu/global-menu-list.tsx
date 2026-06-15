@@ -116,6 +116,7 @@ export const GlobalMenuList = ({
                 disabled={item.disabled}
                 showInfoDot={item.showInfoDot}
                 subtitle={item.subtitle}
+                className="first:rounded-t-none last:rounded-b-none"
                 data-testid={item.id}
               >
                 {renderMenuItemContent(item.label, item.badge, showChevron)}

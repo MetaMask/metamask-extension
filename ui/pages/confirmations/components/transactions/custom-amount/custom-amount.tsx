@@ -67,7 +67,7 @@ function getTextColor(
   return TextColor.textDefault;
 }
 
-export const CustomAmountSkeleton: React.FC = () => (
+export const CustomAmountSkeleton = () => (
   <Box
     display={Display.Flex}
     flexDirection={FlexDirection.Row}
@@ -80,7 +80,7 @@ export const CustomAmountSkeleton: React.FC = () => (
   </Box>
 );
 
-export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
+export const CustomAmount = React.memo(
   ({
     amountFiat,
     autoFocus = false,
@@ -89,7 +89,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     hasAlert = false,
     isLoading,
     onChange,
-  }) => {
+  }: CustomAmountProps) => {
     const isMaxAmount = useTransactionPayIsMaxAmount();
     const isQuotesLoading = useIsTransactionPayLoading();
     const selectedCurrency = useSelector(getCurrentCurrency);

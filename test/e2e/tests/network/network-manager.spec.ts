@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
@@ -10,6 +11,127 @@ import NetworkManager, {
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
+
+const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+
+async function mockLineaAndMusd(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: 2500,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+          'eip155:59144/slip44:60': {
+            id: 'ethereum',
+            price: 2500,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+          [`eip155:1/erc20:${MUSD_ADDRESS.toLowerCase()}`]: {
+            price: 1,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+          [`eip155:59144/erc20:${MUSD_ADDRESS.toLowerCase()}`]: {
+            price: 1,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+        },
+      })),
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          usd: {
+            name: 'US Dollar',
+            ticker: 'usd',
+            value: 1,
+            currencyType: 'fiat',
+          },
+          eth: {
+            name: 'Ether',
+            ticker: 'eth',
+            value: 1 / 2500,
+            currencyType: 'crypto',
+          },
+        },
+      })),
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, {
+        fullSupport: [],
+        partialSupport: { balances: [] },
+      }),
+    await mockServer
+      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const assetIds = url.searchParams.getAll('assetIds').join(',');
+        const results = [];
+
+        if (
+          assetIds.includes('eip155:1/slip44:60') ||
+          assetIds.includes('eip155:1/')
+        ) {
+          results.push({
+            assetId: 'eip155:1/slip44:60',
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18,
+          });
+        }
+
+        if (assetIds.includes('eip155:59144')) {
+          results.push({
+            assetId: 'eip155:59144/slip44:60',
+            name: 'Ether',
+            symbol: 'ETH',
+            decimals: 18,
+          });
+        }
+
+        if (
+          assetIds
+            .toLowerCase()
+            .includes(`eip155:1/erc20:${MUSD_ADDRESS.toLowerCase()}`)
+        ) {
+          results.push({
+            assetId: `eip155:1/erc20:${MUSD_ADDRESS}`,
+            name: 'MUSD',
+            symbol: 'MUSD',
+            decimals: 6,
+          });
+        }
+
+        if (
+          assetIds
+            .toLowerCase()
+            .includes(`eip155:59144/erc20:${MUSD_ADDRESS.toLowerCase()}`)
+        ) {
+          results.push({
+            assetId: `eip155:59144/erc20:${MUSD_ADDRESS}`,
+            name: 'MUSD',
+            symbol: 'MUSD',
+            decimals: 6,
+          });
+        }
+
+        return { statusCode: 200, json: { data: results } };
+      }),
+  ];
+}
 
 describe('Network Manager', function (this: Suite) {
   it('should reflect the enabled networks state in the network manager', async function () {
@@ -128,24 +250,25 @@ describe('Network Manager', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockLineaAndMusd,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
         const networkManager = new NetworkManager(driver);
 
-        // Only Ethereum native token visible
-        await assetListPage.checkTokenItemNumber(1);
+        // Only Ethereum native token and MUSD
+        await assetListPage.checkTokenItemNumber(2);
 
-        // Change to Linea, only Linea native token visible
+        // Change to Linea, only Linea native token and MUSD visible
         await networkManager.openNetworkManager();
         await networkManager.selectNetworkByChainId(NetworkId.LINEA);
-        await assetListPage.checkTokenItemNumber(1);
+        await assetListPage.checkTokenItemNumber(2);
 
-        // Change to Ethereum, only Ethereum native token visible
+        // Change to Ethereum, only Ethereum native token and MUSD visible
         await networkManager.openNetworkManager();
         await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
-        await assetListPage.checkTokenItemNumber(1);
+        await assetListPage.checkTokenItemNumber(2);
       },
     );
   });

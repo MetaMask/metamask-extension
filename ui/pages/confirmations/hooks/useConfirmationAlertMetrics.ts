@@ -19,6 +19,7 @@ export type AlertMetricsProperties = {
 };
 
 export const ALERTS_NAME_METRICS: Record<AlertsName | string, string> = {
+  [AlertsName.AddressPoisoning]: 'address_poisoning',
   [AlertsName.GasEstimateFailed]: 'gas_estimate_failed',
   [AlertsName.GasFeeLow]: 'gas_fee_low',
   [AlertsName.GasTooLow]: 'gas_too_low',

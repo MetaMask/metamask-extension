@@ -2,12 +2,13 @@ import React, { useMemo } from 'react';
 
 import { GroupedDeFiPositions } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
+import { Box } from '@metamask/design-system-react';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';

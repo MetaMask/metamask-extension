@@ -5,6 +5,7 @@ import { MOCK_META_METRICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -121,7 +122,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
           environment_type: 'fullscreen',
         });
 
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
         await new HomePage(driver).checkPageIsLoaded();
         await headerNavbar.openSettingsPage();
         await settingsPage.checkPageIsLoaded();

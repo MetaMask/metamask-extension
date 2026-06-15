@@ -113,6 +113,7 @@ ui/components/app/whats-new-popup               @MetaMask/core-extension-ux
 ui/css                                          @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
 ui/pages/core                                   @MetaMask/core-extension-ux
+ui/pages/permissions-connect/                   @MetaMask/core-extension-ux
 ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
 ui/components/app/transaction-list              @MetaMask/core-extension-ux
@@ -164,10 +165,8 @@ ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.ts      
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts     @MetaMask/confirmations @MetaMask/web3auth
 
 # Assets
-ui/components/app/detected-token                   @MetaMask/metamask-assets
 ui/components/app/import-token                        @MetaMask/metamask-assets
 ui/components/app/assets                              @MetaMask/metamask-assets
-ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
 # Smart Transactions
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions
@@ -271,3 +270,8 @@ app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platfor
 ui/hooks/gator-permissions                           @MetaMask/delegation
 app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
 shared/lib/gator-permissions                         @MetaMask/delegation
+
+# Snapshots – no code owners assigned
+# This allows anyone with write access to approve changes to any *.snap files.
+# ⚠️ Note: Leaving this rule unassigned disables Code Owner review enforcement for snapshot files.
+**/*.snap

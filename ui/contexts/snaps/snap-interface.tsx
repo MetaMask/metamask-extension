@@ -6,13 +6,7 @@ import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
-import React, {
-  FunctionComponent,
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   handleSnapRequest as handleSnapRequestFunction,
@@ -72,9 +66,12 @@ export type SnapInterfaceContextProviderProps = {
  * @param params.initialState - The initial state of the interface.
  * @returns The context provider.
  */
-export const SnapInterfaceContextProvider: FunctionComponent<
-  SnapInterfaceContextProviderProps
-> = ({ children, interfaceId, snapId, initialState }) => {
+export const SnapInterfaceContextProvider = ({
+  children,
+  interfaceId,
+  snapId,
+  initialState,
+}: React.PropsWithChildren<SnapInterfaceContextProviderProps>) => {
   const dispatch = useDispatch();
 
   // We keep an internal copy of the state to speed up the state update in the

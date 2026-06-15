@@ -29,6 +29,11 @@ describe('Token List', function () {
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },
+    manifestFlags: {
+      remoteFeatureFlags: {
+        extensionUxTokenManagementFilter: false,
+      },
+    },
   };
 
   it('should not show percentage increase for an ERC20 token without prices available', async function () {
@@ -109,7 +114,7 @@ describe('Token List', function () {
           tokenAddress,
           symbol,
         );
-
+        await assetListPage.dismissTokenImportedMessage();
         await assetListPage.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',

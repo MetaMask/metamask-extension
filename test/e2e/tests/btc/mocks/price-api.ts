@@ -163,3 +163,47 @@ export const mockSupportedVsCurrencies = (mockServer: Mockttp) =>
       'chf',
       'cny',
     ]);
+
+// Mock for price API supported networks (/v2/supportedNetworks)
+export const mockPriceApiSupportedNetworks = (mockServer: Mockttp) =>
+  mockServer.forGet(`${PRICE_API_URL}/v2/supportedNetworks`).thenJson(200, {
+    fullSupport: [
+      'eip155:1',
+      'eip155:10',
+      'eip155:56',
+      'eip155:100',
+      'eip155:137',
+      'eip155:250',
+      'eip155:324',
+      'eip155:8453',
+      'eip155:42161',
+      'eip155:43114',
+      'eip155:59144',
+    ],
+    partialSupport: {
+      spotPricesV2: [
+        'eip155:1284',
+        'eip155:1285',
+        'eip155:42220',
+        'eip155:534352',
+        'eip155:81457',
+        'eip155:1313161554',
+        'eip155:1666600000',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'bip122:000000000019d6689c085ae165831e93',
+        'tron:728126428',
+      ],
+      spotPricesV3: [
+        'eip155:1284',
+        'eip155:1285',
+        'eip155:42220',
+        'eip155:534352',
+        'eip155:81457',
+        'eip155:1313161554',
+        'eip155:1666600000',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'bip122:000000000019d6689c085ae165831e93',
+        'tron:728126428',
+      ],
+    },
+  });

@@ -38,11 +38,8 @@ export class PerpsMarketDetailPage {
    */
   private readonly closeAmountSliderInCloseModal = `[data-testid="${PerpsMarketDetailPage.perpsClosePositionModalTestId}"] [data-testid^="${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}"]`;
 
-  /**
-   * MUI `Slider` thumb / track (`role="slider"`) inside the close modal.
-   * Keyboard handling matches @material-ui/core/Slider (End = max, ArrowLeft = step down in LTR).
-   */
-  private readonly closeAmountSliderRoleInCloseModal = `${this.closeAmountSliderInCloseModal} [role="slider"]`;
+  /** MUI v5 Slider keyboard target inside the close modal (visually-hidden `input[type="range"]`). */
+  private readonly closeAmountSliderRoleInCloseModal = `${this.closeAmountSliderInCloseModal} input[type="range"]`;
 
   private readonly closeCtaButton = { testId: 'perps-close-cta-button' };
 
@@ -540,9 +537,10 @@ export class PerpsMarketDetailPage {
   /**
    * Sets the close-position slider to the given percentage (0–100) in the close modal.
    *
-   * Uses the MUI Slider keyboard model: `End` jumps to `max` (100), then `ArrowLeft`
-   * steps by 1 (see `handleKeyDown` in @material-ui/core/Slider/Slider.js). This
-   * avoids hit-testing / coordinate issues with WebDriver in the extension.
+   * Uses the MUI v5 Slider keyboard model: `End` jumps to `max` (100), then
+   * `ArrowLeft` steps by 1 (handled by `createHandleHiddenInputKeyDown` in
+   * MUI v5's `useSlider`). Targets the hidden `input[type="range"]` directly,
+   * which avoids hit-testing / coordinate issues with WebDriver in the extension.
    *
    * @param percent - Target 0–100; must match `close-amount-slider-pct-{n}` on the wrapper.
    */
@@ -552,7 +550,12 @@ export class PerpsMarketDetailPage {
     }
     await this.driver.waitForSelector(this.closeAmountSliderInCloseModal);
     const handleCss = this.closeAmountSliderRoleInCloseModal;
-    await this.driver.clickElement(handleCss);
+    // MUI v5 Slider renders a visually-hidden input that Selenium cannot
+    // click or scroll into view. Focus it via JS so keyboard events work.
+    await this.driver.executeScript(
+      `document.querySelector(arguments[0]).focus()`,
+      handleCss,
+    );
     await this.driver.press(handleCss, Key.END);
     await this.driver.wait(
       async () => (await this.getCloseAmountSliderPercentInModal()) === 100,

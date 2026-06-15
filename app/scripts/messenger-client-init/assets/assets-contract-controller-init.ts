@@ -1,9 +1,9 @@
-import { AssetsContractController } from '@metamask/assets-controllers';
-import { MessengerClientInitFunction } from '../types';
 import {
-  AssetsContractControllerInitMessenger,
+  AssetsContractController,
   AssetsContractControllerMessenger,
-} from '../messengers/assets';
+} from '@metamask/assets-controllers';
+import { MessengerClientInitFunction } from '../types';
+import { AssetsContractControllerInitMessenger } from '../messengers/assets';
 import { getGlobalChainId } from '../init-utils';
 
 /**

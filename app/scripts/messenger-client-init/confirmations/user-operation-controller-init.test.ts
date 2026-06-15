@@ -1,10 +1,12 @@
-import { UserOperationController } from '@metamask/user-operation-controller';
+import {
+  UserOperationController,
+  UserOperationControllerMessenger,
+} from '@metamask/user-operation-controller';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getUserOperationControllerMessenger,
   getUserOperationControllerInitMessenger,
-  UserOperationControllerMessenger,
   UserOperationControllerInitMessenger,
 } from '../messengers';
 import { getRootMessenger } from '../../lib/messenger';

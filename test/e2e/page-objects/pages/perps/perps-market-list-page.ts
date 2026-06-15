@@ -89,7 +89,7 @@ export class PerpsMarketListPage {
    * Selects a filter by type (e.g. 'crypto', 'all').
    * Opens the filter dropdown and clicks the option.
    *
-   * @param optionId - 'all' | 'crypto' | 'stocks' | 'commodities' | 'forex' | 'new'
+   * @param optionId - 'all' | 'crypto' | 'stock' | 'commodity' | 'forex' | 'new'
    */
   async selectFilter(optionId: string): Promise<void> {
     await this.driver.waitForSelector(this.filterSelectButton);

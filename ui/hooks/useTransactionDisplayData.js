@@ -9,8 +9,6 @@ import {
   getKnownMethodData,
   getMarketData,
   getNativeTokenInfo,
-  getSelectedAddress,
-  selectERC20TokensByChain,
 } from '../selectors';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -103,9 +101,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const locale = useSelector(getIntlLocale);
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getAllTokens);
-  const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
-  const tokenListAllChains = useSelector(selectERC20TokensByChain);
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
@@ -178,14 +174,10 @@ export function useTransactionDisplayData(transactionGroup) {
   const [currentAssetDetails, setCurrentAssetDetails] = useState(null);
 
   if (isTokenCategory) {
-    token =
-      knownTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
-        selectedAddress
-      ]?.find(({ address }) =>
-        isEqualCaseInsensitive(address, recipientAddress),
-      ) ||
-      tokenListAllChains?.[transactionGroup?.initialTransaction?.chainId]
-        ?.data?.[recipientAddress.toLowerCase()];
+    const txChainId = transactionGroup?.initialTransaction?.chainId;
+    token = Object.values(knownTokens?.[txChainId] ?? {})
+      .flat()
+      .find(({ address }) => isEqualCaseInsensitive(address, recipientAddress));
   }
   useEffect(() => {
     return () => {
@@ -427,7 +419,11 @@ export function useTransactionDisplayData(transactionGroup) {
     const sourceToken =
       sourceTokenAddress &&
       sourceChainId &&
-      tokenListAllChains?.[sourceChainId]?.data?.[sourceTokenAddress];
+      Object.values(knownTokens?.[sourceChainId] ?? {})
+        .flat()
+        .find(({ address }) =>
+          isEqualCaseInsensitive(address, sourceTokenAddress),
+        );
 
     if (type === TransactionType.perpsDeposit) {
       title = t('perpsDepositActivityTitle');
@@ -459,7 +455,7 @@ export function useTransactionDisplayData(transactionGroup) {
         address: targetLookupAddress,
         chainId: targetLookupChainId,
         networkConfigurationsByChainId,
-        tokenListAllChains,
+        allTokens: knownTokens,
       });
 
     if (isPostQuote) {
@@ -579,21 +575,21 @@ export function useTransactionDisplayData(transactionGroup) {
 /**
  * Resolves the destination token's symbol and native flag from a token
  * address + chain ID. Native targets (e.g. BNB on BNB chain) are not in the
- * ERC-20 token list keyed by address, so they need a separate lookup via the
+ * user's token list keyed by address, so they need a separate lookup via the
  * network configuration.
  *
  * @param {object} args
  * @param {string|undefined} args.address - Lower-cased token address.
  * @param {string|undefined} args.chainId - Hex chain ID.
  * @param {object|undefined} args.networkConfigurationsByChainId - Map keyed by chain ID.
- * @param {object|undefined} args.tokenListAllChains - ERC-20 token lists keyed by chain ID.
+ * @param {object|undefined} args.allTokens - User tokens keyed by chain ID then account address.
  * @returns {{ symbol: string|undefined, isNative: boolean }}
  */
 function resolveTargetToken({
   address,
   chainId,
   networkConfigurationsByChainId,
-  tokenListAllChains,
+  allTokens,
 }) {
   if (!address || !chainId) {
     return { symbol: undefined, isNative: false };
@@ -610,7 +606,11 @@ function resolveTargetToken({
     return { symbol: nativeInfo?.symbol, isNative: true };
   }
 
-  const targetToken = tokenListAllChains?.[chainId]?.data?.[address];
+  const targetToken = Object.values(allTokens?.[chainId] ?? {})
+    .flat()
+    .find(({ address: tokenAddress }) =>
+      isEqualCaseInsensitive(tokenAddress, address),
+    );
   return { symbol: targetToken?.symbol, isNative: false };
 }
 

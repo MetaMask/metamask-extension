@@ -3,7 +3,7 @@
 // These are required (not extended) by both `.eslintrc.base.js` and
 // `.eslintrc.js`, so the same zone list is used wherever the rule needs
 // to be configured (notably the router-registry override in `.eslintrc.js`
-// re-enables only the architectural zones).
+// re-enables only the non-route-isolation source-boundary zones).
 //
 // Kept outside `.eslintrc*.js` because ESLint v8 validates every config
 // it loads and rejects unknown top-level exports.
@@ -43,6 +43,27 @@ const architecturalZones = [
   },
 ];
 
+const buildSystemZones = [
+  {
+    target: './app',
+    from: './development',
+    message:
+      'Should not import build-system modules in background, use shared directory instead',
+  },
+  {
+    target: './ui',
+    from: './development',
+    message:
+      'Should not import build-system modules in UI, use shared directory instead',
+  },
+  {
+    target: './shared',
+    from: './development',
+    message:
+      'Should not import build-system modules in shared, use shared constants or utilities instead',
+  },
+];
+
 // Top-level route directories under `ui/pages/`. Each top-level directory
 // is treated as a "route module" per ADR 0021 (modularize-routes). The
 // `routes` subdirectory holds the React Router registry (which must
@@ -71,4 +92,4 @@ const routeIsolationZones = routeDirs.map((route) => ({
     `from a sibling route directory. See ADR 0021 (modularize-routes).`,
 }));
 
-module.exports = { architecturalZones, routeIsolationZones };
+module.exports = { architecturalZones, buildSystemZones, routeIsolationZones };

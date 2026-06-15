@@ -119,6 +119,7 @@ const isLowValueAsset = (
 
   return (
     !token.isNative &&
+    !isMusdToken(token.address) &&
     tokenFiatAmount !== null &&
     tokenFiatAmount !== undefined &&
     Number.isFinite(tokenFiatAmount) &&
@@ -225,13 +226,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
         return assets.filter((asset) => {
           if (isTronSpecialAsset(asset.assetId)) {
-            return false;
-          }
-          if (
-            'address' in asset &&
-            isMusdToken(asset.address) &&
-            asset.balance === '0'
-          ) {
             return false;
           }
           if (shouldHideZeroBalanceTokens && asset.balance === '0') {

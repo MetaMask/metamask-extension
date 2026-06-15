@@ -37,7 +37,7 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useIsNetworkGasSponsored } from '../../hooks/useIsNetworkGasSponsored';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
-import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain/networks';
+import { getSelectedMultichainNetworkChainId } from '../../selectors/multichain/networks';
 import {
   getOrderedNetworksList,
   getShowTestNetworks,
@@ -63,6 +63,7 @@ import {
   sortNetworksByPrioity,
 } from '../../../shared/lib/network.utils';
 import { useNetworkManagerState } from '../../components/multichain/network-manager/hooks/useNetworkManagerState';
+import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 
 const filterNetworks = <
   NetworkRecord extends {
@@ -155,6 +156,8 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
   );
 };
 
+const SectionDivider = () => <Box className="mx-4 border-t border-muted" />;
+
 type NetworksPageListProps = {
   searchQuery: string;
   footerContent?: React.ReactNode;
@@ -171,16 +174,18 @@ export const NetworksPageList = ({
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShowTestNetworks);
-  const [, evmNetworks] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
   );
+  const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
 
-  const { nonTestNetworks, testNetworks } = useNetworkManagerState({
-    showDefaultNetworks: true,
-  });
+  const { nonTestNetworks, testNetworks, isNetworkInDefaultNetworkTab } =
+    useNetworkManagerState({
+      showDefaultNetworks: true,
+    });
   const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
     useNetworkItemCallbacks();
   const { handleNetworkChange } = useNetworkChangeHandlers();
@@ -192,6 +197,19 @@ export const NetworksPageList = ({
         searchQuery,
       ),
     [nonTestNetworks, orderedNetworksList, searchQuery],
+  );
+
+  const defaultNetworks = useMemo(
+    () => orderedNetworks.filter(isNetworkInDefaultNetworkTab),
+    [isNetworkInDefaultNetworkTab, orderedNetworks],
+  );
+
+  const customNetworks = useMemo(
+    () =>
+      orderedNetworks.filter(
+        (network) => !isNetworkInDefaultNetworkTab(network),
+      ),
+    [isNetworkInDefaultNetworkTab, orderedNetworks],
   );
 
   const featuredNetworksNotYetEnabled = useMemo(() => {
@@ -214,6 +232,14 @@ export const NetworksPageList = ({
         searchQuery,
       ),
     [testNetworks, searchQuery],
+  );
+
+  const currentlyOnTestnet = useMemo(
+    () =>
+      Object.values(testNetworks).some(
+        (network) => network.chainId === currentMultichainChainId,
+      ),
+    [currentMultichainChainId, testNetworks],
   );
 
   const renderNetworkListItem = useCallback(
@@ -256,6 +282,10 @@ export const NetworksPageList = ({
 
   const handleToggleTestNetworks = useCallback(
     (value: boolean) => {
+      if (currentlyOnTestnet) {
+        return;
+      }
+
       const newValue = !value;
       dispatch(setShowTestNetworks(newValue));
       trackEvent({
@@ -266,7 +296,7 @@ export const NetworksPageList = ({
         },
       });
     },
-    [dispatch, trackEvent],
+    [currentlyOnTestnet, dispatch, trackEvent],
   );
 
   return (
@@ -275,7 +305,7 @@ export const NetworksPageList = ({
       data-testid="networks-page-list"
     >
       <Box className="flex-1 overflow-y-auto pt-2">
-        {orderedNetworks.length > 0 ? (
+        {defaultNetworks.length > 0 ? (
           <Box
             padding={4}
             paddingBottom={2}
@@ -283,15 +313,63 @@ export const NetworksPageList = ({
             justifyContent={BoxJustifyContent.Between}
           >
             <Text color={TextColor.TextAlternative}>
-              {t('enabledNetworks')}
+              {t('defaultNetworks')}
             </Text>
           </Box>
         ) : null}
 
-        <Box>{orderedNetworks.map(renderNetworkListItem)}</Box>
+        <Box>{defaultNetworks.map(renderNetworkListItem)}</Box>
+
+        {customNetworks.length > 0 ? (
+          <>
+            <SectionDivider />
+            <Box
+              padding={4}
+              paddingBottom={2}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+            >
+              <Text color={TextColor.TextAlternative}>
+                {t('customNetworks')}
+              </Text>
+            </Box>
+          </>
+        ) : null}
+
+        <Box>{customNetworks.map(renderNetworkListItem)}</Box>
+
+        {sortedTestNetworks.length > 0 ? (
+          <>
+            <SectionDivider />
+            <Box
+              paddingBottom={4}
+              paddingTop={4}
+              paddingLeft={4}
+              paddingRight={4}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+            >
+              <Text color={TextColor.TextAlternative}>
+                {t('showTestnetNetworks')}
+              </Text>
+              <ToggleButton
+                dataTestId="networks-page-show-test-networks"
+                value={showTestnets || currentlyOnTestnet}
+                disabled={currentlyOnTestnet}
+                onToggle={handleToggleTestNetworks}
+              />
+            </Box>
+          </>
+        ) : null}
+
+        {showTestnets || currentlyOnTestnet ? (
+          <>{sortedTestNetworks.map(renderNetworkListItem)}</>
+        ) : null}
 
         {featuredNetworksNotYetEnabled.length > 0 ? (
           <>
+            <SectionDivider />
             <AdditionalNetworksInfo />
             <Box>
               {featuredNetworksNotYetEnabled.map((network) => (
@@ -299,30 +377,6 @@ export const NetworksPageList = ({
               ))}
             </Box>
           </>
-        ) : null}
-
-        {sortedTestNetworks.length > 0 ? (
-          <Box
-            paddingBottom={4}
-            paddingTop={4}
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-            className="px-4"
-          >
-            <Text color={TextColor.TextAlternative}>
-              {t('showTestnetNetworks')}
-            </Text>
-            <ToggleButton
-              dataTestId="networks-page-show-test-networks"
-              value={showTestnets}
-              onToggle={handleToggleTestNetworks}
-            />
-          </Box>
-        ) : null}
-
-        {showTestnets ? (
-          <Box>{sortedTestNetworks.map(renderNetworkListItem)}</Box>
         ) : null}
       </Box>
 

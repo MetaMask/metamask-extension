@@ -1,6 +1,7 @@
 import {
   ClientConfigApiService,
   RemoteFeatureFlagController,
+  RemoteFeatureFlagControllerMessenger,
 } from '@metamask/remote-feature-flag-controller';
 import {
   ActionConstraint,
@@ -8,7 +9,7 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { ENVIRONMENT } from '../../../development/build/constants';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
@@ -20,7 +21,6 @@ import {
   getRemoteFeatureFlagControllerInitMessenger,
   getRemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger,
-  RemoteFeatureFlagControllerMessenger,
 } from './messengers';
 import { buildControllerInitRequestMock } from './test/utils';
 

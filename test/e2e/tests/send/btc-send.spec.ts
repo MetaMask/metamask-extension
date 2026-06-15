@@ -6,7 +6,8 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import {
@@ -50,11 +51,14 @@ describe('BTC Account - Send', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         const sendPage = new SendPage(driver);
@@ -77,11 +81,14 @@ describe('BTC Account - Send', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         const sendPage = new SendPage(driver);
@@ -110,11 +117,14 @@ describe('BTC Account - Send', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         const sendPage = new SendPage(driver);
@@ -136,7 +146,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.clickConfirmButton();
 
         // Wait for the transaction to appear in the activity list
-        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityListPage.checkTransactionActivityByText('Sending');
 
         // Note: Transaction shows as "Pending" immediately after broadcast.
         // The BTC snap stores it with "Unconfirmed" status when broadcast.

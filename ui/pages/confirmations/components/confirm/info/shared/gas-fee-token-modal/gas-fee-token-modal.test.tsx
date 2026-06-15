@@ -146,7 +146,7 @@ describe('GasFeeTokenModal', () => {
       store,
     );
 
-    expect(result.getByText('0.000066 ETH')).toBeInTheDocument();
+    expect(result.getByText('0.000125 ETH')).toBeInTheDocument();
   });
 
   it('never renders native list item if `excludeNativeTokenForFee` is set to `true`', () => {
@@ -154,7 +154,7 @@ describe('GasFeeTokenModal', () => {
       <GasFeeTokenModal />,
       configureStore(getState({ excludeNativeTokenForFee: true })),
     );
-    expect(result.queryByText('0.000066 ETH')).not.toBeInTheDocument();
+    expect(result.queryByText('0.000125 ETH')).not.toBeInTheDocument();
   });
 
   it('selects token matching selectedGasFeeToken', () => {
