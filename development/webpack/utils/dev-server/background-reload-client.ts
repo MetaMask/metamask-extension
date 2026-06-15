@@ -10,11 +10,9 @@ declare const __resourceQuery: string;
 
 const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 
-// Storage key holding the fingerprint of the currently running code. The
-// record must outlive the MV3 service worker, which Chrome idle-terminates and
-// later restarts with the *registered* (possibly stale) script —
-// `storage.session` survives that. The extension's real wallet state lives in
-// `storage.local`, which we deliberately don't touch.
+// Storage key holding the last background fingerprint seen during this session.
+// The fingerprint is stored in the session storage instead of a module-level variable so
+// that the value survives service worker restarts during the same session.
 const FINGERPRINT_KEY = 'MM_BACKGROUND_RELOAD_FINGERPRINT';
 
 /**
