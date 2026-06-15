@@ -49,17 +49,33 @@ export function connectToDevServer(
     });
 
     socket.addEventListener('message', (event: MessageEvent) => {
-      if (isDone() || typeof event.data !== 'string') {
+      if (isDone()) {
+        return;
+      }
+      if (typeof event.data !== 'string') {
+        console.warn(
+          '[webpack-dev-server] Ignoring non-string WebSocket message.',
+          event.data,
+        );
         return;
       }
       let message: { type?: string; data?: unknown };
       try {
         message = JSON.parse(event.data);
-      } catch {
+      } catch (error) {
+        console.warn(
+          '[webpack-dev-server] Ignoring malformed WebSocket message.',
+          error,
+        );
         return;
       }
       if (typeof message.type === 'string') {
         onMessage(message.type, message.data, socket);
+      } else {
+        console.warn(
+          '[webpack-dev-server] Ignoring WebSocket message without a type.',
+          message,
+        );
       }
     });
 

@@ -554,6 +554,11 @@ describe('./utils/dev-server', () => {
   describe('connectToDevServer', () => {
     it('dispatches parsed dev-server messages and ignores invalid messages', () => {
       withFakeWebSocket(() => {
+        const { mock: consoleWarnMock } = mock.method(
+          console,
+          'warn',
+          () => undefined,
+        );
         const messages: {
           type: string;
           data: unknown;
@@ -589,6 +594,14 @@ describe('./utils/dev-server', () => {
             socket,
           },
         ]);
+        assert.deepStrictEqual(
+          consoleWarnMock.calls.map((call) => call.arguments[0]),
+          [
+            '[webpack-dev-server] Ignoring malformed WebSocket message.',
+            '[webpack-dev-server] Ignoring WebSocket message without a type.',
+            '[webpack-dev-server] Ignoring non-string WebSocket message.',
+          ],
+        );
       });
     });
 
