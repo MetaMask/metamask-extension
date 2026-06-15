@@ -72,6 +72,19 @@ describe('benchmark render-complete helpers', () => {
       expect(isSwapPageRenderComplete()).toBe(true);
     });
 
+    it('returns true when the quote renders with included network fees', () => {
+      document.body.innerHTML = `
+        <button data-testid="bridge-source-button">ETH</button>
+        <input data-testid="from-amount" />
+        <div data-testid="network-fees-included"></div>
+        <div data-testid="network-fees-included-original-amount"></div>
+        <div data-testid="minimum-received"></div>
+        <button data-testid="slippage-edit-button"></button>
+      `;
+
+      expect(isSwapPageRenderComplete()).toBe(true);
+    });
+
     it('returns false while the quote input is still disabled', () => {
       document.body.innerHTML = `
         <button data-testid="bridge-source-button">ETH</button>

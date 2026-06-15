@@ -70,6 +70,15 @@ export function isSwapPageRenderComplete(): boolean {
   const fromAmountInput = document.querySelector<HTMLInputElement>(
     '[data-testid="from-amount"]',
   );
+  const networkFees = document.querySelector<HTMLElement>(
+    '[data-testid="network-fees"], [data-testid="network-fees-included"], [data-testid="network-fees-sponsored"]',
+  );
+  const minimumReceived = document.querySelector<HTMLElement>(
+    '[data-testid="minimum-received"]',
+  );
+  const slippageEditButton = document.querySelector<HTMLElement>(
+    '[data-testid="slippage-edit-button"]',
+  );
   const fromTokenText = fromTokenSelector?.textContent?.trim() ?? '';
 
   const hasEditableQuoteInput = Boolean(
@@ -80,10 +89,9 @@ export function isSwapPageRenderComplete(): boolean {
       fromAmountInput.getAttribute('aria-disabled') === 'false'),
   );
 
-  const hasRenderedQuoteDetails =
-    document.querySelectorAll(
-      '[data-testid="network-fees"], [data-testid="minimum-received"], [data-testid="slippage-edit-button"]',
-    ).length >= 3;
+  const hasRenderedQuoteDetails = Boolean(
+    networkFees && minimumReceived && slippageEditButton,
+  );
 
   return (
     fromTokenText.length > 0 &&
