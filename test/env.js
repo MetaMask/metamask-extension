@@ -12,10 +12,10 @@ process.env.NOTIFICATIONS_SERVICE_URL =
   'https://mock-test-notifications-api.metamask.io';
 process.env.PUSH_NOTIFICATIONS_SERVICE_URL =
   'https://mock-test-push-notifications-api.metamask.io';
+process.env.COMPLIANCE_API_URL = 'https://mock-test-compliance-api.metamask.io';
 process.env.PORTFOLIO_URL = 'https://portfolio.test';
 process.env.METAMASK_VERSION = 'MOCK_VERSION';
 process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
-process.env.TELEGRAM_LOGIN_ENABLED = 'true';
 process.env.METAMASK_SHIELD_ENABLED = 'false';
 process.env.PERPS_ENABLED = 'true';
 process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';

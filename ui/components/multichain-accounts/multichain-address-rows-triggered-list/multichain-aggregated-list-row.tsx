@@ -22,8 +22,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CopyParams } from '../multichain-address-row/multichain-address-row';
 import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 
 type MultichainAggregatedAddressListRowProps = {
   /**

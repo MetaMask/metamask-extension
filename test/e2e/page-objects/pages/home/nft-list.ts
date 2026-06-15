@@ -1,8 +1,6 @@
-import { Driver } from '../../../webdriver/driver';
+import HomePage from './homepage';
 
-class NftListPage {
-  private readonly driver: Driver;
-
+class NftListPage extends HomePage {
   private readonly confirmImportNftButton =
     '[data-testid="import-nfts-modal-import-button"]';
 
@@ -34,10 +32,6 @@ class NftListPage {
     '[data-testid="nft-remove-success-toast"]';
 
   private readonly nftListItem = '[data-testid="nft-wrapper"]';
-
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
 
   async checkPageIsLoaded(): Promise<void> {
     try {

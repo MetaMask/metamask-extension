@@ -13,6 +13,7 @@ import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 const MOCK_CHAINLIST_RESPONSE = [
   {
@@ -230,7 +231,7 @@ describe('Popular Networks', function (this: Suite) {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleNetworkDetailsCheck();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         // return to the home screen
         const homepage = new Homepage(driver);

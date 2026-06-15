@@ -22,12 +22,17 @@ import { sortBalanceChanges } from './sortBalanceChanges';
  * @param props.labelColor
  * @returns
  */
-export const BalanceChangeList: React.FC<{
+export const BalanceChangeList = ({
+  heading,
+  balanceChanges,
+  testId,
+  labelColor,
+}: {
   heading: string;
   balanceChanges: BalanceChange[];
   testId?: string;
   labelColor?: TextColor;
-}> = ({ heading, balanceChanges, testId, labelColor }) => {
+}) => {
   const { currentConfirmation } = useConfirmContext();
   const sortedBalanceChanges = useMemo(() => {
     return sortBalanceChanges(balanceChanges);

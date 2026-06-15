@@ -7,13 +7,10 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
-import { Encryptor } from '@metamask/keyring-controller';
-import { KeyringClass } from '@metamask/keyring-utils';
-import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
+import { Mutex } from 'async-mutex';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
-import { HardwareTransportBridgeClass } from '../lib/hardware-keyring-builder-factory';
 import ExtensionPlatform from '../platforms/extension';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -80,12 +77,6 @@ export type MessengerClientInitRequest<
   currentMigrationVersion: number;
 
   /**
-   * An instance of an encryptor to use for encrypting and decrypting
-   * sensitive data.
-   */
-  encryptor: Encryptor;
-
-  /**
    * Returns a promise that resolves when onboarding has been completed.
    */
   ensureOnboardingComplete: () => Promise<void>;
@@ -142,18 +133,6 @@ export type MessengerClientInitRequest<
   getUIState(): MetaMaskReduxState['metamask'];
 
   /**
-   * Overrides for the keyrings.
-   */
-  keyringOverrides?: {
-    qr?: KeyringClass;
-    qrBridge?: typeof QrKeyringScannerBridge;
-    lattice?: KeyringClass;
-    trezorBridge?: HardwareTransportBridgeClass;
-    oneKey?: HardwareTransportBridgeClass;
-    ledgerBridge?: HardwareTransportBridgeClass;
-  };
-
-  /**
    * The Infura project ID to use for the network controller.
    */
   infuraProjectId: string;
@@ -170,10 +149,11 @@ export type MessengerClientInitRequest<
    */
   persistedState: MessengerClientPersistedState;
 
+  // TODO: Remove this once the migration to the LegacyBackgroundApiService is complete.
   /**
-   * Remove an account from keyring state.
+   * The mutex used to ensure that only one seedless onboarding operation can occur at a time.
    */
-  removeAccount(address: string): Promise<string>;
+  seedlessOperationMutex: Mutex;
 
   /**
    * Create a multiplexed stream for connecting to an untrusted context like a
@@ -247,6 +227,22 @@ export type MessengerClientInitRequest<
    * The user's preferred language code, if any.
    */
   initLangCode: string | null;
+
+  /**
+   * Gets the record of request account tab IDs.
+   */
+  getRequestAccountTabIds: () => Record<string, number>;
+
+  /**
+   * Gets the record of open MetaMask tab IDs.
+   */
+  getOpenMetamaskTabsIds: () => Record<string, number>;
+
+  /**
+   * Sends an update to the UI.
+   *
+   */
+  sendUpdate: () => void;
 };
 
 /**

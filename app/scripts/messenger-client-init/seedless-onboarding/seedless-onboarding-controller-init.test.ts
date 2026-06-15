@@ -11,7 +11,7 @@ import {
 } from '../messengers/seedless-onboarding';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controller-init';
 
 jest.mock('@metamask/seedless-onboarding-controller');

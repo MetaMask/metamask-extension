@@ -11,7 +11,7 @@ import {
 } from '../messengers/subscription';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { SubscriptionControllerInit } from './subscription-controller-init';
 
 jest.mock('@metamask/subscription-controller');

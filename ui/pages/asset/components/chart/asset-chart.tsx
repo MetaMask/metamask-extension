@@ -17,18 +17,19 @@ import { brandColor } from '@metamask/design-tokens';
 import { Hex } from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
+import {
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useTheme } from '../../../../hooks/useTheme';
 import {
   BackgroundColor,
-  Display,
-  JustifyContent,
   TextColor,
   TextVariant,
-  BorderRadius,
-  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import {
-  Box,
   ButtonBase,
   ButtonBaseSize,
 } from '../../../../components/component-library';
@@ -196,11 +197,7 @@ const AssetChart = ({
   }, [currentPrice]);
 
   return (
-    <Box
-      borderRadius={BorderRadius.LG}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-    >
+    <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
       <AssetChartPrice
         ref={priceRef}
         loading={loading}
@@ -213,15 +210,14 @@ const AssetChart = ({
 
       <Box
         data-testid="asset-price-chart"
+        className="flex rounded-lg"
         marginTop={4}
         backgroundColor={
           loading && !prices
-            ? BackgroundColor.backgroundSection
-            : BackgroundColor.transparent
+            ? BoxBackgroundColor.BackgroundSection
+            : BoxBackgroundColor.Transparent
         }
-        borderRadius={BorderRadius.LG}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
       >
         {shouldShowChartLoading && <AssetChartLoading />}
         {shouldShowChartEmptyState && <AssetChartEmptyState />}
@@ -235,10 +231,10 @@ const AssetChart = ({
             />
             <Box
               style={{ aspectRatio: `${options.aspectRatio}` }}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
+              className="flex"
+              flexDirection={BoxFlexDirection.Column}
               justifyContent={
-                currentPrice ? JustifyContent.flexEnd : JustifyContent.flexStart
+                currentPrice ? BoxJustifyContent.End : BoxJustifyContent.Start
               }
             >
               <Line
@@ -290,8 +286,8 @@ const AssetChart = ({
 
         <Box
           style={prices ? undefined : { visibility: `hidden` }}
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
+          className="flex"
+          justifyContent={BoxJustifyContent.Between}
           marginTop={2}
           marginLeft={3}
           marginRight={3}

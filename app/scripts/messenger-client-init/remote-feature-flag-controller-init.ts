@@ -7,7 +7,7 @@ import {
   RemoteFeatureFlagController,
   RemoteFeatureFlagControllerMessenger,
 } from '@metamask/remote-feature-flag-controller';
-import { ENVIRONMENT } from '../../../development/build/constants';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import { previousValueComparator } from '../lib/util';
 import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
 import { MessengerClientInitFunction } from './types';
@@ -89,7 +89,7 @@ export const RemoteFeatureFlagControllerInit: MessengerClientInitFunction<
     fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
     disabled: getIsDisabled(),
     getMetaMetricsId: () =>
-      initMessenger.call('MetaMetricsController:getMetaMetricsId'),
+      initMessenger.call('AnalyticsController:getState').analyticsId,
     clientVersion: getBaseSemVerVersion(),
     prevClientVersion,
     clientConfigApiService: new ClientConfigApiService({

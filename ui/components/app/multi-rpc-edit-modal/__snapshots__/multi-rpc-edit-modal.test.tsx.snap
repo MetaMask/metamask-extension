@@ -34,7 +34,7 @@ exports[`MultiRpcEditModal renders correctly with required props 1`] = `
             class="mm-box mm-modal-body mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-sm"
+              class="items-center justify-center flex rounded-sm"
             >
               <img
                 src="/images/networks1.png"
@@ -51,16 +51,16 @@ exports[`MultiRpcEditModal renders correctly with required props 1`] = `
               supportMultiRpcInformation
             </p>
             <div
-              class="mm-box mm-box--padding-bottom-6"
+              class="pb-6"
             >
               <div
-                class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-1"
+                class="mt-4 mb-1"
               >
                 <div
-                  class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+                  class="flex-row items-center justify-between pt-4 pb-4 flex"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-8/12"
+                    class="items-center flex w-8/12"
                   >
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -72,10 +72,10 @@ exports[`MultiRpcEditModal renders correctly with required props 1`] = `
                       />
                     </div>
                     <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-11/12"
+                      class="flex-col flex w-11/12"
                     >
                       <div
-                        class="mm-box mm-box--margin-left-4"
+                        class="ml-4"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
@@ -84,7 +84,7 @@ exports[`MultiRpcEditModal renders correctly with required props 1`] = `
                         </p>
                       </div>
                       <div
-                        class="mm-box mm-box--margin-left-4 mm-box--display-flex mm-box--align-items-center"
+                        class="items-center ml-4 flex"
                       >
                         <button
                           class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--color-text-alternative mm-box--background-color-transparent"
@@ -96,7 +96,7 @@ exports[`MultiRpcEditModal renders correctly with required props 1`] = `
                     </div>
                   </div>
                   <div
-                    class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    class="items-center ml-1 flex"
                   >
                     <button
                       class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"

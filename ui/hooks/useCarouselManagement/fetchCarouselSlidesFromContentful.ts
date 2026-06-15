@@ -1,5 +1,5 @@
 import semver from 'semver';
-import { CarouselSlide } from '../../../shared/constants/app-state';
+import type { CarouselSlide } from '../../../shared/constants/app-state';
 import { isProduction } from '../../../shared/lib/environment';
 import { captureException } from '../../../shared/lib/sentry';
 import packageJson from '../../../package.json';

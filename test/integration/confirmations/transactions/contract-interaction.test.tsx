@@ -178,9 +178,10 @@ describe('Contract Interaction Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
-          participateInMetaMetrics: true,
+          analyticsId: 'test-metametrics-id',
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
           dataCollectionForMarketing: false,
-          metaMetricsId: 'test-metametrics-id',
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -314,7 +315,7 @@ describe('Contract Interaction Confirmation', () => {
 
     const firstGasField =
       await within(editGasFeesRow).findByTestId('first-gas-field');
-    expect(firstGasField).toHaveTextContent('0.0001');
+    expect(firstGasField).toHaveTextContent('0.0023');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
     );

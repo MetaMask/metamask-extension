@@ -9,7 +9,7 @@ import { WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
@@ -367,7 +367,7 @@ async function confirmAndGetTransaction(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   const activityList = new ActivityListPage(driver);
-  await activityList.openActivityTab();
+  await activityList.goToActivityList();
 
   if (expectedStatus === 'confirmed') {
     await activityList.checkConfirmedTxNumberDisplayedInActivity(1);

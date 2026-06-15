@@ -399,6 +399,83 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
+    it('renders the repair link as an accessible button', async () => {
+      const error = createTestError(
+        ErrorCode.DeviceDisconnected,
+        'Device disconnected',
+        'Device not found.',
+      );
+      const onRepairDevice = jest.fn();
+
+      const { getByRole } = renderWithMetrics(
+        <HardwareWalletErrorModal
+          error={error}
+          onRepairDevice={onRepairDevice}
+        />,
+      );
+
+      const repairButton = getByRole('button', {
+        name: '[hardwareWalletRepairLink]',
+      });
+
+      expect(repairButton).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(repairButton);
+      });
+
+      expect(onRepairDevice).toHaveBeenCalledTimes(1);
+      expect(onRepairDevice).toHaveBeenCalledWith(HardwareWalletType.Ledger);
+      expect(
+        mockTrackEvent.mock.calls.some(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
+        ),
+      ).toBe(true);
+      expect(
+        mockTrackEvent.mock.calls.some(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+        ),
+      ).toBe(false);
+    });
+
+    it('does not render or track the repair link when onRepairDevice is not provided', async () => {
+      const error = createTestError(
+        ErrorCode.DeviceDisconnected,
+        'Device disconnected',
+        'Device not found.',
+      );
+
+      const { getByText, queryByRole } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(
+        getByText('[hardwareWalletErrorRecoveryConnection1]'),
+      ).toBeInTheDocument();
+      expect(
+        queryByRole('button', {
+          name: '[hardwareWalletRepairLink]',
+        }),
+      ).not.toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+      });
+
+      expect(mockEnsureDeviceReady).toHaveBeenCalledTimes(1);
+      expect(
+        mockTrackEvent.mock.calls.some(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
+        ),
+      ).toBe(false);
+    });
+
     it('displays unlock instructions for ConnectionClosed', () => {
       const error = createTestError(
         ErrorCode.ConnectionClosed,
