@@ -7,6 +7,11 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  twMerge,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
@@ -21,6 +26,11 @@ import type { OrderSummaryProps } from '../../order-entry.types';
  * @param props.originalEstimatedFees - Estimated trading fees before discount
  * @param props.liquidationPrice - Estimated liquidation price
  * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount percentage (whole numbers)
+ * @param props.showSlippageRow
+ * @param props.slippageDisplay
+ * @param props.exceedsMaxSlippage
+ * @param props.onSlippageClick
+ * @param props.isSlippageRowDisabled
  */
 export const OrderSummary = ({
   marginRequired,
@@ -28,6 +38,11 @@ export const OrderSummary = ({
   originalEstimatedFees,
   liquidationPrice,
   metamaskFeeRateDiscountPercentage,
+  showSlippageRow = false,
+  slippageDisplay,
+  exceedsMaxSlippage = false,
+  onSlippageClick,
+  isSlippageRowDisabled = false,
 }: OrderSummaryProps) => {
   const t = useI18nContext();
 
@@ -50,6 +65,57 @@ export const OrderSummary = ({
           {liquidationPrice ?? '-'}
         </Text>
       </Box>
+
+      {showSlippageRow && (
+        <button
+          type="button"
+          onClick={onSlippageClick}
+          disabled={isSlippageRowDisabled}
+          data-testid="perps-order-summary-slippage-row"
+          aria-label={t('perpsSlippageEditAriaLabel')}
+          className={twMerge(
+            'flex w-full items-center justify-between border-0 bg-transparent p-0 text-left',
+            isSlippageRowDisabled
+              ? 'cursor-not-allowed opacity-70'
+              : 'cursor-pointer',
+          )}
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsSlippage')}
+          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              color={
+                exceedsMaxSlippage
+                  ? TextColor.ErrorDefault
+                  : TextColor.TextDefault
+              }
+              data-testid="perps-order-summary-slippage-value"
+            >
+              {slippageDisplay ?? '-'}
+            </Text>
+            {exceedsMaxSlippage ? (
+              <span
+                className="sr-only"
+                aria-live="polite"
+                data-testid="perps-order-slippage-exceeds-indicator"
+              >
+                {t('perpsSlippageExceeded')}
+              </span>
+            ) : null}
+            <Icon
+              name={IconName.Edit}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+        </button>
+      )}
 
       {/* Margin */}
       <Box
