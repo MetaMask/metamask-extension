@@ -19,7 +19,6 @@ import {
   getIsSocialLoginFlow,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
-  getDeferredDeepLink,
   getDeferredDeepLinkParameters,
   getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
