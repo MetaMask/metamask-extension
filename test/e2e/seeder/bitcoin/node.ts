@@ -223,6 +223,13 @@ type FundingOutpoint = {
   vout: number;
 };
 
+type FundingEntry = {
+  address: string;
+  scripthash: string;
+  scriptPubKey: string;
+  txid: string;
+};
+
 type SegwitAddress = {
   prefix: string;
   program: Uint8Array;
@@ -339,6 +346,7 @@ export class BitcoinRegtestNode {
     );
     await this.#runBitcoinCli(['generatetoaddress', '101', miningAddress]);
 
+    const fundingEntries: FundingEntry[] = [];
     for (const [address, balance] of Object.entries(initialBalances)) {
       if (balance <= 0) {
         continue;
@@ -351,8 +359,12 @@ export class BitcoinRegtestNode {
         ['-rpcwallet=e2e', 'sendtoaddress', regtestAddress, balance.toString()],
         { trimStdout: true },
       );
-      await this.#runBitcoinCli(['generatetoaddress', '6', miningAddress]);
+      fundingEntries.push({ address, scripthash, scriptPubKey, txid });
+    }
 
+    await this.#runBitcoinCli(['generatetoaddress', '1', miningAddress]);
+
+    for (const { address, scripthash, scriptPubKey, txid } of fundingEntries) {
       const tx = await this.#rpc<BitcoinCoreRawTransaction>(
         'getrawtransaction',
         [txid, true],
