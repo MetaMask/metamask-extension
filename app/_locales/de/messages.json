@@ -7,12 +7,6 @@
     "message": "Das Laden dauert länger als gewöhnlich.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Fehler"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Inkongruente Transaktionsdaten. Bitte überprüfen Sie die Transaktionsdetails."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Keine weiteren Konten. Wenn Sie auf ein Konto zugreifen möchten, das unten nicht aufgelistet ist, verbinden Sie bitte erneut Ihr Hardware-Wallet und wählen Sie dieses."
   },

@@ -65,7 +65,7 @@ describe('qr-error-content utils', () => {
       expect(mockT).toHaveBeenCalledWith('qrErrorUrDecodeBody');
     });
 
-    it('returns the same universal copy for UrDecodeError + Signing', () => {
+    it('returns universal title and body for UrDecodeError + Signing', () => {
       resolveErrorCopy(
         QrErrorType.UrDecodeError,
         QrErrorFlowContext.Signing,
@@ -74,6 +74,17 @@ describe('qr-error-content utils', () => {
 
       expect(mockT).toHaveBeenCalledWith('qrErrorUrDecodeTitle');
       expect(mockT).toHaveBeenCalledWith('qrErrorUrDecodeBody');
+    });
+
+    it('returns mismatched transaction copy for MismatchedTransaction', () => {
+      resolveErrorCopy(
+        QrErrorType.MismatchedTransaction,
+        QrErrorFlowContext.Signing,
+        mockT,
+      );
+
+      expect(mockT).toHaveBeenCalledWith('qrErrorMismatchedTransactionTitle');
+      expect(mockT).toHaveBeenCalledWith('qrErrorMismatchedTransactionBody');
     });
 
     it('falls back to UR decode copy for unrecognised error types', () => {
@@ -111,6 +122,7 @@ describe('qr-error-content utils', () => {
         QrErrorType.NonUrQrCode,
         QrErrorType.WrongUrType,
         QrErrorType.UrDecodeError,
+        QrErrorType.MismatchedTransaction,
       ];
       const allFlows = [QrErrorFlowContext.Pairing, QrErrorFlowContext.Signing];
 
@@ -149,6 +161,15 @@ describe('qr-error-content utils', () => {
       expect(
         rootTestId(QrErrorType.UrDecodeError, QrErrorFlowContext.Signing),
       ).toBe('qr-error-urDecodeError-signing');
+    });
+
+    it('reflects the MismatchedTransaction error type', () => {
+      expect(
+        rootTestId(
+          QrErrorType.MismatchedTransaction,
+          QrErrorFlowContext.Signing,
+        ),
+      ).toBe('qr-error-mismatchedTransaction-signing');
     });
   });
 });

@@ -7,12 +7,6 @@
     "message": "Le chargement prend plus de temps que d’habitude.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Erreur"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Données de transaction incompatibles. Veuillez vérifier les détails de la transaction."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Il n’y a plus de comptes. Si vous souhaitez accéder à un autre compte non répertorié ci-dessous, veuillez reconnecter votre portefeuille matériel et le sélectionner."
   },

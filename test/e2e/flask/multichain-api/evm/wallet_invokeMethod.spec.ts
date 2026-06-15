@@ -170,6 +170,7 @@ async function mockSecurityAlertsForMaliciousSignature(
 }
 
 describe('Multichain API', function () {
+  this.timeout(120000); // This test is very long, so we need an unusually high timeout
   const EVM_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
   const CAIP_ACCOUNT_IDS = [
     toEvmCaipAccountId(ACCOUNT_1),
