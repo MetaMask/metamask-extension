@@ -273,7 +273,7 @@ const AccountList = ({
   const renderPagination = () => (
     <Box flexDirection={BoxFlexDirection.Row} className="hw-list-pagination">
       <TextButton
-        className="hw-list-pagination__button"
+        className={`hw-list-pagination__button ${isFirstPage ? 'opacity-50 cursor-not-allowed' : ''}`}
         aria-disabled={isFirstPage}
         onClick={isFirstPage ? undefined : goToPreviousPage}
         data-testid="hw-list-pagination__prev-button"
