@@ -67,7 +67,6 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",

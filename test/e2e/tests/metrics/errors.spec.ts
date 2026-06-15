@@ -105,8 +105,11 @@ const removedBackgroundFields = [
   'BridgeController.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
-  // This property is timing-dependent
+  // These properties are timing-dependent
   'MetaMetricsController.latestNonAnonymousEventTimestamp',
+  // Populated by the Home page mount, so captured as `null` or a string
+  // depending on whether the mount wins the race before the error fires.
+  'AppStateController.pendingShieldCohort',
   // PhishingController properties (except urlScanCache which is masked)
   'PhishingController.c2DomainBlocklistLastFetched',
   'PhishingController.hotlistLastFetched',
