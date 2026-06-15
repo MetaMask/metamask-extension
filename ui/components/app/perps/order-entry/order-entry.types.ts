@@ -225,6 +225,16 @@ export type OrderSummaryProps = {
    * positive, the fees row renders a VIP badge alongside the fee value.
    */
   metamaskFeeRateDiscountPercentage?: number;
+  /** Whether to show the slippage row (market orders only). */
+  showSlippageRow?: boolean;
+  /** Formatted slippage value, e.g. "Est: 0.12% / Max: 3%" */
+  slippageDisplay?: string | null;
+  /** True when estimated slippage exceeds the configured max. */
+  exceedsMaxSlippage?: boolean;
+  /** Opens the max-slippage configuration modal. */
+  onSlippageClick?: () => void;
+  /** Disables slippage row interaction while the persisted cap is still loading. */
+  isSlippageRowDisabled?: boolean;
 };
 
 /**
