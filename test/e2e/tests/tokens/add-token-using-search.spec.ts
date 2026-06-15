@@ -217,6 +217,11 @@ describe('Add existing token using search', function () {
         localNodeOptions: {
           chainId: parseInt(CHAIN_IDS.BSC, 16),
         },
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
         title: this.test?.fullTitle(),
         testSpecificMock: mockBscApis,
       },

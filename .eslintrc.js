@@ -609,7 +609,6 @@ module.exports = {
         'app/scripts/lockdown-run.js',
         'app/scripts/lockdown-more.js',
         'test/helpers/protect-intrinsics-helpers.js',
-        'test/unit-global/protect-intrinsics.test.js',
       ],
       globals: {
         harden: 'readonly',
@@ -895,7 +894,6 @@ module.exports = {
         'test/e2e/page-objects/pages/settings/about-page.ts',
         'test/e2e/page-objects/pages/settings/advanced-settings.ts',
         'test/e2e/page-objects/pages/settings/backup-and-sync-settings.ts',
-        'test/e2e/page-objects/pages/settings/change-password-page.ts',
         'test/e2e/page-objects/pages/settings/contacts-settings.ts',
         'test/e2e/page-objects/pages/settings/experimental-settings.ts',
         'test/e2e/page-objects/pages/settings/notifications-settings-page.ts',
