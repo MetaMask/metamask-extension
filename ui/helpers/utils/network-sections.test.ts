@@ -1,3 +1,5 @@
+import { TrxScope } from '@metamask/keyring-api';
+
 import { getNetworkSections } from './network-sections';
 
 describe('getNetworkSections', () => {
@@ -23,7 +25,7 @@ describe('getNetworkSections', () => {
         name: 'Bitcoin',
       },
       {
-        chainId: 'tron:0x2b6653dc',
+        chainId: TrxScope.Mainnet,
         name: 'Tron',
       },
     ]);
@@ -34,7 +36,7 @@ describe('getNetworkSections', () => {
       '0x1',
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       'bip122:000000000019d6689c085ae165831e93',
-      'tron:0x2b6653dc',
+      TrxScope.Mainnet,
     ]);
   });
 
