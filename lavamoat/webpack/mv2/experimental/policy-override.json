@@ -60,7 +60,7 @@
       }
     },
     "^ background; v popup": {},
-    "axios": {
+    "wait-on>axios": {
       "globals": {
         "Buffer": false,
         "Buffer.alloc": true,
@@ -83,13 +83,6 @@
     "buffer": {
       "globals": {
         "SharedArrayBuffer": true
-      }
-    },
-    "core-js-pure": {
-      "globals": {
-        "navigator.userAgent": true,
-        "MessageChannel": true,
-        "location": true
       }
     },
     "ethers>@ethersproject/random": {
@@ -268,6 +261,13 @@
         "WebSocketPair": false,
         "WorkerGlobalScope": false,
         "importScripts": false
+      }
+    },
+    "@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
       }
     }
   }

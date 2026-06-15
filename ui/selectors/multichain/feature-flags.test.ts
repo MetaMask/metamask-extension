@@ -1,4 +1,7 @@
-import { getIsTokenManagementFilterEnabled } from './feature-flags';
+import {
+  getIsNetworkManagementEnabled,
+  getIsTokenManagementFilterEnabled,
+} from './feature-flags';
 
 const buildState = (
   remoteFeatureFlags: Record<string, unknown> = {},
@@ -27,12 +30,27 @@ describe('getIsTokenManagementFilterEnabled', () => {
     ).toBe(false);
   });
 
-  it('returns false when the flag object is disabled', () => {
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
     expect(
       getIsTokenManagementFilterEnabled(
         buildState({
           extensionUxTokenManagementFilter: {
-            enabled: false,
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a version-gated flag whose minimumVersion is in the future', () => {
+    expect(
+      getIsTokenManagementFilterEnabled(
+        buildState({
+          extensionUxTokenManagementFilter: {
+            enabled: true,
+            minimumVersion: '999.0.0',
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }) as any,
@@ -40,7 +58,21 @@ describe('getIsTokenManagementFilterEnabled', () => {
     ).toBe(false);
   });
 
-  it('returns true when the flag object is enabled', () => {
+  it('returns false when the version-gated flag is explicitly disabled', () => {
+    expect(
+      getIsTokenManagementFilterEnabled(
+        buildState({
+          extensionUxTokenManagementFilter: {
+            enabled: false,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false for malformed objects missing the minimumVersion field', () => {
     expect(
       getIsTokenManagementFilterEnabled(
         buildState({
@@ -50,13 +82,95 @@ describe('getIsTokenManagementFilterEnabled', () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }) as any,
       ),
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it('returns false when the flag is missing', () => {
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getIsTokenManagementFilterEnabled(buildState() as any),
+    ).toBe(false);
+  });
+});
+
+describe('getIsNetworkManagementEnabled', () => {
+  it('returns true when the flag is true', () => {
+    expect(
+      getIsNetworkManagementEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionUxNetworkManagement: true }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false when the flag is false', () => {
+    expect(
+      getIsNetworkManagementEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionUxNetworkManagement: false }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsNetworkManagementEnabled(
+        buildState({
+          extensionUxNetworkManagement: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a version-gated flag whose minimumVersion is in the future', () => {
+    expect(
+      getIsNetworkManagementEnabled(
+        buildState({
+          extensionUxNetworkManagement: {
+            enabled: true,
+            minimumVersion: '999.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the version-gated flag is explicitly disabled', () => {
+    expect(
+      getIsNetworkManagementEnabled(
+        buildState({
+          extensionUxNetworkManagement: {
+            enabled: false,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false for malformed objects missing the minimumVersion field', () => {
+    expect(
+      getIsNetworkManagementEnabled(
+        buildState({
+          extensionUxNetworkManagement: {
+            enabled: true,
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is missing', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsNetworkManagementEnabled(buildState() as any),
     ).toBe(false);
   });
 });

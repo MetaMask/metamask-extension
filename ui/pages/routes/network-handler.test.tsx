@@ -6,7 +6,7 @@ import {
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
 } from '../../selectors';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useAppSelector } from '../../store/store';
 import { automaticallySwitchNetwork } from '../../store/actions';
 import { NetworkHandler } from './network-handler';

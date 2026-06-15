@@ -37,6 +37,25 @@ import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
 
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// default gate is a passthrough; the blocked case is simulated per-test below.
+const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
+jest.mock('../../components/app/compliance', () => ({
+  useComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+  useSelectedAccountComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+}));
+
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
 
 const enterAmount = (value: string) => {
@@ -311,6 +330,7 @@ describe('PerpsOrderEntryPage', () => {
     mockReplacePerpsToastByKey.mockReset();
     mockHidePerpsToast.mockReset();
     mockTriggerDeposit.mockClear();
+    mockSubmitRequestToBackground.mockResolvedValue(undefined);
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -621,6 +641,24 @@ describe('PerpsOrderEntryPage', () => {
 
       const submitButton = screen.getByTestId('submit-order-button');
       expect(submitButton).toBeDisabled();
+    });
+
+    it('gates the amount input add funds action when compliance blocks the selected wallet', async () => {
+      // Simulate a blocked wallet: the gate short-circuits and never runs the
+      // wrapped add-funds action. Real compliance check + access-restricted modal
+      // are covered in useComplianceGate.test.tsx and
+      // access-restricted-context.test.tsx.
+      mockComplianceGate.mockImplementationOnce(async () => undefined);
+      const store = mockStore(createMockState());
+
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('amount-input-add-funds'));
+      });
+
+      await waitFor(() => expect(mockComplianceGate).toHaveBeenCalled());
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
     });
 
     it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
@@ -1150,11 +1188,15 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsClosePosition',
         [
-          {
+          expect.objectContaining({
             symbol: 'ETH',
             orderType: 'market',
             currentPrice: 3025.5,
-          },
+            trackingData: expect.objectContaining({
+              totalFee: expect.any(Number),
+              marketPrice: 3025.5,
+            }),
+          }),
         ],
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
@@ -1185,8 +1227,7 @@ describe('PerpsOrderEntryPage', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
@@ -1481,6 +1522,89 @@ describe('PerpsOrderEntryPage', () => {
         expect.anything(),
       );
     });
+
+    it('routes market order with TP/SL on new position through two-step placeOrder + updatePositionTPSL', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      fireEvent.change(tpContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '3300' },
+      });
+      const slContainer = screen.getByTestId('sl-price-input');
+      fireEvent.change(slContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '2800' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const placeOrderCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsPlaceOrder',
+      );
+      expect(placeOrderCall).toBeTruthy();
+      expect(placeOrderCall?.[1][0]).not.toHaveProperty('takeProfitPrice');
+      expect(placeOrderCall?.[1][0]).not.toHaveProperty('stopLossPrice');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            takeProfitPrice: '3300',
+            stopLossPrice: '2800',
+          }),
+        ],
+      );
+    });
+
+    it('reports TP/SL attach failure when the follow-up updatePositionTPSL call fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TPSL attach failed',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      fireEvent.change(tpContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '3300' },
+      });
+      const slContainer = screen.getByTestId('sl-price-input');
+      fireEvent.change(slContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '2800' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        expect.anything(),
+      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastUpdateFailed',
+        }),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+      });
+    });
   });
 
   describe('formStateToOrderParams', () => {
@@ -1724,8 +1848,7 @@ describe('PerpsOrderEntryPage', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));

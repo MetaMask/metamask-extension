@@ -34,11 +34,14 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
-  updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   createTransactionEventFragment: jest.fn(),
   createSpeedUpTransaction: jest.fn(() => ({ type: 'SPEED_UP_TRANSACTION' })),
   createCancelTransaction: jest.fn(() => ({ type: 'CANCEL_TRANSACTION' })),
+}));
+
+jest.mock('../../../store/actions/update-transaction-gas-fees', () => ({
+  updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
 }));
 
 jest.mock('../../../contexts/transaction-modal', () => ({

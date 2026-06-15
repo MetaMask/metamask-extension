@@ -17,12 +17,26 @@ import {
 } from './WalletFundsObtainedMonitor';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// so these tests exercise the real gating logic driven by the messenger mock.
-jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual(
+// and provide the pure flag-evaluation logic without the IN_TEST bypass
+// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
+// so using jest.requireActual here would make the function always return true,
+// breaking tests that exercise the disabled-flag path).
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
     '../../../shared/lib/assets-unify-state/remote-feature-flag',
   ),
-);
+  isAssetsUnifyStateFeatureEnabled: jest.fn(
+    (
+      featureFlag:
+        | { enabled: boolean; featureVersion: string }
+        | undefined
+        | null,
+      featureVersion: string,
+    ) =>
+      Boolean(featureFlag?.enabled) &&
+      featureFlag?.featureVersion === featureVersion,
+  ),
+}));
 
 function createMessengerMock(): jest.Mocked<WalletFundsObtainedMonitorMessenger> {
   return {

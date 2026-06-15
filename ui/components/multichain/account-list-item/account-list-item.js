@@ -51,9 +51,7 @@ import {
 } from '../../../selectors/multichain';
 import { ConnectedStatus } from '../connected-status';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';

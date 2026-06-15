@@ -40,7 +40,7 @@ export type UseBridgeTxHistoryDataProps = {
 
 // Helper to serialize for navigation.
 // TODO: Fetch details from CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE instead.
-function serialize(obj: unknown): unknown {
+export function serialize(obj: unknown): unknown {
   if (obj === null || obj === undefined) {
     return obj;
   }
@@ -119,6 +119,7 @@ export function useBridgeTxHistoryData({
   }, [navigate, txMeta]);
 
   return {
+    bridgeHistoryItem,
     // By complete, this means BOTH source and dest tx are confirmed
     isBridgeComplete: displayBridgeHistoryItem
       ? isBridgeComplete(displayBridgeHistoryItem)

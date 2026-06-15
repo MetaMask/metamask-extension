@@ -10,10 +10,19 @@ import { CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE } from '../../../helpers/constants/ro
 import { AccountList } from './account-list';
 
 const mockUseNavigate = jest.fn();
+let mockLocationKey = 'default';
+let mockLocationState: Record<string, unknown> | null = null;
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => ({
+      key: mockLocationKey,
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: mockLocationState,
+    }),
   };
 });
 
@@ -39,6 +48,8 @@ const addWalletButtonTestId = 'account-list-add-wallet-button';
 describe('AccountList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocationKey = 'default';
+    mockLocationState = null;
   });
 
   const renderComponent = () => {
@@ -67,13 +78,36 @@ describe('AccountList', () => {
     expect(screen.getByText('Account 2')).toBeInTheDocument();
   });
 
-  it('calls navigate when back button is clicked', () => {
+  it('navigates back when arrived via in-app navigation', () => {
+    mockLocationKey = 'abc123';
+
     renderComponent();
 
     const backButton = screen.getByLabelText(messages.back.message);
     fireEvent.click(backButton);
 
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+  });
+
+  it('navigates to home when location.key is default', () => {
+    renderComponent();
+
+    const backButton = screen.getByLabelText(messages.back.message);
+    fireEvent.click(backButton);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true });
+  });
+
+  it('navigates to home when arrived from fresh tab via state', () => {
+    mockLocationKey = 'abc123';
+    mockLocationState = { fromFreshTab: true };
+
+    renderComponent();
+
+    const backButton = screen.getByLabelText(messages.back.message);
+    fireEvent.click(backButton);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 
   it('navigates to choose wallet type page when add wallet button is clicked', () => {

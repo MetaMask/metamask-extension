@@ -38,13 +38,13 @@ describe('onRpcEndpointUnavailable', () => {
       error: new HttpError(420),
       infuraProjectId: 'the-infura-project-id',
       trackEvent,
-      metaMetricsId:
+      analyticsId:
         '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
     });
 
     expect(shouldCreateRpcServiceEventsMock).toHaveBeenCalledWith({
       error: new HttpError(420),
-      metaMetricsId:
+      analyticsId:
         '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
     });
   });
@@ -61,7 +61,7 @@ describe('onRpcEndpointUnavailable', () => {
         error: undefined,
         infuraProjectId: 'the-infura-project-id',
         trackEvent,
-        metaMetricsId:
+        analyticsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
 
@@ -90,7 +90,7 @@ describe('onRpcEndpointUnavailable', () => {
         error: new HttpError(420),
         infuraProjectId: 'the-infura-project-id',
         trackEvent,
-        metaMetricsId:
+        analyticsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
 
@@ -120,7 +120,7 @@ describe('onRpcEndpointUnavailable', () => {
         error: undefined,
         infuraProjectId: 'the-infura-project-id',
         trackEvent,
-        metaMetricsId:
+        analyticsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
 
@@ -150,7 +150,7 @@ describe('onRpcEndpointUnavailable', () => {
         error: new Error('some error'),
         infuraProjectId: 'the-infura-project-id',
         trackEvent,
-        metaMetricsId:
+        analyticsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
 
@@ -194,13 +194,13 @@ describe('onRpcEndpointDegraded', () => {
       trackEvent,
       type: 'retries_exhausted',
       retryReason: 'non_successful_http_status',
-      metaMetricsId:
+      analyticsId:
         '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
     });
 
     expect(shouldCreateRpcServiceEventsMock).toHaveBeenCalledWith({
       error: new HttpError(420),
-      metaMetricsId:
+      analyticsId:
         '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
     });
   });
@@ -219,7 +219,7 @@ describe('onRpcEndpointDegraded', () => {
         rpcMethodName: 'eth_blockNumber',
         trackEvent,
         type: 'slow_success',
-        metaMetricsId:
+        analyticsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
 
@@ -253,7 +253,7 @@ describe('onRpcEndpointDegraded', () => {
         trackEvent,
         type: 'retries_exhausted',
         retryReason: 'non_successful_http_status',
-        metaMetricsId:
+        analyticsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
 
@@ -288,7 +288,7 @@ describe('onRpcEndpointDegraded', () => {
         rpcMethodName: 'eth_blockNumber',
         trackEvent,
         type: 'slow_success',
-        metaMetricsId:
+        analyticsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
 
@@ -303,6 +303,43 @@ describe('onRpcEndpointDegraded', () => {
           rpc_domain: 'custom',
           rpc_endpoint_url: 'custom',
           rpc_method_name: 'eth_blockNumber',
+        },
+      });
+      /* eslint-enable @typescript-eslint/naming-convention */
+    });
+
+    it('includes duration_ms and trace_id when present in the payload', () => {
+      shouldCreateRpcServiceEventsMock.mockReturnValue(true);
+      isPublicEndpointUrlMock.mockReturnValue(true);
+      const trackEvent = jest.fn();
+
+      onRpcEndpointDegraded({
+        chainId: '0xaa36a7',
+        duration: 5123,
+        endpointUrl: 'https://example.com',
+        error: undefined,
+        infuraProjectId: 'the-infura-project-id',
+        rpcMethodName: 'eth_blockNumber',
+        traceId: 'abc-123-trace',
+        trackEvent,
+        type: 'slow_success',
+        analyticsId:
+          '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+      });
+
+      // The names of Segment properties have a particular case.
+      /* eslint-disable @typescript-eslint/naming-convention */
+      expect(trackEvent).toHaveBeenCalledWith({
+        category: 'Network',
+        event: 'RPC Service Degraded',
+        properties: {
+          chain_id_caip: 'eip155:11155111',
+          type: 'slow_success',
+          rpc_domain: 'example.com',
+          rpc_endpoint_url: 'example.com',
+          rpc_method_name: 'eth_blockNumber',
+          duration_ms: 5123,
+          trace_id: 'abc-123-trace',
         },
       });
       /* eslint-enable @typescript-eslint/naming-convention */
@@ -322,7 +359,7 @@ describe('onRpcEndpointDegraded', () => {
         rpcMethodName: 'eth_blockNumber',
         trackEvent,
         type: 'retries_exhausted',
-        metaMetricsId:
+        analyticsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
 

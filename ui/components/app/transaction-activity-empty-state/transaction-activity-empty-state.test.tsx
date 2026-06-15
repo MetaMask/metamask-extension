@@ -11,6 +11,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import * as useMultichainSelectorHook from '../../../hooks/useMultichainSelector';
+import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 import {
   TransactionActivityEmptyState,
   type TransactionActivityEmptyStateProps,
@@ -18,6 +19,16 @@ import {
 
 // Mock the useBridging hook
 jest.mock('../../../hooks/bridge/useBridging');
+
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  selectAccountGroupBalanceForEmptyState: jest.fn(),
+}));
+
+const mockSelectAccountGroupBalanceForEmptyState =
+  selectAccountGroupBalanceForEmptyState as jest.MockedFunction<
+    typeof selectAccountGroupBalanceForEmptyState
+  >;
 
 const createAccount = (
   overrides: Partial<InternalAccount> = {},
@@ -131,6 +142,7 @@ describe('TransactionActivityEmptyState', () => {
 
   beforeEach(() => {
     ({ mockOpenBridgeExperience } = setupMocks());
+    mockSelectAccountGroupBalanceForEmptyState.mockReturnValue(true);
   });
 
   const renderComponent = (
@@ -170,11 +182,26 @@ describe('TransactionActivityEmptyState', () => {
     expect(screen.getByTestId('activity-tab-empty-state')).toBeInTheDocument();
   });
 
-  it('renders description text', () => {
+  it('renders swap description when the account has tokens', () => {
+    mockSelectAccountGroupBalanceForEmptyState.mockReturnValue(true);
     renderComponent();
     expect(
       screen.getByText(messages.activityEmptyDescription.message),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.activityEmptyNoFundsDescription.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders add funds description when the account has no tokens', () => {
+    mockSelectAccountGroupBalanceForEmptyState.mockReturnValue(false);
+    renderComponent();
+    expect(
+      screen.getByText(messages.activityEmptyNoFundsDescription.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.activityEmptyDescription.message),
+    ).not.toBeInTheDocument();
   });
 
   it('applies custom className', () => {
@@ -273,6 +300,30 @@ describe('TransactionActivityEmptyState', () => {
         'Activity Tab Empty State',
         undefined, // No specific token
       );
+    });
+  });
+
+  describe('Add funds button functionality', () => {
+    beforeEach(() => {
+      mockSelectAccountGroupBalanceForEmptyState.mockReturnValue(false);
+    });
+
+    it('renders add funds button when the account has no tokens', () => {
+      renderComponent();
+      expect(
+        screen.getByRole('button', { name: messages.addFunds.message }),
+      ).toBeInTheDocument();
+    });
+
+    it('opens funding modal when add funds button is clicked', () => {
+      renderComponent();
+      fireEvent.click(
+        screen.getByRole('button', { name: messages.addFunds.message }),
+      );
+
+      expect(
+        screen.getByTestId('activity-tab-empty-state-funding-modal'),
+      ).toBeInTheDocument();
     });
   });
 });

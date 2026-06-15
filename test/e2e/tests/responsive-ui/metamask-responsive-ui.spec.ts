@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -13,6 +14,7 @@ import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/sen
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { PAGES } from '../../webdriver/driver';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -84,7 +86,6 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         // may still have in-flight requests, causing them to be terminated.
         // See issues #37342 and #37498.
         ignoredConsoleErrors: [
-          'unable to proceed, wallet is locked',
           'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
           'Unable to enable notifications',
         ],
@@ -105,6 +106,14 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         await resetPasswordPage.checkPageIsLoaded();
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
         await resetPasswordPage.waitForPasswordInputToNotBeVisible();
+
+        // Assert passkey setup is shown for chrome
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+        if (!isFirefox) {
+          const setupPasskeyPage = new SetupPasskeyPage(driver);
+          await setupPasskeyPage.checkPageIsLoaded();
+          await setupPasskeyPage.skipPasskeySetup();
+        }
 
         // Check balance renders correctly
         const homePage = new HomePage(driver);

@@ -17,10 +17,7 @@ import {
   isPermissionDataWithTotalExposure,
   computeTotalExposureForPermission,
 } from '../../../../../../shared/lib/gator-permissions/compute-total-exposure';
-import {
-  PERMISSION_SCHEMAS,
-  assertPermissionSchemaEntry,
-} from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import { getPermissionSchemaEntry } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
@@ -94,11 +91,15 @@ function schemaElementDomKey(
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
 
-const ReviewAddressDisplay: React.FC<{
+const ReviewAddressDisplay = ({
+  address,
+  testId,
+  style,
+}: {
   address: string;
   testId: string;
   style?: React.CSSProperties;
-}> = ({ address, testId, style }) => {
+}) => {
   const { displayName, hexAddress } = useFallbackDisplayName(address);
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
@@ -137,7 +138,7 @@ const ReviewAddressDisplay: React.FC<{
   );
 };
 
-const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
+const ReviewAccountRow = ({ address }: { address: string }) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -164,10 +165,13 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
   );
 };
 
-const ReviewNetworkRow: React.FC<{
+const ReviewNetworkRow = ({
+  chainId,
+  networkName,
+}: {
   chainId: Hex;
   networkName: string;
-}> = ({ chainId, networkName }) => {
+}) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -210,10 +214,13 @@ const ReviewNetworkRow: React.FC<{
   );
 };
 
-const ReviewRuleAddressRow: React.FC<{
+const ReviewRuleAddressRow = ({
+  addresses,
+  label,
+}: {
   addresses: string[];
   label: string;
-}> = ({ addresses, label }) => {
+}) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -312,6 +319,32 @@ function renderElement({
         />
       );
 
+    case 'raw-text':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t(element.labelKey)}
+          value={element.getValue(ctx)}
+          testId={element.testId}
+        />
+      );
+
+    case 'list':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t(element.labelKey)}
+          value={
+            <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+              {element.getValue(ctx).map((value, valueIndex) => (
+                <li key={`${value}-${valueIndex}`}>{t(value)}</li>
+              ))}
+            </ul>
+          }
+          testId={element.testId}
+        />
+      );
+
     case 'date':
       return (
         <GatorPermissionDetailRow
@@ -371,8 +404,13 @@ function renderElement({
     case 'divider':
     case 'origin':
     case 'address':
-    default:
-      return throwUnhandledPermissionSchemaElement(element as never);
+      throw new Error(
+        `Unexpected schema element type in review renderer: ${element.type}`,
+      );
+    default: {
+      const neverElement: never = element;
+      return throwUnhandledPermissionSchemaElement(neverElement);
+    }
   }
 }
 
@@ -512,9 +550,7 @@ export type ReviewPermissionRendererProps = {
  * @param options0.permissionAccount
  * @param options0.networkName
  */
-export const ReviewPermissionRenderer: React.FC<
-  ReviewPermissionRendererProps
-> = ({
+export const ReviewPermissionRenderer = ({
   permissionType,
   permissionData,
   chainId,
@@ -525,11 +561,10 @@ export const ReviewPermissionRenderer: React.FC<
   origin,
   permissionAccount,
   networkName,
-}) => {
+}: ReviewPermissionRendererProps) => {
   const t = useI18nContext() as I18nFunction;
 
-  const schemaEntry = PERMISSION_SCHEMAS[permissionType];
-  assertPermissionSchemaEntry(permissionType, schemaEntry);
+  const schemaEntry = getPermissionSchemaEntry(permissionType);
 
   const effectiveExpiry = extractExpiryTimestampFromRules(rules ?? []);
   const redeemerAddresses = extractAddressesFromRuleByType(

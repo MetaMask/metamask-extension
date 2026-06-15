@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 
 const FEEDBACK_MESSAGE =
-  'Message: Unable to find value of key "developerOptions" for locale "en"';
+  'Message: Unable to find value of key "debug" for locale "en"';
 
 class ErrorPage {
   private readonly driver: Driver;
@@ -54,7 +54,7 @@ class ErrorPage {
 
   async validateErrorMessage(): Promise<void> {
     await this.driver.waitForSelector({
-      text: `Message: Unable to find value of key "developerOptions" for locale "en"`,
+      text: `Message: Unable to find value of key "debug" for locale "en"`,
       css: this.errorMessage,
     });
   }

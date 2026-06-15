@@ -28,27 +28,27 @@ export type CustomAmountProps = {
   onChange?: (value: string) => void;
 };
 
-function getFontSize(length: number): string {
-  if (length <= 8) {
+function getFontSize(displayWidth: number): string {
+  if (displayWidth <= 8) {
     return '64px';
   }
-  if (length <= 13) {
+  if (displayWidth <= 13) {
     return '40px';
   }
-  if (length <= 18) {
+  if (displayWidth <= 18) {
     return '30px';
   }
   return '20px';
 }
 
-function getLineHeight(length: number): string {
-  if (length <= 8) {
+function getLineHeight(displayWidth: number): string {
+  if (displayWidth <= 8) {
     return '70px';
   }
-  if (length <= 13) {
+  if (displayWidth <= 13) {
     return '44px';
   }
-  if (length <= 18) {
+  if (displayWidth <= 18) {
     return '33px';
   }
   return '22px';
@@ -67,7 +67,7 @@ function getTextColor(
   return TextColor.textDefault;
 }
 
-export const CustomAmountSkeleton: React.FC = () => (
+export const CustomAmountSkeleton = () => (
   <Box
     display={Display.Flex}
     flexDirection={FlexDirection.Row}
@@ -80,7 +80,7 @@ export const CustomAmountSkeleton: React.FC = () => (
   </Box>
 );
 
-export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
+export const CustomAmount = React.memo(
   ({
     amountFiat,
     autoFocus = false,
@@ -89,7 +89,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     hasAlert = false,
     isLoading,
     onChange,
-  }) => {
+  }: CustomAmountProps) => {
     const isMaxAmount = useTransactionPayIsMaxAmount();
     const isQuotesLoading = useIsTransactionPayLoading();
     const selectedCurrency = useSelector(getCurrentCurrency);
@@ -102,6 +102,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     // as a full ch over-allocates (visible cursor gap); counting them as 0
     // under-allocates (text gets clipped when overflowing the input).
     const amountWidth = amountLength - decimalSeparatorCount * 0.5;
+    const displayWidth = amountWidth + Math.max(1, fiatSymbol.length);
 
     const showLoader = isLoading || (isMaxAmount && isQuotesLoading);
 
@@ -119,8 +120,8 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
       return <CustomAmountSkeleton />;
     }
 
-    const fontSize = getFontSize(amountLength);
-    const lineHeight = getLineHeight(amountLength);
+    const fontSize = getFontSize(displayWidth);
+    const lineHeight = getLineHeight(displayWidth);
     const textColor = getTextColor(hasAlert, disabled);
 
     return (

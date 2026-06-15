@@ -86,6 +86,7 @@ describe('State Utils', () => {
             profile: {
               identifierId: '',
               profileId: '',
+              canonicalProfileId: '',
               metaMetricsId: '',
             },
           },
@@ -104,6 +105,7 @@ describe('State Utils', () => {
             profile: {
               identifierId: '',
               profileId: '',
+              canonicalProfileId: '',
               metaMetricsId: '',
             },
           },

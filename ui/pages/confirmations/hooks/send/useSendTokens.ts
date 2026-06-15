@@ -18,7 +18,11 @@ import {
   toAssetId,
   type AssetMetadata,
 } from '../../../../../shared/lib/asset-utils';
-import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  getAssetsBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroupIncludingHidden,
+} from '../../../../selectors/assets';
+import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
 
@@ -42,7 +46,12 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
     enrichTokenRequests = EMPTY_ENRICH_TOKEN_REQUESTS,
   } = options;
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
-  const assets = useSelector(getAssetsBySelectedAccountGroup);
+  const includeHiddenTokens = useSelector(getIsTokenManagementFilterEnabled);
+  const assets = useSelector(
+    includeHiddenTokens
+      ? getAssetsBySelectedAccountGroupIncludingHidden
+      : getAssetsBySelectedAccountGroup,
+  );
   const [enrichedTokensMetadata, setEnrichedTokensMetadata] = useState<
     Record<CaipAssetType, AssetMetadata>
   >({});

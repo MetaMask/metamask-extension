@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "ಸ್ವಯಂ-ಲಾಗ್ಔಟ್‌ ಟೈಮರ್ (ನಿಮಿಷಗಳು)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "MetaMask ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲಾಗ್ ಔಟ್‌ ಆಗುವ ಮೊದಲು ನಿಮಿಷಗಳಲ್ಲಿ ನಿಷ್ಕ್ರಿಯ ಸಮಯವನ್ನು ಹೊಂದಿಸಿ"
-  },
   "average": {
     "message": "ಸರಾಸರಿ"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ"
   },
-  "currencyConversion": {
-    "message": "ಕರೆನ್ಸಿ ಪರಿವರ್ತನೆ"
-  },
-  "currentLanguage": {
-    "message": "ಪ್ರಸ್ತುತ ಭಾಷೆ"
-  },
   "custom": {
     "message": "ಸುಧಾರಿತ"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "ಮುಗಿದಿದೆ"
-  },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
   },
   "downloadStateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು  ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ ಸಂಪರ್ಕಿಸಿ"
-  },
-  "hardwareWalletsMsg": {
-    "message": "MetaMask ನೊಂದಿಗೆ ಬಳಸಲು ನೀವು ಇಷ್ಟಪಡುವ ಹಾರ್ಡ‌ವೇರ್ ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "here": {
     "message": "ಇಲ್ಲಿ",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
-  "links": {
-    "message": "ಲಿಂಕ್‌ಗಳು"
-  },
   "loading": {
     "message": "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
   },
@@ -384,9 +363,6 @@
   },
   "nevermind": {
     "message": "ಪರವಾಗಿಲ್ಲ"
-  },
-  "newAccount": {
-    "message": "ಹೊಸ ಖಾತೆ"
   },
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",
@@ -493,9 +469,6 @@
   "restore": {
     "message": "ಮರುಸ್ಥಾಪನೆ"
   },
-  "revealSeedWords": {
-    "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"
-  },
   "revealSeedWordsWarning": {
     "message": "ಈ ಪದಗಳನ್ನು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಕದಿಯಲು ಬಳಸಬಹುದು.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -542,9 +515,6 @@
   "showFiatConversionInTestnets": {
     "message": "Testnets ನಲ್ಲಿ ಪರಿವರ್ತನೆಯನ್ನು ತೋರಿಸಿ"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Testnets ನಲ್ಲಿ ಫಿಯೆಟ್ ಪರಿವರ್ತನೆಯನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
   "showHexData": {
     "message": "ಹೆಕ್ಸ್ ಡೇಟಾವನ್ನು ತೋರಿಸಿ"
   },
@@ -574,9 +544,6 @@
   },
   "stateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳು"
-  },
-  "stateLogsDescription": {
-    "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳು ನಿಮ್ಮ ಸಾರ್ವಜನಿಕ ಖಾತೆಯ ವಿಳಾಸಗಳು ಮತ್ತು ಕಳುಹಿಸಲಾದ ವಹಿವಾಟುಗಳನ್ನು ಹೊಂದಿರುತ್ತವೆ."
   },
   "submitted": {
     "message": "ಸಲ್ಲಿಸಲಾಗಿದೆ"

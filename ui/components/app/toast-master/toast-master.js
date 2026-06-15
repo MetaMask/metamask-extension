@@ -10,8 +10,7 @@ import {
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { PRIVACY_POLICY_LINK } from '../../../../shared/lib/ui-utils';
 import {
   BorderRadius,
@@ -37,7 +36,6 @@ import {
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
-import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { MerklClaimToast, MusdConversionToast } from '../musd';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
@@ -69,6 +67,7 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   selectShowPrivacyPolicyToast,
+  selectNewPrivacyPolicyToastShownDate,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
@@ -109,7 +108,6 @@ export function ToastMaster() {
         <PrivacyPolicyToast />
         <PermittedNetworkToast />
         <InfuraSwitchToast />
-        <PerpsDepositToast />
         <MerklClaimToast />
         <MusdConversionToast />
         <PerpsWithdrawToast />
@@ -124,7 +122,6 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         {storageErrorToast}
-        <PerpsDepositToast />
         <PerpsWithdrawToast />
       </ToastContainer>
     );
@@ -146,8 +143,10 @@ export function ToastMaster() {
 function PrivacyPolicyToast() {
   const t = useI18nContext();
 
-  const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
-    useSelector(selectShowPrivacyPolicyToast);
+  const showPrivacyPolicyToast = useSelector(selectShowPrivacyPolicyToast);
+  const newPrivacyPolicyToastShownDate = useSelector(
+    selectNewPrivacyPolicyToastShownDate,
+  );
 
   // If the privacy policy toast is shown, and there is no date set, set it
   if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {

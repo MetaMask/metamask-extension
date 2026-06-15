@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
@@ -7,7 +6,8 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
   mockAllBridgeEndpoints,
@@ -66,16 +66,13 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
-
-        // Verify swap button is enabled for Bitcoin account
-        const isSwapEnabled = await homePage.checkIsSwapButtonEnabled();
-        assert.ok(isSwapEnabled, 'Swap button should be enabled for BTC');
 
         // Click swap button to open bridge page
         await homePage.clickOnSwapButton();
@@ -96,11 +93,14 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         // Click swap button
@@ -135,11 +135,14 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         // Click swap button
@@ -170,11 +173,14 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         // Click swap button
@@ -206,11 +212,14 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         // Click swap button

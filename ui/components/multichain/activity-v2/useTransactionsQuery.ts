@@ -1,7 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { HttpError } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
+import { getErrorBodyMessage } from '../../../../shared/lib/error';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getUseExternalServices } from '../../../selectors';
@@ -11,6 +13,52 @@ import { apiClient } from '../../../helpers/api-client';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import type { ActivityListFilter } from './helpers';
+
+const knownApiMessages = ['networks param contains no supported chains'];
+
+type TransactionsQueryOptions = ReturnType<
+  typeof apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions
+>;
+type TransactionsQueryFunction = Extract<
+  NonNullable<TransactionsQueryOptions['queryFn']>,
+  (...args: never[]) => unknown
+>;
+
+function isKnownApiResponseError(error: unknown) {
+  if (!(error instanceof HttpError) || error.status !== 400) {
+    return false;
+  }
+
+  const errorBodyMessage = getErrorBodyMessage(error.body);
+
+  return Boolean(
+    errorBodyMessage &&
+    knownApiMessages.some((message) => errorBodyMessage.includes(message)),
+  );
+}
+
+function withKnownApiResponse(queryFn: TransactionsQueryOptions['queryFn']) {
+  if (typeof queryFn !== 'function') {
+    return queryFn;
+  }
+
+  return async (context: Parameters<TransactionsQueryFunction>[0]) => {
+    try {
+      return await queryFn(context);
+    } catch (error) {
+      if (isKnownApiResponseError(error)) {
+        return {
+          data: [],
+          pageInfo: {
+            count: 0,
+            hasNextPage: false,
+          },
+        };
+      }
+      throw error;
+    }
+  };
+}
 
 function getTransactionApiLanguage(locale: string) {
   return locale.split('-')[0];
@@ -68,9 +116,10 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
       lang,
     });
 
-  // @ts-expect-error apiClient returns v5 types, repo still in v4
   return useInfiniteQuery({
     ...queryOptions,
+    // @ts-expect-error apiClient returns v5 types, repo still in v4
+    queryFn: withKnownApiResponse(queryOptions.queryFn),
     select: selectFn,
     enabled:
       Boolean(useExternalServices) &&
@@ -116,9 +165,10 @@ export function usePrefetchTransactions() {
     }
 
     queryClient
-      // @ts-expect-error apiClient returns v5 types, repo still in v4
       .prefetchInfiniteQuery({
         ...queryOptions,
+        // @ts-expect-error apiClient returns v5 types, repo still in v4
+        queryFn: withKnownApiResponse(queryOptions.queryFn),
         retry: false,
         staleTime: 5 * MINUTE,
       })

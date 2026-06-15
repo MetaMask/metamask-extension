@@ -1,6 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
 import AccountListPage from '../pages/account-list-page';
+import AssetListPage from '../pages/home/asset-list';
 import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import PrivacySettings from '../pages/settings/privacy-settings';
@@ -13,11 +14,16 @@ export const SECOND_TEST_E2E_SRP =
  * Imports an additional secret recovery phrase from the account list after unlock.
  *
  * @param driver - The webdriver instance.
- * @param srpWords - Space-separated recovery phrase words. Defaults to {@link SECOND_TEST_E2E_SRP}.
+ * @param options - Optional overrides.
+ * @param options.srpWords - Space-separated recovery phrase words. Defaults to {@link SECOND_TEST_E2E_SRP}.
+ * @param options.expectedBalance - Expected balance for Account 1 to verify after import. Defaults to '0'.
  */
 export async function importAdditionalSecretRecoveryPhrase(
   driver: Driver,
-  srpWords: string = SECOND_TEST_E2E_SRP,
+  {
+    srpWords = SECOND_TEST_E2E_SRP,
+    expectedBalance = '0',
+  }: { srpWords?: string; expectedBalance?: string } = {},
 ): Promise<void> {
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
@@ -29,6 +35,11 @@ export async function importAdditionalSecretRecoveryPhrase(
   await homePage.checkNewSrpAddedToastIsDisplayed();
   await homePage.dismissSrpAddedToast();
   await homePage.checkPageIsLoaded();
+  const assetListPage = new AssetListPage(driver);
+  await assetListPage.checkExpectedTokenBalanceIsDisplayed(
+    expectedBalance,
+    'ETH',
+  );
 }
 
 export async function verifySrp(

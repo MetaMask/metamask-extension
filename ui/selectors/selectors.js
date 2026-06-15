@@ -72,9 +72,13 @@ import {
   getIsTronTestnetSupportEnabled,
 } from './multichain/feature-flags';
 
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
+import {
+  addHexPrefix,
+  getDeviceType,
+  // eslint-disable-next-line import-x/no-restricted-paths
+} from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   MAINNET_DISPLAY_NAME,
@@ -138,6 +142,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
+  DEVICE_TYPE,
   ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
@@ -148,7 +153,7 @@ import {
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
-} from '../ducks/metamask/metamask';
+} from '../ducks/metamask/base-selectors';
 import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
@@ -308,6 +313,10 @@ export function getExternalServicesOnboardingToggleState(state) {
   return state.appState.externalServicesOnboardingToggleState;
 }
 
+export function getBackupAndSyncOnboardingToggleState(state) {
+  return state.appState.backupAndSyncOnboardingToggleState;
+}
+
 export function getShowDeleteMetaMetricsDataModal(state) {
   return state.appState.showDeleteMetaMetricsDataModal;
 }
@@ -362,9 +371,17 @@ export function getNetworkIdentifier(state) {
   return nickname || rpcUrl || type;
 }
 
+export function getAnalyticsId(state) {
+  const { analyticsId } = state.metamask;
+  return analyticsId;
+}
+
+/**
+ * @param state
+ * @deprecated Use `getAnalyticsId` instead.
+ */
 export function getMetaMetricsId(state) {
-  const { metaMetricsId } = state.metamask;
-  return metaMetricsId;
+  return getAnalyticsId(state);
 }
 
 export function isCurrentProviderCustom(state) {
@@ -573,6 +590,15 @@ const getMetaMaskAccountsWithoutBalance = createSelector(
  */
 export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
+}
+
+export function getMaybeSelectedInternalAccount(state) {
+  // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
+  // - This might happen during the onboarding
+  const accountId = state.metamask.internalAccounts?.selectedAccount;
+  return accountId
+    ? state.metamask.internalAccounts?.accounts[accountId]
+    : undefined;
 }
 
 export function checkIfMethodIsEnabled(state, methodName) {
@@ -1070,21 +1096,24 @@ export const getTokenExchangeRates = createSelector(
   },
 );
 
-export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = getTokenRatesControllerMarketData(state) ?? {};
+export const getCrossChainTokenExchangeRates = createSelector(
+  getTokenRatesControllerMarketData,
+  (contractMarketData) => {
+    const marketData = contractMarketData ?? {};
 
-  return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
-    acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
-      (innerAcc, innerKey) => {
-        innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
-        return innerAcc;
-      },
-      {},
-    );
+    return Object.keys(marketData).reduce((acc, topLevelKey) => {
+      acc[topLevelKey] = Object.keys(marketData[topLevelKey]).reduce(
+        (innerAcc, innerKey) => {
+          innerAcc[innerKey] = marketData[topLevelKey][innerKey]?.price;
+          return innerAcc;
+        },
+        {},
+      );
 
-    return acc;
-  }, {});
-};
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Get market data for tokens on the current chain
@@ -1164,21 +1193,21 @@ export function getAccountName(accounts, accountAddress) {
   return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
-export function accountsWithSendEtherInfoSelector(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const internalAccounts = getInternalAccounts(state);
-
-  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
-    (internalAccount) => {
-      return {
-        ...internalAccount,
-        ...accounts[internalAccount.address],
-      };
-    },
-  );
-
-  return accountsWithSendEtherInfo;
-}
+export const accountsWithSendEtherInfoSelector = createSelector(
+  getMetaMaskAccounts,
+  getInternalAccounts,
+  (accounts, internalAccounts) => {
+    const accountsWithSendEtherInfo = internalAccounts.map(
+      (internalAccount) => {
+        return {
+          ...internalAccount,
+          ...accounts[internalAccount.address],
+        };
+      },
+    );
+    return accountsWithSendEtherInfo;
+  },
+);
 
 export const getAccountsWithLabels = createSelector(
   getMetaMaskAccountsOrdered,
@@ -1203,16 +1232,22 @@ export const getAccountsWithLabels = createSelector(
   },
 );
 
-export function getCurrentAccountWithSendEtherInfo(state) {
-  const { address: currentAddress } = getSelectedInternalAccount(state);
-  const accounts = accountsWithSendEtherInfoSelector(state);
+export const getCurrentAccountWithSendEtherInfo = createSelector(
+  getSelectedInternalAccount,
+  accountsWithSendEtherInfoSelector,
+  ({ address: currentAddress }, accounts) => {
+    return getAccountByAddress(accounts, currentAddress);
+  },
+);
 
-  return getAccountByAddress(accounts, currentAddress);
-}
-export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
-  const accounts = accountsWithSendEtherInfoSelector(state);
-  return getAccountByAddress(accounts, targetAddress);
-}
+export const getTargetAccountWithSendEtherInfo =
+  createParameterizedShallowEqualSelector(10)(
+    accountsWithSendEtherInfoSelector,
+    (_, targetAddress) => targetAddress,
+    (accounts, targetAddress) => {
+      return getAccountByAddress(accounts, targetAddress);
+    },
+  );
 
 export function getCurrentEthBalance(state) {
   return getCurrentAccountWithSendEtherInfo(state)?.balance;
@@ -2870,6 +2905,16 @@ export function getIsPasskeyRegistered(state) {
 }
 
 /**
+ * Passkey vault wrapping key derivation method from the enrolled record.
+ *
+ * @param {object} state - Redux state
+ * @returns {'prf' | 'userHandle' | undefined}
+ */
+export function getPasskeyDerivationMethod(state) {
+  return state.metamask?.passkeyRecord?.keyDerivation?.method;
+}
+
+/**
  * True when the enrolled passkey's AAGUID is in the sidepanel-incompatible set
  * (defer passkey flows to a normal browser tab when also in sidepanel).
  *
@@ -2893,7 +2938,8 @@ export function getIsPasskeyFeatureAvailable(state) {
     getIsPasskeyFeatureEnabled() &&
     isWebAuthnSupported() &&
     !getIsSocialLoginFlow(state) &&
-    !isFirefoxBrowser()
+    !isFirefoxBrowser() &&
+    getDeviceType() !== DEVICE_TYPE.MOBILE
   );
 }
 
@@ -3418,7 +3464,7 @@ export const getHdKeyringOfSelectedAccountOrPrimaryKeyring = createSelector(
  * @returns {object} The permissions subjects object.
  */
 export function getPermissionSubjects(state) {
-  return state.metamask.subjects || {};
+  return state.metamask.subjects || EMPTY_OBJECT;
 }
 
 /**

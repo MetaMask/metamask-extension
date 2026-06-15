@@ -39,7 +39,10 @@ import {
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
-import { getDappActiveNetwork } from '../../../selectors/dapp';
+import {
+  getDappActiveNetwork,
+  getIsEip1193CompatibleConnection,
+} from '../../../selectors/dapp';
 import {
   addPermittedAccounts,
   hidePermittedNetworkToast,
@@ -48,7 +51,7 @@ import {
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { getURLHost } from '../../../helpers/utils/util';
-import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
+import { getCaip25CaveatValueFromPermissions } from '../../../helpers/utils/caip25-permissions';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
 import { Tag } from '../../component-library/tag/tag';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
@@ -64,7 +67,7 @@ import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-po
  * Not-connected layout (active account is not among permitted accounts):
  * [Favicon+grey dot] [Origin / Account · Not connected] ... [Connect]
  */
-export const DappConnectionControlBar: React.FC = () => {
+export const DappConnectionControlBar = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -81,6 +84,7 @@ export const DappConnectionControlBar: React.FC = () => {
     { permissions: Record<string, { parentCapability: string }> }
   >;
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
+  const isEip1193Compatible = useSelector(getIsEip1193CompatibleConnection);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupInternalAccounts = useSelector((state) =>
     getInternalAccountsFromGroupById(
@@ -310,8 +314,8 @@ export const DappConnectionControlBar: React.FC = () => {
             )
           ) : (
             <>
-              {/* Network selector (icon-only, same size as action icons) */}
-              {dappActiveNetwork && (
+              {/* Network selector — only for EIP-1193-compatible (EVM) connections */}
+              {dappActiveNetwork && isEip1193Compatible && (
                 <button
                   ref={setNetworkButtonElement}
                   className="dapp-connection-control-bar__network-button flex items-center gap-1"

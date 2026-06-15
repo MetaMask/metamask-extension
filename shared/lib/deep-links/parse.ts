@@ -5,13 +5,28 @@ import { verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
 import { SIG_PARAMS_PARAM } from './constants';
 
-export type ParsedDeepLink = {
+type ParsedDeepLinkWithSignature = {
   destination: Destination;
   signature: SignatureStatus;
   route: Route;
 };
 
-export async function parse(url: URL): Promise<ParsedDeepLink | false> {
+type ParsedDeepLinkWithoutSignature = Omit<
+  ParsedDeepLinkWithSignature,
+  'signature'
+>;
+
+type ParseOptions = { verify?: true } | { verify: false };
+
+export type ParsedDeepLink<Options extends ParseOptions = { verify: true }> =
+  Options extends { verify: false }
+    ? ParsedDeepLinkWithoutSignature
+    : ParsedDeepLinkWithSignature;
+
+export async function parse<Options extends ParseOptions = { verify: true }>(
+  url: URL,
+  options?: Options,
+): Promise<ParsedDeepLink<Options> | false> {
   const route = routes.get(url.pathname.toLowerCase());
   if (!route) {
     log.debug('No handler found for the pathname:', url.pathname);
@@ -21,10 +36,19 @@ export async function parse(url: URL): Promise<ParsedDeepLink | false> {
   let destination: Destination;
   try {
     const canonicalUrl = new URL(canonicalize(url));
+    const canonicalSearchParams = new URLSearchParams(
+      canonicalUrl.searchParams,
+    );
     // canonicalize does not remove sig_params, as it is needed for verification
-    // but we do not want to pass it to the route handler, so we remove it
-    canonicalUrl.searchParams.delete(SIG_PARAMS_PARAM);
-    destination = route.handler(canonicalUrl.searchParams);
+    // but canonical route handlers should not receive it.
+    canonicalSearchParams.delete(SIG_PARAMS_PARAM);
+
+    const handlerSearchParams =
+      route.handlerSearchParams === 'original'
+        ? new URLSearchParams(url.searchParams)
+        : canonicalSearchParams;
+
+    destination = route.handler(handlerSearchParams);
   } catch (error) {
     // tab may have closed in the meantime, the searchParams may have
     // been rejected by the handler, etc.
@@ -32,6 +56,10 @@ export async function parse(url: URL): Promise<ParsedDeepLink | false> {
     return false;
   }
 
+  if (options?.verify === false) {
+    return { destination, route } as ParsedDeepLink<Options>;
+  }
+
   const signature = await verify(url);
-  return { destination, signature, route };
+  return { destination, signature, route } as ParsedDeepLink<Options>;
 }

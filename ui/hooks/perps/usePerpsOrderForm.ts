@@ -121,7 +121,7 @@ export type UsePerpsOrderFormReturn = {
     liquidationPrice: string | null;
     liquidationPriceRaw: number | null;
     orderValue: string | null;
-    estimatedFees: string | null;
+    estimatedFees: number | null;
   };
   /** Handler for amount changes */
   handleAmountChange: (amount: string) => void;
@@ -353,9 +353,7 @@ export function usePerpsOrderForm({
         orderValue: formatPerpsFiat(closeValueUsd, {
           ranges: PRICE_RANGES_UNIVERSAL,
         }),
-        estimatedFees: formatPerpsFiat(estimatedFees, {
-          ranges: PRICE_RANGES_MINIMAL_VIEW,
-        }),
+        estimatedFees,
       };
     }
 
@@ -449,9 +447,7 @@ export function usePerpsOrderForm({
       orderValue: formatPerpsFiat(amount, {
         ranges: PRICE_RANGES_UNIVERSAL,
       }),
-      estimatedFees: formatPerpsFiat(estimatedFees, {
-        ranges: PRICE_RANGES_MINIMAL_VIEW,
-      }),
+      estimatedFees,
     };
   }, [
     formState.leverage,

@@ -504,6 +504,20 @@ describe('asset-utils', () => {
       expect(isEvmChainId('0x59f' as Hex)).toBe(true); // Hex format
       expect(isEvmChainId('eip155:1439' as CaipChainId)).toBe(true); // CAIP format
     });
+
+    it('returns false for non-string chain ids without recursing', () => {
+      let depth = 0;
+      const chainId = {
+        toString() {
+          depth += 1;
+          isEvmChainId(chainId as never);
+          return '0x1';
+        },
+      };
+
+      expect(isEvmChainId(chainId as never)).toBe(false);
+      expect(depth).toBe(0);
+    });
   });
 
   describe('isTronSpecialAsset', () => {

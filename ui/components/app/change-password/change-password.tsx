@@ -34,6 +34,7 @@ import Mascot from '../../ui/mascot';
 import Spinner from '../../ui/spinner';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
@@ -41,8 +42,10 @@ import {
   isPasskeyCeremonySilentError,
   translatePasskeyError,
 } from '../../../../shared/lib/passkey';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   ExtensionPasskeyErrorCode,
+  getPasskeyErrorCode,
   getPasskeyControllerErrorCode,
 } from '../../../../shared/lib/passkey/passkey-error';
 import {
@@ -64,7 +67,7 @@ import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import PasswordForm from '../password-form/password-form';
 import {
-  SECURITY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
 import { toast, ToastContent } from '../../ui/toast/toast';
@@ -93,7 +96,7 @@ type ChangePasswordProps = {
 };
 
 const ChangePassword = ({
-  redirectRoute = SECURITY_ROUTE,
+  redirectRoute = SECURITY_AND_PASSWORD_ROUTE,
 }: ChangePasswordProps) => {
   const t = useI18nContext();
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
@@ -174,7 +177,19 @@ const ChangePassword = ({
       return false;
     }
 
-    let isPasskeyRenewalSuccessful = false;
+    const startedAt = Date.now();
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.PasswordChangeWithPasskey,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        status: 'started',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        passkey_renewal_enabled: isPasskeyRenewalEnabled,
+      },
+    });
+
+    let isPasskeyRenewed = false;
     try {
       await dispatch(
         changePasswordWithPasskeyVerification(
@@ -183,11 +198,56 @@ const ChangePassword = ({
           { renewVaultKeyProtection: isPasskeyRenewalEnabled },
         ),
       );
-      isPasskeyRenewalSuccessful = isPasskeyRenewalEnabled;
+      isPasskeyRenewed = isPasskeyRenewalEnabled;
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChangeWithPasskey,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - startedAt,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_renewal_enabled: isPasskeyRenewalEnabled,
+        },
+      });
     } catch (error) {
+      const errorCode = getPasskeyErrorCode(error);
+      const durationMs = Date.now() - startedAt;
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChangeWithPasskey,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: 'failed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_renewal_enabled: isPasskeyRenewalEnabled,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: durationMs,
+          reason: errorCode,
+        },
+      });
+
+      captureException(
+        createSentryError(
+          'Change password with passkey verification failed',
+          error,
+        ),
+        {
+          extra: {
+            isPasskeyRenewalEnabled,
+            errorCode,
+            durationMs,
+          },
+        },
+      );
+
+      // if passkey renewal is not enabled, it's either passkey verification failed or password change failed
       if (!isPasskeyRenewalEnabled) {
         throw error;
       }
+
       const passkeyCode = getPasskeyControllerErrorCode(error);
       // strictly treat vault key renewal failure as a password change success
       if (passkeyCode !== ExtensionPasskeyErrorCode.VaultKeyRenewalFailed) {
@@ -197,7 +257,7 @@ const ChangePassword = ({
 
     setPasskeyAuthenticationResponse(null);
     await forceUpdateMetamaskState(dispatch);
-    return isPasskeyRenewalSuccessful;
+    return isPasskeyRenewed;
   };
 
   const onChangePassword = async () => {
@@ -310,6 +370,12 @@ const ChangePassword = ({
           error,
         );
       } else {
+        captureException(
+          createSentryError(
+            'Passkey verification during change password failed',
+            error,
+          ),
+        );
         toast.error(
           <ToastContent
             title={
@@ -555,7 +621,7 @@ const ChangePassword = ({
               }
             }}
           >
-            <Box>
+            <Box className="flex-1 overflow-y-auto">
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
@@ -684,6 +750,7 @@ const ChangePassword = ({
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
           mode="verify"
+          location="settings-change-password"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openChangePasswordInFullScreen}
         />

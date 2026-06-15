@@ -1,8 +1,6 @@
 import { useSelector } from 'react-redux';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import { getUseCurrencyRateCheck } from '../selectors';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {

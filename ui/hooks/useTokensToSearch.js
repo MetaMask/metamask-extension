@@ -10,10 +10,8 @@ import {
   getTokenList,
 } from '../selectors';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/lib/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';

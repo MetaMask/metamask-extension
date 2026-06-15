@@ -70,3 +70,29 @@ export const selectRewardsAccountLinkedTimestamp = (
 
 export const selectRewardsDeeplinkUrl = (state: MetaMaskReduxState) =>
   state.rewards.rewardsDeeplinkUrl ?? null;
+
+/**
+ * Whether the VIP program (fee discounts + VIP badge) is enabled.
+ *
+ * Reads the `vipProgramEnabled` remote feature flag. Supports both a plain
+ * boolean and a version-gated object (`{ enabled, minimumVersion }`). When
+ * `false`, absent, or the current version doesn't meet the minimum, VIP tier
+ * lookups and discount calculations are suppressed across the app (perps,
+ * bridge, etc.).
+ */
+export const selectVipProgramEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags): boolean => {
+    const flag = remoteFeatureFlags?.vipProgramEnabled as
+      | VersionGatedFeatureFlag
+      | boolean
+      | undefined;
+
+    if (typeof flag === 'boolean') {
+      return flag;
+    }
+    return Boolean(
+      validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
+    );
+  },
+);

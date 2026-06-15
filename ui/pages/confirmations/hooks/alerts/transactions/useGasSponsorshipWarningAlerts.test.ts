@@ -8,7 +8,10 @@ import {
   getMockConfirmStateForTransaction,
 } from '../../../../../../test/data/confirmations/helper';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useGasSponsorshipWarningAlerts } from './useGasSponsorshipWarningAlerts';
 
@@ -176,15 +179,20 @@ describe('useGasSponsorshipWarningAlerts', () => {
 
     expect(alerts).toEqual([
       {
+        actions: [
+          {
+            key: AlertActionKey.Buy,
+            label: 'Buy MON',
+          },
+        ],
         field: RowAlertKey.EstimatedFee,
-        inlineAlertText:
-          'Gas sponsorship isn’t available for this transaction. You’ll need to keep at least 10 MON in your account.',
-        isOpenModalOnClick: false,
-        key: 'gasSponsorshipReserveBalanceWarning',
+        isBlocking: true,
+        isOpenModalOnClick: true,
+        key: 'gasSponsorshipAlert',
         message:
-          'Gas sponsorship isn’t available for this transaction. You’ll need to keep at least 10 MON in your account.',
-        reason: 'Gas sponsorship unavailable',
-        severity: Severity.Warning,
+          'This specific network requires maintaining a reserve of 10 MON in your account.',
+        reason: 'Reserve balance is required',
+        severity: Severity.Danger,
         showArrow: false,
       },
     ]);

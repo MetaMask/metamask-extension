@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Automātiskās izrakstīšanās taimeris (minūtes)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Iestatiet bezdarbības laiku minūtēs, pēc kura MetaMask veiks automātisku izrakstīšanu"
-  },
   "average": {
     "message": "Vidēji"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "Izveidot paroli"
   },
-  "currencyConversion": {
-    "message": "Valūtas konvertācija"
-  },
-  "currentLanguage": {
-    "message": "Pašreizējā valodā"
-  },
   "custom": {
     "message": "Papildu"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "Pabeigts"
-  },
-  "downloadGoogleChrome": {
-    "message": "Lejupielādēt ar Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Lejupielādēt stāvokļa žurnālus"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Pieslēdziet aparatūras maku"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Atlasiet aparatūras maku lietošanai ar MetaMask"
   },
   "here": {
     "message": "šeit",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli testa tīkls"
-  },
-  "links": {
-    "message": "Saites"
-  },
   "loading": {
     "message": "Notiek ielāde..."
   },
@@ -384,9 +363,6 @@
   },
   "nevermind": {
     "message": "Nav svarīgi"
-  },
-  "newAccount": {
-    "message": "Jauns konts"
   },
   "newAccountNumberName": {
     "message": "Konts $1",
@@ -493,9 +469,6 @@
   "restore": {
     "message": "Atjaunot"
   },
-  "revealSeedWords": {
-    "message": "Parādīt atkopšanas vārdus"
-  },
   "revealSeedWordsWarning": {
     "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -542,9 +515,6 @@
   "showFiatConversionInTestnets": {
     "message": "Rādīt konversiju testa tīklos"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Atlasiet šo, lai testa tīklos uzrādītu fiat konversiju"
-  },
   "showHexData": {
     "message": "Rādīt hex datus"
   },
@@ -574,9 +544,6 @@
   },
   "stateLogs": {
     "message": "Statusu žurnāli"
-  },
-  "stateLogsDescription": {
-    "message": "Statusa žurnāli ietver publisko kontu adreses un nosūtītos darījumus."
   },
   "submitted": {
     "message": "Iesniegts"

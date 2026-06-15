@@ -6,6 +6,8 @@ import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup
 import { SettingItemConfig } from '../types';
 import { SettingsTab } from '../shared';
 
+const BackupAndSyncToggleSettingItem = () => <BackupAndSyncToggle />;
+
 const BackupAndSyncTab = () => {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
@@ -13,7 +15,7 @@ const BackupAndSyncTab = () => {
     const result: SettingItemConfig[] = [
       {
         id: 'backup-toggle',
-        component: BackupAndSyncToggle,
+        component: BackupAndSyncToggleSettingItem,
       },
     ];
 
@@ -28,7 +30,7 @@ const BackupAndSyncTab = () => {
     return result;
   }, [isBackupAndSyncEnabled]);
 
-  return <SettingsTab items={items} tabMessageKey="backupAndSync" />;
+  return <SettingsTab items={items} />;
 };
 
 export default BackupAndSyncTab;

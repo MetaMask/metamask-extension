@@ -4,24 +4,13 @@ import type {
   E2EEnvironmentConfig,
   ProdEnvironmentConfig,
 } from '@metamask/client-mcp-core';
-import type { MockedEndpoint, Mockttp } from '../../../mock-e2e';
 import { MetaMaskFixtureCapability } from './fixture';
 import { MetaMaskChainCapability, NoOpChainCapability } from './chain';
 import { MetaMaskContractSeedingCapability } from './seeding';
 import { MetaMaskStateSnapshotCapability } from './state-snapshot';
-import { MetaMaskMockServerCapability } from './mock-server';
 
 export type CreateMetaMaskContextOptions = {
   config?: Partial<E2EEnvironmentConfig>;
-  mockServer?: {
-    enabled?: boolean;
-    port?: number;
-    chainId?: number;
-    ethConversionInUsd?: string;
-    testSpecificMock?: (
-      mockServer: Mockttp,
-    ) => Promise<void | MockedEndpoint[]>;
-  };
   forkUrl?: string;
   forkBlockNumber?: number;
 };
@@ -72,20 +61,11 @@ export function createMetaMaskE2EContext(
     defaultChainId: config.defaultChainId,
   });
 
-  const mockServer = new MetaMaskMockServerCapability({
-    enabled: options.mockServer?.enabled,
-    port: options.mockServer?.port,
-    chainId: options.mockServer?.chainId ?? config.defaultChainId,
-    ethConversionInUsd: options.mockServer?.ethConversionInUsd,
-    testSpecificMock: options.mockServer?.testSpecificMock,
-  });
-
   return {
     fixture,
     chain,
     contractSeeding,
     stateSnapshot,
-    mockServer,
     config,
   };
 }

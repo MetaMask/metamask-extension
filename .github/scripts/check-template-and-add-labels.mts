@@ -35,6 +35,7 @@ const knownBots = [
   'runway-github',
   'cursor',
   'copilot-swe-agent',
+  'metamask-aep',
 ];
 
 // GitHub App / bot logins that cannot be resolved as User in GraphQL (user(login:) returns null).

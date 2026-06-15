@@ -27,7 +27,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../app/scripts/lib/util', () => ({
+jest.mock('../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../shared/lib/environment-type'),
   getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 
@@ -109,6 +110,42 @@ describe('Settings', () => {
       expect(
         await screen.findByText(messages.theme.message),
       ).toBeInTheDocument();
+    });
+
+    it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+      const storeWithDefaultAddress = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            extensionUxDefaultAddressVersioned: true,
+          },
+        },
+      });
+
+      const { unmount } = renderSettings(storeWithDefaultAddress);
+      const select = await screen.findByTestId(
+        'default-address-scope-dropdown',
+      );
+
+      Object.defineProperty(select, '__reactFiber$test', {
+        configurable: true,
+        enumerable: true,
+        value: {},
+      });
+      Object.defineProperty(select, '__reactProps$test', {
+        configurable: true,
+        enumerable: true,
+        value: {},
+      });
+
+      unmount();
+
+      expect(select.parentElement).toBeNull();
+      expect('__reactFiber$test' in select).toBe(false);
+      expect('__reactProps$test' in select).toBe(false);
     });
 
     it('navigates to transaction shield from the root page', async () => {

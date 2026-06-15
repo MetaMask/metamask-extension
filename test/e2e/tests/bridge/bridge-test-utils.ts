@@ -8,7 +8,7 @@ import {
 } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
-import { getRegistryEntry } from '../../feature-flags/feature-flag-registry';
+import { getRegistryBooleanFlag } from '../../feature-flags/feature-flag-registry';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -549,7 +549,11 @@ async function mockFeatureFlags(
 ) {
   const extensionSkipTransactionStatusPage =
     additionalFlags.extensionSkipTransactionStatusPage ??
-    getRegistryEntry('extensionSkipTransactionStatusPage')?.productionDefault;
+    getRegistryBooleanFlag('extensionSkipTransactionStatusPage');
+
+  const extensionUxActivityListRedesign =
+    additionalFlags.extensionUxActivityListRedesign ??
+    getRegistryBooleanFlag('extensionUxActivityListRedesign');
 
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
@@ -561,6 +565,7 @@ async function mockFeatureFlags(
           {
             bridgeConfig: featureFlags,
             extensionSkipTransactionStatusPage,
+            extensionUxActivityListRedesign,
             ...additionalFlags,
           },
         ],
@@ -864,10 +869,7 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 }
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
-  const resolvedEthPrice =
-    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
-      ? ETH_CONVERSION_RATE_USD
-      : 1;
+  const resolvedEthPrice = 3010;
 
   const tokenEntry = (
     id: string,
@@ -877,7 +879,6 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
     assetPriceType: 'fungible',
     id,
     price,
-    usdPrice: price,
     pricePercentChange1d,
   });
 
@@ -1090,7 +1091,13 @@ const STX_MAINNET_SENTINEL_URL =
 const STX_LINEA_SENTINEL_URL =
   'https://tx-sentinel-linea-mainnet.api.cx.metamask.io';
 
+const extensionSkipTransactionStatusPage = getRegistryBooleanFlag(
+  'extensionSkipTransactionStatusPage',
+  true,
+);
+
 const STX_MAINNET_NETWORK_CONFIG = {
+  extensionSkipTransactionStatusPage,
   smartTransactionsNetworks: {
     '0x1': {
       extensionActive: true,
@@ -1102,6 +1109,7 @@ const STX_MAINNET_NETWORK_CONFIG = {
 };
 
 const STX_LINEA_NETWORK_CONFIG = {
+  extensionSkipTransactionStatusPage,
   smartTransactionsNetworks: {
     '0xe708': {
       extensionActive: true,
@@ -1372,7 +1380,6 @@ export const getBridgeFixtures = ({
         ),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
-        await mockPriceSpotPrices(mockServer),
         await mockPriceSpotPricesV3(mockServer),
         await mockSwapAggregatorLinea(mockServer),
         await mockGasPricesArbitrum(mockServer),
@@ -2007,6 +2014,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
     },
     manifestFlags: {
       remoteFeatureFlags: {
+        extensionSkipTransactionStatusPage,
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         smartTransactionsNetworks: {
           '0x1': {

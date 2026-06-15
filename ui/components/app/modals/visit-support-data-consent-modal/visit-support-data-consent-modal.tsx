@@ -1,5 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
 import { getMetaMetricsId } from '../../../../selectors/selectors';
@@ -9,7 +10,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  Box,
   ModalFooter,
   ButtonPrimary,
   ButtonPrimarySize,
@@ -19,7 +19,6 @@ import {
   ButtonSecondarySize,
 } from '../../../component-library';
 import {
-  Display,
   TextVariant,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
@@ -37,9 +36,10 @@ type VisitSupportDataConsentModalProps = {
   isOpen: boolean;
 };
 
-const VisitSupportDataConsentModal: React.FC<
-  VisitSupportDataConsentModalProps
-> = ({ isOpen, onClose }) => {
+const VisitSupportDataConsentModal = ({
+  isOpen,
+  onClose,
+}: VisitSupportDataConsentModalProps) => {
   const version = process.env.METAMASK_VERSION as string;
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -129,7 +129,7 @@ const VisitSupportDataConsentModal: React.FC<
         </ModalBody>
 
         <ModalFooter>
-          <Box display={Display.Flex} gap={4}>
+          <Box className="flex" gap={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               width={BlockSize.Half}

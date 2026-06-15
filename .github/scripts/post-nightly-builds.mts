@@ -298,98 +298,6 @@ async function postSuccessNotification(env: any, version: string) {
             },
             {
               type: 'link' as const,
-              url: buildLinks.browserify.main.chrome,
-              text: 'Main Chrome Extension',
-            },
-            {
-              type: 'text' as const,
-              text: '\n',
-            },
-            {
-              type: 'emoji' as const,
-              name: 'firefox',
-            },
-            {
-              type: 'text' as const,
-              text: ' ',
-            },
-            {
-              type: 'link' as const,
-              url: buildLinks.browserify.main.firefox,
-              text: 'Main Firefox Extension',
-            },
-            {
-              type: 'text' as const,
-              text: '\n',
-            },
-            {
-              type: 'emoji' as const,
-              name: 'test_tube',
-            },
-            {
-              type: 'text' as const,
-              text: ' ',
-            },
-            {
-              type: 'link' as const,
-              url: buildLinks.browserify.experimental.chrome,
-              text: 'Experimental Chrome Extension',
-            },
-            {
-              type: 'text' as const,
-              text: '\n',
-            },
-            {
-              type: 'emoji' as const,
-              name: 'test_tube',
-            },
-            {
-              type: 'text' as const,
-              text: ' ',
-            },
-            {
-              type: 'link' as const,
-              url: buildLinks.browserify.experimental.firefox,
-              text: 'Experimental Firefox Extension',
-            },
-            {
-              type: 'text' as const,
-              text: '\n',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: 'divider',
-    },
-    {
-      type: 'rich_text',
-      elements: [
-        {
-          type: 'rich_text_section',
-          elements: [
-            {
-              type: 'emoji' as const,
-              name: 'package',
-            },
-            {
-              type: 'text' as const,
-              text: ' Webpack Download Links:\n',
-              style: {
-                bold: true,
-              },
-            },
-            {
-              type: 'emoji' as const,
-              name: 'chrome',
-            },
-            {
-              type: 'text' as const,
-              text: ' ',
-            },
-            {
-              type: 'link' as const,
               url: buildLinks.webpack.main.chrome,
               text: 'Main Chrome Extension',
             },
@@ -442,6 +350,98 @@ async function postSuccessNotification(env: any, version: string) {
             {
               type: 'link' as const,
               url: buildLinks.webpack.experimental.firefox,
+              text: 'Experimental Firefox Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'divider',
+    },
+    {
+      type: 'rich_text',
+      elements: [
+        {
+          type: 'rich_text_section',
+          elements: [
+            {
+              type: 'emoji' as const,
+              name: 'package',
+            },
+            {
+              type: 'text' as const,
+              text: ' Deprecated Browserify Fallback Download Links:\n',
+              style: {
+                bold: true,
+              },
+            },
+            {
+              type: 'emoji' as const,
+              name: 'chrome',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildLinks.browserify.main.chrome,
+              text: 'Main Chrome Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+            {
+              type: 'emoji' as const,
+              name: 'firefox',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildLinks.browserify.main.firefox,
+              text: 'Main Firefox Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+            {
+              type: 'emoji' as const,
+              name: 'test_tube',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildLinks.browserify.experimental.chrome,
+              text: 'Experimental Chrome Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+            {
+              type: 'emoji' as const,
+              name: 'test_tube',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildLinks.browserify.experimental.firefox,
               text: 'Experimental Firefox Extension',
             },
             {

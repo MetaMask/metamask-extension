@@ -37,8 +37,8 @@ const EXPECTED_ALERT = {
   field: RowAlertKey.EstimatedFee,
   isBlocking: true,
   key: AlertsName.InsufficientPayTokenBalance,
-  message: 'Amount exceeds your available Perps balance.',
-  reason: 'Enter a valid amount.',
+  message: 'Insufficient funds',
+  reason: 'Insufficient funds',
   severity: Severity.Danger,
 };
 
@@ -154,6 +154,20 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
   it('alerts when entered amount exceeds `withdrawableBalance`', () => {
     setAccount({ spendableBalance: '0', withdrawableBalance: '50' });
     setEnteredAmount('51');
+    const { result } = runHook(buildPerpsWithdrawState());
+    expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+  });
+
+  it('returns no alert when Max only exceeds the balance below Perps precision', () => {
+    setAccount({ spendableBalance: '0', withdrawableBalance: '7.863083' });
+    setEnteredAmount('7.8630830000000005');
+    const { result } = runHook(buildPerpsWithdrawState());
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('alerts when entered amount exceeds the balance by one Perps precision unit', () => {
+    setAccount({ spendableBalance: '0', withdrawableBalance: '7.863083' });
+    setEnteredAmount('7.863084');
     const { result } = runHook(buildPerpsWithdrawState());
     expect(result.current).toStrictEqual([EXPECTED_ALERT]);
   });

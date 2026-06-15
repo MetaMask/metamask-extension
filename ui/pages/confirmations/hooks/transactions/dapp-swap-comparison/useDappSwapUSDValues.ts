@@ -83,7 +83,7 @@ export function useDappSwapUSDValues({
         ),
       );
       const conversionRate = new BigNumber(
-        getTokenValueFromRecord(fiatRates, tokenAddress) ?? 0,
+        String(getTokenValueFromRecord(fiatRates, tokenAddress) ?? 0),
       );
       const value = new BigNumber(tokenAmount ?? 0)
         .dividedBy(decimals)

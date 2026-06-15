@@ -1455,6 +1455,17 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
     selectAssetsBySelectedAccountGroup(assetListState),
 );
 
+export const getAssetsBySelectedAccountGroupIncludingHidden =
+  createDeepEqualSelector(
+    getStateForAssetSelector,
+    (assetListState: AssetListState) =>
+      selectAssetsBySelectedAccountGroup({
+        ...assetListState,
+        allIgnoredTokens: EMPTY_OBJECT,
+        allIgnoredAssets: EMPTY_OBJECT,
+      }),
+  );
+
 export const selectAccountSupportsEnabledNetworks = createSelector(
   [getSelectedInternalAccount, getAllEnabledNetworksForAllNamespaces],
   (selectedAccount, enabledNetworks) => {

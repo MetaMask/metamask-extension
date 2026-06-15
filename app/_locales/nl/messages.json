@@ -162,9 +162,6 @@
   "networks": {
     "message": "netwerken"
   },
-  "newAccount": {
-    "message": "Nieuw account"
-  },
   "newContract": {
     "message": "Nieuw contract"
   },
@@ -206,9 +203,6 @@
   "required": {
     "message": "Verplicht"
   },
-  "revealSeedWords": {
-    "message": "Onthul back-up woorden"
-  },
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen).",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -239,9 +233,6 @@
   },
   "stateLogs": {
     "message": "Staatslogboeken"
-  },
-  "stateLogsDescription": {
-    "message": "Staatslogboeken bevatten uw openbare accountadressen en verzonden transacties."
   },
   "supportCenter": {
     "message": "Bezoek ons ​​ondersteuningscentrum"

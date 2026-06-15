@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import type { NetworkConfiguration } from '@metamask/network-controller';
@@ -8,10 +8,18 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
 import {
-  SECURITY_ROUTE,
+  ASSETS_ROUTE,
+  NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import AssetListControlBar from './asset-list-control-bar';
+
+let mockIsNetworkManagementEnabled = true;
+
+jest.mock('../../../../../selectors/multichain/feature-flags', () => ({
+  ...jest.requireActual('../../../../../selectors/multichain/feature-flags'),
+  getIsNetworkManagementEnabled: () => mockIsNetworkManagementEnabled,
+}));
 
 type TooltipProps = {
   children: React.ReactNode;
@@ -70,6 +78,7 @@ const createMockState = () => ({
 
 describe('NFTs options', () => {
   afterEach(() => {
+    mockIsNetworkManagementEnabled = true;
     jest.clearAllMocks();
   });
 
@@ -190,7 +199,9 @@ describe('NFTs options', () => {
     expect(autodetectButton).toBeInTheDocument();
 
     fireEvent.click(autodetectButton);
-    expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${ASSETS_ROUTE}#autodetect-tokens`,
+    );
   });
 
   it('shows Manage tokens instead of Import tokens when the token management feature flag is enabled', async () => {
@@ -245,5 +256,74 @@ describe('NFTs options', () => {
       'Import tokens',
     );
     expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
+  });
+
+  it('navigates to the dedicated networks page from manage networks in the home modal', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+    fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${NETWORKS_ROUTE}?drawerOpen=true`,
+    );
+  });
+
+  it('calls onNetworkSelect with CAIP IDs when one network is enabled', async () => {
+    const onNetworkSelect = jest.fn();
+    const state = createMockState();
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(
+      <AssetListControlBar onNetworkSelect={onNetworkSelect} />,
+      store,
+    );
+
+    await waitFor(() =>
+      expect(onNetworkSelect).toHaveBeenCalledWith(['eip155:1']),
+    );
+  });
+
+  it('opens the network filter modal and can navigate to manage networks', async () => {
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId, findByText } = renderWithProvider(
+      <AssetListControlBar />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+
+    fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${NETWORKS_ROUTE}?drawerOpen=true`,
+    );
+  });
+
+  it('opens the legacy Network Manager modal when network management feature flag is disabled', async () => {
+    mockIsNetworkManagementEnabled = false;
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+
+    expect(store.getActions()).toContainEqual(
+      expect.objectContaining({
+        payload: { name: 'NETWORK_MANAGER' },
+      }),
+    );
   });
 });

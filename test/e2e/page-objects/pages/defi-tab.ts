@@ -1,4 +1,5 @@
 import { Driver } from '../../webdriver/driver';
+import HomePage from './home/homepage';
 
 class DeFiToken {
   protected readonly driver: Driver;
@@ -36,9 +37,7 @@ class DeFiToken {
   }
 }
 
-class DeFiTab {
-  protected readonly driver: Driver;
-
+class DeFiTab extends HomePage {
   readonly defiTabCells: DeFiToken;
 
   private readonly allNetworksOption =
@@ -56,7 +55,7 @@ class DeFiTab {
   private readonly noPositionsMessage = '[data-testid="defi-tab-empty-state"]';
 
   constructor(driver: Driver) {
-    this.driver = driver;
+    super(driver);
     this.defiTabCells = new DeFiToken(driver);
   }
 

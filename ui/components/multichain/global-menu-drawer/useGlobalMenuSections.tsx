@@ -42,9 +42,7 @@ import {
 } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { Tag } from '../../component-library';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -282,8 +280,8 @@ export function useGlobalMenuSections(
           'explore/tokens',
           'ext_portfolio_button',
           metaMetricsId,
-          isMetaMetricsEnabled,
-          isMarketingEnabled,
+          isMetaMetricsEnabled === true,
+          isMarketingEnabled === true,
         );
         global.platform.openTab({ url });
         trackEvent({
@@ -438,7 +436,7 @@ export function useGlobalMenuSections(
           iconName: IconName.Lock,
           iconColor: IconColor.ErrorDefault,
           textColor: TextColor.ErrorDefault,
-          label: t('logOut'),
+          label: t('lock'),
           onClick: async () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,

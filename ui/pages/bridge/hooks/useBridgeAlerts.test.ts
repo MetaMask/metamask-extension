@@ -3,12 +3,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
+  getActiveQuoteInsufficientNativeReserveError,
   getActiveQuotePriceData,
   getBridgeQuotes,
   getBridgeUnavailableQuoteReason,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
-  getInsufficientNativeReserveError,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -34,7 +34,7 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getActiveQuotePriceData: jest.fn(),
   getFormattedPriceImpactPercentage: jest.fn(),
   getFormattedPriceImpactFiat: jest.fn(),
-  getInsufficientNativeReserveError: jest.fn(),
+  getActiveQuoteInsufficientNativeReserveError: jest.fn(),
   getBridgeQuotes: jest.fn(),
 }));
 
@@ -107,7 +107,9 @@ describe('useBridgeAlerts', () => {
     jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
     jest.mocked(getFormattedPriceImpactPercentage).mockReturnValue('7.0%');
     jest.mocked(getFormattedPriceImpactFiat).mockReturnValue(null as never);
-    jest.mocked(getInsufficientNativeReserveError).mockReturnValue(undefined);
+    jest
+      .mocked(getActiveQuoteInsufficientNativeReserveError)
+      .mockReturnValue(undefined);
     jest.mocked(getBridgeQuotes).mockReturnValue({
       isLoading: false,
       activeQuote: null,
@@ -459,10 +461,12 @@ describe('useBridgeAlerts', () => {
         priceImpact: 0.05,
       } as never);
 
-      jest.mocked(getInsufficientNativeReserveError).mockReturnValue({
-        minimumNativeBalanceToBeKeptInAccount: '10',
-        maxSwappableNativeBalance: '5',
-      });
+      jest
+        .mocked(getActiveQuoteInsufficientNativeReserveError)
+        .mockReturnValue({
+          minimumNativeBalanceToBeKeptInAccount: '10',
+          maxSwappableNativeBalance: '5',
+        });
 
       const { result } = renderHook();
 
@@ -497,10 +501,12 @@ describe('useBridgeAlerts', () => {
         priceImpact: 0.05,
       } as never);
 
-      jest.mocked(getInsufficientNativeReserveError).mockReturnValue({
-        minimumNativeBalanceToBeKeptInAccount: '10',
-        maxSwappableNativeBalance: '5',
-      });
+      jest
+        .mocked(getActiveQuoteInsufficientNativeReserveError)
+        .mockReturnValue({
+          minimumNativeBalanceToBeKeptInAccount: '10',
+          maxSwappableNativeBalance: '5',
+        });
 
       const { result } = renderHook();
 
@@ -534,7 +540,9 @@ describe('useBridgeAlerts', () => {
       jest.mocked(getActiveQuotePriceData).mockReturnValue({
         priceImpact: 0.05,
       } as never);
-      jest.mocked(getInsufficientNativeReserveError).mockReturnValue(undefined);
+      jest
+        .mocked(getActiveQuoteInsufficientNativeReserveError)
+        .mockReturnValue(undefined);
       const { result } = renderHook();
 
       expect(

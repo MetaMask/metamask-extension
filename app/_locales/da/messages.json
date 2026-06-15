@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Timer for automatisk udlogning (minutter)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Indstil den passive tid i minutter, før MetaMask automatisk logger dig ud"
-  },
   "average": {
     "message": "Gennemsnit"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "Opret adgangskode"
   },
-  "currencyConversion": {
-    "message": "Valutakonvertering"
-  },
-  "currentLanguage": {
-    "message": "Nuværende sprog"
-  },
   "custom": {
     "message": "Avanceret"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "Færdig"
-  },
-  "downloadGoogleChrome": {
-    "message": "Hent Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Download tilstandslogs"
@@ -265,9 +253,6 @@
   },
   "hardwareWallets": {
     "message": "Tilslut en hardware-tegnebog"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Vælg en hardware-pung du vil bruge med MetaMask"
   },
   "here": {
     "message": "her",
@@ -336,9 +321,6 @@
   "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
   },
-  "lineaGoerli": {
-    "message": "Linea-testnetværk"
-  },
   "loading": {
     "message": "Indlæser..."
   },
@@ -372,9 +354,6 @@
   },
   "nevermind": {
     "message": "Lige meget"
-  },
-  "newAccount": {
-    "message": "Ny konto"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -478,9 +457,6 @@
   "restore": {
     "message": "Gendan"
   },
-  "revealSeedWords": {
-    "message": "Vis Seedord"
-  },
   "revealSeedWordsWarning": {
     "message": "Disse ord kan bruges til at stjæle alle dine konti.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -524,9 +500,6 @@
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på testnet"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Vælg dette for at vise fiat-konvertering på Testnets"
-  },
   "showHexData": {
     "message": "Vis hex-data"
   },
@@ -556,9 +529,6 @@
   },
   "stateLogs": {
     "message": "Tilstandslogs"
-  },
-  "stateLogsDescription": {
-    "message": "Status-logføringer indeholder dine offentlige kontoadresser og afsendte transaktioner."
   },
   "submitted": {
     "message": "Indsendt"

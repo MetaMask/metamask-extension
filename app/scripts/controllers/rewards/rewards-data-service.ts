@@ -2,7 +2,7 @@
 // TODO: find similar functionality in extession
 // import { getSubscriptionToken } from '../utils/multi-subscription-token-vault';
 import log from 'loglevel';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import ExtensionPlatform from '../../platforms/extension';
 import {
   REWARDS_API_URL,
@@ -26,6 +26,7 @@ import type {
   ChallengeDto,
   SiweLoginDto,
   SiweJoinDto,
+  VipFeesResponseDto,
 } from './rewards-controller.types';
 import { RewardsDataServiceMethodActions } from './rewards-data-service-method-action-types';
 import { RewardsDataServiceMessenger } from './rewards-data-service-types';
@@ -81,6 +82,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getSeasonMetadata',
   'getDiscoverSeasons',
   'generateChallenge',
+  'getVipFees',
 ] as const;
 
 export type RewardsDataServiceActions = RewardsDataServiceMethodActions;
@@ -667,6 +669,28 @@ export class RewardsDataService {
     }
 
     return data as SeasonMetadataDto;
+  }
+
+  /**
+   * Get the VIP fee table for the current subscription.
+   *
+   * @param subscriptionToken - The subscription token used for authentication.
+   * @returns The VIP fee response (tier 0 will have `fees=null`).
+   */
+  async getVipFees(subscriptionToken: string): Promise<VipFeesResponseDto> {
+    const response = await this.makeRequest(
+      '/vip/fees',
+      {
+        method: 'GET',
+      },
+      subscriptionToken,
+    );
+
+    if (!response.ok) {
+      throw new Error(`Get VIP fees failed: ${response.status}`);
+    }
+
+    return (await response.json()) as VipFeesResponseDto;
   }
 
   /**
