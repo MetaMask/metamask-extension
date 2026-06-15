@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header should match snapshot with signature confirmation 1`] = `
 <div>
@@ -13,7 +13,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -95,7 +95,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
               data-testid="header-info__account-details-button"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/info.svg');"
               />
             </button>
@@ -135,7 +135,7 @@ exports[`Header should match snapshot with token transfer confirmation initiated
               data-testid="header-advanced-details-button"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/customize.svg');"
               />
             </button>
@@ -159,7 +159,7 @@ exports[`Header should match snapshot with token transfer confirmation initiated
       data-testid="wallet-initiated-header-back-button"
     >
       <span
-        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/arrow-left.svg');"
       />
     </button>
@@ -181,7 +181,7 @@ exports[`Header should match snapshot with token transfer confirmation initiated
             data-testid="header-advanced-details-button"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/customize.svg');"
             />
           </button>
@@ -205,7 +205,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -287,7 +287,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
               data-testid="header-info__account-details-button"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/info.svg');"
               />
             </button>
@@ -311,7 +311,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
                 data-testid="header-advanced-details-button"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/customize.svg');"
                 />
               </button>

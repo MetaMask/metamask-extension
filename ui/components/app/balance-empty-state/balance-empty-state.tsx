@@ -45,10 +45,10 @@ export type BalanceEmptyStateProps = {
   onClickReceive?: () => void;
 };
 
-export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
+export const BalanceEmptyState = ({
   onClickReceive,
   ...props
-}) => {
+}: BalanceEmptyStateProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);

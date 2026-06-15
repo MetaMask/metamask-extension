@@ -551,6 +551,10 @@ async function mockFeatureFlags(
     additionalFlags.extensionSkipTransactionStatusPage ??
     getRegistryBooleanFlag('extensionSkipTransactionStatusPage');
 
+  const extensionUxActivityListRedesign =
+    additionalFlags.extensionUxActivityListRedesign ??
+    getRegistryBooleanFlag('extensionUxActivityListRedesign');
+
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .thenCallback(() => {
@@ -561,6 +565,7 @@ async function mockFeatureFlags(
           {
             bridgeConfig: featureFlags,
             extensionSkipTransactionStatusPage,
+            extensionUxActivityListRedesign,
             ...additionalFlags,
           },
         ],
@@ -864,10 +869,7 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 }
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
-  const resolvedEthPrice =
-    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
-      ? ETH_CONVERSION_RATE_USD
-      : 1;
+  const resolvedEthPrice = 3010;
 
   const tokenEntry = (
     id: string,
@@ -877,7 +879,6 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
     assetPriceType: 'fungible',
     id,
     price,
-    usdPrice: price,
     pricePercentChange1d,
   });
 
@@ -1379,7 +1380,6 @@ export const getBridgeFixtures = ({
         ),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
-        await mockPriceSpotPrices(mockServer),
         await mockPriceSpotPricesV3(mockServer),
         await mockSwapAggregatorLinea(mockServer),
         await mockGasPricesArbitrum(mockServer),

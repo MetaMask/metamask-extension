@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Skeleton } from '@metamask/design-system-react';
-
-import { Box } from '../../../../components/component-library';
+import { Box, Skeleton } from '@metamask/design-system-react';
 
 export const AssetChartLoading = () => {
   return (

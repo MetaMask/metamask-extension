@@ -799,15 +799,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Beidh ort 2 idirbheart a dheimhniú ar do sparán crua-earraí:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Cruthaigh cuntas Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Chun aistriú chuig líonra Solana, beidh cuntas agus seoladh glactha ag teastáil uait."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Beidh cuntas Solana ag teastáil uait ar dtús."
-  },
   "bridgeDetailsTitle": {
     "message": "Sonraí an droichid",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -851,9 +842,6 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Roghnaigh comhartha agus méid"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Cruthaíodh cuntas Solana"
   },
   "bridgeStatusComplete": {
     "message": "Críochnaithe",
@@ -1921,9 +1909,6 @@
   },
   "enabled": {
     "message": "Cumasaithe"
-  },
-  "enabledNetworks": {
-    "message": "Líonraí cumasaithe"
   },
   "encryptionPublicKeyNotice": {
     "message": "Ba mhaith le $1 d’eochair chriptithe phoiblí. Trí thoiliú a thabhairt, beidh an suíomh seo in ann teachtaireachtaí criptithe a scríobh chugat.",
@@ -5997,9 +5982,6 @@
   },
   "termsOfUseTitle": {
     "message": "Athbhreithnigh ár dTéarmaí Úsáide"
-  },
-  "testNetworks": {
-    "message": "Líonraí tástála"
   },
   "testnets": {
     "message": "Líonta tástála"

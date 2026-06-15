@@ -6,6 +6,7 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
+  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
   getSocialLoginEmail,
   getSocialLoginType,
@@ -22,7 +23,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventAccountType,
 } from '../../../../shared/constants/metametrics';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { AccountStatusLayout } from '../account-status-layout';
@@ -35,6 +35,7 @@ export default function AccountExist() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const socialLoginType = useSelector(getSocialLoginType);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const {
     trackEvent,
     bufferedTrace,
@@ -72,7 +73,7 @@ export default function AccountExist() {
       properties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: `${MetaMetricsEventAccountType.Imported}_${socialLoginType}`,
+        account_type: accountTypeForMetrics,
       },
     });
     bufferedTrace?.({

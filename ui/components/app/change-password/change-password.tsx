@@ -67,7 +67,7 @@ import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import PasswordForm from '../password-form/password-form';
 import {
-  SECURITY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
 import { toast, ToastContent } from '../../ui/toast/toast';
@@ -96,7 +96,7 @@ type ChangePasswordProps = {
 };
 
 const ChangePassword = ({
-  redirectRoute = SECURITY_ROUTE,
+  redirectRoute = SECURITY_AND_PASSWORD_ROUTE,
 }: ChangePasswordProps) => {
   const t = useI18nContext();
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());

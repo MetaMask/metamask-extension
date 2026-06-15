@@ -105,7 +105,7 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('storybook:');
   });
 
-  it('includes a bundle analyzer link', () => {
+  it('includes bundle size and bundle analyzer links', () => {
     const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
@@ -114,6 +114,9 @@ describe('buildArtifactsBody', () => {
       buildsFromSha: 'abc1234',
     });
 
+    expect(result).toContain(
+      `<a href="${HOST}/bundle-size/bundle_size.json">Bundle Size Stats</a>`,
+    );
     expect(result).toContain(
       `<a href="${HOST}/build-dist-webpack/bundle-analyzer/report.html">Bundle Analyzer</a>`,
     );

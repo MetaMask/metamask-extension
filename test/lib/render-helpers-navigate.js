@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars -- ESLint is confused here */
 /* global jest */
 import React, { useMemo, useState } from 'react';
-import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
@@ -22,6 +21,7 @@ import {
   RouteMessengerContext,
 } from '../../ui/contexts/route-messenger';
 import { UIMessengerProvider } from '../../ui/contexts/ui-messenger';
+import { MetaMaskTestReduxProvider } from './redux-test-provider';
 import { createMockUIMessenger } from './mock-ui-messenger';
 
 // Re-export en messages for tests that need direct access
@@ -37,6 +37,13 @@ const createMockMetaMetricsContext = (
   onboardingParentContext: { current: null },
 });
 
+/**
+ * @param {object} props
+ * @param {string} [props.currentLocale]
+ * @param {object} [props.current]
+ * @param {object} [props.en]
+ * @param {import('react').ReactNode} [props.children]
+ */
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
 
@@ -55,16 +62,23 @@ I18nProvider.propTypes = {
   currentLocale: PropTypes.string,
   current: PropTypes.object,
   en: PropTypes.object,
-  children: PropTypes.node,
 };
 
 I18nProvider.defaultProps = {
   children: undefined,
 };
 
+/**
+ * @param {object} [options]
+ * @param {string[]} [options.initialEntries]
+ * @param {import('redux').Store} [options.store]
+ * @param {string} [options.routePath]
+ * @returns {import('react').FC<{ children?: import('react').ReactNode }>}
+ */
 export function createMemoryRouterWrapper(options = {}) {
   const { initialEntries = ['/'], store, routePath = '*' } = options;
 
+  /** @param {{ children?: import('react').ReactNode }} props */
   function Wrapper({ children }) {
     const router = createMemoryRouter(
       [
@@ -83,12 +97,14 @@ export function createMemoryRouterWrapper(options = {}) {
       />
     );
 
-    return store ? <Provider store={store}>{container}</Provider> : container;
+    return store ? (
+      <MetaMaskTestReduxProvider store={store}>
+        {container}
+      </MetaMaskTestReduxProvider>
+    ) : (
+      container
+    );
   }
-
-  Wrapper.propTypes = {
-    children: PropTypes.node,
-  };
 
   return Wrapper;
 }
@@ -175,7 +191,7 @@ export function renderHookWithProvider(
   uiMessenger = createMockUIMessenger(),
   routeMessenger = null,
 ) {
-  const store = state ? configureStore(state) : undefined;
+  const store = configureStore(state ?? {});
 
   const ProviderWrapper = createProviderWrapper(
     store,
@@ -215,7 +231,7 @@ export function renderHookWithProvider(
  * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
  * @param {UIMessenger} [uiMessenger] - An optional mock UI messenger instance.
  * @param {RouteMessenger | null} [routeMessenger] - An optional mock route messenger instance. If not provided, the RouteMessengerContext will not be included in the provider tree.
- * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
+ * @returns {RenderHookResult & { history: History, store: ReturnType<import('../../ui/store/store').default> }} The result of the rendered hook, the history object, and the store.
  */
 export const renderHookWithProviderTyped = (
   hook,

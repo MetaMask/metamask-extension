@@ -58,8 +58,9 @@ describe('Permit Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
-          participateInMetaMetrics: true,
-          metaMetricsId: 'test-metametrics-id',
+          analyticsId: 'test-metametrics-id',
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
           dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,

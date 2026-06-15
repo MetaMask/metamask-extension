@@ -27,7 +27,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../app/scripts/lib/util', () => ({
+jest.mock('../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../shared/lib/environment-type'),
   getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 

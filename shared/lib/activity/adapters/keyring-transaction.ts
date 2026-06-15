@@ -3,9 +3,15 @@ import {
   TransactionStatus as KeyringTransactionStatus,
   TransactionType as KeyringTransactionType,
 } from '@metamask/keyring-api';
-import type { ActivityListItem, Status, TokenAmount } from '../types';
+import type {
+  ActivityFee,
+  ActivityListItem,
+  Status,
+  TokenAmount,
+} from '../types';
 
 type Movement = Transaction['from'][number];
+type Fee = Transaction['fees'][number];
 type FungibleAsset = Extract<
   NonNullable<Movement['asset']>,
   { fungible: true }
@@ -38,7 +44,10 @@ function hasFungibleAsset(
   return movement.asset?.fungible === true;
 }
 
-function getToken(movements: Movement[], direction: TokenAmount['direction']) {
+function getToken(
+  movements: Movement[],
+  direction: TokenAmount['direction'],
+): TokenAmount | undefined {
   const movement = movements.find(hasFungibleAsset);
 
   if (!movement) {
@@ -48,23 +57,65 @@ function getToken(movements: Movement[], direction: TokenAmount['direction']) {
   return {
     amount: movement.asset.amount,
     symbol: movement.asset.unit,
+    assetId: movement.asset.type,
     direction,
   };
+}
+
+function getFee(fee: Fee): ActivityFee | undefined {
+  const { asset } = fee;
+
+  if (asset.fungible !== true) {
+    return undefined;
+  }
+
+  return {
+    type: fee.type,
+    amount: asset.amount,
+    symbol: asset.unit,
+    assetId: asset.type,
+  };
+}
+
+function getFees(transaction: Transaction) {
+  return transaction.fees.flatMap((fee) => {
+    const mappedFee = getFee(fee);
+
+    return mappedFee ? [mappedFee] : [];
+  });
 }
 
 // Converts keyring API transactions into the shared activity item shape
 export function mapKeyringTransaction({
   transaction,
+  subjectAddress,
 }: {
   transaction: Transaction;
+  subjectAddress?: string;
 }): ActivityListItem {
   const status = mapStatus(transaction.status);
   const timestamp = mapTimestamp(transaction.timestamp);
   const chainId = transaction.chain;
-  const from = getAddress(transaction.from);
-  const to = getAddress(transaction.to);
+
+  const from =
+    transaction.type === KeyringTransactionType.Send && subjectAddress
+      ? subjectAddress
+      : getAddress(transaction.from);
+
+  const to =
+    transaction.type === KeyringTransactionType.Receive && subjectAddress
+      ? subjectAddress
+      : getAddress(transaction.to);
 
   if (transaction.type === KeyringTransactionType.Send) {
+    const fromToken = getToken(transaction.from, 'out');
+    let token = fromToken;
+
+    // Bitcoin transaction.from can be empty, resulting in no token avatar or send amount displayed.
+    if (!fromToken && chainId.startsWith('bip122:')) {
+      token = getToken(transaction.to, 'out');
+    }
+
     return {
       type: 'send',
       chainId,
@@ -74,7 +125,8 @@ export function mapKeyringTransaction({
         hash: transaction.id,
         from,
         to,
-        token: getToken(transaction.from, 'out'),
+        token,
+        fees: getFees(transaction),
       },
     };
   }
@@ -90,6 +142,7 @@ export function mapKeyringTransaction({
         from,
         to,
         token: getToken(transaction.to, 'in'),
+        fees: getFees(transaction),
       },
     };
   }
@@ -102,8 +155,10 @@ export function mapKeyringTransaction({
       timestamp,
       data: {
         hash: transaction.id,
+        from,
         destinationToken: getToken(transaction.to, 'in'),
         sourceToken: getToken(transaction.from, 'out'),
+        fees: getFees(transaction),
       },
     };
   }
@@ -117,6 +172,7 @@ export function mapKeyringTransaction({
       hash: transaction.id,
       from,
       to,
+      fees: getFees(transaction),
       transactionType: transaction.type,
     },
   };

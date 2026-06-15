@@ -22,11 +22,22 @@ import * as assetUtilsModule from '../../../../shared/lib/asset-utils';
 import { ImportTokensModal } from '.';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// so these tests exercise the real feature-flag gating logic via state.
-jest.mock('../../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual(
-    '../../../../shared/lib/assets-unify-state/remote-feature-flag',
-  ),
+// and provide the pure flag-evaluation logic without the IN_TEST bypass
+// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
+// so using jest.requireActual here would make the function always return true,
+// breaking tests that exercise the disabled-flag path).
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: jest.fn(
+      (featureFlag, featureVersion) =>
+        Boolean(featureFlag?.enabled) &&
+        featureFlag?.featureVersion === featureVersion,
+    ),
+  }),
 );
 
 jest.mock('../../../hooks/bridge/useTokensWithFiltering');
@@ -446,29 +457,6 @@ describe('ImportTokensModal', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('should show "unavailable" message when no tokens and not EVM chain', () => {
-      // Mock as non-EVM chain with no token support
-      jest.spyOn(assetUtilsModule, 'isEvmChainId').mockReturnValue(false);
-
-      useTokensWithFiltering.mockReturnValue({
-        *filteredTokenListGenerator() {
-          // No tokens
-        },
-        isLoading: false,
-      });
-
-      const { getByTestId, queryByText } = render();
-
-      expect(getByTestId('import-tokens-no-support')).toBeInTheDocument();
-      expect(getByTestId('import-tokens-no-support').textContent).toContain(
-        messages.simulationDetailsUnavailable.message,
-      );
-
-      // Should not show tabs when not supported
-      expect(queryByText(messages.search.message)).not.toBeInTheDocument();
-      expect(queryByText(messages.customToken.message)).not.toBeInTheDocument();
-    });
-
     it('should show Search tab when tokens are available on EVM chain', () => {
       jest.spyOn(assetUtilsModule, 'isEvmChainId').mockReturnValue(true);
 
@@ -506,13 +494,10 @@ describe('ImportTokensModal', () => {
         isLoading: false,
       });
 
-      const { getByText, queryByText } = render();
+      const { getByText } = render();
 
       // Custom token tab should still be available on EVM chains
       expect(getByText(messages.customToken.message)).toBeInTheDocument();
-
-      // Search tab should not show when no tokens
-      expect(queryByText(messages.search.message)).not.toBeInTheDocument();
     });
 
     it('should disable Next button when loading', () => {

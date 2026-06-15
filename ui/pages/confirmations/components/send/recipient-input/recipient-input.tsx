@@ -65,8 +65,8 @@ export const RecipientInput = ({
     '';
 
   const onToChange = useCallback(
-    (e) => {
-      if (e.nativeEvent.inputType === 'insertFromPaste') {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if ((e.nativeEvent as InputEvent).inputType === 'insertFromPaste') {
         setRecipientInputMethodPasted();
       } else {
         setRecipientInputMethodManual();

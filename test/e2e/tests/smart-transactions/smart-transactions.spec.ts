@@ -7,7 +7,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import {
   createDappTransaction,
   createInternalTransaction,
-} from '../../page-objects/flows/transaction';
+} from '../../page-objects/flows/transaction.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -154,8 +154,8 @@ describe('Smart Transactions', function () {
         await activityList.checkCompletedTxNumberDisplayedInActivity();
         await activityList.checkNoFailedTransactions();
         await activityList.checkConfirmedTxNumberDisplayedInActivity();
-        await activityList.checkTxAction({ action: 'Swap ETH to DAI' });
-        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
+        await activityList.checkTxAction({ action: 'Swapped ETH to DAI' });
+        await activityList.checkTxAmountInActivity(`+4,625.9799 DAI`, 1);
       },
     );
   });

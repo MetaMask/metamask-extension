@@ -75,6 +75,7 @@ import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -230,7 +231,7 @@ function buildClosePositionParams(
  * PerpsOrderEntryPage - Full-page order entry for perps trading
  * Accessible via /perps/trade/:symbol?direction=long|short&mode=new|modify|close&orderType=market|limit
  */
-const PerpsOrderEntryPage: React.FC = () => {
+const PerpsOrderEntryPage = () => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
   const navigate = useNavigate();
@@ -239,6 +240,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
+  const { gate } = useSelectedAccountComplianceGate();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
@@ -1330,7 +1332,34 @@ const PerpsOrderEntryPage: React.FC = () => {
   ]);
 
   const handlePrimaryAction = useCallback(async () => {
-    if (hasNoAvailableBalance) {
+    await gate(async () => {
+      if (hasNoAvailableBalance) {
+        if (!isEligible) {
+          setIsGeoBlockModalOpen(true);
+          return;
+        }
+        if (!selectedAddress || isDepositLoading) {
+          return;
+        }
+
+        await triggerDeposit();
+        return;
+      }
+
+      await handleOrderSubmit();
+    });
+  }, [
+    gate,
+    handleOrderSubmit,
+    hasNoAvailableBalance,
+    isDepositLoading,
+    isEligible,
+    selectedAddress,
+    triggerDeposit,
+  ]);
+
+  const handleAddFunds = useCallback(async () => {
+    await gate(async () => {
       if (!isEligible) {
         setIsGeoBlockModalOpen(true);
         return;
@@ -1340,18 +1369,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       }
 
       await triggerDeposit();
-      return;
-    }
-
-    await handleOrderSubmit();
-  }, [
-    handleOrderSubmit,
-    hasNoAvailableBalance,
-    isDepositLoading,
-    isEligible,
-    selectedAddress,
-    triggerDeposit,
-  ]);
+    });
+  }, [gate, isDepositLoading, isEligible, selectedAddress, triggerDeposit]);
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -1537,7 +1556,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           existingPosition={existingPositionForOrder}
           midPrice={topOfBook?.midPrice}
           onOrderTypeChange={setOrderType}
-          onAddFunds={triggerDeposit}
+          onAddFunds={handleAddFunds}
           initialLeverage={initialLeverage}
           autoFocusUsd={orderMode !== 'close'}
           autoFocusLimitPrice={orderMode !== 'close'}

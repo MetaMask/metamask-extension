@@ -162,7 +162,7 @@ function addPayTypeProperties(
   transaction: TransactionMeta,
   transactionMetricsRequest: Pick<
     TransactionMetricsRequest,
-    'getTransactionPayData'
+    'getTransactionPayData' | 'getTransactionUIMetricsFragment'
   >,
 ) {
   const { id: transactionId, metamaskPay } = transaction;
@@ -188,6 +188,17 @@ function addPayTypeProperties(
       properties.mm_pay_use_case = useCase;
       break;
     }
+  }
+
+  // The prefilled amount is a UI load-time value recorded on the parent
+  // confirmation's metrics fragment. Read it from the parent here so it rides
+  // along to the executed child transactions whose events are actually emitted.
+  const prefilledAmount =
+    transactionMetricsRequest.getTransactionUIMetricsFragment(transactionId)
+      ?.properties?.mm_pay_prefilled_amount;
+
+  if (prefilledAmount !== undefined) {
+    properties.mm_pay_prefilled_amount = prefilledAmount;
   }
 
   if (!txPayData) {

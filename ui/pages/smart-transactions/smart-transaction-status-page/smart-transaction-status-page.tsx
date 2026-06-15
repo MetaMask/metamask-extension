@@ -7,6 +7,11 @@ import {
 
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   Text,
   IconName,
   Button,
@@ -14,12 +19,7 @@ import {
   ButtonSecondary,
 } from '../../../components/component-library';
 import {
-  AlignItems,
   BlockSize,
-  BorderStyle,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextVariant,
   TextColor,
   FontWeight,
@@ -106,10 +106,9 @@ const Description = ({ description }: { description: string | undefined }) => {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      className="smart-transaction-status-page__description"
+      className="flex smart-transaction-status-page__description"
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
     >
       <Text
         marginTop={2}
@@ -152,11 +151,7 @@ const PortfolioSmartTransactionStatusUrl = ({
     return null;
   }
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      marginTop={2}
-    >
+    <Box className="flex" flexDirection={BoxFlexDirection.Column} marginTop={2}>
       <Button
         type="link"
         variant={ButtonVariant.Link}
@@ -249,10 +244,8 @@ const SmartTransactionsStatusPageFooter = ({
 }) => {
   return (
     <Box
-      className="smart-transaction-status-page__footer"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      width={BlockSize.Full}
+      className="flex w-full smart-transaction-status-page__footer"
+      flexDirection={BoxFlexDirection.Column}
       padding={4}
       paddingBottom={0}
     >
@@ -328,28 +321,22 @@ export const SmartTransactionStatusPage = ({
 
   return (
     <Box
-      className="smart-transaction-status-page"
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      display={Display.Flex}
-      borderStyle={BorderStyle.none}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
+      className="flex h-full w-full smart-transaction-status-page"
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
       marginBottom={0}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        width={BlockSize.Full}
+        className="flex w-full"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         style={{ flexGrow: 1 }}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          width={BlockSize.Full}
+          className="flex w-full"
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
         >
           <SmartTransactionStatusAnimation
             status={smartTransaction?.status as SmartTransactionStatuses}
@@ -365,7 +352,7 @@ export const SmartTransactionStatusPage = ({
           />
         </Box>
         {canShowSimulationDetails && (
-          <Box width={BlockSize.Full}>
+          <Box className="w-full">
             <SimulationDetails
               transaction={fullTxData}
               smartTransactionStatus={smartTransaction?.status?.toLowerCase()}

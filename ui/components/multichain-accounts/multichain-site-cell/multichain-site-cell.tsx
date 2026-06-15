@@ -37,7 +37,7 @@ type MultichainSiteCellProps = {
   hideAllToasts?: () => void;
 };
 
-export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
+export const MultichainSiteCell = ({
   nonTestNetworks,
   testNetworks,
   supportedAccountGroups,
@@ -47,7 +47,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
   selectedChainIds,
   isConnectFlow,
   hideAllToasts = () => undefined,
-}) => {
+}: MultichainSiteCellProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
@@ -129,6 +129,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           onClick={handleOpenAccountsModal}
           paddingBottomValue={2}
           paddingTopValue={0}
+          // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
           content={
             selectedAccountGroupIds.length === 1 ? (
               <PreferredAvatar
@@ -153,6 +154,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           onClick={handleOpenNetworksModal}
           paddingTopValue={2}
           paddingBottomValue={0}
+          // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
           content={<MultichainSiteCellTooltip networks={selectedNetworks} />}
         />
       </Box>

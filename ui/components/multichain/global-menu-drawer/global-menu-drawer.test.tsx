@@ -12,12 +12,12 @@ import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/l
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 
-// eslint-disable-next-line import-x/no-restricted-paths
-const getEnvironmentType = jest.requireMock('../../../../app/scripts/lib/util')
-  .getEnvironmentType as jest.Mock;
+const getEnvironmentType = jest.requireMock(
+  '../../../../shared/lib/environment-type',
+).getEnvironmentType as jest.Mock;
 
-jest.mock('../../../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../../../app/scripts/lib/util'),
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
 }));
 
