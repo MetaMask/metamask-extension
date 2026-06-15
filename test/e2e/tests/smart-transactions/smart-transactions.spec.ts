@@ -134,7 +134,6 @@ describe('Smart Transactions', function () {
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
-        await homePage.checkIfSwapButtonIsClickable();
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
@@ -168,7 +167,6 @@ describe('Smart Transactions', function () {
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
-        await homePage.checkIfSwapButtonIsClickable();
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
