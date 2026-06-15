@@ -102,20 +102,12 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
-      // v10's browser-tracing observers (long-animation-frame, INP, fetch) add
-      // per-frame instrumentation overhead that, under e2e's 100% sample rate,
-      // delays the non-EVM account render past the page-object waits. e2e does
-      // not consume these traces, so skip the integration for the fake DSN.
-      ...(sentryTarget === SENTRY_DSN_FAKE
-        ? []
-        : [
-            Sentry.browserTracingIntegration({
-              // Creates ui.long-animation-frame spans (falls back to ui.long-task).
-              // Pairs with TBT aggregate measurements from performance-observers.ts.
-              enableLongAnimationFrame: true,
-              shouldCreateSpanForRequest,
-            }),
-          ]),
+      Sentry.browserTracingIntegration({
+        // Creates ui.long-animation-frame spans (falls back to ui.long-task).
+        // Pairs with TBT aggregate measurements from performance-observers.ts.
+        enableLongAnimationFrame: true,
+        shouldCreateSpanForRequest,
+      }),
       metaMetricsIntegration({
         getAnalyticsState,
         log,
