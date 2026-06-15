@@ -64,12 +64,12 @@ describe('AppStateController', () => {
             mainFrameOrigin: 'https://top-level.example',
           },
         });
-        expect(controller.getTransactionFrameContext('request-1')).toStrictEqual(
-          {
-            frameId: 1,
-            mainFrameOrigin: 'https://top-level.example',
-          },
-        );
+        expect(
+          controller.getTransactionFrameContext('request-1'),
+        ).toStrictEqual({
+          frameId: 1,
+          mainFrameOrigin: 'https://top-level.example',
+        });
       });
     });
 
@@ -80,9 +80,9 @@ describe('AppStateController', () => {
           mainFrameOrigin: 'https://dapp.example',
         });
 
-        expect(controller.getTransactionFrameContext('top-level')).toStrictEqual(
-          { frameId: 0 },
-        );
+        expect(
+          controller.getTransactionFrameContext('top-level'),
+        ).toStrictEqual({ frameId: 0 });
         expect(
           controller.getTransactionFrameContext('origin-only'),
         ).toStrictEqual({ mainFrameOrigin: 'https://dapp.example' });

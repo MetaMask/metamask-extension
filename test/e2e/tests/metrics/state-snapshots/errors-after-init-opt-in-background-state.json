@@ -85,6 +85,7 @@
     "storageWriteErrorType": null,
     "termsOfUseLastAgreed": "number",
     "throttledOrigins": "object",
+    "transactionFrameContexts": "object",
     "trezorModel": null,
     "updateModalLastDismissedAt": null
   },
