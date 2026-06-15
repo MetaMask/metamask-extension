@@ -77,6 +77,130 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.closePercent).toBe(100);
     });
 
+    it('pre-fills default order amount for new orders when balance is available', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 100,
+            szDecimals: 6,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('10');
+    });
+
+    it('recaps default order amount when price resolves after mount', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 0,
+        availableBalance: 1,
+        szDecimals: 6,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('10');
+
+      props.currentPrice = 45000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).not.toBe('10');
+      expect(Number.parseFloat(result.current.formState.amount)).toBeLessThan(
+        10,
+      );
+    });
+
+    it('recaps default order amount using current leverage after balance increases', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 45000,
+        availableBalance: 10,
+        szDecimals: 6,
+        initialLeverage: 3,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(10);
+      });
+
+      props.availableBalance = 1000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('10');
+      const marginAtTenX = 10 / 10;
+      const expectedBalancePercent =
+        Math.round((marginAtTenX / 1000) * 100 * 100) / 100;
+      expect(result.current.formState.balancePercent).toBe(
+        expectedBalancePercent,
+      );
+      const marginAtDefaultLeverage = 10 / 3;
+      const balancePercentAtDefaultLeverage =
+        Math.round((marginAtDefaultLeverage / 1000) * 100 * 100) / 100;
+      expect(result.current.formState.balancePercent).not.toBe(
+        balancePercentAtDefaultLeverage,
+      );
+    });
+
+    it('recaps default order amount when tradeable balance increases', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 45000,
+        availableBalance: 1,
+        szDecimals: 6,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      const cappedAmount = Number.parseFloat(result.current.formState.amount);
+      expect(cappedAmount).toBeLessThan(10);
+
+      props.availableBalance = 1000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('10');
+    });
+
+    it('preserves user-edited amount when price resolves after mount', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 0,
+        availableBalance: 1,
+        szDecimals: 6,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5');
+      });
+      expect(result.current.formState.amount).toBe('5');
+
+      props.currentPrice = 45000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('5');
+    });
+
     it('uses initialLeverage when provided for new orders', () => {
       const { result } = renderHookWithProvider(
         () =>

@@ -13,9 +13,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PartnerLink } from './partner-link';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
 
-const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
+const PartnerImage = ({
   partnerId,
   partnerName,
+}: {
+  partnerId: string;
+  partnerName: string;
 }) => {
   return (
     <img
@@ -26,15 +29,13 @@ const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
   );
 };
 
-export const DefiReferralConsentTreatment: React.FC<
-  DefiReferralConsentProps
-> = ({
+export const DefiReferralConsentTreatment = ({
   onActionComplete,
   selectedAddress,
   partnerId,
   partnerName,
   learnMoreUrl,
-}) => {
+}: DefiReferralConsentProps) => {
   const t = useI18nContext();
 
   const handleSubmit = (value: boolean) => {

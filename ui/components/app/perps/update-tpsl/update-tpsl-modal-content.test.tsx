@@ -14,6 +14,26 @@ const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
 
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
+
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
@@ -61,9 +81,9 @@ const defaultProps = {
  * Mirrors UpdateTPSLModal footer so unit tests can reach the primary action
  * @param props
  */
-const TpslContentWithTestFooter: React.FC<
-  React.ComponentProps<typeof UpdateTPSLModalContent>
-> = (props) => {
+const TpslContentWithTestFooter = (
+  props: React.ComponentProps<typeof UpdateTPSLModalContent>,
+) => {
   const [submitState, setSubmitState] =
     React.useState<UpdateTPSLSubmitState | null>(null);
   return (

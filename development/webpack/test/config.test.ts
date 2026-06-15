@@ -192,9 +192,6 @@ describe('./utils/config.ts', () => {
       rcVars.INFURA_ENV_KEY_REF = 'INFURA_PROD_PROJECT_ID';
       rcVars.SEGMENT_WRITE_KEY_REF = 'SEGMENT_PROD_WRITE_KEY';
       rcVars.SEGMENT_PROD_WRITE_KEY = 'SEGMENT_PROD_WRITE_KEY';
-      rcVars.APPLE_PROD_CLIENT_ID = 'APPLE_PROD_CLIENT_ID';
-      rcVars.GOOGLE_PROD_CLIENT_ID = 'GOOGLE_PROD_CLIENT_ID';
-      rcVars.TELEGRAM_PROD_CLIENT_ID = 'TELEGRAM_PROD_CLIENT_ID';
 
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(

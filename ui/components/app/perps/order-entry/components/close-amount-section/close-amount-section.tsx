@@ -37,14 +37,14 @@ const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
  * @param props.currentPrice - Current asset price for USD calculation
  * @param props.sizeDecimals - Market size decimals for controller-based size formatting
  */
-export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
+export const CloseAmountSection = ({
   positionSize,
   closePercent,
   onClosePercentChange,
   asset,
   currentPrice,
   sizeDecimals,
-}) => {
+}: CloseAmountSectionProps) => {
   const t = useI18nContext();
 
   const totalPositionSize = Math.abs(Number.parseFloat(positionSize)) || 0;
@@ -93,7 +93,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
   }, []);
 
   const handleSliderChange = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event, value: number | number[]) => {
       const percent = Array.isArray(value) ? value[0] : value;
       onClosePercentChange(percent);
     },

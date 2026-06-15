@@ -1,29 +1,30 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
-  IconName,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
   Checkbox,
-  IconSize,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  Text,
+  FontWeight,
   Icon,
-} from '../../../component-library';
-
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
   IconColor,
-  JustifyContent,
+  IconName,
+  IconSize,
+  Text,
   TextColor,
   TextVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+
+import {
+  BackgroundColor,
+  TextVariant as LegacyTextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
@@ -43,15 +44,13 @@ type MultichainEditNetworksPageProps = {
   onSubmit: (chainIds: CaipChainId[]) => void;
 };
 
-export const MultichainEditNetworksPage: React.FC<
-  MultichainEditNetworksPageProps
-> = ({
+export const MultichainEditNetworksPage = ({
   nonTestNetworks,
   testNetworks,
   defaultSelectedChainIds,
   onSubmit,
   onClose,
-}) => {
+}: MultichainEditNetworksPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
@@ -103,7 +102,7 @@ export const MultichainEditNetworksPage: React.FC<
     >
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: LegacyTextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -124,11 +123,13 @@ export const MultichainEditNetworksPage: React.FC<
       >
         <Box padding={4}>
           <Checkbox
+            id="edit-networks-select-all"
             label={t('selectAll')}
-            isChecked={checked}
-            gap={4}
-            onClick={() => (allAreSelected ? deselectAll() : selectAll())}
-            isIndeterminate={isIndeterminate}
+            isSelected={checked || isIndeterminate}
+            onChange={() => (allAreSelected ? deselectAll() : selectAll())}
+            checkedIconProps={
+              isIndeterminate ? { name: IconName.MinusBold } : undefined
+            }
           />
         </Box>
         {nonTestNetworks.map((network) => (
@@ -141,13 +142,18 @@ export const MultichainEditNetworksPage: React.FC<
             }}
             startAccessory={
               <Checkbox
-                isChecked={selectedChainIds.includes(network.caipChainId)}
+                id={`edit-networks-checkbox-${network.caipChainId}`}
+                isSelected={selectedChainIds.includes(network.caipChainId)}
+                onChange={() => handleNetworkClick(network.caipChainId)}
+                onClick={(event) => event.stopPropagation()}
               />
             }
           />
         ))}
         <Box padding={4}>
-          <Text variant={TextVariant.bodyMdMedium}>{t('testnets')}</Text>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {t('testnets')}
+          </Text>
         </Box>
         {testNetworks.map((network) => (
           <NetworkListItem
@@ -159,7 +165,10 @@ export const MultichainEditNetworksPage: React.FC<
             }}
             startAccessory={
               <Checkbox
-                isChecked={selectedChainIds.includes(network.caipChainId)}
+                id={`edit-networks-checkbox-${network.caipChainId}`}
+                isSelected={selectedChainIds.includes(network.caipChainId)}
+                onChange={() => handleNetworkClick(network.caipChainId)}
+                onClick={(event) => event.stopPropagation()}
               />
             }
             showEndAccessory={false}
@@ -169,28 +178,27 @@ export const MultichainEditNetworksPage: React.FC<
       <Footer>
         {selectedChainIds.length === 0 ? (
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            flexDirection={BoxFlexDirection.Column}
             gap={4}
-            alignItems={AlignItems.center}
-            width={BlockSize.Full}
+            alignItems={BoxAlignItems.Center}
+            className="flex w-full"
           >
             <Box
-              display={Display.Flex}
+              className="flex"
               gap={1}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
             >
               <Icon
                 name={IconName.Danger}
                 size={IconSize.Sm}
-                color={IconColor.errorDefault}
+                color={IconColor.ErrorDefault}
               />
-              <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
                 {t('disconnectMessage')}
               </Text>
             </Box>
-            <ButtonPrimary
+            <Button
               data-testid="disconnect-chains-button"
               onClick={() => {
                 onSubmit(selectedChainIds);
@@ -215,25 +223,27 @@ export const MultichainEditNetworksPage: React.FC<
                 });
                 onClose();
               }}
-              size={ButtonPrimarySize.Lg}
-              block
-              danger
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              isFullWidth
+              isDanger
             >
               {t('disconnect')}
-            </ButtonPrimary>
+            </Button>
           </Box>
         ) : (
-          <ButtonPrimary
+          <Button
             data-testid="connect-more-chains-button"
             onClick={() => {
               onSubmit(selectedChainIds);
               onClose();
             }}
-            size={ButtonPrimarySize.Lg}
-            block
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            isFullWidth
           >
             {t('update')}
-          </ButtonPrimary>
+          </Button>
         )}
       </Footer>
     </Page>

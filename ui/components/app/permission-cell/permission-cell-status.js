@@ -1,21 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarTokenSize,
-  Box,
   Text,
 } from '../../component-library';
 import {
-  AlignItems,
   BlockSize,
   BorderColor,
   Display,
-  FlexDirection,
-  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -56,97 +57,95 @@ export const PermissionCellStatus = ({
     <>
       {networks.length > 0 ? (
         <Box
-          as="span"
-          className="permission-cell__status__accounts-group-box"
-          display={Display.InlineFlex}
+          asChild
+          className="permission-cell__status__accounts-group-box inline-flex"
         >
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {networks?.map((network, index) => {
-              // Get network icon: try EVM chain ID map first, then rpcPrefs.imageUrl for non-EVM
-              const networkImageUrl =
-                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId] ??
-                network.rpcPrefs?.imageUrl ??
-                network.nativeTokenIconUrl;
-              return (
-                <Box
-                  key={`${network.name}_${index}`}
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.flexStart}
-                  alignItems={AlignItems.center}
-                  marginTop={2}
-                >
-                  <AvatarNetwork
-                    size={AvatarNetworkSize.Xs}
-                    src={networkImageUrl}
-                    name={network.name}
-                  />
-                  <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                    {network.name}
-                  </Text>
-                </Box>
-              );
-            })}
-          </Box>
+          <span>
+            <Box className="flex flex-col">
+              {networks?.map((network, index) => {
+                // Get network icon: try EVM chain ID map first, then rpcPrefs.imageUrl for non-EVM
+                const networkImageUrl =
+                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId] ??
+                  network.rpcPrefs?.imageUrl ??
+                  network.nativeTokenIconUrl;
+                return (
+                  <Box
+                    key={`${network.name}_${index}`}
+                    className="flex"
+                    justifyContent={BoxJustifyContent.Start}
+                    alignItems={BoxAlignItems.Center}
+                    marginTop={2}
+                  >
+                    <AvatarNetwork
+                      size={AvatarNetworkSize.Xs}
+                      src={networkImageUrl}
+                      name={network.name}
+                    />
+                    <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+                      {network.name}
+                    </Text>
+                  </Box>
+                );
+              })}
+            </Box>
+          </span>
         </Box>
       ) : (
         <Box
-          as="span"
-          className="permission-cell__status__accounts-group-box"
-          display={Display.InlineFlex}
+          asChild
+          className="permission-cell__status__accounts-group-box inline-flex"
         >
-          <Tooltip
-            position="bottom"
-            html={
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-              >
-                <Text
-                  variant={TextVariant.headingSm}
-                  color={TextColor.textAlternative}
-                  textAlign={TextAlign.Center}
-                >
-                  {t('accounts')}
-                </Text>
+          <span>
+            <Tooltip
+              position="bottom"
+              html={
                 <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
+                  className="flex flex-col"
+                  justifyContent={BoxJustifyContent.Center}
+                  alignItems={BoxAlignItems.Center}
                 >
-                  {accounts.map((account, index) => (
-                    <Box
-                      key={`${account.avatarValue}_${index}`}
-                      display={Display.Flex}
-                      justifyContent={JustifyContent.flexStart}
-                      alignItems={AlignItems.center}
-                      marginTop={2}
-                    >
-                      <PreferredAvatar
-                        address={account.avatarValue}
-                        size={AvatarAccountSize.Xs}
-                      />
-                      <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                        {account.avatarName}
-                      </Text>
-                    </Box>
-                  ))}
+                  <Text
+                    variant={TextVariant.headingSm}
+                    color={TextColor.textAlternative}
+                    textAlign={TextAlign.Center}
+                  >
+                    {t('accounts')}
+                  </Text>
+                  <Box className="flex flex-col">
+                    {accounts.map((account, index) => (
+                      <Box
+                        key={`${account.avatarValue}_${index}`}
+                        className="flex"
+                        justifyContent={BoxJustifyContent.Start}
+                        alignItems={BoxAlignItems.Center}
+                        marginTop={2}
+                      >
+                        <PreferredAvatar
+                          address={account.avatarValue}
+                          size={AvatarAccountSize.Xs}
+                        />
+                        <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+                          {account.avatarName}
+                        </Text>
+                      </Box>
+                    ))}
+                  </Box>
                 </Box>
-              </Box>
-            }
-          >
-            <AvatarGroup
-              limit={3}
-              members={accounts}
-              avatarType={AvatarType.ACCOUNT}
-              variant={avatarAccountVariant}
-              size={AvatarTokenSize.Xs}
-              width={BlockSize.Min}
-              borderColor={BorderColor.backgroundDefault}
-              marginLeft={4}
-              paddingLeft={4}
-            />
-          </Tooltip>
+              }
+            >
+              <AvatarGroup
+                limit={3}
+                members={accounts}
+                avatarType={AvatarType.ACCOUNT}
+                variant={avatarAccountVariant}
+                size={AvatarTokenSize.Xs}
+                width={BlockSize.Min}
+                borderColor={BorderColor.backgroundDefault}
+                marginLeft={4}
+                paddingLeft={4}
+              />
+            </Tooltip>
+          </span>
         </Box>
       )}
     </>

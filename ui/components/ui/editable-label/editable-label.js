@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
-import {
-  AlignItems,
-  Color,
-  Display,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
+import { Color, TextVariant } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import { ButtonIcon, IconName, Text, Box } from '../../component-library';
+import { ButtonIcon, IconName, Text } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 
 export default class EditableLabel extends Component {
@@ -47,8 +43,7 @@ export default class EditableLabel extends Component {
 
     return (
       <Box
-        className={classnames('editable-label', this.props.className)}
-        display={Display.Flex}
+        className={classnames('flex editable-label', this.props.className)}
         gap={3}
       >
         <FormTextField
@@ -79,7 +74,7 @@ export default class EditableLabel extends Component {
 
   renderReadonly() {
     return (
-      <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
+      <Box className="flex" alignItems={BoxAlignItems.Center} gap={3}>
         <Text
           variant={TextVariant.bodyLgMedium}
           style={{ wordBreak: 'break-word' }}

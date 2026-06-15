@@ -565,6 +565,36 @@ describe('useHardwareWalletConnection', () => {
       );
     });
 
+    it('connects with the current wallet type ref when selected account wallet type is unavailable', async () => {
+      mockRefs.adapterRef.current = null;
+      mockRefs.walletTypeRef.current = HardwareWalletType.Trezor;
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
+        mockAdapter,
+      );
+
+      const { result } = setupHook();
+
+      let ready: boolean | undefined;
+      await act(async () => {
+        ready = await result.current.ensureDeviceReady();
+      });
+
+      expect(ready).toBe(true);
+      expect(createAdapterForHardwareWalletType).toHaveBeenCalledWith(
+        HardwareWalletType.Trezor,
+        expect.any(Object),
+      );
+      expect(mockAdapter.connectMock).toHaveBeenCalled();
+      expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalled();
+    });
+
     it('verifies device when already connected', async () => {
       const mockAdapter = new MockHardwareWalletAdapter({
         onDisconnect: mockHandleDisconnect,

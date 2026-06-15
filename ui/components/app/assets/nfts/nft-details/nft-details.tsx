@@ -70,12 +70,10 @@ import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getConversionRate } from '../../../../../ducks/metamask/base-selectors';
 import { Numeric } from '../../../../../../shared/lib/Numeric';
-// TODO: Remove restricted import
 import {
   addUrlProtocolPrefix,
   isWebUrl,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../../../../app/scripts/lib/util';
+} from '../../../../../../shared/lib/url-utils';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';

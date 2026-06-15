@@ -11,6 +11,7 @@ import {
   getAllScopesFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SubjectType } from '@metamask/permission-controller';
+import { Box } from '@metamask/design-system-react';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
@@ -19,14 +20,9 @@ import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
 
 import {
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library';
-import {
   getCaip25CaveatValueFromPermissions,
   getCaip25PermissionsResponse,
-} from '../../../pages/permissions-connect/connect-page/utils';
+} from '../../../helpers/utils/caip25-permissions';
 import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
@@ -287,7 +283,7 @@ export default class PermissionPageContainer extends Component {
           selectedAccounts={selectedAccounts}
           allAccountsSelected={allAccountsSelected}
         />
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box className="flex flex-col">
           {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
             <PermissionsConnectFooter />
           )}

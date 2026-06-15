@@ -8,6 +8,7 @@ import type {
 } from '@metamask/approval-controller';
 import type { GetSubjectMetadata } from '@metamask/permission-controller';
 import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
+import type { SnapAccountServiceHandleKeyringSnapMessageAction } from '@metamask/snap-account-service';
 import {
   SnapControllerGetPermittedSnapsAction,
   SnapControllerInstallSnapsAction,
@@ -26,6 +27,10 @@ type AllowedActions =
   | SnapControllerGetPermittedSnapsAction
   | SnapControllerInstallSnapsAction;
 
+// TODO: Ideally we remove this type, but we request more permissions than
+// defined in the permission controller's own messenger (to support certain
+// side effects), so we can't currently use the controller's messenger type as
+// the allowed actions for the controller's messenger.
 export type PermissionControllerMessenger = ReturnType<
   typeof getPermissionControllerMessenger
 >;
@@ -70,6 +75,7 @@ type AllowedInitializationActions =
   | MultichainRoutingServiceIsSupportedScopeAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | SnapPermissionSpecificationsActions
+  | SnapAccountServiceHandleKeyringSnapMessageAction
   | ApprovalControllerAddRequestAction;
 
 export type PermissionControllerInitMessenger = ReturnType<
@@ -102,9 +108,8 @@ export function getPermissionControllerInitMessenger(
       'AccountsController:listAccounts',
       'AssetsController:getState',
       'CurrencyRateController:getState',
-      'KeyringController:getKeyringsByType',
       'KeyringController:withKeyring',
-      'KeyringController:addNewKeyring',
+      'KeyringController:withKeyringV2Unsafe',
       'MultichainRoutingService:isSupportedScope',
       'MultichainRoutingService:getSupportedAccounts',
       'NetworkController:findNetworkClientIdByChainId',
@@ -121,6 +126,7 @@ export function getPermissionControllerInitMessenger(
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
       'SnapInterfaceController:setInterfaceDisplayed',
+      'SnapAccountService:handleKeyringSnapMessage',
       'ApprovalController:addRequest',
     ],
   });
