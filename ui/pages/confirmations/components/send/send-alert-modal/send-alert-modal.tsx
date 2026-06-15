@@ -136,6 +136,7 @@ export const SendAlertModal = ({
 }: SendAlertModalProps) => {
   const t = useI18nContext();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [viewedKeys, setViewedKeys] = useState<Set<string>>(() => new Set());
 
   const safeIndex = Math.min(currentIndex, Math.max(alerts.length - 1, 0));
   const currentAlert = alerts[safeIndex];
@@ -153,7 +154,26 @@ export const SendAlertModal = ({
 
   useEffect(() => {
     setCurrentIndex(0);
-  }, [isOpen, alertKeys]);
+    setViewedKeys(new Set());
+  }, [isOpen]);
+
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [alertKeys]);
+
+  useEffect(() => {
+    if (!isOpen || !currentAlert) {
+      return;
+    }
+    setViewedKeys((prev) => {
+      if (prev.has(currentAlert.key)) {
+        return prev;
+      }
+      const next = new Set(prev);
+      next.add(currentAlert.key);
+      return next;
+    });
+  }, [isOpen, currentAlert]);
 
   const isOnLastAlert = safeIndex >= Math.max(alerts.length - 1, 0);
 
@@ -162,11 +182,13 @@ export const SendAlertModal = ({
       return;
     }
     if (isOnLastAlert) {
-      onAcknowledge();
+      const acknowledged = new Set(viewedKeys);
+      acknowledged.add(currentAlert.key);
+      onAcknowledge(Array.from(acknowledged));
       return;
     }
     goToNext();
-  }, [currentAlert, goToNext, isOnLastAlert, onAcknowledge]);
+  }, [currentAlert, goToNext, isOnLastAlert, onAcknowledge, viewedKeys]);
 
   if (!currentAlert) {
     return null;

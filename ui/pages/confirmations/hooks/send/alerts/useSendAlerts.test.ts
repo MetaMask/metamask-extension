@@ -155,4 +155,56 @@ describe('useSendAlerts', () => {
 
     expect(result.current.hasUnacknowledgedAlerts).toBe(false);
   });
+
+  it('only acknowledges the supplied keys when keys are passed explicitly', () => {
+    mockUseTokenContractSendAlert.mockReturnValue(TOKEN_CONTRACT_ALERT);
+    mockUseFirstTimeInteractionSendAlert.mockReturnValue(FIRST_TIME_ALERT);
+
+    const { result } = renderHook(() => useSendAlerts());
+
+    act(() => {
+      result.current.acknowledgeAlerts([TOKEN_CONTRACT_ALERT.key]);
+    });
+
+    expect(result.current.hasUnacknowledgedAlerts).toBe(true);
+
+    act(() => {
+      result.current.acknowledgeAlerts([FIRST_TIME_ALERT.key]);
+    });
+
+    expect(result.current.hasUnacknowledgedAlerts).toBe(false);
+  });
+
+  it('merges acknowledged keys across successive calls instead of overwriting', () => {
+    mockUseTokenContractSendAlert.mockReturnValue(TOKEN_CONTRACT_ALERT);
+
+    const { result, rerender } = renderHook(() => useSendAlerts());
+
+    act(() => {
+      result.current.acknowledgeAlerts([TOKEN_CONTRACT_ALERT.key]);
+    });
+
+    mockUseFirstTimeInteractionSendAlert.mockReturnValue(FIRST_TIME_ALERT);
+    rerender();
+
+    expect(result.current.hasUnacknowledgedAlerts).toBe(true);
+
+    act(() => {
+      result.current.acknowledgeAlerts([FIRST_TIME_ALERT.key]);
+    });
+
+    expect(result.current.hasUnacknowledgedAlerts).toBe(false);
+  });
+
+  it('is a no-op when called with an empty key list', () => {
+    mockUseTokenContractSendAlert.mockReturnValue(TOKEN_CONTRACT_ALERT);
+
+    const { result } = renderHook(() => useSendAlerts());
+
+    act(() => {
+      result.current.acknowledgeAlerts([]);
+    });
+
+    expect(result.current.hasUnacknowledgedAlerts).toBe(true);
+  });
 });

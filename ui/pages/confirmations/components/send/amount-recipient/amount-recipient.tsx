@@ -91,13 +91,16 @@ export const AmountRecipient = () => {
     validateNonEvmAmountAsync,
   ]);
 
-  const handleAlertModalAcknowledge = useCallback(async () => {
-    setIsAlertModalOpen(false);
-    acknowledgeAlerts();
-    if (shouldSubmitOnAcknowledge) {
-      await proceedWithSubmit();
-    }
-  }, [acknowledgeAlerts, shouldSubmitOnAcknowledge, proceedWithSubmit]);
+  const handleAlertModalAcknowledge = useCallback(
+    async (acknowledgedKeys: string[]) => {
+      setIsAlertModalOpen(false);
+      acknowledgeAlerts(acknowledgedKeys);
+      if (shouldSubmitOnAcknowledge) {
+        await proceedWithSubmit();
+      }
+    },
+    [acknowledgeAlerts, shouldSubmitOnAcknowledge, proceedWithSubmit],
+  );
 
   const onClick = useCallback(async () => {
     if (hasUnacknowledgedAlerts) {

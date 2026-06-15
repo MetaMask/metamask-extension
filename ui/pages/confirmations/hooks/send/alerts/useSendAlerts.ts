@@ -7,7 +7,7 @@ import type { SendAlert } from './types';
 export function useSendAlerts(): {
   alerts: SendAlert[];
   hasUnacknowledgedAlerts: boolean;
-  acknowledgeAlerts: () => void;
+  acknowledgeAlerts: (keys?: string[]) => void;
 } {
   const { to } = useSendContext();
   const tokenContractAlert = useTokenContractSendAlert();
@@ -29,9 +29,20 @@ export function useSendAlerts(): {
     setAcknowledgedKeys([]);
   }, [to]);
 
-  const acknowledgeAlerts = useCallback(() => {
-    setAcknowledgedKeys(alerts.map((alert) => alert.key));
-  }, [alerts]);
+  const acknowledgeAlerts = useCallback(
+    (keys?: string[]) => {
+      const toAdd = keys ?? alerts.map((alert) => alert.key);
+      if (toAdd.length === 0) {
+        return;
+      }
+      setAcknowledgedKeys((prev) => {
+        const merged = new Set(prev);
+        toAdd.forEach((k) => merged.add(k));
+        return Array.from(merged);
+      });
+    },
+    [alerts],
+  );
 
   const hasUnacknowledgedAlerts = alerts.some(
     (alert) => !acknowledgedKeys.includes(alert.key),

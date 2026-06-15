@@ -681,7 +681,9 @@ describe('AmountRecipient', () => {
       });
 
       await waitFor(() => {
-        expect(mockAcknowledgeAlerts).toHaveBeenCalled();
+        expect(mockAcknowledgeAlerts).toHaveBeenCalledWith([
+          TOKEN_CONTRACT_ALERT.key,
+        ]);
       });
       expect(mockHandleSubmit).toHaveBeenCalled();
     });
@@ -762,7 +764,9 @@ describe('AmountRecipient', () => {
       });
 
       await waitFor(() => {
-        expect(mockAcknowledgeAlerts).toHaveBeenCalled();
+        expect(mockAcknowledgeAlerts).toHaveBeenCalledWith([
+          TOKEN_CONTRACT_ALERT.key,
+        ]);
       });
       expect(mockHandleSubmit).not.toHaveBeenCalled();
     });

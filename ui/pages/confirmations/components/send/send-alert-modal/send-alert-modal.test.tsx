@@ -81,11 +81,12 @@ describe('SendAlertModal', () => {
     expect(queryByTestId('send-alert-modal-message')).not.toBeInTheDocument();
   });
 
-  it('calls onAcknowledge when acknowledge button is clicked', () => {
+  it('calls onAcknowledge with the viewed key when acknowledge button is clicked', () => {
     const { getByTestId } = renderComponent();
 
     fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
     expect(mockOnAcknowledge).toHaveBeenCalledTimes(1);
+    expect(mockOnAcknowledge).toHaveBeenCalledWith([TOKEN_ALERT.key]);
   });
 
   it('calls onClose when cancel button is clicked', () => {
@@ -267,6 +268,105 @@ describe('SendAlertModal', () => {
 
       fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
       expect(mockOnAcknowledge).toHaveBeenCalledTimes(1);
+      expect(mockOnAcknowledge).toHaveBeenCalledWith([
+        TOKEN_ALERT.key,
+        FIRST_TIME_ALERT.key,
+      ]);
+    });
+  });
+
+  describe('viewed-key tracking', () => {
+    it('only includes keys the user actually stepped through when alerts grow mid-flow', () => {
+      const { getByTestId, rerender } = renderComponent({
+        alerts: [TOKEN_ALERT],
+      });
+
+      rerender(
+        <SendAlertModal
+          {...defaultProps}
+          alerts={[TOKEN_ALERT, FIRST_TIME_ALERT]}
+        />,
+      );
+
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      expect(mockOnAcknowledge).not.toHaveBeenCalled();
+
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      expect(mockOnAcknowledge).toHaveBeenCalledTimes(1);
+      expect(mockOnAcknowledge).toHaveBeenCalledWith([
+        TOKEN_ALERT.key,
+        FIRST_TIME_ALERT.key,
+      ]);
+    });
+
+    it('rewinds navigation when the alert set changes identity but preserves previously viewed keys', () => {
+      const THIRD_ALERT: SendAlert = {
+        key: 'third',
+        title: 'Third',
+        message: 'Third alert message.',
+      };
+
+      const { getByTestId, rerender } = renderComponent({
+        alerts: [TOKEN_ALERT, FIRST_TIME_ALERT],
+      });
+
+      fireEvent.click(getByTestId('send-alert-modal-next-button'));
+
+      rerender(
+        <SendAlertModal
+          {...defaultProps}
+          alerts={[TOKEN_ALERT, THIRD_ALERT]}
+        />,
+      );
+
+      expect(getByTestId('send-alert-modal-page-counter')).toHaveTextContent(
+        '1 of 2',
+      );
+
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      expect(mockOnAcknowledge).not.toHaveBeenCalled();
+
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      const reportedKeys = mockOnAcknowledge.mock.calls[0][0] as string[];
+      expect(reportedKeys).toEqual(
+        expect.arrayContaining([
+          TOKEN_ALERT.key,
+          FIRST_TIME_ALERT.key,
+          THIRD_ALERT.key,
+        ]),
+      );
+    });
+
+    it('clears viewed keys when the modal is closed and reopened', () => {
+      const { getByTestId, rerender } = renderComponent({
+        alerts: [TOKEN_ALERT, FIRST_TIME_ALERT],
+      });
+
+      fireEvent.click(getByTestId('send-alert-modal-next-button'));
+
+      rerender(
+        <SendAlertModal
+          {...defaultProps}
+          alerts={[TOKEN_ALERT, FIRST_TIME_ALERT]}
+          isOpen={false}
+        />,
+      );
+      rerender(
+        <SendAlertModal
+          {...defaultProps}
+          alerts={[TOKEN_ALERT, FIRST_TIME_ALERT]}
+          isOpen={true}
+        />,
+      );
+
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      expect(mockOnAcknowledge).not.toHaveBeenCalled();
+
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      expect(mockOnAcknowledge).toHaveBeenCalledWith([
+        TOKEN_ALERT.key,
+        FIRST_TIME_ALERT.key,
+      ]);
     });
   });
 
