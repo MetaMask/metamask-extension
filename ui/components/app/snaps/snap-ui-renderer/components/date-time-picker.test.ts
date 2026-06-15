@@ -1,7 +1,17 @@
 import { Box, DateTimePicker, Field } from '@metamask/snaps-sdk/jsx';
 import { renderInterface } from '../test-utils';
 
+const FIXED_DATE = new Date('2024-01-15T10:00:00.000Z');
+
 describe('SnapUIDateTimePicker', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(FIXED_DATE);
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
   it('renders a date time picker', () => {
     const { container } = renderInterface(
       Box({

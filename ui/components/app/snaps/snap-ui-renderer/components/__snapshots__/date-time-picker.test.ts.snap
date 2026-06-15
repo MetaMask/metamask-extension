@@ -29,10 +29,10 @@ exports[`SnapUIDateTimePicker can show an error 1`] = `
             >
               <input
                 aria-invalid="false"
-                aria-label="Choose date, selected date is Jun 15, 2026"
+                aria-label="Choose date, selected date is Jan 15, 2024"
                 autocomplete="off"
                 class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
-                id="mui-13"
+                id=":ri:"
                 inputmode="text"
                 readonly=""
                 type="text"
@@ -79,10 +79,10 @@ exports[`SnapUIDateTimePicker renders a date picker 1`] = `
             >
               <input
                 aria-invalid="false"
-                aria-label="Choose date, selected date is Jun 15, 2026"
+                aria-label="Choose date, selected date is Jan 15, 2024"
                 autocomplete="off"
                 class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
-                id="mui-4"
+                id=":r6:"
                 inputmode="text"
                 readonly=""
                 type="text"
@@ -124,10 +124,10 @@ exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
             >
               <input
                 aria-invalid="false"
-                aria-label="Choose date, selected date is Jun 15, 2026"
+                aria-label="Choose date, selected date is Jan 15, 2024"
                 autocomplete="off"
                 class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
-                id="mui-1"
+                id=":r2:"
                 inputmode="text"
                 readonly=""
                 type="text"
@@ -169,10 +169,10 @@ exports[`SnapUIDateTimePicker renders a time picker 1`] = `
             >
               <input
                 aria-invalid="false"
-                aria-label="Choose time, selected time is 4:20 PM"
+                aria-label="Choose time, selected time is 10:00 AM"
                 autocomplete="off"
                 class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
-                id="mui-7"
+                id=":ra:"
                 inputmode="text"
                 readonly=""
                 type="text"
@@ -220,10 +220,10 @@ exports[`SnapUIDateTimePicker renders inside a field 1`] = `
             >
               <input
                 aria-invalid="false"
-                aria-label="Choose date, selected date is Jun 15, 2026"
+                aria-label="Choose date, selected date is Jan 15, 2024"
                 autocomplete="off"
                 class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
-                id="mui-10"
+                id=":re:"
                 inputmode="text"
                 readonly=""
                 type="text"
