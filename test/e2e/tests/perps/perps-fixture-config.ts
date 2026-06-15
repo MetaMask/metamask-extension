@@ -92,6 +92,13 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
   confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_DISABLED_FLAG,
   perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
   perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
+  // Disable the configurable max-slippage controls in the generic Perps E2E
+  // fixture. When enabled, market-order submit is gated on a live order-book
+  // slippage estimate (usePerpsEstimatedSlippage) that the lifecycle WS mock
+  // does not feed, leaving submit-order-button permanently disabled. The flag
+  // is on in production (registry value), so it stays registered; tests that
+  // need the slippage UI can opt in explicitly. Covered by unit tests + recipe.
+  perpsSlippageConfig2: { enabled: false, minimumVersion: '0.0.0' },
 };
 
 /**
@@ -258,6 +265,13 @@ async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay: { name: 'empty' },
     perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
+    // Mirror the seeded controller state: the background
+    // RemoteFeatureFlagController refetches /v1/flags on load and would
+    // otherwise overwrite the seeded `enabled: false` with the production
+    // default (`enabled: true`), re-enabling slippage gating and leaving
+    // market submit disabled without order-book estimates.
+    perpsSlippageConfig2:
+      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
   });
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
