@@ -7,6 +7,7 @@ import {
 } from '@metamask/bridge-controller';
 import { handleFetch, HttpError } from '@metamask/controller-utils';
 import { TransactionController } from '@metamask/transaction-controller';
+import type { Json } from '@metamask/utils';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import {
   ASSETS_UNIFY_STATE_FLAG,
@@ -101,8 +102,12 @@ export const BridgeControllerInit: MessengerClientInitFunction<
       const actionId = (Date.now() + Math.random()).toString();
 
       let activeTabDomain: string | undefined;
-      if (event === UnifiedSwapBridgeEventName.Submitted) {
-        try {
+      try {
+        // Track active tab domain for Submitted and ButtonClicked events
+        if (
+          event === UnifiedSwapBridgeEventName.Submitted ||
+          event === UnifiedSwapBridgeEventName.ButtonClicked
+        ) {
           const appStateController = getMessengerClient('AppStateController');
           const remoteFeatureFlagController = getMessengerClient(
             'RemoteFeatureFlagController',
@@ -116,17 +121,24 @@ export const BridgeControllerInit: MessengerClientInitFunction<
             activeTabOrigin,
             allowlist,
           );
-        } catch {
-          // Intentionally empty
         }
+      } catch {
+        // Intentionally empty
       }
+
+      const propertiesObj = (properties ?? {}) as Record<string, Json> & {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        environment_type?: string;
+      };
 
       initMessenger.call('MetaMetricsController:trackEvent', {
         category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
         event,
+        // UI events (e.g. ButtonClicked) pass environment_type explicitly;
+        // background events fall back to getEnvironmentType() → 'background'.
+        environmentType: propertiesObj.environment_type ?? getEnvironmentType(),
         properties: {
-          ...(properties ?? {}),
-          environmentType: getEnvironmentType(),
+          ...propertiesObj,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
           actionId,
