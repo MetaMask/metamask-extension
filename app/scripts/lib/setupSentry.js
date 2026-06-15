@@ -35,6 +35,9 @@ const RELEASE = getSentryRelease(
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
+const SENTRY_DISTRIBUTED_TRACING_ENABLED = !(
+  process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED === 'true'
+);
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -92,34 +95,6 @@ function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
-  // Distributed-trace propagation to backend hosts (W3C `traceparent` + RAPID
-  // baggage) is gated by the same kill switch as the cross-boundary RPC
-  // envelope, so a single flag short-circuits all outbound propagation.
-  const distributedTracingEnabled =
-    !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
-
-  const integrations = [
-    Sentry.dedupeIntegration(),
-    Sentry.extraErrorDataIntegration(),
-    Sentry.browserTracingIntegration({
-      // Creates ui.long-animation-frame spans (falls back to ui.long-task).
-      // Pairs with TBT aggregate measurements from performance-observers.ts.
-      enableLongAnimationFrame: true,
-      shouldCreateSpanForRequest,
-    }),
-    metaMetricsIntegration({
-      getAnalyticsState,
-      log,
-    }),
-  ];
-
-  if (distributedTracingEnabled) {
-    // Registered after `browserTracingIntegration` so the SDK's
-    // `sentry-trace` / `baggage` headers are already attached when this
-    // integration appends the W3C `traceparent` and RAPID baggage.
-    integrations.push(consensysTracePropagationIntegration({ log }));
-  }
-
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
     // Clone before rewriteReport so we never mutate the event object that dedupeIntegration
@@ -131,14 +106,27 @@ function getClientOptions() {
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
-    integrations,
+    integrations: [
+      Sentry.dedupeIntegration(),
+      Sentry.extraErrorDataIntegration(),
+      Sentry.browserTracingIntegration({
+        // Creates ui.long-animation-frame spans (falls back to ui.long-task).
+        // Pairs with TBT aggregate measurements from performance-observers.ts.
+        enableLongAnimationFrame: true,
+        shouldCreateSpanForRequest,
+      }),
+      metaMetricsIntegration({
+        getAnalyticsState,
+        log,
+      }),
+      // Must register after `browserTracingIntegration`.
+      ...(SENTRY_DISTRIBUTED_TRACING_ENABLED
+        ? [consensysTracePropagationIntegration({ log })]
+        : []),
+    ],
     release: RELEASE,
-    // Unblocks the SDK's automatic `sentry-trace` / `baggage` header injection
-    // on outbound HTTPS to backend API hosts. Must be a top-level init option:
-    // in v8 `browserTracingIntegration` reads it exclusively from
-    // `client.getOptions()` and ignores it as an integration option (defaults
-    // to localhost + same-origin only).
-    ...(distributedTracingEnabled && {
+    // Must be a top-level init option.
+    ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
       tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
     }),
     // Client reports are automatically sent when a page's visibility changes to
