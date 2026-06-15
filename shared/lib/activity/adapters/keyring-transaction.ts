@@ -38,7 +38,10 @@ function hasFungibleAsset(
   return movement.asset?.fungible === true;
 }
 
-function getToken(movements: Movement[], direction: TokenAmount['direction']) {
+function getToken(
+  movements: Movement[],
+  direction: TokenAmount['direction'],
+): TokenAmount | undefined {
   const movement = movements.find(hasFungibleAsset);
 
   if (!movement) {
@@ -48,7 +51,50 @@ function getToken(movements: Movement[], direction: TokenAmount['direction']) {
   return {
     amount: movement.asset.amount,
     symbol: movement.asset.unit,
+    assetId: movement.asset.type,
     direction,
+  };
+}
+
+function aggregateMovementAmount(movements: Movement[]) {
+  const amountByAssetType: Record<
+    string,
+    {
+      amount: number;
+      unit: string;
+    }
+  > = {};
+
+  for (const movement of movements) {
+    if (!hasFungibleAsset(movement)) {
+      continue;
+    }
+
+    const { type: assetType, unit } = movement.asset;
+    const parsedAmount = Number.parseFloat(movement.asset.amount);
+    const normalizedAmount = Number.isFinite(parsedAmount) ? parsedAmount : 0;
+
+    if (!amountByAssetType[assetType]) {
+      amountByAssetType[assetType] = {
+        amount: normalizedAmount,
+        unit,
+      };
+      continue;
+    }
+
+    amountByAssetType[assetType].amount += normalizedAmount;
+  }
+
+  const entries = Object.entries(amountByAssetType);
+  if (entries.length !== 1) {
+    return undefined;
+  }
+
+  const [assetType, aggregate] = entries[0];
+  return {
+    assetType,
+    amount: String(aggregate.amount),
+    unit: aggregate.unit,
   };
 }
 
@@ -65,16 +111,34 @@ export function mapKeyringTransaction({
   const to = getAddress(transaction.to);
 
   if (transaction.type === KeyringTransactionType.Send) {
+    const fromToken = getToken(transaction.from, 'out');
+    let token = fromToken;
+
+    // Bitcoin transaction.from can be empty, resulting in no token avatar or send amount displayed.
+    // Workaround: use the same aggregated to-asset fallback strategy as tx details modal.
+    if (!fromToken && chainId.startsWith('bip122:')) {
+      const aggregatedToAsset = aggregateMovementAmount(transaction.to);
+      if (aggregatedToAsset) {
+        token = {
+          direction: 'out',
+          assetId: aggregatedToAsset.assetType,
+          symbol: aggregatedToAsset.unit,
+          amount: aggregatedToAsset.amount,
+        };
+      }
+    }
+
     return {
       type: 'send',
       chainId,
       status,
       timestamp,
+      raw: { type: 'keyringTransaction', data: transaction },
       data: {
         hash: transaction.id,
         from,
         to,
-        token: getToken(transaction.from, 'out'),
+        token,
       },
     };
   }
@@ -85,6 +149,7 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
+      raw: { type: 'keyringTransaction', data: transaction },
       data: {
         hash: transaction.id,
         from,
@@ -100,6 +165,7 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
+      raw: { type: 'keyringTransaction', data: transaction },
       data: {
         hash: transaction.id,
         destinationToken: getToken(transaction.to, 'in'),
@@ -113,6 +179,7 @@ export function mapKeyringTransaction({
     chainId,
     status,
     timestamp,
+    raw: { type: 'keyringTransaction', data: transaction },
     data: {
       hash: transaction.id,
       from,

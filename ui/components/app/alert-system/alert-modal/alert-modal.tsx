@@ -383,8 +383,8 @@ export function AlertModal({
   const { trackAlertRender } = useAlertMetrics();
 
   const handleClose = useCallback(
-    (...args) => {
-      onClose(...args);
+    (request?: { recursive?: boolean } | void) => {
+      onClose(request ?? undefined);
     },
     [onClose],
   );

@@ -36,11 +36,11 @@ export type OrderCardProps = {
  * @param options0.onClick - Optional click handler override. If not provided, navigates to market detail page.
  * @param options0.variant - Visual variant - 'default' for perps tab, 'muted' for detail page
  */
-export const OrderCard: React.FC<OrderCardProps> = ({
+export const OrderCard = ({
   order,
   onClick,
   variant = 'default',
-}) => {
+}: OrderCardProps) => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const displayName = getDisplayName(order.symbol);
@@ -103,7 +103,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         size={AvatarTokenSize.Md}
         className="shrink-0"
       />
-
       {/* Left side: Symbol info and size */}
       <Box
         className="min-w-0 flex-1"
@@ -134,7 +133,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           {order.size} {displayName}
         </Text>
       </Box>
-
       {/* Right side: USD value */}
       <Box
         className="shrink-0"

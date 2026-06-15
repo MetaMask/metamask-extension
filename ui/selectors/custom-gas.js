@@ -1,6 +1,4 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../app/scripts/lib/util';
+import { addHexPrefix } from '../../shared/lib/add-hex-prefix';
 import { decEthToConvertedCurrency } from '../../shared/lib/conversion.utils';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatETHFee } from '../helpers/utils/formatters';

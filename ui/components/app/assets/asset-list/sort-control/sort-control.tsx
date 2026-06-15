@@ -1,13 +1,13 @@
 import React, { ReactNode, useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'clsx';
-import { Box, Text } from '../../../../component-library';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
+import { Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -58,9 +58,8 @@ export const SelectableListItem = ({
       </Text>
       {isSelected && (
         <Box
-          className="selectable-list-item__selected-indicator"
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
+          className="selectable-list-item__selected-indicator rounded-full"
+          backgroundColor={BoxBackgroundColor.PrimaryDefault}
         />
       )}
     </Box>

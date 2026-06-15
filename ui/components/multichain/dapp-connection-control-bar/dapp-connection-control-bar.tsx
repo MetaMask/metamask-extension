@@ -67,7 +67,7 @@ import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-po
  * Not-connected layout (active account is not among permitted accounts):
  * [Favicon+grey dot] [Origin / Account · Not connected] ... [Connect]
  */
-export const DappConnectionControlBar: React.FC = () => {
+export const DappConnectionControlBar = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();

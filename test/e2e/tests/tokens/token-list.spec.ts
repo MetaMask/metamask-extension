@@ -109,7 +109,7 @@ describe('Token List', function () {
           tokenAddress,
           symbol,
         );
-
+        await assetListPage.dismissTokenImportedMessage();
         await assetListPage.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',

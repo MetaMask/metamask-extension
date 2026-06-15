@@ -160,6 +160,12 @@ mm launch --state custom --preset withMultipleAccounts
 
 ---
 
+## Known Limitations
+
+- **Pre-launch network mocking:** `mm mock-network` uses Playwright route interception, which is only active after `mm launch` completes. Requests made during extension startup (before the session is active) cannot be intercepted. Pre-launch mocking support will be added in a future update.
+
+---
+
 ## See Also
 
 - **Agent Skill**: `.claude/skills/metamask-visual-testing/SKILL.md` - Concise command reference for agents.

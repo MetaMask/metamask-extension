@@ -121,7 +121,6 @@ describe('Account Tracker API Usage', function () {
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
             },
           })
           .build(),
@@ -129,7 +128,6 @@ describe('Account Tracker API Usage', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await driver.delay(veryLargeDelayMs);
         let allInfuraJsonRpcRequests =
           await getAllInfuraJsonRpcRequests(mockedEndpoint);
         let rpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(

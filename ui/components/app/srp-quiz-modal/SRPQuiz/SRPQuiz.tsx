@@ -288,7 +288,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   };
 
   // trackEvent shortcut specific to the SRP quiz
-  const trackEventSrp = useCallback((location) => {
+  const trackEventSrp = useCallback((location: string) => {
     trackEvent(
       {
         category: MetaMetricsEventCategory.Keys,

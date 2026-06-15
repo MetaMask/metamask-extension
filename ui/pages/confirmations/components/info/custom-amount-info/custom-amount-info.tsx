@@ -78,7 +78,7 @@ export type CustomAmountInfoProps = {
   overrideCenterContent?: (amountHuman: string) => ReactNode;
 };
 
-export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
+export const CustomAmountInfo = React.memo(
   ({
     balanceUsdOverride,
     children,
@@ -91,7 +91,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     overrideBottomContent,
     overrideCenterContent,
     preferredToken,
-  }) => {
+  }: CustomAmountInfoProps) => {
     useAutomaticTransactionPayToken({
       disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
       preferredToken,

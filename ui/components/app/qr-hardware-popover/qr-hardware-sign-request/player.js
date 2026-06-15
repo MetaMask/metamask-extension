@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { UR, UREncoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  TextAlign,
-} from '../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { TextAlign } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../ui/page-container';
-import { Text, Box } from '../../../component-library';
+import { Text } from '../../../component-library';
 
 // QR code configuration constants to help with memory optimization
 const QR_FRAGMENT_SIZE = 200;
@@ -43,9 +43,9 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
       <Box
         paddingTop={4}
         paddingBottom={4}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        flexDirection={FlexDirection.Column}
+        className="flex"
+        alignItems={BoxAlignItems.Center}
+        flexDirection={BoxFlexDirection.Column}
       >
         <div
           style={{

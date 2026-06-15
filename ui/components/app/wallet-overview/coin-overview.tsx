@@ -6,7 +6,8 @@ import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Box, ButtonLink, IconName } from '../../component-library';
+import { Box } from '@metamask/design-system-react';
+import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -292,6 +293,7 @@ export const CoinOverview = ({
 
   return (
     <WalletOverview
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       balance={
         shouldShowBalanceEmptyState ? (
           <BalanceEmptyState
@@ -322,6 +324,7 @@ export const CoinOverview = ({
           </Tooltip>
         )
       }
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       buttons={
         <CoinButtons
           {...{

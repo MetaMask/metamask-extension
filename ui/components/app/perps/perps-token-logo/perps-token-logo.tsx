@@ -32,11 +32,11 @@ const AVATAR_SIZE_CLASS: Record<AvatarTokenSize, string> = {
   [AvatarTokenSize.Xl]: 'h-12 w-12',
 };
 
-export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
+export const PerpsTokenLogo = ({
   symbol,
   size = AvatarTokenSize.Md,
   className,
-}) => {
+}: PerpsTokenLogoProps) => {
   const displaySymbol = useMemo(() => getDisplaySymbol(symbol), [symbol]);
   const sanitizedSymbol = symbol.replace(/:/gu, '-');
   const theme = useTheme();

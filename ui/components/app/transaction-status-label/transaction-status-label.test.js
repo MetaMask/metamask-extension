@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
-import TransactionStatusLabel from '.';
+import TransactionStatusLabel, { getStatusKey } from '.';
 
 // Mock the useI18nContext hook
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -18,6 +18,22 @@ jest.mock('../../ui/tooltip', () => ({
     </div>
   ),
 }));
+
+describe('getStatusKey', () => {
+  it('returns signing for approved status', () => {
+    expect(getStatusKey(TransactionStatus.approved, true)).toBe('signing');
+  });
+
+  it('returns queued for submitted when not earliest nonce', () => {
+    expect(getStatusKey(TransactionStatus.submitted, false)).toBe('queued');
+  });
+
+  it('returns pending for submitted when earliest nonce', () => {
+    expect(getStatusKey(TransactionStatus.submitted, true)).toBe(
+      TransactionGroupStatus.pending,
+    );
+  });
+});
 
 describe('TransactionStatusLabel Component', () => {
   it('renders translated status text for confirmed transactions', () => {

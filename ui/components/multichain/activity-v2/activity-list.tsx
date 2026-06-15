@@ -17,8 +17,8 @@ import {
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
+import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import AssetListControlBar from '../../app/assets/asset-list/asset-list-control-bar';
 import { noAdjustmentsScroll } from '../../ui/virtualized-list/virtualized-list';
 import {
@@ -48,6 +48,7 @@ type Props = {
 
 export const ActivityList = ({ filter }: Props) => {
   const t = useI18nContext();
+  const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TransactionViewModel | null>(
@@ -214,7 +215,7 @@ export const ActivityList = ({ filter }: Props) => {
       return (
         <Box className="px-4 py-2 bg-background-default">
           <Text className="text-sm text-alternative">
-            {formatDateWithYearContext(item.date, 'MMM d, y', 'MMM d, y')}
+            {formatMediumDate(item.date)}
           </Text>
         </Box>
       );

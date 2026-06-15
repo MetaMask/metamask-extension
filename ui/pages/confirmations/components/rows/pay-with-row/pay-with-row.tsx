@@ -208,6 +208,7 @@ function PayWithRowInline({
           <TokenIcon
             chainId={displayToken.chainId as `0x${string}`}
             tokenAddress={displayToken.address as `0x${string}`}
+            symbol={displayToken.symbol}
             size="xs"
           />
         </Box>
@@ -256,6 +257,7 @@ function PayWithRowPill({
       <TokenIcon
         chainId={displayToken.chainId as `0x${string}`}
         tokenAddress={displayToken.address as `0x${string}`}
+        symbol={displayToken.symbol}
       />
       <Text
         variant={TextVariant.bodyMdMedium}

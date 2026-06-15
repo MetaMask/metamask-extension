@@ -89,6 +89,9 @@
     "message": "Ví sử dụng “$1” đã tồn tại. Bạn có muốn thử đăng nhập không?",
     "description": "$1 is the account email"
   },
+  "accountAlreadyExistsLoginDescriptionTelegram": {
+    "message": "Một ví đã được liên kết với tài khoản Telegram này. Bạn có muốn mở khóa ví này không?"
+  },
   "accountAlreadyExistsTitle": {
     "message": "Ví đã tồn tại"
   },
@@ -123,6 +126,10 @@
   "accountNotFoundDescription": {
     "message": "Chúng tôi không tìm thấy ví cho “$1”. Bạn có muốn tạo ví mới với thông tin đăng nhập này không?",
     "description": "$1 is the account email"
+  },
+  "accountNotFoundDescriptionTelegram": {
+    "message": "Chúng tôi không tìm thấy ví nào được liên kết với tài khoản $1 này. Bạn có muốn tạo một ví mới bằng thông tin đăng nhập này không?",
+    "description": "$1 is the social login provider"
   },
   "accountNotFoundTitle": {
     "message": "Không tìm thấy ví"
@@ -163,23 +170,68 @@
   "activity": {
     "message": "Hoạt động"
   },
+  "activityEmptyDescription": {
+    "message": "Hoán đổi token đầu tiên của bạn ngay hôm nay."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "Nạp tiền vào ví để bắt đầu."
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_failed_title": {
+    "message": "Phê duyệt thất bại"
   },
   "activity_approveSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_approveSpendingCap_pending_title": {
+    "message": "Đang phê duyệt hạn mức chi tiêu"
+  },
   "activity_approveSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_title": {
+    "message": "Đã phê duyệt hạn mức chi tiêu"
   },
   "activity_bridge_failed_description": {
     "message": "Cầu nối thất bại"
   },
   "activity_bridge_failed_title": {
     "message": "Cầu nối thất bại"
+  },
+  "activity_bridge_pending_description": {
+    "message": "Đang tạo cầu nối $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_pending_title": {
+    "message": "Đang tạo cầu nối $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_description": {
+    "message": "Đã tạo cầu nối $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_title": {
+    "message": "Đã tạo cầu nối $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_failed_description": {
+    "message": "Mua thất bại"
+  },
+  "activity_buy_failed_title": {
+    "message": "Mua thất bại"
+  },
+  "activity_buy_pending_description": {
+    "message": "Đang mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_pending_title": {
+    "message": "Đang mua $1",
+    "description": "$1 is the token symbol"
   },
   "activity_buy_success_description": {
     "message": "Đã mua $1",
@@ -189,14 +241,100 @@
     "message": "Đã mua $1",
     "description": "$1 is the token symbol"
   },
-  "activity_contractInteraction_success_title": {
-    "message": "Tương tác hợp đồng thông minh"
+  "activity_claimMusdBonus_failed_title": {
+    "message": "Nhận thưởng thất bại"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "Đang nhận thưởng mUSD"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "Đã nhận thưởng mUSD"
+  },
+  "activity_claim_failed_description": {
+    "message": "Nhận thưởng thất bại"
+  },
+  "activity_claim_failed_title": {
+    "message": "Nhận thưởng thất bại"
+  },
+  "activity_claim_pending_description": {
+    "message": "Đang nhận $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "Đang nhận $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "Đã nhận $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "Đã nhận $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractDeployment_failed_description": {
+    "message": "Triển khai thất bại"
+  },
+  "activity_contractDeployment_failed_title": {
+    "message": "Triển khai thất bại"
+  },
+  "activity_contractDeployment_pending_description": {
+    "message": "Đang triển khai hợp đồng"
+  },
+  "activity_contractDeployment_pending_title": {
+    "message": "Đang triển khai hợp đồng"
+  },
+  "activity_contractDeployment_success_description": {
+    "message": "Đã triển khai hợp đồng"
+  },
+  "activity_contractDeployment_success_title": {
+    "message": "Đã triển khai hợp đồng"
+  },
+  "activity_contractInteraction_failed_title": {
+    "message": "Tương tác thất bại"
+  },
+  "activity_contractInteraction_pending_title": {
+    "message": "Đang thực hiện tương tác"
+  },
+  "activity_convert_failed_description": {
+    "message": "Chuyển đổi thất bại"
+  },
+  "activity_convert_failed_title": {
+    "message": "Chuyển đổi thất bại"
+  },
+  "activity_convert_pending_description": {
+    "message": "Đang chuyển đổi sang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_pending_title": {
+    "message": "Đang chuyển đổi sang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_description": {
+    "message": "Đã chuyển đổi sang $1",
+    "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
     "message": "Nạp tiền thất bại"
   },
   "activity_deposit_failed_title": {
     "message": "Nạp tiền thất bại"
+  },
+  "activity_deposit_pending_description": {
+    "message": "Đang gửi $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_pending_title": {
+    "message": "Đang gửi $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_description": {
+    "message": "Đã gửi $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_title": {
+    "message": "Đã gửi $1",
+    "description": "$1 is the token symbol"
   },
   "activity_fallback_description": {
     "message": "Giao dịch"
@@ -208,13 +346,22 @@
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_failed_title": {
+    "message": "Tăng hạn mức thất bại"
+  },
   "activity_increaseSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_pending_title": {
+    "message": "Đang tăng hạn mức chi tiêu"
+  },
   "activity_increaseSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_title": {
+    "message": "Đã tăng hạn mức chi tiêu"
   },
   "activity_lendingDeposit_failed_title": {
     "message": "Nạp tiền thất bại"
@@ -225,15 +372,216 @@
   "activity_lendingWithdrawal_failed_title": {
     "message": "Rút tiền thất bại"
   },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "Rút tiền cho vay"
+  "activity_lendingWithdrawal_pending_description": {
+    "message": "Đang rút $1",
+    "description": "$1 is the token symbol"
   },
-  "activity_lendingWithdrawal_success_title": {
-    "message": "Rút tiền cho vay"
+  "activity_lendingWithdrawal_pending_title": {
+    "message": "Đang rút $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_marketCloseShort_failed_description": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_marketCloseShort_failed_title": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_marketCloseShort_pending_description": {
+    "message": "Đang đóng vị thế bán khống - đóng theo giá thị trường"
+  },
+  "activity_marketCloseShort_pending_title": {
+    "message": "Đang đóng vị thế bán khống - đóng theo giá thị trường"
+  },
+  "activity_marketCloseShort_success_description": {
+    "message": "Đã đóng vị thế bán khống - đóng theo giá thị trường"
+  },
+  "activity_marketCloseShort_success_title": {
+    "message": "Đã đóng vị thế bán khống - đóng theo giá thị trường"
+  },
+  "activity_marketShort_failed_description": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_marketShort_failed_title": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_marketShort_pending_description": {
+    "message": "Đang đóng vị thế bán khống - giá thị trường"
+  },
+  "activity_marketShort_pending_title": {
+    "message": "Đang đóng vị thế bán khống - giá thị trường"
+  },
+  "activity_marketShort_success_description": {
+    "message": "Đã đóng vị thế bán khống - giá thị trường"
+  },
+  "activity_marketShort_success_title": {
+    "message": "Đã đóng vị thế bán khống - giá thị trường"
+  },
+  "activity_nftMint_failed_title": {
+    "message": "Đúc thất bại"
+  },
+  "activity_nftMint_pending_title": {
+    "message": "Đang đúc $1",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_success_title": {
     "message": "Đã đúc $1",
     "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsAddFunds_failed_description": {
+    "message": "Nạp tiền thất bại"
+  },
+  "activity_perpsAddFunds_failed_title": {
+    "message": "Nạp tiền thất bại"
+  },
+  "activity_perpsAddFunds_pending_description": {
+    "message": "Đang nạp tiền"
+  },
+  "activity_perpsAddFunds_pending_title": {
+    "message": "Đang nạp tiền"
+  },
+  "activity_perpsAddFunds_success_description": {
+    "message": "Đã nạp tiền vào tài khoản"
+  },
+  "activity_perpsAddFunds_success_title": {
+    "message": "Đã nạp tiền vào tài khoản"
+  },
+  "activity_perpsCloseLongLiquidated_failed_description": {
+    "message": "Đóng vị thế mua khống - thanh lý thất bại"
+  },
+  "activity_perpsCloseLongLiquidated_failed_title": {
+    "message": "Đóng vị thế mua khống - thanh lý thất bại"
+  },
+  "activity_perpsCloseLongLiquidated_pending_description": {
+    "message": "Đang đóng vị thế mua khống - đã bị thanh lý"
+  },
+  "activity_perpsCloseLongLiquidated_pending_title": {
+    "message": "Đang đóng vị thế mua khống - đã bị thanh lý"
+  },
+  "activity_perpsCloseLongLiquidated_success_description": {
+    "message": "Đã đóng vị thế mua khống - đã bị thanh lý"
+  },
+  "activity_perpsCloseLongLiquidated_success_title": {
+    "message": "Đã đóng vị thế mua khống - đã bị thanh lý"
+  },
+  "activity_perpsCloseLongStopLoss_failed_description": {
+    "message": "Đóng vị thế mua khống - cắt lỗ thất bại"
+  },
+  "activity_perpsCloseLongStopLoss_failed_title": {
+    "message": "Đóng vị thế mua khống - cắt lỗ thất bại"
+  },
+  "activity_perpsCloseLongStopLoss_pending_description": {
+    "message": "Đang đóng vị thế mua khống - cắt lỗ"
+  },
+  "activity_perpsCloseLongStopLoss_pending_title": {
+    "message": "Đang đóng vị thế mua khống - cắt lỗ"
+  },
+  "activity_perpsCloseLongStopLoss_success_description": {
+    "message": "Đã đóng vị thế mua khống - cắt lỗ"
+  },
+  "activity_perpsCloseLongStopLoss_success_title": {
+    "message": "Đã đóng vị thế mua khống - cắt lỗ"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_description": {
+    "message": "Đóng vị thế mua khống thất bại"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_title": {
+    "message": "Đóng vị thế mua khống thất bại"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_description": {
+    "message": "Đang đóng vị thế mua khống - chốt lời"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_title": {
+    "message": "Đang đóng vị thế mua khống - chốt lời"
+  },
+  "activity_perpsCloseLongTakeProfit_success_description": {
+    "message": "Đã đóng vị thế mua khống - chốt lời"
+  },
+  "activity_perpsCloseLongTakeProfit_success_title": {
+    "message": "Đã đóng vị thế mua khống - chốt lời"
+  },
+  "activity_perpsCloseLong_failed_description": {
+    "message": "Đóng vị thế mua khống thất bại"
+  },
+  "activity_perpsCloseLong_failed_title": {
+    "message": "Đóng vị thế mua khống thất bại"
+  },
+  "activity_perpsCloseLong_pending_description": {
+    "message": "Đang đóng vị thế mua khống"
+  },
+  "activity_perpsCloseLong_pending_title": {
+    "message": "Đang đóng vị thế mua khống"
+  },
+  "activity_perpsCloseLong_success_description": {
+    "message": "Đã đóng vị thế mua khống"
+  },
+  "activity_perpsCloseLong_success_title": {
+    "message": "Đã đóng vị thế mua khống"
+  },
+  "activity_perpsCloseShortLiquidated_failed_description": {
+    "message": "Đóng vị thế bán khống - thanh lý thất bại"
+  },
+  "activity_perpsCloseShortLiquidated_failed_title": {
+    "message": "Đóng vị thế bán khống - thanh lý thất bại"
+  },
+  "activity_perpsCloseShortLiquidated_pending_description": {
+    "message": "Đang đóng vị thế bán khống - đã bị thanh lý"
+  },
+  "activity_perpsCloseShortLiquidated_pending_title": {
+    "message": "Đang đóng vị thế bán khống - đã bị thanh lý"
+  },
+  "activity_perpsCloseShortLiquidated_success_description": {
+    "message": "Đã đóng vị thế bán khống - đã bị thanh lý"
+  },
+  "activity_perpsCloseShortLiquidated_success_title": {
+    "message": "Đã đóng vị thế bán khống - đã bị thanh lý"
+  },
+  "activity_perpsCloseShortStopLoss_failed_description": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_perpsCloseShortStopLoss_failed_title": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_perpsCloseShortStopLoss_pending_description": {
+    "message": "Đang đóng vị thế bán khống - cắt lỗ"
+  },
+  "activity_perpsCloseShortStopLoss_pending_title": {
+    "message": "Đang đóng vị thế bán khống - cắt lỗ"
+  },
+  "activity_perpsCloseShortStopLoss_success_description": {
+    "message": "Đã đóng vị thế bán khống - cắt lỗ"
+  },
+  "activity_perpsCloseShortStopLoss_success_title": {
+    "message": "Đã đóng vị thế bán khống - cắt lỗ"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_description": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_title": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_description": {
+    "message": "Đang đóng vị thế bán khống - chốt lời"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_title": {
+    "message": "Đang đóng vị thế bán khống - chốt lời"
+  },
+  "activity_perpsCloseShortTakeProfit_success_description": {
+    "message": "Đã đóng vị thế bán khống - chốt lời"
+  },
+  "activity_perpsCloseShortTakeProfit_success_title": {
+    "message": "Đã đóng vị thế bán khống - chốt lời"
+  },
+  "activity_perpsCloseShort_failed_description": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_perpsCloseShort_failed_title": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_perpsCloseShort_pending_description": {
+    "message": "Đang đóng vị thế bán khống"
+  },
+  "activity_perpsCloseShort_pending_title": {
+    "message": "Đang đóng vị thế bán khống"
   },
   "activity_perpsCloseShort_success_description": {
     "message": "Đã đóng vị thế bán khống"
@@ -241,16 +589,100 @@
   "activity_perpsCloseShort_success_title": {
     "message": "Đã đóng vị thế bán khống"
   },
+  "activity_perpsOpenLong_failed_description": {
+    "message": "Mở vị thế mua khống thất bại"
+  },
+  "activity_perpsOpenLong_failed_title": {
+    "message": "Mở vị thế mua khống thất bại"
+  },
+  "activity_perpsOpenLong_pending_description": {
+    "message": "Đang mở vị thế mua khống"
+  },
+  "activity_perpsOpenLong_pending_title": {
+    "message": "Đang mở vị thế mua khống"
+  },
   "activity_perpsOpenLong_success_description": {
     "message": "Đã mở vị thế mua khống"
   },
   "activity_perpsOpenLong_success_title": {
     "message": "Đã mở vị thế mua khống"
   },
+  "activity_perpsOpenShort_failed_description": {
+    "message": "Mở vị thế bán khống thất bại"
+  },
+  "activity_perpsOpenShort_failed_title": {
+    "message": "Mở vị thế bán khống thất bại"
+  },
+  "activity_perpsOpenShort_pending_description": {
+    "message": "Đang mở vị thế bán khống"
+  },
+  "activity_perpsOpenShort_pending_title": {
+    "message": "Đang mở vị thế bán khống"
+  },
+  "activity_perpsOpenShort_success_description": {
+    "message": "Đã mở vị thế bán khống"
+  },
+  "activity_perpsOpenShort_success_title": {
+    "message": "Đã mở vị thế bán khống"
+  },
+  "activity_perpsPaidFundingFees_failed_description": {
+    "message": "Thanh toán phí tài trợ thất bại"
+  },
+  "activity_perpsPaidFundingFees_failed_title": {
+    "message": "Thanh toán phí tài trợ thất bại"
+  },
+  "activity_perpsPaidFundingFees_pending_description": {
+    "message": "Đang thanh toán phí tài trợ"
+  },
+  "activity_perpsPaidFundingFees_pending_title": {
+    "message": "Đang thanh toán phí tài trợ"
+  },
+  "activity_perpsPaidFundingFees_success_description": {
+    "message": "Đã thanh toán phí tài trợ"
+  },
+  "activity_perpsPaidFundingFees_success_title": {
+    "message": "Đã thanh toán phí tài trợ"
+  },
+  "activity_perpsReceivedFundingFees_failed_description": {
+    "message": "Nhận phí thất bại"
+  },
+  "activity_perpsReceivedFundingFees_failed_title": {
+    "message": "Nhận phí thất bại"
+  },
+  "activity_perpsReceivedFundingFees_pending_description": {
+    "message": "Đang nhận phí tài trợ"
+  },
+  "activity_perpsReceivedFundingFees_pending_title": {
+    "message": "Đang nhận phí tài trợ"
+  },
+  "activity_perpsReceivedFundingFees_success_description": {
+    "message": "Đã nhận phí tài trợ"
+  },
+  "activity_perpsReceivedFundingFees_success_title": {
+    "message": "Đã nhận phí tài trợ"
+  },
   "activity_perpsWithdrawFunds_failed_description": {
     "message": "Rút tiền thất bại"
   },
   "activity_perpsWithdrawFunds_failed_title": {
+    "message": "Rút tiền thất bại"
+  },
+  "activity_perpsWithdrawFunds_pending_description": {
+    "message": "Đang rút tiền"
+  },
+  "activity_perpsWithdrawFunds_pending_title": {
+    "message": "Đang rút tiền"
+  },
+  "activity_perpsWithdrawFunds_success_description": {
+    "message": "Rút tiền hợp đồng vĩnh cửu"
+  },
+  "activity_perpsWithdrawFunds_success_title": {
+    "message": "Rút tiền hợp đồng vĩnh cửu"
+  },
+  "activity_predictionCashedOut_failed_description": {
+    "message": "Rút tiền thất bại"
+  },
+  "activity_predictionCashedOut_failed_title": {
     "message": "Rút tiền thất bại"
   },
   "activity_predictionCashedOut_pending_description": {
@@ -265,11 +697,59 @@
   "activity_predictionCashedOut_success_title": {
     "message": "Đã rút tiền"
   },
+  "activity_predictionClaimWinnings_failed_description": {
+    "message": "Nhận thưởng thất bại"
+  },
+  "activity_predictionClaimWinnings_failed_title": {
+    "message": "Nhận thưởng thất bại"
+  },
+  "activity_predictionClaimWinnings_pending_description": {
+    "message": "Đang nhận tiền thắng"
+  },
+  "activity_predictionClaimWinnings_pending_title": {
+    "message": "Đang nhận tiền thắng"
+  },
+  "activity_predictionClaimWinnings_success_description": {
+    "message": "Đã nhận tiền thắng"
+  },
+  "activity_predictionClaimWinnings_success_title": {
+    "message": "Đã nhận tiền thắng"
+  },
+  "activity_predictionPlaced_failed_description": {
+    "message": "Dự đoán thất bại"
+  },
+  "activity_predictionPlaced_failed_title": {
+    "message": "Dự đoán thất bại"
+  },
+  "activity_predictionPlaced_pending_description": {
+    "message": "Đang đặt dự đoán"
+  },
+  "activity_predictionPlaced_pending_title": {
+    "message": "Đang đặt dự đoán"
+  },
   "activity_predictionPlaced_success_description": {
     "message": "Dự đoán đã đặt"
   },
   "activity_predictionPlaced_success_title": {
     "message": "Dự đoán đã đặt"
+  },
+  "activity_predictionsAddFunds_failed_description": {
+    "message": "Nạp tiền thất bại"
+  },
+  "activity_predictionsAddFunds_failed_title": {
+    "message": "Nạp tiền thất bại"
+  },
+  "activity_predictionsAddFunds_pending_description": {
+    "message": "Đang nạp tiền"
+  },
+  "activity_predictionsAddFunds_pending_title": {
+    "message": "Đang nạp tiền"
+  },
+  "activity_predictionsAddFunds_success_description": {
+    "message": "Đã nạp tiền vào tài khoản"
+  },
+  "activity_predictionsAddFunds_success_title": {
+    "message": "Đã nạp tiền vào tài khoản"
   },
   "activity_predictionsWithdrawFunds_failed_description": {
     "message": "Rút tiền thất bại"
@@ -283,33 +763,84 @@
   "activity_predictionsWithdrawFunds_pending_title": {
     "message": "Đang rút tiền"
   },
+  "activity_predictionsWithdrawFunds_success_description": {
+    "message": "Rút tiền dự đoán"
+  },
+  "activity_predictionsWithdrawFunds_success_title": {
+    "message": "Rút tiền dự đoán"
+  },
   "activity_receive_failed_description": {
     "message": "Từ: $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_failed_title": {
+    "message": "Nhận thất bại"
   },
   "activity_receive_pending_description": {
     "message": "Từ: $1",
     "description": "$1 is the shortened sender address"
   },
+  "activity_receive_pending_title": {
+    "message": "Đang nhận $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_success_description": {
     "message": "Từ: $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_title": {
+    "message": "Đã nhận $1",
+    "description": "$1 is the token symbol"
   },
   "activity_revokeSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_failed_title": {
+    "message": "Thu hồi thất bại"
+  },
   "activity_revokeSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_title": {
+    "message": "Đang thu hồi hạn mức chi tiêu"
   },
   "activity_revokeSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_success_title": {
+    "message": "Đã thu hồi hạn mức chi tiêu"
+  },
+  "activity_sell_failed_description": {
+    "message": "Bán thất bại"
+  },
+  "activity_sell_failed_title": {
+    "message": "Bán thất bại"
+  },
+  "activity_sell_pending_description": {
+    "message": "Đang bán $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_pending_title": {
+    "message": "Đang bán $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_description": {
+    "message": "Đã bán $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_title": {
+    "message": "Đã bán $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_send_failed_description": {
     "message": "Đến: $1",
     "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_failed_title": {
+    "message": "Gửi thất bại"
   },
   "activity_send_pending_description": {
     "message": "Đến: $1",
@@ -327,11 +858,107 @@
     "message": "Đã gửi $1",
     "description": "$1 is the token symbol"
   },
+  "activity_smartAccountUpgrade_failed_description": {
+    "message": "Nâng cấp thất bại"
+  },
+  "activity_smartAccountUpgrade_failed_title": {
+    "message": "Nâng cấp thất bại"
+  },
+  "activity_smartAccountUpgrade_pending_description": {
+    "message": "Đang nâng cấp tài khoản thông minh"
+  },
+  "activity_smartAccountUpgrade_pending_title": {
+    "message": "Đang nâng cấp tài khoản thông minh"
+  },
+  "activity_smartAccountUpgrade_success_description": {
+    "message": "Đã nâng cấp tài khoản thông minh"
+  },
+  "activity_smartAccountUpgrade_success_title": {
+    "message": "Đã nâng cấp tài khoản thông minh"
+  },
+  "activity_stopMarketCloseShort_failed_description": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_stopMarketCloseShort_failed_title": {
+    "message": "Đóng vị thế bán khống thất bại"
+  },
+  "activity_stopMarketCloseShort_pending_description": {
+    "message": "Đang đóng vị thế bán khống - cắt lỗ theo giá thị trường"
+  },
+  "activity_stopMarketCloseShort_pending_title": {
+    "message": "Đang đóng vị thế bán khống - cắt lỗ theo giá thị trường"
+  },
+  "activity_stopMarketCloseShort_success_description": {
+    "message": "Đã đóng vị thế bán khống - cắt lỗ theo giá thị trường"
+  },
+  "activity_stopMarketCloseShort_success_title": {
+    "message": "Đã đóng vị thế bán khống - cắt lỗ theo giá thị trường"
+  },
   "activity_swapIncomplete_failed_title": {
     "message": "Hoán đổi không thành công"
   },
+  "activity_swapIncomplete_pending_title": {
+    "message": "Đang hoán đổi $1",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swapIncomplete_success_title": {
+    "message": "Đã hoán đổi $1",
+    "description": "$1 is the source token symbol"
+  },
   "activity_swap_failed_title": {
     "message": "Hoán đổi không thành công"
+  },
+  "activity_swap_pending_title": {
+    "message": "Đang hoán đổi $1 sang $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_swap_success_title": {
+    "message": "Đã hoán đổi $1 sang $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_unwrap_failed_description": {
+    "message": "Hủy bọc thất bại"
+  },
+  "activity_unwrap_failed_title": {
+    "message": "Hủy bọc thất bại"
+  },
+  "activity_unwrap_pending_description": {
+    "message": "Đang hủy bọc $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_pending_title": {
+    "message": "Đang hủy bọc $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_description": {
+    "message": "Đã hủy bọc $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_title": {
+    "message": "Đã hủy bọc $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_failed_description": {
+    "message": "Bọc thất bại"
+  },
+  "activity_wrap_failed_title": {
+    "message": "Bọc thất bại"
+  },
+  "activity_wrap_pending_description": {
+    "message": "Đang bọc $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_pending_title": {
+    "message": "Đang bọc $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_description": {
+    "message": "Đã bọc $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_title": {
+    "message": "Đã bọc $1",
+    "description": "$1 is the token symbol"
   },
   "add": {
     "message": "Thêm"
@@ -493,6 +1120,15 @@
   "addressMismatchPunycode": {
     "message": "Phiên bản Punycode: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressPoisoningBadge": {
+    "message": "Đã bị đầu độc"
+  },
+  "addressPoisoningMessage": {
+    "message": "Địa chỉ này rất giống với địa chỉ bạn đã dùng trước đây. Địa chỉ này có thể được tạo ra để lừa bạn gửi tiền đến người nhận không đúng."
+  },
+  "addressPoisoningTitle": {
+    "message": "Đã phát hiện hành vi đầu độc địa chỉ"
   },
   "addressQrCodeModalDescription": {
     "message": "Sử dụng địa chỉ này để nhận token và bộ sưu tập trên $1",
@@ -1175,15 +1811,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Bạn sẽ cần xác nhận 2 giao dịch trên ví cứng của mình:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Tạo tài khoản Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Để hoán đổi sang mạng Solana, bạn cần có tài khoản và địa chỉ nhận."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Bạn sẽ cần có tài khoản Solana trước."
-  },
   "bridgeDetailsTitle": {
     "message": "Chi tiết cầu nối",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1459,9 +2086,6 @@
   "bridgeSendLoading": {
     "message": "Đang gửi từ chuỗi nguồn"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Đã tạo tài khoản Solana"
-  },
   "bridgeStatusComplete": {
     "message": "Hoàn tất",
     "description": "Status text indicating a bridge transaction has successfully completed."
@@ -1728,6 +2352,9 @@
     "message": "Được cộng đồng đóng góp",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
+  "compareAddresses": {
+    "message": "So sánh địa chỉ"
+  },
   "completed": {
     "message": "Đã hoàn tất"
   },
@@ -1920,6 +2547,9 @@
   },
   "confirmTitleDescSign": {
     "message": "Xem lại thông tin yêu cầu trước khi bạn xác nhận."
+  },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "Trang web này yêu cầu quyền thu hồi các phê duyệt token của bạn."
   },
   "confirmTitlePermission": {
     "message": "Yêu cầu cấp quyền"
@@ -2458,6 +3088,9 @@
   "default": {
     "message": "Mặc định"
   },
+  "defaultNetworks": {
+    "message": "Mạng mặc định"
+  },
   "defaultRpcUrl": {
     "message": "URL RPC mặc định"
   },
@@ -2892,6 +3525,9 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "Nhập mật khẩu MetaMask"
   },
+  "enteredMalicious": {
+    "message": "Địa chỉ bạn đã nhập"
+  },
   "errorCode": {
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
@@ -3241,6 +3877,18 @@
     "message": "Hằng tuần",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "Tất cả các cơ chế thu hồi cho ERC-20, ERC-1155, ERC-721.",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "ERC-20 approve(spender, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
+  "gatorPermissionsErc721ApproveRevocation": {
+    "message": "ERC-721 approve(address(0), tokenId)",
+    "description": "Token approval revocation method for ERC-721 single-token approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "Ngày hết hạn",
     "description": "Label for the expiration date of a permission"
@@ -3261,6 +3909,22 @@
     "message": "Hạn mức tối đa",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsPermit2ApproveRevocation": {
+    "message": "Permit2 approve(token, spender, 0, 0)",
+    "description": "Token approval revocation method for Permit2 approve reset"
+  },
+  "gatorPermissionsPermit2InvalidateNonces": {
+    "message": "Permit2 vô hiệu hóa số nonce",
+    "description": "Token approval revocation method for Permit2 nonce invalidation"
+  },
+  "gatorPermissionsPermit2Lockdown": {
+    "message": "Permit2 khóa khẩn cấp",
+    "description": "Token approval revocation method for Permit2 lockdown"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "Phương thức thu hồi",
+    "description": "Label for the enabled token approval revocation methods"
+  },
   "gatorPermissionsRevocationPending": {
     "message": "Đang chờ thu hồi",
     "description": "Label for a gator permission that is pending a revocation transaction"
@@ -3268,6 +3932,10 @@
   "gatorPermissionsRevoke": {
     "message": "Thu hồi",
     "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsSetApprovalForAllRevocation": {
+    "message": "ERC-721/ERC-1155 setApprovalForAll(false)",
+    "description": "Token approval revocation method for setApprovalForAll reset"
   },
   "gatorPermissionsShowDetails": {
     "message": "Hiển thị chi tiết",
@@ -3651,6 +4319,9 @@
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "includes": {
+    "message": "Bao gồm"
+  },
   "includesXTransactions": {
     "message": "Bao gồm $1 giao dịch"
   },
@@ -3825,6 +4496,9 @@
   },
   "knownAddressRecipient": {
     "message": "Địa chỉ hợp đồng đã biết."
+  },
+  "knownSafeAddress": {
+    "message": "Địa chỉ đã biết"
   },
   "knownTokenWarning": {
     "message": "Hành động này sẽ chỉnh sửa các token đã niêm yết trong ví của bạn, kẻ xấu có thể lợi dụng việc này để lừa đảo bạn. Chỉ chấp thuận nếu bạn chắc chắn rằng bạn muốn thay đổi giá trị mà những token này đại diện cho. Tìm hiểu thêm về $1"
@@ -4009,6 +4683,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "Phiên làm việc đã hết hạn"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "Cập nhật Telegram"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "Chúng tôi không thể kết nối với Telegram. Điều này thường xảy ra khi ứng dụng Telegram của bạn đã cũ. Vui lòng cập nhật Telegram và thử lại."
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "Không thể đăng nhập bằng Telegram"
+  },
   "logo": {
     "message": "Logo $1",
     "description": "$1 is the name of the ticker"
@@ -4022,6 +4705,10 @@
   },
   "lowLowercase": {
     "message": "thấp"
+  },
+  "lowValueAssets": {
+    "message": "Token giá trị thấp ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -4202,6 +4889,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "Theo hồ sơ của chúng tôi, giá trị RPC URL đã gửi không khớp với một nhà cung cấp đã biết cho ID chuỗi này."
+  },
+  "mmFee": {
+    "message": "Phí MM $1%."
   },
   "month": {
     "message": "tháng"
@@ -4757,9 +5447,6 @@
   "newCustomTokenAdded": {
     "message": "“$1” đã được thêm thành công!"
   },
-  "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "Cài đặt > Bảo mật và quyền riêng tư"
-  },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "Để sử dụng Opensea để xem NFT của bạn, hãy bật 'Hiển thị Phương tiện NFT' trong $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
@@ -5264,6 +5951,9 @@
   "openWallet": {
     "message": "Mở ví"
   },
+  "opensInNewTab": {
+    "message": "mở trong tab mới"
+  },
   "options": {
     "message": "Tùy chọn"
   },
@@ -5291,6 +5981,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "Các quyền khác trên trang web này"
+  },
+  "otherQrWallet": {
+    "message": "Ví QR khác"
   },
   "otherSnaps": {
     "message": "Snap khác",
@@ -8770,6 +9463,19 @@
     "message": "Bạn có thể dán toàn bộ Cụm từ khôi phục bí mật vào bất kỳ trường nào.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
+  "srpRevealMaliciousBlockBody": {
+    "message": "Những kẻ tấn công trên $1 đang cố lừa bạn chia sẻ Cụm từ khôi phục bí mật. Bất kỳ ai có được cụm từ này đều có thể đánh cắp toàn bộ tài sản trong ví của bạn.",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "Quay lại mục an toàn"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "Bạn có thể đang bị lừa đảo ngay lúc này"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "Nguy hiểm"
+  },
   "srpSecurityQuizGetStarted": {
     "message": "Bắt đầu"
   },
@@ -9549,6 +10255,10 @@
   "transactionIncludesTypes": {
     "message": "Giao dịch này bao gồm: $1."
   },
+  "transactionProtectedByEnforcedSimulations": {
+    "message": "Giao dịch này đã được bảo vệ. Chúng tôi đã hủy giao dịch để tránh mất tiền ngoài ý muốn.",
+    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
+  },
   "transactionSettings": {
     "message": "Cài đặt giao dịch"
   },
@@ -9719,6 +10429,13 @@
   "unavailable": {
     "message": "Không khả dụng"
   },
+  "unavailableNetworkConnection": {
+    "message": "Kết nối mạng không khả dụng"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "Kết nối với $1 không ổn định. Hãy cập nhật thông tin kết nối mạng trước khi tiếp tục hoặc thử lại sau.",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục."
   },
@@ -9745,6 +10462,9 @@
   "unknownNetworkForKeyEntropy": {
     "message": "Mạng chưa xác định",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownPermissionType": {
+    "message": "Loại quyền không xác định"
   },
   "unknownQrCode": {
     "message": "Lỗi: Chúng tôi không thể xác định mã QR đó"
@@ -9922,6 +10642,10 @@
   "viewinExplorer": {
     "message": "Xem $1 trong trình khám phá",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "Truy cập trang web"

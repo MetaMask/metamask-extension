@@ -77,13 +77,6 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getAllBridgeableNetworks: () => [],
 }));
 
-const MOCK_RECENT_PAGE = '/home';
-jest.mock('../../../ducks/history/history', () => ({
-  getMostRecentOverviewPage: jest
-    .fn()
-    .mockImplementation(() => MOCK_RECENT_PAGE),
-}));
-
 const mockUseNavigate = jest.fn();
 let mockLocationKey = 'default';
 jest.mock('react-router-dom', () => ({
@@ -698,7 +691,7 @@ describe('ConnectHardwareForm', () => {
         expect(unlockButton).toBeDisabled();
       });
 
-      it('navigates to overview page on successful unlock', async () => {
+      it('navigates to home page on successful unlock', async () => {
         const checkboxes = screen.getAllByTestId('hw-account-list__item');
         const firstCheckbox = checkboxes[0].querySelector(
           'input[type="checkbox"]',
@@ -715,7 +708,7 @@ describe('ConnectHardwareForm', () => {
         });
 
         await waitFor(() => {
-          expect(mockUseNavigate).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
+          expect(mockUseNavigate).toHaveBeenCalledWith('/');
         });
       });
 
@@ -787,6 +780,19 @@ describe('ConnectHardwareForm', () => {
             null,
             '',
           );
+        });
+      });
+    });
+
+    describe('onCancel', () => {
+      it('returns to device selection view on cancel', async () => {
+        const cancelButton = screen.getByTestId(
+          'connect-hardware-account-list-cancel-btn',
+        );
+        fireEvent.click(cancelButton);
+
+        await waitFor(() => {
+          expect(screen.getByText(tEn('hardwareWallets'))).toBeInTheDocument();
         });
       });
     });

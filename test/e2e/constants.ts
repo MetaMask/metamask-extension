@@ -292,6 +292,10 @@ export const MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 /* Mock Apple account used in Social login flow e2e tests*/
 export const MOCK_APPLE_ACCOUNT = 'e2e-user-mock@appleid.com';
+/* Mock Telegram account used in Social login flow e2e tests*/
+export const MOCK_TELEGRAM_ACCOUNT = 'e2e-user-mock@telegram.local';
+export const MOCK_TELEGRAM_ACCOUNT_WALLET_ADDRESS =
+  MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS;
 
 /* Test seed phrases used in onboarding flows */
 export const TEST_SEED_PHRASE =

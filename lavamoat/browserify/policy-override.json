@@ -71,6 +71,11 @@
         "crypto.getRandomValues": true
       }
     },
+    "@emotion/react>@emotion/cache": {
+      "globals": {
+        "document": true
+      }
+    },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "document": false,

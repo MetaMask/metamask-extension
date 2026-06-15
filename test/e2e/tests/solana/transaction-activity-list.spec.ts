@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -26,7 +26,7 @@ describe('Transaction activity list', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.goToActivityList();
 
@@ -67,9 +67,10 @@ describe('Transaction activity list', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity(1);

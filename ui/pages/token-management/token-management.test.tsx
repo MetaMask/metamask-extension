@@ -485,7 +485,7 @@ describe('TokenManagementPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('enables API browse results when the page opens for EVM and non-EVM networks', () => {
+  it('enables API browse results for EVM and non-EVM networks when the page opens', () => {
     renderPage(
       createState({
         enabledNetworkMap: {
@@ -500,6 +500,25 @@ describe('TokenManagementPage', () => {
         query: '',
         enableTokenBrowse: true,
         networks: ['eip155:1', solanaChainId],
+      }),
+    );
+  });
+
+  it('uses enabled CAIP chain ids directly for empty-query browse', () => {
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          eip155: { '0x1': true, '0x89': true, '0x5': true },
+        },
+      }),
+    );
+
+    const { calls } = mockTokenSearch.spy.mock;
+    expect(calls[calls.length - 1][0]).toEqual(
+      expect.objectContaining({
+        query: '',
+        enableTokenBrowse: true,
+        networks: ['eip155:1', 'eip155:137', 'eip155:5'],
       }),
     );
   });
@@ -1250,6 +1269,24 @@ describe('TokenManagementPage', () => {
     fireEvent.change(screen.getByTestId('token-management-search-input'), {
       target: { value: 'usdc' },
     });
+
+    expect(
+      screen.getByTestId('token-management-search-error'),
+    ).toBeInTheDocument();
+  });
+
+  it('surfaces a friendly error message when the browse request fails and there are no local tokens', () => {
+    setTokenSearchState({ error: new Error('boom') });
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x1': true,
+        },
+        accountGroupAssets: {
+          '0x1': [],
+        },
+      }),
+    );
 
     expect(
       screen.getByTestId('token-management-search-error'),

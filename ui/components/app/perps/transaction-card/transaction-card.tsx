@@ -46,13 +46,13 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
  * @param options0.showTopBorder
  * @param options0.screenName - Forwarded to PerpsFillTag for analytics attribution
  */
-export const TransactionCard: React.FC<TransactionCardProps> = ({
+export const TransactionCard = ({
   transaction,
   onClick,
   variant = 'default',
   showTopBorder = false,
   screenName,
-}) => {
+}: TransactionCardProps) => {
   const t = useI18nContext();
   const displayName = getDisplayName(transaction.symbol);
 

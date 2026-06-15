@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Box } from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
@@ -15,7 +16,6 @@ import {
   TextFieldType,
   BannerAlert,
   BannerAlertSeverity,
-  Box,
   TextFieldSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';

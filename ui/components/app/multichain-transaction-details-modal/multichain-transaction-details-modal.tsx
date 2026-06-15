@@ -7,10 +7,12 @@ import {
 } from '@metamask/keyring-api';
 import { useSelector } from 'react-redux';
 import {
-  Display,
-  FlexDirection,
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
-  JustifyContent,
   TextVariant,
   IconColor,
   FontWeight,
@@ -23,7 +25,6 @@ import {
   ModalContent,
   ModalHeader,
   Modal,
-  Box,
   Text,
   ModalFooter,
   Button,
@@ -76,11 +77,11 @@ const AccountRow = ({ label, address, chain }: Props) => {
   }
 
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+    <Box className="flex" justifyContent={BoxJustifyContent.Between}>
       <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
         {label}
       </Text>
-      <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+      <Box className="flex" alignItems={BoxAlignItems.Center} gap={1}>
         <ButtonLink
           size={ButtonLinkSize.Inherit}
           textProps={{
@@ -180,15 +181,11 @@ export function MultichainTransactionDetailsModal({
     }
 
     return (
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+      <Box className="flex" justifyContent={BoxJustifyContent.Between}>
         <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
           {label}
         </Text>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexEnd}
-        >
+        <Box className="flex flex-col items-end">
           <Text variant={TextVariant.bodyMd} data-testid={dataTestId}>
             {asset.amount} {asset.unit}
           </Text>
@@ -218,8 +215,7 @@ export function MultichainTransactionDetailsModal({
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          className: 'flex flex-col',
           padding: 4,
         }}
       >
@@ -240,17 +236,10 @@ export function MultichainTransactionDetailsModal({
           <Divider />
         </Box>
         <Box>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={4}
-          >
+          <Box className="flex flex-col" gap={4}>
             {/* Status */}
             {status && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
+              <Box className="flex" justifyContent={BoxJustifyContent.Between}>
                 <Text
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
@@ -267,18 +256,11 @@ export function MultichainTransactionDetailsModal({
             )}
 
             {/* Transaction ID */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
+            <Box className="flex" justifyContent={BoxJustifyContent.Between}>
               <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
                 {t('notificationItemTransactionId')}
               </Text>
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={1}
-              >
+              <Box className="flex" alignItems={BoxAlignItems.Center} gap={1}>
                 <ButtonLink
                   size={ButtonLinkSize.Inherit}
                   textProps={{
@@ -312,11 +294,7 @@ export function MultichainTransactionDetailsModal({
             <Divider />
           </Box>
 
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={4}
-          >
+          <Box className="flex flex-col" gap={4}>
             {/* From */}
             <AccountRow label={t('from')} address={fromAddress} chain={chain} />
 

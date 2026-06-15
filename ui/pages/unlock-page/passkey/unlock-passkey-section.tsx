@@ -21,6 +21,7 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
@@ -29,6 +30,7 @@ import {
   translatePasskeyError,
   getPasskeyErrorCode,
 } from '../../../../shared/lib/passkey';
+import { captureException } from '../../../../shared/lib/sentry';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { generatePasskeyAuthenticationOptions } from '../../../store/actions';
@@ -168,6 +170,14 @@ export const UnlockPasskeySection = ({
           setPasskeyError(null);
         } else {
           passkeyFailedAttemptCount.current += 1;
+          captureException(createSentryError('Passkey unlock failed', err), {
+            extra: {
+              ...baseProperties,
+              failedAttempts: passkeyFailedAttemptCount.current,
+              durationMs,
+              errorCode,
+            },
+          });
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppUnlockedFailed,

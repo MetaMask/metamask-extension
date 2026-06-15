@@ -64,13 +64,13 @@ function toFlipPositionPayload(pos: Position): Position {
   };
 }
 
-export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
+export const ReversePositionModal = ({
   isOpen,
   onClose,
   position,
   currentPrice,
   sizeDecimals,
-}) => {
+}: ReversePositionModalProps) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();

@@ -53,6 +53,13 @@ jest.mock('../../../../shared/lib/passkey', () => ({
   }),
 }));
 
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
+}));
+
 const mockAuthenticationResponse = {
   id: 'AQ',
   rawId: 'AQ',

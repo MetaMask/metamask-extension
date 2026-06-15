@@ -44,10 +44,13 @@ describe('usePerpsDepositConfirmation', () => {
     });
 
     expect(mockCreatePerpsDepositTransaction).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith({
-      pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
-      search: `loader=${ConfirmationLoader.CustomAmount}`,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      {
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
+        search: `loader=${ConfirmationLoader.CustomAmount}`,
+      },
+      { replace: true },
+    );
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-123' });
   });
 
@@ -66,10 +69,13 @@ describe('usePerpsDepositConfirmation', () => {
       await result.current.trigger();
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith({
-      pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-return`,
-      search: `loader=${ConfirmationLoader.CustomAmount}&goBackTo=%2Fperps%2Ftrade%2FBTC`,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      {
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-return`,
+        search: `loader=${ConfirmationLoader.CustomAmount}&goBackTo=%2Fperps%2Ftrade%2FBTC`,
+      },
+      { replace: true },
+    );
   });
 
   it('returns transaction id without navigating when navigateOnCreate is false', async () => {

@@ -46,7 +46,7 @@ describe('useMetametrics', () => {
     const { result, waitForNextUpdate } = renderHook(
       () => useEnableMetametrics(),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={store}>{children}</Provider>
         ),
       },
@@ -73,7 +73,7 @@ describe('useMetametrics', () => {
     const { result, waitForNextUpdate } = renderHook(
       () => useDisableMetametrics(),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={store}>{children}</Provider>
         ),
       },

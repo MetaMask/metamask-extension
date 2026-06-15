@@ -89,7 +89,7 @@ describe('Send - Edit Transaction', function () {
         // confirms the transaction
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
-        await activityListPage.openActivityTab();
+        await activityListPage.goToActivityList();
         await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
 
         await activityListPage.checkTxAmountInActivity('-2.2 ETH');
@@ -151,7 +151,7 @@ describe('Send - Edit Transaction', function () {
         // confirms the transaction
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
-        await activityListPage.openActivityTab();
+        await activityListPage.goToActivityList();
         await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
 
         await activityListPage.checkTxAmountInActivity('-2.2 ETH');

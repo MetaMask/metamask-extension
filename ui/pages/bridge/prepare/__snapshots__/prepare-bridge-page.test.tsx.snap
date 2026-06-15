@@ -95,7 +95,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       style="position: relative;"
     >
       <div
-        class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-section"
+        class="bg-section prepare-bridge-page__switch-tokens flex"
         style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
       >
         <button
@@ -112,7 +112,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         </button>
       </div>
       <div
-        class="mm-box mm-box--padding-inline-4"
+        class="px-4"
         style="margin-top: -16px;"
       />
       <div
@@ -328,7 +328,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       style="position: relative;"
     >
       <div
-        class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-section"
+        class="bg-section prepare-bridge-page__switch-tokens flex"
         style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
       >
         <button
@@ -345,7 +345,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         </button>
       </div>
       <div
-        class="mm-box mm-box--padding-inline-4"
+        class="px-4"
         style="margin-top: -16px;"
       />
       <div

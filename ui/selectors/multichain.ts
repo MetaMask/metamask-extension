@@ -50,8 +50,7 @@ import {
   getProviderConfig,
   NetworkState,
 } from '../../shared/lib/selectors/networks';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
+import { getConversionRatesForNativeAsset } from '../../shared/lib/asset-conversion-rates';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import {
   type AccountsState,

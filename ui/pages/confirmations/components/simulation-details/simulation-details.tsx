@@ -68,7 +68,7 @@ export type SimulationDetailsProps = {
  * @param props
  * @param props.error
  */
-const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
+const ErrorContent = ({ error }: { error: SimulationError }) => {
   const t = useI18nContext();
 
   function getMessage() {
@@ -99,7 +99,7 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 /**
  * Content when there are no balance changes.
  */
-const EmptyContent: React.FC = () => {
+const EmptyContent = () => {
   const t = useI18nContext();
   return (
     <Text
@@ -209,18 +209,18 @@ const LegacyHeader = () => {
  * @param props.title
  * @param props.titleTooltip
  */
-const HeaderLayout: React.FC<{
-  isTransactionsRedesign: boolean;
-  transactionId: string;
-  title?: string;
-  titleTooltip?: string;
-}> = ({
+const HeaderLayout = ({
   children,
   isTransactionsRedesign,
   transactionId,
   title,
   titleTooltip,
-}) => {
+}: React.PropsWithChildren<{
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+  title?: string;
+  titleTooltip?: string;
+}>) => {
   return (
     <Box
       display={Display.Flex}
@@ -253,20 +253,20 @@ const HeaderLayout: React.FC<{
  * @param props.children
  * @param props.transactionId
  */
-export const SimulationDetailsLayout: React.FC<{
-  title?: string;
-  titleTooltip?: string;
-  inHeader?: React.ReactNode;
-  isTransactionsRedesign: boolean;
-  transactionId: string;
-}> = ({
+export const SimulationDetailsLayout = ({
   title,
   titleTooltip,
   inHeader,
   isTransactionsRedesign,
   transactionId,
   children,
-}) =>
+}: React.PropsWithChildren<{
+  title?: string;
+  titleTooltip?: string;
+  inHeader?: React.ReactNode;
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+}>) =>
   isTransactionsRedesign ? (
     <ConfirmInfoSection noPadding>
       <Box
@@ -415,7 +415,7 @@ function SimulationDetailsSkeleton({
  * @param props.staticRows - Optional static rows to display.
  * @param props.smartTransactionStatus - Optional Smart Transaction status to override transaction status for immediate UI updates.
  */
-export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
+export const SimulationDetails = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
