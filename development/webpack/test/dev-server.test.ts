@@ -623,6 +623,47 @@ describe('./utils/dev-server', () => {
         assert.strictEqual(setTimeoutMock.callCount(), 1);
       });
     });
+
+    it('attaches listeners once per WebSocket when reconnecting', () => {
+      withFakeWebSocket(() => {
+        const reconnects: (() => void)[] = [];
+        const messages: string[] = [];
+        mock.method(
+          globalThis,
+          'setTimeout',
+          (callback: () => void) => {
+            reconnects.push(callback);
+            return undefined as unknown as ReturnType<typeof setTimeout>;
+          },
+        );
+
+        connectToDevServer(
+          'ws://localhost:12345/ws',
+          () => false,
+          (type) => messages.push(type),
+        );
+
+        const firstSocket = FakeWebSocket.sockets[0];
+        assert.strictEqual(firstSocket.listeners.get('open')?.length, 1);
+        assert.strictEqual(firstSocket.listeners.get('message')?.length, 1);
+        assert.strictEqual(firstSocket.listeners.get('close')?.length, 1);
+
+        firstSocket.dispatch('close');
+        reconnects[0]();
+
+        const secondSocket = FakeWebSocket.sockets[1];
+        assert.notStrictEqual(secondSocket, firstSocket);
+        assert.strictEqual(secondSocket.listeners.get('open')?.length, 1);
+        assert.strictEqual(secondSocket.listeners.get('message')?.length, 1);
+        assert.strictEqual(secondSocket.listeners.get('close')?.length, 1);
+
+        secondSocket.dispatch('message', {
+          data: JSON.stringify({ type: 'valid' }),
+        });
+
+        assert.deepStrictEqual(messages, ['valid']);
+      });
+    });
   });
 
   describe('closeSocket', () => {
