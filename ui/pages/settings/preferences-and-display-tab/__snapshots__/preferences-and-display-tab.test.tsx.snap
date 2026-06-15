@@ -3,7 +3,7 @@
 exports[`PreferencesAndDisplayTab snapshot matches snapshot 1`] = `
 <div>
   <div
-    class="pb-4 overflow-y-auto"
+    class="pb-4 overflow-y-auto h-full min-h-0"
   >
     <div>
       <a
