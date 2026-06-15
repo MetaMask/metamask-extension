@@ -194,13 +194,15 @@ export const selectNonEvmActivityItems = createSelector(
     selectNonEvmTransactionsForActivity,
     getAssetsMetadata,
     getInternalAccountsObject,
+    selectBridgeHistory,
   ],
-  (transactions, assetsMetadata, internalAccountsById) =>
+  (transactions, assetsMetadata, internalAccountsById, bridgeHistory) =>
     transactions.map((transaction) =>
       mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
         subjectAddress: internalAccountsById?.[transaction.account]?.address,
+        bridgeHistory: getBridgeHistoryItemByKey(bridgeHistory, transaction.id),
       }),
     ),
 );
@@ -269,6 +271,7 @@ function normalizeBridgeHistoryLookupKey(value: unknown) {
     : undefined;
 }
 
+// @deprecated - Migrate to getBridgeHistoryItemByKey
 function getBridgeHistoryItem(
   bridgeHistory: Record<string, BridgeHistoryItem>,
   transactionGroup: TransactionGroup,
@@ -309,6 +312,42 @@ function getBridgeHistoryItem(
       return itemLookupValues.some((value) => lookupValueSet.has(value));
     })
   );
+}
+
+function getBridgeHistoryItemByKey(
+  bridgeHistory: Record<string, BridgeHistoryItem>,
+  key: string,
+) {
+  if (!key) {
+    return undefined;
+  }
+
+  const normalizedKey = normalizeBridgeHistoryLookupKey(key);
+  const directEntry =
+    bridgeHistory[key] ??
+    (normalizedKey ? bridgeHistory[normalizedKey] : undefined);
+
+  if (directEntry) {
+    return directEntry;
+  }
+
+  const lookupValueSet = new Set(normalizedKey ? [normalizedKey] : []);
+
+  return Object.values(bridgeHistory).find((item) => {
+    const itemLookupValues = [
+      item.txMetaId,
+      item.actionId,
+      item.originalTransactionId,
+      item.approvalTxId,
+      item.status.srcChain?.txHash,
+      item.status.destChain?.txHash,
+    ].flatMap((value) => {
+      const normalizedValue = normalizeBridgeHistoryLookupKey(value);
+      return normalizedValue ? [normalizedValue] : [];
+    });
+
+    return itemLookupValues.some((value) => lookupValueSet.has(value));
+  });
 }
 
 function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
