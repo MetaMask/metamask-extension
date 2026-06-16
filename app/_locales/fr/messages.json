@@ -7,12 +7,6 @@
     "message": "Le chargement prend plus de temps que d’habitude.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Erreur"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Données de transaction incompatibles. Veuillez vérifier les détails de la transaction."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Il n’y a plus de comptes. Si vous souhaitez accéder à un autre compte non répertorié ci-dessous, veuillez reconnecter votre portefeuille matériel et le sélectionner."
   },
@@ -3448,9 +3442,6 @@
   },
   "enabled": {
     "message": "Activé"
-  },
-  "enabledNetworks": {
-    "message": "Réseaux activés"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 aimerait avoir votre clé publique de cryptage. En y consentant, ce site sera en mesure de vous composer des messages cryptés.",
@@ -10070,9 +10061,6 @@
   },
   "termsOfUseTitle": {
     "message": "Nos conditions d’utilisation ont été mises à jour"
-  },
-  "testNetworks": {
-    "message": "Réseaux de test"
   },
   "testnets": {
     "message": "Testnets"

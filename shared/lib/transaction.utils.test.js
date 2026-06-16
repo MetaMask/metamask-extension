@@ -8,6 +8,7 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import {
   buildApproveTransactionData,
   buildIncreaseAllowanceTransactionData,
+  buildIncreaseApprovalTransactionData,
   buildPermit2ApproveTransactionData,
 } from '../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
@@ -63,6 +64,21 @@ describe('Transaction.utils', function () {
       expect(result.args.spender).toBe(ADDRESS_2_MOCK);
       expect(result.args.expiration).toBe(EXPIRATION_MOCK);
       expect(result.args.amount.toString()).toBe(AMOUNT_MOCK.toString());
+    });
+
+    it('decodes legacy increaseApproval function with no external fallback', () => {
+      const data = buildIncreaseApprovalTransactionData(
+        ADDRESS_MOCK,
+        AMOUNT_MOCK,
+      );
+
+      expect(data.startsWith('0xd73dd623')).toBe(true);
+
+      const result = parseStandardTokenTransactionData(data);
+
+      expect(result.name).toBe('increaseApproval');
+      expect(result.args._spender).toBe(ADDRESS_MOCK);
+      expect(result.args._addedValue.toString()).toBe(AMOUNT_MOCK.toString());
     });
   });
 
@@ -673,6 +689,21 @@ describe('Transaction.utils', function () {
         isApproveAll: false,
         isRevokeAll: false,
         name: 'increaseAllowance',
+        spender: ADDRESS_MOCK,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data with spender if legacy increaseApproval', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildIncreaseApprovalTransactionData(ADDRESS_MOCK, AMOUNT_MOCK),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: undefined,
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'increaseApproval',
         spender: ADDRESS_MOCK,
         tokenAddress: undefined,
       });

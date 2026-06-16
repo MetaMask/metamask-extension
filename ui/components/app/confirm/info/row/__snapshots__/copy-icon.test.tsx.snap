@@ -8,7 +8,7 @@ exports[`CopyIcon should match snapshot 1`] = `
     style="cursor: pointer; position: absolute; right: 0px; top: 2px;"
   >
     <span
-      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
       style="mask-image: url('./images/icons/copy.svg');"
     />
   </button>
@@ -23,7 +23,7 @@ exports[`CopyIcon should match snapshot with isStopPropagationEnabled 1`] = `
     style="cursor: pointer; position: absolute; right: 0px; top: 2px;"
   >
     <span
-      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
       style="mask-image: url('./images/icons/copy.svg');"
     />
   </button>

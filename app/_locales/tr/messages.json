@@ -7,12 +7,6 @@
     "message": "Yükleme her zamankinden daha uzun sürüyor.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Hata"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Uyumsuz işlem verisi. Lütfen işlem ayrıntılarını kontrol edin."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Başka hesap yok. Aşağıda listelenmeyen başka bir hesaba erişmek istiyorsanız lütfen donanım cüzdanınızı yeniden bağlayın ve seçin."
   },
@@ -3448,9 +3442,6 @@
   },
   "enabled": {
     "message": "Etkinleştirildi"
-  },
-  "enabledNetworks": {
-    "message": "Etkinleştirilen ağlar"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 genel şifreleme anahtarınızı istiyor. Bunu onayladığınızda bu site sizin için şifrelenmiş mesajlar oluşturabilecektir.",
@@ -10078,9 +10069,6 @@
   },
   "termsOfUseTitle": {
     "message": "Kullanım Şartları bölümümüzü inceleyin"
-  },
-  "testNetworks": {
-    "message": "Test ağları"
   },
   "testnets": {
     "message": "Testnet'ler"

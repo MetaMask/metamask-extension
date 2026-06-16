@@ -7,12 +7,6 @@
     "message": "読み込みに通常より時間がかかっています。",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "エラー"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "トランザクションデータが一致していません。トランザクションの詳細を確認してください。"
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "他にアカウントはありません。以下のリストにない別のアカウントにアクセスする場合は、ハードウェアウォレットを接続しなおして選択してください。"
   },
@@ -3448,9 +3442,6 @@
   },
   "enabled": {
     "message": "有効にしました"
-  },
-  "enabledNetworks": {
-    "message": "ネットワークが有効になりました"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1は公開暗号鍵を必要とします。同意することによって、このサイトは暗号化されたメッセージを作成できます。",
@@ -10074,9 +10065,6 @@
   },
   "termsOfUseTitle": {
     "message": "利用規約が更新されました"
-  },
-  "testNetworks": {
-    "message": "テストネットワーク"
   },
   "testnets": {
     "message": "テストネット"

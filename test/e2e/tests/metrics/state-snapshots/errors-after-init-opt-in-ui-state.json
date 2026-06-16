@@ -53,8 +53,7 @@
     "singleExceptions": "object",
     "smartTransactionsError": null,
     "smartTransactionsErrorMessageDismissed": "boolean",
-    "txId": null,
-    "warning": "undefined"
+    "txId": null
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -225,6 +224,7 @@
     "lastError": null,
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": "object",
+    "lastQrScanCompletedSuccessfully": null,
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",

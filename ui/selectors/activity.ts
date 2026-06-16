@@ -24,10 +24,13 @@ import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts'
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
+import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
+import { selectBridgeHistoryItemForTxHash } from '../ducks/bridge-status/selectors';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { Status } from '../../shared/lib/activity/types';
+import { getInternalAccountsObject } from './accounts';
 import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
 import { getAssetsMetadata } from './assets';
 import {
@@ -47,6 +50,7 @@ import {
 } from './selectors';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
+// @deprecated - Migrate to selectBridgeHistoryItem
 const selectBridgeHistory = (state: MetaMaskReduxState) =>
   (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
     string,
@@ -143,7 +147,7 @@ export const selectLocalTransactionsByHash = createSelector(
         }
 
         // Also index by id so signing/queued transactions (no hash yet) can be
-        // looked up — the activity adapter sets data.hash = primaryTransaction.id
+        // looked up — the activity adapter sets hash = primaryTransaction.id
         // as a fallback when no real tx hash exists.
         const id = transaction.id?.toLowerCase();
         if (id && !transactionsByHash.has(id)) {
@@ -187,15 +191,45 @@ export const selectNonEvmTransactionsForActivity = createSelector(
   },
 );
 
+const selectBridgeHistoryItem = createSelector(
+  [(state: MetaMaskReduxState) => state],
+  (state) => (txHash?: string) =>
+    txHash ? selectBridgeHistoryItemForTxHash(state, txHash) : undefined,
+);
+
 export const selectNonEvmActivityItems = createSelector(
-  [selectNonEvmTransactionsForActivity, getAssetsMetadata],
-  (transactions, assetsMetadata) =>
+  [
+    selectNonEvmTransactionsForActivity,
+    getAssetsMetadata,
+    getInternalAccountsObject,
+    selectBridgeHistoryItem,
+  ],
+  (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
     transactions.map((transaction) =>
       mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
+        subjectAddress: internalAccountsById?.[transaction.account]?.address,
+        bridgeHistory: getBridgeHistory(transaction.id),
       }),
     ),
+);
+
+export const selectNonEvmActivityItemsById = createSelector(
+  selectNonEvmActivityItems,
+  (items) => {
+    const itemsById = new Map<string, (typeof items)[number]>();
+
+    for (const item of items) {
+      const id = item.hash?.toLowerCase();
+
+      if (id) {
+        itemsById.set(id, item);
+      }
+    }
+
+    return itemsById;
+  },
 );
 
 function patchKeyringTransaction(
@@ -245,6 +279,7 @@ function normalizeBridgeHistoryLookupKey(value: unknown) {
     : undefined;
 }
 
+// @deprecated - Migrate to selectBridgeHistoryItem
 function getBridgeHistoryItem(
   bridgeHistory: Record<string, BridgeHistoryItem>,
   transactionGroup: TransactionGroup,
@@ -456,12 +491,14 @@ export const selectLocalActivityItems = createSelector(
           transactionGroup,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
+        const fees = getLocalTransactionFees(transactionGroup);
 
         return enrichLocalMusdClaimActivity(
           mapLocalTransaction({
             ...transactionGroup,
             ...getSwapTokens(bridgeHistoryItem),
             ...(activityStatus ? { activityStatus } : {}),
+            fees,
             nativeAssetSymbol,
             contractTokenMetadata,
           }),
@@ -479,6 +516,23 @@ export const selectLocalActivityItems = createSelector(
         transactionGroup,
       );
     });
+  },
+);
+
+export const selectLocalActivityItemsByIdentifier = createSelector(
+  selectLocalActivityItems,
+  (items) => {
+    const itemsByIdentifier = new Map();
+
+    for (const item of items) {
+      const hash = item.hash?.toLowerCase();
+
+      if (hash) {
+        itemsByIdentifier.set(hash, item);
+      }
+    }
+
+    return itemsByIdentifier;
   },
 );
 

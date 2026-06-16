@@ -24,6 +24,7 @@ import {
   getWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
+import { useHasSufficientGasForQuoteForMetrics } from '../../../hooks/bridge/useHasSufficientGasForQuoteForMetrics';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
@@ -64,6 +65,7 @@ export default function useSubmitBridgeTransaction() {
     shallowEqual,
   );
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+  const getHasSufficientGasForQuote = useHasSufficientGasForQuoteForMetrics();
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
@@ -131,6 +133,7 @@ export default function useSubmitBridgeTransaction() {
               true,
               recommendedQuote,
               fromTokenBalanceInUsd,
+              getHasSufficientGasForQuote(quoteResponse),
             ),
             toToken?.securityData?.type ?? null,
           ),

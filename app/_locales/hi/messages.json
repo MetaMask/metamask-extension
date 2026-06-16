@@ -7,12 +7,6 @@
     "message": "लोडिंग सामान्य से अधिक समय ले रही है।",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "गड़बड़ी"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "असंगत ट्रांसेक्शन डेटा। कृपया ट्रांसेक्शन की जानकारी की जांच करें।"
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "कोई और अकाउंट नहीं। यदि आप नीचे अलिस्टेड किसी अन्य अकाउंट तक पहुंचना चाहते हैं, तो कृपया अपने hardware wallet को फिर से कनेक्ट करें और उसे चुनें।"
   },
@@ -3448,9 +3442,6 @@
   },
   "enabled": {
     "message": "चालू किया गया"
-  },
-  "enabledNetworks": {
-    "message": "चालू किए गए नेटवर्क"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 आपकी पब्लिक एन्क्रिप्शन की (key) चाहता है। सहमति देने पर, यह साइट आपके लिए एन्क्रिप्ट किए गए मैसेज लिख पाएगी।",
@@ -10070,9 +10061,6 @@
   },
   "termsOfUseTitle": {
     "message": "हमारी उपयोग की शर्तों की समीक्षा करें"
-  },
-  "testNetworks": {
-    "message": "टेस्ट नेटवर्क्स"
   },
   "testnets": {
     "message": "Testnets"
