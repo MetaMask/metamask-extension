@@ -6843,6 +6843,9 @@
   "perpsDepositFundsTitle": {
     "message": "Deposit funds to Perps"
   },
+  "perpsFundAgain": {
+    "message": "Fund again"
+  },
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
