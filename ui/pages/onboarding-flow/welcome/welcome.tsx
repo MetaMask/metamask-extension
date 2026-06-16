@@ -378,7 +378,7 @@ export default function OnboardingWelcome() {
         const [isNewUser, geolocation] = await Promise.all([
           handleSocialLogin(socialConnectionType),
           getGeolocation(),
-        ])
+        ]);
 
         // Track wallet setup completed for social login users
         await trackEvent({

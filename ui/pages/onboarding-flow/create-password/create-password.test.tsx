@@ -370,10 +370,7 @@ describe('Onboarding Create Password', () => {
         Actions,
         'setDataCollectionForMarketing',
       );
-      const setMarketingConsentSpy = jest.spyOn(
-        Actions,
-        'setMarketingConsent',
-      );
+      const setMarketingConsentSpy = jest.spyOn(Actions, 'setMarketingConsent');
 
       const mockStore = configureMockStore([thunk])({
         ...mockState,
@@ -436,10 +433,7 @@ describe('Onboarding Create Password', () => {
         Actions,
         'setDataCollectionForMarketing',
       );
-      const setMarketingConsentSpy = jest.spyOn(
-        Actions,
-        'setMarketingConsent',
-      );
+      const setMarketingConsentSpy = jest.spyOn(Actions, 'setMarketingConsent');
 
       const mockStore = configureMockStore([thunk])({
         ...mockState,

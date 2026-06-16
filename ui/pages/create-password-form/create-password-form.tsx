@@ -54,10 +54,12 @@ const CreatePasswordForm = ({
   const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
-    if (dataCollectionForMarketing) {
+    // For Social login users in US region, we set the marketing consent to true by default for the first time render
+    if (isSocialLoginFlow && dataCollectionForMarketing && !hasUserInteractedWithTermsRef.current) {
       setTermsChecked(dataCollectionForMarketing);
+      hasUserInteractedWithTermsRef.current = true;
     }
-  }, [dataCollectionForMarketing, setTermsChecked]);
+  }, [dataCollectionForMarketing, setTermsChecked, isSocialLoginFlow]);
 
   const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
