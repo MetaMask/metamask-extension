@@ -542,7 +542,7 @@ describe('AssetPage', () => {
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
 
-    const { container, queryByTestId } = renderWithProvider(
+    const { queryByTestId } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
@@ -564,8 +564,6 @@ describe('AssetPage', () => {
       const chart = queryByTestId('asset-chart-empty-state');
       expect(chart).toBeInTheDocument();
     });
-
-    expect(container).toBeInTheDocument();
   });
 
   it('should render an ERC20 token with prices', async () => {
@@ -609,8 +607,6 @@ describe('AssetPage', () => {
     // Verify market data is rendered
     const marketCapElement = queryByTestId('asset-market-cap');
     expect(marketCapElement).toHaveTextContent('$56.09K');
-
-    expect(container).toBeInTheDocument();
   });
 
   describe('mUSD asset page feature flags', () => {
