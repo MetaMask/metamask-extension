@@ -9,18 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.36.0]
 
-### Uncategorized
-
-- Not required — developer tooling only. (#43130)
-- Updated the Sei native token icon to Sei's maroon token mark. (#43173)
-- Adds `metamask-aep[bot]` to the CLA Signature Bot allowlist in `.github/workflows/cla.yml`. (#43237)
-- Raised the minimum supported browser versions for Chromium-based browsers to 123 and Firefox to ESR 128. (#41067)
-- chore(6936): migrate core UI components from MUI v4 → v5 (#41955)
-- Bump assets controller v8.3.1 (#43163)
-- chore(6921): upgrade React type definitions to v18 and codemod explicit children typing (#42616)
-- Updated the Sei network and token logo to Sei's new brand mark. (#43117)
-- chore: migrate `checkIsSeedlessPasswordOutdated` to `LegacyBackgroundApiService` (#43131)
-
 ### Added
 
 - Added Blockaid spender scanning for legacy ERC-20 `increaseApproval` transactions (e.g. LINK, stLINK, BAT). (#43141)
@@ -42,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   networks fail at once.
 - Add Telegram provider to Social Login options (#43125)
 - Updated onboarding metrics for Telegram Login. fixed onboarding unlock metrics. (#43052)
+- Raised the minimum supported browser versions for Chromium-based browsers to 123 and Firefox to ESR 128. (#41067)
 
 ### Fixed
 
@@ -65,6 +54,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disabled passkey unlock and setup on mobile browsers where the experience is unreliable. (#43009)
 - Fix routing after hardware wallet onboarding (#42952)
 
+### Changed
+
+- Updated the Sei native token icon to Sei's maroon token mark. (#43173)
+- Updated the Sei network and token logo to Sei's new brand mark. (#43117)
+-
 ## [13.34.1]
 
 ### Changed
