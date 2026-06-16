@@ -19,7 +19,7 @@
 import type { Json } from '@metamask/utils';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
+import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from 'shared/lib/active-tab-domain-metrics';
 
 // ============================================================================
 // Types
@@ -2133,13 +2133,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  // Value is enabled despite the flag being disabled in prod, as specs are already updated to use the redesigned activity list.
+  // See https://github.com/MetaMask/metamask-extension/pull/42837
   extensionUxActivityListRedesign: {
     name: 'extensionUxActivityListRedesign',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
       minimumVersion: '0.0.0',
-      enabled: false,
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2526,6 +2527,20 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           overrides: {
             perpsWithdraw: {
               tokens: {
+                '0x2105': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                ],
+                '0x38': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x55d398326f99059fF775485246999027B3197955',
+                  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                ],
+                '0x89': [
+                  '0x0000000000000000000000000000000000001010',
+                  '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+                  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+                ],
                 '0xa4b1': [
                   '0x0000000000000000000000000000000000000000',
                   '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
