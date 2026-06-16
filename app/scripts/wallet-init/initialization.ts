@@ -1,4 +1,4 @@
-import { Wallet, WalletOptions } from '@metamask/wallet';
+import { Wallet } from '@metamask/wallet';
 import { Json } from '@metamask/utils';
 import { Encryptor } from '@metamask/keyring-controller';
 import { ShowApprovalRequest } from '@metamask/approval-controller';
@@ -7,30 +7,33 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { RootMessenger } from '../lib/messenger';
 import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
+import { ExtensionConnectivityAdapter } from '../controllers/connectivity';
 import { getKeyringBuilders, getKeyringV2Builders } from './keyrings';
+import { getRemoteFeatureFlagClientConfigApiService } from './remote-feature-flags';
 
-// TODO: Remove this workaround once @metamask/wallet types are updated to include approvalController.
-// The runtime (index.cjs) supports approvalController in instanceOptions, but the TypeScript
-// declarations (types.d.cts) are missing it in InstanceSpecificOptions.
-type WalletInstanceOptions = WalletOptions['instanceOptions'] & {
-  approvalController?: {
-    showApprovalRequest?: ShowApprovalRequest;
-    typesExcludedFromRateLimiting?: string[];
-  };
-};
+// Refresh remote feature flags at most every 15 minutes.
+const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
 
 export function initializeWallet({
   messenger,
   state,
   encryptor,
   showApprovalRequest,
+  getMetaMetricsId,
 }: {
   messenger: RootMessenger;
   state: Record<string, Record<string, Json>>;
   encryptor?: Encryptor;
   showApprovalRequest?: ShowApprovalRequest;
+  getMetaMetricsId: () => string;
 }) {
-  return new Wallet({
+  // The extension detects connectivity in a separate context (MV3 offscreen
+  // document / MV2 background page) and pushes the status in via the adapter,
+  // so we keep a reference to drive it from `background.js`.
+  const connectivityAdapter = new ExtensionConnectivityAdapter();
+
+  const wallet = new Wallet({
     messenger,
     state,
     instanceOptions: {
@@ -52,14 +55,34 @@ export function initializeWallet({
           DIALOG_APPROVAL_TYPES.default,
         ],
       },
+      connectivityController: {
+        connectivityAdapter,
+      },
       keyringController: {
         encryptor,
         keyringBuilders: getKeyringBuilders(messenger),
         keyringV2Builders: getKeyringV2Builders(),
       },
+      remoteFeatureFlagController: {
+        clientConfigApiService: getRemoteFeatureFlagClientConfigApiService(),
+        getMetaMetricsId,
+        clientVersion: getBaseSemVerVersion(),
+        prevClientVersion: state.AppMetadataController?.currentAppVersion as
+          | string
+          | undefined,
+        fetchInterval: REMOTE_FEATURE_FLAG_FETCH_INTERVAL,
+        // Start disabled until onboarding is complete and the user has opted
+        // into external services. The extension then drives the dynamic
+        // enable/disable toggling from Preferences/Onboarding state changes.
+        disabled:
+          state.OnboardingController?.completedOnboarding !== true ||
+          state.PreferencesController?.useExternalServices !== true,
+      },
       storageService: {
         storage: new BrowserStorageAdapter(),
       },
-    } as WalletInstanceOptions,
+    },
   });
+
+  return { wallet, connectivityAdapter };
 }
