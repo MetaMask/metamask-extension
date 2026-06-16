@@ -497,7 +497,9 @@ const HomeNetworkFilterModalContent = ({
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',
-        name: hasOnlyDefaultNetworks ? t('allDefaultNetworks') : t('allNetworks'),
+        name: hasOnlyDefaultNetworks
+          ? t('allDefaultNetworks')
+          : t('allNetworks'),
         iconSrc: IconName.Global,
         selected: isAllDefaultSelected,
         onClick: handleSelectAllDefaultNetworks,
