@@ -524,7 +524,7 @@ describe('ManifestPlugin', () => {
         ['runtime.js', 'home.js', 'shared.js', 'home.html', 'home.css'],
         ['home-async.js', 'home.css'],
       ),
-      'service-worker.js': createMockEntrypoint(
+      'service-worker.ts': createMockEntrypoint(
         ['service-worker.js', 'shared.js'],
         ['background.js'],
       ),
@@ -666,7 +666,7 @@ describe('ManifestPlugin', () => {
         assets: debugStatsAssets,
         entrypoints: {
           home: createMockEntrypoint(['runtime.js', 'home.js', 'home.css']),
-          'service-worker.js': createMockEntrypoint(
+          'service-worker.ts': createMockEntrypoint(
             ['service-worker.js', 'shared.js'],
             ['background.js'],
           ),
@@ -687,7 +687,7 @@ describe('ManifestPlugin', () => {
             ],
             asyncFiles: [],
           },
-          'service-worker.js': {
+          'service-worker.ts': {
             categories: ['background'],
             initialFiles: [
               { name: 'service-worker.js', size: 300 },
@@ -1632,11 +1632,11 @@ describe('ManifestPlugin', () => {
         );
 
         // service_worker with chunkLoading: 'import-scripts'
-        const sw = entries['service-worker.js'];
+        const sw = entries['service-worker.ts'];
         assert.ok(sw, 'should have service worker entry');
         assert.strictEqual(sw.chunkLoading, 'import-scripts');
         assert.deepStrictEqual(sw.import, [
-          resolve(entrypointsContext, 'service-worker.js'),
+          resolve(entrypointsContext, 'service-worker.ts'),
         ]);
 
         // web_accessible_resources (.js only)
@@ -1838,7 +1838,7 @@ describe('ManifestPlugin', () => {
           mockEntrypoint('vendor/trezor/content-script.bundle.js'),
         );
         compilation.entrypoints.set(
-          'service-worker.js',
+          'service-worker.ts',
           mockEntrypoint('service-worker.bundle.js'),
         );
         compilation.entrypoints.set(
@@ -1981,7 +1981,7 @@ describe('ManifestPlugin', () => {
         // service_worker should keep original path
         assert.strictEqual(
           (json as chrome.runtime.ManifestV3).background?.service_worker,
-          'service-worker.js',
+          'service-worker.ts',
         );
 
         // web_accessible_resources should keep original paths
