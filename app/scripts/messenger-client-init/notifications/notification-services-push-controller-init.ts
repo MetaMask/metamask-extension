@@ -22,6 +22,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import ExtensionPlatform from '../../platforms/extension';
+
+/**
+ * Matches backend-safe extension versions: 2 to 4 dot-separated numeric
+ * segments (e.g. `7.80`, `7.80.0`, `12.18.3.0`). Rejects bare majors,
+ * prerelease (`-flask.1`), build metadata (`+build.1`), and `v` prefixes.
+ */
+const APP_VERSION_REGEX = /^\d+\.\d+(?:\.\d+){0,2}$/u;
 
 /**
  * normalises the extension locale path to use hyphens ('-') instead of underscores ('_')
@@ -31,6 +39,25 @@ import {
  */
 export const getNormalisedLocale = (locale: string): string =>
   locale.replace('_', '-');
+
+/**
+ * Returns the extension version for push registration metadata, but only when
+ * it is in a backend-safe numeric format. Returns undefined otherwise (or if
+ * the version lookup fails) so the field is omitted from the registration.
+ *
+ * @returns The backend-safe app version, or undefined.
+ */
+export const getAppVersionForRegistration = (): string | undefined => {
+  let appVersion: string;
+
+  try {
+    appVersion = new ExtensionPlatform().getVersion();
+  } catch {
+    return undefined;
+  }
+
+  return APP_VERSION_REGEX.test(appVersion) ? appVersion : undefined;
+};
 
 export const NotificationServicesPushControllerInit: MessengerClientInitFunction<
   NotificationServicesPushController,
@@ -42,6 +69,8 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
   persistedState,
   getMessengerClient,
 }) => {
+  const appVersion = getAppVersionForRegistration();
+
   const messengerClient = new NotificationServicesPushController({
     messenger: controllerMessenger,
     state: {
@@ -76,6 +105,7 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
         getNormalisedLocale(
           getMessengerClient('PreferencesController').state.currentLocale,
         ),
+      ...(appVersion ? { appVersion } : {}),
     },
   });
 
