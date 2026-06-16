@@ -1726,7 +1726,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   stopNetworkRequests() {
-    this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     if (
       !this.controllerMessenger.call(

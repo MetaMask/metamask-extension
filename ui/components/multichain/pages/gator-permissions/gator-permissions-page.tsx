@@ -212,7 +212,7 @@ export const GatorPermissionsPage = () => {
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
             onClick={handleBack}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
           />
         }
       >

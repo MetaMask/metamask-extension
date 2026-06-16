@@ -79,7 +79,7 @@ class AccountListPage {
     '[data-testid="account-name-input"] input';
 
   private readonly multichainAccountNameInputConfirmButton =
-    '.mm-button-base[aria-label="Confirm"]';
+    '[data-testid="account-name-confirm-button"]';
 
   private readonly addMultichainAccountButton =
     '[data-testid="add-multichain-account-button"]';
