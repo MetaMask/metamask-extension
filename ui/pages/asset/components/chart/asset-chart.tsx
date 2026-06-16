@@ -198,7 +198,7 @@ const AssetChart = ({
         display: false,
       },
     },
-  } as const;
+  } as ChartOptions<'line'>;
 
   const chartRef = useRef<Chart<'line', Point[]>>();
   const priceRef = useRef<{
@@ -253,6 +253,7 @@ const AssetChart = ({
                 ref={chartRef}
                 data={{ datasets: [{ data: prices }] }}
                 options={options}
+                // Update the price display on chart hover
                 onMouseMove={(event) => {
                   const data = chartRef?.current?.data?.datasets?.[0]?.data;
                   if (data) {
@@ -276,6 +277,7 @@ const AssetChart = ({
                     }
                   }
                 }}
+                // Revert to current price when not hovering
                 onMouseOut={() => {
                   priceRef?.current?.setPrice({
                     price: currentPrice,
@@ -294,6 +296,7 @@ const AssetChart = ({
         )}
 
         <Box
+          style={prices ? undefined : { visibility: `hidden` }}
           className="flex"
           justifyContent={BoxJustifyContent.Between}
           marginTop={2}
