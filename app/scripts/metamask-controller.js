@@ -756,6 +756,9 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController = this.wallet.getInstance('KeyringController');
     this.snapAccountService = messengerClientsByName.SnapAccountService;
     this.accountsController = this.wallet.getInstance('AccountsController');
+    this.connectivityController = this.wallet.getInstance(
+      'ConnectivityController',
+    );
     this.addressBookController = messengerClientsByName.AddressBookController;
     this.alertController = messengerClientsByName.AlertController;
     this.decryptMessageController =
@@ -1438,6 +1441,10 @@ export default class MetamaskController extends EventEmitter {
     this.memStore = new ComposableObservableStore({
       config: {
         AccountsController: this.accountsController,
+        // The ConnectivityController is wallet-owned; include it here so its
+        // (ephemeral, non-persisted) `connectivityStatus` still flows into the
+        // flattened `state.metamask` that the UI reads for offline detection.
+        ConnectivityController: this.connectivityController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainAssetsController: this.multichainAssetsController,
