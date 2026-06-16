@@ -152,8 +152,8 @@ The button can be dragged anywhere if it is in your way.
 At the bottom of the panel:
 
 - The **status dot** shows whether the agent is connected (green = connected).
-- Type a plain-language description of what you want (for example, *"make this
-  button bigger and use the primary brand color"*), and/or rely on your pending
+- Type a plain-language description of what you want (for example, _"make this
+  button bigger and use the primary brand color"_), and/or rely on your pending
   inline edits.
 - Press **Enter** or click the **↑** send button.
 
@@ -169,13 +169,13 @@ thread. You can keep iterating — each send is a new request.
 
 ## Troubleshooting
 
-| Symptom | Likely cause / fix |
-| --- | --- |
-| No 🎨 button | Build was not started with `DESIGNER_MODE=true`, or the build wasn't fully restarted after adding the flag. Check the console for the `[designer-mode]` logs. |
-| `[designer-mode] failed to init` in console | The inspector threw on init — share the error with a developer. |
-| Panel shows **"Not connected"** | The relay server isn't running. A developer needs to run the `designer-mode` agent skill ("enter design mode"). Inspection still works; sending is disabled. |
-| Send button disabled | Same as above — the agent/relay is not connected. |
-| Sent a request but no reply | The agent may be busy or waiting for approval. Check with the developer running the skill. |
+| Symptom                                     | Likely cause / fix                                                                                                                                            |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No 🎨 button                                | Build was not started with `DESIGNER_MODE=true`, or the build wasn't fully restarted after adding the flag. Check the console for the `[designer-mode]` logs. |
+| `[designer-mode] failed to init` in console | The inspector threw on init — share the error with a developer.                                                                                               |
+| Panel shows **"Not connected"**             | The relay server isn't running. A developer needs to run the `designer-mode` agent skill ("enter design mode"). Inspection still works; sending is disabled.  |
+| Send button disabled                        | Same as above — the agent/relay is not connected.                                                                                                             |
+| Sent a request but no reply                 | The agent may be busy or waiting for approval. Check with the developer running the skill.                                                                    |
 
 ---
 

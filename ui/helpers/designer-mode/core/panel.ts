@@ -1,14 +1,28 @@
-import type { ComponentInfo, ChangesetEntry, RelayStatus, TokenPattern } from './types';
+import type {
+  ComponentInfo,
+  ChangesetEntry,
+  RelayStatus,
+  TokenPattern,
+} from './types';
 import type { RelayClient } from './relay';
-
 
 /* ── Panel theme (dev-tool overlay; rgb()/rgba() so it never inherits product tokens) ── */
 const C = {
-  bg: 'rgb(44, 44, 44)', surface: 'rgb(56, 56, 56)', surfaceHover: 'rgb(64, 64, 64)',
-  input: 'rgb(30, 30, 30)', inputHover: 'rgb(42, 42, 42)', inputFocus: 'rgb(13, 153, 255)',
-  text: 'rgb(255, 255, 255)', textSecondary: 'rgb(173, 173, 173)', textTertiary: 'rgb(119, 119, 119)',
-  accent: 'rgb(13, 153, 255)', accentDim: 'rgba(13, 153, 255, 0.15)',
-  success: 'rgb(48, 209, 88)', error: 'rgb(255, 69, 58)', divider: 'rgb(64, 64, 64)', chevron: 'rgb(136, 136, 136)',
+  bg: 'rgb(44, 44, 44)',
+  surface: 'rgb(56, 56, 56)',
+  surfaceHover: 'rgb(64, 64, 64)',
+  input: 'rgb(30, 30, 30)',
+  inputHover: 'rgb(42, 42, 42)',
+  inputFocus: 'rgb(13, 153, 255)',
+  text: 'rgb(255, 255, 255)',
+  textSecondary: 'rgb(173, 173, 173)',
+  textTertiary: 'rgb(119, 119, 119)',
+  accent: 'rgb(13, 153, 255)',
+  accentDim: 'rgba(13, 153, 255, 0.15)',
+  success: 'rgb(48, 209, 88)',
+  error: 'rgb(255, 69, 58)',
+  divider: 'rgb(64, 64, 64)',
+  chevron: 'rgb(136, 136, 136)',
 } as const;
 const F = `Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
 const M = `ui-monospace,SFMono-Regular,Menlo,monospace`;
@@ -23,7 +37,9 @@ function findStyleValue(styles: Record<string, string>, prop: string): string {
 }
 
 function shortenValue(val: string): string {
-  if (!val) {return '';}
+  if (!val) {
+    return '';
+  }
   return val.replace(/px$/u, '').trim();
 }
 
@@ -35,10 +51,14 @@ function shortenValue(val: string): string {
  * @param color - A CSS color string (hex or `rgb()/rgba()`).
  */
 function toHexColor(color: string): string {
-  if (color.startsWith('#')) {return color;}
+  if (color.startsWith('#')) {
+    return color;
+  }
   const hex = (n: number) => n.toString(16).padStart(2, '0');
   const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/u);
-  if (!m) {return `#${hex(0)}${hex(0)}${hex(0)}`;}
+  if (!m) {
+    return `#${hex(0)}${hex(0)}${hex(0)}`;
+  }
   return `#${hex(Number(m[1]))}${hex(Number(m[2]))}${hex(Number(m[3]))}`;
 }
 
@@ -47,268 +67,682 @@ const DEFAULT_TOKEN_PATTERNS: TokenPattern[] = [
   { pattern: /^(token|ds|theme)-/u, category: 'Design Token' },
   { pattern: /^(text|bg|border|shadow|color)-/u, category: 'Tailwind Color' },
   { pattern: /^(p|m|gap|space|w|h|min|max)-/u, category: 'Tailwind Spacing' },
-  { pattern: /^(flex|grid|col|row|justify|items|self)-/u, category: 'Tailwind Layout' },
-  { pattern: /^(font|text|leading|tracking|uppercase|lowercase|capitalize)/u, category: 'Tailwind Typography' },
+  {
+    pattern: /^(flex|grid|col|row|justify|items|self)-/u,
+    category: 'Tailwind Layout',
+  },
+  {
+    pattern: /^(font|text|leading|tracking|uppercase|lowercase|capitalize)/u,
+    category: 'Tailwind Typography',
+  },
 ];
 
 /* ── CSS ── */
 const PANEL_CSS = css`
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  :host { all: initial; }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  :host {
+    all: initial;
+  }
 
   @keyframes pulse-orb {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.3); }
+    0%,
+    100% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.3);
+    }
   }
 
   .panel {
-    position: fixed; width: 340px;
-    background: ${C.bg}; border-radius: 10px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
-    display: flex; flex-direction: column; font-family: ${F}; font-size: 12px;
-    color: ${C.text}; z-index: 2147483645; overflow: hidden; user-select: none;
+    position: fixed;
+    width: 340px;
+    background: ${C.bg};
+    border-radius: 10px;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    font-family: ${F};
+    font-size: 12px;
+    color: ${C.text};
+    z-index: 2147483645;
+    overflow: hidden;
+    user-select: none;
     transition: max-height 0.2s ease;
   }
-  .panel.hover-mode { max-height: 280px; overflow: hidden; }
-  .panel.locked-mode { max-height: 680px; overflow-y: auto; }
+  .panel.hover-mode {
+    max-height: 280px;
+    overflow: hidden;
+  }
+  .panel.locked-mode {
+    max-height: 680px;
+    overflow-y: auto;
+  }
 
   /* Header */
   .header {
-    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
-    background: ${C.surface}; cursor: move; flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: ${C.surface};
+    cursor: move;
+    flex-shrink: 0;
     border-bottom: 1px solid ${C.divider};
   }
-  .drag-handle { color: ${C.textSecondary}; font-size: 16px; cursor: grab; flex-shrink: 0; line-height: 1; }
-  .header-title { flex: 1; font-weight: 600; font-size: 13px; color: ${C.textSecondary}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .header-actions { display: flex; gap: 4px; flex-shrink: 0; }
-  .icon-btn {
-    background: none; border: none; color: ${C.textSecondary}; cursor: pointer;
-    padding: 3px 6px; border-radius: 4px; font-size: 12px; line-height: 1;
+  .drag-handle {
+    color: ${C.textSecondary};
+    font-size: 16px;
+    cursor: grab;
+    flex-shrink: 0;
+    line-height: 1;
   }
-  .icon-btn:hover { background: ${C.surfaceHover}; color: ${C.text}; }
+  .header-title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 13px;
+    color: ${C.textSecondary};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .header-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: none;
+    border: none;
+    color: ${C.textSecondary};
+    cursor: pointer;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1;
+  }
+  .icon-btn:hover {
+    background: ${C.surfaceHover};
+    color: ${C.text};
+  }
   .copy-btn {
-    font-size: 10px; background: ${C.surface}; color: ${C.textSecondary};
-    border: 1px solid ${C.divider}; border-radius: 4px; padding: 3px 8px; cursor: pointer;
+    font-size: 10px;
+    background: ${C.surface};
+    color: ${C.textSecondary};
+    border: 1px solid ${C.divider};
+    border-radius: 4px;
+    padding: 3px 8px;
+    cursor: pointer;
     transition: all 0.15s;
   }
-  .copy-btn:hover { color: ${C.text}; border-color: ${C.accent}; }
-  .copy-btn.copied { color: ${C.success}; border-color: ${C.success}; }
+  .copy-btn:hover {
+    color: ${C.text};
+    border-color: ${C.accent};
+  }
+  .copy-btn.copied {
+    color: ${C.success};
+    border-color: ${C.success};
+  }
 
   /* Lock bar */
   .lock-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 5px 12px; background: ${C.accentDim}; font-size: 10px; color: ${C.accent};
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 12px;
+    background: ${C.accentDim};
+    font-size: 10px;
+    color: ${C.accent};
   }
   .unlock-btn {
-    background: transparent; border: 1px solid ${C.accent}; color: ${C.accent};
-    border-radius: 4px; padding: 2px 8px; font-size: 10px; cursor: pointer;
+    background: transparent;
+    border: 1px solid ${C.accent};
+    color: ${C.accent};
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 10px;
+    cursor: pointer;
   }
-  .unlock-btn:hover { background: ${C.accent}; color: rgb(255, 255, 255); }
+  .unlock-btn:hover {
+    background: ${C.accent};
+    color: rgb(255, 255, 255);
+  }
 
   /* Empty state */
   .empty-state {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 40px 24px; color: ${C.textTertiary}; text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    color: ${C.textTertiary};
+    text-align: center;
   }
 
   /* Element header */
-  .el-header { padding: 10px 12px; border-bottom: 1px solid ${C.divider}; }
-  .el-name { font-weight: 700; font-size: 13px; color: ${C.text}; display: flex; align-items: center; gap: 6px; }
-  .test-id-pill {
-    font-size: 9px; font-family: ${M}; background: ${C.accentDim}; color: ${C.accent};
-    padding: 1px 6px; border-radius: 8px; font-weight: 500;
+  .el-header {
+    padding: 10px 12px;
+    border-bottom: 1px solid ${C.divider};
   }
-  .el-breadcrumb { font-size: 10px; color: ${C.textTertiary}; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .el-filepath { font-size: 10px; color: ${C.textTertiary}; font-family: ${M}; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .el-name {
+    font-weight: 700;
+    font-size: 13px;
+    color: ${C.text};
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .test-id-pill {
+    font-size: 9px;
+    font-family: ${M};
+    background: ${C.accentDim};
+    color: ${C.accent};
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  .el-breadcrumb {
+    font-size: 10px;
+    color: ${C.textTertiary};
+    margin-top: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .el-filepath {
+    font-size: 10px;
+    color: ${C.textTertiary};
+    font-family: ${M};
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   /* Body */
-  .body { flex: 1; overflow-y: auto; min-height: 0; }
-  .body::-webkit-scrollbar { width: 4px; }
-  .body::-webkit-scrollbar-track { background: transparent; }
-  .body::-webkit-scrollbar-thumb { background: ${C.divider}; border-radius: 2px; }
+  .body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+  }
+  .body::-webkit-scrollbar {
+    width: 4px;
+  }
+  .body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .body::-webkit-scrollbar-thumb {
+    background: ${C.divider};
+    border-radius: 2px;
+  }
 
   /* Sections */
-  .section { border-bottom: 1px solid ${C.divider}; }
-  .section-header {
-    display: flex; align-items: center; gap: 6px; padding: 7px 12px;
-    background: none; border: none; width: 100%; color: ${C.textSecondary};
-    font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
-    cursor: pointer; font-family: ${F};
+  .section {
+    border-bottom: 1px solid ${C.divider};
   }
-  .section-header:hover { background: ${C.surfaceHover}; }
-  .section-icon { font-size: 11px; width: 14px; text-align: center; }
-  .chevron { font-size: 8px; transition: transform 0.15s; color: ${C.chevron}; margin-left: auto; }
-  .chevron.open { transform: rotate(90deg); }
-  .section-body { padding: 6px 12px 10px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: none;
+    border: none;
+    width: 100%;
+    color: ${C.textSecondary};
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: ${F};
+  }
+  .section-header:hover {
+    background: ${C.surfaceHover};
+  }
+  .section-icon {
+    font-size: 11px;
+    width: 14px;
+    text-align: center;
+  }
+  .chevron {
+    font-size: 8px;
+    transition: transform 0.15s;
+    color: ${C.chevron};
+    margin-left: auto;
+  }
+  .chevron.open {
+    transform: rotate(90deg);
+  }
+  .section-body {
+    padding: 6px 12px 10px;
+  }
 
   /* Property rows */
-  .prop-row { display: flex; align-items: flex-start; min-height: 24px; gap: 6px; margin: 1px 0; }
-  .prop-label { font-size: 10px; color: ${C.textTertiary}; width: 72px; flex-shrink: 0; padding-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .prop-value { flex: 1; min-width: 0; }
+  .prop-row {
+    display: flex;
+    align-items: flex-start;
+    min-height: 24px;
+    gap: 6px;
+    margin: 1px 0;
+  }
+  .prop-label {
+    font-size: 10px;
+    color: ${C.textTertiary};
+    width: 72px;
+    flex-shrink: 0;
+    padding-top: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .prop-value {
+    flex: 1;
+    min-width: 0;
+  }
 
   /* Two-col grid */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 8px;
+  }
 
   /* Editable values */
   .editable {
-    display: flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px;
-    cursor: pointer; font-size: 11px; font-family: ${M}; color: ${C.text};
-    border: 1px solid transparent; min-height: 22px; word-break: break-all;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: ${M};
+    color: ${C.text};
+    border: 1px solid transparent;
+    min-height: 22px;
+    word-break: break-all;
     transition: background 0.1s;
   }
-  .editable:hover { background: ${C.inputHover}; border-color: ${C.divider}; }
-  .editable input, .edit-input {
-    width: 100%; background: ${C.input}; color: ${C.text}; border: 1px solid ${C.inputFocus};
-    border-radius: 4px; padding: 2px 6px; font-size: 11px; font-family: ${M}; outline: none;
+  .editable:hover {
+    background: ${C.inputHover};
+    border-color: ${C.divider};
+  }
+  .editable input,
+  .edit-input {
+    width: 100%;
+    background: ${C.input};
+    color: ${C.text};
+    border: 1px solid ${C.inputFocus};
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-family: ${M};
+    outline: none;
   }
   .color-swatch {
-    width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2);
-    flex-shrink: 0; cursor: pointer;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    cursor: pointer;
   }
-  .color-input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
-  .readonly { font-size: 11px; font-family: ${M}; color: ${C.text}; padding: 2px 6px; word-break: break-all; }
+  .color-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  .readonly {
+    font-size: 11px;
+    font-family: ${M};
+    color: ${C.text};
+    padding: 2px 6px;
+    word-break: break-all;
+  }
 
   /* Text area */
   .text-input {
-    width: 100%; background: ${C.input}; color: ${C.text}; border: 1px solid ${C.divider};
-    border-radius: 4px; padding: 6px 8px; font-size: 11px; font-family: ${F};
-    outline: none; resize: vertical; min-height: 40px;
+    width: 100%;
+    background: ${C.input};
+    color: ${C.text};
+    border: 1px solid ${C.divider};
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 11px;
+    font-family: ${F};
+    outline: none;
+    resize: vertical;
+    min-height: 40px;
   }
-  .text-input:focus { border-color: ${C.inputFocus}; }
+  .text-input:focus {
+    border-color: ${C.inputFocus};
+  }
 
   /* Spacing editor */
-  .spacing-editor { margin: 4px 0; }
-  .spacing-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; font-family: ${F}; }
+  .spacing-editor {
+    margin: 4px 0;
+  }
+  .spacing-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+    font-family: ${F};
+  }
   .spacing-cross-wrap {
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    padding: 4px 8px; background: ${C.input}; border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 8px;
+    background: ${C.input};
+    border-radius: 6px;
     border: 1px solid ${C.divider};
   }
   .spacing-mid-row {
-    display: flex; align-items: center; gap: 4px; width: 100%; justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    justify-content: center;
   }
-  .spacing-cross-wrap .sc-center { width: 36px; height: 18px; border-radius: 3px; flex-shrink: 0; }
+  .spacing-cross-wrap .sc-center {
+    width: 36px;
+    height: 18px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
   .mini-input {
-    width: 40px; text-align: center; background: transparent; color: ${C.text};
-    border: 1px solid transparent; border-radius: 3px; padding: 2px 2px;
-    font-size: 10px; font-family: ${M}; outline: none; cursor: pointer;
-    transition: border-color 0.1s, background-color 0.1s;
+    width: 40px;
+    text-align: center;
+    background: transparent;
+    color: ${C.text};
+    border: 1px solid transparent;
+    border-radius: 3px;
+    padding: 2px 2px;
+    font-size: 10px;
+    font-family: ${M};
+    outline: none;
+    cursor: pointer;
+    transition:
+      border-color 0.1s,
+      background-color 0.1s;
   }
-  .mini-input:hover { border-color: ${C.divider}; background: ${C.inputHover}; }
-  .mini-input:focus { border-color: ${C.inputFocus}; background: ${C.input}; }
+  .mini-input:hover {
+    border-color: ${C.divider};
+    background: ${C.inputHover};
+  }
+  .mini-input:focus {
+    border-color: ${C.inputFocus};
+    background: ${C.input};
+  }
 
   /* Pill list */
-  .pill-list { display: flex; flex-wrap: wrap; gap: 4px; }
-  .pill {
-    display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px;
-    background: ${C.surface}; border-radius: 10px; font-size: 10px; font-family: ${M};
-    color: ${C.textSecondary}; max-width: 100%; overflow: hidden;
+  .pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
   }
-  .pill-x { color: ${C.textTertiary}; cursor: pointer; padding: 0 2px; font-size: 10px; }
-  .pill-x:hover { color: ${C.error}; }
-  .add-btn { font-size: 10px; color: ${C.accent}; background: none; border: none; cursor: pointer; padding: 2px 4px; margin-top: 4px; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    background: ${C.surface};
+    border-radius: 10px;
+    font-size: 10px;
+    font-family: ${M};
+    color: ${C.textSecondary};
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .pill-x {
+    color: ${C.textTertiary};
+    cursor: pointer;
+    padding: 0 2px;
+    font-size: 10px;
+  }
+  .pill-x:hover {
+    color: ${C.error};
+  }
+  .add-btn {
+    font-size: 10px;
+    color: ${C.accent};
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 4px;
+    margin-top: 4px;
+  }
   .add-input {
-    font-size: 10px; font-family: ${M}; background: ${C.input}; color: ${C.text};
-    border: 1px solid ${C.inputFocus}; border-radius: 4px; padding: 3px 6px;
-    outline: none; width: 100%; margin-top: 4px;
+    font-size: 10px;
+    font-family: ${M};
+    background: ${C.input};
+    color: ${C.text};
+    border: 1px solid ${C.inputFocus};
+    border-radius: 4px;
+    padding: 3px 6px;
+    outline: none;
+    width: 100%;
+    margin-top: 4px;
   }
 
   /* Props JSON */
   .props-pre {
-    font-size: 10px; font-family: ${M}; color: ${C.textTertiary};
-    background: ${C.input}; border-radius: 4px; padding: 6px 8px;
-    margin-top: 6px; white-space: pre-wrap; word-break: break-all;
-    max-height: 100px; overflow-y: auto; line-height: 1.4;
+    font-size: 10px;
+    font-family: ${M};
+    color: ${C.textTertiary};
+    background: ${C.input};
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin-top: 6px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 100px;
+    overflow-y: auto;
+    line-height: 1.4;
   }
 
   /* Chat footer */
   .footer {
-    flex-shrink: 0; background: rgb(26, 26, 26);
+    flex-shrink: 0;
+    background: rgb(26, 26, 26);
     border-radius: 0 0 10px 10px;
   }
   .footer-top {
-    display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
     border-top: 1px solid ${C.divider};
   }
   .status-dot {
-    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
     background: ${C.textTertiary};
   }
-  .status-dot.connected { background: ${C.success}; box-shadow: 0 0 6px ${C.success}; }
-  .status-dot.disconnected { background: ${C.error}; box-shadow: 0 0 6px ${C.error}; }
+  .status-dot.connected {
+    background: ${C.success};
+    box-shadow: 0 0 6px ${C.success};
+  }
+  .status-dot.disconnected {
+    background: ${C.error};
+    box-shadow: 0 0 6px ${C.error};
+  }
   .component-pill {
-    font-size: 10px; font-family: ${M}; color: ${C.textSecondary};
-    background: ${C.surface}; padding: 1px 6px; border-radius: 8px;
+    font-size: 10px;
+    font-family: ${M};
+    color: ${C.textSecondary};
+    background: ${C.surface};
+    padding: 1px 6px;
+    border-radius: 8px;
   }
 
   /* Pending edits banner */
   .edits-banner {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 6px 12px; background: rgba(255, 165, 0, 0.12); font-size: 10px; color: rgb(255, 179, 71);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: rgba(255, 165, 0, 0.12);
+    font-size: 10px;
+    color: rgb(255, 179, 71);
   }
-  .edits-banner-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edits-banner-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .apply-btn {
-    background: rgb(255, 179, 71); color: rgb(26, 26, 26); border: none; border-radius: 4px;
-    padding: 3px 10px; font-size: 10px; font-weight: 600; cursor: pointer; flex-shrink: 0;
+    background: rgb(255, 179, 71);
+    color: rgb(26, 26, 26);
+    border: none;
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
   }
-  .apply-btn:hover { background: rgb(255, 197, 110); }
+  .apply-btn:hover {
+    background: rgb(255, 197, 110);
+  }
 
   /* Message thread */
   .message-thread {
-    max-height: 160px; overflow-y: auto; padding: 6px 12px; display: flex;
-    flex-direction: column; gap: 4px;
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 6px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
-  .message-thread::-webkit-scrollbar { width: 3px; }
-  .message-thread::-webkit-scrollbar-thumb { background: ${C.divider}; border-radius: 2px; }
+  .message-thread::-webkit-scrollbar {
+    width: 3px;
+  }
+  .message-thread::-webkit-scrollbar-thumb {
+    background: ${C.divider};
+    border-radius: 2px;
+  }
   .msg-sent {
-    align-self: flex-end; background: ${C.accent}; color: rgb(255, 255, 255);
-    border-radius: 8px 8px 2px 8px; padding: 5px 8px; font-size: 11px;
-    max-width: 85%; word-break: break-word; line-height: 1.35;
+    align-self: flex-end;
+    background: ${C.accent};
+    color: rgb(255, 255, 255);
+    border-radius: 8px 8px 2px 8px;
+    padding: 5px 8px;
+    font-size: 11px;
+    max-width: 85%;
+    word-break: break-word;
+    line-height: 1.35;
   }
   .msg-agent {
-    align-self: flex-start; background: ${C.surface}; color: ${C.textSecondary};
-    border-radius: 8px 8px 8px 2px; padding: 5px 8px; font-size: 11px;
-    max-width: 85%; word-break: break-word; line-height: 1.35;
+    align-self: flex-start;
+    background: ${C.surface};
+    color: ${C.textSecondary};
+    border-radius: 8px 8px 8px 2px;
+    padding: 5px 8px;
+    font-size: 11px;
+    max-width: 85%;
+    word-break: break-word;
+    line-height: 1.35;
   }
   .msg-status {
-    align-self: center; color: ${C.textTertiary}; font-size: 10px;
+    align-self: center;
+    color: ${C.textTertiary};
+    font-size: 10px;
     font-style: italic;
   }
 
   /* Agent working indicator */
   .agent-working {
-    display: flex; align-items: center; gap: 6px; padding: 4px 12px;
-    font-size: 10px; color: ${C.textTertiary};
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    font-size: 10px;
+    color: ${C.textTertiary};
   }
   .pulse-orb {
-    width: 8px; height: 8px; border-radius: 50%; background: ${C.accent};
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${C.accent};
     animation: pulse-orb 1.2s ease-in-out infinite;
   }
 
   /* Composer */
   .composer {
-    display: flex; align-items: flex-end; padding: 6px 12px 10px; gap: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 6px 12px 10px;
+    gap: 0;
     position: relative;
   }
   .composer-wrap {
-    flex: 1; position: relative;
+    flex: 1;
+    position: relative;
   }
   .chat-input {
-    width: 100%; box-sizing: border-box; background: ${C.input}; color: ${C.text}; border: 1px solid ${C.divider};
-    border-radius: 8px; padding: 8px 40px 8px 10px; font-size: 11px; font-family: ${F};
-    outline: none; resize: none; min-height: 36px;
+    width: 100%;
+    box-sizing: border-box;
+    background: ${C.input};
+    color: ${C.text};
+    border: 1px solid ${C.divider};
+    border-radius: 8px;
+    padding: 8px 40px 8px 10px;
+    font-size: 11px;
+    font-family: ${F};
+    outline: none;
+    resize: none;
+    min-height: 36px;
   }
-  .chat-input:focus { border-color: ${C.inputFocus}; }
+  .chat-input:focus {
+    border-color: ${C.inputFocus};
+  }
   .send-btn {
-    position: absolute; right: 5px; bottom: 7px;
-    background: ${C.accent}; color: rgb(255, 255, 255); border: none; border-radius: 6px;
-    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 14px; font-weight: 700;
+    position: absolute;
+    right: 5px;
+    bottom: 7px;
+    background: ${C.accent};
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
   }
-  .send-btn:disabled { opacity: 0.3; cursor: default; }
+  .send-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
 
   /* Minimized */
-  .minimized .body, .minimized .footer, .minimized .el-header, .minimized .lock-bar, .minimized .empty-state { display: none; }
+  .minimized .body,
+  .minimized .footer,
+  .minimized .el-header,
+  .minimized .lock-bar,
+  .minimized .empty-state {
+    display: none;
+  }
 `;
 
 /* ── Types ── */
@@ -352,7 +786,12 @@ export class PanelController {
 
   private isLocked = false;
 
-  private anchor: { h: 'left' | 'right'; x: number; v: 'top' | 'bottom'; y: number } = { h: 'right', x: 20, v: 'bottom', y: 20 };
+  private anchor: {
+    h: 'left' | 'right';
+    x: number;
+    v: 'top' | 'bottom';
+    y: number;
+  } = { h: 'right', x: 20, v: 'bottom', y: 20 };
 
   private sectionStates: Map<string, boolean> = new Map();
 
@@ -401,7 +840,11 @@ export class PanelController {
       // Panel fits on the left side
       this.anchor = { ...this.anchor, h: 'left', x: toggleLeft };
     } else {
-      this.anchor = { ...this.anchor, h: 'right', x: Math.max(0, window.innerWidth - panelW) };
+      this.anchor = {
+        ...this.anchor,
+        h: 'right',
+        x: Math.max(0, window.innerWidth - panelW),
+      };
     }
 
     // Determine vertical anchor
@@ -413,7 +856,11 @@ export class PanelController {
       // Panel fits growing downward from top
       this.anchor = { ...this.anchor, v: 'top', y: toggleTop };
     } else {
-      this.anchor = { ...this.anchor, v: 'bottom', y: Math.max(0, window.innerHeight - panelH) };
+      this.anchor = {
+        ...this.anchor,
+        v: 'bottom',
+        y: Math.max(0, window.innerHeight - panelH),
+      };
     }
   }
 
@@ -431,9 +878,13 @@ export class PanelController {
     this.isLocked = true;
     const snap: Record<string, string> = {};
     for (const group of Object.values(info.computedStyles)) {
-      for (const [k, v] of Object.entries(group as Record<string, string>)) {snap[k] = v;}
+      for (const [k, v] of Object.entries(group as Record<string, string>)) {
+        snap[k] = v;
+      }
     }
-    if (info.textContent) {snap.__textContent = info.textContent;}
+    if (info.textContent) {
+      snap.__textContent = info.textContent;
+    }
     this.originalSnapshot = snap;
     this.editLog.clear();
     this.editLogStrings = [];
@@ -442,7 +893,9 @@ export class PanelController {
   }
 
   showHover(info: ComponentInfo, el: HTMLElement) {
-    if (this.isLocked) {return;} // don't override locked panel with hover
+    if (this.isLocked) {
+      return;
+    } // don't override locked panel with hover
     this.info = info;
     this.selectedEl = el;
     this.isVisible = true;
@@ -450,7 +903,9 @@ export class PanelController {
   }
 
   hideHover() {
-    if (this.isLocked) {return;} // don't hide locked panel on mouse leave
+    if (this.isLocked) {
+      return;
+    } // don't hide locked panel on mouse leave
     this.info = null;
     this.selectedEl = null;
     // Keep panel visible in compact mode (no info, but still showing)
@@ -482,9 +937,14 @@ export class PanelController {
       const origVal = existing?.original ?? original;
       this.editLog.set(property, { original: origVal, current: newValue });
       const logEntry = `${property}: ${shortenValue(origVal)} → ${shortenValue(newValue)}`;
-      const existingIdx = this.editLogStrings.findIndex(s => s.startsWith(`${property  }:`));
-      if (existingIdx >= 0) {this.editLogStrings[existingIdx] = logEntry;}
-      else {this.editLogStrings.push(logEntry);}
+      const existingIdx = this.editLogStrings.findIndex((s) =>
+        s.startsWith(`${property}:`),
+      );
+      if (existingIdx >= 0) {
+        this.editLogStrings[existingIdx] = logEntry;
+      } else {
+        this.editLogStrings.push(logEntry);
+      }
     }
     if (!property.startsWith('__')) {
       el.style.setProperty(property, newValue);
@@ -503,25 +963,35 @@ export class PanelController {
   }
 
   unmount() {
-    if (this.healthInterval) {clearInterval(this.healthInterval);}
+    if (this.healthInterval) {
+      clearInterval(this.healthInterval);
+    }
     this.host?.remove();
   }
 
   /* ── Private ── */
 
   private getChangeset(): ChangesetEntry[] {
-    return Array.from(this.editLog.entries()).map(([property, { original, current }]) => ({ property, original, current }));
+    return Array.from(this.editLog.entries()).map(
+      ([property, { original, current }]) => ({ property, original, current }),
+    );
   }
 
   private async checkHealth() {
     const prev = this.relayStatus;
     this.relayStatus = await this.relay.checkHealth();
-    if (this.relayStatus !== prev) {this.render();}
+    if (this.relayStatus !== prev) {
+      this.render();
+    }
   }
 
   private async sendToAgent(message: string) {
-    if (!this.info) {return;}
-    if (message) {this.chatMessages.push({ type: 'sent', text: message });}
+    if (!this.info) {
+      return;
+    }
+    if (message) {
+      this.chatMessages.push({ type: 'sent', text: message });
+    }
     this.agentWorking = true;
     this.render();
     const { formatAgentPrompt } = await import('./prompt');
@@ -530,10 +1000,14 @@ export class PanelController {
   }
 
   private getAllStyles(): Record<string, string> {
-    if (!this.info) {return {};}
+    if (!this.info) {
+      return {};
+    }
     const all: Record<string, string> = {};
     for (const group of Object.values(this.info.computedStyles)) {
-      for (const [k, v] of Object.entries(group as Record<string, string>)) {all[k] = v;}
+      for (const [k, v] of Object.entries(group as Record<string, string>)) {
+        all[k] = v;
+      }
     }
     return all;
   }
@@ -543,19 +1017,26 @@ export class PanelController {
   }
 
   private detectTokens(): string[] {
-    if (!this.info) {return [];}
+    if (!this.info) {
+      return [];
+    }
     const patterns = this.options.tokenPatterns ?? DEFAULT_TOKEN_PATTERNS;
     const tokens: string[] = [];
     for (const cls of this.info.classes) {
       for (const tp of patterns) {
-        if (tp.pattern.test(cls)) { tokens.push(cls); break; }
+        if (tp.pattern.test(cls)) {
+          tokens.push(cls);
+          break;
+        }
       }
     }
     return tokens;
   }
 
   private getComponentPath(): string {
-    if (!this.info?.domPath) {return '';}
+    if (!this.info?.domPath) {
+      return '';
+    }
     const parts = this.info.domPath.split(' > ');
     return parts.slice(-3).join(' › ');
   }
@@ -563,12 +1044,18 @@ export class PanelController {
   /* ── Render ── */
 
   private render() {
-    if (!this.shadow) {return;}
+    if (!this.shadow) {
+      return;
+    }
     const old = this.shadow.querySelector('.panel');
     const prevScroll = old ? old.scrollTop : 0;
-    if (old) {old.remove();}
+    if (old) {
+      old.remove();
+    }
 
-    if (!this.isVisible) {return;}
+    if (!this.isVisible) {
+      return;
+    }
 
     const panel = document.createElement('div');
     panel.className = `panel${this.isMinimized ? ' minimized' : ''} ${this.isLocked ? 'locked-mode' : 'hover-mode'}`;
@@ -592,7 +1079,9 @@ export class PanelController {
 
     this.shadow.appendChild(panel);
     if (prevScroll) {
-      requestAnimationFrame(() => { panel.scrollTop = prevScroll; });
+      requestAnimationFrame(() => {
+        panel.scrollTop = prevScroll;
+      });
     }
     this.setupDrag(panel);
   }
@@ -617,29 +1106,44 @@ export class PanelController {
     copyBtn.textContent = 'Copy for AI';
     copyBtn.onclick = () => {
       const { info } = this;
-      if (!info) {return;}
-      import('./prompt').then(({ formatForClipboard: f }) => {
-        navigator.clipboard.writeText(f(info, this.getChangeset())).then(() => {
-          copyBtn.textContent = '✓ Copied';
-          copyBtn.classList.add('copied');
-          setTimeout(() => { copyBtn.textContent = 'Copy for AI'; copyBtn.classList.remove('copied'); }, 2000);
-        }).catch(() => {
-          // Clipboard write can reject without focus; ignore in this dev tool.
+      if (!info) {
+        return;
+      }
+      import('./prompt')
+        .then(({ formatForClipboard: f }) => {
+          navigator.clipboard
+            .writeText(f(info, this.getChangeset()))
+            .then(() => {
+              copyBtn.textContent = '✓ Copied';
+              copyBtn.classList.add('copied');
+              setTimeout(() => {
+                copyBtn.textContent = 'Copy for AI';
+                copyBtn.classList.remove('copied');
+              }, 2000);
+            })
+            .catch(() => {
+              // Clipboard write can reject without focus; ignore in this dev tool.
+            });
+        })
+        .catch(() => {
+          // Dynamic import failure is non-critical for this dev tool.
         });
-      }).catch(() => {
-        // Dynamic import failure is non-critical for this dev tool.
-      });
     };
 
     const minBtn = document.createElement('button');
     minBtn.className = 'icon-btn';
     minBtn.textContent = this.isMinimized ? '▢' : '▁';
-    minBtn.onclick = () => { this.isMinimized = !this.isMinimized; this.render(); };
+    minBtn.onclick = () => {
+      this.isMinimized = !this.isMinimized;
+      this.render();
+    };
 
     const closeBtn = document.createElement('button');
     closeBtn.className = 'icon-btn';
     closeBtn.textContent = '×';
-    closeBtn.onclick = () => { this.options.onClose?.(); };
+    closeBtn.onclick = () => {
+      this.options.onClose?.();
+    };
 
     actions.appendChild(copyBtn);
     actions.appendChild(minBtn);
@@ -661,7 +1165,9 @@ export class PanelController {
     const unlockBtn = document.createElement('button');
     unlockBtn.className = 'unlock-btn';
     unlockBtn.textContent = 'Unlock';
-    unlockBtn.onclick = () => { this.options.onUnlock?.(); };
+    unlockBtn.onclick = () => {
+      this.options.onUnlock?.();
+    };
 
     bar.appendChild(txt);
     bar.appendChild(unlockBtn);
@@ -781,8 +1287,12 @@ export class PanelController {
         if (this.selectedEl) {
           this.recordEdit('__textContent', ta.value, this.selectedEl);
           // update text in DOM
-          const textNodes = Array.from(this.selectedEl.childNodes).filter(n => n.nodeType === Node.TEXT_NODE);
-          if (textNodes.length > 0) {textNodes[0].textContent = ta.value;}
+          const textNodes = Array.from(this.selectedEl.childNodes).filter(
+            (n) => n.nodeType === Node.TEXT_NODE,
+          );
+          if (textNodes.length > 0) {
+            textNodes[0].textContent = ta.value;
+          }
         }
       };
       body.appendChild(ta);
@@ -821,7 +1331,9 @@ export class PanelController {
           ['Gap', 'gap'],
         ];
         for (const [label, prop] of flexProps) {
-          flexGrid.appendChild(this.makePropRow(label, prop, this.getVal(prop)));
+          flexGrid.appendChild(
+            this.makePropRow(label, prop, this.getVal(prop)),
+          );
         }
         body.appendChild(flexGrid);
       }
@@ -838,18 +1350,33 @@ export class PanelController {
   private renderSpacingSection(): HTMLElement {
     return this.buildSection('Spacing', '⬜', true, (body) => {
       // Margin
-      body.appendChild(this.buildSpacingCross('Margin', C.accent, C.accentDim, [
-        'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
-      ]));
+      body.appendChild(
+        this.buildSpacingCross('Margin', C.accent, C.accentDim, [
+          'margin-top',
+          'margin-right',
+          'margin-bottom',
+          'margin-left',
+        ]),
+      );
 
       // Padding
-      body.appendChild(this.buildSpacingCross('Padding', C.success, 'rgba(48, 209, 88, 0.15)', [
-        'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-      ]));
+      body.appendChild(
+        this.buildSpacingCross(
+          'Padding',
+          C.success,
+          'rgba(48, 209, 88, 0.15)',
+          ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'],
+        ),
+      );
     });
   }
 
-  private buildSpacingCross(label: string, color: string, bgColor: string, props: [string, string, string, string]): HTMLElement {
+  private buildSpacingCross(
+    label: string,
+    color: string,
+    bgColor: string,
+    props: [string, string, string, string],
+  ): HTMLElement {
     const wrap = document.createElement('div');
     wrap.className = 'spacing-editor';
     wrap.style.marginBottom = '8px';
@@ -895,19 +1422,33 @@ export class PanelController {
     return wrap;
   }
 
-  private setupMiniInput(input: HTMLInputElement, prop: string, _color: string) {
+  private setupMiniInput(
+    input: HTMLInputElement,
+    prop: string,
+    _color: string,
+  ) {
     let startValue = '';
-    input.onfocus = () => { startValue = input.value; input.select(); };
+    input.onfocus = () => {
+      startValue = input.value;
+      input.select();
+    };
     input.onblur = () => {
       if (this.selectedEl && input.value !== startValue) {
         const val = input.value.trim();
-        const withUnit = /^\d+$/u.test(val) ? `${val  }px` : val;
+        const withUnit = /^\d+$/u.test(val) ? `${val}px` : val;
         this.applyEdit(prop, withUnit, this.selectedEl);
       }
     };
     input.onkeydown = (e) => {
-      if (e.key === 'Enter') { input.blur(); return; }
-      if (e.key === 'Escape') { input.value = shortenValue(this.getVal(prop)) || '0'; input.blur(); return; }
+      if (e.key === 'Enter') {
+        input.blur();
+        return;
+      }
+      if (e.key === 'Escape') {
+        input.value = shortenValue(this.getVal(prop)) || '0';
+        input.blur();
+        return;
+      }
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
         const step = e.shiftKey ? 10 : 1;
@@ -915,7 +1456,7 @@ export class PanelController {
         const num = parseFloat(input.value) || 0;
         input.value = String(num + delta);
         if (this.selectedEl) {
-          this.recordEdit(prop, `${input.value  }px`, this.selectedEl);
+          this.recordEdit(prop, `${input.value}px`, this.selectedEl);
         }
       }
     };
@@ -925,7 +1466,9 @@ export class PanelController {
   private renderTypographySection(): HTMLElement {
     return this.buildSection('Typography', 'T', true, (body) => {
       // Font (full width)
-      body.appendChild(this.makePropRowFull('Font', 'font-family', this.getVal('font-family')));
+      body.appendChild(
+        this.makePropRowFull('Font', 'font-family', this.getVal('font-family')),
+      );
 
       const grid = document.createElement('div');
       grid.className = 'two-col';
@@ -953,9 +1496,12 @@ export class PanelController {
   private renderFillStrokeSection(): HTMLElement {
     return this.buildSection('Fill & Stroke', '◉', false, (body) => {
       // Background with color
-      const bgVal = this.getVal('background-color') || this.getVal('background');
+      const bgVal =
+        this.getVal('background-color') || this.getVal('background');
       if (bgVal && bgVal !== 'rgba(0, 0, 0, 0)') {
-        body.appendChild(this.makeColorRow('Background', 'background-color', bgVal));
+        body.appendChild(
+          this.makeColorRow('Background', 'background-color', bgVal),
+        );
       }
 
       // Opacity
@@ -969,7 +1515,9 @@ export class PanelController {
       const bs = this.getVal('border-style');
       const bc = this.getVal('border-color');
       if (bw && bw !== '0px') {
-        body.appendChild(this.makePropRowFull('Border', 'border-width', `${bw} ${bs} ${bc}`));
+        body.appendChild(
+          this.makePropRowFull('Border', 'border-width', `${bw} ${bs} ${bc}`),
+        );
       }
 
       // Radius
@@ -990,24 +1538,34 @@ export class PanelController {
   private renderComponentSection(): HTMLElement {
     return this.buildSection('Component', '⚛', false, (body) => {
       const { info } = this;
-      if (!info) {return;}
+      if (!info) {
+        return;
+      }
       const fields: [string, string][] = [
         ['Name', info.componentName],
         ['Test ID', info.testId ?? '—'],
-        ['File', info.filePath
-          ? `${info.filePath.split('/').slice(-2).join('/')}${info.lineNumber ? `:${info.lineNumber}` : ''}`
-          : '—'],
+        [
+          'File',
+          info.filePath
+            ? `${info.filePath.split('/').slice(-2).join('/')}${info.lineNumber ? `:${info.lineNumber}` : ''}`
+            : '—',
+        ],
       ];
 
       for (const [label, val] of fields) {
         const row = document.createElement('div');
         row.className = 'prop-row';
-        const l = document.createElement('span'); l.className = 'prop-label'; l.textContent = label;
-        const v = document.createElement('span'); v.className = 'readonly'; v.textContent = val;
+        const l = document.createElement('span');
+        l.className = 'prop-label';
+        l.textContent = label;
+        const v = document.createElement('span');
+        v.className = 'readonly';
+        v.textContent = val;
         if (label === 'File' && info.filePath) {
           v.title = `${info.filePath}${info.lineNumber ? `:${info.lineNumber}` : ''}`;
         }
-        row.appendChild(l); row.appendChild(v);
+        row.appendChild(l);
+        row.appendChild(v);
         body.appendChild(row);
       }
 
@@ -1015,12 +1573,15 @@ export class PanelController {
       if (info.domPath) {
         const row = document.createElement('div');
         row.className = 'prop-row';
-        const l = document.createElement('span'); l.className = 'prop-label'; l.textContent = 'DOM Path';
+        const l = document.createElement('span');
+        l.className = 'prop-label';
+        l.textContent = 'DOM Path';
         const v = document.createElement('span');
         v.className = 'readonly';
         v.style.cssText = `font-size:9px;color:${C.textTertiary};word-break:break-all;`;
         v.textContent = info.domPath;
-        row.appendChild(l); row.appendChild(v);
+        row.appendChild(l);
+        row.appendChild(v);
         body.appendChild(row);
       }
 
@@ -1039,11 +1600,15 @@ export class PanelController {
     return this.buildSection('Design Tokens', '◆', false, (body) => {
       this.buildEditablePillList(body, tokens, {
         onRemove: (token) => {
-          if (this.selectedEl) {this.selectedEl.classList.remove(token);}
+          if (this.selectedEl) {
+            this.selectedEl.classList.remove(token);
+          }
           this.render();
         },
         onAdd: (token) => {
-          if (this.selectedEl) {this.selectedEl.classList.add(token);}
+          if (this.selectedEl) {
+            this.selectedEl.classList.add(token);
+          }
           this.render();
         },
       });
@@ -1056,11 +1621,15 @@ export class PanelController {
       const classes = this.info?.classes ?? [];
       this.buildEditablePillList(body, classes, {
         onRemove: (cls) => {
-          if (this.selectedEl) {this.selectedEl.classList.remove(cls);}
+          if (this.selectedEl) {
+            this.selectedEl.classList.remove(cls);
+          }
           this.render();
         },
         onAdd: (cls) => {
-          if (this.selectedEl) {this.selectedEl.classList.add(cls);}
+          if (this.selectedEl) {
+            this.selectedEl.classList.add(cls);
+          }
           this.render();
         },
       });
@@ -1081,11 +1650,15 @@ export class PanelController {
       pill.className = 'pill';
       const txt = document.createElement('span');
       txt.textContent = item;
-      txt.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+      txt.style.cssText =
+        'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
       const x = document.createElement('span');
       x.className = 'pill-x';
       x.textContent = '×';
-      x.onclick = (e) => { e.stopPropagation(); opts.onRemove(item); };
+      x.onclick = (e) => {
+        e.stopPropagation();
+        opts.onRemove(item);
+      };
       pill.appendChild(txt);
       pill.appendChild(x);
       list.appendChild(pill);
@@ -1105,13 +1678,21 @@ export class PanelController {
       input.onkeydown = (e) => {
         if (e.key === 'Enter') {
           const val = input.value.trim();
-          if (val) {opts.onAdd(val);}
+          if (val) {
+            opts.onAdd(val);
+          }
           input.remove();
           addBtn.style.display = '';
         }
-        if (e.key === 'Escape') { input.remove(); addBtn.style.display = ''; }
+        if (e.key === 'Escape') {
+          input.remove();
+          addBtn.style.display = '';
+        }
       };
-      input.onblur = () => { input.remove(); addBtn.style.display = ''; };
+      input.onblur = () => {
+        input.remove();
+        addBtn.style.display = '';
+      };
     };
     container.appendChild(addBtn);
   }
@@ -1130,7 +1711,8 @@ export class PanelController {
 
     const statusLabel = document.createElement('span');
     statusLabel.style.cssText = `font-size:10px;color:${this.relayStatus === 'connected' ? C.success : C.textTertiary};`;
-    statusLabel.textContent = this.relayStatus === 'connected' ? 'Connected' : 'Not connected';
+    statusLabel.textContent =
+      this.relayStatus === 'connected' ? 'Connected' : 'Not connected';
 
     const compPill = document.createElement('span');
     compPill.className = 'component-pill';
@@ -1149,7 +1731,8 @@ export class PanelController {
       const txt = document.createElement('span');
       txt.className = 'edits-banner-text';
       const editNames = this.editLogStrings.slice(0, 2).join(', ');
-      const more = this.editLog.size > 2 ? ` +${this.editLog.size - 2} more` : '';
+      const more =
+        this.editLog.size > 2 ? ` +${this.editLog.size - 2} more` : '';
       txt.textContent = `${this.editLog.size} pending edit${this.editLog.size > 1 ? 's' : ''}: ${editNames}${more}`;
 
       const applyBtn = document.createElement('button');
@@ -1174,7 +1757,9 @@ export class PanelController {
       }
       footer.appendChild(thread);
       // Auto-scroll
-      requestAnimationFrame(() => { thread.scrollTop = thread.scrollHeight; });
+      requestAnimationFrame(() => {
+        thread.scrollTop = thread.scrollHeight;
+      });
     }
 
     // Agent working indicator
@@ -1209,13 +1794,18 @@ export class PanelController {
 
     const send = () => {
       const msg = input.value.trim();
-      if (!msg && this.editLog.size === 0) {return;}
+      if (!msg && this.editLog.size === 0) {
+        return;
+      }
       this.sendToAgent(msg);
       input.value = '';
     };
 
     input.onkeydown = (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        send();
+      }
     };
     sendBtn.onclick = send;
 
@@ -1228,7 +1818,12 @@ export class PanelController {
   }
 
   /* ── Section builder ── */
-  private buildSection(title: string, icon: string, defaultOpen: boolean, content: (body: HTMLElement) => void): HTMLElement {
+  private buildSection(
+    title: string,
+    icon: string,
+    defaultOpen: boolean,
+    content: (body: HTMLElement) => void,
+  ): HTMLElement {
     const section = document.createElement('div');
     section.className = 'section';
 
@@ -1273,34 +1868,58 @@ export class PanelController {
   private makePropRow(label: string, prop: string, value: string): HTMLElement {
     const row = document.createElement('div');
     row.className = 'prop-row';
-    const l = document.createElement('span'); l.className = 'prop-label'; l.textContent = label;
-    const v = document.createElement('div'); v.className = 'prop-value';
+    const l = document.createElement('span');
+    l.className = 'prop-label';
+    l.textContent = label;
+    const v = document.createElement('div');
+    v.className = 'prop-value';
     v.appendChild(this.makeEditableValue(prop, value));
-    row.appendChild(l); row.appendChild(v);
+    row.appendChild(l);
+    row.appendChild(v);
     return row;
   }
 
-  private makePropRowFull(label: string, prop: string, value: string): HTMLElement {
+  private makePropRowFull(
+    label: string,
+    prop: string,
+    value: string,
+  ): HTMLElement {
     const row = document.createElement('div');
     row.className = 'prop-row';
-    const l = document.createElement('span'); l.className = 'prop-label'; l.textContent = label;
-    const v = document.createElement('div'); v.className = 'prop-value';
+    const l = document.createElement('span');
+    l.className = 'prop-label';
+    l.textContent = label;
+    const v = document.createElement('div');
+    v.className = 'prop-value';
     v.appendChild(this.makeEditableValue(prop, value));
-    row.appendChild(l); row.appendChild(v);
+    row.appendChild(l);
+    row.appendChild(v);
     return row;
   }
 
-  private makeColorRow(label: string, prop: string, value: string): HTMLElement {
+  private makeColorRow(
+    label: string,
+    prop: string,
+    value: string,
+  ): HTMLElement {
     const row = document.createElement('div');
     row.className = 'prop-row';
-    const l = document.createElement('span'); l.className = 'prop-label'; l.textContent = label;
-    const v = document.createElement('div'); v.className = 'prop-value';
+    const l = document.createElement('span');
+    l.className = 'prop-label';
+    l.textContent = label;
+    const v = document.createElement('div');
+    v.className = 'prop-value';
     v.appendChild(this.makeEditableValue(prop, value, true));
-    row.appendChild(l); row.appendChild(v);
+    row.appendChild(l);
+    row.appendChild(v);
     return row;
   }
 
-  private makeEditableValue(prop: string, value: string, isColor = false): HTMLElement {
+  private makeEditableValue(
+    prop: string,
+    value: string,
+    isColor = false,
+  ): HTMLElement {
     const wrap = document.createElement('div');
     wrap.className = 'editable';
 
@@ -1315,17 +1934,23 @@ export class PanelController {
       colorInput.value = toHexColor(value);
       colorInput.oninput = () => {
         swatch.style.background = colorInput.value;
-        if (this.selectedEl) {this.recordEdit(prop, colorInput.value, this.selectedEl);}
+        if (this.selectedEl) {
+          this.recordEdit(prop, colorInput.value, this.selectedEl);
+        }
       };
 
-      swatch.onclick = (e) => { e.stopPropagation(); colorInput.click(); };
+      swatch.onclick = (e) => {
+        e.stopPropagation();
+        colorInput.click();
+      };
       wrap.appendChild(swatch);
       wrap.appendChild(colorInput);
     }
 
     const textSpan = document.createElement('span');
     textSpan.textContent = shortenValue(value) || '—';
-    textSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+    textSpan.style.cssText =
+      'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
     wrap.appendChild(textSpan);
 
     wrap.onclick = () => {
@@ -1337,11 +1962,20 @@ export class PanelController {
       input.select();
 
       const original = value;
-      const isNumeric = /^-?\d*\.?\d+(px|em|rem|%|vh|vw|pt)?$/u.test(value.trim());
+      const isNumeric = /^-?\d*\.?\d+(px|em|rem|%|vh|vw|pt)?$/u.test(
+        value.trim(),
+      );
 
       input.onkeydown = (e) => {
-        if (e.key === 'Enter') { input.blur(); return; }
-        if (e.key === 'Escape') { input.value = original; input.blur(); return; }
+        if (e.key === 'Enter') {
+          input.blur();
+          return;
+        }
+        if (e.key === 'Escape') {
+          input.value = original;
+          input.blur();
+          return;
+        }
         if (isNumeric && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
           e.preventDefault();
           const step = e.shiftKey ? 10 : 1;
@@ -1349,19 +1983,25 @@ export class PanelController {
           const m = input.value.match(/^(-?\d*\.?\d+)(.*)/u);
           if (m) {
             input.value = `${parseFloat(m[1]) + delta}${m[2]}`;
-            if (this.selectedEl) {this.recordEdit(prop, input.value, this.selectedEl);}
+            if (this.selectedEl) {
+              this.recordEdit(prop, input.value, this.selectedEl);
+            }
           }
         }
       };
       // Live apply on keystrokes
       input.oninput = () => {
-        if (this.selectedEl) {this.recordEdit(prop, input.value, this.selectedEl);}
+        if (this.selectedEl) {
+          this.recordEdit(prop, input.value, this.selectedEl);
+        }
       };
       input.onblur = () => {
         const newVal = input.value;
         const newWrap = this.makeEditableValue(prop, newVal, isColor);
         input.replaceWith(newWrap);
-        if (this.selectedEl && newVal !== original) {this.applyEdit(prop, newVal, this.selectedEl);}
+        if (this.selectedEl && newVal !== original) {
+          this.applyEdit(prop, newVal, this.selectedEl);
+        }
       };
     };
 
@@ -1371,31 +2011,46 @@ export class PanelController {
   /* ── Drag ── */
   private setupDrag(panel: HTMLElement) {
     const header = panel.querySelector('.header') as HTMLElement;
-    if (!header) {return;}
+    if (!header) {
+      return;
+    }
     let dragging = false;
-    let startX = 0; let startY = 0;
+    let startX = 0;
+    let startY = 0;
 
     header.onmousedown = (e) => {
-      if ((e.target as HTMLElement).closest('button')) {return;}
+      if ((e.target as HTMLElement).closest('button')) {
+        return;
+      }
       dragging = true;
       startX = e.clientX;
       startY = e.clientY;
       e.preventDefault();
     };
     const onMove = (e: MouseEvent) => {
-      if (!dragging) {return;}
+      if (!dragging) {
+        return;
+      }
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
       const dirX = this.anchor.h === 'right' ? -1 : 1;
       const dirY = this.anchor.v === 'bottom' ? -1 : 1;
-      this.anchor.x = Math.max(0, Math.min(window.innerWidth - 340, this.anchor.x + dx * dirX));
-      this.anchor.y = Math.max(0, Math.min(window.innerHeight - 100, this.anchor.y + dy * dirY));
+      this.anchor.x = Math.max(
+        0,
+        Math.min(window.innerWidth - 340, this.anchor.x + dx * dirX),
+      );
+      this.anchor.y = Math.max(
+        0,
+        Math.min(window.innerHeight - 100, this.anchor.y + dy * dirY),
+      );
       panel.style[this.anchor.h] = `${this.anchor.x}px`;
       panel.style[this.anchor.v] = `${this.anchor.y}px`;
       startX = e.clientX;
       startY = e.clientY;
     };
-    const onUp = () => { dragging = false; };
+    const onUp = () => {
+      dragging = false;
+    };
 
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);

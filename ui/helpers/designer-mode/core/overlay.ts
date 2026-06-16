@@ -1,6 +1,12 @@
 import type { InspectorAdapter, ComponentInfo } from './types';
 
-const IGNORED_SELECTORS = ['[data-designer-mode]', '.dm-overlay', '.dm-panel', '.dm-highlight', '.dm-toggle'];
+const IGNORED_SELECTORS = [
+  '[data-designer-mode]',
+  '.dm-overlay',
+  '.dm-panel',
+  '.dm-highlight',
+  '.dm-toggle',
+];
 
 export class OverlayController {
   private adapter: InspectorAdapter;
@@ -17,9 +23,13 @@ export class OverlayController {
 
   private tooltip: HTMLDivElement | null = null;
 
-  private onSelect: ((info: ComponentInfo | null, el: HTMLElement | null) => void) | null = null;
+  private onSelect:
+    | ((info: ComponentInfo | null, el: HTMLElement | null) => void)
+    | null = null;
 
-  private onHover: ((info: ComponentInfo | null, el: HTMLElement | null) => void) | null = null;
+  private onHover:
+    | ((info: ComponentInfo | null, el: HTMLElement | null) => void)
+    | null = null;
 
   private boundMouseMove: (e: MouseEvent) => void;
 
@@ -41,20 +51,34 @@ export class OverlayController {
     this.highlight = document.createElement('div');
     this.highlight.className = 'dm-highlight';
     Object.assign(this.highlight.style, {
-      position: 'fixed', pointerEvents: 'none', zIndex: '2147483640',
-      border: '2px dashed rgb(3, 125, 214)', borderRadius: '4px',
-      display: 'none', boxSizing: 'border-box',
+      position: 'fixed',
+      pointerEvents: 'none',
+      zIndex: '2147483640',
+      border: '2px dashed rgb(3, 125, 214)',
+      borderRadius: '4px',
+      display: 'none',
+      boxSizing: 'border-box',
       transition: 'all 0.1s ease-out',
     });
 
     this.tooltip = document.createElement('div');
     this.tooltip.className = 'dm-tooltip';
     Object.assign(this.tooltip.style, {
-      position: 'fixed', pointerEvents: 'none', zIndex: '2147483641',
-      background: 'rgb(3, 125, 214)', color: 'rgb(255, 255, 255)', fontSize: '11px', fontFamily: 'monospace',
-      padding: '2px 6px', borderRadius: '3px', display: 'none',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.15)', maxWidth: '400px',
-      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+      position: 'fixed',
+      pointerEvents: 'none',
+      zIndex: '2147483641',
+      background: 'rgb(3, 125, 214)',
+      color: 'rgb(255, 255, 255)',
+      fontSize: '11px',
+      fontFamily: 'monospace',
+      padding: '2px 6px',
+      borderRadius: '3px',
+      display: 'none',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+      maxWidth: '400px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
     });
 
     container.appendChild(this.highlight);
@@ -78,24 +102,40 @@ export class OverlayController {
     document.removeEventListener('click', this.boundClick, true);
     document.removeEventListener('keydown', this.boundKeyDown, true);
     document.removeEventListener('mouseleave', this.boundMouseLeave);
-    if (this.highlight) {this.highlight.style.display = 'none';}
-    if (this.tooltip) {this.tooltip.style.display = 'none';}
+    if (this.highlight) {
+      this.highlight.style.display = 'none';
+    }
+    if (this.tooltip) {
+      this.tooltip.style.display = 'none';
+    }
   }
 
-  setOnSelect(cb: (info: ComponentInfo | null, el: HTMLElement | null) => void) { this.onSelect = cb; }
+  setOnSelect(
+    cb: (info: ComponentInfo | null, el: HTMLElement | null) => void,
+  ) {
+    this.onSelect = cb;
+  }
 
-  setOnHover(cb: (info: ComponentInfo | null, el: HTMLElement | null) => void) { this.onHover = cb; }
+  setOnHover(cb: (info: ComponentInfo | null, el: HTMLElement | null) => void) {
+    this.onHover = cb;
+  }
 
-  getHoveredElement(): HTMLElement | null { return this.hoveredEl; }
+  getHoveredElement(): HTMLElement | null {
+    return this.hoveredEl;
+  }
 
   private shouldIgnore(el: HTMLElement): boolean {
-    return IGNORED_SELECTORS.some(s => el.closest(s) !== null);
+    return IGNORED_SELECTORS.some((s) => el.closest(s) !== null);
   }
 
   private handleMouseMove(e: MouseEvent) {
-    if (!this.isActive || this.isLocked) {return;}
+    if (!this.isActive || this.isLocked) {
+      return;
+    }
     const el = e.target as HTMLElement;
-    if (this.shouldIgnore(el)) {return;}
+    if (this.shouldIgnore(el)) {
+      return;
+    }
     this.hoveredEl = el;
     this.showHighlight(el, false);
     const info = this.adapter.getComponentInfo(el);
@@ -110,17 +150,27 @@ export class OverlayController {
   }
 
   private handleMouseLeave() {
-    if (!this.isActive || this.isLocked) {return;}
+    if (!this.isActive || this.isLocked) {
+      return;
+    }
     this.hoveredEl = null;
-    if (this.highlight) {this.highlight.style.display = 'none';}
-    if (this.tooltip) {this.tooltip.style.display = 'none';}
+    if (this.highlight) {
+      this.highlight.style.display = 'none';
+    }
+    if (this.tooltip) {
+      this.tooltip.style.display = 'none';
+    }
     this.onHover?.(null, null);
   }
 
   private handleClick(e: MouseEvent) {
-    if (!this.isActive) {return;}
+    if (!this.isActive) {
+      return;
+    }
     const el = e.target as HTMLElement;
-    if (this.shouldIgnore(el)) {return;}
+    if (this.shouldIgnore(el)) {
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
     if (this.isLocked && this.selectedEl === el) {
@@ -137,20 +187,26 @@ export class OverlayController {
         this.tooltip.style.top = `${rect.top - 28}px`;
         this.tooltip.style.left = `${rect.left}px`;
       }
-      if (info) {this.onSelect?.(info, el);}
+      if (info) {
+        this.onSelect?.(info, el);
+      }
     }
   }
 
   private handleKeyDown(e: KeyboardEvent) {
-    if (e.key === 'Escape') { this.unlock(); }
+    if (e.key === 'Escape') {
+      this.unlock();
+    }
     if (e.key === 'c' || e.key === 'C') {
       const el = this.selectedEl || this.hoveredEl;
       if (el) {
         const info = this.adapter.getComponentInfo(el);
         if (info) {
-          navigator.clipboard.writeText(JSON.stringify(info, null, 2)).catch(() => {
-            // Clipboard write can reject without focus; ignore in this dev tool.
-          });
+          navigator.clipboard
+            .writeText(JSON.stringify(info, null, 2))
+            .catch(() => {
+              // Clipboard write can reject without focus; ignore in this dev tool.
+            });
         }
       }
     }
@@ -159,13 +215,19 @@ export class OverlayController {
   unlock() {
     this.isLocked = false;
     this.selectedEl = null;
-    if (this.highlight) {this.highlight.style.display = 'none';}
-    if (this.tooltip) {this.tooltip.style.display = 'none';}
+    if (this.highlight) {
+      this.highlight.style.display = 'none';
+    }
+    if (this.tooltip) {
+      this.tooltip.style.display = 'none';
+    }
     this.onSelect?.(null, null);
   }
 
   private showHighlight(el: HTMLElement, locked: boolean) {
-    if (!this.highlight) {return;}
+    if (!this.highlight) {
+      return;
+    }
     const rect = el.getBoundingClientRect();
     Object.assign(this.highlight.style, {
       display: 'block',

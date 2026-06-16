@@ -33,7 +33,9 @@ export class RelayClient {
    * checks — flipping the UI to "Not connected" while the relay is fine.
    */
   private startPolling() {
-    if (this.polling) {return;}
+    if (this.polling) {
+      return;
+    }
     this.polling = true;
     this.pollLoop().catch(() => {
       // pollLoop handles its own errors; this guards against unexpected rejections.
@@ -57,7 +59,7 @@ export class RelayClient {
         // 200 with empty body = shouldn't happen but loop anyway.
       } catch {
         // Network error: brief delay before retry so we don't tight-loop on a downed server.
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 1000));
       }
     }
   }
@@ -68,8 +70,12 @@ export class RelayClient {
 
   async checkHealth(): Promise<RelayStatus> {
     try {
-      const r = await fetch(`${this.baseUrl}/api/health`, { signal: AbortSignal.timeout(2000) });
+      const r = await fetch(`${this.baseUrl}/api/health`, {
+        signal: AbortSignal.timeout(2000),
+      });
       return r.ok ? 'connected' : 'disconnected';
-    } catch { return 'disconnected'; }
+    } catch {
+      return 'disconnected';
+    }
   }
 }

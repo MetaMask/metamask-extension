@@ -14,13 +14,26 @@ export class ToggleController {
     this.btn.className = 'dm-toggle';
     this.btn.setAttribute('data-designer-mode', 'toggle');
     Object.assign(this.btn.style, {
-      position: 'fixed', bottom: `${this.pos.bottom}px`, right: `${this.pos.right}px`,
-      width: '44px', height: '44px',
-      borderRadius: '22px', border: 'none', background: 'rgb(3, 125, 214)', cursor: 'grab',
-      fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      boxShadow: '0 4px 16px rgba(3, 125, 214, 0.4)', zIndex: '2147483644',
-      transition: 'width 0.2s ease-out, padding 0.2s ease-out', overflow: 'hidden', gap: '8px',
-      padding: '0', whiteSpace: 'nowrap',
+      position: 'fixed',
+      bottom: `${this.pos.bottom}px`,
+      right: `${this.pos.right}px`,
+      width: '44px',
+      height: '44px',
+      borderRadius: '22px',
+      border: 'none',
+      background: 'rgb(3, 125, 214)',
+      cursor: 'grab',
+      fontSize: '20px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      boxShadow: '0 4px 16px rgba(3, 125, 214, 0.4)',
+      zIndex: '2147483644',
+      transition: 'width 0.2s ease-out, padding 0.2s ease-out',
+      overflow: 'hidden',
+      gap: '8px',
+      padding: '0',
+      whiteSpace: 'nowrap',
     });
 
     const emoji = document.createElement('span');
@@ -29,8 +42,11 @@ export class ToggleController {
 
     this.label = document.createElement('span');
     Object.assign(this.label.style, {
-      fontSize: '13px', fontWeight: '600', color: 'rgb(255, 255, 255)',
-      display: 'none', whiteSpace: 'nowrap',
+      fontSize: '13px',
+      fontWeight: '600',
+      color: 'rgb(255, 255, 255)',
+      display: 'none',
+      whiteSpace: 'nowrap',
     });
     this.label.textContent = 'Designer Mode';
 
@@ -58,30 +74,45 @@ export class ToggleController {
   }
 
   private setupDrag() {
-    if (!this.btn) {return;}
+    if (!this.btn) {
+      return;
+    }
     let dragging = false;
     let didDrag = false;
-    let startX = 0; let startY = 0;
+    let startX = 0;
+    let startY = 0;
 
     this.btn.onmousedown = (e) => {
       dragging = true;
       didDrag = false;
       startX = e.clientX;
       startY = e.clientY;
-      if (this.btn) {this.btn.style.cursor = 'grabbing';}
+      if (this.btn) {
+        this.btn.style.cursor = 'grabbing';
+      }
       e.preventDefault();
     };
 
     const onMove = (e: MouseEvent) => {
-      if (!dragging || !this.btn) {return;}
+      if (!dragging || !this.btn) {
+        return;
+      }
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
-      if (!didDrag && Math.abs(dx) < 4 && Math.abs(dy) < 4) {return;}
+      if (!didDrag && Math.abs(dx) < 4 && Math.abs(dy) < 4) {
+        return;
+      }
       didDrag = true;
 
       this.pos = {
-        right: Math.max(0, Math.min(window.innerWidth - 44, this.pos.right - dx)),
-        bottom: Math.max(0, Math.min(window.innerHeight - 44, this.pos.bottom - dy)),
+        right: Math.max(
+          0,
+          Math.min(window.innerWidth - 44, this.pos.right - dx),
+        ),
+        bottom: Math.max(
+          0,
+          Math.min(window.innerHeight - 44, this.pos.bottom - dy),
+        ),
       };
       this.btn.style.right = `${this.pos.right}px`;
       this.btn.style.bottom = `${this.pos.bottom}px`;
@@ -90,9 +121,13 @@ export class ToggleController {
     };
 
     const onUp = () => {
-      if (!dragging) {return;}
+      if (!dragging) {
+        return;
+      }
       dragging = false;
-      if (this.btn) {this.btn.style.cursor = 'grab';}
+      if (this.btn) {
+        this.btn.style.cursor = 'grab';
+      }
       if (!didDrag) {
         this.onToggle?.();
       }
@@ -109,9 +144,15 @@ export class ToggleController {
     }
   }
 
-  getPosition() { return this.pos; }
+  getPosition() {
+    return this.pos;
+  }
 
-  setOnToggle(cb: () => void) { this.onToggle = cb; }
+  setOnToggle(cb: () => void) {
+    this.onToggle = cb;
+  }
 
-  unmount() { this.btn?.remove(); }
+  unmount() {
+    this.btn?.remove();
+  }
 }

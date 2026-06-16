@@ -1,8 +1,4 @@
-import {
-  buildComponentInfo,
-  buildFallbackInfo,
-  serializeProps,
-} from './core';
+import { buildComponentInfo, buildFallbackInfo, serializeProps } from './core';
 import type { ComponentInfo, InspectorAdapter } from './core';
 
 /**
@@ -30,10 +26,11 @@ type ReactComponentType = {
 function getReactFiber(el: HTMLElement): ReactFiber | null {
   const key = Object.keys(el).find(
     (k) =>
-      k.startsWith('__reactFiber$') ||
-      k.startsWith('__reactInternalInstance$'),
+      k.startsWith('__reactFiber$') || k.startsWith('__reactInternalInstance$'),
   );
-  return key ? ((el as unknown as Record<string, ReactFiber>)[key] ?? null) : null;
+  return key
+    ? ((el as unknown as Record<string, ReactFiber>)[key] ?? null)
+    : null;
 }
 
 const REACT_INTERNALS = [

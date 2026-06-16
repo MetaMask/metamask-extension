@@ -1,4 +1,8 @@
-import type { InspectorAdapter, DesignerModeOptions, ComponentInfo } from './types';
+import type {
+  InspectorAdapter,
+  DesignerModeOptions,
+  ComponentInfo,
+} from './types';
 import { OverlayController } from './overlay';
 import { PanelController } from './panel';
 import { ToggleController } from './toggle';
@@ -42,7 +46,9 @@ export class DesignerModeCore {
   }
 
   mount() {
-    if (this.host) {return;}
+    if (this.host) {
+      return;
+    }
     this.host = document.createElement('div');
     this.host.setAttribute('data-designer-mode', 'root');
     document.body.appendChild(this.host);
@@ -58,13 +64,20 @@ export class DesignerModeCore {
     }
 
     this.overlay.setOnSelect((info, el) => {
-      if (!info) { this.panel.hide(); this.selectedEl = null; return; }
+      if (!info) {
+        this.panel.hide();
+        this.selectedEl = null;
+        return;
+      }
       this.selectedEl = el;
       this.panel.show(info, el);
     });
 
     this.overlay.setOnHover((info, el) => {
-      if (!info || !el) { this.panel.hideHover(); return; }
+      if (!info || !el) {
+        this.panel.hideHover();
+        return;
+      }
       this.panel.showHover(info, el);
     });
 
@@ -72,7 +85,9 @@ export class DesignerModeCore {
 
     if (this.options.persistState) {
       const saved = localStorage.getItem('designer-mode-active');
-      if (saved === 'true') {this.setActive(true);}
+      if (saved === 'true') {
+        this.setActive(true);
+      }
     }
   }
 
@@ -85,7 +100,9 @@ export class DesignerModeCore {
     document.removeEventListener('keydown', this.boundKeyDown, true);
   }
 
-  toggle() { this.setActive(!this.isActive); }
+  toggle() {
+    this.setActive(!this.isActive);
+  }
 
   setActive(active: boolean) {
     this.isActive = active;
@@ -106,7 +123,9 @@ export class DesignerModeCore {
     }
   }
 
-  isMounted() { return Boolean(this.host?.isConnected); }
+  isMounted() {
+    return Boolean(this.host?.isConnected);
+  }
 
   private handleKeyDown(e: KeyboardEvent) {
     const modifier = e.ctrlKey || e.metaKey;

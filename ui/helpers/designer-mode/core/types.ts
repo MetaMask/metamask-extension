@@ -9,7 +9,7 @@ export type ComponentInfo = {
   layoutRect: DOMRectReadOnly;
   textContent: string | null;
   domPath?: string;
-}
+};
 
 export type ComputedStyleSnapshot = {
   layout: Record<string, string>;
@@ -18,13 +18,13 @@ export type ComputedStyleSnapshot = {
   spacing: Record<string, string>;
   border: Record<string, string>;
   effects: Record<string, string>;
-}
+};
 
 export type ChangesetEntry = {
   property: string;
   original: string;
   current: string;
-}
+};
 
 export type DesignerModeOptions = {
   relayUrl?: string;
@@ -35,18 +35,18 @@ export type DesignerModeOptions = {
   tokenPatterns?: TokenPattern[];
   onRequest?: (info: ComponentInfo, message: string) => void;
   onResponse?: (response: string) => void;
-}
+};
 
 export type TokenPattern = {
   pattern: RegExp;
   category: string;
-}
+};
 
 export type InspectorAdapter = {
   getComponentInfo(el: HTMLElement): ComponentInfo | null;
   onActivate(): void;
   onDeactivate(): void;
-}
+};
 
 export type Framework = 'react' | 'vue' | 'angular' | 'svelte' | 'vanilla';
 export type RelayStatus = 'connected' | 'disconnected' | 'checking';

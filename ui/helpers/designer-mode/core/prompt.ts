@@ -3,21 +3,33 @@ import type { ComponentInfo, ChangesetEntry } from './types';
 export function formatAgentPrompt(
   info: ComponentInfo,
   changeset: ChangesetEntry[],
-  message: string
+  message: string,
 ): string {
   const lines: string[] = ['=== DESIGNER MODE REQUEST ===', ''];
 
   lines.push('Selected Element');
   lines.push(`  Component : ${info.componentName}`);
-  if (info.filePath) {lines.push(`  File      : ${info.filePath}${info.lineNumber ? `:${info.lineNumber}` : ''}`);}
-  if (info.testId) {lines.push(`  Test ID   : ${info.testId}`);}
-  if (info.classes.length) {lines.push(`  Classes   : ${info.classes.join(' ')}`);}
-  if (info.domPath) {lines.push(`  DOM Path  : ${info.domPath}`);}
+  if (info.filePath) {
+    lines.push(
+      `  File      : ${info.filePath}${info.lineNumber ? `:${info.lineNumber}` : ''}`,
+    );
+  }
+  if (info.testId) {
+    lines.push(`  Test ID   : ${info.testId}`);
+  }
+  if (info.classes.length) {
+    lines.push(`  Classes   : ${info.classes.join(' ')}`);
+  }
+  if (info.domPath) {
+    lines.push(`  DOM Path  : ${info.domPath}`);
+  }
   lines.push('');
 
   if (info.props && Object.keys(info.props).length > 0) {
     lines.push('Props');
-    for (const [k, v] of Object.entries(info.props)) {lines.push(`  ${k.padEnd(12)}: ${v}`);}
+    for (const [k, v] of Object.entries(info.props)) {
+      lines.push(`  ${k.padEnd(12)}: ${v}`);
+    }
     lines.push('');
   }
 
@@ -32,15 +44,21 @@ export function formatAgentPrompt(
 
   for (const [title, styles] of styleGroups) {
     const entries = Object.entries(styles).filter(([, v]) => v);
-    if (!entries.length) {continue;}
+    if (!entries.length) {
+      continue;
+    }
     lines.push(title);
-    for (const [k, v] of entries) {lines.push(`  ${k.padEnd(20)}: ${v}`);}
+    for (const [k, v] of entries) {
+      lines.push(`  ${k.padEnd(20)}: ${v}`);
+    }
     lines.push('');
   }
 
   if (changeset.length > 0) {
     lines.push('Changeset (inline edits made by designer)');
-    for (const e of changeset) {lines.push(`  ${e.property.padEnd(20)}: ${e.original} → ${e.current}`);}
+    for (const e of changeset) {
+      lines.push(`  ${e.property.padEnd(20)}: ${e.original} → ${e.current}`);
+    }
     lines.push('');
   }
 
@@ -60,6 +78,9 @@ export function formatAgentPrompt(
   return lines.join('\n');
 }
 
-export function formatForClipboard(info: ComponentInfo, changeset: ChangesetEntry[] = []): string {
+export function formatForClipboard(
+  info: ComponentInfo,
+  changeset: ChangesetEntry[] = [],
+): string {
   return formatAgentPrompt(info, changeset, '');
 }
