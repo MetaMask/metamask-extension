@@ -73,7 +73,7 @@ const AssetOptions = ({
         ariaLabel={t('assetOptions')}
         iconName={IconName.MoreVertical}
         color={Color.textDefault}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
       />
       {assetOptionsOpen ? (
         <Menu

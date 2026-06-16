@@ -44,6 +44,7 @@ export const NotificationDetailTitle = ({
         variant={TextVariant.headingSm}
         textAlign={TextAlign.Center}
         overflowWrap={OverflowWrap.BreakWord}
+        data-testid="notification-details-title"
       >
         {title}
       </Text>

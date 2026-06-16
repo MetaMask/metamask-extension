@@ -6262,9 +6262,6 @@ describe('MetaMaskController', () => {
       });
 
       jest
-        .spyOn(metamaskController, '_importAccountsWithBalances')
-        .mockResolvedValue({});
-      jest
         .spyOn(metamaskController, 'discoverAndCreateAccounts')
         .mockResolvedValue({});
       jest
@@ -6280,7 +6277,7 @@ describe('MetaMaskController', () => {
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
     });
 
-    it('calls _importAccountsWithBalances when firstTimeFlowType is socialImport', async () => {
+    it('calls discoverAndCreateAccounts for each HD keyring when firstTimeFlowType is socialImport', async () => {
       jest
         .spyOn(
           metamaskController.accountTreeController,
@@ -6302,12 +6299,22 @@ describe('MetaMaskController', () => {
       // Allow async subscription handler to run
       await new Promise((resolve) => setImmediate(resolve));
 
+      const { keyrings } = metamaskController.keyringController.state;
+      const hdIds = keyrings
+        .filter((keyring) => keyring.type === 'HD Key Tree')
+        .map((keyring) => keyring.metadata.id);
+
       expect(
-        metamaskController._importAccountsWithBalances,
+        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
       ).toHaveBeenCalledTimes(1);
       expect(
         metamaskController.discoverAndCreateAccounts,
-      ).not.toHaveBeenCalled();
+      ).toHaveBeenCalledTimes(hdIds.length);
+      hdIds.forEach((id) => {
+        expect(
+          metamaskController.discoverAndCreateAccounts,
+        ).toHaveBeenCalledWith(id);
+      });
     });
 
     it('calls discoverAndCreateAccounts when firstTimeFlowType is not socialImport', async () => {
@@ -6337,75 +6344,6 @@ describe('MetaMaskController', () => {
       expect(
         metamaskController.discoverAndCreateAccounts,
       ).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('_importAccountsWithBalances', () => {
-    let metamaskController;
-
-    beforeEach(async () => {
-      metamaskController = new MetaMaskController({
-        showUserConfirmation: noop,
-        encryptor: mockEncryptor,
-        initState: cloneDeep(firstTimeState),
-        initLangCode: 'en_US',
-        platform: {
-          showTransactionNotification: () => undefined,
-          getVersion: () => 'foo',
-          switchToAnotherURL: jest.fn(),
-        },
-        browser: browserPolyfillMock,
-        getRequestAccountTabIds: () => ({}),
-        getOpenMetamaskTabsIds: () => ({}),
-        notificationManager: {
-          markAsAutomaticallyClosed: jest.fn(),
-        },
-        infuraProjectId: 'foo',
-        isFirstMetaMaskControllerSetup: true,
-        cronjobControllerStorageManager:
-          createMockCronjobControllerStorageManager(),
-        controllerMessenger: new Messenger({
-          namespace: MOCK_ANY_NAMESPACE,
-        }),
-      });
-
-      // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({
-        setSelectedAccounts: jest.fn(),
-      });
-
-      await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
-    });
-
-    it('calls getSnapKeyring, syncWithUserStorageAtLeastOnce, and discoverAndCreateAccounts for each HD keyring', async () => {
-      jest
-        .spyOn(
-          metamaskController.accountTreeController,
-          'syncWithUserStorageAtLeastOnce',
-        )
-        .mockResolvedValue(undefined);
-      jest
-        .spyOn(metamaskController, 'discoverAndCreateAccounts')
-        .mockResolvedValue({});
-
-      await metamaskController._importAccountsWithBalances();
-
-      const { keyrings } = metamaskController.keyringController.state;
-      const hdIds = keyrings
-        .filter((keyring) => keyring.type === 'HD Key Tree')
-        .map((keyring) => keyring.metadata.id);
-
-      expect(
-        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
-      ).toHaveBeenCalledTimes(hdIds.length);
-      expect(
-        metamaskController.discoverAndCreateAccounts,
-      ).toHaveBeenCalledTimes(hdIds.length);
-      hdIds.forEach((id) => {
-        expect(
-          metamaskController.discoverAndCreateAccounts,
-        ).toHaveBeenCalledWith(id);
-      });
     });
   });
 
