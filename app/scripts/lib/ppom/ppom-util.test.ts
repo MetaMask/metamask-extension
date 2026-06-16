@@ -75,7 +75,7 @@ const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: 'success',
   reason: 'success',
-  source: SecurityAlertSource.Local,
+  source: SecurityAlertSource.API,
   securityAlertId: SECURITY_ALERT_ID_MOCK,
 };
 

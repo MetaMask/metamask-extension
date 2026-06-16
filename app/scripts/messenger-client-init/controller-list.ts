@@ -70,7 +70,6 @@ import { NetworkEnablementController } from '@metamask/network-enablement-contro
 import { PermissionLogController } from '@metamask/permission-log-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
-import { PPOMController } from '@metamask/ppom-validator';
 import { LoggingController } from '@metamask/logging-controller';
 import { StorageService } from '@metamask/storage-service';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -194,7 +193,6 @@ export type MessengerClient =
   | PermissionLogController
   | PerpsController
   | PhishingController
-  | PPOMController
   | PreferencesController
   | QrSyncController
   | QrSyncDataService
