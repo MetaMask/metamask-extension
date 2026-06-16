@@ -830,7 +830,7 @@ describe('ConnectHardwareForm', () => {
       it('disables Previous button on the first page', () => {
         expect(
           screen.getByTestId('hw-list-pagination__prev-button'),
-        ).toBeDisabled();
+        ).toHaveAttribute('aria-disabled', 'true');
       });
     });
   });
