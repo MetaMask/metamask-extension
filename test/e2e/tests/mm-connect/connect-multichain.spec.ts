@@ -62,7 +62,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
     );
   });
 
-  it.only('automatically repopulates ScopeCards after a dapp page refresh without re-prompting', async function () {
+  it('automatically repopulates ScopeCards after a dapp page refresh without re-prompting', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
