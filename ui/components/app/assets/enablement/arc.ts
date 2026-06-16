@@ -1,3 +1,6 @@
+import { BridgeAsset } from '@metamask/bridge-controller';
+import { hexToNumber } from '@metamask/utils';
+
 /**
  * Arc Chain Augmentation Module
  * Contains specific logic that is reused to across the app to augment Arc specific functionality.
@@ -14,6 +17,15 @@ const ARC_NATIVE_HEX_CHAIN_ID = '0x13b2';
 const ARC_NATIVE_ASSET_ID =
   'eip155:5042/erc20:0x0000000000000000000000000000000000000000';
 const ARC_NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+export const ARC_ERC20_USDC_BRIDGE_ASSET: BridgeAsset = {
+  symbol: 'USDC',
+  name: 'USDC',
+  address: '0x3600000000000000000000000000000000000000',
+  assetId: 'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
+  chainId: hexToNumber(ARC_NATIVE_HEX_CHAIN_ID),
+  decimals: 6,
+};
 
 function isNativeArcAsset(asset: {
   address?: string;
