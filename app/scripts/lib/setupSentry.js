@@ -128,6 +128,11 @@ function getClientOptions() {
     // Must be a top-level init option.
     ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
       tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
+      // TODO(sentry-v10, #42867): Once the v10 upgrade ships, enable
+      // `propagateTraceparent: true` here so the SDK attaches `traceparent` to
+      // these targets natively. Then remove the manual traceparent injection
+      // from `consensysTracePropagationIntegration` (keep the RAPID baggage and
+      // the `consensys-request-id` correlation).
     }),
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
