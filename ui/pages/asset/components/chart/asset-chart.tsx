@@ -155,6 +155,7 @@ const AssetChart = ({
 
   const {
     loading,
+    isFetchedAfterMount,
     data: {
       prices,
       metadata: { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax },
@@ -174,14 +175,16 @@ const AssetChart = ({
     ...initialChartOptions,
     borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
     animation: { duration: 0 },
-    animations: {
-      y: {
-        from: (ctx: { chart: { scales: { y: { bottom: number } } } }) =>
-          ctx.chart.scales.y.bottom,
-        duration: 600,
-        easing: 'easeOutQuart' as const,
-      },
-    },
+    animations: isFetchedAfterMount
+      ? {
+          y: {
+            from: (ctx: { chart: { scales: { y: { bottom: number } } } }) =>
+              ctx.chart.scales.y.bottom,
+            duration: 600,
+            easing: 'easeOutQuart' as const,
+          },
+        }
+      : {},
     scales: {
       x: {
         min: Number.isFinite(xMin) ? xMin : undefined,

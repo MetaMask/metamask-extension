@@ -174,7 +174,7 @@ export const useHistoricalPrices = ({
     ] as const;
   }, [v3Params, currency, timePeriod]);
 
-  const { data: prices = [], isFetching } = useQuery({
+  const { data: prices = [], isFetching, isFetchedAfterMount } = useQuery({
     // @ts-expect-error - fix once extension in react-query v5
     queryKey,
     queryFn: async ({ queryKey: qk, signal }) => {
@@ -209,6 +209,7 @@ export const useHistoricalPrices = ({
 
   return {
     loading: isFetching,
+    isFetchedAfterMount,
     data: { prices, metadata },
   };
 };
