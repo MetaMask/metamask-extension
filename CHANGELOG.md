@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.35.1]
+
+### Added
+
+- Added Arc network integration (#43509)
+
+### Changed
+
+- Removed trailing slash from Arc explorer URL (#43546)
+- Bumped multiple audit packages (#43572)
+
+### Fixed
+
+- Fixed Arc Native USDC being shown in swaps, now filters in favor of ERC-20 asset (#43550)
+- Fixed send flow displaying incorrect balances, wrong gas fees, and false "insufficient funds" alerts when Network Manager selection differs from transaction chain (#43371)
+
 ## [13.35.0]
 
 ### Added
@@ -2496,7 +2512,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.35.1...HEAD
+[13.35.1]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...v13.35.1
 [13.35.0]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...v13.35.0
 [13.34.1]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...v13.34.1
 [13.34.0]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...v13.34.0
