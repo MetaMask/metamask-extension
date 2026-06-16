@@ -120,6 +120,7 @@ export type ControllerStatePropertiesEnumerated = {
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
   canTrackWalletFundsObtained: AppStateControllerState['canTrackWalletFundsObtained'];
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
+  lastQrScanCompletedSuccessfully: AppStateControllerState['lastQrScanCompletedSuccessfully'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   shieldSubscriptionError: AppStateControllerState['shieldSubscriptionError'];
   shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
