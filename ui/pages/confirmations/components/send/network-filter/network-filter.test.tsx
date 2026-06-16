@@ -29,6 +29,7 @@ jest.mock(
       title: React.ReactNode;
       topItem?: { name: string; onClick: () => void };
       sections: {
+        title?: React.ReactNode;
         items: { key: string; name: string; onClick: () => void }[];
       }[];
     }) =>
@@ -48,6 +49,9 @@ jest.mock(
               <button
                 key={item.key}
                 data-testid="shared-network-selection-item"
+                data-section-title={
+                  typeof section.title === 'string' ? section.title : ''
+                }
                 onClick={item.onClick}
               >
                 {item.name}
@@ -302,6 +306,40 @@ describe('NetworkFilter', () => {
     expect(networkItems[0]).toHaveTextContent('Ethereum');
     expect(networkItems[1]).toHaveTextContent('Arbitrum');
     expect(networkItems[2]).toHaveTextContent('Polygon');
+  });
+
+  it('groups networks into Default and Custom sections', () => {
+    // 0x1 (Ethereum) is a featured network -> Default; 0x19 (Cronos) is a
+    // custom network -> Custom networks.
+    mockUseChainNetworkNameAndImageMap.mockReturnValue(
+      new Map([
+        ['0x1', { networkName: 'Ethereum', networkImage: 'eth.svg' }],
+        ['0x19', { networkName: 'Cronos', networkImage: 'cronos.svg' }],
+      ]),
+    );
+
+    const { getByTestId, getByText } = render(
+      <NetworkFilter
+        tokens={[
+          { chainId: '0x1', fiat: { balance: 100 } },
+          { chainId: '0x19', fiat: { balance: 5 } },
+        ]}
+        nfts={[]}
+        onChainIdChange={mockOnChainIdChange}
+      />,
+    );
+
+    fireEvent.click(getByTestId('send-network-filter-toggle'));
+
+    // `t` is mocked to return the key, so the section title is the i18n key.
+    expect(getByText('Ethereum').closest('button')).toHaveAttribute(
+      'data-section-title',
+      'defaultNetworks',
+    );
+    expect(getByText('Cronos').closest('button')).toHaveAttribute(
+      'data-section-title',
+      'customNetworks',
+    );
   });
 
   describe('metrics', () => {
