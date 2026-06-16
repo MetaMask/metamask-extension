@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
   enterBridgeQuote,
   getBridgeNegativeCasesFixtures,
@@ -167,9 +167,9 @@ describe('Bridge functionality', function (this: Suite) {
         await driver.clickElementSafe({ text: 'View activity' });
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkPendingBridgeTransactionActivity();
-        await activityList.checkBridgeTransactionDetails(
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkPendingBridgeTransactionActivity();
+        await activityTab.checkBridgeTransactionDetails(
           'Bridging ETH',
           true,
           'pending',
@@ -208,9 +208,9 @@ describe('Bridge functionality', function (this: Suite) {
         await bridgePage.submitQuoteAndDismiss();
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkFailedTxNumberDisplayedInActivity();
-        await activityList.checkBridgeTransactionDetails(
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity();
+        await activityTab.checkBridgeTransactionDetails(
           'Bridge failed',
           true,
           'failed',
@@ -249,9 +249,9 @@ describe('Bridge functionality', function (this: Suite) {
         await bridgePage.submitQuoteAndDismiss();
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkFailedTxNumberDisplayedInActivity();
-        await activityList.checkBridgeTransactionDetails(
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity();
+        await activityTab.checkBridgeTransactionDetails(
           'Bridge failed',
           true,
           'failed',

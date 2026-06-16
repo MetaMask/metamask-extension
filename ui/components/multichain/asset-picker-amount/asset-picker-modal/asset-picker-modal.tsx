@@ -45,7 +45,9 @@ import {
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import {
+  ARC_USDC_TOKEN_ADDRESS,
   CHAIN_ID_TOKEN_IMAGE_MAP,
+  CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
@@ -254,13 +256,27 @@ export function AssetPickerModal({
           string?: string;
         })
     > {
+      // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
+      // display duplicate. Hide it from the picker so only the native token is
+      // selectable; native tokens (empty/zero address) are never affected.
+      const addToken = (
+        symbol: string,
+        address?: null | string,
+        tokenChainId?: string,
+      ) =>
+        shouldAddToken(symbol, address, tokenChainId) &&
+        !(
+          tokenChainId === CHAIN_IDS.ARC &&
+          (address ?? '').toLowerCase() === ARC_USDC_TOKEN_ADDRESS
+        );
+
       // Yield multichain tokens with balances
       for (const token of multichainTokensWithBalance) {
         // Filter out Tron special assets (resources, staking state, etc.)
         if (isTronSpecialAsset(token.assetId)) {
           continue;
         }
-        if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+        if (addToken(token.symbol, token.address, token.chainId)) {
           yield token.isNative
             ? {
                 ...token,
@@ -308,7 +324,7 @@ export function AssetPickerModal({
       }
 
       for (const token of allDetectedTokens) {
-        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
+        if (addToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
       }
@@ -324,16 +340,13 @@ export function AssetPickerModal({
       for (const topToken of topTokens ?? []) {
         const token: TokenListToken =
           evmTokenMetadataByAddress?.[topToken.address];
-        if (
-          token &&
-          shouldAddToken(token.symbol, token.address, currentChainId)
-        ) {
+        if (token && addToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
       }
 
       for (const token of Object.values(evmTokenMetadataByAddress)) {
-        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
+        if (addToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
       }

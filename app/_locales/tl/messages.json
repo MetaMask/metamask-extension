@@ -7,12 +7,6 @@
     "message": "Masyadong matagal ang paglo-load kaysa sa karaniwan.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Error"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Hindi tugmang data ng transaksyon. Pakisuri ang mga detalye ng transaksyon."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Wala nang mga account. Kung gusto mong mag-access ng iba pang account na hindi nakalista sa ibaba, pakikonektang muli ang wallet na hardware mo at piliin ito."
   },

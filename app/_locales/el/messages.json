@@ -7,12 +7,6 @@
     "message": "Η φόρτωση διαρκεί περισσότερο από το συνηθισμένο.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Σφάλμα"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Μη συμβατά δεδομένα συναλλαγών. Ελέγξτε τις λεπτομέρειες της συναλλαγής."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Δεν υπάρχουν άλλοι λογαριασμοί. Αν θέλετε να αποκτήσετε πρόσβαση σε έναν άλλο λογαριασμό που δεν περιλαμβάνεται στην παρακάτω λίστα, παρακαλούμε συνδέστε ξανά το πορτοφόλι υλικού σας και επιλέξτε το."
   },
