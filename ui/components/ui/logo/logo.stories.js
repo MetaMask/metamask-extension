@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { Box } from '@metamask/design-system-react';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import { Text, Box } from '../../component-library';
+import { Text } from '../../component-library';
 
 import Card from '../card';
 

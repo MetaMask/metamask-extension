@@ -53,10 +53,10 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "calculateGasEstimate": [Function],
-        "estimatedFeeFiat": "$0.04",
+        "estimatedFeeFiat": "$0.07",
         "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0001",
-        "estimatedFeeNativeHex": "0x3be226d2d900",
+        "estimatedFeeNativeHex": "0x720087dcfc95",
         "maxFeeFiat": "$0.07",
         "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeHex": "0x720087dcfc95",
@@ -102,7 +102,7 @@ describe('useFeeCalculations', () => {
         "estimatedFeeFiat": "",
         "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0001",
-        "estimatedFeeNativeHex": "0x3be226d2d900",
+        "estimatedFeeNativeHex": "0x720087dcfc95",
         "maxFeeFiat": "",
         "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeHex": "0x720087dcfc95",
@@ -124,16 +124,19 @@ describe('useFeeCalculations', () => {
       mockState,
     );
 
-    // The following assertions are meant as a snapshot test. These are
-    // currently unavailable after the prettier upgrade to v3, so I'm asserting
-    // each property individually instead.
-    expect(result.current.estimatedFeeFiat).toBe('$0.03');
-    expect(result.current.estimatedFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.estimatedFeeNative).toBe('0.0001');
-    expect(result.current.estimatedFeeNativeHex).toBe('0x364ba3e2d900');
-    expect(result.current.maxFeeFiat).toBe('$0.06');
-    expect(result.current.maxFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.maxFeeNative).toBe('0.0001');
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$0.06",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0001",
+        "estimatedFeeNativeHex": "0x675d37a7cc95",
+        "maxFeeFiat": "$0.06",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x675d37a7cc95",
+        "maxFeeNative": "0.0001",
+      }
+    `);
   });
 
   it('picks up gasUsed for network fee on estimations', () => {
@@ -151,16 +154,19 @@ describe('useFeeCalculations', () => {
       mockState,
     );
 
-    // The following assertions are meant as a snapshot test. These are
-    // currently unavailable after the prettier upgrade to v3, so I'm asserting
-    // each property individually instead.
-    expect(result.current.estimatedFeeFiat).toBe('$0.03');
-    expect(result.current.estimatedFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.estimatedFeeNative).toBe('0.0001');
-    expect(result.current.estimatedFeeNativeHex).toBe('0x327a19c8f800');
-    expect(result.current.maxFeeFiat).toBe('$0.06');
-    expect(result.current.maxFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.maxFeeNative).toBe('0.0001');
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$0.06",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0001",
+        "estimatedFeeNativeHex": "0x60183e087418",
+        "maxFeeFiat": "$0.06",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x60183e087418",
+        "maxFeeNative": "0.0001",
+      }
+    `);
   });
 
   it('returns the correct estimate for a transaction with layer1GasFee', () => {
@@ -175,16 +181,19 @@ describe('useFeeCalculations', () => {
       mockState,
     );
 
-    // The following assertions are meant as a snapshot test. These are
-    // currently unavailable after the prettier upgrade to v3, so I'm asserting
-    // each property individually instead.
-    expect(result.current.estimatedFeeFiat).toBe('$2.54');
-    expect(result.current.estimatedFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.estimatedFeeNative).toBe('0.0046');
-    expect(result.current.estimatedFeeNativeHex).toBe('0x103be226d2d900');
-    expect(result.current.maxFeeFiat).toBe('$2.57');
-    expect(result.current.maxFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.maxFeeNative).toBe('0.0046');
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$2.57",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0046",
+        "estimatedFeeNativeHex": "0x10720087dcfc95",
+        "maxFeeFiat": "$2.57",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x10720087dcfc95",
+        "maxFeeNative": "0.0046",
+      }
+    `);
   });
 
   it('displays "< 0.0001" for very small non-zero estimated and max fees', () => {
@@ -223,12 +232,18 @@ describe('useFeeCalculations', () => {
       mockState,
     );
 
-    expect(result.current.estimatedFeeFiat).toBe('$2.89');
-    expect(result.current.estimatedFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.estimatedFeeNative).toBe('0.0052');
-    expect(result.current.estimatedFeeNativeHex).toBe('0x12779901f5aa00');
-    expect(result.current.maxFeeFiat).toBe('$3.24');
-    expect(result.current.maxFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.maxFeeNative).toBe('0.0058');
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$3.24",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0058",
+        "estimatedFeeNativeHex": "0x14b264dbe9b842",
+        "maxFeeFiat": "$3.24",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x14b264dbe9b842",
+        "maxFeeNative": "0.0058",
+      }
+    `);
   });
 });

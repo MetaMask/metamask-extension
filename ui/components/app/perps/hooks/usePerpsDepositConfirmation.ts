@@ -68,10 +68,13 @@ export function usePerpsDepositConfirmation(
           params.set('goBackTo', goBackTo);
         }
 
-        navigate({
-          pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-          search: params.toString(),
-        });
+        navigate(
+          {
+            pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
+            search: params.toString(),
+          },
+          { replace: true },
+        );
       }
 
       onCreated?.(transactionId);

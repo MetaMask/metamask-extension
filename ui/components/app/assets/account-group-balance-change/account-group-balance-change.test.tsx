@@ -18,6 +18,7 @@ describe('AccountGroupBalanceChange', () => {
     portfolioChange: null,
     amountChange: 200,
     percentChange: 0.1,
+    isLoading: false,
   });
 
   const arrange = () => {

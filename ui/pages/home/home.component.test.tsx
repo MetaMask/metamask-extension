@@ -66,7 +66,7 @@ function buildDefaultProps(overrides: Record<string, unknown> = {}) {
     showMultiRpcModal: false,
     showUpdateModal: false,
     totalUnapprovedCount: 0,
-    participateInMetaMetrics: false,
+    isMetaMetricsEnabled: false,
     setDataCollectionForMarketing: jest.fn(),
     shouldShowWeb3ShimUsageNotification: false,
     setWeb3ShimUsageAlertDismissed: jest.fn(),

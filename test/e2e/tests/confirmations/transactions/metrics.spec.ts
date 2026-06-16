@@ -14,7 +14,7 @@ import ContractDeploymentConfirmation from '../../../page-objects/pages/confirma
 import { login } from '../../../page-objects/flows/login.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import { assertAdvancedGasDetails } from './shared';
 
 // Type definition for event structure
@@ -65,9 +65,11 @@ describe('Metrics', function () {
         );
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Contract deployment' });
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAction({
+          action: 'Contract interaction',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // deposit contract
@@ -105,7 +107,7 @@ describe('Metrics', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(2);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 

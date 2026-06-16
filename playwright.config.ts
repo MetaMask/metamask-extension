@@ -49,24 +49,6 @@ const config: PlaywrightTestConfig = {
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'swap',
-      testMatch: '/swap/specs/*swap.spec.ts',
-      use: {
-        ...devices['Desktop Chrome'],
-        headless: true,
-      },
-      fullyParallel: false,
-    },
-    // Global: universal, common, shared, and non feature related tests
-    {
-      name: 'global',
-      testMatch: '/global/specs/**.spec.ts',
-      use: {
-        ...devices['Desktop Chrome'],
-        headless: true,
-      },
-    },
-    {
       name: 'benchmark',
       testDir: DAPP_PAGE_LOAD_BENCHMARK_DIR,
       testMatch: '**/*.spec.ts',
