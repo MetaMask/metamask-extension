@@ -555,7 +555,7 @@
     "@lydell/node-pty": "^1.1.0",
     "@metamask/api-specs": "^0.13.0",
     "@metamask/auto-changelog": "^5.3.1",
-    "@metamask/browser-playground": "0.7.2",
+    "@metamask/browser-playground": "0.8.1",
     "@metamask/build-utils": "^3.0.0",
     "@metamask/client-mcp-core": "0.5.0",
     "@metamask/design-system-shared": "^0.17.0",
