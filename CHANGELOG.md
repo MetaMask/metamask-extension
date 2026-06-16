@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.36.0]
 
+### Uncategorized
+
+- Not required — developer tooling only. (#43130)
+- Adds `metamask-aep[bot]` to the CLA Signature Bot allowlist in `.github/workflows/cla.yml`. (#43237)
+
 ### Added
 
 - Added Blockaid spender scanning for legacy ERC-20 `increaseApproval` transactions (e.g. LINK, stLINK, BAT). (#43141)
@@ -32,6 +37,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated onboarding metrics for Telegram Login. fixed onboarding unlock metrics. (#43052)
 - Raised the minimum supported browser versions for Chromium-based browsers to 123 and Firefox to ESR 128. (#41067)
 
+### Changed
+
+- Updated the Sei native token icon to Sei's maroon token mark. (#43173)
+- Updated the Sei network and token logo to Sei's new brand mark. (#43117)
+-
+- Bump `@metamask/assets-controllers` from 108.5.0 to 109.0.0 (#43422)
+
 ### Fixed
 
 - Fixed a false "Insufficient funds" error on perps when the size slider is set to 100%. (#43383)
@@ -53,15 +65,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix aggregated balance (#43061)
 - Disabled passkey unlock and setup on mobile browsers where the experience is unreliable. (#43009)
 - Fix routing after hardware wallet onboarding (#42952)
-
-### Changed
-
-- Updated the Sei native token icon to Sei's maroon token mark. (#43173)
-- Updated the Sei network and token logo to Sei's new brand mark. (#43117)
--
-### Changed
-
-- Bump `@metamask/assets-controllers` from 108.5.0 to 109.0.0 (#43422)
 
 ## [13.34.1]
 
