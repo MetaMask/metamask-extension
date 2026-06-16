@@ -48,30 +48,15 @@ exports[`AssetPage should render a native asset 1`] = `
         <h1
           class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--color-text-default mm-box--rounded-lg"
           data-testid="asset-hovered-price"
-          style="opacity: 0.2;"
+          style="opacity: 1;"
         >
           $123.00
         </h1>
-        <div
-          aria-hidden="true"
-          class="relative overflow-hidden rounded-lg"
-          style="width: 33%;"
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
         >
-          <div
-            aria-hidden="true"
-            class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-          />
-          <div
-            aria-hidden="true"
-            class="pointer-events-none invisible relative z-10"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-            >
-               
-            </p>
-          </div>
-        </div>
+           
+        </p>
       </div>
       <div
         class="flex-col mt-4 bg-transparent flex rounded-lg"
@@ -82,24 +67,8 @@ exports[`AssetPage should render a native asset 1`] = `
           style="opacity: 1;"
         >
           <div
-            class=""
-            style="direction: rtl;"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-xs-medium mm-text--text-align-center mm-box--margin-top-1 mm-box--margin-right-4 mm-box--margin-bottom-1 mm-box--margin-left-4 mm-box--color-text-alternative"
-            />
-          </div>
-          <div
             class="flex-col justify-end flex"
           />
-          <div
-            class=""
-            style="direction: rtl;"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-xs-medium mm-text--text-align-center mm-box--margin-top-1 mm-box--margin-right-4 mm-box--margin-bottom-1 mm-box--margin-left-4 mm-box--color-text-alternative"
-            />
-          </div>
         </div>
         <div
           class="justify-between mt-2 mr-3 ml-3 flex"
@@ -903,30 +872,15 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         <h1
           class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--color-text-default mm-box--rounded-lg"
           data-testid="asset-hovered-price"
-          style="opacity: 0.2;"
+          style="opacity: 1;"
         >
           $15,129.00
         </h1>
-        <div
-          aria-hidden="true"
-          class="relative overflow-hidden rounded-lg"
-          style="width: 33%;"
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
         >
-          <div
-            aria-hidden="true"
-            class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-          />
-          <div
-            aria-hidden="true"
-            class="pointer-events-none invisible relative z-10"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-            >
-               
-            </p>
-          </div>
-        </div>
+           
+        </p>
       </div>
       <div
         class="flex-col mt-4 bg-transparent flex rounded-lg"
@@ -937,24 +891,8 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           style="opacity: 1;"
         >
           <div
-            class=""
-            style="direction: rtl;"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-xs-medium mm-text--text-align-center mm-box--margin-top-1 mm-box--margin-right-4 mm-box--margin-bottom-1 mm-box--margin-left-4 mm-box--color-text-alternative"
-            />
-          </div>
-          <div
             class="flex-col justify-end flex"
           />
-          <div
-            class=""
-            style="direction: rtl;"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-xs-medium mm-text--text-align-center mm-box--margin-top-1 mm-box--margin-right-4 mm-box--margin-bottom-1 mm-box--margin-left-4 mm-box--color-text-alternative"
-            />
-          </div>
         </div>
         <div
           class="justify-between mt-2 mr-3 ml-3 flex"

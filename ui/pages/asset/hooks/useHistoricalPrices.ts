@@ -101,6 +101,13 @@ type PricesClientFetch = {
   ) => Promise<{ prices?: [number, number][] }>;
 };
 
+const flatlinePlaceholder: { prices: [number, number][] } = {
+  prices: [
+    [Date.now() - 24 * 60 * 60 * 1000, 0],
+    [Date.now(), 0],
+  ],
+};
+
 /** TanStack Query key prefix — distinct from `@metamask/core-backend` `['prices', ...]` keys to avoid cache/queryFn mismatches. */
 const V3_HISTORICAL_PRICES_QUERY_KEY_ROOT = [
   'metamask-extension',
@@ -179,6 +186,7 @@ export const useHistoricalPrices = ({
     isFetching,
     isInitialLoading,
     isFetchedAfterMount,
+    isPlaceholderData,
   } = useQuery({
     // @ts-expect-error - fix once extension in react-query v5
     queryKey,
@@ -204,6 +212,7 @@ export const useHistoricalPrices = ({
     },
     enabled: Boolean(v3Params),
     keepPreviousData: true,
+    placeholderData: flatlinePlaceholder,
     retry: false,
     staleTime: STALE_TIMES.PRICES,
     gcTime: GC_TIMES.DEFAULT,
@@ -216,6 +225,7 @@ export const useHistoricalPrices = ({
     loading: isInitialLoading,
     isFetching,
     isFetchedAfterMount,
+    isPlaceholderData,
     data: { prices, metadata },
   };
 };

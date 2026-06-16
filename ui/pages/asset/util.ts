@@ -65,6 +65,11 @@ export const chainSupportsPricing = (chainId: Hex) =>
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;
 
+export const finiteFallback = <TFallback>(
+  value: number,
+  fallback: TFallback,
+): number | TFallback => (Number.isFinite(value) ? value : fallback);
+
 export const findAssetByAddress = <TItem extends { address: string }>(
   data: Record<string, TItem[]>,
   address?: string,

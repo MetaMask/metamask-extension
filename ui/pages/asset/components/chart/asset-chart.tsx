@@ -36,7 +36,7 @@ import {
 import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
-import { loadingOpacity } from '../../util';
+import { finiteFallback, loadingOpacity } from '../../util';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 import { AssetChartEmptyState } from './asset-chart-empty-state';
@@ -56,6 +56,7 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   parsing: false,
   aspectRatio: 2.6,
   layout: { autoPadding: false, padding: 0 },
+  animation: { duration: 0 },
   fill: true,
   backgroundColor: ({ chart }) => {
     const gradient = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
@@ -157,6 +158,7 @@ const AssetChart = ({
     loading,
     isFetching,
     isFetchedAfterMount,
+    isPlaceholderData,
     data: {
       prices,
       metadata: { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax },
@@ -169,12 +171,12 @@ const AssetChart = ({
   });
 
   const shouldShowChartEmptyState = !loading && prices.length === 0;
-  const shouldShowChartMuted = isFetching && prices.length > 0;
+  const shouldShowChartMuted =
+    isFetching && prices.length > 0 && !isPlaceholderData;
 
   const options = {
     ...initialChartOptions,
     borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
-    animation: { duration: 0 },
     animations: isFetchedAfterMount
       ? {
           y: {
@@ -187,14 +189,14 @@ const AssetChart = ({
       : {},
     scales: {
       x: {
-        min: Number.isFinite(xMin) ? xMin : undefined,
-        max: Number.isFinite(xMax) ? xMax : undefined,
+        min: finiteFallback(xMin, undefined),
+        max: finiteFallback(xMax, undefined),
         display: false,
         type: 'linear',
       },
       y: {
-        min: Number.isFinite(yMin) ? yMin : 0,
-        max: Number.isFinite(yMax) ? yMax : 1,
+        min: isPlaceholderData ? 0 : finiteFallback(yMin, 0),
+        max: isPlaceholderData ? 1 : finiteFallback(yMax, 1),
         display: false,
       },
     },
@@ -221,7 +223,7 @@ const AssetChart = ({
         currency={currency}
         price={currentPrice}
         date={Date.now()}
-        comparePrice={prices?.[0]?.y}
+        comparePrice={isPlaceholderData ? undefined : prices?.[0]?.y}
         asset={asset}
       />
 
@@ -229,18 +231,24 @@ const AssetChart = ({
         data-testid="asset-price-chart"
         className="flex rounded-lg"
         marginTop={4}
-        backgroundColor={BoxBackgroundColor.Transparent}
+        backgroundColor={
+          loading && !prices
+            ? BoxBackgroundColor.BackgroundSection
+            : BoxBackgroundColor.Transparent
+        }
         flexDirection={BoxFlexDirection.Column}
       >
         {shouldShowChartEmptyState && <AssetChartEmptyState />}
         {!shouldShowChartEmptyState && (
           <Box style={{ opacity: shouldShowChartMuted ? loadingOpacity : 1 }}>
-            <ChartTooltip
-              point={maxPricePoint}
-              xMin={xMin}
-              xMax={xMax}
-              currency={currency}
-            />
+            {!isPlaceholderData && (
+              <ChartTooltip
+                point={maxPricePoint}
+                xMin={xMin}
+                xMax={xMax}
+                currency={currency}
+              />
+            )}
             <Box
               style={{ aspectRatio: `${options.aspectRatio}` }}
               className="flex"
@@ -255,6 +263,9 @@ const AssetChart = ({
                 options={options}
                 // Update the price display on chart hover
                 onMouseMove={(event) => {
+                  if (isPlaceholderData) {
+                    return;
+                  }
                   const data = chartRef?.current?.data?.datasets?.[0]?.data;
                   if (data) {
                     const target = event.target as HTMLElement;
@@ -286,12 +297,14 @@ const AssetChart = ({
                 }}
               />
             </Box>
-            <ChartTooltip
-              point={minPricePoint}
-              xMin={xMin}
-              xMax={xMax}
-              currency={currency}
-            />
+            {!isPlaceholderData && (
+              <ChartTooltip
+                point={minPricePoint}
+                xMin={xMin}
+                xMax={xMax}
+                currency={currency}
+              />
+            )}
           </Box>
         )}
 
