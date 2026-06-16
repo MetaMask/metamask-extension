@@ -75,22 +75,22 @@ jest.mock('../../../../../selectors', () => ({
   getUseExternalServices: () => true,
 }));
 
+jest.mock('../../../../../selectors/multichain-accounts/account-tree', () => ({
+  ...jest.requireActual(
+    '../../../../../selectors/multichain-accounts/account-tree',
+  ),
+  getInternalAccountBySelectedAccountGroupAndCaip: () => ({ id: 'mock-evm' }),
+}));
+
 jest.mock(
-  '../../../../../selectors/multichain-accounts/account-tree',
+  '../../../../../selectors/network-blacklist/network-blacklist',
   () => ({
     ...jest.requireActual(
-      '../../../../../selectors/multichain-accounts/account-tree',
+      '../../../../../selectors/network-blacklist/network-blacklist',
     ),
-    getInternalAccountBySelectedAccountGroupAndCaip: () => ({ id: 'mock-evm' }),
+    selectAdditionalNetworksBlacklistFeatureFlag: () => [],
   }),
 );
-
-jest.mock('../../../../../selectors/network-blacklist/network-blacklist', () => ({
-  ...jest.requireActual(
-    '../../../../../selectors/network-blacklist/network-blacklist',
-  ),
-  selectAdditionalNetworksBlacklistFeatureFlag: () => [],
-}));
 
 jest.mock('../../../../../../shared/lib/network.utils', () => ({
   ...jest.requireActual('../../../../../../shared/lib/network.utils'),
@@ -125,15 +125,29 @@ describe('HomeNetworkFilterModal', () => {
     mockShowTestNetworks = false;
   });
 
-  describe('when only default networks are present', () => {
+  describe('when there are no custom networks', () => {
     it('labels the top row "All networks" and hides the "Default networks" header', () => {
       const { getByText, queryByText } = renderModal();
 
       expect(getByText('All networks')).toBeInTheDocument();
       expect(queryByText('All default networks')).not.toBeInTheDocument();
+      // The default list is the primary list, so its header is hidden.
       expect(queryByText('Default networks')).not.toBeInTheDocument();
       // The default networks themselves still render.
       expect(getByText('Ethereum')).toBeInTheDocument();
+    });
+
+    it('keeps "All networks" and hides the "Default networks" header even when test networks are enabled', () => {
+      mockTestNetworks = [SEPOLIA];
+      mockShowTestNetworks = true;
+
+      const { getByText, queryByText } = renderModal();
+
+      expect(getByText('All networks')).toBeInTheDocument();
+      expect(queryByText('All default networks')).not.toBeInTheDocument();
+      expect(queryByText('Default networks')).not.toBeInTheDocument();
+      // The testnets section still renders with its own header.
+      expect(getByText('Testnets')).toBeInTheDocument();
     });
   });
 
@@ -148,10 +162,9 @@ describe('HomeNetworkFilterModal', () => {
       expect(getByText('Default networks')).toBeInTheDocument();
       expect(getByText('Custom networks')).toBeInTheDocument();
     });
-  });
 
-  describe('when test networks are present and enabled', () => {
-    it('labels the top row "All default networks" and shows the "Default networks" header', () => {
+    it('keeps "All default networks" when test networks are also enabled', () => {
+      mockCustomNetworks = [CUSTOM_NETWORK];
       mockTestNetworks = [SEPOLIA];
       mockShowTestNetworks = true;
 
@@ -160,6 +173,7 @@ describe('HomeNetworkFilterModal', () => {
       expect(getByText('All default networks')).toBeInTheDocument();
       expect(queryByText('All networks')).not.toBeInTheDocument();
       expect(getByText('Default networks')).toBeInTheDocument();
+      expect(getByText('Custom networks')).toBeInTheDocument();
       expect(getByText('Testnets')).toBeInTheDocument();
     });
   });

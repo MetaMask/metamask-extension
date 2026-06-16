@@ -356,11 +356,12 @@ const HomeNetworkFilterModalContent = ({
     );
   }, [orderedNetworksList, testNetworkMap, useExternalServices]);
 
-  // When there are no custom and no visible test networks, the default list is the
-  // only list, so the "Default networks" header is redundant and the top row
-  // represents *all* networks rather than just the default subset.
-  const hasOnlyDefaultNetworks =
-    customNetworks.length === 0 && !(showTestnets && testNetworks.length > 0);
+  // Without any custom networks the default (popular) list is the primary list:
+  // the top row represents *all* the user's networks ("All networks") and the
+  // redundant "Default networks" header is hidden. Once a custom network exists
+  // the Default/Custom distinction matters, so the top row becomes "All default
+  // networks" and the header is shown. Test networks don't affect this.
+  const hasNoCustomNetworks = customNetworks.length === 0;
 
   const additionalNetworks = useMemo(() => {
     const availableNetworks = FEATURED_RPCS.filter(
@@ -409,7 +410,7 @@ const HomeNetworkFilterModalContent = ({
     const nextSections: NetworkSelectionSection[] = [
       {
         key: 'default-networks',
-        title: hasOnlyDefaultNetworks ? undefined : t('defaultNetworks'),
+        title: hasNoCustomNetworks ? undefined : t('defaultNetworks'),
         items: defaultNetworks.map((network) => ({
           key: network.chainId,
           name: network.name,
@@ -480,7 +481,7 @@ const HomeNetworkFilterModalContent = ({
     defaultNetworks,
     handleAddNetwork,
     handleSelectNetwork,
-    hasOnlyDefaultNetworks,
+    hasNoCustomNetworks,
     isNetworkSelected,
     showTestnets,
     t,
@@ -494,7 +495,7 @@ const HomeNetworkFilterModalContent = ({
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',
-        name: hasOnlyDefaultNetworks ? t('allNetworks') : t('allDefaultNetworks'),
+        name: hasNoCustomNetworks ? t('allNetworks') : t('allDefaultNetworks'),
         iconSrc: IconName.Global,
         selected: isAllDefaultSelected,
         onClick: handleSelectAllDefaultNetworks,
