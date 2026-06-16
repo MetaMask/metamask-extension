@@ -99,7 +99,7 @@ describe('AccountList', () => {
 
     expect(
       screen.getByTestId('hw-list-pagination__prev-button'),
-    ).toBeDisabled();
+    ).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('calls onAccountChange when an unconnected account checkbox is clicked', () => {
