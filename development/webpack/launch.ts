@@ -76,6 +76,7 @@ function createOutputStreams(process: NodeJS.Process) {
   const isWindows = process.platform === 'win32';
   // use IPC for communication on Windows, as it doesn't support POSIX signals
   const ipc = isWindows ? 'ipc' : 'ignore';
+  const stdin = isatty(process.stdin.fd) ? 'inherit' : 'ignore';
   const outs = (['stdout', 'stderr'] as const).map(function createStream(name) {
     const parentStream = process[name];
     // TODO: get Windows PTY working
@@ -111,7 +112,7 @@ function createOutputStreams(process: NodeJS.Process) {
         });
     },
     destroy: () => outs.forEach((out) => out.destroy()),
-    stdio: ['ignore', outs[0].pty, outs[1].pty, ipc] as StdioOptions,
+    stdio: [stdin, outs[0].pty, outs[1].pty, ipc] as StdioOptions,
   };
 }
 
