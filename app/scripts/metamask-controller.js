@@ -1029,7 +1029,11 @@ export default class MetamaskController extends EventEmitter {
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
-            await this._importAccountsWithBalances();
+            for (const {
+              metadata: { id: entropySource },
+            } of this.getHDKeyringObjects()) {
+              await this.discoverAndCreateAccounts(entropySource);
+            }
           } else {
             await this.discoverAndCreateAccounts(id);
           }
@@ -5320,29 +5324,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Imports accounts with balances to the keyring.
-   */
-  async _importAccountsWithBalances() {
-    const { keyrings } = this.keyringController.state;
-
-    // walk through all the keyrings and import the solana accounts for the HD keyrings
-    for (const { metadata } of keyrings) {
-      // check if the keyring is an HD keyring
-      const isHdKeyring = await this.keyringController.withKeyringV2(
-        { id: metadata.id },
-        async ({ keyring }) => {
-          return keyring.type === KeyringType.Hd;
-        },
-      );
-      if (isHdKeyring) {
-        await getSnapKeyring(this.controllerMessenger);
-        await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-        await this.discoverAndCreateAccounts(metadata.id);
-      }
-    }
-  }
-
-  /**
    * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
    *
    * @param {Buffer} mnemonic - The BIP-39 mnemonic.
@@ -6670,15 +6651,24 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Returns the list of HD keyring objects in the keyring controller's state.
+   *
+   * @returns {Array} The list of HD keyring objects.
+   */
+  getHDKeyringObjects() {
+    return this.keyringController.state.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hdKeyTree,
+    );
+  }
+
+  /**
    * Returns the index of the HD keyring containing the selected account.
    *
    * @returns {number | undefined} The index of the HD keyring containing the selected account.
    */
   getHDEntropyIndex() {
     const selectedAccount = this.accountsController.getSelectedAccount();
-    const hdKeyrings = this.keyringController.state.keyrings.filter(
-      (keyring) => keyring.type === KeyringTypes.hdKeyTree,
-    );
+    const hdKeyrings = this.getHDKeyringObjects();
     const index = hdKeyrings.findIndex((keyring) =>
       keyring.accounts.includes(selectedAccount.address),
     );
