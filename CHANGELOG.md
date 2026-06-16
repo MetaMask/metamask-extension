@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.36.0]
+
+### Added
+
+- Added Blockaid spender scanning for legacy ERC-20 `increaseApproval` transactions (e.g. LINK, stLINK, BAT). (#43141)
+- Perps market search now matches full market names — e.g. searching "bitcoin" finds BTC (and BCH), "tesla" finds TSLA, (#43456)
+  "spacex" finds SPCX.
+- Added design changes for swaps filter (#43453)
+- UI update for network filter (#43310)
+- Updated MM Pay token picker to use inline row layout with error messages shown above the payment details (#43313)
+- Added compliance blocking for restricted wallets using Perps. (#42519)
+- Extends dapp scanning capability to include path-based domains. (#42311)
+- Added a Batch Sell entry point in the wallet overview action area, allowing users to select and sell multiple tokens across (#42408)
+  supported networks in one flow.
+- Container-based responsive text ## **Related issues** (#43184)
+- Activity list redesign (#42837)
+- Added "Paid by MetaMask" label on the mUSD conversion confirmation screen when all transaction fees are sponsored (#43168)
+- Add Arc as Default Network (network/native logo + native price + multicall) (#43114)
+- Added a confirmation modal when closing all perpetual positions (#42613)
+- Reduced false-positive RPC connection banners — single-provider outages no longer pop the banner, even when many popular (#43073)
+  networks fail at once.
+- Add Telegram provider to Social Login options (#43125)
+- Updated onboarding metrics for Telegram Login. fixed onboarding unlock metrics. (#43052)
+- Raised the minimum supported browser versions for Chromium-based browsers to 123 and Firefox to ESR 128. (#41067)
+
+### Fixed
+
+- Fixed a false "Insufficient funds" error on perps when the size slider is set to 100%. (#43383)
+- Asset picker network (#43465)
+- Updated gas token picker design to remove background pill and show a right-facing arrow (#43165)
+- Routed the default zkSync Era RPC through Infura for improved performance and reliability. (#43407)
+- Fixed a bug where Firefox clipped the top of the search field focus outline in Send and Receive. (#43120)
+- Fix trezor connection for Firefox browser (#43179)
+- Exclude Ondo assets from batch sell select screen (#43327)
+- Fixed a bug where switching the extension between side panel and popup view and back could reopen MetaMask in the popup, (#43221)
+  sometimes leaving both the side panel and popup open at the same time
+- Delete token list (#43108)
+- Fixed the Perps withdraw button doing nothing when a non-EVM network (Solana, Bitcoin, Tron) was selected (#43212)
+- Fixed missing token icons (e.g. mUSD) in transaction confirmation rows and estimated changes. (#43133)
+- Removes `toggleNetworkMenuAfterSubmit ?` pre-condition for replacement RPC networks-form (#42980)
+- Update legacy settings routes to new correct ones (#43111)
+- Fixed navigation issue where tapping "Add Funds" in the perps order screen caused the back button to require two taps (#43002)
+- Add new hardware wallet reconnection page. (#42680)
+- Fix aggregated balance (#43061)
+- Disabled passkey unlock and setup on mobile browsers where the experience is unreliable. (#43009)
+- Fix routing after hardware wallet onboarding (#42952)
+
+### Changed
+
+- Updated the Sei native token icon to Sei's maroon token mark. (#43173)
+- Updated the Sei network and token logo to Sei's new brand mark. (#43117)
+-
 ### Changed
 
 - Bump `@metamask/assets-controllers` from 108.5.0 to 109.0.0 (#43422)
@@ -2466,7 +2518,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...HEAD
+[13.36.0]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...v13.36.0
 [13.34.1]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...v13.34.1
 [13.34.0]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...v13.34.0
 [13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.33.0
