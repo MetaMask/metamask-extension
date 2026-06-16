@@ -10,8 +10,8 @@ function makeItem(
   return {
     type: 'send',
     chainId: 'eip155:1',
+    hash: '0xabc',
     data: {
-      hash: '0xabc',
       from: '0x1',
       to: '0x2',
     },
@@ -31,8 +31,8 @@ describe('dedupeItems', () => {
       timestamp: timestamp + 1,
       status: 'success',
       type: 'contractInteraction',
+      hash: '0xabc',
       data: {
-        hash: '0xabc',
         from: '0x1',
         to: '0x2',
       },
