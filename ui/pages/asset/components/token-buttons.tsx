@@ -25,6 +25,7 @@ import {
 } from '../../../components/component-library';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
+import { mapArcNativeAssetToSwapToken } from '../../../components/app/assets/enablement/arc';
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
@@ -121,7 +122,10 @@ const TokenButtons = ({
   }, [trackEvent, navigate, token]);
 
   const handleSwapOnClick = useCallback(async () => {
-    openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
+    openBridgeExperience(
+      MetaMetricsSwapsEventSource.TokenView,
+      mapArcNativeAssetToSwapToken(token),
+    );
   }, [token, openBridgeExperience]);
 
   return (

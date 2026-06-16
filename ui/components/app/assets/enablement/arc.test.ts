@@ -1,4 +1,7 @@
-import { filterOutArcNativeAsset } from './arc';
+import {
+  filterOutArcNativeAsset,
+  mapArcNativeAssetToSwapToken,
+} from './arc';
 
 const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
 const ARC_NATIVE_HEX_CHAIN_ID = '0x13b2';
@@ -117,4 +120,79 @@ describe('filterOutArcNativeAsset', () => {
       expect(filterOutArcNativeAsset(assets)).toStrictEqual(expected);
     },
   );
+});
+
+describe('mapArcNativeAssetToSwapToken', () => {
+  it('maps the Arc native asset matched by address to the ERC20 USDC token', () => {
+    const token = {
+      chainId: ARC_NATIVE_HEX_CHAIN_ID,
+      address: ARC_NATIVE_ADDRESS,
+      symbol: 'USDC',
+      decimals: 6,
+    };
+
+    expect(mapArcNativeAssetToSwapToken(token)).toStrictEqual({
+      ...token,
+      address: ARC_ERC20_USDC_ADDRESS,
+    });
+  });
+
+  it('maps the Arc native asset matched case-insensitively', () => {
+    const token = {
+      chainId: ARC_NATIVE_HEX_CHAIN_ID.toUpperCase(),
+      address: ARC_NATIVE_ADDRESS.toUpperCase(),
+      symbol: 'USDC',
+    };
+
+    expect(mapArcNativeAssetToSwapToken(token)).toStrictEqual({
+      ...token,
+      address: ARC_ERC20_USDC_ADDRESS,
+    });
+  });
+
+  it('preserves the other token fields when mapping the Arc native asset', () => {
+    const token = {
+      chainId: ARC_NATIVE_HEX_CHAIN_ID,
+      address: ARC_NATIVE_ADDRESS,
+      symbol: 'USDC',
+      decimals: 6,
+      name: 'USD Coin',
+      type: 'token',
+    };
+
+    expect(mapArcNativeAssetToSwapToken(token)).toStrictEqual({
+      ...token,
+      address: ARC_ERC20_USDC_ADDRESS,
+    });
+  });
+
+  it('returns the Arc ERC20 USDC token unchanged', () => {
+    const token = {
+      chainId: ARC_NATIVE_HEX_CHAIN_ID,
+      address: ARC_ERC20_USDC_ADDRESS,
+      symbol: 'USDC',
+    };
+
+    expect(mapArcNativeAssetToSwapToken(token)).toStrictEqual(token);
+  });
+
+  it('returns the native zero address unchanged when on a non-Arc chain', () => {
+    const token = {
+      chainId: 'eip155:1',
+      address: ARC_NATIVE_ADDRESS,
+      symbol: 'ETH',
+    };
+
+    expect(mapArcNativeAssetToSwapToken(token)).toStrictEqual(token);
+  });
+
+  it('returns a non-native Arc token unchanged', () => {
+    const token = {
+      chainId: ARC_NATIVE_HEX_CHAIN_ID,
+      address: '0x1111111111111111111111111111111111111111',
+      symbol: 'FOO',
+    };
+
+    expect(mapArcNativeAssetToSwapToken(token)).toStrictEqual(token);
+  });
 });
