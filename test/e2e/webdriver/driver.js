@@ -1123,7 +1123,8 @@ class Driver {
    * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
    * Defaults to true.
    * @param {number} [options.waitForControllersTimeout] - optional parameter to specify the timeout in milliseconds for waiting
-   * for the controllers to be loaded. Defaults to 10000 (10 seconds).
+   * for the controllers to be loaded. Defaults to `max(this.timeout, 30000)` so
+   * startup gets headroom for the heavier Sentry v10 SDK init on constrained CI.
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
@@ -1131,7 +1132,12 @@ class Driver {
     page = PAGES.HOME,
     {
       waitForControllers = true,
-      waitForControllersTimeout = this.timeout,
+      // The `.controller-loaded` marker can take well past the default selenium
+      // `this.timeout` (10s) on 2-core CI when the v10 Sentry SDK's heavier
+      // startup runs during (re)initialization — e.g. after a wallet unlock.
+      // Give the startup wait dedicated headroom without slowing every other
+      // `waitForSelector`, which still uses `this.timeout`.
+      waitForControllersTimeout = Math.max(this.timeout, 30000),
     } = {},
   ) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
@@ -1149,11 +1155,12 @@ class Driver {
    * indicating that the controllers have finished loading.
    *
    * @param {number} [timeout] - optional timeout in milliseconds for waiting for the controllers to be loaded.
-   * Defaults to 10000 (10 seconds).
+   * Defaults to 30000 (30 seconds) so startup gets headroom for the heavier
+   * Sentry v10 SDK init on constrained CI runners.
    * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
    * @throws {Error} Will throw an error if the element is not located within the timeout period.
    */
-  async waitForControllersLoaded(timeout = 10000) {
+  async waitForControllersLoaded(timeout = 30000) {
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.controller-loaded')),
       timeout,
