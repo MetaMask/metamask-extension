@@ -2558,20 +2558,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
                   '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
                   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
                 ],
-                '0x2105': [
-                  '0x0000000000000000000000000000000000000000',
-                  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-                ],
-                '0x38': [
-                  '0x0000000000000000000000000000000000000000',
-                  '0x55d398326f99059fF775485246999027B3197955',
-                  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                ],
-                '0x89': [
-                  '0x0000000000000000000000000000000000001010',
-                  '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-                  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-                ],
               },
               enabled: false,
             },
