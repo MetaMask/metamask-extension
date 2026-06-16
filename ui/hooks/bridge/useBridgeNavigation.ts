@@ -13,6 +13,7 @@ import {
 } from '@metamask/utils';
 import {
   AssetType,
+  FeatureId,
   formatAddressToCaipReference,
   formatChainIdToHex,
   isNativeAddress,
@@ -151,7 +152,8 @@ export const useBridgeNavigation = () => {
         dispatch(
           trackUnifiedSwapBridgeEvent(
             UnifiedSwapBridgeEventName.PageViewed,
-            {},
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            { feature_id: FeatureId.UNIFIED_SWAP_BRIDGE },
           ),
         );
       navigate(

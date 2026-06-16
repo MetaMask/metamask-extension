@@ -146,6 +146,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
     {
       "best_quote_provider": "lifi_across",
       "can_submit": true,
+      "feature_id": "unified_swap_bridge",
       "gas_included": false,
       "gas_included_7702": false,
       "has_sufficient_gas_for_quote": null,
@@ -303,6 +304,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
     {
       "best_quote_provider": "lifi_across",
       "can_submit": true,
+      "feature_id": "unified_swap_bridge",
       "gas_included": false,
       "gas_included_7702": false,
       "has_sufficient_gas_for_quote": null,
