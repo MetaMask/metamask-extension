@@ -1,4 +1,4 @@
-import React, { Component, useContext } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import log from 'loglevel';
 import { AvatarAccountSize } from '@metamask/design-system-react';
@@ -12,13 +12,14 @@ import { Numeric } from '../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
-import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 
-class ConfirmEncryptionPublicKeyBase extends Component {
-  static propTypes = {
+export default class ConfirmEncryptionPublicKey extends Component {
+  static contextTypes = {
     t: PropTypes.func.isRequired,
     trackEvent: PropTypes.func.isRequired,
+  };
+
+  static propTypes = {
     fromAccount: PropTypes.shape({
       address: PropTypes.string.isRequired,
       balance: PropTypes.string,
@@ -45,7 +46,7 @@ class ConfirmEncryptionPublicKeyBase extends Component {
           <div className="request-encryption-public-key__header-background" />
 
           <div className="request-encryption-public-key__header__text">
-            {this.props.t('encryptionPublicKeyRequest')}
+            {this.context.t('encryptionPublicKeyRequest')}
           </div>
 
           <div className="request-encryption-public-key__header__tip-container">
@@ -57,7 +58,8 @@ class ConfirmEncryptionPublicKeyBase extends Component {
   };
 
   renderAccount = () => {
-    const { fromAccount, t } = this.props;
+    const { fromAccount } = this.props;
+    const { t } = this.context;
 
     return (
       <div className="request-encryption-public-key__account">
@@ -76,8 +78,8 @@ class ConfirmEncryptionPublicKeyBase extends Component {
     const {
       nativeCurrency,
       fromAccount: { balance },
-      t,
     } = this.props;
+    const { t } = this.context;
 
     const nativeCurrencyBalance = new Numeric(
       balance,
@@ -125,7 +127,8 @@ class ConfirmEncryptionPublicKeyBase extends Component {
   };
 
   renderBody = () => {
-    const { subjectMetadata, txData, t } = this.props;
+    const { subjectMetadata, txData } = this.props;
+    const { t } = this.context;
 
     const targetSubjectMetadata = subjectMetadata[txData.origin];
     const notice = t('encryptionPublicKeyNotice', [
@@ -167,7 +170,7 @@ class ConfirmEncryptionPublicKeyBase extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props;
-    const { t, trackEvent } = this.props;
+    const { t, trackEvent } = this.context;
 
     return (
       <PageContainerFooter
@@ -188,7 +191,7 @@ class ConfirmEncryptionPublicKeyBase extends Component {
         }}
         onSubmit={async (event) => {
           await encryptionPublicKey(txData, event);
-          this.props.trackEvent({
+          this.context.trackEvent({
             category: MetaMetricsEventCategory.Messages,
             event: 'Confirm',
             properties: {
@@ -218,13 +221,3 @@ class ConfirmEncryptionPublicKeyBase extends Component {
     );
   };
 }
-
-function ConfirmEncryptionPublicKey(props) {
-  const t = useContext(I18nContext);
-  const { trackEvent } = useContext(MetaMetricsContext);
-  return (
-    <ConfirmEncryptionPublicKeyBase {...props} t={t} trackEvent={trackEvent} />
-  );
-}
-
-export default ConfirmEncryptionPublicKey;

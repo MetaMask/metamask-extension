@@ -87,7 +87,7 @@ describe('Settings', () => {
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
       expect(
-        await screen.findByText(messages.theme.message),
+        await screen.findByText(messages.preferencesAndDisplay.message),
       ).toBeInTheDocument();
       expect(
         screen.getByText(messages.securityAndPrivacy.message),
@@ -108,7 +108,7 @@ describe('Settings', () => {
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
       expect(
-        await screen.findByText(messages.theme.message),
+        await screen.findByText(messages.preferencesAndDisplay.message),
       ).toBeInTheDocument();
     });
 

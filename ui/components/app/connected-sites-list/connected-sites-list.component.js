@@ -7,10 +7,11 @@ import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
 import { Size } from '../../../helpers/constants/design-system';
 import { SnapIcon } from '../snaps/snap-icon';
-import { I18nContext } from '../../../contexts/i18n';
 
 export default class ConnectedSitesList extends Component {
-  static contextType = I18nContext;
+  static contextTypes = {
+    t: PropTypes.func,
+  };
 
   static propTypes = {
     connectedSubjects: PropTypes.arrayOf(
@@ -26,7 +27,7 @@ export default class ConnectedSitesList extends Component {
 
   getConnectedSitesListContent = () => {
     const { connectedSubjects, onDisconnect, getSnapName } = this.props;
-    const t = this.context;
+    const { t } = this.context;
     return connectedSubjects.map((subject) => {
       if (isSnapId(subject.origin)) {
         const snapName = getSnapName(subject.origin);
@@ -90,7 +91,7 @@ export default class ConnectedSitesList extends Component {
 
   getSubjectDisplayName(subject) {
     if (subject.extensionId) {
-      return this.context('externalExtension');
+      return this.context.t('externalExtension');
     }
 
     // We strip https schemes only, and only if the URL has no port.

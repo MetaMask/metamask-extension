@@ -27,6 +27,10 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constan
 import TokenListPlaceholder from './token-list-placeholder';
 
 export default class TokenList extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   static propTypes = {
     allTokens: PropTypes.object,
     results: PropTypes.array,

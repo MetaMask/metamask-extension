@@ -310,14 +310,15 @@ describe('Contract Interaction Confirmation Alerts', () => {
       },
     };
 
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedMetaMaskState,
-          transactions: [transactions],
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
+    // Avoid wrapping in act() here: React 18's act() waits for ALL pending
+    // async work (including Rive WASM loading) which can exceed the timeout.
+    // findByTestId calls below handle async waiting instead.
+    await integrationTestRender({
+      preloadedState: {
+        ...mockedMetaMaskState,
+        transactions: [transactions],
+      },
+      backgroundConnection: backgroundConnectionMocked,
     });
 
     fireEvent.click(await screen.findByTestId('inline-alert'));

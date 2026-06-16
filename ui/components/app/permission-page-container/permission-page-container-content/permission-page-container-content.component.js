@@ -12,7 +12,6 @@ import {
   BoxJustifyContent,
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
-import { I18nContext } from '../../../../contexts/i18n';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
   FontWeight,
@@ -46,10 +45,12 @@ export default class PermissionPageContainerContent extends PureComponent {
     selectedCaipChainIds: null,
   };
 
-  static contextType = I18nContext;
+  static contextTypes = {
+    t: PropTypes.func,
+  };
 
   render() {
-    const t = this.context;
+    const { t } = this.context;
 
     const {
       selectedPermissions,

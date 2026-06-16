@@ -12,7 +12,6 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { I18nContext } from '../../../../contexts/i18n';
 import * as actions from '../../../../store/actions';
 import { Button, ButtonVariant } from '../../../component-library';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
@@ -110,7 +109,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 class HideTokenConfirmationModal extends Component {
-  static contextType = I18nContext;
+  static contextTypes = {
+    t: PropTypes.func,
+    trackEvent: PropTypes.func,
+  };
 
   static propTypes = {
     hideToken: PropTypes.func.isRequired,
@@ -149,7 +151,7 @@ class HideTokenConfirmationModal extends Component {
     return (
       <div className="hide-token-confirmation__container">
         <div className="hide-token-confirmation__title">
-          {this.context('hideTokenPrompt')}
+          {this.context.t('hideTokenPrompt')}
         </div>
         <AvatarToken
           className="hide-token-confirmation__identicon"
@@ -159,7 +161,7 @@ class HideTokenConfirmationModal extends Component {
         />
         <div className="hide-token-confirmation__symbol">{symbol}</div>
         <div className="hide-token-confirmation__copy">
-          {this.context('readdToken')}
+          {this.context.t('readdToken')}
         </div>
         <Box
           className="flex w-full"
@@ -174,7 +176,7 @@ class HideTokenConfirmationModal extends Component {
             data-testid="hide-token-confirmation__cancel"
             onClick={() => hideModal()}
           >
-            {this.context('cancel')}
+            {this.context.t('cancel')}
           </Button>
           <Button
             variant={ButtonVariant.Primary}
@@ -208,7 +210,7 @@ class HideTokenConfirmationModal extends Component {
               navigate(DEFAULT_ROUTE);
             }}
           >
-            {this.context('hide')}
+            {this.context.t('hide')}
           </Button>
         </Box>
       </div>

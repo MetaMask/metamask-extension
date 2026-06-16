@@ -632,6 +632,11 @@ describe('Reveal Seed Page', () => {
         mockStore,
       );
 
+      // Wait for the phishing scan to complete before checking the metric event
+      await waitFor(() => {
+        expect(mockScanUrlForPhishing).toHaveBeenCalled();
+      });
+
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith({
           category: MetaMetricsEventCategory.Keys,

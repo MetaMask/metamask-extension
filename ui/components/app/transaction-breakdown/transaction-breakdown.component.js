@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import { I18nContext } from '../../../contexts/i18n';
 import { SuccessPill } from '../../component-library';
 import CurrencyDisplay from '../../ui/currency-display';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
@@ -12,7 +11,9 @@ import { RecipientWithAddress } from '../../ui/sender-to-recipient/sender-to-rec
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
 export default class TransactionBreakdown extends PureComponent {
-  static contextType = I18nContext;
+  static contextTypes = {
+    t: PropTypes.func,
+  };
 
   static propTypes = {
     className: PropTypes.string,
@@ -43,7 +44,7 @@ export default class TransactionBreakdown extends PureComponent {
   };
 
   render() {
-    const t = this.context;
+    const { t } = this.context;
     const {
       gas,
       gasPrice,

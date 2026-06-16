@@ -158,9 +158,15 @@ describe('Unconnected Account Alert', () => {
 
     const dontShowCheckbox = getByRole('checkbox');
 
-    expect(dontShowCheckbox.checked).toStrictEqual(false);
+    // Initial state: unchecked (no checked class)
+    expect(dontShowCheckbox.classList.contains('check-box__checked')).toBe(
+      false,
+    );
     fireEvent.click(dontShowCheckbox);
-    expect(dontShowCheckbox.checked).toStrictEqual(true);
+    // After click, the CheckBox component re-renders with checked=true, adding the class
+    expect(dontShowCheckbox.classList.contains('check-box__checked')).toBe(
+      true,
+    );
   });
 
   it('clicks dismiss button and calls dismissAlert action', () => {

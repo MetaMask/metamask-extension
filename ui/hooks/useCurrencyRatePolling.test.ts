@@ -1,5 +1,6 @@
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { BtcScope } from '@metamask/keyring-api';
+import { act } from '@testing-library/react-hooks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import {
@@ -105,8 +106,10 @@ describe('useCurrencyRatePolling', () => {
       state,
     );
 
-    // Wait for the asynchronous effect(s) to complete.
-    await new Promise((r) => setTimeout(r, 0));
+    // Flush async state updates (React 18 requires act() to process async effects).
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 0));
+    });
     await Promise.all(mockPromises);
 
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
@@ -184,8 +187,10 @@ describe('useCurrencyRatePolling', () => {
 
     renderHookWithProvider(() => useCurrencyRatePolling(), state);
 
-    // Wait for the asynchronous effect(s) to complete.
-    await new Promise((r) => setTimeout(r, 0));
+    // Flush async state updates (React 18 requires act() to process async effects).
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 0));
+    });
     await Promise.all(mockPromises);
 
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
@@ -217,8 +222,10 @@ describe('useCurrencyRatePolling', () => {
 
     renderHookWithProvider(() => useCurrencyRatePolling(), state);
 
-    // Wait for the asynchronous effect(s) to complete.
-    await new Promise((r) => setTimeout(r, 0));
+    // Flush async state updates (React 18 requires act() to process async effects).
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 0));
+    });
     await Promise.all(mockPromises);
 
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);

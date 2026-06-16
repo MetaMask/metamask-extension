@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { I18nContext } from '../../contexts/i18n';
 import ConnectedSitesList from '../../components/app/connected-sites-list';
 import Popover from '../../components/ui/popover/popover.component';
 import { Button, ButtonVariant } from '../../components/component-library';
 
 export default class ConnectedSites extends Component {
-  static contextType = I18nContext;
+  static contextTypes = {
+    t: PropTypes.func,
+  };
 
   static defaultProps = {
     tabToConnect: null,
@@ -82,7 +83,7 @@ export default class ConnectedSites extends Component {
       tabToConnect,
       requestAccountsPermission,
     } = this.props;
-    const t = this.context;
+    const { t } = this.context;
 
     return (
       <Popover
@@ -113,7 +114,7 @@ export default class ConnectedSites extends Component {
 
   renderDisconnectPopover() {
     const { closePopover, permittedAccountsByOrigin } = this.props;
-    const t = this.context;
+    const { t } = this.context;
     const {
       sitePendingDisconnect: { subjectKey },
     } = this.state;

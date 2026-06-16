@@ -11,6 +11,28 @@
         "postcss>picocolors": true
       }
     },
+    "@babel/core>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>@babel/helper-validator-identifier": true,
+        "loose-envify>js-tokens": true,
+        "postcss>picocolors": true
+      }
+    },
+    "@babel/core>@babel/helpers>@babel/template>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process": true
+      },
+      "packages": {
+        "@babel/core>@babel/helpers>@babel/types>@babel/helper-validator-identifier": true,
+        "loose-envify>js-tokens": true,
+        "postcss>picocolors": true
+      }
+    },
     "@babel/core": {
       "builtin": {
         "assert": true,
@@ -32,15 +54,15 @@
         "structuredClone": true
       },
       "packages": {
-        "@babel/code-frame": true,
+        "@babel/core>@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/core>@babel/helpers": true,
         "@babel/core>@babel/parser": true,
-        "depcheck>@babel/parser": true,
         "@babel/preset-typescript": true,
         "@babel/core>@babel/template": true,
+        "@babel/core>@babel/traverse": true,
         "depcheck>@babel/traverse": true,
         "@babel/core>@babel/types": true,
         "@babel/core>@jridgewell/remapping": true,
@@ -63,9 +85,21 @@
         "@babel/core>@babel/generator>jsesc": true
       }
     },
+    "@storybook/test-runner>@babel/generator": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@babel/types": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "@babel/core>@babel/generator>jsesc": true
+      }
+    },
     "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@metamask/snaps-utils>@babel/types": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets": {
@@ -75,11 +109,14 @@
         "process.versions": true
       },
       "packages": {
+        "@babel/core>@babel/helper-compilation-targets>@babel/compat-data": true,
         "@babel/preset-env>@babel/compat-data": true,
+        "@babel/core>@babel/helper-compilation-targets>@babel/helper-validator-option": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
         "@babel/preset-env>@babel": true,
         "browserslist": true,
         "@babel/core>@babel/helper-compilation-targets>lru-cache": true,
+        "@babel/core>semver": true,
         "@babel/core>@babel/helper-compilation-targets>semver": true
       }
     },
@@ -100,7 +137,7 @@
     },
     "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@metamask/snaps-utils>@babel/types": true
       }
     },
     "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -109,6 +146,14 @@
       },
       "packages": {
         "@babel/core>@babel/types": true
+      }
+    },
+    "@emotion/react>@emotion/babel-plugin>@babel/helper-module-imports": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@babel/types": true
       }
     },
     "@babel/core>@babel/helper-module-transforms": {
@@ -120,13 +165,26 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
+        "@babel/core>@babel/types>@babel/helper-validator-identifier": true,
+        "@babel/core>@babel/traverse": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-modules-amd>@babel/helper-module-transforms": {
+      "builtin": {
+        "assert": true,
+        "path.basename": true,
+        "path.extname": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@emotion/react>@emotion/babel-plugin>@babel/helper-module-imports": true,
         "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
     },
     "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@metamask/snaps-utils>@babel/types": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": {
@@ -139,18 +197,18 @@
     },
     "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@metamask/snaps-utils>@babel/types": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@metamask/snaps-utils>@babel/types": true
       }
     },
     "@babel/core>@babel/helpers": {
       "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
+        "@babel/core>@babel/helpers>@babel/template": true,
+        "@babel/core>@babel/helpers>@babel/types": true
       }
     },
     "react-compiler-webpack>@babel/plugin-syntax-jsx": {
@@ -166,7 +224,7 @@
     "@babel/preset-env>@babel/plugin-transform-modules-commonjs": {
       "packages": {
         "@babel/core": true,
-        "@babel/core>@babel/helper-module-transforms": true,
+        "@babel/preset-env>@babel/plugin-transform-modules-amd>@babel/helper-module-transforms": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true
       }
@@ -198,9 +256,37 @@
     },
     "@babel/core>@babel/template": {
       "packages": {
+        "@babel/core>@babel/code-frame": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/core>@babel/helpers>@babel/template": {
+      "packages": {
+        "@babel/core>@babel/helpers>@babel/template>@babel/code-frame": true,
+        "@babel/core>@babel/helpers>@babel/template>@babel/parser": true,
+        "@babel/core>@babel/helpers>@babel/types": true
+      }
+    },
+    "@storybook/test-runner>@babel/template": {
+      "packages": {
         "@babel/code-frame": true,
         "depcheck>@babel/parser": true,
-        "@babel/core>@babel/types": true
+        "@metamask/snaps-utils>@babel/types": true
+      }
+    },
+    "@babel/core>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/core>@babel/code-frame": true,
+        "@babel/core>@babel/generator": true,
+        "@babel/core>@babel/traverse>@babel/helper-globals": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/template": true,
+        "@babel/core>@babel/types": true,
+        "nock>debug": true
       }
     },
     "depcheck>@babel/traverse": {
@@ -210,11 +296,14 @@
       "packages": {
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
+        "@storybook/test-runner>@babel/generator": true,
         "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@babel/core>@babel/parser": true,
         "depcheck>@babel/parser": true,
         "@babel/core>@babel/template": true,
+        "@storybook/test-runner>@babel/template": true,
         "@babel/core>@babel/types": true,
+        "@metamask/snaps-utils>@babel/types": true,
         "depcheck>@babel": true,
         "nock>debug": true
       }
@@ -226,6 +315,26 @@
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "@babel/core>@babel/types>@babel/helper-validator-identifier": true
+      }
+    },
+    "@babel/core>@babel/helpers>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/helpers>@babel/types>@babel/helper-string-parser": true,
+        "@babel/core>@babel/helpers>@babel/types>@babel/helper-validator-identifier": true
+      }
+    },
+    "@metamask/snaps-utils>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@babel/types>@babel/helper-string-parser": true,
         "@babel/code-frame>@babel/helper-validator-identifier": true
       }
     },
@@ -795,7 +904,8 @@
         "process": true
       },
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/core>@babel/types": true,
+        "@metamask/snaps-utils>@babel/types": true
       }
     },
     "browserslist>baseline-browser-mapping": {
@@ -1138,6 +1248,7 @@
         "process.cwd": true
       },
       "packages": {
+        "lockfile-lint>cosmiconfig>env-paths": true,
         "postcss-loader>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
         "mocha>js-yaml": true,
@@ -1366,14 +1477,25 @@
         "webpack>tapable": true
       }
     },
+    "lockfile-lint>cosmiconfig>env-paths": {
+      "builtin": {
+        "os.homedir": true,
+        "os.tmpdir": true,
+        "path.basename": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      }
+    },
     "postcss-loader>cosmiconfig>env-paths": {
       "builtin": {
         "os": true,
         "path": true
       },
       "globals": {
-        "process.env": true,
-        "process.platform": true
+        "process.env": true
       }
     },
     "depcheck>cosmiconfig>parse-json>error-ex": {
@@ -1997,6 +2119,8 @@
         "os.release": true,
         "path.basename": true,
         "path.relative": true,
+        "path.resolve": true,
+        "path.win32.basename": true,
         "url.fileURLToPath": true
       },
       "globals": {
@@ -2604,12 +2728,6 @@
       }
     },
     "@babel/core>semver": {
-      "globals": {
-        "console": true,
-        "process": true
-      }
-    },
-    "@babel/core>@babel/helper-compilation-targets>semver": {
       "globals": {
         "console": true,
         "process": true
@@ -3286,7 +3404,7 @@
         "http-server>opener": true,
         "postcss>picocolors": true,
         "webpack-bundle-analyzer>sirv": true,
-        "ws": true
+        "webpack-bundle-analyzer>ws": true
       }
     },
     "webpack-dev-server>webpack-dev-middleware": {
@@ -3366,7 +3484,7 @@
         "webpack-dev-server>sockjs": true,
         "webpack": true,
         "webpack-dev-server>webpack-dev-middleware": true,
-        "ws": true
+        "webpack-dev-server>ws": true
       }
     },
     "webpack>webpack-sources": {
@@ -3403,7 +3521,46 @@
         "eslint>strip-ansi": true
       }
     },
-    "ws": {
+    "webpack-bundle-analyzer>ws": {
+      "builtin": {
+        "buffer.isUtf8": true,
+        "crypto.createHash": true,
+        "crypto.randomBytes": true,
+        "crypto.randomFillSync": true,
+        "events": true,
+        "http.STATUS_CODES": true,
+        "http.createServer": true,
+        "http.request": true,
+        "https.request": true,
+        "net.connect": true,
+        "net.isIP": true,
+        "stream.Duplex": true,
+        "stream.Readable": true,
+        "stream.Writable": true,
+        "tls.connect": true,
+        "url.URL": true,
+        "util.types.isUint8Array": true,
+        "zlib.Z_DEFAULT_WINDOWBITS": true,
+        "zlib.Z_SYNC_FLUSH": true,
+        "zlib.createDeflateRaw": true,
+        "zlib.createInflateRaw": true
+      },
+      "globals": {
+        "Blob": true,
+        "Buffer": true,
+        "clearTimeout": true,
+        "process.env.WS_NO_BUFFER_UTIL": true,
+        "process.env.WS_NO_UTF_8_VALIDATE": true,
+        "process.nextTick": true,
+        "setImmediate": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "ws>bufferutil": true,
+        "ws>utf-8-validate": true
+      }
+    },
+    "webpack-dev-server>ws": {
       "builtin": {
         "buffer.isUtf8": true,
         "crypto.createHash": true,

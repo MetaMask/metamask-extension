@@ -3,6 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { LegacyMetaMetricsProvider } from '../../../contexts/metametrics';
 import * as storeActions from '../../../store/actions';
 import { isFlask } from '../../../../shared/lib/build-types';
 import ExperimentalTab from './experimental-tab';
@@ -27,7 +28,12 @@ const render = (overrideMetaMaskState = {}) => {
       ...overrideMetaMaskState,
     },
   });
-  return renderWithProvider(<ExperimentalTab />, store);
+  return renderWithProvider(
+    <LegacyMetaMetricsProvider>
+      <ExperimentalTab />
+    </LegacyMetaMetricsProvider>,
+    store,
+  );
 };
 
 describe('ExperimentalTab', () => {

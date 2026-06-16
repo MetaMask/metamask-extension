@@ -5,6 +5,10 @@ import PageContainerHeader from './page-container-header';
 import PageContainerFooter from './page-container-footer';
 
 export default class PageContainer extends PureComponent {
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   static propTypes = {
     // PageContainerHeader props
     backButtonString: PropTypes.string,

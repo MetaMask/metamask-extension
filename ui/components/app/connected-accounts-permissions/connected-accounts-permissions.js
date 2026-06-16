@@ -25,7 +25,7 @@ import {
 import { getSnapName } from '../../../helpers/utils/util';
 import { getSnapsMetadata } from '../../../selectors';
 
-const ConnectedAccountsPermissions = ({ permissions }) => {
+const ConnectedAccountsPermissions = ({ permissions = [] }) => {
   const t = useI18nContext();
   const [expanded, setExpanded] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
@@ -109,10 +109,6 @@ ConnectedAccountsPermissions.propTypes = {
       key: PropTypes.string.isRequired,
     }),
   ),
-};
-
-ConnectedAccountsPermissions.defaultProps = {
-  permissions: [],
 };
 
 ConnectedAccountsPermissions.displayName = 'ConnectedAccountsPermissions';

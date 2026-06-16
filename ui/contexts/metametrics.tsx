@@ -3,6 +3,7 @@
  * metrics system. This file implements Segment analytics tracking.
  */
 import React, {
+  Component,
   createContext,
   useEffect,
   useRef,
@@ -299,6 +300,48 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       {children}
     </MetaMetricsContext.Provider>
   );
+}
+
+type LegacyChildContext = {
+  trackEvent: UITrackEventMethod;
+  bufferedTrace: UITraceMethod;
+  bufferedEndTrace: UIEndTraceMethod;
+};
+
+type LegacyMetaMetricsProviderProps = {
+  children?: ReactNode;
+};
+
+/**
+ * Legacy context provider for class components using the old context API
+ *
+ * @deprecated Use MetaMetricsContext with useContext hook instead
+ */
+export class LegacyMetaMetricsProvider extends Component<LegacyMetaMetricsProviderProps> {
+  static contextType = MetaMetricsContext;
+
+  // eslint-disable-next-line react/static-property-placement
+  static childContextTypes = {
+    // This has to be different than the type name for the old metametrics file
+    // using the same name would result in whichever was lower in the tree to be
+    // used.
+    trackEvent: (): null => null,
+    bufferedTrace: (): null => null,
+    bufferedEndTrace: (): null => null,
+  };
+
+  getChildContext(): LegacyChildContext {
+    const context = this.context as MetaMetricsContextValue;
+    return {
+      trackEvent: context.trackEvent,
+      bufferedTrace: context.bufferedTrace,
+      bufferedEndTrace: context.bufferedEndTrace,
+    };
+  }
+
+  render() {
+    return this.props.children;
+  }
 }
 
 /**
