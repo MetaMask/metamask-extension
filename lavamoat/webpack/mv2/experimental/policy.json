@@ -2548,11 +2548,9 @@
     "@metamask/transaction-controller": {
       "globals": {
         "Buffer.from": true,
-        "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
         "fetch": true,
-        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
@@ -3064,7 +3062,8 @@
         "XMLHttpRequest": true
       },
       "packages": {
-        "@google/genai>protobufjs>@protobufjs/aspromise": true
+        "@google/genai>protobufjs>@protobufjs/aspromise": true,
+        "@google/genai>protobufjs>@protobufjs/inquire": true
       }
     },
     "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
@@ -3718,7 +3717,7 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "buffer": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": true,
+        "@google/genai>protobufjs>long": true,
         "@google/genai>protobufjs": true,
         "tslib": true
       }
@@ -4422,7 +4421,7 @@
       "packages": {
         "currency-formatter>accounting": true,
         "currency-formatter>locale-currency": true,
-        "react>object-assign": true
+        "gulp-watch>object-assign": true
       }
     },
     "nock>debug": {
@@ -5314,13 +5313,6 @@
         "navigator": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {
-      "globals": {
-        "WebAssembly.Instance": true,
-        "WebAssembly.Module": true,
-        "define": true
-      }
-    },
     "@google/genai>protobufjs>long": {
       "globals": {
         "WebAssembly.Instance": true,
@@ -5629,10 +5621,10 @@
         "@google/genai>protobufjs>@protobufjs/eventemitter": true,
         "@google/genai>protobufjs>@protobufjs/fetch": true,
         "@google/genai>protobufjs>@protobufjs/float": true,
+        "@google/genai>protobufjs>@protobufjs/inquire": true,
         "@google/genai>protobufjs>@protobufjs/path": true,
         "@google/genai>protobufjs>@protobufjs/pool": true,
-        "@google/genai>protobufjs>@protobufjs/utf8": true,
-        "@google/genai>protobufjs>long": true
+        "@google/genai>protobufjs>@protobufjs/utf8": true
       }
     },
     "crypto-browserify>public-encrypt": {
@@ -5697,11 +5689,6 @@
         "process": true,
         "crypto-browserify>randombytes": true,
         "mockttp>express>safe-buffer": true
-      }
-    },
-    "react": {
-      "packages": {
-        "react>object-assign": true
       }
     },
     "react-beautiful-dnd": {
@@ -5819,11 +5806,13 @@
         "clipboardData": true,
         "console.error": true,
         "document": true,
+        "event": true,
+        "queueMicrotask": true,
         "removeEventListener": true,
+        "reportError": true,
         "setTimeout": true
       },
       "packages": {
-        "react>object-assign": true,
         "react": true,
         "react-dom>scheduler": true
       }
@@ -6409,12 +6398,15 @@
     "react-dom>scheduler": {
       "globals": {
         "MessageChannel": true,
-        "cancelAnimationFrame": true,
         "clearTimeout": true,
-        "console": true,
+        "console.error": true,
+        "navigator": true,
         "performance": true,
-        "requestAnimationFrame": true,
+        "setImmediate": true,
         "setTimeout": true
+      },
+      "packages": {
+        "core-js-pure": true
       }
     },
     "ethers>@ethersproject/json-wallets>scrypt-js": {
