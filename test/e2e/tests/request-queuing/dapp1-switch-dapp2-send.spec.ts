@@ -6,7 +6,7 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   WINDOW_TITLES,
 } from '../../constants';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
@@ -320,9 +320,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await homePage.goToActivityList();
 
         // Check for transaction
-        await new ActivityListPage(
-          driver,
-        ).checkConfirmedTxNumberDisplayedInActivity(1);
+        await new ActivityTab(driver).checkConfirmedTxNumberDisplayedInActivity(
+          1,
+        );
       },
     );
   });

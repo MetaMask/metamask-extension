@@ -1,12 +1,17 @@
 import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   hideDeleteMetaMetricsDataModal,
   openDataDeletionErrorModal,
 } from '../../../ducks/app/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  Box,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -22,7 +27,6 @@ import {
   BlockSize,
   Display,
   FlexDirection,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
@@ -34,7 +38,11 @@ import {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function ClearMetaMetricsData() {
+export default function ClearMetaMetricsData({
+  onDeletionSuccess,
+}: {
+  onDeletionSuccess?: () => void;
+}) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -55,6 +63,7 @@ export default function ClearMetaMetricsData() {
           excludeMetaMetricsId: true,
         },
       );
+      onDeletionSuccess?.();
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
       trackEvent(
@@ -83,10 +92,10 @@ export default function ClearMetaMetricsData() {
       >
         <ModalHeader onClose={closeModal}>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            className="flex"
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
           >
             <Text variant={TextVariant.headingSm}>
               {t('deleteMetaMetricsDataModalTitle')}
@@ -97,8 +106,8 @@ export default function ClearMetaMetricsData() {
           marginLeft={4}
           marginRight={4}
           marginBottom={3}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          className="flex"
+          flexDirection={BoxFlexDirection.Column}
           gap={4}
         >
           <Text variant={TextVariant.bodySmMedium}>
@@ -106,7 +115,7 @@ export default function ClearMetaMetricsData() {
           </Text>
         </Box>
         <ModalFooter>
-          <Box display={Display.Flex} gap={4}>
+          <Box className="flex" gap={4}>
             <Button
               size={ButtonSize.Lg}
               width={BlockSize.Half}

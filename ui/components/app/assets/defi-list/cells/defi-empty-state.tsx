@@ -12,8 +12,9 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import {
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../../../selectors';
 
 export const DeFiEmptyStateMessage = () => {
@@ -21,17 +22,21 @@ export const DeFiEmptyStateMessage = () => {
   const theme = useTheme();
   const { trackEvent } = useContext(MetaMetricsContext);
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const handleExploreDefi = useCallback(() => {
     const url = getPortfolioUrl(
       'explore/tokens',
       'ext_defi_empty_state_button',
-      metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
+      analyticsId,
+      isMetaMetricsEnabled === true,
+      isMarketingEnabled === true,
     );
     global.platform.openTab({ url });
     trackEvent({
@@ -42,7 +47,7 @@ export const DeFiEmptyStateMessage = () => {
         text: 'Explore DeFi',
       },
     });
-  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
+  }, [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, trackEvent]);
 
   const defiIcon =
     theme === ThemeType.dark

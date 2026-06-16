@@ -40,6 +40,7 @@ function runHook({
   isMaxAmount = false,
   requiredTokens = [],
   updateTokenAmountMock = jest.fn(),
+  prefillMaxOnLoad = false,
 }: {
   currency?: string;
   disableUpdate?: boolean;
@@ -49,6 +50,7 @@ function runHook({
   isMaxAmount?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
   updateTokenAmountMock?: jest.Mock;
+  prefillMaxOnLoad?: boolean;
 } = {}) {
   jest
     .mocked(useTokenFiatRatesModule.useTokenFiatRate)
@@ -92,6 +94,7 @@ function runHook({
         balanceUsdOverride,
         currency,
         disableUpdate,
+        prefillMaxOnLoad,
       }),
     DEFAULT_MOCK_STATE,
   );
@@ -551,6 +554,57 @@ describe('useTransactionCustomAmount', () => {
           }),
         },
       );
+    });
+  });
+
+  describe('prefillMaxOnLoad', () => {
+    it('pre-fills the max amount on mount when enabled and balance is known', () => {
+      const { result } = runHook({
+        prefillMaxOnLoad: true,
+        payTokenBalanceUsd: 100,
+      });
+
+      expect(result.current.amountFiat).toBe('100');
+    });
+
+    it('enables max amount mode when pre-filling', () => {
+      runHook({ prefillMaxOnLoad: true, payTokenBalanceUsd: 100 });
+
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        true,
+      );
+    });
+
+    it('tags mm_pay_amount_input_type as prefilled_max when pre-filling', () => {
+      runHook({ prefillMaxOnLoad: true, payTokenBalanceUsd: 100 });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: 'prefilled_max',
+          }),
+        },
+      );
+    });
+
+    it('does not pre-fill when disabled', () => {
+      const { result } = runHook({
+        prefillMaxOnLoad: false,
+        payTokenBalanceUsd: 100,
+      });
+
+      expect(result.current.amountFiat).toBe('0');
+    });
+
+    it('does not pre-fill when the balance is zero', () => {
+      const { result } = runHook({
+        prefillMaxOnLoad: true,
+        payTokenBalanceUsd: 0,
+      });
+
+      expect(result.current.amountFiat).toBe('0');
     });
   });
 

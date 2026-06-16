@@ -19,8 +19,9 @@ import {
 } from '../../../constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
+import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { TransactionGroup } from '../../multichain/types';
-import type { Status, TokenAmount } from '../types';
+import type { ActivityFee, Status, TokenAmount } from '../types';
 
 export type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
@@ -43,6 +44,76 @@ export function getNativeAssetSafe(chainId: string | number) {
   } catch {
     return undefined;
   }
+}
+
+const nativeTokenDecimals = 18;
+
+function toNetworkFeeAmount(
+  gasUsed: string | number | undefined,
+  gasPrice: string | number | undefined,
+): string | undefined {
+  if (gasUsed === undefined || gasPrice === undefined) {
+    return undefined;
+  }
+
+  try {
+    return String(BigInt(gasUsed) * BigInt(gasPrice));
+  } catch {
+    return undefined;
+  }
+}
+
+function buildBaseNetworkFee(
+  amount: string,
+  chainId: string | number,
+): ActivityFee {
+  const nativeAsset = getNativeAssetSafe(chainId);
+
+  return {
+    type: 'base',
+    amount,
+    ...(nativeAsset?.decimals === undefined
+      ? { decimals: nativeTokenDecimals }
+      : { decimals: nativeAsset.decimals }),
+    ...(nativeAsset?.symbol ? { symbol: nativeAsset.symbol } : {}),
+    ...(nativeAsset?.assetId ? { assetId: nativeAsset.assetId } : {}),
+  };
+}
+
+function getNetworkFee(
+  transaction: V1TransactionByHashResponse,
+  chainId: string,
+): ActivityFee | undefined {
+  const amount = toNetworkFeeAmount(
+    transaction.gasUsed,
+    transaction.effectiveGasPrice,
+  );
+
+  return amount ? buildBaseNetworkFee(amount, chainId) : undefined;
+}
+
+export function getFees(
+  transaction: V1TransactionByHashResponse,
+  chainId: string,
+): ActivityFee[] | undefined {
+  const networkFee = getNetworkFee(transaction, chainId);
+
+  return networkFee ? [networkFee] : undefined;
+}
+
+export function getLocalTransactionFees(
+  transactionGroup: Pick<TransactionGroup, 'primaryTransaction'>,
+): ActivityFee[] | undefined {
+  const { primaryTransaction } = transactionGroup;
+  const amount = toNetworkFeeAmount(
+    primaryTransaction.txReceipt?.gasUsed,
+    primaryTransaction.txReceipt?.effectiveGasPrice ??
+      primaryTransaction.txParams?.gasPrice,
+  );
+
+  return amount
+    ? [buildBaseNetworkFee(amount, primaryTransaction.chainId)]
+    : undefined;
 }
 
 const resolveAssetId = (
@@ -182,6 +253,51 @@ export function getTokenMetadataFromKnownToken(
       ? {}
       : { decimals: tokenMetadata.decimals }),
     ...(tokenMetadata.assetId ? { assetId: tokenMetadata.assetId } : {}),
+  };
+}
+
+/**
+ * Resolves the user's primary send and receive legs from indexed value transfers.
+ * Prefers a receive whose symbol differs from the sent leg so dust does not win.
+ *
+ * @param valueTransfers - Indexed value transfers from the Accounts API.
+ * @param subjectAddress - The account address to match transfers against.
+ * @returns The primary sent and received transfers for the account.
+ */
+export function parseValueTransfers(
+  valueTransfers: ValueTransfer[] | undefined,
+  subjectAddress: string,
+): {
+  sentTransfer: ValueTransfer | undefined;
+  receivedTransfer: ValueTransfer | undefined;
+  sentNftTransfer: ValueTransfer | undefined;
+  receivedNftTransfer: ValueTransfer | undefined;
+} {
+  const sent = valueTransfers?.filter(({ from }) =>
+    equalsIgnoreCase(from, subjectAddress),
+  );
+  const received = valueTransfers?.filter(({ to }) =>
+    equalsIgnoreCase(to, subjectAddress),
+  );
+
+  const sentTransfer = sent?.[0];
+
+  const receivedTransfer =
+    received?.find(({ symbol }) => symbol !== sentTransfer?.symbol) ??
+    received?.[0];
+
+  const sentNftTransfer = sent?.find(({ transferType }) =>
+    isNftStandard(transferType),
+  );
+  const receivedNftTransfer = received?.find(({ transferType }) =>
+    isNftStandard(transferType),
+  );
+
+  return {
+    sentTransfer,
+    receivedTransfer,
+    sentNftTransfer,
+    receivedNftTransfer,
   };
 }
 

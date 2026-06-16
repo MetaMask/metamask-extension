@@ -1420,7 +1420,7 @@
         "atob": true
       }
     },
-    "@storybook/test-runner>@storybook/core-common>esbuild": {
+    "tsx>esbuild": {
       "builtin": {
         "child_process.execFileSync": true,
         "child_process.spawn": true,
@@ -2939,7 +2939,7 @@
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@swc/core": true,
-        "@storybook/test-runner>@storybook/core-common>esbuild": true,
+        "tsx>esbuild": true,
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "mocha>serialize-javascript": true,

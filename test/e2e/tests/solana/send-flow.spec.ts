@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { SOLANA_MAINNET_SCOPE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -91,10 +91,10 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.clickFooterConfirmButton();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
-        await activityList.checkNoFailedTransactions();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAction({ action: 'Sent SOL' });
+        await activityTab.checkTxAmountInActivity('-0.007079 SOL', 1);
+        await activityTab.checkNoFailedTransactions();
       },
     );
   });
@@ -141,10 +141,10 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.checkSecurityAlertsErrorIsDisplayed();
         await confirmation.clickFooterConfirmButton();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkFailedTxNumberDisplayedInActivity();
-        await activityList.checkTxAction({
-          action: 'Interaction',
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity();
+        await activityTab.checkTxAction({
+          action: 'Interaction failed',
           confirmedTx: 0,
         });
       },

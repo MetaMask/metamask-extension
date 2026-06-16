@@ -5,7 +5,10 @@ import { buildPerformanceBenchmarksSection } from './performance-benchmarks';
 import { buildTestPlanSection } from './test-plan';
 import { buildSectionWithFallback, postCommentWithMetamaskBot } from './utils';
 
-start().catch(console.error);
+start().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
 async function start(): Promise<void> {
   const {
