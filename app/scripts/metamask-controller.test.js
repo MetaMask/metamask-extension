@@ -23,10 +23,7 @@ import {
 import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import {
-  CHAIN_IDS,
-  TransactionController,
-} from '@metamask/transaction-controller';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   RatesController,
   TokenListController,
@@ -587,20 +584,6 @@ describe('MetaMaskController', () => {
       jest
         .spyOn(environment, 'getIsPerpsIncludedInBuild')
         .mockReturnValue(false);
-
-      jest
-        .spyOn(
-          TransactionController.prototype,
-          'startIncomingTransactionPolling',
-        )
-        .mockReturnValue();
-
-      jest
-        .spyOn(
-          TransactionController.prototype,
-          'stopIncomingTransactionPolling',
-        )
-        .mockReturnValue();
 
       jest.spyOn(Messenger.prototype, 'subscribe');
       jest.spyOn(TokenListController.prototype, 'start');

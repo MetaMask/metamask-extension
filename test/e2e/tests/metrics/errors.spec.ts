@@ -105,8 +105,6 @@ const removedBackgroundFields = [
   'BridgeController.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
-  // These properties are timing-dependent
-  'MetaMetricsController.latestNonAnonymousEventTimestamp',
   // Populated by the Home page mount, so captured as `null` or a string
   // depending on whether the mount wins the race before the error fires.
   'AppStateController.pendingShieldCohort',

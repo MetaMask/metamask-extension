@@ -224,6 +224,7 @@
     "lastError": null,
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": "object",
+    "lastQrScanCompletedSuccessfully": null,
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
