@@ -14,7 +14,6 @@ import {
 import { noop, type Manifest } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
-import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
 import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
@@ -263,8 +262,7 @@ ${Object.entries(env)
     assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
     assert.strictEqual(manifestPlugin.options.stats, false);
-    const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
-    assert.strictEqual(manifestOpts.zipOptions, undefined);
+    assert.strictEqual('zipOptions' in manifestPlugin.options, false);
 
     const progressPlugin = options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
@@ -341,7 +339,7 @@ ${Object.entries(env)
 
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
-    ) as WebpackPluginInstance & ManifestPlugin<boolean>;
+    ) as WebpackPluginInstance & ManifestPlugin<true>;
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, []);
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);

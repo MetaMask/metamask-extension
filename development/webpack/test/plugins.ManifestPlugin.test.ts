@@ -609,7 +609,7 @@ describe('ManifestPlugin', () => {
         getModule: (dependency: object) => entryModules.get(dependency),
         getIncomingConnections: (module: object) =>
           incomingConnections.get(module) ?? [],
-      } as typeof compilation.moduleGraph;
+      } as unknown as typeof compilation.moduleGraph;
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
         manifest_version: manifestVersion,
