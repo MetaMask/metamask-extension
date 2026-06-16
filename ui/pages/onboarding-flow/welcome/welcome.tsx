@@ -45,7 +45,6 @@ import {
   setPna25Acknowledged,
   getIsSeedlessOnboardingUserAuthenticated,
   getGeolocation,
-  setDataCollectionForMarketing,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -375,9 +374,11 @@ export default function OnboardingWelcome() {
       });
 
       try {
-        const [isNewUser, geolocation] = await Promise.all([
+        const [isNewUser] = await Promise.all([
           handleSocialLogin(socialConnectionType),
-          getGeolocation(),
+          // get the geolocation to check if the user is in the US region
+          // if user is in the US region, we will set the Marketing Opt-In to true by default in the create password screen
+          getGeolocation().catch(() => undefined),
         ]);
 
         // Track wallet setup completed for social login users
@@ -395,11 +396,6 @@ export default function OnboardingWelcome() {
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext?.current,
           });
-
-          if (geolocation === 'US') {
-            // for Social login users in US region, set the marketing consent to true by default
-            await dispatch(setDataCollectionForMarketing(true));
-          }
 
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });

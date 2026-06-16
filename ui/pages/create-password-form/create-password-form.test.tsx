@@ -6,10 +6,10 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { CreatePasswordForm } from '.';
 
 describe('CreatePasswordForm', () => {
-  const createMockStore = (dataCollectionForMarketing: boolean | null = null) =>
+  const createMockStore = (isInUSRegion: boolean = false) =>
     configureMockStore([thunk])({
       metamask: {
-        dataCollectionForMarketing,
+        location: isInUSRegion ? 'US' : undefined,
       },
     });
 
@@ -29,7 +29,7 @@ describe('CreatePasswordForm', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('defaults the marketing terms checkbox to checked when marketing consent is stored', async () => {
+  it('defaults the marketing terms checkbox to checked for Social login users in US region', async () => {
     const { getByRole } = renderWithProvider(
       <CreatePasswordForm
         isSocialLoginFlow

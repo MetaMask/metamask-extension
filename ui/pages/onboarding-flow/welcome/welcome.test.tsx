@@ -99,7 +99,6 @@ describe('Welcome Page', () => {
   let startOAuthLoginSpy: jest.SpyInstance;
   let enabledMetricsSpy: jest.SpyInstance;
   let geolocationSpy: jest.SpyInstance;
-  let dataCollectionForMarketingSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -111,10 +110,6 @@ describe('Welcome Page', () => {
     geolocationSpy = jest
       .spyOn(Actions, 'getGeolocation')
       .mockResolvedValue('CA');
-    dataCollectionForMarketingSpy = jest.spyOn(
-      Actions,
-      'setDataCollectionForMarketing',
-    );
   });
 
   it('render matches snapshot', async () => {
@@ -248,7 +243,6 @@ describe('Welcome Page', () => {
 
       // should set setParticipateInMetaMetrics to true and send the queued events to Segment
       expect(enabledMetricsSpy).toHaveBeenCalledWith(true);
-      expect(dataCollectionForMarketingSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -288,7 +282,6 @@ describe('Welcome Page', () => {
 
     await waitFor(() => {
       expect(geolocationSpy).toHaveBeenCalled();
-      expect(dataCollectionForMarketingSpy).toHaveBeenCalledWith(true);
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
         { replace: true },

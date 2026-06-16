@@ -26,7 +26,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useBoolean } from '../../hooks/useBoolean';
-import { getDataCollectionForMarketing } from '../../selectors';
 
 type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
@@ -49,21 +48,23 @@ const CreatePasswordForm = ({
     toggle,
   } = useBoolean();
   const hasUserInteractedWithTermsRef = useRef(false);
-  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+  const geolocation = useSelector(
+    (state: { metamask: { location: string } }) => state.metamask?.location,
+  );
 
   const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
-    // For Social login users in US region, we set the marketing consent to true by default for the first time render
     if (
       isSocialLoginFlow &&
-      dataCollectionForMarketing &&
+      // For Social login users in US region, we set the marketing consent to true by default for the first time render
+      geolocation === 'US' &&
       !hasUserInteractedWithTermsRef.current
     ) {
-      setTermsChecked(dataCollectionForMarketing);
+      setTermsChecked(true);
       hasUserInteractedWithTermsRef.current = true;
     }
-  }, [dataCollectionForMarketing, setTermsChecked, isSocialLoginFlow]);
+  }, [setTermsChecked, isSocialLoginFlow, geolocation]);
 
   const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
