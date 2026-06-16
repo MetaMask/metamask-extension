@@ -24,7 +24,9 @@ export class TestDappBitcoin {
     tag: 'button',
   };
 
-  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
+  private readonly connectedAccountSelector = {
+    css: `[data-testid="${dataTestIds.testPage.header.account}"]`,
+  };
 
   private readonly disconnectButtonSelector = {
     testId: dataTestIds.testPage.header.disconnect,
@@ -101,8 +103,8 @@ export class TestDappBitcoin {
   }
 
   async findConnectedAccount(account: string) {
-    await this.driver.findElement({
-      css: this.connectedAccountSelectorTestId,
+    await this.driver.waitForSelector({
+      ...this.connectedAccountSelector,
       text: account,
     });
   }
