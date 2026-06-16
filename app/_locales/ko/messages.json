@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "오픈한 롱"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "숏 포지션 열기 실패"
   },
@@ -5606,9 +5605,6 @@
   },
   "notCurrentAccount": {
     "message": "올바른 계정인가요? 현재 지갑에서 선택된 계정과 다릅니다."
-  },
-  "notEnoughGas": {
-    "message": "가스 부족"
   },
   "notificationDetail": {
     "message": "세부 정보"

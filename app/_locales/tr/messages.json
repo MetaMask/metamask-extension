@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Long pozisyon açıldı"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Short açılamadı"
   },
@@ -5606,9 +5605,6 @@
   },
   "notCurrentAccount": {
     "message": "Bu hesap doğru mu? Cüzdanınızdaki mevcut seçili hesaptan farklı"
-  },
-  "notEnoughGas": {
-    "message": "Yeterli gaz yok"
   },
   "notificationDetail": {
     "message": "Ayrıntılar"

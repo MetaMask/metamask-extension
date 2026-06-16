@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Abriu posição long"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Abrir posição short falhou"
   },
@@ -5602,9 +5601,6 @@
   },
   "notCurrentAccount": {
     "message": "Essa é a conta correta? É diferente da conta atualmente selecionada na sua carteira"
-  },
-  "notEnoughGas": {
-    "message": "Não há gás suficiente"
   },
   "notificationDetail": {
     "message": "Detalhes"

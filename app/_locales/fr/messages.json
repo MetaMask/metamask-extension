@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Position longue ouverte"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "L’ouverture de position longue a échoué"
   },
@@ -5602,9 +5601,6 @@
   },
   "notCurrentAccount": {
     "message": "S’agit-il du bon compte ? Il est différent de celui actuellement sélectionné dans votre portefeuille"
-  },
-  "notEnoughGas": {
-    "message": "Pas assez de gaz"
   },
   "notificationDetail": {
     "message": "Détails"

@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Открыта длинная позиция"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Ошибка открытия короткой позиции"
   },
@@ -5602,9 +5601,6 @@
   },
   "notCurrentAccount": {
     "message": "Это правильный счет? Он отличается от счета, выбранного в настоящее время в вашем кошельке."
-  },
-  "notEnoughGas": {
-    "message": "Недостаточно газа"
   },
   "notificationDetail": {
     "message": "Подробности"

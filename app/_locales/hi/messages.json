@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "खुला लॉन्ग"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "शॉर्ट ओपन नहीं हो पाया"
   },
@@ -5602,9 +5601,6 @@
   },
   "notCurrentAccount": {
     "message": "क्या यह सही अकाउंट है? यह आपके वॉलेट में वर्तमान में चुना गया अकाउंट से अलग है"
-  },
-  "notEnoughGas": {
-    "message": "गैस कम है"
   },
   "notificationDetail": {
     "message": "विवरण"

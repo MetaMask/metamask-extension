@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Long terbuka"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Pembukaan posisi short gagal"
   },
@@ -5606,9 +5605,6 @@
   },
   "notCurrentAccount": {
     "message": "Apa ini akun yang benar? Ini berbeda dari akun yang saat ini dipilih di dompet Anda"
-  },
-  "notEnoughGas": {
-    "message": "Gas tidak cukup"
   },
   "notificationDetail": {
     "message": "Detail"

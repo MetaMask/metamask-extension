@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Άνοιξε θέση αγοράς (long)"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Το άνοιγμα της θέσης πώλησης απέτυχε"
   },
@@ -5602,9 +5601,6 @@
   },
   "notCurrentAccount": {
     "message": "Είναι αυτός ο σωστός λογαριασμός; Είναι διαφορετικός από τον τρέχοντα επιλεγμένο λογαριασμό στο πορτοφόλι σας."
-  },
-  "notEnoughGas": {
-    "message": "Δεν υπάρχει αρκετό τέλος συναλλαγής"
   },
   "notificationDetail": {
     "message": "Λεπτομέρειες"
