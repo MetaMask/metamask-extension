@@ -1,21 +1,21 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
-import { getActiveQrCodeScanRequest } from '../../../selectors';
+import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
+import { getHardwareWalletType } from '../../../shared/lib/selectors/keyring';
+import { getActiveQrCodeScanRequest } from '../../selectors';
 import {
   cancelQrCodeScan,
   cancelTx,
   completeQrCodeScan,
   rejectPendingApproval,
-} from '../../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
-import { HardwareWalletSignatureStatus } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import { isQrHardwareSignRequest } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
+} from '../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../store/store';
+import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { isQrHardwareSignRequest } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletQrStateOptions = {
   signatureState: HardwareWalletSignaturesState;
@@ -62,13 +62,6 @@ export function useHwSwapQrState({
       ? activeQrCodeScanRequest
       : undefined;
 
-  // Use refs so the cancel callback doesn't recreate on every render due to
-  // non-memoized objects changing identity.
-  const qrSignRequestRef = useRef(qrSignRequest);
-  qrSignRequestRef.current = qrSignRequest;
-  const confirmationTxDataRef = useRef(confirmationTxData);
-  confirmationTxDataRef.current = confirmationTxData;
-
   const currentQrRequestId = qrSignRequest?.request.requestId;
 
   useEffect(() => {
@@ -88,29 +81,25 @@ export function useHwSwapQrState({
       : undefined;
 
   const handleQrScanSuccess = useCallback(
-    (response: SerializedUR) => dispatch(completeQrCodeScan(response)),
+    async (response: SerializedUR) => dispatch(completeQrCodeScan(response)),
     [dispatch],
   );
 
   const handleQrSignatureCancel = useCallback(() => {
-    const currentConfirmationTxData = confirmationTxDataRef.current;
-
-    if (currentConfirmationTxData?.id) {
+    if (confirmationTxData?.id) {
       dispatch(
         rejectPendingApproval(
-          currentConfirmationTxData.id,
+          confirmationTxData.id,
           serializeError(providerErrors.userRejectedRequest()),
         ),
       );
-      dispatch(
-        cancelTx(currentConfirmationTxData as Parameters<typeof cancelTx>[0]),
-      );
+      dispatch(cancelTx(confirmationTxData as Parameters<typeof cancelTx>[0]));
     }
 
-    if (qrSignRequestRef.current) {
+    if (qrSignRequest) {
       dispatch(cancelQrCodeScan());
     }
-  }, [dispatch]);
+  }, [dispatch, qrSignRequest, confirmationTxData]);
 
   return {
     isReadingQrSignature,
