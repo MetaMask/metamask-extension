@@ -971,43 +971,6 @@ describe('MetaMetricsController', function () {
       );
     });
 
-    it('uses current time for latest analytics event state', async function () {
-      await withController(({ controller }) => {
-        const spy = jest.spyOn(segmentMock, 'track');
-        const currentTimestamp = new Date('2024-02-01T00:00:00.000Z').getTime();
-        const customTimestamp = '2024-01-15T00:00:00.000Z';
-        jest.setSystemTime(currentTimestamp);
-        controller.trackEvent({
-          event: 'Fake Event',
-          category: 'Unit Test',
-          timestamp: customTimestamp,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '1',
-          },
-        });
-        expect(spy).toHaveBeenCalledTimes(1);
-        expect(spy).toHaveBeenCalledWith(
-          {
-            event: 'Fake Event',
-            properties: {
-              ...DEFAULT_EVENT_PROPERTIES,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id: '1',
-            },
-            context: DEFAULT_TEST_CONTEXT,
-            userId: TEST_ANALYTICS_ID,
-          },
-          spy.mock.calls[0][1],
-        );
-        expect(controller.state.latestNonAnonymousEventTimestamp).toBe(
-          currentTimestamp,
-        );
-      });
-    });
-
     it('should throw if event not provided', async function () {
       await withController(({ controller }) => {
         expect(() => {
@@ -1510,27 +1473,17 @@ describe('MetaMetricsController', function () {
   });
 
   describe('Sensitive transaction and signature events', function () {
-    it('keeps the original event name, marks anonymous-only tracks, and preserves the latest non-anonymous timestamp', async function () {
-      const previousTimestamp = new Date('2024-01-01T00:00:00.000Z').getTime();
-
+    it('keeps the original event name and marks anonymous-only tracks', async function () {
       await withController(
         {
           options: {
             state: {
               fragments: {},
-              latestNonAnonymousEventTimestamp: previousTimestamp,
             },
           },
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          expect(controller.state.latestNonAnonymousEventTimestamp).toBe(
-            previousTimestamp,
-          );
-          const currentTimestamp = new Date(
-            '2024-02-01T00:00:00.000Z',
-          ).getTime();
-          jest.setSystemTime(currentTimestamp);
           controller.trackEvent(
             {
               event: 'Signature Requested',
@@ -1550,9 +1503,6 @@ describe('MetaMetricsController', function () {
               }),
             }),
             undefined,
-          );
-          expect(controller.state.latestNonAnonymousEventTimestamp).toBe(
-            previousTimestamp,
           );
         },
       );
@@ -2922,8 +2872,7 @@ describe('MetaMetricsController', function () {
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state
-        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        // Set `fragments` to an empty object to override complex default `fragments` mock state.
         {
           options: { state: { fragments: {} } },
         },
@@ -2937,7 +2886,6 @@ describe('MetaMetricsController', function () {
           ).toMatchInlineSnapshot(`
             {
               "completedMetaMetricsOnboarding": true,
-              "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
             }
           `);
@@ -2947,8 +2895,7 @@ describe('MetaMetricsController', function () {
 
     it('includes expected state in state logs', async () => {
       await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state
-        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        // Set `fragments` to an empty object to override complex default `fragments` mock state.
         {
           options: { state: { fragments: {} } },
         },
@@ -2965,7 +2912,6 @@ describe('MetaMetricsController', function () {
               "dataCollectionForMarketing": null,
               "eventsBeforeMetricsOptIn": [],
               "fragments": {},
-              "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "tracesBeforeMetricsOptIn": [],
               "traits": {},
@@ -2977,8 +2923,7 @@ describe('MetaMetricsController', function () {
 
     it('persists expected state', async () => {
       await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state
-        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        // Set `fragments` to an empty object to override complex default `fragments` mock state.
         {
           options: { state: { fragments: {} } },
         },
@@ -2995,7 +2940,6 @@ describe('MetaMetricsController', function () {
               "dataCollectionForMarketing": null,
               "eventsBeforeMetricsOptIn": [],
               "fragments": {},
-              "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "tracesBeforeMetricsOptIn": [],
               "traits": {},
@@ -3007,8 +2951,7 @@ describe('MetaMetricsController', function () {
 
     it('exposes expected state to UI', async () => {
       await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state
-        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        // Set `fragments` to an empty object to override complex default `fragments` mock state.
         {
           options: { state: { fragments: {} } },
         },
@@ -3024,7 +2967,6 @@ describe('MetaMetricsController', function () {
               "completedMetaMetricsOnboarding": true,
               "dataCollectionForMarketing": null,
               "fragments": {},
-              "latestNonAnonymousEventTimestamp": 0,
             }
           `);
         },
