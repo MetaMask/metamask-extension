@@ -1,0 +1,28 @@
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+
+import type { QrSyncControllerMessenger } from '../../controllers/qr-sync/types';
+import type { RootMessenger } from '../../lib/messenger';
+
+/**
+ * Create a messenger restricted to the allowed actions and events of the QR
+ * sync controller.
+ *
+ * @param messenger - The base messenger used to create the restricted
+ * messenger.
+ * @returns The controller messenger.
+ */
+export function getQrSyncControllerMessenger(
+  messenger: RootMessenger<
+    MessengerActions<QrSyncControllerMessenger>,
+    MessengerEvents<QrSyncControllerMessenger>
+  >,
+): QrSyncControllerMessenger {
+  return new Messenger({
+    namespace: 'QrSyncController',
+    parent: messenger,
+  });
+}

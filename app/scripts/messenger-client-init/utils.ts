@@ -65,6 +65,7 @@ export type MessengerClientsToInitialize =
   | 'GeolocationController'
   | 'PerpsController'
   | 'PPOMController'
+  | 'QrSyncController'
   | 'TransactionController'
   | 'TransactionPayController'
   | 'UserStorageController';

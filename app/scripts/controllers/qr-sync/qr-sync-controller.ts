@@ -417,6 +417,7 @@ export class QrSyncController extends BaseController<
   }
 
   #generateQrCode(request: SessionRequest): string {
+    // TODO: Encode the QR with mobile compatible format
     return JSON.stringify(request);
   }
 
