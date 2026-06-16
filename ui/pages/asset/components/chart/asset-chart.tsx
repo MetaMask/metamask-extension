@@ -40,7 +40,6 @@ import { loadingOpacity } from '../../util';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 import { AssetChartEmptyState } from './asset-chart-empty-state';
-import { AssetChartLoading } from './asset-chart-loading';
 import AssetChartPrice from './asset-chart-price';
 
 Chart.register(
@@ -57,7 +56,6 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   parsing: false,
   aspectRatio: 2.6,
   layout: { autoPadding: false, padding: 0 },
-  animation: { duration: 0 },
   fill: true,
   backgroundColor: ({ chart }) => {
     const gradient = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
@@ -169,17 +167,33 @@ const AssetChart = ({
   });
 
   // The cases below are intentionally mutually exclusive, in order to flatten the render logic
-  const shouldShowChartLoading = loading && prices.length === 0;
-  const shouldShowChartEmptyState = !loading && prices.length === 0; // When the chart is not loading anymore and there are no prices, show an empty state
+  const shouldShowChartEmptyState = !loading && prices.length === 0;
   const shouldShowChartMuted = loading && prices.length > 0;
-  const shouldShowChart = !loading && prices.length > 0;
 
   const options = {
     ...initialChartOptions,
     borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
+    animation: { duration: 0 },
+    animations: {
+      y: {
+        from: (ctx: { chart: { scales: { y: { bottom: number } } } }) =>
+          ctx.chart.scales.y.bottom,
+        duration: 600,
+        easing: 'easeOutQuart' as const,
+      },
+    },
     scales: {
-      x: { min: xMin, max: xMax, display: false, type: 'linear' },
-      y: { min: yMin, max: yMax, display: false },
+      x: {
+        min: Number.isFinite(xMin) ? xMin : undefined,
+        max: Number.isFinite(xMax) ? xMax : undefined,
+        display: false,
+        type: 'linear',
+      },
+      y: {
+        min: Number.isFinite(yMin) ? yMin : 0,
+        max: Number.isFinite(yMax) ? yMax : 1,
+        display: false,
+      },
     },
   } as const;
 
@@ -212,16 +226,11 @@ const AssetChart = ({
         data-testid="asset-price-chart"
         className="flex rounded-lg"
         marginTop={4}
-        backgroundColor={
-          loading && !prices
-            ? BoxBackgroundColor.BackgroundSection
-            : BoxBackgroundColor.Transparent
-        }
+        backgroundColor={BoxBackgroundColor.Transparent}
         flexDirection={BoxFlexDirection.Column}
       >
-        {shouldShowChartLoading && <AssetChartLoading />}
         {shouldShowChartEmptyState && <AssetChartEmptyState />}
-        {(shouldShowChart || shouldShowChartMuted) && (
+        {!shouldShowChartEmptyState && (
           <Box style={{ opacity: shouldShowChartMuted ? loadingOpacity : 1 }}>
             <ChartTooltip
               point={maxPricePoint}
@@ -241,8 +250,6 @@ const AssetChart = ({
                 ref={chartRef}
                 data={{ datasets: [{ data: prices }] }}
                 options={options}
-                updateMode="none"
-                // Update the price display on chart hover
                 onMouseMove={(event) => {
                   const data = chartRef?.current?.data?.datasets?.[0]?.data;
                   if (data) {
@@ -266,7 +273,6 @@ const AssetChart = ({
                     }
                   }
                 }}
-                // Revert to current price when not hovering
                 onMouseOut={() => {
                   priceRef?.current?.setPrice({
                     price: currentPrice,
@@ -285,7 +291,6 @@ const AssetChart = ({
         )}
 
         <Box
-          style={prices ? undefined : { visibility: `hidden` }}
           className="flex"
           justifyContent={BoxJustifyContent.Between}
           marginTop={2}
