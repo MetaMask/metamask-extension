@@ -160,6 +160,8 @@ describe('useHistoricalPrices', () => {
 
       expect(result.current).toEqual({
         loading: true,
+        isFetching: true,
+        isFetchedAfterMount: false,
         data: {
           prices: [],
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
@@ -183,6 +185,8 @@ describe('useHistoricalPrices', () => {
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
         data: { prices: SEVEN_DAY_POINTS, metadata: SEVEN_DAY_METADATA },
       });
     });
@@ -231,6 +235,8 @@ describe('useHistoricalPrices', () => {
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
         data: {
           prices: [],
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
@@ -265,6 +271,8 @@ describe('useHistoricalPrices', () => {
 
       expect(result.current).toEqual({
         loading: true,
+        isFetching: true,
+        isFetchedAfterMount: false,
         data: {
           prices: [],
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
@@ -288,6 +296,8 @@ describe('useHistoricalPrices', () => {
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
         data: { prices: SEVEN_DAY_POINTS, metadata: SEVEN_DAY_METADATA },
       });
     });
@@ -332,6 +342,8 @@ describe('useHistoricalPrices', () => {
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
         data: {
           prices: [],
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,

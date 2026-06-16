@@ -155,6 +155,7 @@ const AssetChart = ({
 
   const {
     loading,
+    isFetching,
     isFetchedAfterMount,
     data: {
       prices,
@@ -167,9 +168,8 @@ const AssetChart = ({
     timeRange: selectedTimeRange,
   });
 
-  // The cases below are intentionally mutually exclusive, in order to flatten the render logic
   const shouldShowChartEmptyState = !loading && prices.length === 0;
-  const shouldShowChartMuted = loading && prices.length > 0;
+  const shouldShowChartMuted = isFetching && prices.length > 0;
 
   const options = {
     ...initialChartOptions,

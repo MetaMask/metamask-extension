@@ -177,6 +177,7 @@ export const useHistoricalPrices = ({
   const {
     data: prices = [],
     isFetching,
+    isInitialLoading,
     isFetchedAfterMount,
   } = useQuery({
     // @ts-expect-error - fix once extension in react-query v5
@@ -212,7 +213,8 @@ export const useHistoricalPrices = ({
   const metadata = useMemo(() => deriveMetadata(prices), [prices]);
 
   return {
-    loading: isFetching,
+    loading: isInitialLoading,
+    isFetching,
     isFetchedAfterMount,
     data: { prices, metadata },
   };
