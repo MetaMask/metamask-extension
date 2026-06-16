@@ -2012,6 +2012,24 @@ describe('#getConnectedSitesList', () => {
 
       expect(firstResult).toBe(secondResult);
     });
+
+    it('returns a new reference when current chainId changes', () => {
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const stateWithDifferentChainId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+        },
+      };
+
+      const secondResult = selectors.getSwapsDefaultToken(
+        stateWithDifferentChainId,
+      );
+
+      expect(secondResult).not.toBe(firstResult);
+      expect(secondResult.chainId).not.toBe(firstResult.chainId);
+    });
   });
 
   describe('getIsSwapsChain', () => {

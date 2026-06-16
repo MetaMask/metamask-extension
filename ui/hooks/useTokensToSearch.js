@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { uniqBy } from 'lodash';
 import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
@@ -105,7 +105,7 @@ export function useTokensToSearch({
   const tokenConversionRates = useSelector(getTokenExchangeRates);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const tokenList = useSelector(getTokenList);
 
   const memoizedTopTokens = useEqualityCheck(topTokens);
