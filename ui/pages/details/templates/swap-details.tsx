@@ -41,7 +41,7 @@ export function SwapDetails({
         </Section>
       </div>
       <Footer>
-        <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
+        <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
 
         <SwapAgainButton
           sourceToken={item.data.sourceToken}
