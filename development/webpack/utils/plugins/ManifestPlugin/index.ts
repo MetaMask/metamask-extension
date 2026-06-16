@@ -274,8 +274,7 @@ export class ManifestPlugin<Z extends boolean> {
         continue;
       }
 
-      const initialFileNames = new Set(entry.getFiles());
-      const initialFiles = getAssetStats(compilation, initialFileNames);
+      const initialFiles = getAssetStats(compilation, entry.getFiles());
       const asyncFiles = [
         ...entry.getEntrypointChunk().getAllAsyncChunks(),
       ].flatMap((chunk) => getAssetStats(compilation, chunk.files));
