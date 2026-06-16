@@ -1992,6 +1992,26 @@ describe('#getConnectedSitesList', () => {
       expect(result).toStrictEqual(expectedToken);
       expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
+
+    it('returns a stable reference for identical inputs', () => {
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const secondResult = selectors.getSwapsDefaultToken(mockState);
+
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns a stable reference for identical overrideChainId inputs', () => {
+      const firstResult = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+      const secondResult = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+
+      expect(firstResult).toBe(secondResult);
+    });
   });
 
   describe('getIsSwapsChain', () => {
