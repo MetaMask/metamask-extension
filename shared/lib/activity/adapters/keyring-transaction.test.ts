@@ -60,8 +60,8 @@ describe('mapKeyringTransaction', () => {
       type: 'bridge',
       chainId: MultichainNetworks.SOLANA,
       status: 'success',
+      hash: solanaBridgeFixture.transaction.id,
       data: {
-        hash: solanaBridgeFixture.transaction.id,
         from: solanaBridgeFixture.fromAddress,
         sourceToken: {
           amount: '1.5',

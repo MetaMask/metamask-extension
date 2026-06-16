@@ -147,8 +147,8 @@ export function mapKeyringTransaction({
         chainId,
         status: mapBridgeStatus(bridgeStatus),
         timestamp,
+        hash: transaction.id,
         data: {
-          hash: transaction.id,
           from,
           sourceToken: {
             amount: quote.srcTokenAmount,

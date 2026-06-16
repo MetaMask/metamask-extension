@@ -388,8 +388,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: new Date('2026-01-16T21:09:00.000Z').getTime(),
+      hash: '0x3ac43e7c4a1a4421304ada43b41acec4d71ad90abfa418e97e92540a26eef0a2',
       data: {
-        hash: '0x3ac43e7c4a1a4421304ada43b41acec4d71ad90abfa418e97e92540a26eef0a2',
         sourceToken: {
           amount: '7934205',
           decimals: 6,
