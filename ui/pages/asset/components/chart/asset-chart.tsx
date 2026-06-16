@@ -170,7 +170,8 @@ const AssetChart = ({
     timeRange: selectedTimeRange,
   });
 
-  const shouldShowChartEmptyState = !loading && prices.length === 0;
+  // The cases below are not mutually exclusive
+  const shouldShowChartEmptyState = !loading && prices.length === 0; // When the chart is not loading anymore and there are no prices, show an empty state
   const shouldShowChartMuted =
     isFetching && prices.length > 0 && !isPlaceholderData;
 
@@ -183,7 +184,6 @@ const AssetChart = ({
             from: (ctx: { chart: { scales: { y: { bottom: number } } } }) =>
               ctx.chart.scales.y.bottom,
             duration: 600,
-            easing: 'easeOutQuart' as const,
           },
         }
       : {},
@@ -219,11 +219,15 @@ const AssetChart = ({
     <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
       <AssetChartPrice
         ref={priceRef}
-        loading={loading}
+        loading={loading || isPlaceholderData}
         currency={currency}
         price={currentPrice}
         date={Date.now()}
-        comparePrice={isPlaceholderData ? undefined : prices?.[0]?.y}
+        comparePrice={
+          isPlaceholderData || shouldShowChartEmptyState
+            ? undefined
+            : prices?.[0]?.y
+        }
         asset={asset}
       />
 
@@ -241,14 +245,12 @@ const AssetChart = ({
         {shouldShowChartEmptyState && <AssetChartEmptyState />}
         {!shouldShowChartEmptyState && (
           <Box style={{ opacity: shouldShowChartMuted ? loadingOpacity : 1 }}>
-            {!isPlaceholderData && (
-              <ChartTooltip
-                point={maxPricePoint}
-                xMin={xMin}
-                xMax={xMax}
-                currency={currency}
-              />
-            )}
+            <ChartTooltip
+              point={isPlaceholderData ? undefined : maxPricePoint}
+              xMin={xMin}
+              xMax={xMax}
+              currency={currency}
+            />
             <Box
               style={{ aspectRatio: `${options.aspectRatio}` }}
               className="flex"
@@ -297,14 +299,13 @@ const AssetChart = ({
                 }}
               />
             </Box>
-            {!isPlaceholderData && (
-              <ChartTooltip
-                point={minPricePoint}
-                xMin={xMin}
-                xMax={xMax}
-                currency={currency}
-              />
-            )}
+
+            <ChartTooltip
+              point={isPlaceholderData ? undefined : minPricePoint}
+              xMin={xMin}
+              xMax={xMax}
+              currency={currency}
+            />
           </Box>
         )}
 

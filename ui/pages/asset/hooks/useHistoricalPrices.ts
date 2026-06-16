@@ -101,13 +101,6 @@ type PricesClientFetch = {
   ) => Promise<{ prices?: [number, number][] }>;
 };
 
-const flatlinePlaceholder: { prices: [number, number][] } = {
-  prices: [
-    [Date.now() - 24 * 60 * 60 * 1000, 0],
-    [Date.now(), 0],
-  ],
-};
-
 /** TanStack Query key prefix — distinct from `@metamask/core-backend` `['prices', ...]` keys to avoid cache/queryFn mismatches. */
 const V3_HISTORICAL_PRICES_QUERY_KEY_ROOT = [
   'metamask-extension',
@@ -158,6 +151,13 @@ export const useHistoricalPrices = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
+  const flatlinePlaceholder: { prices: [number, number][] } = {
+    prices: [
+      [Date.now() - 24 * 60 * 60 * 1000, 0],
+      [Date.now(), 0],
+    ],
+  };
+
   const v3Params = useMemo(
     () => getV3HistoricalPricesCaipParams(chainId, address),
     [chainId, address],
