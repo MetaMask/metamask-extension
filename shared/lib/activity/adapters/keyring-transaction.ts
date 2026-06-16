@@ -249,7 +249,7 @@ export function mapKeyringTransaction({
         token: rawToken
           ? { ...rawToken, amount: isUnlimited ? undefined : rawToken.amount }
           : rawToken,
-        fees: getFees(transaction),
+        fees,
       },
     };
   }
