@@ -5,4 +5,5 @@ export enum AddDeviceSettingsStep {
   EnterVerificationCode = 'EnterVerificationCode',
   ValidatingDevice = 'ValidatingDevice',
   SyncingWallets = 'SyncingWallets',
+  Success = 'Success',
 }

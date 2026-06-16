@@ -11,12 +11,14 @@ import {
   Text,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   AddWallets,
   EnterPassword,
   EnterVerificationCode,
   LoadingStep,
   QrCodeScan,
+  Success,
 } from './components';
 import { AddDeviceSettingsStep } from './constant';
 
@@ -54,8 +56,11 @@ const AddDeviceSettings = () => {
           <LoadingStep
             title={t('add_device_syncing_title')}
             message={t('add_device_syncing_desc')}
+            onComplete={() => handleNextStep(AddDeviceSettingsStep.Success)}
           />
         );
+      case AddDeviceSettingsStep.Success:
+        return <Success onDone={() => navigate(DEFAULT_ROUTE)} />;
       default:
         return null;
     }
