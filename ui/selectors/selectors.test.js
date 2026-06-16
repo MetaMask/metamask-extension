@@ -1990,7 +1990,10 @@ describe('#getConnectedSitesList', () => {
 
     it('returns a stable reference for identical inputs', () => {
       const firstResult = selectors.getSwapsDefaultToken(mockState);
-      const secondResult = selectors.getSwapsDefaultToken(mockState);
+      const equivalentState = {
+        ...mockState,
+      };
+      const secondResult = selectors.getSwapsDefaultToken(equivalentState);
 
       expect(firstResult).toBe(secondResult);
     });
@@ -2000,8 +2003,11 @@ describe('#getConnectedSitesList', () => {
         mockState,
         CHAIN_IDS.POLYGON,
       );
+      const equivalentState = {
+        ...mockState,
+      };
       const secondResult = selectors.getSwapsDefaultToken(
-        mockState,
+        equivalentState,
         CHAIN_IDS.POLYGON,
       );
 
