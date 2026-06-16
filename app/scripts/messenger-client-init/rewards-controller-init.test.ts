@@ -148,7 +148,6 @@ describe('RewardsControllerInit', () => {
       const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
       expect(constructorArgs.isBitcoinDisabled()).toBe(true);
     });
-
   });
 
   describe('isTronDisabled', () => {
@@ -182,7 +181,6 @@ describe('RewardsControllerInit', () => {
       const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
       expect(constructorArgs.isTronDisabled()).toBe(true);
     });
-
   });
 
   describe('isVipDisabled', () => {
@@ -216,6 +214,5 @@ describe('RewardsControllerInit', () => {
       const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
       expect(constructorArgs.isVipDisabled()).toBe(true);
     });
-
   });
 });

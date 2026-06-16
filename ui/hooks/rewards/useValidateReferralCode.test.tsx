@@ -9,9 +9,10 @@ import {
 jest.useFakeTimers();
 
 jest.mock('../../store/actions', () => ({
-  validateRewardsReferralCode: jest.fn(
-    () => async () => ({ valid: true, isVipCode: false }),
-  ),
+  validateRewardsReferralCode: jest.fn(() => async () => ({
+    valid: true,
+    isVipCode: false,
+  })),
 }));
 
 const { validateRewardsReferralCode } = jest.requireMock(
