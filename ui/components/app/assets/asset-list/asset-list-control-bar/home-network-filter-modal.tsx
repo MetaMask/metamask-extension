@@ -356,12 +356,14 @@ const HomeNetworkFilterModalContent = ({
     );
   }, [orderedNetworksList, testNetworkMap, useExternalServices]);
 
-  // Without any custom networks the default (popular) list is the primary list:
-  // the top row represents *all* the user's networks ("All networks") and the
-  // redundant "Default networks" header is hidden. Once a custom network exists
-  // the Default/Custom distinction matters, so the top row becomes "All default
-  // networks" and the header is shown. Test networks don't affect this.
-  const hasNoCustomNetworks = customNetworks.length === 0;
+  // When there are no custom networks and no visible test networks, the default
+  // (popular) list is the *only* list: the redundant "Default networks" header
+  // is hidden and the top "select all" row reads "All default networks". Once a
+  // custom network exists or test networks are shown, multiple sections appear,
+  // so the top row becomes "All networks" and the default section shows its
+  // "Default networks" header.
+  const hasOnlyDefaultNetworks =
+    customNetworks.length === 0 && !(showTestnets && testNetworks.length > 0);
 
   const additionalNetworks = useMemo(() => {
     const availableNetworks = FEATURED_RPCS.filter(
@@ -410,7 +412,7 @@ const HomeNetworkFilterModalContent = ({
     const nextSections: NetworkSelectionSection[] = [
       {
         key: 'default-networks',
-        title: hasNoCustomNetworks ? undefined : t('defaultNetworks'),
+        title: hasOnlyDefaultNetworks ? undefined : t('defaultNetworks'),
         items: defaultNetworks.map((network) => ({
           key: network.chainId,
           name: network.name,
@@ -481,7 +483,7 @@ const HomeNetworkFilterModalContent = ({
     defaultNetworks,
     handleAddNetwork,
     handleSelectNetwork,
-    hasNoCustomNetworks,
+    hasOnlyDefaultNetworks,
     isNetworkSelected,
     showTestnets,
     t,
@@ -495,7 +497,7 @@ const HomeNetworkFilterModalContent = ({
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',
-        name: hasNoCustomNetworks ? t('allNetworks') : t('allDefaultNetworks'),
+        name: hasOnlyDefaultNetworks ? t('allDefaultNetworks') : t('allNetworks'),
         iconSrc: IconName.Global,
         selected: isAllDefaultSelected,
         onClick: handleSelectAllDefaultNetworks,
