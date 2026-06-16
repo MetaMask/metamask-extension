@@ -7,7 +7,10 @@ import type {
 } from './permission-detail-schema.types';
 import { getPermissionSchemaEntry } from './permission-detail-schemas';
 import { MAX_UINT256 } from './permission-constants';
-import { ALL_METAMASK_FACILITATOR_ADDRESSES } from './facilitator-addresses';
+import {
+  ALL_METAMASK_FACILITATOR_ADDRESSES,
+  isMetaMaskFacilitatorAddress,
+} from './facilitator-addresses';
 
 type ElementOfType<TType extends SchemaElement['type']> = Extract<
   SchemaElement,
@@ -167,11 +170,11 @@ describe('permissionInfoSection field accessors', () => {
     }
   });
 
-  it('shows a named MetaMask facilitator redeemer row when all redeemers are facilitator addresses', () => {
+  it('shows a MetaMask facilitator redeemer row when all redeemers are facilitator addresses', () => {
     const namedRedeemerElement = findElementOfType(
       'native-token-stream',
       'confirmation-redeemer-metamask-facilitator',
-      'named-rule-address',
+      'text',
     );
     const redeemerAddressElement = findElementOfType(
       'native-token-stream',
@@ -206,11 +209,31 @@ describe('permissionInfoSection field accessors', () => {
       false,
     );
     expect(namedRedeemerElement.isVisible(duplicateFacilitatorContext)).toBe(
-      false,
-    );
-    expect(redeemerAddressElement.isVisible(duplicateFacilitatorContext)).toBe(
       true,
     );
+    expect(redeemerAddressElement.isVisible(duplicateFacilitatorContext)).toBe(
+      false,
+    );
+    expect(namedRedeemerElement.isVisible({ ...base, redeemerAddresses: [] }))
+      .toBe(false);
+  });
+});
+
+describe('isMetaMaskFacilitatorAddress', () => {
+  it('matches facilitator addresses case-insensitively', () => {
+    expect(
+      isMetaMaskFacilitatorAddress(
+        ALL_METAMASK_FACILITATOR_ADDRESSES[0].toLowerCase(),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for unknown addresses', () => {
+    expect(
+      isMetaMaskFacilitatorAddress(
+        '0x0000000000000000000000000000000000000001',
+      ),
+    ).toBe(false);
   });
 });
 

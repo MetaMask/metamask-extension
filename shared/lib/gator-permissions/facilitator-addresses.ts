@@ -17,21 +17,6 @@ const METAMASK_FACILITATOR_ADDRESSES_LOWERCASE = new Set<string>(
   ALL_METAMASK_FACILITATOR_ADDRESSES.map((address) => address.toLowerCase()),
 );
 
-export function areOnlyMetaMaskFacilitatorAddresses(
-  addresses: string[] | null | undefined,
-): boolean {
-  if (!addresses?.length) {
-    return false;
-  }
-
-  const normalizedAddresses = new Set(
-    addresses.map((address) => address.toLowerCase()),
-  );
-
-  return (
-    normalizedAddresses.size === addresses.length &&
-    [...normalizedAddresses].every((address) =>
-      METAMASK_FACILITATOR_ADDRESSES_LOWERCASE.has(address),
-    )
-  );
+export function isMetaMaskFacilitatorAddress(address: string): boolean {
+  return METAMASK_FACILITATOR_ADDRESSES_LOWERCASE.has(address.toLowerCase());
 }

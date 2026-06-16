@@ -21,6 +21,10 @@ export const gatorPermissionDetailRowStyle = {
   alignSelf: 'center',
 } as const;
 
+export const gatorPermissionDetailRowLabelStyle = {
+  alignSelf: 'center',
+} as const;
+
 type GatorPermissionDetailRowProps = {
   label: string;
   value: React.ReactNode;
@@ -57,7 +61,7 @@ export const GatorPermissionDetailRow = ({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         gap={1}
-        style={gatorPermissionDetailRowStyle}
+        style={gatorPermissionDetailRowLabelStyle}
       >
         <Text
           textAlign={TextAlign.Left}

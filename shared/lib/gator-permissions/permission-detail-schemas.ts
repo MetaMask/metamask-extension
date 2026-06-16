@@ -16,7 +16,7 @@ import {
   convertAmountPerSecondToAmountPerPeriod,
   getPeriodFrequencyValueTranslationKey,
 } from './time-utils';
-import { areOnlyMetaMaskFacilitatorAddresses } from './facilitator-addresses';
+import { isMetaMaskFacilitatorAddress } from './facilitator-addresses';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -163,12 +163,13 @@ const permissionInfoSection: SchemaSection = {
     },
     { type: 'network', includeInViews: ['confirmation', 'reviewDetail'] },
     {
-      type: 'named-rule-address',
+      type: 'text',
       labelKey: 'redeemers',
       testId: 'confirmation-redeemer-metamask-facilitator',
       getValue: () => ({ key: 'gatorPermissionsMetaMaskFacilitator' }),
       isVisible: (ctx) =>
-        areOnlyMetaMaskFacilitatorAddresses(ctx.redeemerAddresses),
+        Boolean(ctx.redeemerAddresses?.length) &&
+        ctx.redeemerAddresses.every(isMetaMaskFacilitatorAddress),
       tooltip: 'gatorPermissionsMetaMaskFacilitatorTooltip',
       includeInViews: ['confirmation', 'reviewDetail'],
     },
@@ -179,7 +180,7 @@ const permissionInfoSection: SchemaSection = {
       getValue: (ctx) => ctx.redeemerAddresses ?? undefined,
       isVisible: (ctx) =>
         Boolean(ctx.redeemerAddresses?.length) &&
-        !areOnlyMetaMaskFacilitatorAddresses(ctx.redeemerAddresses),
+        !ctx.redeemerAddresses?.every(isMetaMaskFacilitatorAddress),
       includeInViews: ['confirmation', 'reviewDetail'],
     },
     {

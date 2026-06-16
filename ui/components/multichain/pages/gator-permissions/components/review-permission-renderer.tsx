@@ -316,6 +316,7 @@ function renderElement({
           label={t(element.labelKey)}
           value={translateI18nValue(t, element.getValue(ctx))}
           testId={element.testId}
+          tooltip={element.tooltip ? t(element.tooltip) : undefined}
         />
       );
 
@@ -326,17 +327,6 @@ function renderElement({
           label={t(element.labelKey)}
           value={element.getValue(ctx)}
           testId={element.testId}
-        />
-      );
-
-    case 'named-rule-address':
-      return (
-        <GatorPermissionDetailRow
-          key={rowKey}
-          label={t(element.labelKey)}
-          value={translateI18nValue(t, element.getValue(ctx))}
-          testId={element.testId}
-          tooltip={element.tooltip ? t(element.tooltip) : undefined}
         />
       );
 

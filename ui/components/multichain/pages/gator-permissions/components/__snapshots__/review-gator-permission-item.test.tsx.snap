@@ -46,7 +46,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -72,7 +72,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -252,7 +252,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -283,7 +283,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -463,7 +463,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -489,7 +489,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -669,7 +669,7 @@ exports[`Permission List Item render ERC20 token permissions renders token appro
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -849,7 +849,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -875,7 +875,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -1055,7 +1055,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
@@ -1081,7 +1081,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
       >
         <div
           class="flex flex-row gap-1 items-center"
-          style="flex: 1; align-self: center;"
+          style="align-self: center;"
         >
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"

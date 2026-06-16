@@ -170,7 +170,7 @@ function renderElement(
         <ConfirmInfoRow
           key={index}
           label={t(element.labelKey)}
-          tooltip={element.tooltip}
+          tooltip={element.tooltip ? t(element.tooltip) : undefined}
         >
           <Text variant={TextVariant.BodyMd}>
             {translateI18nValue(t, element.getValue(ctx))}
@@ -187,21 +187,6 @@ function renderElement(
           tooltip={element.tooltip}
         >
           <Text variant={TextVariant.BodyMd}>{element.getValue(ctx)}</Text>
-        </ConfirmInfoRow>
-      );
-    }
-
-    case 'named-rule-address': {
-      return (
-        <ConfirmInfoRow
-          key={index}
-          label={t(element.labelKey)}
-          tooltip={element.tooltip ? t(element.tooltip) : undefined}
-          data-testid={element.testId}
-        >
-          <Text variant={TextVariant.BodyMd}>
-            {translateI18nValue(t, element.getValue(ctx))}
-          </Text>
         </ConfirmInfoRow>
       );
     }

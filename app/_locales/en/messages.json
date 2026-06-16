@@ -4069,10 +4069,10 @@
     "description": "Label for the max allowance of a permission"
   },
   "gatorPermissionsMetaMaskFacilitator": {
-    "message": "MetaMask facilitator"
+    "message": "MetaMask x402 facilitator"
   },
   "gatorPermissionsMetaMaskFacilitatorTooltip": {
-    "message": "May only be redeemed by the MetaMask facilitator"
+    "message": "May only be redeemed by the MetaMask x402 facilitator"
   },
   "gatorPermissionsPermit2ApproveRevocation": {
     "message": "Permit2 approve(token, spender, 0, 0)",
