@@ -34,8 +34,10 @@ const MONAD_DEFAULT_BLOCK_EXPLORER_URL = 'https://monadscan.com/';
 const MONAD_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'MonadScan';
 const HYPEREVM_DEFAULT_BLOCK_EXPLORER_URL = 'https://hyperevmscan.io/';
 const HYPEREVM_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'HyperEVMScan';
-const HYPERLIQUID_DEFAULT_BLOCK_EXPLORER_URL = 'https://app.hyperliquid.xyz/explorer';
-const HYPERLIQUID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'Hyperliquid Explorer';
+const HYPERLIQUID_DEFAULT_BLOCK_EXPLORER_URL =
+  'https://app.hyperliquid.xyz/explorer';
+const HYPERLIQUID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL =
+  'Hyperliquid Explorer';
 const MEGAETH_DEFAULT_BLOCK_EXPLORER_URL = 'https://megaeth.blockscout.com/';
 const MEGAETH_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'MegaETH Explorer';
 const TEMPO_DEFAULT_BLOCK_EXPLORER_URL = 'https://explore.tempo.xyz/';
