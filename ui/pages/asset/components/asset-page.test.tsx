@@ -164,9 +164,7 @@ function mockGetDefaultAssetsBySelectedAccountGroup() {
 
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
-  getAssetsBySelectedAccountGroup: jest.fn(() =>
-    mockGetDefaultAssetsBySelectedAccountGroup(),
-  ),
+  getAssetsBySelectedAccountGroup: jest.fn(),
 }));
 
 describe('AssetPage', () => {
@@ -326,6 +324,12 @@ describe('AssetPage', () => {
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
 
+    // Return a stable (same-reference) default so Reselect's input stability
+    // check does not trigger a warning when getAsset calls this selector twice.
+    (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+      mockGetDefaultAssetsBySelectedAccountGroup(),
+    );
+
     // Mock implementation for useMultiPolling
     (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
       // Mock startPolling and stopPollingByPollingToken for each input
@@ -462,9 +466,10 @@ describe('AssetPage', () => {
   });
 
   it('shows the Send button when token balance is greater than zero', () => {
-    (
-      getAssetsBySelectedAccountGroup as unknown as jest.Mock
-    ).mockReturnValueOnce({
+    // Use mockReturnValue (not mockReturnValueOnce) so that Reselect's input
+    // stability check — which calls the selector twice — always gets the same
+    // reference.  The outer beforeEach will reset this for the next test.
+    (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue({
       '0x1': [
         {
           assetId: '0x0000000000000000000000000000000000000000',
@@ -783,9 +788,10 @@ describe('AssetPage', () => {
     };
 
     afterEach(() => {
+      // Return a stable reference so subsequent tests don't see stale overrides.
       (
         getAssetsBySelectedAccountGroup as unknown as jest.Mock
-      ).mockImplementation(() => mockGetDefaultAssetsBySelectedAccountGroup());
+      ).mockReturnValue(mockGetDefaultAssetsBySelectedAccountGroup());
     });
 
     it('shows estimated annual bonus as 3% of combined Mainnet and Linea fiat when viewing Mainnet mUSD', () => {
