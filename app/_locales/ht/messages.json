@@ -433,6 +433,12 @@
   "transfer": {
     "message": "Transfè"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Eseye anko"
   },

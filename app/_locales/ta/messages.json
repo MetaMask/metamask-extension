@@ -364,6 +364,12 @@
   "transactionError": {
     "message": "பரிவர்த்தனை பிழை. விதிமுறை ஒப்பந்தத்தில் விதிவிலக்கு."
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "மீண்டும் முயல்க"
   },

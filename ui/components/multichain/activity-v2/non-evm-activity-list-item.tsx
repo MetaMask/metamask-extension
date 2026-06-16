@@ -26,8 +26,15 @@ type Props = {
 export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const matchedBridgeHistoryItem = bridgeHistoryItems[transaction.id];
-  const { from, to, type, timestamp, isRedeposit, title } =
-    useMultichainTransactionDisplay(transaction);
+  const {
+    from,
+    to,
+    type,
+    groupCategory,
+    isRedeposit,
+    title,
+    shouldShowAmountOrUnit,
+  } = useMultichainTransactionDisplay(transaction);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
   if (
@@ -66,14 +73,15 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   }
 
   let { amount, unit } = to ?? {};
-  let category = type as TransactionGroupCategory;
   if (type === KeyringTransactionType.Swap) {
     amount = from?.amount;
     unit = from?.unit;
   }
 
-  if (type === KeyringTransactionType.Unknown) {
-    category = TransactionGroupCategory.interaction;
+  // If the transaction is a trustline approve or disapprove, set the amount and unit to empty strings.
+  if (!shouldShowAmountOrUnit) {
+    amount = '';
+    unit = '';
   }
 
   return (
@@ -82,7 +90,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
       onClick={() => onClick(transaction)}
       icon={
         <ChainBadge chainId={transaction.chain}>
-          <TransactionIcon category={category} status={statusKey} />
+          <TransactionIcon category={groupCategory} status={statusKey} />
         </ChainBadge>
       }
       rightContent={

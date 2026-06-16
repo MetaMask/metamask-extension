@@ -9610,6 +9610,12 @@
   "trustSignalContinueAnyway": {
     "message": "Yine de Bağlan"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Tekrar deneyin"
   },

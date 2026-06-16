@@ -593,6 +593,12 @@
   "transferFrom": {
     "message": "ಇದರಿಂದ ವರ್ಗಾಯಿಸಿ"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "ಪುನಃ ಪ್ರಯತ್ನಿಸಿ"
   },

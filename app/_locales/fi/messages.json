@@ -590,6 +590,12 @@
   "transferFrom": {
     "message": "Siirto kohteesta"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Yritä uudelleen"
   },

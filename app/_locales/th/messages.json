@@ -316,6 +316,12 @@
   "total": {
     "message": "รวม"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "unknown": {
     "message": "ไม่รู้จัก"
   },

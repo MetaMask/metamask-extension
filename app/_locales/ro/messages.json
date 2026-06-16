@@ -578,6 +578,12 @@
   "transferFrom": {
     "message": "Transferați de la"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Încearcă din nou"
   },

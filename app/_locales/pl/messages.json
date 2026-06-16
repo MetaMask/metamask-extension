@@ -581,6 +581,12 @@
   "transferFrom": {
     "message": "Przelew z"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Spróbuj ponownie"
   },

@@ -9642,6 +9642,12 @@
   "trustSignalContinueAnyway": {
     "message": "それでも接続する"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "再試行してください"
   },

@@ -581,6 +581,12 @@
   "transferFrom": {
     "message": "Prebacite iz"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Пробај поново"
   },

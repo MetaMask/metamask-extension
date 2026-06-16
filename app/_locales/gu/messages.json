@@ -130,6 +130,12 @@
   "settings": {
     "message": "સેટિંગ્સ"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "ફરી પ્રયાસ કરો"
   },

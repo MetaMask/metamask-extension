@@ -593,6 +593,12 @@
   "transferFrom": {
     "message": "Nosūtīt no"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Mēģināt vēlreiz"
   },

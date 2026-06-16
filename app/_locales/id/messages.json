@@ -9646,6 +9646,12 @@
   "trustSignalContinueAnyway": {
     "message": "Tetap Terhubung"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Coba lagi"
   },

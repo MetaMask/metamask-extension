@@ -252,6 +252,12 @@
   "total": {
     "message": "Totaal"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "unknown": {
     "message": "Onbekend"
   },

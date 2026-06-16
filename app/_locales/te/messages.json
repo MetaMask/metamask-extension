@@ -130,6 +130,12 @@
   "settings": {
     "message": "సెట్టింగ్‌లు"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "మళ్లీ ప్రయత్నించు"
   },

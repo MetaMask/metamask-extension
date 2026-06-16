@@ -297,6 +297,12 @@
   "transactionError": {
     "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "unapproved": {
     "message": "Neschváleno"
   },

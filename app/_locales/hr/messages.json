@@ -587,6 +587,12 @@
   "transferFrom": {
     "message": "Prenesi od"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Pokušaj ponovo"
   },

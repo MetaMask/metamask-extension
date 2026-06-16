@@ -575,6 +575,12 @@
   "transferFrom": {
     "message": "Tuma Kutoka"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Jaribu tena"
   },

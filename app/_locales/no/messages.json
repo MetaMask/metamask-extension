@@ -578,6 +578,12 @@
   "transferFrom": {
     "message": "Overfør fra"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Prøv igjen"
   },

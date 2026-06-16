@@ -9636,6 +9636,12 @@
   "trustSignalContinueAnyway": {
     "message": "仍然连接"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "重试"
   },

@@ -9646,6 +9646,12 @@
   "trustSignalContinueAnyway": {
     "message": "Vẫn kết nối"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Thử lại"
   },

@@ -9636,6 +9636,12 @@
   "trustSignalContinueAnyway": {
     "message": "तब भी कनेक्ट करें"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "फिर से प्रयास करें"
   },

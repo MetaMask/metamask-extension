@@ -1585,6 +1585,12 @@
     "message": "Tivemos dificuldade para conectar-nos à sua $1. Revise $2 e tente novamente.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Tente novamente"
   },
