@@ -262,12 +262,6 @@
   "total": {
     "message": "कुल"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "unknown": {
     "message": "अज्ञात नेटवर्क"
   },

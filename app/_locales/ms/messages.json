@@ -574,12 +574,6 @@
   "transferFrom": {
     "message": "Pindah Daripada"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Cuba lagi"
   },

@@ -587,12 +587,6 @@
   "transferFrom": {
     "message": "Ülekandmine asukohast"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Proovi uuesti"
   },

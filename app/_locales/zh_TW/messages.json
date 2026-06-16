@@ -981,12 +981,6 @@
     "message": "我們在連線到您的 $1 的時候遇到問題，試著檢查 $2 然後再試一次。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "再試一次"
   },

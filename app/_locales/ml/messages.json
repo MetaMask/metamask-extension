@@ -130,12 +130,6 @@
   "settings": {
     "message": "ക്രമീകരണങ്ങള്‍"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "വീണ്ടും ശ്രമിക്കുക"
   },

@@ -593,12 +593,6 @@
   "transferFrom": {
     "message": "Передати від"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Повторити"
   },

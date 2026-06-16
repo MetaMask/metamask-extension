@@ -140,12 +140,6 @@
   "settings": {
     "message": "Definições"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Tentar novamente"
   },

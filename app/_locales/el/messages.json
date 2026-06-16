@@ -9642,12 +9642,6 @@
   "trustSignalContinueAnyway": {
     "message": "Σύνδεση ούτως ή άλλως"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Προσπαθήστε ξανά"
   },

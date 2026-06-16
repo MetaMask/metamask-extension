@@ -9642,12 +9642,6 @@
   "trustSignalContinueAnyway": {
     "message": "Kumonekta Pa Rin"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Subukang muli"
   },

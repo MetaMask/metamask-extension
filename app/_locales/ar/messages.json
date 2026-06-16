@@ -594,12 +594,6 @@
   "transferFrom": {
     "message": "التحويل من"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "إعادة المحاولة"
   },

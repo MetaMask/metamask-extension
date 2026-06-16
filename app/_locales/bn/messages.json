@@ -590,12 +590,6 @@
   "transferFrom": {
     "message": "থেকে ট্রান্সফার করুন"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "আবার করুন"
   },

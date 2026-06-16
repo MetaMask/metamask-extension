@@ -587,12 +587,6 @@
   "transferFrom": {
     "message": "Átvezetés innen: "
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Újra"
   },

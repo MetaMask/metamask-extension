@@ -559,12 +559,6 @@
   "transferFrom": {
     "message": "Presun z"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Skúsiť znova"
   },

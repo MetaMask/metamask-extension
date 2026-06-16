@@ -6182,12 +6182,6 @@
   "troubleStartingTitle": {
     "message": "Bhí trioblóid ag MetaMask ag tosú."
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Déan iarracht arís"
   },

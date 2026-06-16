@@ -593,12 +593,6 @@
   "transferFrom": {
     "message": "Pervedimas iš"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Bandyti dar kartą"
   },

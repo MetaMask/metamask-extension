@@ -572,12 +572,6 @@
   "transferFrom": {
     "message": "Transferir Des de"
   },
-  "trustlineApprove": {
-    "message": "Activate trustline"
-  },
-  "trustlineDisapprove": {
-    "message": "Deactivate trustline"
-  },
   "tryAgain": {
     "message": "Torna-ho a provar"
   },
