@@ -63,6 +63,7 @@ import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type { Preferences } from '../../../shared/types/preferences';
+import { LegacyBackgroundApiServiceSetLockedAction } from '../services/legacy-background-api-service-method-action-types';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -213,6 +214,7 @@ export type AllowedActions =
   | ApprovalControllerAddRequestAction
   | ApprovalControllerAcceptRequestAction
   | KeyringControllerGetStateAction
+  | LegacyBackgroundApiServiceSetLockedAction
   | PreferencesControllerGetStateAction
   | ProfileMetricsControllerSkipInitialDelayAction;
 
@@ -268,7 +270,6 @@ type AppStateControllerInitState = Partial<
 
 export type AppStateControllerOptions = {
   state?: AppStateControllerInitState;
-  onInactiveTimeout?: () => void;
   messenger: AppStateControllerMessenger;
   extension: Browser;
 };
@@ -741,6 +742,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setNewPrivacyPolicyToastShownDate',
   'setOnboardingDate',
   'setOutdatedBrowserWarningLastShown',
+  'setPasskeyAutoUnlockSuppressed',
   'setPendingExtensionVersion',
   'setPendingRedirectRoute',
   'setPendingShieldCohort',
@@ -771,8 +773,6 @@ export class AppStateController extends BaseController<
 > {
   readonly #extension: AppStateControllerOptions['extension'];
 
-  readonly #onInactiveTimeout: () => void;
-
   #timer: NodeJS.Timeout | null;
 
   readonly waitingForUnlock: { resolve: () => void }[];
@@ -781,12 +781,7 @@ export class AppStateController extends BaseController<
 
   #qrCodeScanPromise: DeferredPromise<SerializedUR> | null = null;
 
-  constructor({
-    state = {},
-    messenger,
-    onInactiveTimeout,
-    extension,
-  }: AppStateControllerOptions) {
+  constructor({ state = {}, messenger, extension }: AppStateControllerOptions) {
     super({
       name: controllerName,
       metadata: controllerMetadata,
@@ -799,9 +794,6 @@ export class AppStateController extends BaseController<
     });
 
     this.#extension = extension;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
     // Clearing an alarm does not remove the listeners, so we only need to register the listener once.
@@ -1776,5 +1768,9 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.deferredDeepLink = undefined;
     });
+  }
+
+  #onInactiveTimeout(): void {
+    this.messenger.call('LegacyBackgroundApiService:setLocked');
   }
 }
