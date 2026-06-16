@@ -7,30 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [13.35.0]
-
-### Added
-
-- Reduced false-positive RPC connection banners — single-provider outages no longer pop the banner, even when many popular (#43073)
-  networks fail at once.
-- Added "Paid by MetaMask" label on the mUSD conversion confirmation screen when all transaction fees are sponsored (#43168)
-- Add Arc as Default Network (network/native logo + native price + multicall) (#43114)
-- Added a confirmation modal when closing all perpetual positions (#42613)
-- Reduced false-positive RPC connection banners — single-provider outages no longer pop the banner, even when many popular
-  networks fail at once. (#43073)
-- Add Telegram provider to Social Login options (#43125)
-
-### Changed
-
-- Raised the minimum supported browser versions for Chromium-based browsers to 123 and Firefox to ESR 128. (#41067)
-- chore(6936): migrate core UI components from MUI v4 → v5 (#41955)
-- Bump assets controller v8.3.1 (#43163)
-- chore(6921): upgrade React type definitions to v18 and codemod explicit children typing (#42616)
-- Updated the Sei network and token logo to Sei's new brand mark. (#43117)
-- chore: migrate `checkIsSeedlessPasswordOutdated` to `LegacyBackgroundApiService` (#43131)
-
-### Fixed
-
 ## [13.36.0]
 
 ### Added
@@ -56,6 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated onboarding metrics for Telegram Login. fixed onboarding unlock metrics. (#43052)
 - Raised the minimum supported browser versions for Chromium-based browsers to 123 and Firefox to ESR 128. (#41067)
 
+### Changed
+
+- Updated the Sei native token icon to Sei's maroon token mark. (#43173)
+- Updated the Sei network and token logo to Sei's new brand mark. (#43117)
+- Bump `@metamask/assets-controllers` from 108.5.0 to 109.0.0 (#43422)
+
 ### Fixed
 
 - Fixed a false "Insufficient funds" error on perps when the size slider is set to 100%. (#43383)
@@ -79,14 +61,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix routing after hardware wallet onboarding (#42952)
 - Updated onboarding metrics for Telegram Login. fixed onboarding unlock metrics. (#43052)
 
+## [13.35.0]
+
+### Added
+
+- Reduced false-positive RPC connection banners — single-provider outages no longer pop the banner, even when many popular (#43073)
+  networks fail at once.
+- Added "Paid by MetaMask" label on the mUSD conversion confirmation screen when all transaction fees are sponsored (#43168)
+- Add Arc as Default Network (network/native logo + native price + multicall) (#43114)
+- Added a confirmation modal when closing all perpetual positions (#42613)
+- Reduced false-positive RPC connection banners — single-provider outages no longer pop the banner, even when many popular
+  networks fail at once. (#43073)
+- Add Telegram provider to Social Login options (#43125)
+
 ### Changed
 
-- Updated the Sei native token icon to Sei's maroon token mark. (#43173)
+- Raised the minimum supported browser versions for Chromium-based browsers to 123 and Firefox to ESR 128. (#41067)
+- chore(6936): migrate core UI components from MUI v4 → v5 (#41955)
+- Bump assets controller v8.3.1 (#43163)
+- chore(6921): upgrade React type definitions to v18 and codemod explicit children typing (#42616)
 - Updated the Sei network and token logo to Sei's new brand mark. (#43117)
--
-### Changed
-
-- Bump `@metamask/assets-controllers` from 108.5.0 to 109.0.0 (#43422)
+- chore: migrate `checkIsSeedlessPasswordOutdated` to `LegacyBackgroundApiService` (#43131)
 
 ## [13.34.1]
 
@@ -2543,10 +2538,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...HEAD
-[13.35.0]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...v13.35.0
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...HEAD
-[13.36.0]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...v13.36.0
+[13.36.0]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...v13.36.0
+[13.35.0]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...v13.35.0
 [13.34.1]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...v13.34.1
 [13.34.0]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...v13.34.0
 [13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.33.0
