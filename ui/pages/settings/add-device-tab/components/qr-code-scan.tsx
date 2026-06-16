@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Box,
   Text,
@@ -7,7 +7,9 @@ import {
   TextVariant,
   Button,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Skeleton } from '../../../../components/component-library/skeleton';
 import { AddDeviceSettingsStep } from '../constant';
 import { QRCodeImage } from '../../../../components/app/deeplink-qr-code/deeplink-qr-code';
 
@@ -15,8 +17,17 @@ type QrCodeScanProps = {
   onScanSuccess: (type: AddDeviceSettingsStep) => void;
 };
 
+type QrSyncState = {
+  metamask: {
+    qrPayload?: string | null;
+  };
+};
+
 const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
   const t = useI18nContext();
+  const qrPayload = useSelector(
+    (state: QrSyncState) => state.metamask.qrPayload ?? null,
+  );
 
   return (
     <Box className="p-4 flex flex-1 flex-col gap-4">
@@ -31,10 +42,15 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
         {t('scan_qr_code_desc')}
       </Text>
       <Box className="flex items-center justify-center flex-row mt-4">
-        <QRCodeImage data="metamask-device-sync" />
+        {qrPayload ? (
+          <QRCodeImage data={qrPayload} />
+        ) : (
+          <Skeleton width={240} height={240} />
+        )}
       </Box>
       <Button
         className="w-full"
+        disabled={!qrPayload}
         onClick={() =>
           onScanSuccess(AddDeviceSettingsStep.EnterVerificationCode)
         }

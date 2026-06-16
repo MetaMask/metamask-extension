@@ -1,16 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  IconName,
-  ButtonIconSize,
-  TextVariant,
-  TextColor,
-  FontWeight,
-  ButtonIcon,
-  Text,
-} from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import React, { useEffect, useState } from 'react';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   AddWallets,
   EnterPassword,
@@ -20,9 +9,22 @@ import {
 import { AddDeviceSettingsStep } from './constant';
 
 const AddDeviceSettings = () => {
-  const navigate = useNavigate();
-  const t = useI18nContext();
   const [step, setStep] = useState(AddDeviceSettingsStep.ScanQrCode);
+
+  useEffect(() => {
+    if (step !== AddDeviceSettingsStep.ScanQrCode) {
+      return;
+    }
+
+    const createQrSyncSession = async () => {
+      await submitRequestToBackground<void>('messengerCall', [
+        'QrSyncController:createSession',
+        [],
+      ]).catch(() => undefined);
+    };
+
+    createQrSyncSession();
+  }, [step]);
 
   const handleNextStep = (type: AddDeviceSettingsStep) => {
     setStep(type);
