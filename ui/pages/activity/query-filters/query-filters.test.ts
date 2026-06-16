@@ -196,7 +196,6 @@ describe('query filters', () => {
             symbol: 'USDC',
             assetId: toAssetId(tokenAddress, 'eip155:1'),
           },
-          fees: undefined,
         },
       },
     ]);

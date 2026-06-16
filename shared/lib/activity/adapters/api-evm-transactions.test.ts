@@ -48,7 +48,6 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1778593067000,
-      hash: undefined,
       data: {
         from: subjectAddress,
         to: baseRecipientAddress,
@@ -256,7 +255,6 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1777983327000,
-      hash: undefined,
       data: {
         from: lineaSenderAddress,
         to: subjectAddress,
@@ -295,7 +293,6 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1778003873000,
-      hash: undefined,
       data: {
         sourceToken: {
           direction: 'out',
@@ -414,7 +411,6 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1771884263000,
-      hash: undefined,
       data: {
         from: subjectAddress,
         to: nftRecipientAddress,
@@ -936,7 +932,6 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:56',
       status: 'success',
       timestamp: 1778601880000,
-      hash: undefined,
       data: {
         from: bscContractCallerAddress,
         methodId: '0x174dea71',
