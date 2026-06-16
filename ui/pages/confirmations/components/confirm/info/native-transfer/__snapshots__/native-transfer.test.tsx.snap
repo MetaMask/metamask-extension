@@ -176,7 +176,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
                   class="address-display-clickable"
                 >
                   <button
-                    class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default inline cursor-pointer appearance-none border-0 bg-transparent p-0 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"
+                    class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default inline cursor-pointer appearance-none border-0 bg-transparent p-0 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed whitespace-nowrap"
                     data-testid="confirm-info-row-display-name"
                     type="button"
                   >
