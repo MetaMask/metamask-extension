@@ -52,6 +52,11 @@ export function withTransactionEnvelopeTypeFixtures(
           : {},
       ...(smartContract && { smartContract }),
       testSpecificMock: combinedMocks,
+      manifestFlags: {
+        remoteFeatureFlags: {
+          extensionUxTokenManagementFilter: false,
+        },
+      },
       title,
     },
     testFunction,

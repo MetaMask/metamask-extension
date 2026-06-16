@@ -40,6 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disabled passkey unlock and setup on mobile browsers where the experience is unreliable. (#43009)
 - Fix routing after hardware wallet onboarding (#42952)
 - Updated onboarding metrics for Telegram Login. fixed onboarding unlock metrics. (#43052)
+### Changed
+
+- Bump `@metamask/assets-controllers` from 108.5.0 to 109.0.0 (#43422)
 
 ## [13.34.1]
 

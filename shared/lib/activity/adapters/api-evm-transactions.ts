@@ -185,7 +185,7 @@ export function mapApiEvmTransactions({
     hasNativeTransferWithoutMethod
   ) {
     const isReceive =
-      Boolean(receivedTransfer) ||
+      Boolean(receivedTransfer && !sentTransfer) ||
       (equalsIgnoreCase(transaction.to, subjectAddress) &&
         !equalsIgnoreCase(transaction.from, subjectAddress));
 

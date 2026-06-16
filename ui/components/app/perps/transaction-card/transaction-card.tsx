@@ -157,7 +157,12 @@ export const TransactionCard = ({
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
+          <Text
+            fontWeight={FontWeight.Medium}
+            className="text-s-body-md @compact:text-s-body-sm"
+          >
+            {transaction.title}
+          </Text>
           {!(isClickable && hasInteractiveBadge) && (
             <PerpsFillTag transaction={transaction} screenName={screenName} />
           )}
@@ -174,9 +179,9 @@ export const TransactionCard = ({
         gap={1}
       >
         <Text
-          variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           color={amountDisplay.color}
+          className="text-s-body-md @compact:text-s-body-sm"
         >
           {amountDisplay.text}
         </Text>
@@ -186,6 +191,7 @@ export const TransactionCard = ({
 
   const sharedClassName = twMerge(
     'gap-4 px-4 py-3',
+    '[container-name:list-item] [container-type:inline-size]',
     variantStyles,
     showTopBorder && 'border-t border-background-default',
   );
@@ -196,6 +202,7 @@ export const TransactionCard = ({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         className={twMerge(
+          '[container-name:list-item] [container-type:inline-size]',
           variantStyles,
           showTopBorder && 'border-t border-background-default',
         )}

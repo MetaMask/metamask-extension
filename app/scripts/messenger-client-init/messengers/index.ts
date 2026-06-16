@@ -1,4 +1,5 @@
 import { noop } from 'lodash';
+import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -71,6 +72,7 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
+  getSnapAccountServiceMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -253,7 +255,7 @@ export {
   getGasFeeControllerInitMessenger,
 } from './gas-fee-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
-
+export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export type { NetworkControllerInitMessenger } from './network-controller-messenger';
@@ -374,6 +376,10 @@ export const MESSENGER_FACTORIES = {
   },
   AppStateController: {
     getMessenger: getAppStateControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AnalyticsController: {
+    getMessenger: getAnalyticsControllerMessenger,
     getInitMessenger: noop,
   },
   AssetsController: {
@@ -591,6 +597,10 @@ export const MESSENGER_FACTORIES = {
   SignatureController: {
     getMessenger: getSignatureControllerMessenger,
     getInitMessenger: getSignatureControllerInitMessenger,
+  },
+  SnapAccountService: {
+    getMessenger: getSnapAccountServiceMessenger,
+    getInitMessenger: noop,
   },
   SnapsNameProvider: {
     getMessenger: getSnapsNameProviderMessenger,

@@ -17,7 +17,7 @@ const mockedMetametricsId = '0xtestMetaMetricsId';
 let mockStoreState = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-    metaMetricsId: mockedMetametricsId,
+    analyticsId: mockedMetametricsId,
   },
 };
 

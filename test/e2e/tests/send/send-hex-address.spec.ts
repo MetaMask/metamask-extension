@@ -5,7 +5,7 @@
  * when pasted or typed in the send flow.
  */
 
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import SendPage from '../../page-objects/pages/send/send-page';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';

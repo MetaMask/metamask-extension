@@ -157,14 +157,13 @@ const MultichainBridgeTransactionListItem = ({
       rightContent={
         <>
           <Text
-            className="activity-list-item__primary-currency"
+            className="activity-list-item__primary-currency text-s-body-md @compact:text-s-body-sm"
             color={TextColor.textDefault}
             data-testid="transaction-list-item-primary-currency"
             ellipsis
             fontWeight={FontWeight.Medium}
             textAlign={TextAlign.Right}
             title="Primary Currency"
-            variant={TextVariant.bodyMdMedium}
           >
             {(() => {
               if (sourceAsset?.fungible) {
