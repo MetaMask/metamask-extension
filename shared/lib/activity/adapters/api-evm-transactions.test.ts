@@ -372,6 +372,45 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps the LiFi Linea USDC to ETH exchange to a Swap activity', () => {
+    const transaction =
+      apiResponses.lifiLineaUsdcEthExchange as unknown as V1TransactionByHashResponse;
+    const swapperAddress = transaction.from;
+    const lineaUsdc = '0x176211869ca2b568f2a7d4ee941e073a821ee1ff';
+
+    const item = mapApiEvmTransactions({
+      subjectAddress: swapperAddress,
+      transaction,
+    });
+
+    expect(item).toMatchObject({
+      type: 'swap',
+      chainId: 'eip155:59144',
+      status: 'success',
+      timestamp: new Date('2026-01-16T21:09:00.000Z').getTime(),
+      data: {
+        hash: '0x3ac43e7c4a1a4421304ada43b41acec4d71ad90abfa418e97e92540a26eef0a2',
+        sourceToken: {
+          amount: '7934205',
+          decimals: 6,
+          direction: 'out',
+          assetId: toAssetId(lineaUsdc, 'eip155:59144'),
+          symbol: 'USDC',
+        },
+        destinationToken: {
+          amount: '2388594176642019',
+          decimals: 18,
+          direction: 'in',
+          assetId: toAssetId(
+            '0x0000000000000000000000000000000000000000',
+            'eip155:59144',
+          ),
+          symbol: 'ETH',
+        },
+      },
+    });
+  });
+
   it('maps an NFT sale with received native value to a Send activity', () => {
     const nftRecipientAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
     const nftBuyerAddress = '0x78c87da124bb36a914ff1c0f2d642f47870c997c';

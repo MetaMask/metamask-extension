@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AddTokenConfirmation from '../../page-objects/pages/confirmations/add-token-confirmations';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 
@@ -50,7 +50,7 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new AssetListPage(driver).checkTokenAmountIsDisplayed('0 TST');
+        await new TokensTab(driver).checkTokenAmountIsDisplayed('0 TST');
       },
     );
   });
@@ -95,7 +95,7 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new AssetListPage(driver).checkTokenItemNumber(1);
+        await new TokensTab(driver).checkTokenItemNumber(1);
       },
     );
   });

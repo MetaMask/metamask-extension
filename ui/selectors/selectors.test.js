@@ -4473,6 +4473,69 @@ describe('getDeferredDeepLink', () => {
   });
 });
 
+describe('getDeferredDeepLinkParameters', () => {
+  it('returns only UTM parameters from the deferred deep link', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: {
+          createdAt: 1765465337256,
+          referringLink:
+            'https://link.metamask.io/swap?utm_source=newsletter&utm_medium=email&utm_campaign=&foo=bar',
+        },
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual({
+      utm_source: 'newsletter',
+      utm_medium: 'email',
+    });
+  });
+
+  it('returns null when deferredDeepLink is not set', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: undefined,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual(null);
+  });
+});
+
+describe('getLastQrScanCompletedSuccessfully', () => {
+  it('returns true when last QR scan completed successfully', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: true,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(true);
+  });
+
+  it('returns false when last QR scan was cancelled', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: false,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(false);
+  });
+
+  it('returns null when no recent QR scan completion', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: null,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeNull();
+  });
+
+  it('returns undefined when lastQrScanCompletedSuccessfully is not in state', () => {
+    const state = { metamask: {} };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeUndefined();
+  });
+});
+
 describe('getLastVisitedPerpsRoute', () => {
   it('returns the perps lastVisitedRoute value when set', () => {
     const entry = { path: '/perps/market/BTC', timestamp: 1700000000000 };
