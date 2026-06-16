@@ -11,9 +11,6 @@ import {
   AccountImportStrategy,
   KeyringTypes,
 } from '@metamask/keyring-controller';
-import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
-import { AccountGroupId } from '@metamask/account-api';
 import { add0x, hexToBytes } from '@metamask/utils';
 import {
   EncAccountDataType,
@@ -24,7 +21,6 @@ import {
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import mockState from '../../../test/data/mock-state.json';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { createSentryError } from '../../../shared/lib/error';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
