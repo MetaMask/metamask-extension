@@ -1040,7 +1040,7 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
+        quotes: (mockBridgeQuotesErc20Erc20 ).map(
           (quote) => ({
             ...quote,
             quote: {

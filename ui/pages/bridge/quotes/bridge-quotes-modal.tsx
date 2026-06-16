@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
-  type QuoteMetadata,
   type QuoteResponse,
   FeatureId,
   UnifiedSwapBridgeEventName,
@@ -57,14 +56,14 @@ export const BridgeQuotesModal = ({
   const locale = useSelector(getIntlLocale);
 
   const isRecommendedQuote = useCallback(
-    (quote: QuoteMetadata & QuoteResponse) => {
+    (quote: QuoteResponse) => {
       return quote.quote.requestId === recommendedQuote?.quote.requestId;
     },
     [recommendedQuote],
   );
 
   const handleQuoteSelected = useCallback(
-    (quote: QuoteMetadata & QuoteResponse) => {
+    (quote: QuoteResponse) => {
       dispatch(setSelectedQuote(quote));
       recommendedQuote &&
         dispatch(
@@ -133,7 +132,7 @@ export const BridgeQuotesModal = ({
         {/* QUOTE LIST */}
         <Column maxWidth={BlockSize.Full} style={{ overflow: 'auto' }}>
           {sortedQuotes.map(
-            (quote: QuoteMetadata & QuoteResponse, index: number) => {
+            (quote: QuoteResponse, index: number) => {
               const {
                 totalNetworkFee,
                 toTokenAmount,

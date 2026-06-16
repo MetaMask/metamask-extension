@@ -1,7 +1,6 @@
 import {
   ChainId,
   selectMinimumBalanceForRentExemptionInSOL,
-  type QuoteMetadata,
   type QuoteResponse,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
@@ -47,7 +46,7 @@ const buildQuote = (
     quote: { srcChainId },
     totalNetworkFee: { amount: totalNetworkFee },
     sentAmount: { amount: sentAmount },
-  }) as unknown as QuoteResponse & QuoteMetadata;
+  }) as unknown as QuoteResponse;
 
 const renderUseHasSufficientGasForQuoteForMetrics = () =>
   renderHookWithProvider(

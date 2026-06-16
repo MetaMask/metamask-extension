@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import {
   isNativeAddress,
   selectMinimumBalanceForRentExemptionInSOL,
-  type QuoteMetadata,
   type QuoteResponse,
 } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
@@ -36,7 +35,7 @@ export const computeHasSufficientGasForQuoteForMetrics = ({
   fromToken,
   minimumBalanceToKeep,
 }: {
-  quote: (QuoteResponse & QuoteMetadata) | null;
+  quote: (QuoteResponse) | null;
   nativeBalance: ReturnType<typeof getFromNativeBalance>;
   fromToken: ReturnType<typeof getFromToken>;
   minimumBalanceToKeep: string;
@@ -76,7 +75,7 @@ export const useHasSufficientGasForQuoteForMetrics = () => {
   );
 
   return useCallback(
-    (quote: (QuoteResponse & QuoteMetadata) | null): boolean | null => {
+    (quote: (QuoteResponse) | null): boolean | null => {
       const srcChainId = quoteRequest?.srcChainId ?? quote?.quote?.srcChainId;
       const minimumBalanceToKeep = resolveMinimumBalanceToKeep(
         srcChainId,

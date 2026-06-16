@@ -7,7 +7,6 @@ import {
   type QuoteResponse,
   isNativeAddress,
   RequestStatus,
-  type QuoteMetadata,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
@@ -173,12 +172,12 @@ const bridgeSlice = createSlice({
     restoreQuoteRequestFromState: (
       state,
       {
-        payload: { sentAmount, quote },
-      }: { payload: QuoteResponse & QuoteMetadata },
+        payload: {  quote },
+      }: { payload: QuoteResponse },
     ) => {
-      state.fromToken = toBridgeToken(quote.srcAsset);
-      state.toToken = toBridgeToken(quote.destAsset);
-      state.fromTokenInputValue = sentAmount.amount;
+      state.fromToken = toBridgeToken(quote.src.asset);
+      state.toToken = toBridgeToken(quote.dest.asset);
+      state.fromTokenInputValue = quote.src.normalizedAmount??null;
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
