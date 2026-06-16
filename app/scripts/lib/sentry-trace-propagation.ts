@@ -22,30 +22,16 @@ const TRACE_FLAG_SAMPLED = 1;
 
 /**
  * Backend API host patterns that should receive distributed-trace propagation
- * (W3C `traceparent` + RAPID baggage) on outbound HTTPS. Shared with Sentry's
- * `tracePropagationTargets` so the SDK attaches `sentry-trace` / `baggage` to
- * the exact same hosts this integration augments.
- *
- * NOTE: the host inventory is RAPID-cited (`*.api.cx.metamask.io`). Additional
- * backend hosts (Infura, BlockAid, etc.) should be added once confirmed against
- * the extension's actual outbound call surface.
+ * (W3C `traceparent` + RAPID baggage) on outbound HTTPS. 
  */
 export const BACKEND_TRACE_PROPAGATION_TARGETS: RegExp[] = [
   /^https:\/\/[a-z0-9.-]+\.(?:[a-z0-9]+-)?api\.cx\.metamask\.io(?:[/?#]|$)/u,
 ];
 
-// --- consensys-request-id provider seam -----------------------------------
-//
-// Per-request now: each outbound request gets a fresh UUIDv4. The provider is
-// swappable so a per-operation source (one id shared across the HTTP calls of a
-// transaction lifecycle) can replace it later without touching the fetch hook —
-// see the "per-request vs per-operation" open question on
-// MetaMask/MetaMask-planning#7236.
-
 let requestIdProvider: () => string = () => uuidv4();
 let currentConsensysRequestId: string | undefined;
-// `null` marks a trace that fanned out to more than one request id: a
-// trace-level Sentry error can't be attributed to a single outbound request, so
+// `null` marks a trace that fanned out to more than one request id.
+// A trace-level Sentry error can't be attributed to a single outbound request, so
 // the tag is suppressed rather than attaching a misleading last-write-wins id.
 const requestIdByTraceId = new Map<string, string | null>();
 const MAX_TRACE_REQUEST_ID_ENTRIES = 100;
@@ -61,7 +47,7 @@ export function setConsensysRequestIdProvider(provider: () => string): void {
 }
 
 /**
- * Reset the request-id provider and cached id. Test seam.
+ * Test helper that resets the request-id provider and cached id.
  */
 export function resetConsensysRequestIdProvider(): void {
   requestIdProvider = () => uuidv4();
