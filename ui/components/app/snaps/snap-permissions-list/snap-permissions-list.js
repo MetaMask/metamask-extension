@@ -1,18 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box, ButtonLink } from '../../../component-library';
+import { ButtonLink } from '../../../component-library';
 import {
   getMultipleTargetsSubjectMetadata,
   getSnapsMetadata,
 } from '../../../../selectors';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
 import {
   MinPermissionAbstractionDisplayCount,
   PermissionsAbstractionThreshold,
@@ -71,12 +70,8 @@ export default function SnapPermissionsList({
   };
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      width={BlockSize.Full}
-    >
-      <Box className="snap-permissions-list" width={BlockSize.Full}>
+    <Box flexDirection={BoxFlexDirection.Column} className="flex w-full">
+      <Box className="snap-permissions-list w-full">
         <SnapPermissionAdapter
           permissions={showAll ? weightedPermissions : filteredPermissions}
           snapId={snapId}
@@ -87,10 +82,11 @@ export default function SnapPermissionsList({
       </Box>
       {showAll ? null : (
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Center}
           paddingTop={2}
           paddingBottom={2}
+          className="flex"
         >
           <ButtonLink onClick={onShowAllPermissionsHandler}>
             {t('seeAllPermissions')}

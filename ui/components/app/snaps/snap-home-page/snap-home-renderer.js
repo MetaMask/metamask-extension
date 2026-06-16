@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Text } from '../../../component-library';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
+import { Text } from '../../../component-library';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import {
   getSnapMetadata,
@@ -11,11 +12,7 @@ import {
 } from '../../../../selectors';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-import {
-  BackgroundColor,
-  BlockSize,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { Copyable } from '../copyable';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { deleteInterface } from '../../../../store/actions';
@@ -70,14 +67,13 @@ export const SnapHomeRenderer = ({ snapId }) => {
   if (error) {
     return (
       <Box
-        height={BlockSize.Full}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={BoxBackgroundColor.BackgroundAlternative}
+        className="h-full w-full"
         style={{
           overflowY: 'auto',
         }}
       >
-        <Box height={BlockSize.Full} padding={4}>
+        <Box padding={4} className="h-full">
           <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               {t('snapsUIError', [<b key="0">{snapName}</b>])}

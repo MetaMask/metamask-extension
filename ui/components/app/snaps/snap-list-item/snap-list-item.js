@@ -2,16 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   Color,
-  AlignItems,
-  JustifyContent,
-  Display,
-  BlockSize,
   TextVariant,
-  BorderRadius,
-  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { Text, Box } from '../../../component-library';
+import { Text } from '../../../component-library';
 import { SnapIcon } from '../snap-icon';
 
 const SnapListItem = ({
@@ -23,21 +24,19 @@ const SnapListItem = ({
 }) => {
   return (
     <Box
-      className="snap-list-item"
+      className="flex snap-list-item w-full"
       data-testid={snapId}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       padding={4}
       onClick={onClick}
     >
       <Box
-        className="snap-list-item__inner-wrapper"
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexStart}
-        width={BlockSize.Full}
+        className="flex snap-list-item__inner-wrapper w-full"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Start}
       >
         <Box>
           <SnapIcon snapId={snapId} />
@@ -45,7 +44,7 @@ const SnapListItem = ({
         <Box
           paddingLeft={4}
           paddingRight={4}
-          width={BlockSize.Full}
+          className="w-full"
           style={{ overflow: 'hidden' }}
         >
           <Text
@@ -68,10 +67,9 @@ const SnapListItem = ({
       </Box>
       {showUpdateDot && (
         <Box
-          display={Display.Flex}
+          className="rounded-full"
           style={{ width: '10px', height: '10px', content: '' }}
-          borderRadius={BorderRadius.full}
-          backgroundColor={BackgroundColor.primaryDefault}
+          backgroundColor={BoxBackgroundColor.PrimaryDefault}
         />
       )}
     </Box>

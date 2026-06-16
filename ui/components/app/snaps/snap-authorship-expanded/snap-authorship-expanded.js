@@ -4,17 +4,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-  BorderRadius,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   BorderStyle,
   Color,
-  Display,
-  FlexDirection,
   FontWeight,
-  JustifyContent,
   OverflowWrap,
   TextAlign,
   TextVariant,
@@ -24,7 +24,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapRegistryData } from '../../../../selectors';
 import { disableSnap, enableSnap } from '../../../../store/actions';
-import { Box, ButtonLink, Text } from '../../../component-library';
+import { ButtonLink, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import SnapExternalPill from '../snap-version/snap-external-pill';
@@ -70,22 +70,22 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
 
   return (
     <Box
-      className={classnames('snaps-authorship-expanded', className)}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderColor={BorderColor.borderDefault}
+      className={classnames(
+        'snaps-authorship-expanded rounded-lg w-full',
+        className,
+      )}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      borderColor={BoxBorderColor.BorderDefault}
       borderWidth={1}
-      width={BlockSize.Full}
-      borderRadius={BorderRadius.LG}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
         paddingLeft={4}
         paddingTop={4}
         paddingBottom={4}
-        borderColor={BorderColor.borderDefault}
-        width={BlockSize.Full}
+        borderColor={BoxBorderColor.BorderDefault}
+        className="flex w-full"
         style={{
           borderLeft: BorderStyle.none,
           borderRight: BorderStyle.none,
@@ -101,23 +101,22 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           </Tooltip>
         </Box>
       </Box>
-      <Box padding={4} width={BlockSize.Full}>
+      <Box padding={4} className="w-full">
         {safeWebsite && (
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-            width={BlockSize.Full}
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
             marginBottom={4}
+            className="flex w-full"
           >
             <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
               {t('snapDetailWebsite')}
             </Text>
             <Box
               paddingLeft={8}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.flexEnd}
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.End}
+              className="flex"
             >
               <ButtonLink
                 href={safeWebsite.toString()}
@@ -131,18 +130,17 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
         )}
         {installOrigin && installInfo && (
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-            width={BlockSize.Full}
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            className="flex w-full"
           >
             <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
               {t('installOrigin')}
             </Text>
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.flexEnd}
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.End}
+              className="flex"
             >
               <Text textAlign={TextAlign.End}>{installOrigin.host}</Text>
               <Text color={Color.textMuted}>
@@ -154,11 +152,11 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           </Box>
         )}
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
           marginTop={4}
+          className="flex"
         >
           <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
             {t('version')}

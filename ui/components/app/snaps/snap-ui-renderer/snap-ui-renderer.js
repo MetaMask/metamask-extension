@@ -7,19 +7,18 @@ import { isEqual } from 'lodash';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import { ThemeProvider } from '@material-ui/core/styles';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { getInterface } from '../../../../selectors';
-import { Box } from '../../../component-library';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 import PulseLoader from '../../../ui/pulse-loader';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
+import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
@@ -28,6 +27,16 @@ import {
   muiPickerTheme,
 } from './utils';
 import { COMPONENT_MAPPING } from './components';
+
+// Maps legacy BackgroundColor enum values used by Snaps content to the
+// Tailwind utility classes consumed by `@metamask/design-system-react` Box.
+const BACKGROUND_TO_TAILWIND = {
+  [BackgroundColor.backgroundDefault]: 'bg-default',
+  [BackgroundColor.backgroundAlternative]: 'bg-alternative',
+  [BackgroundColor.backgroundSection]: 'bg-section',
+  [BackgroundColor.backgroundSubsection]: 'bg-subsection',
+  [BackgroundColor.backgroundMuted]: 'bg-muted',
+};
 
 // Component for tracking the number of re-renders
 // DO NOT USE IN PRODUCTION
@@ -127,11 +136,10 @@ const SnapUIRendererComponent = ({
   if (isLoading || !content) {
     return (
       <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        height={BlockSize.Full}
-        width={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
+        className="flex h-full w-full"
       >
         <PulseLoader />
       </Box>
@@ -149,9 +157,7 @@ const SnapUIRendererComponent = ({
       <ThemeProvider theme={muiPickerTheme}>
         <MuiPickersUtilsProvider utils={LuxonUtils} locale={locale}>
           <Box
-            className="snap-ui-renderer__content"
-            height={BlockSize.Full}
-            backgroundColor={backgroundColor}
+            className={`snap-ui-renderer__content h-full ${BACKGROUND_TO_TAILWIND[backgroundColor] ?? 'bg-alternative'}`}
             style={{
               overflowY: 'auto',
             }}

@@ -1,11 +1,7 @@
 import React, { FormEvent } from 'react';
 import { UserInputEventType } from '@metamask/snaps-sdk';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { Box } from '../../../component-library';
-import {
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
 
 export type SnapUIFormProps = {
   name: string;
@@ -27,15 +23,18 @@ export const SnapUIForm = ({
 
   return (
     <Box
-      as="form"
-      className="snap-ui-renderer__form"
-      onSubmit={handleSubmit}
-      id={name}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      asChild
+      flexDirection={BoxFlexDirection.Column}
       gap={2}
+      className="flex"
     >
-      {children}
+      <form
+        className="snap-ui-renderer__form"
+        onSubmit={handleSubmit}
+        id={name}
+      >
+        {children}
+      </form>
     </Box>
   );
 };

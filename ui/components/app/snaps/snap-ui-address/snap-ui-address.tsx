@@ -4,11 +4,14 @@ import {
   isHexString,
   parseCaipAccountId,
 } from '@metamask/utils';
-import { AvatarAccountSize } from '@metamask/design-system-react';
-import { Box, Text } from '../../../component-library';
 import {
-  AlignItems,
-  Display,
+  AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { Text } from '../../../component-library';
+import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -63,10 +66,10 @@ export const SnapUIAddress = ({
 
   return (
     <Box
-      className="snap-ui-renderer__address"
+      className="flex snap-ui-renderer__address"
       data-testid="snap-ui-address"
-      display={Display.Flex}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
       gap={2}
     >
       {avatar && <SnapUIAvatar address={caipIdentifier} size={avatarSize} />}

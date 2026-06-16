@@ -1,14 +1,15 @@
 import React, { ReactNode } from 'react';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   TextColor,
   TextVariant,
-  AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../component-library';
+import { Text } from '../../../component-library';
 import { SnapUIImage } from '../snap-ui-image';
 
 export type SnapUICardProps = {
@@ -28,16 +29,17 @@ export const SnapUICard = ({
 }: SnapUICardProps) => {
   return (
     <Box
-      className="snap-ui-renderer__card"
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
+      className="flex snap-ui-renderer__card"
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
       gap={2}
     >
       <Box
-        display={Display.Flex}
+        flexDirection={BoxFlexDirection.Row}
         gap={4}
-        alignItems={AlignItems.center}
+        alignItems={BoxAlignItems.Center}
+        className="flex"
         style={{ overflow: 'hidden' }}
       >
         {image && (
@@ -49,8 +51,8 @@ export const SnapUICard = ({
           />
         )}
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
+          className="flex"
           style={{ overflow: 'hidden' }}
         >
           <Text variant={TextVariant.bodyMdMedium} ellipsis>
@@ -64,9 +66,8 @@ export const SnapUICard = ({
         </Box>
       </Box>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        textAlign={TextAlign.Right}
+        flexDirection={BoxFlexDirection.Column}
+        className="flex text-right"
         style={{ overflow: 'hidden' }}
       >
         <Text variant={TextVariant.bodyMdMedium} ellipsis>
