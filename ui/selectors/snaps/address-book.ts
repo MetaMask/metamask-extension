@@ -1,5 +1,8 @@
-import { AddressBookController } from '@metamask/address-book-controller';
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
+import {
+  AddressBookController,
+  AddressBookEntry,
+} from '@metamask/address-book-controller';
+import { createParameterizedSelector } from '../../../shared/lib/selectors/selector-creators';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 
 /**
@@ -27,11 +30,9 @@ export const getFullAddressBook = (state: AddressBookMetaMaskState) =>
  * @param chainId - The chain ID to get the address book for.
  * @returns The address book for the network.
  */
-export const getAddressBookByNetwork = createDeepEqualSelector(
-  [
-    getFullAddressBook,
-    (_state: AddressBookMetaMaskState, chainId: `0x${string}`) => chainId,
-  ],
+export const getAddressBookByNetwork = createParameterizedSelector(20)(
+  getFullAddressBook,
+  (_state: AddressBookMetaMaskState, chainId: `0x${string}`) => chainId,
   (addressBook, chainId) => {
     if (!addressBook[chainId]) {
       return [];
@@ -52,17 +53,12 @@ export const getAddressBookByNetwork = createDeepEqualSelector(
  */
 /* eslint-enable jsdoc/require-param */
 /* eslint-enable jsdoc/check-param-names */
-export const getAddressBookEntryByNetwork = createDeepEqualSelector(
-  [
-    (
-      state: AddressBookMetaMaskState,
-      _address: string,
-      chainId: `0x${string}`,
-    ) => getAddressBookByNetwork(state, chainId),
-    (_state, address) => address,
-  ],
+export const getAddressBookEntryByNetwork = createParameterizedSelector(50)(
+  (state: AddressBookMetaMaskState, _address: string, chainId: `0x${string}`) =>
+    getAddressBookByNetwork(state, chainId),
+  (_state, address) => address,
   (addressBook, address) => {
-    return addressBook.find((contact) =>
+    return addressBook.find((contact: AddressBookEntry) =>
       isEqualCaseInsensitive(contact.address, address),
     );
   },
