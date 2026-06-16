@@ -53,8 +53,7 @@
     "singleExceptions": "object",
     "smartTransactionsError": null,
     "smartTransactionsErrorMessageDismissed": "boolean",
-    "txId": null,
-    "warning": "undefined"
+    "txId": null
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -121,24 +120,9 @@
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
     "currencyRates": {
-      "BNB": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
-      },
       "ETH": {
         "conversionDate": "object",
         "conversionRate": 1700,
-        "usdConversionRate": null
-      },
-      "MON": {
-        "conversionDate": "object",
-        "conversionRate": null,
-        "usdConversionRate": null
-      },
-      "POL": {
-        "conversionDate": null,
-        "conversionRate": null,
         "usdConversionRate": null
       }
     },
@@ -240,6 +224,7 @@
     "lastError": null,
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": "object",
+    "lastQrScanCompletedSuccessfully": null,
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
@@ -261,6 +246,7 @@
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
     "methodData": "object",
+    "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": "object",
     "musdConversionDismissedCtaKeys": "object",

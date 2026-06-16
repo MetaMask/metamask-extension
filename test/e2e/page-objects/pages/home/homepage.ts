@@ -480,30 +480,18 @@ class HomePage {
     );
   }
 
-  async checkIfSendButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.sendButton, {
-        timeout: 1000,
-      });
-    } catch (e) {
-      console.log('Send button not clickable', e);
-      return false;
-    }
-    console.log('Send button is clickable');
-    return true;
+  async checkSendButtonIsClickable(clickable: boolean = true): Promise<void> {
+    console.log(`Check Send button is ${clickable ? 'enabled' : 'disabled'}`);
+    await this.driver.waitForSelector(this.sendButton, {
+      state: clickable ? 'enabled' : 'disabled',
+    });
   }
 
-  async checkIfSwapButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.swapButton, {
-        timeout: 1000,
-      });
-    } catch (e) {
-      console.log('Swap button not clickable', e);
-      return false;
-    }
-    console.log('Swap button is clickable');
-    return true;
+  async checkSwapButtonIsClickable(clickable: boolean = true): Promise<void> {
+    console.log(`Check Swap button is ${clickable ? 'enabled' : 'disabled'}`);
+    await this.driver.waitForSelector(this.swapButton, {
+      state: clickable ? 'enabled' : 'disabled',
+    });
   }
 
   async checkLocalNodeBalanceIsDisplayed(

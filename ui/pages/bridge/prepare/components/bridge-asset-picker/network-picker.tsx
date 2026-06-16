@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -8,11 +9,18 @@ import {
 import { type CaipChainId } from '@metamask/utils';
 import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../../../shared/constants/bridge';
 import {
+  IconName as ComponentIconName,
   Popover,
   PopoverRole,
 } from '../../../../../components/component-library';
-import { NetworkListItem } from '../../../../../components/multichain';
+import { NetworkListItem } from '../../../../../components/multichain/network-list-item';
+import {
+  NetworkSelectionModal,
+  type NetworkSelectionSection,
+} from '../../../../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getNetworkSections } from '../../../../../helpers/utils/network-sections';
+import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   BackgroundColor,
   BorderRadius,
@@ -32,12 +40,66 @@ export const NetworkPicker = ({
   selectedChainId: CaipChainId | null;
   disabledChainId?: CaipChainId;
   onNetworkChange: (chainId: CaipChainId | null) => void;
-  buttonElement: HTMLElement | null;
+  buttonElement?: HTMLElement | null;
   isOpen: boolean;
   onClose: () => void;
   testId: string;
 }) => {
   const t = useI18nContext();
+  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
+
+  const networkSections = useMemo(() => getNetworkSections(chains), [chains]);
+
+  const sections = useMemo<NetworkSelectionSection[]>(
+    () =>
+      networkSections.map((section) => ({
+        key: section.key,
+        title: section.titleKey ? t(section.titleKey) : undefined,
+        items: section.items.map(({ chainId, name }) => ({
+          key: chainId,
+          chainId,
+          name,
+          iconSrc: BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[chainId],
+          selected: selectedChainId === chainId,
+          disabled: disabledChainId === chainId,
+          onClick: () => {
+            if (disabledChainId === chainId) {
+              return;
+            }
+            onNetworkChange(chainId);
+          },
+          testId: `${testId}-item-${chainId}`,
+        })),
+      })),
+    [
+      disabledChainId,
+      networkSections,
+      onNetworkChange,
+      selectedChainId,
+      t,
+      testId,
+    ],
+  );
+
+  if (isNetworkManagementEnabled) {
+    return (
+      <NetworkSelectionModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={t('bridgeSelectNetwork')}
+        data-testid={testId}
+        topItem={{
+          key: 'all-networks',
+          name: t('allNetworks'),
+          iconSrc: ComponentIconName.Global,
+          selected: !selectedChainId,
+          onClick: () => onNetworkChange(null),
+          testId: `${testId}-all-networks`,
+        }}
+        sections={sections}
+      />
+    );
+  }
 
   return (
     <Popover

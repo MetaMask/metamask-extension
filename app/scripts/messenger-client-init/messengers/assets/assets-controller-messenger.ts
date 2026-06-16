@@ -76,7 +76,6 @@ export function getAssetsControllerMessenger(
       'PreferencesController:stateChange',
       'AccountTreeController:stateChange',
       'TransactionController:transactionConfirmed',
-      'TransactionController:incomingTransactionsReceived',
       'TransactionController:unapprovedTransactionAdded',
     ],
   });

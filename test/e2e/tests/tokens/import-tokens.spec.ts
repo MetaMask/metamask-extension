@@ -1,4 +1,4 @@
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 
 import { withFixtures } from '../../helpers';
@@ -548,20 +548,25 @@ describe('Import flow', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: importTokensTestMock,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver }) => {
         await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importMultipleTokensBySearch([
+        await tokensTab.importMultipleTokensBySearch([
           'CHAIN',
           'CHANGE',
           'CHAI',
         ]);
 
-        const tokenList = new AssetListPage(driver);
+        const tokenList = new TokensTab(driver);
 
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, mUSD
         // ERC20 Tokens: Chain Games, Chai, ChangeX
@@ -679,6 +684,11 @@ describe('Import flow', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: importTokensTestMock,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver }) => {
         await login(driver, { validateBalance: false });
@@ -686,13 +696,13 @@ describe('Import flow', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         const networkManagerPage = new NetworkManager(driver);
         await networkManagerPage.openNetworkManager();
         await networkManagerPage.selectNetworkByChainId(NetworkId.POLYGON);
 
         // the token symbol is prefilled because of the mock
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           '0x89',
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
           'USDT',
@@ -700,7 +710,7 @@ describe('Import flow', function () {
 
         console.log(`Imported token ++++++++++`);
 
-        const tokenList = new AssetListPage(driver);
+        const tokenList = new TokensTab(driver);
 
         // Native Tokens: Polygon POL
         // ERC20 Tokens: Polygon USDT

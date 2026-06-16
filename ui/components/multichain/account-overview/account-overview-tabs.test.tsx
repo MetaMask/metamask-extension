@@ -10,10 +10,15 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
 jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useTokenBalances', () => ({
+  useTokenBalances: jest.fn(),
 }));
 
 jest.mock('../../app/assets/asset-list', () => ({
@@ -50,6 +55,11 @@ jest.mock('../../app/perps/perps-tab', () => ({
   PerpsTab: () => <div data-testid="perps-tab-mock">PerpsTab</div>,
 }));
 
+beforeEach(() => {
+  jest.clearAllMocks();
+  (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
+});
+
 describe('AccountOverviewTabs - event metrics', () => {
   const mockTrackEvent = jest.fn();
   const mockMetaMetricsContext = {
@@ -61,6 +71,70 @@ describe('AccountOverviewTabs - event metrics', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('does not fire trackEvent when clicking the Activity tab (V3 mode)', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
+        remoteFeatureFlags: { extensionUxActivityListRedesign: true },
+      },
+    });
+
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <AccountOverviewTabs
+          showTokens={true}
+          showNfts={false}
+          showActivity={true}
+          setBasicFunctionalityModalOpen={jest.fn()}
+          onSupportLinkClick={jest.fn()}
+        />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    fireEvent.click(getByText(messages.activity.message));
+
+    // ActivityScreenOpened is deferred to ActivityListV3; tab click must not
+    // fire any metric.
+    expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('fires ActivityScreenOpened when clicking the Activity tab (V2 mode)', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
+        remoteFeatureFlags: { extensionUxActivityListRedesign: false },
+      },
+    });
+
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <AccountOverviewTabs
+          showTokens={true}
+          showNfts={false}
+          showActivity={true}
+          setBasicFunctionalityModalOpen={jest.fn()}
+          onSupportLinkClick={jest.fn()}
+        />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    fireEvent.click(getByText(messages.activity.message));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.ActivityScreenOpened,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          network_filter: ['eip155:1'],
+        }),
+      }),
+    );
   });
 
   it('includes network_filter property with both EVM and non-EVM networks in CAIP format', () => {
@@ -109,5 +183,41 @@ describe('AccountOverviewTabs - event metrics', () => {
         ],
       },
     });
+  });
+});
+
+describe('AccountOverviewTabs - TokenBalancesPoller', () => {
+  it('polls token balances for the enabled EVM chain IDs', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        enabledNetworkMap: {
+          eip155: {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.POLYGON]: true,
+          },
+        },
+      },
+    });
+
+    renderWithProvider(
+      <AccountOverviewTabs
+        showTokens={true}
+        showNfts={false}
+        showActivity={false}
+        setBasicFunctionalityModalOpen={jest.fn()}
+        onSupportLinkClick={jest.fn()}
+      />,
+      store,
+    );
+
+    expect(useTokenBalances).toHaveBeenCalledWith(
+      expect.objectContaining({
+        chainIds: expect.arrayContaining([
+          CHAIN_IDS.MAINNET,
+          CHAIN_IDS.POLYGON,
+        ]),
+      }),
+    );
   });
 });

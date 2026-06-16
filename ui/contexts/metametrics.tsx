@@ -3,7 +3,6 @@
  * metrics system. This file implements Segment analytics tracking.
  */
 import React, {
-  Component,
   createContext,
   useEffect,
   useRef,
@@ -36,9 +35,9 @@ import {
 } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import {
-  getIsParticipateInMetaMetricsSet,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../selectors';
 import { submitRequestToBackground } from '../store/background-connection';
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
@@ -143,15 +142,16 @@ type MetaMetricsProviderProps = {
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
-  const isParticipateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
-  const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const canTrackImmediately = isMetricsEnabled && Boolean(metaMetricsId);
+  const isOptedIn = useSelector(getOptedIn);
+  const analyticsId = useSelector(getAnalyticsId);
+  const isMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const canTrackImmediately = isMetricsEnabled && Boolean(analyticsId);
   // Buffer events until we know whether or not we can submit them.
   const canMaybeTrackLater =
-    !isParticipateInMetaMetricsSet || (isMetricsEnabled && !metaMetricsId);
+    !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
 
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
@@ -299,48 +299,6 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       {children}
     </MetaMetricsContext.Provider>
   );
-}
-
-type LegacyChildContext = {
-  trackEvent: UITrackEventMethod;
-  bufferedTrace: UITraceMethod;
-  bufferedEndTrace: UIEndTraceMethod;
-};
-
-type LegacyMetaMetricsProviderProps = {
-  children?: ReactNode;
-};
-
-/**
- * Legacy context provider for class components using the old context API
- *
- * @deprecated Use MetaMetricsContext with useContext hook instead
- */
-export class LegacyMetaMetricsProvider extends Component<LegacyMetaMetricsProviderProps> {
-  static contextType = MetaMetricsContext;
-
-  // eslint-disable-next-line react/static-property-placement
-  static childContextTypes = {
-    // This has to be different than the type name for the old metametrics file
-    // using the same name would result in whichever was lower in the tree to be
-    // used.
-    trackEvent: (): null => null,
-    bufferedTrace: (): null => null,
-    bufferedEndTrace: (): null => null,
-  };
-
-  getChildContext(): LegacyChildContext {
-    const context = this.context as MetaMetricsContextValue;
-    return {
-      trackEvent: context.trackEvent,
-      bufferedTrace: context.bufferedTrace,
-      bufferedEndTrace: context.bufferedEndTrace,
-    };
-  }
-
-  render() {
-    return this.props.children;
-  }
 }
 
 /**

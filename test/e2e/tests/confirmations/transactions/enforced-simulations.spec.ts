@@ -9,9 +9,9 @@ import { WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
 import { MockedEndpoint } from '../../../mock-e2e';
 import { mockEip7702FeatureFlag } from '../helpers';
@@ -366,13 +366,13 @@ async function confirmAndGetTransaction(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  const activityList = new ActivityListPage(driver);
-  await activityList.goToActivityList();
+  const activityTab = new ActivityTab(driver);
+  await activityTab.goToActivityList();
 
   if (expectedStatus === 'confirmed') {
-    await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+    await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
   } else {
-    await activityList.checkFailedTxNumberDisplayedInActivity(1);
+    await activityTab.checkFailedTxNumberDisplayedInActivity(1);
   }
 
   await driver.switchToWindowWithTitle(

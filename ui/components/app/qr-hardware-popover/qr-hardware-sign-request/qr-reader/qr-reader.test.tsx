@@ -4,12 +4,12 @@ import type { UR } from '@ngraveio/bc-ur';
 import { ETHSignature } from '@keystonehq/bc-ur-registry-eth';
 import * as uuid from 'uuid';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import {
   UrType,
   SIGNING_EXPECTED_UR_TYPES,
   type BaseQrReaderProps,
 } from '../../base-qr-reader';
+import { QrMismatchedTransactionError } from '../../qr-utils/qr-utils';
 import type { QrReaderProps } from './qr-reader.types';
 import QrReader from './qr-reader';
 
@@ -138,7 +138,7 @@ describe('QrReader', () => {
       });
     });
 
-    it('throws and sets error title when requestId does not match', async () => {
+    it('throws QrMismatchedTransactionError when requestId does not match', async () => {
       mockUr = buildMockUr();
 
       mockFromCBOR.mockReturnValue({
@@ -151,16 +151,11 @@ describe('QrReader', () => {
       await screen.getByTestId('base-qr-reader-success').click();
 
       await waitFor(() => {
-        expect(defaultProps.setErrorTitle).toHaveBeenCalledWith(
-          tEn('QRHardwareInvalidTransactionTitle'),
-        );
+        expect(defaultProps.setErrorTitle).not.toHaveBeenCalled();
         expect(defaultProps.submitQRHardwareSignature).not.toHaveBeenCalled();
       });
 
-      expect(mockLastReaderError).toBeDefined();
-      expect(mockLastReaderError?.message).toBe(
-        tEn('QRHardwareMismatchedSignId'),
-      );
+      expect(mockLastReaderError).toBeInstanceOf(QrMismatchedTransactionError);
     });
   });
 

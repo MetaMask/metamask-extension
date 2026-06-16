@@ -3,7 +3,7 @@ import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import HomePage from '../../../page-objects/pages/home/homepage';
 
-import DeFiTab from '../../../page-objects/pages/defi-tab';
+import DeFiTab from '../../../page-objects/pages/home/defi-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';

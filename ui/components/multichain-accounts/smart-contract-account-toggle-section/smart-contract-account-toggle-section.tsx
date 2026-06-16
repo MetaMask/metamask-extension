@@ -5,12 +5,13 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   BoxJustifyContent,
-} from '@metamask/design-system-react';
-import { ButtonLink, ButtonLinkSize, Text } from '../../component-library';
-import {
-  TextVariant,
+  FontWeight,
+  Text,
+  TextButton,
+  TextButtonSize,
   TextColor,
-} from '../../../helpers/constants/design-system';
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
@@ -70,20 +71,22 @@ export const SmartContractAccountToggleSection = ({
       style={{ borderRadius: '8px' }}
     >
       <Box paddingRight={2}>
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={2}>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          className="mb-2"
+        >
           {t('enableSmartContractAccount')}
         </Text>
-        <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
+        <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>
           {t('enableSmartContractAccountDescription')}{' '}
-          <ButtonLink
+          <TextButton
             onClick={() => {
               global.platform.openTab({
                 url: ZENDESK_URLS.ACCOUNT_UPGRADE,
               });
             }}
-            size={ButtonLinkSize.Sm}
-            target="_blank"
-            rel="noopener noreferrer"
+            size={TextButtonSize.BodySm}
             style={{
               height: '22px',
               fontSize: '14px',
@@ -92,7 +95,7 @@ export const SmartContractAccountToggleSection = ({
             }}
           >
             {t('learnMoreUpperCase')}
-          </ButtonLink>
+          </TextButton>
         </Text>
       </Box>
       <Box>{networkList}</Box>

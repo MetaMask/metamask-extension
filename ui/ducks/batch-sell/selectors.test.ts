@@ -522,6 +522,60 @@ describe('batch-sell selectors', () => {
       expect(result[0].symbol).toBe('ETH');
     });
 
+    it('filters out tokens whose name includes "Ondo Tokenized"', () => {
+      const ONDO_ASSET_ID =
+        `${CAIP_MAINNET}/erc20:0xBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb` as CaipChainId;
+      const ONDO_BRIDGE_TOKEN = {
+        assetId: ONDO_ASSET_ID,
+        chainId: CAIP_MAINNET,
+        symbol: 'OUSG',
+        name: 'Ondo Tokenized Short-Term US Government Bond Fund',
+        decimals: 18,
+        balance: '5',
+        tokenFiatAmount: 500,
+        iconUrl: undefined,
+      };
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
+        [ONDO_ASSET_ID.toLowerCase()]: ONDO_BRIDGE_TOKEN,
+      } as never);
+
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
+        buildState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].symbol).toBe('ETH');
+    });
+
+    it('does not filter out tokens whose name only partially resembles "Ondo Tokenized"', () => {
+      const OTHER_ASSET_ID =
+        `${CAIP_MAINNET}/erc20:0xCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCc` as CaipChainId;
+      const OTHER_BRIDGE_TOKEN = {
+        assetId: OTHER_ASSET_ID,
+        chainId: CAIP_MAINNET,
+        symbol: 'ONDO',
+        name: 'Ondo Finance',
+        decimals: 18,
+        balance: '10',
+        tokenFiatAmount: 100,
+        iconUrl: undefined,
+      };
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
+        [OTHER_ASSET_ID.toLowerCase()]: OTHER_BRIDGE_TOKEN,
+      } as never);
+
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
+        buildState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(2);
+      expect(result.map((a) => a.symbol)).toContain('ONDO');
+    });
+
     it('populates tokenFiatPrice and percentageChange from marketData for EVM native asset', () => {
       mockGetBridgeAssetsByAssetId.mockReturnValue({
         [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
