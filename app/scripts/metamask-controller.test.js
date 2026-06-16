@@ -4486,11 +4486,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'discoverAndCreateAccounts')
           .mockResolvedValue({});
 
+        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
+
         jest
           .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
-
-        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
 
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
           shouldCreateSocialBackup: false,
@@ -4523,7 +4523,9 @@ describe('MetaMaskController', () => {
 
         await waitForAllPromises();
 
-        expect(metamaskController.discoverAndCreateAccounts).not.toHaveBeenCalled();
+        expect(
+          metamaskController.discoverAndCreateAccounts,
+        ).not.toHaveBeenCalled();
       });
     });
 
