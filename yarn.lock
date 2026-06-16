@@ -5395,6 +5395,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-83774e1":
+  version: 0.0.1-preview-83774e1
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-83774e1"
+  checksum: 10/e92e3806db71056f3cfe2183745246cdf56fcd8ec84d3a5f68d44fdfac0ae5ebb4a92442039704c9fd535d96a6d949670b36f2564a73ebd9ea4973ac83c26c28
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.7.1":
   version: 0.7.1
   resolution: "@metamask/7715-permission-types@npm:0.7.1"
@@ -8322,10 +8329,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@0.0.1-preview-83774e1":
+"@metamask/stellar-wallet-snap@patch:@metamask-previews/stellar-wallet-snap@npm%3A0.0.1-preview-83774e1#~/.yarn/patches/@metamask-previews-stellar-wallet-snap-npm-0.0.1-preview-83774e1-8f9d0f2891.patch":
   version: 0.0.1-preview-83774e1
-  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-83774e1"
-  checksum: 10/e92e3806db71056f3cfe2183745246cdf56fcd8ec84d3a5f68d44fdfac0ae5ebb4a92442039704c9fd535d96a6d949670b36f2564a73ebd9ea4973ac83c26c28
+  resolution: "@metamask/stellar-wallet-snap@patch:@metamask-previews/stellar-wallet-snap@npm%3A0.0.1-preview-83774e1#~/.yarn/patches/@metamask-previews-stellar-wallet-snap-npm-0.0.1-preview-83774e1-8f9d0f2891.patch::version=0.0.1-preview-83774e1&hash=df7d01"
+  checksum: 10/79fe377ea352d5076c3bc11e8cdadd4cac473379f3f6543e9fc1072c86d35fd3ce2e6e5330ac6edf5f9e32144b8a38cfef8d121977447d12192f36f3f9be39f0
   languageName: node
   linkType: hard
 
@@ -33394,7 +33401,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^12.2.1"
     "@metamask/solana-wallet-snap": "npm:^2.8.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@0.0.1-preview-83774e1"
+    "@metamask/stellar-wallet-snap": "patch:@metamask-previews/stellar-wallet-snap@npm%3A0.0.1-preview-83774e1#~/.yarn/patches/@metamask-previews-stellar-wallet-snap-npm-0.0.1-preview-83774e1-8f9d0f2891.patch"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.1.2"
     "@metamask/superstruct": "npm:^3.2.1"

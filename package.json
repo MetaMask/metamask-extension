@@ -316,7 +316,7 @@
     "@metamask/transaction-pay-controller@npm:^22.6.0": "patch:@metamask/transaction-pay-controller@npm%3A22.6.0#~/.yarn/patches/@metamask-transaction-pay-controller-npm-22.6.0-ecc6df0372.patch",
     "@metamask/assets-controller@npm:^7.1.2": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
     "@metamask/assets-controller@npm:^8.1.0": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
-    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@0.0.1-preview-83774e1"
+    "@metamask/stellar-wallet-snap": "patch:@metamask-previews/stellar-wallet-snap@npm%3A0.0.1-preview-83774e1#~/.yarn/patches/@metamask-previews-stellar-wallet-snap-npm-0.0.1-preview-83774e1-8f9d0f2891.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -451,7 +451,7 @@
     "@metamask/snaps-utils": "^12.2.1",
     "@metamask/solana-wallet-snap": "^2.8.0",
     "@metamask/solana-wallet-standard": "^1.0.0",
-    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@0.0.1-preview-83774e1",
+    "@metamask/stellar-wallet-snap": "patch:@metamask-previews/stellar-wallet-snap@npm%3A0.0.1-preview-83774e1#~/.yarn/patches/@metamask-previews-stellar-wallet-snap-npm-0.0.1-preview-83774e1-8f9d0f2891.patch",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.1.2",
     "@metamask/transaction-controller": "^68.0.0",
