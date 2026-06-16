@@ -243,8 +243,8 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
         from,
         token: rawToken
           ? { ...rawToken, amount: isUnlimited ? undefined : rawToken.amount }

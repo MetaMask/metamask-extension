@@ -167,8 +167,8 @@ describe('mapKeyringTransaction', () => {
       chainId: MultichainNetworks.SOLANA,
       status: 'success',
       timestamp: 1716367781000,
+      hash: 'approve-id',
       data: {
-        hash: 'approve-id',
         from: 'owner-address',
         token: {
           amount: '999999999999999',
@@ -210,8 +210,8 @@ describe('mapKeyringTransaction', () => {
 
     expect(item).toMatchObject({
       type: 'approveSpendingCap',
+      hash: 'unlimited-approve-id',
       data: {
-        hash: 'unlimited-approve-id',
         token: {
           assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
           symbol: 'USDC',
