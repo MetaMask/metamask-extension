@@ -512,7 +512,9 @@ export class LegacyBackgroundApiService {
                 'Imported account keyring does not export accounts',
               );
             }
-            const privateKeyObj = await keyring.exportAccount(importedAccount.id);
+            const privateKeyObj = await keyring.exportAccount(
+              importedAccount.id,
+            );
             return { id: metadata.id, privateKey: privateKeyObj.privateKey };
           },
         )) as { id: string; privateKey: string };

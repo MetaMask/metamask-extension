@@ -1028,7 +1028,9 @@ export default class MetamaskController extends EventEmitter {
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
-            for (const { metadata: { id: entropySource } } of this.getHDKeyringObjects()) {
+            for (const {
+              metadata: { id: entropySource },
+            } of this.getHDKeyringObjects()) {
               await this.discoverAndCreateAccounts(entropySource);
             }
           } else {
