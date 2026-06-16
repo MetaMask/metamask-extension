@@ -1,5 +1,4 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent, useContext } from 'react';
 import {
   Navigate,
   type NavigateFunction,
@@ -7,6 +6,8 @@ import {
 } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { I18nContext } from '../../contexts/i18n';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -107,12 +108,9 @@ type DeepLinkQrCodeData = {
   deeplinkUrl: string;
 };
 
-type HomeContext = {
-  t: (key: string, args?: unknown[]) => string;
-  trackEvent: UITrackEventMethod;
-};
-
 export type HomeProps = {
+  t: (key: string, ...args: unknown[]) => string;
+  trackEvent: UITrackEventMethod;
   navigate?: NavigateFunction;
   forgottenPassword?: boolean;
   isNotification?: boolean;
@@ -220,22 +218,7 @@ function shouldCloseNotificationPopup({
   return Boolean(baseCondition && !isHardwareWalletErrorModalBlockingClose);
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-
-export default class Home extends PureComponent<HomeProps, HomeState> {
-  // Legacy context API — required for class components consuming this context.
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
-  };
-
-  /** Typed accessor for the legacy React context. */
-  private get ctx(): HomeContext {
-    return this.context as HomeContext;
-  }
-
+class HomeBase extends PureComponent<HomeProps, HomeState> {
   state: HomeState = {
     canShowBlockageNotification: true,
     deepLinkQrCode: null,
@@ -461,7 +444,7 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
   onAcceptTermsOfUse = () => {
     const { setTermsOfUseLastAgreed } = this.props;
     setTermsOfUseLastAgreed(new Date().getTime());
-    this.ctx.trackEvent({
+    this.props.trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.TermsOfUseAccepted,
       properties: {
@@ -472,7 +455,7 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
 
   onSupportLinkClick = () => {
     if (isMain()) {
-      this.ctx.trackEvent(
+      this.props.trackEvent(
         {
           category: MetaMetricsEventCategory.Home,
           event: MetaMetricsEventName.SupportLinkClicked,
@@ -501,7 +484,7 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
   };
 
   renderNotifications() {
-    const { t } = this.ctx;
+    const { t } = this.props;
 
     const {
       navigate,
@@ -736,12 +719,11 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
   }
 
   renderOnboardingPopover = () => {
-    const { t } = this.ctx;
-    const { setDataCollectionForMarketing } = this.props;
+    const { t, trackEvent, setDataCollectionForMarketing } = this.props;
 
     const handleClose = () => {
       setDataCollectionForMarketing(false);
-      this.ctx.trackEvent({
+      trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -753,7 +735,7 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
 
     const handleConsent = (consent: boolean) => {
       setDataCollectionForMarketing(consent);
-      this.ctx.trackEvent({
+      trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -827,8 +809,7 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
   };
 
   renderPopover = () => {
-    const { setConnectedStatusPopoverHasBeenShown } = this.props;
-    const { t } = this.ctx;
+    const { setConnectedStatusPopoverHasBeenShown, t } = this.props;
     return (
       <Popover
         title={t('whatsThis')}
@@ -873,7 +854,7 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
   };
 
   render() {
-    const { t } = this.ctx;
+    const { t } = this.props;
     const { deepLinkQrCode } = this.state;
     const {
       useExternalServices,
@@ -1069,3 +1050,11 @@ export default class Home extends PureComponent<HomeProps, HomeState> {
     );
   }
 }
+
+function Home(props: Omit<HomeProps, 't' | 'trackEvent'>) {
+  const t = useContext(I18nContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
+  return <HomeBase {...props} t={t} trackEvent={trackEvent} />;
+}
+
+export default Home;

@@ -23,7 +23,6 @@ const CARD_STYLES =
 
 export type PerpsMarketCardProps = {
   symbol: string;
-  name?: string;
   price: string;
   change24hPercent: string;
   volume?: string;
@@ -33,7 +32,6 @@ export type PerpsMarketCardProps = {
 
 export const PerpsMarketCard = ({
   symbol,
-  name,
   price,
   change24hPercent,
   volume,
@@ -41,7 +39,6 @@ export const PerpsMarketCard = ({
   'data-testid': testId,
 }: PerpsMarketCardProps) => {
   const displaySymbol = getDisplayName(symbol);
-  const displayName = name ? getDisplayName(name) : displaySymbol;
   const displayChange24hPercent = formatSignedChangePercent(change24hPercent);
   const changeColor = getChangeColor(displayChange24hPercent);
 
@@ -67,7 +64,7 @@ export const PerpsMarketCard = ({
           fontWeight={FontWeight.Medium}
           className="text-s-body-md @compact:text-s-body-sm"
         >
-          {displayName}
+          {displaySymbol}
         </Text>
         {volume ? (
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
