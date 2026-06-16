@@ -1337,7 +1337,7 @@ export function revealSeedWordsWithPasskey(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
-      const encodedSeedPhrase = await submitRequestToBackground<string>(
+      const encodedSeedPhrase = await submitRequestToBackground(
         'revealSeedWordsWithPasskey',
         [authenticationResponse, keyringId],
       );
