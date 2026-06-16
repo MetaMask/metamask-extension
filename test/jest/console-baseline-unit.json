@@ -1010,10 +1010,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Warning: Encountered two children with": 1
     },
-    "ui/pages/onboarding-flow/welcome/welcome.test.tsx": {
-      "MetaMask: Background connection not initialized": 16,
-      "React: State updates on unmounted components": 1
-    },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5
     },

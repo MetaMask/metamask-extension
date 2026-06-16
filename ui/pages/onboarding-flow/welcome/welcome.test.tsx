@@ -98,6 +98,8 @@ describe('Welcome Page', () => {
   };
   let startOAuthLoginSpy: jest.SpyInstance;
   let enabledMetricsSpy: jest.SpyInstance;
+  let geolocationSpy: jest.SpyInstance;
+  let dataCollectionForMarketingSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -106,6 +108,13 @@ describe('Welcome Page', () => {
       .spyOn(Actions, 'startOAuthLogin')
       .mockReturnValueOnce(jest.fn().mockResolvedValueOnce(true));
     enabledMetricsSpy = jest.spyOn(Actions, 'setParticipateInMetaMetrics');
+    geolocationSpy = jest
+      .spyOn(Actions, 'getGeolocation')
+      .mockResolvedValue('CA');
+    dataCollectionForMarketingSpy = jest.spyOn(
+      Actions,
+      'setDataCollectionForMarketing',
+    );
   });
 
   it('render matches snapshot', async () => {
@@ -213,6 +222,7 @@ describe('Welcome Page', () => {
 
     await waitFor(() => {
       expect(startOAuthLoginSpy).toHaveBeenCalled();
+      expect(geolocationSpy).toHaveBeenCalled();
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
@@ -238,6 +248,51 @@ describe('Welcome Page', () => {
 
       // should set setParticipateInMetaMetrics to true and send the queued events to Segment
       expect(enabledMetricsSpy).toHaveBeenCalledWith(true);
+      expect(dataCollectionForMarketingSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should preselect marketing consent for US social login create users', async () => {
+    geolocationSpy.mockResolvedValueOnce('US');
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(true);
+
+    const { getByText, getByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <Welcome />
+      </MetaMetricsContext.Provider>,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(
+        getByText(messages.onboardingCreateWallet.message),
+      ).toBeInTheDocument();
+    });
+
+    await act(async () => {
+      fireEvent.click(getByText(messages.onboardingCreateWallet.message));
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    });
+
+    await waitFor(() => {
+      expect(
+        getByTestId('onboarding-create-with-google-button'),
+      ).toBeInTheDocument();
+    });
+
+    await act(async () => {
+      fireEvent.click(getByTestId('onboarding-create-with-google-button'));
+    });
+
+    await waitFor(() => {
+      expect(geolocationSpy).toHaveBeenCalled();
+      expect(dataCollectionForMarketingSpy).toHaveBeenCalledWith(true);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_CREATE_PASSWORD_ROUTE,
+        { replace: true },
+      );
     });
   });
 

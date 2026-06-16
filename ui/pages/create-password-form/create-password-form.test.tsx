@@ -1,88 +1,71 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
-import * as Actions from '../../store/actions';
+import { fireEvent, waitFor } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { CreatePasswordForm } from '.';
 
-jest.mock('../../store/actions', () => ({
-  ...jest.requireActual('../../store/actions'),
-  getGeolocation: jest.fn(),
-}));
-
 describe('CreatePasswordForm', () => {
-  const mockGetGeolocation = jest.mocked(Actions.getGeolocation);
-
-  beforeEach(() => {
-    mockGetGeolocation.mockResolvedValue('CA');
-  });
+  const createMockStore = (dataCollectionForMarketing: boolean | null = null) =>
+    configureMockStore([thunk])({
+      metamask: {
+        dataCollectionForMarketing,
+      },
+    });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders match snapshot', () => {
-    const { container } = render(
+    const { container } = renderWithProvider(
       <CreatePasswordForm
         isSocialLoginFlow={false}
         onSubmit={jest.fn()}
         onBack={jest.fn()}
       />,
+      createMockStore(),
     );
     expect(container).toMatchSnapshot();
   });
 
-  it('does not fetch geolocation for non-social login flow', () => {
-    render(
-      <CreatePasswordForm
-        isSocialLoginFlow={false}
-        onSubmit={jest.fn()}
-        onBack={jest.fn()}
-      />,
-    );
-
-    expect(mockGetGeolocation).not.toHaveBeenCalled();
-  });
-
-  it('defaults the marketing terms checkbox to checked for USA social-login users', async () => {
-    mockGetGeolocation.mockResolvedValue('US');
-
-    const { getByRole } = render(
+  it('defaults the marketing terms checkbox to checked when marketing consent is stored', async () => {
+    const { getByRole } = renderWithProvider(
       <CreatePasswordForm
         isSocialLoginFlow
         onSubmit={jest.fn()}
         onBack={jest.fn()}
       />,
+      createMockStore(true),
     );
 
     await waitFor(() => {
-      expect(mockGetGeolocation).toHaveBeenCalled();
       expect(getByRole('checkbox')).toBeChecked();
     });
   });
 
-  it('defaults the marketing terms checkbox to unchecked for non-USA social-login users', async () => {
-    const { getByRole } = render(
+  it('defaults the marketing terms checkbox to unchecked when marketing consent is not stored', () => {
+    const { getByRole } = renderWithProvider(
       <CreatePasswordForm
         isSocialLoginFlow
         onSubmit={jest.fn()}
         onBack={jest.fn()}
       />,
+      createMockStore(false),
     );
-
-    await waitFor(() => {
-      expect(mockGetGeolocation).toHaveBeenCalled();
-    });
 
     expect(getByRole('checkbox')).not.toBeChecked();
   });
 
   it('onsubmit called with correct passwords and terms checked', async () => {
     const onSubmit = jest.fn();
-    const { queryByTestId } = render(
+    const { queryByTestId } = renderWithProvider(
       <CreatePasswordForm
         isSocialLoginFlow={false}
         onSubmit={onSubmit}
         onBack={jest.fn()}
       />,
+      createMockStore(),
     );
 
     const createPasswordInput = queryByTestId('create-password-new-input');

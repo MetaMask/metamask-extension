@@ -44,6 +44,8 @@ import {
   setParticipateInMetaMetrics,
   setPna25Acknowledged,
   getIsSeedlessOnboardingUserAuthenticated,
+  getGeolocation,
+  setDataCollectionForMarketing,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -373,7 +375,10 @@ export default function OnboardingWelcome() {
       });
 
       try {
-        const isNewUser = await handleSocialLogin(socialConnectionType);
+        const [isNewUser, geolocation] = await Promise.all([
+          handleSocialLogin(socialConnectionType),
+          getGeolocation(),
+        ])
 
         // Track wallet setup completed for social login users
         await trackEvent({
@@ -390,6 +395,12 @@ export default function OnboardingWelcome() {
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext?.current,
           });
+
+          if (geolocation === 'US') {
+            // for Social login users in US region, set the marketing consent to true by default
+            await dispatch(setDataCollectionForMarketing(true));
+          }
+
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
         } else {
