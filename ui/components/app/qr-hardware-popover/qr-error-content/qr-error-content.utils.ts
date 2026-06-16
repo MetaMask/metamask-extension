@@ -42,6 +42,11 @@ export function resolveErrorCopy(
           ? t('qrErrorWrongUrTypePairingBody')
           : t('qrErrorWrongUrTypeSigningBody'),
       };
+    case QrErrorType.MismatchedTransaction:
+      return {
+        title: t('qrErrorMismatchedTransactionTitle'),
+        body: t('qrErrorMismatchedTransactionBody'),
+      };
     case QrErrorType.UrDecodeError:
     default:
       return {

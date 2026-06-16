@@ -1,6 +1,6 @@
 import HomePage from './homepage';
 
-class NftListPage extends HomePage {
+class NftsTab extends HomePage {
   private readonly confirmImportNftButton =
     '[data-testid="import-nfts-modal-import-button"]';
 
@@ -151,4 +151,4 @@ class NftListPage extends HomePage {
   }
 }
 
-export default NftListPage;
+export default NftsTab;

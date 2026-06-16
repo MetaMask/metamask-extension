@@ -7,8 +7,9 @@ import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics
 import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getLatestMetricsEventTimestamp,
 } from '../../../selectors';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
@@ -23,10 +24,13 @@ describe('DeleteMetametricsDataItem', () => {
 
   const mockSelectorsDefault = () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
         return true;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getOptedIn) {
+        return true;
+      }
+      if (selector === getAnalyticsId) {
         return 'mock-metametrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -58,10 +62,13 @@ describe('DeleteMetametricsDataItem', () => {
 
   it('button is disabled when metametrics is not enabled', () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
+        return true;
+      }
+      if (selector === getOptedIn) {
         return false;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getAnalyticsId) {
         return null;
       }
       return undefined;
@@ -75,10 +82,13 @@ describe('DeleteMetametricsDataItem', () => {
 
   it('button is disabled when metaMetricsId is null', () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
         return true;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getOptedIn) {
+        return true;
+      }
+      if (selector === getAnalyticsId) {
         return null;
       }
       return undefined;
@@ -113,10 +123,13 @@ describe('DeleteMetametricsDataItem', () => {
   it('opens deletion in progress modal when deletion is already in progress', async () => {
     const now = Date.now();
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
         return true;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getOptedIn) {
+        return true;
+      }
+      if (selector === getAnalyticsId) {
         return 'mock-metametrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -146,10 +159,13 @@ describe('DeleteMetametricsDataItem', () => {
   it('shows deletion in progress modal for Initialized status', async () => {
     const now = Date.now();
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
         return true;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getOptedIn) {
+        return true;
+      }
+      if (selector === getAnalyticsId) {
         return 'mock-metametrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -179,10 +195,13 @@ describe('DeleteMetametricsDataItem', () => {
   it('opens delete modal when there are new events after deletion finished', async () => {
     const now = Date.now();
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
         return true;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getOptedIn) {
+        return true;
+      }
+      if (selector === getAnalyticsId) {
         return 'mock-metametrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {

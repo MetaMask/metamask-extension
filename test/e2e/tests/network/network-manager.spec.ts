@@ -8,7 +8,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
 
@@ -254,21 +254,21 @@ describe('Network Manager', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         const networkManager = new NetworkManager(driver);
 
         // Only Ethereum native token and MUSD
-        await assetListPage.checkTokenItemNumber(2);
+        await tokensTab.checkTokenItemNumber(2);
 
         // Change to Linea, only Linea native token and MUSD visible
         await networkManager.openNetworkManager();
         await networkManager.selectNetworkByChainId(NetworkId.LINEA);
-        await assetListPage.checkTokenItemNumber(2);
+        await tokensTab.checkTokenItemNumber(2);
 
         // Change to Ethereum, only Ethereum native token and MUSD visible
         await networkManager.openNetworkManager();
         await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
-        await assetListPage.checkTokenItemNumber(2);
+        await tokensTab.checkTokenItemNumber(2);
       },
     );
   });
