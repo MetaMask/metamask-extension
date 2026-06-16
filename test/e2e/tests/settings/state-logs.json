@@ -1056,7 +1056,6 @@
     "lastUpdatedFromVersion": "null",
     "lastVisitedRoute": "null",
     "lastViewedUserSurvey": "null",
-    "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
     "logs": {},
     "lastWithdrawResult": "null",
