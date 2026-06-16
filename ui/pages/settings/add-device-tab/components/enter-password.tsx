@@ -36,7 +36,7 @@ const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
   }, [password, onContinue]);
 
   return (
-    <Box className="p-4 flex flex-1 flex-col gap-4">
+    <Box className="flex flex-1 flex-col gap-4">
       <Text
         variant={TextVariant.HeadingLg}
         color={TextColor.TextDefault}

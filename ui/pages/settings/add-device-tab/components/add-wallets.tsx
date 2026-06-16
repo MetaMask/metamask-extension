@@ -39,7 +39,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   }, []);
 
   return (
-    <Box className="p-4 flex flex-1 flex-col gap-4">
+    <Box className="flex flex-1 flex-col gap-4">
       <Box className="flex-col gap-1 px-4">
         <Text
           variant={TextVariant.HeadingLg}

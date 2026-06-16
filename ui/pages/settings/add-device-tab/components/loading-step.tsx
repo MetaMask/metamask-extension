@@ -41,7 +41,13 @@ const LoadingStep = ({
   }, [onComplete, delayMs]);
 
   return (
-    <Box className="p-4 flex flex-1 flex-col items-center justify-center gap-8 mt-10">
+    <Box
+      alignItems={BoxAlignItems.Center}
+      flexDirection={BoxFlexDirection.Column}
+      gap={8}
+      paddingTop={8}
+      className="flex-1"
+    >
       <Box
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
@@ -73,7 +79,7 @@ const LoadingStep = ({
           color={TextColor.TextDefault}
           fontWeight={FontWeight.Bold}
           textAlign={TextAlign.Center}
-          className='mb-2'
+          className="mb-2"
         >
           {title}
         </Text>

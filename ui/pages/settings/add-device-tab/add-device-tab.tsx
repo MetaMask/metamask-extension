@@ -1,14 +1,18 @@
 import React from 'react';
-import { SettingsTab } from '../shared';
-import { SettingItemConfig } from '../types';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import AddDeviceSettings from './add-device-settings';
 
-const ADD_DEVICE_TAB_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'add-device', component: AddDeviceSettings },
-];
-
 const AddDeviceTab = () => {
-  return <SettingsTab items={ADD_DEVICE_TAB_SETTING_ITEMS} />;
+  return (
+    <Box
+      paddingHorizontal={3}
+      paddingVertical={4}
+      flexDirection={BoxFlexDirection.Column}
+      className="add-device-tab h-full"
+    >
+      <AddDeviceSettings />
+    </Box>
+  );
 };
 
 export default AddDeviceTab;

@@ -160,7 +160,7 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
   );
 
   return (
-    <Box className="p-4 flex flex-1 flex-col gap-6">
+    <Box className="flex flex-1 flex-col gap-6">
       <Box className="flex flex-col gap-2">
         <Text
           variant={TextVariant.HeadingLg}
