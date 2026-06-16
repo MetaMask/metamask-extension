@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import {
   removeUrlsFromBreadCrumb,
   rewriteReport,
@@ -296,6 +297,32 @@ describe('Setup Sentry', () => {
       rewriteReport(testReport);
       expect(testReport.breadcrumbs[0].data.arguments[0].message).toStrictEqual(
         'Failed for 0x**',
+      );
+    });
+
+    it('scrubs breadcrumbs without mutating live source objects', () => {
+      const liveError = new Error(
+        'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+      );
+      const liveArgs = [liveError];
+      const testReport = cloneDeep({
+        message: 'An error occurred',
+        breadcrumbs: [
+          {
+            message: 'console.error',
+            data: { arguments: liveArgs, logger: 'console' },
+          },
+        ],
+        request: {},
+      });
+
+      rewriteReport(testReport);
+
+      expect(testReport.breadcrumbs[0].data.arguments[0].message).toStrictEqual(
+        'Failed for 0x**',
+      );
+      expect(liveError.message).toStrictEqual(
+        'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
       );
     });
   });

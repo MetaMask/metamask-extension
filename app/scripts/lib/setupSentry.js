@@ -339,7 +339,7 @@ export function shouldCreateSpanForRequest(url) {
 
 /**
  * Receives a Sentry breadcrumb object and potentially removes urls
- * from its `data` property, it particular those possibly found at
+ * from its `data` property, in particular those possibly found at
  * data.from, data.to and data.url. Performs a deep address scrub for use when
  * an event is about to be sent (not on every breadcrumb capture).
  *
@@ -368,7 +368,9 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
 }
 
 /**
- * Deep-scrubs all breadcrumbs attached to an outbound error report.
+ * Deep-scrubs all breadcrumbs attached to an outbound Sentry event (errors and
+ * transactions). The report must already be cloned (see `safeCloneReport` in
+ * `beforeSend` / `beforeSendTransaction`) so breadcrumb mutation is safe.
  *
  * @param {object} report - A Sentry event object.
  */
@@ -376,9 +378,9 @@ export function sanitizeBreadcrumbsInReport(report) {
   if (!Array.isArray(report.breadcrumbs)) {
     return;
   }
-  report.breadcrumbs = report.breadcrumbs.map((crumb) =>
-    removeUrlsFromBreadCrumb(cloneDeep(crumb)),
-  );
+  for (let i = 0; i < report.breadcrumbs.length; i++) {
+    removeUrlsFromBreadCrumb(report.breadcrumbs[i]);
+  }
 }
 
 /**
