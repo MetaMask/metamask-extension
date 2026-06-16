@@ -344,7 +344,7 @@
     "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
     "@metamask/assets-controllers": "^109.0.0",
     "@metamask/base-controller": "^9.0.1",
-    "@metamask/bitcoin-wallet-snap": "^1.12.0",
+    "@metamask/bitcoin-wallet-snap": "^1.13.0",
     "@metamask/bridge-controller": "^73.2.0",
     "@metamask/bridge-status-controller": "^72.0.1",
     "@metamask/browser-passworder": "^6.0.0",
@@ -827,16 +827,6 @@
     "yargs": "^17.7.2",
     "yargs-parser": "^21.1.1",
     "yazl": "^3.3.1"
-  },
-  "previewBuilds": {
-    "@metamask/tron-wallet-snap": {
-      "type": "non-breaking",
-      "previewVersion": "1.25.8-preview-bc33ccf"
-    },
-    "@metamask/bitcoin-wallet-snap": {
-      "type": "non-breaking",
-      "previewVersion": "1.12.0-preview-4a97f11"
-    }
   },
   "engines": {
     "node": ">=24.13.0",
