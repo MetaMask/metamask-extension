@@ -1,66 +1,30 @@
-import { useRive, useStateMachineInput } from '@rive-app/react-canvas';
-import React, { useEffect } from 'react';
+import React from 'react';
 import cn from 'clsx';
-import { ThemeType } from '../../../../shared/constants/preferences';
-import { useTheme } from '../../../hooks/useTheme';
-import { useRiveFileLavamoat } from '../../../hooks/useRiveFileLavamoat';
-
-const source = './images/riv_animations/spinner_loader_with_states.riv';
-const stateMachine = 'SpinnerLoader';
+import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 
 type Props = {
   state: 'loading' | 'success' | 'fail';
   className?: string;
 };
 
+// Static, dependency-light status glyphs. A loading/success/fail indicator does
+// not need the Rive WASM runtime; keeping it off this component removes the Rive
+// runtime + rive.wasm from the home/activity critical path (they rendered eagerly
+// via toasts, activity rows, and tx-status). Animated Rive surfaces (onboarding,
+// perps tutorial) keep their lazy split.
+const STATE_ICON: Record<Props['state'], { name: IconName; spin?: boolean }> = {
+  loading: { name: IconName.Loading, spin: true },
+  success: { name: IconName.Confirmation },
+  fail: { name: IconName.Danger },
+};
+
 export function StatusIcon({ state, className }: Props) {
-  const theme = useTheme();
-  const isDark = theme === ThemeType.dark;
-
-  const { riveFile, status: fileStatus } = useRiveFileLavamoat({ src: source });
-  const { rive, RiveComponent } = useRive({
-    riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? stateMachine : undefined,
-    autoplay: true,
-  });
-  const darkInput = useStateMachineInput(rive, stateMachine, 'Dark');
-
-  useEffect(() => {
-    if (!darkInput) {
-      return;
-    }
-
-    try {
-      // eslint-disable-next-line react-compiler/react-compiler
-      darkInput.value = isDark;
-    } catch {
-      // Rive WASM runtime may have been cleaned up
-    }
-  }, [rive, darkInput, isDark]);
-
-  useEffect(() => {
-    if (!rive) {
-      return;
-    }
-
-    try {
-      const inputs = rive.stateMachineInputs(stateMachine);
-      const trigger = inputs?.find((i) => i.name.toLowerCase() === state);
-      trigger?.fire();
-    } catch {
-      // Rive WASM runtime may have been cleaned up
-    }
-  }, [rive, state]);
-
-  useEffect(() => {
-    return () => {
-      rive?.cleanup();
-    };
-  }, [rive]);
-
-  if (fileStatus !== 'success') {
-    return null;
-  }
-
-  return <RiveComponent className={cn('size-6', className)} />;
+  const { name, spin } = STATE_ICON[state];
+  return (
+    <Icon
+      name={name}
+      size={IconSize.Lg}
+      className={cn('size-6', spin && 'animate-spin', className)}
+    />
+  );
 }

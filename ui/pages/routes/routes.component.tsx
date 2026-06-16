@@ -74,6 +74,9 @@ import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
 } from '../../helpers/constants/routes';
@@ -140,6 +143,7 @@ import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '..
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
+import { preloadRiveWasm } from '../../contexts/rive-wasm';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -200,19 +204,27 @@ const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
 const PermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/permissions-page/permissions-page.js'),
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page.js'
+    ),
 );
 const GatorPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    ),
 );
 const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    ),
 );
 const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
+    ),
 );
 const Home = mmLazy(() => import('../home/index.ts'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
@@ -250,6 +262,50 @@ const TransactionDetailsRoute = mmLazy(
   () => import('../details/transaction-details-route.tsx'),
 );
 // End Lazy Routes
+
+const RIVE_PRELOAD_EXACT_ROUTES = [
+  ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+] as const;
+
+const RIVE_PRELOAD_PREFIX_ROUTES = [
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_ORDER_ENTRY_ROUTE,
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_WITHDRAW_ROUTE,
+] as const;
+
+const logRiveRoutePreloadError = (...args: unknown[]) => {
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
+
+  console.error(...args);
+};
+
+/**
+ * Returns whether a route should kick off Rive preload as soon as it matches.
+ *
+ * This preserves first-frame performance for known Rive surfaces by starting the
+ * runtime and WASM load while the route subtree is still resolving.
+ * Exact matches are used for leaf routes with a single known Rive surface,
+ * while prefix checks cover route families whose nested paths can also render
+ * Rive content.
+ *
+ * @param pathname - The current router pathname.
+ * @returns True when the route is a known Rive consumer surface.
+ */
+export const shouldPreloadRiveForPath = (pathname: string) =>
+  RIVE_PRELOAD_EXACT_ROUTES.includes(
+    pathname as (typeof RIVE_PRELOAD_EXACT_ROUTES)[number],
+  ) ||
+  RIVE_PRELOAD_PREFIX_ROUTES.some((routePrefix) =>
+    pathname.startsWith(routePrefix),
+  );
 
 const SettingsV2LegacyRedirect = () => {
   const { pathname, search, hash } = useLocation();
@@ -642,6 +698,30 @@ export default function Routes() {
   useEffect(() => {
     dispatch(pageChanged(location.pathname));
   }, [location.pathname, dispatch]);
+
+  useEffect(() => {
+    if (!shouldPreloadRiveForPath(location.pathname)) {
+      return undefined;
+    }
+    // Defer the runtime+WASM fetch to idle so it never competes with the
+    // route's critical render/network work. Falls back to a microtask where
+    // requestIdleCallback is unavailable.
+    const preload = () => {
+      preloadRiveWasm().catch((error) => {
+        logRiveRoutePreloadError(
+          '[Rive] Failed to preload WASM for route:',
+          location.pathname,
+          error,
+        );
+      });
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      const idleId = window.requestIdleCallback(preload);
+      return () => window.cancelIdleCallback?.(idleId);
+    }
+    const timerId = setTimeout(preload, 0);
+    return () => clearTimeout(timerId);
+  }, [location.pathname]);
 
   useEffect(() => {
     setTheme(theme);

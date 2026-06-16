@@ -1,30 +1,24 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { StatusIcon } from './status-icon';
-
-jest.mock('@rive-app/react-canvas', () => ({
-  useRive: () => ({
-    rive: null,
-    RiveComponent: () => <div data-testid="rive-component" />,
-  }),
-  useStateMachineInput: () => null,
-}));
-
-jest.mock('../../../hooks/useTheme', () => ({
-  useTheme: () => 'light',
-}));
-
-jest.mock('../../../hooks/useRiveFileLavamoat', () => ({
-  useRiveFileLavamoat: () => ({ riveFile: {}, status: 'success' }),
-}));
 
 const states = ['loading', 'success', 'fail'] as const;
 
 describe('StatusIcon', () => {
   for (const state of states) {
     it(`renders for ${state} status`, () => {
-      render(<StatusIcon state={state} />);
-      expect(screen.getByTestId('rive-component')).toBeInTheDocument();
+      const { container } = render(<StatusIcon state={state} />);
+      expect(container.firstChild).not.toBeNull();
     });
   }
+
+  it('animates the loading state', () => {
+    const { container } = render(<StatusIcon state="loading" />);
+    expect(container.querySelector('.animate-spin')).not.toBeNull();
+  });
+
+  it('does not animate terminal states', () => {
+    const { container } = render(<StatusIcon state="success" />);
+    expect(container.querySelector('.animate-spin')).toBeNull();
+  });
 });
