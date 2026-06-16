@@ -5463,11 +5463,11 @@
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTron": {
-    "message": "Tron"
-  },
   "networkNameStellar": {
     "message": "Stellar"
+  },
+  "networkNameTron": {
+    "message": "Tron"
   },
   "networkOptions": {
     "message": "Network options"
@@ -9647,34 +9647,6 @@
   "staked": {
     "message": "Staked"
   },
-  "stellarTrustlineInactive": {
-    "message": "Inactive",
-    "description": "Label for a Stellar classic token the user imported but has not established an on-chain trustline for yet"
-  },
-  "stellarClassicActivateOnStellarTitle": {
-    "message": "Activate $1 on Stellar",
-    "description": "Title for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
-  },
-  "stellarClassicActivateOnStellarBody": {
-    "message": "Two steps: fund wallet with XLM, then add $1",
-    "description": "Explainer for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
-  },
-  "stellarClassicActivateOnStellarButton": {
-    "message": "Activate",
-    "description": "Primary button to submit a Stellar classic trustline add via the wallet snap"
-  },
-  "stellarClassicTrustlineAddError": {
-    "message": "Something went wrong while adding this trustline. Try again.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicRemoveTrustline": {
-    "message": "Remove trustline",
-    "description": "Button label to remove an active Stellar classic trustline from the asset detail page"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Something went wrong while removing this trustline. Your balance must be zero. Try again.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
   "stakingDeposit": {
     "message": "Staking deposit"
   },
@@ -9740,6 +9712,34 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
+  },
+  "stellarClassicActivateOnStellarBody": {
+    "message": "Two steps: fund wallet with XLM, then add $1",
+    "description": "Explainer for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
+  },
+  "stellarClassicActivateOnStellarButton": {
+    "message": "Activate",
+    "description": "Primary button to submit a Stellar classic trustline add via the wallet snap"
+  },
+  "stellarClassicActivateOnStellarTitle": {
+    "message": "Activate $1 on Stellar",
+    "description": "Title for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
+  },
+  "stellarClassicRemoveTrustline": {
+    "message": "Remove trustline",
+    "description": "Button label to remove an active Stellar classic trustline from the asset detail page"
+  },
+  "stellarClassicTrustlineAddError": {
+    "message": "Something went wrong while adding this trustline. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "Something went wrong while removing this trustline. Your balance must be zero. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "stellarTrustlineInactive": {
+    "message": "Inactive",
+    "description": "Label for a Stellar classic token the user imported but has not established an on-chain trustline for yet"
   },
   "stillConnectingTo": {
     "message": "Still connecting to $1...",
@@ -10476,6 +10476,12 @@
   },
   "trustSignalContinueAnyway": {
     "message": "Connect Anyway"
+  },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
   },
   "tryAgain": {
     "message": "Try again"
