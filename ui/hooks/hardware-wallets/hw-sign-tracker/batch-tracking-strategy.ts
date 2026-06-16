@@ -6,43 +6,8 @@ import {
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { EventResult, TrackingStrategy } from './types';
 import { classifySignedEvent } from './shared-filters';
-
-/**
- * Checks whether a transaction belongs to the currently tracked batch (or is
- * from a stale batch that should be ignored).
- *
- * @param transactionMeta - The transaction metadata to check.
- * @param currentBatchId - The current batch ID. `undefined` accepts all,
- * `null` rejects stale batches, a string only matches that batch.
- * @param staleBatchIds - Set of batch IDs that have been superseded by retries.
- * @returns True if the transaction belongs to the current batch.
- */
-function isFromCurrentBatch(
-  transactionMeta: TransactionMeta,
-  currentBatchId: string | null | undefined,
-  staleBatchIds: Set<string>,
-): boolean {
-  const batchId = transactionMeta.batchId ?? 'batch-unknown';
-  if (currentBatchId === undefined) {
-    return true;
-  }
-  if (currentBatchId === null) {
-    return !staleBatchIds.has(batchId);
-  }
-  return batchId === currentBatchId;
-}
-
-/**
- * Returns true when no batch has been identified yet, meaning rejection and
- * finished events should be blocked until the first signed event establishes
- * the active batch.
- * @param currentBatchId
- */
-function shouldBlockPendingEvent(
-  currentBatchId: string | null | undefined,
-): boolean {
-  return currentBatchId === undefined;
-}
+import { UNKNOWN_BATCH_ID } from './constants';
+import { applyRetryGenerationBump, shouldIgnoreBatchEvent } from './utils';
 
 /**
  * Batch-mode tracking strategy. Tracks transactions by batchId.
@@ -64,28 +29,45 @@ export class BatchTrackingStrategy implements TrackingStrategy {
   // TrackingStrategy implementation
   // ---------------------------------------------------------------
 
+  /**
+   * Detects a retry-generation bump and marks all seen batches as stale. When
+   * `retryGenerationRef` advances past `lastSeenGenerationRef`, every seen
+   * batch ID is moved to the stale set, seen batches are cleared, and the
+   * active batch is unlocked (`#currentBatchId = null`) so the next signed
+   * event re-establishes the batch from the new retry generation.
+   *
+   * @param retryGenerationRef - External ref bumped on retry; `undefined`
+   * disables retry tracking.
+   * @param lastSeenGenerationRef - Mutable ref tracking the last retry
+   * generation this strategy observed; updated in place when a bump is detected.
+   */
   checkRetryGeneration(
     retryGenerationRef: React.RefObject<number | undefined> | undefined,
     lastSeenGenerationRef: React.MutableRefObject<number>,
   ): void {
-    if (
-      !retryGenerationRef ||
-      retryGenerationRef.current === lastSeenGenerationRef.current
-    ) {
-      return;
+    const bumped = applyRetryGenerationBump(
+      retryGenerationRef,
+      lastSeenGenerationRef,
+      this.#seenBatchIds,
+      this.#staleBatchIds,
+    );
+    if (bumped) {
+      this.#currentBatchId = null;
     }
-    lastSeenGenerationRef.current = retryGenerationRef.current ?? 0;
-
-    for (const id of this.#seenBatchIds) {
-      this.#staleBatchIds.add(id);
-    }
-    this.#seenBatchIds = new Set();
-    this.#currentBatchId = null;
   }
 
+  /**
+   * Processes a `transactionStatusUpdated` event in batch mode. Records the tx
+   * and its batch as seen, then delegates `signed` events to `#handleSigned`
+   * (which locks/validates the active batch) and `failed` events to
+   * `#handleFailed` (which ignores stale/non-current batches).
+   *
+   * @param transactionMeta - The updated transaction.
+   * @returns The resulting action, or `{ action: null }` to emit nothing.
+   */
   processStatusUpdated(transactionMeta: TransactionMeta): EventResult {
     const { status, type } = transactionMeta;
-    const batchId = transactionMeta.batchId ?? 'batch-unknown';
+    const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
 
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
@@ -101,17 +83,22 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     return { action: null };
   }
 
+  /**
+   * Processes a `transactionRejected` event in batch mode. Records the tx and
+   * its batch as seen, then emits `TransactionRejected` only when the event is
+   * not blocked by `shouldIgnoreBatchEvent` (a batch is locked and the tx
+   * belongs to the current, non-stale batch).
+   *
+   * @param transactionMeta - The rejected transaction.
+   * @returns The resulting action, or `{ action: null }` to emit nothing.
+   */
   processRejected(transactionMeta: TransactionMeta): EventResult {
-    const batchId = transactionMeta.batchId ?? 'batch-unknown';
+    const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
 
-    if (shouldBlockPendingEvent(this.#currentBatchId)) {
-      return { action: null };
-    }
     if (
-      this.#currentBatchId !== undefined &&
-      !isFromCurrentBatch(
+      shouldIgnoreBatchEvent(
         transactionMeta,
         this.#currentBatchId,
         this.#staleBatchIds,
@@ -125,18 +112,23 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     };
   }
 
+  /**
+   * Processes a `transactionFinished` event in batch mode. Records the tx and
+   * its batch as seen, ignores stale/non-current batches via
+   * `shouldIgnoreBatchEvent`, then maps the final `rejected`/`failed` status to
+   * the corresponding action.
+   *
+   * @param transactionMeta - The finished transaction.
+   * @returns The resulting action, or `{ action: null }` to emit nothing.
+   */
   processFinished(transactionMeta: TransactionMeta): EventResult {
     const { status } = transactionMeta;
-    const batchId = transactionMeta.batchId ?? 'batch-unknown';
+    const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
 
-    if (shouldBlockPendingEvent(this.#currentBatchId)) {
-      return { action: null };
-    }
     if (
-      this.#currentBatchId !== undefined &&
-      !isFromCurrentBatch(
+      shouldIgnoreBatchEvent(
         transactionMeta,
         this.#currentBatchId,
         this.#staleBatchIds,
@@ -163,29 +155,20 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     return { action: null };
   }
 
-  recordTxId(txId: string): void {
-    this.#trackedTxIds.add(txId);
-  }
-
-  checkPendingAbort(
-    txId: string,
-    pendingAbortTxIds: Set<string>,
-    onAllSettled: () => void,
-  ): boolean {
-    if (!pendingAbortTxIds.has(txId)) {
-      return false;
-    }
-    pendingAbortTxIds.delete(txId);
-    if (pendingAbortTxIds.size === 0) {
-      onAllSettled();
-    }
-    return true;
-  }
-
+  /**
+   * Returns the set of transaction IDs observed since the last reset (used by
+   * the host hook to know which in-flight tx IDs may need aborting on cancel).
+   *
+   * @returns The currently tracked transaction IDs.
+   */
   getTrackedTxIds(): Set<string> {
     return this.#trackedTxIds;
   }
 
+  /**
+   * Clears all batch, stale, seen, and tracked-tx state. Called on cancel,
+   * subscription teardown, and when the tracker is disabled.
+   */
   reset(): void {
     this.#currentBatchId = undefined;
     this.#staleBatchIds = new Set();
@@ -221,12 +204,8 @@ export class BatchTrackingStrategy implements TrackingStrategy {
   }
 
   #handleFailed(transactionMeta: TransactionMeta): EventResult {
-    if (shouldBlockPendingEvent(this.#currentBatchId)) {
-      return { action: null };
-    }
     if (
-      this.#currentBatchId !== undefined &&
-      !isFromCurrentBatch(
+      shouldIgnoreBatchEvent(
         transactionMeta,
         this.#currentBatchId,
         this.#staleBatchIds,

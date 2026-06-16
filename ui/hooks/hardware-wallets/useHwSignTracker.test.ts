@@ -6,6 +6,7 @@ import {
 } from '../../store/background-connection';
 import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { useHwSignTracker } from './useHwSignTracker';
+import { UNKNOWN_BATCH_ID } from './hw-sign-tracker/constants';
 
 jest.mock('../../store/background-connection', () => {
   const createMockUnsubscribe = () => {
@@ -921,7 +922,10 @@ describe('useHwSignTracker (batch mode specific)', () => {
       retryGenerationRef.current = 1;
 
       // Terminal event from unknown batch passes (null state accepts non-stale)
-      await fire(FINISHED, { status: 'rejected', batchId: 'batch-unknown' });
+      await fire(FINISHED, {
+        status: 'rejected',
+        batchId: UNKNOWN_BATCH_ID,
+      });
       expect(dispatchEvent).toHaveBeenCalledWith({
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });
@@ -933,8 +937,11 @@ describe('useHwSignTracker (batch mode specific)', () => {
       });
       dispatchEvent.mockClear();
 
-      // Old batch-unknown is now stale
-      await fire(FINISHED, { status: 'rejected', batchId: 'batch-unknown' });
+      // Old unknown batch is now stale
+      await fire(FINISHED, {
+        status: 'rejected',
+        batchId: UNKNOWN_BATCH_ID,
+      });
       expect(dispatchEvent).not.toHaveBeenCalled();
 
       // New batch event is allowed

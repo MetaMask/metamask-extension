@@ -1,11 +1,9 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { EventResult, TrackingStrategy } from './types';
 import { classifySignedEvent } from './shared-filters';
+import { applyRetryGenerationBump } from './utils';
 
 /**
  * Sequential-mode tracking strategy. Tracks transactions by individual tx ID.
@@ -13,28 +11,52 @@ import { classifySignedEvent } from './shared-filters';
  * tracked (non-stale) tx IDs are processed.
  */
 export class SequentialTrackingStrategy implements TrackingStrategy {
+  /**
+   * Transaction IDs that are currently being tracked for status updates.
+   * New transaction IDs are added as they are observed via {@link processStatusUpdated},
+   * and cleared on retry-generation bumps or {@link reset}.
+   */
   #trackedTxIds = new Set<string>();
 
+  /**
+   * Transaction IDs from a previous retry generation that should be ignored.
+   * Populated by {@link checkRetryGeneration} when the retry generation advances,
+   * ensuring events for superseded transactions are not processed.
+   */
   #staleTxIds = new Set<string>();
 
+  /**
+   * Detects a retry-generation bump and marks all currently tracked transaction
+   * IDs as stale. When the retry generation referenced by `retryGenerationRef`
+   * advances beyond the last-seen value in `lastSeenGenerationRef`, every tracked
+   * ID is moved to {@link #staleTxIds} and {@link #trackedTxIds} is reset so only
+   * transactions from the new generation are processed going forward.
+   *
+   * @param retryGenerationRef - Ref holding the current retry generation
+   * (or `undefined` if retry tracking is disabled).
+   * @param lastSeenGenerationRef - Mutable ref tracking the last retry generation
+   * this strategy observed; updated in place when a bump is detected.
+   */
   checkRetryGeneration(
     retryGenerationRef: React.RefObject<number | undefined> | undefined,
     lastSeenGenerationRef: React.MutableRefObject<number>,
   ): void {
-    if (
-      !retryGenerationRef ||
-      retryGenerationRef.current === lastSeenGenerationRef.current
-    ) {
-      return;
-    }
-    lastSeenGenerationRef.current = retryGenerationRef.current ?? 0;
-
-    for (const id of this.#trackedTxIds) {
-      this.#staleTxIds.add(id);
-    }
-    this.#trackedTxIds = new Set();
+    applyRetryGenerationBump(
+      retryGenerationRef,
+      lastSeenGenerationRef,
+      this.#trackedTxIds,
+      this.#staleTxIds,
+    );
   }
 
+  /**
+   * Processes a `transactionStatusUpdated` event in sequential mode. Ignores
+   * stale (superseded) tx IDs, tracks the tx ID, and maps `signed`/`failed`
+   * statuses to the corresponding signature-state-machine action.
+   *
+   * @param transactionMeta - The updated transaction.
+   * @returns The resulting action, or `{ action: null }` to emit nothing.
+   */
   processStatusUpdated(transactionMeta: TransactionMeta): EventResult {
     const { status, type } = transactionMeta;
 
@@ -45,7 +67,10 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
     this.#trackedTxIds.add(transactionMeta.id);
 
     if (status === TransactionStatus.signed) {
-      const action = classifySignedEvent(type as TransactionType);
+      if (!type) {
+        return { action: null };
+      }
+      const action = classifySignedEvent(type);
       return action ? { action } : { action: null };
     }
 
@@ -58,6 +83,13 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
     return { action: null };
   }
 
+  /**
+   * Processes a `transactionRejected` event in sequential mode. Emits a
+   * `TransactionRejected` action only for currently tracked tx IDs.
+   *
+   * @param transactionMeta - The rejected transaction.
+   * @returns The resulting action, or `{ action: null }` to emit nothing.
+   */
   processRejected(transactionMeta: TransactionMeta): EventResult {
     if (!this.#trackedTxIds.has(transactionMeta.id)) {
       return { action: null };
@@ -68,6 +100,14 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
     };
   }
 
+  /**
+   * Processes a `transactionFinished` event in sequential mode. Maps a finished
+   * transaction's final `rejected`/`failed` status to the corresponding action,
+   * but only for currently tracked tx IDs.
+   *
+   * @param transactionMeta - The finished transaction.
+   * @returns The resulting action, or `{ action: null }` to emit nothing.
+   */
   processFinished(transactionMeta: TransactionMeta): EventResult {
     const { status } = transactionMeta;
 
@@ -93,29 +133,20 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
     return { action: null };
   }
 
-  recordTxId(txId: string): void {
-    this.#trackedTxIds.add(txId);
-  }
-
-  checkPendingAbort(
-    txId: string,
-    pendingAbortTxIds: Set<string>,
-    onAllSettled: () => void,
-  ): boolean {
-    if (!pendingAbortTxIds.has(txId)) {
-      return false;
-    }
-    pendingAbortTxIds.delete(txId);
-    if (pendingAbortTxIds.size === 0) {
-      onAllSettled();
-    }
-    return true;
-  }
-
+  /**
+   * Returns the set of transaction IDs observed since the last reset (used by
+   * the host hook to know which in-flight tx IDs may need aborting on cancel).
+   *
+   * @returns The currently tracked transaction IDs.
+   */
   getTrackedTxIds(): Set<string> {
     return this.#trackedTxIds;
   }
 
+  /**
+   * Clears all tracking and stale state. Called on cancel, subscription
+   * teardown, and when the tracker is disabled.
+   */
   reset(): void {
     this.#trackedTxIds = new Set();
     this.#staleTxIds = new Set();

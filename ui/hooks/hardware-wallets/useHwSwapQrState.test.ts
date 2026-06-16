@@ -1,3 +1,4 @@
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
@@ -124,7 +125,7 @@ describe('useHwSwapQrState', () => {
 
   it('shows inline QR signing when qrSignRequest exists and awaiting signature', () => {
     const mockQrSignRequest = {
-      type: 'SIGN',
+      type: QrScanRequestType.SIGN,
       request: {
         requestId: 'qr-123',
         payload: { type: 'test', cbor: '0x' },
@@ -150,7 +151,7 @@ describe('useHwSwapQrState', () => {
 
   it('does not show inline QR signing when not awaiting signature', () => {
     const mockQrSignRequest = {
-      type: 'SIGN',
+      type: QrScanRequestType.SIGN,
       request: {
         requestId: 'qr-123',
         payload: { type: 'test', cbor: '0x' },
@@ -175,7 +176,7 @@ describe('useHwSwapQrState', () => {
 
   it('returns activeQrStep when showing inline signing and not reading', () => {
     const mockQrSignRequest = {
-      type: 'SIGN',
+      type: QrScanRequestType.SIGN,
       request: {
         requestId: 'qr-123',
         payload: { type: 'test', cbor: '0x' },
@@ -202,7 +203,7 @@ describe('useHwSwapQrState', () => {
 
   it('returns undefined activeQrStep when isReadingQrSignature is true', () => {
     const mockQrSignRequest = {
-      type: 'SIGN',
+      type: QrScanRequestType.SIGN,
       request: {
         requestId: 'qr-123',
         payload: { type: 'test', cbor: '0x' },
@@ -231,7 +232,7 @@ describe('useHwSwapQrState', () => {
 
   it('resets isReadingQrSignature when currentQrRequestId changes', () => {
     const mockQrSignRequest = {
-      type: 'SIGN',
+      type: QrScanRequestType.SIGN,
       request: {
         requestId: 'qr-123',
         payload: { type: 'test', cbor: '0x' },
@@ -242,7 +243,7 @@ describe('useHwSwapQrState', () => {
     mockGetActiveQrCodeScanRequest.mockReturnValue(mockQrSignRequest);
     mockIsQrHardwareSignRequest.mockReturnValue(true);
 
-    const { result } = renderHook(() =>
+    const { result, rerender } = renderHook(() =>
       useHwSwapQrState({
         signatureState: createSignatureState(
           HardwareWalletSignatureStatus.AwaitingFirstSignature,
@@ -258,7 +259,7 @@ describe('useHwSwapQrState', () => {
     expect(result.current.isReadingQrSignature).toBe(true);
 
     const newQrSignRequest = {
-      type: 'SIGN',
+      type: QrScanRequestType.SIGN,
       request: {
         requestId: 'qr-456',
         payload: { type: 'test', cbor: '0x' },
@@ -267,7 +268,9 @@ describe('useHwSwapQrState', () => {
 
     mockGetActiveQrCodeScanRequest.mockReturnValue(newQrSignRequest);
 
-    expect(result.current.isReadingQrSignature).toBe(true);
+    rerender();
+
+    expect(result.current.isReadingQrSignature).toBe(false);
   });
 
   describe('handleQrScanSuccess', () => {
@@ -308,7 +311,7 @@ describe('useHwSwapQrState', () => {
 
     it('cancels QR code scan when qrSignRequest exists', () => {
       const mockQrSignRequest = {
-        type: 'SIGN',
+        type: QrScanRequestType.SIGN,
         request: {
           requestId: 'qr-123',
           payload: { type: 'test', cbor: '0x' },
