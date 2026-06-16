@@ -276,7 +276,7 @@ export function consensysTracePropagationIntegration({
         try {
           const requestId = requestIdProvider();
           currentConsensysRequestId = requestId;
-          
+
           const traceparent = getCurrentTraceparent();
           if (traceparent) {
             // TODO: Remove `getTraceIdFromTraceparent` call once sentry SDK is upgraded to v10.
