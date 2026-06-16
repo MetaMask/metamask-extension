@@ -1935,25 +1935,27 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsDefaultToken(state, overrideChainId = null) {
-  const selectedAccount = getSelectedAccount(state);
-  const balance = selectedAccount?.balance;
-  const currentChainId = getCurrentChainId(state);
+export const getSwapsDefaultToken = createSelector(
+  (state) => getSelectedAccount(state),
+  (state) => getCurrentChainId(state),
+  (_state, overrideChainId = null) => overrideChainId,
+  (selectedAccount, currentChainId, overrideChainId) => {
+    const balance = selectedAccount?.balance;
+    const chainId = overrideChainId ?? currentChainId;
+    const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
-  const chainId = overrideChainId ?? currentChainId;
-  const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
-
-  return {
-    ...defaultTokenObject,
-    chainId,
-    balance: hexToDecimal(balance),
-    string: getValueFromWeiHex({
-      value: balance,
-      numberOfDecimals: 4,
-      toDenomination: 'ETH',
-    }),
-  };
-}
+    return {
+      ...defaultTokenObject,
+      chainId,
+      balance: hexToDecimal(balance),
+      string: getValueFromWeiHex({
+        value: balance,
+        numberOfDecimals: 4,
+        toDenomination: 'ETH',
+      }),
+    };
+  },
+);
 
 /**
  * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
