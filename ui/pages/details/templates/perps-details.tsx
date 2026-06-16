@@ -1,10 +1,11 @@
 import React from 'react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { PerpsFiatRows } from '../components/amounts-section';
 import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection, TokensSection } from '../components/sections';
+
+const HYPERLIQUID_EXPLORER_URL = 'https://app.hyperliquid.xyz/explorer';
 
 export function PerpsDetails({
   item,
@@ -23,7 +24,7 @@ export function PerpsDetails({
 
       <Footer>
         <BlockExplorerButton
-          chainId={CHAIN_IDS.HYPERLIQUID}
+          blockExplorerUrl={HYPERLIQUID_EXPLORER_URL}
           txHash={item.data.hash}
         />
       </Footer>

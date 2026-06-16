@@ -217,7 +217,6 @@ export const CHAIN_IDS = {
   INJECTIVE: '0x6f0',
   MONAD: '0x8f',
   HYPE: '0x3e7',
-  HYPERLIQUID: '0x3e70',
   X_LAYER: '0xc4',
   ETHERLINK: '0xa729',
   MSU: '0x10b3e',

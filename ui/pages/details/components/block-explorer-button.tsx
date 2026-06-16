@@ -5,16 +5,24 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useBlockExplorerUrl } from './shared';
+import { getExplorerTxUrl, useBlockExplorerUrl } from './shared';
 
 type Props = {
-  chainId: string | undefined;
+  chainId?: string;
   txHash: string | undefined;
+  blockExplorerUrl?: string;
 };
 
-export function BlockExplorerButton({ chainId, txHash }: Props) {
+export function BlockExplorerButton({
+  chainId,
+  txHash,
+  blockExplorerUrl,
+}: Props) {
   const t = useI18nContext();
-  const explorerTxUrl = useBlockExplorerUrl(chainId ?? '', txHash);
+  const chainExplorerTxUrl = useBlockExplorerUrl(chainId ?? '', txHash);
+  const explorerTxUrl = blockExplorerUrl
+    ? getExplorerTxUrl({ chainId: '', txHash, blockExplorerUrl })
+    : chainExplorerTxUrl;
 
   const handleClick = useCallback(() => {
     if (explorerTxUrl) {
