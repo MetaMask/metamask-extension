@@ -1,4 +1,3 @@
-import {} from '@metamask/accounts-controller';
 import {
   AccountGroupAssets,
   AssetListState,
