@@ -2250,6 +2250,8 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
 describe('getRatesControllerRates', () => {
   const solanaNativeAssetId =
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+  const solanaSplMissingSymbolAssetId =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2NzMQx8TiDFbw5p3oMNVBh59UkKAPLHoa62YV6vXNmmG';
 
   describe('when assets unify state feature is disabled', () => {
     it('returns rates from state unchanged', () => {
@@ -2336,6 +2338,44 @@ describe('getRatesControllerRates', () => {
           conversionDate: lastUpdated,
           conversionRate: 91.69,
           usdConversionRate: 91.69,
+        },
+      });
+    });
+
+    it('skips assetsInfo entries with missing symbol without throwing', () => {
+      const lastUpdated = 1700000000000;
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          rates: {},
+          assetsInfo: {
+            [solanaSplMissingSymbolAssetId]: {
+              decimals: 9,
+              type: 'spl',
+            },
+            [bitcoinNativeAssetId]: {
+              type: 'native',
+              symbol: 'BTC',
+              decimals: 8,
+            },
+          },
+          assetsPrice: {
+            [bitcoinNativeAssetId]: makeMockPrice({
+              id: 'btc',
+              price: 71052.43,
+              usdPrice: 71052.43,
+              lastUpdated,
+            }),
+          },
+        },
+      };
+
+      expect(() => getRatesControllerRates(state)).not.toThrow();
+      expect(getRatesControllerRates(state)).toStrictEqual({
+        btc: {
+          conversionDate: lastUpdated,
+          conversionRate: 71052.43,
+          usdConversionRate: 71052.43,
         },
       });
     });

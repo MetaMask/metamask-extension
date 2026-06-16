@@ -617,7 +617,6 @@ jobs:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       builds-from-sha: ${{ needs.get-requirements.outputs.builds-from-sha }}
     secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
       E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
       E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}

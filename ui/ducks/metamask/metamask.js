@@ -26,6 +26,7 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions/update-transaction-gas-fees';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { EMPTY_ARRAY } from '../../selectors/shared';
 
 const initialState = {
   isInitialized: false,
@@ -281,7 +282,7 @@ export const getNfts = (state) => {
 
   const { chainId } = getProviderConfig(state);
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
 export const getAllNfts = (state) => {
@@ -290,7 +291,7 @@ export const getAllNfts = (state) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
-  return allNfts?.[selectedAddress] ?? [];
+  return allNfts?.[selectedAddress] ?? EMPTY_ARRAY;
 };
 
 export const getNFTsByChainId = (state, chainId) => {
@@ -299,7 +300,7 @@ export const getNFTsByChainId = (state, chainId) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
 export const getNftContracts = (state) => {
@@ -308,7 +309,7 @@ export const getNftContracts = (state) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
-  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
 export function getNativeCurrency(state) {
