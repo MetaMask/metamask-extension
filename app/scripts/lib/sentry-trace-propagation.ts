@@ -22,7 +22,7 @@ const TRACE_FLAG_SAMPLED = 1;
 
 /**
  * Backend API host patterns that should receive distributed-trace propagation
- * (W3C `traceparent` + RAPID baggage) on outbound HTTPS. 
+ * (W3C `traceparent` + RAPID baggage) on outbound HTTPS.
  */
 export const BACKEND_TRACE_PROPAGATION_TARGETS: RegExp[] = [
   /^https:\/\/[a-z0-9.-]+\.(?:[a-z0-9]+-)?api\.cx\.metamask\.io(?:[/?#]|$)/u,
