@@ -35,9 +35,8 @@ const RELEASE = getSentryRelease(
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
-const SENTRY_DISTRIBUTED_TRACING_ENABLED = !(
-  process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED === 'true'
-);
+const SENTRY_DISTRIBUTED_TRACING_ENABLED =
+  !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
