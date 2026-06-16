@@ -3,6 +3,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   NotificationDetailTitle,
   NotificationListItemSnap,
 } from '../../../../components/multichain';
@@ -15,13 +20,10 @@ import {
 import { formatIsoDateString } from '../../../../helpers/utils/notification.util';
 import { SnapUIRenderer } from '../../../../components/app/snaps/snap-ui-renderer';
 import {
-  AlignItems,
   BackgroundColor,
-  Display,
-  FlexDirection,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
-import { Box, IconSize, Text } from '../../../../components/component-library';
+import { IconSize, Text } from '../../../../components/component-library';
 import { isOfTypeNodeGuard } from '../node-guard';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
@@ -89,18 +91,13 @@ export const components: NotificationComponent<SnapNotification> = {
         return (
           <>
             <Box
-              display={Display.Flex}
               style={{
                 borderBottom: '1px solid var(--color-border-muted)',
               }}
-              flexDirection={FlexDirection.Column}
+              flexDirection={BoxFlexDirection.Column}
               padding={[4, 2, 4, 4]}
             >
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                paddingBottom={2}
-              >
+              <Box alignItems={BoxAlignItems.Center} paddingBottom={2}>
                 <SnapIcon snapId={snapId} avatarSize={IconSize.Xl} />
                 <Text paddingLeft={4} fontWeight={FontWeight.Medium}>
                   {snapsNameGetter(snapId)}

@@ -2,17 +2,12 @@ import React, { useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { hasProperty } from '@metamask/utils';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { Box } from '../../components/component-library';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
@@ -103,9 +98,8 @@ export function NotificationsListItem({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Row}
+      className="w-full"
       data-testid={`notification-list-item-${notification.id}`}
     >
       <ncs.item notification={notification} onClick={handleNotificationClick} />

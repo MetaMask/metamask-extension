@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Meta } from '@storybook/react';
-import { Box } from '../../components/component-library';
+import { Box } from '@metamask/design-system-react';
 import {
   createMockNotificationEthSent,
   createMockNotificationEthReceived,
