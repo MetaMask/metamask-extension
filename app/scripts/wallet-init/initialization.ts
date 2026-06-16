@@ -14,6 +14,7 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
+import { CHAIN_IDS, getFailoverUrlsForInfuraNetwork } from '../../../shared/constants/network';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -75,6 +76,14 @@ export function initializeWallet({
       }),
       networkController: {
         infuraProjectId,
+        failoverUrls: {
+          [CHAIN_IDS.MAINNET]: getFailoverUrlsForInfuraNetwork('ethereum-mainnet'),
+          [CHAIN_IDS.LINEA_MAINNET]: getFailoverUrlsForInfuraNetwork('linea-mainnet'),
+          [CHAIN_IDS.BASE]: getFailoverUrlsForInfuraNetwork('base-mainnet'),
+          [CHAIN_IDS.ARBITRUM]: getFailoverUrlsForInfuraNetwork('arbitrum-mainnet'),
+          [CHAIN_IDS.OPTIMISM]: getFailoverUrlsForInfuraNetwork('optimism-mainnet'),
+          [CHAIN_IDS.POLYGON]: getFailoverUrlsForInfuraNetwork('polygon-mainnet'),
+        }
       },
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
