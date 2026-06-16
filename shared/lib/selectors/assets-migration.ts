@@ -86,7 +86,7 @@ type ControllerStateSelector<
   metamask: Pick<InputState, ResultField>;
 }) => InputState[ResultField];
 
-const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
+export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
   [
     (state: { metamask: RemoteFeatureFlagControllerState }) =>
       state.metamask?.remoteFeatureFlags ?? {},
