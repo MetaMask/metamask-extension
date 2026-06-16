@@ -6,8 +6,15 @@ import {
   TextColor,
   FontWeight,
   TextAlign,
+  BoxJustifyContent,
+  BoxAlignItems,
+  IconName,
+  Icon,
+  BoxFlexDirection,
+  BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import Spinner from '../../../../components/ui/spinner';
+import PulseLoader from '../../../../components/ui/pulse-loader';
 
 const DEFAULT_DELAY_MS = 2000;
 
@@ -34,7 +41,29 @@ const LoadingStep = ({
   }, [onComplete, delayMs]);
 
   return (
-    <Box className="p-4 flex flex-1 flex-col items-center justify-center gap-4">
+    <Box className="p-4 flex flex-1 flex-col items-center justify-center gap-8 mt-10">
+      <Box
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        flexDirection={BoxFlexDirection.Row}
+        gap={4}
+      >
+        <Box
+          backgroundColor={BoxBackgroundColor.PrimaryMuted}
+          padding={3}
+          className="rounded-md"
+        >
+          <Icon name={IconName.Monitor} />
+        </Box>
+        <PulseLoader />
+        <Box
+          backgroundColor={BoxBackgroundColor.PrimaryMuted}
+          padding={3}
+          className="rounded-md"
+        >
+          <Icon name={IconName.Mobile} />
+        </Box>
+      </Box>
       <Box className="w-10 h-10">
         <Spinner />
       </Box>
@@ -44,6 +73,7 @@ const LoadingStep = ({
           color={TextColor.TextDefault}
           fontWeight={FontWeight.Bold}
           textAlign={TextAlign.Center}
+          className='mb-2'
         >
           {title}
         </Text>

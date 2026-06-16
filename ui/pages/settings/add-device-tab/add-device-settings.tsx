@@ -25,7 +25,7 @@ import { AddDeviceSettingsStep } from './constant';
 const AddDeviceSettings = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const [step, setStep] = useState(AddDeviceSettingsStep.ScanQrCode);
+  const [step, setStep] = useState(AddDeviceSettingsStep.Success);
 
   const handleNextStep = (type: AddDeviceSettingsStep) => {
     setStep(type);

@@ -22,14 +22,14 @@ const Success = ({ onDone }: SuccessProps) => {
   const t = useI18nContext();
 
   return (
-    <Box className="p-4 flex flex-1 flex-col">
+    <Box className="p-4 flex flex-1 flex-col gap-4">
       <Box className="flex flex-1 flex-col items-center justify-center gap-4">
         <Icon
           name={IconName.Confirmation}
           size={IconSize.Xl}
           color={IconColor.SuccessDefault}
         />
-        <Box className="flex flex-col items-center gap-1">
+        <Box className="flex flex-col items-center gap-2">
           <Text
             variant={TextVariant.HeadingLg}
             color={TextColor.TextDefault}
@@ -47,7 +47,7 @@ const Success = ({ onDone }: SuccessProps) => {
           </Text>
         </Box>
       </Box>
-      <Button className="w-full mt-auto" onClick={onDone}>
+      <Button className="w-full mt-10" onClick={onDone}>
         {t('done')}
       </Button>
     </Box>
