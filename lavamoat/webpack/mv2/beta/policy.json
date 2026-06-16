@@ -889,7 +889,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controllers": true,
+        "@metamask/assets-controller>@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
@@ -939,7 +939,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controllers>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -948,6 +948,15 @@
         "reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "uuid": true
+      }
+    },
+    "@metamask/assets-controller>@metamask/assets-controllers": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
@@ -1017,6 +1026,32 @@
         "uuid": true
       }
     },
+    "@metamask/bridge-status-controller>@metamask/bridge-controller": {
+      "globals": {
+        "Buffer.from": true,
+        "URLSearchParams": true,
+        "console.warn": true
+      },
+      "packages": {
+        "ethers>@ethersproject/address": true,
+        "ethers>@ethersproject/constants": true,
+        "@ethersproject/contracts": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/multichain-network-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "buffer": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@metamask/bridge-controller": {
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -1025,7 +1060,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/bridge-controller": true,
+        "@metamask/bridge-status-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/polling-controller": true,
@@ -1814,23 +1849,6 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/bridge-status-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
     "@metamask/delegation-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -2313,7 +2331,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true
+        "@metamask/react-data-query>@tanstack/query-core": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -2646,9 +2664,9 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
-        "@metamask/bridge-controller": true,
+        "@metamask/transaction-pay-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/transaction-pay-controller>@metamask/bridge-status-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
         "@metamask/transaction-pay-controller>@metamask/transaction-controller": true,
@@ -3045,8 +3063,7 @@
         "XMLHttpRequest": true
       },
       "packages": {
-        "@google/genai>protobufjs>@protobufjs/aspromise": true,
-        "@google/genai>protobufjs>@protobufjs/inquire": true
+        "@google/genai>protobufjs>@protobufjs/aspromise": true
       }
     },
     "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
@@ -3487,19 +3504,6 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
       }
     },
-    "@metamask/assets-controllers>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "document.visibilityState": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
-      }
-    },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
@@ -3513,13 +3517,24 @@
         "setTimeout": true
       }
     },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      }
+    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console": true,
         "document": true,
         "navigator": true,
         "removeEventListener": true,
@@ -3702,7 +3717,7 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "buffer": true,
-        "@google/genai>protobufjs>long": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": true,
         "@google/genai>protobufjs": true,
         "tslib": true
       }
@@ -5363,6 +5378,13 @@
         "navigator": true
       }
     },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {
+      "globals": {
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true,
+        "define": true
+      }
+    },
     "@google/genai>protobufjs>long": {
       "globals": {
         "WebAssembly.Instance": true,
@@ -5671,10 +5693,10 @@
         "@google/genai>protobufjs>@protobufjs/eventemitter": true,
         "@google/genai>protobufjs>@protobufjs/fetch": true,
         "@google/genai>protobufjs>@protobufjs/float": true,
-        "@google/genai>protobufjs>@protobufjs/inquire": true,
         "@google/genai>protobufjs>@protobufjs/path": true,
         "@google/genai>protobufjs>@protobufjs/pool": true,
-        "@google/genai>protobufjs>@protobufjs/utf8": true
+        "@google/genai>protobufjs>@protobufjs/utf8": true,
+        "@google/genai>protobufjs>long": true
       }
     },
     "crypto-browserify>public-encrypt": {

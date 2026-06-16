@@ -59,6 +59,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the Sei native token icon to Sei's maroon token mark. (#43173)
 - Updated the Sei network and token logo to Sei's new brand mark. (#43117)
 -
+### Changed
+
+- Bump `@metamask/assets-controllers` from 108.5.0 to 109.0.0 (#43422)
+
 ## [13.34.1]
 
 ### Changed
