@@ -40,7 +40,11 @@ const AddRewardsAccount = ({ account }: AddRewardsAccountProps) => {
       className="flex gap-1 items-center"
     >
       {isLoading ? (
-        <Icon name={IconName.Loading} size={IconSize.Sm} className="animate-spin" />
+        <Icon
+          name={IconName.Loading}
+          size={IconSize.Sm}
+          className="animate-spin"
+        />
       ) : (
         <img
           src={'./images/metamask-rewards-points-alternative.svg'}
