@@ -10699,6 +10699,12 @@
   "trustSignalContinueAnyway": {
     "message": "Connect Anyway"
   },
+  "trustlineApprove": {
+    "message": "Activate trustline"
+  },
+  "trustlineDisapprove": {
+    "message": "Deactivate trustline"
+  },
   "tryAgain": {
     "message": "Try again"
   },
