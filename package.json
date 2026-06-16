@@ -164,6 +164,7 @@
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "32.0.0",
+    "@metamask/smart-transactions-controller": "npm:@metamask-previews/smart-transactions-controller@24.2.1-preview-742bf0b2a",
     "follow-redirects": "^1.16.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
