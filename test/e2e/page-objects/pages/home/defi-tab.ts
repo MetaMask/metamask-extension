@@ -1,5 +1,5 @@
-import { Driver } from '../../webdriver/driver';
-import HomePage from './home/homepage';
+import { Driver } from '../../../webdriver/driver';
+import HomePage from './homepage';
 
 class DeFiToken {
   protected readonly driver: Driver;

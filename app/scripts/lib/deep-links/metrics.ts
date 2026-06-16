@@ -4,21 +4,10 @@ import {
   type MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import type { SignatureStatus } from '../../../../shared/lib/deep-links/verify';
-
-type UTMParameter =
-  | 'utm_campaign'
-  | 'utm_content'
-  | 'utm_medium'
-  | 'utm_source'
-  | 'utm_term';
-
-const UTM_PARAMETERS = new Set([
-  'utm_campaign',
-  'utm_content',
-  'utm_medium',
-  'utm_source',
-  'utm_term',
-]) as Set<UTMParameter> & { has: (key: string) => key is UTMParameter };
+import {
+  type UTMParameter,
+  UTM_PARAMETERS,
+} from '../../../../shared/types/metametrics';
 
 export type Properties = {
   route: string;
