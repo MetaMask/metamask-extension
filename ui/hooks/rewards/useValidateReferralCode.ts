@@ -137,12 +137,12 @@ export const useValidateReferralCode = (
             return;
           }
 
-          if (!result.valid) {
-            setError(REFERRAL_CODE_INVALID_ERROR);
-            setIsVipCode(false);
-          } else {
+          if (result.valid) {
             setError('');
             setIsVipCode(result.isVipCode ?? false);
+          } else {
+            setError(REFERRAL_CODE_INVALID_ERROR);
+            setIsVipCode(false);
           }
         } catch {
           if (currentRequestId !== requestIdRef.current) {
