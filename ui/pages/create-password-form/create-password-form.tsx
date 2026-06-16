@@ -45,8 +45,11 @@ const CreatePasswordForm = ({
 }: CreatePasswordFormProps) => {
   const t = useI18nContext();
   const [password, setPassword] = useState('');
-  const { value: termsChecked, setValue: setTermsChecked, toggle } =
-    useBoolean();
+  const {
+    value: termsChecked,
+    setValue: setTermsChecked,
+    toggle,
+  } = useBoolean();
   const hasUserInteractedWithTermsRef = useRef(false);
 
   const { trackEvent } = useContext(MetaMetricsContext);
