@@ -1969,10 +1969,6 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns the token object for the overridden chainId when overrideChainId is provided', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
       const expectedToken = {
         symbol: 'POL',
         name: 'Polygon',
@@ -1990,7 +1986,6 @@ describe('#getConnectedSitesList', () => {
       );
 
       expect(result).toStrictEqual(expectedToken);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
 
     it('returns a stable reference for identical inputs', () => {

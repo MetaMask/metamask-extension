@@ -1933,12 +1933,9 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 
 export const getSwapsDefaultToken = createSelector(
   (state) => getSelectedAccount(state),
+  (state) => getCurrentChainId(state),
   (_state, overrideChainId = null) => overrideChainId,
-  (state, overrideChainId = null) =>
-    overrideChainId === null || overrideChainId === undefined
-      ? getCurrentChainId(state)
-      : null,
-  (selectedAccount, overrideChainId, currentChainId) => {
+  (selectedAccount, currentChainId, overrideChainId) => {
     const balance = selectedAccount?.balance;
     const chainId = overrideChainId ?? currentChainId;
     const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
