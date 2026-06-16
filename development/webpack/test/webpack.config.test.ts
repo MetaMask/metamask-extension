@@ -27,14 +27,6 @@ function getWebpackInstance(config: Configuration) {
   return webpack(config);
 }
 
-function getExpectedDefaultZipMtime() {
-  const latestCommitTimestamp = getLatestCommit().timestamp();
-  if (isValidZipMtime(latestCommitTimestamp)) {
-    return latestCommitTimestamp;
-  }
-  return DEFAULT_ZIP_MTIME;
-}
-
 async function withWatching<T>(
   config: Configuration,
   callback: (watch: (trigger?: () => void) => Promise<void>) => Promise<T>,
