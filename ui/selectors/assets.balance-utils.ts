@@ -13,21 +13,7 @@ import type {
   WalletBalance,
 } from '@metamask/assets-controllers';
 
-/**
- * Balance calculation utilities for new unified AssetsController
- *
- * This module intentionally mirrors the public surface of the legacy core
- * helpers in `@metamask/assets-controllers/src/balances.ts`
- * TODO - move this into `@metamask/assets-controller`
- */
-
-/**
- * Resolves the account IDs that belong to a given account-tree group.
- *
- * @param accountTreeState - AccountTreeController state.
- * @param groupId - Account group identifier.
- * @returns The account IDs in the group (empty when the group is not found).
- */
+// TODO: move this module into `@metamask/assets-controller`.
 function getAccountIdsForGroup(
   accountTreeState: AccountTreeControllerState,
   groupId: string,
@@ -42,17 +28,6 @@ function getAccountIdsForGroup(
   return [];
 }
 
-/**
- * Aggregates a single account group's total fiat balance (and its 1d price
- * change) using the new AssetsController aggregation selector.
- *
- * @param assetsControllerState - Minimal AssetsController state slice.
- * @param accountsById - Internal accounts keyed by account id.
- * @param enabledNetworkMap - Map of enabled networks keyed by namespace.
- * @param accountIds - Account IDs that make up the group.
- * @param trace - Optional trace callback forwarded to the aggregation selector.
- * @returns The group's total fiat balance and 1d percent change.
- */
 function aggregateGroupBalance(
   assetsControllerState: AssetsControllerState,
   accountsById: AccountsById,
@@ -83,16 +58,6 @@ function aggregateGroupBalance(
   return { totalBalanceInFiat, pricePercentChange1d };
 }
 
-/**
- * Computes a group's current and previous total in user currency for a period.
- * The new aggregation selector only exposes a 1d price change, so non-1d
- * periods are treated as a 0% change.
- *
- * @param totalBalanceInFiat - Current group total in user currency.
- * @param pricePercentChange1d - Weighted 1d percent change for the group.
- * @param period - Change period ('1d' | '7d' | '30d').
- * @returns Current and previous totals in user currency.
- */
 function getCurrentAndPrevious(
   totalBalanceInFiat: number,
   pricePercentChange1d: number,
@@ -111,15 +76,6 @@ function getCurrentAndPrevious(
   return { current, previous };
 }
 
-/**
- * Builds a `BalanceChangeResult` from aggregated current/previous totals.
- *
- * @param current - Current total in user currency.
- * @param previous - Previous total in user currency.
- * @param period - Change period ('1d' | '7d' | '30d').
- * @param userCurrency - User currency code.
- * @returns Change result including current, previous, delta, percent, and period.
- */
 function buildBalanceChangeResult(
   current: number,
   previous: number,
@@ -201,22 +157,6 @@ export function calculateBalanceForAllWallets(
   return { wallets, totalBalanceInUserCurrency, userCurrency };
 }
 
-/**
- * Calculate the portfolio value change for a specific account group and period.
- *
- * Mirrors the legacy `calculateBalanceChangeForAccountGroup` output. The new
- * aggregation selector only provides a 1d price change, so non-1d periods
- * return a zeroed change.
- *
- * @param assetsControllerState - Minimal AssetsController state slice.
- * @param accountTreeState - AccountTreeController state.
- * @param accountsById - Internal accounts keyed by account id.
- * @param enabledNetworkMap - Map of enabled networks keyed by namespace.
- * @param groupId - Account group identifier.
- * @param period - Change period ('1d' | '7d' | '30d').
- * @param trace - Optional trace callback forwarded to the aggregation selector.
- * @returns Change result including current, previous, delta, percent, and period.
- */
 export function calculateBalanceChangeForAccountGroup(
   assetsControllerState: AssetsControllerState,
   accountTreeState: AccountTreeControllerState,
