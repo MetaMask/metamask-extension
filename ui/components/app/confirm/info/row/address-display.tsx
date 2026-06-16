@@ -140,7 +140,6 @@ export const ConfirmInfoRowAddressDisplay = memo(
         {name && isClickable && (
           <span className="address-display-clickable">
             <TextButton
-              variant={TextVariant.BodyMd}
               onClick={handleClick}
               className="min-w-0"
               data-testid="confirm-info-row-display-name"
@@ -151,7 +150,6 @@ export const ConfirmInfoRowAddressDisplay = memo(
         )}
         {name && !isClickable && (
           <Text
-            variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             data-testid="confirm-info-row-display-name"
@@ -162,7 +160,6 @@ export const ConfirmInfoRowAddressDisplay = memo(
         {!name && isClickable && (
           <span className="address-display-clickable">
             <TextButton
-              variant={TextVariant.BodyMd}
               onClick={handleClick}
               className="whitespace-nowrap"
               data-testid="confirm-info-row-display-name"
