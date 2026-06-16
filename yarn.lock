@@ -5858,9 +5858,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^109.0.0":
-  version: 109.0.0
-  resolution: "@metamask/assets-controllers@npm:109.0.0"
+"@metamask/assets-controllers@npm:^109.0.0, @metamask/assets-controllers@npm:^109.1.0":
+  version: 109.1.0
+  resolution: "@metamask/assets-controllers@npm:109.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5874,7 +5874,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^9.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/contract-metadata": "npm:^2.4.0"
-    "@metamask/controller-utils": "npm:^12.1.1"
+    "@metamask/controller-utils": "npm:^12.2.0"
     "@metamask/core-backend": "npm:^6.3.3"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/keyring-api": "npm:^23.1.0"
@@ -5894,8 +5894,8 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
     "@metamask/storage-service": "npm:^1.0.2"
-    "@metamask/transaction-controller": "npm:^67.1.0"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/transaction-controller": "npm:^68.0.0"
+    "@metamask/utils": "npm:^11.11.0"
     "@tanstack/query-core": "npm:^5.62.16"
     "@types/bn.js": "npm:^5.1.5"
     "@types/uuid": "npm:^8.3.0"
@@ -5911,7 +5911,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/726f9073e9930f9232fa0f0b6338574aac9491da11c136ed65db6802bf9d562c09016187bc41e41b16a45cfafde60a4ff9ac626aa54af5338774ed26f93dc0bb
+  checksum: 10/2256ec4edbc8d674e6c7a3f5ffd0287f8732d4b8b4533e009354cdbd0c88d04aa1f6945865536d8dbac5d47d570519cf83a0df3125ac09454ffe35399e365ec9
   languageName: node
   linkType: hard
 
@@ -8685,14 +8685,14 @@ __metadata:
   linkType: hard
 
 "@metamask/transaction-pay-controller@npm:^23.6.0":
-  version: 23.6.0
-  resolution: "@metamask/transaction-pay-controller@npm:23.6.0"
+  version: 23.7.0
+  resolution: "@metamask/transaction-pay-controller@npm:23.7.0"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/assets-controller": "npm:^9.0.1"
-    "@metamask/assets-controllers": "npm:^109.0.0"
+    "@metamask/assets-controllers": "npm:^109.1.0"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/bridge-controller": "npm:^75.1.1"
     "@metamask/bridge-status-controller": "npm:^72.1.0"
@@ -8710,7 +8710,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
-  checksum: 10/3e4881d55a4935e09eff7d4e0a93177827f9c4848a5ffa9dbc16186b6c2ffc072c8adee00e4df8c002097979b0575c84d1a73fc2256a1f3c2b1e791967ac4bd7
+  checksum: 10/71178b4406853c84d8200d6d3399227d7f9104300c98e431c6a851ef70a6a89d17771d6e4c9c744451f0d7fd77ea2fe7383590d8c8719078bd7bee5bfdfcea4c
   languageName: node
   linkType: hard
 
@@ -16631,7 +16631,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:^2.6.12, @types/node-fetch@npm:^2.6.4":
+"@types/node-fetch@npm:^2.6.4":
   version: 2.6.12
   resolution: "@types/node-fetch@npm:2.6.12"
   dependencies:
@@ -19228,11 +19228,11 @@ __metadata:
   linkType: hard
 
 "argparse@npm:^1.0.7":
-  version: 1.0.9
-  resolution: "argparse@npm:1.0.9"
+  version: 1.0.10
+  resolution: "argparse@npm:1.0.10"
   dependencies:
     sprintf-js: "npm:~1.0.2"
-  checksum: 10/656da5b9177007e57a429d3c38a6f9856ed13d362e0344b8db3c0e8f92bf7c5ad7e60c156fa981863cda4bb428ac03a3ceedd48910cf81f9df4f59c3214b3556
+  checksum: 10/c6a621343a553ff3779390bb5ee9c2263d6643ebcd7843227bdde6cc7adbed796eb5540ca98db19e3fd7b4714e1faa51551f8849b268bb62df27ddb15cbcd91e
   languageName: node
   linkType: hard
 
@@ -43190,17 +43190,15 @@ __metadata:
   linkType: hard
 
 "ua-parser-js@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "ua-parser-js@npm:2.0.3"
+  version: 2.0.10
+  resolution: "ua-parser-js@npm:2.0.10"
   dependencies:
-    "@types/node-fetch": "npm:^2.6.12"
     detect-europe-js: "npm:^0.1.2"
     is-standalone-pwa: "npm:^0.1.1"
-    node-fetch: "npm:^2.7.0"
     ua-is-frozen: "npm:^0.1.2"
   bin:
     ua-parser-js: script/cli.js
-  checksum: 10/f181f1c976d67a2a8cdd396f8c5cecc8bfe4ada7183e7ef06a81a09aa9dc98480048380240f6374189cf2ab7e6275b711f9732e26b7ed2a14f3e4fe3576b8842
+  checksum: 10/8353e434cb334acb0449bbb587ce748c2a1b31ad0a0380575a1011696615312429ff54aaddb7f26e939e6d21f132ecccb82981f320a9a9e0306759914d4e6614
   languageName: node
   linkType: hard
 
@@ -45404,17 +45402,17 @@ __metadata:
   linkType: hard
 
 "ws@npm:^6.1.0":
-  version: 6.2.3
-  resolution: "ws@npm:6.2.3"
+  version: 6.2.4
+  resolution: "ws@npm:6.2.4"
   dependencies:
     async-limiter: "npm:~1.0.0"
-  checksum: 10/19f8d1608317f4c98f63da6eebaa85260a6fe1ba459cbfedd83ebe436368177fb1e2944761e2392c6b7321cbb7a375c8a81f9e1be35d555b6b4647eb61eadd46
+  checksum: 10/5ec88106f4f97fb175837a476e186b889ec8c57a5ee7c511c852fc1d129ad55cd1c1f45092af2df7419c1394f2000f9b1b6f68f2fcfe52d04d8882aafa1b3838
   languageName: node
   linkType: hard
 
 "ws@npm:^7, ws@npm:^7.4.6, ws@npm:^7.5.0, ws@npm:^7.5.1, ws@npm:^7.5.10":
-  version: 7.5.10
-  resolution: "ws@npm:7.5.10"
+  version: 7.5.11
+  resolution: "ws@npm:7.5.11"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ^5.0.2
@@ -45423,7 +45421,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10/9c796b84ba80ffc2c2adcdfc9c8e9a219ba99caa435c9a8d45f9ac593bba325563b3f83edc5eb067cc6d21b9a6bf2c930adf76dd40af5f58a5ca6859e81858f0
+  checksum: 10/486141e4a01bb75883f9ba39317309c2427e24db1cb75e340fad6e5886b65c03d994a34209f0e4ba06dd6cb9ec95dd1b6a09c52c05eed9a34d6376f4fbbf617c
   languageName: node
   linkType: hard
 
