@@ -15,6 +15,10 @@ const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappBitcoin {
+  private readonly amountInputSelector = {
+    testId: dataTestIds.testPage.sendTransaction.amout,
+  };
+
   private readonly connectButtonSelector = {
     testId: dataTestIds.testPage.header.connect,
     tag: 'button',
@@ -41,6 +45,14 @@ export class TestDappBitcoin {
     text: 'Connected',
   };
 
+  private readonly mainnetNetworkOptionSelector = {
+    testId: dataTestIds.testPage.header.networks.mainnet,
+  };
+
+  private readonly messageInputSelector = {
+    testId: dataTestIds.testPage.signMessage.message,
+  };
+
   private readonly metamaskWalletOptionSelector = {
     testId: dataTestIds.testPage.walletSelectionModal.walletOption,
     text: 'MetaMask',
@@ -48,6 +60,14 @@ export class TestDappBitcoin {
 
   private readonly networkSelector = {
     testId: dataTestIds.testPage.header.network,
+  };
+
+  private readonly psbtInputSelector = {
+    testId: dataTestIds.testPage.signTransaction.psbt,
+  };
+
+  private readonly recipientInputSelector = {
+    testId: dataTestIds.testPage.sendTransaction.recipient,
   };
 
   private readonly satsConnectV3ButtonSelector = {
@@ -60,9 +80,33 @@ export class TestDappBitcoin {
     tag: 'button',
   };
 
+  private readonly sendTransactionButtonSelector = {
+    testId: dataTestIds.testPage.sendTransaction.sendTransaction,
+  };
+
+  private readonly signMessageButtonSelector = {
+    testId: dataTestIds.testPage.signMessage.signMessage,
+  };
+
+  private readonly signPsbtButtonSelector = {
+    testId: dataTestIds.testPage.signTransaction.signTransaction,
+  };
+
+  private readonly signedMessageSelector = {
+    testId: dataTestIds.testPage.signMessage.signedMessage,
+  };
+
+  private readonly signedPsbtSelector = {
+    testId: dataTestIds.testPage.signTransaction.signedPsbt,
+  };
+
   private readonly standardButtonSelector = {
     testId: dataTestIds.testPage.walletSelectionModal.standardButton,
     tag: 'button',
+  };
+
+  private readonly transactionHashSelector = {
+    css: `[data-testid="${dataTestIds.testPage.sendTransaction.txId}"]`,
   };
 
   constructor(driver: Driver) {
@@ -134,47 +178,35 @@ export class TestDappBitcoin {
   }
 
   async sendTransaction() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.sendTransaction.sendTransaction,
-    });
+    await this.driver.clickElement(this.sendTransactionButtonSelector);
   }
 
   async setAmount(message: string) {
-    await this.setInputValue(
-      dataTestIds.testPage.sendTransaction.amout,
-      message,
-    );
+    await this.setInputValue(this.amountInputSelector, message);
   }
 
-  private async setInputValue(id: string, value: string) {
-    await this.driver.fill({ testId: id }, value);
+  private async setInputValue(selector: { testId: string }, value: string) {
+    await this.driver.fill(selector, value);
   }
 
   async setMessage(message: string) {
-    await this.setInputValue(dataTestIds.testPage.signMessage.message, message);
+    await this.setInputValue(this.messageInputSelector, message);
   }
 
   async setPsbt(psbt: string) {
-    await this.setInputValue(dataTestIds.testPage.signTransaction.psbt, psbt);
+    await this.setInputValue(this.psbtInputSelector, psbt);
   }
 
   async setRecepient(message: string) {
-    await this.setInputValue(
-      dataTestIds.testPage.sendTransaction.recipient,
-      message,
-    );
+    await this.setInputValue(this.recipientInputSelector, message);
   }
 
   async signMessage() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signMessage.signMessage,
-    });
+    await this.driver.clickElement(this.signMessageButtonSelector);
   }
 
   async signPsbt() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signTransaction.signTransaction,
-    });
+    await this.driver.clickElement(this.signPsbtButtonSelector);
   }
 
   async switchTo() {
@@ -183,18 +215,14 @@ export class TestDappBitcoin {
   }
 
   async switchToMainnet() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.network,
-    });
+    await this.driver.clickElement(this.networkSelector);
 
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.networks.mainnet,
-    });
+    await this.driver.clickElement(this.mainnetNetworkOptionSelector);
   }
 
   async verifySignedMessage(signedMessage: string) {
     await this.driver.waitForSelector({
-      testId: dataTestIds.testPage.signMessage.signedMessage,
+      ...this.signedMessageSelector,
       text: signedMessage,
     });
   }
@@ -204,7 +232,7 @@ export class TestDappBitcoin {
     // with the "cHNidP" magic prefix) so we never read a stale or empty
     // element before asserting it differs from the unsigned input.
     const signedPsbtElement = await this.driver.waitForSelector({
-      testId: dataTestIds.testPage.signTransaction.signedPsbt,
+      ...this.signedPsbtSelector,
       text: 'cHNidP',
     });
     const signedPsbt = await signedPsbtElement.getText();
@@ -217,8 +245,8 @@ export class TestDappBitcoin {
   }
 
   async verifyTransactionHash(transactionHash: string) {
-    await this.driver.findElement({
-      css: `[data-testid="${dataTestIds.testPage.sendTransaction.txId}"]`,
+    await this.driver.waitForSelector({
+      ...this.transactionHashSelector,
       text: transactionHash,
     });
   }
