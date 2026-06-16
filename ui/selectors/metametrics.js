@@ -31,9 +31,6 @@ export const getIsParticipateInMetaMetricsSet =
 
 export const getPna25Acknowledged = (state) => state.metamask.pna25Acknowledged;
 
-export const getLatestMetricsEventTimestamp = (state) =>
-  state.metamask.latestNonAnonymousEventTimestamp;
-
 export const selectFragmentBySuccessEvent = createSelector(
   selectFragments,
   (_, fragmentOptions) => fragmentOptions,
