@@ -39,7 +39,7 @@ const NftOptions = ({
         data-testid="nft-options__button"
         onClick={() => setNftOptionsOpen(!nftOptionsOpen)}
         color={IconColor.iconDefault}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
         ariaLabel={t('nftOptions')}
       />
       <Popover

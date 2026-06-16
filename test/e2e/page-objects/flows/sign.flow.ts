@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES } from '../../constants';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TestDapp from '../pages/test-dapp';
 import PersonalSignConfirmation from '../pages/confirmations/personal-sign-confirmation';
@@ -195,7 +195,7 @@ export const signPermitWithSnapAccount = async (
   await testDapp.clickPermit();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new PermitConfirmation(driver);
-  await confirmation.verifyOrigin();
+  await confirmation.checkOrigin(DAPP_HOST_ADDRESS);
   if (isSyncFlow) {
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {

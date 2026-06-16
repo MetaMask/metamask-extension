@@ -14,10 +14,10 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getIsSocialLoginFlow,
-  getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
   getDeferredDeepLinkParameters,
   getAccountTypeForOnboardingMetrics,
@@ -79,20 +79,18 @@ export default function CreatePassword({
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-  const isParticipateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const isOptedIn = useSelector(getOptedIn);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
-  const metametricsId = useSelector(getMetaMetricsId);
+  const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
-  const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
-    'base64',
-  );
+  const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');
   const shouldInjectMetametricsIframe = Boolean(
-    participateInMetaMetrics && base64MetametricsId,
+    completedMetaMetricsOnboarding && isOptedIn && base64AnalyticsId,
   );
   const analyticsIframeQuery = {
-    mmi: base64MetametricsId,
+    mmi: base64AnalyticsId,
     env: 'production',
   };
   const urlSearchParams = new URLSearchParams(analyticsIframeQuery);
@@ -135,7 +133,7 @@ export default function CreatePassword({
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
           navigate(
-            isParticipateInMetaMetricsSet
+            completedMetaMetricsOnboarding
               ? ONBOARDING_COMPLETION_ROUTE
               : ONBOARDING_METAMETRICS,
             { replace: true },
@@ -158,7 +156,7 @@ export default function CreatePassword({
     firstTimeFlowType,
     newAccountCreationInProgress,
     secretRecoveryPhrase,
-    isParticipateInMetaMetricsSet,
+    completedMetaMetricsOnboarding,
     isWalletResetInProgress,
     isPasskeyFeatureAvailable,
   ]);

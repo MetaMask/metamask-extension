@@ -3,7 +3,7 @@ import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
@@ -106,18 +106,18 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         await homepage.goToActivityList();
 
         // Check for unconfirmed transaction in tx list
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkPendingTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkPendingTxNumberDisplayedInActivity(1);
 
         // Click Unconfirmed Tx
-        await activityList.clickOnActivity(1);
+        await activityTab.clickOnActivity(1);
 
         // Confirm Tx
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
         // Check for Confirmed Transaction
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
