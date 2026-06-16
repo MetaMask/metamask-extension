@@ -78,16 +78,26 @@ exports[`AssetPage should render a native asset 1`] = `
         data-testid="asset-price-chart"
       >
         <div
-          class="asset-chart__empty-or-loading-state-container"
-          data-testid="asset-chart-loading"
+          class=""
+          style="opacity: 1;"
         >
           <div
-            aria-hidden="true"
-            class="relative overflow-hidden asset-chart__skeleton rounded-lg"
+            class=""
+            style="direction: rtl;"
           >
-            <div
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            <p
+              class="mm-box mm-text mm-text--body-xs-medium mm-text--text-align-center mm-box--margin-top-1 mm-box--margin-right-4 mm-box--margin-bottom-1 mm-box--margin-left-4 mm-box--color-text-alternative"
+            />
+          </div>
+          <div
+            class="flex-col justify-end flex"
+          />
+          <div
+            class=""
+            style="direction: rtl;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-xs-medium mm-text--text-align-center mm-box--margin-top-1 mm-box--margin-right-4 mm-box--margin-bottom-1 mm-box--margin-left-4 mm-box--color-text-alternative"
             />
           </div>
         </div>
@@ -923,16 +933,26 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         data-testid="asset-price-chart"
       >
         <div
-          class="asset-chart__empty-or-loading-state-container"
-          data-testid="asset-chart-loading"
+          class=""
+          style="opacity: 1;"
         >
           <div
-            aria-hidden="true"
-            class="relative overflow-hidden asset-chart__skeleton rounded-lg"
+            class=""
+            style="direction: rtl;"
           >
-            <div
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            <p
+              class="mm-box mm-text mm-text--body-xs-medium mm-text--text-align-center mm-box--margin-top-1 mm-box--margin-right-4 mm-box--margin-bottom-1 mm-box--margin-left-4 mm-box--color-text-alternative"
+            />
+          </div>
+          <div
+            class="flex-col justify-end flex"
+          />
+          <div
+            class=""
+            style="direction: rtl;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-xs-medium mm-text--text-align-center mm-box--margin-top-1 mm-box--margin-right-4 mm-box--margin-bottom-1 mm-box--margin-left-4 mm-box--color-text-alternative"
             />
           </div>
         </div>
