@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate } from 'react-router-dom';
+import {
+  Navigate,
+  type NavigateFunction,
+  type Location as RouterLocation,
+} from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
@@ -67,8 +71,135 @@ import RewardsModal from '../../components/app/rewards/onboarding/RewardsModal';
 import { Pna25Modal } from '../../components/app/modals/pna25-modal';
 import { DeeplinkQRCode } from '../../components/app/deeplink-qr-code';
 import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
+import { type UITrackEventMethod } from '../../contexts/metametrics';
 import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
 import { HomeDeepLinkActions } from './HomeDeepLinkActions';
+
+// ---------------------------------------------------------------------------
+// Local types
+// ---------------------------------------------------------------------------
+
+type EditedNetwork = {
+  editCompleted?: boolean;
+  newNetwork?: boolean;
+  nickname?: string;
+};
+
+type PendingRedirectRoute = {
+  path: string;
+  search?: string;
+  environmentType?: string;
+};
+
+type RedirectAfterDefaultPage = {
+  shouldRedirect?: boolean;
+  path?: string;
+};
+
+type LastVisitedPerpsRoute = {
+  path: string;
+  timestamp: number;
+};
+
+type DeepLinkQrCodeData = {
+  titleKey: string;
+  descriptionKey: string;
+  deeplinkUrl: string;
+};
+
+type HomeContext = {
+  t: (key: string, args?: unknown[]) => string;
+  trackEvent: UITrackEventMethod;
+};
+
+export type HomeProps = {
+  navigate?: NavigateFunction;
+  forgottenPassword?: boolean;
+  isNotification?: boolean;
+  hasApprovalFlows?: boolean;
+  setConnectedStatusPopoverHasBeenShown?: () => void;
+  shouldShowSeedPhraseReminder: boolean;
+  isPopup?: boolean;
+  connectedStatusPopoverHasBeenShown?: boolean;
+  showRecoveryPhraseReminder: boolean;
+  showTermsOfUsePopup: boolean;
+  firstTimeFlowType?: string;
+  completedOnboarding?: boolean;
+  onboardedInThisUISession?: boolean;
+  showMultiRpcModal: boolean;
+  showUpdateModal: boolean;
+  newNetworkAddedConfigurationId?: string;
+  totalUnapprovedCount: number;
+  isMetaMetricsEnabled?: boolean;
+  setDataCollectionForMarketing: (val: boolean) => void;
+  dataCollectionForMarketing?: boolean | null;
+  location?: RouterLocation;
+  shouldShowWeb3ShimUsageNotification: boolean;
+  setWeb3ShimUsageAlertDismissed: (origin: string) => void;
+  originOfCurrentTab?: string;
+  disableWeb3ShimUsageAlert: () => void;
+  infuraBlocked: boolean;
+  setRecoveryPhraseReminderHasBeenShown: () => void;
+  setRecoveryPhraseReminderLastShown: (lastShown: number) => void;
+  setTermsOfUseLastAgreed: (lastAgreed: number) => void;
+  showOutdatedBrowserWarning: boolean;
+  setOutdatedBrowserWarningLastShown: (lastShown: number) => void;
+  newNetworkAddedName?: string;
+  editedNetwork?: EditedNetwork;
+  isSigningQRHardwareTransaction?: boolean;
+  isHardwareWalletErrorModalVisible?: boolean;
+  attemptCloseNotificationPopup: () => void;
+  newTokensImported?: string;
+  newTokensImportedError?: string;
+  setNewTokensImported: (newTokens: string) => void;
+  setNewTokensImportedError: (msg: string) => void;
+  clearNewNetworkAdded?: () => void;
+  clearEditedNetwork?: () => void;
+  setActiveNetwork?: (networkConfigurationId: string) => void;
+  useExternalServices?: boolean;
+  setBasicFunctionalityModalOpen?: () => void;
+  fetchBuyableChains: () => void;
+  redirectAfterDefaultPage?: RedirectAfterDefaultPage;
+  setRedirectAfterDefaultPage?: (redirect: { path: string }) => void;
+  clearRedirectAfterDefaultPage?: () => void;
+  isSeedlessPasswordOutdated?: boolean;
+  isPrimarySeedPhraseBackedUp?: boolean;
+  showShieldEntryModal?: boolean;
+  isSocialLoginFlow?: boolean;
+  lookupSelectedNetworks: () => void;
+  evaluateCohortEligibility?: (cohort: string) => void;
+  pendingShieldCohort?: string;
+  setPendingShieldCohort?: (cohort: string) => void;
+  isSignedIn?: boolean;
+  rewardsEnabled?: boolean;
+  rewardsModalOpen?: boolean;
+  showPna25Modal: boolean;
+  envType?: string;
+  pendingRedirectRoute?: PendingRedirectRoute | null;
+  clearPendingRedirectRoute?: () => void;
+  lastVisitedPerpsRoute?: LastVisitedPerpsRoute | null;
+  clearLastVisitedPerpsRoute?: () => void;
+};
+
+type HomeState = {
+  canShowBlockageNotification: boolean;
+  deepLinkQrCode: DeepLinkQrCodeData | null;
+  notificationClosing: boolean;
+  shouldEvaluateCohortEligibility: boolean;
+};
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+type CloseNotificationArgs = Pick<
+  HomeProps,
+  | 'isNotification'
+  | 'totalUnapprovedCount'
+  | 'hasApprovalFlows'
+  | 'isSigningQRHardwareTransaction'
+  | 'isHardwareWalletErrorModalVisible'
+>;
 
 function shouldCloseNotificationPopup({
   isNotification,
@@ -76,7 +207,7 @@ function shouldCloseNotificationPopup({
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
   isHardwareWalletErrorModalVisible,
-}) {
+}: CloseNotificationArgs): boolean {
   const baseCondition =
     isNotification &&
     totalUnapprovedCount === 0 &&
@@ -86,97 +217,33 @@ function shouldCloseNotificationPopup({
   const isHardwareWalletErrorModalBlockingClose =
     isHardwareWalletErrorModalVisible;
 
-  const shouldClose = baseCondition && !isHardwareWalletErrorModalBlockingClose;
-
-  return shouldClose;
+  return Boolean(baseCondition && !isHardwareWalletErrorModalBlockingClose);
 }
 
-export default class Home extends PureComponent {
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
+export default class Home extends PureComponent<HomeProps, HomeState> {
+  // Legacy context API — required for class components consuming this context.
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
   };
 
-  static propTypes = {
-    navigate: PropTypes.func,
-    forgottenPassword: PropTypes.bool,
-    isNotification: PropTypes.bool,
-    hasApprovalFlows: PropTypes.bool,
-    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
-    shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
-    isPopup: PropTypes.bool,
-    connectedStatusPopoverHasBeenShown: PropTypes.bool,
-    showRecoveryPhraseReminder: PropTypes.bool.isRequired,
-    showTermsOfUsePopup: PropTypes.bool.isRequired,
-    firstTimeFlowType: PropTypes.string,
-    completedOnboarding: PropTypes.bool,
-    onboardedInThisUISession: PropTypes.bool,
-    showMultiRpcModal: PropTypes.bool.isRequired,
-    showUpdateModal: PropTypes.bool.isRequired,
-    newNetworkAddedConfigurationId: PropTypes.string,
-    totalUnapprovedCount: PropTypes.number.isRequired,
-    participateInMetaMetrics: PropTypes.bool,
-    setDataCollectionForMarketing: PropTypes.func.isRequired,
-    dataCollectionForMarketing: PropTypes.bool,
-    location: PropTypes.object,
-    shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
-    setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
-    originOfCurrentTab: PropTypes.string,
-    disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    infuraBlocked: PropTypes.bool.isRequired,
-    setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
-    setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
-    setTermsOfUseLastAgreed: PropTypes.func.isRequired,
-    showOutdatedBrowserWarning: PropTypes.bool.isRequired,
-    setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
-    newNetworkAddedName: PropTypes.string,
-    editedNetwork: PropTypes.object,
-    isSigningQRHardwareTransaction: PropTypes.bool,
-    isHardwareWalletErrorModalVisible: PropTypes.bool,
-    attemptCloseNotificationPopup: PropTypes.func.isRequired,
-    newTokensImported: PropTypes.string,
-    newTokensImportedError: PropTypes.string,
-    setNewTokensImported: PropTypes.func.isRequired,
-    setNewTokensImportedError: PropTypes.func.isRequired,
-    clearNewNetworkAdded: PropTypes.func,
-    clearEditedNetwork: PropTypes.func,
-    setActiveNetwork: PropTypes.func,
-    useExternalServices: PropTypes.bool,
-    setBasicFunctionalityModalOpen: PropTypes.func,
-    fetchBuyableChains: PropTypes.func.isRequired,
-    redirectAfterDefaultPage: PropTypes.object,
-    setRedirectAfterDefaultPage: PropTypes.func,
-    clearRedirectAfterDefaultPage: PropTypes.func,
-    isSeedlessPasswordOutdated: PropTypes.bool,
-    isPrimarySeedPhraseBackedUp: PropTypes.bool,
-    showShieldEntryModal: PropTypes.bool,
-    isSocialLoginFlow: PropTypes.bool,
-    lookupSelectedNetworks: PropTypes.func.isRequired,
-    evaluateCohortEligibility: PropTypes.func,
-    pendingShieldCohort: PropTypes.string,
-    setPendingShieldCohort: PropTypes.func,
-    isSignedIn: PropTypes.bool,
-    rewardsEnabled: PropTypes.bool,
-    rewardsModalOpen: PropTypes.bool,
-    showPna25Modal: PropTypes.bool.isRequired,
-    envType: PropTypes.string,
-    pendingRedirectRoute: PropTypes.object,
-    clearPendingRedirectRoute: PropTypes.func,
-    lastVisitedPerpsRoute: PropTypes.shape({
-      path: PropTypes.string.isRequired,
-      timestamp: PropTypes.number.isRequired,
-    }),
-    clearLastVisitedPerpsRoute: PropTypes.func,
-  };
+  /** Typed accessor for the legacy React context. */
+  private get ctx(): HomeContext {
+    return this.context as HomeContext;
+  }
 
-  state = {
+  state: HomeState = {
     canShowBlockageNotification: true,
     deepLinkQrCode: null,
     notificationClosing: false,
     shouldEvaluateCohortEligibility: true,
   };
 
-  constructor(props) {
+  constructor(props: HomeProps) {
     super(props);
 
     const {
@@ -196,7 +263,9 @@ export default class Home extends PureComponent {
         isHardwareWalletErrorModalVisible,
       })
     ) {
-      this.state.notificationClosing = true;
+      // Safe to mutate state directly before first render
+      // eslint-disable-next-line react/no-direct-mutation-state
+      this.state = { ...this.state, notificationClosing: true };
       attemptCloseNotificationPopup();
     }
   }
@@ -212,8 +281,8 @@ export default class Home extends PureComponent {
       redirectAfterDefaultPage?.shouldRedirect &&
       redirectAfterDefaultPage?.path
     ) {
-      navigate(redirectAfterDefaultPage.path);
-      clearRedirectAfterDefaultPage();
+      navigate?.(redirectAfterDefaultPage.path);
+      clearRedirectAfterDefaultPage?.();
     }
   }
 
@@ -231,11 +300,11 @@ export default class Home extends PureComponent {
         !environmentType || environmentType === this.props.envType;
 
       if (shouldRedirect) {
-        this.props.setRedirectAfterDefaultPage({
+        this.props.setRedirectAfterDefaultPage?.({
           path: search ? `${path}${search}` : path,
         });
       }
-      this.props.clearPendingRedirectRoute();
+      this.props.clearPendingRedirectRoute?.();
     }
   }
 
@@ -284,11 +353,11 @@ export default class Home extends PureComponent {
     // it.
     const pendingApplies =
       Boolean(pendingRedirectRoute) &&
-      (!pendingRedirectRoute.environmentType ||
-        pendingRedirectRoute.environmentType === envType);
+      (!pendingRedirectRoute?.environmentType ||
+        pendingRedirectRoute?.environmentType === envType);
     const justLeftPerpsInApp = wasPerpsUnmountedInAppRecently(1500);
     if (!pendingApplies && !justLeftPerpsInApp && isFresh && isPerpsPath) {
-      setRedirectAfterDefaultPage({ path });
+      setRedirectAfterDefaultPage?.({ path });
     }
 
     clearLastVisitedPerpsRoute?.();
@@ -310,19 +379,14 @@ export default class Home extends PureComponent {
     }
   }
 
-  static getDerivedStateFromProps({
-    isNotification,
-    totalUnapprovedCount,
-    hasApprovalFlows,
-    isSigningQRHardwareTransaction,
-    isHardwareWalletErrorModalVisible,
-  }) {
+  static getDerivedStateFromProps(props: HomeProps): Partial<HomeState> | null {
     const shouldClose = shouldCloseNotificationPopup({
-      isNotification,
-      totalUnapprovedCount,
-      hasApprovalFlows,
-      isSigningQRHardwareTransaction,
-      isHardwareWalletErrorModalVisible,
+      isNotification: props.isNotification,
+      totalUnapprovedCount: props.totalUnapprovedCount,
+      hasApprovalFlows: props.hasApprovalFlows,
+      isSigningQRHardwareTransaction: props.isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible:
+        props.isHardwareWalletErrorModalVisible,
     });
     if (shouldClose) {
       return { notificationClosing: true };
@@ -330,7 +394,7 @@ export default class Home extends PureComponent {
     return null;
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: HomeProps, prevState: HomeState) {
     const {
       attemptCloseNotificationPopup,
       newNetworkAddedConfigurationId,
@@ -352,8 +416,8 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId &&
       prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId
     ) {
-      setActiveNetwork(newNetworkAddedConfigurationId);
-      clearNewNetworkAdded();
+      setActiveNetwork?.(newNetworkAddedConfigurationId);
+      clearNewNetworkAdded?.();
     }
 
     if (notificationClosing && !prevState.notificationClosing) {
@@ -390,14 +454,14 @@ export default class Home extends PureComponent {
       setRecoveryPhraseReminderHasBeenShown,
       setRecoveryPhraseReminderLastShown,
     } = this.props;
-    setRecoveryPhraseReminderHasBeenShown(true);
+    setRecoveryPhraseReminderHasBeenShown();
     setRecoveryPhraseReminderLastShown(new Date().getTime());
   };
 
   onAcceptTermsOfUse = () => {
     const { setTermsOfUseLastAgreed } = this.props;
     setTermsOfUseLastAgreed(new Date().getTime());
-    this.context.trackEvent({
+    this.ctx.trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.TermsOfUseAccepted,
       properties: {
@@ -408,7 +472,7 @@ export default class Home extends PureComponent {
 
   onSupportLinkClick = () => {
     if (isMain()) {
-      this.context.trackEvent(
+      this.ctx.trackEvent(
         {
           category: MetaMetricsEventCategory.Home,
           event: MetaMetricsEventName.SupportLinkClicked,
@@ -428,7 +492,7 @@ export default class Home extends PureComponent {
     setOutdatedBrowserWarningLastShown(new Date().getTime());
   };
 
-  showDeepLinkQrCode = (deepLinkQrCode) => {
+  showDeepLinkQrCode = (deepLinkQrCode: DeepLinkQrCodeData) => {
     this.setState({ deepLinkQrCode });
   };
 
@@ -437,7 +501,7 @@ export default class Home extends PureComponent {
   };
 
   renderNotifications() {
-    const { t } = this.context;
+    const { t } = this.ctx;
 
     const {
       navigate,
@@ -463,7 +527,7 @@ export default class Home extends PureComponent {
     const onAutoHide = () => {
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
+      clearEditedNetwork?.(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -497,7 +561,7 @@ export default class Home extends PureComponent {
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
                 ariaLabel={t('close')}
-                onClick={() => clearNewNetworkAdded()}
+                onClick={() => clearNewNetworkAdded?.()}
                 className="home__new-network-notification-close"
               />
             </Box>
@@ -525,7 +589,7 @@ export default class Home extends PureComponent {
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
                 ariaLabel={t('close')}
-                onClick={() => clearEditedNetwork()}
+                onClick={() => clearEditedNetwork?.()}
                 className="home__new-network-notification-close"
               />
             </Box>
@@ -608,8 +672,8 @@ export default class Home extends PureComponent {
             </span>,
           ])}
           ignoreText={t('dismiss')}
-          onIgnore={(disable) => {
-            setWeb3ShimUsageAlertDismissed(originOfCurrentTab);
+          onIgnore={(disable: boolean) => {
+            setWeb3ShimUsageAlertDismissed(originOfCurrentTab ?? '');
             if (disable) {
               disableWeb3ShimUsageAlert();
             }
@@ -628,7 +692,7 @@ export default class Home extends PureComponent {
             if (isPopup) {
               global.platform.openExtensionInBrowser(backUpSRPRoute);
             } else {
-              navigate(backUpSRPRoute);
+              navigate?.(backUpSRPRoute);
             }
           }}
           infoText={t('backupApprovalInfo')}
@@ -672,12 +736,12 @@ export default class Home extends PureComponent {
   }
 
   renderOnboardingPopover = () => {
-    const { t } = this.context;
+    const { t } = this.ctx;
     const { setDataCollectionForMarketing } = this.props;
 
     const handleClose = () => {
       setDataCollectionForMarketing(false);
-      this.context.trackEvent({
+      this.ctx.trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -687,9 +751,9 @@ export default class Home extends PureComponent {
       });
     };
 
-    const handleConsent = (consent) => {
+    const handleConsent = (consent: boolean) => {
       setDataCollectionForMarketing(consent);
-      this.context.trackEvent({
+      this.ctx.trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -707,11 +771,9 @@ export default class Home extends PureComponent {
             onClose={handleClose}
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
-            fontWeight={FontWeight.Bold}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
             gap={4}
-            size={18}
             paddingBottom={0}
           >
             {t('onboardedMetametricsTitle')}
@@ -766,14 +828,14 @@ export default class Home extends PureComponent {
 
   renderPopover = () => {
     const { setConnectedStatusPopoverHasBeenShown } = this.props;
-    const { t } = this.context;
+    const { t } = this.ctx;
     return (
       <Popover
         title={t('whatsThis')}
         onClose={setConnectedStatusPopoverHasBeenShown}
         className="home__connected-status-popover"
         showArrow
-        CustomBackground={({ onClose }) => {
+        CustomBackground={({ onClose }: { onClose: () => void }) => {
           return (
             <div
               className="home__connected-status-popover-bg-container"
@@ -811,13 +873,13 @@ export default class Home extends PureComponent {
   };
 
   render() {
-    const { t } = this.context;
+    const { t } = this.ctx;
     const { deepLinkQrCode } = this.state;
     const {
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
-      participateInMetaMetrics,
+      isMetaMetricsEnabled,
       dataCollectionForMarketing,
       connectedStatusPopoverHasBeenShown,
       isPopup,
@@ -921,8 +983,7 @@ export default class Home extends PureComponent {
     return (
       <ScrollContainer className="main-container main-container--has-shadow">
         <div className="home__container">
-          {dataCollectionForMarketing === null &&
-          participateInMetaMetrics === true
+          {dataCollectionForMarketing === null && isMetaMetricsEnabled === true
             ? this.renderOnboardingPopover()
             : null}
           {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
@@ -938,7 +999,7 @@ export default class Home extends PureComponent {
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
           {showRewardsModal && <RewardsModal />}
-          {showDeepLinkQrCodeModal ? (
+          {showDeepLinkQrCodeModal && deepLinkQrCode ? (
             <Modal
               data-testid="deeplink-qrcode-modal"
               isOpen
@@ -988,8 +1049,10 @@ export default class Home extends PureComponent {
           <div className="home__main-view">
             <AccountOverview
               onSupportLinkClick={this.onSupportLinkClick}
-              useExternalServices={useExternalServices}
-              setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
+              useExternalServices={useExternalServices ?? false}
+              setBasicFunctionalityModalOpen={
+                setBasicFunctionalityModalOpen ?? (() => undefined)
+              }
             />
             {(isBeta() || isFlask()) && (
               <div className="home__support">

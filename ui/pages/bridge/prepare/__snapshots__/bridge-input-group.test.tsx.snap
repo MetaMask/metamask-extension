@@ -46,7 +46,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
               class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/close.svg');"
               />
             </button>
@@ -89,6 +89,98 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
             >
               Default networks
             </p>
+            <div
+              class=""
+              data-testid="bridge-network-picker-popover-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+            >
+              <div
+                class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                data-testid="network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Solana logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/solana-logo.svg"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                  style="overflow: hidden;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
+                    data-testid="Solana"
+                  >
+                    <div
+                      class="multichain-network-list-item__tooltip"
+                    >
+                      <div
+                        class=""
+                        style="display: inline;"
+                        tabindex="0"
+                        title=""
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                          tabindex="0"
+                        >
+                          Solana
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class=""
+              data-testid="bridge-network-picker-popover-item-bip122:000000000019d6689c085ae165831e93"
+            >
+              <div
+                class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                data-testid="network-list-item-bip122:000000000019d6689c085ae165831e93"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Bitcoin logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/bitcoin-logo.svg"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                  style="overflow: hidden;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
+                    data-testid="Bitcoin"
+                  >
+                    <div
+                      class="multichain-network-list-item__tooltip"
+                    >
+                      <div
+                        class=""
+                        style="display: inline;"
+                        tabindex="0"
+                        title=""
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                          tabindex="0"
+                        >
+                          Bitcoin
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class=""
               data-testid="bridge-network-picker-popover-item-eip155:1"
@@ -266,110 +358,6 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                           tabindex="0"
                         >
                           BNB Chain
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="flex flex-col"
-          >
-            <hr
-              class="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted"
-            />
-            <p
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default px-4 py-2"
-            >
-              Custom networks
-            </p>
-            <div
-              class=""
-              data-testid="bridge-network-picker-popover-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
-            >
-              <div
-                class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
-                data-testid="network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
-              >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                >
-                  <img
-                    alt="Solana logo"
-                    class="mm-avatar-network__network-image"
-                    src="./images/solana-logo.svg"
-                  />
-                </div>
-                <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
-                  style="overflow: hidden;"
-                >
-                  <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
-                    data-testid="Solana"
-                  >
-                    <div
-                      class="multichain-network-list-item__tooltip"
-                    >
-                      <div
-                        class=""
-                        style="display: inline;"
-                        tabindex="0"
-                        title=""
-                      >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
-                        >
-                          Solana
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class=""
-              data-testid="bridge-network-picker-popover-item-bip122:000000000019d6689c085ae165831e93"
-            >
-              <div
-                class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
-                data-testid="network-list-item-bip122:000000000019d6689c085ae165831e93"
-              >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                >
-                  <img
-                    alt="Bitcoin logo"
-                    class="mm-avatar-network__network-image"
-                    src="./images/bitcoin-logo.svg"
-                  />
-                </div>
-                <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
-                  style="overflow: hidden;"
-                >
-                  <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
-                    data-testid="Bitcoin"
-                  >
-                    <div
-                      class="multichain-network-list-item__tooltip"
-                    >
-                      <div
-                        class=""
-                        style="display: inline;"
-                        tabindex="0"
-                        title=""
-                      >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
-                        >
-                          Bitcoin
                         </p>
                       </div>
                     </div>
@@ -535,7 +523,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
               class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/close.svg');"
               />
             </button>
@@ -578,6 +566,98 @@ exports[`BridgeInputGroup should render source networks 1`] = `
             >
               Default networks
             </p>
+            <div
+              class=""
+              data-testid="bridge-network-picker-popover-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+            >
+              <div
+                class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                data-testid="network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Solana logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/solana-logo.svg"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                  style="overflow: hidden;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
+                    data-testid="Solana"
+                  >
+                    <div
+                      class="multichain-network-list-item__tooltip"
+                    >
+                      <div
+                        class=""
+                        style="display: inline;"
+                        tabindex="0"
+                        title=""
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                          tabindex="0"
+                        >
+                          Solana
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class=""
+              data-testid="bridge-network-picker-popover-item-bip122:000000000019d6689c085ae165831e93"
+            >
+              <div
+                class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                data-testid="network-list-item-bip122:000000000019d6689c085ae165831e93"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Bitcoin logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/bitcoin-logo.svg"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                  style="overflow: hidden;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
+                    data-testid="Bitcoin"
+                  >
+                    <div
+                      class="multichain-network-list-item__tooltip"
+                    >
+                      <div
+                        class=""
+                        style="display: inline;"
+                        tabindex="0"
+                        title=""
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                          tabindex="0"
+                        >
+                          Bitcoin
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class=""
               data-testid="bridge-network-picker-popover-item-eip155:1"
@@ -763,110 +843,6 @@ exports[`BridgeInputGroup should render source networks 1`] = `
               </div>
             </div>
           </div>
-          <div
-            class="flex flex-col"
-          >
-            <hr
-              class="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted"
-            />
-            <p
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default px-4 py-2"
-            >
-              Custom networks
-            </p>
-            <div
-              class=""
-              data-testid="bridge-network-picker-popover-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
-            >
-              <div
-                class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
-                data-testid="network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
-              >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                >
-                  <img
-                    alt="Solana logo"
-                    class="mm-avatar-network__network-image"
-                    src="./images/solana-logo.svg"
-                  />
-                </div>
-                <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
-                  style="overflow: hidden;"
-                >
-                  <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
-                    data-testid="Solana"
-                  >
-                    <div
-                      class="multichain-network-list-item__tooltip"
-                    >
-                      <div
-                        class=""
-                        style="display: inline;"
-                        tabindex="0"
-                        title=""
-                      >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
-                        >
-                          Solana
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class=""
-              data-testid="bridge-network-picker-popover-item-bip122:000000000019d6689c085ae165831e93"
-            >
-              <div
-                class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
-                data-testid="network-list-item-bip122:000000000019d6689c085ae165831e93"
-              >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                >
-                  <img
-                    alt="Bitcoin logo"
-                    class="mm-avatar-network__network-image"
-                    src="./images/bitcoin-logo.svg"
-                  />
-                </div>
-                <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
-                  style="overflow: hidden;"
-                >
-                  <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
-                    data-testid="Bitcoin"
-                  >
-                    <div
-                      class="multichain-network-list-item__tooltip"
-                    >
-                      <div
-                        class=""
-                        style="display: inline;"
-                        tabindex="0"
-                        title=""
-                      >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
-                        >
-                          Bitcoin
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
     </div>
@@ -925,7 +901,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/close.svg');"
               />
             </button>
@@ -1310,7 +1286,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/close.svg');"
               />
             </button>

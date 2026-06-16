@@ -90,6 +90,20 @@ export const getHip3AllowedSourcesSet = createSelector(
   (allowedSources): Set<string> => new Set(allowedSources),
 );
 
+/**
+ * Whether the perps slippage configuration UI is enabled.
+ *
+ * Remote flag `perpsSlippageConfig2` — the RemoteFeatureFlagController camelCases
+ * LaunchDarkly keys, so the stored key is camelCase (not kebab). The value follows
+ * the same `{ enabled, minimumVersion }` rollout shape as `perpsEnabledVersion`
+ * (boolean still supported for backward compatibility).
+ */
+export const getIsPerpsSlippageConfigEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsSlippageConfig2),
+);
+
 // Re-export the VIP program flag so perps consumers can import from this
 // domain module without reaching into the rewards duck directly.
 export { selectVipProgramEnabled as getIsVipProgramEnabled } from '../../ducks/rewards/selectors';

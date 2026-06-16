@@ -2,7 +2,7 @@ import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { veryLargeDelayMs } from '../../../helpers';
 import HomePage from './homepage';
 
-class AssetListPage extends HomePage {
+class TokensTab extends HomePage {
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
   private readonly assetPriceInDetailsModal =
@@ -926,4 +926,4 @@ class AssetListPage extends HomePage {
   }
 }
 
-export default AssetListPage;
+export default TokensTab;

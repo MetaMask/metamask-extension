@@ -10,7 +10,7 @@ import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockEip7702FeatureFlag } from '../helpers';
@@ -103,8 +103,8 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -160,8 +160,8 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity(1);
       },
     );
   });
