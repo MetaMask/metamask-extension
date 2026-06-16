@@ -55,7 +55,11 @@ const CreatePasswordForm = ({
 
   useEffect(() => {
     // For Social login users in US region, we set the marketing consent to true by default for the first time render
-    if (isSocialLoginFlow && dataCollectionForMarketing && !hasUserInteractedWithTermsRef.current) {
+    if (
+      isSocialLoginFlow &&
+      dataCollectionForMarketing &&
+      !hasUserInteractedWithTermsRef.current
+    ) {
       setTermsChecked(dataCollectionForMarketing);
       hasUserInteractedWithTermsRef.current = true;
     }
