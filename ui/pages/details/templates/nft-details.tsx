@@ -9,19 +9,24 @@ import { MetadataSection, TokensSection } from '../components/sections';
 export function NftDetails({
   item,
 }: {
-  item: Extract<ActivityListItem, { type: 'nftBuy' | 'nftSell' }>;
+  item: Extract<ActivityListItem, { type: 'nftBuy' | 'nftMint' | 'nftSell' }>;
 }) {
   const t = useI18nContext();
 
+  const isMint = item.type === 'nftMint';
+  const amountToken = isMint ? item.data.token : item.data.paymentToken;
   const paymentLabel =
     item.type === 'nftSell' ? t('youReceived') : t('youSent');
-  const {paymentToken} = item.data;
 
   return (
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
         <TokensSection
-          tokens={[{ label: paymentLabel, token: paymentToken }]}
+          tokens={[
+            isMint
+              ? { token: item.data.token }
+              : { label: paymentLabel, token: amountToken },
+          ]}
         />
         <MetadataSection
           item={item}
@@ -29,7 +34,7 @@ export function NftDetails({
         />
         <Section>
           <FeesRows item={item} />
-          <TotalAmountRow token={paymentToken} />
+          <TotalAmountRow token={amountToken} />
         </Section>
       </div>
       <Footer>

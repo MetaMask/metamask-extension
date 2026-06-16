@@ -221,8 +221,7 @@ export const apiResponses = {
     hash: '0x0e7f29fa4af73f3708a7383a2fa8d0e09f6c6bf8a176bccf3a6b3259e2886bae',
     timestamp: '2026-01-14T21:50:29.000Z',
     chainId: 8453,
-    accountId:
-      'eip155:8453:0xe321bd63cde8ea046b382f82964575f2a5586474',
+    accountId: 'eip155:8453:0xe321bd63cde8ea046b382f82964575f2a5586474',
     blockNumber: 40819041,
     blockHash:
       '0xb01189d473edf852620d176a4abe46a999a3ce58d3e4ea3dca0125811421b8cf',

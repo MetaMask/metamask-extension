@@ -19,6 +19,7 @@ export function TemplateLoader({ item }: Props) {
 
   switch (item.type) {
     case 'nftBuy':
+    case 'nftMint':
     case 'nftSell':
       return <NftDetails item={item} />;
     case 'send':
