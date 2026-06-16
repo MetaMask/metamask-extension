@@ -79,7 +79,7 @@ export const SmartContractAccountToggleSection = ({
         </Text>
         <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>
           {t('enableSmartContractAccountDescription')}{' '}
-          <TextButton asChild variant={TextVariant.BodySm}>
+          <TextButton asChild className="text-inherit">
             <a
               key="change-password__link-text"
               href={ZENDESK_URLS.ACCOUNT_UPGRADE}
