@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { addMultichainAccounts } from '../../page-objects/flows/add-account.flow';
+import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder-v2';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
@@ -122,7 +122,7 @@ export async function withBtcWalletStandardSnap(
 
       await driver.delay(regularDelayMs); // workaround to avoid flakiness
 
-      await addMultichainAccounts({ driver, numberOfAccounts });
+      await addMultipleAccounts({ driver, numberOfAccounts });
 
       await test(driver, mockServer);
     },

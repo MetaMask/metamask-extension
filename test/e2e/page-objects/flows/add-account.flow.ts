@@ -37,15 +37,19 @@ export const addAccount = async ({
 };
 
 /**
- * Opens the account menu once, creates the given number of multichain
- * accounts, then selects the requested account.
+ * Opens the account menu once, creates the given number of accounts while
+ * keeping the account list open, then selects the requested account.
+ *
+ * Use this flow when a test needs to create multiple accounts in one account
+ * list session. For single-account creation with label verification, use
+ * `addAccount`.
  *
  * @param options - Flow options.
  * @param options.driver - The webdriver instance.
- * @param options.numberOfAccounts - Number of multichain accounts to create. Defaults to 1.
+ * @param options.numberOfAccounts - Number of accounts to create. Defaults to 1.
  * @param options.accountToSelect - Account label to select once creation is done. Defaults to 'Account 1'.
  */
-export const addMultichainAccounts = async ({
+export const addMultipleAccounts = async ({
   driver,
   numberOfAccounts = 1,
   accountToSelect = 'Account 1',
