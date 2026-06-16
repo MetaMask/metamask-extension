@@ -80,7 +80,10 @@ import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useOnClickOutside } from '../perps/hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
-import { ARC_ERC20_USDC_BRIDGE_ASSET } from '../assets/enablement/arc';
+import {
+  ARC_ERC20_USDC_BRIDGE_ASSET,
+  ARC_HEX_CHAIN_ID,
+} from '../assets/enablement/arc';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 
 /**
@@ -89,7 +92,7 @@ import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
  */
 const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
   // On Arc, we want to Bridge/Swap the ERC20 flavor of USDC, not the native one.
-  '0x13b2': ARC_ERC20_USDC_BRIDGE_ASSET,
+  [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
 };
 
 function getSwapNativeTokenWithOverridesForChain(chainId: string): BridgeAsset {

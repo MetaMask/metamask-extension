@@ -12,8 +12,8 @@ import { hexToNumber } from '@metamask/utils';
  *
  * - Exception to showing ERC20 token in the UI: Swaps/Bridge flow - as the router has been validated for this token only.
  */
+export const ARC_HEX_CHAIN_ID = '0x13b2';
 const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
-const ARC_NATIVE_HEX_CHAIN_ID = '0x13b2';
 const ARC_NATIVE_ASSET_ID =
   'eip155:5042/erc20:0x0000000000000000000000000000000000000000';
 const ARC_NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -23,7 +23,7 @@ export const ARC_ERC20_USDC_BRIDGE_ASSET: BridgeAsset = {
   name: 'USDC',
   address: '0x3600000000000000000000000000000000000000',
   assetId: 'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
-  chainId: hexToNumber(ARC_NATIVE_HEX_CHAIN_ID),
+  chainId: hexToNumber(ARC_HEX_CHAIN_ID),
   decimals: 6,
 };
 
@@ -33,7 +33,7 @@ function isNativeArcAsset(asset: {
   chainId?: string;
 }): boolean {
   const isArcChainId =
-    asset.chainId?.toLowerCase() === ARC_NATIVE_HEX_CHAIN_ID ||
+    asset.chainId?.toLowerCase() === ARC_HEX_CHAIN_ID ||
     asset.chainId?.toLowerCase() === ARC_NATIVE_CAIP_CHAIN_ID;
 
   if (
