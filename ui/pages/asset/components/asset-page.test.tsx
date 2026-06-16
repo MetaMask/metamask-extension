@@ -46,7 +46,10 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../store/controller-actions/transaction-controller');
 
 // Mock the price chart
-jest.mock('react-chartjs-2', () => ({ Line: () => null }));
+jest.mock('react-chartjs-2', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  Line: require('react').forwardRef(() => null),
+}));
 
 // Mock BUYABLE_CHAINS_MAP
 jest.mock('../../../../shared/constants/network', () => ({
