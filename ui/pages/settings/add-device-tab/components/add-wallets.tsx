@@ -19,7 +19,7 @@ type AddWalletsProps = {
   onAddWallets: (type: AddDeviceSettingsStep) => void;
 };
 
-const AddWallets = (_props: AddWalletsProps) => {
+const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   const t = useI18nContext();
   const { wallets } = useSelector(getAccountTree);
   const [selectedAccountGroups, setSelectedAccountGroups] = useState<
@@ -65,9 +65,7 @@ const AddWallets = (_props: AddWalletsProps) => {
       <Box className="w-full mt-auto px-4">
         <Button
           className="w-full"
-          onClick={() =>
-            console.log('Selected account groups:', selectedAccountGroups)
-          }
+          onClick={() => onAddWallets(AddDeviceSettingsStep.SyncingWallets)}
         >
           {t('add_wallets')}
         </Button>

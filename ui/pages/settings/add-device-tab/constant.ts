@@ -3,4 +3,6 @@ export enum AddDeviceSettingsStep {
   AddWallets = 'AddWallets',
   ScanQrCode = 'ScanQrCode',
   EnterVerificationCode = 'EnterVerificationCode',
+  ValidatingDevice = 'ValidatingDevice',
+  SyncingWallets = 'SyncingWallets',
 }

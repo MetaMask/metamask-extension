@@ -1187,6 +1187,18 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "add_device_syncing_desc": {
+    "message": "Keep this device and your MetaMask app open while we sync your wallets."
+  },
+  "add_device_syncing_title": {
+    "message": "Syncing your wallets"
+  },
+  "add_device_validating_desc": {
+    "message": "Hang tight while we securely connect this device to your MetaMask app."
+  },
+  "add_device_validating_title": {
+    "message": "Validating your device"
+  },
   "add_wallets": {
     "message": "Add wallets"
   },

@@ -1187,6 +1187,18 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "add_device_syncing_desc": {
+    "message": "Keep this device and your MetaMask app open while we sync your wallets."
+  },
+  "add_device_syncing_title": {
+    "message": "Syncing your wallets"
+  },
+  "add_device_validating_desc": {
+    "message": "Hang tight while we securely connect this device to your MetaMask app."
+  },
+  "add_device_validating_title": {
+    "message": "Validating your device"
+  },
   "add_wallets": {
     "message": "Add wallets"
   },
@@ -3701,6 +3713,9 @@
   },
   "enter_verification_code_desc": {
     "message": "For security, enter the code shown in the MetaMask app on your device."
+  },
+  "enter_verification_code_error": {
+    "message": "Incorrect code. Please try again."
   },
   "enter_your_password": {
     "message": "Enter your password"

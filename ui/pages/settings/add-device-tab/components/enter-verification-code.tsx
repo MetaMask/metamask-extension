@@ -47,7 +47,7 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
       }
 
       if (joined === TEMP_VERIFICATION_CODE) {
-        onContinue(AddDeviceSettingsStep.EnterPassword);
+        onContinue(AddDeviceSettingsStep.ValidatingDevice);
       } else {
         setIsError(true);
       }

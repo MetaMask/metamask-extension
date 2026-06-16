@@ -479,7 +479,10 @@ export const MultichainAccountList = ({
             isExpanded: isWalletExpanded,
             accountGroupIds: accounts
               .filter((account) => account.type === 'account')
-              .map((account) => (account as { groupId: string }).groupId as AccountGroupId),
+              .map(
+                (account) =>
+                  (account as { groupId: string }).groupId as AccountGroupId,
+              ),
           });
           if (isWalletExpanded) {
             result.push(...accounts);
