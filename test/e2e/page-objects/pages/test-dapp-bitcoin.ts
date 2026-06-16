@@ -15,10 +15,6 @@ const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappBitcoin {
-  private readonly bitcoinChainDisplay = {
-    testId: dataTestIds.testPage.header.network,
-  };
-
   private readonly connectButtonSelector = {
     testId: dataTestIds.testPage.header.connect,
     tag: 'button',
@@ -50,6 +46,10 @@ export class TestDappBitcoin {
     text: 'MetaMask',
   };
 
+  private readonly networkSelector = {
+    testId: dataTestIds.testPage.header.network,
+  };
+
   private readonly satsConnectV3ButtonSelector = {
     testId: dataTestIds.testPage.walletSelectionModal.satsConnectV3Button,
     tag: 'button',
@@ -71,7 +71,7 @@ export class TestDappBitcoin {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.bitcoinChainDisplay);
+      await this.driver.waitForSelector(this.networkSelector);
     } catch (e) {
       console.log(
         'Timeout while waiting for Bitcoin Test Dapp page to be loaded',
@@ -129,9 +129,7 @@ export class TestDappBitcoin {
   }
 
   async selectNetwork(label: 'Mainnet' | 'Testnet') {
-    const selectEl = await this.driver.findElement({
-      testId: dataTestIds.testPage.header.network,
-    });
+    const selectEl = await this.driver.findElement(this.networkSelector);
     await selectEl.sendKeys(label);
   }
 
