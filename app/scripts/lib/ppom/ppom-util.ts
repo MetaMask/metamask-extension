@@ -41,8 +41,6 @@ import {
 
 const log = createProjectLogger('ppom-util');
 
-const { sentry } = global;
-
 const SECURITY_ALERT_RESPONSE_ERROR = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -152,20 +150,16 @@ export async function updateSecurityAlertResponse({
 export function handlePPOMError(
   error: unknown,
   logMessage: string,
-  source: SecurityAlertSource = SecurityAlertSource.API,
 ): SecurityAlertResponse {
   const errorData = getErrorData(error);
   const description = getErrorMessage(error);
 
-  if (source === SecurityAlertSource.Local) {
-    sentry?.captureException(error);
-  }
   console.error(logMessage, errorData);
 
   return {
     ...SECURITY_ALERT_RESPONSE_ERROR,
     description,
-    source,
+    source: SecurityAlertSource.API,
   };
 }
 

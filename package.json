@@ -306,7 +306,6 @@
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
-    "@blockaid/ppom_release": "^1.5.3",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@ensdomains/content-hash": "^2.5.7",
@@ -419,7 +418,6 @@
     "@metamask/phishing-controller": "^17.2.0",
     "@metamask/polling-controller": "^16.0.7",
     "@metamask/post-message-stream": "^10.0.0",
-    "@metamask/ppom-validator": "0.39.1",
     "@metamask/preinstalled-example-snap": "^0.8.1",
     "@metamask/profile-metrics-controller": "^4.0.1",
     "@metamask/profile-sync-controller": "^28.3.0",

@@ -1712,13 +1712,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.5.3":
-  version: 1.5.3
-  resolution: "@blockaid/ppom_release@npm:1.5.3"
-  checksum: 10/3e8a16866b477eef247c4a65c80d361e7429389e7e760c0497bc69269526e2325fa15cdbf93455c1655877a7760c6b4fc9ce87d80f0290483160632300bcfbc8
-  languageName: node
-  linkType: hard
-
 "@bufbuild/protobuf@npm:^1.0.0":
   version: 1.6.0
   resolution: "@bufbuild/protobuf@npm:1.6.0"
@@ -5972,7 +5965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.18.0, @metamask/controller-utils@npm:^11.19.0, @metamask/controller-utils@npm:^11.20.0, @metamask/controller-utils@npm:^11.3.0":
+"@metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.18.0, @metamask/controller-utils@npm:^11.19.0, @metamask/controller-utils@npm:^11.20.0":
   version: 11.20.0
   resolution: "@metamask/controller-utils@npm:11.20.0"
   dependencies:
@@ -7451,24 +7444,6 @@ __metadata:
     "@metamask/utils": "npm:^9.0.0"
     readable-stream: "npm:3.6.2"
   checksum: 10/8218d321abe734522aefaf6b44e4203966c3feaf83e2de6e68eef9dbe92b7fb47fe7fd82eae362147b1d741cc58d78bcc95d8bf02058e260ad2fb978104c96cf
-  languageName: node
-  linkType: hard
-
-"@metamask/ppom-validator@npm:0.39.1":
-  version: 0.39.1
-  resolution: "@metamask/ppom-validator@npm:0.39.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.3.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/network-controller": "npm:^30.0.0"
-    "@metamask/utils": "npm:^11.0.0"
-    await-semaphore: "npm:^0.1.3"
-    crypto-js: "npm:^4.2.0"
-    elliptic: "npm:^6.5.4"
-    eslint-plugin-n: "npm:^16.6.2"
-    json-rpc-random-id: "npm:^1.0.1"
-  checksum: 10/b4cc791ca7b51921730974cfe9bb615b82845400d8e8835b160e008b628220c095d29690a5372a0422784d18651f57617d5e5ef0c3b3f31dd6ecc3290b2d099d
   languageName: node
   linkType: hard
 
@@ -19529,13 +19504,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"await-semaphore@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "await-semaphore@npm:0.1.3"
-  checksum: 10/93769d51b8d26cdf26c770280a345d3af5e87daa09104af6d623c2d68d218bdd65b5d8d39ad9f56217bfc9ea9c6d50df9902e78de915188ede2736579a19227c
-  languageName: node
-  linkType: hard
-
 "axe-core@npm:^4.2.0":
   version: 4.3.3
   resolution: "axe-core@npm:4.3.3"
@@ -22395,7 +22363,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-js@npm:4.2.0, crypto-js@npm:^4.1.1, crypto-js@npm:^4.2.0":
+"crypto-js@npm:4.2.0, crypto-js@npm:^4.1.1":
   version: 4.2.0
   resolution: "crypto-js@npm:4.2.0"
   checksum: 10/c7bcc56a6e01c3c397e95aa4a74e4241321f04677f9a618a8f48a63b5781617248afb9adb0629824792e7ec20ca0d4241a49b6b2938ae6f973ec4efc5c53c924
@@ -32727,7 +32695,6 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.25.9"
     "@babel/register": "npm:^7.25.9"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch"
-    "@blockaid/ppom_release": "npm:^1.5.3"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
     "@ensdomains/content-hash": "npm:^2.5.7"
@@ -32864,7 +32831,6 @@ __metadata:
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/polling-controller": "npm:^16.0.7"
     "@metamask/post-message-stream": "npm:^10.0.0"
-    "@metamask/ppom-validator": "npm:0.39.1"
     "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.8.1"
     "@metamask/profile-metrics-controller": "npm:^4.0.1"
