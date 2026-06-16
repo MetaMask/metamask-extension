@@ -428,7 +428,7 @@ describe('Onboarding Create Password', () => {
       expect(setMarketingConsentSpy).not.toHaveBeenCalled();
     });
 
-    it('should create new wallet with marketing checked by default for social login when marketing consent is stored', async () => {
+    it('should create new wallet with marketing checked by default for social login users in the US region', async () => {
       const setDataCollectionForMarketingSpy = jest.spyOn(
         Actions,
         'setDataCollectionForMarketing',
@@ -440,7 +440,7 @@ describe('Onboarding Create Password', () => {
         metamask: {
           ...mockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.socialCreate,
-          dataCollectionForMarketing: true,
+          location: 'US',
         },
       });
       const { queryByTestId, getByRole } = renderWithProvider(
