@@ -33,6 +33,7 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
+import log from 'loglevel';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
@@ -181,20 +182,21 @@ import {
 } from '../../shared/lib/feature-flags';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
-import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
-import { getIsSocialLoginFlow } from './first-time-flow';
-import { getHasShieldEntryModalShownOnce } from './subscription';
-import { getApprovalRequestsByType } from './approvals';
+import { UTM_PARAMETERS } from '../../shared/types/metametrics';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import {
+  getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
+} from './transactions';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
   getMultichainNetwork,
 } from './multichain/networks';
-import {
-  getUnapprovedTransactions,
-  getCurrentNetworkTransactions,
-} from './transactions';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import { getApprovalRequestsByType } from './approvals';
+import { getHasShieldEntryModalShownOnce } from './subscription';
+import { getIsSocialLoginFlow } from './first-time-flow';
+import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -393,6 +395,10 @@ export function isCurrentProviderCustom(state) {
 
 export function getActiveQrCodeScanRequest(state) {
   return state.metamask.activeQrCodeScanRequest;
+}
+
+export function getLastQrScanCompletedSuccessfully(state) {
+  return state.metamask.lastQrScanCompletedSuccessfully;
 }
 
 export function getIsSigningQRHardwareTransaction(state) {
@@ -1095,21 +1101,24 @@ export const getTokenExchangeRates = createSelector(
   },
 );
 
-export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = getTokenRatesControllerMarketData(state) ?? {};
+export const getCrossChainTokenExchangeRates = createSelector(
+  getTokenRatesControllerMarketData,
+  (contractMarketData) => {
+    const marketData = contractMarketData ?? {};
 
-  return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
-    acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
-      (innerAcc, innerKey) => {
-        innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
-        return innerAcc;
-      },
-      {},
-    );
+    return Object.keys(marketData).reduce((acc, topLevelKey) => {
+      acc[topLevelKey] = Object.keys(marketData[topLevelKey]).reduce(
+        (innerAcc, innerKey) => {
+          innerAcc[innerKey] = marketData[topLevelKey][innerKey]?.price;
+          return innerAcc;
+        },
+        {},
+      );
 
-    return acc;
-  }, {});
-};
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Get market data for tokens on the current chain
@@ -1926,25 +1935,27 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsDefaultToken(state, overrideChainId = null) {
-  const selectedAccount = getSelectedAccount(state);
-  const balance = selectedAccount?.balance;
-  const currentChainId = getCurrentChainId(state);
+export const getSwapsDefaultToken = createSelector(
+  (state) => getSelectedAccount(state),
+  (state) => getCurrentChainId(state),
+  (_state, overrideChainId = null) => overrideChainId,
+  (selectedAccount, currentChainId, overrideChainId) => {
+    const balance = selectedAccount?.balance;
+    const chainId = overrideChainId ?? currentChainId;
+    const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
-  const chainId = overrideChainId ?? currentChainId;
-  const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
-
-  return {
-    ...defaultTokenObject,
-    chainId,
-    balance: hexToDecimal(balance),
-    string: getValueFromWeiHex({
-      value: balance,
-      numberOfDecimals: 4,
-      toDenomination: 'ETH',
-    }),
-  };
-}
+    return {
+      ...defaultTokenObject,
+      chainId,
+      balance: hexToDecimal(balance),
+      string: getValueFromWeiHex({
+        value: balance,
+        numberOfDecimals: 4,
+        toDenomination: 'ETH',
+      }),
+    };
+  },
+);
 
 /**
  * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
@@ -3460,7 +3471,7 @@ export const getHdKeyringOfSelectedAccountOrPrimaryKeyring = createSelector(
  * @returns {object} The permissions subjects object.
  */
 export function getPermissionSubjects(state) {
-  return state.metamask.subjects || {};
+  return state.metamask.subjects || EMPTY_OBJECT;
 }
 
 /**
@@ -3987,4 +3998,34 @@ export function getLastVisitedPerpsRoute(state) {
  */
 export function getDeferredDeepLink(state) {
   return state.metamask?.deferredDeepLink || null;
+}
+
+/**
+ * Retrieves the deferred deep link parameters from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {Record<string, string>} The deferred deep link parameters if available, empty object otherwise.
+ */
+export function getDeferredDeepLinkParameters(state) {
+  const deferredDeepLink = getDeferredDeepLink(state);
+  if (!deferredDeepLink) {
+    return null;
+  }
+
+  const utmProperties = {};
+  try {
+    const url = new URL(deferredDeepLink.referringLink);
+
+    for (const utmParam of UTM_PARAMETERS) {
+      const value = url.searchParams.get(utmParam);
+      if (value) {
+        utmProperties[utmParam] = value;
+      }
+    }
+  } catch (error) {
+    log.error('Failed to parse deferred deep link:', deferredDeepLink, error);
+    return null;
+  }
+
+  return utmProperties;
 }

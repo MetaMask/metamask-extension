@@ -78,10 +78,10 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           );
 
           // 'Send' button should be disabled
-          assert.equal(await homePage.checkIfSendButtonIsClickable(), false);
+          await homePage.checkSendButtonIsClickable(false);
 
           // 'Swap' button should be disabled
-          assert.equal(await homePage.checkIfSwapButtonIsClickable(), false);
+          await homePage.checkSwapButtonIsClickable(false);
         },
       );
     });

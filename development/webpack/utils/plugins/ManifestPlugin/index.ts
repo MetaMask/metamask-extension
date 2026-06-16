@@ -17,7 +17,10 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
-import { DEV_SERVER_CLIENT_ENTRY_NAME } from '../../constants';
+import {
+  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+  UI_RELOAD_CLIENT_ENTRY_NAME,
+} from '../../dev-server/reload-protocol';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
@@ -90,13 +93,14 @@ export class ManifestPlugin<Z extends boolean> {
 
   private watchedFiles: string[] = [];
 
-  private addedScripts: Set<string> = new Set();
+  addedScripts: Set<string> = new Set();
 
   private selfContainedScripts: Set<string> = new Set([
     'snow.prod',
     'use-snow',
     'bootstrap',
-    DEV_SERVER_CLIENT_ENTRY_NAME,
+    UI_RELOAD_CLIENT_ENTRY_NAME,
+    BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
   ]);
 
   /**

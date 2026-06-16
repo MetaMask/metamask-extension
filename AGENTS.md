@@ -177,8 +177,6 @@ yarn test:integration
 yarn test:integration:coverage
 
 # Playwright Tests
-yarn test:e2e:swap         # Swap functionality
-yarn test:e2e:global       # Global tests
 yarn test:e2e:benchmark    # Performance benchmarks
 ```
 
