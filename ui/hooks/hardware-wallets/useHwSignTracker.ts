@@ -179,15 +179,11 @@ export function useHwSignTracker(
     const unsubscribes: (() => Promise<void>)[] = [];
 
     const handlePendingAbort = (txId: string): boolean => {
-      return checkPendingAbort(
-        txId,
-        pendingAbortTxIdsRef.current,
-        () => {
-          if (abortSettleResolveRef.current) {
-            abortSettleResolveRef.current();
-          }
-        },
-      );
+      return checkPendingAbort(txId, pendingAbortTxIdsRef.current, () => {
+        if (abortSettleResolveRef.current) {
+          abortSettleResolveRef.current();
+        }
+      });
     };
 
     const registerSubscription = async (

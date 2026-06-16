@@ -41,8 +41,8 @@ export function createTxMeta(overrides: TxMetaOverrides = {}): TransactionMeta {
  * plain object so the helper does not depend on the React type namespace.
  * @param value
  */
-export function createRetryGenRef(
-  value: number | undefined = 0,
-): { current: number | undefined } {
+export function createRetryGenRef(value: number | undefined = 0): {
+  current: number | undefined;
+} {
   return { current: value };
 }
