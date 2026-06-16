@@ -143,9 +143,9 @@ describe('SmartContractAccountToggleSection', () => {
 
       expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
       expect(screen.getByText('Sepolia')).toBeInTheDocument();
-      // Check that toggle checkboxes are rendered (2 toggles) + 1 learn more button
+      // Check that toggle checkboxes are rendered (2 toggles) + 1 learn more link
       expect(screen.getAllByRole('checkbox')).toHaveLength(2);
-      expect(screen.getAllByRole('button')).toHaveLength(1); // Just the learn more button
+      expect(screen.getAllByRole('link')).toHaveLength(1); // Just the learn more link
       expect(container).toMatchSnapshot();
     });
 
@@ -182,14 +182,14 @@ describe('SmartContractAccountToggleSection', () => {
 
       const { container } = render();
 
-      const learnMoreButton = screen.getByText(
+      const learnMoreLink = screen.getByText(
         messages.learnMoreUpperCase.message,
       );
-      fireEvent.click(learnMoreButton);
 
-      expect(mockOpenTab).toHaveBeenCalledWith({
-        url: ZENDESK_URLS.ACCOUNT_UPGRADE,
-      });
+      expect(learnMoreLink.closest('a')).toHaveAttribute(
+        'href',
+        ZENDESK_URLS.ACCOUNT_UPGRADE,
+      );
       expect(container).toMatchSnapshot();
     });
   });

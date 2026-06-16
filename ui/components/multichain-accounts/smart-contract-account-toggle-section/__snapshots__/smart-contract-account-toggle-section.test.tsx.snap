@@ -19,17 +19,15 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
       >
         Unlock faster transactions, lower network fees, and added security on supported networks.
          
-        <button
+        <a
           class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
-          role="button"
-          style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
+          href="https://support.metamask.io/configure/accounts/what-is-a-smart-account/?utm_source=extension#what-are-metamask-smart-accounts"
+          rel="noopener noreferrer"
+          target="_blank"
+          variant="body-sm"
         >
-          <span
-            class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
-          >
-            Learn more
-          </span>
-        </button>
+          Learn more
+        </a>
       </p>
     </div>
     <div
@@ -143,17 +141,15 @@ exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk artic
       >
         Unlock faster transactions, lower network fees, and added security on supported networks.
          
-        <button
+        <a
           class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
-          role="button"
-          style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
+          href="https://support.metamask.io/configure/accounts/what-is-a-smart-account/?utm_source=extension#what-are-metamask-smart-accounts"
+          rel="noopener noreferrer"
+          target="_blank"
+          variant="body-sm"
         >
-          <span
-            class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
-          >
-            Learn more
-          </span>
-        </button>
+          Learn more
+        </a>
       </p>
     </div>
     <div
@@ -186,17 +182,15 @@ exports[`SmartContractAccountToggleSection Loading State shows loading spinner w
       >
         Unlock faster transactions, lower network fees, and added security on supported networks.
          
-        <button
+        <a
           class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
-          role="button"
-          style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
+          href="https://support.metamask.io/configure/accounts/what-is-a-smart-account/?utm_source=extension#what-are-metamask-smart-accounts"
+          rel="noopener noreferrer"
+          target="_blank"
+          variant="body-sm"
         >
-          <span
-            class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
-          >
-            Learn more
-          </span>
-        </button>
+          Learn more
+        </a>
       </p>
     </div>
     <div
@@ -270,17 +264,15 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
       >
         Unlock faster transactions, lower network fees, and added security on supported networks.
          
-        <button
+        <a
           class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
-          role="button"
-          style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
+          href="https://support.metamask.io/configure/accounts/what-is-a-smart-account/?utm_source=extension#what-are-metamask-smart-accounts"
+          rel="noopener noreferrer"
+          target="_blank"
+          variant="body-sm"
         >
-          <span
-            class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
-          >
-            Learn more
-          </span>
-        </button>
+          Learn more
+        </a>
       </p>
     </div>
     <div
