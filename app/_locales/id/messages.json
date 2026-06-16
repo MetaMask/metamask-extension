@@ -7,12 +7,6 @@
     "message": "Pemuatan memerlukan waktu lebih lama dari biasanya.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Kesalahan"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Data transaksi tidak sesuai. Harap periksa detail transaksi."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Tidak ada akun lainnya. Jika Anda ingin mengakses akun lain yang tidak terdaftar di bawah ini, harap hubungkan kembali dompet perangkat keras Anda dan pilih."
   },
@@ -3448,9 +3442,6 @@
   },
   "enabled": {
     "message": "Diaktifkan"
-  },
-  "enabledNetworks": {
-    "message": "Jaringan yang diaktifkan"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 menginginkan kunci enkripsi publik Anda. Dengan menyetujui, situs ini akan dapat membuat pesan terenkripsi untuk Anda.",
@@ -10078,9 +10069,6 @@
   },
   "termsOfUseTitle": {
     "message": "Syarat Penggunaan kami telah diperbarui"
-  },
-  "testNetworks": {
-    "message": "Jaringan pengujian"
   },
   "testnets": {
     "message": "Testnet"

@@ -2,7 +2,10 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type {
+  MetaMaskReduxDispatch,
+  MetaMaskReduxState,
+} from '../../../store/store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -72,8 +75,8 @@ export const createToggleItem = (
       }
 
       const result = config.action(newValue);
-      if (result !== undefined) {
-        dispatch(result);
+      if (result !== undefined && result !== null) {
+        dispatch(result as Parameters<MetaMaskReduxDispatch>[0]);
       }
     };
 

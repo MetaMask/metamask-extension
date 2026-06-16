@@ -7,12 +7,6 @@
     "message": "Loading is taking longer than usual.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Error"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Incongruent transaction data. Please check the transaction details."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "No more accounts. If you would like to access another account unlisted below, please reconnect your hardware wallet and select it."
   },
@@ -1938,6 +1932,9 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeAgain": {
+    "message": "Bridge again"
+  },
   "bridgeAllowSwappingOf": {
     "message": "Allow exact access to $1 $2 on $3 for bridging",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -1967,6 +1964,9 @@
   },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
+  },
+  "bridgeExplorerPopupDescription": {
+    "message": "This transaction lives on two networks. One link shows the source, the other shows the destination once confirmed."
   },
   "bridgeFee": {
     "message": "Bridge fee"
@@ -3109,6 +3109,9 @@
   "dateCreated": {
     "message": "Date created"
   },
+  "day": {
+    "message": "Day"
+  },
   "debitCreditPurchaseOptions": {
     "message": "Debit or credit card purchase options"
   },
@@ -3140,6 +3143,12 @@
   },
   "decryptRequest": {
     "message": "Decrypt request"
+  },
+  "deepLinkQrPredictDescription": {
+    "message": "To access MetaMask Prediction Markets, scan the QR code with your mobile device."
+  },
+  "deepLinkQrPredictTitle": {
+    "message": "Open Prediction Markets on mobile"
   },
   "deepLink_Caution": {
     "message": "Proceed with caution"
@@ -3597,9 +3606,6 @@
   },
   "enabled": {
     "message": "Enabled"
-  },
-  "enabledNetworks": {
-    "message": "Enabled networks"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
@@ -7143,8 +7149,45 @@
   "perpsSize": {
     "message": "Size"
   },
+  "perpsSlippage": {
+    "message": "Slippage"
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "Your transaction won't go through if the price shifts beyond this threshold."
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "Set slippage"
+  },
+  "perpsSlippageCustom": {
+    "message": "Custom"
+  },
+  "perpsSlippageEditAriaLabel": {
+    "message": "Edit max slippage"
+  },
   "perpsSlippageExceeded": {
     "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
+  },
+  "perpsSlippageExceedsMax": {
+    "message": "Estimated slippage ($1%) exceeds your max slippage ($2%). Increase the cap or reduce the order size.",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageInputLabel": {
+    "message": "Max slippage percentage"
+  },
+  "perpsSlippageOutOfRange": {
+    "message": "Enter a value between $1% and $2%",
+    "description": "$1 is min percent, $2 is max percent"
+  },
+  "perpsSlippageRowFormat": {
+    "message": "Est: $1% / Max: $2%",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageRowFormatPending": {
+    "message": "Est: -- / Max: $1%",
+    "description": "$1 is max slippage percent"
+  },
+  "perpsSlippageSet": {
+    "message": "Set"
   },
   "perpsSortByFundingRate": {
     "message": "Funding rate"
@@ -7814,6 +7857,14 @@
   "qrCameraAccessNeededTitle": {
     "message": "Camera access needed",
     "description": "Title when the camera permission dialog was dismissed without a choice."
+  },
+  "qrErrorMismatchedTransactionBody": {
+    "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
+    "description": "Body text when a signature QR belongs to a previous transaction."
+  },
+  "qrErrorMismatchedTransactionTitle": {
+    "message": "Wrong QR code",
+    "description": "Title shown when a signature QR belongs to a different transaction."
   },
   "qrErrorNonUrPairingBody": {
     "message": "Go back to your hardware wallet and find the option to share or export your accounts, choose MetaMask, then scan the QR code.",
@@ -9966,6 +10017,9 @@
   "swapAdjustSlippage": {
     "message": "Adjust slippage"
   },
+  "swapAgain": {
+    "message": "Swap again"
+  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -10313,9 +10367,6 @@
   "termsOfUseTitle": {
     "message": "Review our Terms of Use"
   },
-  "testNetworks": {
-    "message": "Test networks"
-  },
   "testnets": {
     "message": "Testnets"
   },
@@ -10431,6 +10482,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalAmount": {
+    "message": "Total amount"
   },
   "totalReceived": {
     "message": "Total received"
@@ -10680,6 +10734,10 @@
   },
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
+  },
+  "unexpectedError": {
+    "message": "An unexpected error occurred.",
+    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Allow exact access to $1 $2 on $3 for swapping"
