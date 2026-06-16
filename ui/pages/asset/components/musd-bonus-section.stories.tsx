@@ -27,7 +27,9 @@ const store = configureMockStore()({
         nativeCurrency: 'ETH',
         blockExplorerUrl: 'https://etherscan.io',
         defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [{ url: 'https://mainnet.infura.io/v3/', type: 'custom' }],
+        rpcEndpoints: [
+          { url: 'https://mainnet.infura.io/v3/', type: 'custom' },
+        ],
       },
     },
     marketData: {
@@ -48,12 +50,17 @@ const meta: Meta<typeof MusdBonusSection> = {
         <QueryClientProvider
           client={
             new QueryClient({
-              defaultOptions: { queries: { retry: false, staleTime: Infinity } },
+              defaultOptions: {
+                queries: { retry: false, staleTime: Infinity },
+              },
             })
           }
         >
           <div
-            style={{ width: 360, backgroundColor: 'var(--color-background-default)' }}
+            style={{
+              width: 360,
+              backgroundColor: 'var(--color-background-default)',
+            }}
           >
             <Story />
           </div>
