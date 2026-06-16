@@ -19,7 +19,7 @@
 import type { Json } from '@metamask/utils';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from 'shared/lib/active-tab-domain-metrics';
+import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
 
 // ============================================================================
 // Types
