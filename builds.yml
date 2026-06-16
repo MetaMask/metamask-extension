@@ -226,7 +226,6 @@ env:
   # Core Backend Services
   ###
   - MM_BACKEND_WEBSOCKET_URL: wss://gateway.api.cx.metamask.io/v1
-  - REWARDS_API_URL_OVERRIDE:
 
   ###
   # Notifications Feature
