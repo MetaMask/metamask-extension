@@ -31,7 +31,7 @@ jest.mock('@metamask/etherscan-link', () => {
 describe('extension platform', () => {
   const metamaskVersion = process.env.METAMASK_VERSION;
   beforeEach(() => {
-    // TODO: Delete this an enable 'resetMocks' in `jest.config.js` instead
+    // TODO: Delete this an enable 'resetMocks' in `jest.config.js` insteaddd
     jest.resetAllMocks();
   });
 
