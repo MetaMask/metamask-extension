@@ -37,7 +37,7 @@ const AddRewardsAccount = ({ account }: AddRewardsAccountProps) => {
       variant={TextVariant.BodySm}
       data-testid="add-rewards-account-button"
       aria-disabled={isLoading}
-      className="flex gap-1 items-center"
+      className={`flex gap-1 items-center ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}
     >
       {isLoading ? (
         <Icon
