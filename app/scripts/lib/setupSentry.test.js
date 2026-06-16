@@ -1,6 +1,7 @@
 import {
   removeUrlsFromBreadCrumb,
   rewriteReport,
+  rewriteTransactionReport,
   shouldCreateSpanForRequest,
 } from './setupSentry';
 
@@ -273,6 +274,48 @@ describe('Setup Sentry', () => {
       };
       rewriteReport(testReport);
       expect(testReport.contexts.account.address).toStrictEqual('**');
+    });
+
+    it('removes addresses from breadcrumbs when sending an error report', () => {
+      const testReport = {
+        message: 'An error occurred',
+        breadcrumbs: [
+          {
+            message: 'console.error',
+            data: {
+              arguments: [
+                new Error(
+                  'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+                ),
+              ],
+            },
+          },
+        ],
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.breadcrumbs[0].data.arguments[0].message).toStrictEqual(
+        'Failed for 0x**',
+      );
+    });
+  });
+
+  describe('rewriteTransactionReport', () => {
+    it('removes addresses from breadcrumbs when sending a transaction', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        breadcrumbs: [
+          {
+            message: 'fetch',
+            data: {
+              url: 'https://api.example.com/0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+            },
+          },
+        ],
+      };
+      rewriteTransactionReport(testReport);
+      expect(testReport.breadcrumbs[0].data.url).toStrictEqual('');
     });
   });
 

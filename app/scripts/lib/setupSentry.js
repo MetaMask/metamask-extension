@@ -95,6 +95,8 @@ function getClientOptions() {
     // which would otherwise make the next error look like a different stack (background timers
     // usually run after beforeSend finished; rapid UI captures often dedupe first).
     beforeSend: (report) => rewriteReport(safeCloneReport(report)),
+    beforeSendTransaction: (report) =>
+      rewriteTransactionReport(safeCloneReport(report)),
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -291,8 +293,7 @@ export function beforeBreadcrumb() {
     ) {
       return null;
     }
-    const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
-    return newBreadcrumb;
+    return breadcrumb;
   };
 }
 
@@ -339,7 +340,8 @@ export function shouldCreateSpanForRequest(url) {
 /**
  * Receives a Sentry breadcrumb object and potentially removes urls
  * from its `data` property, it particular those possibly found at
- * data.from, data.to and data.url
+ * data.from, data.to and data.url. Performs a deep address scrub for use when
+ * an event is about to be sent (not on every breadcrumb capture).
  *
  * @param {object} breadcrumb - A Sentry breadcrumb object: https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/
  * @returns {object} A modified Sentry breadcrumb object.
@@ -366,6 +368,33 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
 }
 
 /**
+ * Deep-scrubs all breadcrumbs attached to an outbound error report.
+ *
+ * @param {object} report - A Sentry event object.
+ */
+export function sanitizeBreadcrumbsInReport(report) {
+  if (!Array.isArray(report.breadcrumbs)) {
+    return;
+  }
+  report.breadcrumbs = report.breadcrumbs.map((crumb) =>
+    removeUrlsFromBreadCrumb(cloneDeep(crumb)),
+  );
+}
+
+/**
+ * Scrubs breadcrumb payloads on performance transaction events before send.
+ * {@link rewriteReport} handles errors via `beforeSend`; transactions use
+ * `beforeSendTransaction` instead.
+ *
+ * @param {object} report - A Sentry transaction event object.
+ * @returns {object} The modified report (same reference).
+ */
+export function rewriteTransactionReport(report) {
+  sanitizeBreadcrumbsInReport(report);
+  return report;
+}
+
+/**
  * Receives a Sentry event object and modifies it before the error is sent to Sentry.
  * Sanitizes messages/URLs and attaches app state.
  *
@@ -383,6 +412,8 @@ export function rewriteReport(report) {
     // but putting the code here as well gives public visibility to how we are handling
     // privacy with respect to sentry.
     sanitizeAddressesFromErrorMessages(report);
+    // Deep-scrub breadcrumb payloads only when an error is being sent.
+    sanitizeBreadcrumbsInReport(report);
     // Remove addresses from other error parameters (extra, contexts).
     // Done before attaching appState below so the (already masked) appState is
     // not re-walked.
