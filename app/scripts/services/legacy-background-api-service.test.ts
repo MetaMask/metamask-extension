@@ -1304,123 +1304,6 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('forwardSelectedAccountGroupToSnapKeyring', () => {
-    const mockGroupId = 'keyring:foo/0' as AccountGroupId;
-
-    it('does nothing when the Snap keyring is not available', async () => {
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await expect(
-          rootMessenger.call(
-            'LegacyBackgroundApiService:forwardSelectedAccountGroupToSnapKeyring',
-            undefined,
-            mockGroupId,
-          ),
-        ).resolves.toBeUndefined();
-
-        expect(callSpy).not.toHaveBeenCalledWith(
-          'AccountTreeController:getAccountGroupObject',
-          expect.anything(),
-        );
-      });
-    });
-
-    it('does nothing when there is no selected account group', async () => {
-      const snapKeyring = { setSelectedAccounts: jest.fn() };
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await expect(
-          rootMessenger.call(
-            'LegacyBackgroundApiService:forwardSelectedAccountGroupToSnapKeyring',
-            snapKeyring as unknown as SnapKeyring,
-            '',
-          ),
-        ).resolves.toBeUndefined();
-
-        expect(callSpy).not.toHaveBeenCalledWith(
-          'AccountTreeController:getAccountGroupObject',
-          expect.anything(),
-        );
-        expect(snapKeyring.setSelectedAccounts).not.toHaveBeenCalled();
-      });
-    });
-
-    it('does not forward accounts when the account group is not found', async () => {
-      const snapKeyring = { setSelectedAccounts: jest.fn() };
-
-      await withService(async ({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'AccountTreeController:getAccountGroupObject',
-          jest.fn().mockReturnValue(undefined),
-        );
-
-        await rootMessenger.call(
-          'LegacyBackgroundApiService:forwardSelectedAccountGroupToSnapKeyring',
-          snapKeyring as unknown as SnapKeyring,
-          mockGroupId,
-        );
-
-        expect(snapKeyring.setSelectedAccounts).not.toHaveBeenCalled();
-      });
-    });
-
-    it('does not forward accounts when the group only has EVM accounts', async () => {
-      const snapKeyring = { setSelectedAccounts: jest.fn() };
-
-      await withService(async ({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'AccountTreeController:getAccountGroupObject',
-          jest.fn().mockReturnValue({ accounts: ['evm-account-id'] }),
-        );
-        rootMessenger.registerActionHandler(
-          'AccountsController:getAccount',
-          jest.fn().mockReturnValue({ type: EthAccountType.Eoa }),
-        );
-
-        await rootMessenger.call(
-          'LegacyBackgroundApiService:forwardSelectedAccountGroupToSnapKeyring',
-          snapKeyring as unknown as SnapKeyring,
-          mockGroupId,
-        );
-
-        expect(snapKeyring.setSelectedAccounts).not.toHaveBeenCalled();
-      });
-    });
-
-    it('forwards the selected accounts when the group has non-EVM accounts', async () => {
-      const snapKeyring = { setSelectedAccounts: jest.fn() };
-      const accounts = ['evm-account-id', 'solana-account-id'];
-
-      await withService(async ({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'AccountTreeController:getAccountGroupObject',
-          jest.fn().mockReturnValue({ accounts }),
-        );
-        rootMessenger.registerActionHandler(
-          'AccountsController:getAccount',
-          jest
-            .fn()
-            .mockImplementation((id) =>
-              id === 'solana-account-id'
-                ? { type: SolAccountType.DataAccount }
-                : { type: EthAccountType.Eoa },
-            ),
-        );
-
-        await rootMessenger.call(
-          'LegacyBackgroundApiService:forwardSelectedAccountGroupToSnapKeyring',
-          snapKeyring as unknown as SnapKeyring,
-          mockGroupId,
-        );
-
-        expect(snapKeyring.setSelectedAccounts).toHaveBeenCalledWith(accounts);
-      });
-    });
-  });
-
   describe('setLocked', () => {
     beforeEach(() => {
       jest.useFakeTimers();
@@ -2070,11 +1953,9 @@ function getMessenger(
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
-<<<<<<< HEAD
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
       'MetaMetricsController:trackEvent',
-=======
       'KeyringController:verifyPassword',
       'KeyringController:changePassword',
       'KeyringController:exportEncryptionKey',
@@ -2089,10 +1970,8 @@ function getMessenger(
       'SeedlessOnboardingController:submitPassword',
       'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
-      'AccountsController:getAccount',
       'AccountTreeController:init',
       'AccountTreeController:getSelectedAccountGroup',
-      'AccountTreeController:getAccountGroupObject',
       'MultichainAccountService:init',
       'MultichainAccountService:resyncAccounts',
       'MultichainAccountService:alignWallets',
@@ -2102,7 +1981,6 @@ function getMessenger(
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
->>>>>>> b621b27eec (migrate `setLocked` and `syncPasswordAndUnlockWallet` to `LegacyBackgroundApiService`)
     ],
   });
 

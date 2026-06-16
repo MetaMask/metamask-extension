@@ -200,18 +200,6 @@ export type LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction = {
 };
 
 /**
- * Forward currently selected account group to the Snap keyring.
- *
- * @param snapKeyring - Snap keyring instance or undefined if not available.
- * @param groupId - Currently selected account group.
- */
-export type LegacyBackgroundApiServiceForwardSelectedAccountGroupToSnapKeyringAction =
-  {
-    type: `LegacyBackgroundApiService:forwardSelectedAccountGroupToSnapKeyring`;
-    handler: LegacyBackgroundApiService['forwardSelectedAccountGroupToSnapKeyring'];
-  };
-
-/**
  * Locks MetaMask
  *
  * @param options - The options for setting the locked state.
@@ -254,6 +242,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
-  | LegacyBackgroundApiServiceForwardSelectedAccountGroupToSnapKeyringAction
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction;

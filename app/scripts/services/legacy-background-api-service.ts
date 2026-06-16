@@ -24,7 +24,6 @@ import {
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import {
-  AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSetSelectedAccountAction,
@@ -76,14 +75,10 @@ import {
   MultichainAccountServiceAlignWalletsAction,
   MultichainAccountServiceInitAction,
 } from '@metamask/multichain-account-service';
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
-  AccountTreeControllerGetAccountGroupObjectAction,
   AccountTreeControllerGetSelectedAccountGroupAction,
   AccountTreeControllerInitAction,
 } from '@metamask/account-tree-controller';
-import { AccountGroupId } from '@metamask/account-api';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import {
   AuthenticationControllerGetStateAction,
@@ -127,7 +122,6 @@ const serviceName = 'LegacyBackgroundApiService';
  */
 const MESSENGER_EXPOSED_METHODS = [
   'checkIsSeedlessPasswordOutdated',
-  'forwardSelectedAccountGroupToSnapKeyring',
   'getAccountsBySnapId',
   'getCode',
   'getGlobalChainId',
@@ -156,10 +150,8 @@ export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
 type AllowedActions =
-  | AccountTreeControllerGetAccountGroupObjectAction
   | AccountTreeControllerGetSelectedAccountGroupAction
   | AccountTreeControllerInitAction
-  | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerSetSelectedAccountAction
@@ -956,50 +948,6 @@ export class LegacyBackgroundApiService {
 
     // This allows to create missing accounts if new account providers have been added.
     await this.#messenger.call('MultichainAccountService:alignWallets');
-  }
-
-  /**
-   * Forward currently selected account group to the Snap keyring.
-   *
-   * @param snapKeyring - Snap keyring instance or undefined if not available.
-   * @param groupId - Currently selected account group.
-   */
-  async forwardSelectedAccountGroupToSnapKeyring(
-    snapKeyring: SnapKeyring | undefined,
-    groupId: '' | AccountGroupId | undefined,
-  ): Promise<void> {
-    if (!snapKeyring) {
-      // Nothing to forward if the Snap keyring is not available.
-      return;
-    }
-
-    if (groupId) {
-      const group = this.#messenger.call(
-        'AccountTreeController:getAccountGroupObject',
-        groupId,
-      );
-
-      if (group) {
-        // FIXME: For now, only our non-EVM Snaps support this `keyring_setSelectedAccounts`
-        // method. There's also no way to know which optional method is supported on an
-        // account management Snap for now.
-        // Calling this on the SSK has an undesired side-effect on the Snap itself, to avoid
-        // making it fail, we ONLY scope this call to "multichain account groups" which are
-        // backed by non-EVM Snaps.
-        const hasNonEvmAccounts = group.accounts.some((id) => {
-          const account = this.#messenger.call(
-            'AccountsController:getAccount',
-            id,
-          );
-
-          return account && !isEvmAccountType(account.type);
-        });
-
-        if (hasNonEvmAccounts) {
-          await snapKeyring.setSelectedAccounts(group.accounts);
-        }
-      }
-    }
   }
 
   /**
