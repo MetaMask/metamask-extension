@@ -73,9 +73,8 @@ export function getCurrentConsensysRequestId(): string | undefined {
  * @param flags - Decimal value of the `trace-flags` byte.
  * @returns True when the sampled bit is set.
  *
- * TODO(sentry-v10, #42867): Remove together with `getCurrentTraceparent`, its
- * only caller, once the v10 upgrade ships.
  */
+// TODO: Remove once sentry SDK is upgraded to v10.
 function isSampled(flags: number): boolean {
   return flags % 2 === TRACE_FLAG_SAMPLED;
 }
@@ -95,16 +94,9 @@ export function matchesBackendTarget(url: string): boolean {
  * span when present, otherwise the merged scope propagation context, so the
  * trace id matches the `sentry-trace` the SDK propagates.
  *
- * TODO(sentry-v10, #42867): Remove once the Sentry v10 upgrade ships. v10's
- * `propagateTraceparent: true` makes the SDK attach `traceparent` to outbound
- * requests on `tracePropagationTargets` from this same active-span/scope
- * source, so this helper (and `isSampled`) become dead. When removing, also
- * drop the `traceparent` plumbing from `buildAugmentedHeaders` and the fetch
- * hook, and derive the trace id for `requestIdByTraceId` directly from
- * `getActiveSpan().spanContext()`.
- *
  * @returns A W3C `traceparent` string, or undefined when no trace id is known.
  */
+// TODO: Remove once sentry SDK is upgraded to v10.
 export function getCurrentTraceparent(): string | undefined {
   try {
     const activeSpan = getActiveSpan();
@@ -211,9 +203,7 @@ export function buildAugmentedHeaders(
     headers.set(key, value);
   });
   // Respect a caller- or SDK-provided `traceparent`; only set ours when absent.
-  // TODO(sentry-v10, #42867): Remove this block and the `traceparent` param
-  // once v10's `propagateTraceparent` attaches the header itself; this function
-  // then only appends the RAPID baggage.
+  // TODO: Remove this block and the `traceparent` param once sentry SDK is upgraded to v10.
   if (traceparent && !headers.has('traceparent')) {
     headers.set('traceparent', traceparent);
   }
@@ -223,9 +213,7 @@ export function buildAugmentedHeaders(
   return headers;
 }
 
-// TODO(sentry-v10, #42867): Once `getCurrentTraceparent` is removed, source the
-// trace id for `requestIdByTraceId` from `getActiveSpan().spanContext().traceId`
-// rather than parsing it back out of the traceparent string here.
+// TODO: Remove once sentry SDK is upgraded to v10.
 function getTraceIdFromTraceparent(traceparent: string): string | undefined {
   const [, traceId] = traceparent.split('-');
   return traceId || undefined;
@@ -288,18 +276,18 @@ export function consensysTracePropagationIntegration({
         try {
           const requestId = requestIdProvider();
           currentConsensysRequestId = requestId;
-          // TODO(sentry-v10, #42867): Drop the `traceparent` computation and the
-          // arg passed to `buildAugmentedHeaders` once v10's `propagateTraceparent`
-          // attaches the header. Keep the `requestIdByTraceId` mapping below, but
-          // source the trace id from `getActiveSpan().spanContext()`.
+          
           const traceparent = getCurrentTraceparent();
           if (traceparent) {
+            // TODO: Remove `getTraceIdFromTraceparent` call once sentry SDK is upgraded to v10.
+            // Source the trace id from `getActiveSpan().spanContext()`.
             const traceId = getTraceIdFromTraceparent(traceparent);
             if (traceId) {
               setRequestIdForTraceId(traceId, requestId);
             }
           }
           const headers = buildAugmentedHeaders(handlerData.args, {
+            // TODO: Remove `traceparent` argument once sentry SDK is upgraded to v10.
             traceparent,
             requestId,
           });
