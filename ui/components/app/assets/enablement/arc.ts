@@ -10,6 +10,8 @@
  * - Exception to showing ERC20 token in the UI: Swaps/Bridge flow - as the router has been validated for this token only.
  * When the user starts a Swap/Bridge from the Arc native asset, the source token is mapped to the ERC20 USDC token.
  */
+import { isCaipAssetType } from '@metamask/utils';
+
 const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
 const ARC_NATIVE_HEX_CHAIN_ID = '0x13b2';
 const ARC_NATIVE_ASSET_ID =
@@ -31,7 +33,8 @@ function isNativeArcAsset(asset: {
   if (
     isArcChainId &&
     'address' in asset &&
-    asset.address?.toLowerCase() === ARC_NATIVE_ADDRESS
+    (asset.address?.toLowerCase() === ARC_NATIVE_ADDRESS ||
+      asset.address?.toLowerCase() === ARC_NATIVE_ASSET_ID)
   ) {
     return true;
   }
@@ -73,7 +76,10 @@ export function mapArcNativeAssetToSwapToken<
   TToken extends { address: string; chainId?: string },
 >(token: TToken): TToken {
   if (isNativeArcAsset(token)) {
-    return { ...token, address: ARC_ERC20_USDC_ADDRESS };
+    const address = isCaipAssetType(token.address)
+      ? ARC_USDC_ASSET_ID
+      : ARC_ERC20_USDC_ADDRESS;
+    return { ...token, address };
   }
 
   return token;

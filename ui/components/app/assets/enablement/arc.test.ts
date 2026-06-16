@@ -137,6 +137,20 @@ describe('mapArcNativeAssetToSwapToken', () => {
     });
   });
 
+  it('maps the Arc native asset to the CAIP-19 USDC asset id when the address is a CAIP-19 asset type', () => {
+    const token = {
+      chainId: ARC_NATIVE_HEX_CHAIN_ID,
+      address: ARC_NATIVE_ASSET_ID,
+      symbol: 'USDC',
+      decimals: 6,
+    };
+
+    expect(mapArcNativeAssetToSwapToken(token)).toStrictEqual({
+      ...token,
+      address: `${ARC_NATIVE_CAIP_CHAIN_ID}/erc20:${ARC_ERC20_USDC_ADDRESS}`,
+    });
+  });
+
   it('maps the Arc native asset matched case-insensitively', () => {
     const token = {
       chainId: ARC_NATIVE_HEX_CHAIN_ID.toUpperCase(),
