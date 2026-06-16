@@ -149,6 +149,22 @@ export const InternalAccountPropType = PropTypes.shape({
   type: PropTypes.string.isRequired,
 });
 
+export const getMultichainDefaultToken = createSelector(
+  [
+    (state: MultichainState, account?: InternalAccount) =>
+      getMultichainIsEvm(state, account),
+    (state: MultichainState, account?: InternalAccount) =>
+      getMultichainIsEvm(state, account)
+        ? getProviderConfig(state).ticker
+        : undefined,
+    (state: MultichainState, account?: InternalAccount) =>
+      getMultichainProviderConfig(state, account).ticker,
+  ],
+  (isEvm, evmTicker, multichainTicker) => ({
+    symbol: isEvm ? (evmTicker ?? 'ETH') : multichainTicker,
+  }),
+);
+
 export function getMultichainIsBitcoin(
   state: MultichainState,
   account?: InternalAccount,
@@ -248,18 +264,6 @@ export function getMultichainShouldShowFiat(
     ? getShouldShowFiat(state, chainId)
     : (useCurrencyRateCheck && isMainnet) ||
         (useCurrencyRateCheck && isTestnet && getShowFiatInTestnets(state));
-}
-
-export function getMultichainDefaultToken(
-  state: MultichainState,
-  account?: InternalAccount,
-) {
-  const symbol = getMultichainIsEvm(state, account)
-    ? // We fallback to 'ETH' to keep original behavior of `getSwapsDefaultToken`
-      (getProviderConfig(state)?.ticker ?? 'ETH')
-    : getMultichainProviderConfig(state, account).ticker;
-
-  return { symbol };
 }
 
 export function getMultichainCurrentChainId(state: MultichainState) {

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+import { URDecoder } from '@ngraveio/bc-ur';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
 import {
@@ -13,13 +14,23 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../shared/constants/app';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsHardwareWalletDeviceType,
+} from '../../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { CameraPermissionState } from '../../../../contexts/hardware-wallets/constants';
 import EnhancedQrReader from '../enhanced-qr-reader';
+import { QrErrorFlowContext } from '../qr-error-content';
+import {
+  QrMismatchedTransactionError,
+  ScanErrorCategory,
+} from '../qr-utils/qr-utils';
 import {
   DOMExceptionName,
   PAIRING_EXPECTED_UR_TYPES,
+  SIGNING_EXPECTED_UR_TYPES,
+  UrType,
   WebcamErrorType,
   type BaseQrReaderProps,
 } from './base-qr-reader.types';
@@ -45,6 +56,13 @@ jest.mock('../../../../helpers/utils/webcam-utils');
 
 jest.mock('../enhanced-qr-reader');
 
+jest.mock('@ngraveio/bc-ur', () => ({
+  ...jest.requireActual('@ngraveio/bc-ur'),
+  // The real delegation is (re)installed in `beforeEach` so that per-test
+  // overrides do not leak between tests.
+  URDecoder: jest.fn(),
+}));
+
 const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 const mockGetChromiumExtensionCameraSiteSettingsUrl = jest.mocked(
   getChromiumExtensionCameraSiteSettingsUrl,
@@ -54,6 +72,7 @@ const mockGetMozExtensionOriginForDisplay = jest.mocked(
   getMozExtensionOriginForDisplay,
 );
 const mockEnhancedQrReader = jest.mocked(EnhancedQrReader);
+const mockURDecoder = jest.mocked(URDecoder);
 
 const mockCheckStatus = jest.mocked(WebcamUtils.checkStatus);
 const mockQueryCameraPermission = jest.mocked(
@@ -67,7 +86,8 @@ const mockStream = {
 };
 
 /**
- * Sets up `WebcamUtils` mocks for the happy path: fullscreen, prompt permission, stream OK.
+ * Sets up `WebcamUtils` mocks for the success path with fullscreen, prompt
+ * permission, and a working video stream.
  */
 function setupWebcamUtilsSuccess() {
   mockCheckStatus.mockResolvedValue({
@@ -96,6 +116,14 @@ describe('BaseQrReader', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockURDecoder.mockImplementation(
+      (...args: ConstructorParameters<typeof URDecoder>) =>
+        new (
+          jest.requireActual(
+            '@ngraveio/bc-ur',
+          ) as typeof import('@ngraveio/bc-ur')
+        ).URDecoder(...args),
+    );
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
     // @ts-expect-error mocking platform
     global.platform = {
@@ -784,6 +812,85 @@ describe('BaseQrReader', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders QrErrorContent when handleSuccess rejects with mismatched transaction', async () => {
+    setupWebcamUtilsSuccess();
+    const mockInstance = {
+      isComplete: jest
+        .fn()
+        .mockReturnValueOnce(false)
+        .mockReturnValueOnce(true),
+      isError: jest.fn().mockReturnValue(false),
+      receivePart: jest.fn(),
+      estimatedPercentComplete: jest.fn().mockReturnValue(1),
+      resultUR: jest.fn().mockReturnValue({ type: UrType.EthSignature }),
+    };
+    mockURDecoder.mockImplementation(
+      () => mockInstance as unknown as URDecoder,
+    );
+
+    mockEnhancedQrReader.mockImplementation((({
+      onFrame,
+    }: {
+      onFrame: (data: string) => void;
+    }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useEffect(() => {
+        onFrame(`ur:${UrType.EthSignature}/mock-frame`);
+      }, [onFrame]);
+      return null;
+    }) as unknown as typeof EnhancedQrReader);
+
+    const handleSuccess = jest
+      .fn()
+      .mockRejectedValue(new QrMismatchedTransactionError());
+
+    const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+    await act(async () => {
+      renderWithProvider(
+        <BaseQrReader
+          {...defaultProps}
+          isReadingWallet={false}
+          expectedUrTypes={SIGNING_EXPECTED_UR_TYPES}
+          handleSuccess={handleSuccess}
+        />,
+        undefined,
+        '/',
+        render,
+        () => mockTrackEvent,
+      );
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('qr-error-mismatchedTransaction-signing'),
+      ).toBeInTheDocument();
+    });
+    expect(
+      screen.getByText(messages.qrErrorMismatchedTransactionTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.qrErrorMismatchedTransactionBody.message),
+    ).toBeInTheDocument();
+    expect(defaultProps.setErrorActive).toHaveBeenCalledWith(true);
+
+    const scanFailed = mockTrackEvent.mock.calls.filter(
+      (call: unknown[]) =>
+        (call[0] as { event: string }).event ===
+        MetaMetricsEventName.QrHardwareScanFailed,
+    );
+    expect(scanFailed).toHaveLength(1);
+    expect(scanFailed[0][0].properties).toStrictEqual({
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+      device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+      error_category: ScanErrorCategory.MismatchedSignId,
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+      is_ur_format: true,
+      flow: QrErrorFlowContext.Signing,
+    });
+  });
+
   // ---- Cancel & Try Again on error UI ------------------------------------
 
   it('calls handleCancel when Cancel is clicked on error UI', async () => {
@@ -1103,6 +1210,72 @@ describe('BaseQrReader', () => {
         screen.getByText(messages.QRHardwareScanInstructions.message),
       ).toBeInTheDocument();
       expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    // ---- QR scan-failed tracking ------------------------------------------
+
+    it('fires QrHardwareScanFailed with non_ur_qr_scanned for pairing flow', async () => {
+      setupWebcamUtilsSuccess();
+      mockEnhancedQrReader.mockImplementation((({
+        onFrame,
+      }: {
+        onFrame: (data: string) => void;
+      }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+          onFrame('not-a-valid-ur-payload');
+        }, [onFrame]);
+        return null;
+      }) as unknown as typeof EnhancedQrReader);
+
+      await act(async () => {
+        renderWithMetrics(<BaseQrReader {...defaultProps} isReadingWallet />);
+      });
+
+      const scanFailed = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.QrHardwareScanFailed,
+      );
+      expect(scanFailed).toHaveLength(1);
+      expect(scanFailed[0][0].properties).toStrictEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+        device_type: 'QR Hardware',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+        error_category: 'non_ur_qr_scanned',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+        is_ur_format: false,
+        flow: 'pairing',
+      });
+    });
+
+    it('fires QrHardwareScanFailed with non_ur_qr_scanned for signing flow', async () => {
+      setupWebcamUtilsSuccess();
+      mockEnhancedQrReader.mockImplementation((({
+        onFrame,
+      }: {
+        onFrame: (data: string) => void;
+      }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+          onFrame('not-a-valid-ur-payload');
+        }, [onFrame]);
+        return null;
+      }) as unknown as typeof EnhancedQrReader);
+
+      await act(async () => {
+        renderWithMetrics(
+          <BaseQrReader {...defaultProps} isReadingWallet={false} />,
+        );
+      });
+
+      const scanFailed = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.QrHardwareScanFailed,
+      );
+      expect(scanFailed).toHaveLength(1);
+      expect(scanFailed[0][0].properties.flow).toBe('signing');
     });
   });
 });

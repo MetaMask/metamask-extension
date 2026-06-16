@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
@@ -20,11 +20,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
-  getLatestMetricsEventTimestamp,
 } from '../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
 import DataDeletionErrorModal from '../data-deletion-error-modal';
@@ -57,8 +57,10 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
     ) => {
       const t = useI18nContext();
       const dispatch = useDispatch();
+      const [deletionRequestedThisSession, setDeletionRequestedThisSession] =
+        useState(false);
 
-      const metaMetricsId = useSelector(getMetaMetricsId);
+      const analyticsId = useSelector(getAnalyticsId);
       const metaMetricsDataDeletionStatus: DeleteRegulationStatus = useSelector(
         getMetaMetricsDataDeletionStatus,
       );
@@ -76,10 +78,11 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
       const showDataDeletionErrorModal = useSelector(
         getShowDataDeletionErrorModal,
       );
-      const latestMetricsEventTimestamp = useSelector(
-        getLatestMetricsEventTimestamp,
+      const completedMetaMetricsOnboarding = useSelector(
+        getCompletedMetaMetricsOnboarding,
       );
-      const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+      const isOptedIn = useSelector(getOptedIn);
+      const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
       let dataDeletionButtonDisabled = !isMetaMetricsEnabled;
       if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
         dataDeletionButtonDisabled =
@@ -88,7 +91,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
             DeleteRegulationStatus.Running,
             DeleteRegulationStatus.Finished,
           ].includes(metaMetricsDataDeletionStatus) &&
-          metaMetricsDataDeletionTimestamp > latestMetricsEventTimestamp;
+          deletionRequestedThisSession;
       }
       const privacyPolicyLink = (
         <a
@@ -111,7 +114,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
             <div className="settings-page__content-item">
               <span>{t('deleteMetaMetricsData')}</span>
               <div className="settings-page__content-description">
-                {dataDeletionButtonDisabled && Boolean(metaMetricsId)
+                {dataDeletionButtonDisabled && Boolean(analyticsId)
                   ? t('deleteMetaMetricsDataRequestedDescription', [
                       formatedDate,
                       privacyPolicyLink,
@@ -122,7 +125,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
             <div
               className={`settings-page__content-item-col ${defaultPrivacySettings ? 'settings-page__button-defaut-settings' : ''}`}
             >
-              {Boolean(!metaMetricsId) && (
+              {Boolean(!analyticsId) && (
                 <Box className="inline-flex">
                   <Icon name={IconName.Info} size={IconSize.Sm} />
                   <Text
@@ -147,7 +150,11 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
               </ButtonPrimary>
             </div>
           </Box>
-          {showDeleteMetaMetricsDataModal && <ClearMetametricsData />}
+          {showDeleteMetaMetricsDataModal && (
+            <ClearMetametricsData
+              onDeletionSuccess={() => setDeletionRequestedThisSession(true)}
+            />
+          )}
           {showDataDeletionErrorModal && <DataDeletionErrorModal />}
         </>
       );

@@ -32,6 +32,7 @@ import EnhancedQrReader from '../enhanced-qr-reader';
 import {
   cameraReadyStateToErrorCode,
   buildQrCameraRecoveryTrackEventArgs,
+  buildQrScanFailedTrackEventArgs,
 } from './base-qr-reader-utils';
 import {
   CameraReadyState,
@@ -177,6 +178,22 @@ const BaseQrReader = ({
     );
   }, [readyState, trackEvent]);
 
+  // ---- QR scan-failed tracking --------------------------------------------
+
+  // Guards against duplicate events when trackEvent is recreated by context changes.
+  const lastTrackedScanErrorRef = useRef<typeof scanError>(null);
+
+  useEffect(() => {
+    if (!scanError || scanError === lastTrackedScanErrorRef.current) {
+      return;
+    }
+    lastTrackedScanErrorRef.current = scanError;
+    const flow = isReadingWallet
+      ? QrErrorFlowContext.Pairing
+      : QrErrorFlowContext.Signing;
+    trackEvent(buildQrScanFailedTrackEventArgs(scanError, flow));
+  }, [scanError, isReadingWallet, trackEvent]);
+
   // ---- Decoder lifecycle --------------------------------------------------
 
   const { handleScan, resetDecoder } = useDecoderLifecycle(
@@ -252,8 +269,6 @@ const BaseQrReader = ({
     if (error.type === WebcamErrorType.NoWebcamFound) {
       title = t('noWebcamFoundTitle');
       message = t('noWebcamFound');
-    } else if (error.message === t('QRHardwareMismatchedSignId')) {
-      message = t('QRHardwareMismatchedSignId');
     } else {
       title = t('generalCameraErrorTitle');
       message = t('generalCameraError');

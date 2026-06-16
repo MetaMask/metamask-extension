@@ -37,8 +37,14 @@ import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
-import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
+import { MODES } from './utils/constants';
+import { injectEntryScripts } from './utils/dev-server';
+import {
+  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+  UI_RELOAD_CLIENT_ENTRY_NAME,
+} from './utils/dev-server/reload-protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
+import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -166,7 +172,7 @@ const manifestPlugin = new ManifestPlugin({
     ? {
         zipOptions: {
           outFilePath: `../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
-          mtime: getLatestCommit().timestamp(),
+          mtime: getDefaultZipMtime(),
           excludeExtensions: ['.map'],
           // `level: 9` is the highest; it may increase build time by ~5% over level 1
           level: 9,
@@ -195,24 +201,33 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
-    // In watch mode, inject a `<script>` tag for the bundled
-    // webpack-dev-server client into every UI page (identified by the
-    // `#app-content` mount point — every page that renders the React UI
-    // has it via `partial-body.html`, no other extension page does). Kept
-    // out of the MV3 service worker, the Firefox MV2 background page, and
-    // the offscreen page — reloading those would break the message ports
-    // connecting them to the UI.
-    beforeEmit: (content, _entry, compilation) => {
-      if (!args.watch || !content.includes('id="app-content"')) return content;
-      const entrypoint = compilation.entrypoints.get(
-        DEV_SERVER_CLIENT_ENTRY_NAME,
-      );
-      if (!entrypoint) return content;
-      const tags = entrypoint
-        .getFiles()
-        .map((file) => `<script src="${file}" defer></script>`)
-        .join('');
-      return content.replace('</head>', `${tags}</head>`);
+    // In watch mode, inject dev-only ui and background reload clients into the relevant HTML pages.
+    beforeEmit: (content, entry, compilation) => {
+      if (!args.watch) {
+        return content;
+      }
+      // UI pages (identified by the `#app-content` React mount point, present
+      // via `partial-body.html` on every page that renders the React UI and no
+      // other extension page) get the UI reload client
+      if (content.includes('id="app-content"')) {
+        return injectEntryScripts(
+          content,
+          compilation,
+          UI_RELOAD_CLIENT_ENTRY_NAME,
+        );
+      }
+      // The MV2 (Firefox) background page gets the background reload client,
+      // which triggers `chrome.runtime.reload()` only when a background or
+      // content-script bundle changes. (On MV3 the client is bundled into the
+      // service worker instead, since it loads a single JS file.)
+      if (MANIFEST_VERSION === 2 && entry.name === 'background') {
+        return injectEntryScripts(
+          content,
+          compilation,
+          BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+        );
+      }
+      return content;
     },
     preload: [
       {
@@ -460,13 +475,6 @@ const config = {
           loader: require.resolve('./utils/loaders/envValidationLoader'),
           options: { declarations: [...buildEnvVarDeclarations] },
         },
-      },
-      // @protobufjs/inquire intentionally uses `require(moduleName)` to probe
-      // optional modules such as `buffer` and `long`.
-      {
-        test: /[\\/]@protobufjs[\\/]inquire[\\/]index\.js$/u,
-        include: NODE_MODULES_RE,
-        parser: { exprContextCritical: false },
       },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {
