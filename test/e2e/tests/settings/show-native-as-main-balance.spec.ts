@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -64,8 +64,8 @@ describe('Settings: Show native token as main balance', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenAmountIsDisplayed('25 ETH');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenAmountIsDisplayed('25 ETH');
       },
     );
   });
@@ -98,8 +98,8 @@ describe('Settings: Show native token as main balance', function () {
         await closeSettings(driver);
 
         // assert amount displayed
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenFiatAmountIsDisplayed('$42,500.00');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenFiatAmountIsDisplayed('$42,500.00');
       },
     );
   });
