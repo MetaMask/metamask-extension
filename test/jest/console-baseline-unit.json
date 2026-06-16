@@ -1,8 +1,5 @@
 {
   "files": {
-    "app/scripts/controllers/metametrics-controller.test.ts": {
-      "MetaMask: MetaMetrics invalid trait types": 4
-    },
     "app/scripts/controllers/rewards/rewards-data-service.test.ts": {
       "error: RewardsDataService: Failed to fetch geolocation": 2
     },
@@ -335,9 +332,6 @@
     },
     "ui/components/app/snaps/snap-ui-renderer/components/asset-selector.test.ts": {
       "MetaMask: Background connection not initialized": 4
-    },
-    "ui/components/app/snaps/snap-ui-renderer/components/date-time-picker.test.ts": {
-      "warn: Material-UI: You are trying to": 5
     },
     "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.test.js": {
       "error: Warning: React does not recognize": 1
@@ -994,9 +988,6 @@
       "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/onboarding-flow/account-not-found/account-not-found.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
-    "ui/pages/onboarding-flow/create-password/create-password.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx": {

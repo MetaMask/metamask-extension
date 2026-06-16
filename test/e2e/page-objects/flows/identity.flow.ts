@@ -1,13 +1,16 @@
+import HeaderNavbar from '../pages/header-navbar';
+import HomePage from '../pages/home/homepage';
+import PrivacySettings from '../pages/settings/privacy-settings';
+import SettingsPage from '../pages/settings/settings-page';
+import { Driver } from '../../webdriver/driver';
+import {
+  IDENTITY_TEAM_PASSWORD,
+  IDENTITY_TEAM_SEED_PHRASE,
+} from '../../tests/identity/constants';
 import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
-} from '../../page-objects/flows/onboarding.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/home/homepage';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { Driver } from '../../webdriver/driver';
-import { IDENTITY_TEAM_PASSWORD, IDENTITY_TEAM_SEED_PHRASE } from './constants';
+} from './onboarding.flow';
 
 export const completeOnboardFlowIdentity = async (
   driver: Driver,

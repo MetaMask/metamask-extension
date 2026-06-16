@@ -314,7 +314,7 @@ const AssetPage = ({
         <Box flexDirection={BoxFlexDirection.Row}>
           <ButtonIcon
             color={IconColor.IconDefault}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back') as string}
             iconName={IconName.ArrowLeft}
             onClick={() => transitionBack(() => navigate(-1))}

@@ -1,4 +1,4 @@
-import React, { Component, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { getMessage } from '../ui/helpers/utils/i18n-helper';
 import { I18nContext } from '../ui/contexts/i18n';
@@ -29,29 +29,3 @@ I18nProvider.propTypes = {
 I18nProvider.defaultProps = {
   children: undefined,
 };
-
-export class LegacyI18nProvider extends Component {
-  static propTypes = {
-    children: PropTypes.node,
-  };
-
-  static defaultProps = {
-    children: undefined,
-  };
-
-  static contextType = I18nContext;
-
-  static childContextTypes = {
-    t: PropTypes.func,
-  };
-
-  getChildContext() {
-    return {
-      t: this.context,
-    };
-  }
-
-  render() {
-    return this.props.children;
-  }
-}

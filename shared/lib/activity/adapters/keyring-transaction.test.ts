@@ -1,5 +1,6 @@
 import { TransactionStatus, TransactionType } from '@metamask/keyring-api';
 import { MultichainNetworks } from '../../../constants/multichain/networks';
+import { solanaBridgeFixture } from './fixtures/non-evm-bridge';
 import { mapKeyringTransaction } from './keyring-transaction';
 
 describe('mapKeyringTransaction', () => {
@@ -34,8 +35,8 @@ describe('mapKeyringTransaction', () => {
       chainId: MultichainNetworks.SOLANA,
       status: 'success',
       timestamp: 1716367781000,
+      hash: 'send-id',
       data: {
-        hash: 'send-id',
         from: 'from-address',
         to: 'to-address',
         token: {
@@ -43,6 +44,34 @@ describe('mapKeyringTransaction', () => {
           assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
           direction: 'out',
           symbol: 'USDC',
+        },
+      },
+    });
+  });
+
+  it('maps cross-chain bridge source sends to bridge activity items', () => {
+    const item = mapKeyringTransaction({
+      subjectAddress: solanaBridgeFixture.fromAddress,
+      transaction: solanaBridgeFixture.transaction,
+      bridgeHistory: solanaBridgeFixture.bridgeHistory,
+    });
+
+    expect(item).toMatchObject({
+      type: 'bridge',
+      chainId: MultichainNetworks.SOLANA,
+      status: 'success',
+      hash: solanaBridgeFixture.transaction.id,
+      data: {
+        from: solanaBridgeFixture.fromAddress,
+        sourceToken: {
+          amount: '1.5',
+          symbol: 'USDC',
+          direction: 'out',
+        },
+        destinationToken: {
+          amount: '1.4',
+          symbol: 'USDC',
+          direction: 'in',
         },
       },
     });
@@ -89,8 +118,8 @@ describe('mapKeyringTransaction', () => {
       chainId: MultichainNetworks.SOLANA,
       status: 'pending',
       timestamp: 1716367781000,
+      hash: 'swap-id',
       data: {
-        hash: 'swap-id',
         sourceToken: {
           amount: '1',
           assetId: `${MultichainNetworks.SOLANA}/slip44:501`,

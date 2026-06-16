@@ -7,12 +7,6 @@
     "message": "加载时间比平时长。",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "错误"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "不一致的交易数据。请查看交易详情。"
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "暂无更多账户。若想访问下方未列出的其他账户，请重新连接您的硬件钱包并选择它。"
   },

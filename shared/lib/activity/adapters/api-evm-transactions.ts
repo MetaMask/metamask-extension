@@ -11,7 +11,7 @@ import {
   getNativeAssetSafe,
   getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
-  isNftStandard,
+  parseValueTransfers,
   withFallbackTokenAssetId,
   type ValueTransfer,
 } from './helpers';
@@ -36,21 +36,13 @@ export function mapApiEvmTransactions({
     direction: TokenAmount['direction'],
   ) => getTokenAmountFromTransfer(transfer, direction, chainId);
 
-  const sentTransfer = valueTransfers?.find(({ from: transferFrom }) =>
-    equalsIgnoreCase(transferFrom, subjectAddress),
-  );
-  const receivedTransfer = valueTransfers?.find(({ to }) =>
-    equalsIgnoreCase(to, subjectAddress),
-  );
-  const sentNftTransfer = valueTransfers?.find(
-    ({ from: transferFrom, transferType }) =>
-      equalsIgnoreCase(transferFrom, subjectAddress) &&
-      isNftStandard(transferType),
-  );
-  const receivedNftTransfer = valueTransfers?.find(
-    ({ to, transferType }) =>
-      equalsIgnoreCase(to, subjectAddress) && isNftStandard(transferType),
-  );
+  const {
+    sentTransfer,
+    receivedTransfer,
+    sentNftTransfer,
+    receivedNftTransfer,
+  } = parseValueTransfers(valueTransfers, subjectAddress);
+
   const sentNativeTransfer = valueTransfers?.find(
     ({ from: transferFrom, transferType }) =>
       equalsIgnoreCase(transferFrom, subjectAddress) &&
@@ -74,10 +66,10 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
+        hash,
         data: {
           sourceToken: getToken(sentTransfer, 'out'),
           from,
-          hash,
         },
       };
     }
@@ -87,12 +79,12 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
         sourceToken: getToken(sentTransfer, 'out'),
         destinationToken: getToken(receivedTransfer, 'in'),
         fees: getFees(transaction, chainId),
         from,
-        hash,
       },
     };
   }
@@ -128,8 +120,8 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
-        hash,
         from,
         token,
         fees: getFees(transaction, chainId),
@@ -146,8 +138,8 @@ export function mapApiEvmTransactions({
           chainId,
           status,
           timestamp,
+          hash,
           data: {
-            hash,
             from: receivedNftTransfer.from,
             to: receivedNftTransfer.to,
             token: getToken(receivedNftTransfer, 'in'),
@@ -161,8 +153,8 @@ export function mapApiEvmTransactions({
           chainId,
           status,
           timestamp,
+          hash,
           data: {
-            hash,
             from: receivedNftTransfer.from,
             to: receivedNftTransfer.to,
             token: getToken(receivedNftTransfer, 'in'),
@@ -175,8 +167,8 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
+        hash,
         data: {
-          hash,
           from: receivedNftTransfer.from,
           to: receivedNftTransfer.to,
           token: getToken(receivedNftTransfer, 'in'),
@@ -190,8 +182,8 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
+        hash,
         data: {
-          hash,
           from: sentNftTransfer.from,
           to: sentNftTransfer.to,
           token: getToken(sentNftTransfer, 'out'),
@@ -230,6 +222,7 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
         from: transfer?.from ?? from,
         to: transfer?.to ?? transaction.to,
@@ -241,7 +234,6 @@ export function mapApiEvmTransactions({
             chainId,
           ) ?? nativeToken,
         fees: getFees(transaction, chainId),
-        hash,
       },
     };
   }
@@ -252,8 +244,8 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
-        hash,
         from,
         token: getToken(receivedTransfer, 'in'),
       },
@@ -266,8 +258,8 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
-        hash,
         from,
         token: getToken(
           receivedTransfer ?? sentTransfer,
@@ -283,8 +275,8 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
-        hash,
         sourceToken: getToken(sentTransfer, 'out'),
         from,
         fees: getFees(transaction, chainId),
@@ -299,8 +291,8 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
-        hash,
         sourceToken: getToken(sentTransfer, 'out'),
         destinationToken: getToken(receivedTransfer, 'in'),
         fees: getFees(transaction, chainId),
@@ -316,8 +308,8 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
-        hash,
         sourceToken: getToken(sentTransfer, 'out'),
         destinationToken: getToken(receivedTransfer, 'in'),
         fees: getFees(transaction, chainId),
@@ -333,8 +325,8 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
-        hash,
         sourceToken: getToken(sentTransfer, 'out'),
         destinationToken: getToken(receivedTransfer, 'in'),
         fees: getFees(transaction, chainId),
@@ -348,8 +340,8 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
-        hash,
         sourceToken: getToken(sentTransfer, 'out'),
         destinationToken: getToken(receivedTransfer, 'in'),
         fees: getFees(transaction, chainId),
@@ -370,12 +362,12 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
         sourceToken: getToken(sentTransfer, 'out'),
         destinationToken: getToken(receivedTransfer, 'in'),
         fees: getFees(transaction, chainId),
         from,
-        hash,
       },
     };
   }
@@ -386,8 +378,8 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      hash,
       data: {
-        hash,
         from,
         token: getToken(sentTransfer, 'out'),
       },
@@ -408,8 +400,8 @@ export function mapApiEvmTransactions({
     chainId,
     status,
     timestamp,
+    hash,
     data: {
-      hash,
       methodId: transaction.methodId,
       from,
       to: transaction.to,

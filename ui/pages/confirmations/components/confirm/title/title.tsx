@@ -363,6 +363,7 @@ const ConfirmTitle = memo(() => {
           paddingTop={4}
           paddingBottom={2}
           textAlign={TextAlign.Center}
+          data-testid="confirm-title-text"
         >
           {title}
         </Text>
@@ -375,6 +376,7 @@ const ConfirmTitle = memo(() => {
           paddingBottom={4}
           color={TextColor.textAlternative}
           textAlign={TextAlign.Center}
+          data-testid="confirm-title-description"
         >
           {description}
         </Text>
