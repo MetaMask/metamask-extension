@@ -5,6 +5,7 @@ import type {
   TokenPattern,
 } from './types';
 import type { RelayClient } from './relay';
+import { formatAgentPrompt, formatForClipboard } from './prompt';
 
 /* ── Panel theme (dev-tool overlay; rgb()/rgba() so it never inherits product tokens) ── */
 const C = {
@@ -994,7 +995,6 @@ export class PanelController {
     }
     this.agentWorking = true;
     this.render();
-    const { formatAgentPrompt } = await import('./prompt');
     const prompt = formatAgentPrompt(this.info, this.getChangeset(), message);
     await this.relay.sendMessage(prompt);
   }
@@ -1109,24 +1109,18 @@ export class PanelController {
       if (!info) {
         return;
       }
-      import('./prompt')
-        .then(({ formatForClipboard: f }) => {
-          navigator.clipboard
-            .writeText(f(info, this.getChangeset()))
-            .then(() => {
-              copyBtn.textContent = '✓ Copied';
-              copyBtn.classList.add('copied');
-              setTimeout(() => {
-                copyBtn.textContent = 'Copy for AI';
-                copyBtn.classList.remove('copied');
-              }, 2000);
-            })
-            .catch(() => {
-              // Clipboard write can reject without focus; ignore in this dev tool.
-            });
+      navigator.clipboard
+        .writeText(formatForClipboard(info, this.getChangeset()))
+        .then(() => {
+          copyBtn.textContent = '✓ Copied';
+          copyBtn.classList.add('copied');
+          setTimeout(() => {
+            copyBtn.textContent = 'Copy for AI';
+            copyBtn.classList.remove('copied');
+          }, 2000);
         })
         .catch(() => {
-          // Dynamic import failure is non-critical for this dev tool.
+          // Clipboard write can reject without focus; ignore in this dev tool.
         });
     };
 

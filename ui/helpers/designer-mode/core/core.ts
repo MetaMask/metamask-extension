@@ -7,6 +7,8 @@ import { OverlayController } from './overlay';
 import { PanelController } from './panel';
 import { ToggleController } from './toggle';
 import { RelayClient } from './relay';
+import { detectFramework } from './utils';
+import { createAdapter } from './detect';
 
 export class DesignerModeCore {
   private adapter: InspectorAdapter;
@@ -64,7 +66,7 @@ export class DesignerModeCore {
     }
 
     this.overlay.setOnSelect((info, el) => {
-      if (!info) {
+      if (!info || !el) {
         this.panel.hide();
         this.selectedEl = null;
         return;
@@ -136,9 +138,7 @@ export class DesignerModeCore {
   }
 
   static async autoInit(options: DesignerModeOptions = {}) {
-    const { detectFramework } = await import('./utils');
     const framework = await detectFramework();
-    const { createAdapter } = await import('./detect');
     const adapter = createAdapter(framework);
     const core = new DesignerModeCore({ ...options, adapter });
     core.mount();

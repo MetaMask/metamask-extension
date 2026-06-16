@@ -1,4 +1,4 @@
-import type { ComputedStyleSnapshot, ComponentInfo } from './types';
+import type { ComputedStyleSnapshot, ComponentInfo, Framework } from './types';
 
 export type ComponentInfoFields = {
   componentName: string;
@@ -221,7 +221,7 @@ export function serializeProps(
   );
 }
 
-export function detectFramework(): Promise<import('./types').Framework> {
+export function detectFramework(): Promise<Framework> {
   return new Promise((resolve) => {
     setTimeout(() => {
       const { body } = document;
