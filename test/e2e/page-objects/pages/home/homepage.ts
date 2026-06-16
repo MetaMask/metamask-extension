@@ -211,8 +211,16 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
-    await this.driver.waitForSelector(this.solanaAccountIcon);
-    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+    // The Solana/Bitcoin icons only render after their snaps resolve accounts.
+    // That render completes in well under a second locally, but on constrained
+    // 2-core CI runners the v10 Sentry SDK's heavier startup can push it past
+    // the default 10s wait, so allow extra headroom for these snap-backed icons.
+    await this.driver.waitForSelector(this.solanaAccountIcon, {
+      timeout: 30000,
+    });
+    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
+      timeout: 30000,
+    });
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
