@@ -335,9 +335,7 @@ describe('OnboardingMainStep', () => {
     });
     render(<OnboardingMainStep />);
 
-    expect(
-      screen.getByTestId('rewards-vip-referral-tag'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('rewards-vip-referral-tag')).toBeInTheDocument();
   });
 
   it('does not show the VIP referral tag when the VIP program flag is off', () => {

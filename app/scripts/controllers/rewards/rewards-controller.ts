@@ -2198,7 +2198,8 @@ export class RewardsController extends BaseController<
     );
     // A referral code is only treated as a VIP code when the backend says so
     // AND the VIP feature is enabled locally (rewards on and VIP not disabled).
-    const isVipCode = (response.isVipCode ?? false) && this.isVipFeatureEnabled();
+    const isVipCode =
+      (response.isVipCode ?? false) && this.isVipFeatureEnabled();
     return { valid: response.valid, isVipCode };
   }
 

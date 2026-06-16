@@ -119,7 +119,9 @@ export const useValidateReferralCode = (
         const refinedCode = normalizeReferralCode(code);
 
         if (!isReferralCodeFormatValid(refinedCode)) {
-          if (currentRequestId !== requestIdRef.current) return;
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
           setError(REFERRAL_CODE_INVALID_ERROR);
           setIsVipCode(false);
           setIsValidating(false);
@@ -131,7 +133,9 @@ export const useValidateReferralCode = (
             validateRewardsReferralCode(refinedCode),
           )) as unknown as { valid: boolean; isVipCode: boolean };
 
-          if (currentRequestId !== requestIdRef.current) return;
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
 
           if (!result.valid) {
             setError(REFERRAL_CODE_INVALID_ERROR);
@@ -141,7 +145,9 @@ export const useValidateReferralCode = (
             setIsVipCode(result.isVipCode ?? false);
           }
         } catch {
-          if (currentRequestId !== requestIdRef.current) return;
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
           setError(REFERRAL_CODE_UNKNOWN_ERROR);
           setIsVipCode(false);
         }

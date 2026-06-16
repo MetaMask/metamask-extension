@@ -138,6 +138,9 @@ export class RewardsDataService {
   }
 
   getRewardsApiBaseUrl() {
+    if (process.env.REWARDS_API_URL_OVERRIDE) {
+      return process.env.REWARDS_API_URL_OVERRIDE;
+    }
     if (
       process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION ||
       process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE
