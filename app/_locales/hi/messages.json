@@ -64,6 +64,18 @@
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
     "description": "$1 is the `terms` message"
   },
+  "accessRestrictedContactSupport": {
+    "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
+  },
+  "accessRestrictedDescriptionLine1": {
+    "message": "कम्प्लायंस स्क्रीनिंग के दौरान इस वॉलेट एड्रेस की शिक़ायत मिली है। इस वजह से, कुछ MetaMask सर्विस उपलब्ध नहीं हैं।"
+  },
+  "accessRestrictedDescriptionLine2": {
+    "message": "अगर आपको लगता है कि यह एक गड़बड़ी है, तो रिव्यू के लिए सपोर्ट से संपर्क करें।"
+  },
+  "accessRestrictedTitle": {
+    "message": "एक्सेस प्रतिबंधित"
+  },
   "accessingYourCamera": {
     "message": "आपके कैमरे को एक्सेस कर रहे हैं..."
   },
@@ -284,11 +296,26 @@
   "activity_contractDeployment_success_title": {
     "message": "कॉन्ट्रैक्ट डिप्लॉय किया गया"
   },
+  "activity_contractInteraction_failed_description": {
+    "message": "$1 के साथ",
+    "description": "$1 is the shortened contract address"
+  },
   "activity_contractInteraction_failed_title": {
     "message": "इंटरेक्शन नहीं हो पाया"
   },
+  "activity_contractInteraction_pending_description": {
+    "message": "$1 के साथ",
+    "description": "$1 is the shortened contract address"
+  },
   "activity_contractInteraction_pending_title": {
     "message": "इंटरेक्शन प्रोग्रेस में है"
+  },
+  "activity_contractInteraction_success_description": {
+    "message": "$1 के साथ",
+    "description": "$1 is the shortened contract address"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "कॉन्ट्रैक्ट इंटरैक्शन"
   },
   "activity_convert_failed_description": {
     "message": "कन्वर्शन नहीं हो पाया"
@@ -306,6 +333,10 @@
   },
   "activity_convert_success_description": {
     "message": "$1 में कन्वर्ट किया गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_title": {
+    "message": "$1 कन्वर्ट किया गया",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -360,6 +391,12 @@
   "activity_lendingDeposit_failed_title": {
     "message": "डिपॉज़िट नहीं हो पाया"
   },
+  "activity_lendingDeposit_pending_title": {
+    "message": "डिपॉज़िट उधार दिया जा रहा है"
+  },
+  "activity_lendingDeposit_success_title": {
+    "message": "डिपॉज़िट उधार दिया जा रहा है"
+  },
   "activity_lendingWithdrawal_failed_description": {
     "message": "विदड्रॉवल नहीं हो पाया"
   },
@@ -373,6 +410,9 @@
   "activity_lendingWithdrawal_pending_title": {
     "message": "$1 निकाला जा रहा है",
     "description": "$1 is the token symbol"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "विदड्रॉ उधार दिया जा रहा है"
   },
   "activity_marketCloseShort_failed_description": {
     "message": "क्लोज़ शॉर्ट नहीं हो पाया"
@@ -409,6 +449,17 @@
   },
   "activity_marketShort_success_title": {
     "message": "शॉर्ट क्लोज़ किया जा रहा है - मार्केट क्लोज़"
+  },
+  "activity_nftBuy_failed_title": {
+    "message": "खरीदना नहीं हो पाया"
+  },
+  "activity_nftBuy_pending_title": {
+    "message": "$1 खरीद रहे हैं",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftBuy_success_title": {
+    "message": "$1 खरीदा गया",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_failed_title": {
     "message": "मिंट नहीं हो पाया"
@@ -601,7 +652,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "खुला लॉन्ग"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "शॉर्ट ओपन नहीं हो पाया"
   },
@@ -1686,6 +1736,54 @@
   "basicFunctionalityRequired_toggleLabel": {
     "message": "बेसिक फंक्शनलिटी"
   },
+  "batchSell": {
+    "message": "बैच सेल"
+  },
+  "batchSellContinueNAssetsCTAPlural": {
+    "message": "($1) टोकन के साथ जारी रखें"
+  },
+  "batchSellContinueNAssetsCTASingle": {
+    "message": "($1) टोकन के साथ जारी रखें"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "कोई टोकन नहीं। कोई प्रॉब्लम नहीं। बैच सेल के लिए टोकन एक्सप्लोर करें और खरीदें।"
+  },
+  "batchSellGetNewQuotes": {
+    "message": "नए उद्धरण प्राप्त करें"
+  },
+  "batchSellHighRateAlert": {
+    "message": "हाई रेट अलर्ट"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "एक टोकन बैच में बेचने पर रेट ज़्यादा हो सकता है। क्या आप इसके बजाय स्वैप करना चाहते हैं?"
+  },
+  "batchSellMaxSelectedTokens": {
+    "message": "ज़्यादा से ज़्यादा $1 टोकन अलाउड हैं"
+  },
+  "batchSellMinimumReceiveExplanation": {
+    "message": "आपके ट्रांसेक्शन के प्रोसेस होने के दौरान प्राइस बदलने पर जो न्यूनतम राशि आपको प्राप्त होगी, वह आपके स्लिपेज (slippage) टॉलरेंस पर आधारित है। यह हमारे लिक्विडिटी प्रदाताओं से एक अनुमान है। अंतिम राशि भिन्न हो सकती है।"
+  },
+  "batchSellNetworkFeeTooltip": {
+    "message": "नेटवर्क फीस इस बात पर निर्भर करते हैं कि नेटवर्क कितना व्यस्त है और आपका ट्रांसेक्शन कितना जटिल है।"
+  },
+  "batchSellReceiveStablecoin": {
+    "message": "एक स्टेबलकॉइन चुनें"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "सभी टोकन एक ही नेटवर्क पर होने चाहिए।"
+  },
+  "batchSellSelectHeaderTitle": {
+    "message": "5 टोकन तक चुनें"
+  },
+  "batchSellSlippageDescription": {
+    "message": "अगर प्राइस स्लिपेज परसेंट से ज़्यादा बदल जाता है, तो आपका ट्रांसेक्शन पूरा नहीं होगा।"
+  },
+  "batchSellYouSellTokenCount": {
+    "message": "$1 टोकन"
+  },
+  "batchSellYouSellTokenCountPlural": {
+    "message": "$1 टोकन"
+  },
   "bestQuote": {
     "message": "सबसे अच्छी क्वोट"
   },
@@ -1786,6 +1884,9 @@
   "bridge": {
     "message": "ब्रिज करें"
   },
+  "bridgeAgain": {
+    "message": "फिर से ब्रिज करें"
+  },
   "bridgeAllowSwappingOf": {
     "message": "ब्रिजिंग के लिए $3 पर $1 $2 तक सटीक पहुंच की अनुमति दें",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -1815,6 +1916,9 @@
   },
   "bridgeExplorerLinkViewOn": {
     "message": "$1 पर देखें"
+  },
+  "bridgeExplorerPopupDescription": {
+    "message": "यह ट्रांज़ैक्शन दो नेटवर्क पर रहता है। एक लिंक सोर्स दिखाता है, दूसरा कन्फर्म होने के बाद डेस्टिनेशन दिखाता है।"
   },
   "bridgeFee": {
     "message": "ब्रिज फीस"
@@ -2957,6 +3061,9 @@
   "dateCreated": {
     "message": "बनाने की तारीख"
   },
+  "day": {
+    "message": "दिन"
+  },
   "debitCreditPurchaseOptions": {
     "message": "डेबिट या क्रेडिट कार्ड से खरीदारी के विकल्प"
   },
@@ -2988,6 +3095,12 @@
   },
   "decryptRequest": {
     "message": "रिक्वेस्ट डिक्रिप्ट करें"
+  },
+  "deepLinkQrPredictDescription": {
+    "message": "MetaMask प्रेडिक्शन मार्केट्स को एक्सेस करने के लिए, अपने मोबाइल डिवाइस से QR कोड स्कैन करें।"
+  },
+  "deepLinkQrPredictTitle": {
+    "message": "प्रेडिक्शन मार्केट्स को मोबाइल पर खोलें"
   },
   "deepLink_Caution": {
     "message": "सावधानी से आगे बढ़ें"
@@ -3100,6 +3213,9 @@
   },
   "defiEmptyDescription": {
     "message": "सीधे अपने वॉलेट में उधार दें, उधार लें और ट्रेड करें।"
+  },
+  "defiIcon": {
+    "message": "DeFi आइकन"
   },
   "defiReferralCheckboxLabel": {
     "message": "MetaMask को रेफ़रल कोड जोड़ने की अनुमति दें। यह स्थायी है। साइट अपने नियमों के अनुसार डिस्काउंट देती है। MetaMask को एक फीस मिलता है।",
@@ -3637,6 +3753,9 @@
   "exploreDefi": {
     "message": "DeFi को एक्सप्लोर करें"
   },
+  "exploreTokens": {
+    "message": "टोकन एक्सप्लोर करें"
+  },
   "exportYourData": {
     "message": "अपना डेटा एक्सपोर्ट करें"
   },
@@ -4074,6 +4193,39 @@
   "hardwareWalletLookingForDevice": {
     "message": "अपना $1 खोज रहे हैं...",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletRepairDetecting": {
+    "message": "डिवाइस डिटेक्ट किया जा रहा है..."
+  },
+  "hardwareWalletRepairDeviceNotDetected": {
+    "message": "डिवाइस डिटेक्ट नहीं हुआ। कृपया पिछले स्टेप्स चेक करें और फिर से कोशिश करें।"
+  },
+  "hardwareWalletRepairLink": {
+    "message": "शुरू से रिकनेक्ट करें"
+  },
+  "hardwareWalletRepairPermissionsTitle": {
+    "message": "MetaMask को इन चीज़ों के लिए अनुमति दें:"
+  },
+  "hardwareWalletRepairStepOneDescription": {
+    "message": "पक्का करें कि USB केबल आपके डिवाइस और कंप्यूटर दोनों से अच्छी तरह कनेक्ट हो। कोई दूसरा USB पोर्ट या केबल ट्राई करें।"
+  },
+  "hardwareWalletRepairStepOneTitle": {
+    "message": "USB कनेक्शन चेक करें"
+  },
+  "hardwareWalletRepairStepTwoDescription": {
+    "message": "अपना हार्डवेयर वॉलेट अनलॉक करने के लिए अपना PIN डालें।"
+  },
+  "hardwareWalletRepairStepTwoTitle": {
+    "message": "अपना डिवाइस अनलॉक करें"
+  },
+  "hardwareWalletRepairSuccessDescription": {
+    "message": "आपका डिवाइस सही से फिर से कनेक्ट हो गया है। आप यह टैब बंद कर सकते हैं।"
+  },
+  "hardwareWalletRepairSuccessTitle": {
+    "message": "डिवाइस कनेक्ट किया गया"
+  },
+  "hardwareWalletRepairTitle": {
+    "message": "हार्डवेयर डिवाइस कनेक्ट करें"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "सुनिश्चित करें कि आपका $1 प्लग इन है और Ethereum ऐप का चयन करें।"
@@ -5435,6 +5587,9 @@
   "newCustomTokenAdded": {
     "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
   },
+  "newNFTDetectedInImportNFTsMessageStrongText": {
+    "message": "सेटिंग्स > एसेट्स"
+  },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "अपने NFTs देखने के लिए OpenSea का उपयोग करने के लिए, $1 में 'NFT मीडिया दिखाएं' चालू करें।",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
@@ -5563,6 +5718,9 @@
   },
   "noOptionsAvailableMessage": {
     "message": "यह ट्रेड रूट अभी उपलब्ध नहीं है। राशि, नेटवर्क या टोकन बदलने का प्रयास करें और हम सबसे अच्छा विकल्प ढूंढ लेंगे।"
+  },
+  "noQuoteAvailable": {
+    "message": "कोई कोटेशन उपलब्ध नहीं है"
   },
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
@@ -6543,6 +6701,9 @@
     "message": "ट्रेड करने के लिए उपलब्ध है",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBalance": {
+    "message": "पर्प्स बैलेंस"
+  },
   "perpsBasicFunctionalityOff": {
     "message": "जब बेसिक फ़ंक्शनैलिटी बंद होती है, तो यह सुविधा उपलब्ध नहीं होती।"
   },
@@ -6572,6 +6733,12 @@
   },
   "perpsCloseAll": {
     "message": "सब बंद करें"
+  },
+  "perpsCloseAllDescription": {
+    "message": "हम आपकी सभी ओपन पोज़िशन को वर्तमान मार्केट प्राइस पर बंद कर देंगे।"
+  },
+  "perpsCloseAllPositions": {
+    "message": "सभी पोज़िशन बंद करें"
   },
   "perpsCloseAmount": {
     "message": "अमाउंट क्लोज़ करें"
@@ -6689,11 +6856,20 @@
   "perpsFilterCrypto": {
     "message": "क्रिप्टो"
   },
+  "perpsFilterEtf": {
+    "message": "ETF"
+  },
   "perpsFilterForex": {
     "message": "फॉरेक्स"
   },
+  "perpsFilterIndex": {
+    "message": "इंडेक्स"
+  },
   "perpsFilterNew": {
     "message": "नया"
+  },
+  "perpsFilterPreIpo": {
+    "message": "Pre-IPO"
   },
   "perpsFilterStocks": {
     "message": "स्टॉक्स"
@@ -6724,6 +6900,9 @@
   },
   "perpsInsufficientMargin": {
     "message": "इस ऑर्डर को लगाने के लिए पर्याप्त मार्जिन नहीं है।"
+  },
+  "perpsKeepPositions": {
+    "message": "पोज़िशन्स रखें"
   },
   "perpsLearnBasics": {
     "message": "पर्प्स की मूल बातें सीखें"
@@ -6918,8 +7097,26 @@
   "perpsSize": {
     "message": "आकार"
   },
+  "perpsSlippage": {
+    "message": "स्लिपेज (slippage)"
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "यदि कीमत इस सीमा से आगे बदल जाती है, तो आपका ट्रांसेक्शन पूरा नहीं होगा।"
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "स्लिपेज (slippage) सेट करें"
+  },
+  "perpsSlippageCustom": {
+    "message": "कस्टम"
+  },
   "perpsSlippageExceeded": {
     "message": "स्लिपेज सीमा से अधिक हो गया है। अपनी स्लिपेज टॉलरेंस को समायोजित करें और दोबारा कोशिश करें।"
+  },
+  "perpsSlippageInputLabel": {
+    "message": "अधिकतम स्लिपेज (slippage) प्रतिशत"
+  },
+  "perpsSlippageSet": {
+    "message": "निर्धारित करें"
   },
   "perpsSortByFundingRate": {
     "message": "फंडिंग रेट"
@@ -7009,6 +7206,22 @@
   "perpsToastCancelOrderSuccess": {
     "message": "ऑर्डर कैंसिल किया गया",
     "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseAllFailed": {
+    "message": "सभी पोज़िशन बंद नहीं हो पाईं",
+    "description": "Error toast text shown when batch closing all perps positions fails"
+  },
+  "perpsToastCloseAllInProgress": {
+    "message": "सभी पोज़िशन बंद की जा रही हैं",
+    "description": "In-progress toast text shown while batch closing all perps positions"
+  },
+  "perpsToastCloseAllPartial": {
+    "message": "$2 में से $1 पोजीशन बंद की गई",
+    "description": "Warning toast text shown when only some perps positions were successfully closed. $1 is success count, $2 is total attempted count."
+  },
+  "perpsToastCloseAllSuccess": {
+    "message": "सभी पोज़िशन बंद की गईं",
+    "description": "Success toast text shown when all perps positions are successfully closed"
   },
   "perpsToastCloseFailed": {
     "message": "पोज़िशन बंद नहीं हो पाई",
@@ -7570,6 +7783,10 @@
     "message": "कैमरा एक्सेस की आवश्यकता है",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorMismatchedTransactionTitle": {
+    "message": "गलत QR कोड",
+    "description": "Title shown when a signature QR belongs to a different transaction."
+  },
   "qrErrorNonUrPairingBody": {
     "message": "अपने हार्डवेयर वॉलेट पर वापस जाएं और एकाउंट्स शेयर या एक्सपोर्ट करने का विकल्प ढूंढें, MetaMask चुनें, फिर QR कोड स्कैन करें।",
     "description": "Body text for the non-UR QR code error during pairing."
@@ -8072,6 +8289,9 @@
     "message": "अपने एकाउंट्स ढूंढें",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
+  "searchingForBestQuotes": {
+    "message": "सबसे अच्छे कोट्स की खोज की जा रही है"
+  },
   "second": {
     "message": "सेकंड"
   },
@@ -8206,6 +8426,9 @@
   },
   "selectedAccountMismatch": {
     "message": "अलग खाता चुना गया"
+  },
+  "sellAll": {
+    "message": "सभी को बेचें"
   },
   "send": {
     "message": "भेजें"
@@ -9715,6 +9938,9 @@
   "swapAdjustSlippage": {
     "message": "स्लिपेज को समायोजित करें"
   },
+  "swapAgain": {
+    "message": "फिर से स्वैप करें"
+  },
   "swapAggregator": {
     "message": "एग्रीगेटर"
   },
@@ -10178,6 +10404,12 @@
   "total": {
     "message": "कुल"
   },
+  "totalAmount": {
+    "message": "कुल रकम"
+  },
+  "totalReceived": {
+    "message": "टोटल प्राप्त हुआ"
+  },
   "totalVolume": {
     "message": "टोटल वॉल्यूम"
   },
@@ -10419,6 +10651,10 @@
   },
   "unexpectedBehavior": {
     "message": "यह व्यवहार अप्रत्याशित है और इसे बग के रूप में रिपोर्ट किया जाना चाहिए, भले ही आपके एकाउंट्स रिस्टोर कर दिए गए हों।"
+  },
+  "unexpectedError": {
+    "message": "एक अनपेक्षित गड़बड़ी हुई।",
+    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "स्वैपिंग के लिए $3 पर $1 $2 तक सटीक पहुंच की अनुमति दें"
@@ -10742,6 +10978,9 @@
   "yes": {
     "message": "हां"
   },
+  "yesSwap": {
+    "message": "हाँ, स्वैप करें"
+  },
   "you": {
     "message": "आप"
   },
@@ -10754,6 +10993,9 @@
   "youReceived": {
     "message": "आपको प्राप्त हुआ",
     "description": "Label indicating the amount and asset the user received."
+  },
+  "youSell": {
+    "message": "आप बेचते हैं"
   },
   "youSent": {
     "message": "आपने भेजा",

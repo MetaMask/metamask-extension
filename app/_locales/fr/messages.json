@@ -64,6 +64,18 @@
     "message": "J’ai lu et j’accepte les $1",
     "description": "$1 is the `terms` message"
   },
+  "accessRestrictedContactSupport": {
+    "message": "Contacter le service d’assistance"
+  },
+  "accessRestrictedDescriptionLine1": {
+    "message": "Cette adresse de portefeuille a été signalée lors du contrôle de conformité. Par conséquent, certains services MetaMask ne sont pas disponibles."
+  },
+  "accessRestrictedDescriptionLine2": {
+    "message": "Si vous pensez qu’il s’agit d’une erreur, contactez le service d’assistance pour demander une réévaluation."
+  },
+  "accessRestrictedTitle": {
+    "message": "Accès restreint"
+  },
   "accessingYourCamera": {
     "message": "Accès à votre appareil photo..."
   },
@@ -284,11 +296,26 @@
   "activity_contractDeployment_success_title": {
     "message": "Contrat déployé"
   },
+  "activity_contractInteraction_failed_description": {
+    "message": "Avec $1",
+    "description": "$1 is the shortened contract address"
+  },
   "activity_contractInteraction_failed_title": {
     "message": "Échec de l’interaction"
   },
+  "activity_contractInteraction_pending_description": {
+    "message": "Avec $1",
+    "description": "$1 is the shortened contract address"
+  },
   "activity_contractInteraction_pending_title": {
     "message": "Interaction en cours"
+  },
+  "activity_contractInteraction_success_description": {
+    "message": "Avec $1",
+    "description": "$1 is the shortened contract address"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "Interaction avec un contrat"
   },
   "activity_convert_failed_description": {
     "message": "La conversion a échoué"
@@ -306,6 +333,10 @@
   },
   "activity_convert_success_description": {
     "message": "A converti en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_title": {
+    "message": "$1 convertis",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -360,6 +391,12 @@
   "activity_lendingDeposit_failed_title": {
     "message": "Le dépôt a échoué"
   },
+  "activity_lendingDeposit_pending_title": {
+    "message": "Dépôt de prêt"
+  },
+  "activity_lendingDeposit_success_title": {
+    "message": "Dépôt de prêt"
+  },
   "activity_lendingWithdrawal_failed_description": {
     "message": "Le retrait a échoué"
   },
@@ -373,6 +410,9 @@
   "activity_lendingWithdrawal_pending_title": {
     "message": "Retirer en $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "Prêt retiré"
   },
   "activity_marketCloseShort_failed_description": {
     "message": "La position courte a échoué"
@@ -409,6 +449,17 @@
   },
   "activity_marketShort_success_title": {
     "message": "Position courte fermée - marché"
+  },
+  "activity_nftBuy_failed_title": {
+    "message": "Échec de l’achat"
+  },
+  "activity_nftBuy_pending_title": {
+    "message": "Acheter des $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftBuy_success_title": {
+    "message": "A acheté $1",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_failed_title": {
     "message": "Échec du Mint"
@@ -601,7 +652,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Position longue ouverte"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "L’ouverture de position longue a échoué"
   },
@@ -1686,6 +1736,54 @@
   "basicFunctionalityRequired_toggleLabel": {
     "message": "Fonctionnalité de base"
   },
+  "batchSell": {
+    "message": "Vente par lot"
+  },
+  "batchSellContinueNAssetsCTAPlural": {
+    "message": "Continuer avec ($1) jetons"
+  },
+  "batchSellContinueNAssetsCTASingle": {
+    "message": "Continuer avec ($1) jeton"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "Vous n’avez pas de jetons ? Pas de problème. Découvrez et achetez des jetons pour les vendre par lot."
+  },
+  "batchSellGetNewQuotes": {
+    "message": "Obtenir de nouvelles cotations"
+  },
+  "batchSellHighRateAlert": {
+    "message": "Alerte de taux élevé"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "La vente par lot d’un jeton pourrait entraîner un taux plus élevé. Souhaitez-vous effectuer un échange à la place ?"
+  },
+  "batchSellMaxSelectedTokens": {
+    "message": "$1 jetons au maximum"
+  },
+  "batchSellMinimumReceiveExplanation": {
+    "message": "Le montant minimum que vous recevrez si le prix change pendant le traitement de votre transaction, en fonction de votre tolérance au slippage. Il s’agit d’une estimation fournie par nos fournisseurs de liquidité. Le montant final peut différer."
+  },
+  "batchSellNetworkFeeTooltip": {
+    "message": "Les frais de réseau dépendent du trafic sur le réseau et de la complexité de votre transaction."
+  },
+  "batchSellReceiveStablecoin": {
+    "message": "Sélectionnez un stablecoin"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "Tous les jetons doivent être sur le même réseau."
+  },
+  "batchSellSelectHeaderTitle": {
+    "message": "Sélectionnez jusqu’à 5 jetons"
+  },
+  "batchSellSlippageDescription": {
+    "message": "Votre transaction n’aboutira pas si la variation de prix dépasse le pourcentage de slippage."
+  },
+  "batchSellYouSellTokenCount": {
+    "message": "$1 jeton"
+  },
+  "batchSellYouSellTokenCountPlural": {
+    "message": "$1 jetons"
+  },
   "bestQuote": {
     "message": "Meilleure cotation"
   },
@@ -1786,6 +1884,9 @@
   "bridge": {
     "message": "Établir une passerelle"
   },
+  "bridgeAgain": {
+    "message": "Transférer à nouveau"
+  },
   "bridgeAllowSwappingOf": {
     "message": "Autoriser l’accès exact à $1 $2 sur $3 pour l’établissement d’une passerelle",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -1815,6 +1916,9 @@
   },
   "bridgeExplorerLinkViewOn": {
     "message": "Consulter sur $1"
+  },
+  "bridgeExplorerPopupDescription": {
+    "message": "Cette transaction se déroule sur deux réseaux. Un lien indique la source, l’autre indique la destination une fois la transaction confirmée."
   },
   "bridgeFee": {
     "message": "Frais de passerelle"
@@ -2957,6 +3061,9 @@
   "dateCreated": {
     "message": "Date de création"
   },
+  "day": {
+    "message": "Jour"
+  },
   "debitCreditPurchaseOptions": {
     "message": "Options d’achat par carte de débit ou de crédit"
   },
@@ -2988,6 +3095,12 @@
   },
   "decryptRequest": {
     "message": "Décrypter la demande"
+  },
+  "deepLinkQrPredictDescription": {
+    "message": "Pour accéder aux marchés des prédictions de MetaMask, scannez le code QR avec votre appareil mobile."
+  },
+  "deepLinkQrPredictTitle": {
+    "message": "Ouvrir les marchés de prédiction sur téléphone portable"
   },
   "deepLink_Caution": {
     "message": "Agissez avec prudence"
@@ -3100,6 +3213,9 @@
   },
   "defiEmptyDescription": {
     "message": "Prêtez, empruntez et échangez, directement depuis votre portefeuille."
+  },
+  "defiIcon": {
+    "message": "Icône DeFi"
   },
   "defiReferralCheckboxLabel": {
     "message": "Autorisez MetaMask à ajouter un code de parrainage. Cette autorisation est permanente. Le site offre des réductions selon ses conditions générales. MetaMask perçoit une commission.",
@@ -3637,6 +3753,9 @@
   "exploreDefi": {
     "message": "Explorez la DeFi"
   },
+  "exploreTokens": {
+    "message": "Explorer les jetons"
+  },
   "exportYourData": {
     "message": "Exportez vos données"
   },
@@ -4074,6 +4193,39 @@
   "hardwareWalletLookingForDevice": {
     "message": "À la recherche de votre $1…",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletRepairDetecting": {
+    "message": "Détection de l’appareil en cours…"
+  },
+  "hardwareWalletRepairDeviceNotDetected": {
+    "message": "Appareil non détecté. Vérifiez les étapes précédentes et réessayez."
+  },
+  "hardwareWalletRepairLink": {
+    "message": "Recommencer la connexion depuis le début"
+  },
+  "hardwareWalletRepairPermissionsTitle": {
+    "message": "Autorisez MetaMask à :"
+  },
+  "hardwareWalletRepairStepOneDescription": {
+    "message": "Assurez-vous que le câble USB est bien connecté à votre appareil et à votre ordinateur. Essayez un autre port USB ou un autre câble."
+  },
+  "hardwareWalletRepairStepOneTitle": {
+    "message": "Vérifiez la connexion USB"
+  },
+  "hardwareWalletRepairStepTwoDescription": {
+    "message": "Saisissez votre code PIN pour déverrouiller votre portefeuille matériel."
+  },
+  "hardwareWalletRepairStepTwoTitle": {
+    "message": "Déverrouillez votre appareil"
+  },
+  "hardwareWalletRepairSuccessDescription": {
+    "message": "Votre appareil a été reconnecté avec succès. Vous pouvez fermer cet onglet."
+  },
+  "hardwareWalletRepairSuccessTitle": {
+    "message": "Appareil connecté"
+  },
+  "hardwareWalletRepairTitle": {
+    "message": "Connecter l’appareil matériel"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Assurez-vous que votre $1 est branché et sélectionnez l'application Ethereum."
@@ -5435,6 +5587,9 @@
   "newCustomTokenAdded": {
     "message": "« $1 » a été ajouté avec succès !"
   },
+  "newNFTDetectedInImportNFTsMessageStrongText": {
+    "message": "Paramètres > Actifs"
+  },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "Pour afficher vos NFT en utilisant Opensea, activez l’option « Afficher les supports NFT » dans $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
@@ -5563,6 +5718,9 @@
   },
   "noOptionsAvailableMessage": {
     "message": "Ce moyen d’échange n’est pas disponible pour le moment. Essayez de modifier le montant, le réseau ou le jeton et nous vous trouverons la meilleure option."
+  },
+  "noQuoteAvailable": {
+    "message": "Aucune cotation disponible"
   },
   "noSnaps": {
     "message": "Aucun Snap installé"
@@ -6543,6 +6701,9 @@
     "message": "Disponible pour le trading",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBalance": {
+    "message": "Solde des contrats à terme"
+  },
   "perpsBasicFunctionalityOff": {
     "message": "Cette fonctionnalité n’est pas disponible lorsque les fonctionnalités de base sont désactivées."
   },
@@ -6572,6 +6733,12 @@
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
+  },
+  "perpsCloseAllDescription": {
+    "message": "Nous fermerons toutes vos positions ouvertes au prix actuel du marché."
+  },
+  "perpsCloseAllPositions": {
+    "message": "Fermer toutes les positions"
   },
   "perpsCloseAmount": {
     "message": "Montant à clôturer"
@@ -6689,11 +6856,20 @@
   "perpsFilterCrypto": {
     "message": "Crypto"
   },
+  "perpsFilterEtf": {
+    "message": "ETF"
+  },
   "perpsFilterForex": {
     "message": "Forex"
   },
+  "perpsFilterIndex": {
+    "message": "Indice"
+  },
   "perpsFilterNew": {
     "message": "Nouveau"
+  },
+  "perpsFilterPreIpo": {
+    "message": "Pré-IPO"
   },
   "perpsFilterStocks": {
     "message": "Actions"
@@ -6724,6 +6900,9 @@
   },
   "perpsInsufficientMargin": {
     "message": "Marge insuffisante pour passer cet ordre."
+  },
+  "perpsKeepPositions": {
+    "message": "Conserver les positions"
   },
   "perpsLearnBasics": {
     "message": "Apprenez les bases des contrats perpétuels"
@@ -6918,8 +7097,26 @@
   "perpsSize": {
     "message": "Taille"
   },
+  "perpsSlippage": {
+    "message": "Slippage/effet de glissement"
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "Votre transaction ne sera pas validée si le prix dépasse ce seuil."
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "Définir le slippage"
+  },
+  "perpsSlippageCustom": {
+    "message": "Personnalisé"
+  },
   "perpsSlippageExceeded": {
     "message": "Slippage dépassé. Ajustez votre tolérance au slippage et réessayez."
+  },
+  "perpsSlippageInputLabel": {
+    "message": "Pourcentage maximal de slippage"
+  },
+  "perpsSlippageSet": {
+    "message": "Définir"
   },
   "perpsSortByFundingRate": {
     "message": "Taux de financement"
@@ -7009,6 +7206,22 @@
   "perpsToastCancelOrderSuccess": {
     "message": "Commande annulée",
     "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseAllFailed": {
+    "message": "Échec de la fermeture de toutes les positions",
+    "description": "Error toast text shown when batch closing all perps positions fails"
+  },
+  "perpsToastCloseAllInProgress": {
+    "message": "Fermeture de toutes les positions",
+    "description": "In-progress toast text shown while batch closing all perps positions"
+  },
+  "perpsToastCloseAllPartial": {
+    "message": "$1 position(s) sur $2 fermée(s)",
+    "description": "Warning toast text shown when only some perps positions were successfully closed. $1 is success count, $2 is total attempted count."
+  },
+  "perpsToastCloseAllSuccess": {
+    "message": "Toutes les positions ont été fermées",
+    "description": "Success toast text shown when all perps positions are successfully closed"
   },
   "perpsToastCloseFailed": {
     "message": "Échec de la fermeture de la position",
@@ -7570,6 +7783,10 @@
     "message": "L’accès à l’appareil photo est requis",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorMismatchedTransactionTitle": {
+    "message": "Code QR incorrect",
+    "description": "Title shown when a signature QR belongs to a different transaction."
+  },
   "qrErrorNonUrPairingBody": {
     "message": "Retournez sur votre portefeuille matériel et trouvez l’option permettant de partager ou d’exporter vos comptes, choisissez MetaMask, puis scannez le code QR.",
     "description": "Body text for the non-UR QR code error during pairing."
@@ -8072,6 +8289,9 @@
     "message": "Recherchez vos comptes",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
+  "searchingForBestQuotes": {
+    "message": "Recherche des meilleures cotations"
+  },
   "second": {
     "message": "s"
   },
@@ -8206,6 +8426,9 @@
   },
   "selectedAccountMismatch": {
     "message": "Compte différent sélectionné"
+  },
+  "sellAll": {
+    "message": "Tout vendre"
   },
   "send": {
     "message": "Envoyer"
@@ -9715,6 +9938,9 @@
   "swapAdjustSlippage": {
     "message": "Ajuster l’effet de glissement"
   },
+  "swapAgain": {
+    "message": "Échanger à nouveau"
+  },
   "swapAggregator": {
     "message": "Agrégateur"
   },
@@ -10178,6 +10404,12 @@
   "total": {
     "message": "Total"
   },
+  "totalAmount": {
+    "message": "Montant total"
+  },
+  "totalReceived": {
+    "message": "Total reçu"
+  },
   "totalVolume": {
     "message": "Volume total"
   },
@@ -10419,6 +10651,10 @@
   },
   "unexpectedBehavior": {
     "message": "Ce comportement est inattendu et doit être signalé comme un bogue, même si vos comptes ont été restaurés."
+  },
+  "unexpectedError": {
+    "message": "Une erreur inattendue s’est produite.",
+    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Autoriser l’accès uniquement à $1 $2 sur $3 pour l’échange"
@@ -10742,6 +10978,9 @@
   "yes": {
     "message": "Oui"
   },
+  "yesSwap": {
+    "message": "Oui, procéder à l’échange"
+  },
   "you": {
     "message": "Vous"
   },
@@ -10754,6 +10993,9 @@
   "youReceived": {
     "message": "Vous avez reçu",
     "description": "Label indicating the amount and asset the user received."
+  },
+  "youSell": {
+    "message": "Vous vendez"
   },
   "youSent": {
     "message": "Vous avez envoyé",
