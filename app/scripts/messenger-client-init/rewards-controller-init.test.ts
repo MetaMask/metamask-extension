@@ -1,5 +1,5 @@
 import { RewardsController } from '../controllers/rewards/rewards-controller';
-import * as ManifestFlags from '../../../shared/lib/manifestFlags';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import {
   RewardsControllerMessenger,
   RewardsControllerState,
@@ -15,7 +15,10 @@ import type { RewardsControllerInitMessenger } from './messengers/rewards-contro
 import type { MessengerClientInitRequest } from './types';
 
 jest.mock('../controllers/rewards/rewards-controller');
+jest.mock('../../../shared/lib/manifestFlags');
 jest.mock('../../../shared/lib/feature-flags/version-gating');
+
+const mockGetManifestFlags = jest.mocked(getManifestFlags);
 
 function buildInitRequestMock(
   remoteFeatureFlags?: Record<string, unknown>,
@@ -56,7 +59,7 @@ describe('RewardsControllerInit', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
+    mockGetManifestFlags.mockReturnValue({
       remoteFeatureFlags: undefined,
     } as never);
   });
@@ -148,6 +151,22 @@ describe('RewardsControllerInit', () => {
       const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
       expect(constructorArgs.isBitcoinDisabled()).toBe(true);
     });
+
+    it('uses manifest flag override when available', () => {
+      mockGetManifestFlags.mockReturnValue({
+        remoteFeatureFlags: {
+          rewardsBitcoinEnabledExtension: true,
+        },
+      } as never);
+      const requestMock = buildInitRequestMock({
+        rewardsBitcoinEnabledExtension: false,
+      });
+
+      RewardsControllerInit(requestMock);
+
+      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
+      expect(constructorArgs.isBitcoinDisabled()).toBe(false);
+    });
   });
 
   describe('isTronDisabled', () => {
@@ -180,6 +199,22 @@ describe('RewardsControllerInit', () => {
 
       const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
       expect(constructorArgs.isTronDisabled()).toBe(true);
+    });
+
+    it('uses manifest flag override when available', () => {
+      mockGetManifestFlags.mockReturnValue({
+        remoteFeatureFlags: {
+          rewardsTronEnabledExtension: true,
+        },
+      } as never);
+      const requestMock = buildInitRequestMock({
+        rewardsTronEnabledExtension: false,
+      });
+
+      RewardsControllerInit(requestMock);
+
+      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
+      expect(constructorArgs.isTronDisabled()).toBe(false);
     });
   });
 
