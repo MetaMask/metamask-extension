@@ -81,7 +81,7 @@ const NotificationSectionRow = ({
         >
           <Icon
             name={section.iconName}
-            size={IconSize.Md}
+            size={IconSize.Lg}
             color={IconColor.IconAlternative}
           />
           <Box
@@ -132,7 +132,7 @@ export const getNotificationsSettingsSectionConfigs = (
       type: 'perps',
       title: t('notificationsSettingsPerpsTitle'),
       description: t('notificationsSettingsPerpsDescription'),
-      iconName: IconName.Global,
+      iconName: IconName.Candlestick,
     });
   }
 
@@ -140,7 +140,7 @@ export const getNotificationsSettingsSectionConfigs = (
     type: 'marketing',
     title: t('notificationsSettingsMarketingTitle'),
     description: t('notificationsSettingsMarketingDescription'),
-    iconName: IconName.Star,
+    iconName: IconName.Campaign,
   });
 
   return nextSections;
