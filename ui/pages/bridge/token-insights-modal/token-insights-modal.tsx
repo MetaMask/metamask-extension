@@ -52,11 +52,11 @@ type MarketDataRowProps = {
   'data-testid'?: string;
 };
 
-const MarketDataRow: React.FC<MarketDataRowProps> = ({
+const MarketDataRow = ({
   label,
   value,
   'data-testid': dataTestId,
-}) => (
+}: MarketDataRowProps) => (
   <Box
     marginBottom={3}
     data-testid={dataTestId}
@@ -71,11 +71,11 @@ const MarketDataRow: React.FC<MarketDataRowProps> = ({
   </Box>
 );
 
-export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
+export const TokenInsightsModal = ({
   isOpen,
   onClose,
   token,
-}) => {
+}: TokenInsightsModalProps) => {
   const t = useI18nContext();
   const { trackEvent } = React.useContext(MetaMetricsContext);
   const dialogRef = React.useRef<HTMLElement | null>(null);

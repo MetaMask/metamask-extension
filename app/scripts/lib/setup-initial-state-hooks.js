@@ -12,7 +12,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
-import { trackEarlySegmentEvent } from './segment/early-segment-tracking';
+import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
 
 const platform = new ExtensionPlatform();
 

@@ -161,6 +161,19 @@ export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
 };
 
 /**
+ * Checks if the seedless password is outdated.
+ *
+ * @param args - The arguments for the checkIsSeedlessPasswordOutdated method.
+ * @param args.skipCache - whether to skip the cache @default false
+ * @param args.captureSentryError - whether to capture the sentry error. @default false
+ * @returns true if the password is outdated, false otherwise, undefined if the flow is not seedless
+ */
+export type LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction = {
+  type: `LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated`;
+  handler: LegacyBackgroundApiService['checkIsSeedlessPasswordOutdated'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -178,4 +191,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
-  | LegacyBackgroundApiServiceGetAccountsBySnapIdAction;
+  | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
+  | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction;

@@ -14,7 +14,7 @@ import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerImportAccountWithStrategyAction,
   KeyringControllerRemoveAccountAction,
-  KeyringControllerWithKeyringAction,
+  KeyringControllerWithKeyringV2Action,
 } from '@metamask/keyring-controller';
 import {
   AccountsControllerGetAccountByAddressAction,
@@ -37,8 +37,12 @@ import {
 import { SmartTransactionsControllerWipeSmartTransactionsAction } from '@metamask/smart-transactions-controller';
 import { BridgeStatusControllerWipeBridgeStatusAction } from '@metamask/bridge-status-controller';
 import {
+  EncAccountDataType,
   SecretType,
   SeedlessOnboardingControllerAddNewSecretDataAction,
+  SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
+  SeedlessOnboardingControllerGetStateAction,
+  SeedlessOnboardingControllerRunMigrationsAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
 } from '@metamask/seedless-onboarding-controller';
 import { PermissionControllerUpdatePermissionsByCaveatAction } from '@metamask/permission-controller';
@@ -48,6 +52,7 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -64,6 +69,10 @@ import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/o
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
 import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
+import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
+import { MetaMetricsControllerTrackEventAction } from '../controllers/metametrics-controller-method-action-types';
+import { runSeedlessOnboardingMigrations } from '../lib/seedless-onboarding/run-migrations';
+import { createSentryError } from '../../../shared/lib/error';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
@@ -73,6 +82,7 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'checkIsSeedlessPasswordOutdated',
   'getAccountsBySnapId',
   'getCode',
   'getGlobalChainId',
@@ -110,19 +120,25 @@ type AllowedActions =
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
-  | KeyringControllerWithKeyringAction
+  | KeyringControllerWithKeyringV2Action
+  | MetaMetricsControllerTrackEventAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
+  | OnboardingControllerGetStateAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PreferencesControllerSetPasswordForgottenAction
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
+  | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction
+  | SeedlessOnboardingControllerGetStateAction
+  | SeedlessOnboardingControllerRunMigrationsAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | TransactionControllerGetStateAction
-  | TransactionControllerWipeTransactionsAction;
+  | TransactionControllerWipeTransactionsAction
+  | SnapAccountServiceGetLegacySnapKeyringAction;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -322,7 +338,7 @@ export class LegacyBackgroundApiService {
   async getSeedPhrase(password: string, keyringId?: string): Promise<Buffer> {
     const seedPhrase = await this.#messenger.call(
       'KeyringController:exportSeedPhrase',
-      password,
+      { password },
       keyringId,
     );
 
@@ -476,18 +492,30 @@ export class LegacyBackgroundApiService {
     );
 
     if (isSocialLoginFlow) {
-      // Use withKeyring to get keyring metadata for an address
+      const importedAccount = this.#messenger.call(
+        'AccountsController:getAccountByAddress',
+        importedAccountAddress,
+      );
+      if (!importedAccount) {
+        throw new Error(
+          `No account found for address: ${importedAccountAddress}`,
+        );
+      }
+
       const { id: keyringId, privateKey: privateKeyFromKeyring } =
         (await this.#messenger.call(
-          'KeyringController:withKeyring',
+          'KeyringController:withKeyringV2',
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
-            // We can be sure that the keyring supports exporting accounts because this is a SimpleKeyring.
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const privateKey = await keyring.exportAccount!(
-              importedAccountAddress,
+            if (!keyring.exportAccount) {
+              throw new Error(
+                'Imported account keyring does not export accounts',
+              );
+            }
+            const privateKeyObj = await keyring.exportAccount(
+              importedAccount.id,
             );
-            return { id: metadata.id, privateKey };
+            return { id: metadata.id, privateKey: privateKeyObj.privateKey };
           },
         )) as { id: string; privateKey: string };
 
@@ -547,10 +575,14 @@ export class LegacyBackgroundApiService {
     if (syncWithSocial) {
       await this.#seedlessOperationMutex.runExclusive(async () => {
         try {
+          // Run data type migration before adding new secret data to ensure
+          // data consistency.
+          await runSeedlessOnboardingMigrations(this.#messenger);
+
           await this.#messenger.call(
             'SeedlessOnboardingController:addNewSecretData',
             privateKeyBytes,
-            SecretType.PrivateKey,
+            EncAccountDataType.ImportedPrivateKey,
             { keyringId },
           );
         } catch (error) {
@@ -582,5 +614,50 @@ export class LegacyBackgroundApiService {
       getSnapKeyring.bind(null, this.#messenger),
       snapId,
     );
+  }
+
+  /**
+   * Checks if the seedless password is outdated.
+   *
+   * @param args - The arguments for the checkIsSeedlessPasswordOutdated method.
+   * @param args.skipCache - whether to skip the cache @default false
+   * @param args.captureSentryError - whether to capture the sentry error. @default false
+   * @returns true if the password is outdated, false otherwise, undefined if the flow is not seedless
+   */
+  async checkIsSeedlessPasswordOutdated({
+    skipCache = false,
+    captureSentryError = false,
+  } = {}): Promise<boolean | undefined> {
+    try {
+      const isSocialLoginFlow = this.#messenger.call(
+        'OnboardingController:getIsSocialLoginFlow',
+      );
+      const { completedOnboarding } = this.#messenger.call(
+        'OnboardingController:getState',
+      );
+
+      if (!isSocialLoginFlow || !completedOnboarding) {
+        // this is only available for seedless onboarding flow and completed onboarding
+        return false;
+      }
+
+      const isPasswordOutdated = await this.#messenger.call(
+        'SeedlessOnboardingController:checkIsPasswordOutdated',
+        { skipCache },
+      );
+
+      return isPasswordOutdated;
+    } catch (error) {
+      if (captureSentryError) {
+        this.#messenger.captureException?.(
+          createSentryError(
+            'Failed to check if seedless password is outdated',
+            error,
+          ),
+        );
+      }
+
+      throw error;
+    }
   }
 }

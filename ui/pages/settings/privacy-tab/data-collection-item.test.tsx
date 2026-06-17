@@ -43,7 +43,8 @@ const createMockStore = (overrides = {}) =>
     metamask: {
       ...mockState.metamask,
       useExternalServices: true,
-      participateInMetaMetrics: true,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
       dataCollectionForMarketing: false,
       ...overrides,
     },
@@ -118,8 +119,8 @@ describe('DataCollectionToggleItem', () => {
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
 
-  it('is disabled when participateInMetaMetrics is false', () => {
-    const mockStore = createMockStore({ participateInMetaMetrics: false });
+  it('is disabled when metrics participation is false', () => {
+    const mockStore = createMockStore({ optedIn: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     const toggle = screen.getByRole('checkbox');

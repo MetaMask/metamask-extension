@@ -8,6 +8,8 @@ import type { Hex, CaipChainId } from '@metamask/utils';
 import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
+  SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG,
+  DEFAULT_SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS,
 } from '../../constants/smartTransactions';
 import { getBooleanFeatureFlag } from '../remote-feature-flag-utils';
 import { isProduction } from '../environment';
@@ -157,8 +159,21 @@ export const getChainSupportsSmartTransactions = (
   return getAllowedSmartTransactionsChainIds().includes(effectiveChainId);
 };
 
+const getAllowedRpcHosts = (state: RemoteFeatureFlagsState): string[] => {
+  const flag =
+    getRemoteFeatureFlags(state)[SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG];
+  if (
+    Array.isArray(flag) &&
+    flag.length > 0 &&
+    flag.every((host) => typeof host === 'string')
+  ) {
+    return flag;
+  }
+  return DEFAULT_SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS;
+};
+
 const getIsAllowedRpcUrlForSmartTransactions = (
-  state: NetworkState,
+  state: NetworkState & RemoteFeatureFlagsState,
   chainId?: string,
 ) => {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -180,10 +195,15 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   const rpcUrl = defaultRpcEndpoint?.url;
   const hostname = rpcUrl && new URL(rpcUrl).hostname;
 
-  return (
-    hostname?.endsWith('.infura.io') ||
-    hostname?.endsWith('.binance.org') ||
-    false
+  const allowedHosts = getAllowedRpcHosts(state);
+  return Boolean(
+    hostname &&
+    allowedHosts.some((host) =>
+      // A leading dot denotes a suffix/subdomain match (e.g. `.infura.io`
+      // matches `mainnet.infura.io`); otherwise require an exact host match
+      // so `mainnet.base.org` does not match `developer-access-mainnet.base.org`.
+      host.startsWith('.') ? hostname.endsWith(host) : hostname === host,
+    ),
   );
 };
 

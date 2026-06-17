@@ -269,7 +269,7 @@ export function TitleSkeleton() {
   );
 }
 
-const ConfirmTitle: React.FC = memo(() => {
+const ConfirmTitle = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
@@ -363,6 +363,7 @@ const ConfirmTitle: React.FC = memo(() => {
           paddingTop={4}
           paddingBottom={2}
           textAlign={TextAlign.Center}
+          data-testid="confirm-title-text"
         >
           {title}
         </Text>
@@ -375,6 +376,7 @@ const ConfirmTitle: React.FC = memo(() => {
           paddingBottom={4}
           color={TextColor.textAlternative}
           textAlign={TextAlign.Center}
+          data-testid="confirm-title-description"
         >
           {description}
         </Text>
