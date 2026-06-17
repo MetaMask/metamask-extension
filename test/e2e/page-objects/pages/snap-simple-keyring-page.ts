@@ -1,6 +1,8 @@
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
-import { regularDelayMs } from '../../helpers';
+import { getCleanAppState, regularDelayMs } from '../../helpers';
+
+const SIMPLE_KEYRING_SNAP_ID = 'npm:@metamask/snap-simple-keyring-snap';
 
 class SnapSimpleKeyringPage {
   private readonly driver: Driver;
@@ -306,6 +308,7 @@ class SnapSimpleKeyringPage {
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
     await this.checkSimpleKeyringSnapConnected();
+    await this.checkSnapIsReady();
   }
 
   /**
@@ -342,6 +345,23 @@ class SnapSimpleKeyringPage {
   async checkSimpleKeyringSnapConnected(): Promise<void> {
     console.log('Check simple keyring snap is connected');
     await this.driver.waitForSelector(this.snapConnectedMessage);
+  }
+
+  /**
+   * Waits until the Simple Keyring Snap has finished installing in the
+   * extension background state and is ready to handle keyring requests.
+   *
+   */
+  async checkSnapIsReady(): Promise<void> {
+    console.log('Wait for Simple Keyring Snap to be ready');
+    await this.driver.waitUntil(
+      async () => {
+        const state = await getCleanAppState(this.driver);
+        const snap = state?.metamask?.snaps?.[SIMPLE_KEYRING_SNAP_ID];
+        return Boolean(snap?.enabled && snap.status !== 'installing');
+      },
+      { interval: regularDelayMs, timeout: 10000 },
+    );
   }
 }
 
