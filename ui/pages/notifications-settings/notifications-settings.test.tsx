@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -8,6 +8,8 @@ import { createMockNotificationPreferences } from '../../hooks/metamask-notifica
 import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { NotificationsSettingsContent } from './notifications-settings';
+
+const mockSwitchAccountNotifications = jest.fn();
 
 jest.mock('./notifications-settings-allow-notifications', () => ({
   NotificationsSettingsAllowNotifications: () => (
@@ -19,18 +21,32 @@ jest.mock('./notifications-settings-per-account', () => ({
   NotificationsSettingsPerAccount: ({
     address,
     name,
+    disabledSwitch,
+    isEnabled,
+    onToggle,
   }: {
     address: string;
     name: string;
+    disabledSwitch: boolean;
+    isEnabled: boolean;
+    onToggle: (nextValue: boolean) => Promise<void>;
   }) => (
-    <div data-testid={`notifications-settings-account-${address}`}>{name}</div>
+    <button
+      data-testid={`notifications-settings-account-${address}`}
+      disabled={disabledSwitch}
+      onClick={() => {
+        onToggle(!isEnabled).catch(() => undefined);
+      }}
+    >
+      {name}
+    </button>
   ),
 }));
 
 jest.mock('../../hooks/metamask-notifications/useSwitchNotifications', () => ({
   useAccountSettingsProps: jest.fn(),
   useSwitchAccountNotificationsChange: jest.fn(() => ({
-    onChange: jest.fn(),
+    onChange: mockSwitchAccountNotifications,
     error: null,
   })),
 }));
@@ -245,6 +261,116 @@ describe('NotificationsSettingsContent', () => {
       ),
     ).toBeInTheDocument();
     expect(screen.queryByText('Imported 2')).not.toBeInTheDocument();
+  });
+
+  it('queues rapid account toggles while rendering optimistic account states', async () => {
+    const account1 = createInternalAccount({
+      id: 'account-1',
+      address: '0x1111111111111111111111111111111111111111',
+      type: 'eip155:eoa',
+      name: 'Account 1',
+    });
+    const account2 = createInternalAccount({
+      id: 'account-2',
+      address: '0x2222222222222222222222222222222222222222',
+      type: 'eip155:eoa',
+      name: 'Account 2',
+    });
+    const store = mockStore({
+      metamask: {
+        isNotificationServicesEnabled: true,
+        isUpdatingMetamaskNotifications: false,
+        isUpdatingMetamaskNotificationsAccount: [],
+        subscriptionAccountsSeen: [account1.address, account2.address],
+        accountTree: {
+          selectedAccountGroup: 'entropy:wallet-1/0',
+          wallets: {
+            'entropy:wallet-1': {
+              id: 'entropy:wallet-1',
+              type: 'entropy',
+              metadata: { name: 'Wallet 1' },
+              groups: {
+                'entropy:wallet-1/0': {
+                  id: 'entropy:wallet-1/0',
+                  type: 'multichain-account',
+                  metadata: {
+                    name: 'Account 1',
+                    pinned: false,
+                    hidden: false,
+                  },
+                  accounts: [account1.id],
+                },
+                'entropy:wallet-1/1': {
+                  id: 'entropy:wallet-1/1',
+                  type: 'multichain-account',
+                  metadata: {
+                    name: 'Account 2',
+                    pinned: false,
+                    hidden: false,
+                  },
+                  accounts: [account2.id],
+                },
+              },
+            },
+          },
+        },
+        internalAccounts: {
+          selectedAccount: account1.id,
+          accounts: {
+            [account1.id]: account1,
+            [account2.id]: account2,
+          },
+        },
+      },
+    });
+    let resolveFirstToggle: () => void = () => undefined;
+    const firstToggle = new Promise<void>((resolve) => {
+      resolveFirstToggle = resolve;
+    });
+    mockSwitchAccountNotifications.mockImplementation(() =>
+      mockSwitchAccountNotifications.mock.calls.length === 1
+        ? firstToggle
+        : Promise.resolve(),
+    );
+
+    renderWithProvider(
+      <NotificationsSettingsContent />,
+      store,
+      '/settings/notifications?section=walletActivity',
+    );
+
+    fireEvent.click(
+      screen.getByTestId(
+        'notifications-settings-account-0x1111111111111111111111111111111111111111',
+      ),
+    );
+
+    await waitFor(() => {
+      expect(mockSwitchAccountNotifications).toHaveBeenCalledTimes(1);
+    });
+
+    const secondAccountToggle = screen.getByTestId(
+      'notifications-settings-account-0x2222222222222222222222222222222222222222',
+    );
+    expect(secondAccountToggle).not.toBeDisabled();
+    fireEvent.click(secondAccountToggle);
+
+    expect(mockSwitchAccountNotifications).toHaveBeenCalledTimes(1);
+    resolveFirstToggle();
+
+    await waitFor(() => {
+      expect(mockSwitchAccountNotifications).toHaveBeenCalledTimes(2);
+    });
+    expect(mockSwitchAccountNotifications).toHaveBeenNthCalledWith(
+      1,
+      ['0x1111111111111111111111111111111111111111'],
+      false,
+    );
+    expect(mockSwitchAccountNotifications).toHaveBeenNthCalledWith(
+      2,
+      ['0x2222222222222222222222222222222222222222'],
+      false,
+    );
   });
 
   it('renders local EVM accounts when AUS wallet activity accounts are empty', () => {

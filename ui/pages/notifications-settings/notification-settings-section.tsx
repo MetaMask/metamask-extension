@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -73,6 +73,11 @@ const getWalletActivityAccountsByAddress = (
     ),
   );
 
+type PendingAccountToggle = {
+  value: boolean;
+  generation: number;
+};
+
 const WalletActivitySectionContent = ({
   preferences,
   notificationAccountGroups,
@@ -84,6 +89,11 @@ const WalletActivitySectionContent = ({
   const { onChange: switchAccountNotifications, error: accountToggleError } =
     useSwitchAccountNotificationsChange();
   const [updatingAllAccounts, setUpdatingAllAccounts] = useSafeState(false);
+  const [pendingAccountToggles, setPendingAccountToggles] = useState<
+    Record<string, PendingAccountToggle>
+  >({});
+  const accountToggleGenerationRef = useRef<Record<string, number>>({});
+  const accountToggleWriteChainRef = useRef<Promise<void>>(Promise.resolve());
 
   const walletAccountsByAddress = useMemo(
     () => getWalletActivityAccountsByAddress(preferences),
@@ -114,9 +124,17 @@ const WalletActivitySectionContent = ({
     [accountSettingsProps.data, walletAccountsByAddress],
   );
 
+  const getAccountEnabledValue = useCallback(
+    (address: string) => {
+      const lowerAddress = address.toLowerCase();
+      return pendingAccountToggles[lowerAddress]?.value ?? isAccountEnabled(address);
+    },
+    [isAccountEnabled, pendingAccountToggles],
+  );
+
   const hasEnabledAccount = useMemo(
-    () => accountAddresses.some(isAccountEnabled),
-    [accountAddresses, isAccountEnabled],
+    () => accountAddresses.some(getAccountEnabledValue),
+    [accountAddresses, getAccountEnabledValue],
   );
 
   const toggleAllAccounts = useCallback(async () => {
@@ -143,12 +161,56 @@ const WalletActivitySectionContent = ({
     switchAccountNotifications,
   ]);
 
+  const handleToggleAccountNotifications = useCallback(
+    async (address: string, nextValue: boolean) => {
+      const lowerAddress = address.toLowerCase();
+      const generation = (accountToggleGenerationRef.current[lowerAddress] ?? 0) + 1;
+      accountToggleGenerationRef.current[lowerAddress] = generation;
+      setPendingAccountToggles((current) => ({
+        ...current,
+        [lowerAddress]: { value: nextValue, generation },
+      }));
+
+      const persistWrite = accountToggleWriteChainRef.current.then(async () => {
+        await switchAccountNotifications([address], nextValue);
+        await refetchAccountSettings();
+        await refetchNotificationPreferences();
+        listNotifications();
+      });
+      accountToggleWriteChainRef.current = persistWrite.catch(() => undefined);
+
+      try {
+        await persistWrite;
+      } finally {
+        setPendingAccountToggles((current) => {
+          if (current[lowerAddress]?.generation !== generation) {
+            return current;
+          }
+
+          const next = { ...current };
+          delete next[lowerAddress];
+          return next;
+        });
+      }
+    },
+    [
+      listNotifications,
+      refetchAccountSettings,
+      refetchNotificationPreferences,
+      switchAccountNotifications,
+    ],
+  );
+
   if (notificationAccountGroups.length === 0) {
     return null;
   }
 
   const shouldDisableAccountSwitches =
     accountSettingsProps.initialLoading || updatingAllAccounts;
+  const shouldDisableToggleAllAccounts =
+    shouldDisableAccountSwitches ||
+    accountSettingsProps.accountsBeingUpdated.length > 0 ||
+    Object.keys(pendingAccountToggles).length > 0;
 
   return (
     <>
@@ -175,7 +237,7 @@ const WalletActivitySectionContent = ({
           <button
             className="border-0 bg-transparent p-0 text-primary-default cursor-pointer"
             data-testid="notifications-settings-toggle-all-accounts"
-            disabled={shouldDisableAccountSwitches}
+            disabled={shouldDisableToggleAllAccounts}
             onClick={toggleAllAccounts}
           >
             <Text
@@ -219,13 +281,15 @@ const WalletActivitySectionContent = ({
                   address={account.address}
                   name={account.name}
                   disabledSwitch={shouldDisableAccountSwitches}
-                  isLoading={accountSettingsProps.accountsBeingUpdated.includes(
-                    account.address,
-                  )}
-                  isEnabled={isAccountEnabled(account.address)}
-                  refetchAccountSettings={refetchAccountSettings}
-                  refetchNotificationPreferences={
-                    refetchNotificationPreferences
+                  isLoading={
+                    Boolean(pendingAccountToggles[account.address.toLowerCase()]) ||
+                    accountSettingsProps.accountsBeingUpdated.includes(
+                      account.address,
+                    )
+                  }
+                  isEnabled={getAccountEnabledValue(account.address)}
+                  onToggle={(nextValue: boolean) =>
+                    handleToggleAccountNotifications(account.address, nextValue)
                   }
                 />
               ))}
