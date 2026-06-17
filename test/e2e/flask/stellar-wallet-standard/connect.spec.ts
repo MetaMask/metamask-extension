@@ -10,7 +10,7 @@ import {
   withStellarWalletSnap,
 } from './testHelpers';
 
-describe('Stellar Wallet Standard - Connect - e2e tests', function () {
+describe('Stellar - Connect - e2e tests', function () {
   it('Connects and displays the connected Stellar account', async function () {
     await withStellarWalletSnap(
       {

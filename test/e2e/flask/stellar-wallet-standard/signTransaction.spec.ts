@@ -10,7 +10,7 @@ import {
   withStellarWalletSnap,
 } from './testHelpers';
 
-describe('Stellar Wallet Standard - Sign Transaction - e2e tests', function () {
+describe('Stellar - Sign Transaction - e2e tests', function () {
   it('Signs a transaction', async function () {
     await withStellarWalletSnap(
       {

@@ -154,31 +154,24 @@ export class TestDappStellar {
     return signedTransactionElement.getText();
   }
 
-  async setUsdcRecipient(recipient: string) {
+  async setAuthEntry(authEntry: string) {
     await this.driver.fill(
-      { testId: dataTestIds.testPage.sendUsdc.recipient },
-      recipient,
+      { testId: dataTestIds.testPage.signAuthEntry.authEntry },
+      authEntry,
     );
   }
 
-  async setUsdcAmount(amount: string) {
-    await this.driver.fill(
-      { testId: dataTestIds.testPage.sendUsdc.amount },
-      amount,
-    );
-  }
-
-  async sendUsdc() {
+  async signAuthEntry() {
     await this.driver.clickElement({
-      testId: dataTestIds.testPage.sendUsdc.sendUsdc,
+      testId: dataTestIds.testPage.signAuthEntry.signAuthEntry,
     });
   }
 
-  async verifyTransactionHash(transactionHash: string) {
-    await this.driver.findElement({
-      css: `[data-testid="${dataTestIds.testPage.sendUsdc.hash}"]`,
-      text: transactionHash,
-    });
+  async getSignedAuthEntry(): Promise<string> {
+    const signedAuthEntryElement = await this.driver.waitForSelector(
+      `[data-testid="${dataTestIds.testPage.signAuthEntry.signedAuthEntry}"]`,
+    );
+    return signedAuthEntryElement.getText();
   }
 
   async verifySignedTransactionDiffersFrom(unsignedXdr: string) {

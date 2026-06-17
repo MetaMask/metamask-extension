@@ -13,9 +13,7 @@ import {
 } from '../../tests/btc/mocks/price-api';
 import {
   mockHorizonAccount,
-  mockHorizonSubmitTransaction,
   mockHorizonTestnetAccount,
-  mockHorizonTestnetSubmitTransaction,
   mockStellarFeatureFlag,
   mockStellarMessageScan,
   mockStellarStaticAssets,
@@ -79,8 +77,6 @@ export async function withStellarWalletSnap(
         await mockStellarFeatureFlag(mockServer),
         await mockHorizonAccount(mockServer),
         await mockHorizonTestnetAccount(mockServer),
-        await mockHorizonSubmitTransaction(mockServer),
-        await mockHorizonTestnetSubmitTransaction(mockServer),
         await mockStellarMessageScan(mockServer),
         await mockStellarTransactionScan(mockServer),
         await mockStellarTokens(mockServer),
