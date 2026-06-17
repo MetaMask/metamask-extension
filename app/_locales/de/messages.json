@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Geöffnete Long-Position"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Eröffnen der Short-Position fehlgeschlagen"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "Automatische Erkennung von Tokens in Ihrer Wallet, Anzeige von NFTs und stapelweise Aktualisierung des Kontostands"
   },
-  "asterdexReferralConfirmText": {
-    "message": "Ja, 4 % zurückerhalten",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "Erhalten Sie 4 % zurück auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "Erhalten Sie 4 % auf Trades mit einem MetaMask-Empfehlungscode zurück. Dieser Rabatt gilt für alle zukünftigen Trades, gemäß $1 von AsterDEX. MetaMask erhält eine Gebühr.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "4 % bei AsterDEX zurückerhalten",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Versuch, den Swap kostenlos zu stornieren"
@@ -3105,14 +3092,6 @@
     "message": "Erlauben Sie MetaMask, einen Empfehlungscode hinzuzufügen. Dieser ist dauerhaft. Die Website gewährt Rabatte gemäß ihren Bedingungen. MetaMask erhält eine Gebühr.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "Nein, danke",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "geschäftsbedingungen",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3974,21 +3953,9 @@
     "message": "Bereiten Sie Ihre Wallet für die Nutzung von web3 vor",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "Ja, 5 % sparen",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "Sparen Sie bis zu 5 % auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "Sparen Sie 5 % auf Trades mit einem MetaMask-Empfehlungscode. Dieser Rabatt gilt für alle zukünftigen Trades, gemäß $1 von GMX. MetaMask erhält eine Gebühr.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "5 % bei GMX sparen",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Zur Seite gehen"
@@ -4203,21 +4170,9 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "Ja, 4 % sparen",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Sparen Sie bis zu 4 % auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "Sparen Sie 4 % auf Trades mit einem MetaMask-Empfehlungscode. Gilt für alle zukünftigen Trades, gemäß $1 von Hyperliquid. MetaMask erhält eine Gebühr.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "4 % bei Hyperliquid sparen",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Ich verstehe"

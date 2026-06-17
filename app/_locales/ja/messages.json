@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "ロングをオープンしました"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "ショートのオープンに失敗しました"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
   },
-  "asterdexReferralConfirmText": {
-    "message": "はい、4%の還元を受けます",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引額の4%が返ってきます。",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "MetaMask紹介コードを使って取引すると、4%還元されます。この割引はAsterDEXの$1に従い、すべての先物取引に適用されます。MetaMaskは手数料をいただきます。",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "AsterDEXで4%還元",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "無料でスワップのキャンセルを試行"
@@ -3105,14 +3092,6 @@
     "message": "MetaMaskに紹介コードを追加することを許可してください。これは後で変更できません。このサイトは利用規約に基づいて割引を提供し、MetaMaskは手数料を受け取ります。",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "いいえ、結構です",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "規約に同意したものとみなされます",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3978,21 +3957,9 @@
     "message": "Web3を使用できるようにウォレットを準備しましょう",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "はい、5%節約します",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引手数料が最大5%割引されます。",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "MetaMask紹介コードを使って取引すると、5%節約できます。この割引はGMXの$1に従い、すべての先物取引に適用されます。MetaMaskは手数料をいただきます。",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "GMXで5%節約",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "サイトに移動"
@@ -4207,21 +4174,9 @@
   "honeypotTitle": {
     "message": "ハニーポット"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "はい、4%節約します",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引手数料が最大4%割引されます。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "MetaMask紹介コードを使って取引すると、4%節約できます。この割引はHyperliquidの$1に従い、すべての先物取引に適用されます。MetaMaskは手数料をいただきます。",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "Hyperliquidで4%節約",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "理解しています"

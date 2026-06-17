@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "खुला लॉन्ग"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "शॉर्ट ओपन नहीं हो पाया"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "अपने वॉलेट में टोकन ऑटोडिटेक्ट करें, NFT प्रदर्शित करें, और बैच अकाउंट बैलेंस संबंधी अपडेट प्राप्त करें"
   },
-  "asterdexReferralConfirmText": {
-    "message": "हाँ, 4% वापस पाएं",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 4% वापस पाएं।",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड्स पर 4% वापस पाएं। यह छूट AsterDEX की $1 के अनुसार भविष्य के सभी ट्रेड्स पर लागू होती है। MetaMask एक शुल्क अर्जित करता है।",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "AsterDEX पर 4% वापस पाएं",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "स्वैप को मुफ्त में कैंसिल करने की कोशिश करें"
@@ -3105,14 +3092,6 @@
     "message": "MetaMask को रेफ़रल कोड जोड़ने की अनुमति दें। यह स्थायी है। साइट अपने नियमों के अनुसार डिस्काउंट देती है। MetaMask को एक फीस मिलता है।",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "जी नहीं, धन्यवाद",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "शर्तें",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3974,21 +3953,9 @@
     "message": "web3 का उपयोग करने के लिए अपना वॉलेट तैयार करें",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "हाँ, 5% सेव करें",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 5% तक की बचत करें।",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड्स में 5% सेव करें। यह छूट GMX की $1 के अनुसार भविष्य के सभी ट्रेड्स पर लागू होती है। MetaMask एक शुल्क अर्जित करता है।",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "GMX पर 5% सेव करें",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "साइट पर जाएं"
@@ -4203,21 +4170,9 @@
   "honeypotTitle": {
     "message": "हनी पॉट"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "हाँ, 4% सेव करें",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 4% तक की बचत करें।",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड्स पर 4% सेव करें। यह छूट हाइपरलिक्विड की $1 के अनुसार भविष्य के सभी ट्रेड्स पर लागू होती है। MetaMask एक शुल्क अर्जित करता है।",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "हाइपरलिक्विड पर 4% सेव करें",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "मैं समझता हूं"
