@@ -9,9 +9,9 @@ import { supplyMethodIds, withdrawMethodIds, wrapMethodIds } from './constants';
 import {
   getFees,
   getNativeAssetSafe,
+  getNftPaymentTransfer,
   getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
-  isNftStandard,
   parseValueTransfers,
   withFallbackTokenAssetId,
   type ValueTransfer,
@@ -40,15 +40,11 @@ export function mapApiEvmTransactions({
   const {
     sentTransfer,
     receivedTransfer,
+    sentNativeTransfer,
     sentNftTransfer,
     receivedNftTransfer,
   } = parseValueTransfers(valueTransfers, subjectAddress);
 
-  const sentNativeTransfer = valueTransfers?.find(
-    ({ from: transferFrom, transferType }) =>
-      equalsIgnoreCase(transferFrom, subjectAddress) &&
-      transferType === 'normal',
-  );
   const hasNativeTransferWithoutMethod =
     transactionCategory === 'CONTRACT_CALL' &&
     !transaction.methodId &&
@@ -130,6 +126,8 @@ export function mapApiEvmTransactions({
     };
   }
 
+  const isNftExchange = transactionCategory === 'NFT_EXCHANGE';
+
   // TODO: Categorize NFT in the backend, sometimes TRANSFER or CONTRACT_CALL
   if (sentNftTransfer || receivedNftTransfer) {
     if (receivedNftTransfer) {
@@ -148,13 +146,16 @@ export function mapApiEvmTransactions({
         };
       }
 
-      const sentFungibleTransfer =
-        sentNativeTransfer ??
-        (sentTransfer && !isNftStandard(sentTransfer.transferType)
-          ? sentTransfer
-          : undefined);
+      const purchasePaymentTransfer = getNftPaymentTransfer({
+        side: 'buy',
+        sentTransfer,
+        sentNativeTransfer,
+        nftCounterparty: receivedNftTransfer.from,
+        subjectAddress,
+      });
 
-      if (sentFungibleTransfer) {
+      // API category, or outgoing payment to the seller / in native ETH.
+      if (isNftExchange || purchasePaymentTransfer) {
         return {
           type: 'nftBuy',
           chainId,
@@ -165,7 +166,7 @@ export function mapApiEvmTransactions({
             from: receivedNftTransfer.from,
             to: receivedNftTransfer.to,
             token: getToken(receivedNftTransfer, 'in'),
-            paymentToken: getToken(sentFungibleTransfer, 'out'),
+            paymentToken: getToken(purchasePaymentTransfer, 'out'),
           },
         };
       }
@@ -185,7 +186,16 @@ export function mapApiEvmTransactions({
     }
 
     if (sentNftTransfer) {
-      if (receivedTransfer && !isNftStandard(receivedTransfer.transferType)) {
+      const saleProceedsTransfer = getNftPaymentTransfer({
+        side: 'sell',
+        receivedTransfer,
+        nftCounterparty: sentNftTransfer.to,
+        transactionFrom: from,
+        subjectAddress,
+      });
+
+      // API category, or incoming payment from the buyer.
+      if (isNftExchange || saleProceedsTransfer) {
         return {
           type: 'nftSell',
           chainId,
@@ -196,7 +206,7 @@ export function mapApiEvmTransactions({
             from: sentNftTransfer.from,
             to: sentNftTransfer.to,
             token: getToken(sentNftTransfer, 'out'),
-            paymentToken: getToken(receivedTransfer, 'in'),
+            paymentToken: getToken(saleProceedsTransfer, 'in'),
           },
         };
       }

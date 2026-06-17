@@ -206,7 +206,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
               : undefined,
         };
       }
-      case 'nftBuy': {
+      case 'nftBuy':
+      case 'nftSell': {
         const { token, paymentToken } = activity.data;
 
         return {
@@ -226,17 +227,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),
-        };
-      }
-      case 'nftSell': {
-        const { token, paymentToken } = activity.data;
-
-        return {
-          avatarTokens: [token?.assetId],
-          title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
-          primaryAmount: formatTokenAmount(paymentToken),
-          primaryDirection: paymentToken?.direction,
-          secondaryAmount: formatAsFiat(paymentToken),
         };
       }
       case 'contractInteraction': {

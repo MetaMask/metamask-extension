@@ -31,6 +31,59 @@ export function isNftStandard(value?: string) {
   return value === 'erc721' || value === 'erc1155';
 }
 
+export function getNftPaymentTransfer({
+  side,
+  sentTransfer,
+  receivedTransfer,
+  sentNativeTransfer,
+  nftCounterparty,
+  transactionFrom,
+  subjectAddress,
+}: {
+  side: 'buy' | 'sell';
+  sentTransfer?: ValueTransfer;
+  receivedTransfer?: ValueTransfer;
+  sentNativeTransfer?: ValueTransfer;
+  nftCounterparty: string;
+  transactionFrom?: string;
+  subjectAddress: string;
+}) {
+  const isFungible = (transfer?: ValueTransfer) =>
+    Boolean(transfer && !isNftStandard(transfer.transferType));
+
+  if (side === 'buy') {
+    for (const transfer of [sentNativeTransfer, sentTransfer]) {
+      if (!transfer || !isFungible(transfer)) {
+        continue;
+      }
+
+      if (
+        equalsIgnoreCase(transfer.to, nftCounterparty) ||
+        transfer.transferType === 'normal'
+      ) {
+        return transfer;
+      }
+    }
+
+    return undefined;
+  }
+
+  if (!receivedTransfer || !isFungible(receivedTransfer)) {
+    return undefined;
+  }
+
+  if (
+    equalsIgnoreCase(receivedTransfer.from, nftCounterparty) ||
+    (transactionFrom &&
+      !equalsIgnoreCase(transactionFrom, subjectAddress) &&
+      equalsIgnoreCase(receivedTransfer.from, transactionFrom))
+  ) {
+    return receivedTransfer;
+  }
+
+  return undefined;
+}
+
 /**
  * Looks up the native asset for a chain, returning `undefined` instead of
  * throwing when the chain is outside the bridge swaps registry
@@ -270,6 +323,7 @@ export function parseValueTransfers(
 ): {
   sentTransfer: ValueTransfer | undefined;
   receivedTransfer: ValueTransfer | undefined;
+  sentNativeTransfer: ValueTransfer | undefined;
   sentNftTransfer: ValueTransfer | undefined;
   receivedNftTransfer: ValueTransfer | undefined;
 } {
@@ -286,6 +340,10 @@ export function parseValueTransfers(
     received?.find(({ symbol }) => symbol !== sentTransfer?.symbol) ??
     received?.[0];
 
+  const sentNativeTransfer = sent?.find(
+    ({ transferType }) => transferType === 'normal',
+  );
+
   const sentNftTransfer = sent?.find(({ transferType }) =>
     isNftStandard(transferType),
   );
@@ -296,6 +354,7 @@ export function parseValueTransfers(
   return {
     sentTransfer,
     receivedTransfer,
+    sentNativeTransfer,
     sentNftTransfer,
     receivedNftTransfer,
   };
