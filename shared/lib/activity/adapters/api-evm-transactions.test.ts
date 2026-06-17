@@ -479,8 +479,8 @@ describe('mapEvmTransactions', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1768427429000,
+      hash: '0x0e7f29fa4af73f3708a7383a2fa8d0e09f6c6bf8a176bccf3a6b3259e2886bae',
       data: {
-        hash: '0x0e7f29fa4af73f3708a7383a2fa8d0e09f6c6bf8a176bccf3a6b3259e2886bae',
         from: sellerAddress,
         to: '0xbaf3ad6542f932cc0e0b54983e82e0cfb7c5a5a1',
         token: {
