@@ -6843,9 +6843,6 @@
   "perpsDepositFundsTitle": {
     "message": "Deposit funds to Perps"
   },
-  "perpsFundAgain": {
-    "message": "Fund again"
-  },
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
@@ -6928,6 +6925,9 @@
   },
   "perpsFilterStocks": {
     "message": "Stocks"
+  },
+  "perpsFundAgain": {
+    "message": "Fund again"
   },
   "perpsFunding": {
     "message": "Funding"
