@@ -9322,25 +9322,23 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    this.metaMetricsController.trackEvent(
-      {
-        event: 'Tx Status Update: On-Chain Failure',
-        category: MetaMetricsEventCategory.Background,
-        properties: {
-          action: 'Transactions',
-          errorMessage: transactionMeta.simulationFails?.reason,
-          numberOfTokens: tokens.length,
-          // TODO: remove this once we have migrated to the new account balances state
-          numberOfAccounts: Object.keys(metamaskState.accounts).length,
-          // 'legacy_event' is holdover from Matomo that needs further migration: the property
-          // routes this event to a special Segment source that marks the data as not
-          // conforming to our schema.
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          legacy_event: true,
-        },
+    this.metaMetricsController.trackEvent({
+      event: 'Tx Status Update: On-Chain Failure',
+      category: MetaMetricsEventCategory.Background,
+      properties: {
+        action: 'Transactions',
+        errorMessage: transactionMeta.simulationFails?.reason,
+        numberOfTokens: tokens.length,
+        // TODO: remove this once we have migrated to the new account balances state
+        numberOfAccounts: Object.keys(metamaskState.accounts).length,
+        // 'legacy_event' is holdover from Matomo that needs further migration: the property
+        // routes this event to a special Segment source that marks the data as not
+        // conforming to our schema.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        legacy_event: true,
       },
-    );
+    });
   }
 
   _getMetaMaskState() {

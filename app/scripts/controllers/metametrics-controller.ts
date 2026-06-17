@@ -1,12 +1,4 @@
-import {
-  isEqual,
-  memoize,
-  merge,
-  omitBy,
-  pickBy,
-  size,
-  sum,
-} from 'lodash';
+import { isEqual, memoize, merge, omitBy, pickBy, size, sum } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { NameType } from '@metamask/name-controller';
 import { getErrorMessage } from '@metamask/utils';

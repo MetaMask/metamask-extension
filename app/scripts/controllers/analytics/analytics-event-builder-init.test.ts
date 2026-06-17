@@ -38,23 +38,29 @@ describe('configureAnalyticsEventBuilder', () => {
       namespace: MOCK_ANY_NAMESPACE,
     });
 
-    messenger.registerActionHandler('PreferencesController:getState', () =>
-      ({
-        currentLocale: 'en_US',
-      }) as never,
+    messenger.registerActionHandler(
+      'PreferencesController:getState',
+      () =>
+        ({
+          currentLocale: 'en_US',
+        }) as never,
     );
 
-    messenger.registerActionHandler('MultichainNetworkController:getState', () =>
-      ({
-        isEvmSelected: true,
-        selectedMultichainNetworkChainId: 'eip155:1',
-      }) as never,
+    messenger.registerActionHandler(
+      'MultichainNetworkController:getState',
+      () =>
+        ({
+          isEvmSelected: true,
+          selectedMultichainNetworkChainId: 'eip155:1',
+        }) as never,
     );
 
-    messenger.registerActionHandler('NetworkController:getState', () =>
-      ({
-        selectedNetworkClientId: 'mainnet',
-      }) as never,
+    messenger.registerActionHandler(
+      'NetworkController:getState',
+      () =>
+        ({
+          selectedNetworkClientId: 'mainnet',
+        }) as never,
     );
 
     messenger.registerActionHandler(
@@ -73,11 +79,13 @@ describe('configureAnalyticsEventBuilder', () => {
         }) as never,
     );
 
-    messenger.registerActionHandler('MetaMetricsController:getState', () =>
-      ({
-        marketingCampaignCookieId: MARKETING_CAMPAIGN_COOKIE_ID,
-        dataCollectionForMarketing: true,
-      }) as never,
+    messenger.registerActionHandler(
+      'MetaMetricsController:getState',
+      () =>
+        ({
+          marketingCampaignCookieId: MARKETING_CAMPAIGN_COOKIE_ID,
+          dataCollectionForMarketing: true,
+        }) as never,
     );
 
     configureAnalyticsEventBuilder({

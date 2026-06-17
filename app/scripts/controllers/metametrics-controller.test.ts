@@ -843,20 +843,18 @@ describe('MetaMetricsController', function () {
     it('should track a legacy event', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.trackEvent(
-          {
-            event: 'Fake Event',
-            category: 'Unit Test',
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id: '1',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              legacy_event: true,
-            },
+        controller.trackEvent({
+          event: 'Fake Event',
+          category: 'Unit Test',
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: '1',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            legacy_event: true,
           },
-        );
+        });
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenCalledWith(
           {
@@ -3358,7 +3356,6 @@ async function withController<ReturnValue>(
     return fn({
       controller,
       controllerMessenger: metaMetricsControllerMessenger,
-      messenger,
       triggerPreferencesControllerStateChange: (state) =>
         messenger.publish('PreferencesController:stateChange', state, []),
       triggerNetworkDidChange: (state) =>

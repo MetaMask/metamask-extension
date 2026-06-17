@@ -106,6 +106,15 @@ function removePropertiesFromMap(
   });
 }
 
+function filterUndefinedProperties(
+  properties: AnalyticsUnfilteredProperties,
+): AnalyticsEventProperties {
+  return omitBy(
+    properties ?? {},
+    (propertyValue) => propertyValue === undefined,
+  ) as AnalyticsEventProperties;
+}
+
 function enrichPropertiesWithABTests(
   eventName: string,
   properties: AnalyticsEventProperties,
@@ -126,10 +135,10 @@ function enrichPropertiesWithABTests(
   }
 
   try {
-    return enrichWithABTests(
-      normalizedEvent,
-      config.getRemoteFeatureFlags(),
-    ).properties ?? {};
+    return (
+      enrichWithABTests(normalizedEvent, config.getRemoteFeatureFlags())
+        .properties ?? {}
+    );
   } catch {
     return normalizedEvent.properties ?? {};
   }
@@ -223,8 +232,7 @@ function normalizeProperties(
       locale,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      environment_type:
-        options?.environmentType ?? ENVIRONMENT_TYPE_BACKGROUND,
+      environment_type: options?.environmentType ?? ENVIRONMENT_TYPE_BACKGROUND,
     },
     (propertyValue) => propertyValue === undefined,
   ) as AnalyticsEventProperties;
@@ -287,8 +295,7 @@ export function buildAnalyticsContext(
       name: 'MetaMask Extension',
       version: appVersion,
     },
-    userAgent:
-      typeof window === 'undefined' ? '' : window.navigator.userAgent,
+    userAgent: typeof window === 'undefined' ? '' : window.navigator.userAgent,
     page: options?.page ?? METAMETRICS_BACKGROUND_PAGE_OBJECT,
     ...(options?.referrer ? { referrer: options.referrer } : {}),
     marketingCampaignCookieId,
@@ -369,10 +376,7 @@ function createBuilderFromEvent(
     addProperties: (properties: AnalyticsUnfilteredProperties) => {
       event.properties = {
         ...event.properties,
-        ...omitBy(
-          properties ?? {},
-          (propertyValue) => propertyValue === undefined,
-        ),
+        ...filterUndefinedProperties(properties),
       };
       return createBuilderFromEvent(event);
     },
@@ -380,10 +384,7 @@ function createBuilderFromEvent(
     addSensitiveProperties: (properties: AnalyticsUnfilteredProperties) => {
       event.sensitiveProperties = {
         ...event.sensitiveProperties,
-        ...omitBy(
-          properties ?? {},
-          (propertyValue) => propertyValue === undefined,
-        ),
+        ...filterUndefinedProperties(properties),
       };
       return createBuilderFromEvent(event);
     },
@@ -398,14 +399,11 @@ function createBuilderFromEvent(
       return createBuilderFromEvent(event);
     },
 
-    build: (options?: AnalyticsEventBuildOptions) =>
-      buildEvent(event, options),
+    build: (options?: AnalyticsEventBuildOptions) => buildEvent(event, options),
   };
 }
 
-function createEventBuilder(
-  eventName: string,
-): AnalyticsEventBuilderInterface {
+function createEventBuilder(eventName: string): AnalyticsEventBuilderInterface {
   if (!eventName) {
     throw new Error(`Must specify event. Event was: ${eventName}`);
   }
@@ -425,4 +423,3 @@ export const AnalyticsEventBuilder = {
   configure,
   createEventBuilder,
 };
-

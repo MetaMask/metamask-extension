@@ -39,12 +39,24 @@ jest.mock('../../lib/segment', () => ({
 
 const mockSegment = segment as jest.Mocked<typeof segment>;
 
+function createMockAnalyticsTrackingEvent(
+  partial: Pick<AnalyticsTrackingEvent, 'name'> &
+    Partial<Omit<AnalyticsTrackingEvent, 'name'>>,
+): AnalyticsTrackingEvent {
+  return {
+    properties: {},
+    sensitiveProperties: {},
+    saveDataRecording: false,
+    hasProperties: true,
+    ...partial,
+  };
+}
+
 const builtEvent: BuiltAnalyticsEvent = {
-  event: {
+  event: createMockAnalyticsTrackingEvent({
     name: 'Test Event',
     properties: { foo: 'bar' },
-    sensitiveProperties: {},
-  } as AnalyticsTrackingEvent,
+  }),
   context: {
     app: { name: 'MetaMask Extension', version: '1.0.0' },
   },
@@ -76,17 +88,21 @@ function createConfiguredMessenger({
     namespace: MOCK_ANY_NAMESPACE,
   });
 
-  rootMessenger.registerActionHandler('PreferencesController:getState', () =>
-    ({
-      useExternalServices,
-    }) as never,
+  rootMessenger.registerActionHandler(
+    'PreferencesController:getState',
+    () =>
+      ({
+        useExternalServices,
+      }) as never,
   );
 
-  rootMessenger.registerActionHandler('AnalyticsController:getState', () =>
-    ({
-      analyticsId,
-      optedIn,
-    }) as never,
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:getState',
+    () =>
+      ({
+        analyticsId,
+        optedIn,
+      }) as never,
   );
 
   configureAnalyticsDelivery({
@@ -172,11 +188,10 @@ describe('analytics delivery', () => {
       });
 
       const metricsOptOutEvent: BuiltAnalyticsEvent = {
-        event: {
+        event: createMockAnalyticsTrackingEvent({
           name: MetaMetricsEventName.MetricsOptOut,
           properties: { category: 'Settings' },
-          sensitiveProperties: {},
-        } as AnalyticsTrackingEvent,
+        }),
         context: {
           app: { name: 'MetaMask Extension', version: '1.0.0' },
         },
@@ -205,11 +220,9 @@ describe('analytics delivery', () => {
       });
 
       trackEvent({
-        event: {
+        event: createMockAnalyticsTrackingEvent({
           name: MetaMetricsEventName.MetricsOptOut,
-          properties: {},
-          sensitiveProperties: {},
-        } as AnalyticsTrackingEvent,
+        }),
         context: {
           app: { name: 'MetaMask Extension', version: '1.0.0' },
         },
@@ -238,7 +251,10 @@ describe('analytics delivery', () => {
     });
 
     it('delivers user traits to AnalyticsController', () => {
-      const userTraits = { installDateExt: '2024-01-01' };
+      const userTraits = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        install_date_ext: '2024-01-01',
+      };
 
       identify(userTraits);
 
@@ -247,13 +263,17 @@ describe('analytics delivery', () => {
 
     it('filters invalid traits before delivery', () => {
       identify({
-        installDateExt: '2024-01-01',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        install_date_ext: '2024-01-01',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         test_null: null,
       } as never);
 
       expect(identifyHandler).toHaveBeenCalledWith(
-        { installDateExt: '2024-01-01' },
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          install_date_ext: '2024-01-01',
+        },
         undefined,
       );
       expect(warnSpy).toHaveBeenCalledWith(
@@ -277,7 +297,10 @@ describe('analytics delivery', () => {
         identifyHandler as never,
       );
 
-      identify({ installDateExt: '2024-01-01' });
+      identify({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        install_date_ext: '2024-01-01',
+      });
 
       expect(identifyHandler).not.toHaveBeenCalled();
     });

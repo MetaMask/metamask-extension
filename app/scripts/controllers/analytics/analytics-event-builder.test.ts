@@ -227,8 +227,9 @@ describe('AnalyticsEventBuilder', () => {
   });
 
   it('auto-anonymizes send and confirm events by default', () => {
-    const { event } =
-      AnalyticsEventBuilder.createEventBuilder('send button clicked').build();
+    const { event } = AnalyticsEventBuilder.createEventBuilder(
+      'send button clicked',
+    ).build();
 
     expect(event.properties[ANONYMOUS_EVENT_PROPERTY]).toBe(true);
   });
@@ -358,4 +359,3 @@ describe('buildPageViewPayload', () => {
     });
   });
 });
-

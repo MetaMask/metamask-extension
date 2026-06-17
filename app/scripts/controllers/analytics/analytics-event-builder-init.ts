@@ -65,10 +65,8 @@ export function configureAnalyticsEventBuilder({
         chainId: getCurrentChainId(messenger),
         locale,
         appVersion,
-        marketingCampaignCookieId:
-          metaMetricsState.marketingCampaignCookieId,
-        dataCollectionForMarketing:
-          metaMetricsState.dataCollectionForMarketing,
+        marketingCampaignCookieId: metaMetricsState.marketingCampaignCookieId,
+        dataCollectionForMarketing: metaMetricsState.dataCollectionForMarketing,
         isEvmSelected,
         selectedMultichainNetworkChainId,
       };

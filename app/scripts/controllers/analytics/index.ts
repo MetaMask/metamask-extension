@@ -18,5 +18,6 @@ export {
   validateIdentifyPayload,
 } from './analytics-delivery';
 
-export const createEventBuilder =
-  AnalyticsEventBuilder.createEventBuilder.bind(AnalyticsEventBuilder);
+export const createEventBuilder = AnalyticsEventBuilder.createEventBuilder.bind(
+  AnalyticsEventBuilder,
+);

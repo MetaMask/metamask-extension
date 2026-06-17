@@ -9,7 +9,10 @@ import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import type { MetaMetricsUserTraits } from '../../../../shared/constants/metametrics';
 import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment-tracking';
 import { getPlatform } from '../../lib/util';
-import type { BuiltAnalyticsEvent, BuiltPageViewPayload } from './analytics-event-builder';
+import type {
+  BuiltAnalyticsEvent,
+  BuiltPageViewPayload,
+} from './analytics-event-builder';
 import type { AnalyticsEventBuilderMessenger } from './analytics-event-builder-messenger';
 
 export type ConfigureAnalyticsDeliveryOptions = {
@@ -23,7 +26,9 @@ export function canSubmitAnalytics(eventName?: string): boolean {
     throw new Error('Analytics delivery has not been configured');
   }
 
-  const { useExternalServices } = messenger.call('PreferencesController:getState');
+  const { useExternalServices } = messenger.call(
+    'PreferencesController:getState',
+  );
   if (!useExternalServices) {
     return false;
   }
@@ -32,7 +37,9 @@ export function canSubmitAnalytics(eventName?: string): boolean {
     return true;
   }
 
-  const { analyticsId, optedIn } = messenger.call('AnalyticsController:getState');
+  const { analyticsId, optedIn } = messenger.call(
+    'AnalyticsController:getState',
+  );
   return optedIn && analyticsId.length > 0;
 }
 
