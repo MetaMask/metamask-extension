@@ -1,18 +1,19 @@
+import {
+  bundleParts,
+  mapBundleParts,
+  type BundlePart,
+  type BundleSizeSummary,
+  type StoredBundleSizeData,
+} from '../webpack/utils/plugins/ManifestPlugin/stats';
 import type { ArtifactLinks } from './artifacts';
 
-const bundlePartLabels = {
+const bundlePartLabels: Record<BundlePart, string> = {
   background: 'background',
   ui: 'ui',
   common: 'common',
   other: 'other',
   contentScripts: 'content scripts',
-} as const;
-
-type BundlePart = keyof typeof bundlePartLabels;
-type BundleSizeSummary = Partial<Record<string, number>>;
-type StoredBundleSizeData = Record<string, BundleSizeSummary>;
-
-const bundleParts = Object.keys(bundlePartLabels) as BundlePart[];
+};
 
 const bundleSizeTableHeader = [
   '| Status | Bundle | Total | Diff | Change |',
@@ -74,9 +75,7 @@ async function fetchJson(url: string, label: string): Promise<unknown> {
 function getBundlePartSizes(
   summary: BundleSizeSummary,
 ): Record<BundlePart, number> {
-  return Object.fromEntries(
-    bundleParts.map((part) => [part, summary[part] ?? 0]),
-  ) as Record<BundlePart, number>;
+  return mapBundleParts((part) => summary[part] ?? 0);
 }
 
 function getBaselineSummary(
