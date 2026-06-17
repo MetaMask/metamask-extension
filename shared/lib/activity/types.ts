@@ -77,8 +77,8 @@ type ActivityData<Type extends ActivityKind, Data> = {
   status: Status;
   timestamp: number;
   isEarliestNonce?: boolean;
+  hash?: string;
   data: Data & {
-    hash?: string;
     from?: string;
   };
 };
