@@ -1331,6 +1331,11 @@ export type OrderFill = {
   providerId?: PerpsProviderType; // Multi-provider: which provider this fill occurred on (injected by aggregator)
 };
 
+export type CheckEligibilityParams = {
+  blockedRegions: string[];
+  geoLocation: string;
+};
+
 // Parameter interfaces - all fully optional for better UX
 export type GetPositionsParams = {
   accountId?: CaipAccountId; // Optional: defaults to selected account
@@ -1352,6 +1357,11 @@ export type GetOrderFillsParams = {
   aggregateByTime?: boolean; // Optional: aggregate by time
 };
 
+export type GetOrFetchFillsParams = {
+  startTime?: number;
+  symbol?: string;
+};
+
 export type GetOrdersParams = {
   accountId?: CaipAccountId; // Optional: defaults to selected account
   startTime?: number; // Optional: start timestamp (Unix milliseconds)
@@ -1369,6 +1379,11 @@ export type GetFundingParams = {
   offset?: number; // Optional: offset for pagination
 };
 
+export type PerpsReadOptions = {
+  /** Bypass any provider-internal cache. Used for user-initiated refresh (pull-to-refresh). */
+  forceRefresh?: boolean;
+};
+
 export type GetSupportedPathsParams = {
   isTestnet?: boolean; // Optional: override current testnet state
   assetId?: CaipAssetId; // Optional: filter by specific asset
@@ -1376,13 +1391,26 @@ export type GetSupportedPathsParams = {
   chainId?: CaipChainId; // Optional: filter by chain (CAIP-2 format)
 };
 
-export type GetAvailableDexsParams = object;
+export type GetAvailableDexsParams = Record<string, never>;
+
+export type SortField = 'volume' | 'priceChange' | 'fundingRate' | 'openInterest';
+
+export type SortDirection = 'asc' | 'desc';
 
 export type GetMarketsParams = {
   symbols?: string[]; // Optional symbol filter (e.g., ['BTC', 'xyz:XYZ100'])
   dex?: string; // HyperLiquid HIP-3: DEX name (empty string '' or undefined for main DEX). Other protocols: ignored.
   skipFilters?: boolean; // Skip market filtering (both allowlist and blocklist, default: false). When true, returns all markets without filtering.
   readOnly?: boolean; // Lightweight mode: skip full initialization, only fetch market metadata (no wallet/WebSocket needed). Only main DEX markets returned. Use for discovery use cases like checking if a perps market exists.
+};
+
+export type GetMarketDataWithPricesParams = {
+  standalone?: boolean;
+  categories?: MarketTypeFilter[];
+  excludeSymbols?: string[];
+  sortBy?: SortField;
+  direction?: SortDirection;
+  limit?: number;
 };
 
 export type SubscribePricesParams = {
@@ -1590,7 +1618,7 @@ export type PerpsProvider = {
   getPositions(params?: GetPositionsParams): Promise<Position[]>;
   getAccountState(params?: GetAccountStateParams): Promise<AccountState>;
   getMarkets(params?: GetMarketsParams): Promise<MarketInfo[]>;
-  getMarketDataWithPrices(): Promise<PerpsMarketData[]>;
+  getMarketDataWithPrices(params?: GetMarketDataWithPricesParams): Promise<PerpsMarketData[]>;
   withdraw(params: WithdrawParams): Promise<WithdrawResult>; // API operation - stays in provider
   // Note: deposit() is handled by PerpsController routing (blockchain operation)
   validateDeposit(
@@ -1612,7 +1640,12 @@ export type PerpsProvider = {
    * Purpose: Track what actually happened when orders were executed.
    * Example: Market long 1 ETH @ $50,000 → OrderFill with exact execution price and fees
    */
-  getOrderFills(params?: GetOrderFillsParams): Promise<OrderFill[]>;
+  getOrderFills(params?: GetOrderFillsParams, options?: PerpsReadOptions): Promise<OrderFill[]>;
+
+  /**
+   * Get fills using WebSocket cache first, falling back to REST API.
+   */
+  getOrFetchFills(params?: GetOrFetchFillsParams): Promise<OrderFill[]>;
 
   /**
    * Get historical portfolio data.
@@ -1630,7 +1663,7 @@ export type PerpsProvider = {
    * Purpose: Track the complete journey of orders from request to completion.
    * Example: Limit buy 1 ETH @ $48,000 → Order with status 'open' → 'filled' when executed
    */
-  getOrders(params?: GetOrdersParams): Promise<Order[]>;
+  getOrders(params?: GetOrdersParams, options?: PerpsReadOptions): Promise<Order[]>;
 
   /**
    * Currently active open orders (real-time status).
@@ -1645,7 +1678,7 @@ export type PerpsProvider = {
    * Purpose: Track ongoing expenses and income from position maintenance.
    * Example: Holding long ETH position → Funding payment of -$5.00 (you pay the funding)
    */
-  getFunding(params?: GetFundingParams): Promise<Funding[]>;
+  getFunding(params?: GetFundingParams, options?: PerpsReadOptions): Promise<Funding[]>;
 
   /**
    * Get user non-funding ledger updates (deposits, transfers, withdrawals)

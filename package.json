@@ -17,7 +17,6 @@
     "webpack:lavamoat:policy:mv2": "concurrently 'yarn webpack:lavamoat:build:mv2 --generatePolicy' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type flask' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type beta' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type experimental' --kill-others-on-fail",
     "webpack:lavamoat:policy:mv3": "concurrently 'yarn webpack:lavamoat:build --generatePolicy' 'yarn webpack:lavamoat:build --generatePolicy --type flask' 'yarn webpack:lavamoat:build --generatePolicy --type beta' 'yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail",
     "foundryup": "yarn mm-foundryup",
-    "postinstall": "yarn webpack:clearcache && yarn foundryup && yarn skills:postinstall",
     "skills": "metamask-skills sync",
     "skills:postinstall": "metamask-skills postinstall",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
@@ -160,6 +159,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/perps-controller@npm:^8.1.0": "npm:@metamask-previews/perps-controller@8.0.0-preview-7bc7196a6",
     "@metamask/bridge-controller@npm:^73.2.0": "patch:@metamask/bridge-controller@npm%3A73.2.0#~/.yarn/patches/@metamask-bridge-controller-npm-73.2.0-be55b13227.patch",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
