@@ -86,6 +86,9 @@ const useBridging = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
+          // TODO: Remove @ts-expect-error once @metamask/bridge-controller is
+          // updated to 75.2.0, which adds environment_type to the type.
+          // @ts-expect-error environment_type is not yet in the package type
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
         }),
