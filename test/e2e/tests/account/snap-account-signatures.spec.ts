@@ -94,7 +94,7 @@ describe('Snap Account Signatures', function (this: Suite) {
             approveTransaction,
           );
 
-          await driver.waitUntilXWindowHandles(3, 1000, 10000);
+          await driver.waitUntilXWindowHandles(7, 1000, 10000);
           await signPermitWithSnapAccount(
             driver,
             newPublicKey,
