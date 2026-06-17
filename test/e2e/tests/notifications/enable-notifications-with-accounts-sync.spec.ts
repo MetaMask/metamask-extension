@@ -40,7 +40,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      *
      * Part 1: Initial Configuration
      * - Complete onboarding with pre-synced accounts
-     * - Enable notifications and verify default state (all enabled)
+     * - Enable notifications and verify initial default state
      * - Modify settings:
      * → Disable second account notifications
      * → Disable product notifications
@@ -93,13 +93,14 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
           );
-          await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
+          await notificationsSettingsPage.assertMainNotificationSettingsTogglesState(
             driver,
-            { productExpectedState: 'disabled' },
+            { marketingInAppExpectedState: 'disabled' },
           );
           await assertAllAccountsEnabled(driver);
 
-          // Switch off address 2 and product notifications toggle
+          // Update preferences for persistence check:
+          // disable account 2 and toggle marketing in-app notifications.
           await notificationsSettingsPage.clickNotificationToggle({
             address: notificationsMockAccounts[1].a,
             toggleType: 'address',
@@ -140,7 +141,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
           );
-          await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
+          await notificationsSettingsPage.assertMainNotificationSettingsTogglesState(
             driver,
           );
 

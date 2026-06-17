@@ -270,21 +270,25 @@ class NotificationsSettingsPage {
     }
   }
 
-  async assertMainNotificationSettingsTogglesEnabled(
+  async assertMainNotificationSettingsTogglesState(
     driver: Driver,
     {
-      productExpectedState = 'enabled',
-    }: { productExpectedState?: 'enabled' | 'disabled' } = {},
+      generalExpectedState = 'enabled',
+      marketingInAppExpectedState = 'enabled',
+    }: {
+      generalExpectedState?: 'enabled' | 'disabled';
+      marketingInAppExpectedState?: 'enabled' | 'disabled';
+    } = {},
   ) {
     const notificationsSettingsPage = new NotificationsSettingsPage(driver);
     await notificationsSettingsPage.checkPageIsLoaded();
     await notificationsSettingsPage.checkNotificationState({
       toggleType: 'general',
-      expectedState: 'enabled',
+      expectedState: generalExpectedState,
     });
     await notificationsSettingsPage.checkNotificationState({
       toggleType: 'product',
-      expectedState: productExpectedState,
+      expectedState: marketingInAppExpectedState,
     });
     return notificationsSettingsPage;
   }
