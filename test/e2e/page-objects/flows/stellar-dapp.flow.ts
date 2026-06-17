@@ -2,6 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import { TestDappStellar } from '../pages/test-dapp-stellar';
 import { WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
+import SnapSignAuthEntryConfirmation from '../pages/confirmations/snap-sign-auth-entry-confirmation';
 import SnapSignMessageConfirmation from '../pages/confirmations/snap-sign-message-confirmation';
 import SnapSignTransactionConfirmation from '../pages/confirmations/snap-sign-transaction-confirmation';
 import { largeDelayMs } from '../../helpers';
@@ -73,7 +74,10 @@ export const connectStellarTestDapp = async (
  */
 export const confirmStellarSnapSigning = async (
   driver: Driver,
-  confirmation: SnapSignMessageConfirmation | SnapSignTransactionConfirmation,
+  confirmation:
+    | SnapSignMessageConfirmation
+    | SnapSignTransactionConfirmation
+    | SnapSignAuthEntryConfirmation,
 ): Promise<void> => {
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
