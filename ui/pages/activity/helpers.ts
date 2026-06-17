@@ -82,8 +82,8 @@ export function useActivityCellStatus(data: ActivityListItem): {
   transactionGroup?: TransactionGroup;
 } {
   const localTransactionsByHash = useSelector(selectLocalTransactionsByHash);
-  const transactionGroup = data.data.hash
-    ? localTransactionsByHash.get(data.data.hash.toLowerCase())
+  const transactionGroup = data.hash
+    ? localTransactionsByHash.get(data.hash.toLowerCase())
     : undefined;
 
   return {
@@ -98,7 +98,7 @@ export type GroupedItem =
   | { type: 'item'; item: ActivityListItem };
 
 function getItemHash(item: ActivityListItem) {
-  return item.data.hash?.toLowerCase();
+  return item.hash?.toLowerCase();
 }
 
 function parseDate(timestamp: number) {

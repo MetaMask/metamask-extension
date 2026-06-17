@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -84,6 +84,19 @@ import {
   dismissSidePanelMigrationToast,
 } from './utils';
 
+// Memoized to prevent re-renders when ToastMaster re-renders due to location changes.
+const MemoizedSurveyToast = memo(SurveyToast);
+const MemoizedPrivacyPolicyToast = memo(PrivacyPolicyToast);
+const MemoizedPermittedNetworkToast = memo(PermittedNetworkToast);
+const MemoizedInfuraSwitchToast = memo(InfuraSwitchToast);
+const MemoizedMerklClaimToast = memo(MerklClaimToast);
+const MemoizedMusdConversionToast = memo(MusdConversionToast);
+const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
+const MemoizedShieldPausedToast = memo(ShieldPausedToast);
+const MemoizedShieldEndingToast = memo(ShieldEndingToast);
+const MemoizedSidePanelMigrationToast = memo(SidePanelMigrationToast);
+const MemoizedStorageErrorToast = memo(StorageErrorToast);
+
 export function ToastMaster() {
   const location = useLocation();
 
@@ -97,23 +110,20 @@ export function ToastMaster() {
   const onPerpsScreen = currentPathname.startsWith(PERPS_ROUTE);
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
-  // Storage error toast should show on ALL screens
-  const storageErrorToast = <StorageErrorToast />;
-
   if (onHomeScreen) {
     return (
       <ToastContainer>
-        {storageErrorToast}
-        <SurveyToast />
-        <PrivacyPolicyToast />
-        <PermittedNetworkToast />
-        <InfuraSwitchToast />
-        <MerklClaimToast />
-        <MusdConversionToast />
-        <PerpsWithdrawToast />
-        <ShieldPausedToast />
-        <ShieldEndingToast />
-        <SidePanelMigrationToast />
+        <MemoizedStorageErrorToast />
+        <MemoizedSurveyToast />
+        <MemoizedPrivacyPolicyToast />
+        <MemoizedPermittedNetworkToast />
+        <MemoizedInfuraSwitchToast />
+        <MemoizedMerklClaimToast />
+        <MemoizedMusdConversionToast />
+        <MemoizedPerpsWithdrawToast />
+        <MemoizedShieldPausedToast />
+        <MemoizedShieldEndingToast />
+        <MemoizedSidePanelMigrationToast />
       </ToastContainer>
     );
   }
@@ -121,20 +131,28 @@ export function ToastMaster() {
   if (onPerpsScreen) {
     return (
       <ToastContainer>
-        {storageErrorToast}
-        <PerpsWithdrawToast />
+        <MemoizedStorageErrorToast />
+        <MemoizedPerpsWithdrawToast />
       </ToastContainer>
     );
   }
 
   if (onSettingsScreen) {
-    return <ToastContainer>{storageErrorToast}</ToastContainer>;
+    return (
+      <ToastContainer>
+        <MemoizedStorageErrorToast />
+      </ToastContainer>
+    );
   }
 
   // On other screens, only render ToastContainer if storage error toast should show
   // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
   if (shouldShowStorageErrorToast) {
-    return <ToastContainer>{storageErrorToast}</ToastContainer>;
+    return (
+      <ToastContainer>
+        <MemoizedStorageErrorToast />
+      </ToastContainer>
+    );
   }
 
   return null;
