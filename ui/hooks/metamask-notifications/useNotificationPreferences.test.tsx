@@ -145,7 +145,9 @@ describe('useNotificationPreferences', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.preferences).toStrictEqual(firstExpectedPreferences);
+      expect(result.current.preferences).toStrictEqual(
+        firstExpectedPreferences,
+      );
     });
     await waitFor(() => {
       expect(putPayloads).toStrictEqual([firstExpectedPreferences]);
@@ -161,7 +163,9 @@ describe('useNotificationPreferences', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.preferences).toStrictEqual(secondExpectedPreferences);
+      expect(result.current.preferences).toStrictEqual(
+        secondExpectedPreferences,
+      );
     });
     expect(putPayloads).toStrictEqual([firstExpectedPreferences]);
 

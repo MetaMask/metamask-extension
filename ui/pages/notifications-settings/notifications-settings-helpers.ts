@@ -24,8 +24,7 @@ export function getNotificationWalletGroups(
   return accountGroups.reduce<NotificationWalletGroup[]>(
     (walletGroups, accountGroup) => {
       const evmAccount = accountGroup.accounts.find(
-        (account) =>
-          Boolean(account.address) && isEvmAccountType(account.type),
+        (account) => Boolean(account.address) && isEvmAccountType(account.type),
       );
 
       if (!evmAccount?.address) {
