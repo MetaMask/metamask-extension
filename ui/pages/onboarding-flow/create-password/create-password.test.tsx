@@ -603,6 +603,8 @@ describe('Onboarding Create Password', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           new_wallet: true,
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'metamask',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           implementation_type: 'extension',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           onboarding_type: 'seed_phrase',
@@ -789,6 +791,8 @@ describe('Onboarding Create Password', () => {
           wallet_setup_type: 'import',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           new_wallet: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'imported',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           implementation_type: 'extension',
           // eslint-disable-next-line @typescript-eslint/naming-convention
