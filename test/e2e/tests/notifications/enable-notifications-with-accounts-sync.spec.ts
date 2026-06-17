@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/user-storage';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { completeOnboardFlowIdentity } from '../identity/flows';
+import { completeOnboardFlowIdentity } from '../../page-objects/flows/identity.flow';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import { IDENTITY_TEAM_STORAGE_KEY } from '../identity/constants';
 import { createEncryptedResponse } from '../../helpers/identity/user-storage/generateEncryptedData';

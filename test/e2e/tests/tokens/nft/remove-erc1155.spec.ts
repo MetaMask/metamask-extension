@@ -4,7 +4,7 @@ import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
-import NftListPage from '../../../page-objects/pages/home/nft-list';
+import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../../constants';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -37,16 +37,16 @@ describe('Remove ERC1155 NFT', function () {
 
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();
-        const nftListPage = new NftListPage(driver);
-        await nftListPage.clickNFTIconOnActivityList();
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.clickNFTIconOnActivityList();
 
         const nftDetailsPage = new NFTDetailsPage(driver);
         await nftDetailsPage.checkPageIsLoaded();
         await nftDetailsPage.removeNFT();
 
         // Check the success remove NFT toaster is displayed and the NFT is removed from the NFT tab
-        await nftListPage.checkSuccessRemoveNftMessageIsDisplayed();
-        await nftListPage.checkNoNftInfoIsDisplayed();
+        await nftsTab.checkSuccessRemoveNftMessageIsDisplayed();
+        await nftsTab.checkNoNftInfoIsDisplayed();
       },
     );
   });
@@ -75,19 +75,19 @@ describe('Remove ERC1155 NFT', function () {
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
         await homepage.goToNftTab();
-        const nftListPage = new NftListPage(driver);
+        const nftsTab = new NftsTab(driver);
         await driver.clickElement('[data-testid="sort-by-networks"]');
         await driver.clickElement('[data-testid="modal-header-close-button"]');
-        await nftListPage.checkNftNameIsDisplayed('ENS: Ethereum Name Service');
-        await nftListPage.checkNftImageIsDisplayed();
-        await nftListPage.clickNFTIconOnActivityList();
+        await nftsTab.checkNftNameIsDisplayed('ENS: Ethereum Name Service');
+        await nftsTab.checkNftImageIsDisplayed();
+        await nftsTab.clickNFTIconOnActivityList();
 
         const nftDetailsPage = new NFTDetailsPage(driver);
         await nftDetailsPage.checkPageIsLoaded();
 
         await nftDetailsPage.removeNFT();
-        await nftListPage.checkSuccessRemoveNftMessageIsDisplayed();
-        await nftListPage.checkNoNftInfoIsDisplayed();
+        await nftsTab.checkSuccessRemoveNftMessageIsDisplayed();
+        await nftsTab.checkNoNftInfoIsDisplayed();
       },
     );
   });

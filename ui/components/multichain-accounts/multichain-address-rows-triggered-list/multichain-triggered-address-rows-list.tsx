@@ -326,7 +326,7 @@ export const MultichainTriggeredAddressRowsList = ({
         account: InternalAccount;
       },
       index: number,
-    ): React.JSX.Element => {
+    ): JSX.Element => {
       const handleCopyClick = () => {
         handleCopy(normalizeSafeAddress(item.account.address));
       };

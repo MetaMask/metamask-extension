@@ -35,7 +35,6 @@ import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilit
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
-import { getStatePatches } from './patch-store-substream-connection';
 
 jest.mock(
   '../../app/scripts/messenger-client-init/perps-controller-init',
@@ -49,9 +48,6 @@ jest.mock(
     }),
   }),
 );
-jest.mock('./patch-store-substream-connection');
-
-const getStatePatchesMock = jest.mocked(getStatePatches);
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -137,6 +133,7 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.getStatePatches = sinon.stub().resolves([]);
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
@@ -193,6 +190,7 @@ describe('Actions', () => {
         createSeedPhraseBackup: createSeedPhraseBackupStub,
         createNewVaultAndKeychain: createNewVaultAndKeychainStub,
         getSeedPhrase: getSeedPhraseStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -239,14 +237,11 @@ describe('Actions', () => {
       expect(
         background.setDataCollectionForMarketing.calledOnceWith(true),
       ).toStrictEqual(true);
-      expect(getStatePatchesMock).toHaveBeenCalled();
+      expect(background.getStatePatches.calledOnce).toStrictEqual(true);
       expect(store.getActions()).toStrictEqual([
         {
           type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
           value: true,
-        },
-        {
-          type: actionConstants.HIDE_WARNING,
         },
       ]);
     });
@@ -278,7 +273,7 @@ describe('Actions', () => {
       ).toStrictEqual(true);
     });
 
-    it('displays a warning when restoring the social backup fails', async () => {
+    it('throws an error when restoring the social backup fails', async () => {
       const store = mockStore();
 
       background.restoreSocialBackupAndGetSeedPhrase.rejects(
@@ -287,12 +282,9 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];
-
       await expect(
         store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
       ).rejects.toThrow('error');
-      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
@@ -381,7 +373,9 @@ describe('Actions', () => {
         actions.changePasswordWithPasskeyVerification(
           newPassword,
           authenticationResponse,
-          { renewVaultKeyProtection: false },
+          {
+            renewVaultKeyProtection: false,
+          },
         ),
       );
 
@@ -394,7 +388,7 @@ describe('Actions', () => {
       ).toStrictEqual(true);
     });
 
-    it('dispatches a warning and rethrows when the background rejects', async () => {
+    it('throws when the background rejects', async () => {
       const store = mockStore();
       const err = new Error('passkey verification failed');
       background.changePasswordWithPasskeyVerification.rejects(err);
@@ -414,10 +408,6 @@ describe('Actions', () => {
           }),
         ),
       ).rejects.toThrow('passkey verification failed');
-
-      expect(store.getActions()).toStrictEqual([
-        { type: actionConstants.DISPLAY_WARNING, payload: err.message },
-      ]);
     });
   });
 
@@ -428,7 +418,6 @@ describe('Actions', () => {
     });
 
     it('#tryUnlockMetamaskWithPasskey dispatches success actions when unlock succeeds', async () => {
-      getStatePatchesMock.mockResolvedValue([]);
       const store = mockStore();
       background.unlockWithPasskey.resolves();
       setBackgroundConnection(background);
@@ -453,15 +442,11 @@ describe('Actions', () => {
       ).toBe(true);
       expect(store.getActions()).toStrictEqual([
         { type: actionConstants.SHOW_LOADING, payload: undefined },
-        { type: actionConstants.UNLOCK_IN_PROGRESS },
-        { type: actionConstants.UNLOCK_SUCCEEDED, value: undefined },
-        { type: actionConstants.HIDE_WARNING },
         { type: actionConstants.HIDE_LOADING },
       ]);
     });
 
     it('#tryUnlockMetamaskWithPasskey dispatches failure and rethrows when unlock fails', async () => {
-      getStatePatchesMock.mockResolvedValue([]);
       const store = mockStore();
       background.unlockWithPasskey.rejects(new Error('unlock failed'));
       setBackgroundConnection(background);
@@ -485,8 +470,6 @@ describe('Actions', () => {
 
       expect(store.getActions()).toStrictEqual([
         { type: actionConstants.SHOW_LOADING, payload: undefined },
-        { type: actionConstants.UNLOCK_IN_PROGRESS },
-        { type: actionConstants.UNLOCK_FAILED, value: 'unlock failed' },
         { type: actionConstants.HIDE_LOADING },
       ]);
     });
@@ -791,10 +774,7 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'UNLOCK_IN_PROGRESS' },
-        { type: 'UNLOCK_SUCCEEDED', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'HIDE_WARNING' },
       ];
 
       await store.dispatch(actions.tryUnlockMetamask());
@@ -813,8 +793,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'UNLOCK_IN_PROGRESS' },
-        { type: 'UNLOCK_FAILED', value: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -839,6 +817,7 @@ describe('Actions', () => {
       background.getApi.returns({
         createNewVaultAndRestore: createNewVaultAndRestoreStub,
         unMarkPasswordForgotten: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -855,6 +834,7 @@ describe('Actions', () => {
       background.getApi.returns({
         createNewVaultAndRestore: sinon.stub().resolves(),
         unMarkPasswordForgotten: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -881,7 +861,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -914,7 +893,7 @@ describe('Actions', () => {
       expect(getSeedPhrase.callCount).toStrictEqual(1);
     });
 
-    it('displays warning error message then callback in background errors', async () => {
+    it('hides loading indicator and rethrows when callback in background errors', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -947,7 +926,10 @@ describe('Actions', () => {
 
       const removeAccount = sinon.stub().resolves();
 
-      background.getApi.returns({ removeAccount });
+      background.getApi.returns({
+        removeAccount,
+        getStatePatches: sinon.stub().resolves([]),
+      });
       setBackgroundConnection(background.getApi());
 
       const expectedActions = [
@@ -964,7 +946,7 @@ describe('Actions', () => {
       expect(actionTypes).toStrictEqual(expectedActions);
     });
 
-    it('displays warning error message when removeAccount callback errors', async () => {
+    it('hides loading indicator and rethrows when removeAccount callback errors', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -974,7 +956,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1022,7 +1003,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1044,7 +1024,11 @@ describe('Actions', () => {
 
       const importAccountWithStrategy = sinon.stub().resolves();
 
-      background.getApi.returns({ importAccountWithStrategy });
+      background.getApi.returns({
+        importAccountWithStrategy,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(
@@ -1057,7 +1041,7 @@ describe('Actions', () => {
       expect(importAccountWithStrategy.callCount).toStrictEqual(1);
     });
 
-    it('displays warning error message when importAccount in background callback errors', async () => {
+    it('hides loading indicator and rethrows when importAccount in background callback errors', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -1102,7 +1086,7 @@ describe('Actions', () => {
       expect(checkHardwareStatus.callCount).toStrictEqual(1);
     });
 
-    it('shows loading indicator and displays error', async () => {
+    it('hides loading indicator and rethrows on error', async () => {
       const store = mockStore();
 
       background.checkHardwareStatus.rejects(new Error('error'));
@@ -1111,7 +1095,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1207,7 +1190,7 @@ describe('Actions', () => {
       expect(forgetDevice.callCount).toStrictEqual(1);
     });
 
-    it('shows loading indicator and displays error', async () => {
+    it('hides loading indicator and rethrows on error', async () => {
       const store = mockStore();
 
       background.forgetDevice.rejects(new Error('error'));
@@ -1216,7 +1199,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1268,7 +1250,7 @@ describe('Actions', () => {
       ).toStrictEqual(true);
     });
 
-    it('shows loading indicator and displays error', async () => {
+    it('hides loading indicator and rethrows on error', async () => {
       const store = mockStore();
       const page = 0;
       const hdPath = `m/44'/60'/0'/0`;
@@ -1282,7 +1264,6 @@ describe('Actions', () => {
           type: 'SHOW_LOADING_INDICATION',
           payload: 'Looking for your Ledger...',
         },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1381,10 +1362,6 @@ describe('Actions', () => {
           type: 'SHOW_LOADING_INDICATION',
           payload: 'Looking for your Ledger...',
         },
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'translated_ledgerWebHIDNotConnectedErrorMessage',
-        },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1401,6 +1378,42 @@ describe('Actions', () => {
       ).rejects.toThrow('translated_ledgerWebHIDNotConnectedErrorMessage');
 
       expect(mockRequestDevice.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('translates Trezor Suite Desktop missing errors during connect', async () => {
+      const store = mockStore();
+      const page = 0;
+      const hdPath = `m/44'/60'/0'/0`;
+
+      background.connectHardware.rejects(
+        Object.assign(new Error('Desktop_ConnectionMissing'), {
+          code: 'Desktop_ConnectionMissing',
+        }),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Trezor...',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await expect(
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.trezor,
+            page,
+            hdPath,
+            false,
+            translateHardwareMessage,
+          ),
+        ),
+      ).rejects.toThrow('translated_trezorDesktopAppRequiredError');
+
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
@@ -1485,10 +1498,6 @@ describe('Actions', () => {
         {
           type: 'SHOW_LOADING_INDICATION',
           payload: 'Looking for your Ledger...',
-        },
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'translated_ledgerDeviceOpenFailureMessage',
         },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
@@ -1601,7 +1610,7 @@ describe('Actions', () => {
       ]);
     });
 
-    it('shows loading indicator and displays error', async () => {
+    it('shows loading indicator', async () => {
       const store = mockStore();
 
       background.unlockHardwareWalletAccount.rejects(new Error('error'));
@@ -1610,7 +1619,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1643,7 +1651,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1728,6 +1735,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         updateTransaction: updateTransactionStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1750,6 +1758,7 @@ describe('Actions', () => {
         updateTransaction: () => {
           throw new Error('error');
         },
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1796,7 +1805,7 @@ describe('Actions', () => {
       expect(backgroundSetLocked.firstCall.args).toStrictEqual([]);
     });
 
-    it('returns display warning error with value when setLocked in background callback errors', async () => {
+    it('hides loading indicator and dispatches lock action when background callback errors', async () => {
       const store = mockStore();
 
       background.setLocked.rejects(new Error('error'));
@@ -1805,7 +1814,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'LOCK_METAMASK' },
       ];
@@ -1868,7 +1876,7 @@ describe('Actions', () => {
       expect(setSelectedInternalAccountSpy.calledWith('mock-id')).toBe(true);
     });
 
-    it('displays warning if setSelectedAccount throws', async () => {
+    it('hides loading indicator if setSelectedAccount throws', async () => {
       const store = mockStore({
         activeTab: {},
         metamask: {
@@ -1914,7 +1922,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -2077,6 +2084,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2105,6 +2113,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2139,6 +2148,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: ignoreTokensStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2149,18 +2159,18 @@ describe('Actions', () => {
       expect(ignoreTokensStub.callCount).toStrictEqual(1);
     });
 
-    it('should display warning when ignoreTokens in background fails', async () => {
+    it('hides loading indicator when ignoreTokens in background fails', async () => {
       const store = mockStore();
 
       background.getApi.returns({
         ignoreTokens: sinon.stub().rejects(new Error('error')),
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -2186,6 +2196,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: hideAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2196,7 +2207,7 @@ describe('Actions', () => {
       expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
     });
 
-    it('displays warning when hideAsset in background fails', async () => {
+    it('hides loading indicator when hideAsset in background fails', async () => {
       const store = mockStore();
       const assetId =
         'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
@@ -2204,20 +2215,16 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.hideAsset(assetId));
 
       const dispatchedActions = store.getActions();
-      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
       expect(dispatchedActions.map((a) => a.type)).toContain(
         'HIDE_LOADING_INDICATION',
       );
-      const displayWarningAction = dispatchedActions.find(
-        (a) => a.type === 'DISPLAY_WARNING',
-      );
-      expect(displayWarningAction.payload).toBe('Failed to hide asset');
     });
   });
 
@@ -2235,6 +2242,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2245,7 +2253,7 @@ describe('Actions', () => {
       expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
     });
 
-    it('displays warning when addCustomAsset in background fails', async () => {
+    it('hides loading indicator when addCustomAsset in background fails', async () => {
       const store = mockStore();
       const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
       const assetId =
@@ -2254,13 +2262,13 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.addCustomAsset(accountId, assetId));
 
       const dispatchedActions = store.getActions();
-      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
       expect(dispatchedActions.map((a) => a.type)).toContain(
         'HIDE_LOADING_INDICATION',
       );
@@ -2280,6 +2288,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2290,7 +2299,7 @@ describe('Actions', () => {
       expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
     });
 
-    it('displays warning when unhideAsset in background fails', async () => {
+    it('hides loading indicator when unhideAsset in background fails', async () => {
       const store = mockStore();
       const assetId =
         'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
@@ -2298,13 +2307,13 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.unhideAsset(assetId));
 
       const dispatchedActions = store.getActions();
-      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
       expect(dispatchedActions.map((a) => a.type)).toContain(
         'HIDE_LOADING_INDICATION',
       );
@@ -2325,6 +2334,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: removeCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2337,7 +2347,7 @@ describe('Actions', () => {
       expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
     });
 
-    it('displays warning when removeCustomAsset in background fails', async () => {
+    it('hides loading indicator when removeCustomAsset in background fails', async () => {
       const store = mockStore();
       const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
       const assetId =
@@ -2346,13 +2356,13 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.removeCustomAsset(accountId, assetId));
 
       const dispatchedActions = store.getActions();
-      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
       expect(dispatchedActions.map((a) => a.type)).toContain(
         'HIDE_LOADING_INDICATION',
       );
@@ -2373,6 +2383,7 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
         addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2410,7 +2421,7 @@ describe('Actions', () => {
       expect(hideCount).toBe(1);
     });
 
-    it('displays warning when a background call fails but continues processing', async () => {
+    it('hides loading indicator when a background call fails but continues processing', async () => {
       const store = mockStore();
       const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
       const addCustomAssetStub = sinon.stub().resolves();
@@ -2418,6 +2429,7 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(new Error('unhide failed')),
         addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2436,7 +2448,6 @@ describe('Actions', () => {
 
       expect(addCustomAssetStub.calledOnce).toBe(true);
       const dispatchedActions = store.getActions();
-      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
       expect(dispatchedActions.map((a) => a.type)).toContain(
         'HIDE_LOADING_INDICATION',
       );
@@ -2464,7 +2475,7 @@ describe('Actions', () => {
       ).toBe(true);
     });
 
-    it('displays warning when setActiveNetwork throws', async () => {
+    it('handles error when setActiveNetwork throws', async () => {
       const store = mockStore();
 
       const setCurrentNetworkStub = sinon.stub().rejects(new Error('error'));
@@ -2474,15 +2485,9 @@ describe('Actions', () => {
       });
       setBackgroundConnection(background.getApi());
 
-      const expectedActions = [
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'Had a problem changing networks!',
-        },
-      ];
-
-      await store.dispatch(actions.setActiveNetwork());
-      expect(store.getActions()).toStrictEqual(expectedActions);
+      await expect(
+        store.dispatch(actions.setActiveNetwork()),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -2797,6 +2802,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2814,20 +2820,16 @@ describe('Actions', () => {
 
     it('returns expected actions for successful action', async () => {
       const store = mockStore();
-
       const testPrivKey = 'a-test-priv-key';
-
       const verifyPasswordStub = sinon.stub().resolves();
-
       const exportAccountStub = sinon.stub().resolves(testPrivKey);
-
+      const setPrivateKeyStub = jest.fn();
+      const setShowHoldToReveal = jest.fn();
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
         exportAccount: exportAccountStub,
       });
-
       setBackgroundConnection(background.getApi());
-
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -2837,60 +2839,46 @@ describe('Actions', () => {
         actions.exportAccount(
           'a-test-password',
           '0xAddress',
-          jest.fn(),
-          jest.fn(),
+          setPrivateKeyStub,
+          setShowHoldToReveal,
         ),
       );
 
-      expect(verifyPasswordStub.callCount).toStrictEqual(1);
-      expect(exportAccountStub.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(setPrivateKeyStub).toHaveBeenCalledWith(testPrivKey);
+      expect(setShowHoldToReveal).toHaveBeenCalledWith(true);
     });
 
-    it('returns action errors when first func callback errors', async () => {
+    it('returns invalidPassword error when password validation fails', async () => {
       const store = mockStore();
-
       const verifyPasswordStub = sinon.stub().rejects(new Error('error'));
-
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
       });
-
       setBackgroundConnection(background.getApi());
-
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', payload: 'Incorrect Password.' },
       ];
 
       await expect(
         store.dispatch(actions.exportAccount('a-test-password', '0xAddress')),
-      ).rejects.toThrow('error');
+      ).resolves.toStrictEqual({ error: 'invalidPassword' });
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('returns action errors when second func callback errors', async () => {
+    it('throws when account export fails', async () => {
       const store = mockStore();
-
       const verifyPasswordStub = sinon.stub().resolves();
-
       const exportAccountStub = sinon.stub().rejects(new Error('error'));
-
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
         exportAccount: exportAccountStub,
       });
-
       setBackgroundConnection(background.getApi());
-
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'Had a problem exporting the account.',
-        },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -2938,7 +2926,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -2986,7 +2973,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -3028,7 +3014,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -3076,7 +3061,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -3181,7 +3165,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -3218,7 +3201,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -3255,7 +3237,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -3292,7 +3273,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -3342,7 +3322,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -3364,6 +3343,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         markPasswordForgotten: markPasswordForgottenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3382,6 +3362,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         markPasswordForgotten: markPasswordForgottenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3404,6 +3385,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unMarkPasswordForgotten: unMarkPasswordForgottenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3414,29 +3396,13 @@ describe('Actions', () => {
     });
   });
 
-  describe('#displayWarning', () => {
-    it('sets appState.warning to provided value', async () => {
-      const store = mockStore();
-
-      const warningText = 'This is a sample warning message';
-
-      store.dispatch(actions.displayWarning(warningText));
-
-      const resultantActions = store.getActions();
-
-      expect(resultantActions[0]).toStrictEqual({
-        type: 'DISPLAY_WARNING',
-        payload: warningText,
-      });
-    });
-  });
-
   describe('#cancelTx', () => {
     it('creates COMPLETED_TX with the cancelled transaction ID', async () => {
       const store = mockStore();
 
       background.getApi.returns({
         rejectPendingApproval: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3470,7 +3436,7 @@ describe('Actions', () => {
   });
 
   describe('#createCancelTransaction', () => {
-    it('dispatches DISPLAY_WARNING and rethrows when createCancelTransaction fails', async () => {
+    it('rethrows when createCancelTransaction fails', async () => {
       const store = mockStore();
 
       const createCancelTransactionStub = sinon
@@ -3485,16 +3451,6 @@ describe('Actions', () => {
       await expect(
         store.dispatch(actions.createCancelTransaction(txId)),
       ).rejects.toThrow('Previous transaction is already confirmed');
-
-      const resultantActions = store.getActions();
-      const warningAction = resultantActions.find(
-        (action) => action.type === actionConstants.DISPLAY_WARNING,
-      );
-
-      expect(warningAction).toBeDefined();
-      expect(warningAction.payload).toBe(
-        'Previous transaction is already confirmed',
-      );
     });
   });
 
@@ -5018,7 +4974,6 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'HIDE_WARNING' },
       ];
 
       await store.dispatch(actions.importMnemonicToVault(mnemonic));
@@ -5096,36 +5051,28 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('should call syncSeedPhrases in the background and show/hide loading indication', async () => {
+    it('should call syncSeedPhrases in the background', async () => {
       const store = mockStore();
 
       background.syncSeedPhrases.resolves();
       setBackgroundConnection(background);
 
-      const expectedActions = [{ type: 'HIDE_WARNING' }];
-
       await store.dispatch(actions.syncSeedPhrases());
 
-      expect(store.getActions()).toStrictEqual(expectedActions);
       expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
     });
 
-    it('should handle error and display warning', async () => {
+    it('rethrows error', async () => {
       const store = mockStore();
       const errorMessage = 'Failed to sync seed phrases';
 
       background.syncSeedPhrases.rejects(new Error(errorMessage));
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'DISPLAY_WARNING', payload: errorMessage },
-      ];
-
       await expect(store.dispatch(actions.syncSeedPhrases())).rejects.toThrow(
         errorMessage,
       );
 
-      expect(store.getActions()).toStrictEqual(expectedActions);
       expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
     });
 
@@ -5183,17 +5130,12 @@ describe('Actions', () => {
       });
       setBackgroundConnection(background.getApi());
 
-      const expectedActions = [
-        { type: 'DISPLAY_WARNING', payload: errorMessage },
-      ];
-
       await store.dispatch(
         actions.submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
         }),
       );
 
-      expect(store.getActions()).toStrictEqual(expectedActions);
       expect(
         submitSubscriptionUserEventsStub.calledOnceWith({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
@@ -5240,6 +5182,7 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with a route', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
+      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       const route = { path: '/shield-plan' };
@@ -5253,6 +5196,7 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with null', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
+      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       await store.dispatch(actions.setPendingRedirectRoute(null));
@@ -5260,21 +5204,6 @@ describe('Actions', () => {
       expect(background.setPendingRedirectRoute.getCall(0).args).toStrictEqual([
         null,
       ]);
-    });
-
-    it('dispatches displayWarning on error', async () => {
-      const store = mockStore();
-      background.setPendingRedirectRoute = sinon
-        .stub()
-        .rejects(new Error('error'));
-      setBackgroundConnection(background);
-
-      const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];
-
-      await expect(
-        store.dispatch(actions.setPendingRedirectRoute({ path: '/test' })),
-      ).rejects.toThrow('error');
-      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 

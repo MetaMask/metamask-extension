@@ -9,7 +9,7 @@ import {
   BNB_TOKEN_IMAGE_URL,
   POL_TOKEN_IMAGE_URL,
   AVAX_TOKEN_IMAGE_URL,
-  SEI_IMAGE_URL,
+  SEI_NATIVE_TOKEN_IMAGE_URL,
   MONAD_IMAGE_URL,
   HYPEREVM_IMAGE_URL,
   CURRENCY_SYMBOLS,
@@ -143,8 +143,7 @@ export const SEI_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   name: 'Sei',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  // SEI using the same icon as Sei Mainnet
-  iconUrl: SEI_IMAGE_URL,
+  iconUrl: SEI_NATIVE_TOKEN_IMAGE_URL,
 } as const;
 
 export const MONAD_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {

@@ -6,6 +6,7 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '../../../component-library/button';
+import { I18nContext } from '../../../../contexts/i18n';
 
 export default class PageContainerFooter extends Component {
   static propTypes = {
@@ -23,9 +24,7 @@ export default class PageContainerFooter extends Component {
     submitButtonIcon: PropTypes.string,
   };
 
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   render() {
     const {
@@ -67,7 +66,7 @@ export default class PageContainerFooter extends Component {
               data-testid="page-container-footer-cancel"
               block
             >
-              {cancelText || this.context.t('cancel')}
+              {cancelText || this.context('cancel')}
             </Button>
           )}
 
@@ -84,7 +83,7 @@ export default class PageContainerFooter extends Component {
             startIconName={submitButtonIcon}
             block
           >
-            {submitText || this.context.t('next')}
+            {submitText || this.context('next')}
           </Button>
         </footer>
 

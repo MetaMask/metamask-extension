@@ -9,7 +9,7 @@ import {
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { completeOnboardFlowIdentity } from '../identity/flows';
+import { completeOnboardFlowIdentity } from '../../page-objects/flows/identity.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';

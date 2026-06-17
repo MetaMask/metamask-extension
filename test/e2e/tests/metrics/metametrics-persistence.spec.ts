@@ -24,7 +24,7 @@ describe('MetaMetrics ID persistence', function () {
 
         let uiState = await getCleanAppState(driver);
 
-        assert.equal(uiState.metamask.metaMetricsId, MOCK_META_METRICS_ID);
+        assert.equal(uiState.metamask.analyticsId, MOCK_META_METRICS_ID);
 
         // goes to the privacy settings screen and toggle off participate in metaMetrics
         await new HomePage(driver).headerNavbar.openSettingsPage();
@@ -43,7 +43,7 @@ describe('MetaMetrics ID persistence', function () {
         uiState = await getCleanAppState(driver);
 
         assert.equal(
-          uiState.metamask.metaMetricsId,
+          uiState.metamask.analyticsId,
           MOCK_META_METRICS_ID,
           'Metametrics ID should be preserved when toggling off metametrics collection',
         );
@@ -57,7 +57,7 @@ describe('MetaMetrics ID persistence', function () {
         uiState = await getCleanAppState(driver);
 
         assert.equal(
-          uiState.metamask.metaMetricsId,
+          uiState.metamask.analyticsId,
           MOCK_META_METRICS_ID,
           'Metametrics ID should be preserved when toggling on metametrics collection',
         );

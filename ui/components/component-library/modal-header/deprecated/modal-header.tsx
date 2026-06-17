@@ -24,7 +24,7 @@ import { IconName } from '../../icon';
  * @param options0.onBack
  * @param options0.backButtonProps
  */
-export const ModalHeader: React.FC<ModalHeaderProps> = ({
+export const ModalHeader = ({
   children,
   className = '',
   startAccessory,
@@ -34,7 +34,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   onBack,
   backButtonProps,
   ...props
-}) => {
+}: React.PropsWithChildren<ModalHeaderProps>) => {
   const t = useI18nContext();
   return (
     <HeaderBase
@@ -47,7 +47,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={onBack}
             {...backButtonProps}
           />
@@ -61,7 +61,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
           <ButtonIcon
             iconName={IconName.Close}
             ariaLabel={t('close')}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={onClose}
             {...closeButtonProps}
           />

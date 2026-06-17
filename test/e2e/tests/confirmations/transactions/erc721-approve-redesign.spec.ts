@@ -1,14 +1,17 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { Driver } from '../../../webdriver/driver';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { login } from '../../../page-objects/flows/login.flow';
+import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/erc20-approve-transaction-confirmation';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
+import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
-import { TestSuiteArguments, toggleAdvancedDetails } from './shared';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
+import { mocked4BytesApprove, TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign ERC721 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -22,7 +25,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           smartContract,
-          testSpecificMock: mocks,
+          testSpecificMock: mocked4BytesApprove,
           title: this.test?.fullTitle(),
         },
         async ({
@@ -32,143 +35,53 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
         }: TestSuiteArguments) => {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
+
           await login(driver, { localNode: localNodes?.[0] });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
 
-          await createMintTransaction(driver);
-          await confirmMintTransaction(driver);
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          const erc20ApproveConfirmation =
+            new ERC20ApproveTransactionConfirmation(driver);
+          const permitConfirmation = new PermitConfirmation(driver);
+          const setApprovalForAllConfirmation =
+            new SetApprovalForAllTransactionConfirmation(driver);
+          const homePage = new HomePage(driver);
+          const activityTab = new ActivityTab(driver);
 
-          await createApproveTransaction(driver);
-          await assertApproveDetails(driver);
-          await confirmApproveTransaction(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.clickERC721MintButton();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await transactionConfirmation.checkPageIsLoaded();
+          await scrollAndConfirmAndAssertConfirm(driver);
+
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await homePage.goToActivityList();
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+          await testDapp.clickERC721ApproveButton();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await permitConfirmation.checkTitle('Withdrawal request');
+          await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
+          await erc20ApproveConfirmation.checkEstimatedChangesSection();
+          await erc20ApproveConfirmation.checkWithdrawSection();
+          await erc20ApproveConfirmation.checkNftTokenValue('#1');
+          await erc20ApproveConfirmation.clickAdvancedDetailsButton();
+          await erc20ApproveConfirmation.checkAdvancedDetailsSections();
+
+          await scrollAndConfirmAndAssertConfirm(driver);
+          await driver.waitUntilXWindowHandles(2);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await homePage.goToActivityList();
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity(2);
         },
       );
     });
   });
 });
-
-async function mocked4Bytes(mockServer: MockttpServer) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    .withQuery({ hex_signature: '0x095ea7b3' })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            id: 149,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            created_at: '2016-07-09T03:58:29.617584Z',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            text_signature: 'approve(address,uint256)',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hex_signature: '0x095ea7b3',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            bytes_signature: '\t^§³',
-          },
-        ],
-      },
-    }));
-}
-
-async function mocks(server: MockttpServer) {
-  return [await mocked4Bytes(server)];
-}
-
-async function createMintTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#mintButton');
-}
-
-async function confirmMintTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await driver.waitForSelector({
-    css: 'h2',
-    text: 'Transaction request',
-  });
-
-  await scrollAndConfirmAndAssertConfirm(driver);
-
-  // Verify Mint Transaction is Confirmed before proceeding
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
-  await driver.waitForSelector('[data-tx-status="confirmed"]');
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-}
-
-async function createApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#approveButton');
-}
-
-async function assertApproveDetails(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await driver.waitForSelector({
-    css: 'h2',
-    text: 'Withdrawal request',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'This site wants permission to withdraw your NFTs',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Estimated changes',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Withdraw',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: '#1',
-  });
-
-  await toggleAdvancedDetails(driver);
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Spender',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Request from',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Interacting with',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Method',
-  });
-}
-
-async function confirmApproveTransaction(driver: Driver) {
-  await scrollAndConfirmAndAssertConfirm(driver);
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
-  await driver.waitForSelector('[data-tx-status="confirmed"]');
-}

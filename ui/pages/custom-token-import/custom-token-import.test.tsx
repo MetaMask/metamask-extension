@@ -60,6 +60,7 @@ jest.mock('../../store/actions', () => {
       standard: 'ERC20',
       symbol: 'APE',
       decimals: '18',
+      name: 'ApeCoin',
     }),
   };
 });
@@ -317,11 +318,11 @@ describe('CustomTokenImportPage', () => {
     fireEvent.click(screen.getByTestId('network-selector'));
 
     expect(
+      screen.getByTestId('custom-token-import-network-selector'),
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(messages.networkMenuHeading.message),
     ).toBeInTheDocument();
-
-    const networkItems = screen.getAllByTestId(/select-network-item-/u);
-    expect(networkItems.length).toBeGreaterThan(0);
   });
 
   it('returns to token management with success toast state after submitting a custom token', async () => {

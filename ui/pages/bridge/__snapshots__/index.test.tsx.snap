@@ -18,10 +18,10 @@ exports[`Bridge renders the component with initial props 1`] = `
         >
           <button
             aria-label="Back"
-            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/arrow-left.svg');"
             />
           </button>
@@ -41,11 +41,11 @@ exports[`Bridge renders the component with initial props 1`] = `
         >
           <button
             aria-label="Settings"
-            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="bridge__header-settings-button"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/setting.svg');"
             />
           </button>
@@ -94,7 +94,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       class="inline-flex"
                     >
                       <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
                       >
                         <img
                           alt="ETH"
@@ -108,7 +108,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       style="bottom: 0px; right: 0px;"
                     >
                       <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
                         style="border-width: 1px; border-radius: 6px;"
                       >
                         <img
@@ -159,7 +159,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                 style="align-self: center; border-radius: 100%; width: 100%; height: 100%;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/swap-vertical.svg');"
                 />
               </button>
@@ -206,7 +206,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         class="inline-flex"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
                         >
                           <img
                             alt="mUSD"
@@ -220,7 +220,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         style="bottom: 0px; right: 0px;"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
                           style="border-width: 1px; border-radius: 6px;"
                         >
                           <img
