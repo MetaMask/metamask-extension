@@ -375,7 +375,7 @@ describe('./utils/dev-server', () => {
       });
       assert.match(
         entryPluginCalls[1].entry,
-        /development\/webpack\/utils\/dev-server\/ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A24680%2Fws/u,
+        /development[\\/]webpack[\\/]utils[\\/]dev-server[\\/]ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A24680%2Fws/u,
       );
     });
   });

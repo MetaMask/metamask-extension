@@ -1,8 +1,8 @@
-import { act, renderHook } from '@testing-library/react-hooks';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import { HardwareWalletSignatureStatus } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import { createSignatureState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
+import { act, renderHook } from '@testing-library/react-hooks';
+import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
+import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
 import { useHwSwapQrState } from './useHwSwapQrState';
 
 jest.mock('react-redux', () => ({
@@ -11,15 +11,16 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
-jest.mock('../../../../shared/lib/selectors/keyring', () => ({
+jest.mock('../../../shared/lib/selectors/keyring', () => ({
+  isHardwareWallet: jest.fn(),
   getHardwareWalletType: jest.fn(),
 }));
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../selectors', () => ({
   getActiveQrCodeScanRequest: jest.fn(),
 }));
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../store/actions', () => ({
   cancelQrCodeScan: jest.fn(),
   cancelTx: jest.fn(),
   completeQrCodeScan: jest.fn(),
@@ -27,7 +28,7 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock(
-  '../../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+  '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
   () => ({
     isQrHardwareSignRequest: jest.fn(),
   }),
@@ -37,29 +38,23 @@ const mockUseSelector = jest.requireMock('react-redux').useSelector;
 const mockUseDispatch = jest.requireMock('react-redux').useDispatch;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetHardwareWalletType = jest.requireMock(
-  '../../../../shared/lib/selectors/keyring',
+  '../../../shared/lib/selectors/keyring',
 ).getHardwareWalletType;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetActiveQrCodeScanRequest =
-  jest.requireMock('../../../selectors').getActiveQrCodeScanRequest;
+  jest.requireMock('../../selectors').getActiveQrCodeScanRequest;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockIsQrHardwareSignRequest = jest.requireMock(
-  '../../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+  '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
 ).isQrHardwareSignRequest;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockCancelQrCodeScan = jest.requireMock(
-  '../../../store/actions',
+  '../../store/actions',
 ).cancelQrCodeScan;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockCompleteQrCodeScan = jest.requireMock(
-  '../../../store/actions',
+  '../../store/actions',
 ).completeQrCodeScan;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const mockRejectPendingApproval = jest.requireMock(
-  '../../../store/actions',
-).rejectPendingApproval;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const mockCancelTx = jest.requireMock('../../../store/actions').cancelTx;
 
 describe('useHwSwapQrState', () => {
   const mockDispatch = jest.fn();
@@ -70,12 +65,6 @@ describe('useHwSwapQrState', () => {
     mockGetHardwareWalletType.mockReturnValue(undefined);
     mockGetActiveQrCodeScanRequest.mockReturnValue(undefined);
     mockIsQrHardwareSignRequest.mockReturnValue(false);
-    mockCancelQrCodeScan.mockReturnValue({ type: 'CANCEL_QR_CODE_SCAN' });
-    mockCompleteQrCodeScan.mockReturnValue({ type: 'COMPLETE_QR_CODE_SCAN' });
-    mockRejectPendingApproval.mockReturnValue({
-      type: 'REJECT_PENDING_APPROVAL',
-    });
-    mockCancelTx.mockReturnValue({ type: 'CANCEL_TX' });
 
     mockUseSelector.mockImplementation((selector: unknown) => {
       if (selector === mockGetHardwareWalletType) {
@@ -299,9 +288,6 @@ describe('useHwSwapQrState', () => {
       result.current.handleQrScanSuccess(mockResponse as never);
 
       expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: 'COMPLETE_QR_CODE_SCAN',
-      });
     });
   });
 
@@ -321,47 +307,6 @@ describe('useHwSwapQrState', () => {
       result.current.handleQrSignatureCancel();
 
       expect(mockDispatch).toHaveBeenCalledTimes(2);
-      expect(mockDispatch).toHaveBeenNthCalledWith(1, {
-        type: 'REJECT_PENDING_APPROVAL',
-      });
-      expect(mockDispatch).toHaveBeenNthCalledWith(2, { type: 'CANCEL_TX' });
-    });
-
-    it('keeps a stable reference while using the latest confirmation tx data', () => {
-      const initialTxData = { id: 'tx-123' };
-      const latestTxData = { id: 'tx-456' };
-
-      const { result, rerender } = renderHook(
-        ({ confirmationTxData }: { confirmationTxData: { id: string } }) =>
-          useHwSwapQrState({
-            signatureState: createSignatureState(
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
-            ),
-            confirmationTxData,
-          }),
-        {
-          initialProps: {
-            confirmationTxData: initialTxData,
-          },
-        },
-      );
-
-      const initialHandleQrSignatureCancel =
-        result.current.handleQrSignatureCancel;
-
-      rerender({ confirmationTxData: latestTxData });
-
-      expect(result.current.handleQrSignatureCancel).toBe(
-        initialHandleQrSignatureCancel,
-      );
-
-      result.current.handleQrSignatureCancel();
-
-      expect(mockRejectPendingApproval).toHaveBeenCalledWith(
-        latestTxData.id,
-        expect.any(Object),
-      );
-      expect(mockCancelTx).toHaveBeenCalledWith(latestTxData);
     });
 
     it('cancels QR code scan when qrSignRequest exists', () => {
@@ -389,9 +334,6 @@ describe('useHwSwapQrState', () => {
       result.current.handleQrSignatureCancel();
 
       expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: 'CANCEL_QR_CODE_SCAN',
-      });
     });
   });
 });

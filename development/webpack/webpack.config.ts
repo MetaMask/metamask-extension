@@ -35,7 +35,6 @@ import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
-import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 import { injectEntryScripts } from './utils/dev-server';
@@ -67,57 +66,6 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
-const bundleSizeUiEntrypoints = new Set([
-  'home',
-  'loading',
-  'notification',
-  'popup-init',
-  'popup',
-  'sidepanel',
-]);
-const bundleSizeOtherEntrypoints = new Set([
-  'offscreen',
-  'trezor-usb-permissions',
-  'usb-permissions',
-]);
-const bundleSizeOtherEntrypointPattern = /^offscreen\.\d+$/u;
-const bundleSizeContentScriptEntrypoints = new Set([
-  'scripts/contentscript.js',
-  'scripts/inpage.js',
-  'vendor/trezor/content-script.js',
-]);
-
-// TODO(#41847): Move HTML entrypoints into ownership-specific locations so
-// this classifier no longer needs to know about the current mixed page layout.
-const classifyBundleSizeEntrypoint = (
-  entrypointName: string,
-): BundleSizeCategory | null => {
-  if (
-    // MV3 uses the service-worker.ts entry point for the background script,
-    // while MV2 uses background
-    entrypointName === 'service-worker.ts' ||
-    entrypointName === 'background'
-  ) {
-    return 'background';
-  }
-
-  if (bundleSizeUiEntrypoints.has(entrypointName)) {
-    return 'ui';
-  }
-
-  if (
-    bundleSizeOtherEntrypoints.has(entrypointName) ||
-    bundleSizeOtherEntrypointPattern.test(entrypointName)
-  ) {
-    return 'other';
-  }
-
-  if (bundleSizeContentScriptEntrypoints.has(entrypointName)) {
-    return 'contentScripts';
-  }
-
-  return null;
-};
 
 // #region cache
 const cache = args.cache
@@ -154,6 +102,11 @@ const cache = args.cache
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 
 const manifestPlugin = new ManifestPlugin({
+  html: [
+    { directory: join('html', 'ui'), category: 'ui' },
+    { directory: join('html', 'background'), category: 'background' },
+    { directory: join('html', 'other'), category: 'other' },
+  ],
   web_accessible_resources: webAccessibleResources,
   manifest_version: MANIFEST_VERSION,
   description: commitHash
@@ -188,7 +141,6 @@ const manifestPlugin = new ManifestPlugin({
     ? {
         outFile: BUNDLE_SIZE_SUMMARY_FILE,
         debug: true,
-        classifyEntrypoint: classifyBundleSizeEntrypoint,
       }
     : false,
 });

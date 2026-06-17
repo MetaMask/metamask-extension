@@ -37,13 +37,12 @@ describe('batch builder', () => {
       batch_transaction_method: 'eip7702',
       eip7702_upgrade_transaction: true,
       transaction_contract_method: ['transfer'],
-    });
-    expect(result.sensitiveProperties).toMatchObject({
       transaction_contract_address: [
         '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       ],
       account_eip7702_upgraded: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
     });
+    expect(result.sensitiveProperties).toStrictEqual({});
   });
 
   it('marks rejected upgrade when error code matches', async () => {

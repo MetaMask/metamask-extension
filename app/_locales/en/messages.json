@@ -10591,7 +10591,7 @@
     "description": "Hardware device name"
   },
   "trezorDesktopAppRequiredError": {
-    "message": "Trezor Suite Desktop is required to use Trezor with Firefox. Please install and open Trezor Suite (suite.trezor.io) and try again.",
+    "message": "Trezor Suite Desktop is required to use Trezor. Please install and open Trezor Suite (suite.trezor.io) and try again.",
     "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
