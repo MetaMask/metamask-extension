@@ -5951,6 +5951,18 @@
   "notCurrentAccount": {
     "message": "Is this the correct account? It's different from the currently selected account in your wallet"
   },
+  "notEnoughGas": {
+    "message": "Not enough gas"
+  },
+  "notificationCategoryMarketing": {
+    "message": "Updates and Rewards"
+  },
+  "notificationCategoryPerps": {
+    "message": "Trading Activity"
+  },
+  "notificationCategoryWalletActivity": {
+    "message": "Wallet Activity"
+  },
   "notificationDetail": {
     "message": "Details"
   },
