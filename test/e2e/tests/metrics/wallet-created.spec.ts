@@ -7,6 +7,7 @@ import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletWithSocialLoginOnboardingFlow,
   handleSidepanelPostOnboarding,
+  type OnboardingMetricsFlowOptions,
 } from '../../page-objects/flows/onboarding.flow';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
@@ -240,13 +241,10 @@ describe('Wallet Created Events', function () {
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        const onboardingOptions: {
-          driver: Driver;
-          optedIn?: boolean;
-          dataCollectionForMarketing?: boolean;
-        } = {
-          driver,
-        };
+        const onboardingOptions: { driver: Driver } & OnboardingMetricsFlowOptions =
+          {
+            driver,
+          };
         // If running in Firefox, set the onboarding options to true
         // Otherwise, `optedIn` is automatically set to true for social login users
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
