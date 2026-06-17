@@ -6,6 +6,7 @@ import type {
 import type {
   AnalyticsContext,
   AnalyticsControllerState,
+  AnalyticsTrackingEvent,
   AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
 import { AddressBookEntry } from '@metamask/address-book-controller';
@@ -54,6 +55,7 @@ import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets
 import {
   AB_TEST_ANALYTICS_MAPPINGS,
   clearABTestAnalyticsMappings,
+  getRemoteFeatureFlagsWithManifestOverrides,
 } from '../../../shared/lib/ab-testing/ab-test-analytics';
 import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 import * as ManifestFlags from '../../../shared/lib/manifestFlags';
@@ -66,6 +68,11 @@ import {
 } from '../../../test/data/mock-accounts';
 import type { Preferences } from '../../../shared/types/preferences';
 import { ANONYMOUS_EVENT_PROPERTY } from './analytics/platform-adapter';
+import { configureAnalyticsEventBuilder } from './analytics/analytics-event-builder-init';
+import { configureAnalyticsDelivery } from './analytics/analytics-delivery';
+import * as analyticsDelivery from './analytics/analytics-delivery';
+import { AnalyticsEventBuilder } from './analytics/analytics-event-builder';
+import { getAnalyticsEventBuilderMessenger } from './analytics/analytics-event-builder-messenger';
 import {
   MetaMetricsController,
   AllowedActions,
@@ -497,11 +504,11 @@ describe('MetaMetricsController', function () {
         expect(warnSpy).toHaveBeenCalledTimes(2);
         expect(warnSpy).toHaveBeenNthCalledWith(
           1,
-          'MetaMetricsController: "test_null" value is not a valid trait type',
+          'analytics delivery identify: "test_null" value is not a valid trait type',
         );
         expect(warnSpy).toHaveBeenNthCalledWith(
           2,
-          'MetaMetricsController: "test_array_multi_types" value is not a valid trait type',
+          'analytics delivery identify: "test_array_multi_types" value is not a valid trait type',
         );
       });
     });
@@ -553,11 +560,11 @@ describe('MetaMetricsController', function () {
         expect(warnSpy).toHaveBeenCalledTimes(2);
         expect(warnSpy).toHaveBeenNthCalledWith(
           1,
-          'MetaMetricsController: "test_null" value is not a valid trait type',
+          'analytics delivery identify: "test_null" value is not a valid trait type',
         );
         expect(warnSpy).toHaveBeenNthCalledWith(
           2,
-          'MetaMetricsController: "test_array_multi_types" value is not a valid trait type',
+          'analytics delivery identify: "test_array_multi_types" value is not a valid trait type',
         );
       });
     });
@@ -792,6 +799,47 @@ describe('MetaMetricsController', function () {
       );
     });
 
+    it('produces the same AnalyticsController payload as a direct AnalyticsEventBuilder call', async function () {
+      await withController(({ controller }) => {
+        let mmcBuiltPayload:
+          | {
+              event: AnalyticsTrackingEvent;
+              context?: AnalyticsContext;
+            }
+          | undefined;
+
+        jest
+          .spyOn(analyticsDelivery, 'trackEvent')
+          .mockImplementation((built) => {
+            mmcBuiltPayload = built;
+          });
+
+        const referrer = { url: 'https://dapp.example' };
+
+        controller.trackEvent({
+          event: 'Some Event',
+          category: 'Some Category',
+          revenue: 1,
+          value: 2,
+          currency: 'USD',
+          properties: { foo: 'bar' },
+          referrer,
+        });
+
+        const direct = AnalyticsEventBuilder.createEventBuilder('Some Event')
+          .addProperties({
+            category: 'Some Category',
+            revenue: 1,
+            value: 2,
+            currency: 'USD',
+            foo: 'bar',
+          })
+          .build({ referrer });
+
+        expect(mmcBuiltPayload).toStrictEqual(direct);
+      });
+    });
+
     it('should track a legacy event', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
@@ -803,9 +851,11 @@ describe('MetaMetricsController', function () {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               chain_id: '1',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              legacy_event: true,
             },
           },
-          { matomoEvent: true },
         );
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenCalledWith(
@@ -971,14 +1021,24 @@ describe('MetaMetricsController', function () {
       );
     });
 
-    it('should throw if event not provided', async function () {
-      await withController(({ controller }) => {
-        expect(() => {
+    it('captures an exception when event is not provided', async function () {
+      const captureExceptionMock = jest.fn();
+      await withController(
+        {
+          options: {
+            captureException: captureExceptionMock,
+          },
+        },
+        async ({ controller }) => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
           controller.trackEvent({ category: 'test' });
-        }).toThrow(/Must specify event\./u);
-      });
+          await flushPromises();
+          expect(captureExceptionMock).toHaveBeenCalledWith(
+            new Error('Must specify event. Event was: undefined'),
+          );
+        },
+      );
     });
 
     it('should throw if provided sensitiveProperties, when excludeMetaMetricsId is true', async function () {
@@ -3254,16 +3314,51 @@ async function withController<ReturnValue>(
       ],
     });
 
-    return fn({
-      controller: new MetaMetricsController({
-        messenger: metaMetricsControllerMessenger,
-        version: '0.0.1',
-        environment: 'test',
-        extension: MOCK_EXTENSION,
-        ...options,
-        state: mmcState,
+    AnalyticsEventBuilder.configure({
+      getExtensionContext: () => ({
+        chainId: (
+          Object.values(
+            mockNetworkClientConfigurationsByNetworkClientId,
+          )[0] as { chainId: typeof DEFAULT_CHAIN_ID }
+        ).chainId,
+        locale: currentLocale.replace('_', '-'),
+        appVersion: '0.0.1-test',
+        marketingCampaignCookieId: mmcState.marketingCampaignCookieId,
+        dataCollectionForMarketing: mmcState.dataCollectionForMarketing,
+        isEvmSelected: mockMultichainNetworkState.isEvmSelected,
+        selectedMultichainNetworkChainId:
+          mockMultichainNetworkState.selectedMultichainNetworkChainId,
       }),
+      getRemoteFeatureFlags: () =>
+        getRemoteFeatureFlagsWithManifestOverrides(
+          messenger.call('RemoteFeatureFlagController:getState')
+            ?.remoteFeatureFlags as Record<string, unknown> | undefined,
+        ),
+    });
+
+    configureAnalyticsEventBuilder({
+      messenger: getAnalyticsEventBuilderMessenger(messenger),
+      version: '0.0.1',
+      environment: 'test',
+    });
+
+    configureAnalyticsDelivery({
+      messenger: getAnalyticsEventBuilderMessenger(messenger),
+    });
+
+    const controller = new MetaMetricsController({
+      messenger: metaMetricsControllerMessenger,
+      version: '0.0.1',
+      environment: 'test',
+      extension: MOCK_EXTENSION,
+      ...options,
+      state: mmcState,
+    });
+
+    return fn({
+      controller,
       controllerMessenger: metaMetricsControllerMessenger,
+      messenger,
       triggerPreferencesControllerStateChange: (state) =>
         messenger.publish('PreferencesController:stateChange', state, []),
       triggerNetworkDidChange: (state) =>

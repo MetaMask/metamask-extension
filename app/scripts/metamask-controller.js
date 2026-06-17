@@ -236,6 +236,10 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
+import {
+  createEventBuilder,
+  trackEvent as trackAnalyticsEvent,
+} from './controllers/analytics';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -3629,6 +3633,18 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
         metaMetricsController,
       ),
+      trackAnalyticsEvent: (built, options) => {
+        try {
+          trackAnalyticsEvent(
+            createEventBuilder(built.name)
+              .addProperties(built.properties)
+              .addSensitiveProperties(built.sensitiveProperties)
+              .build(options),
+          );
+        } catch (error) {
+          captureException(error);
+        }
+      },
       trackMetaMetricsPage: metaMetricsController.trackPage.bind(
         metaMetricsController,
       ),
@@ -9316,10 +9332,13 @@ export default class MetamaskController extends EventEmitter {
           numberOfTokens: tokens.length,
           // TODO: remove this once we have migrated to the new account balances state
           numberOfAccounts: Object.keys(metamaskState.accounts).length,
+          // 'legacy_event' is holdover from Matomo that needs further migration: the property
+          // routes this event to a special Segment source that marks the data as not
+          // conforming to our schema.
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          legacy_event: true,
         },
-      },
-      {
-        matomoEvent: true,
       },
     );
   }

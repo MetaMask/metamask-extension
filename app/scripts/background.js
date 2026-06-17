@@ -83,6 +83,7 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
+import { AnalyticsEventBuilder, trackEvent } from './controllers/analytics';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -1391,14 +1392,14 @@ function emitAppOpenedMetricEvent(environmentType) {
     allowlist,
   );
 
-  controller.metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.AppOpened,
-    category: MetaMetricsEventCategory.App,
-    environmentType,
-    properties: {
-      ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
-    },
-  });
+  trackEvent(
+    AnalyticsEventBuilder.createEventBuilder(MetaMetricsEventName.AppOpened)
+      .addProperties({
+        category: MetaMetricsEventCategory.App,
+        ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
+      })
+      .build({ environmentType }),
+  );
 }
 
 /**

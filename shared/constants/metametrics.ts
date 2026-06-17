@@ -160,15 +160,21 @@ export type MetaMetricsEventOptions = {
    */
   excludeMetaMetricsId?: boolean;
   /**
-   * Is this event a holdover from Matomo that needs further migration? When
-   * true, sends the data to a special Segment source that marks the event data
-   * as not conforming to our schema.
-   */
-  matomoEvent?: boolean;
-  /**
    * Values that can used in the "properties" tracking object as keys,
    */
   contextPropsIntoEventProperties?: string | string[];
+};
+
+export type UIAnalyticsEventBuildOptions = Pick<
+  MetaMetricsEventOptions,
+  'excludeMetaMetricsId'
+>;
+
+export type UIAnalyticsEvent = {
+  name: string;
+  properties: Record<string, JsonWithUndefined>;
+  sensitiveProperties: Record<string, JsonWithUndefined>;
+  options?: UIAnalyticsEventBuildOptions;
 };
 
 export type MetaMetricsEventFragment = {

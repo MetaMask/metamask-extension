@@ -160,6 +160,8 @@ import {
   MetaMetricsEventAccountType,
   MetaMetricsUserTraits,
   MetaMetricsUserTrait,
+  UIAnalyticsEvent,
+  UIAnalyticsEventBuildOptions,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
@@ -6311,6 +6313,17 @@ export function trackMetaMetricsEvent(
   options?: MetaMetricsEventOptions,
 ) {
   return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
+}
+
+export function trackAnalyticsEvent(
+  payload: UIAnalyticsEvent,
+  options: UIAnalyticsEventBuildOptions & {
+    environmentType: string;
+    page?: MetaMetricsPageObject;
+    referrer?: MetaMetricsReferrerObject;
+  },
+) {
+  return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
 export function createEventFragment(
