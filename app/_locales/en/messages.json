@@ -1195,16 +1195,16 @@
     "message": "Device paired"
   },
   "add_device_syncing_desc": {
-    "message": "Keep this device and your MetaMask app open while we sync your wallets."
+    "message": "Sending your selected accounts to your phone."
   },
   "add_device_syncing_title": {
-    "message": "Syncing your wallets"
+    "message": "Importing accounts"
   },
   "add_device_validating_desc": {
-    "message": "Hang tight while we securely connect this device to your MetaMask app."
+    "message": "Establishing a secure, encrypted connection with your phone."
   },
   "add_device_validating_title": {
-    "message": "Validating your device"
+    "message": "Pairing devices"
   },
   "add_wallets": {
     "message": "Add wallets"

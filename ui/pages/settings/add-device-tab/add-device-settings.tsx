@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  IconName,
-  ButtonIconSize,
-  TextVariant,
-  TextColor,
-  FontWeight,
-  ButtonIcon,
-  Text,
-} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -40,7 +30,7 @@ const AddDeviceSettings = () => {
       case AddDeviceSettingsStep.ValidatingDevice:
         return (
           <LoadingStep
-            title={t('add_device_validating_title')}
+            title={`${t('add_device_validating_title')}...`}
             message={t('add_device_validating_desc')}
             onComplete={() =>
               handleNextStep(AddDeviceSettingsStep.EnterPassword)
@@ -54,7 +44,7 @@ const AddDeviceSettings = () => {
       case AddDeviceSettingsStep.SyncingWallets:
         return (
           <LoadingStep
-            title={t('add_device_syncing_title')}
+            title={`${t('add_device_syncing_title')}...`}
             message={t('add_device_syncing_desc')}
             onComplete={() => handleNextStep(AddDeviceSettingsStep.Success)}
           />

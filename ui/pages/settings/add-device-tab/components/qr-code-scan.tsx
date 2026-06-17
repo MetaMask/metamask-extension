@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Box,
   Text,
@@ -6,6 +6,9 @@ import {
   TextColor,
   TextVariant,
   Button,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AddDeviceSettingsStep } from '../constant';
@@ -19,7 +22,7 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
   const t = useI18nContext();
 
   return (
-    <Box className="flex flex-1 flex-col gap-4">
+    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
       <Text
         variant={TextVariant.HeadingLg}
         color={TextColor.TextDefault}
@@ -30,7 +33,12 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('scan_qr_code_desc')}
       </Text>
-      <Box className="flex items-center justify-center flex-row mt-4">
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        marginTop={4}
+      >
         <QRCodeImage data="metamask-device-sync" />
       </Box>
       <Button
@@ -39,7 +47,7 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
           onScanSuccess(AddDeviceSettingsStep.EnterVerificationCode)
         }
       >
-        {t('continue')}
+        {t('continue')} (remove later)
       </Button>
     </Box>
   );

@@ -6,6 +6,7 @@ import {
   TextColor,
   FontWeight,
   Button,
+  BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -36,7 +37,7 @@ const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
   }, [password, onContinue]);
 
   return (
-    <Box className="flex flex-1 flex-col gap-4">
+    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
       <Text
         variant={TextVariant.HeadingLg}
         color={TextColor.TextDefault}

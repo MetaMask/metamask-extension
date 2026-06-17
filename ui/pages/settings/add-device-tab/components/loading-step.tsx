@@ -73,7 +73,11 @@ const LoadingStep = ({
       <Box className="w-10 h-10">
         <Spinner />
       </Box>
-      <Box className="flex flex-col items-center gap-1">
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+      >
         <Text
           variant={TextVariant.HeadingLg}
           color={TextColor.TextDefault}

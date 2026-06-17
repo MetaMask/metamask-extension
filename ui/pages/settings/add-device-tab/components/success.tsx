@@ -11,6 +11,9 @@ import {
   TextColor,
   TextVariant,
   FontWeight,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -22,14 +25,24 @@ const Success = ({ onDone }: SuccessProps) => {
   const t = useI18nContext();
 
   return (
-    <Box className="flex flex-1 flex-col gap-4">
-      <Box className="flex flex-1 flex-col items-center justify-center gap-4">
+    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        gap={4}
+        className="flex-1"
+      >
         <Icon
           name={IconName.Confirmation}
           size={IconSize.Xl}
           color={IconColor.SuccessDefault}
         />
-        <Box className="flex flex-col items-center gap-2">
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
           <Text
             variant={TextVariant.HeadingLg}
             color={TextColor.TextDefault}

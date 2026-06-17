@@ -6,6 +6,9 @@ import {
   TextColor,
   FontWeight,
   Input,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AddDeviceSettingsStep } from '../constant';
@@ -160,8 +163,8 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
   );
 
   return (
-    <Box className="flex flex-1 flex-col gap-6">
-      <Box className="flex flex-col gap-2">
+    <Box flexDirection={BoxFlexDirection.Column} gap={6} className="flex-1">
+      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text
           variant={TextVariant.HeadingLg}
           color={TextColor.TextDefault}
@@ -173,7 +176,13 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
           {t('enter_verification_code_desc')}
         </Text>
       </Box>
-      <Box className="flex flex-row items-center justify-between gap-2 mx-auto">
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Between}
+        gap={2}
+        className="mx-auto"
+      >
         {code.map((digit, index) => (
           <Input
             // The list is a fixed-length set of positional inputs, so the
