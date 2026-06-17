@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Abriu posição long"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Abrir posição short falhou"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "Detecte automaticamente tokens em sua carteira, exiba NFTs e receba atualizações de saldo de contas em lote"
   },
-  "asterdexReferralConfirmText": {
-    "message": "Sim, receba 4% de cashback",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "Receba 4% de reembolso em negociações com um código de indicação da MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "Receba 4% de cashback em negociações com um código de indicação da MetaMask. Este desconto é válido para todas as negociações futuras, conforme o $1 da AsterDEX. A MetaMask recebe uma comissão.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "Receba 4% de cashback em compras no AsterDEX",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Tentar cancelar a troca sem custo"
@@ -3105,14 +3092,6 @@
     "message": "Permita que a MetaMask adicione um código de indicação. Isso é permanente. O site oferece descontos conforme seus próprios termos. A MetaMask ganha uma taxa.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "Não, obrigado",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "termos",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3974,21 +3953,9 @@
     "message": "Prepare sua carteira para usar a web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "Sim, economize 5%",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "Economize até 5% em negociações com um código de indicação da MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "Economize 5% em suas negociações com um código de indicação da MetaMask. Este desconto é válido para todas as negociações futuras, conforme o $1 da GMX. A MetaMask recebe uma comissão.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "Economize 5% no GMX",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Ir ao site"
@@ -4203,21 +4170,9 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "Sim, economize 4%",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Economize até 4% em negociações com um código de indicação da MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "Economize 4% em suas negociações com um código de indicação da MetaMask. Válido para todas as negociações futuras conforme o $1 da Hyperliquid. A MetaMask recebe uma comissão.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "Economize 4% na Hyperliquid",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Eu compreendo"

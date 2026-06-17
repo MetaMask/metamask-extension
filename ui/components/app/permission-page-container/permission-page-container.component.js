@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
@@ -12,6 +12,8 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { SubjectType } from '@metamask/permission-controller';
 import { Box } from '@metamask/design-system-react';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
@@ -28,10 +30,12 @@ import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/p
 import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
 import PermissionPageContainerContent from './permission-page-container-content';
 
-export default class PermissionPageContainer extends Component {
+class PermissionPageContainerBase extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
     selectedAccounts: PropTypes.array,
     requestedChainIds: PropTypes.array,
     /**
@@ -70,11 +74,6 @@ export default class PermissionPageContainer extends Component {
     selectedCaipChainIds: null,
     allAccountsSelected: false,
     currentPermissions: {},
-  };
-
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
   };
 
   state = {};
@@ -124,7 +123,7 @@ export default class PermissionPageContainer extends Component {
   }
 
   componentDidMount() {
-    this.context.trackEvent({
+    this.props.trackEvent({
       category: MetaMetricsEventCategory.Auth,
       event: 'Tab Opened',
       properties: {
@@ -259,8 +258,8 @@ export default class PermissionPageContainer extends Component {
     const footerLeftActionText = requestedPermissions[
       Caip25EndowmentPermissionName
     ]
-      ? this.context.t('cancel')
-      : this.context.t('back');
+      ? this.props.t('cancel')
+      : this.props.t('back');
 
     return (
       <TemplateAlertContextProvider
@@ -301,3 +300,13 @@ export default class PermissionPageContainer extends Component {
     );
   }
 }
+
+function PermissionPageContainer(props) {
+  const t = useContext(I18nContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
+  return (
+    <PermissionPageContainerBase {...props} t={t} trackEvent={trackEvent} />
+  );
+}
+
+export default PermissionPageContainer;

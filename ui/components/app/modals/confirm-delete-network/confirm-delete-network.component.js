@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { I18nContext } from '../../../../contexts/i18n';
 
 import Modal, { ModalContent } from '../../modal';
 
@@ -15,9 +16,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     switchToEthereumNetwork: PropTypes.func,
   };
 
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   handleDelete = async () => {
     const {
@@ -44,7 +43,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   };
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
     const { networkNickname } = this.props;
 
     return (

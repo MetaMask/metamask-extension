@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useMemo } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import {
   Box,
@@ -129,8 +129,10 @@ export const ConfirmInfoRow = ({
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
 
+  const contextValue = useMemo(() => ({ variant }), [variant]);
+
   return (
-    <ConfirmInfoRowContext.Provider value={{ variant }}>
+    <ConfirmInfoRowContext.Provider value={contextValue}>
       <Box
         data-testid={dataTestId}
         className="confirm-info-row"

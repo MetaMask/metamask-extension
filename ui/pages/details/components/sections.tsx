@@ -83,7 +83,7 @@ export function MetadataSection({
 
       <Row
         label={t('transactionIdLabel')}
-        value={<TransactionId value={item.data.hash} />}
+        value={<TransactionId value={item.hash} />}
       />
     </Section>
   );

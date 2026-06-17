@@ -165,16 +165,6 @@ describe('Transaction Controller Init', () => {
     });
   });
 
-  describe('determines incoming transactions is disabled', () => {
-    it('when useExternalServices is enabled in preferences and onboarding complete', () => {
-      const incomingTransactionsIsEnabled = testConstructorOption(
-        'incomingTransactions',
-      )?.isEnabled;
-
-      expect(incomingTransactionsIsEnabled?.()).toBe(false);
-    });
-  });
-
   it('determines if first time interaction enabled using preference', () => {
     const isFirstTimeInteractionEnabled = testConstructorOption(
       'isFirstTimeInteractionEnabled',

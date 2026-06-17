@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Đã mở vị thế mua khống"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Mở vị thế bán khống thất bại"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "Tự động phát hiện token trong ví của bạn, hiển thị NFT và nhận hàng loạt thông tin cập nhật về số dư tài khoản"
   },
-  "asterdexReferralConfirmText": {
-    "message": "Có, hoàn tiền 4%",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "Được hoàn 4% khi giao dịch với mã giới thiệu MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "Hoàn tiền 4% cho các giao dịch bằng mã giới thiệu MetaMask. Khoản chiết khấu này áp dụng cho tất cả các giao dịch trong tương lai, theo $1 của AsterDEX. MetaMask sẽ nhận được một khoản phí.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "Hoàn tiền 4% trên AsterDEX",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Cố gắng hủy hoán đổi miễn phí"
@@ -3105,14 +3092,6 @@
     "message": "Cho phép MetaMask thêm mã giới thiệu. Hành động này là vĩnh viễn. Trang web cung cấp chiết khấu theo điều khoản của họ. MetaMask nhận được một khoản phí.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "Không, cảm ơn",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "điều khoản",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3978,21 +3957,9 @@
     "message": "Chuẩn bị ví của bạn để sử dụng web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "Có, tiết kiệm 5%",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "Tiết kiệm đến 5% khi giao dịch với mã giới thiệu MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "Tiết kiệm 5% cho các giao dịch bằng mã giới thiệu MetaMask. Khoản chiết khấu này áp dụng cho tất cả các giao dịch trong tương lai, theo $1 của GMX. MetaMask sẽ nhận được một khoản phí.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "Tiết kiệm 5% trên GMX",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Đến trang web"
@@ -4207,21 +4174,9 @@
   "honeypotTitle": {
     "message": "Bẫy trong bẫy"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "Có, tiết kiệm 4%",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Tiết kiệm đến 4% khi giao dịch với mã giới thiệu MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "Tiết kiệm 4% cho các giao dịch bằng mã giới thiệu MetaMask. Áp dụng cho tất cả các giao dịch trong tương lai theo $1 của Hyperliquid. MetaMask sẽ nhận được một khoản phí.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "Tiết kiệm 4% trên Hyperliquid",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Tôi hiểu"
