@@ -191,8 +191,8 @@ export function mapApiEvmTransactions({
           chainId,
           status,
           timestamp,
+          hash,
           data: {
-            hash,
             from: sentNftTransfer.from,
             to: sentNftTransfer.to,
             token: getToken(sentNftTransfer, 'out'),
