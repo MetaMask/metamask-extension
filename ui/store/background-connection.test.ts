@@ -26,7 +26,7 @@ function setup() {
 
   const messengerSubscribe = jest.fn().mockResolvedValue(undefined);
 
-  const messengerUnsubscribe = jest.fn().mockResolvedValue(undefined);
+  const messengerUnsubscribe = jest.fn();
 
   // @ts-expect-error Partial mock.
   setBackgroundConnection({
