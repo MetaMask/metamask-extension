@@ -89,7 +89,7 @@ export function BridgeDetails({
     destinationChainId && destinationChainId !== sourceChainId,
   );
 
-  const sourceTxHash = item.data.hash;
+  const sourceTxHash = item.hash;
   const { destTxHash, destinationAccountAddress, fromAddress } = useSelector(
     (state) => {
       const bridgeHistoryItem = sourceTxHash
