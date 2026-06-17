@@ -4,37 +4,37 @@ import {
   confirmStellarSnapSigning,
   connectStellarTestDapp,
 } from '../../page-objects/flows/stellar-dapp.flow';
-import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
+import SnapSignAuthEntryConfirmation from '../../page-objects/pages/confirmations/snap-sign-auth-entry-confirmation';
+import { DEFAULT_STELLAR_AUTH_ENTRY_XDR } from '../../constants';
 import {
   DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
   withStellarWalletSnap,
 } from './testHelpers';
 
-describe('Stellar - Sign Message - e2e tests', function () {
-  it('Signs a message', async function () {
+describe('Stellar - Sign Auth Entry - e2e tests', function () {
+  it('Signs an auth entry', async function () {
     await withStellarWalletSnap(
       {
         ...DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
       },
       async (driver) => {
-        const messageToSign = 'Hello, world!';
         const testDapp = new TestDappStellar(driver);
         await testDapp.openTestDappPage();
 
         await connectStellarTestDapp(driver, testDapp);
-        await testDapp.setMessage(messageToSign);
-        await testDapp.signMessage();
+        await testDapp.setAuthEntry(DEFAULT_STELLAR_AUTH_ENTRY_XDR);
+        await testDapp.signAuthEntry();
 
-        const signMessageConfirmation = new SnapSignMessageConfirmation(
+        const signAuthEntryConfirmation = new SnapSignAuthEntryConfirmation(
           driver,
         );
-        await confirmStellarSnapSigning(driver, signMessageConfirmation);
-
+        await confirmStellarSnapSigning(driver, signAuthEntryConfirmation);
         await testDapp.switchTo();
 
-        const signedMessage = await testDapp.getSignedMessage();
-        assert.ok(signedMessage.length > 0);
+        const signedAuthEntry = await testDapp.getSignedAuthEntry();
+        assert.ok(signedAuthEntry.length > 0);
+        assert.match(signedAuthEntry, /^[A-Za-z0-9+/=]+$/u);
       },
     );
   });
