@@ -1102,7 +1102,7 @@
     "message": "Add a custom token"
   },
   "addDevice": {
-    "message": "Add device"
+    "message": "Sync with mobile"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
@@ -1207,10 +1207,10 @@
     "message": "Pairing devices"
   },
   "add_wallets": {
-    "message": "Add wallets"
+    "message": "Choose what to sync"
   },
   "add_wallets_desc": {
-    "message": "Pick the wallets you’d like to use on this device. You can add or remove them later."
+    "message": "Pick the wallets and accounts to import to your phone. You can change this later."
   },
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."

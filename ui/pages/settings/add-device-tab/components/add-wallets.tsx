@@ -76,7 +76,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           className="w-full"
           onClick={() => onAddWallets(AddDeviceSettingsStep.SyncingWallets)}
         >
-          {t('add_wallets')}
+          {t('continue')}
         </Button>
       </Box>
     </Box>
