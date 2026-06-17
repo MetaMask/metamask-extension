@@ -22,7 +22,7 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('0 SOL');
+        await homePage.checkExpectedBalanceIsDisplayed('0 SOL', 'SOL', false, 60000);
       },
     );
   });
@@ -42,7 +42,7 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('$0');
+        await homePage.checkExpectedBalanceIsDisplayed('$0', 'USD', true, 60000);
       },
     );
   });
@@ -64,7 +64,7 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('$5,643.50');
+        await homePage.checkExpectedBalanceIsDisplayed('$5,643.50', 'USD', true, 60000);
       },
     );
   });
@@ -82,7 +82,7 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('50 SOL');
+        await homePage.checkExpectedBalanceIsDisplayed('50 SOL', 'SOL', false, 60000);
       },
     );
   });
