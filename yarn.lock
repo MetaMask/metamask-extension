@@ -6988,9 +6988,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^27.0.0":
-  version: 27.0.0
-  resolution: "@metamask/keyring-controller@npm:27.0.0"
+"@metamask/keyring-controller@npm:^27.0.0, @metamask/keyring-controller@npm:^27.1.0":
+  version: 27.1.0
+  resolution: "@metamask/keyring-controller@npm:27.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7001,13 +7001,13 @@ __metadata:
     "@metamask/keyring-api": "npm:^23.1.0"
     "@metamask/keyring-internal-api": "npm:^11.0.1"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/utils": "npm:^11.11.0"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/42e21a4f747bd40db72587065cf5f60cf916b3e70f2bb6e368cd3c31220f05b44673a90302e8dd98212dcf098aca5a7c553dcf3fd21e0f570190b768963e6e7e
+  checksum: 10/72c3cd205c88ac0becff32f1d22dae841d13a6847fc165a16782d1cd8daafb434b472ef867b94833d2f8bcb5f98a9663b630c8bed231332305ba1a395385c241
   languageName: node
   linkType: hard
 
@@ -8612,8 +8612,8 @@ __metadata:
   linkType: hard
 
 "@metamask/transaction-pay-controller@npm:^23.6.0":
-  version: 23.7.0
-  resolution: "@metamask/transaction-pay-controller@npm:23.7.0"
+  version: 23.8.0
+  resolution: "@metamask/transaction-pay-controller@npm:23.8.0"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -8625,7 +8625,7 @@ __metadata:
     "@metamask/bridge-status-controller": "npm:^72.1.0"
     "@metamask/controller-utils": "npm:^12.2.0"
     "@metamask/gas-fee-controller": "npm:^26.2.2"
-    "@metamask/keyring-controller": "npm:^27.0.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/network-controller": "npm:^32.0.0"
@@ -8637,7 +8637,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
-  checksum: 10/71178b4406853c84d8200d6d3399227d7f9104300c98e431c6a851ef70a6a89d17771d6e4c9c744451f0d7fd77ea2fe7383590d8c8719078bd7bee5bfdfcea4c
+  checksum: 10/777e3f8ce2207c606eb45d36bc2c3b96021bb667074f6aae77db13229a1ca3b20ef2816325bb26e17b8262ffdd78fdb90f80bddc0e4040516ffd93d67b438b95
   languageName: node
   linkType: hard
 
@@ -17768,11 +17768,11 @@ __metadata:
   linkType: hard
 
 "@wallet-standard/app@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@wallet-standard/app@npm:1.1.0"
+  version: 1.1.1
+  resolution: "@wallet-standard/app@npm:1.1.1"
   dependencies:
-    "@wallet-standard/base": "npm:^1.1.0"
-  checksum: 10/d233cc79fbd857689c8c14a60875df9d8ad120fa1c9d59aeeef7303489cdecd60a12bbc2f3794720aadf6ef369cf09d1409c26c0801273561bcdb12a07b08e19
+    "@wallet-standard/base": "npm:^1.1.1"
+  checksum: 10/34c7c1656e195edab1aff0faab9593d91ab168e7f594b007bc2179f9319c27cfaec5a4e4e83f9c5afcb401986dff51eaec90ac5f63122fed2befa91b9b8a0edf
   languageName: node
   linkType: hard
 
@@ -17815,7 +17815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wallet-standard/features@npm:1.1.0, @wallet-standard/features@npm:^1.1.0":
+"@wallet-standard/features@npm:1.1.0":
   version: 1.1.0
   resolution: "@wallet-standard/features@npm:1.1.0"
   dependencies:
@@ -17824,7 +17824,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wallet-standard/features@npm:^1.0.3":
+"@wallet-standard/features@npm:^1.0.3, @wallet-standard/features@npm:^1.1.0":
   version: 1.1.1
   resolution: "@wallet-standard/features@npm:1.1.1"
   dependencies:
@@ -17833,12 +17833,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wallet-standard/wallet@npm:1.1.0, @wallet-standard/wallet@npm:^1.1.0":
+"@wallet-standard/wallet@npm:1.1.0":
   version: 1.1.0
   resolution: "@wallet-standard/wallet@npm:1.1.0"
   dependencies:
     "@wallet-standard/base": "npm:^1.1.0"
   checksum: 10/b56846709c43b1dee6b44f7a9e15d89a00e4408d3d967eb438f415b42c5c52c4cf33a7b3126d0cf0dc0d78f244755e3d084a05824c1397ce58be169426c5337b
+  languageName: node
+  linkType: hard
+
+"@wallet-standard/wallet@npm:^1.1.0":
+  version: 1.1.1
+  resolution: "@wallet-standard/wallet@npm:1.1.1"
+  dependencies:
+    "@wallet-standard/base": "npm:^1.1.1"
+  checksum: 10/1b6baa51efeaed9db9dd45e2c01616803dcc1e589910ec1477e641572fcb9586d15c2de36f442732c79e714ef2b30453fc72e48caef6a2cac488d820bfdadd7c
   languageName: node
   linkType: hard
 
