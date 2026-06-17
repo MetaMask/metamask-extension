@@ -354,6 +354,9 @@ class SnapSimpleKeyringPage {
    */
   async checkSnapIsReady(): Promise<void> {
     console.log('Wait for Simple Keyring Snap to be ready');
+    await this.driver.switchToWindowWithTitle(
+      WINDOW_TITLES.ExtensionInFullScreenView,
+    );
     await this.driver.waitUntil(
       async () => {
         const state = await getCleanAppState(this.driver);
@@ -361,6 +364,9 @@ class SnapSimpleKeyringPage {
         return Boolean(snap?.enabled && snap.status !== 'installing');
       },
       { interval: regularDelayMs, timeout: 10000 },
+    );
+    await this.driver.switchToWindowWithTitle(
+      WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
   }
 }
