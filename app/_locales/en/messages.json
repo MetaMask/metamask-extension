@@ -5798,6 +5798,15 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
+  "notificationCategoryMarketing": {
+    "message": "Updates and Rewards"
+  },
+  "notificationCategoryPerps": {
+    "message": "Trading Activity"
+  },
+  "notificationCategoryWalletActivity": {
+    "message": "Wallet Activity"
+  },
   "notificationDetail": {
     "message": "Details"
   },

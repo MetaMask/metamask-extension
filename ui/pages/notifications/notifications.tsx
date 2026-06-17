@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -12,9 +12,7 @@ import {
   IconSize,
   ButtonIcon,
   ButtonIconSize,
-  Box,
 } from '../../components/component-library';
-import { Tabs, Tab } from '../../components/ui/tabs';
 import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
@@ -23,20 +21,14 @@ import {
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
-import { getNotifySnaps } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
-import { NewFeatureTag } from './NewFeatureTag';
+import { NotificationsCategory } from './notifications-category';
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
@@ -154,16 +146,13 @@ export default function Notifications() {
 
   const { isLoading, error } = useMetamaskNotificationsContext();
 
-  const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
+  const activeTab = TAB_KEYS.ALL;
   const combinedNotifications = useCombinedNotifications();
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
     () => filterNotifications(activeTab, combinedNotifications),
     [activeTab, combinedNotifications],
   );
-
-  let hasNotifySnaps = false;
-  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
 
   useEffect(() => {
     dispatch(deleteExpiredNotifications());
@@ -201,39 +190,11 @@ export default function Notifications() {
         {t('notifications')}
       </Header>
       <Content padding={0}>
-        {hasNotifySnaps && (
-          <Tabs
-            activeTab={activeTab}
-            onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
-            tabListProps={{ className: 'px-4' }}
-          >
-            <Tab
-              data-testid={TAB_KEYS.ALL}
-              name={t('all')}
-              tabKey={TAB_KEYS.ALL}
-            />
-            <Tab
-              data-testid={TAB_KEYS.WALLET}
-              name={
-                <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
-                  gap={2}
-                >
-                  {t('wallet')}
-                  <NewFeatureTag />
-                </Box>
-              }
-              tabKey={TAB_KEYS.WALLET}
-            ></Tab>
-            <Tab
-              data-testid={TAB_KEYS.WEB3}
-              name={t('web3')}
-              tabKey={TAB_KEYS.WEB3}
-            />
-          </Tabs>
-        )}
+        <NotificationsCategory
+          onSelect={() => {
+            // TODO: filter the notifications list by the selected category
+          }}
+        />
 
         <NotificationsList
           activeTab={activeTab}
