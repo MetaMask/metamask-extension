@@ -52,10 +52,10 @@ export function submitRequestToBackground<R>(
 }
 
 type MessengerEventSubscription = {
-  // Callbacks are identified by reference. Subscribing the same function twice
-  // to the same event collapses to a single entry, and the first matching
-  // unsubscribe removes it for both callers — mirrors `Set` semantics.
-  callbacks: Set<(data: Json) => void>;
+  // Each subscribe call is an independent registration keyed by a unique
+  // symbol, so unsubscribing one never affects another even when they share
+  // the same callback reference.
+  callbacks: Map<symbol, (data: Json) => void>;
   subscribePromise: Promise<void>;
 };
 
@@ -85,7 +85,7 @@ function routeMessengerEventNotification(
   if (!subscription) {
     return;
   }
-  for (const callback of subscription.callbacks) {
+  for (const callback of subscription.callbacks.values()) {
     try {
       callback(payload);
     } catch (error) {
@@ -141,10 +141,14 @@ export async function subscribeToMessengerEvent<Data extends Json>(
   // `Data extends Json` but `(data: Data) => void` is not assignable to `(data: Json) => void` due to contravariant function parameters; the cast is safe because all callbacks receive `Json`-shaped data at runtime.
   const looselyTypedCallback = callback as (data: Json) => void;
 
+  // Unique key for this registration so it can be removed independently of any
+  // other registration that happens to share the same callback reference.
+  const registrationId = Symbol('messengerEventSubscription');
+
   let subscription = messengerEventSubscriptions.get(event);
 
   if (subscription) {
-    subscription.callbacks.add(looselyTypedCallback);
+    subscription.callbacks.set(registrationId, looselyTypedCallback);
   } else {
     if (!notificationRouterAttached) {
       background.onNotification(routeMessengerEventNotification);
@@ -157,7 +161,7 @@ export async function subscribeToMessengerEvent<Data extends Json>(
     );
 
     subscription = {
-      callbacks: new Set([looselyTypedCallback]),
+      callbacks: new Map([[registrationId, looselyTypedCallback]]),
       subscribePromise,
     };
     messengerEventSubscriptions.set(event, subscription);
@@ -179,7 +183,7 @@ export async function subscribeToMessengerEvent<Data extends Json>(
       return;
     }
 
-    const removed = currentSubscription.callbacks.delete(looselyTypedCallback);
+    const removed = currentSubscription.callbacks.delete(registrationId);
     if (!removed || currentSubscription.callbacks.size > 0) {
       return;
     }

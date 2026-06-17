@@ -298,7 +298,7 @@ describe('subscribeToMessengerEvent', () => {
     expect(listenerB).not.toHaveBeenCalled();
   });
 
-  it('collapses to one slot when the same callback is subscribed twice to the same event', async () => {
+  it('treats two subscriptions sharing the same callback reference as independent', async () => {
     const { submitNotification, messengerUnsubscribe } = setup();
 
     const listener = jest.fn();
@@ -312,15 +312,24 @@ describe('subscribeToMessengerEvent', () => {
       params: [event, [{ foo: 'bar' }, []]],
     });
 
-    // Set-by-reference: a notification fires the callback exactly once,
-    // not once per subscribe call.
+    // Each subscribe call is an independent registration, so a notification
+    // fires the shared callback once per registration.
+    expect(listener).toHaveBeenCalledTimes(2);
+
+    // Unsubscribing one registration leaves the other intact, so no upstream
+    // unsubscribe yet and the remaining registration still receives events.
+    await unsubscribeFirst();
+    expect(messengerUnsubscribe).not.toHaveBeenCalled();
+
+    listener.mockClear();
+    submitNotification({
+      jsonrpc: '2.0',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
+      params: [event, [{ foo: 'bar' }, []]],
+    });
     expect(listener).toHaveBeenCalledTimes(1);
 
-    // The first unsubscribe empties the set, so the upstream messengerUnsubscribe call is sent.
-    await unsubscribeFirst();
-    expect(messengerUnsubscribe).toHaveBeenCalledTimes(1);
-
-    // The second unsubscribe finds nothing to remove and is a no-op.
+    // Removing the last registration sends the upstream unsubscribe.
     await unsubscribeSecond();
     expect(messengerUnsubscribe).toHaveBeenCalledTimes(1);
   });
