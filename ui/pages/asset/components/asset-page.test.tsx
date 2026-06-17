@@ -531,12 +531,12 @@ describe('AssetPage', () => {
   });
 
   it('should render a native asset', () => {
-    const { container } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <AssetPage asset={native} optionsButton={null} />,
       store,
       '/0x1',
     );
-    expect(container).toBeInTheDocument();
+    expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
   });
 
   it('should render an ERC20 asset without prices', async () => {
