@@ -126,6 +126,36 @@ export const selectProtectedLocalTransactions = createSelector(
   },
 );
 
+export const selectLocalTransactionsByHash = createSelector(
+  selectLocalTransactions,
+  (transactionGroups) => {
+    const transactionsByHash = new Map<string, TransactionGroup>();
+
+    for (const transactionGroup of transactionGroups) {
+      for (const transaction of [
+        transactionGroup.primaryTransaction,
+        transactionGroup.initialTransaction,
+      ]) {
+        // Index by tx hash when available (confirmed/submitted transactions)
+        const hash = transaction.hash?.toLowerCase();
+        if (hash) {
+          transactionsByHash.set(hash, transactionGroup);
+        }
+
+        // Also index by id so signing/queued transactions (no hash yet) can be
+        // looked up — the activity adapter sets data.hash = primaryTransaction.id
+        // as a fallback when no real tx hash exists.
+        const id = transaction.id?.toLowerCase();
+        if (id && !transactionsByHash.has(id)) {
+          transactionsByHash.set(id, transactionGroup);
+        }
+      }
+    }
+
+    return transactionsByHash;
+  },
+);
+
 export const selectNonEvmTransactionsForActivity = createSelector(
   [
     selectCurrentAccountNonEvmTransactions,
@@ -160,16 +190,12 @@ export const selectNonEvmTransactionsForActivity = createSelector(
 export const selectNonEvmActivityItems = createSelector(
   [selectNonEvmTransactionsForActivity, getAssetsMetadata],
   (transactions, assetsMetadata) =>
-    transactions.map((transaction) => {
-      if (transaction.type !== 'swap') {
-        return mapKeyringTransaction({ transaction });
-      }
-
-      return mapKeyringTransaction({
-        // Unified assets caused Snap token movements with empty unit
+    transactions.map((transaction) =>
+      mapKeyringTransaction({
+        // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
-      });
-    }),
+      }),
+    ),
 );
 
 function patchKeyringTransaction(
@@ -189,7 +215,11 @@ function patchUnit(
   movement: KeyringTransaction['from'][number],
   assetsMetadata: ReturnType<typeof getAssetsMetadata>,
 ) {
-  if (!movement.asset?.fungible || movement.asset.unit) {
+  if (!movement.asset?.fungible) {
+    return movement;
+  }
+
+  if (movement.asset.unit && movement.asset.unit !== 'UNKNOWN') {
     return movement;
   }
 

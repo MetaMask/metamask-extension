@@ -17,6 +17,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedWalletBalance,
   expectedSwapTokens,
   expectedDestAmount,
+  expectedActivityAmount,
 }: {
   driver: Driver;
   quote: BridgeQuote;
@@ -25,6 +26,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedWalletBalance?: string;
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount?: string;
+  expectedActivityAmount?: string;
 }) => {
   const homePage = new HomePage(driver);
   await homePage.goToActivityList();
@@ -45,29 +47,29 @@ export const verifySubmittedSwapTransaction = async ({
 
   if (quote.unapproved) {
     action = isBridge
-      ? `Bridged to ${quote.toChain}`
+      ? `Bridged ${expectedDestToken}`
       : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
     await activityList.checkTxAction({
       action,
       confirmedTx: expectedTransactionsCount,
     });
     await activityList.checkTxAction({
-      action: `Approve ${expectedSrcToken} for ${isBridge ? 'bridge' : 'swap'}`,
+      action: 'Approved spending cap',
       confirmedTx: expectedTransactionsCount,
       txIndex: 2,
     });
   } else {
     action = isBridge
-      ? `Bridged to ${quote.toChain}`
-      : `Swap ${expectedSrcToken} to ${expectedDestToken}`;
+      ? `Bridged ${expectedDestToken}`
+      : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
     await activityList.checkTxAction({
       action,
       confirmedTx: expectedTransactionsCount,
     });
   }
-  // Check the amount of ETH deducted in the activity is correct
+  // v3 activity rows show the destination amount as the primary line
   await activityList.checkTxAmountInActivity(
-    `-${quote.amount} ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom}`,
+    `${expectedActivityAmount ?? expectedDestAmount} ${quote.tokenTo ?? expectedSwapTokens?.tokenTo}`,
   );
 
   await activityList.checkBridgeTransactionDetails(
@@ -99,6 +101,7 @@ export const verifySubmittedSwapTransaction = async ({
  * @param testParams.expectedWalletBalance - The expected wallet balance after the transaction
  * @param testParams.expectedSwapTokens - The expected swap tokens shown in the activity list
  * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
+ * @param testParams.expectedActivityAmount - The expected destination amount shown in the activity list
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  * @param testParams.expectedStatus - The expected state of the transaction
  * @param testParams.skipStatusPage - Whether to skip the status page after submitting
@@ -111,6 +114,7 @@ export const bridgeTransaction = async ({
   expectedWalletBalance,
   expectedSwapTokens,
   expectedDestAmount,
+  expectedActivityAmount,
   submitDelay,
   skipStatusPage,
 }: {
@@ -121,6 +125,7 @@ export const bridgeTransaction = async ({
   expectedWalletBalance?: string;
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount: string;
+  expectedActivityAmount?: string;
   submitDelay?: number;
   skipStatusPage?: boolean;
 }) => {
@@ -153,6 +158,7 @@ export const bridgeTransaction = async ({
     expectedWalletBalance,
     expectedSwapTokens,
     expectedDestAmount,
+    expectedActivityAmount,
   });
 };
 

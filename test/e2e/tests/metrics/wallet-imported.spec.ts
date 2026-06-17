@@ -29,11 +29,7 @@ describe('Wallet Created Events - Imported Account', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
-            participateInMetaMetrics: true,
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
           return await mockSegment(server, expectedEvents);

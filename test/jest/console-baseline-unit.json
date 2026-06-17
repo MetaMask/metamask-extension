@@ -1,8 +1,7 @@
 {
   "files": {
     "app/scripts/controllers/metametrics-controller.test.ts": {
-      "MetaMask: MetaMetrics invalid trait types": 4,
-      "warn: MetaMetricsController#_identify: No userTraits found": 1
+      "MetaMask: MetaMetrics invalid trait types": 4
     },
     "app/scripts/controllers/rewards/rewards-data-service.test.ts": {
       "error: RewardsDataService: Failed to fetch geolocation": 2
@@ -43,6 +42,10 @@
     },
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
       "Test errors: Fetch failures": 6
+    },
+    "app/scripts/lib/transaction/hooks/index.test.ts": {
+      "error: Failed to record sentinel_relay metrics": 1,
+      "error: Failed to record sentinel_stx metrics": 1
     },
     "app/scripts/messenger-client-init/confirmations/transaction-controller-init.test.ts": {
       "error: Failed to record sentinel_relay metrics": 1,
@@ -213,7 +216,8 @@
       "Test errors: Uncaught Errors": 1
     },
     "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
-      "MetaMask: Background connection not initialized": 9
+      "MetaMask: Background connection not initialized": 9,
+      "React: PropTypes validation failures": 1
     },
     "ui/components/app/assets/asset-list/asset-list.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -301,9 +305,6 @@
     "ui/components/app/perps/perps-tutorial-modal/PerpsTutorialModal.test.tsx": {
       "MetaMask: Background connection not initialized": 4
     },
-    "ui/components/app/qr-hardware-popover/base-reader.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 8
-    },
     "ui/components/app/reveal-srp-list/reveal-srp-list.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
@@ -372,9 +373,6 @@
     },
     "ui/components/multichain-accounts/add-multichain-account/add-multichain-account.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3
-    },
-    "ui/components/multichain-accounts/multichain-account-list/multichain-account-list.test.tsx": {
-      "MetaMask: Background connection not initialized": 73
     },
     "ui/components/multichain-accounts/multichain-address-rows-triggered-list/default-address.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -939,7 +937,8 @@
       "error: Failed to detect if URL": 1
     },
     "ui/pages/custom-token-import/custom-token-import.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 2
+      "React: Act warnings (component updates not wrapped)": 2,
+      "error: Warning: React does not recognize": 3
     },
     "ui/pages/defi/components/defi-details-page.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -1154,6 +1153,9 @@
     "ui/pages/swaps/smart-transaction-status/smart-transaction-status.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/token-management/token-management.test.tsx": {
+      "MetaMask: Background connection not initialized": 4
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1
