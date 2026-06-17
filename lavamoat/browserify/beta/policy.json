@@ -1052,7 +1052,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controllers>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -2562,7 +2562,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
+        "@metamask/react-data-query>@tanstack/query-core": true,
         "@tanstack/react-query": true
       }
     },
@@ -3984,6 +3984,20 @@
         "shouldThrowError": true,
         "skipToken": true,
         "timeoutManager": true
+      }
+    },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {

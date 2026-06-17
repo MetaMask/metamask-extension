@@ -26739,17 +26739,6 @@ at your option.
 ******************************
 
 @metamask/remote-feature-flag-controller
-4.2.1 <https://github.com/MetaMask/core>
-This project is licensed under either of
-
- * MIT license ([LICENSE.MIT](LICENSE.MIT))
- * Apache License, Version 2.0 ([LICENSE.APACHE2](LICENSE.APACHE2))
-
-at your option. 
-
-******************************
-
-@metamask/remote-feature-flag-controller
 4.2.2 <https://github.com/MetaMask/core>
 This project is licensed under either of
 
@@ -38184,7 +38173,7 @@ authors: 강동윤 <kdy1997.dev@gmail.com>
 
 ******************************
 
-@swc/core-darwin-arm64
+@swc/core-linux-x64-gnu
 1.13.2 <https://github.com/swc-project/swc>
 license: Apache-2.0 AND MIT
 authors: 강동윤 <kdy1997.dev@gmail.com>
