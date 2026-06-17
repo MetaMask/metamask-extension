@@ -5888,14 +5888,41 @@
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."
   },
+  "notificationsSettingsDeselectAll": {
+    "message": "Deselect all"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "In-app"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "Product updates, feature announcements, and new releases"
+  },
+  "notificationsSettingsMarketingTitle": {
+    "message": "Updates and rewards"
+  },
   "notificationsSettingsPageAllowNotifications": {
     "message": "Choose what you're notified about and how."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"
   },
-  "notificationsSettingsStatusPush": {
+  "notificationsSettingsPerpsDescription": {
+    "message": "Perps position changes, liquidations, funding rates, and margin updates"
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "Trading activity"
+  },
+  "notificationsSettingsPushNotifications": {
     "message": "Push"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "Accounts"
+  },
+  "notificationsSettingsSelectAccountsDescription": {
+    "message": "Choose which accounts you'd like to get notifications for."
   },
   "notificationsSettingsStatusInApp": {
     "message": "In-app"
@@ -5903,38 +5930,14 @@
   "notificationsSettingsStatusOff": {
     "message": "Off"
   },
-  "notificationsSettingsWalletActivityTitle": {
-    "message": "Wallet activity"
+  "notificationsSettingsStatusPush": {
+    "message": "Push"
   },
   "notificationsSettingsWalletActivityDescription": {
     "message": "Buys, sells, transfers, swaps and rewards"
   },
-  "notificationsSettingsPerpsTitle": {
-    "message": "Trading activity"
-  },
-  "notificationsSettingsPerpsDescription": {
-    "message": "Perps position changes, liquidations, funding rates, and margin updates"
-  },
-  "notificationsSettingsMarketingTitle": {
-    "message": "Updates and rewards"
-  },
-  "notificationsSettingsMarketingDescription": {
-    "message": "Product updates, feature announcements, and new releases"
-  },
-  "notificationsSettingsPushNotifications": {
-    "message": "Push"
-  },
-  "notificationsSettingsInAppNotifications": {
-    "message": "In-app"
-  },
-  "notificationsSettingsSelectAccounts": {
-    "message": "Select accounts"
-  },
-  "notificationsSettingsDeselectAll": {
-    "message": "Deselect all"
-  },
-  "notificationsSettingsMarketingConsent": {
-    "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
+  "notificationsSettingsWalletActivityTitle": {
+    "message": "Wallet activity"
   },
   "numberOfTokens": {
     "message": "Number of tokens"

@@ -127,7 +127,9 @@ const WalletActivitySectionContent = ({
   const getAccountEnabledValue = useCallback(
     (address: string) => {
       const lowerAddress = address.toLowerCase();
-      return pendingAccountToggles[lowerAddress]?.value ?? isAccountEnabled(address);
+      return (
+        pendingAccountToggles[lowerAddress]?.value ?? isAccountEnabled(address)
+      );
     },
     [isAccountEnabled, pendingAccountToggles],
   );
@@ -164,7 +166,8 @@ const WalletActivitySectionContent = ({
   const handleToggleAccountNotifications = useCallback(
     async (address: string, nextValue: boolean) => {
       const lowerAddress = address.toLowerCase();
-      const generation = (accountToggleGenerationRef.current[lowerAddress] ?? 0) + 1;
+      const generation =
+        (accountToggleGenerationRef.current[lowerAddress] ?? 0) + 1;
       accountToggleGenerationRef.current[lowerAddress] = generation;
       setPendingAccountToggles((current) => ({
         ...current,
@@ -221,35 +224,44 @@ const WalletActivitySectionContent = ({
         gap={4}
         data-testid="notifications-settings-per-account"
       >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          alignItems={BoxAlignItems.Center}
-          gap={4}
-        >
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
-          >
-            {t('notificationsSettingsSelectAccounts')}
-          </Text>
-          <button
-            className="border-0 bg-transparent p-0 text-primary-default cursor-pointer"
-            data-testid="notifications-settings-toggle-all-accounts"
-            disabled={shouldDisableToggleAllAccounts}
-            onClick={toggleAllAccounts}
+        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Stretch}
+            gap={4}
           >
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
-              color={TextColor.PrimaryDefault}
+              color={TextColor.TextDefault}
             >
-              {hasEnabledAccount
-                ? t('notificationsSettingsDeselectAll')
-                : t('selectAll')}
+              {t('notificationsSettingsSelectAccounts')}
             </Text>
-          </button>
+            <button
+              className="border-0 bg-transparent p-0 text-primary-default cursor-pointer"
+              data-testid="notifications-settings-toggle-all-accounts"
+              disabled={shouldDisableToggleAllAccounts}
+              onClick={toggleAllAccounts}
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.PrimaryDefault}
+              >
+                {hasEnabledAccount
+                  ? t('notificationsSettingsDeselectAll')
+                  : t('selectAll')}
+              </Text>
+            </button>
+          </Box>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Regular}
+            color={TextColor.TextAlternative}
+          >
+            {t('notificationsSettingsSelectAccountsDescription')}
+          </Text>
         </Box>
         {accountToggleError && (
           <Text color={TextColor.ErrorDefault}>
@@ -282,7 +294,9 @@ const WalletActivitySectionContent = ({
                   name={account.name}
                   disabledSwitch={shouldDisableAccountSwitches}
                   isLoading={
-                    Boolean(pendingAccountToggles[account.address.toLowerCase()]) ||
+                    Boolean(
+                      pendingAccountToggles[account.address.toLowerCase()],
+                    ) ||
                     accountSettingsProps.accountsBeingUpdated.includes(
                       account.address,
                     )
@@ -396,25 +410,22 @@ export function NotificationSettingsSection({
       gap={6}
       data-testid={`notifications-settings-section-content-${section.type}`}
     >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-      >
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Text
-          variant={TextVariant.HeadingSm}
+          variant={TextVariant.HeadingMd}
           fontWeight={FontWeight.Bold}
           color={TextColor.TextDefault}
         >
           {section.title}
         </Text>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Regular}
+          color={TextColor.TextAlternative}
+        >
+          {section.description}
+        </Text>
       </Box>
-      <Text
-        variant={TextVariant.BodyMd}
-        fontWeight={FontWeight.Regular}
-        color={TextColor.TextAlternative}
-      >
-        {section.description}
-      </Text>
 
       <Box
         flexDirection={BoxFlexDirection.Column}
