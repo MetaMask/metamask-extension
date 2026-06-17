@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "오픈한 롱"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "숏 포지션 열기 실패"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "지갑에서 토큰을 자동으로 감지하고, NFT를 표시하며, 계정 잔액을 일괄 업데이트하세요."
   },
-  "asterdexReferralConfirmText": {
-    "message": "네, 4% 환급받기",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask 추천인 코드를 사용하여 거래하면 4%를 돌려받을 수 있습니다.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "MetaMask 추천 코드로 거래하고 4%를 환급받으세요. 이 할인은 AsterDEX의 $1에 따라 향후 모든 거래에 적용됩니다. MetaMask는 수수료를 받습니다.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "AsterDEX에서 4% 환급받기",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "무료 스왑 취소 시도"
@@ -3105,14 +3092,6 @@
     "message": "MetaMask가 추천인 코드를 추가하도록 허용하세요. 추가하면 변경할 수 없습니다. 사이트는 약관에 따라 할인을 제공합니다. MetaMask는 수수료를 받습니다.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "아니요, 괜찮습니다",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "간주됩니다",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3978,21 +3957,9 @@
     "message": "Web3를 사용할 수 있도록 지갑을 준비해 주세요",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": " 네, 5% 절약하기",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "MetaMask 추천인 코드로 거래 시 최대 5% 절약하세요.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "MetaMask 추천 코드로 거래하고 5%를 절약하세요. 이 할인은 GMX의 $1에 따라 향후 모든 거래에 적용됩니다. MetaMask는 수수료를 받습니다.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "GMX에서 5% 절약하기",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "사이트로 이동"
@@ -4207,21 +4174,9 @@
   "honeypotTitle": {
     "message": "허니팟"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "네, 4% 절약하기",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMask 추천인 코드로 거래 시 최대 4% 절약하세요.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "MetaMask 추천 코드로 거래하고 4%를 절약하세요. Hyperliquid의 $1에 따라 향후 모든 거래에 적용됩니다. MetaMask는 수수료를 받습니다.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "Hyperliquid에서 4% 절약하기",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "견적은 다음 기간 전에 만료됨을"

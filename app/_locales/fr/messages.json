@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Position longue ouverte"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "L’ouverture de position longue a échoué"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "Détection automatique des jetons dans votre portefeuille, affichage des NFT et mise à jour du solde de plusieurs comptes"
   },
-  "asterdexReferralConfirmText": {
-    "message": "Oui, bénéficiez d’un cashback de 4 %",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "Obtenez 4 % de remise sur vos transactions avec un code de parrainage MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "Bénéficiez d’un cashback de 4 % sur vos ordres de bourse en utilisant un code de parrainage MetaMask. Ce cashback s’applique à tous vos futurs ordres de bourse, conformément aux $1 d’AsterDEX. MetaMask perçoit une commission.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "Bénéficiez d’un cashback de 4 % sur AsterDEX",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Tentative d’annuler gratuitement le swap"
@@ -3105,14 +3092,6 @@
     "message": "Autorisez MetaMask à ajouter un code de parrainage. Cette autorisation est permanente. Le site offre des réductions selon ses conditions générales. MetaMask perçoit une commission.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "Non, merci",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "conditions générales",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3974,21 +3953,9 @@
     "message": "Préparez votre portefeuille pour utiliser web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "Oui, économisez 5 %",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "Économisez jusqu’à 5 % sur vos ordres de bourse avec un code de parrainage MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "Économisez 5 % sur vos ordres de bourse en utilisant un code de parrainage MetaMask. Cette réduction s’applique à tous vos futurs ordres de bourse, conformément aux $1 de GMX. MetaMask perçoit une commission.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "Économisez 5 % sur GMX",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Accéder au site"
@@ -4203,21 +4170,9 @@
   "honeypotTitle": {
     "message": "Pot de miel"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "Oui, économisez 4 %",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Économisez jusqu’à 4 % sur vos ordres de bourse avec un code de parrainage MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "Économisez 4 % sur vos ordres de bourse en utilisant un code de parrainage MetaMask. Cette réduction s’applique à tous vos futurs ordres de bourse, conformément aux $1 de Hyperliquid. MetaMask perçoit une commission.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "Économisez 4 % sur Hyperliquid",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Je comprends"

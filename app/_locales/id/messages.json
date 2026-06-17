@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Long terbuka"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Pembukaan posisi short gagal"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "Autodeteksi token di dompet Anda, tampilkan NFT, dan dapatkan pembaruan saldo akun secara batch"
   },
-  "asterdexReferralConfirmText": {
-    "message": "Ya, dapatkan pengembalian 4%",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "Dapatkan cashback 4% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "Dapatkan pengembalian 4% untuk perdagangan dengan kode referensi MetaMask. Diskon ini berlaku untuk semua perdagangan di masa mendatang, sama halnya dengan $1 dari AsterDEX. MetaMask mendapatkan komisi dari biaya.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "Dapatkan cashback 4% di AsterDEX",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Mencoba membatalkan pertukaran secara gratis"
@@ -3105,14 +3092,6 @@
     "message": "Izinkan MetaMask menambahkan kode rujukan. Kode ini bersifat permanen. Situs ini menawarkan diskon sesuai ketentuan mereka. MetaMask mendapatkan komisi.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "Tidak, terima kasih",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "syarat",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3978,21 +3957,9 @@
     "message": "Siapkan dompet Anda untuk menggunakan web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "Ya, hemat 5%",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "Hemat hingga 5% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "Hemat 5% dalam perdagangan dengan kode referensi MetaMask. Diskon ini berlaku untuk semua perdagangan di masa mendatang, sama halnya dengan $1 dari GMX. MetaMask mendapatkan komisi dari biaya.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "Hemat 5% untuk GMX",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Buka situs"
@@ -4207,21 +4174,9 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "Ya, hemat 4%",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Hemat hingga 4% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "Hemat 4% untuk perdagangan dengan kode referensi MetaMask. Berlaku untuk semua perdagangan di masa mendatang sesuai dengan $1 Hyperliquid. MetaMask mendapatkan komisi dari biaya.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "Hemat 4% untuk Hyperliquid",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Saya mengerti"
