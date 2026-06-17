@@ -98,7 +98,9 @@ describe('useNotifications', () => {
 
   it('should enable notifications with AUS marketing initialization options', async () => {
     const { result } = renderHook(() => useEnableNotifications(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     await act(async () => {
