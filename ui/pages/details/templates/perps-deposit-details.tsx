@@ -10,21 +10,24 @@ import {
 } from '@metamask/design-system-react';
 import { TransactionStatus as TransactionMetaStatus } from '@metamask/transaction-controller';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import { selectLocalTransactionsByHash } from '../../../selectors/activity';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context';
-import { TransactionDetailsSummary } from '../../confirmations/components/activity/transaction-details-summary/transaction-details-summary';
-import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
-import { Footer, Row, Section } from '../components/shared';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { TransactionDetailsSummary } from '../../confirmations/components/activity/transaction-details-summary';
+import {
+  ARBITRUM_USDC,
+  PERPS_CURRENCY,
+  // eslint-disable-next-line import-x/no-restricted-paths
+} from '../../confirmations/constants/perps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { Footer, Row, Section } from '../components/shared';
 
-const HYPE_USDC =
-  BRIDGE_CHAINID_COMMON_TOKEN_PAIR[toEvmCaipChainId(CHAIN_IDS.HYPE)];
+const PERPS_USDC_ASSET_ID = `${toEvmCaipChainId(CHAIN_IDS.ARBITRUM)}/erc20:${ARBITRUM_USDC.address}`;
 
 type Props = {
   item: Extract<
@@ -62,17 +65,15 @@ export function PerpsDepositDetails({ item }: Props) {
   return (
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
-        {formattedTargetFiat && HYPE_USDC?.assetId ? (
-          <div
-            className="flex items-center gap-2 pb-4"
-            data-testid="transaction-details-hero"
-          >
-            <ActivityAvatar tokens={[HYPE_USDC.assetId]} />
-            <Text variant="heading-lg" color="text-success-default">
-              +{formattedTargetFiat}
-            </Text>
-          </div>
-        ) : null}
+        <div
+          className="flex items-center gap-2 pb-4"
+          data-testid="transaction-details-hero"
+        >
+          <ActivityAvatar tokens={[PERPS_USDC_ASSET_ID]} />
+          <Text variant="heading-lg" color="text-success-default">
+            +{formattedTargetFiat}
+          </Text>
+        </div>
 
         <Section>
           <Row
@@ -103,11 +104,11 @@ export function PerpsDepositDetails({ item }: Props) {
           />
         </Section>
 
-        <TransactionDetailsProvider transactionMeta={transactionMeta}>
-          <Section>
+        <Section>
+          <TransactionDetailsProvider transactionMeta={transactionMeta}>
             <TransactionDetailsSummary />
-          </Section>
-        </TransactionDetailsProvider>
+          </TransactionDetailsProvider>
+        </Section>
       </div>
 
       <Footer>
