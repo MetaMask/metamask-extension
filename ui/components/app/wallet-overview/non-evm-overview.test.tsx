@@ -81,7 +81,7 @@ const BTC_OVERVIEW_SWAP = 'coin-overview-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
-const mockMetaMetricsId = 'deadbeef';
+const mockAnalyticsId = 'deadbeef';
 const mockNonEvmBalance = '1';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
@@ -191,7 +191,7 @@ const mockMetamaskStore = {
   // selected account
   completedOnboarding: true,
   // Used when clicking on some buttons
-  metaMetricsId: mockMetaMetricsId,
+  analyticsId: mockAnalyticsId,
   // Override state if provided
   multichainNetworkConfigurationsByChainId:
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
