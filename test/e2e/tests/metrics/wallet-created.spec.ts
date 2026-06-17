@@ -241,10 +241,11 @@ describe('Wallet Created Events', function () {
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        const onboardingOptions: { driver: Driver } & OnboardingMetricsFlowOptions =
-          {
-            driver,
-          };
+        const onboardingOptions: {
+          driver: Driver;
+        } & OnboardingMetricsFlowOptions = {
+          driver,
+        };
         // If running in Firefox, set the onboarding options to true
         // Otherwise, `optedIn` is automatically set to true for social login users
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {

@@ -261,11 +261,13 @@ async function recoverFromTelegramAuthTab({
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
  * @param [options.skipSRPBackup] - Whether to skip the SRP backup step. Defaults to false.
  * @param [options.socialLoginEnabled] - Indicates if social login feature is enabled. Defaults to true.
+ * @param [options.optedIn] - Whether the user has opted in to MetaMetrics.
  */
 export const createNewWalletOnboardingFlow = async ({
   driver,
   password = WALLET_PASSWORD,
   participateInMetaMetrics = false,
+  optedIn,
   needNavigateToNewPage = true,
   dataCollectionForMarketing = false,
   skipSRPBackup = false,
@@ -273,18 +275,20 @@ export const createNewWalletOnboardingFlow = async ({
 }: {
   driver: Driver;
   password?: string;
-  participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
-  dataCollectionForMarketing?: boolean;
   skipSRPBackup?: boolean;
   socialLoginEnabled?: boolean;
-}): Promise<void> => {
+} & OnboardingMetricsFlowOptions): Promise<void> => {
+  const metricsOptions = {
+    participateInMetaMetrics,
+    optedIn,
+    dataCollectionForMarketing,
+  };
   console.log('Starting the creation of a new wallet onboarding flow');
   const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
     driver,
-    participateInMetaMetrics,
+    ...metricsOptions,
     needNavigateToNewPage,
-    dataCollectionForMarketing,
   });
   await startOnboardingPage.createWalletWithSrp(socialLoginEnabled);
 
@@ -303,10 +307,7 @@ export const createNewWalletOnboardingFlow = async ({
   }
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-    await onboardingMetricsFlow(driver, {
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-    });
+    await onboardingMetricsFlow(driver, metricsOptions);
   }
 };
 
