@@ -1,5 +1,6 @@
 import { Wallet } from '@metamask/wallet';
 import { Json } from '@metamask/utils';
+import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import { RootMessenger } from '../lib/messenger';
 import { initializeWallet } from './initialization';
 
@@ -33,7 +34,7 @@ function getRemoteFeatureFlagOptions(
   initializeWallet({
     messenger: {} as unknown as RootMessenger,
     state,
-    getMetaMetricsId: () => 'metrics-id',
+    connectivityAdapter: {} as unknown as ConnectivityAdapter,
   });
   return MockWallet.mock.calls[0][0].instanceOptions
     .remoteFeatureFlagController;

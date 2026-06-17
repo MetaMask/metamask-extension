@@ -450,6 +450,7 @@ import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 import { setupRemoteFeatureFlagToggle } from './wallet-init/remote-feature-flags';
+import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -541,19 +542,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.initializeChainlist();
 
-    const { wallet, connectivityAdapter } = initializeWallet({
+    const connectivityAdapter = new ExtensionConnectivityAdapter();
+    this.connectivityAdapter = connectivityAdapter;
+    this.wallet = initializeWallet({
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
       showApprovalRequest: this.opts.showUserConfirmation,
-      // Resolved lazily: `this.metaMetricsController` is assigned below from the
-      // wallet/messenger-client instances, before any feature-flag fetch runs.
-      getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
+      connectivityAdapter,
     });
-    this.wallet = wallet;
-    // The ConnectivityController is now owned by the wallet; keep a reference to
-    // its adapter so `background.js` can push connectivity status into it.
-    this.connectivityAdapter = connectivityAdapter;
 
     this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
@@ -1441,9 +1438,6 @@ export default class MetamaskController extends EventEmitter {
     this.memStore = new ComposableObservableStore({
       config: {
         AccountsController: this.accountsController,
-        // The ConnectivityController is wallet-owned; include it here so its
-        // (ephemeral, non-persisted) `connectivityStatus` still flows into the
-        // flattened `state.metamask` that the UI reads for offline detection.
         ConnectivityController: this.connectivityController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
@@ -1931,12 +1925,19 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
-    // Remote feature flags are constructed through `@metamask/wallet` with an
-    // initial `disabled` value; the dynamic enable/disable toggling (driven by
-    // onboarding completion and the external-services preference) stays here, in
-    // the extension.
+    const remoteFeatureFlagToggleMessenger = new Messenger({
+      namespace: 'RemoteFeatureFlagToggle',
+      parent: this.controllerMessenger,
+    });
+    this.controllerMessenger.delegate({
+      messenger: remoteFeatureFlagToggleMessenger,
+      events: [
+        'PreferencesController:stateChange',
+        'OnboardingController:stateChange',
+      ],
+    });
     setupRemoteFeatureFlagToggle({
-      messenger: this.controllerMessenger,
+      messenger: remoteFeatureFlagToggleMessenger,
       remoteFeatureFlagController: this.remoteFeatureFlagController,
       preferencesState: this.preferencesController.state,
       onboardingState: this.onboardingController.state,
