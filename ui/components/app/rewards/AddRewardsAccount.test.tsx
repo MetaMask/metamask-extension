@@ -124,14 +124,14 @@ describe('AddRewardsAccount', () => {
       render(<AddRewardsAccount account={mockAccount} />);
 
       const button = screen.getByText('Link Account').closest('button');
-      expect(button).toBeDisabled();
+      expect(button).toHaveAttribute('aria-disabled', 'true');
     });
 
     it('should not disable button when isLoading is false', () => {
       render(<AddRewardsAccount account={mockAccount} />);
 
       const button = screen.getByText('Link Account').closest('button');
-      expect(button).not.toBeDisabled();
+      expect(button).not.toHaveAttribute('aria-disabled', 'true');
     });
   });
 
@@ -222,7 +222,7 @@ describe('AddRewardsAccount', () => {
       const loadingIcon = container.querySelector('svg');
       expect(loadingIcon).toBeInTheDocument();
       const button = screen.getByText('Link Account').closest('button');
-      expect(button).toBeDisabled();
+      expect(button).toHaveAttribute('aria-disabled', 'true');
     });
 
     it('should show error icon and error text when error occurs', () => {
