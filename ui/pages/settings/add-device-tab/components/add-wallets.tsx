@@ -8,6 +8,7 @@ import {
   TextColor,
   FontWeight,
   Button,
+  BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { AddDeviceSettingsStep } from '../constant';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -19,7 +20,7 @@ type AddWalletsProps = {
   onAddWallets: (type: AddDeviceSettingsStep) => void;
 };
 
-const AddWallets = (_props: AddWalletsProps) => {
+const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   const t = useI18nContext();
   const { wallets } = useSelector(getAccountTree);
   const [selectedAccountGroups, setSelectedAccountGroups] = useState<
@@ -39,8 +40,16 @@ const AddWallets = (_props: AddWalletsProps) => {
   }, []);
 
   return (
-    <Box className="p-4 flex flex-1 flex-col gap-4">
-      <Box className="flex-col gap-1 px-4">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={4}
+      className="flex-1 min-h-0"
+    >
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={1}
+        paddingHorizontal={4}
+      >
         <Text
           variant={TextVariant.HeadingLg}
           fontWeight={FontWeight.Bold}
@@ -62,14 +71,12 @@ const AddWallets = (_props: AddWalletsProps) => {
           showAddAccount={false}
         />
       </ScrollContainer>
-      <Box className="w-full mt-auto px-4">
+      <Box className="w-full mt-auto" paddingHorizontal={4}>
         <Button
           className="w-full"
-          onClick={() =>
-            console.log('Selected account groups:', selectedAccountGroups)
-          }
+          onClick={() => onAddWallets(AddDeviceSettingsStep.SyncingWallets)}
         >
-          {t('add_wallets')}
+          {t('continue')}
         </Button>
       </Box>
     </Box>

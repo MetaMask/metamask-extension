@@ -1,24 +1,25 @@
 import type { IKeyManager, KeyPair } from '@metamask/mobile-wallet-protocol-core';
-import { encryptorFactory } from 'app/scripts/lib/encryptor-factory';
-
-const encryptor = encryptorFactory(600_000);
+import { decrypt, encrypt, PrivateKey, PublicKey } from 'eciesjs';
 
 export class KeyManager implements IKeyManager {
   generateKeyPair(): KeyPair {
-    throw new Error('Not implemented');
+    const privateKey = new PrivateKey();
+    return { privateKey: new Uint8Array(privateKey.secret), publicKey: privateKey.publicKey.toBytes(true) };
   }
 
-  async encrypt(data: string): Promise<string> {
-    throw new Error('Not implemented');
+  validatePeerKey(key: Uint8Array): void {
+    PublicKey.fromHex(Buffer.from(key).toString('utf8'));
   }
 
-  async decrypt(data: string): Promise<string> {
-    throw new Error('Not implemented');
+  async encrypt(plaintext: string, theirPublicKey: Uint8Array): Promise<string> {
+    const plaintextBuffer = Buffer.from(plaintext, 'utf8');
+    const encryptedBuffer = encrypt(theirPublicKey, plaintextBuffer);
+    return encryptedBuffer.toString();
   }
 
-  validatePeerKey(key: Uint8Array<ArrayBufferLike>): void {
-    // TODO:
-    // assert that the key is a valid public key
-    throw new Error('Not implemented');
+  async decrypt(encryptedB64: string, myPrivateKey: Uint8Array): Promise<string> {
+    const encryptedBuffer = Buffer.from(encryptedB64, 'base64');
+    const decryptedBuffer = decrypt(myPrivateKey, encryptedBuffer);
+    return Buffer.from(decryptedBuffer).toString('utf8');
   }
 }

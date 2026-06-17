@@ -1102,7 +1102,7 @@
     "message": "Add a custom token"
   },
   "addDevice": {
-    "message": "Add device"
+    "message": "Sync with mobile"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
@@ -1187,11 +1187,30 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "add_device_success_desc": {
+    "message": "$1 accounts from $2 Secret Recovery Phrases were synced to your phone.",
+    "description": "$1 is the number of accounts, $2 is the number of Secret Recovery Phrases"
+  },
+  "add_device_success_title": {
+    "message": "Device paired"
+  },
+  "add_device_syncing_desc": {
+    "message": "Sending your selected accounts to your phone."
+  },
+  "add_device_syncing_title": {
+    "message": "Importing accounts"
+  },
+  "add_device_validating_desc": {
+    "message": "Establishing a secure, encrypted connection with your phone."
+  },
+  "add_device_validating_title": {
+    "message": "Pairing devices"
+  },
   "add_wallets": {
-    "message": "Add wallets"
+    "message": "Choose what to sync"
   },
   "add_wallets_desc": {
-    "message": "Pick the wallets you’d like to use on this device. You can add or remove them later."
+    "message": "Pick the wallets and accounts to import to your phone. You can change this later."
   },
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
@@ -8490,9 +8509,6 @@
   },
   "selectType": {
     "message": "Select type"
-  },
-  "select_all": {
-    "message": "Select all"
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
