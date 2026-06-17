@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback, useMemo } from 'react';
+import React, { useContext, useRef, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
 import { CarouselWithEmptyState } from '../carousel';
@@ -21,9 +21,7 @@ export const Carousel = () => {
     remoteFeatureFlags && remoteFeatureFlags.carouselBanners,
   );
   const { trackEvent } = useContext(MetaMetricsContext);
-  const [displayedSlideIds, setDisplayedSlideIds] = useState<Set<string>>(
-    new Set(),
-  );
+  const displayedSlideIds = useRef<Set<string>>(new Set());
 
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
     useState(false);
@@ -76,7 +74,8 @@ export const Carousel = () => {
 
   const handleActiveSlideChange = useCallback(
     (slide: CarouselSlide) => {
-      if (!displayedSlideIds.has(slide.id)) {
+      if (!displayedSlideIds.current.has(slide.id)) {
+        displayedSlideIds.current.add(slide.id);
         trackEvent({
           event: MetaMetricsEventName.BannerDisplay,
           category: MetaMetricsEventCategory.Banner,
@@ -86,10 +85,9 @@ export const Carousel = () => {
             banner_name: slide.id,
           },
         });
-        setDisplayedSlideIds((prev) => new Set(prev).add(slide.id));
       }
     },
-    [displayedSlideIds, trackEvent],
+    [trackEvent],
   );
 
   if (!isCarouselEnabled) {
