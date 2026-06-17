@@ -29,43 +29,43 @@ const Success = ({ onDone }: SuccessProps) => {
   const wallets = [
     {
       name: 'Main Wallet',
-      accounts_count: 5,
+      accountsCount: 5,
     },
     {
       name: 'Secondary Wallet',
-      accounts_count: 2,
+      accountsCount: 2,
     },
     {
       name: 'Tertiary Wallet',
-      accounts_count: 3,
+      accountsCount: 3,
     },
     {
       name: 'Quaternary Wallet',
-      accounts_count: 4,
+      accountsCount: 4,
     },
     {
       name: 'Quinary Wallet',
-      accounts_count: 1,
+      accountsCount: 1,
     },
     {
       name: 'Senary Wallet',
-      accounts_count: 0,
+      accountsCount: 0,
     },
     {
       name: 'Septenary Wallet',
-      accounts_count: 0,
+      accountsCount: 0,
     },
     {
       name: 'Octonary Wallet',
-      accounts_count: 0,
+      accountsCount: 0,
     },
     {
       name: 'Nonary Wallet',
-      accounts_count: 0,
+      accountsCount: 0,
     },
     {
       name: 'Decenary Wallet',
-      accounts_count: 0,
+      accountsCount: 0,
     },
   ];
 
@@ -136,7 +136,7 @@ const Success = ({ onDone }: SuccessProps) => {
                     variant={TextVariant.BodySm}
                     color={TextColor.TextAlternative}
                   >
-                    {`${wallet.accounts_count} ${t('accounts')}`}
+                    {`${wallet.accountsCount} ${t('accounts')}`}
                   </Text>
                 </Box>
               </Box>
