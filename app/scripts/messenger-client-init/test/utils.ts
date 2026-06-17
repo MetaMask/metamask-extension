@@ -1,3 +1,4 @@
+import { Mutex } from 'async-mutex';
 import ExtensionPlatform from '../../platforms/extension';
 import {
   BaseRestrictedControllerMessenger,
@@ -34,5 +35,10 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     showNotification: jest.fn(),
     showUserConfirmation: jest.fn(),
     preinstalledSnaps: [],
+    infuraProjectId: 'test-infura-project-id',
+    getRequestAccountTabIds: jest.fn(),
+    getOpenMetamaskTabsIds: jest.fn(),
+    sendUpdate: jest.fn(),
+    seedlessOperationMutex: new Mutex(),
   };
 }
