@@ -1,32 +1,12 @@
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import {
+  createTxMeta,
+  TARGET_FROM,
+} from '../../../../test/helpers/hw-sign-tracker';
 import { matchesTx, classifySignedEvent } from './shared-filters';
 
 describe('matchesTx', () => {
-  const TARGET_FROM = '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452';
-
-  function createTxMeta(
-    overrides: Partial<{
-      from: string;
-      type: TransactionType;
-    }> = {},
-  ): TransactionMeta {
-    return {
-      id: 'tx-1',
-      status: TransactionStatus.signed,
-      type: overrides.type ?? TransactionType.bridgeApproval,
-      txParams: { from: overrides.from ?? TARGET_FROM },
-      batchId: undefined,
-      chainId: '0x1',
-      networkClientId: 'test',
-      time: 0,
-    };
-  }
-
   it('returns false when targetFrom is undefined', () => {
     expect(matchesTx(createTxMeta(), undefined)).toBe(false);
   });
@@ -42,10 +22,11 @@ describe('matchesTx', () => {
 
   it('returns false when transaction type is not a batch type', () => {
     expect(
-      matchesTx(createTxMeta({ type: TransactionType.simpleSend }), TARGET_FROM),
-    ).toBe(
-      false,
-    );
+      matchesTx(
+        createTxMeta({ type: TransactionType.simpleSend }),
+        TARGET_FROM,
+      ),
+    ).toBe(false);
   });
 
   it('returns true for matching address and bridge approval type', () => {

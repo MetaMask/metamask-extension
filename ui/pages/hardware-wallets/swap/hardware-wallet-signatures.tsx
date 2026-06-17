@@ -125,7 +125,7 @@ export default function HardwareWalletSignatures() {
   // "Resend transaction" button becomes eligible after SIGNATURE_STUCK_TIMEOUT_MS.
   const hasRetriedRef = useRef(false);
   const [isRetrying, setIsRetrying] = useState(false);
-  const firstSignatureDoneRef = useRef(false);
+  const [firstSignatureDone, setFirstSignatureDone] = useState(false);
   // Set to true when the device has been in an awaiting-signature state for
   // longer than SIGNATURE_STUCK_TIMEOUT_MS without progressing. Resets when
   // the state leaves awaiting-signature or a retry starts.
@@ -190,7 +190,10 @@ export default function HardwareWalletSignatures() {
     signatureState,
     dispatchSignatureEvent,
     submitBridgeTransaction,
-    firstSignatureDoneRef: isStxEnabled ? undefined : firstSignatureDoneRef,
+    firstSignatureDone: isStxEnabled ? undefined : firstSignatureDone,
+    onResetFirstSignature: isStxEnabled
+      ? undefined
+      : () => setFirstSignatureDone(false),
   });
 
   const { isDeviceDisconnectedRef, resetConnectionError } =
@@ -265,7 +268,7 @@ export default function HardwareWalletSignatures() {
       signatureState.status === HardwareWalletSignatureStatus.AwaitingFinalSignature ||
       signatureState.status === HardwareWalletSignatureStatus.Submitted
     ) {
-      firstSignatureDoneRef.current = true;
+      setFirstSignatureDone(true);
     }
   }, [signatureState.status]);
 

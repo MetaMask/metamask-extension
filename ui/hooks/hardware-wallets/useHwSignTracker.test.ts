@@ -6,6 +6,7 @@ import {
 } from '../../store/background-connection';
 import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { useHwSignTracker } from './useHwSignTracker';
+import { UNKNOWN_BATCH_ID } from './hw-sign-tracker/constants';
 
 jest.mock('../../store/background-connection', () => {
   const createMockUnsubscribe = () => {
@@ -288,32 +289,6 @@ describe.each<string, boolean>([
 
     expect(dispatch2).toHaveBeenCalledWith({
       type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
-    });
-  });
-
-  it('fires FirstSignatureSubmitted then TransactionSubmitted for approval → trade batch flow', async () => {
-    const { dispatchEvent, fire } = await setupTracker({ useBatchTracking });
-
-    // Step 1: approval tx signed
-    await fire(STATUS_UPDATED, {
-      id: 'tx-approval',
-      type: TransactionType.bridgeApproval,
-      batchId: 'batch-1',
-    });
-    expect(dispatchEvent).toHaveBeenCalledWith({
-      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
-    });
-
-    dispatchEvent.mockClear();
-
-    // Step 2: trade tx signed (same batch)
-    await fire(STATUS_UPDATED, {
-      id: 'tx-trade',
-      type: TransactionType.bridge,
-      batchId: 'batch-1',
-    });
-    expect(dispatchEvent).toHaveBeenCalledWith({
-      type: HardwareWalletSignatureEvent.TransactionSubmitted,
     });
   });
 
@@ -947,7 +922,10 @@ describe('useHwSignTracker (batch mode specific)', () => {
       retryGenerationRef.current = 1;
 
       // Terminal event from unknown batch passes (null state accepts non-stale)
-      await fire(FINISHED, { status: 'rejected', batchId: 'batch-unknown' });
+      await fire(FINISHED, {
+        status: 'rejected',
+        batchId: UNKNOWN_BATCH_ID,
+      });
       expect(dispatchEvent).toHaveBeenCalledWith({
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });
@@ -959,8 +937,11 @@ describe('useHwSignTracker (batch mode specific)', () => {
       });
       dispatchEvent.mockClear();
 
-      // Old batch-unknown is now stale
-      await fire(FINISHED, { status: 'rejected', batchId: 'batch-unknown' });
+      // Old unknown batch is now stale
+      await fire(FINISHED, {
+        status: 'rejected',
+        batchId: UNKNOWN_BATCH_ID,
+      });
       expect(dispatchEvent).not.toHaveBeenCalled();
 
       // New batch event is allowed

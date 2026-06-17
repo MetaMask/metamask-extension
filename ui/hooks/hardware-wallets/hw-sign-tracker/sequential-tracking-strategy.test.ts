@@ -2,38 +2,13 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import {
+  createRetryGenRef,
+  createTxMeta,
+} from '../../../../test/helpers/hw-sign-tracker';
 import { SequentialTrackingStrategy } from './sequential-tracking-strategy';
-
-type TxMetaOverrides = Partial<{
-  status: TransactionStatus;
-  type: TransactionType;
-  from: string;
-  batchId: string;
-  id: string;
-}>;
-
-function createTxMeta(overrides: TxMetaOverrides = {}): TransactionMeta {
-  return {
-    id: overrides.id ?? 'tx-1',
-    status: overrides.status ?? TransactionStatus.signed,
-    type: overrides.type ?? TransactionType.bridgeApproval,
-    txParams: {
-      from: overrides.from ?? '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452',
-    },
-    batchId: overrides.batchId as `0x${string}` | undefined,
-    chainId: '0x1',
-    networkClientId: 'test',
-    time: 0,
-  };
-}
-
-function createRetryGenRef(
-  value = 0,
-): React.MutableRefObject<number | undefined> {
-  return { current: value };
-}
+import { checkPendingAbort } from './utils';
 
 describe('SequentialTrackingStrategy', () => {
   let strategy: SequentialTrackingStrategy;
@@ -130,9 +105,7 @@ describe('SequentialTrackingStrategy', () => {
     it('dispatches TransactionRejected for tracked tx', () => {
       strategy.processStatusUpdated(createTxMeta({ id: 'tx-1' }));
 
-      const result = strategy.processRejected(
-        createTxMeta({ id: 'tx-1' }),
-      );
+      const result = strategy.processRejected(createTxMeta({ id: 'tx-1' }));
       expect(result.action).toEqual({
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });
@@ -145,7 +118,10 @@ describe('SequentialTrackingStrategy', () => {
   describe('processFinished', () => {
     it('returns null for untracked tx id', () => {
       const result = strategy.processFinished(
-        createTxMeta({ status: TransactionStatus.rejected, id: 'tx-untracked' }),
+        createTxMeta({
+          status: TransactionStatus.rejected,
+          id: 'tx-untracked',
+        }),
       );
       expect(result.action).toBeNull();
     });
@@ -196,9 +172,7 @@ describe('SequentialTrackingStrategy', () => {
       strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
 
       // Stale tx should be blocked
-      const result = strategy.processRejected(
-        createTxMeta({ id: 'tx-old' }),
-      );
+      const result = strategy.processRejected(createTxMeta({ id: 'tx-old' }));
       expect(result.action).toBeNull();
     });
 
@@ -224,28 +198,26 @@ describe('SequentialTrackingStrategy', () => {
   });
 
   // ============================================================
-  // recordTxId / getTrackedTxIds
+  // getTrackedTxIds
   // ============================================================
-  describe('recordTxId / getTrackedTxIds', () => {
-    it('tracks tx IDs from events', () => {
-      strategy.recordTxId('tx-1');
-      strategy.recordTxId('tx-2');
+  describe('getTrackedTxIds', () => {
+    it('returns tx IDs observed via processStatusUpdated', () => {
+      strategy.processStatusUpdated(createTxMeta({ id: 'tx-1' }));
+      strategy.processStatusUpdated(
+        createTxMeta({ id: 'tx-2', type: TransactionType.bridge }),
+      );
       expect(strategy.getTrackedTxIds()).toEqual(new Set(['tx-1', 'tx-2']));
     });
   });
 
   // ============================================================
-  // checkPendingAbort
+  // checkPendingAbort (util)
   // ============================================================
-  describe('checkPendingAbort', () => {
+  describe('checkPendingAbort (util)', () => {
     it('returns true and removes tx from pending set when found', () => {
       const pending = new Set(['tx-1']);
       const onSettled = jest.fn();
-      const consumed = strategy.checkPendingAbort(
-        'tx-1',
-        pending,
-        onSettled,
-      );
+      const consumed = checkPendingAbort('tx-1', pending, onSettled);
       expect(consumed).toBe(true);
       expect(pending.has('tx-1')).toBe(false);
     });
@@ -253,18 +225,14 @@ describe('SequentialTrackingStrategy', () => {
     it('calls onSettled when pending set becomes empty', () => {
       const pending = new Set(['tx-1']);
       const onSettled = jest.fn();
-      strategy.checkPendingAbort('tx-1', pending, onSettled);
+      checkPendingAbort('tx-1', pending, onSettled);
       expect(onSettled).toHaveBeenCalledTimes(1);
     });
 
     it('returns false when tx is not in pending set', () => {
       const pending = new Set(['tx-1']);
       const onSettled = jest.fn();
-      const consumed = strategy.checkPendingAbort(
-        'tx-other',
-        pending,
-        onSettled,
-      );
+      const consumed = checkPendingAbort('tx-other', pending, onSettled);
       expect(consumed).toBe(false);
     });
   });
@@ -280,9 +248,7 @@ describe('SequentialTrackingStrategy', () => {
       expect(strategy.getTrackedTxIds()).toEqual(new Set());
 
       // Untracked tx should be blocked on rejected
-      const result = strategy.processRejected(
-        createTxMeta({ id: 'tx-1' }),
-      );
+      const result = strategy.processRejected(createTxMeta({ id: 'tx-1' }));
       expect(result.action).toBeNull();
     });
   });

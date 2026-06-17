@@ -48,10 +48,10 @@ jest.mock('../../ducks/bridge/utils', () => ({
 }));
 
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
-jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => {
+jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
   return {
     ...jest.requireActual(
-      '../../../contexts/hardware-wallets/HardwareWalletContext',
+      '../../contexts/hardware-wallets/HardwareWalletContext',
     ),
     useHardwareWalletActions: () => ({
       ensureDeviceReady: () => mockEnsureDeviceReady(),
@@ -59,8 +59,8 @@ jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => {
   };
 });
 
-jest.mock('../../../store/actions', () => {
-  const original = jest.requireActual('../../../store/actions');
+jest.mock('../../store/actions', () => {
+  const original = jest.requireActual('../../store/actions');
   return {
     ...original,
     addTransaction: jest.fn(),
@@ -104,9 +104,7 @@ const MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID = {
 };
 
 jest.mock('../../../shared/lib/selectors/networks', () => {
-  const original = jest.requireActual(
-    '../../../shared/lib/selectors/networks',
-  );
+  const original = jest.requireActual('../../../shared/lib/selectors/networks');
   return {
     ...original,
     getSelectedNetworkClientId: () => 'mainnet',

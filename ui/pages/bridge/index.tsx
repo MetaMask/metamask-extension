@@ -99,29 +99,25 @@ const CrossChainSwap = () => {
       <Header
         textProps={{ variant: TextVariant.headingSm }}
         startAccessory={
-          isHardwareWalletSignaturesPage ? null : (
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('back')}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={handleBack}
-            />
-          )
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Md}
+            ariaLabel={t('back')}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={handleBack}
+          />
         }
         endAccessory={
-          isHardwareWalletSignaturesPage ? null : (
-            <ButtonIcon
-              iconName={IconName.Setting}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('settings')}
-              data-testid="bridge__header-settings-button"
-              onClick={() => {
-                setIsSettingsModalOpen(true);
-              }}
-            />
-          )
+          <ButtonIcon
+            iconName={IconName.Setting}
+            size={ButtonIconSize.Md}
+            ariaLabel={t('settings')}
+            data-testid="bridge__header-settings-button"
+            onClick={() => {
+              setIsSettingsModalOpen(true);
+            }}
+          />
         }
       >
         {isHardwareWalletSignaturesPage ? null : t('swap')}

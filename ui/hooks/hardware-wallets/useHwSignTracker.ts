@@ -14,6 +14,49 @@ import type {
 import { matchesTx } from './hw-sign-tracker/shared-filters';
 import { BatchTrackingStrategy } from './hw-sign-tracker/batch-tracking-strategy';
 import { SequentialTrackingStrategy } from './hw-sign-tracker/sequential-tracking-strategy';
+import { checkPendingAbort } from './hw-sign-tracker/utils';
+
+/**
+ * Maps the internal event-source identifier to the TransactionController event
+ * name used for log labeling. Defined at module scope so it is not recreated
+ * on every event invocation.
+ */
+const EVENT_SOURCE_NAMES: Record<
+  'statusUpdated' | 'rejected' | 'finished',
+  string
+> = {
+  statusUpdated: 'transactionStatusUpdated',
+  rejected: 'transactionRejected',
+  finished: 'transactionFinished',
+};
+
+/** Maximum time (ms) to wait for abort confirmations before giving up. */
+const ABORT_SETTLE_TIMEOUT_MS = 5_000;
+
+/**
+ * Races `promise` against a timeout. Clears the timer if the promise settles
+ * first so no dangling timer remains.
+ *
+ * @param promise - The promise to await.
+ * @param timeoutMs - Milliseconds to wait before resolving with `undefined`.
+ * @returns The resolved value of `promise`, or `undefined` on timeout.
+ */
+async function raceWithTimeout<TResult>(
+  promise: Promise<TResult>,
+  timeoutMs: number,
+): Promise<TResult | void> {
+  let timer: NodeJS.Timeout | undefined;
+  const timeoutPromise = new Promise<void>((resolve) => {
+    timer = setTimeout(resolve, timeoutMs);
+  });
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } finally {
+    if (timer) {
+      clearTimeout(timer);
+    }
+  }
+}
 
 /**
  * Factory to create the appropriate tracking strategy based on mode.
@@ -43,7 +86,7 @@ export function useHwSignTracker(
   hardwareWalletUsed: boolean | undefined,
   dispatchSignatureEvent: React.Dispatch<HwSignTrackerAction>,
   options: UseHwSignTrackerOptions,
-  retryGenerationRef?: React.RefObject<number>,
+  retryGenerationRef?: React.RefObject<number | undefined>,
 ) {
   const dispatchRef = useRef(dispatchSignatureEvent);
   dispatchRef.current = dispatchSignatureEvent;
@@ -117,10 +160,7 @@ export function useHwSignTracker(
       return;
     }
 
-    await Promise.race([
-      settlePromise,
-      new Promise((resolve) => setTimeout(resolve, 5_000)),
-    ]);
+    await raceWithTimeout(settlePromise, ABORT_SETTLE_TIMEOUT_MS);
 
     // Stop swallowing events if abort confirmations never arrived (timeout path).
     finishCancelCleanup();
@@ -139,15 +179,11 @@ export function useHwSignTracker(
     const unsubscribes: (() => Promise<void>)[] = [];
 
     const handlePendingAbort = (txId: string): boolean => {
-      return strategy.checkPendingAbort(
-        txId,
-        pendingAbortTxIdsRef.current,
-        () => {
-          if (abortSettleResolveRef.current) {
-            abortSettleResolveRef.current();
-          }
-        },
-      );
+      return checkPendingAbort(txId, pendingAbortTxIdsRef.current, () => {
+        if (abortSettleResolveRef.current) {
+          abortSettleResolveRef.current();
+        }
+      });
     };
 
     const registerSubscription = async (
@@ -168,8 +204,10 @@ export function useHwSignTracker(
      * Creates a unified event handler for a TransactionController event.
      * Encapsulates the shared preamble (generation check → filter → track →
      * abort check) and delegates to the strategy for mode-specific processing.
-     * @param eventSource
-     * @param processor
+     *
+     * @param eventSource - Which TransactionController event this handler wraps
+     * ('statusUpdated', 'rejected', or 'finished'); used only for log labeling.
+     * @param processor - Strategy method that classifies the event into an action.
      */
     const createEventHandler =
       (
@@ -182,17 +220,12 @@ export function useHwSignTracker(
         }
 
         strategy.checkRetryGeneration(
-          retryGenerationRef as React.RefObject<number | undefined> | undefined,
+          retryGenerationRef,
           lastSeenGenerationRef,
         );
 
         const { status, type } = transactionMeta;
 
-        const EVENT_SOURCE_NAMES: Record<string, string> = {
-          statusUpdated: 'transactionStatusUpdated',
-          rejected: 'transactionRejected',
-          finished: 'transactionFinished',
-        };
         const eventSourceName = EVENT_SOURCE_NAMES[eventSource];
 
         log.debug(

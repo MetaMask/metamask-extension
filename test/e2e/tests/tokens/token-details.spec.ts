@@ -7,12 +7,11 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
-  mockHistoricalPrices,
   mockHistoricalPricesV3,
   mockSpotPrices,
 } from './utils/mocks';
@@ -27,6 +26,11 @@ describe('Token Details', function () {
       .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
       .withEnabledNetworks({ eip155: { [chainId]: true } })
       .build(),
+    manifestFlags: {
+      remoteFeatureFlags: {
+        extensionUxTokenManagementFilter: false,
+      },
+    },
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },
@@ -46,19 +50,12 @@ describe('Token Details', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-        );
-        await assetListPage.dismissTokenImportedMessage();
-        await assetListPage.openTokenDetails(symbol);
-        await assetListPage.checkTokenSymbolAndAddressDetails(
-          symbol,
-          tokenAddress,
-        );
+        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
+        await tokensTab.dismissTokenImportedMessage();
+        await tokensTab.openTokenDetails(symbol);
+        await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
       },
     );
   });
@@ -96,41 +93,35 @@ describe('Token Details', function () {
               marketCap: marketData.marketCap * ethConversionInUsd,
             },
           }),
-          await mockHistoricalPrices(mockServer, {
-            address: tokenAddress,
-            chainId,
-            historicalPrices: [
-              { timestamp: 1717566000000, price: marketData.price * 0.9 },
-              { timestamp: 1717566322300, price: marketData.price },
-              { timestamp: 1717566611338, price: marketData.price * 1.1 },
+          await mockHistoricalPricesV3(
+            mockServer,
+            'eip155:1',
+            `erc20:${tokenAddress.toLowerCase()}`,
+            [
+              [1717566000000, marketData.price * 0.9],
+              [1717566322300, marketData.price],
+              [1717566611338, marketData.price * 1.1],
             ],
-          }),
+          ),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-        );
-        await assetListPage.dismissTokenImportedMessage();
-        await assetListPage.openTokenDetails(symbol);
-        await assetListPage.checkTokenSymbolAndAddressDetails(
-          symbol,
-          tokenAddress,
-        );
+        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
+        await tokensTab.dismissTokenImportedMessage();
+        await tokensTab.openTokenDetails(symbol);
+        await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
 
-        await assetListPage.checkTokenPriceAndMarketCap(
+        await tokensTab.checkTokenPriceAndMarketCap(
           expectedPrice,
           expectedMarketCap,
         );
 
-        await assetListPage.checkPriceChartIsShown();
+        await tokensTab.checkPriceChartIsShown();
       },
     );
   });
@@ -140,6 +131,9 @@ describe('Token Details', function () {
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
+        // Native ETH price in the details view comes from the ETH conversion
+        // rate (see useCurrentPrice), so seed it to match the asserted price.
+        ethConversionInUsd: 1700,
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
@@ -157,11 +151,11 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.openTokenDetails('Ethereum');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.openTokenDetails('Ethereum');
 
         // check display of price in details
-        await assetListPage.checkTokenPrice('$1,700.00');
+        await tokensTab.checkTokenPrice('$1,700.00');
       },
     );
   });

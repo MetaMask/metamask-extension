@@ -2,7 +2,7 @@ import { withFixtures } from '../../../helpers';
 import { NETWORK_CLIENT_ID } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import NFTListPage from '../../../page-objects/pages/home/nft-list';
+import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -32,11 +32,11 @@ describe('NFT full', function () {
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.goToNftTab();
-        const nftListPage = new NFTListPage(driver);
+        const nftsTab = new NftsTab(driver);
 
-        await nftListPage.checkNftNameIsDisplayed('ENS: Ethereum Name Service');
-        await nftListPage.checkNftImageIsDisplayed();
-        await nftListPage.clickNFTIconOnActivityList();
+        await nftsTab.checkNftNameIsDisplayed('ENS: Ethereum Name Service');
+        await nftsTab.checkNftImageIsDisplayed();
+        await nftsTab.clickNFTIconOnActivityList();
 
         const nftDetailsPage = new NFTDetailsPage(driver);
         await nftDetailsPage.checkPageIsLoaded();
@@ -69,11 +69,11 @@ describe('NFT full', function () {
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.goToNftTab();
-        const nftListPage = new NFTListPage(driver);
+        const nftsTab = new NftsTab(driver);
 
-        await nftListPage.checkNftNameIsDisplayed('ENS: Ethereum Name Service');
-        await nftListPage.checkNftImageIsDisplayed();
-        await nftListPage.clickNFTIconOnActivityList();
+        await nftsTab.checkNftNameIsDisplayed('ENS: Ethereum Name Service');
+        await nftsTab.checkNftImageIsDisplayed();
+        await nftsTab.clickNFTIconOnActivityList();
 
         const nftDetailsPage = new NFTDetailsPage(driver);
         await nftDetailsPage.checkPageIsLoaded();

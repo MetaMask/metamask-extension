@@ -10,3 +10,6 @@ export { getInstitutionalSnapControllerMessenger } from './institutional-snap-co
 
 export type { AccountTreeControllerInitMessenger } from './account-tree-controller-messenger';
 export type { MultichainAccountServiceInitMessenger } from './multichain-account-service-messenger';
+
+export type { SnapAccountServiceMessenger } from './snap-account-service-messenger';
+export { getSnapAccountServiceMessenger } from './snap-account-service-messenger';

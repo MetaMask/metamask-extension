@@ -14,3 +14,9 @@ export const TRADE_TYPES = new Set([
 
 /** All tracked bridge/swap transaction types (approval + trade). */
 export const ALL_BATCH_TYPES = new Set([...APPROVAL_TYPES, ...TRADE_TYPES]);
+
+/**
+ * Fallback batch ID used when a transaction's `batchId` is undefined. Groups
+ * unbatched transactions together so they can be tracked consistently.
+ */
+export const UNKNOWN_BATCH_ID = 'batch-unknown';

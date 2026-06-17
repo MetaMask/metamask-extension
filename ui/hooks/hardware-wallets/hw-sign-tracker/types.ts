@@ -9,9 +9,7 @@ export type HwSignTrackerAction =
   | { type: typeof HardwareWalletSignatureEvent.TransactionFailed };
 
 /** Result of processing a transaction event through a tracking strategy. */
-export type EventResult =
-  | { action: HwSignTrackerAction }
-  | { action: null };
+export type EventResult = { action: HwSignTrackerAction | null };
 
 /**
  * Strategy interface for batch or sequential tracking.
@@ -26,9 +24,7 @@ export type TrackingStrategy = {
    * @param lastSeenGenerationRef - Internal ref tracking the last-seen generation.
    */
   checkRetryGeneration(
-    retryGenerationRef:
-      | React.RefObject<number | undefined>
-      | undefined,
+    retryGenerationRef: React.RefObject<number | undefined> | undefined,
     lastSeenGenerationRef: React.MutableRefObject<number>,
   ): void;
 
@@ -44,32 +40,12 @@ export type TrackingStrategy = {
   /** Process a transactionFinished event. Handles `rejected` and `failed` statuses. */
   processFinished(transactionMeta: TransactionMeta): EventResult;
 
-  /**
-   * Record a transaction ID as tracked. Called for every matching event
-   * regardless of processing outcome (used for abort tracking).
-   */
-  recordTxId(txId: string): void;
-
-  /**
-   * Check if a pending abort should consume this event.
-   * Returns true if the event was consumed (abort settling in progress).
-   *
-   * @param txId - The transaction ID to check.
-   * @param pendingAbortTxIds - Set of tx IDs awaiting abort confirmation.
-   * @param onAllSettled - Called when all pending aborts have been consumed.
-   */
-  checkPendingAbort(
-    txId: string,
-    pendingAbortTxIds: Set<string>,
-    onAllSettled: () => void,
-  ): boolean;
-
   /** Get all currently tracked transaction IDs (for abort). */
   getTrackedTxIds(): Set<string>;
 
   /** Reset all tracking state (called on cancel, subscription teardown, enable toggle). */
   reset(): void;
-}
+};
 
 /** Options for configuring the hardware wallet signature tracker. */
 export type UseHwSignTrackerOptions = {
