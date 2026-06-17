@@ -474,8 +474,8 @@ describe('ReviewAndConfirmModal', () => {
     });
   });
 
-  describe('NetworkFeeRow skeleton', () => {
-    it('shows the skeleton when totalNetworkFeeAreLoading is true', () => {
+  describe('NetworkFeeRow', () => {
+    it('shows a skeleton while fees are loading', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
@@ -486,7 +486,7 @@ describe('ReviewAndConfirmModal', () => {
       expect(screen.getByTestId('skeleton-loading')).toBeInTheDocument();
     });
 
-    it('does not show the skeleton when totalNetworkFeeAreLoading is false and fee is provided', () => {
+    it('does not show a skeleton once fees have finished loading', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
@@ -497,9 +497,7 @@ describe('ReviewAndConfirmModal', () => {
 
       expect(screen.queryByTestId('skeleton-loading')).not.toBeInTheDocument();
     });
-  });
 
-  describe('NetworkFeeRow error state', () => {
     it('shows a dash when fees failed to load (not loading, fee is null)', () => {
       render(
         <ReviewAndConfirmModal
@@ -537,31 +535,6 @@ describe('ReviewAndConfirmModal', () => {
       );
 
       expect(screen.queryByText('-')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('totalNetworkFeeAreLoading', () => {
-    it('shows a skeleton in the fee row while fees are loading', () => {
-      render(
-        <ReviewAndConfirmModal
-          {...defaultProps}
-          totalNetworkFeeAreLoading={true}
-        />,
-      );
-
-      expect(screen.getByTestId('skeleton-loading')).toBeInTheDocument();
-    });
-
-    it('does not show a skeleton once fees have finished loading', () => {
-      render(
-        <ReviewAndConfirmModal
-          {...defaultProps}
-          totalNetworkFeeAreLoading={false}
-          totalNetworkFee="0.01"
-        />,
-      );
-
-      expect(screen.queryByTestId('skeleton-loading')).not.toBeInTheDocument();
     });
   });
 
