@@ -68,7 +68,7 @@ function getTitleArgs(item: ActivityListItem) {
       return getDefinedArgs(item.data.sourceToken?.symbol);
     }
     default:
-      return [];
+      return [''];
   }
 }
 

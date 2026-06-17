@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Long pozisyon açıldı"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Short açılamadı"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "Cüzdanınızdaki tokenlar otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
   },
-  "asterdexReferralConfirmText": {
-    "message": "Evet, %4 iade al",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask referans kodu ile işlemlerde %4'e varan iade alın.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "MetaMask referans kodu ile işlemlerde %4 iade alın. Bu indirim AsterDEX'in $1 bölümü uyarınca gelecekteki tüm işlemler için geçerlidir. MetaMask bir ücret kazanır.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "AsterDEX'te %4 iade al",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal etme girişimi"
@@ -3105,14 +3092,6 @@
     "message": "MetaMask'in bir yönlendirme kodu eklemesine izin verin. Bu işlem kalıcıdır. Site, kendi koşullarına göre indirimler sunar. MetaMask bu işlemden bir ücret kazanır.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "Hayır, istemiyorum",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "şartlar",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3978,21 +3957,9 @@
     "message": "Cüzdanınızı web3 kullanmaya hazır hale getirin",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "Evet, %5 tasarruf et",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "MetaMask yönlendirme kodu ile işlemlerde %5'e varan tasarruf edin.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "MetaMask referans kodu ile işlemlerde %5 tasarruf edin. Bu indirim GMX'in $1 bölümü uyarınca gelecekteki tüm işlemler için geçerlidir. MetaMask bir ücret kazanır.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "GMX'te %5 tasarruf et",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Siteye git"
@@ -4207,21 +4174,9 @@
   "honeypotTitle": {
     "message": "Bal tuzağı"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "Evet, %4 tasarruf et",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMask yönlendirme kodu ile işlemlerde %4'e varan tasarruf edin.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "MetaMask referans kodu ile işlemlerde %4 tasarruf edin. HyperLiquid'in $1 bölümü uyarınca gelecekteki tüm işlemler için geçerlidir. MetaMask bir ücret kazanır.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "HyperLiquid'de %4 tasarruf et",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Anlıyorum"

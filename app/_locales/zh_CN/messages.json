@@ -601,7 +601,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "已开设多头仓位"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "开空失败"
   },
@@ -1479,21 +1478,9 @@
   "assetsDescription": {
     "message": "自动检测钱包中的代币，显示 NFT，并获取批量账户余额更新"
   },
-  "asterdexReferralConfirmText": {
-    "message": "是，获得 4% 返现",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "使用 MetaMask 推荐码，交易可获得 4% 的返现。",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "使用 MetaMask 推荐码进行交易，可获得 4% 返现。根据 AsterDEX 的 $1 条款，此折扣适用于之后的所有交易。MetaMask 会赚取费用。",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "在 AsterDEX 上可获得 4% 返现",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "尝试免费取消兑换"
@@ -3105,14 +3092,6 @@
     "message": "允许 MetaMask 添加推荐码。此设置为永久有效。相关网站将根据其条款提供折扣。MetaMask 将从中收取费用。",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "不，谢谢",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "条款",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3974,21 +3953,9 @@
     "message": "准备好钱包以便使用 Web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "是，节省 5%",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "使用 MetaMask 推荐码交易费用最高可节省 5%。",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "使用 MetaMask 推荐码进行交易，可节省 5% 的费用。根据 GMX 的 $1 条款，此折扣适用于之后的所有交易。MetaMask 会赚取费用。",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "在 GMX 上可节省 5%",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "转到网站"
@@ -4203,21 +4170,9 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "是，节省 4%",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "使用 MetaMask 推荐码交易费用最高可节省 4%。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "使用 MetaMask 推荐码进行交易，可节省 4% 的费用。根据 Hyperliquid 的 $1 条款，此折扣适用于之后的所有交易。MetaMask 会赚取费用。",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "在 Hyperliquid 上可节省 4%",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "我理解"
