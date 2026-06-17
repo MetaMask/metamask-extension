@@ -22,7 +22,6 @@ export const ProfileMetricsControllerInit: MessengerClientInitFunction<
   ProfileMetricsController,
   ProfileMetricsControllerMessenger
 > = ({ controllerMessenger, persistedState, getMessengerClient }) => {
-  const metaMetricsController = getMessengerClient('MetaMetricsController');
   const analyticsController = getMessengerClient('AnalyticsController');
   const appStateController = getMessengerClient('AppStateController');
   const assertUserOptedIn = () =>
@@ -35,7 +34,7 @@ export const ProfileMetricsControllerInit: MessengerClientInitFunction<
     interval: isTestEnvironment ? 1000 : 10 * 1000,
     initialDelayDuration,
     assertUserOptedIn,
-    getMetaMetricsId: () => metaMetricsController.getMetaMetricsId(),
+    getMetaMetricsId: () => analyticsController.state.analyticsId,
   });
 
   return {

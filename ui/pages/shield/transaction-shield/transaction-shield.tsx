@@ -21,10 +21,10 @@ import {
   TextButton,
   TextColor,
   TextVariant,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
-import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useShieldRewards,

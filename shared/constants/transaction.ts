@@ -279,6 +279,7 @@ export enum EIP5792ErrorCode {
 export const APPROVAL_METHOD_NAMES = [
   'approve',
   'increaseAllowance',
+  'increaseApproval',
   'setApprovalForAll',
 ];
 

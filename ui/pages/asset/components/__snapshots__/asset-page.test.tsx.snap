@@ -13,11 +13,11 @@ exports[`AssetPage should render a native asset 1`] = `
       >
         <button
           aria-label="Back"
-          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default asset-page__back-button"
+          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default asset-page__back-button"
           color="text-icon-default"
         >
           <svg
-            class="inline-block w-5 h-5 text-inherit"
+            class="inline-block w-6 h-6 text-inherit"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -375,7 +375,7 @@ exports[`AssetPage should render a native asset 1`] = `
                   data-testid="asset-network"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
                   >
                     <img
                       alt="Ethereum"
@@ -448,11 +448,11 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       >
         <button
           aria-label="Back"
-          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default asset-page__back-button"
+          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default asset-page__back-button"
           color="text-icon-default"
         >
           <svg
-            class="inline-block w-5 h-5 text-inherit"
+            class="inline-block w-6 h-6 text-inherit"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -717,7 +717,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                   data-testid="asset-network"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
                   >
                     <img
                       alt="Ethereum"
@@ -858,11 +858,11 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       >
         <button
           aria-label="Back"
-          class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default asset-page__back-button"
+          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default asset-page__back-button"
           color="text-icon-default"
         >
           <svg
-            class="inline-block w-5 h-5 text-inherit"
+            class="inline-block w-6 h-6 text-inherit"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -1138,7 +1138,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                   data-testid="asset-network"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
                   >
                     <img
                       alt="Ethereum"

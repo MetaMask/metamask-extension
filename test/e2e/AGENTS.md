@@ -14,6 +14,5 @@ Instructions for AI coding agents working on E2E tests in the MetaMask Browser E
 - **E2E Driver API:** [webdriver/README.md](./webdriver/README.md)
 - **Flask E2E:** [flask/README.md](./flask/README.md)
 - **Playwright benchmark:** [playwright/benchmark/README.md](./playwright/benchmark/README.md)
-- **Playwright swap:** [playwright/swap/README.md](./playwright/swap/README.md)
 - **Forking mainnet for testing:** [docs/forking-mainnet-for-testing.md](../../docs/forking-mainnet-for-testing.md)
 - **QA migrations:** [docs/QA_MIGRATIONS_GUIDE.md](../../docs/QA_MIGRATIONS_GUIDE.md)
