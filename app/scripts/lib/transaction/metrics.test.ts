@@ -146,7 +146,8 @@ describe('transaction metrics handlers', () => {
 
     const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
     expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
-    expect(payload.sensitiveProperties.error).toBe('boom');
+    expect(payload.properties.error).toBe('boom');
+    expect(payload.sensitiveProperties.error).toBeUndefined();
   });
 
   it('tracks finalized event for dropped and sets dropped marker', async () => {
