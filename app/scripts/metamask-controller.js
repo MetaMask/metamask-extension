@@ -123,6 +123,7 @@ import {
   SecretType,
   RecoveryError,
   EncAccountDataType,
+  SeedlessOnboardingMigrationVersion,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
