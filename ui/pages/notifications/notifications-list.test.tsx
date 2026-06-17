@@ -36,7 +36,6 @@ const mockStore = configureStore(middlewares);
 const store = mockStore({
   metamask: {
     isMetamaskNotificationsEnabled: true,
-    isFeatureAnnouncementsEnabled: true,
     isBackupAndSyncEnabled: true,
     metamaskNotifications: [],
     internalAccounts: {

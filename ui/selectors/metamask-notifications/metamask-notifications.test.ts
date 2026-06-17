@@ -9,7 +9,6 @@ import {
   getMetamaskNotificationById,
   getMetamaskNotificationsReadList,
   getMetamaskNotificationsUnreadCount,
-  selectIsFeatureAnnouncementsEnabled,
   getValidNotificationAccounts,
   type NotificationAppState,
 } from './metamask-notifications';
@@ -24,7 +23,6 @@ describe('Metamask Notifications Selectors', () => {
       subscriptionAccountsSeen: [] as string[],
       isMetamaskNotificationsFeatureSeen: true,
       isNotificationServicesEnabled: true,
-      isFeatureAnnouncementsEnabled: true,
       metamaskNotificationsList: mockNotifications,
       metamaskNotificationsReadList: [],
       isFetchingMetamaskNotifications: false,
@@ -70,10 +68,6 @@ describe('Metamask Notifications Selectors', () => {
     expect(getMetamaskNotificationsUnreadCount(mockState())).toStrictEqual(
       expectedUnreadNotificationsCount,
     );
-  });
-
-  it('should select the isFeatureAnnouncementsEnabled state', () => {
-    expect(selectIsFeatureAnnouncementsEnabled(mockState())).toBe(true);
   });
 
   it('should select the valid accounts that can enable notifications', () => {

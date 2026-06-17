@@ -17,7 +17,6 @@ const mockStore = configureStore(middlewares);
 const mockState = {
   metamask: {
     isMetamaskNotificationsEnabled: true,
-    isFeatureAnnouncementsEnabled: true,
     metamaskNotificationsList: [
       {
         type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
