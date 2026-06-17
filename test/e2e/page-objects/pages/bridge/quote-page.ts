@@ -168,6 +168,7 @@ class BridgeQuotePage {
           this.assetPrickerSearchInput,
           quote.tokenTo,
         );
+        await this.driver.delay(2000);
         await this.driver.clickElementAndWaitToDisappear({
           text: quote.tokenTo,
           css: this.tokenButton,

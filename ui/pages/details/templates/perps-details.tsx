@@ -21,7 +21,7 @@ export function PerpsDetails({
       </div>
 
       <Footer>
-        <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
+        <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
       </Footer>
     </div>
   );

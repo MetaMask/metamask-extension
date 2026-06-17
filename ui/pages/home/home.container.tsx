@@ -27,7 +27,8 @@ import {
   getPendingShieldCohort,
   getPendingRedirectRoute,
   getLastVisitedPerpsRoute,
-  getParticipateInMetaMetrics,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -102,7 +103,10 @@ function useCoreHomeState() {
   const dataCollectionForMarketing = useSelector(
     (state: MetaMaskReduxState) => state.metamask.dataCollectionForMarketing,
   );
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isMetaMetricsEnabled = useSelector(
+    (state: MetaMaskReduxState) =>
+      getCompletedMetaMetricsOnboarding(state) && getOptedIn(state),
+  );
   // Derive both account and reminder flag inside one selector to avoid a
   // stale closure over the account object.
   const shouldShowSeedPhraseReminder = useSelector(
@@ -122,7 +126,7 @@ function useCoreHomeState() {
     completedOnboarding,
     connectedStatusPopoverHasBeenShown,
     dataCollectionForMarketing,
-    participateInMetaMetrics: participateInMetaMetrics ?? undefined,
+    isMetaMetricsEnabled,
     shouldShowSeedPhraseReminder,
     isPrimarySeedPhraseBackedUp,
     isSeedlessPasswordOutdated,

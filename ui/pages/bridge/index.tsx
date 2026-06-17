@@ -95,7 +95,7 @@ const CrossChainSwap = () => {
         startAccessory={
           <ButtonIcon
             iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -105,7 +105,7 @@ const CrossChainSwap = () => {
         endAccessory={
           <ButtonIcon
             iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('settings')}
             data-testid="bridge__header-settings-button"
             onClick={() => {
