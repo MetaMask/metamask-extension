@@ -6882,6 +6882,9 @@
   "perpsFilterStocks": {
     "message": "Stocks"
   },
+  "perpsFundAgain": {
+    "message": "Fund again"
+  },
   "perpsFunding": {
     "message": "Funding"
   },
