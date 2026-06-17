@@ -76,6 +76,7 @@ describe('buildBundleSizeDiffSection', () => {
     common: 400,
     other: 100,
     contentScripts: 60,
+    unzipped: 6000,
     zip: 4200,
     timestamp: 2,
   } as const;
@@ -87,6 +88,7 @@ describe('buildBundleSizeDiffSection', () => {
       common: 400,
       other: 90,
       contentScripts: 50,
+      unzipped: 5800,
       zip: 4000,
       timestamp: 1,
     },
@@ -128,6 +130,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('| ✅ | common |');
     expect(result).toContain('| ✅ | other |');
     expect(result).toContain('| ✅ | content scripts |');
+    expect(result).toContain('| ✅ | unzipped |');
     expect(result).toContain('| ✅ | zip |');
   });
 
@@ -146,6 +149,9 @@ describe('buildBundleSizeDiffSection', () => {
     );
     expect(result).toContain(
       '| ✅ | content scripts | 60 Bytes | +10 Bytes | +20.00% |',
+    );
+    expect(result).toContain(
+      '| ✅ | unzipped | 5.86 KiB | +200 Bytes | +3.45% |',
     );
     expect(result).toContain('| ✅ | zip | 4.1 KiB | +200 Bytes | +5.00% |');
   });
@@ -264,6 +270,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('|  | common | 400 Bytes | n/a | n/a |');
     expect(result).toContain('|  | other | 100 Bytes | n/a | n/a |');
     expect(result).toContain('|  | content scripts | 60 Bytes | n/a | n/a |');
+    expect(result).toContain('|  | unzipped | 5.86 KiB | n/a | n/a |');
     expect(result).toContain('|  | zip | 4.1 KiB | n/a | n/a |');
   });
 
@@ -288,6 +295,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('| ✅ | common | 400 Bytes | 0 Bytes | 0.00% |');
     expect(result).toContain('|  | other | 100 Bytes | n/a | n/a |');
     expect(result).toContain('|  | content scripts | 60 Bytes | n/a | n/a |');
+    expect(result).toContain('|  | unzipped | 5.86 KiB | n/a | n/a |');
     expect(result).toContain('|  | zip | 4.1 KiB | n/a | n/a |');
   });
 
@@ -352,6 +360,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('|  | common | 400 Bytes | n/a | n/a |');
     expect(result).toContain('|  | other | 100 Bytes | n/a | n/a |');
     expect(result).toContain('|  | content scripts | 60 Bytes | n/a | n/a |');
+    expect(result).toContain('|  | unzipped | 5.86 KiB | n/a | n/a |');
     expect(result).toContain('|  | zip | 4.1 KiB | n/a | n/a |');
     expect(result).not.toContain('Bundle size data unavailable.');
   });

@@ -247,6 +247,41 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   /**
+   * Returns the uncompressed size of the files included in a browser zip.
+   *
+   * @param compilation - The active compilation.
+   * @param browser - The browser whose unzipped assets should be measured.
+   * @returns The uncompressed zip contents size, if zip output is enabled.
+   */
+  private getBundleUnzippedSize(
+    compilation: Compilation,
+    browser: Browser,
+  ): number | undefined {
+    if (this.options.zip !== true) {
+      return undefined;
+    }
+
+    const { excludeExtensions, outFilePath } = (
+      this.options as ManifestPluginOptions<true>
+    ).zipOptions;
+    const browserPrefix = `${browser}/`;
+    const zipAssetPath = outFilePath.replaceAll('[browser]', browser);
+    let size = 0;
+
+    for (const [assetName, source] of Object.entries(compilation.assets)) {
+      if (
+        assetName.startsWith(browserPrefix) &&
+        assetName !== zipAssetPath &&
+        !excludeExtensions.includes(path.extname(assetName))
+      ) {
+        size += source.size();
+      }
+    }
+
+    return size;
+  }
+
+  /**
    * Collects bundle-size stats from the pre-fanout compilation assets.
    *
    * @param compilation - The active compilation.
@@ -316,9 +351,14 @@ export class ManifestPlugin<Z extends boolean> {
       const { outFile } = this.options.stats;
       for (const browser of this.options.browsers) {
         const statsFile = outFile.replaceAll('[browser]', browser);
+        const unzipped = this.getBundleUnzippedSize(compilation, browser);
         const zip = this.getBundleZipSize(compilation, browser);
         const { partSizes, timestamp, debugEntrypoints } = bundleSizeStats;
-        const summary = createBundleSizeSummary(partSizes, { zip, timestamp });
+        const summary = createBundleSizeSummary(partSizes, {
+          unzipped,
+          zip,
+          timestamp,
+        });
         emitJsonAsset(compilation, statsFile, summary);
 
         if (debugEntrypoints) {
