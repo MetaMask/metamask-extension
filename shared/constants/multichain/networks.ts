@@ -435,6 +435,8 @@ export const TRON_CHAINS: CaipChainId[] = [
   MultichainNetworks.TRON_SHASTA,
 ];
 
+export const BTC_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
+
 type NonEvmAccountChangedConfig = {
   network: MultichainNetworks;
   chains: CaipChainId[];
@@ -450,6 +452,7 @@ export const NON_EVM_ACCOUNT_CHANGED_CONFIGS: NonEvmAccountChangedConfig[] = [
       KnownSessionProperties.SolanaAccountChangedNotifications,
     accountType: SolAccountType.DataAccount,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   {
     network: MultichainNetworks.TRON,
     chains: TRON_CHAINS,
@@ -457,4 +460,14 @@ export const NON_EVM_ACCOUNT_CHANGED_CONFIGS: NonEvmAccountChangedConfig[] = [
       KnownSessionProperties.TronAccountChangedNotifications,
     accountType: TrxAccountType.Eoa,
   },
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  {
+    network: MultichainNetworks.BITCOIN,
+    chains: BTC_CHAINS,
+    notificationProperty:
+      KnownSessionProperties.Bip122AccountChangedNotifications,
+    accountType: BtcAccountType.P2wpkh,
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];

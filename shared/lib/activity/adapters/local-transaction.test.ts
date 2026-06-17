@@ -78,8 +78,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'pending',
       timestamp: 1716367781000,
+      hash: '0xsend',
       data: {
-        hash: '0xsend',
         from,
         to,
         token: {
@@ -125,8 +125,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1338',
       status: 'success',
       timestamp: 1779392463306,
+      hash: '0xcustomsend',
       data: {
-        hash: '0xcustomsend',
         from,
         to,
         token: {
@@ -177,8 +177,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'pending',
       timestamp: 1716367781000,
+      hash: '0xtokensend',
       data: {
-        hash: '0xtokensend',
         from,
         to: recipient,
         token: {
@@ -225,8 +225,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1779392463306,
+      hash: '0x41f675c4a384e5064b1d9620934b0ff5e8a84f5c84530a25d025e27fb784d303',
       data: {
-        hash: '0x41f675c4a384e5064b1d9620934b0ff5e8a84f5c84530a25d025e27fb784d303',
         from,
         to: recipient,
         token: {
@@ -322,8 +322,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:59144',
       status: 'pending',
       timestamp: 1716367881000,
+      hash: '0xretry',
       data: {
-        hash: '0xretry',
         from,
         token: {
           assetId:
@@ -459,8 +459,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1779805800000,
+      hash: '0xmusdconversion',
       data: {
-        hash: '0xmusdconversion',
         from,
         sourceToken: {
           assetId: toAssetId(lineaDai, 'eip155:59144'),
@@ -489,8 +489,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1780690942752,
+      hash: '0xd5dbb4421d123fd16d16485c394a68b5a28d9b5da9d9973554258a9fd2e9ebf6',
       data: {
-        hash: '0xd5dbb4421d123fd16d16485c394a68b5a28d9b5da9d9973554258a9fd2e9ebf6',
         fiat: {
           amount: '0.714705',
         },
@@ -520,8 +520,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1781185241609,
+      hash: '0x3073fa67020abb1931ed043d7a8b6b020aa1004c9d0dd9ebd43ca5b9c10e9503',
       data: {
-        hash: '0x3073fa67020abb1931ed043d7a8b6b020aa1004c9d0dd9ebd43ca5b9c10e9503',
         fiat: {
           amount: '1.000169',
         },
@@ -589,8 +589,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1779892154611,
+      hash: '0x093844dd6200984f0e27d3c3a76b7a63b360bfb2136213237d693afd2cd69740',
       data: {
-        hash: '0x093844dd6200984f0e27d3c3a76b7a63b360bfb2136213237d693afd2cd69740',
         from,
         sourceToken: {
           amount: '100000',
@@ -641,8 +641,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1779912434153,
+      hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
       data: {
-        hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
         from,
         destinationToken: {
           amount: '200000',
@@ -701,8 +701,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1779392463306,
+      hash: '0xbridgeswap',
       data: {
-        hash: '0xbridgeswap',
         from,
         sourceToken: {
           amount: '10000000000000',
@@ -851,8 +851,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1716367781000,
+      hash: '0xswap',
       data: {
-        hash: '0xswap',
         from,
         sourceToken: {
           assetId: 'eip155:8453/slip44:60',
@@ -898,8 +898,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1716367781000,
+      hash: '0xwrap',
       data: {
-        hash: '0xwrap',
         from,
         sourceToken: {
           amount: '0x3782dace9d900000',
@@ -952,8 +952,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1716367781000,
+      hash: '0xunwrap',
       data: {
-        hash: '0xunwrap',
         from,
         sourceToken: {
           amount: unwrapAmount,
@@ -1004,8 +1004,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1716367781000,
+      hash: '0xcontract',
       data: {
-        hash: '0xcontract',
         from,
         to,
         token: {
@@ -1032,8 +1032,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1780606867763,
+      hash: '0x2fda37c5b591c30367649c3c317621429bb5c59ff6a77b0a8cd48b56897168bc',
       data: {
-        hash: '0x2fda37c5b591c30367649c3c317621429bb5c59ff6a77b0a8cd48b56897168bc',
         from,
         token: {
           direction: 'in',
@@ -1073,8 +1073,8 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:59144',
       status: 'pending',
       timestamp: 1778633325000,
+      hash: '0xmusdclaim',
       data: {
-        hash: '0xmusdclaim',
         from,
       },
     });

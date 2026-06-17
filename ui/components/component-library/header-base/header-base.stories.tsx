@@ -38,14 +38,14 @@ DefaultStory.args = {
   ),
   startAccessory: (
     <ButtonIcon
-      size={ButtonIconSize.Sm}
+      size={ButtonIconSize.Md}
       iconName={IconName.ArrowLeft}
       ariaLabel="back"
     />
   ),
   endAccessory: (
     <ButtonIcon
-      size={ButtonIconSize.Sm}
+      size={ButtonIconSize.Md}
       iconName={IconName.Close}
       ariaLabel="close"
     />
@@ -70,7 +70,7 @@ export const StartAccessory = (args) => {
       marginBottom={4}
       startAccessory={
         <ButtonIcon
-          size={ButtonIconSize.Sm}
+          size={ButtonIconSize.Md}
           iconName={IconName.ArrowLeft}
           ariaLabel="back"
         />
@@ -90,7 +90,7 @@ export const EndAccessory = (args) => {
       marginBottom={4}
       endAccessory={
         <ButtonIcon
-          size={ButtonIconSize.Sm}
+          size={ButtonIconSize.Md}
           iconName={IconName.Close}
           ariaLabel="close"
         />
@@ -125,7 +125,7 @@ export const UseCaseDemos = (args) => (
         endAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             iconName={IconName.Close}
             ariaLabel="close"
           />
@@ -148,7 +148,7 @@ export const UseCaseDemos = (args) => (
         startAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.successDefault}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             iconName={IconName.ArrowLeft}
             ariaLabel="back"
           />
@@ -171,7 +171,7 @@ export const UseCaseDemos = (args) => (
         startAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.successDefault}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             iconName={IconName.ArrowLeft}
             ariaLabel="back"
           />
@@ -179,7 +179,7 @@ export const UseCaseDemos = (args) => (
         endAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             iconName={IconName.Close}
             ariaLabel="close"
           />
@@ -211,7 +211,7 @@ export const UseCaseDemos = (args) => (
         endAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             iconName={IconName.Close}
             ariaLabel="close"
           />
@@ -245,7 +245,7 @@ export const UseCaseDemos = (args) => (
         endAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             iconName={IconName.Close}
             ariaLabel="close"
           />
@@ -273,7 +273,7 @@ export const UseCaseDemos = (args) => (
         startAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.successDefault}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             iconName={IconName.Close}
             ariaLabel="close"
           />
@@ -309,7 +309,7 @@ export const UseCaseDemos = (args) => (
         endAccessory={
           <ButtonIcon
             backgroundColor={BackgroundColor.goerli}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             iconName={IconName.Close}
             ariaLabel="close"
           />
