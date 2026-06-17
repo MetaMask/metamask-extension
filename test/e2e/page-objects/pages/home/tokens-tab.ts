@@ -48,6 +48,10 @@ class TokensTab extends HomePage {
 
   private readonly importTokensButton = '[data-testid="importTokens"]';
 
+  private readonly importTokensLoading = {
+    testId: 'import-tokens-loading',
+  };
+
   private readonly importTokensNextButton =
     '[data-testid="import-tokens-button-next"]';
 
@@ -225,7 +229,7 @@ class TokensTab extends HomePage {
     // If the low value assets section is already expanded, no action is required.
     try {
       await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
-        timeout: 1000,
+        timeout: 3000,
       });
       return;
     } catch {
@@ -367,7 +371,11 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.waitForSelector(this.selectedNetwork(networkName));
-    await this.driver.pasteIntoField(this.tokenSearchInput, tokenName);
+    await this.driver.assertElementNotPresent(this.importTokensLoading, {
+      findElementGuard: this.importTokenModalTitle,
+    });
+    await this.driver.waitForSelector(this.tokenSearchInput);
+    await this.driver.fill(this.tokenSearchInput, tokenName);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);
     await this.driver.waitForElementToStopMoving({ text: tokenName, tag: 'p' });
