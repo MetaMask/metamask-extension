@@ -177,4 +177,61 @@ describe('useNotificationPreferences', () => {
     ]);
     expect(mockGetNotificationPreferences).toHaveBeenCalledTimes(1);
   });
+
+  it('rolls back optimistic cache when persisting preferences fails', async () => {
+    const preferences = createMockNotificationPreferences({
+      walletActivity: {
+        pushNotificationsEnabled: true,
+        inAppNotificationsEnabled: true,
+        accounts: [],
+      },
+    });
+    const failedPreferences = {
+      ...preferences,
+      walletActivity: {
+        ...preferences.walletActivity,
+        pushNotificationsEnabled: false,
+      },
+    };
+    const persistError = new Error('Failed to persist preferences');
+
+    mockDispatch.mockImplementation((action) => {
+      if (action.type === 'getNotificationPreferences') {
+        return Promise.resolve(preferences);
+      }
+
+      if (action.type === 'putNotificationPreferences') {
+        return Promise.reject(persistError);
+      }
+
+      return undefined;
+    });
+
+    const { Wrapper } = createWrapper();
+    const { result } = renderHook(() => useNotificationPreferences(), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current.preferences).toStrictEqual(preferences);
+    });
+
+    await act(async () => {
+      await expect(
+        result.current.updatePreference(
+          'walletActivity',
+          'pushNotificationsEnabled',
+          false,
+        ),
+      ).rejects.toThrow('Failed to persist preferences');
+    });
+
+    expect(mockPutNotificationPreferences).toHaveBeenCalledWith(
+      failedPreferences,
+    );
+
+    await waitFor(() => {
+      expect(result.current.preferences).toStrictEqual(preferences);
+    });
+  });
 });
