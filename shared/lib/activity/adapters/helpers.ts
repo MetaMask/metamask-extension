@@ -6,7 +6,10 @@ import {
 } from '@metamask/transaction-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { Hex } from 'viem';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
+import {
+  BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
+} from '../../../constants/bridge';
 import { CHAIN_IDS } from '../../../constants/network';
 import {
   IN_PROGRESS_TRANSACTION_STATUSES,
@@ -16,6 +19,7 @@ import {
 } from '../../../constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
+import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import type { ActivityFee, Status, TokenAmount } from '../types';
 
@@ -221,9 +225,10 @@ export function getKnownTokenMetadata(
     (chainId === CHAIN_IDS.MAINNET || assetId?.startsWith('eip155:1/')
       ? STATIC_MAINNET_TOKEN_LIST[contractAddress.toLowerCase()]
       : undefined) ??
-    Object.values(BRIDGE_CHAINID_COMMON_TOKEN_PAIR).find(
-      (token) => token?.assetId === assetId,
-    );
+    [
+      ...Object.values(BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN),
+      ...Object.values(BRIDGE_CHAINID_COMMON_TOKEN_PAIR),
+    ].find((token) => token?.assetId === assetId);
 
   return tokenMetadata
     ? { ...tokenMetadata, ...(assetId ? { assetId } : {}) }
@@ -248,6 +253,51 @@ export function getTokenMetadataFromKnownToken(
       ? {}
       : { decimals: tokenMetadata.decimals }),
     ...(tokenMetadata.assetId ? { assetId: tokenMetadata.assetId } : {}),
+  };
+}
+
+/**
+ * Resolves the user's primary send and receive legs from indexed value transfers.
+ * Prefers a receive whose symbol differs from the sent leg so dust does not win.
+ *
+ * @param valueTransfers - Indexed value transfers from the Accounts API.
+ * @param subjectAddress - The account address to match transfers against.
+ * @returns The primary sent and received transfers for the account.
+ */
+export function parseValueTransfers(
+  valueTransfers: ValueTransfer[] | undefined,
+  subjectAddress: string,
+): {
+  sentTransfer: ValueTransfer | undefined;
+  receivedTransfer: ValueTransfer | undefined;
+  sentNftTransfer: ValueTransfer | undefined;
+  receivedNftTransfer: ValueTransfer | undefined;
+} {
+  const sent = valueTransfers?.filter(({ from }) =>
+    equalsIgnoreCase(from, subjectAddress),
+  );
+  const received = valueTransfers?.filter(({ to }) =>
+    equalsIgnoreCase(to, subjectAddress),
+  );
+
+  const sentTransfer = sent?.[0];
+
+  const receivedTransfer =
+    received?.find(({ symbol }) => symbol !== sentTransfer?.symbol) ??
+    received?.[0];
+
+  const sentNftTransfer = sent?.find(({ transferType }) =>
+    isNftStandard(transferType),
+  );
+  const receivedNftTransfer = received?.find(({ transferType }) =>
+    isNftStandard(transferType),
+  );
+
+  return {
+    sentTransfer,
+    receivedTransfer,
+    sentNftTransfer,
+    receivedNftTransfer,
   };
 }
 

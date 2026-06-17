@@ -21,8 +21,9 @@ import {
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -35,8 +36,12 @@ type StakeableLinkProps = {
 export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   return (
     <button
@@ -49,7 +54,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
         const url = getPortfolioUrl(
           'stake',
           'ext_stake_button',
-          metaMetricsId,
+          analyticsId,
           isMetaMetricsEnabled === true,
           isMarketingEnabled === true,
         );

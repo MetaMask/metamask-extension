@@ -52,6 +52,7 @@ function configureMocks(): void {
   artifacts.getArtifactLinks.mockReturnValue({
     link: () => '<a href="#">link</a>',
     bundleSizeStats: { url: 'https://ci/bundle.json', label: 'bundle' },
+    bundleSizeDebug: { url: 'https://ci/bundle.debug.json', label: 'debug' },
     bundleSizeData: { url: 'https://ci/data.json', label: 'data' },
     interactionStats: { url: 'https://ci/inter.json', label: 'inter' },
     storybook: { url: 'https://ci/storybook', label: 'Storybook' },
@@ -75,11 +76,13 @@ function configureMocks(): void {
 describe('start() entry point', () => {
   let warnSpy: jest.SpyInstance;
   let errorSpy: jest.SpyInstance;
+  let processExitSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetModules();
     warnSpy = jest.spyOn(console, 'warn').mockImplementation();
     errorSpy = jest.spyOn(console, 'error').mockImplementation();
+    processExitSpy = jest.spyOn(process, 'exit').mockImplementation();
     configureMocks();
   });
 
@@ -103,7 +106,7 @@ describe('start() entry point', () => {
     expect(getMocks().utils.postCommentWithMetamaskBot).not.toHaveBeenCalled();
   });
 
-  it('invokes console.error when required env vars are missing', async () => {
+  it('exits with error when required env vars are missing', async () => {
     setEnv({ HOST_URL: undefined });
 
     // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -117,6 +120,7 @@ describe('start() entry point', () => {
         ),
       }),
     );
+    expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 
   it('calls postCommentWithMetamaskBot with assembled comment body', async () => {

@@ -16,7 +16,7 @@ import {
 } from '../../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../../page-objects/pages/onboarding/onboarding-metrics-page';
@@ -177,10 +177,10 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
             async () => {
               const homePage = new HomePage(driver);
               await homePage.checkPageIsLoaded();
-              const assetListPage = new AssetListPage(driver);
-              await assetListPage.checkTokenListIsDisplayed();
-              await assetListPage.checkTokenExistsInList('Ethereum');
-              await assetListPage.waitForTokenToBeDisplayed('Solana', 120000);
+              const tokensTab = new TokensTab(driver);
+              await tokensTab.checkTokenListIsDisplayed();
+              await tokensTab.checkTokenExistsInList('Ethereum');
+              await tokensTab.waitForTokenToBeDisplayed('Solana', 120000);
             },
           ),
         );
