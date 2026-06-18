@@ -9,23 +9,13 @@ export const METAMETRICS_SETTINGS_LINK =
   'https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/?utm_source=extension';
 
 // TODO make sure these links are correct
-export const ETHERSCAN_PRIVACY_LINK = 'https://etherscan.io/privacyPolicy';
 export const CONSENSYS_PRIVACY_LINK = 'https://consensys.io/privacy-policy/';
-export const AUTO_DETECT_TOKEN_LEARN_MORE_LINK =
-  'https://consensys.io/privacy-policy/';
-export const CONSENSYS_TERMS_OF_USE = 'https://consensys.io/terms-of-use';
 
 export const SECURITY_ALERTS_LEARN_MORE_LINK =
   'https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension';
 
 export const TRANSACTION_SIMULATIONS_LEARN_MORE_LINK =
   'https://support.metamask.io/transactions-and-gas/transactions/simulations/?utm_source=extension';
-
-export const GAS_FEES_LEARN_MORE_URL =
-  'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
-
-export const SMART_ACCOUNT_INFO_LINK =
-  'https://support.metamask.io/configure/accounts/what-is-a-smart-account/?utm_source=extension#what-are-metamask-smart-accounts';
 
 export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/?utm_source=extension#step-two-locate-your-vault`;
 
