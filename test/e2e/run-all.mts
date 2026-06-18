@@ -62,7 +62,7 @@ const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
       testPaths.push(...subDirPaths);
     } else if (
       (fullPath.endsWith('.spec.js') || fullPath.endsWith('.spec.ts')) &&
-      // TODO: add run-all-pw.mts for Playwright tests mimicking run-all.mts
+      // Playwright specs are handled by their own runner, `run-all-pw.mts`.
       !fullPath.endsWith('.pw.spec.ts')
     ) {
       testPaths.push(normalizeTestPath(fullPath));
