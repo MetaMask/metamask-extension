@@ -204,7 +204,9 @@ export const BridgeAssetPickerContent = forwardRef<
         />
         <NetworkPicker
           buttonElement={
-            isNetworkManagementEnabled ? undefined : networkPickerButtonRef.current
+            isNetworkManagementEnabled
+              ? undefined
+              : networkPickerButtonRef.current
           }
           isOpen={isNetworkPickerOpen}
           chains={chains}

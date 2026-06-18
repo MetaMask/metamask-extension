@@ -93,7 +93,7 @@ const BridgeAssetPickerPage = () => {
   const selectedAsset = isDestination ? toToken : fromToken;
   const networks = isDestination ? toChains : fromChains;
   const accountAddress = isDestination
-    ? defaultDestinationAccount?.address ?? selectedAccount?.address
+    ? (defaultDestinationAccount?.address ?? selectedAccount?.address)
     : selectedAccount?.address;
   // If the fromChain is a bridge-only chain, disable it in the toChain picker
   const disabledChainId =

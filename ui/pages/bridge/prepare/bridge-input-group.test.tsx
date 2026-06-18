@@ -463,9 +463,7 @@ describe('BridgeInputGroup', () => {
       });
 
       await waitFor(() => {
-        expect(
-          getByTestId('bridge-asset-picker-search-input'),
-        ).toBeVisible();
+        expect(getByTestId('bridge-asset-picker-search-input')).toBeVisible();
       });
       await flushPromises();
 
