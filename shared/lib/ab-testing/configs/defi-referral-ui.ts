@@ -22,10 +22,10 @@ export const DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS: Record<
 };
 
 export const DEFI_REFERRAL_UI_AB_TEST_EXPOSURE_METADATA = {
-  experimentName: 'DeFi Referral UI',
+  experimentName: 'DeFi Referral UI 2',
   variationNames: {
     [ABTestVariant.Control]: 'Legacy UI',
-    [ABTestVariant.Treatment]: 'Redesigned UI with checkbox',
+    [ABTestVariant.Treatment]: 'Redesigned UI with updated copy',
   },
 } as const;
 
