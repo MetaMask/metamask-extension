@@ -326,6 +326,34 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
       }),
     );
   });
+
+  it('does not persist dismissal when a control user clicks the Perps tab', () => {
+    const { getByText } = renderTabs({ variantFlag: { name: 'control' } });
+
+    fireEvent.click(getByText(messages.perps.message));
+
+    expect(setPerpsTabBadgeSeen).not.toHaveBeenCalled();
+  });
+
+  it('does not record exposure once the badge has been dismissed', () => {
+    renderTabs({ variantFlag: { name: 'treatment' }, perpsTabBadgeSeen: true });
+
+    expect(trackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.ExperimentViewed,
+      }),
+    );
+  });
+
+  it('does not record exposure when the perps experience is unavailable', () => {
+    renderTabs({ variantFlag: { name: 'treatment' }, perpsAvailable: false });
+
+    expect(trackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.ExperimentViewed,
+      }),
+    );
+  });
 });
 
 describe('AccountOverviewTabs - TokenBalancesPoller', () => {

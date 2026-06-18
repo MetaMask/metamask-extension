@@ -102,12 +102,21 @@ export const AccountOverviewTabs = ({
   );
   const prefetchTransactions = usePrefetchTransactions();
 
+  const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+
+  // Only record exposure while the badge is in its visible window — the Perps
+  // tab is available and the badge has not been dismissed. Without this gate,
+  // every AccountOverviewTabs mount would log an exposure, even for users who
+  // never see the Perps tab.
   const { variant: perpsTabBadgeVariant } = useABTest(
     PERPS_TAB_BADGE_AB_KEY,
     PERPS_TAB_BADGE_VARIANTS,
     PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
+    { trackExposure: isPerpsExperienceAvailable && !perpsTabBadgeSeen },
   );
-  const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
+  const showPerpsTabBadge =
+    perpsTabBadgeVariant.showBadge && !perpsTabBadgeSeen;
 
   useEffect(() => {
     if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
@@ -136,9 +145,10 @@ export const AccountOverviewTabs = ({
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      // Dismiss the Perps "New" badge on first interaction and persist the
-      // dismissed state across reloads via AppStateController.
-      if (tabName === AccountOverviewTabKey.Perps && !perpsTabBadgeSeen) {
+      // Persist dismissal only when the badge is actually visible, so a
+      // control/unassigned click never marks it seen (which would suppress the
+      // badge if the profile is later assigned treatment).
+      if (tabName === AccountOverviewTabKey.Perps && showPerpsTabBadge) {
         dispatch(setPerpsTabBadgeSeen(true));
       }
       // For ActivityListV3, ActivityScreenOpened is deferred to the list
@@ -172,7 +182,7 @@ export const AccountOverviewTabs = ({
       activeTabKey,
       isActivityListRedesignEnabled,
       networkFilterForMetrics,
-      perpsTabBadgeSeen,
+      showPerpsTabBadge,
       setActiveTabKey,
       dispatch,
       selectedChainIds,
@@ -196,11 +206,6 @@ export const AccountOverviewTabs = ({
   );
 
   const { safeChains } = useSafeChains();
-
-  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
-
-  const showPerpsTabBadge =
-    perpsTabBadgeVariant.showBadge && !perpsTabBadgeSeen;
 
   return (
     <>
