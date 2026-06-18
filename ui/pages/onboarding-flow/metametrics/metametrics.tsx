@@ -145,7 +145,7 @@ export default function OnboardingMetametrics() {
 
   useEffect(() => {
     if (participateInMetaMetricsSet) {
-      setIsParticipateInMetaMetricsChecked(participateInMetaMetrics);
+      setIsParticipateInMetaMetricsChecked(participateInMetaMetrics === true);
     }
     if (dataCollectionForMarketing) {
       setIsDataCollectionForMarketingChecked(dataCollectionForMarketing);

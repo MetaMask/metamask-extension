@@ -1,12 +1,12 @@
 import React, { CSSProperties } from 'react';
 import { useSelector } from 'react-redux';
+import cn from 'clsx';
 import { Skeleton } from '@metamask/design-system-react';
 import {
   BackgroundColor,
   FontWeight,
   IconColor,
   TextAlign,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import {
   ButtonIcon,
@@ -95,7 +95,10 @@ export const TokenCellSecondaryDisplay = React.memo(
       >
         <SensitiveText
           fontWeight={token.secondary ? FontWeight.Medium : FontWeight.Normal}
-          variant={token.secondary ? TextVariant.bodyMd : TextVariant.bodySm}
+          className={cn(
+            token.secondary ? 'text-s-body-md' : 'text-s-body-sm',
+            '@compact:text-s-body-sm',
+          )}
           textAlign={TextAlign.End}
           data-testid="multichain-token-list-item-secondary-value"
           ellipsis={token.isStakeable}
