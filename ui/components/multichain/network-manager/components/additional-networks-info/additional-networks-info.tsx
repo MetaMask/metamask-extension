@@ -1,12 +1,16 @@
 import React, { memo, useCallback, useState } from 'react';
 import {
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   Display,
   IconColor,
   JustifyContent,
-  TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -20,7 +24,6 @@ import {
 } from '../../../../component-library';
 import { Box } from '../../../../component-library/box';
 import { Icon } from '../../../../component-library/icon';
-import { Text } from '../../../../component-library/text';
 
 /**
  * AdditionalNetworksInfo Component
@@ -74,8 +77,9 @@ export const AdditionalNetworksInfo = memo(() => {
         >
           {/* Label text - uses translation key "additionalNetworks" */}
           <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextAlternative}
           >
             {t('additionalNetworks')}
           </Text>
@@ -111,7 +115,7 @@ export const AdditionalNetworksInfo = memo(() => {
               }}
             >
               {/* Popover content - explanatory text */}
-              <Text variant={TextVariant.bodyMd}>
+              <Text variant={TextVariant.BodyMd}>
                 {t('popularNetworkAddToolTip')}
               </Text>
               {/* Learn more link that opens external documentation */}
