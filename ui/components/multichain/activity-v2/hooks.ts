@@ -53,7 +53,9 @@ function classifyNft(
 
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
-  const evmAddress = useSelector(getSelectedAccountGroupEvmAddress)?.toLowerCase();
+  const evmAddress = useSelector(
+    getSelectedAccountGroupEvmAddress,
+  )?.toLowerCase();
   const isExtensionTransactionLabelsEnabled = useSelector(
     getIsTransactionLabelsEnabled,
   );
