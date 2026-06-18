@@ -289,6 +289,18 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     expect(setPerpsTabBadgeSeen).toHaveBeenCalledWith(true);
   });
 
+  it('does not emit a Perp Screen Viewed event from the tab click (PerpsView owns that event)', () => {
+    const { getByText } = renderTabs({ variantFlag: { name: 'treatment' } });
+
+    fireEvent.click(getByText(messages.perps.message));
+
+    expect(trackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.PerpsScreenViewed,
+      }),
+    );
+  });
+
   it('does not render the Perps tab when the perps experience is unavailable', () => {
     const { queryByTestId } = renderTabs({
       variantFlag: { name: 'treatment' },
