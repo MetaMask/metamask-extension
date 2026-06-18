@@ -263,6 +263,7 @@
     "accountWalletsMetadata": {},
     "activeProvider": "string",
     "activeQrCodeScanRequest": "null",
+    "lastQrScanCompletedSuccessfully": "null",
     "addressBook": {},
     "addressScanCache": {},
     "addressSecurityAlertResponses": {},
@@ -283,6 +284,7 @@
     "allNftContracts": {},
     "allNfts": {},
     "allTokens": {},
+    "analyticsId": "string",
     "announcements": {},
     "appActiveTab": {
       "favIconUrl": "null",
@@ -1073,8 +1075,6 @@
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
     "metaMetricsId": "string",
-    "analyticsId": "string",
-    "optedIn": "boolean",
     "methodData": {},
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
@@ -1180,6 +1180,7 @@
     "onboardingDate": "null",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
+    "optedIn": "boolean",
     "orderedNetworkList": [
       {
         "networkId": "string"

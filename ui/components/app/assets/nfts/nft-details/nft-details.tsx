@@ -376,7 +376,7 @@ export function NftDetailsComponent({
         >
           <ButtonIcon
             color={IconColor.iconDefault}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={() => navigate(DEFAULT_ROUTE)}

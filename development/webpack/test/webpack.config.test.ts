@@ -16,7 +16,6 @@ import {
 import { noop, type Manifest } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
-import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
 import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
@@ -298,8 +297,7 @@ ${Object.entries(env)
     assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
     assert.strictEqual(manifestPlugin.options.stats, false);
-    const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
-    assert.strictEqual(manifestOpts.zipOptions, undefined);
+    assert.strictEqual('zipOptions' in manifestPlugin.options, false);
 
     const progressPlugin = options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
@@ -441,7 +439,7 @@ inquire('long');
 
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
-    ) as WebpackPluginInstance;
+    ) as WebpackPluginInstance & ManifestPlugin<true>;
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, []);
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
@@ -461,36 +459,16 @@ inquire('long');
       BUNDLE_SIZE_SUMMARY_FILE,
     );
     assert.strictEqual(manifestPlugin.options.stats.debug, true);
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('service-worker.ts'),
-      'background',
+    assert.deepStrictEqual(manifestPlugin.options.html, [
+      { directory: join('html', 'ui'), category: 'ui' },
+      { directory: join('html', 'background'), category: 'background' },
+      { directory: join('html', 'other'), category: 'other' },
+    ]);
+
+    const htmlBundlerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'HtmlBundlerPlugin',
     );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('background'),
-      'background',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('home'),
-      'ui',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('offscreen'),
-      'other',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('offscreen.1'),
-      'other',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint(
-        'scripts/contentscript.js',
-      ),
-      'contentScripts',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('unknown'),
-      null,
-    );
+    assert(htmlBundlerPlugin, 'HtmlBundlerPlugin should be present');
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
