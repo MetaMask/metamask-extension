@@ -60,14 +60,15 @@ function getTitleArgs(item: ActivityListItem) {
     case 'claimMusdBonus':
     case 'deposit':
     case 'nftBuy':
-    case 'nftMint': {
+    case 'nftMint':
+    case 'nftSell': {
       return getDefinedArgs(item.data.token?.symbol);
     }
     case 'swapIncomplete': {
       return getDefinedArgs(item.data.sourceToken?.symbol);
     }
     default:
-      return [];
+      return [''];
   }
 }
 
