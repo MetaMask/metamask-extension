@@ -106,7 +106,7 @@ export default function NftFullImage() {
           endAccessory={
             <ButtonIcon
               color={IconColor.iconAlternative}
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Md}
               ariaLabel={t('back')}
               iconName={IconName.Close}
               onClick={onClose}

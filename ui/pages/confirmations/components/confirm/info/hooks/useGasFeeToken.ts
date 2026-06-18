@@ -118,7 +118,7 @@ function useNativeGasFeeToken(): GasFeeToken {
   );
 
   const balance = useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId),
+    selectTransactionAvailableBalance(state, transactionId, chainId),
   );
 
   const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);

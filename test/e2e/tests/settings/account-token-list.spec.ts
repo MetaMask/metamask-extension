@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -121,7 +121,7 @@ describe('Settings', function () {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
-        await new AssetListPage(driver).checkTokenFiatAmountIsDisplayed(
+        await new TokensTab(driver).checkTokenFiatAmountIsDisplayed(
           '$42,500.00',
         );
 
