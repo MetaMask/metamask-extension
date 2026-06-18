@@ -39,7 +39,7 @@ export function getNetworkControllerMessenger(
       'ConnectivityController:getState',
       'RemoteFeatureFlagController:getState',
     ],
-    events: [],
+    events: ['RemoteFeatureFlagController:stateChange'],
   });
   return controllerMessenger;
 }
