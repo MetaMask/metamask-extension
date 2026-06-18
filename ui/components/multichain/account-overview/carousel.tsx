@@ -1,4 +1,10 @@
-import React, { useContext, useRef, useState, useCallback, useMemo } from 'react';
+import React, {
+  useContext,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
 import { CarouselWithEmptyState } from '../carousel';
