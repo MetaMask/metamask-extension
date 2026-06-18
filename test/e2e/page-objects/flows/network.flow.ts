@@ -2,6 +2,14 @@ import { Driver } from '../../webdriver/driver';
 import TokensTab from '../pages/home/tokens-tab';
 import NetworkManager from '../pages/network-manager';
 
+export async function clearOrphanedNetworkManagerBackdrop(
+  driver: Driver,
+): Promise<void> {
+  await driver.executeScript(
+    `document.querySelectorAll('.modal__backdrop').forEach((el) => el.remove());`,
+  );
+}
+
 export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
   networkCategory: string,
@@ -16,4 +24,5 @@ export const switchToNetworkFromNetworkSelect = async (
   await tokensTab.openNetworksFilter();
   await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
+  await clearOrphanedNetworkManagerBackdrop(driver);
 };

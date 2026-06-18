@@ -31,6 +31,7 @@ import {
   mockSolanaBalanceQuote,
   mockTokenApiAssets,
   simulateSolanaTransaction,
+  SOL_BALANCE,
 } from './common-solana';
 
 const isUnifiedAssetsEnabled = true;
@@ -47,25 +48,31 @@ const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 
 async function mockAccountsApiV2WithSolana(
   mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        1,
-        137,
-        56,
-        59144,
-        8453,
-        10,
-        42161,
-        534352,
-        1337,
-        SOLANA_CHAIN_ID,
-      ],
-      partialSupport: { balances: [42220, 43114] },
-    });
+): Promise<MockedEndpoint[]> {
+  // TODO: migrate to withSolanaFixtures for proper live-balance testing
+  // After a successful SPL token send the wallet polls getBalance again; the
+  // second mock (LIFO priority, consumed once) returns the post-send SOL
+  // balance (only the network fee is deducted from SOL).
+  const POST_SEND_SOL_BALANCE = SOL_BALANCE - 5000; // deduct 0.000005 SOL fee
+  return [
+    await mockGetTokenAccountsUSDCOnly(mockServer),
+    await mockGetTokenAccountBalance(mockServer),
+    await simulateSolanaTransaction(mockServer),
+    await mockSolanaBalanceQuote({ mockServer, once: true }),
+    await mockSolanaBalanceQuote({ mockServer, balance: POST_SEND_SOL_BALANCE }),
+    await mockGetFeeForMessage(mockServer),
+    await mockGetLatestBlockhash(mockServer),
+    await mockGetMinimumBalanceForRentExemption(mockServer),
+    await mockMultiCoinPrice(mockServer),
+    await mockPriceApiSpotPriceSwap(mockServer),
+    await mockPriceApiExchangeRates(mockServer),
+    await mockGetMultipleAccounts(mockServer),
+    await mockSendSolanaTransaction(mockServer),
+    await mockGetSuccessSignaturesForAddress(mockServer),
+    await mockGetSuccessSplTokenTransaction(mockServer),
+    await mockGetMintAccountInfo(mockServer),
+    await mockTokenApiAssets(mockServer),
+  ];
 }
 
 async function mockAccountsApiV5WithSolana(

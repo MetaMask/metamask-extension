@@ -5349,6 +5349,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/bitcoin-regtest-up@npm:0.0.0-preview-82e080825":
+  version: 0.0.0-preview-82e080825
+  resolution: "@metamask-previews/bitcoin-regtest-up@npm:0.0.0-preview-82e080825"
+  bin:
+    bitcoin-regtest-up: ./dist/bin/bitcoin-regtest-up.mjs
+  checksum: 10/932859128e554c0f41a0d8fe628575252405dd44db97524698c423c282c84b93e6ae6ca8d93653350c09e3f86f6d50d81d3219b31da3bc6f53cb08a257c22791
+  languageName: node
+  linkType: hard
+
+"@metamask-previews/java-tron-up@npm:0.0.0-preview-73cf60340":
+  version: 0.0.0-preview-73cf60340
+  resolution: "@metamask-previews/java-tron-up@npm:0.0.0-preview-73cf60340"
+  bin:
+    java-tron-up: ./dist/bin/java-tron-up.mjs
+  checksum: 10/9a9acbbb1fae050eb553e3e950a95e5d4f5395bca99aab021a673abaf43258a4ddb2f23962b0b12e34973630875faba7ab900fa30394e2506f69cf990e395548
+  languageName: node
+  linkType: hard
+
+"@metamask-previews/solana-test-validator-up@npm:0.0.0-preview-9b6bf0851":
+  version: 0.0.0-preview-9b6bf0851
+  resolution: "@metamask-previews/solana-test-validator-up@npm:0.0.0-preview-9b6bf0851"
+  bin:
+    solana-test-validator-up: ./dist/bin/solana-test-validator-up.mjs
+  checksum: 10/a619b50139abe2db48a23caeb8bba290c5453113b08fcd4fa897850c776d4b2f4dcf95a1778a7a7ddc33cc2010a43da68ed51f80f540f210fd6212aeac67f881
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.7.1":
   version: 0.7.1
   resolution: "@metamask/7715-permission-types@npm:0.7.1"
@@ -33492,6 +33519,11 @@ __metadata:
     "@ledgerhq/hw-transport": "npm:^6.31.0"
     "@ledgerhq/hw-transport-webhid": "npm:^6.31.0"
     "@lydell/node-pty": "npm:^1.1.0"
+    "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/pickers": "npm:^3.3.11"
+    "@metamask-previews/bitcoin-regtest-up": "npm:0.0.0-preview-82e080825"
+    "@metamask-previews/java-tron-up": "npm:0.0.0-preview-73cf60340"
+    "@metamask-previews/solana-test-validator-up": "npm:0.0.0-preview-9b6bf0851"
     "@metamask/7715-permission-types": "npm:^0.7.1"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.4"
