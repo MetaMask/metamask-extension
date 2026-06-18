@@ -8,7 +8,7 @@ import initLegacy from './ledger';
 
 /** Interface that both DMK and Legacy handlers share for action dispatch. */
 type LedgerHandler = {
-  init(skipMessageListener?: boolean): Promise<void>;
+  init(): Promise<void>;
   destroy(): Promise<void>;
   handleAction(
     action: LedgerAction,
@@ -105,9 +105,9 @@ function ensureMessageListener(): void {
 /**
  * Create a new handler for the given mode and initialise it.
  *
- * Passes `skipMessageListener = true` so the handler does **not** register
- * its own chrome.runtime.onMessage listener — the central router owns the
- * single listener that dispatches to `handleAction()`.
+ * The central router owns the single `chrome.runtime.onMessage` listener
+ * that dispatches to `handleAction()`, so the handler does not register its
+ * own.
  *
  * @param mode - The handler implementation to construct. `DMK` instantiates
  * `LedgerDMKBridgeHandler`, any other value instantiates the legacy
@@ -117,12 +117,12 @@ function ensureMessageListener(): void {
 async function createHandler(mode: LedgerHandlerMode): Promise<LedgerHandler> {
   if (mode === LedgerHandlerMode.DMK) {
     const handler = new LedgerDMKBridgeHandler();
-    await handler.init(true);
+    await handler.init();
     return handler;
   }
 
   const handler = initLegacy();
-  await handler.init(true);
+  await handler.init();
   return handler;
 }
 

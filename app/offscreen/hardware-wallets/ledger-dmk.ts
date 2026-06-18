@@ -18,14 +18,11 @@ export class LedgerDMKBridgeHandler {
   /**
    * Initialises the underlying legacy handler.
    *
-   * @param skipMessageListener - When true, the underlying legacy handler does
-   * NOT register its own chrome.runtime.onMessage listener because the central
-   * router (ledger-router.ts) owns it.
    * @returns Resolves once the legacy handler is ready to dispatch actions.
    */
-  async init(skipMessageListener = false): Promise<void> {
+  async init(): Promise<void> {
     this.legacyHandler = initLegacy();
-    await this.legacyHandler.init(skipMessageListener);
+    await this.legacyHandler.init();
   }
 
   /**

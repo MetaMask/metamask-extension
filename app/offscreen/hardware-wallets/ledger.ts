@@ -23,7 +23,6 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
-import { serializeError } from './ledger-utils';
 
 /**
  * Checks if WebHID API is available in this environment.
@@ -81,14 +80,6 @@ export class LedgerLegacyHandler {
 
   // Prevents concurrent makeApp calls from creating multiple transports
   private pendingMakeApp: Promise<boolean> | null = null;
-
-  private messageListenerFn:
-    | ((
-        msg: Record<string, unknown>,
-        sender: unknown,
-        sendResponse: (response: unknown) => void,
-      ) => boolean)
-    | null = null;
 
   // Stored references to `navigator.hid` listeners so `destroy()` can remove
   // them. Without these references the listeners leak for the lifetime of the
@@ -445,60 +436,6 @@ export class LedgerLegacyHandler {
   }
 
   /**
-   * Sets up the message listener for handling Ledger actions from the offscreen bridge.
-   */
-  private setupMessageListener(): void {
-    this.messageListenerFn = (
-      msg: Record<string, unknown>,
-      _sender: unknown,
-      sendResponse: (response: unknown) => void,
-    ): boolean => {
-      if (
-        msg.target !== OffscreenCommunicationTarget.ledgerOffscreen ||
-        typeof msg.action !== 'string'
-      ) {
-        return false;
-      }
-
-      const action = msg.action as LedgerAction;
-      const params =
-        msg.params && typeof msg.params === 'object'
-          ? (msg.params as Record<string, unknown>)
-          : undefined;
-
-      // Handle the action asynchronously
-      this.handleLedgerAction(action, params)
-        .then((result) => {
-          sendResponse({
-            success: true,
-            payload: result,
-          });
-        })
-        .catch((error) => {
-          console.error(`Ledger action ${action} failed:`, error);
-          sendResponse({
-            success: false,
-            payload: {
-              error: serializeError(error),
-            },
-          });
-        })
-        .finally(() => {
-          this.closeTransport();
-        });
-
-      // Return true to indicate we will send response asynchronously
-      return true;
-    };
-
-    chrome.runtime.onMessage.addListener(
-      this.messageListenerFn as Parameters<
-        typeof chrome.runtime.onMessage.addListener
-      >[0],
-    );
-  }
-
-  /**
    * Handles a Ledger action and returns the result.
    *
    * @param action - The Ledger action to perform.
@@ -634,15 +571,6 @@ export class LedgerLegacyHandler {
    * Safe to call multiple times.
    */
   async destroy(): Promise<void> {
-    if (this.messageListenerFn) {
-      chrome.runtime.onMessage.removeListener(
-        this.messageListenerFn as Parameters<
-          typeof chrome.runtime.onMessage.removeListener
-        >[0],
-      );
-      this.messageListenerFn = null;
-    }
-
     if (this.hidConnectListener && typeof navigator !== 'undefined') {
       navigator.hid.removeEventListener('connect', this.hidConnectListener);
       this.hidConnectListener = null;
@@ -661,17 +589,15 @@ export class LedgerLegacyHandler {
 
   /**
    * Initializes the Ledger offscreen handler.
-   * Sets up device event listeners and message handlers.
    *
-   * @param skipMessageListener - When true, the handler does NOT register its
-   * own chrome.runtime.onMessage listener.  This is used when a central
-   * router (ledger-router.ts) manages the listener instead.
+   * Wires up `navigator.hid` device event listeners and notifies the
+   * extension if a Ledger device is already permitted. The central router
+   * (ledger-router.ts) owns the `chrome.runtime.onMessage` listener and
+   * dispatches actions to `handleAction`, so this method does not register
+   * any message listener itself.
    */
-  async init(skipMessageListener = false): Promise<void> {
+  async init(): Promise<void> {
     this.setupDeviceEventListeners();
-    if (!skipMessageListener) {
-      this.setupMessageListener();
-    }
 
     // Check if there's already a permitted device connected
     if (!isWebHIDSupported()) {
@@ -705,10 +631,8 @@ export class LedgerLegacyHandler {
  * Creates a new legacy Ledger handler instance.
  *
  * The handler is returned WITHOUT calling init() — the central router
- * (ledger-router.ts) calls handler.init(skipMessageListener) so it can
- * control whether the handler registers its own chrome.runtime.onMessage
- * listener.  This avoids double-dispatching messages through both the
- * router's central listener and the handler's own listener.
+ * (ledger-router.ts) calls `handler.init()` and owns the single
+ * `chrome.runtime.onMessage` listener that dispatches to `handleAction`.
  *
  * @returns A raw LedgerLegacyHandler instance (uninitialised).
  */

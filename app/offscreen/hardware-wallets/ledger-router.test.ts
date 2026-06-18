@@ -54,11 +54,14 @@ jest.mock('./ledger', () => ({
 
 // Router exports + mocked handler constructors are re-fetched per test in
 // beforeEach (via jest.isolateModules) so each test starts from a clean
-// module registry. This replaces a former test-only `resetLedgerRouterForTests`
-// escape hatch exported from the production module.
-let initLedger: (typeof import('./ledger-router'))['default'];
-let switchLedgerHandler: (typeof import('./ledger-router'))['switchLedgerHandler'];
-let bootstrapLedger: (typeof import('./ledger-router'))['bootstrapLedger'];
+// module registry.
+type RouterModule = typeof import('./ledger-router');
+type DmkModule = typeof import('./ledger-dmk');
+type LegacyModule = typeof import('./ledger');
+
+let initLedger: RouterModule['default'];
+let switchLedgerHandler: RouterModule['switchLedgerHandler'];
+let bootstrapLedger: RouterModule['bootstrapLedger'];
 let mockedDmkCtor: jest.Mock;
 let mockedLegacyCtor: jest.Mock;
 
@@ -126,16 +129,14 @@ describe('LedgerRouter', () => {
     // any test-only reset hook on the production module.
     jest.isolateModules(() => {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const router =
-        require('./ledger-router') as typeof import('./ledger-router');
+      const router = require('./ledger-router') as RouterModule;
       initLedger = router.default;
       switchLedgerHandler = router.switchLedgerHandler;
       bootstrapLedger = router.bootstrapLedger;
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const dmkModule =
-        require('./ledger-dmk') as typeof import('./ledger-dmk');
+      const dmkModule = require('./ledger-dmk') as DmkModule;
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const legacyModule = require('./ledger') as typeof import('./ledger');
+      const legacyModule = require('./ledger') as LegacyModule;
       mockedDmkCtor = jest.mocked(
         dmkModule.LedgerDMKBridgeHandler,
       ) as jest.Mock;
@@ -195,7 +196,7 @@ describe('LedgerRouter', () => {
 
       expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
       expect(mockLegacyInit).toHaveBeenCalledTimes(1);
-      expect(mockLegacyInit).toHaveBeenCalledWith(true);
+      expect(mockLegacyInit).toHaveBeenCalledWith();
     });
   });
 
@@ -364,7 +365,7 @@ describe('LedgerRouter', () => {
       await bootstrapLedger();
 
       expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
-      expect(mockLegacyInit).toHaveBeenCalledWith(true);
+      expect(mockLegacyInit).toHaveBeenCalledWith();
       expect(mockedDmkCtor).not.toHaveBeenCalled();
     });
   });

@@ -207,7 +207,7 @@ describe('Ledger Offscreen', () => {
   });
 
   describe('init', () => {
-    it('sets up device and message listeners', async () => {
+    it('sets up device listeners', async () => {
       const handler = new LedgerLegacyHandler();
       await handler.init();
 
@@ -219,7 +219,6 @@ describe('Ledger Offscreen', () => {
         'disconnect',
         expect.any(Function),
       );
-      expect(mockAddListener).toHaveBeenCalledWith(expect.any(Function));
     });
 
     it('notifies extension when Ledger device is already connected', async () => {
@@ -817,7 +816,7 @@ describe('Ledger Offscreen', () => {
       });
 
       const handler = new LedgerLegacyHandler();
-      await handler.init(true);
+      await handler.init();
 
       await handler.handleAction(LedgerAction.getPublicKey, {
         hdPath: "m/44'/60'/0'/0/0",
@@ -833,7 +832,7 @@ describe('Ledger Offscreen', () => {
       mockGetAddress.mockRejectedValue(new Error('Device error'));
 
       const handler = new LedgerLegacyHandler();
-      await handler.init(true);
+      await handler.init();
 
       await expect(
         handler.handleAction(LedgerAction.getPublicKey, {
@@ -843,27 +842,6 @@ describe('Ledger Offscreen', () => {
 
       expect(mockTransportClose).toHaveBeenCalled();
       consoleSpy.mockRestore();
-    });
-
-    it('does not register a message listener when skipMessageListener is true', async () => {
-      // Fresh handler + explicit `init(true)` so the assertion does not depend
-      // on whether prior tests in this describe block happened to skip the
-      // listener themselves.
-      mockAddListener.mockClear();
-      const handler = new LedgerLegacyHandler();
-      await handler.init(true);
-
-      expect(mockAddEventListener).toHaveBeenCalledWith(
-        'connect',
-        expect.any(Function),
-      );
-      expect(mockAddEventListener).toHaveBeenCalledWith(
-        'disconnect',
-        expect.any(Function),
-      );
-      // Device listeners are wired, but the chrome.runtime.onMessage
-      // listener is intentionally skipped because the router owns it.
-      expect(mockAddListener).not.toHaveBeenCalled();
     });
   });
 });
