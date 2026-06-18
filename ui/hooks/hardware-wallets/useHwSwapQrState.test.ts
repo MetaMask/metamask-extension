@@ -201,7 +201,7 @@ describe('useHwSwapQrState', () => {
     );
   });
 
-  it('returns undefined activeQrStep when isReadingQrSignature is true', () => {
+  it('keeps activeQrStep when isReadingQrSignature is true', () => {
     const mockQrSignRequest = {
       type: QrScanRequestType.SIGN,
       request: {
@@ -227,7 +227,9 @@ describe('useHwSwapQrState', () => {
       result.current.setIsReadingQrSignature(true);
     });
 
-    expect(result.current.activeQrStep).toBeUndefined();
+    expect(result.current.activeQrStep).toBe(
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+    );
   });
 
   it('resets isReadingQrSignature when currentQrRequestId changes', () => {
