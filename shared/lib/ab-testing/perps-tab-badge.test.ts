@@ -22,7 +22,9 @@ describe('perps-tab-badge config', () => {
   });
 
   it('defines a control variant that hides the badge', () => {
-    expect(PERPS_TAB_BADGE_VARIANTS.control).toStrictEqual({ showBadge: false });
+    expect(PERPS_TAB_BADGE_VARIANTS.control).toStrictEqual({
+      showBadge: false,
+    });
   });
 
   it('defines a treatment variant that shows the badge', () => {

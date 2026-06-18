@@ -30,7 +30,9 @@ export function registerABTestAnalyticsMapping(
   mapping: ABTestAnalyticsMapping,
 ): void {
   if (
-    !AB_TEST_ANALYTICS_MAPPINGS.some(({ flagKey }) => flagKey === mapping.flagKey)
+    !AB_TEST_ANALYTICS_MAPPINGS.some(
+      ({ flagKey }) => flagKey === mapping.flagKey,
+    )
   ) {
     AB_TEST_ANALYTICS_MAPPINGS.push(mapping);
   }
