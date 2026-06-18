@@ -333,9 +333,6 @@
     "ui/components/app/snaps/snap-ui-renderer/components/asset-selector.test.ts": {
       "MetaMask: Background connection not initialized": 4
     },
-    "ui/components/app/snaps/snap-ui-renderer/components/date-time-picker.test.ts": {
-      "warn: Material-UI: You are trying to": 5
-    },
     "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.test.js": {
       "error: Warning: React does not recognize": 1
     },

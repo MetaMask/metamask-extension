@@ -1,6 +1,6 @@
 {
   "background": {
-    "service_worker": "service-worker.js"
+    "service_worker": "service-worker.ts"
   },
   "content_scripts": [
     {
