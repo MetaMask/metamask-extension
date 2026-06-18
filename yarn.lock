@@ -7533,13 +7533,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:32.0.0":
-  version: 32.0.0
-  resolution: "@metamask/network-controller@npm:32.0.0"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@32.0.0-preview-771074f":
+  version: 32.0.0-preview-771074f
+  resolution: "@metamask-previews/network-controller@npm:32.0.0-preview-771074f"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
-    "@metamask/controller-utils": "npm:^12.1.0"
+    "@metamask/controller-utils": "npm:^12.2.0"
     "@metamask/eth-block-tracker": "npm:^15.0.1"
     "@metamask/eth-json-rpc-infura": "npm:^10.3.0"
     "@metamask/eth-json-rpc-middleware": "npm:^23.1.3"
@@ -7547,17 +7547,17 @@ __metadata:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/json-rpc-engine": "npm:^10.5.0"
     "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/swappable-obj-proxy": "npm:^2.3.0"
-    "@metamask/utils": "npm:^11.9.0"
-    async-mutex: "npm:^0.5.0"
+    "@metamask/utils": "npm:^11.11.0"
     fast-deep-equal: "npm:^3.1.3"
     immer: "npm:^9.0.6"
     loglevel: "npm:^1.8.1"
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/263f6355aac3e2014f2d18c2c10b20b83e12823845cf9a12e74dea09d31d5f81be9bd396d9f3b5b7dbaa99ce5ed7f3b0ec4c537656f884f586c349965569ad07
+  checksum: 10/37af368ef59fa9edf9d86a5a61e3042d43feddf7d636db4a8a9e8c36a9a39443342f7226f5bdbe89c67e2921c94720144e507cac4586ef36f441ea09a83f3a48
   languageName: node
   linkType: hard
 

@@ -882,5 +882,11 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/network-controller": {
+      "type": "non-breaking",
+      "previewVersion": "32.0.0-preview-771074f"
+    }
   }
 }
