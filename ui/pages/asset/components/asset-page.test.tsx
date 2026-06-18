@@ -2,7 +2,13 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  EthScope,
+  SolAccountType,
+  SolScope,
+  TrxScope,
+} from '@metamask/keyring-api';
 import nock from 'nock';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
@@ -89,11 +95,18 @@ jest.mock('../../../hooks/musd', () => {
     }),
   };
 });
+const mockActivityListFilters: { v2?: unknown; v3?: unknown } = {};
 jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
-  ActivityList: () => <div data-testid="mock-activity-list" />,
+  ActivityList: ({ filter }: { filter?: unknown }) => {
+    mockActivityListFilters.v2 = filter;
+    return <div data-testid="mock-activity-list" />;
+  },
 }));
 jest.mock('../../activity/activity-list', () => ({
-  ActivityList: () => <div data-testid="mock-activity-list" />,
+  ActivityList: ({ filter }: { filter?: unknown }) => {
+    mockActivityListFilters.v3 = filter;
+    return <div data-testid="mock-activity-list" />;
+  },
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -841,6 +854,106 @@ describe('AssetPage', () => {
       expect(
         getByText(messages.musdAssetBonusAccruing.message),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('non-EVM native asset activity scope', () => {
+    const SOLANA_NATIVE_ASSET_ID = `${SolScope.Mainnet}/slip44:501`;
+    const TRON_NATIVE_ASSET_ID = `${TrxScope.Mainnet}/slip44:195`;
+    const SOLANA_ACCOUNT_ID = 'solana-account-id';
+    const WALLET_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+    const GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+
+    const solanaNativeAsset = {
+      type: AssetType.native,
+      chainId: SolScope.Mainnet as unknown as `0x${string}`,
+      symbol: 'SOL',
+      image: '',
+      isOriginalNativeSymbol: true,
+      decimals: 9,
+    } as const;
+
+    // Selected account stays EVM while the user views the Solana token page,
+    // mirroring the bug repro where a different (e.g. Tron) network/account is
+    // globally selected.
+    const buildSolanaStore = () =>
+      configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          accountTree: {
+            wallets: {
+              [WALLET_ID]: {
+                ...mockStore.metamask.accountTree.wallets[WALLET_ID],
+                groups: {
+                  [GROUP_ID]: {
+                    ...mockStore.metamask.accountTree.wallets[WALLET_ID].groups[
+                      GROUP_ID
+                    ],
+                    accounts: [selectedAccountAddress, SOLANA_ACCOUNT_ID],
+                  },
+                },
+              },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              ...mockStore.metamask.internalAccounts.accounts,
+              [SOLANA_ACCOUNT_ID]: {
+                address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+                id: SOLANA_ACCOUNT_ID,
+                metadata: {
+                  name: 'Solana Account',
+                  keyring: { type: 'Snap Keyring' },
+                },
+                options: {},
+                methods: [],
+                type: SolAccountType.DataAccount,
+                scopes: [SolScope.Mainnet],
+              },
+            },
+            selectedAccount: selectedAccountAddress,
+          },
+        },
+      });
+
+    it('scopes activity to the viewed chain native asset, not the globally selected one', () => {
+      (
+        getAssetsBySelectedAccountGroup as unknown as jest.Mock
+      ).mockReturnValueOnce({
+        [SolScope.Mainnet]: [
+          {
+            assetId: SOLANA_NATIVE_ASSET_ID,
+            isNative: true,
+            rawBalance: '0x1',
+            balance: '1',
+            fiat: { balance: 1 },
+          },
+        ],
+        [TrxScope.Mainnet]: [
+          {
+            assetId: TRON_NATIVE_ASSET_ID,
+            isNative: true,
+            rawBalance: '0x1',
+            balance: '1',
+            fiat: { balance: 1 },
+          },
+        ],
+      });
+
+      renderWithProvider(
+        <AssetPage asset={solanaNativeAsset} optionsButton={null} />,
+        buildSolanaStore(),
+      );
+
+      // Redesign flag is off in the mock store, so the v2 activity list renders.
+      expect(mockActivityListFilters.v2).toMatchObject({
+        chainId: SolScope.Mainnet,
+        assetScope: {
+          kind: 'native',
+          caipAssetType: SOLANA_NATIVE_ASSET_ID,
+        },
+      });
     });
   });
 });

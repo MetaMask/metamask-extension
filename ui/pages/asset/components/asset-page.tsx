@@ -70,7 +70,6 @@ import {
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
-  getMultichainNativeAssetType,
 } from '../../../selectors/assets';
 import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
 import {
@@ -118,8 +117,6 @@ const AssetPage = ({
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
-  // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
-  const nativeAssetType = useSelector(getMultichainNativeAssetType);
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
   const caipChainId = isCaipChainId(asset.chainId)
     ? asset.chainId
@@ -178,7 +175,16 @@ const AssetPage = ({
       if (type === AssetType.token) {
         return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
       }
-      return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
+      if (isEvm) {
+        return getNativeTokenAddress(chainId);
+      }
+      // For non-EVM native assets, derive the native asset id from the asset
+      // being viewed (its chainId within the selected account group) rather
+      // than from the globally selected account/network. Using global
+      // selection caused the wrong chain's native asset to leak in (e.g.
+      // showing Tron activity/balance on the Solana or Bitcoin token page).
+      return accountGroupIdAssets[caipChainId]?.find((item) => item.isNative)
+        ?.assetId;
     })() ?? '';
 
   const shouldShowContractAddress = type === AssetType.token;
