@@ -59,9 +59,8 @@ const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const isReactRefreshEnabled = isDevelopment && args.watch && !args.test;
 const MANIFEST_VERSION = args.manifestVersion;
-const REACT_REFRESH_ENTRY_PATH = require.resolve(
-  '@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry',
-);
+const REACT_REFRESH_ENTRY_PATH =
+  require.resolve('@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry');
 const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -404,9 +403,8 @@ const config = {
     alias: {
       ...(isReactRefreshEnabled
         ? {
-            [REACT_REFRESH_ENTRY_PATH]: require.resolve(
-              './utils/dev-server/react-refresh-entry',
-            ),
+            [REACT_REFRESH_ENTRY_PATH]:
+              require.resolve('./utils/dev-server/react-refresh-entry'),
           }
         : {}),
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),

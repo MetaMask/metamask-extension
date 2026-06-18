@@ -45,7 +45,7 @@ function shouldInstallReactRefreshRuntimeClient(): boolean {
     return false;
   }
 
-  const {currentScript} = document;
+  const { currentScript } = document;
   const currentScriptSource =
     currentScript && 'src' in currentScript ? currentScript.src : '';
 

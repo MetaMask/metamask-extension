@@ -7,12 +7,9 @@ type ReactRefreshRuntime = {
   injectIntoGlobalHook(globalObject: typeof globalThis): void;
 };
 
-const safeThis = require(
-  'core-js-pure/features/global-this',
-) as typeof globalThis;
-const RefreshRuntime = require(
-  'react-refresh/runtime',
-) as ReactRefreshRuntime;
+const safeThis =
+  require('core-js-pure/features/global-this') as typeof globalThis;
+const RefreshRuntime = require('react-refresh/runtime') as ReactRefreshRuntime;
 
 /**
  * @returns Whether this entry is running in a React UI page script.

@@ -4,9 +4,8 @@ import type { Configuration } from 'webpack-dev-server';
 import { UI_RELOAD_CLIENT_ENTRY_NAME } from './reload-protocol';
 import { getClientEntry } from './websocket';
 
-const REACT_REFRESH_RUNTIME_CLIENT_ENTRY = require.resolve(
-  './react-refresh-runtime-client',
-);
+const REACT_REFRESH_RUNTIME_CLIENT_ENTRY =
+  require.resolve('./react-refresh-runtime-client');
 
 /**
  * Builds the webpack entry for webpack-dev-server's client from a
