@@ -114,7 +114,6 @@ import {
   isTronChainId,
   getMaybeHexChainId,
   isSupportedBridgeChain,
-  getDefaultFromToken,
 } from './utils';
 import type {
   BridgeNetwork,
@@ -379,12 +378,8 @@ export const getFromToken = createSelector(
     const fromChain = fromChains.find(
       ({ chainId }) => !isCrossChain(chainId, providerConfig?.chainId),
     );
-    // If the user has not selected a token, return the native token for the selected network as default
-    // If selected network is not supported by swap/bridge, return ETH (edge case)
-    if (!fromChain?.chainId) {
-      return toBridgeToken(getNativeAssetForChainId(FALLBACK_CHAIN_ID));
-    }
-    return getDefaultFromToken(fromChain.chainId);
+    const fromChainId = fromChain?.chainId ?? FALLBACK_CHAIN_ID;
+    return toBridgeToken(getNativeAssetForChainId(fromChainId));
   },
 );
 

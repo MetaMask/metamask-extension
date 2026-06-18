@@ -6038,7 +6038,7 @@ __metadata:
 
 "@metamask/bridge-controller@patch:@metamask/bridge-controller@npm%3A73.2.0#~/.yarn/patches/@metamask-bridge-controller-npm-73.2.0-be55b13227.patch":
   version: 73.2.0
-  resolution: "@metamask/bridge-controller@patch:@metamask/bridge-controller@npm%3A73.2.0#~/.yarn/patches/@metamask-bridge-controller-npm-73.2.0-be55b13227.patch::version=73.2.0&hash=3a6413"
+  resolution: "@metamask/bridge-controller@patch:@metamask/bridge-controller@npm%3A73.2.0#~/.yarn/patches/@metamask-bridge-controller-npm-73.2.0-be55b13227.patch::version=73.2.0&hash=4ce85d"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -6065,7 +6065,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/07341428f26082320ffc751927359dda0ef516a235af23c33471af8ba34e1ecbbca896fad4b010601a92d9ad498371b12cc5323fa72a41b5eac5b4fbc4c166fa
+  checksum: 10/b2bed84af2f2efe05c24876863d3fdab335b1f6442dffba3418717dc0a619f4b8f44274ceb33310766f351f9065d3879df4d2319052f541a98b694db00772c3e
   languageName: node
   linkType: hard
 

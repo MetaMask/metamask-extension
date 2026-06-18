@@ -113,8 +113,8 @@ index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc000
 +const ARC_SWAPS_TOKEN_OBJECT = {
 +    symbol: 'USDC',
 +    name: 'USDC',
-+    address: '0x0000000000000000000000000000000000000000',
-+    decimals: 18,
++    address: '0x3600000000000000000000000000000000000000',
++    decimals: 6,
 +    iconUrl: 'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/5042/erc20/0x0000000000000000000000000000000000000000.png',
 +};
  exports.SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
@@ -132,7 +132,7 @@ index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc000
      TRX: 'slip44:195',
      MON: 'slip44:268435779',
      HYPE: 'slip44:2457',
-+    USDC: 'erc20:0x0000000000000000000000000000000000000000',
++    USDC: 'erc20:0x3600000000000000000000000000000000000000',
  };
  //# sourceMappingURL=tokens.cjs.map
 \ No newline at end of file
@@ -155,8 +155,8 @@ index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44
 +const ARC_SWAPS_TOKEN_OBJECT = {
 +    symbol: 'USDC',
 +    name: 'USDC',
-+    address: '0x0000000000000000000000000000000000000000',
-+    decimals: 18,
++    address: '0x3600000000000000000000000000000000000000',
++    decimals: 6,
 +    iconUrl: 'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/5042/erc20/0x0000000000000000000000000000000000000000.png',
 +};
  export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
@@ -174,7 +174,7 @@ index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44
      TRX: 'slip44:195',
      MON: 'slip44:268435779',
      HYPE: 'slip44:2457',
-+    USDC: 'erc20:0x0000000000000000000000000000000000000000',
++    USDC: 'erc20:0x3600000000000000000000000000000000000000',
  };
  //# sourceMappingURL=tokens.mjs.map
 \ No newline at end of file
@@ -202,3 +202,144 @@ index 6b8ff6303061d23601ab02e41c96192bf09791f5..ea799db2d867d34c0d9b31b1060c7a34
  })(ChainId || (ChainId = {}));
  export var RequestStatus;
  (function (RequestStatus) {
+diff --git a/dist/utils/caip-formatters.cjs b/dist/utils/caip-formatters.cjs
+--- a/dist/utils/caip-formatters.cjs
++++ b/dist/utils/caip-formatters.cjs
+@@ -97,17 +97,17 @@
+ const formatAddressToCaipReference = (address) => {
+-    if ((0, utils_1.isStrictHexString)(address)) {
+-        return (0, address_1.getAddress)(address);
+-    }
++    const addressWithoutPrefix = address.split(':').at(-1);
++    if ((0, utils_1.isStrictHexString)(addressWithoutPrefix)) {
++        return (0, address_1.getAddress)(addressWithoutPrefix);
++    }
+     // If the address looks like a native token, return the zero address because it's
+     // what bridge-api uses to represent a native asset
+     if ((0, bridge_1.isNativeAddress)(address)) {
+         return constants_1.AddressZero;
+     }
+-    const addressWithoutPrefix = address.split(':').at(-1);
+     // If the address is not a valid hex string or CAIP address, throw an error
+     // This should never happen, but it's a sanity check
+     if (!addressWithoutPrefix) {
+         throw new Error('Invalid address');
+     }
+     return addressWithoutPrefix;
+ };
+diff --git a/dist/utils/caip-formatters.mjs b/dist/utils/caip-formatters.mjs
+--- a/dist/utils/caip-formatters.mjs
++++ b/dist/utils/caip-formatters.mjs
+@@ -91,17 +91,17 @@
+ export const formatAddressToCaipReference = (address) => {
+-    if (isStrictHexString(address)) {
+-        return getAddress(address);
+-    }
++    const addressWithoutPrefix = address.split(':').at(-1);
++    if (isStrictHexString(addressWithoutPrefix)) {
++        return getAddress(addressWithoutPrefix);
++    }
+     // If the address looks like a native token, return the zero address because it's
+     // what bridge-api uses to represent a native asset
+     if (isNativeAddress(address)) {
+         return AddressZero;
+     }
+-    const addressWithoutPrefix = address.split(':').at(-1);
+     // If the address is not a valid hex string or CAIP address, throw an error
+     // This should never happen, but it's a sanity check
+     if (!addressWithoutPrefix) {
+         throw new Error('Invalid address');
+     }
+     return addressWithoutPrefix;
+ };
+diff --git a/dist/utils/bridge.mjs b/dist/utils/bridge.mjs
+--- a/dist/utils/bridge.mjs
++++ b/dist/utils/bridge.mjs
+@@ -125,7 +125,13 @@
+-export const isNativeAddress = (address) => address === AddressZero || // bridge and swap apis set the native asset address to zero
+-    address === '' || // assets controllers set the native asset address to an empty string
+-    !address ||
+-    (!isStrictHexString(address) &&
+-        Object.values(SYMBOL_TO_SLIP44_MAP).some(
+-        // check if it matches any supported SLIP44 references
+-        (reference) => address.includes(reference) || reference.endsWith(address)));
++export const isNativeAddress = (address) => {
++    if (address === AddressZero || // bridge and swap apis set the native asset address to zero
++        address === '' || // assets controllers set the native asset address to an empty string
++        !address) {
++        return true;
++    }
++    // address may be a bare reference or a full CAIP-19 assetId (e.g.
++    // "eip155:5042/erc20:0x...."); only the segment after the last "/" matters
++    const suffix = address.includes('/') ? address.split('/').at(-1) : address;
++    return Object.values(SYMBOL_TO_SLIP44_MAP).some((reference) => reference === suffix ||
++        reference === `slip44:${suffix}` ||
++        reference === `erc20:${suffix}`);
++};
+diff --git a/dist/utils/bridge.cjs b/dist/utils/bridge.cjs
+--- a/dist/utils/bridge.cjs
++++ b/dist/utils/bridge.cjs
+@@ -136,8 +136,14 @@
+-const isNativeAddress = (address) => address === constants_1.AddressZero || // bridge and swap apis set the native asset address to zero
+-    address === '' || // assets controllers set the native asset address to an empty string
+-    !address ||
+-    (!(0, utils_1.isStrictHexString)(address) &&
+-        Object.values(tokens_1.SYMBOL_TO_SLIP44_MAP).some(
+-        // check if it matches any supported SLIP44 references
+-        (reference) => address.includes(reference) || reference.endsWith(address)));
+-exports.isNativeAddress = isNativeAddress;
++const isNativeAddress = (address) => {
++    if (address === constants_1.AddressZero || // bridge and swap apis set the native asset address to zero
++        address === '' || // assets controllers set the native asset address to an empty string
++        !address) {
++        return true;
++    }
++    // address may be a bare reference or a full CAIP-19 assetId (e.g.
++    // "eip155:5042/erc20:0x...."); only the segment after the last "/" matters
++    const suffix = address.includes('/') ? address.split('/').at(-1) : address;
++    return Object.values(tokens_1.SYMBOL_TO_SLIP44_MAP).some((reference) => reference === suffix ||
++        reference === `slip44:${suffix}` ||
++        reference === `erc20:${suffix}`);
++};
++exports.isNativeAddress = isNativeAddress;
+diff --git a/dist/utils/balance.cjs b/dist/utils/balance.cjs
+--- a/dist/utils/balance.cjs
++++ b/dist/utils/balance.cjs
+@@ -1,6 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.hasSufficientBalance = exports.calcLatestSrcBalance = exports.fetchTokenBalance = void 0;
++const constants_1 = require("@ethersproject/constants");
+ const address_1 = require("@ethersproject/address");
+ const contracts_1 = require("@ethersproject/contracts");
+ const providers_1 = require("@ethersproject/providers");
+@@ -18,6 +19,6 @@ exports.fetchTokenBalance = fetchTokenBalance;
+ const calcLatestSrcBalance = async (provider, selectedAddress, tokenAddress, chainId) => {
+     if (tokenAddress && chainId) {
+-        if ((0, bridge_1.isNativeAddress)(tokenAddress)) {
++        if (tokenAddress === constants_1.AddressZero) {
+             const ethersProvider = new providers_1.Web3Provider(provider);
+             return await ethersProvider.getBalance((0, address_1.getAddress)(selectedAddress));
+         }
+diff --git a/dist/utils/balance.mjs b/dist/utils/balance.mjs
+--- a/dist/utils/balance.mjs
++++ b/dist/utils/balance.mjs
+@@ -1,8 +1,8 @@
+ import { getAddress } from "@ethersproject/address";
++import { AddressZero } from "@ethersproject/constants";
+ import { Contract } from "@ethersproject/contracts";
+ import { Web3Provider } from "@ethersproject/providers";
+ import { abiERC20 } from "@metamask/metamask-eth-abis";
+-import { isNativeAddress } from "./bridge.mjs";
+ export const fetchTokenBalance = async (address, userAddress, provider) => {
+     const ethersProvider = new Web3Provider(provider);
+     const tokenContract = new Contract(address, abiERC20, ethersProvider);
+@@ -13,7 +13,7 @@ export const fetchTokenBalance = async (address, userAddress, provider) => {
+ };
+ export const calcLatestSrcBalance = async (provider, selectedAddress, tokenAddress, chainId) => {
+     if (tokenAddress && chainId) {
+-        if (isNativeAddress(tokenAddress)) {
++        if (tokenAddress === AddressZero) {
+             const ethersProvider = new Web3Provider(provider);
+             return await ethersProvider.getBalance(getAddress(selectedAddress));
+         }

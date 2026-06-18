@@ -10,11 +10,19 @@ import {
   type QuoteMetadata,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
-import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import {
+  isStrictHexString,
+  type CaipAssetType,
+  type CaipChainId,
+} from '@metamask/utils';
 import { fetchTxAlerts } from '../../../shared/lib/bridge-utils/security-alerts-api.util';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
-import { getTokenExchangeRate, toBridgeToken } from './utils';
+import {
+  getNativeAssetForChainIdSafe,
+  getTokenExchangeRate,
+  toBridgeToken,
+} from './utils';
 import type { BridgeState, TokenPayload } from './types';
 
 export const initialState: BridgeState = {
@@ -72,7 +80,9 @@ const getBalanceAmount = async ({
         await calcLatestSrcBalance(
           global.ethereumProvider,
           selectedAddress,
-          isNative ? zeroAddress() : tokenAddress,
+          isNative && !isStrictHexString(tokenAddress)
+            ? zeroAddress()
+            : tokenAddress,
           formatChainIdToHex(chainId),
         )
       )?.toString(),
@@ -87,7 +97,8 @@ export const setEVMSrcNativeBalance = createAsyncThunk(
   }: Omit<Parameters<typeof getBalanceAmount>[0], 'tokenAddress'>) =>
     await getBalanceAmount({
       selectedAddress,
-      tokenAddress: zeroAddress(),
+      tokenAddress:
+        getNativeAssetForChainIdSafe(chainId)?.address ?? zeroAddress(),
       chainId,
     }),
 );

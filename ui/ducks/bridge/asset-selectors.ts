@@ -12,14 +12,12 @@ import {
   type CaipAssetType,
   type CaipChainId,
   getChecksumAddress,
+  Hex,
   isCaipAssetType,
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
-import {
-  ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS,
-  BRIDGE_ASSET_PICKER_HIDDEN_ASSETS,
-} from '../../../shared/constants/bridge';
+import { ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { isTronSpecialAsset, toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getAccountTrackerControllerAccountsByChainId,
@@ -174,8 +172,14 @@ const getNativeAssetsWithBalance = createSelector(
     getEvmAccountAddress,
     getAllowedHexChainIds,
     getAccountTrackerControllerAccountsByChainId,
+    getTokenBalancesControllerTokenBalances,
   ],
-  (accountAddress, hexChainIds, balanceByChainIdByAccountAddress) => {
+  (
+    accountAddress,
+    hexChainIds,
+    balanceByChainIdByAccountAddress,
+    tokenBalancesByAccountAddress,
+  ) => {
     const assetsWithBalance: BridgeToken[] = [];
     if (!accountAddress || !isStrictHexString(accountAddress)) {
       return assetsWithBalance;
@@ -183,29 +187,41 @@ const getNativeAssetsWithBalance = createSelector(
     const normalizedAddress = getChecksumAddress(accountAddress);
     const lowercasedAddress = accountAddress.toLowerCase();
 
-    Object.entries(balanceByChainIdByAccountAddress).forEach(
-      ([chainId, accounts]) => {
-        if (!isStrictHexString(chainId) || !hexChainIds.includes(chainId)) {
-          return;
-        }
+    const tokenBalances =
+      tokenBalancesByAccountAddress[normalizedAddress] ??
+      // @ts-expect-error - lowercasedAddress is a Hex string
+      tokenBalancesByAccountAddress[lowercasedAddress];
 
-        const token = getNativeAssetForChainId(chainId);
-        const account =
-          accounts[normalizedAddress] ?? accounts[lowercasedAddress];
+    hexChainIds.forEach((chainId) => {
+      const token = getNativeAssetForChainId(chainId);
+      const { decimals, symbol, name, assetId } = token;
 
-        if (account?.balance && token) {
-          const { decimals, symbol, name, assetId } = token;
-          assetsWithBalance.push({
-            balance: convertHexBalanceToDecimal(account.balance, decimals),
-            chainId: formatChainIdToCaip(chainId),
-            symbol,
-            name,
-            decimals,
-            assetId,
-          });
-        }
-      },
-    );
+      /**
+       * When the native asset is a ERC20 - as opposed to actual native,
+       * use the ERC20 balances input as source of truth instead of native.
+       * Having this logic here means `exchangeRatesByAssetId` gets populated.
+       * Otherwise no USD price in the Bridge Asset Picker.
+       */
+      const balanceHex =
+        token.address === zeroAddress()
+          ? (balanceByChainIdByAccountAddress[chainId]?.[normalizedAddress]
+              ?.balance ??
+            balanceByChainIdByAccountAddress[chainId]?.[lowercasedAddress]
+              ?.balance)
+          : (tokenBalances?.[chainId]?.[token.address as Hex] ??
+            tokenBalances?.[chainId]?.[token.address.toLowerCase() as Hex]);
+
+      if (balanceHex) {
+        assetsWithBalance.push({
+          balance: convertHexBalanceToDecimal(balanceHex, decimals),
+          chainId: formatChainIdToCaip(chainId),
+          symbol,
+          name,
+          decimals,
+          assetId,
+        });
+      }
+    });
     return assetsWithBalance;
   },
 );
@@ -391,9 +407,7 @@ const getBridgeAssetsForAccountGroupId = createSelector(
           .toNumber(),
       }));
 
-    return nonEvmAssetsWithFiatBalances
-      .concat(evmAssetsWithFiatBalances)
-      .filter((item) => !BRIDGE_ASSET_PICKER_HIDDEN_ASSETS.has(item.assetId));
+    return nonEvmAssetsWithFiatBalances.concat(evmAssetsWithFiatBalances);
   },
 );
 
