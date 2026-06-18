@@ -23,6 +23,7 @@ import * as actions from '../../../ducks/bridge/actions';
 import configureStore from '../../../store/store';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
+import BridgeAssetPickerPage from './bridge-asset-picker-page';
 
 /** Matches `data-testid` on asset rows: `bridge-asset--${caipAssetId}` */
 const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
@@ -152,6 +153,29 @@ const renderBridgeInputGroup = (
 
   return renderWithProvider(
     <InputGroup mockState={mockState} {...props} />,
+    configureStore(mockState),
+  );
+};
+
+// When the network management feature flag is enabled, token selection happens
+// on a dedicated page instead of the modal. This renders that page directly,
+// mirroring how `BridgeInputGroup` navigates to it. The picker's "source vs
+// destination" mode is derived from the bridge slice flags.
+const renderAssetPickerPage = (
+  stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
+  { isDestination = false }: { isDestination?: boolean } = {},
+) => {
+  const mockState = createBridgeMockStore({
+    ...stateOverrides,
+    bridgeSliceOverrides: {
+      ...stateOverrides.bridgeSliceOverrides,
+      isSrcAssetPickerOpen: !isDestination,
+      isDestAssetPickerOpen: isDestination,
+    },
+  });
+
+  return renderWithProvider(
+    <BridgeAssetPickerPage />,
     configureStore(mockState),
   );
 };
@@ -398,7 +422,7 @@ describe('BridgeInputGroup', () => {
       _description: string,
       getToken: typeof getFromToken,
       enabledNetworkMap: Record<string, Record<string, boolean>>,
-      getChains: typeof getFromChains,
+      _getChains: typeof getFromChains,
       isDestination: boolean,
       {
         expectedDefaultToken,
@@ -431,18 +455,19 @@ describe('BridgeInputGroup', () => {
         },
       };
       const mockState = createBridgeMockStore(stateOverrides);
+      // Ensure the default token is what we expect for this picker mode.
+      expect(getToken(mockState).symbol).toBe(expectedDefaultToken);
 
-      const { getByTestId } = renderBridgeInputGroup(stateOverrides, {
+      const { getByTestId } = renderAssetPickerPage(stateOverrides, {
         isDestination,
-        token: getToken(mockState),
-        networks: getChains(mockState),
       });
 
-      expect(getByTestId(ASSET_PICKER_BUTTON_TEST_ID)).toHaveTextContent(
-        expectedDefaultToken,
-      );
-
-      await openAssetPicker();
+      await waitFor(() => {
+        expect(
+          getByTestId('bridge-asset-picker-search-input'),
+        ).toBeVisible();
+      });
+      await flushPromises();
 
       const networkPicker = getByTestId('multichain-asset-picker__network');
       await fillSearchInput('SD');
@@ -474,7 +499,7 @@ describe('BridgeInputGroup', () => {
       fireEvent.click(solanaNetworkItem);
       await waitFor(() => {
         // The asset picker stays open; only the network picker closes.
-        expect(getByTestId('bridge-asset-picker-modal')).toBeVisible();
+        expect(getByTestId('bridge-asset-picker-search-input')).toBeVisible();
         expect(
           screen.queryByTestId('bridge-network-picker-popover'),
         ).not.toBeInTheDocument();
