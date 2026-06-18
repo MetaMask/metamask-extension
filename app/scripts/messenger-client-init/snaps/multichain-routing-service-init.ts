@@ -7,6 +7,59 @@ import type { Json } from '@metamask/utils';
 import { MultichainRoutingServiceInitMessenger } from '../messengers/snaps';
 import { MessengerClientInitFunction } from '../types';
 
+type WithSnapKeyringFn = ConstructorParameters<
+  typeof MultichainRoutingService
+>[0]['withSnapKeyring'];
+
+type AppStateControllerWithUnlock = {
+  getUnlockPromise: (waitForUnlock: boolean) => Promise<void>;
+};
+
+/**
+ * Route a request through the Snap keyring that owns the requested account.
+ *
+ * @param initMessenger - The init messenger used to call KeyringController.
+ * @param appStateController - Used to ensure the wallet is unlocked first.
+ * @param operation - The operation to run once a keyring is resolved.
+ * @returns The result of the operation.
+ */
+export async function withSnapKeyring(
+  initMessenger: MultichainRoutingServiceInitMessenger,
+  appStateController: AppStateControllerWithUnlock,
+  operation: Parameters<WithSnapKeyringFn>[0],
+): ReturnType<WithSnapKeyringFn> {
+  // Ensure the client is unlocked before attempting to access keyrings.
+  await appStateController.getUnlockPromise(true);
+
+  return operation({
+    keyring: {
+      submitRequest: async (request): Promise<Json> =>
+        initMessenger.call(
+          'KeyringController:withKeyringV2',
+          {
+            filter: (keyring) =>
+              isSnapKeyring(keyring) && keyring.hasAccount(request.account),
+          },
+          async ({ keyring }) => {
+            if (!isSnapKeyring(keyring)) {
+              throw new Error('Expected v2 Snap keyring');
+            }
+            return keyring.submitRequest({
+              id: '',
+              origin: request.origin,
+              scope: request.scope,
+              account: request.account,
+              request: {
+                method: request.method,
+                params: request.params,
+              },
+            });
+          },
+        ) as Promise<Json>,
+    },
+  });
+}
+
 /**
  * Initialize the multichain routing service.
  *
@@ -25,44 +78,10 @@ export const MultichainRoutingServiceInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, initMessenger, getMessengerClient }) => {
   const appStateController = getMessengerClient('AppStateController');
 
-  const withSnapKeyring: ConstructorParameters<
-    typeof MultichainRoutingService
-  >[0]['withSnapKeyring'] = async (operation) => {
-    // Ensure the client is unlocked before attempting to access keyrings.
-    await appStateController.getUnlockPromise(true);
-
-    return operation({
-      keyring: {
-        submitRequest: async (request): Promise<Json> =>
-          initMessenger.call(
-            'KeyringController:withKeyringV2',
-            {
-              filter: (keyring) =>
-                isSnapKeyring(keyring) && keyring.hasAccount(request.account),
-            },
-            async ({ keyring }) => {
-              if (!isSnapKeyring(keyring)) {
-                throw new Error('Expected v2 Snap keyring');
-              }
-              return keyring.submitRequest({
-                id: '',
-                origin: request.origin,
-                scope: request.scope,
-                account: request.account,
-                request: {
-                  method: request.method,
-                  params: request.params,
-                },
-              });
-            },
-          ) as Promise<Json>,
-      },
-    });
-  };
-
   const messengerClient = new MultichainRoutingService({
     messenger: controllerMessenger,
-    withSnapKeyring,
+    withSnapKeyring: (...args) =>
+      withSnapKeyring(initMessenger, appStateController, ...args),
   });
 
   return {
