@@ -306,6 +306,19 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     expect(setPerpsTabBadgeSeen).not.toHaveBeenCalled();
   });
 
+  it('does not mark the badge seen while Perps is unavailable, even when it is the active tab', () => {
+    // Treatment + ?tab=perps but the Perps experience is unavailable: the badge
+    // is never rendered, so it must not be persisted as seen (otherwise it would
+    // be suppressed once Perps becomes available).
+    renderTabs({
+      variantFlag: { name: 'treatment' },
+      perpsAvailable: false,
+      route: '/?tab=perps',
+    });
+
+    expect(setPerpsTabBadgeSeen).not.toHaveBeenCalled();
+  });
+
   it('does not emit a Perp Screen Viewed event from the tab click (PerpsView owns that event)', () => {
     const { getByText } = renderTabs({ variantFlag: { name: 'treatment' } });
 

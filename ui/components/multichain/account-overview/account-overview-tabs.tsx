@@ -114,7 +114,9 @@ export const AccountOverviewTabs = ({
     { trackExposure: isPerpsExperienceAvailable },
   );
   const showPerpsTabBadge =
-    perpsTabBadgeVariant.showBadge && !perpsTabBadgeSeen;
+    isPerpsExperienceAvailable &&
+    perpsTabBadgeVariant.showBadge &&
+    !perpsTabBadgeSeen;
 
   useEffect(() => {
     if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
@@ -124,7 +126,8 @@ export const AccountOverviewTabs = ({
 
   // Mark the badge seen whenever Perps is the active tab — covers clicking in and
   // landing directly on Perps (persisted default or ?tab=perps), which a click
-  // handler misses. Gated on showPerpsTabBadge so control/seen never marks it.
+  // handler misses. Gated on showPerpsTabBadge so control/seen/unavailable (badge
+  // never visible) never marks it seen.
   useEffect(() => {
     if (showPerpsTabBadge && activeTabKey === AccountOverviewTabKey.Perps) {
       dispatch(setPerpsTabBadgeSeen(true));
