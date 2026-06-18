@@ -8362,10 +8362,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^2.8.0":
-  version: 2.8.0
-  resolution: "@metamask/solana-wallet-snap@npm:2.8.0"
-  checksum: 10/5e26f28d585aa00c4da204a7311f15048de30ff336baa90df1ca82f0d151b25dcf7b3fc3daa8b9ab02914aca35f31eb7a2854bf167008f6e96f99e215f02767c
+"@metamask/solana-wallet-snap@npm:@metamask-previews/solana-wallet-snap@2.9.1-preview-09a876d":
+  version: 2.9.1-preview-09a876d
+  resolution: "@metamask-previews/solana-wallet-snap@npm:2.9.1-preview-09a876d"
+  checksum: 10/3be547d734983c4316d839a866aafbcc3cb80c478874c46f86bb405844d1570a85cbb55089a5b0090cf049b1a38d02935b1ef818af9a602b534ad9a31cbd3176
   languageName: node
   linkType: hard
 
@@ -33610,7 +33610,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^16.0.0"
     "@metamask/snaps-sdk": "npm:^11.1.1"
     "@metamask/snaps-utils": "npm:^12.2.1"
-    "@metamask/solana-wallet-snap": "npm:^2.8.0"
+    "@metamask/solana-wallet-snap": "npm:@metamask-previews/solana-wallet-snap@2.9.1-preview-09a876d"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.1.2"
