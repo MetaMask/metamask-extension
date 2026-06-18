@@ -1,8 +1,5 @@
 import {
-  getDefaultNetworkControllerState,
-  NetworkConfiguration,
   NetworkController,
-  RpcEndpointType,
   NetworkControllerMessenger,
 } from '@metamask/network-controller';
 import {
@@ -15,49 +12,6 @@ import {
 } from '../../../shared/constants/network';
 import { MessengerClientInitFunction } from './types';
 import { NetworkControllerInitMessenger } from './messengers';
-
-function getInitialState(initialState?: Partial<NetworkController['state']>) {
-  let initialNetworkControllerState = initialState;
-
-  if (!initialNetworkControllerState) {
-    initialNetworkControllerState = getDefaultNetworkControllerState();
-
-    const networks =
-      initialNetworkControllerState.networkConfigurationsByChainId ?? {};
-
-    let network: NetworkConfiguration;
-    if (process.env.IN_TEST) {
-      network = {
-        chainId: CHAIN_IDS.LOCALHOST,
-        name: 'Localhost 8545',
-        nativeCurrency: 'ETH',
-        blockExplorerUrls: [],
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            networkClientId: 'networkConfigurationId',
-            url: 'http://localhost:8545',
-            type: RpcEndpointType.Custom,
-            failoverUrls: [],
-          },
-        ],
-      };
-      networks[CHAIN_IDS.LOCALHOST] = network;
-    } else if (
-      process.env.METAMASK_DEBUG ||
-      process.env.METAMASK_ENVIRONMENT === 'test'
-    ) {
-      network = networks[CHAIN_IDS.SEPOLIA];
-    } else {
-      network = networks[CHAIN_IDS.MAINNET];
-    }
-
-    initialNetworkControllerState.selectedNetworkClientId =
-      network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
-  }
-
-  return initialNetworkControllerState;
-}
 
 /**
  * Initialize the network controller.
@@ -79,11 +33,9 @@ export const NetworkControllerInit: MessengerClientInitFunction<
   initMessenger,
   persistedState,
 }) => {
-  const initialState = getInitialState(persistedState.NetworkController);
-
   const messengerClient = new NetworkController({
     messenger: controllerMessenger,
-    state: initialState,
+    state: persistedState.NetworkController,
     infuraProjectId,
     failoverUrls: {
       [CHAIN_IDS.MAINNET]: getFailoverUrlsForInfuraNetwork('ethereum-mainnet'),
