@@ -44,7 +44,6 @@ import {
   setParticipateInMetaMetrics,
   setPna25Acknowledged,
   getIsSeedlessOnboardingUserAuthenticated,
-  getGeolocation,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -391,7 +390,6 @@ export default function OnboardingWelcome() {
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext?.current,
           });
-
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
         } else {

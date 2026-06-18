@@ -365,19 +365,12 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('should create new wallet with marketing unchecked by default for social login when marketing consent is not stored', async () => {
-      const setDataCollectionForMarketingSpy = jest.spyOn(
-        Actions,
-        'setDataCollectionForMarketing',
-      );
-      const setMarketingConsentSpy = jest.spyOn(Actions, 'setMarketingConsent');
-
+    it('should create new wallet without marketing checked when its social login flow', () => {
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
           ...mockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.socialCreate,
-          dataCollectionForMarketing: false,
         },
       });
       const { queryByTestId } = renderWithProvider(
@@ -421,70 +414,7 @@ describe('Onboarding Create Password', () => {
 
       fireEvent.click(createNewWalletButton as HTMLElement);
 
-      await waitFor(() => {
-        expect(mockCreateNewAccount).toHaveBeenCalled();
-      });
-      expect(setDataCollectionForMarketingSpy).not.toHaveBeenCalled();
-      expect(setMarketingConsentSpy).not.toHaveBeenCalled();
-    });
-
-    it('should create new wallet with marketing checked by default for social login users in the US region', async () => {
-      const setDataCollectionForMarketingSpy = jest.spyOn(
-        Actions,
-        'setDataCollectionForMarketing',
-      );
-      const setMarketingConsentSpy = jest.spyOn(Actions, 'setMarketingConsent');
-
-      const mockStore = configureMockStore([thunk])({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialCreate,
-          location: 'US',
-        },
-      });
-      const { queryByTestId, getByRole } = renderWithProvider(
-        <CreatePassword
-          createNewAccount={mockCreateNewAccount}
-          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
-          secretRecoveryPhrase="SRP"
-        />,
-        mockStore,
-      );
-
-      const createPasswordInput = queryByTestId('create-password-new-input');
-      const confirmPasswordInput = queryByTestId(
-        'create-password-confirm-input',
-      );
-
-      const createPasswordEvent = {
-        target: {
-          value: '12345678',
-        },
-      };
-      const confirmPasswordEvent = {
-        target: {
-          value: '12345678',
-        },
-      };
-
-      fireEvent.change(createPasswordInput as HTMLElement, createPasswordEvent);
-      fireEvent.change(
-        confirmPasswordInput as HTMLElement,
-        confirmPasswordEvent,
-      );
-
-      await waitFor(() => {
-        expect(getByRole('checkbox')).toBeChecked();
-      });
-
-      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
-
-      await waitFor(() => {
-        expect(mockCreateNewAccount).toHaveBeenCalled();
-        expect(setMarketingConsentSpy).toHaveBeenCalledWith(true);
-        expect(setDataCollectionForMarketingSpy).toHaveBeenCalledWith(true);
-      });
+      expect(mockCreateNewAccount).toHaveBeenCalled();
     });
   });
 
