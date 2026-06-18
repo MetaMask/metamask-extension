@@ -2233,7 +2233,7 @@ export const getSnap = createParameterizedSelector(20)(
  * @param {object} state - The Redux state object.
  * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
  *
- * Kept as deep-equal selector because it rebuilds nested locale-derived metadata structures.
+ * Deep-equal memo: reduce builds a fresh metadata map; locale/snaps inputs can be new refs.
  */
 export const getSnapsMetadata = createDeepEqualSelector(
   getLocale,
