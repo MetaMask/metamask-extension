@@ -156,7 +156,7 @@ const privateHostMatchers = [
  * Setup E2E network mocks.
  *
  * @param {Mockttp} server - The mock server used for network mocks.
- * @param {(server: Mockttp) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
+ * @param {(server: Mockttp, context?: { localNodes: { quit?: () => Promise<void> }[] }) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010.
