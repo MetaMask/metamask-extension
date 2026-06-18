@@ -5,7 +5,6 @@ import {
   RpcEndpointType,
   NetworkControllerMessenger,
 } from '@metamask/network-controller';
-import { SECOND } from '../../../shared/constants/time';
 import {
   onRpcEndpointDegraded,
   onRpcEndpointUnavailable,
@@ -82,23 +81,10 @@ export const NetworkControllerInit: MessengerClientInitFunction<
 }) => {
   const initialState = getInitialState(persistedState.NetworkController);
 
-  const getBlockTrackerOptions = () => {
-    return process.env.IN_TEST
-      ? {}
-      : {
-          pollingInterval: 20 * SECOND,
-          // The retry timeout is pretty short by default, and if the endpoint is
-          // down, it will end up exhausting the max number of consecutive
-          // failures quickly.
-          retryTimeout: 20 * SECOND,
-        };
-  };
-
   const messengerClient = new NetworkController({
     messenger: controllerMessenger,
     state: initialState,
     infuraProjectId,
-    getBlockTrackerOptions,
     failoverUrls: {
       [CHAIN_IDS.MAINNET]: getFailoverUrlsForInfuraNetwork('ethereum-mainnet'),
       [CHAIN_IDS.LINEA_MAINNET]:

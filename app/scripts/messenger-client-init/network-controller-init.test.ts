@@ -92,7 +92,6 @@ describe('NetworkControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: expect.any(Object),
-      getBlockTrackerOptions: expect.any(Function),
       infuraProjectId: undefined,
       failoverUrls: {
         '0x1': [],
