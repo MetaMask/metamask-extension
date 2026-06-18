@@ -5314,7 +5314,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitEncryptionKey(encryptionKey) {
     await this.controllerMessenger.call(
-      'LegacyBackgroundApiService:submitEncryptionKey',
+      'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
       { encryptionKey },
     );
   }
