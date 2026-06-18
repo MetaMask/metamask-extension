@@ -27,7 +27,6 @@ import {
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
-  type CaipChainId,
   Hex,
   isCaipChainId,
   parseCaipAssetType,
@@ -36,7 +35,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
@@ -117,12 +116,7 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const params = useParams<{
-    chainId: Hex | CaipChainId;
-    asset: string;
-    id: string;
-  }>();
-  const { decodedAsset: caipAssetId } = processAssetParams(params);
+  const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
@@ -238,6 +232,7 @@ const AssetPage = ({
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const caipAssetId = isEvm ? toAssetId(address, caipChainId) : decodedAsset;
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
