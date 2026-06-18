@@ -308,7 +308,6 @@
     "@metamask/transaction-pay-controller@npm:^22.6.0": "patch:@metamask/transaction-pay-controller@npm%3A22.6.0#~/.yarn/patches/@metamask-transaction-pay-controller-npm-22.6.0-ecc6df0372.patch",
     "@metamask/assets-controller@npm:^7.1.2": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
     "@metamask/assets-controller@npm:^8.1.0": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
-    "@metamask/bridge-controller@npm:^72.0.4": "patch:@metamask/bridge-controller@npm%3A72.0.4#~/.yarn/patches/@metamask-bridge-controller-npm-72.0.4-1e53af7f4c.patch",
     "@metamask/keyring-controller@npm:^27.0.0": "^26.0.0"
   },
   "dependencies": {
