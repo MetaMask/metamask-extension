@@ -92,7 +92,6 @@ export function getNetworkControllerInitMessenger(
     events: [
       'NetworkController:rpcEndpointUnavailable',
       'NetworkController:rpcEndpointDegraded',
-      'RemoteFeatureFlagController:stateChange',
     ],
   });
   return controllerInitMessenger;

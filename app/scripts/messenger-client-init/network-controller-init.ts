@@ -5,7 +5,6 @@ import {
   RpcEndpointType,
   NetworkControllerMessenger,
 } from '@metamask/network-controller';
-import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SECOND } from '../../../shared/constants/time';
 import {
   onRpcEndpointDegraded,
@@ -83,19 +82,6 @@ export const NetworkControllerInit: MessengerClientInitFunction<
 }) => {
   const initialState = getInitialState(persistedState.NetworkController);
 
-  /**
-   * Determines if RPC failover is enabled based on RemoteFeatureFlagController
-   * state.
-   *
-   * @param state - RemoteFeatureFlagControllerState
-   * @returns true if RPC failover is enabled, false otherwise
-   */
-  const getIsRpcFailoverEnabled = (state: RemoteFeatureFlagControllerState) => {
-    const walletFrameworkRpcFailoverEnabled = state.remoteFeatureFlags
-      .walletFrameworkRpcFailoverEnabled as boolean | undefined;
-    return walletFrameworkRpcFailoverEnabled ?? false;
-  };
-
   const getBlockTrackerOptions = () => {
     return process.env.IN_TEST
       ? {}
@@ -172,20 +158,6 @@ export const NetworkControllerInit: MessengerClientInitFunction<
         type,
       });
     },
-  );
-
-  initMessenger.subscribe(
-    'RemoteFeatureFlagController:stateChange',
-    (isRpcFailoverEnabled) => {
-      if (isRpcFailoverEnabled) {
-        console.log('Enabling RPC failover.');
-        messengerClient.enableRpcFailover();
-      } else {
-        console.log('Disabling RPC failover.');
-        messengerClient.disableRpcFailover();
-      }
-    },
-    getIsRpcFailoverEnabled,
   );
 
   messengerClient.init();
