@@ -27,6 +27,7 @@ import {
   getFromChains,
   getFromToken,
   getIsDestAssetPickerOpen,
+  getIsSrcAssetPickerOpen,
   getToChain,
   getToChains,
   getToToken,
@@ -56,7 +57,9 @@ const BridgeAssetPickerPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isDestination = useSelector(getIsDestAssetPickerOpen);
+  const isSourcePickerOpen = useSelector(getIsSrcAssetPickerOpen);
+  const isDestinationPickerOpen = useSelector(getIsDestAssetPickerOpen);
+  const isDestination = isDestinationPickerOpen && !isSourcePickerOpen;
 
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
@@ -82,12 +85,9 @@ const BridgeAssetPickerPage = () => {
   const contentRef = useRef<BridgeAssetPickerContentHandle>(null);
 
   const handleClose = () => {
-    dispatch(
-      isDestination
-        ? setIsDestAssetPickerOpen(false)
-        : setIsSrcAssetPickerOpen(false),
-    );
-    navigate(SWAP_PATH);
+    dispatch(setIsDestAssetPickerOpen(false));
+    dispatch(setIsSrcAssetPickerOpen(false));
+    navigate(SWAP_PATH, { replace: true });
   };
 
   const selectedAsset = isDestination ? toToken : fromToken;

@@ -7,6 +7,7 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { CaipAssetType } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { SWAP_PATH } from '../../../helpers/constants/routes';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
@@ -29,6 +30,15 @@ import BridgeAssetPickerPage from './bridge-asset-picker-page';
 const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
 
 const mockUseVirtualizer = jest.fn();
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 jest.mock('lodash/debounce', () => ({
   ...jest.requireActual('lodash/debounce'),
@@ -163,14 +173,22 @@ const renderBridgeInputGroup = (
 // destination" mode is derived from the bridge slice flags.
 const renderAssetPickerPage = (
   stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
-  { isDestination = false }: { isDestination?: boolean } = {},
+  {
+    isDestination = false,
+    isSrcAssetPickerOpen,
+    isDestAssetPickerOpen,
+  }: {
+    isDestination?: boolean;
+    isSrcAssetPickerOpen?: boolean;
+    isDestAssetPickerOpen?: boolean;
+  } = {},
 ) => {
   const mockState = createBridgeMockStore({
     ...stateOverrides,
     bridgeSliceOverrides: {
       ...stateOverrides.bridgeSliceOverrides,
-      isSrcAssetPickerOpen: !isDestination,
-      isDestAssetPickerOpen: isDestination,
+      isSrcAssetPickerOpen: isSrcAssetPickerOpen ?? !isDestination,
+      isDestAssetPickerOpen: isDestAssetPickerOpen ?? isDestination,
     },
   });
 
@@ -392,6 +410,68 @@ describe('BridgeInputGroup', () => {
     expect(getByTestId('to-amount-loading-skeleton')).toBeInTheDocument();
     expect(queryByTestId('to-amount')).not.toBeInTheDocument();
     expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
+  });
+
+  it('replaces the asset picker route when closing the page', async () => {
+    setupFetchMock();
+
+    renderAssetPickerPage();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('bridge-asset-picker-search-input'),
+      ).toBeVisible();
+    });
+
+    await userEvent.click(screen.getByLabelText('Back'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(SWAP_PATH, { replace: true });
+  });
+
+  it('uses the source picker when both picker flags are stale-open', async () => {
+    setupFetchMock(
+      undefined,
+      false,
+      tokens.slice(0, 2).concat(tokensWithBalance),
+    );
+
+    const stateOverrides = {
+      featureFlagOverrides: {
+        extensionUxNetworkManagement: true,
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: MultichainNetworks.SOLANA },
+            { chainId: MultichainNetworks.BITCOIN },
+            { chainId: formatChainIdToCaip(1) },
+            { chainId: formatChainIdToCaip(10) },
+            { chainId: formatChainIdToCaip(137) },
+            { chainId: formatChainIdToCaip(56) },
+            { chainId: MultichainNetworks.TRON },
+          ],
+        },
+      },
+    };
+
+    const { getByTestId } = renderAssetPickerPage(stateOverrides, {
+      isSrcAssetPickerOpen: true,
+      isDestAssetPickerOpen: true,
+    });
+
+    await waitFor(() => {
+      expect(getByTestId('bridge-asset-picker-search-input')).toBeVisible();
+    });
+
+    await act(async () => {
+      await getByTestId('multichain-asset-picker__network').click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('bridge-network-picker-popover')).toBeVisible();
+    });
+
+    expect(
+      screen.getAllByTestId(/bridge-network-picker-popover-item-/u),
+    ).toHaveLength(6);
   });
 
   // @ts-expect-error - each is a valid test function
