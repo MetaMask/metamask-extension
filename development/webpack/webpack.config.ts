@@ -6,6 +6,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
+  HotModuleReplacementPlugin,
   ProvidePlugin,
   type Chunk,
   type Configuration,
@@ -37,7 +38,7 @@ import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
-import { injectEntryScripts } from './utils/dev-server';
+import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
 import {
   BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
   UI_RELOAD_CLIENT_ENTRY_NAME,
@@ -56,7 +57,11 @@ const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
+const isReactRefreshEnabled = isDevelopment && args.watch && !args.test;
 const MANIFEST_VERSION = args.manifestVersion;
+const REACT_REFRESH_ENTRY_PATH = require.resolve(
+  '@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry',
+);
 const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -277,6 +282,17 @@ if (args.reactCompilerVerbose) {
   plugins.push(new ReactCompilerPlugin());
 }
 
+if (isReactRefreshEnabled) {
+  const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+  plugins.push(
+    new HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin({
+      include: UI_DIR_RE,
+      overlay: false,
+    }),
+  );
+}
+
 if (args.bundleAnalyzer) {
   const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
   plugins.push(
@@ -287,8 +303,24 @@ if (args.bundleAnalyzer) {
 // #endregion plugins
 
 const swcConfig = { browsersListQuery, isDevelopment };
+const reactRefreshSwcConfig = {
+  ...swcConfig,
+  reactRefresh: isReactRefreshEnabled,
+};
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
+const reactRefreshTsxLoader = getSwcLoader(
+  'typescript',
+  true,
+  safeVariables,
+  reactRefreshSwcConfig,
+);
+const reactRefreshJsxLoader = getSwcLoader(
+  'ecmascript',
+  true,
+  safeVariables,
+  reactRefreshSwcConfig,
+);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 const isChunkableInitial = (chunk: Chunk) =>
@@ -370,6 +402,13 @@ const config = {
     // 2. @metamask/design-system-react could patch the Radix UI packages
     // 3. @metamask/design-system-react could re-export components with a build step that fixes imports
     alias: {
+      ...(isReactRefreshEnabled
+        ? {
+            [REACT_REFRESH_ENTRY_PATH]: require.resolve(
+              './utils/dev-server/react-refresh-entry',
+            ),
+          }
+        : {}),
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
     },
@@ -435,17 +474,49 @@ const config = {
         use: threadLoader,
       },
       // own typescript, and own typescript with jsx
-      {
-        test: /\.(?:ts|mts|tsx)$/u,
-        exclude: NODE_MODULES_RE,
-        use: tsxLoader,
-      },
+      ...(isReactRefreshEnabled
+        ? [
+            {
+              test: /\.(?:ts|mts|tsx)$/u,
+              include: UI_DIR_RE,
+              exclude: NODE_MODULES_RE,
+              use: reactRefreshTsxLoader,
+            },
+            {
+              test: /\.(?:ts|mts|tsx)$/u,
+              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              use: tsxLoader,
+            },
+          ]
+        : [
+            {
+              test: /\.(?:ts|mts|tsx)$/u,
+              exclude: NODE_MODULES_RE,
+              use: tsxLoader,
+            },
+          ]),
       // own javascript, and own javascript with jsx
-      {
-        test: /\.(?:js|mjs|jsx)$/u,
-        exclude: NODE_MODULES_RE,
-        use: jsxLoader,
-      },
+      ...(isReactRefreshEnabled
+        ? [
+            {
+              test: /\.(?:js|mjs|jsx)$/u,
+              include: UI_DIR_RE,
+              exclude: NODE_MODULES_RE,
+              use: reactRefreshJsxLoader,
+            },
+            {
+              test: /\.(?:js|mjs|jsx)$/u,
+              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              use: jsxLoader,
+            },
+          ]
+        : [
+            {
+              test: /\.(?:js|mjs|jsx)$/u,
+              exclude: NODE_MODULES_RE,
+              use: jsxLoader,
+            },
+          ]),
       // React Compiler for UI component files (must appear after SWC rules)
       { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: reactCompiler },
       // vendor javascript. We must transform all npm modules to ensure browser
@@ -606,6 +677,7 @@ const config = {
   // don't warn about large JS assets, unless they are going to be too big for Firefox
   performance: { maxAssetSize: 1 << 22 },
   watch: args.watch,
+  devServer: getDevServerOptions({ reactRefresh: isReactRefreshEnabled }),
   watchOptions: {
     aggregateTimeout: 5, // ms
     ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues

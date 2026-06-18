@@ -4,41 +4,59 @@ import { logStats } from '../helpers';
 import { setupUiReload } from './ui-reload';
 import { setupBackgroundReload } from './background-reload';
 
-export const DEV_SERVER_OPTIONS: Configuration = {
-  hot: false,
-  // We use our own logic to decide when to reload.
-  liveReload: false,
-  // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
-  host: 'localhost',
-  // pick a free port at startup.
-  port: 'auto',
-  // client injection is disabled because the client is registered
-  // as a webpack entry by `setupMiddlewares` below
-  // and injected into UI pages by `HtmlBundlerPlugin`'s `beforeEmit` hook.
-  client: false,
-  devMiddleware: {
-    // browsers need actual files on disk; extension pages are loaded via
-    // `chrome-extension://`, not from the dev-server HTTP origin.
-    writeToDisk: true,
-  },
-  // we don't need/have a "static" directory, so disable it
-  static: false,
-  allowedHosts: 'all',
-  // Wire up the ui and background reload clients here so that we can read the resolved port from
-  // `devServer.options` — by this point `port: 'auto'` has been replaced with
-  // the actual numeric port the server is listening on.
-  setupMiddlewares: (middlewares, devServer) => {
-    const compilers =
-      'compilers' in devServer.compiler
-        ? devServer.compiler.compilers
-        : [devServer.compiler];
-    // Injects the dev-server client and the ui-reload client into UI pages.
-    setupUiReload(devServer, compilers);
-    // Injects the background-reload client into the background/service worker context.
-    setupBackgroundReload(devServer, compilers);
-    return middlewares;
-  },
-};
+export const DEV_SERVER_OPTIONS: Configuration = getDevServerOptions();
+
+/**
+ * Gets webpack-dev-server options for extension watch builds.
+ *
+ * @param options - Dev server integration options.
+ * @param options.reactRefresh - Whether UI pages should use React Refresh
+ * instead of the custom full-page reload client.
+ * @returns Webpack dev server options.
+ */
+export function getDevServerOptions({
+  reactRefresh = false,
+}: {
+  reactRefresh?: boolean;
+} = {}): Configuration {
+  return {
+    // Keep WDS from injecting its HMR runtime into every extension entry. React
+    // Refresh mode wires HMR manually into the UI entrypoints below.
+    hot: false,
+    // We use our own logic to decide when to reload.
+    liveReload: false,
+    // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
+    host: 'localhost',
+    // pick a free port at startup.
+    port: 'auto',
+    // client injection is disabled because the client is registered
+    // as a webpack entry by `setupMiddlewares` below.
+    client: false,
+    devMiddleware: {
+      // browsers need actual files on disk; extension pages are loaded via
+      // `chrome-extension://`, not from the dev-server HTTP origin.
+      writeToDisk: true,
+    },
+    // we don't need/have a "static" directory, so disable it
+    static: false,
+    allowedHosts: 'all',
+    // Wire up the ui and background reload clients here so that we can read the resolved port from
+    // `devServer.options` — by this point `port: 'auto'` has been replaced with
+    // the actual numeric port the server is listening on.
+    setupMiddlewares: (middlewares, devServer) => {
+      const compilers =
+        'compilers' in devServer.compiler
+          ? devServer.compiler.compilers
+          : [devServer.compiler];
+      // Registers the UI reload client and, in React Refresh mode, the
+      // UI-runtime hot-update bridge.
+      setupUiReload(devServer, compilers, { reactRefresh });
+      // Injects the background-reload client into the background/service worker context.
+      setupBackgroundReload(devServer, compilers);
+      return middlewares;
+    },
+  };
+}
 
 /**
  * Injects an entrypoint's files as `<script>` tags into an HTML page, just before `</head>`.
@@ -61,7 +79,7 @@ export const injectEntryScripts = (
   }
   const tags = entrypoint
     .getFiles()
-    .filter((file) => file.endsWith('.js'))
+    .filter((file) => file.endsWith('.js') && !file.includes('.hot-update.'))
     .map((file) => `<script src="${file}" defer></script>`)
     .join('');
   return content.replace('</head>', `${tags}</head>`);

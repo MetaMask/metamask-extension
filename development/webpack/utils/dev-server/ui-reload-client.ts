@@ -1,5 +1,8 @@
 import { closeSocket, connectToDevServer } from './connect-to-dev-server';
-import { UI_RELOAD_MESSAGE_TYPE } from './reload-protocol';
+import {
+  UI_HOT_UPDATE_MESSAGE_TYPE,
+  UI_RELOAD_MESSAGE_TYPE,
+} from './reload-protocol';
 
 // `__resourceQuery` is the query string of the request that pulled this module
 // in as an entry (e.g. `?url=ws%3A%2F%2Flocalhost%3A8080%2Fws`). webpack
@@ -7,7 +10,9 @@ import { UI_RELOAD_MESSAGE_TYPE } from './reload-protocol';
 // URL at server start (the port is only known then).
 declare const __resourceQuery: string;
 
-const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
+const params = new URLSearchParams(__resourceQuery.slice(1));
+const socketUrl = params.get('url');
+const reactRefresh = params.get('reactRefresh') === 'true';
 
 // Storage key holding the UI build hash this page's code was loaded under.
 // `self.sessionStorage` (not `browser.storage.session`) on purpose: it is
@@ -74,6 +79,14 @@ async function onHash(hash: string, socket: WebSocket): Promise<void> {
   if (stored === null) {
     // First announcement this tab has seen: the page was just loaded from the
     // dev server's own output, so only record the baseline.
+    return;
+  }
+  if (reactRefresh) {
+    console.info('[webpack-dev-server] App hot update...');
+    (self as Window).postMessage(
+      { type: UI_HOT_UPDATE_MESSAGE_TYPE, hash },
+      '*',
+    );
     return;
   }
   reloading = true;

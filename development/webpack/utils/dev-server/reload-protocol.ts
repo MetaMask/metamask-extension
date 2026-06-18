@@ -20,6 +20,12 @@ export const BACKGROUND_RELOAD_CLIENT_ENTRY_NAME = 'background-reload-client';
 export const UI_RELOAD_MESSAGE_TYPE = 'mm:ui-reload-hash';
 
 /**
+ * Window message type the injected UI reload client uses to ask the React UI
+ * runtime to check for a hot update.
+ */
+export const UI_HOT_UPDATE_MESSAGE_TYPE = 'mm:ui-hot-update';
+
+/**
  * Entry name for the UI reload client. Used by `ManifestPlugin` to mark the
  * entry self-contained and by `HtmlBundlerPlugin.beforeEmit` to look up its
  * output filename for `<script>` injection into UI pages.

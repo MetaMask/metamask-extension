@@ -4,6 +4,10 @@ import type { Configuration } from 'webpack-dev-server';
 import { UI_RELOAD_CLIENT_ENTRY_NAME } from './reload-protocol';
 import { getClientEntry } from './websocket';
 
+const REACT_REFRESH_RUNTIME_CLIENT_ENTRY = require.resolve(
+  './react-refresh-runtime-client',
+);
+
 /**
  * Builds the webpack entry for webpack-dev-server's client from a
  * dev-server config. webpack preserves the query string as `__resourceQuery`,
@@ -29,31 +33,59 @@ export const getDevServerClientEntry = (config: Configuration): string => {
 };
 
 /**
- * Registers the UI reload client entry on each compiler;
- * `HtmlBundlerPlugin.beforeEmit` injects its output as a `<script>` into every
- * UI page. The entry bundles two modules: the webpack-dev-server client,
- * and the UI reload client, which reloads the page when the dev server says to.
+ * Registers the UI reload client entry on each compiler. In standard watch
+ * mode, `HtmlBundlerPlugin.beforeEmit` injects its output as a `<script>` into
+ * every UI page. In React Refresh mode, the same client is injected into every
+ * UI page and asks a guarded UI-runtime entry to check for hot updates.
  * Whether a build only reloads the UI pages or the whole extension is decided per build in
  * `setupBackgroundReload` — deciding in one place is what keeps a page reload from racing a background reload.
  *
  * @param devServer - The running webpack dev server.
  * @param compilers - The compilers attached to the dev server.
+ * @param options - UI dev-server client options.
+ * @param options.reactRefresh - Whether to skip the custom page reload client
+ * and use React Refresh HMR instead.
  */
 export function setupUiReload(
   devServer: WebpackDevServer,
   compilers: Compiler[],
+  {
+    reactRefresh = false,
+  }: {
+    reactRefresh?: boolean;
+  } = {},
 ): void {
   const devServerClientEntry = getDevServerClientEntry(devServer.options);
-  const uiClientEntry = getClientEntry(devServer, 'ui-reload-client.ts');
   for (const compiler of compilers) {
+    if (reactRefresh) {
+      new compiler.webpack.EntryPlugin(
+        compiler.context,
+        REACT_REFRESH_RUNTIME_CLIENT_ENTRY,
+        {},
+      ).apply(compiler);
+      new compiler.webpack.EntryPlugin(
+        compiler.context,
+        `${getClientEntry(devServer, 'ui-reload-client.ts')}&reactRefresh=true`,
+        {
+          name: UI_RELOAD_CLIENT_ENTRY_NAME,
+          chunkLoading: false,
+        },
+      ).apply(compiler);
+      continue;
+    }
+
     new compiler.webpack.EntryPlugin(compiler.context, devServerClientEntry, {
       name: UI_RELOAD_CLIENT_ENTRY_NAME,
       chunkLoading: false,
     }).apply(compiler);
     // Merged into the same entry (and thus the same injected `<script>`); pass
     // only `name` so webpack doesn't see conflicting entry options.
-    new compiler.webpack.EntryPlugin(compiler.context, uiClientEntry, {
-      name: UI_RELOAD_CLIENT_ENTRY_NAME,
-    }).apply(compiler);
+    new compiler.webpack.EntryPlugin(
+      compiler.context,
+      getClientEntry(devServer, 'ui-reload-client.ts'),
+      {
+        name: UI_RELOAD_CLIENT_ENTRY_NAME,
+      },
+    ).apply(compiler);
   }
 }
