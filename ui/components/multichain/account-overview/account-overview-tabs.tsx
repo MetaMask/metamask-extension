@@ -105,10 +105,8 @@ export const AccountOverviewTabs = ({
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
 
-  // Record exposure only when the Perps tab is actually shown, so mounting the
-  // overview never logs an exposure for users without the Perps experience.
-  // Gated on availability alone (not dismissal) so control and treatment record
-  // exposure symmetrically — once per session — regardless of badge dismissal.
+  // Track exposure only when the Perps tab is shown, gated on availability (not
+  // dismissal) so control and treatment record symmetrically once per session.
   const { variant: perpsTabBadgeVariant } = useABTest(
     PERPS_TAB_BADGE_AB_KEY,
     PERPS_TAB_BADGE_VARIANTS,
@@ -123,6 +121,15 @@ export const AccountOverviewTabs = ({
       setDefaultHomeActiveTabName(activeTabKey);
     }
   }, [activeTabKey]);
+
+  // Mark the badge seen whenever Perps is the active tab — covers clicking in and
+  // landing directly on Perps (persisted default or ?tab=perps), which a click
+  // handler misses. Gated on showPerpsTabBadge so control/seen never marks it.
+  useEffect(() => {
+    if (showPerpsTabBadge && activeTabKey === AccountOverviewTabKey.Perps) {
+      dispatch(setPerpsTabBadgeSeen(true));
+    }
+  }, [showPerpsTabBadge, activeTabKey, dispatch]);
 
   const networkFilterForMetrics = useSelector(
     selectEnabledNetworksAsCaipChainIds,
@@ -144,12 +151,6 @@ export const AccountOverviewTabs = ({
 
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
-      }
-      // Persist dismissal only when the badge is actually visible, so a
-      // control/unassigned click never marks it seen (which would suppress the
-      // badge if the profile is later assigned treatment).
-      if (tabName === AccountOverviewTabKey.Perps && showPerpsTabBadge) {
-        dispatch(setPerpsTabBadgeSeen(true));
       }
       // For ActivityListV3, ActivityScreenOpened is deferred to the list
       // component so it can include accurate is_empty / pending_transactions
@@ -182,7 +183,6 @@ export const AccountOverviewTabs = ({
       activeTabKey,
       isActivityListRedesignEnabled,
       networkFilterForMetrics,
-      showPerpsTabBadge,
       setActiveTabKey,
       dispatch,
       selectedChainIds,

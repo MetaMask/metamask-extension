@@ -208,10 +208,12 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     variantFlag,
     perpsTabBadgeSeen = false,
     perpsAvailable = true,
+    route,
   }: {
     variantFlag?: { name: string };
     perpsTabBadgeSeen?: boolean;
     perpsAvailable?: boolean;
+    route?: string;
   }) => {
     const store = configureStore({
       metamask: {
@@ -240,6 +242,7 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
         />
       </MetaMetricsContext.Provider>,
       store,
+      route,
     );
   };
 
@@ -287,6 +290,20 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     fireEvent.click(getByText(messages.perps.message));
 
     expect(setPerpsTabBadgeSeen).toHaveBeenCalledWith(true);
+  });
+
+  it('persists the dismissal when the Perps tab is already the active tab on mount', () => {
+    renderTabs({ variantFlag: { name: 'treatment' }, route: '/?tab=perps' });
+
+    // No tab click occurs — landing directly on Perps (persisted default tab or
+    // ?tab=perps) must still mark the badge seen.
+    expect(setPerpsTabBadgeSeen).toHaveBeenCalledWith(true);
+  });
+
+  it('does not persist dismissal on mount for a control user already on the Perps tab', () => {
+    renderTabs({ variantFlag: { name: 'control' }, route: '/?tab=perps' });
+
+    expect(setPerpsTabBadgeSeen).not.toHaveBeenCalled();
   });
 
   it('does not emit a Perp Screen Viewed event from the tab click (PerpsView owns that event)', () => {
