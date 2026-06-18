@@ -5024,7 +5024,7 @@
     "message": "MetaMask fee"
   },
   "metamaskNotificationsAreOff": {
-    "message": "Wallet notifications are currently not active."
+    "message": "Turn on notifications"
   },
   "metamaskSwap": {
     "message": "MetaMask Swap"
@@ -5917,6 +5917,9 @@
   },
   "notificationItemUnStakingRequested": {
     "message": "Unstaking requested"
+  },
+  "notificationSettings": {
+    "message": "Notification settings"
   },
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",

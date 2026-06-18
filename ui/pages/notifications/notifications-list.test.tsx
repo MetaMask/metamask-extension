@@ -33,28 +33,30 @@ jest.mock('../../store/actions', () => ({
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
-const store = mockStore({
-  metamask: {
-    isMetamaskNotificationsEnabled: true,
-    isBackupAndSyncEnabled: true,
-    metamaskNotifications: [],
-    internalAccounts: {
-      accounts: [
-        {
-          address: '0x123',
-          id: 'account1',
-          metadata: {},
-          options: {},
-          methods: [],
-          type: 'eip155:eoa',
-          balance: '100',
-          keyring: { type: 'type1' },
-          label: 'Account 1',
-        },
-      ],
+
+const createStore = (isNotificationServicesEnabled: boolean) =>
+  mockStore({
+    metamask: {
+      isNotificationServicesEnabled,
+      isBackupAndSyncEnabled: true,
+      metamaskNotifications: [],
+      internalAccounts: {
+        accounts: [
+          {
+            address: '0x123',
+            id: 'account1',
+            metadata: {},
+            options: {},
+            methods: [],
+            type: 'eip155:eoa',
+            balance: '100',
+            keyring: { type: 'type1' },
+            label: 'Account 1',
+          },
+        ],
+      },
     },
-  },
-});
+  });
 
 const mockNotifications = [
   processNotification(createMockNotificationEthSent()),
@@ -86,7 +88,7 @@ describe('NotificationsList', () => {
         isError={false}
         notificationsCount={0}
       />,
-      store,
+      createStore(true),
     );
 
     expect(screen.getByTestId('notifications-list')).toBeInTheDocument();
@@ -94,4 +96,25 @@ describe('NotificationsList', () => {
       mockNotifications.length,
     );
   });
+
+  ([TAB_KEYS.ALL, TAB_KEYS.WALLET, TAB_KEYS.WEB3] as TAB_KEYS[]).forEach(
+    (tabKey) => {
+      it(`shows disabled notifications state when notifications are disabled for ${tabKey} tab`, () => {
+      renderWithProvider(
+        <NotificationsList
+          activeTab={tabKey}
+          notifications={mockNotifications}
+          isLoading={false}
+          isError={false}
+          notificationsCount={0}
+        />,
+        createStore(false),
+      );
+
+      expect(
+        screen.getByTestId('notifications-list-disabled-notifications'),
+      ).toBeInTheDocument();
+      });
+    },
+  );
 });

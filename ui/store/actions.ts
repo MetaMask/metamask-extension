@@ -7599,27 +7599,6 @@ export function putNotificationPreferences(
   };
 }
 /**
- * Triggers a modal to confirm the action of turning on MetaMask notifications.
- * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn on MetaMask notifications.
- *
- * @returns A thunk action that, when dispatched, shows the confirmation modal.
- */
-export function showConfirmTurnOnMetamaskNotifications(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      showModal({
-        name: 'TURN_ON_METAMASK_NOTIFICATIONS',
-      }),
-    );
-  };
-}
-
-/**
  * Enables MetaMask notifications.
  * This function dispatches a request to the background script to enable MetaMask notifications.
  * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
