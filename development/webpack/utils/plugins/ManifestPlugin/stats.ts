@@ -40,10 +40,6 @@ export type BundleSizeDebugEntrypoint = {
 };
 
 type BundleSizeCategoryAssets = Record<BundleSizeCategory, Set<string>>;
-type NonContentBundleSizeCategory = Exclude<
-  BundleSizeCategory,
-  'contentScripts'
->;
 
 const bundleSizeCategories = [
   'background',
@@ -51,11 +47,6 @@ const bundleSizeCategories = [
   'other',
   'contentScripts',
 ] as const satisfies readonly BundleSizeCategory[];
-const nonContentBundleSizeCategories = [
-  'background',
-  'ui',
-  'other',
-] as const satisfies readonly NonContentBundleSizeCategory[];
 
 function sumAssetSizes(
   assetNames: Iterable<string>,
@@ -88,42 +79,39 @@ export function getBundlePartSizes(
   categoryAssets: BundleSizeCategoryAssets,
   assetSizes: ReadonlyMap<string, number>,
 ): Record<BundlePart, number> {
-  const nonContentAssetCategoryCount = new Map<string, number>();
+  const backgroundUiAssets = categoryAssets.background
+    // @ts-expect-error - Node types need to be updated.
+    .intersection(categoryAssets.ui) as Set<string>;
+  const backgroundOtherAssets = categoryAssets.background
+    // @ts-expect-error - Node types need to be updated.
+    .intersection(categoryAssets.other) as Set<string>;
+  const uiOtherAssets = categoryAssets.ui
+    // @ts-expect-error - Node types need to be updated.
+    .intersection(categoryAssets.other) as Set<string>;
 
-  for (const category of nonContentBundleSizeCategories) {
-    for (const assetName of categoryAssets[category]) {
-      if (categoryAssets.contentScripts.has(assetName)) {
-        continue;
-      }
-      nonContentAssetCategoryCount.set(
-        assetName,
-        (nonContentAssetCategoryCount.get(assetName) ?? 0) + 1,
-      );
-    }
-  }
-
-  const commonAssets = new Set(
-    [...nonContentAssetCategoryCount]
-      .filter(([, categoryCount]) => categoryCount > 1)
-      .map(([assetName]) => assetName),
-  );
-  const getCategorySpecificAssets = (
-    category: NonContentBundleSizeCategory,
-  ) =>
-    [...categoryAssets[category]].filter(
-      (assetName) =>
-        !categoryAssets.contentScripts.has(assetName) &&
-        !commonAssets.has(assetName),
-    );
+  const commonAssets = backgroundUiAssets
+    // @ts-expect-error - Node types need to be updated.
+    .union(backgroundOtherAssets)
+    .union(uiOtherAssets)
+    .difference(categoryAssets.contentScripts) as Set<string>;
+  const backgroundAssets = categoryAssets.background
+    // @ts-expect-error - Node types need to be updated.
+    .difference(commonAssets)
+    .difference(categoryAssets.contentScripts) as Set<string>;
+  const uiAssets = categoryAssets.ui
+    // @ts-expect-error - Node types need to be updated.
+    .difference(commonAssets)
+    .difference(categoryAssets.contentScripts) as Set<string>;
+  const otherAssets = categoryAssets.other
+    // @ts-expect-error - Node types need to be updated.
+    .difference(commonAssets)
+    .difference(categoryAssets.contentScripts) as Set<string>;
 
   return {
-    background: sumAssetSizes(
-      getCategorySpecificAssets('background'),
-      assetSizes,
-    ),
-    ui: sumAssetSizes(getCategorySpecificAssets('ui'), assetSizes),
+    background: sumAssetSizes(backgroundAssets, assetSizes),
+    ui: sumAssetSizes(uiAssets, assetSizes),
     common: sumAssetSizes(commonAssets, assetSizes),
-    other: sumAssetSizes(getCategorySpecificAssets('other'), assetSizes),
+    other: sumAssetSizes(otherAssets, assetSizes),
     contentScripts: sumAssetSizes(categoryAssets.contentScripts, assetSizes),
   };
 }
