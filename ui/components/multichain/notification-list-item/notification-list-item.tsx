@@ -175,7 +175,6 @@ export const NotificationListItem = ({
           )}
         </Box>
       </Box>
-
     </Box>
   );
 };
