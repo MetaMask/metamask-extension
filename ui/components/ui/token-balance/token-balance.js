@@ -47,5 +47,3 @@ TokenBalance.propTypes = {
   }).isRequired,
   showFiat: PropTypes.bool,
 };
-
-

@@ -48,7 +48,6 @@ const prettier = require('prettier');
 const {
   categorizeUnitTestMessage,
   categorizeIntegrationTestMessage,
-  createFallbackCategory,
 } = require('./console-categorizer');
 
 /**
@@ -301,10 +300,11 @@ class ConsoleBaselineReporter {
 
     const category = categorizer(type, text);
 
-    // If category is null (suppressed by rules), use fallback for baseline tracking
-    if (category === null) {
-      return createFallbackCategory(type, text);
-    }
+    // If category is null the rule set has explicitly suppressed this message
+    // (group: null).  Return null so the caller can skip baseline tracking
+    // entirely, which matches the intent of jest-clean-console-reporter's own
+    // suppress behaviour and avoids inflating the baseline with fallback-named
+    // entries for intentionally silenced warnings.
     return category;
   }
 
@@ -333,6 +333,13 @@ class ConsoleBaselineReporter {
       for (const msg of testResult.console) {
         if (msg.type === 'warn' || msg.type === 'error') {
           const category = this.#categorizeMessage(msg.type, msg.message);
+
+          // null means the rule set has suppressed this message (group: null).
+          // Skip baseline tracking so intentionally silenced warnings do not
+          // inflate the baseline under a fallback-named category.
+          if (category === null) {
+            continue;
+          }
 
           if (!this.warningsByFile[filePath][category]) {
             this.warningsByFile[filePath][category] = 0;
