@@ -9,14 +9,14 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import configureStore from '../../ui/store/store';
-import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import {
-  MetaMetricsContext,
-  LegacyMetaMetricsProvider,
-} from '../../ui/contexts/metametrics';
+import { I18nContext } from '../../ui/contexts/i18n';
+import { MetaMetricsContext } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
-import { RouteMessengerContext } from '../../ui/contexts/route-messenger';
+import {
+  LegacyRouteMessengerProvider,
+  RouteMessengerContext,
+} from '../../ui/contexts/route-messenger';
 import { UIMessengerProvider } from '../../ui/contexts/ui-messenger';
 import { MetaMaskTestReduxProvider } from './redux-test-provider';
 import { createMockUIMessenger } from './mock-ui-messenger';
@@ -41,26 +41,28 @@ const createMockMetaMetricsContext = (
  * @param {object} [props.en]
  * @param {import('react').ReactNode} [props.children]
  */
-export const I18nProvider = ({
-  currentLocale,
-  current,
-  en: eng,
-  children,
-} = {}) => {
+export const I18nProvider = (props) => {
+  const { currentLocale, current, en: eng } = props;
+
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
       getMessage(currentLocale, eng, key, ...args);
   }, [currentLocale, current, eng]);
 
-  return <I18nContext.Provider value={t}>{children}</I18nContext.Provider>;
+  return (
+    <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
+  );
 };
 
 I18nProvider.propTypes = {
   currentLocale: PropTypes.string,
   current: PropTypes.object,
   en: PropTypes.object,
-  children: PropTypes.node,
+};
+
+I18nProvider.defaultProps = {
+  children: undefined,
 };
 
 /**
@@ -126,7 +128,7 @@ export function createProviderWrapper(
   function Wrapper({ children }) {
     const content = routeMessenger ? (
       <RouteMessengerContext.Provider value={routeMessenger}>
-        {children}
+        <LegacyRouteMessengerProvider>{children}</LegacyRouteMessengerProvider>
       </RouteMessengerContext.Provider>
     ) : (
       children
@@ -135,17 +137,13 @@ export function createProviderWrapper(
     return (
       <MemoryRouter>
         <I18nProvider currentLocale="en" current={en} en={en}>
-          <LegacyI18nProvider>
-            <UIMessengerProvider value={uiMessenger}>
-              <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-                <LegacyMetaMetricsProvider>
-                  <QueryClientProvider client={queryClient}>
-                    {content}
-                  </QueryClientProvider>
-                </LegacyMetaMetricsProvider>
-              </MetaMetricsContext.Provider>
-            </UIMessengerProvider>
-          </LegacyI18nProvider>
+          <UIMessengerProvider value={uiMessenger}>
+            <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+              <QueryClientProvider client={queryClient}>
+                {content}
+              </QueryClientProvider>
+            </MetaMetricsContext.Provider>
+          </UIMessengerProvider>
         </I18nProvider>
       </MemoryRouter>
     );
@@ -250,7 +248,7 @@ export const renderHookWithProviderTyped = (
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (
     <I18nProvider currentLocale="en" current={en} en={en}>
-      <LegacyI18nProvider>{children}</LegacyI18nProvider>
+      {children}
     </I18nProvider>
   );
 
