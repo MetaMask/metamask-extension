@@ -120,7 +120,6 @@ const BridgeAssetPickerPage = () => {
       </Header>
       <Content
         padding={0}
-        paddingTop={4}
         paddingBottom={4}
         height={BlockSize.Full}
         gap={4}
