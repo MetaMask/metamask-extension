@@ -243,6 +243,12 @@ describe('Enforced Simulations', function (this: Suite) {
 
         const confirmation = new TransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
+
+        // Ensure the confirmation values are populated before toggling to prevent re-renders
+        await confirmation.checkGasFeeEstimate('$15.05');
+        await confirmation.checkEstimatedSimulationDetails('- <0.000001');
+
+        // Disable enforced simulations
         await confirmation.checkEnforcedSimulationsRowIsDisplayed();
         await confirmation.clickEnforcedSimulationsToggle();
         await confirmation.checkEnforcedSimulationsToggleUnchecked();
