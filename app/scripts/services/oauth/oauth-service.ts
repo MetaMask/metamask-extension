@@ -160,9 +160,11 @@ export class OAuthService {
 
     // get the user location to determine if the user is in US region
     // the location value will be used later to determine if Marketing Opt-in should be enabled by default
-    this.#messenger.call('GeolocationController:getGeolocation').catch((error) => {
-      log.error('Error getting user location:', error);
-    });
+    this.#messenger
+      .call('GeolocationController:getGeolocation')
+      .catch((error) => {
+        log.error('Error getting user location:', error);
+      });
 
     const oAuthLoginResult = await this.#handleOAuthLogin(
       loginHandler,
