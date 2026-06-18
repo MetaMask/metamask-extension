@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 class SendPage {
@@ -8,6 +9,10 @@ class SendPage {
   private readonly amountBalance = { testId: 'send-amount-balance' };
 
   private readonly amountFiatValue = { testId: 'send-amount-fiat-value' };
+
+  private readonly amountRequiredError = {
+    text: 'Required',
+  };
 
   private readonly continueButton = { testId: 'send-continue-button' };
 
@@ -33,6 +38,8 @@ class SendPage {
   private readonly invalidAddressError = {
     text: 'Invalid address',
   };
+
+  private readonly invalidAmountError = { text: 'Invalid value' };
 
   private readonly maxButton = {
     text: 'Max',
@@ -74,6 +81,11 @@ class SendPage {
     await this.driver.findElement(this.insufficientFundsError);
   }
 
+  async checkAmountRequiredError(): Promise<void> {
+    console.log('Checking for amount required error');
+    await this.driver.waitForSelector(this.amountRequiredError);
+  }
+
   async checkInsufficientFundsErrorDetailed(): Promise<void> {
     console.log('Checking for detailed insufficient funds error');
     await this.driver.waitForSelector(this.insufficientFundsErrorDetailed);
@@ -81,7 +93,12 @@ class SendPage {
 
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
-    await this.driver.findElement(this.invalidAddressError);
+    await this.driver.waitForSelector(this.invalidAddressError);
+  }
+
+  async checkInvalidAmountError(): Promise<void> {
+    console.log('Checking for invalid amount error');
+    await this.driver.waitForSelector(this.invalidAmountError);
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
@@ -246,6 +263,15 @@ class SendPage {
     });
   }
 
+  async checkContinueButtonIsDisabled(): Promise<void> {
+    console.log('Checking that Continue button is disabled');
+    assert.strictEqual(
+      await this.isContinueButtonEnabled(),
+      false,
+      'Continue button should be disabled',
+    );
+  }
+
   async pressContinueButton(): Promise<void> {
     console.log('Pressing continue button');
     await this.driver.clickElement(this.continueButton);
@@ -267,7 +293,9 @@ class SendPage {
 
   async selectToken(chainId: string, symbol: string): Promise<void> {
     console.log(`Selecting token ${symbol} on chain ${chainId}`);
-    await this.driver.clickElement(this.tokenAsset(chainId, symbol));
+    const tokenAsset = this.tokenAsset(chainId, symbol);
+    await this.driver.waitForSelector(tokenAsset);
+    await this.driver.clickElement(tokenAsset);
   }
 
   async selectNft(nftName: string): Promise<void> {
