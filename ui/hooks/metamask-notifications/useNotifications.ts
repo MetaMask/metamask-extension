@@ -25,7 +25,7 @@ import {
   updateNotificationSubscriptionExpiration,
 } from '../../contexts/metamask-notifications/notification-storage-keys';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
-import { selectIsFeatureAnnouncementsEnabled } from 'ui/selectors/metamask-notifications/metamask-notifications';
+import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 
 /**
  * useState that only applies updates while mounted. Prevents
