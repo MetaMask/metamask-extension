@@ -971,11 +971,6 @@
           "address": "string",
           "options": {
             "exportable": "boolean",
-            "addressType": "string",
-            "scope": "string",
-            "index": "number",
-            "groupIndex": "number",
-            "entropySource": "string",
             "entropy": {
               "type": "string",
               "id": "string",
