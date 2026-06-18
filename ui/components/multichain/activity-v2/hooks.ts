@@ -6,7 +6,7 @@ import type {
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
 import { selectMarketRates } from '../../../selectors/activity';
-import { selectEvmAddress } from '../../../selectors/accounts';
+import { getSelectedAccountGroupEvmAddress } from '../../../selectors/multichain-accounts/account-tree';
 import { parseApprovalTransactionData } from '../../../../shared/lib/transaction.utils';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { getIsTransactionLabelsEnabled } from '../../../selectors/multichain/feature-flags';
@@ -53,7 +53,7 @@ function classifyNft(
 
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
-  const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
+  const evmAddress = useSelector(getSelectedAccountGroupEvmAddress)?.toLowerCase();
   const isExtensionTransactionLabelsEnabled = useSelector(
     getIsTransactionLabelsEnabled,
   );

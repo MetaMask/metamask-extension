@@ -578,6 +578,62 @@ export const getInternalAccountBySelectedAccountGroupAndCaip =
   );
 
 /**
+ * Get the EVM internal account belonging to the currently selected account
+ * group, regardless of which member of the group is the active internal
+ * account. A BIP-44 account group always contains a single EVM account, so
+ * this resolves the wallet's EVM account even when a non-EVM account (e.g.
+ * Solana, Bitcoin, Tron) is currently selected.
+ *
+ * @param state - The multichain accounts state.
+ * @returns The EVM internal account, or null if not found.
+ */
+export const getSelectedAccountGroupEvmInternalAccount = createSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  getSelectedAccountGroup,
+  (accountTree, internalAccounts, selectedAccountGroup) => {
+    if (!selectedAccountGroup) {
+      return null;
+    }
+
+    const { wallets } = accountTree;
+    const group = getGroupByGroupId(wallets, selectedAccountGroup);
+
+    // 'eip155:0' is the wildcard EVM scope shared by all EVM accounts.
+    return getInternalAccountFromGroup(
+      group,
+      'eip155:0' as CaipChainId,
+      internalAccounts,
+    );
+  },
+);
+
+/**
+ * Get the EVM address of the currently selected account group. Prefer this
+ * over `selectEvmAddress` (which only resolves when the active internal
+ * account is itself EVM) when you need the wallet's EVM address irrespective
+ * of which network/account is currently selected. Falls back to the selected
+ * internal account when it is EVM, to preserve legacy behavior in states
+ * without a resolvable account group.
+ *
+ * @param state - The multichain accounts state.
+ * @returns The EVM address, or undefined if not found.
+ */
+export const getSelectedAccountGroupEvmAddress = createSelector(
+  getSelectedAccountGroupEvmInternalAccount,
+  getSelectedInternalAccount,
+  (groupEvmAccount, selectedAccount) => {
+    if (groupEvmAccount) {
+      return groupEvmAccount.address;
+    }
+
+    return selectedAccount && isEvmAccountType(selectedAccount.type)
+      ? selectedAccount.address
+      : undefined;
+  },
+);
+
+/**
  * Retrieve wallet from account tree state.
  *
  * @param state - Redux state.

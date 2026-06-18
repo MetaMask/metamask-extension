@@ -14,7 +14,7 @@ import {
   selectNonEvmTransactionsForActivity,
   selectLocalTransactions,
 } from '../../../selectors/activity';
-import { selectEvmAddress } from '../../../selectors/accounts';
+import { getSelectedAccountGroupEvmAddress } from '../../../selectors/multichain-accounts/account-tree';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { useFormatters } from '../../../hooks/useFormatters';
@@ -57,7 +57,9 @@ export const ActivityList = ({ filter }: Props) => {
   const [selectedNonEvmTransaction, setSelectedNonEvmTransaction] =
     useState<Transaction | null>(null);
 
-  const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
+  const evmAddress = (
+    useSelector(getSelectedAccountGroupEvmAddress) || ''
+  ).toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
 
   // Clear modal state on account switch

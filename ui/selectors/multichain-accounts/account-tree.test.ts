@@ -7,6 +7,7 @@ import {
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 
 import mockState from '../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
@@ -19,6 +20,8 @@ import {
   getCaip25IdByAccountGroupAndScope,
   getInternalAccountByGroupAndCaip,
   getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroupEvmAddress,
+  getSelectedAccountGroupEvmInternalAccount,
   getInternalAccountsFromGroupById,
   getMultichainAccountGroupById,
   getMultichainAccountGroups,
@@ -829,6 +832,130 @@ describe('Multichain Accounts Selectors', () => {
       );
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('getSelectedAccountGroupEvmAddress', () => {
+    const EVM_ACCOUNT_ID = 'evm-account-id';
+    const SOLANA_ACCOUNT_ID = 'solana-account-id';
+    const EVM_ADDRESS = '0xabc0000000000000000000000000000000000001';
+    const SOLANA_ADDRESS = '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv';
+
+    const createStateWithMixedGroup = (selectedAccountId: string) => {
+      const evmAccount = createMockInternalAccount({
+        id: EVM_ACCOUNT_ID,
+        name: 'EVM Account',
+        address: EVM_ADDRESS,
+        type: EthAccountType.Eoa,
+      });
+      const solanaAccount = createMockInternalAccount({
+        id: SOLANA_ACCOUNT_ID,
+        name: 'Solana Account',
+        address: SOLANA_ADDRESS,
+        type: SolAccountType.DataAccount,
+      });
+
+      return createMockMultichainAccountsState(
+        {
+          wallets: {
+            'entropy:test': {
+              id: 'entropy:test' as const,
+              type: AccountWalletType.Entropy as const,
+              status: 'ready',
+              groups: {
+                'entropy:test/0': {
+                  id: 'entropy:test/0' as const,
+                  type: AccountGroupType.MultichainAccount as const,
+                  accounts: [EVM_ACCOUNT_ID, SOLANA_ACCOUNT_ID] as [
+                    string,
+                    ...string[],
+                  ],
+                  metadata: {
+                    name: 'Test',
+                    entropy: { groupIndex: 0 },
+                    pinned: false,
+                    hidden: false,
+                    lastSelected: 0,
+                  },
+                },
+              },
+              metadata: {
+                name: 'Test Wallet',
+                entropy: { id: 'test' },
+              },
+            },
+          },
+        },
+        {
+          accounts: {
+            [EVM_ACCOUNT_ID]: evmAccount,
+            [SOLANA_ACCOUNT_ID]: solanaAccount,
+          },
+          selectedAccount: selectedAccountId,
+        },
+        undefined,
+        'entropy:test/0' as AccountGroupId,
+      );
+    };
+
+    it('returns the group EVM address even when the selected account is non-EVM', () => {
+      // Selected account is the Solana account; selectEvmAddress would return
+      // undefined here, but the group still has an EVM account.
+      const state = createStateWithMixedGroup(SOLANA_ACCOUNT_ID);
+
+      expect(getSelectedAccountGroupEvmInternalAccount(state)?.address).toBe(
+        EVM_ADDRESS,
+      );
+      expect(getSelectedAccountGroupEvmAddress(state)).toBe(EVM_ADDRESS);
+    });
+
+    it('returns the group EVM address when the selected account is the EVM account', () => {
+      const state = createStateWithMixedGroup(EVM_ACCOUNT_ID);
+
+      expect(getSelectedAccountGroupEvmAddress(state)).toBe(EVM_ADDRESS);
+    });
+
+    it('falls back to the selected account when no account group is selected but the selected account is EVM', () => {
+      const evmAccount = createMockInternalAccount({
+        id: EVM_ACCOUNT_ID,
+        name: 'EVM Account',
+        address: EVM_ADDRESS,
+        type: EthAccountType.Eoa,
+      });
+
+      const state = createMockMultichainAccountsState(
+        { wallets: {} },
+        {
+          accounts: { [EVM_ACCOUNT_ID]: evmAccount },
+          selectedAccount: EVM_ACCOUNT_ID,
+        },
+        undefined,
+        null as unknown as AccountGroupId,
+      );
+
+      expect(getSelectedAccountGroupEvmInternalAccount(state)).toBeNull();
+      expect(getSelectedAccountGroupEvmAddress(state)).toBe(EVM_ADDRESS);
+    });
+
+    it('returns undefined when neither the group nor the selected account is EVM', () => {
+      const solanaAccount = createMockInternalAccount({
+        id: SOLANA_ACCOUNT_ID,
+        name: 'Solana Account',
+        address: SOLANA_ADDRESS,
+        type: SolAccountType.DataAccount,
+      });
+
+      const state = createMockMultichainAccountsState(
+        { wallets: {} },
+        {
+          accounts: { [SOLANA_ACCOUNT_ID]: solanaAccount },
+          selectedAccount: SOLANA_ACCOUNT_ID,
+        },
+        undefined,
+        null as unknown as AccountGroupId,
+      );
+
+      expect(getSelectedAccountGroupEvmAddress(state)).toBeUndefined();
     });
   });
 

@@ -7,7 +7,7 @@ import { getErrorBodyMessage } from '../../../../shared/lib/error';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getUseExternalServices } from '../../../selectors';
-import { selectEvmAddress } from '../../../selectors/accounts';
+import { getSelectedAccountGroupEvmAddress } from '../../../selectors/multichain-accounts/account-tree';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { apiClient } from '../../../helpers/api-client';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
@@ -65,7 +65,9 @@ function getTransactionApiLanguage(locale: string) {
 }
 
 function useTransactionParams(caipChainId?: CaipChainId) {
-  const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
+  const evmAddress = (
+    useSelector(getSelectedAccountGroupEvmAddress) || ''
+  ).toLowerCase();
   const locale = useSelector(getIntlLocale);
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
 
