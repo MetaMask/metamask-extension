@@ -185,9 +185,9 @@ describe('ReviewPermissionRenderer', () => {
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        `[data-original-title="${messages.gatorPermissionsMetaMaskFacilitatorTooltip.message}"]`,
+        '[data-original-title="May only be redeemed by the MetaMask x402 facilitator"]',
       ),
-    ).toBeTruthy();
+    ).not.toBeInTheDocument();
   });
 
   it('does not open nickname popover from copy buttons', () => {

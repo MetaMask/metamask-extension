@@ -170,7 +170,6 @@ const permissionInfoSection: SchemaSection = {
       isVisible: (ctx) =>
         Boolean(ctx.redeemerAddresses?.length) &&
         ctx.redeemerAddresses.every(isMetaMaskFacilitatorAddress),
-      tooltip: 'gatorPermissionsMetaMaskFacilitatorTooltip',
       includeInViews: ['confirmation', 'reviewDetail'],
     },
     {

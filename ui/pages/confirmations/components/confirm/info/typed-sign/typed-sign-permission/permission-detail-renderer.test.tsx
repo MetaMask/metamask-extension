@@ -541,9 +541,9 @@ describe('PermissionDetailRenderer', () => {
       ).toBeInTheDocument();
       expect(
         document.querySelector(
-          `[data-original-title="${messages.gatorPermissionsMetaMaskFacilitatorTooltip.message}"]`,
+          '[data-original-title="May only be redeemed by the MetaMask x402 facilitator"]',
         ),
-      ).toBeTruthy();
+      ).not.toBeInTheDocument();
     });
 
     it('uses the Snap-specific request-from tooltip when origin is a Snap id', async () => {

@@ -214,8 +214,9 @@ describe('permissionInfoSection field accessors', () => {
     expect(redeemerAddressElement.isVisible(duplicateFacilitatorContext)).toBe(
       false,
     );
-    expect(namedRedeemerElement.isVisible({ ...base, redeemerAddresses: [] }))
-      .toBe(false);
+    expect(
+      namedRedeemerElement.isVisible({ ...base, redeemerAddresses: [] }),
+    ).toBe(false);
   });
 });
 

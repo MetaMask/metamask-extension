@@ -4071,9 +4071,6 @@
   "gatorPermissionsMetaMaskFacilitator": {
     "message": "MetaMask x402 facilitator"
   },
-  "gatorPermissionsMetaMaskFacilitatorTooltip": {
-    "message": "May only be redeemed by the MetaMask x402 facilitator"
-  },
   "gatorPermissionsPermit2ApproveRevocation": {
     "message": "Permit2 approve(token, spender, 0, 0)",
     "description": "Token approval revocation method for Permit2 approve reset"
