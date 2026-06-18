@@ -421,27 +421,22 @@ class HomePage {
       symbol: resolvedSymbol,
       expectFundYourWalletBanner: resolvedExpectFundYourWalletBanner,
       timeout: resolvedTimeout,
-    } =
-      typeof expectedBalanceOrOptions === 'string'
-        ? {
-            expectedBalance: expectedBalanceOrOptions,
-            symbol,
-            expectFundYourWalletBanner,
-            timeout,
-          }
-        : {
-            expectedBalance: expectedBalanceOrOptions.expectedBalance ?? '25',
-            symbol: expectedBalanceOrOptions.symbol ?? 'ETH',
-            expectFundYourWalletBanner:
-              expectedBalanceOrOptions.expectFundYourWalletBanner ?? true,
-            timeout:
-              expectedBalanceOrOptions.timeout ?? this.driver.timeout,
-          };
+    } = typeof expectedBalanceOrOptions === 'string'
+      ? {
+          expectedBalance: expectedBalanceOrOptions,
+          symbol,
+          expectFundYourWalletBanner,
+          timeout,
+        }
+      : {
+          expectedBalance: expectedBalanceOrOptions.expectedBalance ?? '25',
+          symbol: expectedBalanceOrOptions.symbol ?? 'ETH',
+          expectFundYourWalletBanner:
+            expectedBalanceOrOptions.expectFundYourWalletBanner ?? true,
+          timeout: expectedBalanceOrOptions.timeout ?? this.driver.timeout,
+        };
 
-    if (
-      expectedBalance === '0' &&
-      resolvedExpectFundYourWalletBanner
-    ) {
+    if (expectedBalance === '0' && resolvedExpectFundYourWalletBanner) {
       await this.driver.waitForSelector(this.fundYourWalletBanner, {
         timeout: resolvedTimeout,
       });
