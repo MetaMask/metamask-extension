@@ -212,6 +212,7 @@
     cursor: pointer;
     background: none;
     border: none;
+    anchor-name: --critical-error-info-tip;
 
     &-icon {
       display: block;
@@ -223,8 +224,14 @@
 
   &__legal-text {
     position: fixed;
-    top: 158px;
-    left: -8px;
+    inset: unset;
+    margin: 0;
+    position-anchor: --critical-error-info-tip;
+    top: anchor(bottom);
+    right: anchor(right);
+    left: auto;
+    bottom: auto;
+    margin-top: 8px;
     z-index: 1000;
     max-width: 320px;
     padding: 20px;
