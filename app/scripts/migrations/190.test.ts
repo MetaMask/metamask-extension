@@ -1,27 +1,50 @@
 import { jest } from '@jest/globals';
 import browser from 'webextension-polyfill';
+import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 import { migrate, version } from './190';
 
-// Mock browser.storage.local
 jest.mock('webextension-polyfill', () => ({
   storage: {
     local: {
       get: jest.fn(),
       set: jest.fn(),
+      remove: jest.fn(),
     },
   },
 }));
 
-const mockBrowser = jest.mocked(browser);
+jest.mock('../../../shared/lib/stores/browser-storage-adapter', () => ({
+  BrowserStorageAdapter: jest.fn(),
+}));
 
 const VERSION = version;
 const oldVersion = VERSION - 1;
+const CONTROLLER_NAME = 'TokenListController';
+const CACHE_KEY_PREFIX = 'tokensChainsCache';
+const mockBrowser = jest.mocked(browser);
+const MockedBrowserStorageAdapter =
+  BrowserStorageAdapter as jest.MockedClass<typeof BrowserStorageAdapter>;
+type StorageGetResult = Awaited<ReturnType<BrowserStorageAdapter['getItem']>>;
 
 describe(`migration #${version}`, () => {
+  let getItemMock: jest.MockedFunction<BrowserStorageAdapter['getItem']>;
+  let setItemMock: jest.MockedFunction<BrowserStorageAdapter['setItem']>;
+
   beforeEach(() => {
     jest.clearAllMocks();
-    mockBrowser.storage.local.get.mockResolvedValue({});
-    mockBrowser.storage.local.set.mockResolvedValue(undefined);
+    getItemMock = jest
+      .fn<BrowserStorageAdapter['getItem']>()
+      .mockResolvedValue({});
+    setItemMock = jest
+      .fn<BrowserStorageAdapter['setItem']>()
+      .mockResolvedValue(undefined);
+    MockedBrowserStorageAdapter.mockImplementation(
+      () =>
+        ({
+          getItem: getItemMock,
+          setItem: setItemMock,
+        }) as jest.Mocked<BrowserStorageAdapter>,
+    );
   });
 
   it('updates the version metadata', async () => {
@@ -46,7 +69,8 @@ describe(`migration #${version}`, () => {
     await migrate(oldStorage, changedControllers);
 
     expect(oldStorage.data).toStrictEqual({});
-    expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
+    expect(MockedBrowserStorageAdapter).not.toHaveBeenCalled();
+    expect(setItemMock).not.toHaveBeenCalled();
     expect(changedControllers.size).toBe(0);
   });
 
@@ -68,11 +92,12 @@ describe(`migration #${version}`, () => {
       tokensChainsCache: {},
       preventPollingOnNetworkRestart: false,
     });
-    expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
+    expect(MockedBrowserStorageAdapter).not.toHaveBeenCalled();
+    expect(setItemMock).not.toHaveBeenCalled();
     expect(changedControllers.size).toBe(0);
   });
 
-  it('migrates tokensChainsCache to browser.storage.local', async () => {
+  it('migrates tokensChainsCache through the storage adapter', async () => {
     const chainCache = {
       timestamp: 1234567890,
       data: {
@@ -96,28 +121,29 @@ describe(`migration #${version}`, () => {
 
     await migrate(oldStorage, changedControllers);
 
-    // Should save to storage
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
-      'storageService:TokenListController:tokensChainsCache:0x1': chainCache,
-    });
-
-    // Should clear state
+    expect(getItemMock).toHaveBeenCalledWith(
+      CONTROLLER_NAME,
+      `${CACHE_KEY_PREFIX}:0x1`,
+    );
+    expect(setItemMock).toHaveBeenCalledWith(
+      CONTROLLER_NAME,
+      `${CACHE_KEY_PREFIX}:0x1`,
+      chainCache,
+    );
+    expect(mockBrowser.storage.local.get).not.toHaveBeenCalled();
+    expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
     expect(
       (oldStorage.data.TokenListController as Record<string, unknown>)
         .tokensChainsCache,
     ).toStrictEqual({});
-
-    // Should preserve other state
     expect(
       (oldStorage.data.TokenListController as Record<string, unknown>)
         .preventPollingOnNetworkRestart,
     ).toBe(false);
-
-    // Should mark TokenListController as changed
     expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
-  it('migrates multiple chains in a single storage call', async () => {
+  it('migrates multiple chains independently', async () => {
     const chain1Cache = {
       timestamp: 1234567890,
       data: { '0xToken1': { name: 'Token1' } },
@@ -147,16 +173,25 @@ describe(`migration #${version}`, () => {
 
     await migrate(oldStorage, changedControllers);
 
-    // Should save all chains in a single call
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledTimes(1);
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
-      'storageService:TokenListController:tokensChainsCache:0x1': chain1Cache,
-      'storageService:TokenListController:tokensChainsCache:0x89': chain2Cache,
-      'storageService:TokenListController:tokensChainsCache:0xa86a':
-        chain3Cache,
-    });
-
-    // Should mark TokenListController as changed
+    expect(setItemMock).toHaveBeenCalledTimes(3);
+    expect(setItemMock).toHaveBeenNthCalledWith(
+      1,
+      CONTROLLER_NAME,
+      `${CACHE_KEY_PREFIX}:0x1`,
+      chain1Cache,
+    );
+    expect(setItemMock).toHaveBeenNthCalledWith(
+      2,
+      CONTROLLER_NAME,
+      `${CACHE_KEY_PREFIX}:0x89`,
+      chain2Cache,
+    );
+    expect(setItemMock).toHaveBeenNthCalledWith(
+      3,
+      CONTROLLER_NAME,
+      `${CACHE_KEY_PREFIX}:0xa86a`,
+      chain3Cache,
+    );
     expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
@@ -169,10 +204,11 @@ describe(`migration #${version}`, () => {
       timestamp: 1234567890,
       data: { '0xNew': { name: 'New' } },
     };
-
-    // Mock that chain 0x1 already exists in storage
-    mockBrowser.storage.local.get.mockResolvedValue({
-      'storageService:TokenListController:tokensChainsCache:0x1': existingCache,
+    getItemMock.mockImplementation(async (_namespace, key) => {
+      if (key === `${CACHE_KEY_PREFIX}:0x1`) {
+        return { result: existingCache };
+      }
+      return {} as StorageGetResult;
     });
 
     const oldStorage = {
@@ -180,8 +216,8 @@ describe(`migration #${version}`, () => {
       data: {
         TokenListController: {
           tokensChainsCache: {
-            '0x1': { timestamp: 1111111111, data: {} }, // Should be skipped
-            '0x89': newCache, // Should be migrated
+            '0x1': { timestamp: 1111111111, data: {} },
+            '0x89': newCache,
           },
         },
       },
@@ -190,28 +226,17 @@ describe(`migration #${version}`, () => {
 
     await migrate(oldStorage, changedControllers);
 
-    // Should only save the new chain, not overwrite existing
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
-      'storageService:TokenListController:tokensChainsCache:0x89': newCache,
-    });
-
-    // Should mark TokenListController as changed
+    expect(setItemMock).toHaveBeenCalledTimes(1);
+    expect(setItemMock).toHaveBeenCalledWith(
+      CONTROLLER_NAME,
+      `${CACHE_KEY_PREFIX}:0x89`,
+      newCache,
+    );
     expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
-  it('skips storage.set if all chains already exist in storage', async () => {
-    // Mock that all chains already exist in storage
-    mockBrowser.storage.local.get.mockResolvedValue({
-      'storageService:TokenListController:tokensChainsCache:0x1': {
-        timestamp: 1,
-        data: {},
-      },
-      'storageService:TokenListController:tokensChainsCache:0x89': {
-        timestamp: 2,
-        data: {},
-      },
-    });
-
+  it('skips storage writes if all chains already exist in storage', async () => {
+    getItemMock.mockResolvedValue({ result: { timestamp: 1, data: {} } });
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -227,23 +252,18 @@ describe(`migration #${version}`, () => {
 
     await migrate(oldStorage, changedControllers);
 
-    // Should not call set since all chains already exist
-    expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
-
-    // Should still clear state
+    expect(setItemMock).not.toHaveBeenCalled();
     expect(
       (oldStorage.data.TokenListController as Record<string, unknown>)
         .tokensChainsCache,
     ).toStrictEqual({});
-
-    // Should still mark TokenListController as changed (state was cleared)
     expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
-  it('handles storage errors gracefully and clears state', async () => {
+  it('handles storage write errors gracefully and clears state', async () => {
     const errorSpy = jest.spyOn(console, 'error').mockReturnValue();
     const storageError = new Error('Storage quota exceeded');
-    mockBrowser.storage.local.set.mockRejectedValue(storageError);
+    setItemMock.mockRejectedValue(storageError);
 
     const oldStorage = {
       meta: { version: oldVersion },
@@ -257,66 +277,51 @@ describe(`migration #${version}`, () => {
     };
     const changedControllers = new Set<string>();
 
-    // Should not throw
     await migrate(oldStorage, changedControllers);
 
     expect(oldStorage.meta.version).toBe(version);
-
-    // Should still clear state even on error
     expect(
       (oldStorage.data.TokenListController as Record<string, unknown>)
         .tokensChainsCache,
     ).toStrictEqual({});
-
-    // Should mark TokenListController as changed even on error
     expect(changedControllers.has('TokenListController')).toBe(true);
-
-    // Should log the error
     expect(errorSpy).toHaveBeenCalledWith(
       `Migration #${version}: Failed to migrate tokensChainsCache to StorageService:`,
       storageError,
     );
-
     errorSpy.mockRestore();
   });
 
-  it('handles storage.get errors gracefully', async () => {
-    const errorSpy = jest.spyOn(console, 'error').mockReturnValue();
+  it('migrates when the existing-cache read returns an error', async () => {
     const storageError = new Error('Storage not available');
-    mockBrowser.storage.local.get.mockRejectedValue(storageError);
-
+    const chainCache = {
+      timestamp: 1234567890,
+      data: {},
+    };
+    getItemMock.mockResolvedValue({ error: storageError });
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
         TokenListController: {
           tokensChainsCache: {
-            '0x1': { timestamp: 1234567890, data: {} },
+            '0x1': chainCache,
           },
         },
       },
     };
     const changedControllers = new Set<string>();
 
-    // Should not throw
     await migrate(oldStorage, changedControllers);
 
-    expect(oldStorage.meta.version).toBe(version);
-
-    // Should clear state even on error
+    expect(setItemMock).toHaveBeenCalledWith(
+      CONTROLLER_NAME,
+      `${CACHE_KEY_PREFIX}:0x1`,
+      chainCache,
+    );
     expect(
       (oldStorage.data.TokenListController as Record<string, unknown>)
         .tokensChainsCache,
     ).toStrictEqual({});
-
-    // Should mark TokenListController as changed even on error
     expect(changedControllers.has('TokenListController')).toBe(true);
-
-    // Should log the error
-    expect(errorSpy).toHaveBeenCalledWith(
-      `Migration #${version}: Failed to migrate tokensChainsCache to StorageService:`,
-      storageError,
-    );
-
-    errorSpy.mockRestore();
   });
 });

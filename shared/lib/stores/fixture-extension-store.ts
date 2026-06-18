@@ -1,9 +1,11 @@
-import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
+import type { Json } from '@metamask/utils';
 import getFetchWithTimeout from '../fetch-with-timeout';
 import { getManifestFlags } from '../manifestFlags';
 import ExtensionStore from './extension-store';
 import type { MetaMaskStorageStructure } from './base-store';
+import { BrowserStorageAdapter } from './browser-storage-adapter';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -27,6 +29,50 @@ function resolveFixtureServerPort(): number {
 
 function getFixtureServerUrl(): string {
   return `http://${FIXTURE_SERVER_HOST}:${resolveFixtureServerPort()}/state.json`;
+}
+
+async function setStorageServiceData(
+  storageServiceData: Record<string, unknown>,
+): Promise<void> {
+  const browserStorageAdapter = new BrowserStorageAdapter();
+
+  for (const [key, value] of Object.entries(storageServiceData)) {
+    try {
+      const parsedKey = parseStorageServiceFixtureKey(key);
+      if (!parsedKey) {
+        log.debug(`Ignoring invalid storage service fixture key '${key}'`);
+        continue;
+      }
+      await browserStorageAdapter.setItem(
+        parsedKey.namespace,
+        parsedKey.key,
+        value as Json,
+      );
+    } catch (error) {
+      log.debug(
+        `Error writing storage service fixture data key '${key}': '${error instanceof Error ? error.message : String(error)}'`,
+      );
+    }
+  }
+}
+
+function parseStorageServiceFixtureKey(
+  storageKey: string,
+): { namespace: string; key: string } | undefined {
+  if (!storageKey.startsWith(STORAGE_KEY_PREFIX)) {
+    return undefined;
+  }
+  const keyWithoutPrefix = storageKey.slice(STORAGE_KEY_PREFIX.length);
+  const separatorIndex = keyWithoutPrefix.indexOf(':');
+  if (separatorIndex === -1) {
+    return undefined;
+  }
+  const namespace = keyWithoutPrefix.slice(0, separatorIndex);
+  const key = keyWithoutPrefix.slice(separatorIndex + 1);
+  if (!namespace || !key) {
+    return undefined;
+  }
+  return { namespace, key };
 }
 
 /**
@@ -84,12 +130,6 @@ export class FixtureExtensionStore extends ExtensionStore {
       if (response.ok) {
         const state = await response.json();
 
-        // Write StorageService entries directly to browser.storage.local
-        // so controllers can read them outside the main extension state.
-        if (Object.keys(state.storageServiceData ?? {}).length > 0) {
-          await browser.storage.local.set(state.storageServiceData);
-        }
-
         if (state.meta?.storageKind === 'split') {
           // If fixture is already in split state format, convert it properly
           const kvs = new Map(Object.entries(state.data));
@@ -98,13 +138,18 @@ export class FixtureExtensionStore extends ExtensionStore {
         } else {
           await super.set(state);
         }
+
+        // Write StorageService entries after the main extension state so fixture
+        // state overwrites cannot remove generated StorageService metadata.
+        if (Object.keys(state.storageServiceData ?? {}).length > 0) {
+          await setStorageServiceData(state.storageServiceData);
+        }
       } else {
         log.debug(
           `Received response with a status of ${response.status} ${response.statusText}`,
         );
       }
     } catch (error) {
-      console.log('error', error);
       if (error instanceof Error) {
         log.debug(`Error loading network state: '${error.message}'`);
       } else {

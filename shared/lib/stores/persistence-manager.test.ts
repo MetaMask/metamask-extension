@@ -273,6 +273,20 @@ describe('PersistenceManager', () => {
       });
     });
 
+    it('throws a primary store error when no in-memory state or backup can recover it', async () => {
+      const error = new Error(
+        'MetaMask - could not recover state from generated storage metadata',
+      );
+      mockStoreGet.mockRejectedValueOnce(error);
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce(undefined);
+
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'get-failed' },
+        fingerprint: ['persistence-error', 'get-failed'],
+      });
+    });
+
     it('does throw when validating state with a *missing vault* but has a backup', async () => {
       const mockData = {
         data: {
@@ -290,6 +304,83 @@ describe('PersistenceManager', () => {
 
       await expect(manager.get({ validateVault: true })).rejects.toThrow(
         MISSING_VAULT_ERROR,
+      );
+    });
+
+    it('returns the in-memory state snapshot when validating an empty primary store after a vault was loaded', async () => {
+      const state = {
+        data: {
+          KeyringController: {
+            vault: 'vault',
+          },
+        },
+        meta: {
+          version: 10,
+          storageKind: 'split' as const,
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce(state);
+      await manager.get({ validateVault: false });
+      mockStoreGet.mockResolvedValueOnce({});
+      const getBackupSpy = jest.spyOn(manager, 'getBackup');
+
+      const result = await manager.get({ validateVault: true });
+
+      expect(result).toStrictEqual(state);
+      expect(getBackupSpy).not.toHaveBeenCalled();
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Using in-memory state after primary persistence returned no vault',
+        {
+          level: 'warning',
+          tags: {
+            'persistence.event': 'get-memory-fallback-missing-vault',
+          },
+          fingerprint: [
+            'persistence-event',
+            'get-memory-fallback-missing-vault',
+          ],
+        },
+      );
+    });
+
+    it('returns the in-memory state snapshot when validating a primary store read error after a vault was loaded', async () => {
+      const state = {
+        data: {
+          KeyringController: {
+            vault: 'vault',
+          },
+        },
+        meta: {
+          version: 10,
+          storageKind: 'split' as const,
+        },
+      };
+      const error = new Error('block checksum mismatch');
+      mockStoreGet.mockResolvedValueOnce(state);
+      await manager.get({ validateVault: false });
+      mockStoreGet.mockRejectedValueOnce(error);
+      const getBackupSpy = jest.spyOn(manager, 'getBackup');
+
+      const result = await manager.get({ validateVault: true });
+
+      expect(result).toStrictEqual(state);
+      expect(getBackupSpy).not.toHaveBeenCalled();
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'get-failed' },
+        fingerprint: ['persistence-error', 'get-failed'],
+      });
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Using in-memory state after primary persistence returned no vault',
+        {
+          level: 'warning',
+          tags: {
+            'persistence.event': 'get-memory-fallback-after-error',
+          },
+          fingerprint: [
+            'persistence-event',
+            'get-memory-fallback-after-error',
+          ],
+        },
       );
     });
   });

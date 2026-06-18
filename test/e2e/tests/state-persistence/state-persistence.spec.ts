@@ -50,7 +50,7 @@ async function mockFeatureFlagsWithoutNonEvmAccounts(mockServer: Mockttp) {
   ];
 }
 
-type DataStorage = {
+type DataStorage = Record<string, unknown> & {
   meta: {
     version: string;
     storageKind?: 'data';
@@ -66,6 +66,25 @@ type SplitStateStorage = Record<string, unknown> & {
 
 type StoredState = SplitStateStorage | DataStorage;
 
+type StorageKeyManifest = {
+  version: typeof STORAGE_KEY_MANIFEST_VERSION;
+  updatedAt: number;
+  storageKeys: Record<string, string>;
+};
+
+type StorageKeyList = {
+  version: typeof STORAGE_KEY_MANIFEST_VERSION;
+  updatedAt: number;
+  keys: string[];
+};
+
+type ChunkedStorageValue = {
+  metamaskStorageValue: typeof CHUNKED_VALUE_MARKER;
+  version: number;
+  chunkKeys: string[];
+  stringLength: number;
+};
+
 const SPLIT_FLAG = {
   value: { enabled: 1, maxAccounts: 9999999, maxNetworks: 9999999 },
 };
@@ -75,6 +94,133 @@ const MIGRATION_OVERRIDE_KEYS = [
   'splitStateMigrationMaxNetworks',
 ];
 const BASE_MANIFEST_TESTING_FLAGS = { forceExtensionStore: true };
+const CHUNK_MANIFEST_KEY = '__metamaskChunkManifest';
+const CHUNK_KEY_PREFIX = '__metamaskChunk:';
+const CHUNKED_VALUE_MARKER = 'metamask:chunked-storage-value';
+const STORAGE_KEY_MANIFEST_KEYS = [
+  '__metamaskStorageKeyManifest0',
+  '__metamaskStorageKeyManifest1',
+  '__metamaskStorageKeyManifest2',
+  '__metamaskStorageKeyManifest3',
+] as const;
+const STORAGE_KEY_LIST_KEYS = [
+  '__metamaskStorageKeyList0',
+  '__metamaskStorageKeyList1',
+  '__metamaskStorageKeyList2',
+  '__metamaskStorageKeyList3',
+] as const;
+const STORAGE_KEY_MANIFEST_VERSION = 1;
+const STORAGE_KEY_POINTER_PREFIX = '__metamaskStorageKeyPointer:';
+const STATE_STORAGE_KEY_PREFIX = '__metamaskState:';
+const TEMP_CRONJOB_STORAGE_KEY = 'temp-cronjob-storage';
+const TEMP_CRONJOB_STORAGE_VALUE_KEY_PREFIX = '__metamaskCronjobStorage:';
+const TEMP_CRONJOB_STORAGE_POINTER_KEY_PREFIX =
+  '__metamaskCronjobStoragePointer';
+
+const isObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const isStorageKeyManifest = (value: unknown): value is StorageKeyManifest =>
+  isObject(value) &&
+  value.version === STORAGE_KEY_MANIFEST_VERSION &&
+  typeof value.updatedAt === 'number' &&
+  isObject(value.storageKeys) &&
+  Object.values(value.storageKeys).every(
+    (storageKey) => typeof storageKey === 'string',
+  );
+
+const isStorageKeyList = (value: unknown): value is StorageKeyList =>
+  isObject(value) &&
+  value.version === STORAGE_KEY_MANIFEST_VERSION &&
+  typeof value.updatedAt === 'number' &&
+  Array.isArray(value.keys) &&
+  value.keys.every((key) => typeof key === 'string');
+
+const isChunkedStorageValue = (value: unknown): value is ChunkedStorageValue =>
+  isObject(value) &&
+  value.metamaskStorageValue === CHUNKED_VALUE_MARKER &&
+  Array.isArray(value.chunkKeys) &&
+  value.chunkKeys.every((chunkKey) => typeof chunkKey === 'string') &&
+  typeof value.stringLength === 'number';
+
+const getLatestStorageKeyManifest = (
+  storage: Record<string, unknown>,
+): StorageKeyManifest | undefined => {
+  let latestManifest: StorageKeyManifest | undefined;
+  for (const key of STORAGE_KEY_MANIFEST_KEYS) {
+    const manifest = storage[key];
+    if (
+      isStorageKeyManifest(manifest) &&
+      (!latestManifest || manifest.updatedAt >= latestManifest.updatedAt)
+    ) {
+      latestManifest = manifest;
+    }
+  }
+  return latestManifest;
+};
+
+const getLatestStorageKeyList = (
+  storage: Record<string, unknown>,
+): StorageKeyList | undefined => {
+  let latestKeyList: StorageKeyList | undefined;
+  for (const key of STORAGE_KEY_LIST_KEYS) {
+    const keyList = storage[key];
+    if (
+      isStorageKeyList(keyList) &&
+      (!latestKeyList || keyList.updatedAt >= latestKeyList.updatedAt)
+    ) {
+      latestKeyList = keyList;
+    }
+  }
+  return latestKeyList
+    ? {
+        ...latestKeyList,
+        keys: [...new Set(latestKeyList.keys)],
+      }
+    : undefined;
+};
+
+const resolveStoredValue = (
+  storage: Record<string, unknown>,
+  logicalKey: string,
+): unknown => {
+  const storageKey =
+    getLatestStorageKeyManifest(storage)?.storageKeys[logicalKey] ?? logicalKey;
+  const value = storage[storageKey];
+  if (!isChunkedStorageValue(value)) {
+    return value;
+  }
+
+  const serializedValue = value.chunkKeys
+    .map((chunkKey) => {
+      const chunk = storage[chunkKey];
+      assert.equal(
+        typeof chunk,
+        'string',
+        `chunk ${chunkKey} should be present for ${logicalKey}`,
+      );
+      return chunk;
+    })
+    .join('');
+  assert.equal(
+    serializedValue.length,
+    value.stringLength,
+    `chunk data for ${logicalKey} should have the expected length`,
+  );
+  return JSON.parse(serializedValue);
+};
+
+const assertLogicalKeyPresent = (
+  storage: Record<string, unknown>,
+  logicalKey: string,
+) => {
+  const storageKey =
+    getLatestStorageKeyManifest(storage)?.storageKeys[logicalKey] ?? logicalKey;
+  assert.ok(
+    storageKey in storage,
+    `logical key ${logicalKey} should be present at storage key ${storageKey}`,
+  );
+};
 
 /**
  * Builds fixture options with consistent manifest testing flags.
@@ -184,41 +330,50 @@ const readStorage = async (driver: Driver) => {
  * @param storage - Parsed storage snapshot.
  */
 const assertSplitStateStorage = (storage: SplitStateStorage) => {
+  const storageKeyManifest = getLatestStorageKeyManifest(storage);
   assert.ok(
-    Array.isArray(storage.manifest),
-    'manifest should be written in split state storage',
+    storageKeyManifest,
+    'generated storage key manifest should be written in split state storage',
   );
-  assert.equal(
-    storage.meta?.storageKind,
-    'split',
-    'meta.storageKind should be split',
-  );
+  const storageKeyList = getLatestStorageKeyList(storage);
+  const logicalKeys =
+    storageKeyList?.keys ?? Object.keys(storageKeyManifest.storageKeys);
+  const meta = resolveStoredValue(storage, 'meta') as
+    | SplitStateStorage['meta']
+    | undefined;
+  assert.equal(meta?.storageKind, 'split', 'meta.storageKind should be split');
   assert.ok(
     !('data' in storage),
     `data key should be removed in split state; keys: ${Object.keys(storage).join(', ')}`,
   );
   assert.ok(
-    storage.manifest.includes('meta'),
-    `meta should be part of the manifest; manifest: ${JSON.stringify(storage.manifest)}`,
+    logicalKeys.includes('meta'),
+    `meta should be part of generated storage metadata; keys: ${JSON.stringify(logicalKeys)}`,
   );
 
-  for (const key of storage.manifest) {
-    assert.ok(
-      key === 'manifest' || key in storage,
-      `manifest key ${key} should be present in storage`,
-    );
+  for (const key of logicalKeys) {
+    assertLogicalKeyPresent(storage, key);
   }
 
-  if (typeof storage['temp-cronjob-storage'] === 'undefined') {
-    // temp-cronjob-storage is a temporary key added in a hotfix and is
-    // supposed to be removed at some point. Once it is removed from the codebase,
+  const temporaryCronjobStorageKeys = Object.keys(storage).filter(
+    (key) =>
+      key === TEMP_CRONJOB_STORAGE_KEY ||
+      key.startsWith(TEMP_CRONJOB_STORAGE_VALUE_KEY_PREFIX) ||
+      key.startsWith(TEMP_CRONJOB_STORAGE_POINTER_KEY_PREFIX),
+  );
+  if (temporaryCronjobStorageKeys.length === 0) {
+    // Temporary cronjob storage is expected until the CronjobController no longer
+    // needs its hotfix storage manager. Once it is removed from the codebase,
     // this block should be removed, which is why removing it causes this test
     // to fail.
     assert.fail(
-      'Yay! You removed temp-cronjob-storage from the db. Now update this test by removing this block.',
+      'Yay! You removed temporary cronjob storage from the db. Now update this test by removing this block.',
     );
   } else {
-    delete storage['temp-cronjob-storage']; // <- don't forget to delete this line if you remove temp-cronjob-storage
+    for (const key of temporaryCronjobStorageKeys) {
+      delete storage[key];
+    }
+    // Don't forget to delete this block if you remove temporary cronjob storage.
   }
 
   for (const key of Object.keys(storage)) {
@@ -228,19 +383,30 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
     if (key.startsWith(STORAGE_KEY_PREFIX)) {
       continue; // StorageService keys are managed independently
     }
+    if (
+      key === 'manifest' ||
+      key === CHUNK_MANIFEST_KEY ||
+      key.startsWith(CHUNK_KEY_PREFIX) ||
+      key.startsWith(STATE_STORAGE_KEY_PREFIX) ||
+      key.startsWith(STORAGE_KEY_POINTER_PREFIX) ||
+      (STORAGE_KEY_LIST_KEYS as readonly string[]).includes(key) ||
+      (STORAGE_KEY_MANIFEST_KEYS as readonly string[]).includes(key)
+    ) {
+      continue;
+    }
     assert.ok(
-      key === 'manifest' || storage.manifest.includes(key),
-      `storage key ${key} should be present in manifest`,
+      logicalKeys.includes(key),
+      `storage key ${key} should be present in generated storage metadata`,
     );
   }
 
   // sanity check
   assert(
-    storage.manifest.includes('KeyringController'),
-    'KeyringController should be in the manifest',
+    logicalKeys.includes('KeyringController'),
+    'KeyringController should be in generated storage metadata',
   );
   assert(
-    typeof storage.KeyringController !== 'undefined',
+    typeof resolveStoredValue(storage, 'KeyringController') !== 'undefined',
     'KeyringController should be in storage',
   );
 };
@@ -251,9 +417,15 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
  * @param storage - Parsed storage snapshot.
  */
 const assertDataStateStorage = (storage: DataStorage) => {
-  assert.ok(storage.meta, 'meta should be present in data storage');
-  assert.ok('data' in storage, 'data key should be present in data storage');
-  const keyringLength = Object.keys(storage.data.KeyringController).length;
+  const meta = resolveStoredValue(storage, 'meta') as
+    | DataStorage['meta']
+    | undefined;
+  const data = resolveStoredValue(storage, 'data') as
+    | DataStorage['data']
+    | undefined;
+  assert.ok(meta, 'meta should be present in data storage');
+  assert.ok(data, 'data key should be present in data storage');
+  const keyringLength = Object.keys(data.KeyringController).length;
   assert.ok(
     keyringLength > 0,
     `KeyringController should contain persisted data; length=${keyringLength}`,
@@ -263,7 +435,7 @@ const assertDataStateStorage = (storage: DataStorage) => {
     'manifest should NOT be present in data storage',
   );
   assert.equal(
-    storage.meta?.storageKind,
+    meta?.storageKind,
     'data',
     `meta.storageKind should be data for data storage`,
   );
@@ -277,7 +449,6 @@ const assertDataStateStorage = (storage: DataStorage) => {
  */
 const expectSplitStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
-  console.log('split storage:', Object.keys(storage));
   assertSplitStateStorage(storage as SplitStateStorage);
   return storage;
 };
@@ -290,7 +461,6 @@ const expectSplitStateStorage = async (driver: Driver) => {
  */
 const expectDataStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
-  console.log('data storage:', Object.keys(storage));
   assertDataStateStorage(storage as DataStorage);
   return storage;
 };
@@ -430,22 +600,14 @@ describe('State Persistence', function () {
           const accountListPage = new AccountListPage(driver);
 
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log('completeOnboardingAndSync');
           await completeOnboardingAndSync(driver);
-          console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
-          console.log('headerNavbar.checkPageIsLoaded');
           await headerNavbar.checkPageIsLoaded();
-          console.log('headerNavbar.openAccountMenu');
           await headerNavbar.openAccountMenu();
-          console.log('accountListPage.checkPageIsLoaded');
           await accountListPage.checkPageIsLoaded();
-          console.log('accountListPage.addMultichainAccount');
           await accountListPage.addMultichainAccount();
-          console.log('accountListPage.renameAccount');
           await accountListPage.closeMultichainAccountsPage();
-          console.log('accountListPage.renameAccount');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
@@ -453,36 +615,27 @@ describe('State Persistence', function () {
           );
 
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
-          console.log('pausePersistence');
           await pausePersistence(driver);
-          console.log('setLocalStorageFlags');
           await setLocalStorageFlags(driver);
-          console.log('reloadAndUnlock');
           await reloadAndUnlock(driver);
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log('assertAccountVisible');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log('expectSplitStateStorage');
           await expectSplitStateStorage(driver);
 
-          console.log('reloadAndUnlock 2');
           await reloadAndUnlock(driver);
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log('assertAccountVisible 2');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
-          console.log('expectSplitStateStorage 2');
           await expectSplitStateStorage(driver);
         },
       );

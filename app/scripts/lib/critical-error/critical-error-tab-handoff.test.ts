@@ -5,6 +5,9 @@ import {
 } from '../../../../shared/constants/critical-error-restore-session';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
+  CriticalErrorRestorePointerKeyPrefix,
+  CriticalErrorRestoreSecondaryPointerKeyPrefix,
+  CriticalErrorRestoreValueKeyPrefix,
   readCriticalErrorRestoreSession,
   clearCriticalErrorRestoreSession,
   openRestoringTabAndReload,
@@ -31,14 +34,88 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+const pointerKey0 = `${CriticalErrorRestorePointerKeyPrefix}0`;
+const pointerKey1 = `${CriticalErrorRestorePointerKeyPrefix}1`;
+const pointerKey2 = `${CriticalErrorRestorePointerKeyPrefix}2`;
+const pointerKey3 = `${CriticalErrorRestorePointerKeyPrefix}3`;
+const secondaryPointerKey0 = `${CriticalErrorRestoreSecondaryPointerKeyPrefix}0`;
+const secondaryPointerKey1 = `${CriticalErrorRestoreSecondaryPointerKeyPrefix}1`;
+const secondaryPointerKey2 = `${CriticalErrorRestoreSecondaryPointerKeyPrefix}2`;
+const secondaryPointerKey3 = `${CriticalErrorRestoreSecondaryPointerKeyPrefix}3`;
+const primaryPointerKeys = [pointerKey0, pointerKey1, pointerKey2, pointerKey3];
+const secondaryPointerKeys = [
+  secondaryPointerKey0,
+  secondaryPointerKey1,
+  secondaryPointerKey2,
+  secondaryPointerKey3,
+];
+const pointerKeys = [...primaryPointerKeys, ...secondaryPointerKeys];
+
+function hasOwn(value: Record<string, unknown>, key: string) {
+  return Object.prototype.hasOwnProperty.call(value, key);
+}
+
+function mockStorageGet(
+  storage: Record<string, unknown>,
+  rejectedKeys: Record<string, Error> = {},
+) {
+  (browser.storage.local.get as jest.Mock).mockImplementation(async (key) => {
+    if (typeof key === 'string') {
+      if (rejectedKeys[key]) {
+        throw rejectedKeys[key];
+      }
+      if (hasOwn(storage, key)) {
+        return { [key]: storage[key] };
+      }
+      return {};
+    }
+    throw new Error('Unexpected storage.local.get arguments');
+  });
+}
+
+function getGeneratedRestoreWrite(): Record<string, unknown> {
+  const generatedWrite = (browser.storage.local.set as jest.Mock).mock.calls
+    .map(([value]) => value as Record<string, unknown>)
+    .find((value) =>
+      Object.keys(value).some((key) =>
+        key.startsWith(CriticalErrorRestoreValueKeyPrefix),
+      ),
+    );
+  expect(generatedWrite).toBeDefined();
+  return generatedWrite as Record<string, unknown>;
+}
+
+function getGeneratedRestoreWriteKey(
+  generatedWrite: Record<string, unknown>,
+): string {
+  const generatedStorageKey = Object.keys(generatedWrite).find((key) =>
+    key.startsWith(CriticalErrorRestoreValueKeyPrefix),
+  );
+  expect(generatedStorageKey).toBeDefined();
+  return generatedStorageKey as string;
+}
+
+function getStorageValues(
+  storage: Record<string, unknown>,
+  key: string,
+): Record<string, unknown> {
+  if (hasOwn(storage, key)) {
+    return { [key]: storage[key] };
+  }
+  return {};
+}
+
 describe('critical-error-restore session', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockStorageGet({});
+    (browser.storage.local.set as jest.Mock).mockResolvedValue(undefined);
+    (browser.storage.local.remove as jest.Mock).mockResolvedValue(undefined);
   });
 
   describe('readCriticalErrorRestoreSession', () => {
     it('returns null when key is not set', async () => {
-      (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({});
+      mockStorageGet({});
 
       await expect(
         readCriticalErrorRestoreSession(browser),
@@ -46,7 +123,7 @@ describe('critical-error-restore session', () => {
     });
 
     it('returns null when stored value is not an object', async () => {
-      (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+      mockStorageGet({
         [CRITICAL_ERROR_RESTORE_KEY]: true,
       });
 
@@ -56,7 +133,7 @@ describe('critical-error-restore session', () => {
     });
 
     it('returns null when tabUrl is missing', async () => {
-      (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+      mockStorageGet({
         [CRITICAL_ERROR_RESTORE_KEY]: { tabId: 42 },
       });
 
@@ -67,7 +144,7 @@ describe('critical-error-restore session', () => {
 
     it('returns payload when restore session data is valid', async () => {
       const tabUrl = 'https://metamask.io/restoring#abc';
-      (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+      mockStorageGet({
         [CRITICAL_ERROR_RESTORE_KEY]: { tabUrl, tabId: 42 },
       });
 
@@ -81,7 +158,7 @@ describe('critical-error-restore session', () => {
 
     it('returns undefined tabId when tabId is not a number', async () => {
       const tabUrl = 'https://metamask.io/restoring#abc';
-      (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+      mockStorageGet({
         [CRITICAL_ERROR_RESTORE_KEY]: { tabUrl },
       });
 
@@ -95,36 +172,214 @@ describe('critical-error-restore session', () => {
 
     it('returns null when storage.local.get rejects', async () => {
       const storageError = new Error('storage failed');
-      (browser.storage.local.get as jest.Mock).mockRejectedValueOnce(
-        storageError,
+      mockStorageGet(
+        {},
+        {
+          [CRITICAL_ERROR_RESTORE_KEY]: storageError,
+        },
       );
 
       await expect(
         readCriticalErrorRestoreSession(browser),
       ).resolves.toBeNull();
 
-      expect(jest.mocked(captureException)).toHaveBeenCalledWith(storageError);
-    });
-  });
-
-  describe('clearCriticalErrorRestoreSession', () => {
-    it('removes the restore key', async () => {
-      (browser.storage.local.remove as jest.Mock).mockResolvedValueOnce(
-        undefined,
+      expect(jest.mocked(captureException)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message:
+            'critical-error-restore: failed to read legacy restore session',
+          cause: storageError,
+        }),
+        {
+          tags: {
+            'persistence.storage_area': 'local',
+            'persistence.storage_operation': 'read',
+            'persistence.storage_key_class':
+              'critical-error-restore-legacy-state',
+          },
+        },
       );
+    });
 
-      await clearCriticalErrorRestoreSession(browser);
+    it('returns payload from generated storage when a pointer is present', async () => {
+      const generatedStorageKey = `${CriticalErrorRestoreValueKeyPrefix}abc`;
+      const tabUrl = 'https://metamask.io/restoring#abc';
+      mockStorageGet({
+        [pointerKey0]: {
+          version: 1,
+          updatedAt: 1,
+          storageKey: generatedStorageKey,
+        },
+        [generatedStorageKey]: { tabUrl, tabId: 42 },
+        [CRITICAL_ERROR_RESTORE_KEY]: { tabUrl: 'legacy' },
+      });
 
-      expect(browser.storage.local.remove).toHaveBeenCalledWith(
+      await expect(
+        readCriticalErrorRestoreSession(browser),
+      ).resolves.toStrictEqual({
+        tabId: 42,
+        tabUrl,
+      });
+
+      expect(browser.storage.local.get).not.toHaveBeenCalledWith(
         CRITICAL_ERROR_RESTORE_KEY,
       );
     });
 
-    it('resolves and reports to Sentry when storage.local.remove rejects', async () => {
-      const removeError = new Error('storage remove failed');
-      (browser.storage.local.remove as jest.Mock).mockRejectedValueOnce(
-        removeError,
+    it('returns null when the latest pointer is a tombstone', async () => {
+      const generatedStorageKey = `${CriticalErrorRestoreValueKeyPrefix}abc`;
+      mockStorageGet({
+        [pointerKey0]: {
+          version: 1,
+          updatedAt: 1,
+          storageKey: generatedStorageKey,
+        },
+        [pointerKey1]: {
+          version: 1,
+          updatedAt: 2,
+          storageKey: null,
+        },
+        [generatedStorageKey]: {
+          tabUrl: 'https://metamask.io/restoring#stale',
+        },
+        [CRITICAL_ERROR_RESTORE_KEY]: {
+          tabUrl: 'https://metamask.io/restoring#legacy',
+        },
+      });
+
+      await expect(
+        readCriticalErrorRestoreSession(browser),
+      ).resolves.toBeNull();
+
+      expect(browser.storage.local.get).not.toHaveBeenCalledWith(
+        CRITICAL_ERROR_RESTORE_KEY,
       );
+      expect(browser.storage.local.get).not.toHaveBeenCalledWith(
+        generatedStorageKey,
+      );
+    });
+
+    it('returns payload from a secondary pointer newer than a primary pointer', async () => {
+      const staleStorageKey = `${CriticalErrorRestoreValueKeyPrefix}stale`;
+      const generatedStorageKey = `${CriticalErrorRestoreValueKeyPrefix}abc`;
+      const tabUrl = 'https://metamask.io/restoring#abc';
+      mockStorageGet({
+        [pointerKey0]: {
+          version: 1,
+          updatedAt: 1,
+          storageKey: staleStorageKey,
+        },
+        [secondaryPointerKey0]: {
+          version: 1,
+          updatedAt: 2,
+          storageKey: generatedStorageKey,
+        },
+        [staleStorageKey]: {
+          tabUrl: 'https://metamask.io/restoring#stale',
+        },
+        [generatedStorageKey]: { tabUrl, tabId: 42 },
+      });
+
+      await expect(
+        readCriticalErrorRestoreSession(browser),
+      ).resolves.toStrictEqual({
+        tabId: 42,
+        tabUrl,
+      });
+
+      expect(browser.storage.local.get).toHaveBeenCalledWith(
+        generatedStorageKey,
+      );
+      expect(browser.storage.local.get).not.toHaveBeenCalledWith(
+        staleStorageKey,
+      );
+    });
+
+    it('does not fall back to stale legacy restore data when a generated pointer is present but generated storage is missing', async () => {
+      const generatedStorageKey = `${CriticalErrorRestoreValueKeyPrefix}abc`;
+      mockStorageGet({
+        [pointerKey0]: {
+          version: 1,
+          updatedAt: 1,
+          storageKey: generatedStorageKey,
+        },
+        [CRITICAL_ERROR_RESTORE_KEY]: {
+          tabUrl: 'https://metamask.io/restoring#legacy',
+        },
+      });
+
+      await expect(
+        readCriticalErrorRestoreSession(browser),
+      ).resolves.toBeNull();
+
+      expect(browser.storage.local.get).toHaveBeenCalledWith(
+        generatedStorageKey,
+      );
+      expect(browser.storage.local.get).not.toHaveBeenCalledWith(
+        CRITICAL_ERROR_RESTORE_KEY,
+      );
+    });
+
+    it('does not fall back to stale legacy restore data when generated pointer slots are unreadable', async () => {
+      mockStorageGet(
+        {
+          [CRITICAL_ERROR_RESTORE_KEY]: {
+            tabUrl: 'https://metamask.io/restoring#legacy',
+          },
+        },
+        Object.fromEntries(
+          pointerKeys.map((pointerKey) => [
+            pointerKey,
+            new Error(`block checksum mismatch for ${pointerKey}`),
+          ]),
+        ),
+      );
+
+      await expect(
+        readCriticalErrorRestoreSession(browser),
+      ).resolves.toBeNull();
+
+      expect(browser.storage.local.get).not.toHaveBeenCalledWith(
+        CRITICAL_ERROR_RESTORE_KEY,
+      );
+    });
+  });
+
+  describe('clearCriticalErrorRestoreSession', () => {
+    it('writes a restore session tombstone without removing fixed keys', async () => {
+      await clearCriticalErrorRestoreSession(browser);
+
+      expect(browser.storage.local.set).toHaveBeenCalledWith(
+        expect.objectContaining(
+          Object.fromEntries(
+            pointerKeys.map((pointerKey) => [
+              pointerKey,
+              expect.objectContaining({ storageKey: null }),
+            ]),
+          ),
+        ),
+      );
+      expect(browser.storage.local.remove).not.toHaveBeenCalled();
+    });
+
+    it('does not read or remove stale generated restore values when clearing', async () => {
+      const generatedStorageKey = `${CriticalErrorRestoreValueKeyPrefix}abc`;
+      mockStorageGet({
+        [pointerKey0]: {
+          version: 1,
+          updatedAt: 1,
+          storageKey: generatedStorageKey,
+        },
+      });
+
+      await clearCriticalErrorRestoreSession(browser);
+
+      expect(browser.storage.local.get).not.toHaveBeenCalled();
+      expect(browser.storage.local.remove).not.toHaveBeenCalled();
+    });
+
+    it('resolves and reports to Sentry when storage.local.set rejects', async () => {
+      const setError = new Error('storage set failed');
+      (browser.storage.local.set as jest.Mock).mockRejectedValue(setError);
 
       await expect(
         clearCriticalErrorRestoreSession(browser),
@@ -133,9 +388,16 @@ describe('critical-error-restore session', () => {
       expect(jest.mocked(captureException)).toHaveBeenCalledWith(
         expect.objectContaining({
           message:
-            'critical-error-restore: failed to clear restore session from storage.local',
-          cause: removeError,
+            'critical-error-restore: failed to write restore session pointers',
+          cause: setError,
         }),
+        {
+          tags: {
+            'persistence.storage_area': 'local',
+            'persistence.storage_operation': 'write',
+            'persistence.storage_key_class': 'critical-error-restore-pointer',
+          },
+        },
       );
     });
   });
@@ -160,12 +422,29 @@ describe('openRestoringTabAndReload', () => {
       }),
     );
 
-    expect(browser.storage.local.set).toHaveBeenCalledWith({
-      [CRITICAL_ERROR_RESTORE_KEY]: expect.objectContaining({
+    const generatedWrite = getGeneratedRestoreWrite();
+    const generatedStorageKey = getGeneratedRestoreWriteKey(generatedWrite);
+    expect(generatedWrite[generatedStorageKey]).toStrictEqual(
+      expect.objectContaining({
         tabId: 101,
         tabUrl: expect.stringContaining(METAMASK_RESTORING_PAGE_URL),
       }),
-    });
+    );
+    expect(browser.storage.local.set).toHaveBeenCalledWith(
+      expect.objectContaining({
+        [pointerKey0]: expect.objectContaining({
+          storageKey: expect.stringMatching(
+            `^${CriticalErrorRestoreValueKeyPrefix}`,
+          ),
+        }),
+        [pointerKey1]: expect.objectContaining({
+          storageKey: expect.stringMatching(
+            `^${CriticalErrorRestoreValueKeyPrefix}`,
+          ),
+        }),
+      }),
+    );
+    expect(browser.storage.local.remove).not.toHaveBeenCalled();
     expect(requestSafeReload).toHaveBeenCalledTimes(1);
   });
 
@@ -175,12 +454,128 @@ describe('openRestoringTabAndReload', () => {
 
     await openRestoringTabAndReload(requestSafeReload);
 
-    const storedValue = (browser.storage.local.set as jest.Mock).mock
-      .calls[0][0][CRITICAL_ERROR_RESTORE_KEY];
+    const generatedWrite = getGeneratedRestoreWrite();
+    const generatedStorageKey = getGeneratedRestoreWriteKey(generatedWrite);
+    const storedValue = generatedWrite[generatedStorageKey];
     expect(storedValue).not.toHaveProperty('tabId');
     expect(storedValue).toHaveProperty('tabUrl');
     expect(requestSafeReload).toHaveBeenCalledTimes(1);
     consoleErrorSpy.mockRestore();
+  });
+
+  it('reports storage.local.set failures and still calls requestSafeReload', async () => {
+    const storageError = new Error('storage set failed');
+    (browser.storage.local.set as jest.Mock).mockRejectedValueOnce(
+      storageError,
+    );
+
+    await openRestoringTabAndReload(requestSafeReload);
+
+    expect(jest.mocked(captureException)).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message:
+          'critical-error-restore: failed to save generated restore session to storage.local',
+        cause: storageError,
+      }),
+      {
+        tags: {
+          'persistence.storage_area': 'local',
+          'persistence.storage_operation': 'write',
+          'persistence.storage_key_class':
+            'critical-error-restore-generated-state',
+        },
+      },
+    );
+    expect(requestSafeReload).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses secondary pointers when primary pointer writes fail', async () => {
+    (browser.storage.local.set as jest.Mock).mockImplementation(
+      async (value: Record<string, unknown>) => {
+        if (
+          primaryPointerKeys.some((pointerKey) => hasOwn(value, pointerKey))
+        ) {
+          throw new Error('pointer write failed');
+        }
+      },
+    );
+
+    await openRestoringTabAndReload(requestSafeReload);
+
+    expect(browser.storage.local.set).toHaveBeenCalledWith({
+      [secondaryPointerKey0]: expect.objectContaining({
+        storageKey: expect.stringMatching(
+          `^${CriticalErrorRestoreValueKeyPrefix}`,
+        ),
+      }),
+    });
+    expect(browser.storage.local.set).toHaveBeenCalledWith({
+      [secondaryPointerKey1]: expect.objectContaining({
+        storageKey: expect.stringMatching(
+          `^${CriticalErrorRestoreValueKeyPrefix}`,
+        ),
+      }),
+    });
+    expect(browser.storage.local.set).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        [CRITICAL_ERROR_RESTORE_KEY]: expect.anything(),
+      }),
+    );
+    expect(requestSafeReload).toHaveBeenCalledTimes(1);
+  });
+
+  it('serializes restore save and clear so the clear tombstone wins', async () => {
+    const storage: Record<string, unknown> = {};
+    let inFlightSetCalls = 0;
+    let maxInFlightSetCalls = 0;
+    let resolveGeneratedWriteStarted: () => void = () => undefined;
+    const generatedWriteStarted = new Promise<void>((resolve) => {
+      resolveGeneratedWriteStarted = resolve;
+    });
+    (browser.storage.local.get as jest.Mock).mockImplementation(
+      async (key: string) => getStorageValues(storage, key),
+    );
+    (browser.storage.local.set as jest.Mock).mockImplementation(
+      async (value: Record<string, unknown>) => {
+        inFlightSetCalls += 1;
+        maxInFlightSetCalls = Math.max(maxInFlightSetCalls, inFlightSetCalls);
+        if (
+          Object.keys(value).some((key) =>
+            key.startsWith(CriticalErrorRestoreValueKeyPrefix),
+          )
+        ) {
+          resolveGeneratedWriteStarted();
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+        Object.assign(storage, value);
+        inFlightSetCalls -= 1;
+      },
+    );
+    (browser.storage.local.remove as jest.Mock).mockImplementation(
+      async (keys: string[] | string) => {
+        const keysToRemove = Array.isArray(keys) ? keys : [keys];
+        for (const key of keysToRemove) {
+          delete storage[key];
+        }
+      },
+    );
+
+    const savePromise = openRestoringTabAndReload(requestSafeReload);
+    await generatedWriteStarted;
+    const clearPromise = clearCriticalErrorRestoreSession(browser);
+
+    await Promise.all([savePromise, clearPromise]);
+
+    expect(maxInFlightSetCalls).toBe(1);
+    expect(storage[pointerKey0]).toStrictEqual(
+      expect.objectContaining({ storageKey: null }),
+    );
+    expect(
+      Object.keys(storage).some((key) =>
+        key.startsWith(CriticalErrorRestoreValueKeyPrefix),
+      ),
+    ).toBe(true);
+    await expect(readCriticalErrorRestoreSession(browser)).resolves.toBeNull();
   });
 });
 

@@ -2,6 +2,18 @@ import { until } from 'selenium-webdriver';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 
+const criticalErrorRestoreKey = 'criticalErrorRestore';
+const criticalErrorRestorePointerKeys = [
+  '__metamaskCriticalErrorRestorePointer0',
+  '__metamaskCriticalErrorRestorePointer1',
+  '__metamaskCriticalErrorRestorePointer2',
+  '__metamaskCriticalErrorRestorePointer3',
+  '__metamaskCriticalErrorRestoreSecondaryPointer0',
+  '__metamaskCriticalErrorRestoreSecondaryPointer1',
+  '__metamaskCriticalErrorRestoreSecondaryPointer2',
+  '__metamaskCriticalErrorRestoreSecondaryPointer3',
+] as const;
+
 class CriticalErrorPage {
   protected readonly driver: Driver;
 
@@ -111,18 +123,30 @@ class CriticalErrorPage {
 
       // The service worker handoff runs asynchronously after runtime.reload():
       // it reads the restore session from storage.local, converts the
-      // metamask.io/restoring tab to home.html, then clears the key. We must
-      // wait for that key to be cleared before closing extra tabs — otherwise
-      // we kill the restoring tab before the service worker can hand it off,
-      // causing a fallback that opens a second home.html tab.
+      // metamask.io/restoring tab to home.html, then clears the restore pointer.
+      // We must wait for that pointer to be cleared before closing extra tabs,
+      // otherwise we can kill the restoring tab before the service worker can
+      // hand it off, causing a fallback that opens a second home.html tab.
       await this.driver.waitUntil(
         async () => {
           const cleared = await this.driver.executeScript(`
-            return new Promise(resolve => {
+            const restoreKey = ${JSON.stringify(criticalErrorRestoreKey)};
+            const pointerKeys = ${JSON.stringify(criticalErrorRestorePointerKeys)};
+            const getStorageValue = (key) => new Promise(resolve => {
               const b = globalThis.browser ?? globalThis.chrome;
-              b.storage.local.get('criticalErrorRestore', (data) => {
-                resolve(!data.criticalErrorRestore);
-              });
+              b.storage.local.get(key, (data) => resolve(data?.[key]));
+            });
+            return Promise.all([
+              getStorageValue(restoreKey),
+              ...pointerKeys.map(getStorageValue),
+            ]).then(([legacyRestore, ...pointers]) => {
+              if (legacyRestore) {
+                return false;
+              }
+              const latestPointer = pointers
+                .filter((pointer) => pointer && typeof pointer.updatedAt === 'number')
+                .sort((a, b) => b.updatedAt - a.updatedAt)[0];
+              return !latestPointer || latestPointer.storageKey === null;
             });
           `);
           return Boolean(cleared);
