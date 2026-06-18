@@ -25,7 +25,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { Container } from '../../components/component-library/container/container';
 import ToggleButton from '../../components/ui/toggle-button';
-import { DEFAULT_ROUTE, SECURITY_ROUTE } from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE, PRIVACY_ROUTE } from '../../helpers/constants/routes';
 import { getUseExternalServices } from '../../selectors';
 import { toggleExternalServices } from '../../store/actions';
 import type { BasicFunctionalityOffState } from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
@@ -145,7 +145,7 @@ export const BasicFunctionalityOff = () => {
             />
           </Box>
           <TextButton
-            onClick={() => navigate(SECURITY_ROUTE)}
+            onClick={() => navigate(PRIVACY_ROUTE)}
             data-testid="basic-functionality-off-review-in-settings"
           >
             {t('basicFunctionalityRequired_reviewInSettings')}

@@ -1,4 +1,5 @@
 const { brandColor } = require('@metamask/design-tokens');
+const plugin = require('tailwindcss/plugin');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -25,5 +26,9 @@ module.exports = {
     fontSize: {}, // This removes all default Tailwind font sizes. We want to rely on the design system font sizes and enforce use of the Text component
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addVariant }) => {
+      addVariant('@compact', '@container list-item (max-width: 399px)');
+    }),
+  ],
 };

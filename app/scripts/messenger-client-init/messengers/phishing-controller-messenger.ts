@@ -1,16 +1,10 @@
-import { Messenger } from '@metamask/messenger';
-import { AllowedEvents } from '@metamask/phishing-controller';
-import type { AddressBookControllerGetStateAction } from '@metamask/address-book-controller';
-import type { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { PhishingControllerMessenger } from '@metamask/phishing-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-type AllowedActions =
-  | AddressBookControllerGetStateAction
-  | TransactionControllerGetStateAction;
-
-export type PhishingControllerMessenger = ReturnType<
-  typeof getPhishingControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -20,14 +14,12 @@ export type PhishingControllerMessenger = ReturnType<
  * messenger.
  */
 export function getPhishingControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-) {
-  const controllerMessenger = new Messenger<
-    'PhishingController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<PhishingControllerMessenger>,
+    MessengerEvents<PhishingControllerMessenger>
+  >,
+): PhishingControllerMessenger {
+  const controllerMessenger: PhishingControllerMessenger = new Messenger({
     namespace: 'PhishingController',
     parent: messenger,
   });

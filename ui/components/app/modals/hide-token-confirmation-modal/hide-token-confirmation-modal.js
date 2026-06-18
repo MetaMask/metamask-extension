@@ -5,15 +5,16 @@ import {
   formatChainIdToCaip,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
-import * as actions from '../../../../store/actions';
-import { Button, ButtonVariant, Box } from '../../../component-library';
 import {
-  Display,
-  JustifyContent,
-  AlignItems,
-  BlockSize,
-} from '../../../../helpers/constants/design-system';
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { I18nContext } from '../../../../contexts/i18n';
+import * as actions from '../../../../store/actions';
+import { Button, ButtonVariant } from '../../../component-library';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   getCurrentChainId,
@@ -109,10 +110,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 class HideTokenConfirmationModal extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   static propTypes = {
     hideToken: PropTypes.func.isRequired,
@@ -151,7 +149,7 @@ class HideTokenConfirmationModal extends Component {
     return (
       <div className="hide-token-confirmation__container">
         <div className="hide-token-confirmation__title">
-          {this.context.t('hideTokenPrompt')}
+          {this.context('hideTokenPrompt')}
         </div>
         <AvatarToken
           className="hide-token-confirmation__identicon"
@@ -161,15 +159,14 @@ class HideTokenConfirmationModal extends Component {
         />
         <div className="hide-token-confirmation__symbol">{symbol}</div>
         <div className="hide-token-confirmation__copy">
-          {this.context.t('readdToken')}
+          {this.context('readdToken')}
         </div>
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.Center}
-          alignItems={AlignItems.Center}
+          className="flex w-full"
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           gap={4}
           marginTop={4}
-          width={BlockSize.Full}
         >
           <Button
             variant={ButtonVariant.Secondary}
@@ -177,7 +174,7 @@ class HideTokenConfirmationModal extends Component {
             data-testid="hide-token-confirmation__cancel"
             onClick={() => hideModal()}
           >
-            {this.context.t('cancel')}
+            {this.context('cancel')}
           </Button>
           <Button
             variant={ButtonVariant.Primary}
@@ -211,7 +208,7 @@ class HideTokenConfirmationModal extends Component {
               navigate(DEFAULT_ROUTE);
             }}
           >
-            {this.context.t('hide')}
+            {this.context('hide')}
           </Button>
         </Box>
       </div>

@@ -34,8 +34,8 @@ jest.mock('../../shared/lib/selectors/networks', () => ({
   ...jest.requireActual('../../shared/lib/selectors/networks'),
 }));
 
-jest.mock('../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../app/scripts/lib/util'),
+jest.mock('../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn().mockReturnValue('popup'),
 }));
 
@@ -1969,10 +1969,6 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns the token object for the overridden chainId when overrideChainId is provided', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
       const expectedToken = {
         symbol: 'POL',
         name: 'Polygon',
@@ -1990,7 +1986,50 @@ describe('#getConnectedSitesList', () => {
       );
 
       expect(result).toStrictEqual(expectedToken);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+
+    it('returns a stable reference for identical inputs', () => {
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const equivalentState = {
+        ...mockState,
+      };
+      const secondResult = selectors.getSwapsDefaultToken(equivalentState);
+
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns a stable reference for identical overrideChainId inputs', () => {
+      const firstResult = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+      const equivalentState = {
+        ...mockState,
+      };
+      const secondResult = selectors.getSwapsDefaultToken(
+        equivalentState,
+        CHAIN_IDS.POLYGON,
+      );
+
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns a new reference when current chainId changes', () => {
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const stateWithDifferentChainId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+        },
+      };
+
+      const secondResult = selectors.getSwapsDefaultToken(
+        stateWithDifferentChainId,
+      );
+
+      expect(secondResult).not.toBe(firstResult);
+      expect(secondResult.chainId).not.toBe(firstResult.chainId);
     });
   });
 
@@ -4140,7 +4179,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return permissions for popup context using activeTab.origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const result = selectors.getPermissionsForActiveTab(permissionsTestState);
@@ -4151,7 +4190,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return permissions for sidepanel context using appActiveTab.origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('sidepanel');
 
     const result = selectors.getPermissionsForActiveTab(permissionsTestState);
@@ -4163,7 +4202,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when no permissions exist for the origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const stateWithoutPermissions = {
@@ -4182,7 +4221,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when origin is undefined in popup context', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const stateWithoutOrigin = {
@@ -4196,7 +4235,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when appActiveTab is undefined in sidepanel context', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('sidepanel');
 
     const stateWithoutAppActiveTab = {
@@ -4470,6 +4509,69 @@ describe('getDeferredDeepLink', () => {
     };
 
     expect(selectors.getDeferredDeepLink(state)).toBeNull();
+  });
+});
+
+describe('getDeferredDeepLinkParameters', () => {
+  it('returns only UTM parameters from the deferred deep link', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: {
+          createdAt: 1765465337256,
+          referringLink:
+            'https://link.metamask.io/swap?utm_source=newsletter&utm_medium=email&utm_campaign=&foo=bar',
+        },
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual({
+      utm_source: 'newsletter',
+      utm_medium: 'email',
+    });
+  });
+
+  it('returns null when deferredDeepLink is not set', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: undefined,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual(null);
+  });
+});
+
+describe('getLastQrScanCompletedSuccessfully', () => {
+  it('returns true when last QR scan completed successfully', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: true,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(true);
+  });
+
+  it('returns false when last QR scan was cancelled', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: false,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(false);
+  });
+
+  it('returns null when no recent QR scan completion', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: null,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeNull();
+  });
+
+  it('returns undefined when lastQrScanCompletedSuccessfully is not in state', () => {
+    const state = { metamask: {} };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeUndefined();
   });
 });
 

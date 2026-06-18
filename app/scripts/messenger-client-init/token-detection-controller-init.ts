@@ -1,10 +1,10 @@
-import { TokenDetectionController } from '@metamask/assets-controllers';
+import {
+  TokenDetectionController,
+  TokenDetectionControllerMessenger,
+} from '@metamask/assets-controllers';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { MessengerClientInitFunction } from './types';
-import {
-  TokenDetectionControllerMessenger,
-  TokenDetectionControllerInitMessenger,
-} from './messengers';
+import { TokenDetectionControllerInitMessenger } from './messengers';
 import { tokenListService } from './token-list-service';
 
 export const TokenDetectionControllerInit: MessengerClientInitFunction<

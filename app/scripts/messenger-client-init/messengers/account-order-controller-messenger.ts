@@ -1,10 +1,10 @@
-import { Messenger } from '@metamask/messenger';
-import { AccountOrderControllerMessengerActions } from '../../controllers/account-order';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { AccountOrderControllerMessenger } from '../../controllers/account-order';
 import { RootMessenger } from '../../lib/messenger';
-
-export type AccountOrderControllerMessenger = ReturnType<
-  typeof getAccountOrderControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -12,17 +12,18 @@ export type AccountOrderControllerMessenger = ReturnType<
  *
  * @param messenger - The base messenger used to create the restricted
  * messenger.
+ * @returns The restricted messenger.
  */
 export function getAccountOrderControllerMessenger(
-  messenger: RootMessenger<AccountOrderControllerMessengerActions, never>,
-) {
-  return new Messenger<
-    'AccountOrderController',
-    never,
-    never,
-    typeof messenger
-  >({
-    namespace: 'AccountOrderController',
-    parent: messenger,
-  });
+  messenger: RootMessenger<
+    MessengerActions<AccountOrderControllerMessenger>,
+    MessengerEvents<AccountOrderControllerMessenger>
+  >,
+): AccountOrderControllerMessenger {
+  const accountOrderControllerMessenger: AccountOrderControllerMessenger =
+    new Messenger({
+      namespace: 'AccountOrderController',
+      parent: messenger,
+    });
+  return accountOrderControllerMessenger;
 }

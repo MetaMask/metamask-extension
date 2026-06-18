@@ -87,7 +87,9 @@ describe('PerpsMarketRecentActivity', () => {
         mockStore,
       );
 
-      const skeletons = container.querySelectorAll('.mm-skeleton');
+      const skeletons = container.querySelectorAll(
+        '[data-testid="perps-recent-activity-skeleton"]',
+      );
       expect(skeletons.length).toBe(3);
     });
 
@@ -199,9 +201,6 @@ describe('PerpsMarketRecentActivity', () => {
       expect(
         screen.getByTestId('perps-market-detail-view-all-activity'),
       ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('perps-market-detail-view-all-activity'),
-      ).toHaveStyle({ paddingLeft: '0px', paddingRight: '0px' });
     });
 
     it('"See All" navigates to PERPS_ACTIVITY_ROUTE', () => {

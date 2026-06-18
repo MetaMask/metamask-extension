@@ -13,6 +13,7 @@ import {
   IconName,
   IconSize,
   IconColor,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -20,8 +21,6 @@ import { TransactionCard } from '../transaction-card';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../../shared/constants/perps';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
-import { Skeleton } from '../../../component-library/skeleton';
 import { PerpsCardSkeleton } from '../perps-skeletons/perps-card-skeleton';
 import type { PerpsTransaction } from '../types';
 
@@ -45,13 +44,13 @@ export type PerpsRecentActivityProps = {
  * @param options0.isLoading - Loading state for initial fetch (skeleton when no rows yet)
  * @param options0.error - Error message when fetch failed and there are no rows
  */
-export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
+export const PerpsRecentActivity = ({
   transactions = [],
   maxTransactions = PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS,
   onTransactionClick,
   isLoading = false,
   error = null,
-}) => {
+}: PerpsRecentActivityProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
@@ -81,11 +80,11 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
           alignItems={BoxAlignItems.Center}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
-          marginBottom={2}
+          paddingTop={3}
+          paddingBottom={3}
         >
-          <Skeleton className="h-5 w-36" borderRadius={BorderRadius.SM} />
-          <Skeleton className="h-4 w-14" borderRadius={BorderRadius.SM} />
+          <Skeleton className="h-5 w-36 rounded" />
+          <Skeleton className="h-4 w-14 rounded" />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column}>
           {[1, 2, 3].map((cardIndex) => (
@@ -109,8 +108,8 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
           alignItems={BoxAlignItems.Center}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
-          marginBottom={2}
+          paddingTop={3}
+          paddingBottom={3}
         >
           <Text fontWeight={FontWeight.Medium}>{t('perpsRecentActivity')}</Text>
         </Box>
@@ -134,7 +133,7 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
     >
       {/* Section Header */}
       <ButtonBase
-        className="w-full flex flex-row justify-between items-center px-4 pt-4 mb-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
+        className="w-full flex flex-row justify-between items-center px-4 py-3 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
         onClick={handleSeeAll}
         data-testid="perps-recent-activity-see-all"
         aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}

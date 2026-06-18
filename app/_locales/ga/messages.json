@@ -7,12 +7,6 @@
     "message": "Tá an luchtú ag glacadh níos faide ná mar is gnách.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Earráid"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Sonraí idirbhirt neamhréireach. Seiceáil sonraí an idirbhirt le do thoil."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Níl aon chuntais eile ann. Más mian leat rochtain a fháil ar chuntas eile nach bhfuil liostaithe thíos, athcheangail do sparán crua-earraí agus roghnaigh é."
   },
@@ -36,9 +30,6 @@
   },
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Earráid"
-  },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Cód QR neamhbhailí. Scanáil an cód QR sioncrónaithe den sparán crua-earraí le do thoil."
   },
   "QRHardwareWalletImporterTitle": {
     "message": "Scanáil cód QR"
@@ -802,15 +793,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Beidh ort 2 idirbheart a dheimhniú ar do sparán crua-earraí:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Cruthaigh cuntas Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Chun aistriú chuig líonra Solana, beidh cuntas agus seoladh glactha ag teastáil uait."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Beidh cuntas Solana ag teastáil uait ar dtús."
-  },
   "bridgeDetailsTitle": {
     "message": "Sonraí an droichid",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -854,9 +836,6 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Roghnaigh comhartha agus méid"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Cruthaíodh cuntas Solana"
   },
   "bridgeStatusComplete": {
     "message": "Críochnaithe",
@@ -1924,9 +1903,6 @@
   },
   "enabled": {
     "message": "Cumasaithe"
-  },
-  "enabledNetworks": {
-    "message": "Líonraí cumasaithe"
   },
   "encryptionPublicKeyNotice": {
     "message": "Ba mhaith le $1 d’eochair chriptithe phoiblí. Trí thoiliú a thabhairt, beidh an suíomh seo in ann teachtaireachtaí criptithe a scríobh chugat.",
@@ -3703,10 +3679,6 @@
   "onboardingMetametricsTitle": {
     "message": "Cabhraigh linn MetaMask a fheabhsú"
   },
-  "onboardingOptionIcon": {
-    "message": "Deilbhín $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Sínigh isteach le $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4652,11 +4624,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Bain úsáid as do logáil isteach $1 agus do phasfhocal MetaMask chun do chuntas agus Frásaí Aisghabhála Rúnda a aisghabháil.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "AISGHNÍOMH $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "FRÁSAÍ AISGHABHÁLA RÚNDA"
@@ -6004,9 +5976,6 @@
   },
   "termsOfUseTitle": {
     "message": "Athbhreithnigh ár dTéarmaí Úsáide"
-  },
-  "testNetworks": {
-    "message": "Líonraí tástála"
   },
   "testnets": {
     "message": "Líonta tástála"

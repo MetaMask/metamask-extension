@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
 } from 'react';
 import { useSelector } from 'react-redux';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
@@ -158,7 +159,9 @@ export function useEnableNotificationsByDefaultEffect() {
   ]);
 }
 
-export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
+export const MetamaskNotificationsProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
 
@@ -171,12 +174,22 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   // Enable notifications by default for users
   useEnableNotificationsByDefaultEffect();
 
+  const listNotificationsCallback = useCallback(() => {
+    listNotifications();
+  }, [listNotifications]);
+
+  const contextValue = useMemo(
+    () => ({
+      listNotifications: listNotificationsCallback,
+      notificationsData,
+      isLoading,
+      error,
+    }),
+    [listNotificationsCallback, notificationsData, isLoading, error],
+  );
+
   return (
-    <MetamaskNotificationsContext.Provider
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      value={{ listNotifications, notificationsData, isLoading, error }}
-    >
+    <MetamaskNotificationsContext.Provider value={contextValue}>
       {children}
     </MetamaskNotificationsContext.Provider>
   );

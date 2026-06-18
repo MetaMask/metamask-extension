@@ -1,44 +1,11 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerGetNetworkClientByIdAction,
-} from '@metamask/network-controller';
-import {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerGetAccountAction,
-  AccountsControllerSelectedEvmAccountChangeEvent,
-} from '@metamask/accounts-controller';
-import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
-import {
-  AssetsContractControllerGetERC1155TokenURIAction,
-  AssetsContractControllerGetERC721AssetNameAction,
-  AssetsContractControllerGetERC721AssetSymbolAction,
-  AssetsContractControllerGetERC721TokenURIAction,
-} from '@metamask/assets-controllers';
-import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
-import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { NftControllerMessenger } from '@metamask/assets-controllers';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | ApprovalControllerAddRequestAction
-  | AccountsControllerGetAccountAction
-  | AccountsControllerGetSelectedAccountAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | AssetsContractControllerGetERC721AssetNameAction
-  | AssetsContractControllerGetERC721AssetSymbolAction
-  | AssetsContractControllerGetERC721TokenURIAction
-  | AssetsContractControllerGetERC1155TokenURIAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | PhishingControllerBulkScanUrlsAction;
-
-type Events =
-  | PreferencesControllerStateChangeEvent
-  | AccountsControllerSelectedEvmAccountChangeEvent;
-
-export type NftControllerMessenger = ReturnType<
-  typeof getNftControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the NFT controller. This is scoped to the
@@ -48,14 +15,12 @@ export type NftControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getNftControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
-) {
-  const controllerMessenger = new Messenger<
-    'NftController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<NftControllerMessenger>,
+    MessengerEvents<NftControllerMessenger>
+  >,
+): NftControllerMessenger {
+  const controllerMessenger: NftControllerMessenger = new Messenger({
     namespace: 'NftController',
     parent: messenger,
   });

@@ -17,7 +17,7 @@ import {
 import browser from 'webextension-polyfill';
 import { TransactionType } from '@metamask/transaction-controller';
 import ExtensionPlatform from '../../platforms/extension';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { WebAuthenticator } from '../oauth/types';
 import { createSwapsMockStore } from '../../../../test/jest';
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';

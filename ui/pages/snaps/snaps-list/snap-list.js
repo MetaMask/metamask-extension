@@ -71,7 +71,7 @@ const SnapList = () => {
             <ButtonIcon
               ariaLabel="Back"
               iconName="arrow-left"
-              size="sm"
+              size="md"
               onClick={handleBack}
             />
           }

@@ -45,6 +45,7 @@ import {
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { getEnabledNetworks } from '../../../shared/lib/selectors/multichain';
 import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
+import { getDomain } from '../../../shared/lib/url-utils';
 import type { RemoteFeatureFlagsState } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   type AccountsState,
@@ -452,73 +453,200 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
   },
 );
 
-export const selectFirstUnavailableEvmNetwork = createSelector(
-  getEnabledNetworks,
+/**
+ * Network configurations and their RPC endpoints annotated with information
+ * that the network connection banner logic cares about: whether the endpoint is
+ * an Infura URL, whether its current metadata status is anything other than
+ * Available ("failed"), and its registrable domain. The network itself also
+ * gets an `infuraEndpointIndex` pointing at the first Infura endpoint (used by
+ * the "Switch to Infura" CTA).
+ */
+const selectEnhancedNetworkConfigurationsByChainId = createSelector(
   getNetworkConfigurationsByChainId,
   getNetworksMetadata,
-  (enabledNetworks, networkConfigurationsByChainId, networksMetadata) => {
+  (networkConfigurationsByChainId, networksMetadata) => {
+    const enhancedNetworkConfigurationsByChainId: Record<
+      Hex,
+      Omit<(typeof networkConfigurationsByChainId)[Hex], 'rpcEndpoints'> & {
+        rpcEndpoints: {
+          networkClientId: string;
+          url: string;
+          isInfuraEndpoint: boolean;
+          isFailed: boolean;
+          domain: string | null;
+        }[];
+        infuraEndpointIndex: number | undefined;
+      }
+    > = {};
+
+    for (const [chainId, networkConfiguration] of Object.entries(
+      networkConfigurationsByChainId,
+    )) {
+      const enhancedRpcEndpoints = networkConfiguration.rpcEndpoints.map(
+        (rpcEndpoint) => {
+          const metadata = networksMetadata[rpcEndpoint.networkClientId];
+          // We have to use this function to check whether the endpoint is
+          // an Infura endpoint because some Infura endpoint URLs use the
+          // wrong type.
+          const isInfuraEndpoint = getIsMetaMaskInfuraEndpointUrl(
+            rpcEndpoint.url,
+            infuraProjectId ?? '',
+          );
+          const isFailed =
+            metadata !== undefined &&
+            metadata.status !== NetworkStatus.Available;
+
+          return {
+            networkClientId: rpcEndpoint.networkClientId,
+            url: rpcEndpoint.url,
+            isInfuraEndpoint,
+            isFailed,
+            domain: getDomain(rpcEndpoint.url),
+          };
+        },
+      );
+
+      const firstInfuraIndex = enhancedRpcEndpoints.findIndex(
+        (rpcEndpoint) => rpcEndpoint.isInfuraEndpoint,
+      );
+
+      enhancedNetworkConfigurationsByChainId[chainId as Hex] = {
+        ...networkConfiguration,
+        rpcEndpoints: enhancedRpcEndpoints,
+        infuraEndpointIndex:
+          firstInfuraIndex === -1 ? undefined : firstInfuraIndex,
+      };
+    }
+
+    return enhancedNetworkConfigurationsByChainId;
+  },
+);
+
+/**
+ * The list of enabled EVM networks whose default RPC endpoint is currently
+ * failing, plus a flag for whether every enabled network is failing. Used as
+ * the input to the network connection banner show/hide rule.
+ */
+const selectEnabledFailedNetworksResult = createSelector(
+  getEnabledNetworks,
+  selectEnhancedNetworkConfigurationsByChainId,
+  (enabledNetworks, enhancedNetworkConfigurationsByChainId) => {
     const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
-    const enabledChainIds = Object.entries(enabledEvmNetworks)
+    const enabledEvmChainIds = Object.entries(enabledEvmNetworks)
       .filter(([, isEnabled]) => isEnabled)
       .map(([chainId]) => chainId as Hex);
 
-    for (const chainId of enabledChainIds) {
-      const networkConfiguration = networkConfigurationsByChainId[chainId];
-      if (networkConfiguration) {
-        // Get the network client ID directly from the network configuration
-        const { rpcEndpoints, defaultRpcEndpointIndex, name } =
-          networkConfiguration;
-        const rpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
+    const failedNetworks: {
+      networkClientId: string;
+      chainId: Hex;
+      networkName: string;
+      isInfuraEndpoint: boolean;
+      infuraEndpointIndex: number | undefined;
+      domain: string | null;
+    }[] = [];
+    let totalEnabled = 0;
 
-        if (rpcEndpoint) {
-          const metadata = networksMetadata[rpcEndpoint.networkClientId];
-
-          if (
-            metadata !== undefined &&
-            metadata.status !== NetworkStatus.Available
-          ) {
-            const isInfuraEndpoint = getIsMetaMaskInfuraEndpointUrl(
-              rpcEndpoint.url,
-              infuraProjectId ?? '',
-            );
-
-            // For custom endpoints (non-Infura), check if there's an Infura
-            // endpoint available for this network that we can switch to
-            let infuraEndpointIndex: number | undefined;
-            if (!isInfuraEndpoint) {
-              infuraEndpointIndex = rpcEndpoints.findIndex(
-                (endpoint, index) =>
-                  index !== defaultRpcEndpointIndex &&
-                  getIsMetaMaskInfuraEndpointUrl(
-                    endpoint.url,
-                    infuraProjectId ?? '',
-                  ),
-              );
-              // If no Infura endpoint found, set to undefined
-              if (infuraEndpointIndex === -1) {
-                infuraEndpointIndex = undefined;
-              }
-            }
-
-            return {
-              networkClientId: rpcEndpoint.networkClientId,
-              chainId,
-              networkName: name,
-              // We have to use this function to check whether the endpoint is
-              // an Infura endpoint because some Infura endpoint URLs use the
-              // wrong type.
-              isInfuraEndpoint,
-              // Index of an available Infura endpoint (for custom networks that
-              // have one) that can be used to switch to Infura
-              infuraEndpointIndex,
-            };
-          }
-        }
+    for (const chainId of enabledEvmChainIds) {
+      const networkConfiguration =
+        enhancedNetworkConfigurationsByChainId[chainId];
+      if (!networkConfiguration) {
+        continue;
       }
+
+      const {
+        rpcEndpoints,
+        defaultRpcEndpointIndex,
+        name,
+        infuraEndpointIndex,
+      } = networkConfiguration;
+      const defaultRpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
+      if (!defaultRpcEndpoint) {
+        continue;
+      }
+
+      totalEnabled += 1;
+
+      if (!defaultRpcEndpoint.isFailed) {
+        continue;
+      }
+
+      failedNetworks.push({
+        networkClientId: defaultRpcEndpoint.networkClientId,
+        chainId,
+        networkName: name,
+        isInfuraEndpoint: defaultRpcEndpoint.isInfuraEndpoint,
+        // Only useful when the default is non-Infura — otherwise the CTA to
+        // switch to Infura is hidden anyway.
+        infuraEndpointIndex: defaultRpcEndpoint.isInfuraEndpoint
+          ? undefined
+          : infuraEndpointIndex,
+        domain: defaultRpcEndpoint.domain,
+      });
     }
-    return null;
+
+    return {
+      failedNetworks,
+      areAllEnabledNetworksFailed:
+        failedNetworks.length > 0 && failedNetworks.length === totalEnabled,
+    };
   },
 );
+
+/**
+ * Returns the first failed EVM network that should drive the network connection
+ * banner, or null when no banner should be shown.
+ *
+ * A network is "failed" here when its default RPC endpoint's status is anything
+ * other than `NetworkStatus.Available`.
+ *
+ * The banner always shows for custom networks because users always have the
+ * option to switch to a built-in network, and we surface that custom network
+ * first so the "Switch to MetaMask default RPC" CTA points at it. For all
+ * other networks the banner is intentionally noisy-averse: a single provider's
+ * wide outage (e.g. an Infura-wide hiccup that takes down many *.infura.io
+ * networks at once) is suppressed because it looks like many failed networks
+ * but is really one provider. The banner shows only when failed RPCs span
+ * 2+ distinct domains (likely client-side), or every enabled EVM network has
+ * failed (covers single-network setups), or any failed network's active RPC
+ * is a non-Infura (custom) endpoint — these have no automatic failover so the
+ * user must be told.
+ */
+export const selectFirstFailedNetworkForNetworkConnectionBanner =
+  createSelector(
+    selectEnabledFailedNetworksResult,
+    ({ failedNetworks, areAllEnabledNetworksFailed }) => {
+      const firstCustomFailed = failedNetworks.find((n) => !n.isInfuraEndpoint);
+      const distinctDomains = new Set(
+        failedNetworks
+          .map((n) => n.domain)
+          .filter((domain): domain is string => domain !== null),
+      ).size;
+
+      // Show the banner if:
+      // - The first failing network is a custom network (we assume users always
+      //   want to be informed about errors with RPC endpoints they've chosen)
+      // - There are failures across more than one domain (likely client-side
+      //   issue)
+      // - All enabled networks are failing (likely client-side issue)
+      if (
+        firstCustomFailed ||
+        distinctDomains > 1 ||
+        areAllEnabledNetworksFailed
+      ) {
+        const selected = firstCustomFailed ?? failedNetworks[0];
+
+        return {
+          networkClientId: selected.networkClientId,
+          chainId: selected.chainId,
+          networkName: selected.networkName,
+          isInfuraEndpoint: selected.isInfuraEndpoint,
+          infuraEndpointIndex: selected.infuraEndpointIndex,
+        };
+      }
+
+      return null;
+    },
+  );
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -536,15 +664,19 @@ export type MultichainNetwork = {
   nickname: string;
   isEvmNetwork: boolean;
   chainId: CaipChainId;
-  network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
-    ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
+  // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
+  network: ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
 };
+
+const MULTICHAIN_NETWORK_PROVIDERS: MultichainProviderConfig[] = Object.values(
+  MULTICHAIN_PROVIDER_CONFIGS,
+);
 
 function getMultichainNetworkProviders(
   _state: MultichainNetworkConfigState,
 ): MultichainProviderConfig[] {
   // TODO: need state from the ChainController?
-  return Object.values(MULTICHAIN_PROVIDER_CONFIGS);
+  return MULTICHAIN_NETWORK_PROVIDERS;
 }
 
 // FIXME: All the following might have side-effect, like if the current account is a bitcoin one and that
@@ -567,88 +699,97 @@ export function getMultichainIsEvm(
   );
 }
 
-export function getMultichainNetwork(
-  state: MultichainNetworkConfigState & AccountsState,
-  account?: InternalAccount,
-): MultichainNetwork {
-  const isEvm = getMultichainIsEvm(state, account);
+export const getMultichainNetwork = createSelector(
+  [
+    (
+      state: MultichainNetworkConfigState & AccountsState,
+      account?: InternalAccount,
+    ) => getMultichainIsEvm(state, account),
+    (
+      state: MultichainNetworkConfigState & AccountsState,
+      account?: InternalAccount,
+    ) =>
+      getMultichainIsEvm(state, account)
+        ? getCurrentChainId(state)
+        : (undefined as never),
+    (
+      state: MultichainNetworkConfigState & AccountsState,
+      account?: InternalAccount,
+    ) =>
+      getMultichainIsEvm(state, account)
+        ? getProviderConfig(state)
+        : (undefined as never),
+    getNetworkConfigurationsByChainId,
+    (
+      state: MultichainNetworkConfigState & AccountsState,
+      account?: InternalAccount,
+    ) => account ?? getSelectedInternalAccount(state),
+    (state: MultichainNetworkConfigState & AccountsState) =>
+      getMultichainNetworkProviders(state),
+    (state: MultichainNetworkConfigState & AccountsState) =>
+      state.metamask.selectedMultichainNetworkChainId,
+  ],
+  (
+    isEvm,
+    evmChainId,
+    evmProviderConfig,
+    networkConfigurations,
+    selectedAccount,
+    nonEvmNetworks,
+    selectedChainId,
+  ): MultichainNetwork => {
+    if (isEvm) {
+      const evmNetwork = {
+        ...evmProviderConfig,
+      } as ProviderConfigWithImageUrlAndExplorerUrl;
+      const evmChainIdKey =
+        evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
 
-  if (isEvm) {
-    // EVM networks
-    const evmChainId: Hex = getCurrentChainId(state);
+      evmNetwork.rpcPrefs = {
+        ...evmNetwork.rpcPrefs,
+        imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
+      };
 
-    // TODO: Update to use network configurations when @metamask/network-controller is updated to 20.0.0
-    // ProviderConfig will be deprecated to use NetworkConfigurations
-    // When a user updates a network name its only updated in the NetworkConfigurations.
-    const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
-      getProviderConfig(state) as ProviderConfigWithImageUrlAndExplorerUrl;
+      return {
+        nickname: networkConfigurations[evmChainId]?.name ?? evmNetwork.rpcUrl,
+        isEvmNetwork: true,
+        chainId:
+          `${KnownCaipNamespace.Eip155}:${Number(evmChainId)}` as CaipChainId,
+        network: evmNetwork,
+      };
+    }
 
-    const evmChainIdKey =
-      evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+    let nonEvmNetwork: MultichainProviderConfig | undefined;
 
-    evmNetwork.rpcPrefs = {
-      ...evmNetwork.rpcPrefs,
-      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
-    };
+    if (selectedAccount.scopes.length > 0) {
+      nonEvmNetwork = nonEvmNetworks.find((provider) => {
+        return selectedAccount.scopes.includes(provider.chainId);
+      });
+    }
 
-    const networkConfigurations = getNetworkConfigurationsByChainId(state);
+    if (!nonEvmNetwork && selectedChainId) {
+      nonEvmNetwork = nonEvmNetworks.find(
+        (provider) => provider.chainId === selectedChainId,
+      );
+    }
+
+    if (!nonEvmNetwork) {
+      nonEvmNetwork = nonEvmNetworks.find((provider) => {
+        return provider.isAddressCompatible(selectedAccount.address);
+      });
+    }
+
+    if (!nonEvmNetwork) {
+      throw new Error(
+        'Could not find non-EVM provider for the current configuration. This should never happen.',
+      );
+    }
+
     return {
-      nickname: networkConfigurations[evmChainId]?.name ?? evmNetwork.rpcUrl,
-      isEvmNetwork: true,
-      // We assume the chain ID is `string` or `number`, so we convert it to a
-      // `Number` to be compliant with EIP155 CAIP chain ID
-      chainId: `${KnownCaipNamespace.Eip155}:${Number(
-        evmChainId,
-      )}` as CaipChainId,
-      network: evmNetwork,
+      nickname: nonEvmNetwork.nickname,
+      isEvmNetwork: false,
+      chainId: nonEvmNetwork.chainId,
+      network: nonEvmNetwork,
     };
-  }
-
-  // Non-EVM networks:
-  // (Hardcoded for testing)
-  // HACK: For now, we rely on the account type being "sort-of" CAIP compliant, so use
-  // this as a CAIP-2 namespace and apply our filter with it
-  // For non-EVM, we know we have a selected account, since the logic `isEvm` is based
-  // on having a non-EVM account being selected!
-  const selectedAccount = account ?? getSelectedInternalAccount(state);
-  const nonEvmNetworks = getMultichainNetworkProviders(state);
-
-  const selectedChainId = state.metamask.selectedMultichainNetworkChainId;
-
-  let nonEvmNetwork: MultichainProviderConfig | undefined;
-
-  // FIRST: Try to find network by account scopes (most specific)
-  if (selectedAccount.scopes.length > 0) {
-    nonEvmNetwork = nonEvmNetworks.find((provider) => {
-      return selectedAccount.scopes.includes(provider.chainId);
-    });
-  }
-
-  // SECOND: If no network found by scopes, try selectedChainId
-  if (!nonEvmNetwork && selectedChainId) {
-    nonEvmNetwork = nonEvmNetworks.find(
-      (provider) => provider.chainId === selectedChainId,
-    );
-  }
-
-  // THIRD: Final fallback - address compatibility check
-  if (!nonEvmNetwork) {
-    nonEvmNetwork = nonEvmNetworks.find((provider) => {
-      return provider.isAddressCompatible(selectedAccount.address);
-    });
-  }
-
-  if (!nonEvmNetwork) {
-    throw new Error(
-      'Could not find non-EVM provider for the current configuration. This should never happen.',
-    );
-  }
-
-  return {
-    // TODO: Adapt this for other non-EVM networks
-    nickname: nonEvmNetwork.nickname,
-    isEvmNetwork: false,
-    chainId: nonEvmNetwork.chainId,
-    network: nonEvmNetwork,
-  };
-}
+  },
+);

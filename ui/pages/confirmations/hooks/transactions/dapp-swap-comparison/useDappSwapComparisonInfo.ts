@@ -193,15 +193,11 @@ export function useDappSwapComparisonInfo() {
           swap_comparison_total_latency_ms: swapComparisonLatency,
           swap_mm_quote_response_latency_ms:
             quoteResponseLatency?.toString() ?? 'N_A',
-        },
-        sensitiveProperties: {
-          swap_from_token_contract: srcTokenAddress,
           swap_from_token_symbol:
             getTokenValueFromRecord<TokenStandAndDetails>(
               tokenDetails,
               srcTokenAddress as Hex,
             )?.symbol ?? 'N/A',
-          swap_to_token_contract: destTokenAddress,
           swap_to_token_symbol:
             getTokenValueFromRecord<TokenStandAndDetails>(
               tokenDetails,

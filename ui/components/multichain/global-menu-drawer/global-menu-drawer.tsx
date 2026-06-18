@@ -10,9 +10,7 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -364,7 +362,7 @@ export const GlobalMenuDrawer = ({
               <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
                 <ButtonIcon
                   iconName={IconName.ArrowLeft}
-                  size={ButtonIconSize.Sm}
+                  size={ButtonIconSize.Md}
                   ariaLabel={title || t('close')}
                   onClick={onClose}
                   data-testid="drawer-close-button"
