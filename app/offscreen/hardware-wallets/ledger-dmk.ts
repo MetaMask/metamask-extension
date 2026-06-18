@@ -1,90 +1,50 @@
-import {
-  createLedgerError,
-  isKnownLedgerError,
-} from '@metamask/eth-ledger-bridge-keyring';
-
 import { LedgerAction } from '../../../shared/constants/offscreen-communication';
 import initLegacy, { LedgerLegacyHandler } from './ledger';
 
-function serializeError(error: unknown): {
-  message: string;
-  statusCode?: number;
-  name?: string;
-} {
-  if (error instanceof Error) {
-    const serialized: { message: string; statusCode?: number; name?: string } =
-      {
-        message: error.message,
-        name: error.name,
-      };
-
-    if ('statusCode' in error && typeof error.statusCode === 'number') {
-      serialized.statusCode = error.statusCode;
-    }
-
-    return serialized;
-  }
-  return { message: String(error) };
-}
-
-/**
- * Serializes an error for transmission across message boundaries.
- * Preserves statusCode for TransportStatusError.
- *
- * @param error - The error to serialize.
- * @returns Serialized error object.
- */
-export function serializeLedgerError(error: unknown): {
-  message: string;
-  statusCode?: number;
-  name?: string;
-  code?: number;
-  severity?: string;
-  category?: string;
-  userMessage?: string;
-  extra?: unknown;
-} {
-  if (
-    error instanceof Error &&
-    'statusCode' in error &&
-    typeof error.statusCode === 'number'
-  ) {
-    const statusCodeHex = `0x${error.statusCode.toString(16)}`;
-
-    if (isKnownLedgerError(statusCodeHex)) {
-      const hwError = createLedgerError(statusCodeHex);
-      return {
-        message: hwError.message,
-        name: hwError.name,
-        code: hwError.code,
-        severity: hwError.severity,
-        category: hwError.category,
-        userMessage: hwError.userMessage,
-        statusCode: error.statusCode,
-      };
-    }
-  }
-
-  return serializeError(error);
-}
+// Re-export so existing callers (`./ledger-router`) keep a stable import path
+// while the shared implementation lives in `./ledger-utils`.
+export { serializeLedgerError } from './ledger-utils';
+export type { SerializedLedgerError } from './ledger-utils';
 
 /**
  * Temporary DMK handler stub that delegates to the legacy offscreen handler.
- * Replaced by the real DMK bridge implementation in a follow-up PR.
+ *
+ * Replaced by the real DMK bridge implementation in a follow-up PR. Exists so
+ * the router can already target a distinct handler implementation today.
  */
 export class LedgerDMKBridgeHandler {
   private legacyHandler: LedgerLegacyHandler | null = null;
 
+  /**
+   * Initialises the underlying legacy handler.
+   *
+   * @param skipMessageListener - When true, the underlying legacy handler does
+   * NOT register its own chrome.runtime.onMessage listener because the central
+   * router (ledger-router.ts) owns it.
+   * @returns Resolves once the legacy handler is ready to dispatch actions.
+   */
   async init(skipMessageListener = false): Promise<void> {
     this.legacyHandler = initLegacy();
     await this.legacyHandler.init(skipMessageListener);
   }
 
+  /**
+   * Cleans up the underlying legacy handler.
+   *
+   * @returns Resolves once the legacy handler has been destroyed.
+   */
   async destroy(): Promise<void> {
     await this.legacyHandler?.destroy();
     this.legacyHandler = null;
   }
 
+  /**
+   * Forwards an action to the underlying legacy handler.
+   *
+   * @param action - The Ledger action to perform.
+   * @param params - Optional parameters required by the action.
+   * @returns The result produced by the legacy handler.
+   */
   async handleAction(
     action: LedgerAction,
     params?: Record<string, unknown>,

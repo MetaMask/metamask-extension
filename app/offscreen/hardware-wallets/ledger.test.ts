@@ -845,7 +845,24 @@ describe('Ledger Offscreen', () => {
       consoleSpy.mockRestore();
     });
 
-    it('does not register a message listener', async () => {
+    it('does not register a message listener when skipMessageListener is true', async () => {
+      // Fresh handler + explicit `init(true)` so the assertion does not depend
+      // on whether prior tests in this describe block happened to skip the
+      // listener themselves.
+      mockAddListener.mockClear();
+      const handler = new LedgerLegacyHandler();
+      await handler.init(true);
+
+      expect(mockAddEventListener).toHaveBeenCalledWith(
+        'connect',
+        expect.any(Function),
+      );
+      expect(mockAddEventListener).toHaveBeenCalledWith(
+        'disconnect',
+        expect.any(Function),
+      );
+      // Device listeners are wired, but the chrome.runtime.onMessage
+      // listener is intentionally skipped because the router owns it.
       expect(mockAddListener).not.toHaveBeenCalled();
     });
   });

@@ -23,6 +23,7 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
+import { serializeError } from './ledger-utils';
 
 /**
  * Checks if WebHID API is available in this environment.
@@ -33,35 +34,6 @@ function isWebHIDSupported(): boolean {
   return (
     typeof navigator !== 'undefined' && typeof navigator.hid !== 'undefined'
   );
-}
-
-/**
- * Serializes an error for transmission across message boundaries.
- * Preserves statusCode for TransportStatusError.
- *
- * @param error - The error to serialize.
- * @returns Serialized error object.
- */
-function serializeError(error: unknown): {
-  message: string;
-  statusCode?: number;
-  name?: string;
-} {
-  if (error instanceof Error) {
-    const serialized: { message: string; statusCode?: number; name?: string } =
-      {
-        message: error.message,
-        name: error.name,
-      };
-
-    // Preserve statusCode for TransportStatusError
-    if ('statusCode' in error && typeof error.statusCode === 'number') {
-      serialized.statusCode = error.statusCode;
-    }
-
-    return serialized;
-  }
-  return { message: String(error) };
 }
 
 /**
@@ -116,6 +88,18 @@ export class LedgerLegacyHandler {
         sender: unknown,
         sendResponse: (response: unknown) => void,
       ) => boolean)
+    | null = null;
+
+  // Stored references to `navigator.hid` listeners so `destroy()` can remove
+  // them. Without these references the listeners leak for the lifetime of the
+  // offscreen document, which becomes a problem now that handlers can be
+  // swapped at runtime via `switchLedgerHandler`.
+  private hidConnectListener:
+    | ((event: { device: HIDDevice }) => void)
+    | null = null;
+
+  private hidDisconnectListener:
+    | ((event: { device: HIDDevice }) => void)
     | null = null;
 
   /**
@@ -422,6 +406,10 @@ export class LedgerLegacyHandler {
 
   /**
    * Sets up HID device event listeners for connect/disconnect events.
+   *
+   * The listener references are stored on the instance so `destroy()` can
+   * remove them when the handler is torn down (e.g., during
+   * `switchLedgerHandler`).
    */
   private setupDeviceEventListeners(): void {
     if (!isWebHIDSupported()) {
@@ -429,7 +417,7 @@ export class LedgerLegacyHandler {
       return;
     }
 
-    navigator.hid.addEventListener('connect', ({ device }) => {
+    this.hidConnectListener = ({ device }: { device: HIDDevice }) => {
       if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
         chrome.runtime.sendMessage({
           target: OffscreenCommunicationTarget.extension,
@@ -437,9 +425,9 @@ export class LedgerLegacyHandler {
           payload: true,
         });
       }
-    });
+    };
 
-    navigator.hid.addEventListener('disconnect', ({ device }) => {
+    this.hidDisconnectListener = ({ device }: { device: HIDDevice }) => {
       if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
         // Clean up transport state on disconnect
         this.closeTransport();
@@ -450,7 +438,10 @@ export class LedgerLegacyHandler {
           payload: false,
         });
       }
-    });
+    };
+
+    navigator.hid.addEventListener('connect', this.hidConnectListener);
+    navigator.hid.addEventListener('disconnect', this.hidDisconnectListener);
   }
 
   /**
@@ -612,8 +603,17 @@ export class LedgerLegacyHandler {
    *
    * Used by the centralized ledger-router so both DMK and Legacy handlers
    * expose the same `handleAction` surface for the message listener.
-   * @param action
-   * @param params
+   * Closes the underlying WebHID transport after every action so the device
+   * is released back to the OS even when the action fails.
+   *
+   * @param action - The Ledger action to perform (e.g. `getPublicKey`,
+   * `signTransaction`). Must be a member of `LedgerAction`.
+   * @param params - Optional action payload. Shape depends on `action`; for
+   * example, `getPublicKey` expects `{ hdPath: string }` while
+   * `signTransaction` expects `{ hdPath: string; tx: string }`. Unrecognised
+   * fields are ignored.
+   * @returns Resolves with the action-specific result (e.g. an address object
+   * for `getPublicKey`), or rejects with the underlying Ledger error.
    */
   async handleAction(
     action: LedgerAction,
@@ -627,8 +627,9 @@ export class LedgerLegacyHandler {
   }
 
   /**
-   * Cleans up the handler: removes the chrome message listener and
-   * closes any open transport.
+   * Cleans up the handler: removes the chrome message listener and any
+   * `navigator.hid` connect/disconnect listeners, then closes any open
+   * transport.
    *
    * Safe to call multiple times.
    */
@@ -641,7 +642,21 @@ export class LedgerLegacyHandler {
       );
       this.messageListenerFn = null;
     }
-    this.closeTransport();
+
+    if (this.hidConnectListener && typeof navigator !== 'undefined') {
+      navigator.hid.removeEventListener('connect', this.hidConnectListener);
+      this.hidConnectListener = null;
+    }
+
+    if (this.hidDisconnectListener && typeof navigator !== 'undefined') {
+      navigator.hid.removeEventListener(
+        'disconnect',
+        this.hidDisconnectListener,
+      );
+      this.hidDisconnectListener = null;
+    }
+
+    await this.closeTransport();
   }
 
   /**

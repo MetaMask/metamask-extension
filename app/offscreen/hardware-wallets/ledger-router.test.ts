@@ -3,12 +3,6 @@ import {
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
-import { LedgerDMKBridgeHandler } from './ledger-dmk';
-import initLegacy from './ledger';
-import initLedger, {
-  switchLedgerHandler,
-  bootstrapLedger,
-} from './ledger-router';
 
 const mockDmkInit = jest.fn();
 const mockDmkDestroy = jest.fn();
@@ -28,10 +22,8 @@ let mockDmkInstance: MockHandler;
 let mockLegacyInstance: MockHandler;
 
 jest.mock('./ledger-dmk', () => {
-  let dmkCtorCalls = 0;
   return {
     LedgerDMKBridgeHandler: jest.fn().mockImplementation(() => {
-      dmkCtorCalls += 1;
       mockDmkInstance = {
         init: mockDmkInit,
         destroy: mockDmkDestroy,
@@ -60,10 +52,15 @@ jest.mock('./ledger', () => ({
   }),
 }));
 
-const mockedDmkCtor = jest.mocked(LedgerDMKBridgeHandler);
-const mockedLegacyCtor = jest.mocked(initLegacy);
-
-// ---- Chrome Runtime Mock ----
+// Router exports + mocked handler constructors are re-fetched per test in
+// beforeEach (via jest.isolateModules) so each test starts from a clean
+// module registry. This replaces a former test-only `resetLedgerRouterForTests`
+// escape hatch exported from the production module.
+let initLedger: (typeof import('./ledger-router'))['default'];
+let switchLedgerHandler: (typeof import('./ledger-router'))['switchLedgerHandler'];
+let bootstrapLedger: (typeof import('./ledger-router'))['bootstrapLedger'];
+let mockedDmkCtor: jest.Mock;
+let mockedLegacyCtor: jest.Mock;
 
 type MessageListener = (
   msg: Record<string, unknown>,
@@ -121,10 +118,30 @@ function flushAsync() {
   return new Promise((r) => setTimeout(r, 0));
 }
 
-// ---- Tests ----
-
 describe('LedgerRouter', () => {
   beforeEach(() => {
+    // Re-require the router (and its mocked deps) inside an isolated module
+    // registry so each test starts with fresh singleton state
+    // (activeHandler, currentMode, messageListener, initInProgress) without
+    // any test-only reset hook on the production module.
+    jest.isolateModules(() => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const router =
+        require('./ledger-router') as typeof import('./ledger-router');
+      initLedger = router.default;
+      switchLedgerHandler = router.switchLedgerHandler;
+      bootstrapLedger = router.bootstrapLedger;
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const dmkModule =
+        require('./ledger-dmk') as typeof import('./ledger-dmk');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const legacyModule = require('./ledger') as typeof import('./ledger');
+      mockedDmkCtor = jest.mocked(
+        dmkModule.LedgerDMKBridgeHandler,
+      ) as jest.Mock;
+      mockedLegacyCtor = jest.mocked(legacyModule.default) as jest.Mock;
+    });
+
     jest.clearAllMocks();
     capturedListener = null;
     capturedListeners.clear();
@@ -157,16 +174,20 @@ describe('LedgerRouter', () => {
       expect(capturedListener).not.toBeNull();
     });
 
-    it('removes the previous listener before re-registering', async () => {
+    it('does NOT re-register the listener on subsequent init calls (idempotent)', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
       const firstListener = capturedListener;
+      expect(mockAddListener).toHaveBeenCalledTimes(1);
       expect(capturedListeners.size).toBe(1);
 
       await initLedger(LedgerHandlerMode.DMK);
 
-      expect(mockRemoveListener).toHaveBeenCalledWith(firstListener);
+      // The listener closes over module-level `activeHandler`, so it does not
+      // need to be removed + re-registered when the handler is swapped.
+      expect(mockRemoveListener).not.toHaveBeenCalled();
+      expect(mockAddListener).toHaveBeenCalledTimes(1);
       expect(capturedListeners.size).toBe(1);
-      expect(capturedListener).not.toBe(firstListener);
+      expect(capturedListener).toBe(firstListener);
     });
 
     it('does NOT call init() on the Legacy handler itself (router owns init)', async () => {
@@ -289,7 +310,7 @@ describe('LedgerRouter', () => {
       expect(mockedDmkCtor).not.toHaveBeenCalled();
     });
 
-    it('replaces the message listener after switching', async () => {
+    it('routes incoming messages to the new handler after a switch (same listener)', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
       mockLegacyHandleAction.mockResolvedValue('old');
 
