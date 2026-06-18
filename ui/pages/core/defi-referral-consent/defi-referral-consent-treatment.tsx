@@ -7,12 +7,13 @@ import {
   Checkbox,
   FontWeight,
   Text,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBoolean } from '../../../hooks/useBoolean';
-import { PartnerLink } from './partner-link';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
 
 const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
@@ -76,11 +77,19 @@ export const DefiReferralConsentTreatment: React.FC<
             isSelected={isChecked}
             onChange={toggle}
             label={t('hyperliquidReferralCheckboxLabel', [
-              <PartnerLink
+              <TextButton
                 key="defi-referral-partner-terms"
-                text={t('defiReferralTerms')}
-                url={learnMoreUrl}
-              />,
+                asChild
+                size={TextButtonSize.BodySm}
+              >
+                <a
+                  href={learnMoreUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('defiReferralTerms')}
+                </a>
+              </TextButton>,
             ])}
             labelProps={{
               variant: TextVariant.BodySm,

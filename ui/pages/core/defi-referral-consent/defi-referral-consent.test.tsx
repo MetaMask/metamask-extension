@@ -9,10 +9,8 @@ import {
 } from '../../../../shared/constants/defi-referrals';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { useABTest } from '../../../hooks/useABTest';
-import {
-  DefiReferralUIABTestVariant,
-  DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS,
-} from '../../../../shared/lib/ab-testing/configs/defi-referral-ui';
+import { DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS } from '../../../../shared/lib/ab-testing/configs/defi-referral-ui';
+import { ABTestVariant } from '../../../../shared/lib/ab-testing/variants';
 import { DefiReferralConsent } from './defi-referral-consent';
 
 jest.mock('../../../hooks/useABTest');
@@ -23,14 +21,14 @@ const mockUseABTest = jest.mocked(useABTest);
 const mockControlVariant = () =>
   mockUseABTest.mockReturnValue({
     variant: DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS.control,
-    variantName: DefiReferralUIABTestVariant.Control,
+    variantName: ABTestVariant.Control,
     isActive: false,
   });
 
 const mockTreatmentVariant = () =>
   mockUseABTest.mockReturnValue({
     variant: DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS.treatment,
-    variantName: DefiReferralUIABTestVariant.Treatment,
+    variantName: ABTestVariant.Treatment,
     isActive: true,
   });
 
@@ -49,7 +47,8 @@ const partnerTestCases: PartnerTestCase[] = Object.values(
   learnMoreUrl: partner.learnMoreUrl,
 }));
 
-const hyperliquidPartner = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
+const hyperliquidPartner =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
 
 const nonHyperliquidPartners = partnerTestCases.filter(
   ({ partnerId }) => partnerId !== DefiReferralPartner.Hyperliquid,
@@ -175,7 +174,10 @@ describe('DefiReferralConsent', () => {
       const mockOnActionComplete = jest.fn();
 
       renderWithProvider(
-        <DefiReferralConsent {...props} onActionComplete={mockOnActionComplete} />,
+        <DefiReferralConsent
+          {...props}
+          onActionComplete={mockOnActionComplete}
+        />,
         store,
       );
 
@@ -194,7 +196,10 @@ describe('DefiReferralConsent', () => {
       const mockOnActionComplete = jest.fn();
 
       renderWithProvider(
-        <DefiReferralConsent {...props} onActionComplete={mockOnActionComplete} />,
+        <DefiReferralConsent
+          {...props}
+          onActionComplete={mockOnActionComplete}
+        />,
         store,
       );
 
