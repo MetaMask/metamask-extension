@@ -47,6 +47,33 @@ type NetworkFilterProps = {
   onChainIdChange?: (chainId: string | null) => void;
 };
 
+type ChainNetworkDetails = {
+  networkName?: string;
+  networkImage?: string;
+};
+
+function getNetworkSelectionItem({
+  chainId,
+  selectedChainId,
+  chainNetworkDetails,
+  handleNetworkSelection,
+}: {
+  chainId: string;
+  selectedChainId: string | null;
+  chainNetworkDetails?: ChainNetworkDetails;
+  handleNetworkSelection: (chainId: string | null) => void;
+}): NetworkSelectionSection['items'][number] {
+  return {
+    key: chainId,
+    chainId,
+    name: chainNetworkDetails?.networkName || `Chain ${chainId}`,
+    iconSrc: chainNetworkDetails?.networkImage || '',
+    selected: selectedChainId === chainId,
+    onClick: () => handleNetworkSelection(chainId),
+    testId: `send-network-filter-${chainId}`,
+  };
+}
+
 export const NetworkFilter = ({
   tokens,
   nfts,
@@ -118,8 +145,8 @@ export const NetworkFilter = ({
   }, [selectedChainId, chainNetworkNAmeAndImageMap]);
 
   const handleNetworkFilterClick = useCallback(() => {
-    setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
-  }, [isNetworkFilterPopoverOpen]);
+    setIsNetworkFilterPopoverOpen((isOpen) => !isOpen);
+  }, []);
 
   const closePopover = useCallback(() => {
     setIsNetworkFilterPopoverOpen(false);
@@ -166,22 +193,14 @@ export const NetworkFilter = ({
       networkSections.map((section) => ({
         key: section.key,
         title: section.titleKey ? t(section.titleKey) : undefined,
-        items: section.items.map(({ chainId }) => {
-          const networkName =
-            chainNetworkNAmeAndImageMap.get(chainId)?.networkName;
-          const networkImage =
-            chainNetworkNAmeAndImageMap.get(chainId)?.networkImage;
-
-          return {
-            key: chainId,
+        items: section.items.map(({ chainId }) =>
+          getNetworkSelectionItem({
             chainId,
-            name: networkName || `Chain ${chainId}`,
-            iconSrc: networkImage || '',
-            selected: selectedChainId === chainId,
-            onClick: () => handleNetworkSelection(chainId),
-            testId: `send-network-filter-${chainId}`,
-          };
-        }),
+            selectedChainId,
+            chainNetworkDetails: chainNetworkNAmeAndImageMap.get(chainId),
+            handleNetworkSelection,
+          }),
+        ),
       })),
     [
       chainNetworkNAmeAndImageMap,
