@@ -7634,7 +7634,10 @@ export function enableMetamaskNotifications(
 ): ThunkAction<void, unknown, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('enableMetamaskNotifications', [options]);
+      await submitRequestToBackground(
+        'enableMetamaskNotifications',
+        options ? [options] : [],
+      );
     } catch (error) {
       log.error(error);
       throw error;

@@ -3893,10 +3893,8 @@ export default class MetamaskController extends EventEmitter {
         notificationServicesPushController.disablePushNotifications.bind(
           notificationServicesPushController,
         ),
-      enableMetamaskNotifications:
-        notificationServicesController.enableMetamaskNotifications.bind(
-          notificationServicesController,
-        ),
+      enableMetamaskNotifications: (options) =>
+        notificationServicesController.enableMetamaskNotifications(options),
       disableMetamaskNotifications:
         notificationServicesController.disableNotificationServices.bind(
           notificationServicesController,

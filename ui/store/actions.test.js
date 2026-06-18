@@ -3990,6 +3990,19 @@ describe('Actions', () => {
         true,
       );
     });
+
+    it('calls enableMetamaskNotifications in the background without args when options are omitted', async () => {
+      const store = mockStore();
+      const enableMetamaskNotificationsStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        enableMetamaskNotifications: enableMetamaskNotificationsStub,
+      });
+
+      await store.dispatch(actions.enableMetamaskNotifications());
+
+      expect(enableMetamaskNotificationsStub.calledOnceWith()).toBe(true);
+    });
   });
 
   describe('#toggleExternalServices', () => {
