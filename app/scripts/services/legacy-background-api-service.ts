@@ -982,7 +982,7 @@ export class LegacyBackgroundApiService {
         'AuthenticationController:getState',
       );
       if (isSignedIn) {
-        await this.#messenger.call('AuthenticationController:performSignOut');
+        this.#messenger.call('AuthenticationController:performSignOut');
       }
 
       // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
