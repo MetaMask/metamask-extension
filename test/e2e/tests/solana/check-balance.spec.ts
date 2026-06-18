@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { SNAP_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
@@ -22,7 +23,12 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('0 SOL', 'SOL', false, 60000);
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '0 SOL',
+          symbol: 'SOL',
+          expectFundYourWalletBanner: false,
+          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
@@ -42,7 +48,12 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('$0', 'USD', true, 60000);
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '$0',
+          symbol: 'USD',
+          expectFundYourWalletBanner: true,
+          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
@@ -64,7 +75,12 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('$5,643.50', 'USD', true, 60000);
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '$5,643.50',
+          symbol: 'USD',
+          expectFundYourWalletBanner: true,
+          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
@@ -82,7 +98,12 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('50 SOL', 'SOL', false, 60000);
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '50 SOL',
+          symbol: 'SOL',
+          expectFundYourWalletBanner: false,
+          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
