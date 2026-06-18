@@ -503,9 +503,7 @@ export async function proxyTronBlockchainCalls(
 
       await mockServer
         .forGet(
-          tronProviderUrl(
-            `/v1/accounts/${accountAddress}/transactions/trc20`,
-          ),
+          tronProviderUrl(`/v1/accounts/${accountAddress}/transactions/trc20`),
         )
         .always()
         .thenCallback(async () => {

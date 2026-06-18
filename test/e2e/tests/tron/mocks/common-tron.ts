@@ -369,7 +369,6 @@ export async function mockTronGetTrc20Balance(
     }));
 }
 
-
 export type TronAccountSnapshot = {
   trxSun: number;
   trc20: Partial<Record<TronSwapSymbol, string>>;
@@ -1211,7 +1210,6 @@ function buildMockTronBlock() {
     },
   };
 }
-
 
 export async function mockBridgeGetTronQuoteFor(
   mockServer: Mockttp,
