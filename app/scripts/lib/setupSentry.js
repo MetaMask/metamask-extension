@@ -10,6 +10,10 @@ import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
 import {
+  BACKEND_TRACE_PROPAGATION_TARGETS,
+  consensysTracePropagationIntegration,
+} from './sentry-trace-propagation';
+import {
   getAnalyticsState,
   getAnalyticsStateFromAppState,
   getState,
@@ -31,6 +35,8 @@ const RELEASE = getSentryRelease(
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
+const SENTRY_DISTRIBUTED_TRACING_ENABLED =
+  !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -114,8 +120,21 @@ function getClientOptions() {
         getAnalyticsState,
         log,
       }),
+      // Must register after `browserTracingIntegration`.
+      ...(SENTRY_DISTRIBUTED_TRACING_ENABLED
+        ? [consensysTracePropagationIntegration({ log })]
+        : []),
     ],
     release: RELEASE,
+    // Must be a top-level init option.
+    ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
+      tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
+      // TODO(sentry-v10, #42867): Once the v10 upgrade ships, enable
+      // `propagateTraceparent: true` here so the SDK attaches `traceparent` to
+      // these targets natively. Then remove the manual traceparent injection
+      // from `consensysTracePropagationIntegration` (keep the RAPID baggage and
+      // the `consensys-request-id` correlation).
+    }),
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
     // Our test infra sometimes reports these errors as unexpected failures,
