@@ -99,9 +99,15 @@
   &__link {
     cursor: pointer;
     text-decoration: underline;
-    color: var(--color-primary-default);
+    color: var(--brand-colors-grey-grey000);
 
-    &:hover {
+    &:visited {
+      color: var(--brand-colors-grey-grey000);
+    }
+
+    &:hover,
+    &:active {
+      color: var(--brand-colors-grey-grey000);
       opacity: 0.88;
     }
   }
