@@ -49,12 +49,13 @@ export const DefiReferralConsentTreatment: React.FC<
   };
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      className="h-full justify-between pt-12"
-    >
-      <Box flexDirection={BoxFlexDirection.Column} gap={8} className="mb-4">
-        <Box className="m-auto">
+    <Box flexDirection={BoxFlexDirection.Column} className="h-full">
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={8}
+        className="flex-1 justify-center"
+      >
+        <Box className="mx-auto">
           <PartnerImage partnerId={partnerId} partnerName={partnerName} />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -66,7 +67,7 @@ export const DefiReferralConsentTreatment: React.FC<
           </Text>
         </Box>
       </Box>
-      <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+      <Box flexDirection={BoxFlexDirection.Column} gap={4} className="pt-4">
         <Box
           backgroundColor={BoxBackgroundColor.BackgroundSection}
           padding={3}
