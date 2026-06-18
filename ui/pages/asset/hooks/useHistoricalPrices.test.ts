@@ -152,17 +152,30 @@ describe('useHistoricalPrices', () => {
       },
     };
 
-    it('returns loading true and default data initially', () => {
+    it('returns placeholder data initially while fetching', () => {
       const { result, unmount } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
         state,
       );
 
       expect(result.current).toEqual({
-        loading: true,
+        loading: false,
+        isFetching: true,
+        isFetchedAfterMount: false,
+        isPlaceholderData: true,
         data: {
-          prices: [],
-          metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
+          prices: [
+            { x: expect.any(Number), y: 0 },
+            { x: expect.any(Number), y: 0 },
+          ],
+          metadata: {
+            minPricePoint: { x: expect.any(Number), y: 0 },
+            maxPricePoint: { x: expect.any(Number), y: 0 },
+            xMin: expect.any(Number),
+            xMax: expect.any(Number),
+            yMin: 0,
+            yMax: 0,
+          },
         },
       });
 
@@ -178,11 +191,14 @@ describe('useHistoricalPrices', () => {
       );
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.isPlaceholderData).toBe(false);
       });
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
         data: { prices: SEVEN_DAY_POINTS, metadata: SEVEN_DAY_METADATA },
       });
     });
@@ -226,11 +242,14 @@ describe('useHistoricalPrices', () => {
       );
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.isPlaceholderData).toBe(false);
       });
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
         data: {
           prices: [],
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
@@ -257,17 +276,30 @@ describe('useHistoricalPrices', () => {
       },
     };
 
-    it('returns loading true and default data initially', () => {
+    it('returns placeholder data initially while fetching', () => {
       const { result, unmount } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
         state,
       );
 
       expect(result.current).toEqual({
-        loading: true,
+        loading: false,
+        isFetching: true,
+        isFetchedAfterMount: false,
+        isPlaceholderData: true,
         data: {
-          prices: [],
-          metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
+          prices: [
+            { x: expect.any(Number), y: 0 },
+            { x: expect.any(Number), y: 0 },
+          ],
+          metadata: {
+            minPricePoint: { x: expect.any(Number), y: 0 },
+            maxPricePoint: { x: expect.any(Number), y: 0 },
+            xMin: expect.any(Number),
+            xMax: expect.any(Number),
+            yMin: 0,
+            yMax: 0,
+          },
         },
       });
 
@@ -283,11 +315,14 @@ describe('useHistoricalPrices', () => {
       );
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.isPlaceholderData).toBe(false);
       });
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
         data: { prices: SEVEN_DAY_POINTS, metadata: SEVEN_DAY_METADATA },
       });
     });
@@ -327,11 +362,14 @@ describe('useHistoricalPrices', () => {
       );
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.isPlaceholderData).toBe(false);
       });
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
         data: {
           prices: [],
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
