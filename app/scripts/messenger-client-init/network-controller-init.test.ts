@@ -35,10 +35,9 @@ jest.mock('@metamask/network-controller', () => {
 });
 
 function getInitRequestMock(
-  messenger = new Messenger<
-    MockAnyNamespace,
-    ActionConstraint
-  >({ namespace: MOCK_ANY_NAMESPACE }),
+  messenger = new Messenger<MockAnyNamespace, ActionConstraint>({
+    namespace: MOCK_ANY_NAMESPACE,
+  }),
 ): jest.Mocked<
   MessengerClientInitRequest<
     NetworkControllerMessenger,
