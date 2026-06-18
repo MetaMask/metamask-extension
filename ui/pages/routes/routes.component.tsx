@@ -123,6 +123,7 @@ import { MultichainAccountAddressListPage } from '../multichain-accounts/multich
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
+import { useFetchBuyableChains } from '../../hooks/ramps/useFetchBuyableChains';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
@@ -608,6 +609,8 @@ export default function Routes() {
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
     useMultichainAccountsIntroModal(isUnlocked, location);
+
+  useFetchBuyableChains();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
