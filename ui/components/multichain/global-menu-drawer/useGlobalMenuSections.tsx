@@ -35,9 +35,7 @@ import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/l
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
-import {
-  selectIsMetamaskNotificationsFeatureSeen,
-} from '../../../selectors/metamask-notifications/metamask-notifications';
+import { selectIsMetamaskNotificationsFeatureSeen } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { Tag } from '../../component-library';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {

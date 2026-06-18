@@ -222,9 +222,9 @@ describe('useFetchInitialNotificationsEffect', () => {
     const mockSetStorageItem = jest.spyOn(StorageHelpers, 'setStorageItem');
     const mockGetNotificationPreferences = jest
       .spyOn(Actions, 'getNotificationPreferences')
-      .mockImplementation(
-        () => async () => ({ marketing: { inAppNotificationsEnabled: true } }),
-      );
+      .mockImplementation(() => async () => ({
+        marketing: { inAppNotificationsEnabled: true },
+      }));
 
     return {
       hooks: arrangeHooks(),

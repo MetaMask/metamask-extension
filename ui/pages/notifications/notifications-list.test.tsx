@@ -100,20 +100,20 @@ describe('NotificationsList', () => {
   ([TAB_KEYS.ALL, TAB_KEYS.WALLET, TAB_KEYS.WEB3] as TAB_KEYS[]).forEach(
     (tabKey) => {
       it(`shows disabled notifications state when notifications are disabled for ${tabKey} tab`, () => {
-      renderWithProvider(
-        <NotificationsList
-          activeTab={tabKey}
-          notifications={mockNotifications}
-          isLoading={false}
-          isError={false}
-          notificationsCount={0}
-        />,
-        createStore(false),
-      );
+        renderWithProvider(
+          <NotificationsList
+            activeTab={tabKey}
+            notifications={mockNotifications}
+            isLoading={false}
+            isError={false}
+            notificationsCount={0}
+          />,
+          createStore(false),
+        );
 
-      expect(
-        screen.getByTestId('notifications-list-disabled-notifications'),
-      ).toBeInTheDocument();
+        expect(
+          screen.getByTestId('notifications-list-disabled-notifications'),
+        ).toBeInTheDocument();
       });
     },
   );
