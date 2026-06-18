@@ -2654,7 +2654,7 @@
       },
       "packages": {
         "@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
@@ -2808,7 +2808,7 @@
         "uuid": true
       }
     },
-    "@metamask/subscription-controller>@metamask/transaction-controller": {
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2823,7 +2823,7 @@
         "@ethersproject/providers": true,
         "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
-        "@metamask/subscription-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
@@ -2831,7 +2831,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "async-mutex": true,
-        "@metamask/subscription-controller>bignumber.js": true,
+        "@metamask/smart-transactions-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "browserify>buffer": true,
         "eth-method-registry": true,
