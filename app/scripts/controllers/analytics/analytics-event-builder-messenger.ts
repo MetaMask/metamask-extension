@@ -28,9 +28,11 @@ type AllowedActions =
   | AnalyticsControllerTrackViewAction;
 
 /**
- * Messenger type for {@link AnalyticsEventBuilder} configuration.
+ * Messenger type shared by {@link AnalyticsEventBuilder} configuration and
+ * {@link configureAnalyticsDelivery}.
  *
- * Restricted to controller state reads required to normalize analytics events.
+ * Restricted to controller state reads required to normalize analytics events
+ * and to {@link AnalyticsController} delivery actions (track, identify, view).
  */
 export type AnalyticsEventBuilderMessenger = Messenger<
   'AnalyticsEventBuilder',
@@ -39,7 +41,8 @@ export type AnalyticsEventBuilderMessenger = Messenger<
 >;
 
 /**
- * Create a messenger restricted to actions the analytics event builder needs.
+ * Create a messenger restricted to actions used by the analytics event builder
+ * and delivery helpers.
  *
  * @param messenger - The root messenger used to create the restricted messenger.
  */

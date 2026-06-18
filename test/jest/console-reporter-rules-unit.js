@@ -76,7 +76,8 @@ module.exports = [
 
   // MetaMetrics warnings
   {
-    match: /MetaMetricsController:.*value is not a valid trait type/u,
+    match:
+      /(MetaMetricsController:|analytics delivery identify:).*value is not a valid trait type/u,
     group: 'MetaMask: MetaMetrics invalid trait types',
   },
 
