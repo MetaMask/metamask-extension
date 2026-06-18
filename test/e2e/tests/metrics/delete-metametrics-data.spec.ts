@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -44,7 +44,7 @@ const mockSegment = async (mockServer: Mockttp) => {
         JSON.stringify({
           regulationType: 'DELETE_ONLY',
           subjectType: 'USER_ID',
-          subjectIds: [MOCK_META_METRICS_ID],
+          subjectIds: [MOCK_ANALYTICS_ID],
         }),
       )
       .thenCallback(() => ({
@@ -80,8 +80,9 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -142,8 +143,9 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: false,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: false,
           })
           .build(),
         title: this.test?.fullTitle(),
