@@ -208,11 +208,13 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     variantFlag,
     perpsTabBadgeSeen = false,
     perpsAvailable = true,
+    showTokens = true,
     route,
   }: {
     variantFlag?: { name: string };
     perpsTabBadgeSeen?: boolean;
     perpsAvailable?: boolean;
+    showTokens?: boolean;
     route?: string;
   }) => {
     const store = configureStore({
@@ -234,7 +236,7 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     return renderWithProvider(
       <MetaMetricsContext.Provider value={metaMetricsContext}>
         <AccountOverviewTabs
-          showTokens={true}
+          showTokens={showTokens}
           showNfts={false}
           showActivity={false}
           setBasicFunctionalityModalOpen={jest.fn()}
@@ -304,6 +306,19 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     renderTabs({ variantFlag: { name: 'control' }, route: '/?tab=perps' });
 
     expect(setPerpsTabBadgeSeen).not.toHaveBeenCalled();
+  });
+
+  it('persists the dismissal when Perps is the clamped active tab (active tab hidden)', () => {
+    // Tokens is hidden but activeTabKey points at the now-hidden Tokens tab, so
+    // Tabs clamps the rendered active tab to the first one (Perps). The badge
+    // must still be marked seen even though no tab click occurs.
+    renderTabs({
+      variantFlag: { name: 'treatment' },
+      showTokens: false,
+      route: '/?tab=tokens',
+    });
+
+    expect(setPerpsTabBadgeSeen).toHaveBeenCalledWith(true);
   });
 
   it('does not mark the badge seen while Perps is unavailable, even when it is the active tab', () => {

@@ -124,15 +124,34 @@ export const AccountOverviewTabs = ({
     }
   }, [activeTabKey]);
 
-  // Mark the badge seen whenever Perps is the active tab — covers clicking in and
-  // landing directly on Perps (persisted default or ?tab=perps), which a click
-  // handler misses. Gated on showPerpsTabBadge so control/seen/unavailable (badge
-  // never visible) never marks it seen.
+  // Tabs clamps the active tab to the first rendered tab when activeTabKey
+  // matches no rendered tab (e.g. Tokens hidden with no ?tab=perps / persisted
+  // Perps). Resolve that same effective tab so dismissal also fires when Perps
+  // is the clamped-active tab. Order must match the <Tab> render order below.
+  const renderedTabKeys = [
+    showTokens && AccountOverviewTabKey.Tokens,
+    isPerpsExperienceAvailable && AccountOverviewTabKey.Perps,
+    showDefi && AccountOverviewTabKey.DeFi,
+    showNfts && AccountOverviewTabKey.Nfts,
+    showActivity && AccountOverviewTabKey.Activity,
+  ].filter((key): key is AccountOverviewTab => Boolean(key));
+  const effectiveActiveTabKey = renderedTabKeys.includes(activeTabKey)
+    ? activeTabKey
+    : renderedTabKeys[0];
+
+  // Mark the badge seen whenever Perps is the effective active tab — covers
+  // clicking in, landing directly on Perps (persisted default or ?tab=perps),
+  // and the clamped-active case above; a click handler alone would miss the last
+  // two. Gated on showPerpsTabBadge so control/seen/unavailable (badge never
+  // visible) never marks it seen.
   useEffect(() => {
-    if (showPerpsTabBadge && activeTabKey === AccountOverviewTabKey.Perps) {
+    if (
+      showPerpsTabBadge &&
+      effectiveActiveTabKey === AccountOverviewTabKey.Perps
+    ) {
       dispatch(setPerpsTabBadgeSeen(true));
     }
-  }, [showPerpsTabBadge, activeTabKey, dispatch]);
+  }, [showPerpsTabBadge, effectiveActiveTabKey, dispatch]);
 
   const networkFilterForMetrics = useSelector(
     selectEnabledNetworksAsCaipChainIds,
