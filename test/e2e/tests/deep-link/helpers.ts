@@ -37,7 +37,7 @@ export async function signDeepLink(
   withSigParams = true,
 ) {
   const canonicalUrl = canonicalize(new URL(url));
-  const signedUrl = new URL(canonicalUrl.toString());
+  const signedUrl = new URL(canonicalUrl);
 
   if (withSigParams) {
     const sigParams = [...new Set(signedUrl.searchParams.keys())];
