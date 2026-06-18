@@ -2774,7 +2774,7 @@ THE SOFTWARE.
 ******************************
 
 baseline-browser-mapping
-2.10.33 <https://github.com/web-platform-dx/baseline-browser-mapping>
+2.9.11 <https://github.com/web-platform-dx/baseline-browser-mapping>
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -3888,7 +3888,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 caniuse-lite
-1.0.30001793 <https://github.com/browserslist/caniuse-lite>
+1.0.30001762 <https://github.com/browserslist/caniuse-lite>
 Attribution 4.0 International
 
 =======================================================================
@@ -23275,6 +23275,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 
 ******************************
 
+@metamask/assets-controllers
+109.0.0 <https://github.com/MetaMask/core>
+MIT License
+
+Copyright (c) 2018 MetaMask
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+
+
+******************************
+
 @metamask/auth-network-utils
 0.3.1 <https://github.com/MetaMask/toprf-secure-backup>
 MIT License
@@ -25583,7 +25609,7 @@ SOFTWARE.
 ******************************
 
 @metamask/keyring-snap-sdk
-7.2.1 <https://github.com/MetaMask/accounts>
+7.2.0 <https://github.com/MetaMask/accounts>
 license: Custom: https://github.com/MetaMask/accounts
 authors: undefined
 
@@ -27553,7 +27579,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/tron-wallet-snap
-1.25.6 <https://github.com/MetaMask/snap-tron-wallet>
+1.25.8 <https://github.com/MetaMask/snap-tron-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
