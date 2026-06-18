@@ -428,7 +428,6 @@ import { AlertControllerInit } from './messenger-client-init/alert-controller-in
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { ApprovalControllerInit } from './messenger-client-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
@@ -547,6 +546,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
+      showApprovalRequest: this.opts.showUserConfirmation,
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -618,7 +618,6 @@ export default class MetamaskController extends EventEmitter {
 
     /** @type {import('./messenger-client-init/utils').InitFunctions} */
     const messengerClientInitFunctions = {
-      ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
@@ -747,7 +746,7 @@ export default class MetamaskController extends EventEmitter {
     this.messengerClientsByName = messengerClientsByName;
 
     // Backwards compatibility for existing references
-    this.approvalController = messengerClientsByName.ApprovalController;
+    this.approvalController = this.wallet.getInstance('ApprovalController');
     this.loggingController = messengerClientsByName.LoggingController;
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
@@ -1027,7 +1026,11 @@ export default class MetamaskController extends EventEmitter {
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
-            await this._importAccountsWithBalances();
+            for (const {
+              metadata: { id: entropySource },
+            } of this.getHDKeyringObjects()) {
+              await this.discoverAndCreateAccounts(entropySource);
+            }
           } else {
             await this.discoverAndCreateAccounts(id);
           }
@@ -1721,7 +1724,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   stopNetworkRequests() {
-    this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     if (
       !this.controllerMessenger.call(
@@ -4000,7 +4002,7 @@ export default class MetamaskController extends EventEmitter {
 
   async exportAccount(address, password) {
     await this.verifyPassword(password);
-    return this.keyringController.exportAccount(password, address);
+    return this.keyringController.exportAccount({ password }, address);
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
@@ -5095,9 +5097,15 @@ export default class MetamaskController extends EventEmitter {
         });
       };
 
-      // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
-      // eslint-disable-next-line no-void
-      void syncAndDiscoverAccounts();
+      const { completedOnboarding } = this.onboardingController.state;
+      // In order to avoid premature sync and avoid potential race condition, for the actual B&S full sync after the onboarding is completed.
+      // We only sync and discover accounts if the onboarding is completed.
+      // i.e we don't sync and discover accounts for `socialImport` flow before the onboarding is completed.
+      if (completedOnboarding) {
+        // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
+        // eslint-disable-next-line no-void
+        void syncAndDiscoverAccounts();
+      }
     } finally {
       releaseLock();
     }
@@ -5303,28 +5311,6 @@ export default class MetamaskController extends EventEmitter {
       }
     } finally {
       releaseLock();
-    }
-  }
-
-  /**
-   * Imports accounts with balances to the keyring.
-   */
-  async _importAccountsWithBalances() {
-    const { keyrings } = this.keyringController.state;
-
-    // walk through all the keyrings and import the solana accounts for the HD keyrings
-    for (const { metadata } of keyrings) {
-      // check if the keyring is an HD keyring
-      const isHdKeyring = await this.keyringController.withKeyringV2(
-        { id: metadata.id },
-        async ({ keyring }) => {
-          return keyring.type === KeyringType.Hd;
-        },
-      );
-      if (isHdKeyring) {
-        await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-        await this.discoverAndCreateAccounts(metadata.id);
-      }
     }
   }
 
@@ -6652,15 +6638,24 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Returns the list of HD keyring objects in the keyring controller's state.
+   *
+   * @returns {Array} The list of HD keyring objects.
+   */
+  getHDKeyringObjects() {
+    return this.keyringController.state.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hdKeyTree,
+    );
+  }
+
+  /**
    * Returns the index of the HD keyring containing the selected account.
    *
    * @returns {number | undefined} The index of the HD keyring containing the selected account.
    */
   getHDEntropyIndex() {
     const selectedAccount = this.accountsController.getSelectedAccount();
-    const hdKeyrings = this.keyringController.state.keyrings.filter(
-      (keyring) => keyring.type === KeyringTypes.hdKeyTree,
-    );
+    const hdKeyrings = this.getHDKeyringObjects();
     const index = hdKeyrings.findIndex((keyring) =>
       keyring.accounts.includes(selectedAccount.address),
     );
@@ -6836,15 +6831,17 @@ export default class MetamaskController extends EventEmitter {
 
   setUpCookieHandlerCommunication({ connectionStream }) {
     const {
-      metaMetricsId,
+      analyticsId,
       dataCollectionForMarketing,
-      participateInMetaMetrics,
+      completedMetaMetricsOnboarding,
+      optedIn,
     } = this.getState();
 
     if (
-      metaMetricsId &&
+      analyticsId &&
       dataCollectionForMarketing &&
-      participateInMetaMetrics
+      completedMetaMetricsOnboarding &&
+      optedIn
     ) {
       // setup multiplexing
       const mux = setupMultiplex(connectionStream);

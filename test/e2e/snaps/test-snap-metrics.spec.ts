@@ -5,7 +5,7 @@ import { Driver } from '../webdriver/driver';
 import { getEventPayloads, withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
-  MOCK_META_METRICS_ID,
+  MOCK_ANALYTICS_ID,
   DAPP_PATH,
   DAPP_URL,
   WINDOW_TITLES,
@@ -148,8 +148,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -230,8 +231,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -304,8 +306,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -375,8 +378,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -444,8 +448,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -526,8 +531,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -610,8 +616,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),

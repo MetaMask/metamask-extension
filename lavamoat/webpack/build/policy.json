@@ -219,6 +219,20 @@
         "nock>debug": true
       }
     },
+    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/core>@babel/generator": true,
+        "depcheck>@babel/traverse>@babel/helper-globals": true,
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "@babel/core>@babel/template": true,
+        "@babel/core>@babel/types": true,
+        "nock>debug": true
+      }
+    },
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
@@ -318,7 +332,7 @@
         "process._rawDebug": true
       },
       "packages": {
-        "depcheck>@babel/parser": true,
+        "@lavamoat/webpack>@babel/parser": true,
         "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
         "@lavamoat/webpack>json-stable-stringify": true,
@@ -1138,6 +1152,7 @@
         "process.cwd": true
       },
       "packages": {
+        "lockfile-lint>cosmiconfig>env-paths": true,
         "postcss-loader>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
         "mocha>js-yaml": true,
@@ -1366,14 +1381,25 @@
         "webpack>tapable": true
       }
     },
+    "lockfile-lint>cosmiconfig>env-paths": {
+      "builtin": {
+        "os.homedir": true,
+        "os.tmpdir": true,
+        "path.basename": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      }
+    },
     "postcss-loader>cosmiconfig>env-paths": {
       "builtin": {
         "os": true,
         "path": true
       },
       "globals": {
-        "process.env": true,
-        "process.platform": true
+        "process.env": true
       }
     },
     "depcheck>cosmiconfig>parse-json>error-ex": {
@@ -1394,7 +1420,7 @@
         "atob": true
       }
     },
-    "@storybook/test-runner>@storybook/core-common>esbuild": {
+    "tsx>esbuild": {
       "builtin": {
         "child_process.execFileSync": true,
         "child_process.spawn": true,
@@ -1997,6 +2023,8 @@
         "os.release": true,
         "path.basename": true,
         "path.relative": true,
+        "path.resolve": true,
+        "path.win32.basename": true,
         "url.fileURLToPath": true
       },
       "globals": {
@@ -2035,8 +2063,8 @@
         "console.log": true
       },
       "packages": {
-        "depcheck>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "@lavamoat/webpack>@babel/parser": true,
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
       }
     },
     "webpack>loader-runner": {
@@ -2911,7 +2939,7 @@
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@swc/core": true,
-        "@storybook/test-runner>@storybook/core-common>esbuild": true,
+        "tsx>esbuild": true,
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "mocha>serialize-javascript": true,

@@ -337,7 +337,7 @@ export class LegacyBackgroundApiService {
   async getSeedPhrase(password: string, keyringId?: string): Promise<Buffer> {
     const seedPhrase = await this.#messenger.call(
       'KeyringController:exportSeedPhrase',
-      password,
+      { password },
       keyringId,
     );
 
@@ -506,13 +506,14 @@ export class LegacyBackgroundApiService {
           'KeyringController:withKeyringV2',
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
-            const { exportAccount } = keyring;
-            if (!exportAccount) {
+            if (!keyring.exportAccount) {
               throw new Error(
                 'Imported account keyring does not export accounts',
               );
             }
-            const privateKeyObj = await exportAccount(importedAccount.id);
+            const privateKeyObj = await keyring.exportAccount(
+              importedAccount.id,
+            );
             return { id: metadata.id, privateKey: privateKeyObj.privateKey };
           },
         )) as { id: string; privateKey: string };

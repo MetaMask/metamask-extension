@@ -45,6 +45,7 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
@@ -213,7 +214,7 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.js'));
+const Home = mmLazy(() => import('../home/index.ts'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
@@ -244,6 +245,9 @@ const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 const HardwareWalletRepair = mmLazy(
   () => import('../hardware-wallet-repair/index.ts'),
+);
+const TransactionDetailsRoute = mmLazy(
+  () => import('../details/transaction-details-route.tsx'),
 );
 // End Lazy Routes
 
@@ -454,6 +458,10 @@ export const routeConfig = [
       {
         path: DEFAULT_ROUTE,
         element: <Home />,
+      },
+      {
+        path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
+        element: <TransactionDetailsRoute />,
       },
       {
         element: <RequireBasicFunctionality />,

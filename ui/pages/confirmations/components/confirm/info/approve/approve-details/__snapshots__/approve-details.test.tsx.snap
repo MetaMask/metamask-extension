@@ -148,6 +148,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -363,6 +364,7 @@ exports[`<ApproveDetails /> renders component for approve details for setApprova
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
