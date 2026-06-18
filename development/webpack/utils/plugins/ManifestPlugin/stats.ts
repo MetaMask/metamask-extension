@@ -40,6 +40,10 @@ export type BundleSizeDebugEntrypoint = {
 };
 
 type BundleSizeCategoryAssets = Record<BundleSizeCategory, Set<string>>;
+type NonContentBundleSizeCategory = Exclude<
+  BundleSizeCategory,
+  'contentScripts'
+>;
 
 const bundleSizeCategories = [
   'background',
@@ -47,6 +51,11 @@ const bundleSizeCategories = [
   'other',
   'contentScripts',
 ] as const satisfies readonly BundleSizeCategory[];
+const nonContentBundleSizeCategories = [
+  'background',
+  'ui',
+  'other',
+] as const satisfies readonly NonContentBundleSizeCategory[];
 
 function sumAssetSizes(
   assetNames: Iterable<string>,
@@ -79,29 +88,42 @@ export function getBundlePartSizes(
   categoryAssets: BundleSizeCategoryAssets,
   assetSizes: ReadonlyMap<string, number>,
 ): Record<BundlePart, number> {
-  const commonAssets = categoryAssets.background
-    // @ts-expect-error - Node types need to be updated.
-    .intersection(categoryAssets.ui)
-    .difference(categoryAssets.contentScripts) as Set<string>;
-  const backgroundAssets = categoryAssets.background
-    // @ts-expect-error - Node types need to be updated.
-    .difference(categoryAssets.ui)
-    .difference(categoryAssets.contentScripts) as Set<string>;
-  const uiAssets = categoryAssets.ui
-    // @ts-expect-error - Node types need to be updated.
-    .difference(categoryAssets.background)
-    .difference(categoryAssets.contentScripts) as Set<string>;
-  const otherAssets = categoryAssets.other
-    // @ts-expect-error - Node types need to be updated.
-    .difference(categoryAssets.background)
-    .difference(categoryAssets.ui)
-    .difference(categoryAssets.contentScripts) as Set<string>;
+  const nonContentAssetCategoryCount = new Map<string, number>();
+
+  for (const category of nonContentBundleSizeCategories) {
+    for (const assetName of categoryAssets[category]) {
+      if (categoryAssets.contentScripts.has(assetName)) {
+        continue;
+      }
+      nonContentAssetCategoryCount.set(
+        assetName,
+        (nonContentAssetCategoryCount.get(assetName) ?? 0) + 1,
+      );
+    }
+  }
+
+  const commonAssets = new Set(
+    [...nonContentAssetCategoryCount]
+      .filter(([, categoryCount]) => categoryCount > 1)
+      .map(([assetName]) => assetName),
+  );
+  const getCategorySpecificAssets = (
+    category: NonContentBundleSizeCategory,
+  ) =>
+    [...categoryAssets[category]].filter(
+      (assetName) =>
+        !categoryAssets.contentScripts.has(assetName) &&
+        !commonAssets.has(assetName),
+    );
 
   return {
-    background: sumAssetSizes(backgroundAssets, assetSizes),
-    ui: sumAssetSizes(uiAssets, assetSizes),
+    background: sumAssetSizes(
+      getCategorySpecificAssets('background'),
+      assetSizes,
+    ),
+    ui: sumAssetSizes(getCategorySpecificAssets('ui'), assetSizes),
     common: sumAssetSizes(commonAssets, assetSizes),
-    other: sumAssetSizes(otherAssets, assetSizes),
+    other: sumAssetSizes(getCategorySpecificAssets('other'), assetSizes),
     contentScripts: sumAssetSizes(categoryAssets.contentScripts, assetSizes),
   };
 }
