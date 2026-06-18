@@ -11,6 +11,12 @@ import {
   type QrHardwareSignRequest,
 } from './types';
 
+export {
+  SignatureStepStatus,
+  type BridgeTxHistory,
+  type QrHardwareSignRequest,
+};
+
 /**
  * Type guard that checks whether an unknown value is a valid QR hardware
  * wallet sign request.
@@ -23,21 +29,21 @@ export const isQrHardwareSignRequest = (
 ): request is QrHardwareSignRequest =>
   Boolean(
     request &&
-    typeof request === 'object' &&
-    'type' in request &&
-    request.type === QrScanRequestType.SIGN &&
-    'request' in request &&
-    request.request &&
-    typeof request.request === 'object' &&
-    'requestId' in request.request &&
-    typeof request.request.requestId === 'string' &&
-    'payload' in request.request &&
-    request.request.payload &&
-    typeof request.request.payload === 'object' &&
-    'type' in request.request.payload &&
-    typeof request.request.payload.type === 'string' &&
-    'cbor' in request.request.payload &&
-    typeof request.request.payload.cbor === 'string',
+      typeof request === 'object' &&
+      'type' in request &&
+      request.type === QrScanRequestType.SIGN &&
+      'request' in request &&
+      request.request &&
+      typeof request.request === 'object' &&
+      'requestId' in request.request &&
+      typeof request.request.requestId === 'string' &&
+      'payload' in request.request &&
+      request.request.payload &&
+      typeof request.request.payload === 'object' &&
+      'type' in request.request.payload &&
+      typeof request.request.payload.type === 'string' &&
+      'cbor' in request.request.payload &&
+      typeof request.request.payload.cbor === 'string',
   );
 
 /**
@@ -132,6 +138,35 @@ export const getTitle = ({
   }
 
   return t('swapConfirmWithHwWallet');
+};
+
+/**
+ * Returns the title for the full-page QR hardware wallet signing flow.
+ *
+ * @param options - Configuration object.
+ * @param options.activeQrStep - The signature step currently using QR signing.
+ * @param options.needsTwoConfirmations - Whether the transaction requires approval.
+ * @param options.t - The i18n translation function.
+ * @returns The localized page title string.
+ */
+export const getQrHardwareSigningPageTitle = ({
+  activeQrStep,
+  needsTwoConfirmations,
+  t,
+}: {
+  activeQrStep: HardwareWalletSignatureStatus;
+  needsTwoConfirmations: boolean;
+  t: ReturnType<typeof useI18nContext>;
+}) => {
+  if (activeQrStep === HardwareWalletSignatureStatus.AwaitingFinalSignature) {
+    return t('bridgeQrHardwareSignLastStepTitle');
+  }
+
+  if (needsTwoConfirmations) {
+    return t('bridgeQrHardwareSignStepTitle', ['2', '4']);
+  }
+
+  return t('bridgeQrHardwareSignTitle', ['1', '1']);
 };
 
 /**
