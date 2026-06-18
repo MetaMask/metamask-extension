@@ -20,16 +20,13 @@ import {
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
 } from './messengers';
-import {
-  ADDITIONAL_DEFAULT_NETWORKS,
-  NetworkControllerInit,
-} from './network-controller-init';
+import { NetworkControllerInit } from './network-controller-init';
 
 jest.mock('@metamask/network-controller', () => {
   const originalModule = jest.requireActual('@metamask/network-controller');
   const NetworkControllerMock = jest.fn().mockImplementation(() => {
     return {
-      initializeProvider: jest.fn(),
+      init: jest.fn(),
       enableRpcFailover: jest.fn(),
       disableRpcFailover: jest.fn(),
     };
@@ -82,7 +79,7 @@ describe('NetworkControllerInit', () => {
   it('initializes the controller', () => {
     const { messengerClient } = NetworkControllerInit(getInitRequestMock());
     expect(messengerClient).toStrictEqual({
-      initializeProvider: expect.any(Function),
+      init: expect.any(Function),
       enableRpcFailover: expect.any(Function),
       disableRpcFailover: expect.any(Function),
     });
@@ -95,11 +92,16 @@ describe('NetworkControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: expect.any(Object),
-      additionalDefaultNetworks: ADDITIONAL_DEFAULT_NETWORKS,
       getBlockTrackerOptions: expect.any(Function),
-      getRpcServiceOptions: expect.any(Function),
       infuraProjectId: undefined,
-      isRpcFailoverEnabled: true,
+      failoverUrls: {
+        '0x1': [],
+        '0x2105': [],
+        '0x89': [],
+        '0xa': [],
+        '0xa4b1': [],
+        '0xe708': [],
+      },
     });
   });
 

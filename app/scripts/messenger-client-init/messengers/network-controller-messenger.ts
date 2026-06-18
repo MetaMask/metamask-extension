@@ -35,7 +35,10 @@ export function getNetworkControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: ['ConnectivityController:getState', 'RemoteFeatureFlagController:getState'],
+    actions: [
+      'ConnectivityController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
     events: [],
   });
   return controllerMessenger;
