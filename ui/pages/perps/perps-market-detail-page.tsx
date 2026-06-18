@@ -746,7 +746,11 @@ const PerpsMarketDetailPage = () => {
   }, []);
 
   const handleBackClick = useCallback(() => {
-    navigate({ pathname: '/', search: 'tab=perps' });
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
