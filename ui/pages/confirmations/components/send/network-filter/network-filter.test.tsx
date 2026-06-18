@@ -8,6 +8,7 @@ import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNa
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { ARBITRUM_DISPLAY_NAME } from '../../../../../../shared/constants/network';
 import { NetworkFilter } from './network-filter';
 
 jest.mock('react-redux', () => ({
@@ -29,7 +30,6 @@ jest.mock(
       title: React.ReactNode;
       topItem?: { name: string; onClick: () => void };
       sections: {
-        title?: React.ReactNode;
         items: { key: string; name: string; onClick: () => void }[];
       }[];
     }) =>
@@ -49,9 +49,6 @@ jest.mock(
               <button
                 key={item.key}
                 data-testid="shared-network-selection-item"
-                data-section-title={
-                  typeof section.title === 'string' ? section.title : ''
-                }
                 onClick={item.onClick}
               >
                 {item.name}
@@ -172,7 +169,11 @@ describe('NetworkFilter', () => {
 
   beforeEach(() => {
     mockUseSelector.mockReturnValue(true);
-    mockUseI18nContext.mockReturnValue((key: string) => key);
+    mockUseI18nContext.mockReturnValue(
+      (key: string) =>
+        (messages as Record<string, { message: string } | undefined>)[key]
+          ?.message ?? key,
+    );
     mockGetImageForChainId.mockReturnValue('mock-image-url');
     mockUseAssetSelectionMetrics.mockReturnValue({
       addAssetFilterMethod: mockAddAssetFilterMethod,
@@ -180,9 +181,27 @@ describe('NetworkFilter', () => {
     } as unknown as ReturnType<typeof useAssetSelectionMetrics>);
     mockUseChainNetworkNameAndImageMap.mockReturnValue(
       new Map([
-        ['1', { networkName: 'Ethereum', networkImage: 'eth.svg' }],
-        ['137', { networkName: 'Polygon', networkImage: 'polygon.svg' }],
-        ['42161', { networkName: 'Arbitrum', networkImage: 'arbitrum.svg' }],
+        [
+          '1',
+          {
+            networkName: messages.networkNameEthereum.message,
+            networkImage: 'eth.svg',
+          },
+        ],
+        [
+          '137',
+          {
+            networkName: messages.networkNamePolygon.message,
+            networkImage: 'polygon.svg',
+          },
+        ],
+        [
+          '42161',
+          {
+            networkName: ARBITRUM_DISPLAY_NAME,
+            networkImage: 'arbitrum.svg',
+          },
+        ],
       ]),
     );
   });
@@ -191,7 +210,7 @@ describe('NetworkFilter', () => {
     jest.clearAllMocks();
   });
 
-  it('renders filter button with "All networks" by default', () => {
+  it('renders filter button with the all networks label by default', () => {
     const { getByTestId, getByText } = render(
       <NetworkFilter
         tokens={mockTokens}
@@ -250,11 +269,15 @@ describe('NetworkFilter', () => {
 
     const networkItems = getAllByTestId('shared-network-selection-item');
     expect(networkItems).toHaveLength(3);
-    expect(networkItems[0]).toHaveTextContent('Ethereum');
-    expect(networkItems[1]).toHaveTextContent('Arbitrum');
-    expect(networkItems[2]).toHaveTextContent('Polygon');
+    expect(networkItems[0]).toHaveTextContent(
+      messages.networkNameEthereum.message,
+    );
+    expect(networkItems[1]).toHaveTextContent(ARBITRUM_DISPLAY_NAME);
+    expect(networkItems[2]).toHaveTextContent(
+      messages.networkNamePolygon.message,
+    );
     expect(getByTestId('shared-network-selection-top-item')).toHaveTextContent(
-      'allNetworks',
+      messages.allNetworks.message,
     );
   });
 
@@ -275,7 +298,7 @@ describe('NetworkFilter', () => {
     expect(mockOnChainIdChange).toHaveBeenCalledWith('1');
   });
 
-  it('calls onChainIdChange with null when "All networks" is selected', () => {
+  it('calls onChainIdChange with null when the all networks option is selected', () => {
     const { getByTestId, getAllByTestId } = render(
       <NetworkFilter
         tokens={mockTokens}
@@ -303,42 +326,12 @@ describe('NetworkFilter', () => {
     fireEvent.click(getByTestId('send-network-filter-toggle'));
     const networkItems = getAllByTestId('shared-network-selection-item');
 
-    expect(networkItems[0]).toHaveTextContent('Ethereum');
-    expect(networkItems[1]).toHaveTextContent('Arbitrum');
-    expect(networkItems[2]).toHaveTextContent('Polygon');
-  });
-
-  it('groups networks into Default and Custom sections', () => {
-    // 0x1 (Ethereum) is a featured network -> Default; 0x19 (Cronos) is a
-    // custom network -> Custom networks.
-    mockUseChainNetworkNameAndImageMap.mockReturnValue(
-      new Map([
-        ['0x1', { networkName: 'Ethereum', networkImage: 'eth.svg' }],
-        ['0x19', { networkName: 'Cronos', networkImage: 'cronos.svg' }],
-      ]),
+    expect(networkItems[0]).toHaveTextContent(
+      messages.networkNameEthereum.message,
     );
-
-    const { getByTestId, getByText } = render(
-      <NetworkFilter
-        tokens={[
-          { chainId: '0x1', fiat: { balance: 100 } },
-          { chainId: '0x19', fiat: { balance: 5 } },
-        ]}
-        nfts={[]}
-        onChainIdChange={mockOnChainIdChange}
-      />,
-    );
-
-    fireEvent.click(getByTestId('send-network-filter-toggle'));
-
-    // `t` is mocked to return the key, so the section title is the i18n key.
-    expect(getByText('Ethereum').closest('button')).toHaveAttribute(
-      'data-section-title',
-      'defaultNetworks',
-    );
-    expect(getByText('Cronos').closest('button')).toHaveAttribute(
-      'data-section-title',
-      'customNetworks',
+    expect(networkItems[1]).toHaveTextContent(ARBITRUM_DISPLAY_NAME);
+    expect(networkItems[2]).toHaveTextContent(
+      messages.networkNamePolygon.message,
     );
   });
 
