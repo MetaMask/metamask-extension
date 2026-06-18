@@ -230,6 +230,17 @@ export const selectIsMetamaskNotificationsEnabled = createSelector(
 );
 
 /**
+ * Selector to determine if feature announcements are enabled.
+ *
+ * @param {NotificationAppState} state - The current state of the Redux store.
+ * @returns {boolean} Returns true if feature announcements are enabled, false otherwise.
+ */
+export const selectIsFeatureAnnouncementsEnabled = createSelector(
+  [getMetamask],
+  (metamask): boolean => metamask.isFeatureAnnouncementsEnabled,
+);
+
+/**
  * Selector to determine if MetaMask notifications are currently being created.
  *
  * This selector checks the `isUpdatingMetamaskNotifications` property of the `metamask` state to see if the notifications are in the process of being created.

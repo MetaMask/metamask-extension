@@ -5,6 +5,7 @@ import {
 import { createMockNotificationEthReceived } from '@metamask/notification-services-controller/notification-services/mocks';
 import {
   selectIsMetamaskNotificationsEnabled,
+  selectIsFeatureAnnouncementsEnabled,
   getMetamaskNotifications,
   getMetamaskNotificationById,
   getMetamaskNotificationsReadList,
@@ -23,6 +24,7 @@ describe('Metamask Notifications Selectors', () => {
       subscriptionAccountsSeen: [] as string[],
       isMetamaskNotificationsFeatureSeen: true,
       isNotificationServicesEnabled: true,
+      isFeatureAnnouncementsEnabled: true,
       metamaskNotificationsList: mockNotifications,
       metamaskNotificationsReadList: [],
       isFetchingMetamaskNotifications: false,
@@ -43,6 +45,10 @@ describe('Metamask Notifications Selectors', () => {
 
   it('should select the isMetamaskNotificationsEnabled state', () => {
     expect(selectIsMetamaskNotificationsEnabled(mockState())).toBe(true);
+  });
+
+  it('should select the isFeatureAnnouncementsEnabled state', () => {
+    expect(selectIsFeatureAnnouncementsEnabled(mockState())).toBe(true);
   });
 
   it('should select the metamaskNotificationsList from state', () => {

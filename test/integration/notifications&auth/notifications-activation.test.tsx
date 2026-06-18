@@ -128,7 +128,7 @@ describe('Notifications Activation', () => {
         expect(enableMetamaskNotificationsCall?.[1]).toStrictEqual([
           {
             hasMarketingConsent: false,
-            productAnnouncementEnabled: true,
+            productAnnouncementEnabled: false,
           },
         ]);
       });

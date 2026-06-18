@@ -25,6 +25,7 @@ import {
   updateNotificationSubscriptionExpiration,
 } from '../../contexts/metamask-notifications/notification-storage-keys';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
+import { selectIsFeatureAnnouncementsEnabled } from 'ui/selectors/metamask-notifications/metamask-notifications';
 
 /**
  * useState that only applies updates while mounted. Prevents
@@ -168,6 +169,8 @@ export function useEnableNotifications(): {
   const hasMarketingConsent = Boolean(
     useSelector(getDataCollectionForMarketing),
   );
+  const isFeatureAnnouncementsEnabled =
+    useSelector(selectIsFeatureAnnouncementsEnabled) ?? true;
 
   const [error, setError] = useSafeState<string | null>(null);
 
@@ -178,7 +181,7 @@ export function useEnableNotifications(): {
       await dispatch(
         enableMetamaskNotifications({
           hasMarketingConsent,
-          productAnnouncementEnabled: true,
+          productAnnouncementEnabled: isFeatureAnnouncementsEnabled,
         }),
       );
       await updateNotificationSubscriptionExpiration();
@@ -187,7 +190,7 @@ export function useEnableNotifications(): {
       log.error(e);
       throw e;
     }
-  }, [dispatch, hasMarketingConsent, setError]);
+  }, [dispatch, hasMarketingConsent, isFeatureAnnouncementsEnabled, setError]);
 
   return {
     enableNotifications,

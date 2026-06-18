@@ -35,6 +35,7 @@ describe('useNotifications', () => {
       metamask: {
         isMetamaskNotificationsEnabled: false,
         isBackupAndSyncEnabled: false,
+        isFeatureAnnouncementsEnabled: false,
         dataCollectionForMarketing: true,
         internalAccounts: {
           accounts: [
@@ -109,7 +110,7 @@ describe('useNotifications', () => {
 
     expect(actions.enableMetamaskNotifications).toHaveBeenCalledWith({
       hasMarketingConsent: true,
-      productAnnouncementEnabled: true,
+      productAnnouncementEnabled: false,
     });
   });
 });
