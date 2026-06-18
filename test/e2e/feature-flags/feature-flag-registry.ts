@@ -2268,6 +2268,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  // A/B test (TAT-3382): "New" badge on the Perps tab label. Defaults to off so
+  // the experiment resolves to control (no badge) unless a test seeds a variant.
+  perpsTAT3382AbtestTabBadge: {
+    name: 'perpsTAT3382AbtestTabBadge',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: { enabled: false },
+    status: FeatureFlagStatus.Active,
+  },
+
   vipProgramEnabled: {
     name: 'vipProgramEnabled',
     type: FeatureFlagType.Remote,
