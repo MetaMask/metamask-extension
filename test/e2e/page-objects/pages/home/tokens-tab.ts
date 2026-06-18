@@ -375,7 +375,9 @@ class TokensTab extends HomePage {
       findElementGuard: this.importTokenModalTitle,
     });
     await this.driver.waitForSelector(this.tokenSearchInput);
-    await this.driver.fill(this.tokenSearchInput, tokenName);
+    // Keep paste to avoid flakiness because fill each word separately will cause the search to be triggered multiple times,
+    // and the list will be re-rendered multiple times, leading to flakiness.
+    await this.driver.pasteIntoField(this.tokenSearchInput, tokenName);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);
     await this.driver.waitForElementToStopMoving({ text: tokenName, tag: 'p' });

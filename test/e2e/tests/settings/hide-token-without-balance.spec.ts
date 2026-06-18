@@ -9,7 +9,6 @@ import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 describe('Hide tokens without balance', function (this: Suite) {
-  this.timeout(120000);
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // This script tests the "hide tokens without balance" feature in wallet settings, ensuring that tokens with zero        //
   // balances are correctly hidden from the tokens list tab when corresponding toggle is enabled.                       //
