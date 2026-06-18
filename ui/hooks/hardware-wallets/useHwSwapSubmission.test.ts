@@ -342,4 +342,153 @@ describe('useHwSwapSubmission', () => {
       });
     });
   });
+
+  describe('retrySubmission with firstSignatureDone', () => {
+    const createMockLockedQuoteWithApproval = (requestId: string) =>
+      ({
+        quote: { requestId },
+        quoteMetadata: {},
+        approval: { data: '0xapproval' },
+        trade: { data: '0xtrade' },
+      }) as never;
+
+    it('strips approval from lockedQuote when firstSignatureDone is true', async () => {
+      const lockedQuote = createMockLockedQuoteWithApproval('request-1');
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useHwSwapSubmission({
+            lockedQuote,
+            needsTwoConfirmations: true,
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            ),
+            dispatchSignatureEvent: mockDispatchSignatureEvent,
+            submitBridgeTransaction: mockSubmitBridgeTransaction,
+            firstSignatureDone: true,
+          }),
+        {},
+      );
+
+      await act(async () => {
+        await result.current.retrySubmission();
+      });
+
+      const [callArg] = mockSubmitBridgeTransaction.mock.lastCall;
+      expect(callArg.approval).toBeUndefined();
+      expect(callArg.trade).toEqual({ data: '0xtrade' });
+    });
+
+    it('does not strip approval when firstSignatureDone is false', async () => {
+      const lockedQuote = createMockLockedQuoteWithApproval('request-1');
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useHwSwapSubmission({
+            lockedQuote,
+            needsTwoConfirmations: true,
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+            dispatchSignatureEvent: mockDispatchSignatureEvent,
+            submitBridgeTransaction: mockSubmitBridgeTransaction,
+            firstSignatureDone: false,
+          }),
+        {},
+      );
+
+      mockSubmitBridgeTransaction.mockClear();
+
+      await act(async () => {
+        await result.current.retrySubmission();
+      });
+
+      const [callArg] = mockSubmitBridgeTransaction.mock.lastCall;
+      expect(callArg.approval).toEqual({ data: '0xapproval' });
+      expect(callArg.trade).toEqual({ data: '0xtrade' });
+    });
+
+    it('does not strip approval when firstSignatureDone is not provided', async () => {
+      const lockedQuote = createMockLockedQuoteWithApproval('request-1');
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useHwSwapSubmission({
+            lockedQuote,
+            needsTwoConfirmations: true,
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+            dispatchSignatureEvent: mockDispatchSignatureEvent,
+            submitBridgeTransaction: mockSubmitBridgeTransaction,
+          }),
+        {},
+      );
+
+      mockSubmitBridgeTransaction.mockClear();
+
+      await act(async () => {
+        await result.current.retrySubmission();
+      });
+
+      const [callArg] = mockSubmitBridgeTransaction.mock.lastCall;
+      expect(callArg.approval).toEqual({ data: '0xapproval' });
+    });
+
+    it('calls onResetFirstSignature when requestId changes', () => {
+      const onResetFirstSignature = jest.fn();
+      let lockedQuote = createMockLockedQuoteWithApproval('request-1');
+
+      const { rerender } = renderHookWithProvider(
+        () =>
+          useHwSwapSubmission({
+            lockedQuote,
+            needsTwoConfirmations: true,
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+            dispatchSignatureEvent: mockDispatchSignatureEvent,
+            submitBridgeTransaction: mockSubmitBridgeTransaction,
+            onResetFirstSignature,
+          }),
+        {},
+      );
+
+      // Initial mount fires the effect once for request-1.
+      expect(onResetFirstSignature).toHaveBeenCalledTimes(1);
+
+      rerender();
+      expect(onResetFirstSignature).toHaveBeenCalledTimes(1);
+
+      lockedQuote = createMockLockedQuoteWithApproval('request-2');
+      rerender();
+      expect(onResetFirstSignature).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not strip approval when lockedQuote has no approval field', async () => {
+      const lockedQuote = createMockLockedQuote('request-1');
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useHwSwapSubmission({
+            lockedQuote,
+            needsTwoConfirmations: false,
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            ),
+            dispatchSignatureEvent: mockDispatchSignatureEvent,
+            submitBridgeTransaction: mockSubmitBridgeTransaction,
+            firstSignatureDone: true,
+          }),
+        {},
+      );
+
+      await act(async () => {
+        await result.current.retrySubmission();
+      });
+
+      const [callArg] = mockSubmitBridgeTransaction.mock.lastCall;
+      expect(callArg).toBe(lockedQuote);
+    });
+  });
 });

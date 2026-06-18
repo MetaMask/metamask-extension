@@ -9,6 +9,7 @@ import {
   completeVaultRecoveryOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import {
+  getBackupVault,
   getFirstAddress,
   onboardThenTriggerCorruptionFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
@@ -23,10 +24,6 @@ describe('Vault Corruption', function () {
   // (which reads persisted/backup state) must complete before the event is
   // transmitted. Under CI load this can take a while, so we allow a generous wait.
   const WAIT_FOR_SENTRY_MS = 30000;
-
-  // The encrypted vault is mirrored to the backup IndexedDB asynchronously after
-  // onboarding, so we poll for it rather than reading once (which can race).
-  const WAIT_FOR_BACKUP_MS = 30000;
 
   /**
    * Script template to simulate a broken database.
@@ -63,32 +60,6 @@ describe('Vault Corruption', function () {
   const breakPrimaryDatabaseOnlyScript = createCorruptionScript(
     reloadAndCallbackScript,
   );
-
-  /**
-   * Script to retrieve the encrypted vault from the backup database.
-   */
-  const getBackupVaultScript = `
-    const callback = arguments[arguments.length - 1];
-    const request = globalThis.indexedDB.open('metamask-backup', 1);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains('store')) {
-        db.createObjectStore('store');
-      }
-    };
-    request.onsuccess = () => {
-      const db = request.result;
-      const transaction = db.transaction('store', 'readonly');
-      const store = transaction.objectStore('store');
-      const getRequest = store.get('KeyringController');
-      getRequest.onsuccess = () => {
-        const keyringController = getRequest.result;
-        callback(keyringController?.vault ?? null);
-      };
-      getRequest.onerror = () => callback(null);
-    };
-    request.onerror = () => callback(null);
-  `;
 
   async function mockSentryMissingVaultError(
     mockServer: MockttpServer,
@@ -193,21 +164,12 @@ describe('Vault Corruption', function () {
           driver,
           breakPrimaryDatabaseOnlyScript,
           {
-            participateInMetaMetrics: true,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           },
         );
 
-        // The vault is mirrored to the backup IndexedDB asynchronously, so poll
-        // until it is present. driver.wait does not return the condition value,
-        // so we capture it via closure.
-        let capturedVault: string | null = null;
-        await driver.wait(async () => {
-          capturedVault = (await driver.executeAsyncScript(
-            getBackupVaultScript,
-          )) as string | null;
-          return Boolean(capturedVault);
-        }, WAIT_FOR_BACKUP_MS);
-        const backupVault = capturedVault as string | null;
+        const backupVault = await getBackupVault(driver);
         assert.ok(backupVault, 'Expected backup vault to exist');
 
         await driver.wait(async () => {

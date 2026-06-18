@@ -99,11 +99,14 @@ test/e2e/tests/perps/ @MetaMask/perps
 docs/perps/ @MetaMask/perps
 **/perps/** @MetaMask/perps
 
-# Snaps
-**/snaps/**                          @MetaMask/core-platform
-shared/constants/permissions.ts      @MetaMask/core-platform
-ui/helpers/utils/permission.js       @MetaMask/core-platform
-app/scripts/constants/snaps.ts       @MetaMask/core-platform
+# Core Platform
+**/snaps/**                                                @MetaMask/core-platform
+shared/constants/permissions.ts                            @MetaMask/core-platform
+ui/helpers/utils/permission.js                             @MetaMask/core-platform
+app/scripts/constants/snaps.ts                             @MetaMask/core-platform
+app/scripts/services/legacy-background-api-service.ts      @MetaMask/core-platform
+app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platform
+
 
 # Co-owned by Confirmations and Snaps
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
@@ -111,8 +114,11 @@ ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/c
 # Core Extension UX
 ui/components/app/whats-new-popup               @MetaMask/core-extension-ux
 ui/css                                          @MetaMask/core-extension-ux
+shared/lib/activity                             @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
+ui/pages/activity                               @MetaMask/core-extension-ux
 ui/pages/core                                   @MetaMask/core-extension-ux
+ui/pages/permissions-connect/                   @MetaMask/core-extension-ux
 ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
 ui/components/app/transaction-list              @MetaMask/core-extension-ux
@@ -269,3 +275,8 @@ app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platfor
 ui/hooks/gator-permissions                           @MetaMask/delegation
 app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
 shared/lib/gator-permissions                         @MetaMask/delegation
+
+# Snapshots – no code owners assigned
+# This allows anyone with write access to approve changes to any *.snap files.
+# ⚠️ Note: Leaving this rule unassigned disables Code Owner review enforcement for snapshot files.
+**/*.snap

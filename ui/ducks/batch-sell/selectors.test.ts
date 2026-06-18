@@ -17,6 +17,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { getBridgeAssetsByAssetId } from '../bridge/asset-selectors';
 import {
   getAvailableBatchSellNetworks,
+  getAvailableBatchSellReceiveAssetsForNetwork,
   getBatchSellDestStablecoinsForNetwork,
   getAvailableBatchSellSwapAssetsForNetwork,
 } from './selectors';
@@ -522,6 +523,60 @@ describe('batch-sell selectors', () => {
       expect(result[0].symbol).toBe('ETH');
     });
 
+    it('filters out tokens whose name includes "Ondo Tokenized"', () => {
+      const ONDO_ASSET_ID =
+        `${CAIP_MAINNET}/erc20:0xBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb` as CaipChainId;
+      const ONDO_BRIDGE_TOKEN = {
+        assetId: ONDO_ASSET_ID,
+        chainId: CAIP_MAINNET,
+        symbol: 'OUSG',
+        name: 'Ondo Tokenized Short-Term US Government Bond Fund',
+        decimals: 18,
+        balance: '5',
+        tokenFiatAmount: 500,
+        iconUrl: undefined,
+      };
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
+        [ONDO_ASSET_ID.toLowerCase()]: ONDO_BRIDGE_TOKEN,
+      } as never);
+
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
+        buildState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].symbol).toBe('ETH');
+    });
+
+    it('does not filter out tokens whose name only partially resembles "Ondo Tokenized"', () => {
+      const OTHER_ASSET_ID =
+        `${CAIP_MAINNET}/erc20:0xCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCc` as CaipChainId;
+      const OTHER_BRIDGE_TOKEN = {
+        assetId: OTHER_ASSET_ID,
+        chainId: CAIP_MAINNET,
+        symbol: 'ONDO',
+        name: 'Ondo Finance',
+        decimals: 18,
+        balance: '10',
+        tokenFiatAmount: 100,
+        iconUrl: undefined,
+      };
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
+        [OTHER_ASSET_ID.toLowerCase()]: OTHER_BRIDGE_TOKEN,
+      } as never);
+
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
+        buildState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(2);
+      expect(result.map((a) => a.symbol)).toContain('ONDO');
+    });
+
     it('populates tokenFiatPrice and percentageChange from marketData for EVM native asset', () => {
       mockGetBridgeAssetsByAssetId.mockReturnValue({
         [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
@@ -618,6 +673,188 @@ describe('batch-sell selectors', () => {
       expect(result).toHaveLength(1);
       expect(result[0].tokenFiatPrice).toBe(150);
       expect(result[0].percentageChange).toBe(3.5);
+    });
+  });
+
+  describe('getAvailableBatchSellReceiveAssetsForNetwork', () => {
+    // USDC on Mainnet – present in BATCH_SELL_DEST_STABLECOIN_METADATA (lowercase key)
+    const USDC_MAINNET_ASSET_ID =
+      'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+    // The selector reads state.metamask.tokensChainsCache directly, so every
+    // test needs a state object that at least has metamask.tokensChainsCache.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const buildReceiveState = (tokensChainsCache: any = {}): any => ({
+      metamask: { tokensChainsCache },
+    });
+
+    beforeEach(() => {
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [USDC_MAINNET_ASSET_ID],
+          },
+        },
+      } as never);
+      mockGetBridgeAssetsByAssetId.mockReturnValue({});
+    });
+
+    it('returns empty array when chainId is undefined', () => {
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        undefined,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns the held asset when the user holds the stablecoin', () => {
+      const heldToken = {
+        assetId: USDC_MAINNET_ASSET_ID as CaipChainId,
+        chainId: CAIP_MAINNET,
+        symbol: 'USDC',
+        name: 'USD Coin',
+        decimals: 6,
+        balance: '250',
+        tokenFiatAmount: 250,
+        iconUrl: 'https://held.example/usdc.png',
+      };
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [USDC_MAINNET_ASSET_ID]: heldToken,
+      } as never);
+
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toMatchObject({
+        assetId: USDC_MAINNET_ASSET_ID,
+        balance: '250',
+        iconUrl: 'https://held.example/usdc.png',
+      });
+    });
+
+    it('returns static metadata when the stablecoin is not held by the user', () => {
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toMatchObject({
+        assetId: USDC_MAINNET_ASSET_ID,
+        symbol: 'USDC',
+        name: 'USD Coin',
+        decimals: 6,
+        balance: '0',
+      });
+      // iconUrl comes from the static CDN URL in BATCH_SELL_DEST_STABLECOIN_METADATA
+      expect(result[0].iconUrl).toContain('metamask.io');
+    });
+
+    it('falls back to tokensChainsCache when stablecoin is absent from static metadata', () => {
+      // A token address not present in BATCH_SELL_DEST_STABLECOIN_METADATA
+      const UNKNOWN_ASSET_ID =
+        'eip155:1/erc20:0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [UNKNOWN_ASSET_ID],
+          },
+        },
+      } as never);
+
+      const state = buildReceiveState({
+        '0x1': {
+          data: {
+            '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa': {
+              symbol: 'UNKN',
+              name: 'Unknown Token',
+              decimals: 18,
+              iconUrl: 'https://example.com/unkn.png',
+            },
+          },
+        },
+      });
+
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        state,
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toMatchObject({
+        assetId: UNKNOWN_ASSET_ID,
+        symbol: 'UNKN',
+        name: 'Unknown Token',
+        decimals: 18,
+        balance: '0',
+        iconUrl: 'https://example.com/unkn.png',
+      });
+    });
+
+    it('filters out stablecoins absent from both static metadata and cache', () => {
+      const UNKNOWN_ASSET_ID =
+        'eip155:1/erc20:0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [UNKNOWN_ASSET_ID],
+          },
+        },
+      } as never);
+
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('static metadata path sets balance to "0" and supplies an iconUrl', () => {
+      const [asset] = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        CAIP_MAINNET,
+      );
+
+      expect(asset.balance).toBe('0');
+      expect(asset.iconUrl).toBeTruthy();
+    });
+
+    it('cache path applies a fallback iconUrl when the cache entry has none', () => {
+      const UNKNOWN_ASSET_ID =
+        'eip155:1/erc20:0xcccccccccccccccccccccccccccccccccccccccc';
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [UNKNOWN_ASSET_ID],
+          },
+        },
+      } as never);
+
+      const state = buildReceiveState({
+        '0x1': {
+          data: {
+            // no iconUrl property
+            '0xcccccccccccccccccccccccccccccccccccccccc': {
+              symbol: 'CCCC',
+              name: 'CToken',
+              decimals: 6,
+            },
+          },
+        },
+      });
+
+      const [asset] = getAvailableBatchSellReceiveAssetsForNetwork(
+        state,
+        CAIP_MAINNET,
+      );
+
+      // The selector applies getAssetImageUrl as a final fallback
+      expect(asset.iconUrl).toBeTruthy();
     });
   });
 

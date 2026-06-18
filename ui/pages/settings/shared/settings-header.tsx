@@ -108,7 +108,7 @@ export const SettingsHeader = ({
       <ButtonIcon
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
         onClick={onClose}
         data-testid="settings-header-back-button"
       />

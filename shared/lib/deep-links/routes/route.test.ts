@@ -33,6 +33,15 @@ describe('Route', () => {
     expect(route.handler).toBe(mockHandler);
   });
 
+  it('defaults handlerSearchParams to canonical', () => {
+    expect(route.handlerSearchParams).toBe('canonical');
+  });
+
+  it('assigns handlerSearchParams from options', () => {
+    route = new Route({ ...options, handlerSearchParams: 'original' });
+    expect(route.handlerSearchParams).toBe('original');
+  });
+
   it('should call getTitle with URLSearchParams', () => {
     const params = new URLSearchParams({ foo: 'bar' });
     route.getTitle(params);
