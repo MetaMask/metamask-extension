@@ -502,6 +502,17 @@
     "message": "Minted $1",
     "description": "$1 is the NFT token symbol"
   },
+  "activity_nftSell_failed_title": {
+    "message": "Sale failed"
+  },
+  "activity_nftSell_pending_title": {
+    "message": "Selling $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftSell_success_title": {
+    "message": "Sold $1",
+    "description": "$1 is the NFT token symbol"
+  },
   "activity_perpsAddFunds_failed_description": {
     "message": "Funding failed"
   },
