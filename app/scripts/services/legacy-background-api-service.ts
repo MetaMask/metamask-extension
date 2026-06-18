@@ -14,7 +14,7 @@ import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerImportAccountWithStrategyAction,
   KeyringControllerRemoveAccountAction,
-  KeyringControllerWithKeyringAction,
+  KeyringControllerWithKeyringV2Action,
 } from '@metamask/keyring-controller';
 import {
   AccountsControllerGetAccountByAddressAction,
@@ -120,7 +120,7 @@ type AllowedActions =
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
-  | KeyringControllerWithKeyringAction
+  | KeyringControllerWithKeyringV2Action
   | MetaMetricsControllerTrackEventAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
@@ -338,7 +338,7 @@ export class LegacyBackgroundApiService {
   async getSeedPhrase(password: string, keyringId?: string): Promise<Buffer> {
     const seedPhrase = await this.#messenger.call(
       'KeyringController:exportSeedPhrase',
-      password,
+      { password },
       keyringId,
     );
 
@@ -492,18 +492,30 @@ export class LegacyBackgroundApiService {
     );
 
     if (isSocialLoginFlow) {
-      // Use withKeyring to get keyring metadata for an address
+      const importedAccount = this.#messenger.call(
+        'AccountsController:getAccountByAddress',
+        importedAccountAddress,
+      );
+      if (!importedAccount) {
+        throw new Error(
+          `No account found for address: ${importedAccountAddress}`,
+        );
+      }
+
       const { id: keyringId, privateKey: privateKeyFromKeyring } =
         (await this.#messenger.call(
-          'KeyringController:withKeyring',
+          'KeyringController:withKeyringV2',
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
-            // We can be sure that the keyring supports exporting accounts because this is a SimpleKeyring.
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const privateKey = await keyring.exportAccount!(
-              importedAccountAddress,
+            if (!keyring.exportAccount) {
+              throw new Error(
+                'Imported account keyring does not export accounts',
+              );
+            }
+            const privateKeyObj = await keyring.exportAccount(
+              importedAccount.id,
             );
-            return { id: metadata.id, privateKey };
+            return { id: metadata.id, privateKey: privateKeyObj.privateKey };
           },
         )) as { id: string; privateKey: string };
 

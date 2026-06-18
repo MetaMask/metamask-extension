@@ -47,7 +47,7 @@ export const ModalHeader = ({
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={onBack}
             {...backButtonProps}
           />
@@ -61,7 +61,7 @@ export const ModalHeader = ({
           <ButtonIcon
             iconName={IconName.Close}
             ariaLabel={t('close')}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={onClose}
             {...closeButtonProps}
           />

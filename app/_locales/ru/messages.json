@@ -7,12 +7,6 @@
     "message": "Загрузка занимает больше времени, чем обычно.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Ошибка"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Несоответствующие данные транзакции. Проверьте ее реквизиты."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Больше нет счетов. Если вы хотите получить доступ к другому счету, не указанному ниже, повторно подключите аппаратный кошелек и выберите его."
   },
@@ -69,6 +63,18 @@
   "acceptTermsOfUse": {
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
+  },
+  "accessRestrictedContactSupport": {
+    "message": "Связаться с поддержкой"
+  },
+  "accessRestrictedDescriptionLine1": {
+    "message": "Этот адрес кошелька был отмечен во время проверки на соответствие требованиям. В результате некоторые сервисы MetaMask недоступны."
+  },
+  "accessRestrictedDescriptionLine2": {
+    "message": "Если вы считаете, что это ошибка, обратитесь в службу поддержки для запроса проверки."
+  },
+  "accessRestrictedTitle": {
+    "message": "Доступ ограничен"
   },
   "accessingYourCamera": {
     "message": "Доступ к камере..."
@@ -290,11 +296,26 @@
   "activity_contractDeployment_success_title": {
     "message": "Контракт развернут"
   },
+  "activity_contractInteraction_failed_description": {
+    "message": "С $1",
+    "description": "$1 is the shortened contract address"
+  },
   "activity_contractInteraction_failed_title": {
     "message": "Ошибка взаимодействия"
   },
+  "activity_contractInteraction_pending_description": {
+    "message": "С $1",
+    "description": "$1 is the shortened contract address"
+  },
   "activity_contractInteraction_pending_title": {
     "message": "Взаимодействие выполняется"
+  },
+  "activity_contractInteraction_success_description": {
+    "message": "С $1",
+    "description": "$1 is the shortened contract address"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "Взаимодействие по контракту"
   },
   "activity_convert_failed_description": {
     "message": "Ошибка конвертации"
@@ -312,6 +333,10 @@
   },
   "activity_convert_success_description": {
     "message": "Сконвертировано в $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_title": {
+    "message": "Обменян $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -366,6 +391,12 @@
   "activity_lendingDeposit_failed_title": {
     "message": "Ошибка депозита"
   },
+  "activity_lendingDeposit_pending_title": {
+    "message": "Кредитный депозит"
+  },
+  "activity_lendingDeposit_success_title": {
+    "message": "Кредитный депозит"
+  },
   "activity_lendingWithdrawal_failed_description": {
     "message": "Ошибка вывода средств"
   },
@@ -379,6 +410,9 @@
   "activity_lendingWithdrawal_pending_title": {
     "message": "Вывод $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "Вывод кредита"
   },
   "activity_marketCloseShort_failed_description": {
     "message": "Ошибка закрытия короткой позиции"
@@ -415,6 +449,17 @@
   },
   "activity_marketShort_success_title": {
     "message": "Короткая позиция закрыта — рынок"
+  },
+  "activity_nftBuy_failed_title": {
+    "message": "Ошибка покупки"
+  },
+  "activity_nftBuy_pending_title": {
+    "message": "Покупка $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftBuy_success_title": {
+    "message": "Куплено $1",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_failed_title": {
     "message": "Ошибка минтинга"
@@ -607,7 +652,6 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Открыта длинная позиция"
   },
-
   "activity_perpsOpenShort_failed_description": {
     "message": "Ошибка открытия короткой позиции"
   },
@@ -1485,21 +1529,9 @@
   "assetsDescription": {
     "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
   },
-  "asterdexReferralConfirmText": {
-    "message": "Да, получить 4% возврата",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "Получайте 4% кэшбэка от сделок с реферальным кодом MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "Получайте возврат 4% со сделок по реферальному коду MetaMask. Эта скидка применяется ко всем будущим сделкам согласно $1 AsterDEX.\nMetaMask взимает комиссию.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "Получите возврат 4% на AsterDEX",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Бесплатная попытка отменить своп"
@@ -1692,6 +1724,54 @@
   "basicFunctionalityRequired_toggleLabel": {
     "message": "Базовый функционал"
   },
+  "batchSell": {
+    "message": "Пакетная продажа"
+  },
+  "batchSellContinueNAssetsCTAPlural": {
+    "message": "Продолжить с ($1) токенами"
+  },
+  "batchSellContinueNAssetsCTASingle": {
+    "message": "Продолжить с ($1) токеном"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "Нет токенов. Нет проблем. Ищите и покупайте токены для пакетной продажи."
+  },
+  "batchSellGetNewQuotes": {
+    "message": "Получить новые котировки"
+  },
+  "batchSellHighRateAlert": {
+    "message": "Предупреждение о высоком курсе"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "Пакетная продажа одного токена может привести к более высокому курсу. Хотите вместо этого выполнить своп?"
+  },
+  "batchSellMaxSelectedTokens": {
+    "message": "Разрешено не более $1 токенов"
+  },
+  "batchSellMinimumReceiveExplanation": {
+    "message": "Минимальная сумма, которую вы получите, если цена изменится во время обработки вашей транзакции, рассчитывается исходя из вашей допустимой задержки. Это оценка, предоставленная нашими поставщиками ликвидности. Окончательные суммы могут отличаться."
+  },
+  "batchSellNetworkFeeTooltip": {
+    "message": "Комиссии сети зависят от загруженности сети и сложности транзакции."
+  },
+  "batchSellReceiveStablecoin": {
+    "message": "Выберите стейблкоин"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "Все токены должны быть в одной сети."
+  },
+  "batchSellSelectHeaderTitle": {
+    "message": "Выберите до 5 токенов"
+  },
+  "batchSellSlippageDescription": {
+    "message": "Ваша транзакция не будет завершена, если изменение цены превысит допустимый процент проскальзывания."
+  },
+  "batchSellYouSellTokenCount": {
+    "message": "$1 токен"
+  },
+  "batchSellYouSellTokenCountPlural": {
+    "message": "$1 токенов"
+  },
   "bestQuote": {
     "message": "Лучшая котировка"
   },
@@ -1792,6 +1872,9 @@
   "bridge": {
     "message": "Мост"
   },
+  "bridgeAgain": {
+    "message": "Повторить мост"
+  },
   "bridgeAllowSwappingOf": {
     "message": "Разрешить точный доступ к $1, $2 и $3 для создания моста",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -1821,6 +1904,9 @@
   },
   "bridgeExplorerLinkViewOn": {
     "message": "Смотреть на $1"
+  },
+  "bridgeExplorerPopupDescription": {
+    "message": "Эта транзакция существует в двух сетях. Одна ссылка показывает источник, а другая — пункт назначения после подтверждения транзакции."
   },
   "bridgeFee": {
     "message": "Комиссия моста"
@@ -2963,6 +3049,9 @@
   "dateCreated": {
     "message": "Дата создания"
   },
+  "day": {
+    "message": "День"
+  },
   "debitCreditPurchaseOptions": {
     "message": "Варианты покупки с помощью дебетовой или кредитной карты"
   },
@@ -2994,6 +3083,12 @@
   },
   "decryptRequest": {
     "message": "Расшифровать запрос"
+  },
+  "deepLinkQrPredictDescription": {
+    "message": "Чтобы получить доступ к Рынкам прогнозов MetaMask, отсканируйте QR-код своим мобильным устройством."
+  },
+  "deepLinkQrPredictTitle": {
+    "message": "Открыть Рынок прогнозов на мобильном"
   },
   "deepLink_Caution": {
     "message": "Действуйте с осторожностью"
@@ -3107,17 +3202,12 @@
   "defiEmptyDescription": {
     "message": "Давайте в долг, занимайте и торгуйте прямо в своем кошельке."
   },
+  "defiIcon": {
+    "message": "Значок DeFi"
+  },
   "defiReferralCheckboxLabel": {
     "message": "Разрешите MetaMask добавлять реферальный код. Это действие нельзя отменить. Сайт предлагает скидки в соответствии со своими условиями. MetaMask получает комиссию.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
-  "defiReferralNoThanks": {
-    "message": "Нет, спасибо",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "условиями",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3449,9 +3539,6 @@
   "enabled": {
     "message": "Включено"
   },
-  "enabledNetworks": {
-    "message": "Включенные сети"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 запрашивает ваш открытый ключ шифрования. После получения вашего согласия на это данный сайт сможет создавать зашифрованные сообщения для отправки в ваш адрес.",
     "description": "$1 is the web3 site name"
@@ -3645,6 +3732,9 @@
   },
   "exploreDefi": {
     "message": "Изучить DeFi"
+  },
+  "exploreTokens": {
+    "message": "Обзор токенов"
   },
   "exportYourData": {
     "message": "Экспортируйте свои данные"
@@ -3983,21 +4073,9 @@
     "message": "Подготовьте свой кошелек к использованию web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "Да, сэкономить 5%",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "Экономьте до 5% на сделках с реферальным кодом MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "Экономьте 5% на сделках с реферальным кодом MetaMask. Эта скидка применяется ко всем будущим сделкам согласно $1 GMX. MetaMask взимает комиссию.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "Сэкономьте 5% на GMX",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Перейти на сайт"
@@ -4083,6 +4161,39 @@
   "hardwareWalletLookingForDevice": {
     "message": "Ищем ваше устройство $1…",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletRepairDetecting": {
+    "message": "Обнаружение устройства..."
+  },
+  "hardwareWalletRepairDeviceNotDetected": {
+    "message": "Устройство не обнаружено. Проверьте предыдущие шаги и повторите попытку."
+  },
+  "hardwareWalletRepairLink": {
+    "message": "Переподключиться с самого начала"
+  },
+  "hardwareWalletRepairPermissionsTitle": {
+    "message": "Предоставить MetaMask разрешения:"
+  },
+  "hardwareWalletRepairStepOneDescription": {
+    "message": "Убедитесь, что USB-кабель надежно подключен к устройству и компьютеру. Попробуйте другой USB-порт или кабель."
+  },
+  "hardwareWalletRepairStepOneTitle": {
+    "message": "Проверьте USB-соединение"
+  },
+  "hardwareWalletRepairStepTwoDescription": {
+    "message": "Введите свой PIN-код, чтобы разблокировать аппаратный кошелек."
+  },
+  "hardwareWalletRepairStepTwoTitle": {
+    "message": "Разблокируйте свое устройство"
+  },
+  "hardwareWalletRepairSuccessDescription": {
+    "message": "Ваше устройство успешно переподключено. Вы можете закрыть эту вкладку."
+  },
+  "hardwareWalletRepairSuccessTitle": {
+    "message": "Устройство подключено"
+  },
+  "hardwareWalletRepairTitle": {
+    "message": "Подключить аппаратное устройство"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Убедитесь, что $1 подключен, и выберите приложение Ethereum."
@@ -4212,21 +4323,9 @@
   "honeypotTitle": {
     "message": "Ловушка"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "Да, сэкономить 4%",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Экономьте до 4% на сделках с реферальным кодом MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "Экономьте 4% на сделках с реферальным кодом MetaMask. Применяется ко всем будущим сделкам согласно $1 Hyperliquid. MetaMask взимает комиссию.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "Сэкономьте 4% на Hyperliquid",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Я понимаю"
@@ -5444,6 +5543,9 @@
   "newCustomTokenAdded": {
     "message": "«$1» успешно добавлен!"
   },
+  "newNFTDetectedInImportNFTsMessageStrongText": {
+    "message": "Настройки > Активы"
+  },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "Чтобы использовать OpenSea для просмотра своих NFT, включите «Показать носитель NFT» в $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
@@ -5572,6 +5674,9 @@
   },
   "noOptionsAvailableMessage": {
     "message": "Этот торговый путь сейчас недоступен. Попробуйте изменить сумму, сеть или токен и мы подберем лучший вариант."
+  },
+  "noQuoteAvailable": {
+    "message": "Нет доступных котировок"
   },
   "noSnaps": {
     "message": "Snaps не установлены."
@@ -6552,6 +6657,9 @@
     "message": "Доступно для торговли",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBalance": {
+    "message": "Баланс перпов"
+  },
   "perpsBasicFunctionalityOff": {
     "message": "Эта функция недоступна, пока отключены базовые функции."
   },
@@ -6581,6 +6689,12 @@
   },
   "perpsCloseAll": {
     "message": "Закрыть все"
+  },
+  "perpsCloseAllDescription": {
+    "message": "Мы закроем все ваши открытые позиции по текущей рыночной цене."
+  },
+  "perpsCloseAllPositions": {
+    "message": "Закрыть все позиции"
   },
   "perpsCloseAmount": {
     "message": "Сумма закрытия"
@@ -6698,11 +6812,20 @@
   "perpsFilterCrypto": {
     "message": "Крипто"
   },
+  "perpsFilterEtf": {
+    "message": "ETF"
+  },
   "perpsFilterForex": {
     "message": "Валюты"
   },
+  "perpsFilterIndex": {
+    "message": "Указатель"
+  },
   "perpsFilterNew": {
     "message": "Новые"
+  },
+  "perpsFilterPreIpo": {
+    "message": "До IPO"
   },
   "perpsFilterStocks": {
     "message": "Акции"
@@ -6733,6 +6856,9 @@
   },
   "perpsInsufficientMargin": {
     "message": "Недостаточно маржи для размещения этого ордера."
+  },
+  "perpsKeepPositions": {
+    "message": "Сохранить позиции"
   },
   "perpsLearnBasics": {
     "message": "Изучите основы перпов"
@@ -6927,8 +7053,26 @@
   "perpsSize": {
     "message": "Размер"
   },
+  "perpsSlippage": {
+    "message": "Проскальзывание"
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "Ваша транзакция не будет выполнена, если цена выйдет за пределы этого порога."
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "Установить проскальзывание"
+  },
+  "perpsSlippageCustom": {
+    "message": "Пользовательские"
+  },
   "perpsSlippageExceeded": {
     "message": "Превышен показатель проскальзывания. Откорректируйте допустимое проскальзывание и попробуйте снова."
+  },
+  "perpsSlippageInputLabel": {
+    "message": "Макс. процент проскальзывания"
+  },
+  "perpsSlippageSet": {
+    "message": "Установить"
   },
   "perpsSortByFundingRate": {
     "message": "Ставка финансирования"
@@ -7018,6 +7162,22 @@
   "perpsToastCancelOrderSuccess": {
     "message": "Ордер отменен",
     "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseAllFailed": {
+    "message": "Не удалось закрыть позиции",
+    "description": "Error toast text shown when batch closing all perps positions fails"
+  },
+  "perpsToastCloseAllInProgress": {
+    "message": "Закрытие всех позиций",
+    "description": "In-progress toast text shown while batch closing all perps positions"
+  },
+  "perpsToastCloseAllPartial": {
+    "message": "Закрыты $1 из $2 позиций",
+    "description": "Warning toast text shown when only some perps positions were successfully closed. $1 is success count, $2 is total attempted count."
+  },
+  "perpsToastCloseAllSuccess": {
+    "message": "Все позиции закрыты",
+    "description": "Success toast text shown when all perps positions are successfully closed"
   },
   "perpsToastCloseFailed": {
     "message": "Не удалось закрыть позицию",
@@ -7579,6 +7739,10 @@
     "message": "Необходим доступ к камере",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorMismatchedTransactionTitle": {
+    "message": "Неверный QR-код",
+    "description": "Title shown when a signature QR belongs to a different transaction."
+  },
   "qrErrorNonUrPairingBody": {
     "message": "Вернитесь в свой аппаратный кошелек и найдите опцию поделиться или экспортировать свои счета, выберите MetaMask, затем отсканируйте QR-код.",
     "description": "Body text for the non-UR QR code error during pairing."
@@ -8081,6 +8245,9 @@
     "message": "Поиск по вашим счетам",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
+  "searchingForBestQuotes": {
+    "message": "Поиск наилучшх котировок"
+  },
   "second": {
     "message": "сек."
   },
@@ -8215,6 +8382,9 @@
   },
   "selectedAccountMismatch": {
     "message": "Выбран другой счет"
+  },
+  "sellAll": {
+    "message": "Продать все"
   },
   "send": {
     "message": "Отправить"
@@ -9724,6 +9894,9 @@
   "swapAdjustSlippage": {
     "message": "Откорректировать проскальзывание"
   },
+  "swapAgain": {
+    "message": "Повторить своп"
+  },
   "swapAggregator": {
     "message": "Агрегатор"
   },
@@ -10071,9 +10244,6 @@
   "termsOfUseTitle": {
     "message": "Наши Условия использования обновлены"
   },
-  "testNetworks": {
-    "message": "Протестировать сети"
-  },
   "testnets": {
     "message": "Тестнеты"
   },
@@ -10189,6 +10359,12 @@
   },
   "total": {
     "message": "Итого"
+  },
+  "totalAmount": {
+    "message": "Общая сумма"
+  },
+  "totalReceived": {
+    "message": "Всего получено"
   },
   "totalVolume": {
     "message": "Общий объем"
@@ -10431,6 +10607,10 @@
   },
   "unexpectedBehavior": {
     "message": "Такое поведение является неожиданным, и о нем следует сообщить как об ошибке, даже если ваши счета восстановлены."
+  },
+  "unexpectedError": {
+    "message": "Произошла неожиданная ошибка.",
+    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Разрешите точный доступ к $1 $2 на $3 для обмена"
@@ -10754,6 +10934,9 @@
   "yes": {
     "message": "Да"
   },
+  "yesSwap": {
+    "message": "Да, выполнить своп"
+  },
   "you": {
     "message": "Вы"
   },
@@ -10766,6 +10949,9 @@
   "youReceived": {
     "message": "Вы получили",
     "description": "Label indicating the amount and asset the user received."
+  },
+  "youSell": {
+    "message": "Вы продаете"
   },
   "youSent": {
     "message": "Вы отправили",

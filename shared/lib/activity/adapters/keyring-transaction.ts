@@ -1,11 +1,22 @@
 import {
+  isCrossChain,
+  StatusTypes as BridgeStatusTypes,
+} from '@metamask/bridge-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import {
   type Transaction,
   TransactionStatus as KeyringTransactionStatus,
   TransactionType as KeyringTransactionType,
 } from '@metamask/keyring-api';
-import type { ActivityListItem, Status, TokenAmount } from '../types';
+import type {
+  ActivityFee,
+  ActivityListItem,
+  Status,
+  TokenAmount,
+} from '../types';
 
 type Movement = Transaction['from'][number];
+type Fee = Transaction['fees'][number];
 type FungibleAsset = Extract<
   NonNullable<Movement['asset']>,
   { fungible: true }
@@ -56,76 +67,115 @@ function getToken(
   };
 }
 
-function aggregateMovementAmount(movements: Movement[]) {
-  const amountByAssetType: Record<
-    string,
-    {
-      amount: number;
-      unit: string;
-    }
-  > = {};
+function getFee(fee: Fee): ActivityFee | undefined {
+  const { asset } = fee;
 
-  for (const movement of movements) {
-    if (!hasFungibleAsset(movement)) {
-      continue;
-    }
-
-    const { type: assetType, unit } = movement.asset;
-    const parsedAmount = Number.parseFloat(movement.asset.amount);
-    const normalizedAmount = Number.isFinite(parsedAmount) ? parsedAmount : 0;
-
-    if (!amountByAssetType[assetType]) {
-      amountByAssetType[assetType] = {
-        amount: normalizedAmount,
-        unit,
-      };
-      continue;
-    }
-
-    amountByAssetType[assetType].amount += normalizedAmount;
-  }
-
-  const entries = Object.entries(amountByAssetType);
-  if (entries.length !== 1) {
+  if (asset.fungible !== true) {
     return undefined;
   }
 
-  const [assetType, aggregate] = entries[0];
   return {
-    assetType,
-    amount: String(aggregate.amount),
-    unit: aggregate.unit,
+    type: fee.type,
+    amount: asset.amount,
+    symbol: asset.unit,
+    assetId: asset.type,
   };
+}
+
+function getFees(transaction: Transaction) {
+  return transaction.fees.flatMap((fee) => {
+    const mappedFee = getFee(fee);
+
+    return mappedFee ? [mappedFee] : [];
+  });
+}
+
+function mapBridgeStatus(bridgeStatus: BridgeStatusTypes): Status {
+  switch (bridgeStatus) {
+    case BridgeStatusTypes.FAILED:
+      return 'failed';
+    case BridgeStatusTypes.COMPLETE:
+      return 'success';
+    case BridgeStatusTypes.PENDING:
+    case BridgeStatusTypes.SUBMITTED:
+    default:
+      return 'pending';
+  }
 }
 
 // Converts keyring API transactions into the shared activity item shape
 export function mapKeyringTransaction({
   transaction,
+  subjectAddress,
+  bridgeHistory,
 }: {
   transaction: Transaction;
+  subjectAddress?: string;
+  bridgeHistory?: BridgeHistoryItem;
 }): ActivityListItem {
   const status = mapStatus(transaction.status);
   const timestamp = mapTimestamp(transaction.timestamp);
   const chainId = transaction.chain;
-  const from = getAddress(transaction.from);
-  const to = getAddress(transaction.to);
+
+  const from =
+    transaction.type === KeyringTransactionType.Send && subjectAddress
+      ? subjectAddress
+      : getAddress(transaction.from);
+
+  const to =
+    transaction.type === KeyringTransactionType.Receive && subjectAddress
+      ? subjectAddress
+      : getAddress(transaction.to);
+
+  const fees = getFees(transaction);
 
   if (transaction.type === KeyringTransactionType.Send) {
+    // Keyring transactions mark these as "send" but they may actually be a bridge
+    // Hence, we check the local bridge history
+    if (
+      bridgeHistory &&
+      isCrossChain(
+        bridgeHistory.quote.srcChainId,
+        bridgeHistory.quote.destChainId,
+      )
+    ) {
+      const { quote } = bridgeHistory;
+      const bridgeStatus = bridgeHistory.status.status;
+
+      return {
+        type: 'bridge',
+        chainId,
+        status: mapBridgeStatus(bridgeStatus),
+        timestamp,
+        hash: transaction.id,
+        data: {
+          from,
+          sourceToken: {
+            amount: quote.srcTokenAmount,
+            assetId: quote.srcAsset.assetId,
+            decimals: quote.srcAsset.decimals,
+            direction: 'out',
+            symbol: quote.srcAsset.symbol,
+          },
+          destinationToken: {
+            amount:
+              bridgeHistory.status.destChain?.amount ?? quote.destTokenAmount,
+            assetId: quote.destAsset.assetId,
+            decimals: quote.destAsset.decimals,
+            direction: 'in',
+            symbol: quote.destAsset.symbol,
+          },
+          fees,
+        },
+      };
+    }
+
     const fromToken = getToken(transaction.from, 'out');
     let token = fromToken;
 
     // Bitcoin transaction.from can be empty, resulting in no token avatar or send amount displayed.
-    // Workaround: use the same aggregated to-asset fallback strategy as tx details modal.
     if (!fromToken && chainId.startsWith('bip122:')) {
-      const aggregatedToAsset = aggregateMovementAmount(transaction.to);
-      if (aggregatedToAsset) {
-        token = {
-          direction: 'out',
-          assetId: aggregatedToAsset.assetType,
-          symbol: aggregatedToAsset.unit,
-          amount: aggregatedToAsset.amount,
-        };
-      }
+      token = getToken(transaction.to, 'out');
     }
 
     return {
@@ -133,12 +183,12 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
-      raw: { type: 'keyringTransaction', data: transaction },
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
         from,
         to,
         token,
+        fees,
       },
     };
   }
@@ -149,12 +199,12 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
-      raw: { type: 'keyringTransaction', data: transaction },
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
         from,
         to,
         token: getToken(transaction.to, 'in'),
+        fees,
       },
     };
   }
@@ -165,11 +215,12 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
-      raw: { type: 'keyringTransaction', data: transaction },
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
+        from,
         destinationToken: getToken(transaction.to, 'in'),
         sourceToken: getToken(transaction.from, 'out'),
+        fees,
       },
     };
   }
@@ -179,11 +230,11 @@ export function mapKeyringTransaction({
     chainId,
     status,
     timestamp,
-    raw: { type: 'keyringTransaction', data: transaction },
+    hash: transaction.id,
     data: {
-      hash: transaction.id,
       from,
       to,
+      fees,
       transactionType: transaction.type,
     },
   };

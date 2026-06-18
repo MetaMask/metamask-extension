@@ -1,5 +1,3 @@
-import { DefaultRootState } from 'react-redux';
-
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   EVM_ASSET,
@@ -11,7 +9,7 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-n
 import * as SendContext from '../../context/send';
 import { useCurrencyConversions } from './useCurrencyConversions';
 
-function renderHook(args: DefaultRootState = {}) {
+function renderHook(args: Record<string, unknown> = {}) {
   const { result } = renderHookWithProvider(useCurrencyConversions, {
     ...mockState,
     metamask: { ...mockState.metamask, ...args },

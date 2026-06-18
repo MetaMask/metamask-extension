@@ -269,8 +269,6 @@ const BaseQrReader = ({
     if (error.type === WebcamErrorType.NoWebcamFound) {
       title = t('noWebcamFoundTitle');
       message = t('noWebcamFound');
-    } else if (error.message === t('QRHardwareMismatchedSignId')) {
-      message = t('QRHardwareMismatchedSignId');
     } else {
       title = t('generalCameraErrorTitle');
       message = t('generalCameraError');

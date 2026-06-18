@@ -25,8 +25,8 @@ import {
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
-  getIsParticipateInMetaMetricsSet,
-  getParticipateInMetaMetrics,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 
@@ -126,10 +126,10 @@ export default function OnboardingMetametrics() {
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const participateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isOptedIn = useSelector(getOptedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const [
     isParticipateInMetaMetricsChecked,
@@ -144,17 +144,13 @@ export default function OnboardingMetametrics() {
   const marketingCheckboxRef = useRef<{ toggle: () => void } | null>(null);
 
   useEffect(() => {
-    if (participateInMetaMetricsSet) {
-      setIsParticipateInMetaMetricsChecked(participateInMetaMetrics === true);
+    if (completedMetaMetricsOnboarding) {
+      setIsParticipateInMetaMetricsChecked(isOptedIn);
     }
     if (dataCollectionForMarketing) {
       setIsDataCollectionForMarketingChecked(dataCollectionForMarketing);
     }
-  }, [
-    participateInMetaMetricsSet,
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
-  ]);
+  }, [completedMetaMetricsOnboarding, isOptedIn, dataCollectionForMarketing]);
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
