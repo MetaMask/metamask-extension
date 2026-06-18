@@ -974,9 +974,6 @@
     "ui/pages/notifications/notification-components/snap/snap-footer-button.test.tsx": {
       "error: Warning: React does not recognize": 1
     },
-    "ui/pages/notifications/notifications-list-turn-on-notifications.test.tsx": {
-      "Reselect: Input stability warnings": 2
-    },
     "ui/pages/notifications/notifications-list.test.tsx": {
       "Reselect: Input stability warnings": 1,
       "error: Warning: Encountered two children with": 1
