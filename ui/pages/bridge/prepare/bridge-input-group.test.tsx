@@ -6,7 +6,10 @@ import {
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { CaipAssetType } from '@metamask/utils';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../test/lib/render-helpers-navigate';
 import { SWAP_PATH } from '../../../helpers/constants/routes';
 import {
   createBridgeMockStore,
@@ -423,7 +426,7 @@ describe('BridgeInputGroup', () => {
       ).toBeVisible();
     });
 
-    await userEvent.click(screen.getByLabelText('Back'));
+    await userEvent.click(screen.getByLabelText(messages.back.message));
 
     expect(mockNavigate).toHaveBeenCalledWith(SWAP_PATH, { replace: true });
   });
