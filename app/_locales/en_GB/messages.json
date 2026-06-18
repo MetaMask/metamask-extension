@@ -11009,6 +11009,10 @@
   "value": {
     "message": "Value"
   },
+  "variationalReferralSubtitle": {
+    "message": "Save up to 5% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the Variational referral confirmation screen"
+  },
   "version": {
     "message": "Version"
   },

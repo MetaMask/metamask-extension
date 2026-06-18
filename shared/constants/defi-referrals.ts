@@ -5,6 +5,7 @@ export enum DefiReferralPartner {
   Hyperliquid = 'hyperliquid',
   GMX = 'gmx',
   AsterDEX = 'asterdex',
+  Variational = 'variational',
 }
 
 /**
@@ -69,6 +70,15 @@ export const DEFI_REFERRAL_PARTNERS: Record<
       'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
     approvalType: 'asterdex_referral_consent',
     connectionFlow: 'permissions_then_signature',
+  },
+  [DefiReferralPartner.Variational]: {
+    id: DefiReferralPartner.Variational,
+    name: 'Variational',
+    origin: 'https://omni.variational.io',
+    referralUrl: 'https://omni.variational.io/join/MMREFCSI',
+    learnMoreUrl: 'https://docs.variational.io/omni/rewards/referrals',
+    approvalType: 'variational_referral_consent',
+    connectionFlow: 'permissions',
   },
 };
 

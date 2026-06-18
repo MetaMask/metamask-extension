@@ -1267,7 +1267,8 @@
     "referrals": {
       "asterdex": {},
       "gmx": {},
-      "hyperliquid": {}
+      "hyperliquid": {},
+      "variational": {}
     },
     "remoteFeatureFlags": {
       "feature1": "boolean",

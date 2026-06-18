@@ -3,6 +3,7 @@ import {
   HYPERLIQUID_APPROVAL_TYPE,
   GMX_APPROVAL_TYPE,
   ASTERDEX_APPROVAL_TYPE,
+  VARIATIONAL_APPROVAL_TYPE,
 } from '../../../../../shared/constants/app';
 import {
   DEFI_REFERRAL_PARTNERS,
@@ -15,6 +16,7 @@ const HYPERLIQUID_CONFIG =
   DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
 const GMX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
 const ASTERDEX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDEX];
+const VARIATIONAL_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Variational];
 
 const STATE_MOCK_DEFAULT = {
   metamask: {
@@ -23,6 +25,7 @@ const STATE_MOCK_DEFAULT = {
         [DefiReferralPartner.Hyperliquid]: {},
         [DefiReferralPartner.GMX]: {},
         [DefiReferralPartner.AsterDEX]: {},
+        [DefiReferralPartner.Variational]: {},
       },
     },
   },
@@ -103,3 +106,22 @@ export const AsterdexStory = (args: { selectedAddress: string }) => {
 };
 
 AsterdexStory.storyName = 'Asterdex';
+
+export const VariationalStory = (args: { selectedAddress: string }) => {
+  return (
+    <PendingApproval
+      type={VARIATIONAL_APPROVAL_TYPE}
+      requestData={{
+        selectedAddress: args.selectedAddress,
+        partnerId: VARIATIONAL_CONFIG.id,
+        partnerName: VARIATIONAL_CONFIG.name,
+        learnMoreUrl: VARIATIONAL_CONFIG.learnMoreUrl,
+      }}
+      state={STATE_MOCK_DEFAULT}
+    >
+      <ConfirmationPage />
+    </PendingApproval>
+  );
+};
+
+VariationalStory.storyName = 'Variational';
