@@ -423,8 +423,8 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockCreateNewAccount).toHaveBeenCalled();
-        expect(setDataCollectionForMarketingSpy).toHaveBeenCalledWith(false);
       });
+      expect(setDataCollectionForMarketingSpy).not.toHaveBeenCalled();
       expect(setMarketingConsentSpy).not.toHaveBeenCalled();
     });
 

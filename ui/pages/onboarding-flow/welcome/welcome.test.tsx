@@ -217,7 +217,6 @@ describe('Welcome Page', () => {
 
     await waitFor(() => {
       expect(startOAuthLoginSpy).toHaveBeenCalled();
-      expect(geolocationSpy).toHaveBeenCalled();
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
@@ -246,7 +245,7 @@ describe('Welcome Page', () => {
     });
   });
 
-  it('should preselect marketing consent for US social login create users', async () => {
+  it('should navigate to create password for social login create users', async () => {
     geolocationSpy.mockResolvedValueOnce('US');
     jest
       .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
@@ -281,7 +280,7 @@ describe('Welcome Page', () => {
     });
 
     await waitFor(() => {
-      expect(geolocationSpy).toHaveBeenCalled();
+      expect(startOAuthLoginSpy).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
         { replace: true },

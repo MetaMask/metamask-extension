@@ -273,10 +273,9 @@ export default function CreatePassword({
       });
 
       if (termsChecked) {
-        // sync user's marketing consent selection to OAuth Service
         dispatch(setMarketingConsent(true));
+        dispatch(setDataCollectionForMarketing(termsChecked));
       }
-      dispatch(setDataCollectionForMarketing(termsChecked));
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });

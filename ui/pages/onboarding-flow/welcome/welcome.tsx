@@ -374,12 +374,7 @@ export default function OnboardingWelcome() {
       });
 
       try {
-        const [isNewUser] = await Promise.all([
-          handleSocialLogin(socialConnectionType),
-          // get the geolocation to check if the user is in the US region
-          // if user is in the US region, we will set the Marketing Opt-In to true by default in the create password screen
-          getGeolocation().catch(() => undefined),
-        ]);
+        const isNewUser = await handleSocialLogin(socialConnectionType);
 
         // Track wallet setup completed for social login users
         await trackEvent({
