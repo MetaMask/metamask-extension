@@ -13,12 +13,14 @@ type SettingsTabProps = {
   items: SettingItemConfig[];
   subHeader?: string;
   itemClassName?: string;
+  containerClassName?: string;
 };
 
 export const SettingsTab = ({
   items,
   subHeader,
   itemClassName,
+  containerClassName,
 }: SettingsTabProps) => {
   const { hash } = useLocation();
 
@@ -46,7 +48,12 @@ export const SettingsTab = ({
   }, [hash, items, settingsRefs]);
 
   return (
-    <Box paddingBottom={4} className="overflow-y-auto h-full min-h-0">
+    <Box
+      paddingBottom={4}
+      className={['overflow-y-auto', containerClassName]
+        .filter(Boolean)
+        .join(' ')}
+    >
       {subHeader && (
         <Text
           variant={TextVariant.BodyMd}
