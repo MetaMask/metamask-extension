@@ -15,7 +15,10 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getInternalAccountByAddress } from '../../selectors';
-import { getAddressBookEntryByNetwork } from '../../selectors/snaps/address-book';
+import {
+  AddressBookMetaMaskState,
+  getAddressBookEntryByNetwork,
+} from '../../selectors/snaps/address-book';
 import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import { removeFromAddressBook } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -35,7 +38,7 @@ export function ContactDetailsPage() {
     chainId: string;
     address: string;
   }>();
-  const contact = useSelector((state) =>
+  const contact = useSelector((state: AddressBookMetaMaskState) =>
     address && chainId
       ? getAddressBookEntryByNetwork(state, address, chainId as `0x${string}`)
       : null,
