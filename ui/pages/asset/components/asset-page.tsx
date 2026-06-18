@@ -232,7 +232,9 @@ const AssetPage = ({
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const caipAssetId = isEvm ? toAssetId(address, caipChainId) : decodedAsset;
+  const caipAssetId = isEvm
+    ? toAssetId(address, caipChainId)
+    : (decodedAsset as CaipAssetType);
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
