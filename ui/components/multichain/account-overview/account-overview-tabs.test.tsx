@@ -335,10 +335,24 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     expect(setPerpsTabBadgeSeen).not.toHaveBeenCalled();
   });
 
-  it('does not record exposure once the badge has been dismissed', () => {
+  it('records exposure for control symmetrically with treatment', () => {
+    renderTabs({ variantFlag: { name: 'control' } });
+
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.ExperimentViewed,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          variation_id: 'control',
+        }),
+      }),
+    );
+  });
+
+  it('still records exposure after the badge has been dismissed (symmetric per session)', () => {
     renderTabs({ variantFlag: { name: 'treatment' }, perpsTabBadgeSeen: true });
 
-    expect(trackEvent).not.toHaveBeenCalledWith(
+    expect(trackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         event: MetaMetricsEventName.ExperimentViewed,
       }),

@@ -105,15 +105,15 @@ export const AccountOverviewTabs = ({
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
 
-  // Only record exposure while the badge is in its visible window — the Perps
-  // tab is available and the badge has not been dismissed. Without this gate,
-  // every AccountOverviewTabs mount would log an exposure, even for users who
-  // never see the Perps tab.
+  // Record exposure only when the Perps tab is actually shown, so mounting the
+  // overview never logs an exposure for users without the Perps experience.
+  // Gated on availability alone (not dismissal) so control and treatment record
+  // exposure symmetrically — once per session — regardless of badge dismissal.
   const { variant: perpsTabBadgeVariant } = useABTest(
     PERPS_TAB_BADGE_AB_KEY,
     PERPS_TAB_BADGE_VARIANTS,
     PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
-    { trackExposure: isPerpsExperienceAvailable && !perpsTabBadgeSeen },
+    { trackExposure: isPerpsExperienceAvailable },
   );
   const showPerpsTabBadge =
     perpsTabBadgeVariant.showBadge && !perpsTabBadgeSeen;
@@ -241,8 +241,9 @@ export const AccountOverviewTabs = ({
                 <span className="flex items-center gap-1">
                   {t('perps')}
                   <Tag
+                    as="span"
                     label={t('perpsFilterNew')}
-                    labelProps={{ color: TextColor.primaryDefault }}
+                    labelProps={{ as: 'span', color: TextColor.primaryDefault }}
                     backgroundColor={BackgroundColor.primaryMuted}
                     data-testid="perps-tab-new-badge"
                   />
