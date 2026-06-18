@@ -877,8 +877,6 @@ export default class MetamaskController extends EventEmitter {
     // This captures the version and date when MetaMask was first installed.
     this.appMetadataController.maybeRecordFirstTimeInfo(version);
 
-    this.networkController.init();
-
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
 

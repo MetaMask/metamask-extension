@@ -35,7 +35,7 @@ export function getNetworkControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: ['ConnectivityController:getState'],
+    actions: ['ConnectivityController:getState', 'RemoteFeatureFlagController:getState'],
     events: [],
   });
   return controllerMessenger;
@@ -85,7 +85,6 @@ export function getNetworkControllerInitMessenger(
     actions: [
       'AnalyticsController:getState',
       'MetaMetricsController:trackEvent',
-      'RemoteFeatureFlagController:getState',
     ],
     events: [
       'NetworkController:rpcEndpointUnavailable',

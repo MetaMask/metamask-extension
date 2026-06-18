@@ -188,6 +188,8 @@ export const NetworkControllerInit: MessengerClientInitFunction<
     getIsRpcFailoverEnabled,
   );
 
+  messengerClient.init();
+
   return {
     messengerClient,
   };
