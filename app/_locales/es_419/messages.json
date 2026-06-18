@@ -64,6 +64,18 @@
     "message": "Leí y estoy de acuerdo con $1",
     "description": "$1 is the `terms` message"
   },
+  "accessRestrictedContactSupport": {
+    "message": "Contactar a soporte"
+  },
+  "accessRestrictedDescriptionLine1": {
+    "message": "Esta dirección de billetera se señaló como sospechosa durante el proceso de verificación de cumplimiento. Por ello, algunos servicios de MetaMask no están disponibles."
+  },
+  "accessRestrictedDescriptionLine2": {
+    "message": "Si crees que se trata de un error, comunícate con soporte para solicitar una revisión."
+  },
+  "accessRestrictedTitle": {
+    "message": "Acceso restringido"
+  },
   "accessingYourCamera": {
     "message": "Accediendo a la cámara..."
   },
@@ -290,6 +302,9 @@
   "activity_contractInteraction_pending_title": {
     "message": "Interacción en curso"
   },
+  "activity_contractInteraction_success_title": {
+    "message": "Interacción con el contrato"
+  },
   "activity_convert_failed_description": {
     "message": "Conversión fallida"
   },
@@ -360,6 +375,12 @@
   "activity_lendingDeposit_failed_title": {
     "message": "Depósito fallido"
   },
+  "activity_lendingDeposit_pending_title": {
+    "message": "Depósito en préstamo"
+  },
+  "activity_lendingDeposit_success_title": {
+    "message": "Depósito en préstamo"
+  },
   "activity_lendingWithdrawal_failed_description": {
     "message": "Retiro fallido"
   },
@@ -409,6 +430,17 @@
   },
   "activity_marketShort_success_title": {
     "message": "Posición corta cerrada: mercado"
+  },
+  "activity_nftBuy_failed_title": {
+    "message": "Compra fallida"
+  },
+  "activity_nftBuy_pending_title": {
+    "message": "Comprando $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftBuy_success_title": {
+    "message": "Compraste $1",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_failed_title": {
     "message": "Acuñación fallida"
@@ -1672,6 +1704,39 @@
   },
   "basicFunctionalityRequired_toggleLabel": {
     "message": "Funcionalidad básica"
+  },
+  "batchSell": {
+    "message": "Venta por lotes"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "No tienes tokens. No hay problema. Explora y compra tokens para venderlos en lote."
+  },
+  "batchSellGetNewQuotes": {
+    "message": "Obtener cotizaciones nuevas"
+  },
+  "batchSellHighRateAlert": {
+    "message": "Alerta de tasa alta"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "La venta en lote de un token podría generar una tasa más alta. ¿Prefieres hacer un canje?"
+  },
+  "batchSellMinimumReceiveExplanation": {
+    "message": "La cantidad mínima que recibirás si el precio cambia mientras se procesa tu transacción, según tu tolerancia al deslizamiento. Esta es una estimación de nuestros proveedores de liquidez. Los montos finales pueden variar."
+  },
+  "batchSellNetworkFeeTooltip": {
+    "message": "Las tarifas de red dependen de qué tan ocupada esté la red y de qué tan compleja sea tu transacción."
+  },
+  "batchSellReceiveStablecoin": {
+    "message": "Selecciona una moneda estable"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "Todos los tokens deben estar en la misma red."
+  },
+  "batchSellSelectHeaderTitle": {
+    "message": "Selecciona hasta 5 tokens"
+  },
+  "batchSellSlippageDescription": {
+    "message": "Tu transacción no se realizará si el precio cambia más que el porcentaje de deslizamiento."
   },
   "bestQuote": {
     "message": "Mejor cotización"
@@ -5523,6 +5588,9 @@
   "noOptionsAvailableMessage": {
     "message": "Esta ruta comercial no está disponible en este momento. Intente cambiar el monto, la red o el token y encontraremos la mejor opción."
   },
+  "noQuoteAvailable": {
+    "message": "No hay cotizaciones disponibles"
+  },
   "noSnaps": {
     "message": "No tiene ningún snap instalado."
   },
@@ -6502,6 +6570,9 @@
     "message": "Disponible para operar",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBalance": {
+    "message": "Saldo de contratos perpetuos"
+  },
   "perpsBasicFunctionalityOff": {
     "message": "Esta función no está disponible mientras la funcionalidad básica está desactivada."
   },
@@ -6531,6 +6602,12 @@
   },
   "perpsCloseAll": {
     "message": "Cerrar todo"
+  },
+  "perpsCloseAllDescription": {
+    "message": "Cerraremos todas tus posiciones abiertas al precio de mercado actual."
+  },
+  "perpsCloseAllPositions": {
+    "message": "Cerrar todas las posiciones"
   },
   "perpsCloseAmount": {
     "message": "Monto de cierre"
@@ -6683,6 +6760,9 @@
   },
   "perpsInsufficientMargin": {
     "message": "Margen insuficiente para realizar esta orden."
+  },
+  "perpsKeepPositions": {
+    "message": "Mantener posiciones"
   },
   "perpsLearnBasics": {
     "message": "Aprende los conceptos básicos de los contratos perpetuos"
@@ -6877,8 +6957,26 @@
   "perpsSize": {
     "message": "Tamaño"
   },
+  "perpsSlippage": {
+    "message": "Deslizamiento"
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "Tu transacción no se completará si el precio varía más allá de este umbral."
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "Establecer deslizamiento"
+  },
+  "perpsSlippageCustom": {
+    "message": "Personalizar"
+  },
   "perpsSlippageExceeded": {
     "message": "Se ha superado el límite de deslizamiento. Ajusta la tolerancia de deslizamiento e inténtalo de nuevo."
+  },
+  "perpsSlippageInputLabel": {
+    "message": "Porcentaje máx. de deslizamiento"
+  },
+  "perpsSlippageSet": {
+    "message": "Establecer"
   },
   "perpsSortByFundingRate": {
     "message": "Tasa de financiación"
@@ -7533,6 +7631,10 @@
     "message": "Se necesita acceso a la cámara",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorMismatchedTransactionTitle": {
+    "message": "Código QR incorrecto",
+    "description": "Title shown when a signature QR belongs to a different transaction."
+  },
   "qrErrorNonUrPairingBody": {
     "message": "Vuelve a tu billetera física y busca la opción para compartir o exportar tus cuentas, elige MetaMask y luego escanea el código QR.",
     "description": "Body text for the non-UR QR code error during pairing."
@@ -8169,6 +8271,9 @@
   },
   "selectedAccountMismatch": {
     "message": "Se seleccionó una cuenta distinta"
+  },
+  "sellAll": {
+    "message": "Vender todo"
   },
   "send": {
     "message": "Enviar"
@@ -10141,6 +10246,12 @@
   "total": {
     "message": "Total"
   },
+  "totalAmount": {
+    "message": "Importe total"
+  },
+  "totalReceived": {
+    "message": "Total recibido"
+  },
   "totalVolume": {
     "message": "Volúmen total"
   },
@@ -10382,6 +10493,10 @@
   },
   "unexpectedBehavior": {
     "message": "Este comportamiento es inesperado y debe informarse como un error, incluso si se restauran tus cuentas."
+  },
+  "unexpectedError": {
+    "message": "Ocurrió un error inesperado.",
+    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Permitir acceso exacto a $1 $2 en $3 para canjear"
@@ -10705,6 +10820,9 @@
   "yes": {
     "message": "Sí"
   },
+  "yesSwap": {
+    "message": "Sí, canjear"
+  },
   "you": {
     "message": "Usted"
   },
@@ -10717,6 +10835,9 @@
   "youReceived": {
     "message": "Usted recibió",
     "description": "Label indicating the amount and asset the user received."
+  },
+  "youSell": {
+    "message": "Vendes"
   },
   "youSent": {
     "message": "Usted envió",
