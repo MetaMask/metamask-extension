@@ -16,11 +16,22 @@
  * This adapter bridges the two formats while we migrate specs from
  * Selenium to Playwright. It activates only when
  * `PLAYWRIGHT_JUNIT_OUTPUT_FILE` is set (or an explicit `outputFile`
- * option is supplied), so non-e2e Playwright workflows (swap, global,
- * benchmark) are unaffected.
+ * option is supplied), so the benchmark Playwright project is
+ * unaffected.
+ *
+ * Output is written as **one XML file per spec file**, not a single
+ * batched file. `PLAYWRIGHT_JUNIT_OUTPUT_FILE` is treated as a base
+ * name: each spec gets `<base>-<specHash><ext>`. This matches
+ * `mocha-junit-reporter`'s `[hash].xml` convention and, crucially,
+ * keeps `.github/scripts/merge-test-results.mts` correct on CI
+ * re-runs. That merge copies a previous XML only when none of its
+ * suites ran in the current attempt; with a batched file, re-running a
+ * single spec would skip the merge for the whole batch and drop the
+ * other specs' results. One-spec-per-file makes that check exact.
  *
  */
 
+import { createHash } from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import type {
@@ -189,12 +200,32 @@ export default class MochaCompatJunitReporter implements Reporter {
     }
 
     const buckets = this.#foldRecordsIntoBuckets();
-    const xml = this.#renderXml(buckets);
 
-    await fs.promises.mkdir(path.dirname(this.#outputFile), {
-      recursive: true,
-    });
-    await fs.promises.writeFile(this.#outputFile, xml, 'utf8');
+    // Treat `#outputFile` as a base name and emit one file per spec, so the
+    // XML→spec mapping is 1:1 (see the module docstring on merge-test-results).
+    const { dir, name, ext } = path.parse(this.#outputFile);
+    const outputDir = dir || '.';
+    const extension = ext || '.xml';
+
+    await fs.promises.mkdir(outputDir, { recursive: true });
+
+    await Promise.all(
+      buckets.map((bucket) => {
+        const specHash = createHash('md5')
+          .update(bucket.filePath)
+          .digest('hex')
+          .slice(0, 8);
+        const outputPath = path.join(
+          outputDir,
+          `${name}-${specHash}${extension}`,
+        );
+        return fs.promises.writeFile(
+          outputPath,
+          this.#renderXml([bucket]),
+          'utf8',
+        );
+      }),
+    );
   }
 
   /**

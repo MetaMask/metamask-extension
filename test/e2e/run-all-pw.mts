@@ -165,14 +165,15 @@ async function resolveTestListForGitHubActions(
 
 /**
  * Runs a single Playwright invocation for the given specs. When `outputFile` is
- * provided, the mocha-compatible JUnit reporter writes there (via the
- * `PLAYWRIGHT_JUNIT_OUTPUT_FILE` env var the reporter reads).
+ * provided it's exported as `PLAYWRIGHT_JUNIT_OUTPUT_FILE`; the mocha-compatible
+ * reporter treats it as a base name and writes one XML file per spec
+ * (`<base>-<specHash>.xml`) so re-run merging stays correct.
  *
  * @param options - Invocation options.
  * @param options.specs - Repo-relative spec paths to run.
  * @param options.project - Playwright project name (`chrome-e2e` / `firefox-e2e`).
  * @param options.extraArgs - Additional Playwright CLI args.
- * @param options.outputFile - JUnit output path for this invocation, if any.
+ * @param options.outputFile - JUnit output base path for this invocation, if any.
  */
 async function runPlaywright({
   specs,

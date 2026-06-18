@@ -87,7 +87,7 @@ What it does (only under GitHub Actions, guarded by `GITHUB_ACTION`):
 2. **Splits by timing** across the matrix with `splitTestsByTimings`, fed by the same `test-runs-<browser>.json` artifact the Selenium runner uses (matched by the job's `TEST_SUITE_NAME`). Add specs and they redistribute automatically — no manual `--shard`.
 3. **Applies the e2e quality gate**: new/changed specs (from `changedFilesUtil`, `playwrightOnly: true`) run via `--repeat-each=N --retries=0 --max-failures=1` — the Playwright equivalent of Mocha's `--stop-after-one-failure`. Skipped when `shouldE2eQualityGateBeSkipped()` returns `true`.
 4. **Re-runs only failed specs** on attempt > 1, via `extract-test-results.mts` against `PREVIOUS_RESULTS_PATH`.
-5. **Writes JUnit** per invocation (one normal, one quality-gate) into `test/test-results/e2e/`.
+5. **Writes JUnit** as one file per spec into `test/test-results/e2e/` (the reporter splits each invocation's results so re-run merging stays correct — see [CI](#ci)).
 
 Locally (no `GITHUB_ACTION`) it skips all of the above and runs every discovered spec — or the positional spec filters you pass — in a single Playwright invocation, with no JUnit output. The `--retries` flag is forwarded to the normal (non-quality-gate) invocation; CI appends `--retries 1` to the test command.
 
@@ -115,7 +115,7 @@ The `PlaywrightDriver` shim covers what the easiest migrated specs need. Less-co
 
 - New jobs: `test-e2e-chrome-playwright` (in `.github/workflows/e2e-chrome.yml`) and `test-e2e-firefox-playwright` (in `.github/workflows/e2e-firefox.yml`). Both use the existing `run-e2e.yml` reusable workflow, with the test command set to `yarn test:e2e:playwright:<browser>` (the [`run-all-pw.mts`](../run-all-pw.mts) runner — see [Test runner](#test-runner-run-all-pwmts) for what it does).
 - Shard counts come from `prep-e2e.yml` (`MATRIX_TOTAL`); the runner does time-based distribution internally, so there is no `--shard` in the test command.
-- JUnit XML lands at `test/test-results/e2e/junit-pw-<browser>-<shard>.xml` (plus a `-qg.xml` for the quality-gate invocation), gets uploaded with the rest of the e2e artifacts, and feeds into the existing `test-e2e-*-report` job that already aggregates `test/test-results/e2e/`.
+- JUnit XML lands in `test/test-results/e2e/` as **one file per spec** (`junit-pw-<browser>-<shard>-<specHash>.xml`, plus `-qg-` variants for quality-gate runs), gets uploaded with the rest of the e2e artifacts, and feeds into the existing `test-e2e-*-report` job that already aggregates `test/test-results/e2e/`. One-spec-per-file (matching `mocha-junit-reporter`'s `[hash].xml`) keeps `merge-test-results.mts` correct on re-runs — a batched file would make a partial re-run skip the merge for the whole batch and drop the other specs' passes.
 - Reporting compatibility is handled by a small Playwright reporter at [`shared/mocha-compat-junit-reporter.ts`](./shared/mocha-compat-junit-reporter.ts). Playwright's built-in `junit` reporter omits the `file=` attribute and the `<properties>` block that `.github/scripts/create-e2e-test-report.mts` requires; the adapter emits a `mocha-junit-reporter`-shaped XML so migrated specs appear in the existing chrome/firefox reports. It activates only when `PLAYWRIGHT_JUNIT_OUTPUT_FILE` is set (the runner sets it per invocation), so the benchmark Playwright project is unaffected.
 
 #### Why no `run-e2e-test.js` for Playwright
