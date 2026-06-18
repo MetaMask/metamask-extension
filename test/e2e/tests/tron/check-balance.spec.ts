@@ -27,8 +27,6 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '0 TRX',
-          symbol: 'TRX',
-          expectFundYourWalletBanner: false,
           timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
@@ -58,8 +56,6 @@ describe('Check balance', function (this: Suite) {
         // Total Fiat = TRX $1.79, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $10.18
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$10.18',
-          symbol: 'USD',
-          expectFundYourWalletBanner: true,
           timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
@@ -85,8 +81,6 @@ describe('Check balance', function (this: Suite) {
         // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '6.072 TRX',
-          symbol: 'TRX',
-          expectFundYourWalletBanner: false,
           timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },

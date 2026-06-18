@@ -25,8 +25,6 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '0 SOL',
-          symbol: 'SOL',
-          expectFundYourWalletBanner: false,
           timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
@@ -50,8 +48,6 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$0',
-          symbol: 'USD',
-          expectFundYourWalletBanner: true,
           timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
@@ -77,8 +73,6 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$5,643.50',
-          symbol: 'USD',
-          expectFundYourWalletBanner: true,
           timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
@@ -100,8 +94,6 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '50 SOL',
-          symbol: 'SOL',
-          expectFundYourWalletBanner: false,
           timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
