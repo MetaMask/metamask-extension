@@ -92,7 +92,9 @@ import {
   hasABTestAnalyticsMappingForEvent,
   enrichWithABTests,
   getRemoteFeatureFlagsWithManifestOverrides,
+  registerABTestAnalyticsMapping,
 } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import { PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/perps-tab-badge';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { isMain } from '../../../shared/lib/build-types';
 import { trackSegmentEventWhileOptedOut } from '../lib/segment/custom-segment-tracking';
@@ -426,6 +428,10 @@ export class MetaMetricsController extends BaseController<
       environment === 'production' ? version : `${version}-${environment}`;
     this.#extension = extension;
     this.#environment = environment;
+
+    // Register A/B test analytics mappings so that matching events are
+    // enriched with their `active_ab_tests` assignment.
+    registerABTestAnalyticsMapping(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING);
 
     this.messenger.registerMethodActionHandlers(
       this,

@@ -142,6 +142,7 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  perpsTabBadgeSeen: boolean;
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
   showShieldEntryModalOnce: boolean | null;
@@ -310,6 +311,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
+  perpsTabBadgeSeen: false,
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
@@ -604,6 +606,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
     includeInStateLogs: true,
   },
+  perpsTabBadgeSeen: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
   musdConversionEducationSeen: {
     persist: true,
     includeInDebugSnapshot: true,
@@ -744,6 +752,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setPendingExtensionVersion',
   'setPendingRedirectRoute',
   'setPendingShieldCohort',
+  'setPerpsTabBadgeSeen',
   'setPna25Acknowledged',
   'setProductTour',
   'setRecoveryPhraseReminderHasBeenShown',
@@ -1319,6 +1328,18 @@ export class AppStateController extends BaseController<
   setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
     this.update((state) => {
       state.hasShownMultichainAccountsIntroModal = hasShown;
+    });
+  }
+
+  /**
+   * Sets whether the user has seen (and therefore dismissed) the Perps tab
+   * "New" badge.
+   *
+   * @param value - Whether the Perps tab badge has been seen
+   */
+  setPerpsTabBadgeSeen(value: boolean): void {
+    this.update((state) => {
+      state.perpsTabBadgeSeen = value;
     });
   }
 

@@ -20,17 +20,32 @@ import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
 } from '../../../selectors';
-import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
+import {
+  getIsPerpsExperienceAvailable,
+  getPerpsTabBadgeSeen,
+} from '../../../selectors/perps';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import {
   detectNfts,
   setDefaultHomeActiveTabName,
+  setPerpsTabBadgeSeen,
 } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
+import { Tag } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
+import {
+  BackgroundColor,
+  TextColor,
+} from '../../../helpers/constants/design-system';
+import { useABTest } from '../../../hooks/useABTest';
+import {
+  PERPS_TAB_BADGE_AB_KEY,
+  PERPS_TAB_BADGE_VARIANTS,
+  PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
+} from '../../../../shared/lib/ab-testing/perps-tab-badge';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList as ActivityListV3 } from '../../../pages/activity/activity-list';
 import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
@@ -87,6 +102,13 @@ export const AccountOverviewTabs = ({
   );
   const prefetchTransactions = usePrefetchTransactions();
 
+  const { variant: perpsTabBadgeVariant } = useABTest(
+    PERPS_TAB_BADGE_AB_KEY,
+    PERPS_TAB_BADGE_VARIANTS,
+    PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
+  );
+  const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
+
   useEffect(() => {
     if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
       setDefaultHomeActiveTabName(activeTabKey);
@@ -113,6 +135,11 @@ export const AccountOverviewTabs = ({
 
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
+      }
+      // Dismiss the Perps "New" badge on first interaction and persist the
+      // dismissed state across reloads via AppStateController.
+      if (tabName === AccountOverviewTabKey.Perps && !perpsTabBadgeSeen) {
+        dispatch(setPerpsTabBadgeSeen(true));
       }
       // For ActivityListV3, ActivityScreenOpened is deferred to the list
       // component so it can include accurate is_empty / pending_transactions
@@ -145,6 +172,7 @@ export const AccountOverviewTabs = ({
       activeTabKey,
       isActivityListRedesignEnabled,
       networkFilterForMetrics,
+      perpsTabBadgeSeen,
       setActiveTabKey,
       dispatch,
       selectedChainIds,
@@ -170,6 +198,9 @@ export const AccountOverviewTabs = ({
   const { safeChains } = useSafeChains();
 
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+
+  const showPerpsTabBadge =
+    perpsTabBadgeVariant.showBadge && !perpsTabBadgeSeen;
 
   return (
     <>
@@ -200,7 +231,21 @@ export const AccountOverviewTabs = ({
 
         {isPerpsExperienceAvailable && (
           <Tab
-            name={t('perps')}
+            name={
+              showPerpsTabBadge ? (
+                <span className="flex items-center gap-1">
+                  {t('perps')}
+                  <Tag
+                    label={t('perpsFilterNew')}
+                    labelProps={{ color: TextColor.primaryDefault }}
+                    backgroundColor={BackgroundColor.primaryMuted}
+                    data-testid="perps-tab-new-badge"
+                  />
+                </span>
+              ) : (
+                t('perps')
+              )
+            }
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >

@@ -11,10 +11,15 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
+import { setPerpsTabBadgeSeen } from '../../../store/actions';
+import { PERPS_TAB_BADGE_AB_KEY } from '../../../../shared/lib/ab-testing/perps-tab-badge';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
 jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
+  detectNfts: jest.fn(() => ({ type: 'MOCK_DETECT_NFTS' })),
+  setPerpsTabBadgeSeen: jest.fn(() => () => Promise.resolve()),
 }));
 
 jest.mock('../../../hooks/useTokenBalances', () => ({
@@ -183,6 +188,131 @@ describe('AccountOverviewTabs - event metrics', () => {
         ],
       },
     });
+  });
+});
+
+describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
+  const BADGE_TESTID = 'perps-tab-new-badge';
+  const PERPS_TAB_TESTID = 'account-overview__perps-tab';
+  let originalPerpsEnabled: string | undefined;
+
+  const trackEvent = jest.fn(() => Promise.resolve());
+  const metaMetricsContext = {
+    trackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
+
+  const renderTabs = ({
+    variantFlag,
+    perpsTabBadgeSeen = false,
+    perpsAvailable = true,
+  }: {
+    variantFlag?: { name: string };
+    perpsTabBadgeSeen?: boolean;
+    perpsAvailable?: boolean;
+  }) => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
+        perpsTabBadgeSeen,
+        remoteFeatureFlags: {
+          ...(perpsAvailable
+            ? {
+                perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+              }
+            : {}),
+          ...(variantFlag ? { [PERPS_TAB_BADGE_AB_KEY]: variantFlag } : {}),
+        },
+      },
+    });
+
+    return renderWithProvider(
+      <MetaMetricsContext.Provider value={metaMetricsContext}>
+        <AccountOverviewTabs
+          showTokens={true}
+          showNfts={false}
+          showActivity={false}
+          setBasicFunctionalityModalOpen={jest.fn()}
+          onSupportLinkClick={jest.fn()}
+        />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    clearABTestExposureTrackingForTest();
+    originalPerpsEnabled = process.env.PERPS_ENABLED;
+    process.env.PERPS_ENABLED = 'true';
+    (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
+  });
+
+  afterEach(() => {
+    process.env.PERPS_ENABLED = originalPerpsEnabled;
+  });
+
+  it('renders the Perps tab without a New badge in the control assignment', () => {
+    const { getByTestId, queryByTestId } = renderTabs({
+      variantFlag: { name: 'control' },
+    });
+
+    expect(getByTestId(PERPS_TAB_TESTID)).toBeInTheDocument();
+    expect(queryByTestId(BADGE_TESTID)).not.toBeInTheDocument();
+  });
+
+  it('renders the New badge on the Perps tab in the treatment assignment', () => {
+    const { getByTestId } = renderTabs({ variantFlag: { name: 'treatment' } });
+
+    const badge = getByTestId(BADGE_TESTID);
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveTextContent(messages.perpsFilterNew.message);
+  });
+
+  it('hides the New badge once it has been seen (persisted dismissal)', () => {
+    const { queryByTestId } = renderTabs({
+      variantFlag: { name: 'treatment' },
+      perpsTabBadgeSeen: true,
+    });
+
+    expect(queryByTestId(BADGE_TESTID)).not.toBeInTheDocument();
+  });
+
+  it('persists the dismissal via AppStateController when the Perps tab is clicked', () => {
+    const { getByText } = renderTabs({ variantFlag: { name: 'treatment' } });
+
+    fireEvent.click(getByText(messages.perps.message));
+
+    expect(setPerpsTabBadgeSeen).toHaveBeenCalledWith(true);
+  });
+
+  it('does not render the Perps tab when the perps experience is unavailable', () => {
+    const { queryByTestId } = renderTabs({
+      variantFlag: { name: 'treatment' },
+      perpsAvailable: false,
+    });
+
+    expect(queryByTestId(PERPS_TAB_TESTID)).not.toBeInTheDocument();
+    expect(queryByTestId(BADGE_TESTID)).not.toBeInTheDocument();
+  });
+
+  it('fires the Experiment Viewed event with the treatment assignment', () => {
+    renderTabs({ variantFlag: { name: 'treatment' } });
+
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.ExperimentViewed,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          experiment_id: PERPS_TAB_BADGE_AB_KEY,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          variation_id: 'treatment',
+        }),
+      }),
+    );
   });
 });
 

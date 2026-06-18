@@ -7642,6 +7642,18 @@ export function setMusdConversionEducationSeen(value: boolean) {
 }
 
 /**
+ * Persist that the user has seen (and dismissed) the Perps tab "New" badge.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setPerpsTabBadgeSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setPerpsTabBadgeSeen', [value]);
+  };
+}
+
+/**
  * Persist a dismissed mUSD asset-detail CTA key (chainId-tokenAddress).
  * Stored in AppStateController until uninstall.
  *
