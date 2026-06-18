@@ -4,7 +4,7 @@ import { ASSET_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../pages/account-list-page';
-import ActivityListPage from '../pages/home/activity-list';
+import ActivityTab from '../pages/home/activity-tab';
 import BridgeQuotePage, { type BridgeQuote } from '../pages/bridge/quote-page';
 import HomePage from '../pages/home/homepage';
 import TokenOverviewPage from '../pages/token-overview-page';
@@ -33,8 +33,8 @@ export const verifySubmittedSwapTransaction = async ({
   const homePage = new HomePage(driver);
   await homePage.goToActivityList();
 
-  const activityList = new ActivityListPage(driver);
-  await activityList.checkCompletedBridgeTransactionActivity(
+  const activityTab = new ActivityTab(driver);
+  await activityTab.checkCompletedBridgeTransactionActivity(
     expectedTransactionsCount,
   );
 
@@ -51,11 +51,11 @@ export const verifySubmittedSwapTransaction = async ({
     action = isBridge
       ? `Bridged ${expectedSrcToken}`
       : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
-    await activityList.checkTxAction({
+    await activityTab.checkTxAction({
       action,
       confirmedTx: expectedTransactionsCount,
     });
-    await activityList.checkTxAction({
+    await activityTab.checkTxAction({
       action: 'Approved spending cap',
       confirmedTx: expectedTransactionsCount,
       txIndex: 2,
@@ -64,17 +64,17 @@ export const verifySubmittedSwapTransaction = async ({
     action = isBridge
       ? `Bridged ${expectedSrcToken}`
       : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
-    await activityList.checkTxAction({
+    await activityTab.checkTxAction({
       action,
       confirmedTx: expectedTransactionsCount,
     });
   }
   // v3 activity rows show the destination amount as the primary line
-  await activityList.checkTxAmountInActivity(
+  await activityTab.checkTxAmountInActivity(
     `${expectedActivityAmount ?? expectedDestAmount} ${quote.tokenTo ?? expectedSwapTokens?.tokenTo}`,
   );
 
-  await activityList.checkBridgeTransactionDetails(
+  await activityTab.checkBridgeTransactionDetails(
     action,
     isBridge,
     expectedStatus,

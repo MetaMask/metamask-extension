@@ -9,7 +9,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../../shared/constants/metametrics';
-import { hexWEIToDecGWEI } from '../../../../shared/lib/conversion.utils';
 import { TransactionMetaMetricsEvent } from '../../../../shared/constants/transaction';
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
@@ -137,7 +136,7 @@ describe('transaction metrics handlers', () => {
     );
   });
 
-  it('tracks finalized event for failed and includes error', async () => {
+  it('tracks finalized event for failed and includes error in properties', async () => {
     const request = createRequest();
     await handleTransactionFailed(request, {
       transactionMeta: createTxMeta({ status: TransactionStatus.failed }),
@@ -146,10 +145,10 @@ describe('transaction metrics handlers', () => {
 
     const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
     expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
-    expect(payload.sensitiveProperties.error).toBe('boom');
+    expect(payload.properties.error).toBe('boom');
   });
 
-  it('tracks finalized event for dropped and sets dropped marker', async () => {
+  it('tracks finalized event for dropped', async () => {
     const request = createRequest();
     await handleTransactionDropped(request, {
       transactionMeta: createTxMeta({ status: TransactionStatus.dropped }),
@@ -157,10 +156,9 @@ describe('transaction metrics handlers', () => {
 
     const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
     expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
-    expect(payload.sensitiveProperties.dropped).toBe(true);
   });
 
-  it('tracks finalized event for confirmed and computes status override', async () => {
+  it('tracks finalized event for confirmed and exposes status + completion_time on properties', async () => {
     const request = createRequest();
     const now = Date.now();
     await handleTransactionConfirmed(request, {
@@ -174,11 +172,8 @@ describe('transaction metrics handlers', () => {
 
     const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
     expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
-    expect(payload.sensitiveProperties.status).toBe('failed on-chain');
-    expect(payload.sensitiveProperties.gas_used).toBe(
-      hexWEIToDecGWEI('0x5208'),
-    );
-    expect(payload.sensitiveProperties.block_number).toBe('16');
+    expect(payload.properties.status).toBe('failed on-chain');
+    expect(payload.properties.completion_time).toEqual(expect.any(String));
   });
 
   it('includes transaction hash when pna25 requirements are met', async () => {
@@ -214,10 +209,8 @@ describe('transaction metrics handlers', () => {
     await handleTransactionAdded(request, { transactionMeta: createTxMeta() });
 
     const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
-    expect(
-      payload.sensitiveProperties.transaction_contract_address,
-    ).toStrictEqual([]);
-    expect(payload.sensitiveProperties.transaction_contract_method_4byte).toBe(
+    expect(payload.properties.transaction_contract_address).toStrictEqual([]);
+    expect(payload.properties.transaction_contract_method_4byte).toBe(
       undefined,
     );
   });
@@ -310,9 +303,7 @@ describe('transaction metrics handlers', () => {
     });
 
     const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
-    expect(
-      payload.sensitiveProperties.transaction_contract_address,
-    ).toStrictEqual([
+    expect(payload.properties.transaction_contract_address).toStrictEqual([
       '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
     ]);

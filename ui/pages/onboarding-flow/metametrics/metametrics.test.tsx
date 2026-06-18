@@ -46,7 +46,8 @@ describe('Onboarding Metametrics Component', () => {
   const mockState = {
     metamask: {
       firstTimeFlowType: FirstTimeFlowType.create,
-      participateInMetaMetrics: null,
+      completedMetaMetricsOnboarding: false,
+      optedIn: false,
       internalAccounts: {
         accounts: {},
         selectedAccount: '',

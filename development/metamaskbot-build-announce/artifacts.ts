@@ -6,11 +6,16 @@ import {
   BENCHMARK_BUILD_TYPES,
   BENCHMARK_PLATFORMS,
 } from '../../shared/constants/benchmarks';
+import {
+  BUNDLE_SIZE_DEBUG_FILE,
+  BUNDLE_SIZE_SUMMARY_FILE,
+} from '../webpack/utils/plugins/ManifestPlugin/stats';
 
 type ArtifactLink = { url: string; label: string };
 
 type ArtifactLinkMap = {
   bundleSizeData: ArtifactLink;
+  bundleSizeDebug: ArtifactLink;
   bundleSizeStats: ArtifactLink;
   bundleAnalyzer: ArtifactLink;
   interactionStats: ArtifactLink;
@@ -43,8 +48,18 @@ export function getArtifactLinks(
       url: 'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json',
       label: 'Bundle Size Data',
     },
+    bundleSizeDebug: {
+      url: `${hostUrl}/${BUNDLE_SIZE_DEBUG_FILE.replaceAll(
+        '[browser]',
+        'chrome',
+      )}`,
+      label: 'Bundle Size Stats',
+    },
     bundleSizeStats: {
-      url: `${hostUrl}/bundle-size/bundle_size.json`,
+      url: `${hostUrl}/${BUNDLE_SIZE_SUMMARY_FILE.replaceAll(
+        '[browser]',
+        'chrome',
+      )}`,
       label: 'Bundle Size Stats',
     },
     bundleAnalyzer: {
@@ -229,7 +244,7 @@ export function buildArtifactsBody({
   contentRows.push(...formatBuildLinks(buildLinks, ['webpack']));
 
   contentRows.push(
-    `bundle size: ${artifacts.link('bundleSizeStats')}`,
+    `bundle size: ${artifacts.link('bundleSizeDebug')}`,
     `bundle analyzer: ${artifacts.link('bundleAnalyzer')}`,
     `interaction-benchmark: ${artifacts.link('interactionStats')}`,
     `storybook: ${artifacts.link('storybook')}`,

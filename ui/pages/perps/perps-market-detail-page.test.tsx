@@ -37,6 +37,7 @@ jest.mock('../../components/app/compliance', () => {
 });
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -640,7 +641,13 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates to wallet Perps tab when back button is clicked', async () => {
+    it('navigates back in history when back button is clicked', async () => {
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 2,
+        configurable: true,
+      });
+
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -648,9 +655,36 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith({
-        pathname: '/',
-        search: 'tab=perps',
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
+      });
+    });
+
+    it('falls back to Perps tab when history is empty', async () => {
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 1,
+        configurable: true,
+      });
+
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      const backButton = getByTestId('perps-market-detail-back-button');
+      backButton.click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        { pathname: '/', search: 'tab=perps' },
+        { replace: true },
+      );
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
       });
     });
 
@@ -1749,6 +1783,44 @@ describe('PerpsMarketDetailPage', () => {
       await waitFor(() => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('orders section spacing (TAT-3264)', () => {
+    it('renders the orders section header with the same top spacing token as the stats section header', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      const ordersHeader = screen.getByTestId('perps-orders-section-header');
+      const statsHeader = screen.getByTestId('perps-stats-section-header');
+
+      // Both adjacent section headers must use the page's section-spacing token
+      // (paddingTop={4} → 16px → `pt-4`). Before the fix the orders header had no
+      // paddingTop, so it sat flush against the preceding block.
+      expect(ordersHeader).toHaveClass('pt-4');
+      expect(statsHeader).toHaveClass('pt-4');
+    });
+
+    it('does not render the orders section when there are no open orders (empty-state, no regression)', () => {
+      const savedOrders = mockOrders.splice(0, mockOrders.length);
+      mockLivePositions.mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+      try {
+        const store = mockStore(createMockState(true));
+        renderWithProvider(<PerpsMarketDetailPage />, store);
+
+        expect(
+          screen.queryByTestId('perps-orders-section-header'),
+        ).not.toBeInTheDocument();
+        // The rest of the page still renders correctly.
+        expect(
+          screen.getByTestId('perps-stats-section-header'),
+        ).toBeInTheDocument();
+      } finally {
+        mockOrders.push(...savedOrders);
+      }
     });
   });
 });

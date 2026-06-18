@@ -1,4 +1,4 @@
-import { Wallet } from '@metamask/wallet';
+import { Wallet, WalletOptions } from '@metamask/wallet';
 import { Json } from '@metamask/utils';
 import { Encryptor } from '@metamask/keyring-controller';
 import { ShowApprovalRequest } from '@metamask/approval-controller';
@@ -8,6 +8,16 @@ import { RootMessenger } from '../lib/messenger';
 import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { getKeyringBuilders, getKeyringV2Builders } from './keyrings';
+
+// TODO: Remove this workaround once @metamask/wallet types are updated to include approvalController.
+// The runtime (index.cjs) supports approvalController in instanceOptions, but the TypeScript
+// declarations (types.d.cts) are missing it in InstanceSpecificOptions.
+type WalletInstanceOptions = WalletOptions['instanceOptions'] & {
+  approvalController?: {
+    showApprovalRequest?: ShowApprovalRequest;
+    typesExcludedFromRateLimiting?: string[];
+  };
+};
 
 export function initializeWallet({
   messenger,
@@ -50,6 +60,6 @@ export function initializeWallet({
       storageService: {
         storage: new BrowserStorageAdapter(),
       },
-    },
+    } as WalletInstanceOptions,
   });
 }
