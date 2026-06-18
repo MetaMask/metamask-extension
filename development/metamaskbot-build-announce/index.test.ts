@@ -52,6 +52,7 @@ function configureMocks(): void {
   artifacts.getArtifactLinks.mockReturnValue({
     link: () => '<a href="#">link</a>',
     bundleSizeStats: { url: 'https://ci/bundle.json', label: 'bundle' },
+    bundleSizeDebug: { url: 'https://ci/bundle.debug.json', label: 'debug' },
     bundleSizeData: { url: 'https://ci/data.json', label: 'data' },
     interactionStats: { url: 'https://ci/inter.json', label: 'inter' },
     storybook: { url: 'https://ci/storybook', label: 'Storybook' },
