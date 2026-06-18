@@ -4617,7 +4617,6 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.BSC,
           '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
-          '0x539', // Localhost
           '0x8f', // Monad Mainnet
         ];
 
