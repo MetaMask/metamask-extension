@@ -265,7 +265,8 @@ export default function HardwareWalletSignatures() {
 
   useEffect(() => {
     if (
-      signatureState.status === HardwareWalletSignatureStatus.AwaitingFinalSignature ||
+      signatureState.status ===
+        HardwareWalletSignatureStatus.AwaitingFinalSignature ||
       signatureState.status === HardwareWalletSignatureStatus.Submitted
     ) {
       setFirstSignatureDone(true);
@@ -401,10 +402,18 @@ export default function HardwareWalletSignatures() {
       t,
     });
 
+  /**
+   * Called when the user navigates back from the full-page QR signing flow.
+   * Resets the isReadingQrSignature flag to return to the inline QR view.
+   */
   const handleQrSigningPageBack = useCallback(() => {
     setIsReadingQrSignature(false);
   }, [setIsReadingQrSignature]);
 
+  /**
+   * Called when the user taps the inline "Scan signature" button.
+   * Sets the isReadingQrSignature flag to open the full-page QR signing flow.
+   */
   const handleOpenQrSigningPage = useCallback(() => {
     setIsReadingQrSignature(true);
   }, [setIsReadingQrSignature]);
@@ -561,10 +570,7 @@ export default function HardwareWalletSignatures() {
           >
             {needsTwoConfirmations && (
               <li>
-                <SignatureStatusIcon
-                  status={firstStepStatus}
-                  stepNumber={1}
-                />
+                <SignatureStatusIcon status={firstStepStatus} stepNumber={1} />
                 <Box
                   className="min-w-0 flex-1"
                   flexDirection={BoxFlexDirection.Column}

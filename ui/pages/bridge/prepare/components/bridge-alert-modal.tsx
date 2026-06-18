@@ -30,7 +30,7 @@ import {
   getValidationErrors,
 } from '../../../../ducks/bridge/selectors';
 import { Column, Row } from '../../layout';
-import useSubmitBridgeTransaction from '../../hooks/useSubmitBridgeTransaction';
+import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import { useBridgeAlerts } from '../../hooks/useBridgeAlerts';
 import { type BridgeAlert } from '../types';
 
@@ -75,8 +75,8 @@ export const BridgeAlertModal = ({
     activeAlert?.modalProps?.alertModalErrorMessage;
   const isModalOpen = Boolean(
     isOpen &&
-    activeAlert &&
-    (shouldShowSubmitCTA ? !(isQuoteExpired || isStockMarketClosed) : true),
+      activeAlert &&
+      (shouldShowSubmitCTA ? !(isQuoteExpired || isStockMarketClosed) : true),
   );
 
   /**

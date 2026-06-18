@@ -2063,6 +2063,10 @@
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
   },
+  "bridgeQrHardwareScanSignature": {
+    "message": "I've signed, scan signature",
+    "description": "Button label shown on the QR hardware wallet signing page prompting the user to scan the signature they generated on their device"
+  },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "No quotes available. Try a smaller amount."
   },
