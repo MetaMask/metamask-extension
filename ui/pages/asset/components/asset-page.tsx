@@ -96,7 +96,7 @@ import {
 } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
-import { processAssetParams } from '../asset';
+import { processAssetParams } from '../util';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
