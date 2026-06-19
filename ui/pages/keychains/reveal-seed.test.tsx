@@ -1006,6 +1006,50 @@ describe('Reveal Seed Page', () => {
       expect(mockRequestRevealSeedWordsWithPasskey).not.toHaveBeenCalled();
     });
 
+    it('does not export the SRP when passkey completes before the phishing scan', async () => {
+      let resolveScan:
+        | ((value: {
+            recommendedAction: RecommendedAction;
+            hostname: string;
+          }) => void)
+        | undefined;
+      mockScanUrlForPhishing.mockReset().mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveScan = resolve;
+          }),
+      );
+      mockStartPasskeyAuthentication.mockResolvedValue(mockPasskeyAuthResponse);
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizForPasskeyReveal({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
+
+      await waitFor(() => {
+        expect(mockStartPasskeyAuthentication).toHaveBeenCalled();
+      });
+      expect(mockRequestRevealSeedWordsWithPasskey).not.toHaveBeenCalled();
+
+      resolveScan?.({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('reveal-seed-malicious-block'),
+        ).toBeInTheDocument();
+      });
+      expect(mockRequestRevealSeedWordsWithPasskey).not.toHaveBeenCalled();
+    });
+
     it('uses the password prompt for social-login wallets even when a passkey is enrolled', async () => {
       mockGetIsSocialLoginFlow.mockReturnValue(true);
 

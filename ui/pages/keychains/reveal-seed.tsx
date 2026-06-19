@@ -96,23 +96,28 @@ function RevealSeedPage() {
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const [scanResult, setScanResult] =
     useState<PhishingDetectionScanResult | null>(null);
+  const scanResultPromiseRef = React.useRef<
+    Promise<PhishingDetectionScanResult | null>
+  >(Promise.resolve(null));
 
   useEffect(() => {
     let cancelled = false;
     setScanResult(null);
 
     if (activeTabOrigin) {
-      const originToScan = activeTabOrigin;
-      scanUrlForPhishing(originToScan)
-        .then((result) => {
-          if (cancelled) {
-            return;
-          }
-          setScanResult(result);
-        })
-        .catch(() => {
-          // Scan failed — no action needed
-        });
+      const scanPromise = scanUrlForPhishing(activeTabOrigin).catch(() => {
+        // Scan failed — no action needed
+        return null;
+      });
+      scanResultPromiseRef.current = scanPromise;
+      scanPromise.then((result) => {
+        if (cancelled) {
+          return;
+        }
+        setScanResult(result);
+      });
+    } else {
+      scanResultPromiseRef.current = Promise.resolve(null);
     }
 
     return () => {
@@ -274,8 +279,9 @@ function RevealSeedPage() {
 
   const handleRevealWithPasskey = useCallback(
     async (authenticationResponse: PasskeyAuthenticationResponse) => {
-      // Auto-run passkey may finish before the phishing scan sets isMalicious.
-      if (isMalicious) {
+      const latestScanResult = await scanResultPromiseRef.current;
+      const isMaliciousAction = latestScanResult?.recommendedAction === RecommendedAction.Block;
+      if (isMaliciousAction) {
         setScreen(PASSWORD_PROMPT_SCREEN);
         return false;
       }
@@ -341,7 +347,7 @@ function RevealSeedPage() {
         endTrace({ name: TraceName.RevealSeed });
       }
     },
-    [dispatch, keyringId, trackEvent, hdEntropyIndex, isMalicious],
+    [dispatch, keyringId, trackEvent, hdEntropyIndex],
   );
 
   const handleUsePassword = useCallback(() => {
