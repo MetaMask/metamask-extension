@@ -30,23 +30,27 @@ jestPreviewConfigure({
 // We keep the RuntimeLoader object so existing guards (typeof RuntimeLoader ===
 // 'undefined') continue to work, but override awaitInstance to resolve
 // immediately so act() can settle.
-jest.mock('@rive-app/react-canvas', () => ({
-  RuntimeLoader: {
-    setWasmUrl: () => {},
-    getWasmUrl: () => '',
-    isLoading: false,
-    awaitInstance: () => Promise.resolve(),
-    loadRuntime: () => Promise.resolve(),
-    getInstance: () => undefined,
-    callBackQueue: [],
-    wasmURL: '',
-    // Allow wasmBinary to be set (used by RiveWasmProvider)
-    get wasmBinary() {
-      return undefined;
+jest.mock('@rive-app/react-canvas', () => {
+  const actual = jest.requireActual('@rive-app/react-canvas');
+
+  return {
+    ...actual,
+    RuntimeLoader: {
+      ...(actual.RuntimeLoader ?? {}),
+      // Ensure act() can settle in jsdom
+      awaitInstance: () => Promise.resolve(),
+      loadRuntime: () => Promise.resolve(),
+      getInstance: () => undefined,
+      callBackQueue: [],
+      wasmURL: '',
+      // Allow wasmBinary to be set (used by RiveWasmProvider)
+      get wasmBinary() {
+        return undefined;
+      },
+      set wasmBinary(_v) {},
     },
-    set wasmBinary(_v) {},
-  },
-}));
+  };
+});
 
 // Mock Pay-related components to avoid importing large dependency trees
 // These components are not used by existing integration tests
