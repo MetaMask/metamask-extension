@@ -171,26 +171,36 @@ const AssetChart = ({
   });
 
   const prevIsPlaceholderData = usePrevious(isPlaceholderData);
-  const shouldAnimate =
-    prevIsPlaceholderData === true && !isPlaceholderData && prices.length > 0;
+  const wasPlaceholderData = prevIsPlaceholderData && !isPlaceholderData;
 
   // The cases below are not mutually exclusive
   const shouldShowChartEmptyState = !loading && prices.length === 0; // When the chart is not loading anymore and there are no prices, show an empty state
   const shouldShowChartMuted =
     isFetching && prices.length > 0 && !isPlaceholderData;
 
-  const options = {
-    ...initialChartOptions,
-    borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
-    animations: shouldAnimate
+  const animation =
+    isPlaceholderData || wasPlaceholderData
       ? {
+          x: false,
           y: {
             from: (ctx: { chart: { scales: { y: { bottom: number } } } }) =>
               ctx.chart.scales.y.bottom,
-            duration: 600,
+            duration: 400,
           },
         }
-      : {},
+      : {
+          x: { type: 'number', duration: 400 },
+          y: { type: 'number', duration: 400 },
+        };
+
+  const options = {
+    ...initialChartOptions,
+    borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
+    transitions: {
+      active: { animation },
+      default: { animation },
+      resize: { animation: { duration: 0 } },
+    },
     scales: {
       x: {
         min: finiteFallback(xMin, undefined),
