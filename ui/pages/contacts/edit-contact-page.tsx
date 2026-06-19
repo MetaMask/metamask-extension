@@ -29,9 +29,13 @@ export function EditContactPage() {
     chainId: string;
     address: string;
   }>();
-  const contact = useSelector((state: AddressBookMetaMaskState) =>
+  const contact = useSelector((state) =>
     address && chainId
-      ? getAddressBookEntryByNetwork(state, address, chainId as `0x${string}`)
+      ? getAddressBookEntryByNetwork(
+          state as AddressBookMetaMaskState,
+          address,
+          chainId as Hex,
+        )
       : null,
   );
   const internalAccount = useSelector((state) =>

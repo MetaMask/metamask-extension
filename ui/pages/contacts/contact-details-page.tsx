@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
+import type { Hex } from '@metamask/utils';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -38,9 +39,13 @@ export function ContactDetailsPage() {
     chainId: string;
     address: string;
   }>();
-  const contact = useSelector((state: AddressBookMetaMaskState) =>
+  const contact = useSelector((state) =>
     address && chainId
-      ? getAddressBookEntryByNetwork(state, address, chainId as `0x${string}`)
+      ? getAddressBookEntryByNetwork(
+          state as AddressBookMetaMaskState,
+          address,
+          chainId as Hex,
+        )
       : null,
   );
   const internalAccount = useSelector((state) =>

@@ -2,6 +2,7 @@ import {
   AddressBookController,
   AddressBookEntry,
 } from '@metamask/address-book-controller';
+import type { Hex } from '@metamask/utils';
 import { createParameterizedSelector } from '../../../shared/lib/selectors/selector-creators';
 
 /**
@@ -31,7 +32,7 @@ export const getFullAddressBook = (state: AddressBookMetaMaskState) =>
  */
 export const getAddressBookByNetwork = createParameterizedSelector(20)(
   getFullAddressBook,
-  (_state: AddressBookMetaMaskState, chainId: `0x${string}`) => chainId,
+  (_state: AddressBookMetaMaskState, chainId: Hex) => chainId,
   (addressBook, chainId) => {
     if (!addressBook[chainId]) {
       return [];
@@ -51,7 +52,7 @@ export const getAddressBookByNetwork = createParameterizedSelector(20)(
  */
 export const getAddressBookMapByNetwork = createParameterizedSelector(20)(
   getAddressBookByNetwork,
-  (_state: AddressBookMetaMaskState, chainId: `0x${string}`) => chainId,
+  (_state: AddressBookMetaMaskState, chainId: Hex) => chainId,
   (entries) =>
     new Map<string, AddressBookEntry>(
       entries.map((entry) => [entry.address.toLowerCase(), entry]),
@@ -72,6 +73,6 @@ export const getAddressBookMapByNetwork = createParameterizedSelector(20)(
 export const getAddressBookEntryByNetwork = (
   state: AddressBookMetaMaskState,
   address: string,
-  chainId: `0x${string}`,
+  chainId: Hex,
 ): AddressBookEntry | undefined =>
   getAddressBookMapByNetwork(state, chainId).get(address.toLowerCase());
