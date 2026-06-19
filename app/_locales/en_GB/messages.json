@@ -11051,16 +11051,16 @@
     "message": "You received",
     "description": "Label indicating the amount and asset the user received."
   },
-  "youWithdrew": {
-    "message": "You withdrew",
-    "description": "Label indicating the amount and asset the user withdrew."
-  },
   "youSell": {
     "message": "You sell"
   },
   "youSent": {
     "message": "You sent",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youWithdrew": {
+    "message": "You withdrew",
+    "description": "Label indicating the amount and asset the user withdrew."
   },
   "youllReceive": {
     "message": "You'll receive",

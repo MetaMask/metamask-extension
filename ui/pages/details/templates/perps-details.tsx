@@ -5,6 +5,7 @@ import type {
   ActivityListItem,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
+import { getTokenMetadataFromKnownToken } from '../../../../shared/lib/activity/adapters/helpers';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { NetworkName } from '../../../components/app/transaction/network-name';
@@ -58,17 +59,22 @@ export function PerpsDetails({
   }, [totalFiat]);
 
   const receivedToken = useMemo((): TokenAmount | undefined => {
-    const amount = targetFiat;
-
-    if (!amount) {
+    if (!targetFiat || !metamaskPay?.chainId) {
       return undefined;
     }
 
+    const tokenMetadata = getTokenMetadataFromKnownToken(
+      metamaskPay?.tokenAddress,
+      'in',
+      toEvmCaipChainId(metamaskPay.chainId),
+    );
+
     return {
-      amount,
+      amount: targetFiat,
       direction: 'in',
+      ...tokenMetadata,
     };
-  }, [targetFiat]);
+  }, [targetFiat, metamaskPay?.chainId, metamaskPay?.tokenAddress]);
 
   const transactionFeeAmount =
     Number(networkFeeFiat ?? 0) + Number(bridgeFeeFiat ?? 0);
@@ -76,6 +82,13 @@ export function PerpsDetails({
   const formattedTransactionFee = Number.isFinite(transactionFeeAmount)
     ? formatCurrencyWithMinThreshold(transactionFeeAmount, PERPS_CURRENCY)
     : null;
+
+  const chainId =
+    metamaskPay?.isPostQuote && metamaskPay.chainId
+      ? toEvmCaipChainId(metamaskPay.chainId)
+      : item.chainId;
+
+  const blockExplorerHash = item.hash === '0x0' ? undefined : item.hash;
 
   return (
     <div className="flex grow flex-col">
@@ -85,6 +98,7 @@ export function PerpsDetails({
             { label: t('youWithdrew'), token: withdrewToken },
             { label: t('youReceived'), token: receivedToken },
           ]}
+          showBadge
         />
 
         <Section>
@@ -97,10 +111,7 @@ export function PerpsDetails({
             label={t('account')}
             value={<AccountName address={item.data.from} />}
           />
-          <Row
-            label={t('network')}
-            value={<NetworkName chainId={item.chainId} />}
-          />
+          <Row label={t('network')} value={<NetworkName chainId={chainId} />} />
         </Section>
 
         {formattedTransactionFee ? (
@@ -115,7 +126,7 @@ export function PerpsDetails({
       </div>
 
       <Footer>
-        <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
+        <BlockExplorerButton chainId={chainId} txHash={blockExplorerHash} />
       </Footer>
     </div>
   );
