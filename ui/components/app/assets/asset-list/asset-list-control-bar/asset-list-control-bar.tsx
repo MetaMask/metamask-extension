@@ -75,7 +75,6 @@ import {
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
-  showImportTokensModal,
   showModal,
   updateBalancesFoAccounts,
 } from '../../../../../store/actions';
@@ -90,10 +89,7 @@ import {
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
-import {
-  getIsNetworkManagementEnabled,
-  getIsTokenManagementFilterEnabled,
-} from '../../../../../selectors/multichain/feature-flags';
+import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
@@ -127,9 +123,6 @@ const AssetListControlBar = ({
     selectAccountSupportsEnabledNetworks,
   );
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  const isTokenManagementFilterEnabled = useSelector(
-    getIsTokenManagementFilterEnabled,
-  );
   const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
 
@@ -275,18 +268,6 @@ const AssetListControlBar = ({
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
     setIsNetworkFilterModalOpen(!isNetworkFilterModalOpen);
-  };
-
-  const handleTokenImportModal = () => {
-    dispatch(showImportTokensModal());
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: 'HOME',
-      },
-    });
-    closePopover();
   };
 
   const handleOpenTokenManagement = useCallback(() => {
@@ -454,11 +435,7 @@ const AssetListControlBar = ({
               />
             ) : (
               <Tooltip
-                title={
-                  isTokenManagementFilterEnabled
-                    ? t('manageTokens')
-                    : t('importTokensCamelCase')
-                }
+                title={t('manageTokens')}
                 position="bottom"
                 distance={20}
               >
@@ -466,17 +443,9 @@ const AssetListControlBar = ({
                   ref={importButtonRef}
                   data-testid="importTokens-button"
                   className="asset-list-control-bar__button"
-                  onClick={
-                    isTokenManagementFilterEnabled
-                      ? handleOpenTokenManagement
-                      : handleTokenImportModal
-                  }
+                  onClick={handleOpenTokenManagement}
                   size={ButtonBaseSize.Sm}
-                  startIconName={
-                    isTokenManagementFilterEnabled
-                      ? IconName.MoreVertical
-                      : IconName.Add
-                  }
+                  startIconName={IconName.MoreVertical}
                   startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
                   backgroundColor={
                     isTokenSortPopoverOpen
@@ -530,28 +499,18 @@ const AssetListControlBar = ({
           minWidth: isFullScreen ? '158px' : '',
         }}
       >
-        {isTokenManagementFilterEnabled ? (
-          <SelectableListItem
-            onClick={handleOpenTokenManagement}
-            testId="manageTokens"
-            className="min-h-12"
-          >
-            <Icon
-              name={IconName.Setting}
-              size={IconSize.Sm}
-              marginInlineEnd={2}
-            />
-            {t('manageTokens')}
-          </SelectableListItem>
-        ) : (
-          <SelectableListItem
-            onClick={handleTokenImportModal}
-            testId="importTokens"
-          >
-            <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
-            {t('importTokensCamelCase')}
-          </SelectableListItem>
-        )}
+        <SelectableListItem
+          onClick={handleOpenTokenManagement}
+          testId="manageTokens"
+          className="min-h-12"
+        >
+          <Icon
+            name={IconName.Setting}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
+          {t('manageTokens')}
+        </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
           <Icon
             name={IconName.Refresh}

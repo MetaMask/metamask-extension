@@ -416,7 +416,7 @@ describe('TokenManagementPage', () => {
 
   it('navigates to the custom token import page from the sticky add custom token button', () => {
     const trackEvent = jest.fn();
-    const { store } = renderPage(createState(), undefined, trackEvent);
+    renderPage(createState(), undefined, trackEvent);
 
     const addCustomTokenButton = screen.getByTestId(
       'token-management-add-custom-token-button',
@@ -427,7 +427,6 @@ describe('TokenManagementPage', () => {
 
     fireEvent.click(addCustomTokenButton);
 
-    expect(store.getState().appState.importTokensModalOpen).toBeFalsy();
     expect(CUSTOM_TOKEN_IMPORT_ROUTE).toBe('/custom-token-import');
     expect(trackEvent).toHaveBeenCalledWith({
       category: MetaMetricsEventCategory.Navigation,
