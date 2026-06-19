@@ -206,7 +206,7 @@ class TokensTab extends HomePage {
     console.log(`Clicking on the token name `);
     await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
-      css: this.tokenName,
+      css: this.tokenListItem,
       text: assetName,
     });
   }
@@ -258,6 +258,54 @@ class TokensTab extends HomePage {
   async waitForNetworksFilter(): Promise<void> {
     console.log(`Waiting for the network filter`);
     await this.driver.waitForSelector(this.networksToggle);
+  }
+
+  /**
+   * Asserts the given asset is not listed in the token list.
+   *
+   * @param assetName - The asset name to verify is absent.
+   */
+  async checkAssetIsAbsent(assetName: string): Promise<void> {
+    console.log(`Verifying asset "${assetName}" is not present in token list`);
+    await this.driver.assertElementNotPresent({
+      css: this.tokenName,
+      text: assetName,
+    });
+  }
+
+  /**
+   * Asserts the visible token list contains exactly the given asset names
+   * (order-independent).
+   *
+   * @param expectedAssets - The full set of asset names expected to be visible.
+   */
+  async checkOnlyAssetsArePresent(expectedAssets: string[]): Promise<void> {
+    console.log(
+      `Verifying token list contains exactly: ${expectedAssets.join(', ')}`,
+    );
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const elements = await this.driver.findElements(this.tokenName);
+          if (elements.length !== expectedAssets.length) {
+            return false;
+          }
+          const names = await Promise.all(elements.map((e) => e.getText()));
+          const got = new Set(names.map((n) => n.trim()));
+          return expectedAssets.every((name) => got.has(name));
+        } catch (error) {
+          const err = error as { name?: string };
+          if (
+            err.name === 'NoSuchElementError' ||
+            err.name === 'StaleElementReferenceError'
+          ) {
+            return false;
+          }
+          throw error;
+        }
+      },
+      { timeout: this.driver.timeout, interval: 200 },
+    );
   }
 
   async getNumberOfAssets(): Promise<number> {
