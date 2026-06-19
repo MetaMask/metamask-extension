@@ -22,7 +22,11 @@ import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
-import { trace, TraceName } from '../shared/lib/trace';
+import {
+  getPerformanceTimestamp,
+  trace,
+  TraceName,
+} from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
@@ -245,6 +249,11 @@ async function startApp(metamaskState, opts) {
   // UI messenger is created here in preparation for completely replacing
   // `submitRequestToBackground` with it.
   const uiMessenger = createUIMessenger();
+
+  // UI Startup measures setup before React begins resolving the routed UI.
+  // Capture the boundary before render can trigger lazy route chunk loading.
+  opts.onBeforeFirstRender?.(getPerformanceTimestamp());
+
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
     render(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );

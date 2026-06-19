@@ -243,15 +243,22 @@ async function initializeUiWithTab(
   initialState,
 ) {
   try {
+    let uiStartupEndTimestamp;
     const store = await launchMetamaskUi({
       activeTab,
       container,
       backgroundConnection,
       traceContext,
       initialState,
+      onBeforeFirstRender: (timestamp) => {
+        uiStartupEndTimestamp = timestamp;
+      },
     });
 
-    endTrace({ name: TraceName.UIStartup });
+    endTrace({
+      name: TraceName.UIStartup,
+      timestamp: uiStartupEndTimestamp,
+    });
 
     if (process.env.IN_TEST) {
       window.document?.documentElement?.classList.add('controller-loaded');
