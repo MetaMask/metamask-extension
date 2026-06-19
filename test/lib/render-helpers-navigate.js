@@ -13,10 +13,7 @@ import { I18nContext } from '../../ui/contexts/i18n';
 import { MetaMetricsContext } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
-import {
-  LegacyRouteMessengerProvider,
-  RouteMessengerContext,
-} from '../../ui/contexts/route-messenger';
+import { RouteMessengerContext } from '../../ui/contexts/route-messenger';
 import { UIMessengerProvider } from '../../ui/contexts/ui-messenger';
 import { MetaMaskTestReduxProvider } from './redux-test-provider';
 import { createMockUIMessenger } from './mock-ui-messenger';
@@ -41,12 +38,7 @@ const createMockMetaMetricsContext = (
  * @param {object} [props.en]
  * @param {import('react').ReactNode} [props.children]
  */
-export const I18nProvider = ({
-  currentLocale,
-  current,
-  en: eng,
-  children,
-}) => {
+export const I18nProvider = ({ currentLocale, current, en: eng, children }) => {
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
@@ -126,7 +118,7 @@ export function createProviderWrapper(
   function Wrapper({ children }) {
     const content = routeMessenger ? (
       <RouteMessengerContext.Provider value={routeMessenger}>
-        <LegacyRouteMessengerProvider>{children}</LegacyRouteMessengerProvider>
+        {children}
       </RouteMessengerContext.Provider>
     ) : (
       children

@@ -826,9 +826,9 @@
       "error: Warning: ReactDOM.render is no longer": 7,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
-    "ui/components/app/perps/hooks/usePerpsDepositConfirmation.test.ts": {
+     "ui/components/app/perps/hooks/usePerpsDepositConfirmation.test.ts": {
       "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 6,
+      "error: Warning: ReactDOM.render is no longer": 7,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/app/perps/hooks/usePerpsTabExploreData.test.ts": {
@@ -3085,10 +3085,10 @@
       "error: Warning: ReactDOM.render is no longer": 23,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
-    "ui/hooks/rewards/useValidateReferralCode.test.tsx": {
+     "ui/hooks/rewards/useValidateReferralCode.test.tsx": {
       "Deprecation warnings": 1,
       "React: Act warnings (component updates not wrapped)": 1,
-      "error: Warning: ReactDOM.render is no longer": 13,
+      "error: Warning: ReactDOM.render is no longer": 16,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/hooks/rewards/useVipTier.test.ts": {
@@ -6539,10 +6539,6 @@
     "ui/pages/snaps/snap-view/hooks/useUpdate.test.ts": {
       "Deprecation warnings": 1,
       "MetaMask: Background connection not initialized": 1,
-      "Test errors: Uncaught Errors": 2,
-      "error: Error handled by React Router": 2,
-      "error: React Router caught the following": 2,
-      "error: Warning: React.createElement: type is invalid": 2,
       "error: Warning: ReactDOM.render is no longer": 2,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },

@@ -10,12 +10,7 @@ import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
 
 /** @type {import('react').FC<{ currentLocale?: string; current?: object; en?: object; children?: import('react').ReactNode }>} */
-export const I18nProvider = ({
-  currentLocale,
-  current,
-  en: eng,
-  children,
-}) => {
+export const I18nProvider = ({ currentLocale, current, en: eng, children }) => {
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||

@@ -57,13 +57,11 @@ describe('AdditionalNetworksInfo', () => {
     const infoIcon = document.querySelector('.add-network__warning-icon');
     expect(infoIcon).toBeInTheDocument();
 
-    // Trigger mouse enter on the info icon and wait for state updates
+    // Trigger mouse enter on the info icon and flush state updates
     await act(async () => {
       if (infoIcon) {
         fireEvent.mouseEnter(infoIcon);
       }
-      // Small delay to allow the state update to complete
-      await new Promise((r) => setTimeout(r, 0));
     });
 
     // Popover content should now be visible
@@ -84,8 +82,6 @@ describe('AdditionalNetworksInfo', () => {
       if (containerBox) {
         fireEvent.mouseLeave(containerBox);
       }
-      // Small delay to allow the state update to complete
-      await new Promise((r) => setTimeout(r, 0));
     });
 
     // We've handled the state updates properly with act()
@@ -100,8 +96,6 @@ describe('AdditionalNetworksInfo', () => {
       if (infoIcon) {
         fireEvent.mouseEnter(infoIcon);
       }
-      // Small delay to allow the state update to complete
-      await new Promise((r) => setTimeout(r, 0));
     });
 
     // Find and click the learn more button
@@ -110,8 +104,6 @@ describe('AdditionalNetworksInfo', () => {
         messages.learnMoreUpperCase.message,
       );
       fireEvent.click(learnMoreButton);
-      // Small delay to allow the state update to complete
-      await new Promise((r) => setTimeout(r, 0));
     });
 
     // Verify that global.platform.openTab was called with correct URL

@@ -106,11 +106,16 @@ describe('useCurrencyRatePolling', () => {
       state,
     );
 
-    // Flush async state updates (React 18 requires act() to process async effects).
+    // Await each mocked async call in the chain so React 18 act() processes
+    // each effect in turn rather than relying on an opaque setTimeout flush.
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
+      await Promise.all(
+        mockGetOriginalNativeTokenSymbol.mock.results.map((r) => r.value),
+      );
     });
-    await Promise.all(mockPromises);
+    await act(async () => {
+      await mockPromises[0];
+    });
 
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
     expect(currencyRateStartPolling).toHaveBeenCalledWith(['ETH', 'BNB']);
@@ -167,9 +172,14 @@ describe('useCurrencyRatePolling', () => {
 
     renderHookWithProvider(() => useCurrencyRatePolling(), state);
 
-    // Wait for the asynchronous effect(s) to complete.
-    await new Promise((r) => setTimeout(r, 0));
-    await Promise.all(mockPromises);
+    await act(async () => {
+      await Promise.all(
+        mockGetOriginalNativeTokenSymbol.mock.results.map((r) => r.value),
+      );
+    });
+    await act(async () => {
+      await mockPromises[0];
+    });
 
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
     expect(currencyRateStartPolling).toHaveBeenCalledWith(['ETH']); // Polling using the original native token symbol
@@ -187,11 +197,14 @@ describe('useCurrencyRatePolling', () => {
 
     renderHookWithProvider(() => useCurrencyRatePolling(), state);
 
-    // Flush async state updates (React 18 requires act() to process async effects).
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
+      await Promise.all(
+        mockGetOriginalNativeTokenSymbol.mock.results.map((r) => r.value),
+      );
     });
-    await Promise.all(mockPromises);
+    await act(async () => {
+      await mockPromises[0];
+    });
 
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
     expect(currencyRateStartPolling).toHaveBeenCalledWith(['CUSTOM_TOKEN']); // Polling using the original native token symbol
@@ -222,11 +235,14 @@ describe('useCurrencyRatePolling', () => {
 
     renderHookWithProvider(() => useCurrencyRatePolling(), state);
 
-    // Flush async state updates (React 18 requires act() to process async effects).
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
+      await Promise.all(
+        mockGetOriginalNativeTokenSymbol.mock.results.map((r) => r.value),
+      );
     });
-    await Promise.all(mockPromises);
+    await act(async () => {
+      await mockPromises[0];
+    });
 
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
     expect(currencyRateStartPolling).toHaveBeenCalledWith(['ETH']); // Polling using the original native token symbol

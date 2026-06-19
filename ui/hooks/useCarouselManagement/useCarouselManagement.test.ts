@@ -151,7 +151,10 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
 
     // Flush async state updates from getUserProfileLineageAction() (React 18 requires act()).
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
+      await mockGetUserProfileLineage.mock.results[0]?.value;
+    });
+    await act(async () => {
+      await mockFetch.mock.results[0]?.value;
     });
     expect(mockUpdateSlides).toHaveBeenCalled();
 
