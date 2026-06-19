@@ -7,6 +7,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.37.0]
+
+### Uncategorized
+
+- chore: Set `core-platform` as codeowners of `LegacyBackgroundApiService` (#43625)
+- perf(6557): Memoize swaps default token selector and remove redundant deep/shallow equality in `useTokensToSearch` (#43609)
+- Enabled ERC-7715 requests over the Multichain API and MetaMask Connect (#43513)
+- Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6927 (#43209)
+- Not required — developer tooling only. (#43130)
+- Updated the Sei native token icon to Sei's maroon token mark. (#43173)
+- Adds `metamask-aep[bot]` to the CLA Signature Bot allowlist in `.github/workflows/cla.yml`. (#43237)
+
+### Added
+
+- Display a VIP tag when using a VIP referral code. (#43527)
+- Remove CTA button under notification (#43685)
+- Swaps modal to page (#43691)
+- Fixed display approved transactions for Non-EVM networks (#43566)
+- Add bitcoin connectivity (#40633)
+- Includes `utm_*` parameters from the marketing campaign in the onboarding `Wallet Setup Completed` metrics (#42638)
+- Add QR error handling for invalid transaction signature (#43402)
+- Added configurable max slippage controls for perps market orders (#43357)
+- Added Blockaid spender scanning for legacy ERC-20 `increaseApproval` transactions (e.g. LINK, stLINK, BAT). (#43141)
+- Perps market search now matches full market names — e.g. searching "bitcoin" finds BTC (and BCH), "tesla" finds TSLA, (#43456)
+  "spacex" finds SPCX.
+- Added design changes for swaps filter (#43453)
+- UI update for network filter (#43310)
+- Updated MM Pay token picker to use inline row layout with error messages shown above the payment details (#43313)
+- Added compliance blocking for restricted wallets using Perps. (#42519)
+- Extends dapp scanning capability to include path-based domains. (#42311)
+- Added a Batch Sell entry point in the wallet overview action area, allowing users to select and sell multiple tokens across (#42408)
+  supported networks in one flow.
+- Container-based responsive text ## **Related issues** (#43184)
+- Activity list redesign (#42837)
+
+### Fixed
+
+- Null (#43555)
+- Correct state migration to be identical to real TokenBalancesController (#43626)
+- Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and (#43367)
+  trades no longer leave the user on the order screen).
+- Fixed product announcement notification links opening MetaMask deeplinks externally before routing. (#42805)
+- Fixed perps close-all-positions toasts not appearing on the home screen perps tab (#43613)
+- Consume batch sell assets data from token controller (#43460)
+- Fixed infinite loader on bridge awaiting signatures page when using QR hardware wallets (#40838)
+- Fixed inconsistent spacing above the orders section on the perps market detail page. (#43350)
+- Fixed a false "Insufficient funds" error on perps when the size slider is set to 100%. (#43383)
+- Asset picker network (#43465)
+- Updated gas token picker design to remove background pill and show a right-facing arrow (#43165)
+- Routed the default zkSync Era RPC through Infura for improved performance and reliability. (#43407)
+- Fixed a bug where Firefox clipped the top of the search field focus outline in Send and Receive. (#43120)
+- Fix trezor connection for Firefox browser (#43179)
+- Exclude Ondo assets from batch sell select screen (#43327)
+- Fixed a bug where switching the extension between side panel and popup view and back could reopen MetaMask in the popup, (#43221)
+  sometimes leaving both the side panel and popup open at the same time
+- Delete token list (#43108)
+- Fixed the Perps withdraw button doing nothing when a non-EVM network (Solana, Bitcoin, Tron) was selected (#43212)
+
 ## [13.35.1]
 
 ### Added
@@ -2512,7 +2570,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.35.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.37.0...HEAD
+[13.37.0]: https://github.com/MetaMask/metamask-extension/compare/v13.35.1...v13.37.0
 [13.35.1]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...v13.35.1
 [13.35.0]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...v13.35.0
 [13.34.1]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...v13.34.1
