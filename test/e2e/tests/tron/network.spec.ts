@@ -8,8 +8,26 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { TRON_CHAIN_ID, mockTronFeatureFlags } from './mocks/common-tron';
 
-const TRON_NILE_NAME = 'Tron Nile Testnet';
-const TRON_SHASTA_NAME = 'Tron Shasta Testnet';
+const TRON_NILE_NAME = 'Tron Nile';
+const TRON_SHASTA_NAME = 'Tron Shasta';
+
+const NETWORK_MANAGEMENT_FLAGS = {
+  manifestFlags: {
+    remoteFeatureFlags: {
+      extensionUxNetworkManagement: {
+        enabled: true,
+      },
+    },
+  },
+};
+
+function buildTronNetworkFixture() {
+  return new FixtureBuilderV2()
+    .withPreferencesController({
+      preferences: { showTestNetworks: false },
+    })
+    .build();
+}
 
 async function mockTronFlagsOnly(mockServer: Mockttp) {
   return [await mockTronFeatureFlags(mockServer)];
@@ -95,20 +113,10 @@ describe('Tron network presence', function (this: Suite) {
     );
   });
 
-  // Tron testnets (Nile, Shasta) are not fully supported end-to-end in
-  // MetaMask: the new Network Manager modal does not expose the legacy
-  // "Show test networks" toggle (`network-menu-show-test-networks`), so the
-  // `toggleShowTestNetworks()` helper has nothing to click. Until testnet
-  // support is wired through the Network Manager surface, these tests stay
-  // skipped — do not unskip without first verifying the toggle exists.
-  // TODO: Re-enable once Network Manager surfaces test-network toggle.
-  // Tracking: MetaMask/network-management-team on testnet support for the
-  // new Network Manager modal.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('shows Tron Nile when test networks are enabled', async function () {
+  it('shows Tron Nile when test networks are enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildTronNetworkFixture(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
           // Anvil is needed because the extension still polls EVM networks in
@@ -116,24 +124,22 @@ describe('Tron network presence', function (this: Suite) {
           'anvil',
         ],
         testSpecificMock: mockTronFlagsOnly,
+        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
         await networkManager.toggleShowTestNetworks();
+        await networkManager.openNetworkManager();
         await networkManager.checkNetworkIsListed(TRON_NILE_NAME);
       },
     );
   });
 
-  // See note above: Tron testnets are not fully supported and the new Network
-  // Manager modal doesn't ship the test-network toggle.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('shows Tron Shasta when test networks are enabled', async function () {
+  it('shows Tron Shasta when test networks are enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildTronNetworkFixture(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
           // Anvil is needed because the extension still polls EVM networks in
@@ -141,12 +147,13 @@ describe('Tron network presence', function (this: Suite) {
           'anvil',
         ],
         testSpecificMock: mockTronFlagsOnly,
+        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
         await networkManager.toggleShowTestNetworks();
+        await networkManager.openNetworkManager();
         await networkManager.checkNetworkIsListed(TRON_SHASTA_NAME);
       },
     );

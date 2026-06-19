@@ -1,5 +1,7 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { Driver } from '../../webdriver/driver';
+import SelectNetwork from './dialog/select-network';
+import HeaderNavbar from './header-navbar';
 
 export enum NetworkId {
   ETHEREUM = 'eip155:1',
@@ -72,12 +74,20 @@ class NetworkManager {
   }
 
   private readonly showTestNetworksToggle =
-    '[data-testid="network-menu-show-test-networks"]';
+    '[data-testid="networks-page-show-test-networks"]';
 
   async toggleShowTestNetworks(): Promise<void> {
-    console.log('Toggling "Show test networks"');
+    // The home network filter / legacy Network Manager modal does not expose
+    // the test-network toggle. Enable testnets from Settings → Networks.
+    console.log('Toggling "Show test networks" via Settings → Networks');
+    const headerNavbar = new HeaderNavbar(this.driver);
+    await headerNavbar.openGlobalNetworksMenu();
+    const selectNetwork = new SelectNetwork(this.driver);
+    await selectNetwork.checkPageIsLoaded();
     await this.driver.clickElement(this.showTestNetworksToggle);
     await this.driver.waitForElementToStopMoving(this.showTestNetworksToggle);
+    await selectNetwork.clickCloseButton();
+    await headerNavbar.clickDrawerBackButton();
   }
 
   async checkNetworkIsListed(networkName: string): Promise<void> {
