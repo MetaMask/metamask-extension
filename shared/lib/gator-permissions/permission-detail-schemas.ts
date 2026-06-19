@@ -48,6 +48,16 @@ const requireStartTime = (permission: {
 
 const alwaysVisible = () => true;
 
+function areOnlyMetaMaskFacilitatorAddresses(
+  addresses: string[] | null | undefined,
+): boolean {
+  if (!addresses?.length) {
+    return false;
+  }
+
+  return addresses.every(isMetaMaskFacilitatorAddress);
+}
+
 const TOKEN_APPROVAL_REVOCATION_METHODS: {
   key: string;
   translationKey: string;
@@ -168,8 +178,7 @@ const permissionInfoSection: SchemaSection = {
       testId: 'confirmation-redeemer-metamask-facilitator',
       getValue: () => ({ key: 'gatorPermissionsMetaMaskFacilitator' }),
       isVisible: (ctx) =>
-        Boolean(ctx.redeemerAddresses?.length) &&
-        ctx.redeemerAddresses.every(isMetaMaskFacilitatorAddress),
+        areOnlyMetaMaskFacilitatorAddresses(ctx.redeemerAddresses),
       includeInViews: ['confirmation', 'reviewDetail'],
     },
     {
@@ -179,7 +188,7 @@ const permissionInfoSection: SchemaSection = {
       getValue: (ctx) => ctx.redeemerAddresses ?? undefined,
       isVisible: (ctx) =>
         Boolean(ctx.redeemerAddresses?.length) &&
-        !ctx.redeemerAddresses?.every(isMetaMaskFacilitatorAddress),
+        !areOnlyMetaMaskFacilitatorAddresses(ctx.redeemerAddresses),
       includeInViews: ['confirmation', 'reviewDetail'],
     },
     {
