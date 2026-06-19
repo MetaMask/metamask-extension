@@ -215,6 +215,7 @@ class SendPage {
 
   async pressContinueButton(): Promise<void> {
     console.log('Pressing continue button');
+    await this.driver.waitForSelector(this.continueButton);
     await this.driver.clickElement(this.continueButton);
   }
 
