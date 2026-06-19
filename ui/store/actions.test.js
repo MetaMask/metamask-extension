@@ -4021,25 +4021,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#showConfirmTurnOnMetamaskNotifications', () => {
-    it('should dispatch showModal with the correct payload', async () => {
-      const store = mockStore();
-
-      await store.dispatch(actions.showConfirmTurnOnMetamaskNotifications());
-
-      const expectedActions = [
-        {
-          payload: {
-            name: 'TURN_ON_METAMASK_NOTIFICATIONS',
-          },
-          type: 'UI_MODAL_OPEN',
-        },
-      ];
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#createMetaMetricsDataDeletionTask', () => {
     afterEach(() => {
       sinon.restore();

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   Box,
   BoxAlignItems,
@@ -16,6 +15,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../helpers/constants/routes';
 
 export const NotificationsListDisabledNotifications = () => {

@@ -5,7 +5,6 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
 import * as actions from '../../store/actions';
-import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   useCreateNotifications,
   useDisableNotifications,
@@ -68,11 +67,7 @@ describe('useNotifications', () => {
   it('should create notifications', async () => {
     const { result } = renderHook(() => useCreateNotifications(), {
       wrapper: ({ children }: React.PropsWithChildren) => (
-        <Provider store={store}>
-          <MetamaskNotificationsProvider>
-            {children}
-          </MetamaskNotificationsProvider>
-        </Provider>
+        <Provider store={store}>{children}</Provider>
       ),
     });
 
