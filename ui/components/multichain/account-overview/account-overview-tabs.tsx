@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
+import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
@@ -34,13 +35,13 @@ import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
-import { Box, Tag } from '../../component-library';
+import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import {
   AlignItems,
   BackgroundColor,
+  BorderRadius,
   Display,
-  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useABTest } from '../../../hooks/useABTest';
 import {
@@ -270,13 +271,24 @@ export const AccountOverviewTabs = ({
                   gap={1}
                 >
                   {t('perps')}
-                  <Tag
+                  <Box
                     as="span"
-                    label={t('perpsFilterNew')}
-                    labelProps={{ as: 'span', color: TextColor.primaryDefault }}
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
                     backgroundColor={BackgroundColor.primaryMuted}
+                    borderRadius={BorderRadius.SM}
+                    paddingLeft={2}
+                    paddingRight={2}
                     data-testid="perps-tab-new-badge"
-                  />
+                  >
+                    <Text
+                      asChild
+                      variant={TextVariant.BodySm}
+                      color={TextColor.PrimaryDefault}
+                    >
+                      <span>{t('perpsFilterNew')}</span>
+                    </Text>
+                  </Box>
                 </Box>
               ) : (
                 t('perps')
