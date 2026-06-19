@@ -70,7 +70,7 @@ export function useAnalytics(): UseAnalyticsResult {
         canTrackImmediately ||
         built.name === MetaMetricsEventName.MetricsOptOut
       ) {
-        trackAnalyticsEvent(built, options);
+        trackAnalyticsEvent(built, options).catch(() => undefined);
       } else if (canMaybeTrackLater) {
         submitRequestToBackground('addEventBeforeMetricsOptIn', [
           toMetaMetricsEventPayload(built, options),

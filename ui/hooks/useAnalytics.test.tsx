@@ -15,7 +15,7 @@ jest.mock('./useSegmentContext', () => ({
 }));
 
 jest.mock('../store/actions', () => ({
-  trackAnalyticsEvent: jest.fn(),
+  trackAnalyticsEvent: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.mock('../store/background-connection', () => ({
@@ -153,6 +153,29 @@ describe('useAnalytics', () => {
       });
 
       expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('swallows background RPC failures when tracking immediately', async () => {
+      mockedTrackAnalyticsEvent.mockRejectedValueOnce(
+        new Error('background unavailable'),
+      );
+
+      expect(() =>
+        renderHookConsumer({
+          eventName: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          state: {
+            metamask: {
+              analyticsId: '0x123',
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
+            },
+          },
+        }),
+      ).not.toThrow();
+
+      await waitFor(() => {
+        expect(mockedTrackAnalyticsEvent).toHaveBeenCalled();
+      });
     });
   });
 });
