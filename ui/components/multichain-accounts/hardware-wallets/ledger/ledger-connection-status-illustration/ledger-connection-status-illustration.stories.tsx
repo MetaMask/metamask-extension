@@ -5,7 +5,7 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { LEDGER_CONNECTION_STATUS } from '../ledger-connection-status.constants';
+import { LEDGER_CONNECTION_STATUS, LEDGER_CONNECTION_STATUS_LIST } from '../ledger-connection-status.constants';
 import { LedgerConnectionStatusIllustration } from '.';
 
 const STORY_FRAME_WIDTH = 460;
@@ -35,6 +35,9 @@ const meta = {
       </Box>
     ),
   ],
+  args: {
+    status: LEDGER_CONNECTION_STATUS.Searching,
+  },
   argTypes: {
     status: {
       control: 'select',
@@ -55,9 +58,12 @@ export const Default: Story = {
 };
 
 export const AllStates: Story = {
+  args: {
+    status: LEDGER_CONNECTION_STATUS.Searching,
+  },
   render: () => (
     <Box flexDirection={BoxFlexDirection.Column} gap={8}>
-      {Object.values(LEDGER_CONNECTION_STATUS).map((status) => (
+      {LEDGER_CONNECTION_STATUS_LIST.map((status) => (
         <Box
           key={status}
           backgroundColor={BoxBackgroundColor.BackgroundDefault}

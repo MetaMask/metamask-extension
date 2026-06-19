@@ -2,6 +2,7 @@ import { enLocale as messages } from '../../../lib/i18n-helpers';
 import {
   LEDGER_CONNECTION_STATUS,
   LEDGER_CONNECTION_STATUS_CONTENT,
+  LEDGER_CONNECTION_STATUS_LIST,
   type LedgerConnectionStatusType,
 } from '../../../../ui/components/multichain-accounts/hardware-wallets/ledger/ledger-connection-status.constants';
 
@@ -21,7 +22,7 @@ export type StatusWithoutDescription = {
 };
 
 export const ALL_LEDGER_CONNECTION_STATUSES: LedgerConnectionStatusType[] =
-  Object.values(LEDGER_CONNECTION_STATUS);
+  LEDGER_CONNECTION_STATUS_LIST;
 
 export const DEVICE_NOT_FOUND_INSTRUCTION_MESSAGE_KEYS: LocaleMessageKey[] = (
   LEDGER_CONNECTION_STATUS_CONTENT[LEDGER_CONNECTION_STATUS.DeviceNotFound]
