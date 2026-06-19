@@ -3698,6 +3698,13 @@
   "enter_verification_code_error": {
     "message": "Incorrect code. Please try again."
   },
+  "enter_verification_code_expired": {
+    "message": "Verification code expired"
+  },
+  "enter_verification_code_expires_in": {
+    "message": "Expires in $1s",
+    "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
   "enter_your_password": {
     "message": "Enter your password"
   },
@@ -7870,6 +7877,9 @@
     "message": "Expires in $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
+  "qrCodeScanError": {
+    "message": "Something went wrong scanning the QR code. Generate a new one to try again."
+  },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -9863,6 +9873,9 @@
   },
   "standardAccountLabel": {
     "message": "Standard account"
+  },
+  "start_with_new_qr_code": {
+    "message": "Start with a new QR code"
   },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
