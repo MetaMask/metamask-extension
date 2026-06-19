@@ -280,7 +280,8 @@ function RevealSeedPage() {
   const handleRevealWithPasskey = useCallback(
     async (authenticationResponse: PasskeyAuthenticationResponse) => {
       const latestScanResult = await scanResultPromiseRef.current;
-      const isMaliciousAction = latestScanResult?.recommendedAction === RecommendedAction.Block;
+      const isMaliciousAction =
+        latestScanResult?.recommendedAction === RecommendedAction.Block;
       if (isMaliciousAction) {
         setScreen(PASSWORD_PROMPT_SCREEN);
         return false;
