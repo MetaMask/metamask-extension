@@ -1,6 +1,4 @@
-import type {
-  KeyringControllerWithKeyringV2Action,
-} from '@metamask/keyring-controller';
+import type { KeyringControllerWithKeyringV2Action } from '@metamask/keyring-controller';
 import { isSnapKeyring } from '@metamask/eth-snap-keyring/v2';
 import { SnapId } from '@metamask/snaps-sdk';
 import { RootMessenger } from '../messenger';
@@ -17,10 +15,7 @@ import { RootMessenger } from '../messenger';
  * @returns The addresses of the accounts.
  */
 export const getAccountsBySnapId = async (
-  messenger: RootMessenger<
-    KeyringControllerWithKeyringV2Action,
-    never
-  >,
+  messenger: RootMessenger<KeyringControllerWithKeyringV2Action, never>,
   snapId: SnapId,
 ): Promise<string[]> => {
   try {

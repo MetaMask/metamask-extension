@@ -81,7 +81,11 @@ export const MultichainRoutingServiceInit: MessengerClientInitFunction<
   const messengerClient = new MultichainRoutingService({
     messenger: controllerMessenger,
     withSnapKeyring: <Result>(...args: Parameters<WithSnapKeyringFn>) =>
-      withSnapKeyring(initMessenger, appStateController, ...args) as Promise<Result>,
+      withSnapKeyring(
+        initMessenger,
+        appStateController,
+        ...args,
+      ) as Promise<Result>,
   });
 
   return {
