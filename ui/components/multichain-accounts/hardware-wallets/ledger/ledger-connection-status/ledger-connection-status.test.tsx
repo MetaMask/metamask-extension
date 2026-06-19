@@ -36,9 +36,9 @@ describe('LedgerConnectionStatus', () => {
         expect(
           screen.getByTestId(getStatusRootTestId(status)),
         ).toBeInTheDocument();
-        expect(screen.getByTestId('ledger-connection-status-title')).toHaveTextContent(
-          getLocalizedMessage(titleKey),
-        );
+        expect(
+          screen.getByTestId('ledger-connection-status-title'),
+        ).toHaveTextContent(getLocalizedMessage(titleKey));
         expect(
           screen.getByTestId('ledger-connection-status-description'),
         ).toHaveTextContent(getLocalizedMessage(descriptionKey));
@@ -54,9 +54,9 @@ describe('LedgerConnectionStatus', () => {
       ({ status, titleKey }: StatusWithoutDescription) => {
         renderLedgerConnectionStatus({ status });
 
-        expect(screen.getByTestId('ledger-connection-status-title')).toHaveTextContent(
-          getLocalizedMessage(titleKey),
-        );
+        expect(
+          screen.getByTestId('ledger-connection-status-title'),
+        ).toHaveTextContent(getLocalizedMessage(titleKey));
         expect(
           screen.queryByTestId('ledger-connection-status-description'),
         ).not.toBeInTheDocument();

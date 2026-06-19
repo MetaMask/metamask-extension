@@ -1,9 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../../../test/lib/render-helpers';
-import {
-  LEDGER_CONNECTION_STATUS,
-} from '../ledger-connection-status';
+import { LEDGER_CONNECTION_STATUS } from '../ledger-connection-status';
 import {
   DEVICE_NOT_FOUND_INSTRUCTION_MESSAGE_KEYS,
   getLocalizedMessage,
@@ -34,9 +32,13 @@ describe('LedgerConnectionStatusInstructions', () => {
         />,
       );
 
-      expect(screen.getByText(getLocalizedMessage(messageKey))).toBeInTheDocument();
       expect(
-        screen.getByTestId(`ledger-connection-status-instruction-${messageKey}`),
+        screen.getByText(getLocalizedMessage(messageKey)),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(
+          `ledger-connection-status-instruction-${messageKey}`,
+        ),
       ).toBeInTheDocument();
       expect(
         screen.getByTestId('ledger-connection-status-instructions'),
