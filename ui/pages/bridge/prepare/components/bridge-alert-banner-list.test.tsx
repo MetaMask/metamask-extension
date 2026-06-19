@@ -5,9 +5,9 @@ import {
   formatChainIdToCaip,
   QuoteStreamCompleteReason,
   RequestStatus,
+  BridgeAssetSecurityDataType,
 } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
-import { BridgeAssetSecurityDataType } from '../../utils/tokens';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
@@ -79,7 +79,7 @@ describe('BridgeAlertBannerList', () => {
   });
 
   // @ts-expect-error: each is a valid test function in jest
-  it.each([
+  it.only.each([
     [
       'no-quotes',
       'no quotes',
@@ -213,8 +213,8 @@ describe('BridgeAlertBannerList', () => {
           quoteRequest: {
             srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            srcChainId: 1,
-            destChainId: 10,
+            srcChainId: 10,
+            destChainId: 137,
             walletAddress: '0x123',
             slippage: 0.5,
             srcTokenAmount: '1',

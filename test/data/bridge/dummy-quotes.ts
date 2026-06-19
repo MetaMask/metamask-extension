@@ -435,7 +435,7 @@ export const DummyQuotesNoApproval = {
       },
       estimatedProcessingTimeInSeconds: 60,
     },
-  ],
+  ].map(toQuoteResponseV2),
 };
 
 export const DummyQuotesWithApproval = {

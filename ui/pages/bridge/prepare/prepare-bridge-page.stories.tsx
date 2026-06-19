@@ -3,12 +3,11 @@ import { Provider } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   getNativeAssetForChainId,
-  QuoteResponse,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
@@ -212,7 +211,7 @@ QuotesFetchedStory.decorators = [
             featureFlagOverrides: mockFeatureFlags,
             bridgeSliceOverrides: mockBridgeSlice,
             bridgeStateOverrides: {
-              quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+              quotes: mockBridgeQuotesErc20Erc20,
               quotesLastFetched: Date.now(),
               quotesLoadingStatus: RequestStatus.FETCHED,
             },
@@ -270,7 +269,7 @@ AlertsPresentStory.decorators = [
               },
             },
             bridgeStateOverrides: {
-              quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+              quotes: mockBridgeQuotesErc20Erc20,
               quotesLastFetched: Date.now(),
               quotesLoadingStatus: RequestStatus.FETCHED,
               quoteRequest: {

@@ -190,7 +190,7 @@ exports[`BridgeAlertModal quote-card should render alert banner when there is a 
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should render alert banner when there is a price impact error (with exchange rates): 0.27: BannerAlert within BridgeAlertModal 1`] = `"You will lose $0.07 on this trade"`;
+exports[`BridgeAlertModal quote-card should render alert banner when there is a price impact error (with exchange rates): 0.27: BannerAlert within BridgeAlertModal 1`] = `"You will lose $0.18 on this trade"`;
 
 exports[`BridgeAlertModal quote-card should render when there is a price impact error: 0.27 1`] = `
 <body>
@@ -654,7 +654,7 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
                   <p
                     class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
                   >
-                    You will lose $61,664.88 on this trade
+                    You will lose $61,664.66 on this trade
                   </p>
                 </div>
               </div>
@@ -888,7 +888,7 @@ exports[`BridgeAlertModal submit-cta should render when there is a price impact 
                   <p
                     class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
                   >
-                    You will lose $61,664.88 on this trade
+                    You will lose $61,664.66 on this trade
                   </p>
                 </div>
               </div>

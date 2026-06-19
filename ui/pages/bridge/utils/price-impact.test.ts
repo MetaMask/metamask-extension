@@ -65,8 +65,10 @@ describe('formatPriceImpactFiat', () => {
     expect(
       formatPriceImpactFiat(
         {
-          sentAmount: { valueInCurrency: null },
-          toTokenAmount: { valueInCurrency: '900' },
+          quote: {
+            src: { valueInCurrency: null },
+            dest: { valueInCurrency: '900' }
+          },
         },
         'usd',
       ),
@@ -77,8 +79,10 @@ describe('formatPriceImpactFiat', () => {
     expect(
       formatPriceImpactFiat(
         {
-          sentAmount: { valueInCurrency: '1000' },
-          toTokenAmount: { valueInCurrency: undefined },
+          quote: {
+            src: { valueInCurrency: '1000' },
+            dest: { valueInCurrency: undefined },
+          },
         },
         'usd',
       ),
@@ -88,7 +92,7 @@ describe('formatPriceImpactFiat', () => {
   it('returns undefined when sentAmount is missing', () => {
     expect(
       formatPriceImpactFiat(
-        { toTokenAmount: { valueInCurrency: '900' } },
+        { quote: {src:{}, dest: { valueInCurrency: '900' } } },
         'usd',
       ),
     ).toBeUndefined();
@@ -96,15 +100,17 @@ describe('formatPriceImpactFiat', () => {
 
   it('returns undefined when toTokenAmount is missing', () => {
     expect(
-      formatPriceImpactFiat({ sentAmount: { valueInCurrency: '1000' } }, 'usd'),
+      formatPriceImpactFiat({ quote: { src: { valueInCurrency: '1000' }  , dest: {}} }, 'usd'),
     ).toBeUndefined();
   });
 
   it('formats the absolute difference between source and destination fiat amounts', () => {
     const result = formatPriceImpactFiat(
       {
-        sentAmount: { valueInCurrency: '1000' },
-        toTokenAmount: { valueInCurrency: '995.77' },
+        quote: {
+          src: { valueInCurrency: '1000' },
+          dest: { valueInCurrency: '995.77' },
+        },
       },
       'usd',
     );
@@ -115,8 +121,10 @@ describe('formatPriceImpactFiat', () => {
   it('uses the absolute value so a favourable quote does not produce a negative result', () => {
     const result = formatPriceImpactFiat(
       {
-        sentAmount: { valueInCurrency: '900' },
-        toTokenAmount: { valueInCurrency: '1000' },
+        quote: {
+          src: { valueInCurrency: '900' },
+          dest: { valueInCurrency: '1000' },
+        },
       },
       'usd',
     );
@@ -127,8 +135,10 @@ describe('formatPriceImpactFiat', () => {
   it('handles string numeric inputs', () => {
     const result = formatPriceImpactFiat(
       {
-        sentAmount: { valueInCurrency: '500.50' },
-        toTokenAmount: { valueInCurrency: '496.27' },
+        quote: {
+          src: { valueInCurrency: '500.50' },
+          dest: { valueInCurrency: '496.27' },
+        },
       },
       'usd',
     );
@@ -139,8 +149,10 @@ describe('formatPriceImpactFiat', () => {
   it('handles numeric inputs', () => {
     const result = formatPriceImpactFiat(
       {
-        sentAmount: { valueInCurrency: 1000 },
-        toTokenAmount: { valueInCurrency: 990 },
+        quote: {
+          src: { valueInCurrency: 1000 },
+          dest: { valueInCurrency: 990 },
+        },
       },
       'usd',
     );

@@ -1,4 +1,4 @@
-import { BridgeAssetSecurityDataType } from './tokens';
+import { BridgeAssetSecurityDataType } from '@metamask/bridge-controller';
 
 const featureIdsMap: Record<
   string,

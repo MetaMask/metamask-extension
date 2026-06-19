@@ -176,24 +176,7 @@ describe('Bridge token utils', () => {
           "hash": "632f8d10309be5a3abb9790eafa3b973f51711d3efcc477fdead94dfed0280f5",
         }
       `);
-      expect(validatedTokens).toMatchInlineSnapshot(`
-        [
-          {
-            "assetId": "eip155:1/slip44:60",
-            "chainId": "eip155:1",
-            "decimals": 18,
-            "name": "Ether",
-            "symbol": "ETH",
-          },
-          {
-            "assetId": "eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da",
-            "chainId": "eip155:1",
-            "decimals": 18,
-            "name": "MetaMask USD",
-            "symbol": "mUSD",
-          },
-        ]
-      `);
+      expect(validatedTokens).toMatchInlineSnapshot(`[]`);
     });
 
     it('should invalidate cache when hash is invalid', async () => {

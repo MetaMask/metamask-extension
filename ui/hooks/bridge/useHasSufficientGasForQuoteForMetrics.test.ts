@@ -1,5 +1,6 @@
 import {
   ChainId,
+  getNativeAssetForChainId,
   selectMinimumBalanceForRentExemptionInSOL,
   type QuoteResponse,
 } from '@metamask/bridge-controller';
@@ -11,6 +12,7 @@ import {
   computeHasSufficientGasForQuoteForMetrics,
   useHasSufficientGasForQuoteForMetrics,
 } from './useHasSufficientGasForQuoteForMetrics';
+import { KnownCaipNamespace } from '@metamask/utils';
 
 jest.mock('@metamask/bridge-controller', () => ({
   ...jest.requireActual('@metamask/bridge-controller'),
@@ -43,10 +45,11 @@ const buildQuote = (
   srcChainId?: number | string,
 ) =>
   ({
-    quote: { srcChainId },
-    totalNetworkFee: { amount: totalNetworkFee },
-    sentAmount: { amount: sentAmount },
-  }) as unknown as QuoteResponse;
+    quote: { src:{asset: getNativeAssetForChainId(srcChainId ?? 1), amount: sentAmount}, feeData: { network:[ { amount: totalNetworkFee , asset: getNativeAssetForChainId(srcChainId ?? 1) } ]} },
+    chainId: srcChainId,
+    estimatedProcessingTimeInSeconds: 0,
+    namespace: KnownCaipNamespace.Eip155,
+  });
 
 const renderUseHasSufficientGasForQuoteForMetrics = () =>
   renderHookWithProvider(

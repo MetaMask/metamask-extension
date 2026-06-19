@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QuoteResponse, RequestStatus } from '@metamask/bridge-controller';
+import { RequestStatus } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -35,7 +35,7 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {
@@ -120,7 +120,7 @@ describe('BridgeQuotesModal', () => {
               "price_impact": 0,
               "provider": "socket_across",
               "quoted_time_minutes": 1,
-              "usd_quoted_gas": 6.442841952e-8,
+              "usd_quoted_gas": 0.00100006442841952,
               "usd_quoted_return": 13.8444372,
             },
           ],
@@ -141,7 +141,7 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {
@@ -199,23 +199,25 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20.map(
-          (quote) =>
-            ({
-              ...quote,
-              quote: {
-                ...quote.quote,
-                gasIncluded: true,
-                feeData: {
-                  ...quote.quote.feeData,
-                  txFee: {
-                    amount: '9999900',
-                    asset: quote.quote.srcAsset,
-                  },
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            gasIncluded: true,
+            feeData: {
+              ...quote.quote.feeData,
+              txFee: [
+                {
+                  ...quote.quote.src,
+                  amount: '9999900',
+                  asset: quote.quote.src.asset,
+                  maxFeePerGas: '0',
+                  maxPriorityFeePerGas: '0',
                 },
-              },
-            }) as unknown as QuoteResponse,
-        ),
+              ],
+            },
+          },
+        })),
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {

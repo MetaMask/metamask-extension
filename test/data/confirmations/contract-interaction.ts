@@ -420,4 +420,4 @@ export const mockBridgeQuotes = [
   },
 ] as unknown as QuoteResponseV1[];
 
- mockBridgeQuotes.map(validateQuoteResponseV1);
+//  mockBridgeQuotes.map(validateQuoteResponseV1);

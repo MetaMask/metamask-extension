@@ -63,12 +63,12 @@ export const buildResults = ({
           asset: entry.asset,
           quote: recommendedQuote,
           slippagePercent: entry.slippagePercent,
-          receivedAmount: toFinite(recommendedQuote.toTokenAmount?.amount),
+          receivedAmount: toFinite(recommendedQuote.quote.dest.normalizedAmount),
           receivedAmountFiat: toFinite(
-            recommendedQuote.toTokenAmount?.valueInCurrency,
+            recommendedQuote.quote.dest.valueInCurrency,
           ),
           minimumReceivedAmount: toFinite(
-            recommendedQuote.minToTokenAmount?.amount,
+            recommendedQuote.quote.dest.min?.normalizedAmount,
           ),
           hasQuote: true,
           isLoadingQuote: false,

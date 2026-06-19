@@ -5,7 +5,7 @@ import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
-import { type BridgeAssetV2 } from '../../pages/bridge/utils/tokens';
+import { type BridgeAsset } from '@metamask/bridge-controller';
 import { useAsyncResult } from '../useAsync';
 
 /**
@@ -25,7 +25,7 @@ export const usePopularTokens = ({
   assetsToInclude,
   accountGroupId,
 }: {
-  fetchTokens: (signal?: AbortSignal) => Promise<BridgeAssetV2[]>;
+  fetchTokens: (signal?: AbortSignal) => Promise<BridgeAsset[]>;
   assetsToInclude: BridgeToken[];
   accountGroupId?: AccountGroupId;
 }) => {

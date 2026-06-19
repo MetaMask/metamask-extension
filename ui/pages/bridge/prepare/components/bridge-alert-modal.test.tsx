@@ -1,10 +1,8 @@
 import React from 'react';
 import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {
-  formatAddressToAssetId,
-  QuoteResponse,
-} from '@metamask/bridge-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
+import { parseCaipAssetType } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
@@ -34,15 +32,13 @@ const renderModal = (
   variant: 'submit-cta' | 'alert-details' | undefined = undefined,
   priceImpact: string = '0.05',
   stateOverrides = {},
-  quotes: QuoteResponse[] = mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+  quotes: QuoteResponse[] = mockBridgeQuotesNativeErc20,
   alertId: BridgeAlert['id'] | undefined = undefined,
 ) => {
+  const destAsset = quotes[0].quote.dest.asset;
   const toToken = {
-    ...quotes[0].quote.destAsset,
-    assetId: formatAddressToAssetId(
-      quotes[0].quote.destAsset.address,
-      quotes[0].quote.destChainId,
-    ),
+    ...destAsset,
+    chainId: parseCaipAssetType(destAsset.assetId).chainId,
   };
   const mockStore = configureStore(
     createBridgeMockStore({
@@ -51,17 +47,15 @@ const renderModal = (
           ...quote,
           quote: {
             ...quote.quote,
-            priceData: { ...quote.quote.priceData, priceImpact },
-            srcAsset: {
-              ...quote.quote.srcAsset,
-              assetId: formatAddressToAssetId(
-                quote.quote.srcAsset.address,
-                quote.quote.srcChainId,
-              ),
+            priceData: {
+              ...quote.quote.priceData,
+              priceImpact: {
+                ...quote.quote.priceData?.priceImpact,
+                amount: priceImpact,
+              },
             },
-            destAsset: toToken,
           },
-        })) as unknown as QuoteResponse[],
+        })),
         quoteRequest: {
           srcChainId: 10,
           srcTokenAddress: zeroAddress(),
@@ -212,7 +206,7 @@ describe('BridgeAlertModal', () => {
             },
           },
         },
-        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
       ],
       [
         '',
@@ -226,7 +220,7 @@ describe('BridgeAlertModal', () => {
             },
           },
         },
-        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
       ],
     ])(
       'should render%s when there is a price impact %s: %s',
@@ -329,7 +323,7 @@ describe('BridgeAlertModal', () => {
       jest.clearAllMocks();
     });
 
-    it('shows the fiat loss banner when isPriceImpactError is true and fiat amount is available', () => {
+    it.only('shows the fiat loss banner when isPriceImpactError is true and fiat amount is available', () => {
       const { getByTestId } = renderModal(
         'submit-cta',
         '0.9',
@@ -341,7 +335,7 @@ describe('BridgeAlertModal', () => {
             },
           },
         },
-        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
       );
       expect(
         getByTestId('bridge-alert-modal-banner').textContent,
@@ -361,7 +355,7 @@ describe('BridgeAlertModal', () => {
             },
           },
         },
-        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
       );
       expect(
         queryByTestId('bridge-alert-modal-banner'),

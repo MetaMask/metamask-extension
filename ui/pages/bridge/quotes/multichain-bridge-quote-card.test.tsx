@@ -1,7 +1,6 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import {
-  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -99,7 +98,7 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -181,22 +180,20 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
-          (quote) => ({
-            ...quote,
-            quote: {
-              ...quote.quote,
-              feeData: {
-                ...quote.quote.feeData,
-                metabridge: {
-                  ...quote.quote.feeData.metabridge,
-                  amount: '1000000000000000000',
-                  quoteBpsFee: 87.5,
-                },
-              },
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            feeData: {
+              ...quote.quote.feeData,
+              metabridge: quote.quote.feeData.metabridge.map((fee) => ({
+                ...fee,
+                amount: '1000000000000000000',
+                quoteBpsFee: 87.5,
+              })),
             },
-          }),
-        ),
+          },
+        })),
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -282,7 +279,7 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -374,7 +371,7 @@ describe('MultichainBridgeQuoteCard', () => {
             usdExchangeRate: '.99',
           },
         },
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quoteRequest: {
           insufficientBal: false,
           srcChainId: 10,
@@ -506,10 +503,13 @@ describe('MultichainBridgeQuoteCard', () => {
               ...quote.quote,
               priceData: {
                 ...quote.quote.priceData,
-                priceImpact,
+                priceImpact: {
+                  ...quote.quote.priceData?.priceImpact,
+                  amount: priceImpact,
+                },
               },
             },
-          })) as unknown as QuoteResponse[],
+          })),
           quotesLastFetched: Date.now() - 5000,
           quotesLoadingStatus: RequestStatus.LOADING,
         },
@@ -567,7 +567,7 @@ describe('MultichainBridgeQuoteCard', () => {
             srcTokenAmount: '14000000',
           },
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesErc20Erc20,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
         },
@@ -810,15 +810,13 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
-          (quote) => ({
-            ...quote,
-            quote: {
-              ...quote.quote,
-              gasSponsored: true,
-            },
-          }),
-        ),
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            gasSponsored: true,
+          },
+        })),
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -902,7 +900,7 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -977,7 +975,7 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '1000000000000000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },

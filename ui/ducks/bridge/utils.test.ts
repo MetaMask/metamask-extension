@@ -1,7 +1,7 @@
 import { type CaipAssetType } from '@metamask/utils';
+import { BridgeAssetSecurityDataType } from '@metamask/bridge-controller';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import { isSupportedBridgeChain, toBridgeToken } from './utils';
 
 const BASE_PAYLOAD = {

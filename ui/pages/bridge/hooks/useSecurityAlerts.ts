@@ -1,10 +1,10 @@
+import { BridgeAssetSecurityDataType } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import { getTxAlerts } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MinimalBridgeAlert } from '../prepare/types';
 import { BridgeToken } from '../../../ducks/bridge/types';
-import { BridgeAssetSecurityDataType } from '../utils/tokens';
 import { useAssetSecurityData } from './useAssetSecurityData';
 
 /**
