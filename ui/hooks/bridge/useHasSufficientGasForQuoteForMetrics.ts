@@ -45,7 +45,9 @@ export const computeHasSufficientGasForQuoteForMetrics = ({
   !quote ||
   !fromToken ||
   (isNativeAddress(fromToken.assetId) &&
-    new BigNumber(nativeBalance).sub(quote.sentAmount.amount).lte(0))
+    new BigNumber(nativeBalance)
+      .sub(quote.quote.src.normalizedAmount ?? '0')
+      .lte(0))
     ? null
     : !isNativeBalanceInsufficientForQuote(
         quote,
@@ -76,7 +78,7 @@ export const useHasSufficientGasForQuoteForMetrics = () => {
 
   return useCallback(
     (quote: (QuoteResponse) | null): boolean | null => {
-      const srcChainId = quoteRequest?.srcChainId ?? quote?.quote?.srcChainId;
+      const srcChainId = quoteRequest?.srcChainId ?? quote?.chainId;
       const minimumBalanceToKeep = resolveMinimumBalanceToKeep(
         srcChainId,
         minimumBalanceForRentExemptionInSOL,

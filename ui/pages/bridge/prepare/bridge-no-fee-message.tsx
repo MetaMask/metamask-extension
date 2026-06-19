@@ -10,6 +10,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Row } from '../layout';
 import { readMmFee } from '../utils/quote';
+import { sumFees } from '@metamask/bridge-controller';
 
 export const BridgeNoFeeMessage = () => {
   const t = useI18nContext();
@@ -25,7 +26,8 @@ export const BridgeNoFeeMessage = () => {
     return null;
   }
 
-  const hasNoMMFee = Number(activeQuote.quote.feeData.metabridge.amount) === 0;
+  const hasNoMMFee =
+    Number(sumFees(activeQuote.quote.feeData.metabridge)?.normalizedAmount ?? 0) === 0;
 
   if (!hasNoMMFee) {
     return null;

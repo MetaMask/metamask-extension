@@ -17,10 +17,13 @@ import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { isQuoteExpiredOrInvalid } from '../utils/quote';
+import {
+  isQuoteExpiredOrInvalid,
+} from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
+import { parseCaipAssetType } from '@metamask/utils';
 
 /**
  * Merges tx, token, and validation alert data used for displaying {@link BannerAlert}
@@ -78,8 +81,10 @@ export const useBridgeAlerts = () => {
   })
     ? undefined
     : unvalidatedQuote;
-  const isSwap =
-    activeQuote?.quote.srcChainId === activeQuote?.quote.destChainId;
+  const isSwap = activeQuote
+    ? activeQuote.chainId ===
+      parseCaipAssetType(activeQuote.quote.dest.asset.assetId).chainId
+    : false;
 
   return useMemo(() => {
     const alertsById: Partial<Record<BridgeAlert['id'], BridgeAlert>> = {};

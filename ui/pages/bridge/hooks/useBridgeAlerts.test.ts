@@ -18,6 +18,7 @@ import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 import { useBridgeAlerts } from './useBridgeAlerts';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 jest.mock('../../../hooks/useI18nContext');
 jest.mock('../../../hooks/useMultichainSelector');
@@ -43,11 +44,13 @@ const mockT = jest.fn((key: string, args?: string[]) =>
 );
 
 const MOCK_BRIDGE_QUOTE = {
-  quote: { srcChainId: 1, destChainId: 10 },
+  chainId: 'eip155:1',
+  quote: { src: {asset: getNativeAssetForChainId(1), amount: '1000000000000000000'}, dest: {asset: getNativeAssetForChainId(10), amount: '1000000000000000000'} },
 };
 
 const MOCK_SWAP_QUOTE = {
-  quote: { srcChainId: 1, destChainId: 1 },
+  chainId: 'eip155:1',
+  quote: { src: {asset: getNativeAssetForChainId(1), amount: '1000000000000000000'}, dest: {asset: getNativeAssetForChainId(1), amount: '1000000000000000000'} },
 };
 
 const MOCK_TO_TOKEN = {

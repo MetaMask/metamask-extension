@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
-  formatChainIdToCaip,
   getQuotesReceivedProperties,
   isCrossChain,
 } from '@metamask/bridge-controller';
@@ -34,6 +33,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../../store/store';
 import { isHardwareWalletUserRejection } from '../utils/hardware-wallet-errors';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
+import { parseCaipAssetType } from '@metamask/utils';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -90,14 +90,16 @@ export default function useSubmitBridgeTransaction() {
         );
       }
 
+      const destChainId = parseCaipAssetType(quoteResponse.quote.dest.asset.assetId).chainId;
+
       if (
         isCrossChain(
-          quoteResponse.quote.srcChainId,
-          quoteResponse.quote.destChainId,
+          quoteResponse.chainId,
+          destChainId,
         )
       ) {
         enableMissingNetwork(
-          formatChainIdToCaip(quoteResponse.quote.destChainId),
+          destChainId
         );
       }
     } catch {

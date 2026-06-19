@@ -19,6 +19,7 @@ import {
   isNativeAddress,
   isNonEvmChainId,
   UnifiedSwapBridgeEventName,
+  FeatureId,
 } from '@metamask/bridge-controller';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import {

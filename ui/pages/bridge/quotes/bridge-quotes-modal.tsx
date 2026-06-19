@@ -6,6 +6,8 @@ import {
   FeatureId,
   UnifiedSwapBridgeEventName,
   formatProviderLabel,
+  FeatureId,
+  sumFees,
 } from '@metamask/bridge-controller';
 import {
   Modal,
@@ -24,7 +26,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import {
+  formatCurrencyAmount,
+  formatTokenAmount,
+} from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setSelectedQuote,
@@ -64,6 +69,7 @@ export const BridgeQuotesModal = ({
 
   const handleQuoteSelected = useCallback(
     (quote: QuoteResponse) => {
+      const networkFee = sumFees(quote.quote.feeData.network);
       dispatch(setSelectedQuote(quote));
       recommendedQuote &&
         dispatch(
@@ -81,23 +87,26 @@ export const BridgeQuotesModal = ({
               best_quote_provider: formatProviderLabel(recommendedQuote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_gas: Number(quote.gasFee?.effective?.usd ?? 0),
+              usd_quoted_gas: Number(networkFee?.usd ?? 0),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_return: Number(quote.toTokenAmount.usd),
+              usd_quoted_return: Number(quote.quote.dest.usd),
               provider: formatProviderLabel(quote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              price_impact: Number(quote.quote?.priceData?.priceImpact ?? '0'),
+              price_impact: Number(
+                quote.quote?.priceData?.priceImpact?.amount ?? '0',
+              ),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               gas_included: Boolean(quote.quote?.gasIncluded),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               gas_included_7702: Boolean(quote.quote?.gasIncluded7702),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
             },
@@ -134,13 +143,17 @@ export const BridgeQuotesModal = ({
           {sortedQuotes.map(
             (quote: QuoteResponse, index: number) => {
               const {
-                totalNetworkFee,
-                toTokenAmount,
-                cost,
-                quote: { destAsset, bridges, requestId },
+                quote: {
+                  dest,
+                  priceData,
+                  protocols,
+                  requestId,
+                },
               } = quote;
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommended = isRecommendedQuote(quote);
+              const totalNetworkFee = sumFees(quote.quote.feeData.network) ;
+              const cost = priceData?.cost;
 
               return (
                 <Column
@@ -182,7 +195,7 @@ export const BridgeQuotesModal = ({
                         textOverflow: 'ellipsis',
                       }}
                     >
-                      {startCase(bridges[0])}
+                      {startCase(protocols[0])}
                     </Text>
                     {/* DEST AMOUNT */}
                     <Text
@@ -192,8 +205,8 @@ export const BridgeQuotesModal = ({
                     >
                       {formatTokenAmount(
                         locale,
-                        toTokenAmount.amount,
-                        destAsset.symbol,
+                        dest.normalizedAmount ?? dest.amount,
+                        dest.asset.symbol,
                       )}
                     </Text>
                   </Row>
@@ -211,14 +224,16 @@ export const BridgeQuotesModal = ({
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          cost.valueInCurrency === null
+                          cost?.valueInCurrency === null
                             ? formatTokenAmount(
                                 locale,
-                                totalNetworkFee.amount,
+                                totalNetworkFee?.normalizedAmount ??
+                                  totalNetworkFee?.amount ??
+                                  '0',
                                 nativeCurrency,
                               )
                             : formatCurrencyAmount(
-                                cost.valueInCurrency,
+                                cost?.valueInCurrency,
                                 currency,
                                 2,
                               ),
@@ -248,7 +263,7 @@ export const BridgeQuotesModal = ({
                       style={{ whiteSpace: 'nowrap' }}
                     >
                       {formatCurrencyAmount(
-                        toTokenAmount.valueInCurrency,
+                        dest.valueInCurrency,
                         currency,
                         2,
                       ) ?? ''}

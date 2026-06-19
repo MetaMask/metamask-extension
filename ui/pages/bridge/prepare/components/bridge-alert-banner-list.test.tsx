@@ -3,7 +3,6 @@ import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import {
   formatChainIdToCaip,
-  QuoteResponse,
   QuoteStreamCompleteReason,
   RequestStatus,
 } from '@metamask/bridge-controller';
@@ -210,7 +209,7 @@ describe('BridgeAlertBannerList', () => {
           quotesInitialLoadTime: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesErc20Erc20,
           quoteRequest: {
             srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -282,7 +281,7 @@ describe('BridgeAlertBannerList', () => {
           quotesInitialLoadTime: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesErc20Erc20,
           quoteRequest: {
             srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -381,9 +380,15 @@ describe('BridgeAlertBannerList', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: { priceImpact: '0.05' },
+              priceData: {
+                ...quote.quote.priceData,
+                priceImpact: {
+                  ...quote.quote.priceData?.priceImpact,
+                  amount: '0.05',
+                },
+              },
             },
-          })) as unknown as QuoteResponse[],
+          })),
           quoteRequest: {
             srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',

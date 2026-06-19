@@ -43,14 +43,16 @@ export default function AwaitingSignatures() {
 
   // Navigate to activity tab when QR scan is completed
   useNavigateOnQrScanComplete();
-  const fromAmount = activeQuote?.sentAmount?.amount;
+  const fromAmount = activeQuote?.quote.src.normalizedAmount;
   const fromToken = useSelector(getFromToken, isEqual);
   const toToken = useSelector(getToToken, isEqual);
   const fromChain = useSelector(getFromChain, isEqual);
   const toChain = useSelector(getToChain, isEqual);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
-  const needsTwoConfirmations = Boolean(activeQuote?.approval);
+  const needsTwoConfirmations = Boolean(
+    activeQuote &&  activeQuote.approval,
+  );
   const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
@@ -77,10 +79,10 @@ export default function AwaitingSignatures() {
       sensitiveProperties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_from_amount: activeQuote?.quote?.srcTokenAmount ?? '',
+        token_from_amount: activeQuote?.quote.src.amount ?? '',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
+        token_to_amount: activeQuote?.quote.dest.amount ?? '',
       },
     });
   }, []);
@@ -129,7 +131,7 @@ export default function AwaitingSignatures() {
                     ? 'unifiedSwapAllowSwappingOf'
                     : 'bridgeAllowSwappingOf',
                   [
-                    activeQuote.sentAmount?.amount,
+                    activeQuote.quote.src.normalizedAmount,
                     fromToken?.symbol,
                     fromChain?.name,
                   ],

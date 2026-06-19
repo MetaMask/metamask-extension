@@ -6,6 +6,7 @@ import {
   GenericQuoteRequest,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
+  FeatureId,
 } from '@metamask/bridge-controller';
 import { parseCaipChainId } from '@metamask/utils';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';

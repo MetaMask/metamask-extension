@@ -272,6 +272,9 @@ describe('Ducks - Bridge', () => {
             security_warnings: [],
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
+            feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_amount_source: 1000,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
@@ -303,6 +306,9 @@ describe('Ducks - Bridge', () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           security_warnings: [],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source: 1000,
