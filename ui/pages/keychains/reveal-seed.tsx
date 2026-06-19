@@ -295,9 +295,9 @@ function RevealSeedPage() {
       });
 
       try {
-        const revealedSeedWords = (await (dispatch(
+        const revealedSeedWords = await (dispatch(
           getSeedPhraseWithPasskey(authenticationResponse, keyringId),
-        ) as unknown as Promise<string>)) as string;
+        ) as unknown as Promise<string>);
 
         trackEvent({
           category: MetaMetricsEventCategory.Keys,
