@@ -1,6 +1,5 @@
 import type {
   KeyringControllerWithKeyringV2Action,
-  KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
 import { isSnapKeyring } from '@metamask/eth-snap-keyring/v2';
 import { SnapId } from '@metamask/snaps-sdk';
@@ -19,8 +18,7 @@ import { RootMessenger } from '../messenger';
  */
 export const getAccountsBySnapId = async (
   messenger: RootMessenger<
-    | KeyringControllerWithKeyringV2Action
-    | KeyringControllerWithKeyringV2UnsafeAction,
+    KeyringControllerWithKeyringV2Action,
     never
   >,
   snapId: SnapId,
