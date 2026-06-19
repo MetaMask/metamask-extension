@@ -34,10 +34,12 @@ import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
-import { Tag } from '../../component-library';
+import { Box, Tag } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import {
+  AlignItems,
   BackgroundColor,
+  Display,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useABTest } from '../../../hooks/useABTest';
@@ -124,9 +126,8 @@ export const AccountOverviewTabs = ({
     }
   }, [activeTabKey]);
 
-  // Tabs clamps the active tab to the first rendered tab when activeTabKey
-  // matches no rendered tab (e.g. Tokens hidden with no ?tab=perps / persisted
-  // Perps). Order must match the <Tab> render order below.
+  // Whether the persisted/url active tab resolves to a tab that is actually
+  // rendered. Membership only — render order is irrelevant here.
   const renderedTabKeys = [
     ...(showTokens ? [AccountOverviewTabKey.Tokens] : []),
     ...(isPerpsExperienceAvailable ? [AccountOverviewTabKey.Perps] : []),
@@ -135,12 +136,14 @@ export const AccountOverviewTabs = ({
     ...(showActivity ? [AccountOverviewTabKey.Activity] : []),
   ];
   // Perps is the effective active tab when it is explicitly selected, or when
-  // the active tab is not rendered and Tabs clamps to the first rendered tab
-  // (which is Perps).
+  // the active tab isn't rendered and Tabs clamps to the first rendered tab.
+  // Perps is that first tab whenever Tokens (the only tab that can precede it)
+  // is hidden and the Perps experience is available.
   const perpsIsEffectiveActiveTab =
     activeTabKey === AccountOverviewTabKey.Perps ||
     (!renderedTabKeys.some((key) => key === activeTabKey) &&
-      renderedTabKeys[0] === AccountOverviewTabKey.Perps);
+      !showTokens &&
+      isPerpsExperienceAvailable);
 
   // Mark the badge seen whenever Perps is the effective active tab — covers
   // clicking in, landing directly on Perps (persisted default or ?tab=perps),
@@ -260,7 +263,12 @@ export const AccountOverviewTabs = ({
           <Tab
             name={
               showPerpsTabBadge ? (
-                <span className="flex items-center gap-1">
+                <Box
+                  as="span"
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  gap={1}
+                >
                   {t('perps')}
                   <Tag
                     as="span"
@@ -269,7 +277,7 @@ export const AccountOverviewTabs = ({
                     backgroundColor={BackgroundColor.primaryMuted}
                     data-testid="perps-tab-new-badge"
                   />
-                </span>
+                </Box>
               ) : (
                 t('perps')
               )
