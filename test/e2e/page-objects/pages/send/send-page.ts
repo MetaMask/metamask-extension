@@ -43,8 +43,6 @@ class SendPage {
     text: 'Invalid address',
   };
 
-  private readonly invalidAmountError = { text: 'Invalid value' };
-
   private readonly maxButton = {
     text: 'Max',
     tag: 'button',
@@ -102,11 +100,6 @@ class SendPage {
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
     await this.driver.waitForSelector(this.invalidAddressError);
-  }
-
-  async checkInvalidAmountError(): Promise<void> {
-    console.log('Checking for invalid amount error');
-    await this.driver.waitForSelector(this.invalidAmountError);
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
