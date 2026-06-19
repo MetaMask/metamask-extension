@@ -287,7 +287,7 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  it('Shows Account 1 Tron address on the Receive page and copies it', async function () {
+  it('Shows each account Tron address on the Receive page and copies it', async function () {
     await withTronFixtures(
       {
         accounts: [EMPTY_TRON_ACCOUNT],
@@ -297,24 +297,35 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
+        await addMultichainAccountsThrough(driver, 8);
 
         const homepage = new NonEvmHomepage(driver);
+        const accountList = new AccountListPage(driver);
         const addressList = new AddressListModal(driver);
-        const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[0];
 
-        await homepage.checkPageIsLoaded();
-        await homepage.clickOnReceiveButton();
-        await addressList.checkPageIsLoaded();
-        await addressList.checkNetworkAddressIsDisplayedForNetwork({
-          networkName: 'Tron',
-          networkAddress: shortenAddress(expected),
-        });
-        await addressList.clickCopyButtonForNetworkAndAssertClipboard({
-          networkName: 'Tron',
-          expectedAddress: expected,
-        });
-        await addressList.verifyCopyButtonFeedback();
-        await addressList.goBack();
+        for (let index = 0; index < 8; index += 1) {
+          const accountLabel = `Account ${index + 1}`;
+          const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
+
+          await homepage.headerNavbar.openAccountMenu();
+          await accountList.checkPageIsLoaded();
+          await accountList.selectAccount(accountLabel);
+          await waitUntilAccountTreeSyncIdle(driver);
+
+          await homepage.checkPageIsLoaded();
+          await homepage.clickOnReceiveButton();
+          await addressList.checkPageIsLoaded();
+          await addressList.checkNetworkAddressIsDisplayedForNetwork({
+            networkName: 'Tron',
+            networkAddress: shortenAddress(expected),
+          });
+          await addressList.clickCopyButtonForNetworkAndAssertClipboard({
+            networkName: 'Tron',
+            expectedAddress: expected,
+          });
+          await addressList.verifyCopyButtonFeedback();
+          await addressList.goBack();
+        }
       },
     );
   });

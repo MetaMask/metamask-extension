@@ -144,7 +144,10 @@ class AddressListModal {
     const row = await this.driver.findElement(
       this.addressListRowByNetworkName(networkName),
     );
-    const copyButton = await this.driver.findNestedElement(row, this.copyButton);
+    const copyButton = await this.driver.findNestedElement(
+      row,
+      this.copyButton,
+    );
     await copyButton.click();
   }
 
@@ -193,7 +196,10 @@ class AddressListModal {
     console.log(`Check QR popup shows address "${expectedAddress}"`);
     await this.driver.waitForSelector(this.qrModalAddress);
     const addressElement = await this.driver.findElement(this.qrModalAddress);
-    const displayedAddress = (await addressElement.getText()).replace(/\s+/gu, '');
+    const displayedAddress = (await addressElement.getText()).replace(
+      /\s+/gu,
+      '',
+    );
     if (displayedAddress !== expectedAddress) {
       throw new Error(
         `Expected QR popup address "${expectedAddress}" but got "${displayedAddress}"`,
