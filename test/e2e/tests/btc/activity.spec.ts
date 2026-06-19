@@ -5,8 +5,8 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinTransactionDetailsPage from '../../page-objects/pages/home/bitcoin-transaction-details';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -54,7 +54,7 @@ async function broadcastBitcoinSend(
   amount: string,
 ): Promise<void> {
   const homePage = await landOnBitcoinHomepage(driver);
-  const assetList = new AssetListPage(driver);
+  const assetList = new TokensTab(driver);
   await assetList.checkTokenAmountIsDisplayed(`${DEFAULT_BTC_BALANCE} BTC`);
   const sendPage = new SendPage(driver);
   await homePage.startSendFlow();
@@ -83,7 +83,7 @@ describe('BTC Account - Activity', function (this: Suite) {
       async ({ driver }) => {
         await broadcastBitcoinSend(driver, recipientAddress, sendAmount);
 
-        const activity = new ActivityListPage(driver);
+        const activity = new ActivityTab(driver);
         await activity.checkTransactionActivityByText('Sending BTC');
         await activity.checkWaitForTransactionStatus('pending');
         await activity.checkPendingTxNumberDisplayedInActivity(1);
@@ -109,7 +109,7 @@ describe('BTC Account - Activity', function (this: Suite) {
         const homePage = await landOnBitcoinHomepage(driver);
         await homePage.goToActivityList();
 
-        const activity = new ActivityListPage(driver);
+        const activity = new ActivityTab(driver);
         await activity.checkTransactionActivityByText('Received BTC');
         await activity.checkConfirmedTxNumberDisplayedInActivity(1);
         await activity.checkTxAction({
@@ -133,7 +133,7 @@ describe('BTC Account - Activity', function (this: Suite) {
       async ({ driver }) => {
         await broadcastBitcoinSend(driver, recipientAddress, sendAmount);
 
-        const activity = new ActivityListPage(driver);
+        const activity = new ActivityTab(driver);
         await activity.checkTransactionActivityByText('Sending BTC');
         await activity.checkPendingTxNumberDisplayedInActivity(1);
         await activity.clickOnActivity(1);
@@ -162,11 +162,11 @@ describe('BTC Account - Activity', function (this: Suite) {
       },
       async ({ driver }) => {
         const homePage = await landOnBitcoinHomepage(driver);
-        const assetList = new AssetListPage(driver);
+        const assetList = new TokensTab(driver);
         await assetList.selectOnlyNetworkInFilter('Bitcoin');
 
         await homePage.goToActivityList();
-        const activity = new ActivityListPage(driver);
+        const activity = new ActivityTab(driver);
         await activity.checkTransactionActivityByText('Received BTC');
         await activity.checkConfirmedTxNumberDisplayedInActivity(1);
         await activity.checkTransactionAmount(`${DEFAULT_BTC_BALANCE} BTC`);
