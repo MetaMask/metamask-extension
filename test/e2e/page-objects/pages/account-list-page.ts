@@ -1,7 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
 import { quoteXPathText } from '../../../helpers/quoteXPathText';
-import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
 import PrivacySettings from './settings/privacy-settings';
 import HeaderNavbar from './header-navbar';
@@ -47,16 +46,6 @@ class AccountListPage {
 
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
-
-  private readonly addBtcAccountButton = {
-    text: messages.addBitcoinAccountLabel.message,
-    tag: 'button',
-  };
-
-  private readonly addSolanaAccountButton = {
-    text: messages.addNewSolanaAccountLabel.message,
-    tag: 'button',
-  };
 
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
@@ -203,16 +192,6 @@ class AccountListPage {
     tag: 'h4',
   };
 
-  private readonly importSrpButton = {
-    text: 'Secret Recovery Phrase',
-    tag: 'button',
-  };
-
-  private readonly importSrpModalTitle = {
-    text: 'Import Secret Recovery Phrase',
-    tag: 'p',
-  };
-
   private readonly importSrpInput =
     '[data-testid="srp-input-import__srp-note"]';
 
@@ -226,18 +205,8 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly srpListTitle = {
-    text: 'Select Secret Recovery Phrase',
-    tag: 'label',
-  };
-
   private readonly viewAccountOnExplorerButton = {
     text: 'View on explorer',
-    tag: 'p',
-  };
-
-  private readonly addAccountButton = {
-    text: 'Add account',
     tag: 'p',
   };
 
@@ -355,45 +324,6 @@ class AccountListPage {
   }
 
   /**
-   * Adds a new Solana account with optional custom name.
-   *
-   * @param options - Options for creating the Solana account
-   * @param [options.solanaAccountCreationEnabled] - Whether Solana account creation is enabled. If false, verifies the create button is disabled.
-   * @param [options.accountName] - Optional custom name for the new account
-   * @returns Promise that resolves when account creation is complete
-   */
-  async addNewSolanaAccount({
-    solanaAccountCreationEnabled = true,
-    accountName = '',
-  }: {
-    solanaAccountCreationEnabled?: boolean;
-    accountName?: string;
-  } = {}): Promise<void> {
-    console.log(
-      `Adding new Solana account${
-        accountName ? ` with custom name: ${accountName}` : ' with default name'
-      }`,
-    );
-    if (solanaAccountCreationEnabled) {
-      await this.driver.clickElement(this.addSolanaAccountButton);
-      // needed to mitigate a race condition with the state update
-      // there is no condition we can wait for in the UI
-      if (accountName) {
-        await this.driver.fill(this.accountNameInput, accountName);
-      }
-      await this.driver.clickElementAndWaitToDisappear(
-        this.addAccountConfirmButton,
-      );
-    } else {
-      const createButton = await this.driver.findElement(
-        this.addSolanaAccountButton,
-      );
-      assert.equal(await createButton.isEnabled(), false);
-      await this.driver.clickElement(this.closeAccountModalButton);
-    }
-  }
-
-  /**
    * Adds a new multichain wallet.
    */
   async addMultichainWallet(): Promise<void> {
@@ -454,81 +384,6 @@ class AccountListPage {
     });
   }
 
-  /**
-   * Adds a new account of the specified type with an optional custom name.
-   *
-   * @param options - Options for adding a new account
-   * @param options.accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
-   * @param [options.accountName] - Optional custom name for the new account
-   * @param [options.srpIndex] - Optional SRP index for the new account
-   * @param options.fromModal
-   * @throws {Error} If the specified account type is not supported
-   * @example
-   * // Add a new Ethereum account with default name
-   * await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Ethereum });
-   *
-   * // Add a new Bitcoin account with custom name
-   * await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin, accountName: 'My BTC Wallet' });
-   */
-  async addAccount({
-    accountType,
-    accountName,
-    srpIndex,
-    fromModal = false,
-  }: {
-    accountType: ACCOUNT_TYPE;
-    accountName?: string;
-    srpIndex?: number;
-    fromModal?: boolean;
-  }) {
-    console.log(`Adding new account of type: ${ACCOUNT_TYPE[accountType]}`);
-    if (!fromModal) {
-      let addAccountButton;
-      switch (accountType) {
-        case ACCOUNT_TYPE.Ethereum:
-          addAccountButton = this.addEthereumAccountButton;
-          break;
-        case ACCOUNT_TYPE.Bitcoin:
-          addAccountButton = this.addBtcAccountButton;
-          break;
-        case ACCOUNT_TYPE.Solana:
-          addAccountButton = this.addSolanaAccountButton;
-          break;
-        default:
-          throw new Error('Account type not supported');
-      }
-
-      await this.driver.clickElement(this.createAccountButton);
-      addAccountButton && (await this.driver.clickElement(addAccountButton));
-    }
-    // Run if there are multiple srps
-    if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
-      const srpName = `Secret Recovery Phrase ${srpIndex.toString()}`;
-      // First, we first click here to go to the SRP List.
-      await this.driver.clickElement({
-        text: 'Secret Recovery Phrase 2',
-      });
-      // Then, we select the SRP that we want to add the account to.
-      await this.driver.clickElement({
-        text: srpName,
-      });
-    }
-
-    if (accountName) {
-      console.log(
-        `Customize the new account with account name: ${accountName}`,
-      );
-      await this.driver.fill(this.accountNameInput, accountName);
-    }
-    // needed to mitigate a race condition with the state update
-    // there is no condition we can wait for in the UI
-    await this.driver.delay(largeDelayMs);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.addAccountConfirmButton,
-      5000,
-    );
-  }
-
   async closeAccountModal(): Promise<void> {
     console.log(`Close account modal in account list`);
     await this.driver.clickElementAndWaitToDisappear(
@@ -577,13 +432,6 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
-  }
-
-  async isBtcAccountCreationButtonEnabled(): Promise<boolean> {
-    const createButton = await this.driver.findElement(
-      this.addBtcAccountButton,
-    );
-    return await createButton.isEnabled();
   }
 
   /**
@@ -706,37 +554,10 @@ class AccountListPage {
     );
   }
 
-  async checkAddBitcoinAccountAvailable(
-    expectedAvailability: boolean,
-  ): Promise<void> {
-    console.log(
-      `Check add bitcoin account button is ${
-        expectedAvailability ? 'displayed ' : 'not displayed'
-      }`,
-    );
-    await this.openAddAccountModal();
-    if (expectedAvailability) {
-      await this.driver.waitForSelector(this.addBtcAccountButton);
-    } else {
-      await this.driver.assertElementNotPresent(this.addBtcAccountButton);
-    }
-  }
-
   async openAccountOptionsMenu(): Promise<void> {
     console.log(`Open account option menu`);
     await this.driver.waitForSelector(this.accountListItem);
     await this.driver.clickElement(this.accountOptionsMenuButton);
-  }
-
-  async openAddAccountModal(): Promise<void> {
-    console.log(`Open add account modal in account list`);
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.waitForSelector(this.addEthereumAccountButton);
-  }
-
-  async openImportSrpModal(): Promise<void> {
-    await this.openAddAccountModal();
-    await this.driver.clickElement(this.importSrpButton);
   }
 
   async openConnectHardwareWalletModal(): Promise<void> {
@@ -926,11 +747,6 @@ class AccountListPage {
     await this.driver.waitForSelector(this.walletDetailsButton);
   }
 
-  async checkAddWalletButttonIsDisplayed(): Promise<void> {
-    console.log('Check add wallet button is displayed');
-    await this.driver.waitForSelector(this.addMultichainWalletButton);
-  }
-
   async clickWalletDetailsButton(): Promise<void> {
     console.log('Click wallet details button');
     await this.driver.clickElement(this.walletDetailsButton);
@@ -998,7 +814,8 @@ class AccountListPage {
         expectedAvailability ? 'displayed ' : 'not displayed'
       }`,
     );
-    await this.openAddAccountModal();
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.waitForSelector(this.addEthereumAccountButton);
     if (expectedAvailability) {
       await this.driver.waitForSelector(this.addEoaAccountButton);
     } else {
