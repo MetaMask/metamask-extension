@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Text,
@@ -23,6 +23,7 @@ type QrCodeScanProps = {
 type QrSyncState = {
   metamask: {
     qrPayload?: string | null;
+    phase?: string | null;
   };
 };
 
@@ -31,6 +32,20 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
   const qrPayload = useSelector(
     (state: QrSyncState) => state.metamask.qrPayload ?? null,
   );
+  const qrSyncPhase = useSelector(
+    (state: QrSyncState) => state.metamask.phase ?? null,
+  );
+
+  useEffect(() => {
+    if (
+      qrSyncPhase !== 'awaiting-otp-display' &&
+      qrSyncPhase !== 'awaiting-otp-input'
+    ) {
+      return;
+    }
+
+    onScanSuccess(AddDeviceSettingsStep.EnterVerificationCode);
+  }, [onScanSuccess, qrSyncPhase]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">

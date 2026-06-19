@@ -1,5 +1,5 @@
-import type { QrSyncControllerState } from './types';
 import type { StateMetadata } from "@metamask/base-controller";
+import type { QrSyncControllerState } from './types';
 
 export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
   phase: {
@@ -123,12 +123,9 @@ export const MESSENGER_EXPOSED_METHODS = [
   'createSession',
   'grantOtpDisplay',
   'submitOtp',
-  'selectAccounts',
+  'syncAccounts',
   'sendSyncData',
   'cancelSync',
-  'retryConnection',
-  'acknowledgeCompletion',
-  'dismissError',
   'resetState',
 ] as const;
 

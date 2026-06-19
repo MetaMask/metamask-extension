@@ -2,12 +2,18 @@ import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
+import type {
+  KeyringControllerExportAccountAction,
+  KeyringControllerExportSeedPhraseAction,
+  KeyringControllerGetStateAction,
+  KeyringControllerWithKeyringV2Action,
+} from '@metamask/keyring-controller';
 import type { IKVStore } from '@metamask/mobile-wallet-protocol-core';
 import type { Messenger } from '@metamask/messenger';
 
 import type { QrSyncController } from './qr-sync-controller';
 import type { KeyManager } from './key-manager';
-import { QR_SYNC_CONTROLLER_NAME, QrSyncActionTypes } from './constants';
+import { QR_SYNC_CONTROLLER_NAME, QrSyncActionTypes, QrSyncMessageVersion } from './constants';
 
 export type QrSyncPhase =
   | 'idle'
@@ -45,13 +51,13 @@ export type QrSyncActionType =
   (typeof QrSyncActionTypes)[keyof typeof QrSyncActionTypes];
 
 /**
- * The message structure for the whole QR Sync session.
+ * The message structure for the whole QR Sync session over Mobile Wallet Protocol relay.
  *
  * @type {object}
  */
 export type QrSyncMessage<DataType = undefined> = {
   type: QrSyncActionType;
-  version: string;
+  version: QrSyncMessageVersion;
   data?: DataType;
 };
 
@@ -64,14 +70,13 @@ export type QrSyncAccountCandidate = {
   type: SyncDataType;
   metadata?: {
     accountName?: string;
-    hiddenIdexes: number[];
+    hiddenIndexes: number[];
   };
 };
 
 export type QrSyncOffer = {
   sessionId?: string;
   deadline: number;
-  accounts: QrSyncAccountCandidate[];
 };
 
 export type QrSyncErrorCode =
@@ -145,7 +150,7 @@ export type QrSyncData = {
        *
        * @type {number[]}
        */
-      hiddenIdexes: number[];
+      hiddenIndexes: number[];
 
       /**
        * Whether the wallet is the primary wallet.
@@ -207,6 +212,17 @@ export type QrSyncControllerChannelDisconnectedEvent = {
     {
       sessionId: string | null;
       retryable: boolean;
+      error?: QrSyncError;
+    },
+  ];
+};
+
+export type QrSyncControllerSyncOfferReceivedEvent = {
+  type: 'QrSyncController:syncOfferReceived';
+  payload: [
+    {
+      sessionId: string | null;
+      syncOffer: QrSyncOffer;
     },
   ];
 };
@@ -214,7 +230,8 @@ export type QrSyncControllerChannelDisconnectedEvent = {
 export type QrSyncControllerEvents =
   | QrSyncControllerStateChangeEvent
   | QrSyncControllerSyncCompletedEvent
-  | QrSyncControllerChannelDisconnectedEvent;
+  | QrSyncControllerChannelDisconnectedEvent
+  | QrSyncControllerSyncOfferReceivedEvent;
 
 export type QrSyncControllerGetStateAction = ControllerGetStateAction<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -241,9 +258,9 @@ export type QrSyncControllerSubmitOtpAction = {
   handler: QrSyncController['submitOtp'];
 };
 
-export type QrSyncControllerSelectAccountsAction = {
-  type: 'QrSyncController:selectAccounts';
-  handler: QrSyncController['selectAccounts'];
+export type QrSyncControllerSyncAccountsAction = {
+  type: 'QrSyncController:syncAccounts';
+  handler: QrSyncController['syncAccounts'];
 };
 
 export type QrSyncControllerSendSyncDataAction = {
@@ -254,21 +271,6 @@ export type QrSyncControllerSendSyncDataAction = {
 export type QrSyncControllerCancelSyncAction = {
   type: 'QrSyncController:cancelSync';
   handler: QrSyncController['cancelSync'];
-};
-
-export type QrSyncControllerRetryConnectionAction = {
-  type: 'QrSyncController:retryConnection';
-  handler: QrSyncController['retryConnection'];
-};
-
-export type QrSyncControllerAcknowledgeCompletionAction = {
-  type: 'QrSyncController:acknowledgeCompletion';
-  handler: QrSyncController['acknowledgeCompletion'];
-};
-
-export type QrSyncControllerDismissErrorAction = {
-  type: 'QrSyncController:dismissError';
-  handler: QrSyncController['dismissError'];
 };
 
 export type QrSyncControllerResetStateAction = {
@@ -282,16 +284,20 @@ export type QrSyncControllerActions =
   | QrSyncControllerCreateSessionAction
   | QrSyncControllerGrantOtpDisplayAction
   | QrSyncControllerSubmitOtpAction
-  | QrSyncControllerSelectAccountsAction
+  | QrSyncControllerSyncAccountsAction
   | QrSyncControllerSendSyncDataAction
   | QrSyncControllerCancelSyncAction
-  | QrSyncControllerRetryConnectionAction
-  | QrSyncControllerAcknowledgeCompletionAction
-  | QrSyncControllerDismissErrorAction
   | QrSyncControllerResetStateAction;
+
+export type QrSyncAllowedActions =
+  | QrSyncControllerActions
+  | KeyringControllerGetStateAction
+  | KeyringControllerWithKeyringV2Action
+  | KeyringControllerExportSeedPhraseAction
+  | KeyringControllerExportAccountAction;
 
 export type QrSyncControllerMessenger = Messenger<
   typeof QR_SYNC_CONTROLLER_NAME,
-  QrSyncControllerActions,
+  QrSyncAllowedActions,
   QrSyncControllerEvents
 >;

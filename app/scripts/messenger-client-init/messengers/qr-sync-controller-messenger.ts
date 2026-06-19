@@ -21,8 +21,20 @@ export function getQrSyncControllerMessenger(
     MessengerEvents<QrSyncControllerMessenger>
   >,
 ): QrSyncControllerMessenger {
-  return new Messenger({
+  const qrSyncControllerMessenger: QrSyncControllerMessenger = new Messenger({
     namespace: 'QrSyncController',
     parent: messenger,
   });
+
+  messenger.delegate({
+    messenger: qrSyncControllerMessenger,
+    actions: [
+      'KeyringController:getState',
+      'KeyringController:withKeyringV2',
+      'KeyringController:exportSeedPhrase',
+      'KeyringController:exportAccount',
+    ],
+  });
+
+  return qrSyncControllerMessenger;
 }

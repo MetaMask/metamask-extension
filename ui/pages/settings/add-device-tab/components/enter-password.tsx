@@ -19,9 +19,10 @@ import { AddDeviceSettingsStep } from '../constant';
 
 type EnterPasswordProps = {
   onContinue: (type: AddDeviceSettingsStep) => void;
+  onPasswordChange: (password: string) => void;
 };
 
-const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
+const EnterPassword = ({ onContinue, onPasswordChange }: EnterPasswordProps) => {
   const [password, setPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
     useState(false);
@@ -30,6 +31,7 @@ const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
   const onSubmit = useCallback(async () => {
     try {
       await verifyPassword(password);
+      onPasswordChange(password);
       onContinue(AddDeviceSettingsStep.AddWallets);
     } catch (error) {
       setIsIncorrectPasswordError(true);

@@ -10,13 +10,14 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import log from 'loglevel';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AddDeviceSettingsStep } from '../constant';
 
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
 const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
-const TEMP_VERIFICATION_CODE = '123456';
 
 const createEmptyCode = () => Array<string>(CODE_LENGTH).fill('');
 
@@ -40,7 +41,7 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
   // Single place that persists a new code and reacts to completion, so the
   // change/paste/keydown handlers never duplicate validation or error resets.
   const commitCode = useCallback(
-    (nextCode: string[]) => {
+    async (nextCode: string[]) => {
       setCode(nextCode);
       setIsError(false);
 
@@ -49,9 +50,14 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
         return;
       }
 
-      if (joined === TEMP_VERIFICATION_CODE) {
+      try {
+        log.debug('EnterVerificationCode: submitting OTP', joined);
+        await submitRequestToBackground<void>('messengerCall', [
+          'QrSyncController:submitOtp',
+          [joined],
+        ]);
         onContinue(AddDeviceSettingsStep.ValidatingDevice);
-      } else {
+      } catch {
         setIsError(true);
       }
     },
