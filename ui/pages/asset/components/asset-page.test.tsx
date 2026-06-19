@@ -789,9 +789,9 @@ describe('AssetPage', () => {
 
     afterEach(() => {
       // Return a stable reference so subsequent tests don't see stale overrides.
-      (
-        getAssetsBySelectedAccountGroup as unknown as jest.Mock
-      ).mockReturnValue(mockGetDefaultAssetsBySelectedAccountGroup());
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+        mockGetDefaultAssetsBySelectedAccountGroup(),
+      );
     });
 
     it('shows estimated annual bonus as 3% of combined Mainnet and Linea fiat when viewing Mainnet mUSD', () => {
