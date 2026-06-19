@@ -8,7 +8,7 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
   mockTronFeatureFlags,
   mockExchangeRates,
@@ -56,11 +56,10 @@ describe('Send Tron (local blockchain)', function (this: Suite) {
             await mockTrxNativeSpotPrices(mockServer),
             await mockTronAssets(mockServer, tronNode),
             // ── Blockchain calls proxied to local Tron node ───────────────────
-            ...(await proxyTronBlockchainCalls(
-              mockServer,
-              tronNode,
-              [TRON_ACCOUNT_ADDRESS, TRON_RECIPIENT_ADDRESS],
-            )),
+            ...(await proxyTronBlockchainCalls(mockServer, tronNode, [
+              TRON_ACCOUNT_ADDRESS,
+              TRON_RECIPIENT_ADDRESS,
+            ])),
           ];
         },
       },
@@ -93,7 +92,7 @@ describe('Send Tron (local blockchain)', function (this: Suite) {
         await snapTransactionConfirmation.checkPageIsLoaded();
         await snapTransactionConfirmation.clickFooterConfirmButton();
 
-        const activityList = new ActivityListPage(driver);
+        const activityList = new ActivityTab(driver);
         // The broadcast reached the real local node — no failed transaction should appear
         await activityList.checkNoFailedTransactions();
         // The snap tracks the submitted transaction locally and renders it immediately

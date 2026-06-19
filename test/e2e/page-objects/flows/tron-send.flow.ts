@@ -16,7 +16,6 @@ export async function landOnTronSendScreen({
   assetId?: string;
   expectedNativeBalance?: string | null;
 }): Promise<SendPage> {
-  console.log(`Opening Tron send screen for ${symbol}`);
   await login(driver, { validateBalance: false });
   await selectTronNetwork(driver);
 

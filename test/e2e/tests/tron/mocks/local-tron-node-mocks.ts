@@ -229,7 +229,9 @@ function getCapturedTxFields(
   };
 
   if (contractType === 'TriggerSmartContract') {
-    const transfer = parseTrc20TransferFromData(value.data as string | undefined);
+    const transfer = parseTrc20TransferFromData(
+      value.data as string | undefined,
+    );
     fields.contractAddress = value.contract_address as string | undefined;
     fields.transferTo = transfer.toAddress;
     fields.transferValue = transfer.amount;
@@ -241,7 +243,9 @@ function getCapturedTxFields(
 function resolveTrc20TokenInfo(
   localNode: TronNodeLike | string,
   contractAddress?: string,
-): Pick<TronTrc20Token, 'address' | 'decimals' | 'name' | 'symbol'> | undefined {
+):
+  | Pick<TronTrc20Token, 'address' | 'decimals' | 'name' | 'symbol'>
+  | undefined {
   if (typeof localNode === 'string' || !contractAddress) {
     return undefined;
   }
@@ -286,8 +290,7 @@ function buildTrc20HistoryEntry(
     to: tx.transferTo ?? toBase58Address(tx.toAddress) ?? '',
     type: 'Transfer',
     value:
-      tx.transferValue ??
-      (tx.amount !== undefined ? String(tx.amount) : '0'),
+      tx.transferValue ?? (tx.amount === undefined ? '0' : String(tx.amount)),
   };
 }
 

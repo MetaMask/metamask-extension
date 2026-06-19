@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import { TronNode } from '../../seeder/tron/node';
 import { landOnTronSendScreen } from '../../page-objects/flows/tron-send.flow';
 import { TRON_CHAIN_ID, TRON_RECIPIENT_ADDRESS } from './mocks/common-tron';
@@ -111,7 +111,7 @@ describe('Tron Send', function (this: Suite) {
         });
         await sendPage.fillRecipient(TRON_RECIPIENT_ADDRESS);
         await sendPage.fillAmount('1');
-        await sendPage.checkInvalidAmountError();
+        await sendPage.checkInsufficientBalanceToCoverFeesError();
         await sendPage.checkContinueButtonIsDisabled();
       },
     );
@@ -136,7 +136,7 @@ describe('Tron Send', function (this: Suite) {
         await snapConfirmation.checkPageIsLoaded();
         await snapConfirmation.clickFooterConfirmButton();
 
-        const activityList = new ActivityListPage(driver);
+        const activityList = new ActivityTab(driver);
         await activityList.checkPendingTxNumberDisplayedInActivity(1);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAmountInActivity('-1 TRX', 1);
@@ -167,7 +167,7 @@ describe('Tron Send', function (this: Suite) {
         await snapConfirmation.checkPageIsLoaded();
         await snapConfirmation.clickFooterConfirmButton();
 
-        const activityList = new ActivityListPage(driver);
+        const activityList = new ActivityTab(driver);
         await activityList.checkPendingTxNumberDisplayedInActivity(1);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkNoFailedTransactions();
@@ -204,7 +204,7 @@ describe('Tron Send', function (this: Suite) {
         await snapConfirmation.checkPageIsLoaded();
         await snapConfirmation.clickFooterConfirmButton();
 
-        const activityList = new ActivityListPage(driver);
+        const activityList = new ActivityTab(driver);
         await activityList.checkPendingTxNumberDisplayedInActivity(1);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAmountInActivity('-1 USDT', 1);
@@ -244,7 +244,7 @@ describe('Tron Send', function (this: Suite) {
         await snapConfirmation.checkPageIsLoaded();
         await snapConfirmation.clickFooterConfirmButton();
 
-        const activityList = new ActivityListPage(driver);
+        const activityList = new ActivityTab(driver);
         await activityList.checkPendingTxNumberDisplayedInActivity(1);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkNoFailedTransactions();
