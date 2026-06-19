@@ -128,7 +128,7 @@ export const AccountOverviewTabs = ({
 
   // Whether the persisted/url active tab resolves to a tab that is actually
   // rendered. Membership only — render order is irrelevant here.
-  const renderedTabKeys = [
+  const renderedTabKeys: AccountOverviewTab[] = [
     ...(showTokens ? [AccountOverviewTabKey.Tokens] : []),
     ...(isPerpsExperienceAvailable ? [AccountOverviewTabKey.Perps] : []),
     ...(showDefi ? [AccountOverviewTabKey.DeFi] : []),
@@ -141,7 +141,7 @@ export const AccountOverviewTabs = ({
   // is hidden and the Perps experience is available.
   const perpsIsEffectiveActiveTab =
     activeTabKey === AccountOverviewTabKey.Perps ||
-    (!renderedTabKeys.some((key) => key === activeTabKey) &&
+    (!renderedTabKeys.includes(activeTabKey) &&
       !showTokens &&
       isPerpsExperienceAvailable);
 
