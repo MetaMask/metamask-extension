@@ -1,24 +1,11 @@
 import React from 'react';
-import { screen, fireEvent, act } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { AdditionalNetworksInfo } from './additional-networks-info';
 
-// Mock the global platform.openTab
-const mockOpenTab = jest.fn();
-// @ts-expect-error mocking platform
-global.platform = {
-  openTab: mockOpenTab,
-  closeCurrentWindow: jest.fn(),
-};
-
 describe('AdditionalNetworksInfo', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   const renderComponent = () => {
     const store = configureStore({});
     return renderWithProvider(<AdditionalNetworksInfo />, store);
@@ -31,85 +18,15 @@ describe('AdditionalNetworksInfo', () => {
 
   it('renders the component with "Additional networks" text', () => {
     renderComponent();
-    // Using the actual text that's rendered with the real i18n context
     expect(
       screen.getByText(messages.additionalNetworks.message),
     ).toBeInTheDocument();
   });
 
-  it('shows info icon', () => {
+  it('does not render the info icon', () => {
     renderComponent();
-
-    // Check that the info icon is rendered
-    const infoIcon = document.querySelector('.add-network__warning-icon');
-    expect(infoIcon).toBeInTheDocument();
-  });
-
-  it('shows popover on mouse enter and hides on mouse leave', async () => {
-    renderComponent();
-
-    // Initially the popover should not show its content
     expect(
-      screen.queryByText('Some of these networks rely on third parties'),
+      document.querySelector('.add-network__warning-icon'),
     ).not.toBeInTheDocument();
-
-    // Find the info icon
-    const infoIcon = document.querySelector('.add-network__warning-icon');
-    expect(infoIcon).toBeInTheDocument();
-
-    // Trigger mouse enter on the info icon and flush state updates
-    await act(async () => {
-      if (infoIcon) {
-        fireEvent.mouseEnter(infoIcon);
-      }
-    });
-
-    // Popover content should now be visible
-    expect(
-      screen.getByText((content) =>
-        content.startsWith('Some of these networks rely on third partie'),
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.learnMoreUpperCase.message),
-    ).toBeInTheDocument();
-
-    // Trigger mouse leave on the containing box to close the popover
-    const containerBox = screen
-      .getByText(messages.additionalNetworks.message)
-      .closest('div[role="presentation"]');
-    await act(async () => {
-      if (containerBox) {
-        fireEvent.mouseLeave(containerBox);
-      }
-    });
-
-    // We've handled the state updates properly with act()
-  });
-
-  it('opens external documentation when "Learn more" is clicked', async () => {
-    renderComponent();
-
-    // Open the popover
-    const infoIcon = document.querySelector('.add-network__warning-icon');
-    await act(async () => {
-      if (infoIcon) {
-        fireEvent.mouseEnter(infoIcon);
-      }
-    });
-
-    // Find and click the learn more button
-    await act(async () => {
-      const learnMoreButton = screen.getByText(
-        messages.learnMoreUpperCase.message,
-      );
-      fireEvent.click(learnMoreButton);
-    });
-
-    // Verify that global.platform.openTab was called with correct URL
-    expect(mockOpenTab).toHaveBeenCalledTimes(1);
-    expect(mockOpenTab).toHaveBeenCalledWith({
-      url: ZENDESK_URLS.UNKNOWN_NETWORK,
-    });
   });
 });

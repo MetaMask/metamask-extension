@@ -826,9 +826,14 @@
       "error: Warning: ReactDOM.render is no longer": 7,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
-     "ui/components/app/perps/hooks/usePerpsDepositConfirmation.test.ts": {
+    "ui/components/app/perps/hooks/usePerpsDepositConfirmation.test.ts": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 7,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/app/perps/hooks/usePerpsNetworkManagement.test.ts": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 2,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/app/perps/hooks/usePerpsTabExploreData.test.ts": {
@@ -1053,7 +1058,8 @@
     "ui/components/app/perps/update-tpsl/update-tpsl-modal-content.test.tsx": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 60,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
+      "warn: [Perps] Delayed TP/SL refetch failed:": 2
     },
     "ui/components/app/qr-hardware-popover/base-qr-reader/base-qr-reader.test.tsx": {
       "Deprecation warnings": 1,
@@ -1153,9 +1159,14 @@
       "error: Warning: ReactDOM.render is no longer": 5,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
+    "ui/components/app/rewards/RewardsVipReferralTag/RewardsVipReferralTag.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 2,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
     "ui/components/app/rewards/onboarding/OnboardingMainStep.test.tsx": {
       "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 24,
+      "error: Warning: ReactDOM.render is no longer": 26,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/app/rewards/onboarding/RewardsModal.test.tsx": {
@@ -1688,6 +1699,16 @@
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 11,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/multichain-accounts/hardware-account-address-row/hardware-account-address-row.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 3,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/multichain-accounts/hardware-account-card/hardware-account-card.test.tsx": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 11,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
@@ -3085,7 +3106,7 @@
       "error: Warning: ReactDOM.render is no longer": 23,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
-     "ui/hooks/rewards/useValidateReferralCode.test.tsx": {
+    "ui/hooks/rewards/useValidateReferralCode.test.tsx": {
       "Deprecation warnings": 1,
       "React: Act warnings (component updates not wrapped)": 1,
       "error: Warning: ReactDOM.render is no longer": 16,
@@ -3309,7 +3330,7 @@
     },
     "ui/hooks/useMultichainTransactionDisplay.test.ts": {
       "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 11,
+      "error: Warning: ReactDOM.render is no longer": 13,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/hooks/useName.test.ts": {
@@ -3769,7 +3790,7 @@
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "Deprecation warnings": 1,
       "Reselect: Input stability warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 6,
+      "error: Warning: ReactDOM.render is no longer": 9,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
@@ -5282,6 +5303,11 @@
       "error: Warning: ReactDOM.render is no longer": 8,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
+    "ui/pages/confirmations/hooks/pay/useTransactionPayToken.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 4,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
     "ui/pages/confirmations/hooks/pay/useWithdrawTokenFilter.test.tsx": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 7,
@@ -5795,6 +5821,11 @@
       "error: Warning: ReactDOM.render is no longer": 39,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
+    "ui/pages/create-account/connect-hardware/select-hardware-accounts-page/select-hardware-accounts-page.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 18,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
     "ui/pages/create-account/connect-hardware/select-hardware.test.tsx": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 18,
@@ -6191,7 +6222,7 @@
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "Deprecation warnings": 1,
       "React: Act warnings (component updates not wrapped)": 5,
-      "error: Warning: ReactDOM.render is no longer": 85,
+      "error: Warning: ReactDOM.render is no longer": 86,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/perps/perps-order-entry-page.test.tsx": {

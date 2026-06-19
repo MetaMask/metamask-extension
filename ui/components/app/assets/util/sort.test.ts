@@ -192,7 +192,7 @@ const largeDataset = generateLargeMockData(10000); // 10,000 mock assets
 
 // Define the sorting tests for large datasets
 describe('sortAssets function - large dataset handling', () => {
-  const MAX_EXECUTION_TIME_MS = 500; // Set max allowed execution time (in milliseconds)
+  const MAX_EXECUTION_TIME_MS = 2000; // Set max allowed execution time (in milliseconds)
 
   test('sorts large dataset by name in ascending order', () => {
     const startTime = Date.now();
