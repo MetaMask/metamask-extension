@@ -79,6 +79,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - chore: migrate `checkIsSeedlessPasswordOutdated` to `LegacyBackgroundApiService` (#43131)
 - Removes `toggleNetworkMenuAfterSubmit ?` pre-condition for replacement RPC networks-form. (#42980)
 - Update legacy settings routes to new correct ones. (#43111)
+- Updated API for token management list. (#43401)
+- Updated assets-controller patch to add reconciliation/self-healing metadata. (#43500)
 
 ### Fixed
 
@@ -88,6 +90,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disabled passkey unlock and setup on mobile browsers where the experience is unreliable. (#43009)
 - Fix routing after hardware wallet onboarding. (#42952)
 - Updated onboarding metrics for Telegram Login, fixed onboarding unlock metrics. (#43052)
+- Fixed tokens without symbol breaking the app. (#43514)
+- Fixed native tokens disappearing and gas issues. (#43448)
+- Fixed NFT buy activity type. (#43289)
+- Fixed stringified numeric values to be numeric in token details page. (#43420)
+- Fixed token list font size. (#43326)
+- Fixed PNL display to limit to 2 decimal places in close all positions modal. (#43400)
+- Fixed Telegram logo in onboarding. (#43368)
+- Fixed stale swap status. (#43300)
+- Fixed OAuth client IDs configuration. (#43283)
 
 ## [13.34.1]
 
