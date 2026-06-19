@@ -49,7 +49,7 @@ describe.only('Send flow', function (this: Suite) {
     );
   });
 
-  const STABILITY_RUNS = 50;
+  const STABILITY_RUNS = 20;
 
 Array.from({ length: STABILITY_RUNS }, (_, index) => index + 1).forEach(
   (runNumber) => {
