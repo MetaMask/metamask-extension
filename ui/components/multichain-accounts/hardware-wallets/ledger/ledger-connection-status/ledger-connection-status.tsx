@@ -23,13 +23,12 @@ import {
 import type { LedgerConnectionStatusProps } from './ledger-connection-status.types';
 
 /**
- * Displays a Ledger hardware wallet connection state with illustration,
- * localized title and description, and state-specific actions.
- * @param options0
- * @param options0.status
- * @param options0.deviceModelName
- * @param options0.onBack
- * @param options0.onDeviceSelectorClick
+ * Displays the Ledger hardware wallet connection state UI.
+ * @param props - Component props.
+ * @param props.status - Connection state for the illustration, copy, and optional sections.
+ * @param props.deviceModelName - Ledger model name when status is device-found.
+ * @param props.onBack - Back button click handler. Omit to hide the back button.
+ * @param props.onDeviceSelectorClick - Device selector click handler for the device-found state.
  */
 export const LedgerConnectionStatus = ({
   status,

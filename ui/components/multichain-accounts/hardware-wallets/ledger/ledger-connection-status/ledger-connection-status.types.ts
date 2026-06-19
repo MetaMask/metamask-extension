@@ -1,12 +1,12 @@
 import type { LedgerConnectionStatusType } from '../ledger-connection-status.constants';
 
 export type LedgerConnectionStatusProps = {
-  /** Connection state that controls the illustration, copy, and optional UI sections. */
+  /** Connection state for the illustration, copy, and optional sections. */
   status: LedgerConnectionStatusType;
-  /** Ledger model name for the device-found selector (for example, "Nano X"). */
+  /** Ledger model name shown when status is device-found. */
   deviceModelName?: string;
-  /** Called when the back button is clicked. Omit to hide back navigation. */
+  /** Back button click handler. Omit to hide the back button. */
   onBack?: () => void;
-  /** Called when the device selector row is clicked in the device-found state. */
+  /** Device selector click handler for the device-found state. */
   onDeviceSelectorClick?: () => void;
 };

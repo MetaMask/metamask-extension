@@ -7,7 +7,7 @@ import {
 } from '@metamask/design-system-react';
 import { LEDGER_CONNECTION_STATUS, LedgerConnectionStatus } from '.';
 
-/** Matches the Figma hardware-wallet modal frame width. */
+/** Storybook frame width for the hardware wallet modal layout. */
 const STORY_FRAME_WIDTH = 460;
 
 const meta = {

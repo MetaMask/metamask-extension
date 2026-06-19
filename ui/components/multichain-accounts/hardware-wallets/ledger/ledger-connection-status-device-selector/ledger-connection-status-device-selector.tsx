@@ -13,10 +13,10 @@ import {
 import type { LedgerConnectionStatusDeviceSelectorProps } from './ledger-connection-status-device-selector.types';
 
 /**
- * Shows the detected Ledger device model in the device-found connection state.
- * @param options0
- * @param options0.deviceModelName
- * @param options0.onDeviceSelectorClick
+ * Renders the detected Ledger device model for the device-found state.
+ * @param props - Component props.
+ * @param props.deviceModelName - Detected Ledger model name.
+ * @param props.onDeviceSelectorClick - Row click handler. Omit for a non-interactive row.
  */
 export const LedgerConnectionStatusDeviceSelector = ({
   deviceModelName,
