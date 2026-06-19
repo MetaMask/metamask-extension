@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AccountWalletId } from '@metamask/account-api';
-import {
-  submitRequestToBackground,
-  subscribeToMessengerEvent,
-} from '../../../store/background-connection';
+import { useSelector } from 'react-redux';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
+import {
+  selectIsQrSyncTerminal,
+  selectQrSyncPhase,
+  selectShouldCreateQrSyncSession,
+} from '../../../selectors/qr-sync/qr-sync';
 import {
   AddWallets,
   EnterPassword,
@@ -15,21 +18,18 @@ import {
   QrCodeScan,
   Success,
 } from './components';
-import { AddDeviceSettingsStep } from './constant';
-
-type QrSyncChannelDisconnectedEvent = {
-  sessionId: string | null;
-  retryable: boolean;
-};
 
 const AddDeviceSettings = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const [step, setStep] = useState(AddDeviceSettingsStep.ScanQrCode);
+  const qrSyncPhase = useSelector(selectQrSyncPhase);
+  const shouldCreateSession = useSelector(selectShouldCreateQrSyncSession);
+  const isQrSyncTerminal = useSelector(selectIsQrSyncTerminal);
+  const [isExiting, setIsExiting] = useState(false);
   const [password, setPassword] = useState<string | undefined>();
 
   useEffect(() => {
-    if (step !== AddDeviceSettingsStep.ScanQrCode) {
+    if (!shouldCreateSession || isExiting) {
       return;
     }
 
@@ -41,79 +41,79 @@ const AddDeviceSettings = () => {
     };
 
     createQrSyncSession();
-  }, [step]);
+  }, [isExiting, shouldCreateSession]);
 
   useEffect(() => {
-    let isMounted = true;
-    let unsubscribe: (() => Promise<void>) | undefined;
+    if (qrSyncPhase === QR_SYNC_PHASES.REVIEWING_SYNC_OFFER) {
+      return;
+    }
 
-    const watchQrSyncErrors = async () => {
-      unsubscribe = await subscribeToMessengerEvent<QrSyncChannelDisconnectedEvent>(
-        'QrSyncController:channelDisconnected',
-        async (event) => {
-          console.log('QrSyncChannelDisconnectedEvent: channel disconnected', event);
-          await submitRequestToBackground<void>('messengerCall', [
-            'QrSyncController:resetState',
-            [],
-          ]).catch(() => undefined);
+    setPassword(undefined);
+  }, [qrSyncPhase]);
 
-          if (isMounted) {
-            navigate(DEFAULT_ROUTE);
-          }
-        },
-      ).catch(() => undefined);
-    };
-
-    watchQrSyncErrors();
-
-    return () => {
-      isMounted = false;
-      unsubscribe?.().catch(() => undefined);
-    };
-  }, [navigate]);
-
-  const handleNextStep = useCallback((type: AddDeviceSettingsStep) => {
-    setStep(type);
+  const resetQrSyncState = useCallback(async () => {
+    await submitRequestToBackground<void>('messengerCall', [
+      'QrSyncController:resetState',
+      [],
+    ]).catch(() => undefined);
   }, []);
 
+  const handleExit = useCallback(async () => {
+    setIsExiting(true);
+    await resetQrSyncState();
+    navigate(DEFAULT_ROUTE);
+  }, [navigate, resetQrSyncState]);
+
+  useEffect(() => {
+    if (!isQrSyncTerminal) {
+      return;
+    }
+
+    handleExit().catch(() => undefined);
+  }, [handleExit, isQrSyncTerminal]);
+
   const handleAddWallets = useCallback(async (entropyIds: string[]) => {
+    if (!password) {
+      throw new Error('Password is required before syncing accounts.');
+    }
+
     await submitRequestToBackground<void>('messengerCall', [
       'QrSyncController:syncAccounts',
       [password, entropyIds],
     ]);
-    handleNextStep(AddDeviceSettingsStep.SyncingWallets);
-  }, [password, handleNextStep]);
+  }, [password]);
 
   const renderStep = () => {
-    switch (step) {
-      case AddDeviceSettingsStep.ScanQrCode:
-        return <QrCodeScan onScanSuccess={handleNextStep} />;
-      case AddDeviceSettingsStep.EnterVerificationCode:
-        return <EnterVerificationCode onContinue={handleNextStep} />;
-      case AddDeviceSettingsStep.ValidatingDevice:
+    switch (qrSyncPhase) {
+      case QR_SYNC_PHASES.IDLE:
+      case QR_SYNC_PHASES.DISPLAYING_QR:
+        return <QrCodeScan />;
+      case QR_SYNC_PHASES.AWAITING_OTP_INPUT:
+        return <EnterVerificationCode />;
+      case QR_SYNC_PHASES.AWAITING_SYNC_OFFER:
         return (
           <LoadingStep
             title={`${t('add_device_validating_title')}...`}
             message={t('add_device_validating_desc')}
-            waitForMessengerEvent="QrSyncController:syncOfferReceived"
-            onComplete={() => handleNextStep(AddDeviceSettingsStep.EnterPassword)}
           />
         );
-      case AddDeviceSettingsStep.EnterPassword:
-        return <EnterPassword onContinue={handleNextStep} onPasswordChange={setPassword} />;
-      case AddDeviceSettingsStep.AddWallets:
-        return <AddWallets onAddWallets={handleAddWallets} />;
-      case AddDeviceSettingsStep.SyncingWallets:
+      case QR_SYNC_PHASES.REVIEWING_SYNC_OFFER:
+        return password ? (
+          <AddWallets onAddWallets={handleAddWallets} />
+        ) : (
+          <EnterPassword onPasswordChange={setPassword} />
+        );
+      case QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION:
         return (
           <LoadingStep
             title={`${t('add_device_syncing_title')}...`}
             message={t('add_device_syncing_desc')}
-            waitForMessengerEvent="QrSyncController:syncCompleted"
-            onComplete={() => handleNextStep(AddDeviceSettingsStep.Success)}
           />
         );
-      case AddDeviceSettingsStep.Success:
-        return <Success onDone={() => navigate(DEFAULT_ROUTE)} />;
+      case QR_SYNC_PHASES.COMPLETED:
+        return <Success onDone={() => handleExit().catch(() => undefined)} />;
+      case QR_SYNC_PHASES.CANCELLED:
+      case QR_SYNC_PHASES.FAILED:
       default:
         return null;
     }

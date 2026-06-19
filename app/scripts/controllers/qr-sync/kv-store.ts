@@ -1,45 +1,38 @@
-import type { IKVStore } from "@metamask/mobile-wallet-protocol-core";
-
-const MockStorage = new Map<string, string>();
+import type { IKVStore } from '@metamask/mobile-wallet-protocol-core';
 
 /**
- * Browser-compatible localStorage-based implementation of IKVStore
+ * Ephemeral in-memory implementation of {@link IKVStore} for MWP session data.
+ * Nothing is persisted; call {@link InMemoryKvStore.clear} when the session ends.
  */
-export class LocalStorageKVStore implements IKVStore {
-	private readonly prefix: string;
+export class InMemoryKvStore implements IKVStore {
+  readonly #storage = new Map<string, string>();
 
-	constructor(prefix: string = "mwp-") {
-		this.prefix = prefix;
-	}
+  readonly #prefix: string;
 
-	async get(key: string): Promise<string | null> {
-		try {
-			return MockStorage.get(this.getKey(key)) ?? null;
-		} catch (error) {
-			console.warn("Failed to get from localStorage:", error);
-			return null;
-		}
-	}
+  constructor(prefix: string = 'qr-sync-') {
+    this.#prefix = prefix;
+  }
 
-	async set(key: string, value: string): Promise<void> {
-		try {
-			MockStorage.set(this.getKey(key), value);
-		} catch (error) {
-			console.warn("Failed to set in localStorage:", error);
-			throw error;
-		}
-	}
+  async get(key: string): Promise<string | null> {
+    return this.#storage.get(this.#getKey(key)) ?? null;
+  }
 
-	async delete(key: string): Promise<void> {
-		try {
-			MockStorage.delete(this.getKey(key));
-		} catch (error) {
-			console.warn("Failed to delete from localStorage:", error);
-			throw error;
-		}
-	}
+  async set(key: string, value: string): Promise<void> {
+    this.#storage.set(this.#getKey(key), value);
+  }
 
-	private getKey(key: string): string {
-		return `${this.prefix}${key}`;
-	}
+  async delete(key: string): Promise<void> {
+    this.#storage.delete(this.#getKey(key));
+  }
+
+  /**
+   * Removes all stored entries for this store instance.
+   */
+  clear(): void {
+    this.#storage.clear();
+  }
+
+  #getKey(key: string): string {
+    return `${this.#prefix}${key}`;
+  }
 }

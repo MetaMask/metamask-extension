@@ -14,34 +14,33 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { bytesToBase64 } from '@metamask/utils';
 
 import log from 'loglevel';
+import {
+  QR_SYNC_PHASES,
+  type QrSyncPhase,
+} from '../../../../shared/constants/qr-sync';
 import { convertEnglishWordlistIndicesToCodepoints } from '../../lib/util';
 import { QR_SYNC_CONTROLLER_NAME, QrSyncActionTypes, QrSyncMessageVersion } from './constants';
 import type { KeyManager } from './key-manager';
 import {
   QrSyncMessage,
-  type QrSyncActionType,
   type QrSyncControllerInitOptions,
   type QrSyncControllerMessenger,
   type QrSyncControllerState,
   type QrSyncData,
   type QrSyncError,
   type QrSyncOffer,
-  type QrSyncPhase,
 } from './types';
 import { controllerMetadata, getDefaultQrSyncControllerState, MESSENGER_EXPOSED_METHODS } from './metadata';
-import { LocalStorageKVStore } from './kv-store';
+import { InMemoryKvStore } from './kv-store';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
   QrSyncControllerState,
   QrSyncControllerMessenger
 > {
-  // TODO: replace this with the extension controller state store
-  readonly #defaultKvStore: IKVStore = new LocalStorageKVStore();
-
   readonly #keyManager: KeyManager;
 
-  readonly #kvStore: IKVStore;
+  readonly #kvStore: IKVStore = new InMemoryKvStore();
 
   readonly #relayUrl: string;
 
@@ -68,7 +67,6 @@ export class QrSyncController extends BaseController<
     keyManager,
     messenger,
     relayUrl,
-    kvStore,
     state = {},
   }: QrSyncControllerInitOptions) {
     super({
@@ -83,7 +81,6 @@ export class QrSyncController extends BaseController<
 
     this.#keyManager = keyManager;
     this.#relayUrl = relayUrl;
-    this.#kvStore = kvStore ?? this.#defaultKvStore;
 
     this.messenger.registerMethodActionHandlers(
       this,
@@ -91,60 +88,9 @@ export class QrSyncController extends BaseController<
     );
   }
 
-  async initialize(): Promise<void> {
-    if (this.#mwpDappClient && this.#transport && this.#sessionStore) {
-      return;
-    }
-
-    this.#setInFlightState({
-      actionType: QrSyncActionTypes.INIT_SYNC_SESSION,
-      phase: 'initializing',
-      connectionStatus: 'connecting',
-      canCancel: true,
-      canRetry: false,
-    });
-
-    try {
-      this.#transport = await WebSocketTransport.create({
-        kvstore: this.#kvStore,
-        url: this.#relayUrl,
-        websocket: typeof WebSocket === 'undefined' ? undefined : WebSocket,
-      });
-
-      this.#sessionStore = await SessionStore.create(this.#kvStore);
-
-      this.#mwpDappClient = new DappClient({
-        transport: this.#transport,
-        sessionstore: this.#sessionStore,
-        keymanager: this.#keyManager,
-      });
-
-      this.#registerClientEventHandlers(this.#mwpDappClient);
-      this.#transitionPhase('awaiting-connection', 'connected');
-    } catch (error) {
-      this.#setError({
-        code: 'CHANNEL_INIT_FAILED',
-        message:
-          error instanceof Error ? error.message : 'Failed to initialize sync',
-        retryable: true,
-      });
-      throw error;
-    } finally {
-      this.#finishSubmission();
-    }
-  }
-
   async createSession(): Promise<void> {
-    await this.initialize();
+    await this.#initialize();
     this.#assertDappClientInitialized(this.#mwpDappClient);
-
-    this.#setInFlightState({
-      actionType: QrSyncActionTypes.INIT_SYNC_SESSION,
-      phase: 'awaiting-connection',
-      connectionStatus: 'connected',
-      canCancel: true,
-      canRetry: false,
-    });
 
     try {
       await this.#mwpDappClient.connect({
@@ -166,48 +112,20 @@ export class QrSyncController extends BaseController<
     }
   }
 
-  async grantOtpDisplay(): Promise<void> {
-    this.#assertPhase(['awaiting-otp-display']);
-
-    // TODO: Implement OTP display grant on MWP SDK
-    // await this.#sendMessage({
-    //   type: QrSyncActionTypes.OTP_DISPLAY_GRANT,
-    // });
-
-    this.#setInFlightState({
-      actionType: QrSyncActionTypes.OTP_DISPLAY_GRANT,
-      phase: 'awaiting-otp-input',
-      connectionStatus: this.state.connectionStatus,
-      canCancel: true,
-      canRetry: false,
-    });
-
-    this.#finishSubmission();
-  }
-
   async submitOtp(_otp: string): Promise<void> {
-    this.#assertPhase(['awaiting-otp-input']);
+    this.#assertPhase([QR_SYNC_PHASES.AWAITING_OTP_INPUT]);
     const otp = _otp.trim();
 
     if (!this.#otpSubmitCallback) {
       throw new Error('OTP submit callback is not available.');
     }
 
-    this.#setInFlightState({
-      actionType: QrSyncActionTypes.OTP_DISPLAY_GRANT,
-      phase: 'validating-otp',
-      connectionStatus: this.state.connectionStatus,
-      canCancel: true,
-      canRetry: false,
-    });
-
     try {
       await this.#otpSubmitCallback(otp);
 
       this.update((state) => {
         state.otpAttempts += 1;
-        state.otpValidated = true;
-        state.phase = 'awaiting-sync-offer';
+        state.phase = QR_SYNC_PHASES.AWAITING_SYNC_OFFER;
         state.updatedAt = Date.now();
       });
     } catch (error) {
@@ -231,7 +149,7 @@ export class QrSyncController extends BaseController<
     password: string,
     selectedEntropyIds: string[],
   ): Promise<void> {
-    this.#assertPhase(['reviewing-sync-offer', 'awaiting-user-selection']);
+    this.#assertPhase([QR_SYNC_PHASES.REVIEWING_SYNC_OFFER]);
 
     // TODO: The following logic should be replaced with `exportMetadata` from Accounts.
     const entropyIds = [...new Set(selectedEntropyIds)];
@@ -300,23 +218,59 @@ export class QrSyncController extends BaseController<
     this.update((state) => {
       state.selectedAccountIds = [...entropyIds];
       state.selectedSyncDataType = 'MNEMONIC';
-      state.phase = 'sending-sync-ready';
+      state.lastActionType = QrSyncActionTypes.SYNC_READY;
+      state.error = null;
       state.updatedAt = Date.now();
     });
 
-    await this.sendSyncData(syncData);
+    await this.#sendSyncData(syncData);
   }
 
-  async sendSyncData(syncData: QrSyncData): Promise<void> {
-    this.#assertPhase(['sending-sync-ready']);
+  async #initialize(): Promise<void> {
+    if (this.#mwpDappClient && this.#transport && this.#sessionStore) {
+      return;
+    }
 
-    this.#setInFlightState({
-      actionType: QrSyncActionTypes.SYNC_READY,
-      phase: 'sending-sync-ready',
-      connectionStatus: this.state.connectionStatus,
-      canCancel: true,
-      canRetry: false,
+    this.update((state) => {
+      state.connectionStatus = 'connecting';
+      state.lastActionType = QrSyncActionTypes.INIT_SYNC_SESSION;
+      state.error = null;
+      state.updatedAt = Date.now();
+      state.createdAt = state.createdAt ?? Date.now();
     });
+
+    try {
+      this.#transport = await WebSocketTransport.create({
+        kvstore: this.#kvStore,
+        url: this.#relayUrl,
+        websocket: typeof WebSocket === 'undefined' ? undefined : WebSocket,
+      });
+
+      this.#sessionStore = await SessionStore.create(this.#kvStore);
+
+      this.#mwpDappClient = new DappClient({
+        transport: this.#transport,
+        sessionstore: this.#sessionStore,
+        keymanager: this.#keyManager,
+      });
+
+      this.#registerClientEventHandlers(this.#mwpDappClient);
+      this.#transitionPhase(this.state.phase, 'connected');
+    } catch (error) {
+      this.#setError({
+        code: 'CHANNEL_INIT_FAILED',
+        message:
+          error instanceof Error ? error.message : 'Failed to initialize sync',
+        retryable: true,
+      });
+      throw error;
+    } finally {
+      this.#finishSubmission();
+    }
+  }
+
+  async #sendSyncData(syncData: QrSyncData): Promise<void> {
+    this.#assertPhase([QR_SYNC_PHASES.REVIEWING_SYNC_OFFER]);
 
     await this.#sendMessage({
       type: QrSyncActionTypes.SYNC_READY,
@@ -324,7 +278,7 @@ export class QrSyncController extends BaseController<
     });
 
     this.update((state) => {
-      state.phase = 'awaiting-sync-completion';
+      state.phase = QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION;
     });
     this.#finishSubmission();
   }
@@ -333,10 +287,7 @@ export class QrSyncController extends BaseController<
     this.#cleanupSession({ cancelOtp: true });
 
     this.update((state) => {
-      state.phase = 'cancelled';
-      state.isSubmitting = false;
-      state.canCancel = false;
-      state.canRetry = true;
+      state.phase = QR_SYNC_PHASES.CANCELLED;
       state.updatedAt = Date.now();
       if (reason) {
         state.error = {
@@ -357,7 +308,7 @@ export class QrSyncController extends BaseController<
   setSyncOffer(syncOffer: QrSyncOffer): void {
     this.update((state) => {
       state.syncOffer = syncOffer;
-      state.phase = 'reviewing-sync-offer';
+      state.phase = QR_SYNC_PHASES.REVIEWING_SYNC_OFFER;
       state.expiresAt = syncOffer.deadline;
       state.lastActionType = QrSyncActionTypes.SYNC_OFFER;
       state.updatedAt = Date.now();
@@ -371,11 +322,8 @@ export class QrSyncController extends BaseController<
 
   completeSync(importedAccountIds: string[]): void {
     this.update((state) => {
-      state.phase = 'completed';
+      state.phase = QR_SYNC_PHASES.COMPLETED;
       state.importedAccountIds = [...importedAccountIds];
-      state.isSubmitting = false;
-      state.canCancel = false;
-      state.canRetry = false;
       state.lastActionType = QrSyncActionTypes.SYNC_COMPLETED;
       state.updatedAt = Date.now();
     });
@@ -469,13 +417,11 @@ export class QrSyncController extends BaseController<
     this.update((state) => {
       state.sessionId = request.id;
       state.qrPayload = this.#generateQrCode(request);
-      state.phase = 'displaying-qr';
+      state.phase = QR_SYNC_PHASES.DISPLAYING_QR;
       state.connectionStatus = 'connecting';
       state.createdAt = state.createdAt ?? Date.now();
       state.updatedAt = Date.now();
       state.expiresAt = request.expiresAt;
-      state.canCancel = true;
-      state.canRetry = false;
       state.error = null;
     });
   }
@@ -485,15 +431,19 @@ export class QrSyncController extends BaseController<
     this.#otpCancelCallback = payload.cancel;
 
     this.update((state) => {
-      state.phase = 'awaiting-otp-display';
-      state.otpRequired = true;
-      state.otpValidated = false;
+      state.phase = QR_SYNC_PHASES.AWAITING_OTP_INPUT;
       state.updatedAt = Date.now();
       state.expiresAt = payload.deadline;
+      state.lastActionType = QrSyncActionTypes.OTP_DISPLAY_GRANT;
       state.error = null;
     });
 
-    await this.grantOtpDisplay();
+    // TODO: Implement OTP display grant on MWP SDK
+    // await this.#sendMessage({
+    //   type: QrSyncActionTypes.OTP_DISPLAY_GRANT,
+    // });
+
+    this.#finishSubmission();
   }
 
   #handleMessage(message: unknown): void {
@@ -532,6 +482,7 @@ export class QrSyncController extends BaseController<
   #generateQrCode(request: SessionRequest): string {
     // TODO: Encode the QR with mobile compatible format
     const qrData = JSON.stringify(request);
+    log.debug('QrSyncController: qrData', qrData);
     return qrData;
   }
 
@@ -590,35 +541,8 @@ export class QrSyncController extends BaseController<
     return true;
   }
 
-  #setInFlightState({
-    actionType,
-    phase,
-    connectionStatus,
-    canCancel,
-    canRetry,
-  }: {
-    actionType: QrSyncActionType;
-    phase: QrSyncPhase;
-    connectionStatus: QrSyncControllerState['connectionStatus'];
-    canCancel: boolean;
-    canRetry: boolean;
-  }): void {
-    this.update((state) => {
-      state.phase = phase;
-      state.connectionStatus = connectionStatus;
-      state.lastActionType = actionType;
-      state.isSubmitting = true;
-      state.canCancel = canCancel;
-      state.canRetry = canRetry;
-      state.error = null;
-      state.updatedAt = Date.now();
-      state.createdAt = state.createdAt ?? Date.now();
-    });
-  }
-
   #finishSubmission(): void {
     this.update((state) => {
-      state.isSubmitting = false;
       state.updatedAt = Date.now();
     });
   }
@@ -635,17 +559,12 @@ export class QrSyncController extends BaseController<
   }
 
   #setError(error: QrSyncError): void {
-    this.#terminateSyncProcess();
+    this.#cleanupSession({ cancelOtp: true });
 
     this.update((state) => {
-      state.phase = 'failed';
+      state.phase = QR_SYNC_PHASES.FAILED;
       state.connectionStatus = 'errored';
       state.error = error;
-      state.isSubmitting = false;
-      state.canCancel = false;
-      state.canRetry = error.retryable;
-      state.otpRequired = false;
-      state.otpValidated = false;
       state.syncOffer = null;
       state.qrPayload = null;
       state.selectedAccountIds = [];
@@ -678,10 +597,10 @@ export class QrSyncController extends BaseController<
     this.#transport = null;
     this.#mwpDappClient = null;
     this.#sessionStore = null;
-  }
 
-  #terminateSyncProcess(): void {
-    this.#cleanupSession({ cancelOtp: true });
+    if (this.#kvStore instanceof InMemoryKvStore) {
+      this.#kvStore.clear();
+    }
   }
 
   /**

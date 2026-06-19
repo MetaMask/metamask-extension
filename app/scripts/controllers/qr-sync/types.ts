@@ -1,6 +1,6 @@
 import type {
   ControllerGetStateAction,
-  ControllerStateChangeEvent,
+  ControllerStateChangedEvent,
 } from '@metamask/base-controller';
 import type {
   KeyringControllerExportAccountAction,
@@ -11,39 +11,21 @@ import type {
 import type { IKVStore } from '@metamask/mobile-wallet-protocol-core';
 import type { Messenger } from '@metamask/messenger';
 
+import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
 import type { QrSyncController } from './qr-sync-controller';
 import type { KeyManager } from './key-manager';
 import { QR_SYNC_CONTROLLER_NAME, QrSyncActionTypes, QrSyncMessageVersion } from './constants';
-
-export type QrSyncPhase =
-  | 'idle'
-  | 'initializing'
-  | 'awaiting-connection'
-  | 'displaying-qr'
-  | 'awaiting-otp-display'
-  | 'awaiting-otp-input'
-  | 'validating-otp'
-  | 'awaiting-sync-offer'
-  | 'reviewing-sync-offer'
-  | 'awaiting-user-selection'
-  | 'sending-sync-ready'
-  | 'awaiting-sync-completion'
-  | 'completed'
-  | 'cancelled'
-  | 'failed';
 
 export type QrSyncConnectionStatus =
   | 'disconnected'
   | 'connecting'
   | 'connected'
-  | 'reconnecting'
   | 'errored';
 
 export type QrSyncControllerInitOptions = {
   keyManager: KeyManager;
   messenger: QrSyncControllerMessenger;
   relayUrl: string;
-  kvStore?: IKVStore;
   state?: Partial<QrSyncControllerState>;
 };
 
@@ -170,28 +152,44 @@ export type QrSyncData = {
 };
 
 export type QrSyncControllerState = {
+  /**
+   * The current phase of the QR Sync process.
+   *
+   * @type {QrSyncPhase}
+   */
   phase: QrSyncPhase;
+  /**
+   * The current connection status of the MWP protocol connection.
+   *
+   * @type {QrSyncConnectionStatus}
+   */
   connectionStatus: QrSyncConnectionStatus;
+  /**
+   * Current session ID.
+   */
   sessionId: string | null;
-  createdAt: number | null;
-  updatedAt: number | null;
-  expiresAt: number | null;
+  /**
+   * The QR payload to be displayed to the user.
+   *
+   * @type {string | null}
+   */
   qrPayload: string | null;
-  otpRequired: boolean;
+  /**
+   * The number of OTP attempts.
+   */
   otpAttempts: number;
-  otpValidated: boolean;
   syncOffer: QrSyncOffer | null;
   selectedAccountIds: string[];
   selectedSyncDataType: SyncDataType | null;
   lastActionType: QrSyncActionType | null;
-  isSubmitting: boolean;
-  canCancel: boolean;
-  canRetry: boolean;
   importedAccountIds: string[];
   error: QrSyncError | null;
+  createdAt: number | null;
+  updatedAt: number | null;
+  expiresAt: number | null;
 };
 
-export type QrSyncControllerStateChangeEvent = ControllerStateChangeEvent<
+export type QrSyncControllerStateChangeEvent = ControllerStateChangedEvent<
   typeof QR_SYNC_CONTROLLER_NAME,
   QrSyncControllerState
 >;
@@ -238,19 +236,9 @@ export type QrSyncControllerGetStateAction = ControllerGetStateAction<
   QrSyncControllerState
 >;
 
-export type QrSyncControllerInitializeAction = {
-  type: 'QrSyncController:initialize';
-  handler: QrSyncController['initialize'];
-};
-
 export type QrSyncControllerCreateSessionAction = {
   type: 'QrSyncController:createSession';
   handler: QrSyncController['createSession'];
-};
-
-export type QrSyncControllerGrantOtpDisplayAction = {
-  type: 'QrSyncController:grantOtpDisplay';
-  handler: QrSyncController['grantOtpDisplay'];
 };
 
 export type QrSyncControllerSubmitOtpAction = {
@@ -261,11 +249,6 @@ export type QrSyncControllerSubmitOtpAction = {
 export type QrSyncControllerSyncAccountsAction = {
   type: 'QrSyncController:syncAccounts';
   handler: QrSyncController['syncAccounts'];
-};
-
-export type QrSyncControllerSendSyncDataAction = {
-  type: 'QrSyncController:sendSyncData';
-  handler: QrSyncController['sendSyncData'];
 };
 
 export type QrSyncControllerCancelSyncAction = {
@@ -280,12 +263,9 @@ export type QrSyncControllerResetStateAction = {
 
 export type QrSyncControllerActions =
   | QrSyncControllerGetStateAction
-  | QrSyncControllerInitializeAction
   | QrSyncControllerCreateSessionAction
-  | QrSyncControllerGrantOtpDisplayAction
   | QrSyncControllerSubmitOtpAction
   | QrSyncControllerSyncAccountsAction
-  | QrSyncControllerSendSyncDataAction
   | QrSyncControllerCancelSyncAction
   | QrSyncControllerResetStateAction;
 

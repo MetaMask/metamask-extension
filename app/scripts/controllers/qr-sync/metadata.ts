@@ -1,4 +1,5 @@
 import type { StateMetadata } from "@metamask/base-controller";
+import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
 import type { QrSyncControllerState } from './types';
 
 export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
@@ -44,19 +45,7 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
     usedInUi: true,
     includeInStateLogs: false,
   },
-  otpRequired: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
   otpAttempts: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
-  otpValidated: {
     persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
@@ -86,24 +75,6 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
     usedInUi: false,
     includeInStateLogs: true,
   },
-  isSubmitting: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
-  canCancel: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
-  canRetry: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
   importedAccountIds: {
     persist: false,
     includeInDebugSnapshot: true,
@@ -119,35 +90,27 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
 };
 
 export const MESSENGER_EXPOSED_METHODS = [
-  'initialize',
   'createSession',
-  'grantOtpDisplay',
   'submitOtp',
   'syncAccounts',
-  'sendSyncData',
   'cancelSync',
   'resetState',
 ] as const;
 
 export function getDefaultQrSyncControllerState(): QrSyncControllerState {
   return {
-    phase: 'idle',
+    phase: QR_SYNC_PHASES.IDLE,
     connectionStatus: 'disconnected',
     sessionId: null,
     createdAt: null,
     updatedAt: null,
     expiresAt: null,
     qrPayload: null,
-    otpRequired: false,
     otpAttempts: 0,
-    otpValidated: false,
     syncOffer: null,
     selectedAccountIds: [],
     selectedSyncDataType: null,
     lastActionType: null,
-    isSubmitting: false,
-    canCancel: false,
-    canRetry: false,
     importedAccountIds: [],
     error: null,
   };

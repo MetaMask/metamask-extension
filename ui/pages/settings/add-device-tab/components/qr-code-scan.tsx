@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Box,
   Text,
   FontWeight,
   TextColor,
   TextVariant,
-  Button,
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
@@ -13,39 +12,12 @@ import {
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../../components/component-library/skeleton';
-import { AddDeviceSettingsStep } from '../constant';
 import { QRCodeImage } from '../../../../components/app/deeplink-qr-code/deeplink-qr-code';
+import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 
-type QrCodeScanProps = {
-  onScanSuccess: (type: AddDeviceSettingsStep) => void;
-};
-
-type QrSyncState = {
-  metamask: {
-    qrPayload?: string | null;
-    phase?: string | null;
-  };
-};
-
-const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
+const QrCodeScan = () => {
   const t = useI18nContext();
-  const qrPayload = useSelector(
-    (state: QrSyncState) => state.metamask.qrPayload ?? null,
-  );
-  const qrSyncPhase = useSelector(
-    (state: QrSyncState) => state.metamask.phase ?? null,
-  );
-
-  useEffect(() => {
-    if (
-      qrSyncPhase !== 'awaiting-otp-display' &&
-      qrSyncPhase !== 'awaiting-otp-input'
-    ) {
-      return;
-    }
-
-    onScanSuccess(AddDeviceSettingsStep.EnterVerificationCode);
-  }, [onScanSuccess, qrSyncPhase]);
+  const qrPayload = useSelector(selectQrSyncQrPayload);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
@@ -71,15 +43,6 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
           <Skeleton width={240} height={240} />
         )}
       </Box>
-      <Button
-        className="w-full"
-        disabled={!qrPayload}
-        onClick={() =>
-          onScanSuccess(AddDeviceSettingsStep.EnterVerificationCode)
-        }
-      >
-        {t('continue')} (remove later)
-      </Button>
     </Box>
   );
 };

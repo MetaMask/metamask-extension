@@ -13,7 +13,6 @@ import {
 import log from 'loglevel';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { AddDeviceSettingsStep } from '../constant';
 
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
@@ -21,11 +20,7 @@ const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
 
 const createEmptyCode = () => Array<string>(CODE_LENGTH).fill('');
 
-type EnterVerificationCodeProps = {
-  onContinue: (type: AddDeviceSettingsStep) => void;
-};
-
-const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
+const EnterVerificationCode = () => {
   const t = useI18nContext();
   const [isError, setIsError] = useState(false);
   const [code, setCode] = useState<string[]>(createEmptyCode);
@@ -56,12 +51,11 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
           'QrSyncController:submitOtp',
           [joined],
         ]);
-        onContinue(AddDeviceSettingsStep.ValidatingDevice);
       } catch {
         setIsError(true);
       }
     },
-    [onContinue],
+    [],
   );
 
   // Writes one or more digits starting at `startIndex` (typing or pasting),
