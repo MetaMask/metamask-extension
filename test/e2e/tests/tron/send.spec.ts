@@ -177,11 +177,7 @@ describe('Tron Send', function (this: Suite) {
 
   // ── USDT partial send ───────────────────────────────────────────────────────
 
-  // TODO: Re-enable when the TRC20 send confirmation flow is stable against local Tron mocks.
-  // Tracking: WPN-745 — partial coverage; TRC20 confirmation flow needs
-  // stabilization against local Tron node mocks before these can pass.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('sends part of USDT balance and shows it pending then confirmed', async function () {
+  it('sends part of USDT balance and shows it pending then confirmed', async function () {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],
@@ -219,10 +215,7 @@ describe('Tron Send', function (this: Suite) {
 
   // ── USDT total send (Max) ───────────────────────────────────────────────────
 
-  // TODO: Re-enable when the TRC20 send confirmation flow is stable against local Tron mocks.
-  // Tracking: WPN-745 — same stability issue as partial-USDT send above.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('sends total USDT balance via manual full-amount entry', async function () {
+  it('sends total USDT balance via manual full-amount entry', async function () {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],

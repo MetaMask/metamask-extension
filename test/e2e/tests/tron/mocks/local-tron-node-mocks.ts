@@ -3,8 +3,10 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 import {
   createEmptyTronGridTransactionsResponse,
   createTronGridAccountResponse,
+  hexAddressToBase58,
   normalizeTronHexAddress,
   TronNativeAccount,
+  TronTrc20Token,
 } from '../../../seeder/tron/assets';
 import { TronNode } from '../../../seeder/tron/node';
 
@@ -46,6 +48,8 @@ async function proxyPost(
   return { statusCode: resp.status, json: await resp.json() };
 }
 
+const TRC20_TRANSFER_SELECTOR = 'a9059cbb';
+
 type CapturedTx = {
   txID: string;
   rawDataHex: string;
@@ -53,12 +57,21 @@ type CapturedTx = {
   ownerAddress: string;
   toAddress?: string;
   amount?: number;
+  contractAddress?: string;
+  transferValue?: string;
+  transferTo?: string;
   pollsObserved: number;
 };
 
 type CapturedTxFields = Pick<
   CapturedTx,
-  'amount' | 'contractType' | 'ownerAddress' | 'toAddress'
+  | 'amount'
+  | 'contractAddress'
+  | 'contractType'
+  | 'ownerAddress'
+  | 'toAddress'
+  | 'transferTo'
+  | 'transferValue'
 >;
 
 type TriggerSmartContractRequest = {
@@ -163,6 +176,41 @@ async function fetchTxFromLocalNode(
   return (await resp.json()) as Record<string, unknown>;
 }
 
+function toBase58Address(address?: string): string | undefined {
+  if (!address) {
+    return undefined;
+  }
+  if (/^T[1-9A-HJ-NP-Za-km-z]{33}$/u.test(address)) {
+    return address;
+  }
+  try {
+    return hexAddressToBase58(normalizeTronHexAddress(address));
+  } catch {
+    return address;
+  }
+}
+
+function parseTrc20TransferFromData(data?: string): {
+  amount?: string;
+  toAddress?: string;
+} {
+  if (!data?.startsWith(TRC20_TRANSFER_SELECTOR) || data.length < 8 + 128) {
+    return {};
+  }
+
+  const encodedParams = data.slice(8);
+  const recipientHex = `41${encodedParams.slice(24, 64)}`;
+
+  try {
+    return {
+      toAddress: hexAddressToBase58(recipientHex),
+      amount: BigInt(`0x${encodedParams.slice(64, 128)}`).toString(),
+    };
+  } catch {
+    return {};
+  }
+}
+
 function getCapturedTxFields(
   transaction: Record<string, unknown>,
 ): Partial<CapturedTxFields> {
@@ -171,12 +219,75 @@ function getCapturedTxFields(
   const first = contracts[0] ?? {};
   const parameter = (first.parameter ?? {}) as Record<string, unknown>;
   const value = (parameter.value ?? {}) as Record<string, unknown>;
+  const contractType = first.type as string | undefined;
 
-  return {
+  const fields: Partial<CapturedTxFields> = {
     amount: value.amount as number | undefined,
-    contractType: first.type as string | undefined,
+    contractType,
     ownerAddress: value.owner_address as string | undefined,
     toAddress: value.to_address as string | undefined,
+  };
+
+  if (contractType === 'TriggerSmartContract') {
+    const transfer = parseTrc20TransferFromData(value.data as string | undefined);
+    fields.contractAddress = value.contract_address as string | undefined;
+    fields.transferTo = transfer.toAddress;
+    fields.transferValue = transfer.amount;
+  }
+
+  return fields;
+}
+
+function resolveTrc20TokenInfo(
+  localNode: TronNodeLike | string,
+  contractAddress?: string,
+): Pick<TronTrc20Token, 'address' | 'decimals' | 'name' | 'symbol'> | undefined {
+  if (typeof localNode === 'string' || !contractAddress) {
+    return undefined;
+  }
+
+  const normalizedContract = normalizeMaybeTronAddress(contractAddress);
+  for (const token of Object.values(localNode.trc20Tokens)) {
+    if (!token) {
+      continue;
+    }
+
+    const tokenAddresses = [token.address, token.hexAddress]
+      .map((address) => normalizeMaybeTronAddress(address))
+      .filter((address): address is string => Boolean(address));
+
+    if (normalizedContract && tokenAddresses.includes(normalizedContract)) {
+      return {
+        address: token.address,
+        decimals: token.decimals,
+        name: token.name,
+        symbol: token.symbol,
+      };
+    }
+  }
+
+  return undefined;
+}
+
+function buildTrc20HistoryEntry(
+  tx: CapturedTx,
+  tokenInfo?: Pick<TronTrc20Token, 'address' | 'decimals' | 'name' | 'symbol'>,
+): Record<string, unknown> {
+  return {
+    transaction_id: tx.txID,
+    token_info: tokenInfo ?? {
+      symbol: 'USDT',
+      address: '',
+      decimals: 6,
+      name: 'Tether',
+    },
+    block_timestamp: Date.now(),
+    from: toBase58Address(tx.ownerAddress) ?? '',
+    to: tx.transferTo ?? toBase58Address(tx.toAddress) ?? '',
+    type: 'Transfer',
+    value:
+      tx.transferValue ??
+      (tx.amount !== undefined ? String(tx.amount) : '0'),
   };
 }
 
@@ -443,6 +554,9 @@ export async function proxyTronBlockchainCalls(
               ownerAddress,
               toAddress,
               amount,
+              contractAddress: fields.contractAddress,
+              transferTo: fields.transferTo,
+              transferValue: fields.transferValue,
               pollsObserved: 0,
             });
           }
@@ -512,7 +626,10 @@ export async function proxyTronBlockchainCalls(
           );
           const data = trc20Txs.map((tx) => {
             tx.pollsObserved += 1;
-            return buildHistoryEntry(tx, 'Confirmed');
+            return buildTrc20HistoryEntry(
+              tx,
+              resolveTrc20TokenInfo(localNode, tx.contractAddress),
+            );
           });
           const base = createEmptyTronGridTransactionsResponse();
           return {
