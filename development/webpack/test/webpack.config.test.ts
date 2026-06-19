@@ -38,7 +38,6 @@ function getExpectedDefaultZipMtime() {
   return DEFAULT_ZIP_MTIME;
 }
 
-
 async function withWatching<T>(
   config: Configuration,
   callback: (watch: (trigger?: () => void) => Promise<void>) => Promise<T>,

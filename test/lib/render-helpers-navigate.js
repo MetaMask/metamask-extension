@@ -41,28 +41,26 @@ const createMockMetaMetricsContext = (
  * @param {object} [props.en]
  * @param {import('react').ReactNode} [props.children]
  */
-export const I18nProvider = (props) => {
-  const { currentLocale, current, en: eng } = props;
-
+export const I18nProvider = ({
+  currentLocale,
+  current,
+  en: eng,
+  children,
+}) => {
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
       getMessage(currentLocale, eng, key, ...args);
   }, [currentLocale, current, eng]);
 
-  return (
-    <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={t}>{children}</I18nContext.Provider>;
 };
 
 I18nProvider.propTypes = {
   currentLocale: PropTypes.string,
   current: PropTypes.object,
   en: PropTypes.object,
-};
-
-I18nProvider.defaultProps = {
-  children: undefined,
+  children: PropTypes.node,
 };
 
 /**
