@@ -41,22 +41,23 @@ export function GasSponsorshipModal({ onClose }: { onClose: () => void }) {
     useConfirmContext<TransactionMeta>();
 
   const { chainId } = transactionMeta;
-  const { isOptedOut, setOptedOut } = useGasSponsorshipPreference(chainId);
+  const { isSponsorshipOptedOut, setSponsorshipOptedOut } =
+    useGasSponsorshipPreference(chainId);
   const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
   const { estimatedFeeFiat, estimatedFeeNative } =
     useFeeCalculations(transactionMeta);
 
   const handleSelectSponsored = useCallback(() => {
-    setOptedOut(false);
+    setSponsorshipOptedOut(false);
     onClose();
-  }, [setOptedOut, onClose]);
+  }, [setSponsorshipOptedOut, onClose]);
 
   const handleSelectNative = useCallback(() => {
-    setOptedOut(true);
+    setSponsorshipOptedOut(true);
     onClose();
-  }, [setOptedOut, onClose]);
+  }, [setSponsorshipOptedOut, onClose]);
 
-  const isSponsoredSelected = !isOptedOut;
+  const isSponsoredSelected = !isSponsorshipOptedOut;
 
   return (
     <Modal isOpen onClose={onClose}>

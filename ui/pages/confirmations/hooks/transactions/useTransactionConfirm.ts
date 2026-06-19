@@ -32,7 +32,7 @@ export function useTransactionConfirm() {
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { isOptedOut: isSponsorshipOptedOut } = useGasSponsorshipPreference(
+  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(
     transactionMeta?.chainId,
   );
   const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =

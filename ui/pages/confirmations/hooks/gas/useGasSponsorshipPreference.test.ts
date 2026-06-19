@@ -29,7 +29,7 @@ describe('useGasSponsorshipPreference', () => {
     } as ReturnType<typeof getPreferences>);
   });
 
-  describe('isOptedOut', () => {
+  describe('isSponsorshipOptedOut', () => {
     it('returns false when chainId has no preference', () => {
       mockUseSelector.mockReturnValue({
         gasSponsorshipOptOutByChainId: {},
@@ -37,7 +37,7 @@ describe('useGasSponsorshipPreference', () => {
 
       const { result } = renderHook(() => useGasSponsorshipPreference('0x1'));
 
-      expect(result.current.isOptedOut).toBe(false);
+      expect(result.current.isSponsorshipOptedOut).toBe(false);
     });
 
     it('returns true when chainId is opted out', () => {
@@ -49,7 +49,7 @@ describe('useGasSponsorshipPreference', () => {
 
       const { result } = renderHook(() => useGasSponsorshipPreference('0x1'));
 
-      expect(result.current.isOptedOut).toBe(true);
+      expect(result.current.isSponsorshipOptedOut).toBe(true);
     });
 
     it('returns false when chainId is undefined', () => {
@@ -63,7 +63,7 @@ describe('useGasSponsorshipPreference', () => {
         useGasSponsorshipPreference(undefined),
       );
 
-      expect(result.current.isOptedOut).toBe(false);
+      expect(result.current.isSponsorshipOptedOut).toBe(false);
     });
 
     it('returns false when chainId is opted in explicitly', () => {
@@ -75,11 +75,11 @@ describe('useGasSponsorshipPreference', () => {
 
       const { result } = renderHook(() => useGasSponsorshipPreference('0x1'));
 
-      expect(result.current.isOptedOut).toBe(false);
+      expect(result.current.isSponsorshipOptedOut).toBe(false);
     });
   });
 
-  describe('setOptedOut', () => {
+  describe('setSponsorshipOptedOut', () => {
     it('dispatches setGasSponsorshipOptOut with correct merged state', () => {
       const mockAction = {
         type: 'SET_GAS_SPONSORSHIP_OPT_OUT',
@@ -95,7 +95,7 @@ describe('useGasSponsorshipPreference', () => {
       const { result } = renderHook(() => useGasSponsorshipPreference('0x1'));
 
       act(() => {
-        result.current.setOptedOut(true);
+        result.current.setSponsorshipOptedOut(true);
       });
 
       expect(mockSetGasSponsorshipOptOut).toHaveBeenCalledWith({
@@ -117,7 +117,7 @@ describe('useGasSponsorshipPreference', () => {
       );
 
       act(() => {
-        result.current.setOptedOut(true);
+        result.current.setSponsorshipOptedOut(true);
       });
 
       expect(mockSetGasSponsorshipOptOut).not.toHaveBeenCalled();
@@ -138,7 +138,7 @@ describe('useGasSponsorshipPreference', () => {
       const { result } = renderHook(() => useGasSponsorshipPreference('0x1'));
 
       act(() => {
-        result.current.setOptedOut(false);
+        result.current.setSponsorshipOptedOut(false);
       });
 
       expect(mockSetGasSponsorshipOptOut).toHaveBeenCalledWith({
@@ -163,7 +163,7 @@ describe('useGasSponsorshipPreference', () => {
       const { result } = renderHook(() => useGasSponsorshipPreference('0x89'));
 
       act(() => {
-        result.current.setOptedOut(false);
+        result.current.setSponsorshipOptedOut(false);
       });
 
       expect(mockSetGasSponsorshipOptOut).toHaveBeenCalledWith({

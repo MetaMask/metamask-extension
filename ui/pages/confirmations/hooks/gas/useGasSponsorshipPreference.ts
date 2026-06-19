@@ -13,18 +13,18 @@ import { setGasSponsorshipOptOut } from '../../../../store/actions';
  *
  * @param chainId - The chain ID to check the preference for.
  * @returns An object containing:
- * - `isOptedOut`: Whether the user has opted out of gas sponsorship for this chain.
- * - `setOptedOut`: Function to set the opt-out preference for this chain.
+ * - `isSponsorshipOptedOut`: Whether the user has opted out of gas sponsorship for this chain.
+ * - `setSponsorshipOptedOut`: Function to set the opt-out preference for this chain.
  */
 export function useGasSponsorshipPreference(chainId: Hex | undefined) {
   const dispatch = useDispatch();
   const { gasSponsorshipOptOutByChainId } = useSelector(getPreferences);
 
-  const isOptedOut = Boolean(
+  const isSponsorshipOptedOut = Boolean(
     chainId && gasSponsorshipOptOutByChainId?.[chainId],
   );
 
-  const setOptedOut = useCallback(
+  const setSponsorshipOptedOut = useCallback(
     (optOut: boolean) => {
       if (!chainId) {
         return;
@@ -40,5 +40,5 @@ export function useGasSponsorshipPreference(chainId: Hex | undefined) {
     [chainId, dispatch, gasSponsorshipOptOutByChainId],
   );
 
-  return { isOptedOut, setOptedOut };
+  return { isSponsorshipOptedOut, setSponsorshipOptedOut };
 }

@@ -35,8 +35,8 @@ jest.mock('../../../../hooks/gas/useIsGaslessSupported', () => ({
 
 jest.mock('../../../../hooks/gas/useGasSponsorshipPreference', () => ({
   useGasSponsorshipPreference: jest.fn(() => ({
-    isOptedOut: false,
-    setOptedOut: jest.fn(),
+    isSponsorshipOptedOut: false,
+    setSponsorshipOptedOut: jest.fn(),
   })),
 }));
 

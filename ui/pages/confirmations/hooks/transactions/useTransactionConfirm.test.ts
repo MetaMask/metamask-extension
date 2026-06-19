@@ -164,8 +164,8 @@ describe('useTransactionConfirm', () => {
     });
 
     useGasSponsorshipPreferenceMock.mockReturnValue({
-      isOptedOut: false,
-      setOptedOut: jest.fn(),
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
     });
 
     updateAndApproveTxMock.mockReturnValue(() => Promise.resolve(null));
@@ -577,8 +577,8 @@ describe('useTransactionConfirm', () => {
       pending: false,
     });
     useGasSponsorshipPreferenceMock.mockReturnValue({
-      isOptedOut: true,
-      setOptedOut: jest.fn(),
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
     });
 
     const { onTransactionConfirm } = runHook({
@@ -605,8 +605,8 @@ describe('useTransactionConfirm', () => {
       pending: false,
     });
     useGasSponsorshipPreferenceMock.mockReturnValue({
-      isOptedOut: true,
-      setOptedOut: jest.fn(),
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
     });
 
     const { onTransactionConfirm } = runHook({
@@ -628,8 +628,8 @@ describe('useTransactionConfirm', () => {
       pending: false,
     });
     useGasSponsorshipPreferenceMock.mockReturnValue({
-      isOptedOut: true,
-      setOptedOut: jest.fn(),
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
     });
 
     const { onTransactionConfirm } = runHook({

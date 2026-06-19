@@ -67,8 +67,8 @@ describe('GasSponsorshipModal', () => {
     jest.resetAllMocks();
 
     useGasSponsorshipPreferenceMock.mockReturnValue({
-      isOptedOut: false,
-      setOptedOut: jest.fn(),
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
     });
 
     useNativeCurrencySymbolMock.mockReturnValue({
@@ -125,8 +125,8 @@ describe('GasSponsorshipModal', () => {
 
   it('shows checkmark on sponsored option when not opted out', () => {
     useGasSponsorshipPreferenceMock.mockReturnValue({
-      isOptedOut: false,
-      setOptedOut: jest.fn(),
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
     });
 
     const result = renderWithConfirmContextProvider(
@@ -143,8 +143,8 @@ describe('GasSponsorshipModal', () => {
 
   it('shows checkmark on native option when opted out', () => {
     useGasSponsorshipPreferenceMock.mockReturnValue({
-      isOptedOut: true,
-      setOptedOut: jest.fn(),
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
     });
 
     const result = renderWithConfirmContextProvider(
@@ -157,13 +157,13 @@ describe('GasSponsorshipModal', () => {
     expect(result.getByText('ETH')).toBeInTheDocument();
   });
 
-  it('calls setOptedOut(false) and onClose when selecting sponsored option', async () => {
-    const setOptedOutMock = jest.fn();
+  it('calls setSponsorshipOptedOut(false) and onClose when selecting sponsored option', async () => {
+    const setSponsorshipOptedOutMock = jest.fn();
     const onCloseMock = jest.fn();
 
     useGasSponsorshipPreferenceMock.mockReturnValue({
-      isOptedOut: true,
-      setOptedOut: setOptedOutMock,
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: setSponsorshipOptedOutMock,
     });
 
     const result = renderWithConfirmContextProvider(
@@ -178,17 +178,17 @@ describe('GasSponsorshipModal', () => {
       sponsoredOptions[0]?.click();
     });
 
-    expect(setOptedOutMock).toHaveBeenCalledWith(false);
+    expect(setSponsorshipOptedOutMock).toHaveBeenCalledWith(false);
     expect(onCloseMock).toHaveBeenCalled();
   });
 
-  it('calls setOptedOut(true) and onClose when selecting native option', async () => {
-    const setOptedOutMock = jest.fn();
+  it('calls setSponsorshipOptedOut(true) and onClose when selecting native option', async () => {
+    const setSponsorshipOptedOutMock = jest.fn();
     const onCloseMock = jest.fn();
 
     useGasSponsorshipPreferenceMock.mockReturnValue({
-      isOptedOut: false,
-      setOptedOut: setOptedOutMock,
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: setSponsorshipOptedOutMock,
     });
 
     const result = renderWithConfirmContextProvider(
@@ -201,7 +201,7 @@ describe('GasSponsorshipModal', () => {
       nativeOptions[1]?.click();
     });
 
-    expect(setOptedOutMock).toHaveBeenCalledWith(true);
+    expect(setSponsorshipOptedOutMock).toHaveBeenCalledWith(true);
     expect(onCloseMock).toHaveBeenCalled();
   });
 

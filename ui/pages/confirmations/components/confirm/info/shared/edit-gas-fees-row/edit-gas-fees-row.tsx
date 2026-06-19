@@ -84,8 +84,7 @@ export const EditGasFeesRow = ({
   // This prevents the gas fee row from showing as sponsored if stx is disabled
   // by the user and 7702 is not supported in the chain.
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { isOptedOut: isSponsorshipOptedOut } =
-    useGasSponsorshipPreference(chainId);
+  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(chainId);
 
   const isSponsorshipEligible =
     isGaslessSupported &&

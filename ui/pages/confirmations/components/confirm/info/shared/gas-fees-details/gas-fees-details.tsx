@@ -52,7 +52,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
   const estimationFailed = useEstimationFailed();
 
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { isOptedOut: isSponsorshipOptedOut } = useGasSponsorshipPreference(
+  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(
     transactionMeta?.chainId,
   );
 
