@@ -32321,7 +32321,7 @@ __metadata:
 
 "lavamoat-tofu@patch:lavamoat-tofu@npm%3A9.0.2#~/.yarn/patches/lavamoat-tofu-npm-9.0.2-ec3a308216.patch":
   version: 9.0.2
-  resolution: "lavamoat-tofu@patch:lavamoat-tofu@npm%3A9.0.2#~/.yarn/patches/lavamoat-tofu-npm-9.0.2-ec3a308216.patch::version=9.0.2&hash=933888"
+  resolution: "lavamoat-tofu@patch:lavamoat-tofu@npm%3A9.0.2#~/.yarn/patches/lavamoat-tofu-npm-9.0.2-ec3a308216.patch::version=9.0.2&hash=107664"
   dependencies:
     "@babel/parser": "npm:7.29.3"
     "@babel/traverse": "npm:7.29.0"
@@ -32331,7 +32331,7 @@ __metadata:
     type-fest: "npm:4.41.0"
   peerDependencies:
     lavamoat-core: ">15.4.0"
-  checksum: 10/8c324786326c777e38f8a68424f3e28bb8ee6826c5a0bc7494eace9dae8989446819fa47f89c775f007f9e4bc4f94f32fe71d5ecdee396b1c1b83e80b79f79f1
+  checksum: 10/ed4a33c2cb97a4ea5f3584d6a21b1d2ac7bec68408e84a01b592cf86570615bfff47b4b5de9caca6aedd25437b7b8c69eff293cbbc2e0bb4cc1451a93391ed26
   languageName: node
   linkType: hard
 

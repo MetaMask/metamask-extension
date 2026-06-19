@@ -1,11 +1,11 @@
 diff --git a/src/inspectSource.js b/src/inspectSource.js
-index 3d7f0b3ce2c1a022a5c031b38220587afd1f422a..dc875fd334660b7eac088d19770bfb76024f741b 100644
+index 3d7f0b3ce2c1a022a5c031b38220587afd1f422a..3cac20564c798ed86e469d8c0af4556b8c703d09 100644
 --- a/src/inspectSource.js
 +++ b/src/inspectSource.js
-@@ -94,6 +94,18 @@ function inspectGlobals(
-       if (globalRefs.includes(keyPath[0])) {
-         keyPath.shift()
-       }
+@@ -90,10 +90,23 @@ function inspectGlobals(
+           parents
+         )
+       )
 +
 +      // inspect globals passed to functions
 +      if (parent.type === 'CallExpression') {
@@ -18,10 +18,15 @@ index 3d7f0b3ce2c1a022a5c031b38220587afd1f422a..dc875fd334660b7eac088d19770bfb76
 +        }
 +      }
 +
+       // if nested API lookup begins with a globalRef, drop it
+       if (globalRefs.includes(keyPath[0])) {
+         keyPath.shift()
+       }
++
        // inspect for destructuring
        let destructuredPaths
        if (
-@@ -158,6 +170,39 @@ function inspectGlobals(
+@@ -158,6 +171,39 @@ function inspectGlobals(
      return { identifierUse, path, parent: parentOfMembershipChain }
    }
  
