@@ -1,6 +1,11 @@
 import { Driver } from '../../webdriver/driver';
 import NetworkManager from '../pages/network-manager';
-import { clearOrphanedNetworkManagerBackdrop } from './network.flow';
+
+async function clearOrphanedNetworkManagerBackdrop(
+  driver: Driver,
+): Promise<void> {
+  await driver.assertElementNotPresent('.modal__backdrop');
+}
 
 export async function selectTronNetwork(driver: Driver): Promise<void> {
   const networkManager = new NetworkManager(driver);
