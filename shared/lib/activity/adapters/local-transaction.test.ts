@@ -486,7 +486,7 @@ describe('mapLocalTransaction', () => {
 
     expect(item).toMatchObject({
       type: 'perpsWithdraw',
-      chainId: 'eip155:1',
+      chainId: 'eip155:42161',
       status: 'success',
       timestamp: 1780690942752,
       hash: '0xd5dbb4421d123fd16d16485c394a68b5a28d9b5da9d9973554258a9fd2e9ebf6',
@@ -499,12 +499,10 @@ describe('mapLocalTransaction', () => {
         },
         token: {
           assetId: toAssetId(
-            '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-            'eip155:1',
+            '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+            'eip155:42161',
           ),
-          decimals: 6,
           direction: 'out',
-          symbol: 'mUSD',
         },
       },
     });
@@ -517,7 +515,7 @@ describe('mapLocalTransaction', () => {
 
     expect(item).toMatchObject({
       type: 'perpsAddFunds',
-      chainId: 'eip155:1',
+      chainId: 'eip155:42161',
       status: 'success',
       timestamp: 1781185241609,
       hash: '0x3073fa67020abb1931ed043d7a8b6b020aa1004c9d0dd9ebd43ca5b9c10e9503',
@@ -529,10 +527,11 @@ describe('mapLocalTransaction', () => {
           amount: '0.04143764111397638042',
         },
         token: {
-          assetId: toAssetId(lineaMusd, 'eip155:1'),
-          decimals: 6,
+          assetId: toAssetId(
+            '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+            'eip155:42161',
+          ),
           direction: 'out',
-          symbol: 'mUSD',
         },
       },
     });

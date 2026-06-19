@@ -9,6 +9,7 @@ import {
 } from '@metamask/bridge-controller';
 import { parseCaipChainId } from '@metamask/utils';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
@@ -89,6 +90,11 @@ const useBridging = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+          // TODO: Remove @ts-expect-error once @metamask/bridge-controller is
+          // updated to 75.2.0, which adds environment_type to the type.
+          // @ts-expect-error environment_type is not yet in the package type
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: getEnvironmentType(),
         }),
       );
 
