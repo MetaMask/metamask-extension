@@ -312,6 +312,7 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "productTour": "accountIcon",
+    "proofBackfillCompleted": "boolean",
     "quoteFetchError": null,
     "quoteRequest": "object",
     "quoteStreamComplete": null,
