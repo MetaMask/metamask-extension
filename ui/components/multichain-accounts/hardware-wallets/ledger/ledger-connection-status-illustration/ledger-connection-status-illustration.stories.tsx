@@ -5,7 +5,10 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { LEDGER_CONNECTION_STATUS, LEDGER_CONNECTION_STATUS_LIST } from '../ledger-connection-status.constants';
+import {
+  LEDGER_CONNECTION_STATUS,
+  LEDGER_CONNECTION_STATUS_LIST,
+} from '../ledger-connection-status.constants';
 import { LedgerConnectionStatusIllustration } from '.';
 
 const STORY_FRAME_WIDTH = 460;
