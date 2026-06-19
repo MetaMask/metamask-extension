@@ -205,6 +205,7 @@ describe('useBridging', () => {
             {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               environment_type: 'background',
             },
           ],
