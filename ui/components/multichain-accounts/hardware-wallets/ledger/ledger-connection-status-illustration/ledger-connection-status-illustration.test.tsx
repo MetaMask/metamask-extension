@@ -16,20 +16,20 @@ describe('LedgerConnectionStatusIllustration', () => {
   it.each(ALL_LEDGER_CONNECTION_STATUSES)(
     'renders the illustration mapped to %s',
     (status: LedgerConnectionStatusType) => {
-    const { container } = render(
-      <LedgerConnectionStatusIllustration status={status} />,
-    );
+      const { container } = render(
+        <LedgerConnectionStatusIllustration status={status} />,
+      );
 
-    expect(
-      screen.getByTestId('ledger-connection-status-illustration'),
-    ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('ledger-connection-status-illustration'),
+      ).toBeInTheDocument();
 
-    const image = getIllustrationImage(container);
-    expect(image).toHaveAttribute(
-      'src',
-      LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL[status],
-    );
-    expect(image).toHaveAttribute('alt', '');
+      const image = getIllustrationImage(container);
+      expect(image).toHaveAttribute(
+        'src',
+        LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL[status],
+      );
+      expect(image).toHaveAttribute('alt', '');
     },
   );
 });

@@ -5,16 +5,14 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import {
-  LEDGER_CONNECTION_STATUS,
-  LedgerConnectionStatus,
-} from '.';
+import { LEDGER_CONNECTION_STATUS, LedgerConnectionStatus } from '.';
 
 /** Matches the Figma hardware-wallet modal frame width. */
 const STORY_FRAME_WIDTH = 460;
 
 const meta = {
-  title: 'Components/MultichainAccounts/HardwareWallets/Ledger/LedgerConnectionStatus',
+  title:
+    'Components/MultichainAccounts/HardwareWallets/Ledger/LedgerConnectionStatus',
   component: LedgerConnectionStatus,
   tags: ['autodocs'],
   parameters: {
