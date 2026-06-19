@@ -35,6 +35,7 @@ import {
 } from '../../../../components/component-library';
 import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePrevious } from '../../../../hooks/usePrevious';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { finiteFallback, loadingOpacity } from '../../util';
 import ChartTooltip from './chart-tooltip';
@@ -157,7 +158,6 @@ const AssetChart = ({
   const {
     loading,
     isFetching,
-    isFetchedAfterMount,
     isPlaceholderData,
     data: {
       prices,
@@ -170,6 +170,10 @@ const AssetChart = ({
     timeRange: selectedTimeRange,
   });
 
+  const prevIsPlaceholderData = usePrevious(isPlaceholderData);
+  const shouldAnimate =
+    prevIsPlaceholderData === true && !isPlaceholderData && prices.length > 0;
+
   // The cases below are not mutually exclusive
   const shouldShowChartEmptyState = !loading && prices.length === 0; // When the chart is not loading anymore and there are no prices, show an empty state
   const shouldShowChartMuted =
@@ -178,7 +182,7 @@ const AssetChart = ({
   const options = {
     ...initialChartOptions,
     borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
-    animations: isFetchedAfterMount
+    animations: shouldAnimate
       ? {
           y: {
             from: (ctx: { chart: { scales: { y: { bottom: number } } } }) =>
