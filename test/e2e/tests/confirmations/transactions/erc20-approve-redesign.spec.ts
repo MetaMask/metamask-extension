@@ -28,7 +28,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
-
         },
         async ({
           driver,
