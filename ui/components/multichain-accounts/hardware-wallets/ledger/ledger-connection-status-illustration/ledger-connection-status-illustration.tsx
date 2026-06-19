@@ -9,9 +9,9 @@ import { LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL } from '../ledger-connection-
 import type { LedgerConnectionStatusIllustrationProps } from './ledger-connection-status-illustration.types';
 
 /**
- * Renders the Ledger device illustration for a given connection state.
- * @param options0
- * @param options0.status
+ * Renders the Ledger device illustration for the given connection state.
+ * @param props - Component props.
+ * @param props.status - Connection state that selects the illustration image.
  */
 export const LedgerConnectionStatusIllustration = ({
   status,

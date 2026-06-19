@@ -15,9 +15,9 @@ import { LEDGER_CONNECTION_STATUS_CONTENT } from '../ledger-connection-status.co
 import type { LedgerConnectionStatusInstructionsProps } from './ledger-connection-status-instructions.types';
 
 /**
- * Displays troubleshooting steps to help the user connect an undetected Ledger device.
- * @param options0
- * @param options0.status
+ * Renders troubleshooting steps when a Ledger device is not detected.
+ * @param props - Component props.
+ * @param props.status - Device-not-found connection state.
  */
 export const LedgerConnectionStatusInstructions = ({
   status,
