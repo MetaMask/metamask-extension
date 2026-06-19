@@ -1,8 +1,5 @@
 {
   "files": {
-    "app/scripts/controllers/metametrics-controller.test.ts": {
-      "MetaMask: MetaMetrics invalid trait types": 4
-    },
     "app/scripts/controllers/rewards/rewards-data-service.test.ts": {
       "error: RewardsDataService: Failed to fetch geolocation": 2
     },
@@ -67,15 +64,12 @@
       "MetaMask: MetaMetrics invalid trait types": 1,
       "MetaMask: Sentry initialization warnings": 1,
       "ObjectMultiplex: Malformed chunk warnings": 1,
-      "Third-party: Bindings failed, using pure JS": 1,
       "error: AssertionError: The Snaps platform requires": 1,
       "error: Error: NetworkController state is invalid:": 1,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "error: {": 1,
-      "warn: Error during SnapController initialization. AssertionError:": 2,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "warn: Error during SnapController initialization. AssertionError:": 2
     },
     "app/scripts/migrations/092.2.test.ts": {
       "error: Migration 92.2: Invalid NetworkController state:": 2
@@ -335,9 +329,6 @@
     },
     "ui/components/app/snaps/snap-ui-renderer/components/asset-selector.test.ts": {
       "MetaMask: Background connection not initialized": 4
-    },
-    "ui/components/app/snaps/snap-ui-renderer/components/date-time-picker.test.ts": {
-      "warn: Material-UI: You are trying to": 5
     },
     "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.test.js": {
       "error: Warning: React does not recognize": 1
@@ -997,9 +988,6 @@
       "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/onboarding-flow/account-not-found/account-not-found.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
-    "ui/pages/onboarding-flow/create-password/create-password.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx": {

@@ -256,6 +256,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>

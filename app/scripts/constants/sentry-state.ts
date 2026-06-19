@@ -206,7 +206,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     traits: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,
-    latestNonAnonymousEventTimestamp: true,
   },
   MetaMetricsDataDeletionController: {
     metaMetricsDataDeletionId: true,

@@ -142,6 +142,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>

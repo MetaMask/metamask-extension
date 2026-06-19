@@ -2,7 +2,6 @@ import type { Json } from '@metamask/utils';
 
 import type { MetaMetricsEventPayload } from '../../constants/metametrics';
 import { getManifestFlags } from '../manifestFlags';
-import { DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING } from './configs/defi-referral-ui';
 import {
   createActiveABTestAssignment,
   normalizeActiveABTestAssignments,
@@ -16,9 +15,7 @@ export type ABTestAnalyticsMapping = {
   eventNames: readonly string[];
 };
 
-export const AB_TEST_ANALYTICS_MAPPINGS: ABTestAnalyticsMapping[] = [
-  DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING,
-];
+export const AB_TEST_ANALYTICS_MAPPINGS: ABTestAnalyticsMapping[] = [];
 export function clearABTestAnalyticsMappings(): void {
   AB_TEST_ANALYTICS_MAPPINGS.length = 0;
 }

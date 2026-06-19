@@ -86,6 +86,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <GasTiming
                 chainId={transactionMeta.chainId}
+                networkClientId={transactionMeta.networkClientId}
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
                 userFeeLevelOverride={transactionMeta.userFeeLevel}

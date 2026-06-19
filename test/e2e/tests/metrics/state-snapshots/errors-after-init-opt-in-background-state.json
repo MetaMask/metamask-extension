@@ -52,6 +52,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isWalletResetInProgress": "boolean",
+    "lastQrScanCompletedSuccessfully": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,

@@ -5,7 +5,7 @@ import { DEFAULT_FIXTURE_ACCOUNT, NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 
 const TIMESTAMP_MOCK = 1234;
 
@@ -136,8 +136,8 @@ describe('Incoming Transactions', function () {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkNoTxInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkNoTxInActivity();
       },
     );
   });
@@ -163,8 +163,8 @@ describe('Incoming Transactions', function () {
           }),
       },
       async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.checkNoTxInActivity();
+        const activityTab = await changeNetworkAndGoToActivity(driver);
+        await activityTab.checkNoTxInActivity();
       },
     );
   });
@@ -187,15 +187,15 @@ describe('Incoming Transactions', function () {
           }),
       },
       async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        const activityTab = await changeNetworkAndGoToActivity(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
 
-        await activityList.checkTxAction({
+        await activityTab.checkTxAction({
           action: 'Sent ETH',
           txIndex: 1,
           confirmedTx: 1,
         });
-        await activityList.checkTxAmountInActivity('-4.56 ETH', 1);
+        await activityTab.checkTxAmountInActivity('-4.56 ETH', 1);
       },
     );
   });
@@ -216,9 +216,9 @@ describe('Incoming Transactions', function () {
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
+        const activityTab = await changeNetworkAndGoToActivity(driver);
         await driver.delay(2000);
-        await activityList.checkNoTxInActivity();
+        await activityTab.checkNoTxInActivity();
       },
     );
   });
@@ -233,5 +233,5 @@ async function changeNetworkAndGoToActivity(driver: Driver) {
   const homepage = new HomePage(driver);
   await homepage.goToActivityList();
 
-  return new ActivityListPage(driver);
+  return new ActivityTab(driver);
 }

@@ -6805,12 +6805,17 @@ export function estimateRewardsPoints(
 
 export function validateRewardsReferralCode(
   code: string,
-): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<
+  Promise<{ valid: boolean; isVipCode: boolean }>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async () => {
-    return await submitRequestToBackground<boolean>(
-      'validateRewardsReferralCode',
-      [code],
-    );
+    return await submitRequestToBackground<{
+      valid: boolean;
+      isVipCode: boolean;
+    }>('validateRewardsReferralCode', [code]);
   };
 }
 
