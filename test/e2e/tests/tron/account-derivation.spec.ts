@@ -252,13 +252,7 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  // TODO: Re-enable when the address-list QR button can open the Tron QR
-  // modal. It currently opens the Ethereum QR modal even when clicking the
-  // Tron row.
-  // Tracking: WPN-non-EVM-QR-modal — requires upstream work on the
-  // address QR component to support non-EVM addresses.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
+  it('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
     await withTronFixtures(
       {
         accounts: [EMPTY_TRON_ACCOUNT],
