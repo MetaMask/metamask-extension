@@ -1,11 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryFn, StoryObj } from '@storybook/react';
 import React from 'react';
 import {
   Box,
   BoxBackgroundColor,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { LEDGER_CONNECTION_STATUS, LedgerConnectionStatus } from '.';
+import {
+  LEDGER_CONNECTION_STATUS,
+  LEDGER_CONNECTION_STATUS_LIST,
+} from '../ledger-connection-status.constants';
+import { LedgerConnectionStatus } from './ledger-connection-status';
+import type { LedgerConnectionStatusProps } from './ledger-connection-status.types';
 
 /** Storybook frame width for the hardware wallet modal layout. */
 const STORY_FRAME_WIDTH = 460;
@@ -48,6 +53,9 @@ static PNG illustration from \`app/images/hardware-wallets/ledger-connection/\`.
       </Box>
     ),
   ],
+  args: {
+    status: LEDGER_CONNECTION_STATUS.Searching,
+  },
   argTypes: {
     status: {
       control: 'select',
@@ -68,12 +76,12 @@ static PNG illustration from \`app/images/hardware-wallets/ledger-connection/\`.
       description: 'Device selector click handler for the device-found state.',
       if: { arg: 'status', eq: LEDGER_CONNECTION_STATUS.DeviceFound },
     },
-  },
-} satisfies Meta<typeof LedgerConnectionStatus>;
+  } as Meta<LedgerConnectionStatusProps>['argTypes'],
+} satisfies Meta<LedgerConnectionStatusProps>;
 
 export default meta;
 
-type Story = StoryObj<typeof LedgerConnectionStatus>;
+type Story = StoryObj<typeof meta>;
 
 export const Searching: Story = {
   args: {
@@ -126,31 +134,32 @@ export const GenericError: Story = {
   },
 };
 
-export const AllStates: Story = {
-  render: () => (
-    <Box flexDirection={BoxFlexDirection.Column} gap={8}>
-      {Object.values(LEDGER_CONNECTION_STATUS).map((status) => (
-        <Box
-          key={status}
-          backgroundColor={BoxBackgroundColor.BackgroundDefault}
-          padding={4}
-          style={{ width: STORY_FRAME_WIDTH, minHeight: 560 }}
-        >
-          <LedgerConnectionStatus
-            status={status}
-            deviceModelName="Nano X"
-            onBack={() => undefined}
-          />
-        </Box>
-      ))}
-    </Box>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Scroll through every Ledger connection state in a single canvas for visual QA.',
-      },
+const allStatesStory: StoryFn<LedgerConnectionStatusProps> = () => (
+  <Box flexDirection={BoxFlexDirection.Column} gap={8}>
+    {LEDGER_CONNECTION_STATUS_LIST.map((status) => (
+      <Box
+        key={status}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        padding={4}
+        style={{ width: STORY_FRAME_WIDTH, minHeight: 560 }}
+      >
+        <LedgerConnectionStatus
+          status={status}
+          deviceModelName="Nano X"
+          onBack={() => undefined}
+        />
+      </Box>
+    ))}
+  </Box>
+);
+
+export const AllStates = allStatesStory.bind({});
+AllStates.parameters = {
+  controls: { disable: true },
+  docs: {
+    description: {
+      story:
+        'Scroll through every Ledger connection state in a single canvas for visual QA.',
     },
   },
 };

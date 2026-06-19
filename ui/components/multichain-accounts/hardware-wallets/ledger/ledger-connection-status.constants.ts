@@ -16,6 +16,9 @@ export type LedgerConnectionStatusType =
 export type LedgerConnectionStatusDeviceNotFound =
   typeof LEDGER_CONNECTION_STATUS.DeviceNotFound;
 
+export const LEDGER_CONNECTION_STATUS_LIST: LedgerConnectionStatusType[] =
+  Object.values(LEDGER_CONNECTION_STATUS);
+
 const LEDGER_CONNECTION_ILLUSTRATION_BASE =
   './images/hardware-wallets/ledger-connection';
 
