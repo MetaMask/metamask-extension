@@ -9,10 +9,7 @@ export const ExtensionPasskeyErrorCode = {
   VaultKeyRenewalFailed: 'extension_vault_key_renewal_failed',
 } as const;
 
-export type TranslateFn = (
-  key: string,
-  substitutions?: string[],
-) => string;
+export type TranslateFn = (key: string, substitutions?: string[]) => string;
 
 /**
  * Maps passkey error `code` strings (controller + extension) to extension `messages.json` keys.

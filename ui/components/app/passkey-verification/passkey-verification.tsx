@@ -71,8 +71,11 @@ export async function runPasskeyVerificationCeremony({
         toast.error(
           <ToastContent
             title={
-              translatePasskeyError(error, t as TranslateFn, passkeyMethodLabel) ??
-              t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
+              translatePasskeyError(
+                error,
+                t as TranslateFn,
+                passkeyMethodLabel,
+              ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
             }
           />,
           toastDurationMs === undefined

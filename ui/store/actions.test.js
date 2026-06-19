@@ -942,10 +942,7 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       const seedPhrase = await store.dispatch(
-        actions.getSeedPhraseWithPasskey(
-          authenticationResponse,
-          'keyring-id',
-        ),
+        actions.getSeedPhraseWithPasskey(authenticationResponse, 'keyring-id'),
       );
 
       expect(
