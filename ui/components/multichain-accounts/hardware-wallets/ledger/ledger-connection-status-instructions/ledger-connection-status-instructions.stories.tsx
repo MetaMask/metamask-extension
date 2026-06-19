@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { LEDGER_CONNECTION_STATUS } from '../ledger-connection-status';
+import { LEDGER_CONNECTION_STATUS } from '../ledger-connection-status.constants';
 import { LedgerConnectionStatusInstructions } from '.';
 
 const STORY_FRAME_WIDTH = 460;

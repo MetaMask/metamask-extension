@@ -11,7 +11,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { LEDGER_CONNECTION_STATUS_CONTENT } from '../ledger-connection-status/ledger-connection-status.constants';
+import { LEDGER_CONNECTION_STATUS_CONTENT } from '../ledger-connection-status.constants';
 import type { LedgerConnectionStatusInstructionsProps } from './ledger-connection-status-instructions.types';
 
 /**

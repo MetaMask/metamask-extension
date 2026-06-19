@@ -14,12 +14,12 @@ import {
   type StatusWithoutDescription,
 } from '../../../../../../test/unit/hardware-wallets/ledger/helpers';
 import type { LedgerConnectionStatusProps } from './ledger-connection-status.types';
-import type { LedgerConnectionStatusType } from './ledger-connection-status.constants';
 import {
   LEDGER_CONNECTION_STATUS,
   LEDGER_CONNECTION_STATUS_CONTENT,
   LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL,
   LedgerConnectionStatus,
+  type LedgerConnectionStatusType,
 } from '.';
 
 const renderLedgerConnectionStatus = (props: LedgerConnectionStatusProps) =>
