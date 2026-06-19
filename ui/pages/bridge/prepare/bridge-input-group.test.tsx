@@ -431,6 +431,36 @@ describe('BridgeInputGroup', () => {
     expect(mockNavigate).toHaveBeenCalledWith(SWAP_PATH, { replace: true });
   });
 
+  it('clears picker flags when browser navigation unmounts the page', async () => {
+    setupFetchMock();
+    const setDestinationPickerOpenSpy = jest.spyOn(
+      actions,
+      'setIsDestAssetPickerOpen',
+    );
+    const setSourcePickerOpenSpy = jest.spyOn(
+      actions,
+      'setIsSrcAssetPickerOpen',
+    );
+
+    const { unmount } = renderAssetPickerPage(undefined, {
+      isSrcAssetPickerOpen: true,
+      isDestAssetPickerOpen: false,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('bridge-asset-picker-search-input'),
+      ).toBeVisible();
+    });
+
+    unmount();
+
+    expect(setDestinationPickerOpenSpy).toHaveBeenCalledWith(false);
+    expect(setSourcePickerOpenSpy).toHaveBeenCalledWith(false);
+    setDestinationPickerOpenSpy.mockRestore();
+    setSourcePickerOpenSpy.mockRestore();
+  });
+
   it('uses the source picker when both picker flags are stale-open', async () => {
     setupFetchMock(
       undefined,
