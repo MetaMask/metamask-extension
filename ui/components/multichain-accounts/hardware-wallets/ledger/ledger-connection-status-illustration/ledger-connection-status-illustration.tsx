@@ -8,7 +8,7 @@ import {
 import {
   LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL,
   type LedgerConnectionStatusType,
-} from '../ledger-connection-status';
+} from '../ledger-connection-status/ledger-connection-status.constants';
 
 type LedgerConnectionStatusIllustrationProps = {
   /** Connection state that determines which illustration PNG to render. */

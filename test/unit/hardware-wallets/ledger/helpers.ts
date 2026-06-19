@@ -3,7 +3,7 @@ import {
   LEDGER_CONNECTION_STATUS,
   LEDGER_CONNECTION_STATUS_CONTENT,
   type LedgerConnectionStatusType,
-} from '../../../../ui/components/multichain-accounts/hardware-wallets/ledger';
+} from '../../../../ui/components/multichain-accounts/hardware-wallets/ledger/ledger-connection-status/ledger-connection-status.constants';
 
 type LocaleMessageKey = keyof typeof messages;
 
