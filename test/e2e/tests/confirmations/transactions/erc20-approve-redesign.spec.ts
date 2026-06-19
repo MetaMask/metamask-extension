@@ -28,11 +28,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
-          manifestFlags: {
-            remoteFeatureFlags: {
-              extensionUxTokenManagementFilter: false,
-            },
-          },
+
         },
         async ({
           driver,

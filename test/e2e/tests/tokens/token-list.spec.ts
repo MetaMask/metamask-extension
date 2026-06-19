@@ -31,7 +31,7 @@ describe('Token List', function () {
     },
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
+        extensionUxTokenManagementFilter: true,
       },
     },
   };

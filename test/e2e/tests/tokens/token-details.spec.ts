@@ -28,7 +28,7 @@ describe('Token Details', function () {
       .build(),
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
+        extensionUxTokenManagementFilter: true,
       },
     },
     localNodeOptions: {

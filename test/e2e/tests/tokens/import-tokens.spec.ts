@@ -550,7 +550,7 @@ describe('Import flow', function () {
         testSpecificMock: importTokensTestMock,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -686,7 +686,7 @@ describe('Import flow', function () {
         testSpecificMock: importTokensTestMock,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },

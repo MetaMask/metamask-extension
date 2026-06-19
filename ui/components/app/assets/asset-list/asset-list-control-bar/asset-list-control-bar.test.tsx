@@ -233,31 +233,6 @@ describe('NFTs options', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE);
   });
 
-  it('shows Manage tokens when the token management feature flag is disabled', async () => {
-    setBackgroundConnection(backgroundConnectionMock as never);
-    const state = createMockState();
-    state.metamask.remoteFeatureFlags = {
-      ...state.metamask.remoteFeatureFlags,
-      extensionUxTokenManagementFilter: false,
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
-      store,
-    );
-
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    expect(await findByTestId('manageTokens__button')).toHaveTextContent(
-      'Manage tokens',
-    );
-    expect(queryByTestId('importTokens__button')).not.toBeInTheDocument();
-  });
-
   it('navigates to the dedicated networks page from manage networks in the home modal', async () => {
     setBackgroundConnection(backgroundConnectionMock as never);
     const state = createMockState();

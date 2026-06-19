@@ -97,7 +97,7 @@ function buildFixtures(title: string) {
     testSpecificMock: mockSetup,
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
+        extensionUxTokenManagementFilter: true,
       },
     },
   };
