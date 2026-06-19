@@ -5,7 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -161,7 +161,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await reviewPage.checkTotalAmountIsDisplayed(expectedTotal);
         await reviewPage.clickConfirmButton();
 
-        const activityListPage = new ActivityListPage(driver);
+        const activityListPage = new ActivityTab(driver);
         await activityListPage.checkTransactionActivityByText('Sending BTC');
         await activityListPage.checkWaitForTransactionStatus('pending');
       },
