@@ -19,6 +19,7 @@ import {
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
   translatePasskeyError,
+  type TranslateFn,
 } from '../../../../shared/lib/passkey';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -28,8 +29,6 @@ import Spinner from '../../ui/spinner';
 import { toast, ToastContent } from '../../ui/toast/toast';
 import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
 
-type TranslateFn = (key: string, substitutions?: string[]) => string;
-
 function getPasskeyVerificationSentryContext(flow: string): string {
   return `Passkey verification in ${flow}`;
 }
@@ -37,7 +36,7 @@ function getPasskeyVerificationSentryContext(flow: string): string {
 export type RunPasskeyVerificationCeremonyOptions = {
   sentryContext: string;
   passkeyMethodLabel: string;
-  t: TranslateFn;
+  t: ReturnType<typeof useI18nContext>;
   showErrorToast?: boolean;
   toastDurationMs?: number;
 };
@@ -72,7 +71,7 @@ export async function runPasskeyVerificationCeremony({
         toast.error(
           <ToastContent
             title={
-              translatePasskeyError(error, t, passkeyMethodLabel) ??
+              translatePasskeyError(error, t as TranslateFn, passkeyMethodLabel) ??
               t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
             }
           />,
@@ -124,7 +123,7 @@ export function PasskeyVerification({
       return await runPasskeyVerificationCeremony({
         sentryContext,
         passkeyMethodLabel,
-        t: t as TranslateFn,
+        t,
         showErrorToast,
         toastDurationMs,
       });

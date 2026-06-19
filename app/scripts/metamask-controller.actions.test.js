@@ -1789,14 +1789,14 @@ describe('MetaMaskController', function () {
       });
     });
 
-    describe('#revealSeedWordsWithPasskey', function () {
+    describe('#exportSeedPhraseWithPasskey', function () {
       it('throws when passkey is not registered', async function () {
         jest
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
           .mockReturnValue(false);
 
         await expect(
-          metamaskController.revealSeedWordsWithPasskey(authenticationResponse),
+          metamaskController.exportSeedPhraseWithPasskey(authenticationResponse),
         ).rejects.toMatchObject({
           code: PasskeyControllerErrorCode.NotEnrolled,
         });
@@ -1814,7 +1814,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(new Error('invalid assertion'));
 
         await expect(
-          metamaskController.revealSeedWordsWithPasskey(authenticationResponse),
+          metamaskController.exportSeedPhraseWithPasskey(authenticationResponse),
         ).rejects.toThrow('invalid assertion');
       });
 
@@ -1833,7 +1833,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(new Error('Incorrect encryption key'));
 
         await expect(
-          metamaskController.revealSeedWordsWithPasskey(authenticationResponse),
+          metamaskController.exportSeedPhraseWithPasskey(authenticationResponse),
         ).rejects.toThrow('Incorrect encryption key');
       });
 
@@ -1852,7 +1852,7 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
           .mockResolvedValue(mnemonic);
 
-        const result = await metamaskController.revealSeedWordsWithPasskey(
+        const result = await metamaskController.exportSeedPhraseWithPasskey(
           authenticationResponse,
           'keyring-id',
         );
@@ -1880,7 +1880,7 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
           .mockResolvedValue(new Uint8Array([0, 0, 0, 1]));
 
-        await metamaskController.revealSeedWordsWithPasskey(
+        await metamaskController.exportSeedPhraseWithPasskey(
           authenticationResponse,
         );
 
@@ -2051,7 +2051,7 @@ describe('MetaMaskController', function () {
             removePasskeyWithPasskeyVerification: expect.any(Function),
             removePasskeyWithPasswordVerification: expect.any(Function),
             changePasswordWithPasskeyVerification: expect.any(Function),
-            revealSeedWordsWithPasskey: expect.any(Function),
+            exportSeedPhraseWithPasskey: expect.any(Function),
             exportAccountsWithPasskey: expect.any(Function),
           }),
         );

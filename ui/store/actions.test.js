@@ -915,7 +915,7 @@ describe('Actions', () => {
     });
   });
 
-  describe('#revealSeedWordsWithPasskey', () => {
+  describe('#getSeedPhraseWithPasskey', () => {
     const authenticationResponse = {
       id: 'cred',
       rawId: 'cred',
@@ -934,22 +934,22 @@ describe('Actions', () => {
     it('forwards the authentication response and keyring id and decodes the seed phrase', async () => {
       const store = mockStore();
 
-      const revealSeedWordsWithPasskey = sinon
+      const exportSeedPhraseWithPasskey = sinon
         .stub()
         .resolves(Array.from(Buffer.from('test seed').values()));
 
-      background.getApi.returns({ revealSeedWordsWithPasskey });
+      background.getApi.returns({ exportSeedPhraseWithPasskey });
       setBackgroundConnection(background.getApi());
 
       const seedPhrase = await store.dispatch(
-        actions.revealSeedWordsWithPasskey(
+        actions.getSeedPhraseWithPasskey(
           authenticationResponse,
           'keyring-id',
         ),
       );
 
       expect(
-        revealSeedWordsWithPasskey.calledOnceWith(
+        exportSeedPhraseWithPasskey.calledOnceWith(
           authenticationResponse,
           'keyring-id',
         ),
@@ -961,7 +961,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.getApi.returns({
-        revealSeedWordsWithPasskey: sinon.stub().rejects(new Error('error')),
+        exportSeedPhraseWithPasskey: sinon.stub().rejects(new Error('error')),
       });
       setBackgroundConnection(background.getApi());
 
@@ -972,7 +972,7 @@ describe('Actions', () => {
 
       await expect(
         store.dispatch(
-          actions.revealSeedWordsWithPasskey(authenticationResponse),
+          actions.getSeedPhraseWithPasskey(authenticationResponse),
         ),
       ).rejects.toThrow('error');
 

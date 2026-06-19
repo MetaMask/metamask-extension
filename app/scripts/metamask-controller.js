@@ -3428,7 +3428,7 @@ export default class MetamaskController extends EventEmitter {
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
       exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
-      revealSeedWordsWithPasskey: this.revealSeedWordsWithPasskey.bind(this),
+      exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4679,14 +4679,14 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Reveals the Secret Recovery Phrase after verifying a passkey assertion,
+   * Exports the Secret Recovery Phrase after verifying a passkey assertion,
    * used as a password-less alternative to {@link getSeedPhrase}.
    *
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
-   * @param {string} [keyringId] - The id of the HD keyring to reveal. Defaults to the primary keyring.
+   * @param {string} [keyringId] - The id of the HD keyring to export. Defaults to the primary keyring.
    * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
    */
-  async revealSeedWordsWithPasskey(authenticationResponse, keyringId) {
+  async exportSeedPhraseWithPasskey(authenticationResponse, keyringId) {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,

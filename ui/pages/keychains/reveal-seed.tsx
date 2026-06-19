@@ -29,7 +29,7 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   requestRevealSeedWords,
-  revealSeedWordsWithPasskey,
+  getSeedPhraseWithPasskey,
   scanUrlForPhishing,
 } from '../../store/actions';
 import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
@@ -296,7 +296,7 @@ function RevealSeedPage() {
 
       try {
         const revealedSeedWords = (await (dispatch(
-          revealSeedWordsWithPasskey(authenticationResponse, keyringId),
+          getSeedPhraseWithPasskey(authenticationResponse, keyringId),
         ) as unknown as Promise<string>)) as string;
 
         trackEvent({

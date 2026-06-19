@@ -411,7 +411,7 @@ const ChangePassword = ({
         const response = await runPasskeyVerificationCeremony({
           sentryContext: 'Passkey authentication from change-password toggle',
           passkeyMethodLabel,
-          t: t as (key: string, substitutions?: string[]) => string,
+          t,
           showErrorToast: true,
           toastDurationMs: autoHideToastDelay,
         });

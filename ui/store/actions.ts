@@ -1323,14 +1323,14 @@ export function requestRevealSeedWords(
 }
 
 /**
- * Reveals the Secret Recovery Phrase using a verified passkey assertion instead
+ * Returns the Secret Recovery Phrase using a verified passkey assertion instead
  * of the wallet password.
  *
  * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
- * @param keyringId - The id of the HD keyring to reveal. Defaults to the primary keyring.
+ * @param keyringId - The id of the HD keyring to export. Defaults to the primary keyring.
  * @returns The decoded seed phrase.
  */
-export function revealSeedWordsWithPasskey(
+export function getSeedPhraseWithPasskey(
   authenticationResponse: PasskeyAuthenticationResponse,
   keyringId?: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
@@ -1338,7 +1338,7 @@ export function revealSeedWordsWithPasskey(
     dispatch(showLoadingIndication());
     try {
       const encodedSeedPhrase = await submitRequestToBackground(
-        'revealSeedWordsWithPasskey',
+        'exportSeedPhraseWithPasskey',
         [authenticationResponse, keyringId],
       );
       return Buffer.from(encodedSeedPhrase).toString('utf8');
