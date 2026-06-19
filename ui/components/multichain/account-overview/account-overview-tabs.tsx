@@ -126,18 +126,21 @@ export const AccountOverviewTabs = ({
 
   // Tabs clamps the active tab to the first rendered tab when activeTabKey
   // matches no rendered tab (e.g. Tokens hidden with no ?tab=perps / persisted
-  // Perps). Resolve that same effective tab so dismissal also fires when Perps
-  // is the clamped-active tab. Order must match the <Tab> render order below.
+  // Perps). Order must match the <Tab> render order below.
   const renderedTabKeys = [
-    showTokens && AccountOverviewTabKey.Tokens,
-    isPerpsExperienceAvailable && AccountOverviewTabKey.Perps,
-    showDefi && AccountOverviewTabKey.DeFi,
-    showNfts && AccountOverviewTabKey.Nfts,
-    showActivity && AccountOverviewTabKey.Activity,
-  ].filter((key): key is AccountOverviewTab => Boolean(key));
-  const effectiveActiveTabKey = renderedTabKeys.includes(activeTabKey)
-    ? activeTabKey
-    : renderedTabKeys[0];
+    ...(showTokens ? [AccountOverviewTabKey.Tokens] : []),
+    ...(isPerpsExperienceAvailable ? [AccountOverviewTabKey.Perps] : []),
+    ...(showDefi ? [AccountOverviewTabKey.DeFi] : []),
+    ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
+    ...(showActivity ? [AccountOverviewTabKey.Activity] : []),
+  ];
+  // Perps is the effective active tab when it is explicitly selected, or when
+  // the active tab is not rendered and Tabs clamps to the first rendered tab
+  // (which is Perps).
+  const perpsIsEffectiveActiveTab =
+    activeTabKey === AccountOverviewTabKey.Perps ||
+    (!renderedTabKeys.some((key) => key === activeTabKey) &&
+      renderedTabKeys[0] === AccountOverviewTabKey.Perps);
 
   // Mark the badge seen whenever Perps is the effective active tab — covers
   // clicking in, landing directly on Perps (persisted default or ?tab=perps),
@@ -145,13 +148,10 @@ export const AccountOverviewTabs = ({
   // two. Gated on showPerpsTabBadge so control/seen/unavailable (badge never
   // visible) never marks it seen.
   useEffect(() => {
-    if (
-      showPerpsTabBadge &&
-      effectiveActiveTabKey === AccountOverviewTabKey.Perps
-    ) {
+    if (showPerpsTabBadge && perpsIsEffectiveActiveTab) {
       dispatch(setPerpsTabBadgeSeen(true));
     }
-  }, [showPerpsTabBadge, effectiveActiveTabKey, dispatch]);
+  }, [showPerpsTabBadge, perpsIsEffectiveActiveTab, dispatch]);
 
   const networkFilterForMetrics = useSelector(
     selectEnabledNetworksAsCaipChainIds,
