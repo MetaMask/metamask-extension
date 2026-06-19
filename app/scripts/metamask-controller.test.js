@@ -4474,7 +4474,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('calls discoverAndCreateAccounts when importMnemonicToVault runs', async () => {
+      it('calls discoverAndCreateAccounts when importMnemonicToVault runs after onboarding completes', async () => {
         jest
           .spyOn(
             metamaskController.accountTreeController,
@@ -4488,6 +4488,10 @@ describe('MetaMaskController', () => {
 
         await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
 
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
           shouldCreateSocialBackup: false,
           shouldSelectAccount: false,
@@ -4497,6 +4501,31 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => setImmediate(resolve));
 
         expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
+      });
+
+      it('does not call discoverAndCreateAccounts before onboarding completes', async () => {
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorage',
+          )
+          .mockResolvedValue();
+        jest
+          .spyOn(metamaskController, 'discoverAndCreateAccounts')
+          .mockResolvedValue({});
+
+        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
+
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
+          shouldCreateSocialBackup: false,
+          shouldSelectAccount: false,
+        });
+
+        await waitForAllPromises();
+
+        expect(
+          metamaskController.discoverAndCreateAccounts,
+        ).not.toHaveBeenCalled();
       });
     });
 
