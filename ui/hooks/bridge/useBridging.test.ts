@@ -196,8 +196,8 @@ describe('useBridging', () => {
               token_symbol_destination: '',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-                            // eslint-disable-next-line @typescript-eslint/naming-convention
-                            environment_type: 'background',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
             },
           ],
           [
@@ -541,9 +541,8 @@ describe('useBridging', () => {
               token_symbol_source: token?.symbol ?? 'ETH',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-                            // eslint-disable-next-line @typescript-eslint/naming-convention
-                            environment_type: 'background',
-
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
             },
           ],
           [
@@ -551,6 +550,8 @@ describe('useBridging', () => {
             {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
             },
           ],
         ]);
