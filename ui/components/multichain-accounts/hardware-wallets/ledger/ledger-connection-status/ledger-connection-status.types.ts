@@ -1,4 +1,4 @@
-import type { LedgerConnectionStatusType } from './ledger-connection-status.constants';
+import type { LedgerConnectionStatusType } from '../ledger-connection-status.constants';
 
 export type LedgerConnectionStatusProps = {
   /** Connection state that controls the illustration, copy, and optional UI sections. */

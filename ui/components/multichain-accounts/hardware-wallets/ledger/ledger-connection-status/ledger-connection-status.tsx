@@ -19,7 +19,7 @@ import { LedgerConnectionStatusInstructions } from '../ledger-connection-status-
 import {
   LEDGER_CONNECTION_STATUS,
   LEDGER_CONNECTION_STATUS_CONTENT,
-} from './ledger-connection-status.constants';
+} from '../ledger-connection-status.constants';
 import type { LedgerConnectionStatusProps } from './ledger-connection-status.types';
 
 /**

@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../../../test/lib/render-helpers';
-import { LEDGER_CONNECTION_STATUS } from '../ledger-connection-status';
+import { LEDGER_CONNECTION_STATUS } from '../ledger-connection-status.constants';
 import {
   DEVICE_NOT_FOUND_INSTRUCTION_MESSAGE_KEYS,
   getLocalizedMessage,

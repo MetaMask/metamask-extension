@@ -5,15 +5,8 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 
-import {
-  LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL,
-  type LedgerConnectionStatusType,
-} from '../ledger-connection-status/ledger-connection-status.constants';
-
-type LedgerConnectionStatusIllustrationProps = {
-  /** Connection state that determines which illustration PNG to render. */
-  status: LedgerConnectionStatusType;
-};
+import { LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL } from '../ledger-connection-status.constants';
+import type { LedgerConnectionStatusIllustrationProps } from './ledger-connection-status-illustration.types';
 
 /**
  * Renders the Ledger device illustration for a given connection state.
@@ -22,17 +15,17 @@ type LedgerConnectionStatusIllustrationProps = {
  */
 export const LedgerConnectionStatusIllustration = ({
   status,
-}: LedgerConnectionStatusIllustrationProps) => (
+}: Readonly<LedgerConnectionStatusIllustrationProps>) => (
   <Box
     alignItems={BoxAlignItems.Center}
     justifyContent={BoxJustifyContent.Center}
-    className="ledger-connection-status__illustration w-full shrink-0"
+    className="w-full shrink-0"
     data-testid="ledger-connection-status-illustration"
   >
     <img
       src={LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL[status]}
       alt=""
-      className="ledger-connection-status__illustration-image block h-auto max-h-[278px] w-full object-contain"
+      className="block h-auto max-h-[278px] w-full object-contain"
     />
   </Box>
 );
