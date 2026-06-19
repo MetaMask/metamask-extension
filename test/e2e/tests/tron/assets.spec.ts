@@ -2,9 +2,9 @@ import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TronAssetDetailsPage from '../../page-objects/pages/asset/tron-asset-details';
-import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
 import {
   EMPTY_TRON_ACCOUNT,
   TRON_PORTFOLIO_ACCOUNT,
@@ -13,7 +13,7 @@ import { withTronFixtures } from './fixtures/with-tron-fixtures';
 
 async function landOnTronHome(driver: Driver): Promise<void> {
   await login(driver, { validateBalance: false });
-  await selectTronNetwork(driver);
+  await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 }
 
 describe('Tron assets', function (this: Suite) {
@@ -28,12 +28,13 @@ describe('Tron assets', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
-        const assetList = new AssetListPage(driver);
-        await assetList.checkOnlyAssetsArePresent(['Tron']);
-        await assetList.checkTokenAmountIsDisplayed('0');
-        await assetList.checkTokenRowContainsAllText('Tron', [
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkOnlyAssetsArePresent(['Tron']);
+        await tokensTab.checkTokenAmountIsDisplayed('0');
+        await tokensTab.checkTokenRowHasVisibleLogo('Tron');
+        await tokensTab.checkTokenRowContainsAllText('Tron', [
           'Tron',
           '0 TRX',
           '$',
@@ -53,45 +54,47 @@ describe('Tron assets', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
-        const assetList = new AssetListPage(driver);
-        await assetList.checkTokenExistsInList('Tron', '6.072');
-        await assetList.checkTokenRowContainsAllText('Tron', [
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenExistsInList('Tron', '6.072');
+        await tokensTab.checkTokenRowHasVisibleLogo('Tron');
+        await tokensTab.checkTokenRowContainsAllText('Tron', [
           'Tron',
           '6.072 TRX',
           '$',
         ]);
-        await assetList.checkTokenExistsInList('GasFreeTransferSolution');
-        await assetList.checkTokenRowContainsAllText(
+        await tokensTab.checkTokenExistsInList('GasFreeTransferSolution');
+        await tokensTab.checkTokenRowContainsAllText(
           'GasFreeTransferSolution',
           ['GasFreeTransferSolution', '33.333 GAS_FREE', '$'],
         );
-        await assetList.checkTokenExistsInList('Tether');
-        await assetList.checkTokenRowContainsAllText('Tether', [
+        await tokensTab.checkTokenExistsInList('Tether');
+        await tokensTab.checkTokenRowHasVisibleLogo('Tether');
+        await tokensTab.checkTokenRowContainsAllText('Tether', [
           'Tether',
           '2.805 USDT',
           '$',
         ]);
-        await assetList.checkTokenExistsInList('HTX DAO');
-        await assetList.checkTokenRowContainsAllText('HTX DAO', [
+        await tokensTab.checkTokenExistsInList('HTX DAO');
+        await tokensTab.checkTokenRowContainsAllText('HTX DAO', [
           'HTX DAO',
           '3.16M HTX',
           '$',
         ]);
-        await assetList.checkTokenExistsInList('USDD');
-        await assetList.checkTokenRowContainsAllText('USDD', [
+        await tokensTab.checkTokenExistsInList('USDD');
+        await tokensTab.checkTokenRowContainsAllText('USDD', [
           'USDD',
           '0.290 USDD',
           '$',
         ]);
-        await assetList.checkTokenExistsInList('SEED');
-        await assetList.checkTokenRowContainsAllText('SEED', [
+        await tokensTab.checkTokenExistsInList('SEED');
+        await tokensTab.checkTokenRowContainsAllText('SEED', [
           'SEED',
           '89.851 SEED',
           '$',
         ]);
-        await assetList.checkConversionRateDisplayed();
+        await tokensTab.checkConversionRateDisplayed();
       },
     );
   });
@@ -107,9 +110,9 @@ describe('Tron assets', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await landOnTronHome(driver);
-        const assetList = new AssetListPage(driver);
-        await assetList.selectOnlyTronInNetworkFilter();
-        await assetList.checkOnlyAssetsArePresent([
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.selectOnlyTronInNetworkFilter();
+        await tokensTab.checkOnlyAssetsArePresent([
           'Tron',
           'GasFreeTransferSolution',
           'Tether',
@@ -117,7 +120,7 @@ describe('Tron assets', function (this: Suite) {
           'USDD',
           'SEED',
         ]);
-        await assetList.checkAssetIsAbsent('Ethereum');
+        await tokensTab.checkAssetIsAbsent('Ethereum');
       },
     );
   });
@@ -133,11 +136,11 @@ describe('Tron assets', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await landOnTronHome(driver);
-        const assetList = new AssetListPage(driver);
-        await assetList.selectAllNetworksInNetworkFilter();
-        await assetList.checkTokenExistsInList('Tron');
-        await assetList.checkTokenExistsInList('Tether');
-        await assetList.checkTokenExistsInList('Ethereum');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.selectAllNetworksInNetworkFilter();
+        await tokensTab.checkTokenExistsInList('Tron');
+        await tokensTab.checkTokenExistsInList('Tether');
+        await tokensTab.checkTokenExistsInList('Ethereum');
       },
     );
   });
@@ -153,8 +156,8 @@ describe('Tron assets', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await landOnTronHome(driver);
-        const assetList = new AssetListPage(driver);
-        await assetList.clickOnAsset('Tron');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.clickOnAsset('Tron');
         const details = new TronAssetDetailsPage(driver);
         await details.checkPageIsLoaded();
         await details.checkCurrentPriceHeader();
@@ -181,8 +184,8 @@ describe('Tron assets', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await landOnTronHome(driver);
-        const assetList = new AssetListPage(driver);
-        await assetList.clickOnAsset('Tether');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.clickOnAsset('Tether');
         const details = new TronAssetDetailsPage(driver);
         await details.checkPageIsLoaded();
         await details.checkCurrentPriceHeader();
@@ -208,9 +211,9 @@ describe('Tron assets', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await landOnTronHome(driver);
-        const assetList = new AssetListPage(driver);
-        await assetList.checkTokenExistsInList('Tron');
-        await assetList.checkAssetIsAbsent('Staked TRX');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenExistsInList('Tron');
+        await tokensTab.checkAssetIsAbsent('Staked TRX');
       },
     );
   });

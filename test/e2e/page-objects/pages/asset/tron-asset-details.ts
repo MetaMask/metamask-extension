@@ -32,12 +32,6 @@ class TronAssetDetailsPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    // Use a section title that is rendered for every Tron asset (including
-    // view-only assets like Staked TRX which have no action buttons).
-    await this.driver.waitForSelector({ text: 'Your balance' });
-  }
-
   async checkActionButtons(options: {
     swap?: boolean;
     send?: boolean;
@@ -60,15 +54,10 @@ class TronAssetDetailsPage {
     }
   }
 
-  async checkTokenActionButtons(): Promise<void> {
-    await this.driver.waitForSelector(this.tokenBuyButton);
-    await this.driver.waitForSelector(this.tokenSendButton);
-    await this.driver.waitForSelector(this.tokenSwapButton);
-    await this.driver.assertElementNotPresent(this.nativeReceiveButton);
-  }
-
-  async checkPriceChart(): Promise<void> {
-    await this.driver.waitForSelector(this.priceChart);
+  async checkAllStandardSections(): Promise<void> {
+    for (const title of SECTION_TITLES) {
+      await this.checkSection(title);
+    }
   }
 
   async checkCurrentPriceHeader(): Promise<void> {
@@ -83,16 +72,29 @@ class TronAssetDetailsPage {
     });
     await this.driver.waitForSelector({ text: 'Energy', tag: 'p' });
     await this.driver.waitForSelector({ text: 'Bandwidth', tag: 'p' });
+    await this.driver.waitForSelector({ text: 'USDT transfer' });
+    await this.driver.waitForSelector({ text: 'TRX transfer' });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    // Use a section title that is rendered for every Tron asset (including
+    // view-only assets like Staked TRX which have no action buttons).
+    await this.driver.waitForSelector({ text: 'Your balance' });
+  }
+
+  async checkPriceChart(): Promise<void> {
+    await this.driver.waitForSelector(this.priceChart);
   }
 
   async checkSection(name: SectionTitle): Promise<void> {
     await this.driver.waitForSelector({ text: name });
   }
 
-  async checkAllStandardSections(): Promise<void> {
-    for (const title of SECTION_TITLES) {
-      await this.checkSection(title);
-    }
+  async checkTokenActionButtons(): Promise<void> {
+    await this.driver.waitForSelector(this.tokenBuyButton);
+    await this.driver.waitForSelector(this.tokenSendButton);
+    await this.driver.waitForSelector(this.tokenSwapButton);
+    await this.driver.assertElementNotPresent(this.nativeReceiveButton);
   }
 }
 
