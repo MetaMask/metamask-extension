@@ -101,15 +101,9 @@ Locally (no `GITHUB_ACTION`) it skips all of the above and runs every discovered
 
 ### Unsupported on the Playwright path (yet)
 
-The `PlaywrightDriver` shim covers what the easiest migrated specs need. Less-common methods throw a clear `not yet implemented` error pointing at the gap. When you migrate a spec that hits one of these, fill it in alongside the spec migration in the same PR. Notable current gaps:
+The `PlaywrightDriver` shim only implements what migrated specs actually exercise. Every other method throws a clear `not yet implemented` error rather than shipping unverified behavior — so we add (and verify) methods one migrated spec at a time. When a spec you're migrating hits a gap, implement it (mirroring the Selenium `driver.js` contract) in the same PR.
 
-- `pasteIntoField`
-- `holdMouseDownOnElement`
-- `clickPoint`
-- `waitForElementToStopMoving`
-- `switchToFrame`
-- `virtualAuthenticator` flows
-- Selenium-specific CDP listeners (`checkBrowserForExceptions`, `checkBrowserForConsoleErrors` are no-ops on the PW path; `weberror` events are recorded automatically)
+Intentional no-ops (not gaps): `checkBrowserForExceptions` / `checkBrowserForConsoleErrors` — the PW path records `weberror` events automatically, so these stay as no-ops for API parity rather than throwing.
 
 ### CI
 

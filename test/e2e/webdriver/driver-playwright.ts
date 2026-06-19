@@ -395,10 +395,16 @@ export class PlaywrightDriver {
     // Single-wrap: previous revision wrapped twice ("outer" + "inner"
     // function), which made for harder-to-read stack traces and an extra
     // round of source-string mutation. This version is one wrapper.
-    const source =
+    let source =
       typeof script === 'string'
         ? `function() { ${script} }`
         : script.toString();
+    // When tsx/esbuild transpiles TypeScript it can inject `__name(...)`
+    // helpers that don't exist in the page context. Define a no-op shim so
+    // serialized functions don't throw in-page. Mirrors `driver.js`.
+    if (typeof script === 'function' && source.includes('__name')) {
+      source = `function() { var __name = (fn) => fn; return (${source}).apply(null, arguments); }`;
+    }
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
@@ -412,11 +418,18 @@ export class PlaywrightDriver {
     )) as TResult;
   }
 
+  // Selenium's executeAsyncScript resolves when the script invokes its trailing
+  // completion callback (`arguments[arguments.length - 1]`). No migrated spec
+  // exercises it yet, so it's left as a gap rather than shipping an unverified
+  // implementation — implement (and verify) it alongside the first spec that
+  // needs it. See `driver.js` for the contract to mirror.
   async executeAsyncScript<TResult = unknown>(
-    script: string | ((...args: unknown[]) => unknown),
-    ...args: unknown[]
+    _script: string | ((...args: unknown[]) => unknown),
+    ..._args: unknown[]
   ): Promise<TResult> {
-    return await this.executeScript<TResult>(script, ...args);
+    throw new Error(
+      'PlaywrightDriver.executeAsyncScript is not yet implemented.',
+    );
   }
 
   // -- Element finders -------------------------------------------------------
@@ -788,11 +801,64 @@ export class PlaywrightDriver {
     await element.locator.hover();
   }
 
-  async clickElementUsingMouseMove(rawLocator: RawLocator): Promise<void> {
-    const element = await this.findClickableElement(rawLocator);
-    await element.locator.scrollIntoViewIfNeeded();
-    await element.locator.hover();
-    await element.locator.click();
+  async clickElementUsingMouseMove(_rawLocator: RawLocator): Promise<void> {
+    throw new Error(
+      'PlaywrightDriver.clickElementUsingMouseMove is not yet implemented.',
+    );
+  }
+
+  async pasteIntoField(
+    _rawLocator: RawLocator,
+    _content: string,
+  ): Promise<void> {
+    throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
+  }
+
+  async holdMouseDownOnElement(
+    _rawLocator: RawLocator,
+    _ms: number,
+  ): Promise<void> {
+    throw new Error(
+      'PlaywrightDriver.holdMouseDownOnElement is not yet implemented.',
+    );
+  }
+
+  async clickPoint(
+    _rawLocator: RawLocator,
+    _x: number,
+    _y: number,
+  ): Promise<void> {
+    throw new Error('PlaywrightDriver.clickPoint is not yet implemented.');
+  }
+
+  async isElementMoving(_rawLocator: RawLocator): Promise<boolean> {
+    throw new Error('PlaywrightDriver.isElementMoving is not yet implemented.');
+  }
+
+  /**
+   * Effectively a no-op on the Playwright path. Every actionable method
+   * (`click`, `fill`, `hover`, ...) already auto-waits for the element to
+   * be stable — Playwright defines "stable" as the bounding box not
+   * changing for two consecutive animation frames — before dispatching.
+   * The Selenium driver had to poll the rect manually because Selenium's
+   * actions had no built-in stability guard.
+   *
+   * We still resolve the locator's `visible` state so the call surfaces a
+   * missing-element failure at the same site Selenium did, and so anyone
+   * who calls this method *without* a follow-up action still gets a
+   * meaningful "the element is on screen" signal.
+   *
+   * @param rawLocator - Element locator.
+   * @param timeout - Maximum wait for the element to become visible
+   * (default 6000ms, matches the Selenium driver's outer timeout).
+   */
+  async waitForElementToStopMoving(
+    rawLocator: RawLocator,
+    timeout = 6000,
+  ): Promise<void> {
+    await this.buildLocator(rawLocator)
+      .first()
+      .waitFor({ state: 'visible', timeout });
   }
 
   // -- Navigation -----------------------------------------------------------
@@ -839,93 +905,61 @@ export class PlaywrightDriver {
   // -- Window / tab management ---------------------------------------------
 
   async getAllWindowHandles(): Promise<string[]> {
-    return Array.from(this.pages.keys());
+    throw new Error(
+      'PlaywrightDriver.getAllWindowHandles is not yet implemented.',
+    );
   }
 
-  async switchToWindow(handle: string): Promise<void> {
-    const target = this.pages.get(handle);
-    if (!target) {
-      throw new Error(
-        `PlaywrightDriver.switchToWindow: unknown handle ${handle}`,
-      );
-    }
-    this.currentPage = target;
-    await target.bringToFront();
+  async switchToWindow(_handle: string): Promise<void> {
+    throw new Error('PlaywrightDriver.switchToWindow is not yet implemented.');
   }
 
   async switchToNewWindow(): Promise<void> {
-    const newPage = await this.context.waitForEvent('page', {
-      timeout: this.timeout,
-    });
-    this.currentPage = newPage;
+    throw new Error(
+      'PlaywrightDriver.switchToNewWindow is not yet implemented.',
+    );
   }
 
   async switchToWindowWithUrl(
-    url: string,
+    _url: string,
     _initialHandles?: string[],
     _delayStep = 1000,
-    timeout = this.timeout,
+    _timeout = this.timeout,
   ): Promise<void> {
-    await this.waitUntil(
-      async () => {
-        for (const page of this.context.pages()) {
-          if (page.url() === url) {
-            this.currentPage = page;
-            return true;
-          }
-        }
-        return false;
-      },
-      { interval: 250, timeout },
+    throw new Error(
+      'PlaywrightDriver.switchToWindowWithUrl is not yet implemented.',
     );
   }
 
   async switchToWindowWithTitle(
-    title: string,
+    _title: string,
     _initialHandles?: string[],
     _delayStep = 1000,
-    timeout = this.timeout,
+    _timeout = this.timeout,
   ): Promise<void> {
-    await this.waitUntil(
-      async () => {
-        for (const page of this.context.pages()) {
-          try {
-            const pageTitle = await page.title();
-            if (pageTitle === title) {
-              this.currentPage = page;
-              return true;
-            }
-          } catch {
-            // Page may have been closed mid-iteration; ignore.
-          }
-        }
-        return false;
-      },
-      { interval: 250, timeout },
+    throw new Error(
+      'PlaywrightDriver.switchToWindowWithTitle is not yet implemented.',
     );
   }
 
   async waitUntilXWindowHandles(
-    expected: number,
+    _expected: number,
     _delayStep = 1000,
-    timeout = this.timeout,
+    _timeout = this.timeout,
   ): Promise<string[]> {
-    await this.waitUntil(async () => this.context.pages().length === expected, {
-      interval: 250,
-      timeout,
-    });
-    return await this.getAllWindowHandles();
+    throw new Error(
+      'PlaywrightDriver.waitUntilXWindowHandles is not yet implemented.',
+    );
   }
 
   async closeWindow(): Promise<void> {
-    await this.page.close();
+    throw new Error('PlaywrightDriver.closeWindow is not yet implemented.');
   }
 
-  async closeWindowHandle(handle: string): Promise<void> {
-    const target = this.pages.get(handle);
-    if (target) {
-      await target.close();
-    }
+  async closeWindowHandle(_handle: string): Promise<void> {
+    throw new Error(
+      'PlaywrightDriver.closeWindowHandle is not yet implemented.',
+    );
   }
 
   async switchToFrame(frame: PlaywrightElement | string): Promise<void> {
@@ -949,20 +983,10 @@ export class PlaywrightDriver {
   // -- Diagnostics ----------------------------------------------------------
 
   async takeScreenshot(
-    testTitle: string,
-    screenshotTitle: string,
+    _testTitle: string,
+    _screenshotTitle: string,
   ): Promise<void> {
-    const artifactDir = path.join(
-      './test-artifacts',
-      this.browser,
-      sanitizeTestTitle(testTitle),
-    );
-    await fs.mkdir(artifactDir, { recursive: true });
-    const buffer = await this.page.screenshot();
-    await fs.writeFile(
-      path.join(artifactDir, `${screenshotTitle}.png`),
-      buffer,
-    );
+    throw new Error('PlaywrightDriver.takeScreenshot is not yet implemented.');
   }
 
   /**
@@ -1070,77 +1094,5 @@ export class PlaywrightDriver {
         error,
       );
     }
-  }
-
-  // -- Stubs for methods not yet implemented -------------------------------
-  //
-  // Any uncovered API surface throws a clear error so migration gaps are
-  // immediately visible. Fill these in as specs need them.
-
-  async pasteIntoField(
-    _rawLocator: RawLocator,
-    _content: string,
-  ): Promise<void> {
-    throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
-  }
-
-  async holdMouseDownOnElement(
-    _rawLocator: RawLocator,
-    _ms: number,
-  ): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.holdMouseDownOnElement is not yet implemented.',
-    );
-  }
-
-  async clickPoint(
-    _rawLocator: RawLocator,
-    _x: number,
-    _y: number,
-  ): Promise<void> {
-    throw new Error('PlaywrightDriver.clickPoint is not yet implemented.');
-  }
-
-  /**
-   * Returns true if the element's bounding box moves between two
-   * 500ms-apart samples. Mirrors the Selenium driver's implementation —
-   * preserved for the rare call site that uses this method directly.
-   * Page objects should prefer letting Playwright actions auto-wait for
-   * stability instead.
-   *
-   * @param rawLocator - Element locator.
-   */
-  async isElementMoving(rawLocator: RawLocator): Promise<boolean> {
-    const element = await this.findElement(rawLocator);
-    const initial = await element.getRect();
-    await this.delay(500);
-    const next = await element.getRect();
-    return initial.x !== next.x || initial.y !== next.y;
-  }
-
-  /**
-   * Effectively a no-op on the Playwright path. Every actionable method
-   * (`click`, `fill`, `hover`, ...) already auto-waits for the element to
-   * be stable — Playwright defines "stable" as the bounding box not
-   * changing for two consecutive animation frames — before dispatching.
-   * The Selenium driver had to poll the rect manually because Selenium's
-   * actions had no built-in stability guard.
-   *
-   * We still resolve the locator's `visible` state so the call surfaces a
-   * missing-element failure at the same site Selenium did, and so anyone
-   * who calls this method *without* a follow-up action still gets a
-   * meaningful "the element is on screen" signal.
-   *
-   * @param rawLocator - Element locator.
-   * @param timeout - Maximum wait for the element to become visible
-   * (default 6000ms, matches the Selenium driver's outer timeout).
-   */
-  async waitForElementToStopMoving(
-    rawLocator: RawLocator,
-    timeout = 6000,
-  ): Promise<void> {
-    await this.buildLocator(rawLocator)
-      .first()
-      .waitFor({ state: 'visible', timeout });
   }
 }
