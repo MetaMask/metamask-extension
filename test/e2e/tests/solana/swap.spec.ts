@@ -46,6 +46,8 @@ const isUnifiedAssetsEnabled = true;
 
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+const SOL_CAIP_ASSET = `${SOLANA_CHAIN_ID}/slip44:501`;
+const USDC_CAIP_ASSET = `${SOLANA_CHAIN_ID}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
 
 /**
  * Mock V2 supportedNetworks to include Solana so the AccountsApiDataSource
@@ -455,9 +457,6 @@ async function mockSwapSOLtoUSDC(
 }
 
 const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
-const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
-const USDC_CAIP_ASSET =
-  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
 const SOL_PRICE = 168.88;
 const USDC_PRICE = 0.999761;
