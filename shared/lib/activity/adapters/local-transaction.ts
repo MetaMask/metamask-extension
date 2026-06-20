@@ -11,12 +11,7 @@ import {
 } from '../../transaction.utils';
 import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
 import type { ActivityFee, ActivityListItem, TokenAmount } from '../types';
-import {
-  supplyMethodIds,
-  unwrapMethodIds,
-  withdrawMethodIds,
-  wrapMethodIds,
-} from './constants';
+import { unwrapMethodIds, withdrawMethodIds, wrapMethodIds } from './constants';
 import {
   getKnownTokenMetadata,
   getLocalTransactionFees,
@@ -446,23 +441,6 @@ export function mapLocalTransaction(
       };
     }
 
-    case TransactionType.lendingDeposit:
-      return {
-        type: 'lendingDeposit',
-        chainId,
-        status,
-        timestamp,
-        hash,
-        data: {
-          from,
-          sourceToken: getContractToken({
-            transaction: initialTransaction,
-            direction: 'out',
-            contractAddress: initialTransaction.txParams.to,
-          }),
-        },
-      };
-
     case TransactionType.stakingDeposit:
       return {
         type: 'deposit',
@@ -493,20 +471,11 @@ export function mapLocalTransaction(
       };
 
     default: {
-      const isSupplyContractInteraction =
-        initialTransaction.type === TransactionType.contractInteraction &&
-        methodId &&
-        supplyMethodIds.has(methodId.toLowerCase());
       const isWithdrawContractInteraction =
         initialTransaction.type === TransactionType.contractInteraction &&
         methodId &&
         withdrawMethodIds.has(methodId.toLowerCase());
 
-      const suppliedTokenBalanceChange =
-        isSupplyContractInteraction &&
-        initialTransaction.simulationData?.tokenBalanceChanges?.find(
-          ({ isDecrease, standard }) => isDecrease && standard === 'erc20',
-        );
       const incomingNftBalanceChange =
         initialTransaction.type === TransactionType.contractInteraction &&
         initialTransaction.simulationData?.tokenBalanceChanges?.find(
@@ -532,25 +501,6 @@ export function mapLocalTransaction(
             token: {
               direction: 'in',
             },
-          },
-        };
-      }
-
-      if (suppliedTokenBalanceChange) {
-        return {
-          type: 'lendingDeposit',
-          chainId,
-          status,
-          timestamp,
-          hash,
-          data: {
-            from,
-            sourceToken: getContractToken({
-              amount: BigInt(suppliedTokenBalanceChange.difference).toString(),
-              transaction: initialTransaction,
-              direction: 'out',
-              contractAddress: suppliedTokenBalanceChange.address,
-            }),
           },
         };
       }
