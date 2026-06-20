@@ -44,12 +44,28 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     chainId,
     txHash: txIdentifier,
     enabled: Boolean(
-      isEvm && !localActivityItem && !cachedApiTransaction && selectedAddress,
+      isEvm && selectedAddress && txIdentifier && !cachedApiTransaction,
     ),
   });
 
   const transaction = useMemo(() => {
+    const evmTransaction = (cachedApiTransaction ??
+      apiTransaction) as V1TransactionByHashResponse;
+
+    const apiActivityItem =
+      evmTransaction && selectedAddress
+        ? mapApiEvmTransactions({
+            subjectAddress: selectedAddress,
+            transaction: evmTransaction,
+          })
+        : undefined;
+
     if (localActivityItem) {
+      // More categorized items take precedence, unless it's a generic interaction
+      if (localActivityItem.type === 'contractInteraction' && apiActivityItem) {
+        return apiActivityItem;
+      }
+
       return localActivityItem;
     }
 
@@ -57,14 +73,8 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       return nonEvmActivityItem;
     }
 
-    const evmTransaction = (cachedApiTransaction ??
-      apiTransaction) as V1TransactionByHashResponse;
-
-    if (evmTransaction && selectedAddress) {
-      return mapApiEvmTransactions({
-        subjectAddress: selectedAddress,
-        transaction: evmTransaction,
-      });
+    if (apiActivityItem) {
+      return apiActivityItem;
     }
 
     return undefined;

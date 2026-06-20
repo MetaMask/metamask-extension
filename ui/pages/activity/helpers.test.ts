@@ -20,6 +20,39 @@ function makeItem(
 }
 
 describe('dedupeItems', () => {
+  it('replaces contractInteraction with a more specific API item for the same hash', () => {
+    const timestamp = new Date('2025-01-02T12:00:00Z').getTime();
+
+    const contractInteraction = makeItem({
+      timestamp,
+      status: 'success',
+      type: 'contractInteraction',
+      data: {
+        from: '0x1',
+        to: '0x2',
+      },
+    });
+
+    const lendingDeposit = makeItem({
+      timestamp: timestamp + 1,
+      status: 'success',
+      type: 'lendingDeposit',
+      hash: '0xabc',
+      data: {
+        sourceToken: {
+          amount: '20000000000000000',
+          decimals: 18,
+          direction: 'out',
+          symbol: 'ARB',
+        },
+      },
+    });
+
+    expect(dedupeItems([contractInteraction], [lendingDeposit])).toStrictEqual([
+      lendingDeposit,
+    ]);
+  });
+
   it('does not let contractInteraction replace a more specific item with the same hash', () => {
     const timestamp = new Date('2025-01-02T12:00:00Z').getTime();
     const sendItem = makeItem({
