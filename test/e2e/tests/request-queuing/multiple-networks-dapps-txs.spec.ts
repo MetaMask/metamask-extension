@@ -1,15 +1,28 @@
 import { Suite } from 'mocha';
-import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_ONE_URL,
+  DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { getCleanAppState, withFixtures } from '../../helpers';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../../ui/helpers/constants/routes';
+import { withFixtures } from '../../helpers';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+
+const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image: '',
+  name: 'Ethereum',
+  symbol: 'ETH',
+  type: 'native' as const,
+};
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function (this: Suite) {
   it('should be possible to send requests from different dapps on different networks', async function () {
@@ -26,6 +39,17 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           })
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
+          .withPreferencesController({ securityAlertsEnabled: false })
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1338/slip44:60': { amount: '25' },
+              },
+            },
+            assetsInfo: {
+              'eip155:1338/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+            },
+          })
           .build(),
         localNodeOptions: [
           {
@@ -108,22 +132,14 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         const activityTab = new ActivityTab(driver);
         await activityTab.checkPendingTxNumberDisplayedInActivity(1);
 
-        const uiState = await getCleanAppState(driver);
-        const unapprovedTxId = (
-          uiState?.metamask?.transactions ?? []
-        ).find((tx: { status: string }) => tx.status === 'unapproved')?.id;
-
-        if (!unapprovedTxId) {
-          throw new Error('No unapproved transaction found in wallet state');
-        }
-
-        await driver.openNewURL(
-          `${driver.extensionUrl}/home.html#${CONFIRM_TRANSACTION_ROUTE}/${unapprovedTxId}`,
-        );
-
-        // Confirm Tx
+        // Pending confirm stays in the dialog popup on Firefox.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await transactionConfirmation.checkPageIsLoaded();
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // Check for Confirmed Transaction
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
