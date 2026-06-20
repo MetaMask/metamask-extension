@@ -10,11 +10,11 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
     >
       <button
         aria-label="Back"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-md mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="defi-details-page-back-button"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/arrow-left.svg');"
         />
       </button>
@@ -87,7 +87,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
             Staked
           </p>
           <div
-            class="flex-row gap-4 flex h-full w-full"
+            class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
           >
             <a
               class="flex w-full flex-row py-2 px-4 "
@@ -131,14 +131,14 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                     class="flex flex-row gap-2 min-w-0"
                   >
                     <p
-                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                      class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
                       data-testid="multichain-token-list-item-token-name"
                     >
                       Liquid staked Ether 2.0
                     </p>
                   </div>
                   <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+                    class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                     data-testid="multichain-token-list-item-secondary-value"
                     style="white-space: nowrap; padding-inline-start: 8px;"
                   >

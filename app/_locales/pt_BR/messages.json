@@ -1,10 +1,4 @@
 {
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Erro"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Os dados da transação são inconsistentes. Verifique os detalhes da transação."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Não há mais contas. Se você gostaria de acessar outra conta não listada abaixo, reconecte sua carteira de hardware e selecione-a."
   },

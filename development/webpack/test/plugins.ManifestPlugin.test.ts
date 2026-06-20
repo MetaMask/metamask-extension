@@ -10,7 +10,12 @@ import {
 } from '../utils/plugins/ManifestPlugin/stats';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip';
-import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
+import type { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
+import {
+  DEFAULT_ZIP_MTIME,
+  getDefaultZipMtime,
+  isValidZipMtime,
+} from '../utils/plugins/ManifestPlugin/zip-mtime';
 import { Manifest } from '../utils/helpers';
 import {
   CHROME_MANIFEST_KEY_NON_PRODUCTION,
@@ -18,6 +23,7 @@ import {
   ENVIRONMENTS,
 } from '../utils/constants';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
+import { getLatestCommit } from '../utils/git';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
 const { RawSource } = sources;
@@ -34,6 +40,36 @@ async function readZipEntries(source: { buffer: () => Buffer }) {
       files.map(async (file) => [file.path, await file.buffer()] as const),
     ),
   );
+}
+
+function withSourceDateEpoch(
+  sourceDateEpoch: string | undefined,
+  callback: () => void,
+) {
+  const originalSourceDateEpoch = process.env.SOURCE_DATE_EPOCH;
+  if (sourceDateEpoch === undefined) {
+    delete process.env.SOURCE_DATE_EPOCH;
+  } else {
+    process.env.SOURCE_DATE_EPOCH = sourceDateEpoch;
+  }
+
+  try {
+    callback();
+  } finally {
+    if (originalSourceDateEpoch === undefined) {
+      delete process.env.SOURCE_DATE_EPOCH;
+    } else {
+      process.env.SOURCE_DATE_EPOCH = originalSourceDateEpoch;
+    }
+  }
+}
+
+function getExpectedDefaultZipMtime() {
+  const latestCommitTimestamp = getLatestCommit().timestamp();
+  if (isValidZipMtime(latestCommitTimestamp)) {
+    return latestCommitTimestamp;
+  }
+  return DEFAULT_ZIP_MTIME;
 }
 
 describe('ManifestPlugin', () => {
@@ -435,9 +471,9 @@ describe('ManifestPlugin', () => {
       }
     });
 
-    const statsFixtureContext = join(
+    const entrypointsStatsFixtureContext = join(
       __dirname,
-      'fixtures/ManifestPlugin/empty',
+      'fixtures/ManifestPlugin/entrypoints',
     );
     const chromeSummaryAssetPath = BUNDLE_SIZE_SUMMARY_FILE.replaceAll(
       '[browser]',
@@ -447,17 +483,6 @@ describe('ManifestPlugin', () => {
       '[browser]',
       'chrome',
     );
-    const statsEntrypointCategories = {
-      'service-worker.ts': 'background',
-      home: 'ui',
-      offscreen: 'other',
-      'scripts/contentscript.js': 'contentScripts',
-      'scripts/inpage.js': 'contentScripts',
-    } as const;
-    const classifyStatsEntrypoint = (name: string) =>
-      statsEntrypointCategories[
-        name as keyof typeof statsEntrypointCategories
-      ] ?? null;
     const defaultStatsAssets = {
       'runtime.js': 100,
       'home.js': 200,
@@ -523,12 +548,18 @@ describe('ManifestPlugin', () => {
       zip = false,
       debug = false,
       stats = true,
+      context = entrypointsStatsFixtureContext,
+      manifestVersion = 3,
+      htmlScriptReferences = {},
     }: {
       entrypoints?: Record<string, ReturnType<typeof createMockEntrypoint>>;
       assets?: Record<string, number | string | Buffer>;
       zip?: boolean;
       debug?: boolean;
       stats?: boolean;
+      context?: string;
+      manifestVersion?: 2 | 3;
+      htmlScriptReferences?: Record<string, readonly string[]>;
     } = {}) {
       const files = Object.keys(assets);
       const { compiler, compilation, promise } = mockWebpack(
@@ -539,23 +570,63 @@ describe('ManifestPlugin', () => {
         files.map(() => null),
         false,
       );
-      compiler.context = statsFixtureContext;
+      compiler.context = context;
       compilation.entrypoints = new Map(
         Object.entries(entrypoints),
       ) as typeof compilation.entrypoints;
+      const entryModules = new Map<object, object>();
+      const entryDependencies = new Map<string, object>();
+      const incomingConnections = new Map<
+        object,
+        { originModule: { nameForCondition: () => string } }[]
+      >();
+      compilation.entries = new Map(
+        Object.keys(entrypoints).map((name) => {
+          const dependency = {};
+          const module = {};
+          entryDependencies.set(name, dependency);
+          entryModules.set(dependency, module);
+          return [name, { dependencies: [dependency] }];
+        }),
+      ) as typeof compilation.entries;
+
+      for (const [entrypointName, issuerResources] of Object.entries(
+        htmlScriptReferences,
+      )) {
+        const dependency = entryDependencies.get(entrypointName);
+        const module = dependency ? entryModules.get(dependency) : undefined;
+        if (module) {
+          incomingConnections.set(
+            module,
+            issuerResources.map((resource) => ({
+              originModule: { nameForCondition: () => resource },
+            })),
+          );
+        }
+      }
+
+      compilation.moduleGraph = {
+        getModule: (dependency: object) => entryModules.get(dependency),
+        getIncomingConnections: (module: object) =>
+          incomingConnections.get(module) ?? [],
+      } as unknown as typeof compilation.moduleGraph;
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
+        manifest_version: manifestVersion,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
         buildType: 'main',
+        html: [
+          { directory: join('html', 'ui'), category: 'ui' },
+          { directory: join('html', 'background'), category: 'background' },
+          { directory: join('html', 'other'), category: 'other' },
+        ],
         ...getZipOptions(zip),
         ...(stats
           ? {
               stats: {
                 outFile: BUNDLE_SIZE_SUMMARY_FILE,
-                classifyEntrypoint: classifyStatsEntrypoint,
                 ...(debug ? { debug: true } : {}),
               },
             }
@@ -579,7 +650,7 @@ describe('ManifestPlugin', () => {
         ui: 550,
         common: 150,
         other: 140,
-        contentScripts: 900,
+        contentScripts: 400,
         zip: compilation.assets['chrome/extension.zip'].size(),
         timestamp: summary.timestamp,
       });
@@ -609,7 +680,7 @@ describe('ManifestPlugin', () => {
       assert.deepStrictEqual(debugArtifact, {
         entrypoints: {
           home: {
-            category: 'ui',
+            categories: ['ui'],
             initialFiles: [
               { name: 'runtime.js', size: 100 },
               { name: 'home.js', size: 200 },
@@ -617,7 +688,7 @@ describe('ManifestPlugin', () => {
             asyncFiles: [],
           },
           'service-worker.ts': {
-            category: 'background',
+            categories: ['background'],
             initialFiles: [
               { name: 'service-worker.js', size: 300 },
               { name: 'shared.js', size: 150 },
@@ -625,6 +696,97 @@ describe('ManifestPlugin', () => {
             asyncFiles: [{ name: 'background.js', size: 350 }],
           },
         },
+      });
+    });
+
+    it('counts webpack script entrypoints referenced by HTML entrypoints', async () => {
+      const compilation = await buildStatsAssets({
+        context: entrypointsStatsFixtureContext,
+        assets: {
+          'runtime.js': 10,
+          'offscreen.js': 20,
+          'offscreen-extra.js': 30,
+          'offscreen-async.js': 40,
+          'home.js': 50,
+        },
+        entrypoints: {
+          offscreen: createMockEntrypoint(['runtime.js']),
+          'offscreen.1': createMockEntrypoint(
+            ['runtime.js', 'offscreen.js', 'offscreen-extra.js'],
+            ['offscreen-async.js'],
+          ),
+          home: createMockEntrypoint(['home.js']),
+        },
+        htmlScriptReferences: {
+          'offscreen.1': [
+            join(
+              entrypointsStatsFixtureContext,
+              'html',
+              'other',
+              'offscreen.html',
+            ),
+          ],
+        },
+        debug: true,
+      });
+
+      const summary = readJsonAsset<BundleSizeSummary>(
+        compilation,
+        chromeSummaryAssetPath,
+      );
+      assert.deepStrictEqual(summary, {
+        background: 0,
+        ui: 50,
+        common: 0,
+        other: 100,
+        contentScripts: 0,
+        timestamp: summary.timestamp,
+      });
+
+      const debugArtifact = readJsonAsset<{
+        entrypoints: Record<string, unknown>;
+      }>(compilation, chromeDebugAssetPath);
+      assert.deepStrictEqual(debugArtifact.entrypoints.offscreen, {
+        categories: ['other'],
+        initialFiles: [{ name: 'runtime.js', size: 10 }],
+        asyncFiles: [],
+      });
+      assert.deepStrictEqual(debugArtifact.entrypoints['offscreen.1'], {
+        categories: ['other'],
+        initialFiles: [
+          { name: 'runtime.js', size: 10 },
+          { name: 'offscreen.js', size: 20 },
+          { name: 'offscreen-extra.js', size: 30 },
+        ],
+        asyncFiles: [{ name: 'offscreen-async.js', size: 40 }],
+      });
+    });
+
+    it('classifies MV2 manifest background entries as background', async () => {
+      const compilation = await buildStatsAssets({
+        context: entrypointsStatsFixtureContext,
+        manifestVersion: 2,
+        assets: {
+          'background-page.js': 10,
+          'background-script.js': 20,
+        },
+        entrypoints: {
+          background: createMockEntrypoint(['background-page.js']),
+          'background.js': createMockEntrypoint(['background-script.js']),
+        },
+      });
+
+      const summary = readJsonAsset<BundleSizeSummary>(
+        compilation,
+        chromeSummaryAssetPath,
+      );
+      assert.deepStrictEqual(summary, {
+        background: 30,
+        ui: 0,
+        common: 0,
+        other: 0,
+        contentScripts: 0,
+        timestamp: summary.timestamp,
       });
     });
 
@@ -640,6 +802,83 @@ describe('ManifestPlugin', () => {
   });
 
   describe('zip helpers', () => {
+    it('uses the latest commit timestamp when SOURCE_DATE_EPOCH is unset', () => {
+      withSourceDateEpoch(undefined, () => {
+        assert.strictEqual(getDefaultZipMtime(), getExpectedDefaultZipMtime());
+      });
+    });
+
+    it('uses a deterministic default zip mtime when the latest commit timestamp is unavailable', () => {
+      const childProcess = require('node:child_process');
+      const { mock: testMock } = require('node:test');
+      const zipMtimePath =
+        require.resolve('../utils/plugins/ManifestPlugin/zip-mtime.ts');
+      const gitPath = require.resolve('../utils/git.ts');
+      const originalZipMtimeCache = require.cache[zipMtimePath];
+      const originalGitCache = require.cache[gitPath];
+
+      try {
+        testMock.method(childProcess, 'spawnSync', () => ({
+          stdout: Buffer.alloc(0),
+        }));
+        delete require.cache[zipMtimePath];
+        delete require.cache[gitPath];
+
+        const {
+          DEFAULT_ZIP_MTIME: defaultZipMtime,
+          getDefaultZipMtime: getFreshDefaultZipMtime,
+        } = require('../utils/plugins/ManifestPlugin/zip-mtime.ts');
+
+        withSourceDateEpoch(undefined, () => {
+          assert.strictEqual(getFreshDefaultZipMtime(), defaultZipMtime);
+        });
+      } finally {
+        testMock.restoreAll();
+        if (originalZipMtimeCache) {
+          require.cache[zipMtimePath] = originalZipMtimeCache;
+        } else {
+          delete require.cache[zipMtimePath];
+        }
+        if (originalGitCache) {
+          require.cache[gitPath] = originalGitCache;
+        } else {
+          delete require.cache[gitPath];
+        }
+      }
+    });
+
+    it('uses SOURCE_DATE_EPOCH as the default zip mtime', () => {
+      withSourceDateEpoch('1711141205', () => {
+        assert.strictEqual(getDefaultZipMtime(), 1711141205000);
+      });
+    });
+
+    it('rejects non-integer or negative SOURCE_DATE_EPOCH values', () => {
+      for (const sourceDateEpoch of ['1711141205.825', '-1', '']) {
+        withSourceDateEpoch(sourceDateEpoch, () => {
+          assert.throws(() => getDefaultZipMtime(), {
+            message: new RegExp(
+              `Invalid SOURCE_DATE_EPOCH value "${sourceDateEpoch}": expected a non-negative integer number of seconds since the Unix epoch`,
+              'u',
+            ),
+          });
+        });
+      }
+    });
+
+    it('rejects SOURCE_DATE_EPOCH values outside the zip mtime range', () => {
+      for (const sourceDateEpoch of ['0', '4102444800']) {
+        withSourceDateEpoch(sourceDateEpoch, () => {
+          assert.throws(() => getDefaultZipMtime(), {
+            message: new RegExp(
+              `Invalid SOURCE_DATE_EPOCH value "${sourceDateEpoch}": expected a Unix timestamp in seconds greater than or equal to 315532800 and less than 4102444800`,
+              'u',
+            ),
+          });
+        });
+      }
+    });
+
     it('skips excluded extensions when adding assets to a browser zip', async () => {
       const addedAssets: string[] = [];
       const builder = createBrowserZipBuilder({
@@ -1275,6 +1514,11 @@ describe('ManifestPlugin', () => {
       __dirname,
       'fixtures/ManifestPlugin/entrypoints',
     );
+    const html = [
+      { directory: join('html', 'ui'), category: 'ui' },
+      { directory: join('html', 'background'), category: 'background' },
+      { directory: join('html', 'other'), category: 'other' },
+    ] as const;
 
     function mockEntrypoint(...files: string[]) {
       return { getFiles: () => files };
@@ -1293,6 +1537,7 @@ describe('ManifestPlugin', () => {
           description: null,
           buildType: 'main',
           zip: false,
+          html,
         });
 
         plugin.apply(compiler);
@@ -1325,6 +1570,10 @@ describe('ManifestPlugin', () => {
         assert.ok(entries.notification, 'should have notification HTML entry');
         assert.ok(entries.home, 'should have home HTML entry');
         assert.ok(entries.background, 'should include background.html for MV2');
+        assert.ok(
+          entries['trezor-usb-permissions'],
+          'should include trezor-usb-permissions.html',
+        );
 
         // MV2 should NOT include offscreen.html
         assert.strictEqual(
@@ -1350,7 +1599,7 @@ describe('ManifestPlugin', () => {
 
         // Verify HTML entry structure
         assert.deepStrictEqual(entries.popup.import, [
-          join(entrypointsContext, 'html', 'pages', 'popup.html'),
+          join(entrypointsContext, 'html', 'ui', 'popup.html'),
         ]);
       });
 
@@ -1366,6 +1615,7 @@ describe('ManifestPlugin', () => {
           description: null,
           buildType: 'main',
           zip: false,
+          html,
         });
 
         plugin.apply(compiler);
@@ -1382,11 +1632,11 @@ describe('ManifestPlugin', () => {
         );
 
         // service_worker with chunkLoading: 'import-scripts'
-        const sw = entries['service-worker.js'];
+        const sw = entries['service-worker.ts'];
         assert.ok(sw, 'should have service worker entry');
         assert.strictEqual(sw.chunkLoading, 'import-scripts');
         assert.deepStrictEqual(sw.import, [
-          resolve(entrypointsContext, 'service-worker.js'),
+          resolve(entrypointsContext, 'service-worker.ts'),
         ]);
 
         // web_accessible_resources (.js only)
@@ -1402,6 +1652,10 @@ describe('ManifestPlugin', () => {
         assert.ok(entries.notification, 'should have notification HTML entry');
         assert.ok(entries.home, 'should have home HTML entry');
         assert.ok(entries.offscreen, 'should include offscreen.html for MV3');
+        assert.ok(
+          entries['trezor-usb-permissions'],
+          'should include trezor-usb-permissions.html',
+        );
 
         // MV3 should NOT include background.html
         assert.strictEqual(
@@ -1584,7 +1838,7 @@ describe('ManifestPlugin', () => {
           mockEntrypoint('vendor/trezor/content-script.bundle.js'),
         );
         compilation.entrypoints.set(
-          'service-worker.js',
+          'service-worker.ts',
           mockEntrypoint('service-worker.bundle.js'),
         );
         compilation.entrypoints.set(
@@ -1727,7 +1981,7 @@ describe('ManifestPlugin', () => {
         // service_worker should keep original path
         assert.strictEqual(
           (json as chrome.runtime.ManifestV3).background?.service_worker,
-          'service-worker.js',
+          'service-worker.ts',
         );
 
         // web_accessible_resources should keep original paths

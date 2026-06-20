@@ -18,7 +18,7 @@ interface WrapperProps {
 }
 
 // Wrapper component to provide necessary providers
-const Wrapper: React.FC<WrapperProps> = ({ children }) => (
+const Wrapper = ({ children }: WrapperProps) => (
   <Provider store={store}>{children}</Provider>
 );
 
@@ -51,7 +51,7 @@ const meta: Meta<typeof Home> = {
     isNotification: false,
     totalUnapprovedCount: 0,
     defaultHomeActiveTabName: null,
-    participateInMetaMetrics: false,
+    isMetaMetricsEnabled: false,
     haveSwapsQuotes: false,
     showAwaitingSwapScreen: false,
     haveBridgeQuotes: false,

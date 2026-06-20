@@ -11,7 +11,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 
 import Homepage from '../../page-objects/pages/home/homepage';
-import NftListPage from '../../page-objects/pages/home/nft-list';
+import NftsTab from '../../page-objects/pages/home/nfts-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import SendPage from '../../page-objects/pages/send/send-page';
 
@@ -42,8 +42,8 @@ describe('Send NFT - Filtering', function () {
 
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
-        const nftListPage = new NftListPage(driver);
-        await nftListPage.checkPageIsLoaded();
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.checkPageIsLoaded();
         await homepage.startSendFlow();
 
         const sendPage = new SendPage(driver);

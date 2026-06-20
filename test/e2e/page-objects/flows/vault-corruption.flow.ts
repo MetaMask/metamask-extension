@@ -7,7 +7,10 @@ import AccountAddressModal from '../pages/multichain/account-address-modal';
 import AddressListModal from '../pages/multichain/address-list-modal';
 import CriticalErrorPage from '../pages/critical-error-page';
 import VaultRecoveryPage from '../pages/vault-recovery-page';
-import { completeCreateNewWalletOnboardingFlow } from './onboarding.flow';
+import {
+  completeCreateNewWalletOnboardingFlow,
+  type OnboardingMetricsFlowOptions,
+} from './onboarding.flow';
 import { lockAndWaitForLoginPage } from './login.flow';
 
 /**
@@ -62,6 +65,70 @@ export const simpleReloadScript = `
 `;
 
 /**
+ * Script to read the encrypted vault from the IndexedDB backup database.
+ * Resolves with the encrypted vault string, or `null` if it isn't present yet.
+ *
+ * Must be run via `executeAsyncScript` on an extension page (e.g. the login or
+ * home page) so it can access the extension's IndexedDB.
+ */
+export const getBackupVaultScript = `
+  const callback = arguments[arguments.length - 1];
+  const request = globalThis.indexedDB.open('metamask-backup', 1);
+  request.onupgradeneeded = () => {
+    const db = request.result;
+    if (!db.objectStoreNames.contains('store')) {
+      db.createObjectStore('store');
+    }
+  };
+  request.onsuccess = () => {
+    const db = request.result;
+    const transaction = db.transaction('store', 'readonly');
+    const store = transaction.objectStore('store');
+    const getRequest = store.get('KeyringController');
+    getRequest.onsuccess = () => {
+      const keyringController = getRequest.result;
+      callback(keyringController?.vault ?? null);
+    };
+    getRequest.onerror = () => callback(null);
+  };
+  request.onerror = () => callback(null);
+`;
+
+/**
+ * Reads the encrypted vault from the IndexedDB backup database.
+ *
+ * @param driver - The WebDriver instance. Must currently be on an extension page
+ * (e.g. the login or home page) so the script can access the extension's IndexedDB.
+ * @returns The encrypted vault string, or `null` if it isn't present.
+ */
+export async function getBackupVault(driver: Driver): Promise<string | null> {
+  return (await driver.executeAsyncScript(getBackupVaultScript)) as
+    | string
+    | null;
+}
+
+/**
+ * Waits for the encrypted vault to be written to the IndexedDB backup database.
+ *
+ * The backup write is asynchronous and debounced, so without this guard the
+ * corruption flow can break `storage.local` and reload the extension before the
+ * backup has been committed.
+ *
+ * @param driver - The WebDriver instance. Must currently be on an extension page
+ * (e.g. the login page) so the script can access the extension's IndexedDB.
+ * @param timeoutMs - How long to wait for the backup.
+ */
+export async function waitForBackupVault(
+  driver: Driver,
+  timeoutMs = 10000,
+): Promise<void> {
+  await driver.wait(async () => {
+    const backupVault = await getBackupVault(driver);
+    return Boolean(backupVault);
+  }, timeoutMs);
+}
+
+/**
  * Onboards a new wallet, then executes a script.
  *
  * This flow:
@@ -75,17 +142,13 @@ export const simpleReloadScript = `
  * @param driver - The WebDriver instance.
  * @param script - The script to run (e.g. corruption script, or simpleReloadScript).
  * @param options - Additional options.
- * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
+ * @param options.optedIn - Whether the user has opted in to MetaMetrics. Defaults to false.
  * @returns The initial first account's address (before the script ran).
  */
 export async function onboardThenExecuteScript(
   driver: Driver,
   script: string,
-  {
-    participateInMetaMetrics = false,
-  }: {
-    participateInMetaMetrics?: boolean;
-  } = {},
+  { optedIn = false }: OnboardingMetricsFlowOptions = {},
 ): Promise<string> {
   const initialWindow = await driver.driver.getWindowHandle();
 
@@ -97,7 +160,7 @@ export async function onboardThenExecuteScript(
   await completeCreateNewWalletOnboardingFlow({
     driver,
     password: WALLET_PASSWORD,
-    participateInMetaMetrics,
+    optedIn,
     skipSRPBackup: true,
   });
 
@@ -110,6 +173,9 @@ export async function onboardThenExecuteScript(
     waitForSync: false,
   });
   await lockAndWaitForLoginPage(driver);
+
+  // Ensure backup is in IndexedDB otherwise the Extension may restart with no backup to recover from.
+  await waitForBackupVault(driver);
 
   // use the home page to destroy the vault
   await driver.executeAsyncScript(script);
@@ -136,21 +202,15 @@ export async function onboardThenExecuteScript(
  * @param driver - The WebDriver instance.
  * @param script - The script to break the DB (or simpleReloadScript when manifest flags handle it).
  * @param options - Additional options.
- * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
+ * @param options.optedIn - Whether the user has opted in to MetaMetrics. Defaults to false.
  * @returns The initial first account's address (before corruption).
  */
 export async function onboardThenTriggerCorruptionFlow(
   driver: Driver,
   script: string,
-  {
-    participateInMetaMetrics = false,
-  }: {
-    participateInMetaMetrics?: boolean;
-  } = {},
+  options: OnboardingMetricsFlowOptions = {},
 ): Promise<string> {
-  const firstAddress = await onboardThenExecuteScript(driver, script, {
-    participateInMetaMetrics,
-  });
+  const firstAddress = await onboardThenExecuteScript(driver, script, options);
 
   // wait for the background page to reload
   // Since reloading the background restarts the extension the UI isn't

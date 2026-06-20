@@ -1607,6 +1607,33 @@ describe('getAssetsBySelectedAccountGroup', () => {
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
     expect(result).toStrictEqual(selectorMockResult);
   });
+
+  it('hides the Arc USDC ERC20 while keeping the native token and other assets', () => {
+    const arcNative = {
+      address: '0x0000000000000000000000000000000000000000',
+      isNative: true,
+    };
+    const arcUsdcErc20 = {
+      address: '0x3600000000000000000000000000000000000000',
+      isNative: false,
+    };
+    const otherToken = {
+      address: '0x1111111111111111111111111111111111111111',
+      isNative: false,
+    };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValueOnce({
+      '0x13b2': [arcNative, arcUsdcErc20, otherToken],
+      '0x1': [arcUsdcErc20],
+    } as unknown as ReturnType<typeof selectAssetsBySelectedAccountGroup>);
+
+    const result = getAssetsBySelectedAccountGroup(mockState);
+
+    // Arc USDC ERC20 removed, native + other token kept.
+    expect(result['0x13b2']).toStrictEqual([arcNative, otherToken]);
+    // The same address on a non-Arc chain is untouched.
+    expect(result['0x1']).toStrictEqual([arcUsdcErc20]);
+  });
 });
 
 describe('getAssetsBySelectedAccountGroupIncludingHidden', () => {
@@ -1648,6 +1675,25 @@ describe('getAssetsBySelectedAccountGroupIncludingHidden', () => {
       allIgnoredAssets: {},
     });
     expect(result).toStrictEqual(selectorMockResult);
+  });
+
+  it('hides the Arc USDC ERC20 from the including-hidden list', () => {
+    const arcNative = {
+      address: '0x0000000000000000000000000000000000000000',
+      isNative: true,
+    };
+    const arcUsdcErc20 = {
+      address: '0x3600000000000000000000000000000000000000',
+      isNative: false,
+    };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValueOnce({
+      '0x13b2': [arcNative, arcUsdcErc20],
+    } as unknown as ReturnType<typeof selectAssetsBySelectedAccountGroup>);
+
+    const result = getAssetsBySelectedAccountGroupIncludingHidden(mockState);
+
+    expect(result['0x13b2']).toStrictEqual([arcNative]);
   });
 });
 

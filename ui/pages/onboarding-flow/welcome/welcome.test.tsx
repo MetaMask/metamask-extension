@@ -85,7 +85,7 @@ describe('Welcome Page', () => {
         accounts: {},
         selectedAccount: '',
       },
-      metaMetricsId: '0x00000000',
+      analyticsId: '0x00000000',
     },
   };
   const mockStore = configureMockStore([thunk])(mockState);
@@ -448,9 +448,6 @@ describe('Welcome Page', () => {
     const triggerTelegramCreateFailure = async (errorMessage: string) => {
       jest
         .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
-        .mockReturnValue(true);
-      jest
-        .spyOn(Environment, 'getIsTelegramLoginFeatureEnabled')
         .mockReturnValue(true);
       const noopThunk = () => Promise.resolve();
       jest

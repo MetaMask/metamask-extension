@@ -36,11 +36,11 @@ export type OrderCardProps = {
  * @param options0.onClick - Optional click handler override. If not provided, navigates to market detail page.
  * @param options0.variant - Visual variant - 'default' for perps tab, 'muted' for detail page
  */
-export const OrderCard: React.FC<OrderCardProps> = ({
+export const OrderCard = ({
   order,
   onClick,
   variant = 'default',
-}) => {
+}: OrderCardProps) => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const displayName = getDisplayName(order.symbol);
@@ -92,6 +92,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         baseStyles,
         heightStyle,
         variantStyles,
+        '[container-name:list-item] [container-type:inline-size]',
       )}
       isFullWidth
       onClick={handleClick}
@@ -103,7 +104,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         size={AvatarTokenSize.Md}
         className="shrink-0"
       />
-
       {/* Left side: Symbol info and size */}
       <Box
         className="min-w-0 flex-1"
@@ -114,14 +114,24 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         {isTriggerBasedOrder ? (
           // TP/SL: render label directly in the column so it wraps freely.
           // The symbol is redundant here — it appears after the size below.
-          <Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>
+          <Text
+            fontWeight={FontWeight.Medium}
+            className="text-s-body-md @compact:text-s-body-sm"
+          >
+            {formatOrderLabel(order)}
+          </Text>
         ) : (
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             gap={1}
           >
-            <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+            <Text
+              fontWeight={FontWeight.Medium}
+              className="text-s-body-md @compact:text-s-body-sm"
+            >
+              {displayName}
+            </Text>
             <Text
               variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
@@ -134,7 +144,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           {order.size} {displayName}
         </Text>
       </Box>
-
       {/* Right side: USD value */}
       <Box
         className="shrink-0"
@@ -142,7 +151,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+        <Text
+          fontWeight={FontWeight.Medium}
+          className="text-s-body-md @compact:text-s-body-sm"
+        >
           {orderValueUsd ?? t('perpsMarket')}
         </Text>
         {isTriggerBasedOrder && orderValueUsd && (

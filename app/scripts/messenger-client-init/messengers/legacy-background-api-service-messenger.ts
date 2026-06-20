@@ -42,7 +42,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'NetworkController:resetConnection',
       'KeyringController:importAccountWithStrategy',
       'OnboardingController:getIsSocialLoginFlow',
-      'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2',
       'KeyringController:removeAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:setSelectedAccount',
@@ -54,6 +54,10 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
+      'SnapAccountService:getLegacySnapKeyring',
+      'SeedlessOnboardingController:getState',
+      'SeedlessOnboardingController:runMigrations',
+      'MetaMetricsController:trackEvent',
     ],
   });
 

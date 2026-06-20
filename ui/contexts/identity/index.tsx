@@ -6,7 +6,9 @@ import {
   useAutoSignOut,
 } from '../../hooks/identity/useAuthentication';
 
-export const MetamaskIdentityProvider: React.FC = ({ children }) => {
+export const MetamaskIdentityProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const { dispatchAccountSyncing, shouldDispatchAccountSyncing } =
     useAccountSyncing();
   const { dispatchContactSyncing, shouldDispatchContactSyncing } =
