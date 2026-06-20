@@ -5,7 +5,6 @@ import type {
   ActivityListItem,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
-import { getTokenMetadataFromKnownToken } from '../../../../shared/lib/activity/adapters/helpers';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { NetworkName } from '../../../components/app/transaction/network-name';
@@ -21,6 +20,7 @@ import { Footer, Row, Section } from '../components/shared';
 import { TokensSection } from '../components/sections';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { useDestinationToken } from './helpers';
 
 const ARBITRUM_USDC_ASSET_ID = toAssetId(
   ARBITRUM_USDC.address,
@@ -41,8 +41,7 @@ export function PerpsDetails({
   const { formatDateTime, formatCurrencyWithMinThreshold } = useFormatters();
   const transactionMeta = useTransactionMeta(item.hash);
   const { metamaskPay } = transactionMeta || {};
-  const { targetFiat, totalFiat, networkFeeFiat, bridgeFeeFiat } =
-    metamaskPay || {};
+  const { totalFiat, networkFeeFiat, bridgeFeeFiat } = metamaskPay || {};
 
   const withdrewToken = useMemo((): TokenAmount | undefined => {
     if (!totalFiat) {
@@ -57,31 +56,12 @@ export function PerpsDetails({
       direction: 'out',
     };
   }, [totalFiat]);
+  const receivedToken = useDestinationToken(metamaskPay);
 
-  const receivedToken = useMemo((): TokenAmount | undefined => {
-    if (!targetFiat || !metamaskPay?.chainId) {
-      return undefined;
-    }
-
-    const tokenMetadata = getTokenMetadataFromKnownToken(
-      metamaskPay?.tokenAddress,
-      'in',
-      toEvmCaipChainId(metamaskPay.chainId),
-    );
-
-    return {
-      amount: targetFiat,
-      direction: 'in',
-      ...tokenMetadata,
-    };
-  }, [targetFiat, metamaskPay?.chainId, metamaskPay?.tokenAddress]);
-
-  const transactionFeeAmount =
-    Number(networkFeeFiat ?? 0) + Number(bridgeFeeFiat ?? 0);
-
-  const formattedTransactionFee = Number.isFinite(transactionFeeAmount)
-    ? formatCurrencyWithMinThreshold(transactionFeeAmount, PERPS_CURRENCY)
-    : null;
+  const formattedTransactionFee = formatCurrencyWithMinThreshold(
+    Number(networkFeeFiat ?? 0) + Number(bridgeFeeFiat ?? 0),
+    PERPS_CURRENCY,
+  );
 
   const chainId =
     metamaskPay?.isPostQuote && metamaskPay.chainId
