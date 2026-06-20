@@ -62,7 +62,15 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
 
     if (localActivityItem) {
       // More categorized items take precedence, unless it's a generic interaction
-      if (localActivityItem.type === 'contractInteraction' && apiActivityItem) {
+      const hasMatchingActivityType =
+        apiActivityItem?.type === localActivityItem.type;
+      const isLocalUncategorized =
+        localActivityItem.type === 'contractInteraction';
+
+      if (
+        apiActivityItem &&
+        (hasMatchingActivityType || isLocalUncategorized)
+      ) {
         return apiActivityItem;
       }
 
