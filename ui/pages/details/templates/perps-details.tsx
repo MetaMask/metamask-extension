@@ -48,14 +48,19 @@ export function PerpsDetails({
       return undefined;
     }
 
+    const amount =
+      Number(totalFiat) -
+      Number(bridgeFeeFiat ?? 0) -
+      Number(networkFeeFiat ?? 0);
+
     return {
       assetId: ARBITRUM_USDC_ASSET_ID,
-      amount: totalFiat,
+      amount: String(amount),
       decimals: ARBITRUM_USDC.decimals,
       symbol: ARBITRUM_USDC.symbol,
       direction: 'out',
     };
-  }, [totalFiat]);
+  }, [totalFiat, bridgeFeeFiat, networkFeeFiat]);
   const receivedToken = useDestinationToken(metamaskPay);
 
   const formattedTransactionFee = formatCurrencyWithMinThreshold(
