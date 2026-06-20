@@ -62,10 +62,15 @@ class Confirmation {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.footerCancelButton,
-        this.footerConfirmButton,
-      ]);
+      await this.driver.wait(async () => {
+        try {
+          await this.driver.findClickableElement(this.footerCancelButton);
+          await this.driver.findClickableElement(this.footerConfirmButton);
+          return true;
+        } catch {
+          return false;
+        }
+      });
     } catch (e) {
       console.log(
         'Timeout while waiting for confirmation page to be loaded',
