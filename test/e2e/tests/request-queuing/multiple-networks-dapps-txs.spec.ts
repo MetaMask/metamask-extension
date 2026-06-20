@@ -2,7 +2,8 @@ import { Suite } from 'mocha';
 import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { withFixtures } from '../../helpers';
+import { getCleanAppState, withFixtures } from '../../helpers';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../../ui/helpers/constants/routes';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -10,9 +11,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
-// BUG #38149 - Request Queuing multiple Dapps and txs on different networks fails with unapproved transaction
-// eslint-disable-next-line
-describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.', function (this: Suite) {
+describe('Request Queuing for Multiple Dapps and Txs on different networks.', function (this: Suite) {
   it('should be possible to send requests from different dapps on different networks', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -109,8 +108,18 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         const activityTab = new ActivityTab(driver);
         await activityTab.checkPendingTxNumberDisplayedInActivity(1);
 
-        // Click Unconfirmed Tx
-        await activityTab.clickOnActivity(1);
+        const uiState = await getCleanAppState(driver);
+        const unapprovedTxId = (
+          uiState?.metamask?.transactions ?? []
+        ).find((tx: { status: string }) => tx.status === 'unapproved')?.id;
+
+        if (!unapprovedTxId) {
+          throw new Error('No unapproved transaction found in wallet state');
+        }
+
+        await driver.openNewURL(
+          `${driver.extensionUrl}/home.html#${CONFIRM_TRANSACTION_ROUTE}/${unapprovedTxId}`,
+        );
 
         // Confirm Tx
         await transactionConfirmation.checkPageIsLoaded();
