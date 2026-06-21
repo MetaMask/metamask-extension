@@ -1,8 +1,7 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch } from 'react-redux';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -30,7 +29,8 @@ jest.mock('../../../store/actions', () => ({
   setTransactionActive: jest.fn(),
 }));
 
-jest.mock('../../../../app/scripts/lib/util', () => ({
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
 }));
 

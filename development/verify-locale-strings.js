@@ -319,10 +319,17 @@ async function verifyEnglishLocale() {
     'CSS_loadingTakingTooLongActionText',
   ];
 
+  const messageExceptionPatterns = [
+    /^activity_[a-zA-Z0-9]+_(failed|pending|success)_(description|title)$/u,
+    /^activity_fallback_(description|title)$/u,
+  ];
+
   const englishMessages = Object.keys(englishLocale);
   const unusedMessages = englishMessages.filter(
     (message) =>
-      !messageExceptions.includes(message) && !usedMessages.has(message),
+      !messageExceptions.includes(message) &&
+      !messageExceptionPatterns.some((pattern) => pattern.test(message)) &&
+      !usedMessages.has(message),
   );
 
   if (unusedMessages.length) {

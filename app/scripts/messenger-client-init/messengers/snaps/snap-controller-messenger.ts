@@ -10,7 +10,7 @@ import {
 import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
-  KeyringControllerWithKeyringAction,
+  KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
 import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
@@ -81,7 +81,7 @@ export function getSnapControllerMessenger(
 }
 
 type InitActions =
-  | KeyringControllerWithKeyringAction
+  | KeyringControllerWithKeyringV2UnsafeAction
   | PreferencesControllerGetStateAction
   | MetaMetricsControllerTrackEventAction
   | SnapControllerSetClientActiveAction
@@ -118,7 +118,7 @@ export function getSnapControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
-      'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2Unsafe',
       'PreferencesController:getState',
       'MetaMetricsController:trackEvent',
       'SnapController:setClientActive',

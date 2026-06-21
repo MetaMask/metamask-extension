@@ -19,9 +19,12 @@ import {
   mockAccountResourcesRequest,
   mockTokens,
   mockGetBlock,
+  mockGetNowBlock,
+  mockGetBlockByNum,
   mockScanTransaction,
   mockBroadcastTransaction,
   mockTriggerSmartContract,
+  mockGetNowBlockInfura,
 } from './mocks';
 
 export const TRANSACTION_HASH_MOCK =
@@ -78,6 +81,9 @@ export const withTronAccountSnap = async (
         await mockAccountResourcesRequest(mockServer),
         await mockTokens(mockServer),
         await mockGetBlock(mockServer),
+        await mockGetNowBlock(mockServer),
+        await mockGetNowBlockInfura(mockServer),
+        await mockGetBlockByNum(mockServer),
         await mockScanTransaction(mockServer),
         await mockBroadcastTransaction(mockServer),
         await mockTriggerSmartContract(mockServer),

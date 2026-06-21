@@ -42,7 +42,7 @@ const renderHome = () => {
   return renderWithProvider(<HomeContainer />, store);
 };
 
-describe('HomeWithRouter', () => {
+describe('HomeContainer', () => {
   it('renders AppHeader and DappConnectionControlBar', () => {
     const { getByTestId } = renderHome();
     expect(getByTestId('mock-app-header')).toBeInTheDocument();

@@ -38,6 +38,7 @@ function applyAnvilPort(
   anvilPort: number,
 ): FixtureBuilderV2 {
   return builder.withNetworkController({
+    selectedNetworkClientId: 'localhost',
     networkConfigurationsByChainId: {
       '0x539': {
         blockExplorerUrls: [],

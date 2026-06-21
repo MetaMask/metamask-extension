@@ -10,11 +10,6 @@ export type MetaMetricsControllerFinalizeAbandonedFragmentsAction = {
   handler: MetaMetricsController['finalizeAbandonedFragments'];
 };
 
-export type MetaMetricsControllerGenerateMetaMetricsIdAction = {
-  type: `MetaMetricsController:generateMetaMetricsId`;
-  handler: MetaMetricsController['generateMetaMetricsId'];
-};
-
 /**
  * Create an event fragment in state and returns the event fragment object.
  *
@@ -83,17 +78,6 @@ export type MetaMetricsControllerFinalizeEventFragmentAction = {
   handler: MetaMetricsController['finalizeEventFragment'];
 };
 
-/**
- * Calls this._identify with validated metaMetricsId and user traits if user is participating
- * in the MetaMetrics analytics program
- *
- * @param userTraits
- */
-export type MetaMetricsControllerIdentifyAction = {
-  type: `MetaMetricsController:identify`;
-  handler: MetaMetricsController['identify'];
-};
-
 export type MetaMetricsControllerUpdateExtensionUninstallUrlAction = {
   type: `MetaMetricsController:updateExtensionUninstallUrl`;
   handler: MetaMetricsController['updateExtensionUninstallUrl'];
@@ -121,17 +105,6 @@ export type MetaMetricsControllerSetMarketingCampaignCookieIdAction = {
 };
 
 /**
- * track a page view with Segment
- *
- * @param payload - details of the page viewed.
- * @param options - options for handling the page view.
- */
-export type MetaMetricsControllerTrackPageAction = {
-  type: `MetaMetricsController:trackPage`;
-  handler: MetaMetricsController['trackPage'];
-};
-
-/**
  * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
  *
  * @param payload - details of the event
@@ -140,6 +113,27 @@ export type MetaMetricsControllerTrackPageAction = {
 export type MetaMetricsControllerTrackEventAction = {
   type: `MetaMetricsController:trackEvent`;
   handler: MetaMetricsController['trackEvent'];
+};
+
+/**
+ * Identifies the user with valid user traits if they are participating in
+ * the MetaMetrics analytics program.
+ *
+ * @param userTraits
+ */
+export type MetaMetricsControllerIdentifyAction = {
+  type: `MetaMetricsController:identify`;
+  handler: MetaMetricsController['identify'];
+};
+
+/**
+ * Track a page view through AnalyticsController.
+ *
+ * @param payload - details of the page viewed.
+ */
+export type MetaMetricsControllerTrackPageAction = {
+  type: `MetaMetricsController:trackPage`;
+  handler: MetaMetricsController['trackPage'];
 };
 
 export type MetaMetricsControllerHandleMetaMaskStateUpdateAction = {
@@ -214,20 +208,19 @@ export type MetaMetricsControllerGetMetaMetricsIdAction = {
  */
 export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerFinalizeAbandonedFragmentsAction
-  | MetaMetricsControllerGenerateMetaMetricsIdAction
   | MetaMetricsControllerCreateEventFragmentAction
   | MetaMetricsControllerGetEventFragmentByIdAction
   | MetaMetricsControllerProcessAbandonedFragmentAction
   | MetaMetricsControllerUpdateEventFragmentAction
   | MetaMetricsControllerDeleteEventFragmentAction
   | MetaMetricsControllerFinalizeEventFragmentAction
-  | MetaMetricsControllerIdentifyAction
   | MetaMetricsControllerUpdateExtensionUninstallUrlAction
   | MetaMetricsControllerSetParticipateInMetaMetricsAction
   | MetaMetricsControllerSetDataCollectionForMarketingAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
-  | MetaMetricsControllerTrackPageAction
   | MetaMetricsControllerTrackEventAction
+  | MetaMetricsControllerIdentifyAction
+  | MetaMetricsControllerTrackPageAction
   | MetaMetricsControllerHandleMetaMaskStateUpdateAction
   | MetaMetricsControllerTrackEventsAfterMetricsOptInAction
   | MetaMetricsControllerClearEventsAfterMetricsOptInAction

@@ -77,6 +77,12 @@ export const PerpsControllerInit: MessengerClientInitFunction<
         key,
       ),
     isDisconnecting: () => isDisconnecting,
+    getPerpsDiscountForAccount: (caipAccountId, baseFeeBips) =>
+      controllerMessenger.call(
+        'RewardsController:getPerpsDiscountForAccount',
+        caipAccountId,
+        baseFeeBips,
+      ),
   });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
@@ -178,6 +184,8 @@ type PerpsActionName =
   | 'perpsClearPendingTransactionRequests'
   | 'perpsSaveOrderBookGrouping'
   | 'perpsGetOrderBookGrouping'
+  | 'perpsGetMaxSlippage'
+  | 'perpsSetMaxSlippage'
   | 'perpsGetUserHistory'
   | 'perpsClearDepositResult'
   | 'perpsClearWithdrawResult'
@@ -462,6 +470,8 @@ function getApi(
       messengerClient.saveOrderBookGrouping.bind(messengerClient),
     perpsGetOrderBookGrouping:
       messengerClient.getOrderBookGrouping.bind(messengerClient),
+    perpsGetMaxSlippage: messengerClient.getMaxSlippage.bind(messengerClient),
+    perpsSetMaxSlippage: messengerClient.setMaxSlippage.bind(messengerClient),
 
     // -- Provider passthrough (read-guard) --
     perpsGetUserHistory: read(

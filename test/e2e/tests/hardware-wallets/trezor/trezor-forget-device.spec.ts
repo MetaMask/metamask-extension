@@ -44,8 +44,7 @@ describe('Trezor Hardware', function (this: Suite) {
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickCloseButton();
 
-        await homePage.checkPageIsLoaded();
-        await headerNavbar.openAccountMenu();
+        await accountListPage.closeChooseWalletTypePage();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
           'Trezor Account 1',

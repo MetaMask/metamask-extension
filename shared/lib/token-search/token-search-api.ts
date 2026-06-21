@@ -2,36 +2,24 @@ import getFetchWithTimeout from '../fetch-with-timeout';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../transactions-controller-utils';
 
 const TOKEN_SEARCH_BASE_URL = 'https://token.api.cx.metamask.io';
+const TOKEN_V3_BASE_URL = 'https://tokens.api.cx.metamask.io';
+const DEFAULT_BROWSE_OCCURRENCE_FLOOR = 3;
+const EVM_CHAIN_NAMESPACE = 'eip155:';
 
-/**
- * A single token returned by GET /tokens/search.
- *
- * Mirrors the public API response, intentionally a permissive subset so the UI
- * can keep working if the API adds non-breaking fields.
- */
 export type TokenSearchResult = {
-  /** CAIP-19 asset id, e.g. `eip155:1/erc20:0xa0b…`. */
   assetId: string;
   symbol: string;
   decimals: number;
   name: string;
-  /** Optional icon URL (only present on some entries). */
   iconUrl?: string;
-  /** Free-form tags, e.g. `['stable_coin']`. */
   labels?: string[];
 };
 
-/**
- * Cursor-based page info from the search endpoint.
- */
 export type TokenSearchPageInfo = {
   hasNextPage: boolean;
   endCursor: string;
 };
 
-/**
- * Raw response payload from GET /tokens/search.
- */
 export type TokenSearchResponse = {
   data: TokenSearchResult[];
   count: number;
@@ -39,35 +27,26 @@ export type TokenSearchResponse = {
   pageInfo: TokenSearchPageInfo;
 };
 
-/**
- * Options accepted by {@link searchTokens}.
- */
 export type SearchTokensOptions = {
-  /** User-provided query string (token symbol, name, or address). Required. */
   query: string;
-  /**
-   * CAIP-2 chain IDs to constrain the search to. When omitted, the API
-   * defaults to all supported networks.
-   */
   networks?: string[];
-  /** Max number of results, defaults to 10 server-side. */
   first?: number;
-  /** Base64 cursor returned by a previous response for paging. */
   after?: string;
-  /** Whether to ask the API for security warnings on each token. */
   includeTokenSecurityData?: boolean;
-  /** Optional abort signal to cancel a stale request. */
   signal?: AbortSignal;
 };
 
-/**
- * Builds the query string for a search request. Exposed for unit tests so the
- * mapping from UI state to API params can be asserted without a network round
- * trip.
- *
- * @param options - The same options accepted by {@link searchTokens}.
- * @returns The query string (without leading `?`) for the request.
- */
+export type BrowseTokensOptions = Omit<SearchTokensOptions, 'query'>;
+
+type ChainAssetsResponse = {
+  data?: TokenSearchResult[];
+  count?: number;
+  totalCount?: number;
+  pageInfo?: Partial<TokenSearchPageInfo>;
+};
+
+type BrowseCursorState = Record<string, string | undefined>;
+
 export const buildTokenSearchQueryString = (
   options: Omit<SearchTokensOptions, 'signal'>,
 ): string => {
@@ -88,33 +67,10 @@ export const buildTokenSearchQueryString = (
   return params.toString();
 };
 
-/**
- * Calls GET /tokens/search on the Token API.
- *
- * Throws when the request fails or the response is not OK. Returns an empty
- * page when called with an empty query — callers should typically skip the
- * call in that case rather than rely on this.
- *
- * @param options - The search options. {@see SearchTokensOptions}.
- * @returns The parsed search response.
- */
-export const searchTokens = async (
+const fetchTokenSearch = async (
   options: SearchTokensOptions,
 ): Promise<TokenSearchResponse> => {
-  const trimmedQuery = options.query.trim();
-  if (!trimmedQuery) {
-    return {
-      data: [],
-      count: 0,
-      totalCount: 0,
-      pageInfo: { hasNextPage: false, endCursor: '' },
-    };
-  }
-
-  const queryString = buildTokenSearchQueryString({
-    ...options,
-    query: trimmedQuery,
-  });
+  const queryString = buildTokenSearchQueryString(options);
   const url = `${TOKEN_SEARCH_BASE_URL}/tokens/search?${queryString}`;
 
   const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
@@ -131,4 +87,130 @@ export const searchTokens = async (
   }
 
   return (await response.json()) as TokenSearchResponse;
+};
+
+const getEmptyTokenSearchResponse = (): TokenSearchResponse => ({
+  data: [],
+  count: 0,
+  totalCount: 0,
+  pageInfo: { hasNextPage: false, endCursor: '' },
+});
+
+const parseBrowseCursorState = (cursor?: string): BrowseCursorState => {
+  if (!cursor) {
+    return {};
+  }
+
+  try {
+    const parsed = JSON.parse(cursor) as BrowseCursorState;
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+};
+
+export const searchTokens = async (
+  options: SearchTokensOptions,
+): Promise<TokenSearchResponse> => {
+  const trimmedQuery = options.query.trim();
+  if (!trimmedQuery) {
+    return getEmptyTokenSearchResponse();
+  }
+
+  return fetchTokenSearch({
+    ...options,
+    query: trimmedQuery,
+  });
+};
+
+export const browseTokens = async (
+  options: BrowseTokensOptions,
+): Promise<TokenSearchResponse> => {
+  if (!options.networks || options.networks.length === 0) {
+    return getEmptyTokenSearchResponse();
+  }
+
+  const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
+  const cursorState = parseBrowseCursorState(options.after);
+
+  const settledResponses = await Promise.allSettled(
+    options.networks.map(async (chainId) => {
+      const url = new URL(`${TOKEN_V3_BASE_URL}/v3/chains/${chainId}/assets`);
+      if (typeof options.first === 'number') {
+        url.searchParams.set('first', String(options.first));
+      }
+      if (chainId.startsWith(EVM_CHAIN_NAMESPACE)) {
+        url.searchParams.set(
+          'occurrenceFloor',
+          String(DEFAULT_BROWSE_OCCURRENCE_FLOOR),
+        );
+      }
+
+      const chainCursor = cursorState[chainId];
+      if (chainCursor) {
+        url.searchParams.set('after', chainCursor);
+      }
+
+      const response = await fetchWithTimeout(url.toString(), {
+        method: 'GET',
+        headers: { 'X-Client-Id': 'extension' },
+        signal: options.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Token browse failed: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      return [chainId, (await response.json()) as ChainAssetsResponse] as const;
+    }),
+  );
+
+  const responses = settledResponses
+    .filter(
+      (
+        response,
+      ): response is PromiseFulfilledResult<
+        readonly [string, ChainAssetsResponse]
+      > => response.status === 'fulfilled',
+    )
+    .map((response) => response.value);
+
+  if (responses.length === 0) {
+    const firstRejected = settledResponses.find(
+      (response): response is PromiseRejectedResult =>
+        response.status === 'rejected',
+    );
+    if (firstRejected) {
+      throw firstRejected.reason;
+    }
+
+    return getEmptyTokenSearchResponse();
+  }
+
+  const data = responses.flatMap(([, response]) => response.data ?? []);
+  const totalCount = responses.reduce(
+    (sum, [, response]) => sum + (response.totalCount ?? response.count ?? 0),
+    0,
+  );
+
+  const nextCursorState = Object.fromEntries(
+    responses
+      .filter(([, response]) => response.pageInfo?.hasNextPage)
+      .map(([chainId, response]) => [chainId, response.pageInfo?.endCursor]),
+  );
+
+  return {
+    data,
+    count: data.length,
+    totalCount,
+    pageInfo: {
+      hasNextPage: Object.keys(nextCursorState).length > 0,
+      endCursor:
+        Object.keys(nextCursorState).length > 0
+          ? JSON.stringify(nextCursorState)
+          : '',
+    },
+  };
 };

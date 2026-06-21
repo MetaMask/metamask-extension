@@ -35,6 +35,8 @@ import {
   type SeasonStatusDto,
   type SubscriptionDto,
   type PointsEstimateHistoryEntry,
+  type VipFeesResponseDto,
+  type VipPerpsFeesState,
   SeasonStateDto,
   SeasonMetadataDto,
   DiscoverSeasonsDto,
@@ -65,6 +67,10 @@ const SEASON_METADATA_CACHE_THRESHOLD_MS = 1000 * 60 * 1; // 1 minute
 
 // Opt-in status stale threshold for not opted-in accounts to force a fresh check (less strict than in mobile for now)
 const NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS = 1000 * 60 * 60; // 1 hour
+
+// VIP perps fees cache threshold — read on every perps trade UI render, so
+// cache for 1 hour to keep traffic to /vip/fees low.
+const VIP_PERPS_FEES_CACHE_THRESHOLD_MS = 1000 * 60 * 60;
 
 // Maximum number of points estimate history entries to keep for Customer Support diagnostics
 const MAX_POINTS_ESTIMATE_HISTORY_ENTRIES = 50;
@@ -121,6 +127,12 @@ const metadata = {
     includeInDebugSnapshot: false,
     usedInUi: false,
   },
+  rewardsVipPerpsFees: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
 };
 
 /**
@@ -134,6 +146,7 @@ export const getRewardsControllerDefaultState = (): RewardsControllerState => ({
   rewardsSeasonStatuses: {},
   rewardsSubscriptionTokens: {},
   rewardsPointsEstimateHistory: [],
+  rewardsVipPerpsFees: {},
 });
 
 export const defaultRewardsControllerState = getRewardsControllerDefaultState();
@@ -242,6 +255,8 @@ const MESSENGER_EXPOSED_METHODS = [
   'getOptInStatus',
   'isOptInSupported',
   'getActualSubscriptionId',
+  'getPerpsDiscountForAccount',
+  'getVipTierForAccount',
   'resetState',
 ] as const;
 
@@ -262,7 +277,14 @@ export class RewardsController extends BaseController<
 
   #isTronDisabled: () => boolean;
 
+  #isVipDisabled: () => boolean;
+
   #reauthPromises: Map<string, Promise<void>> = new Map();
+
+  // Deduplicates concurrent /vip/fees fetches for the same subscriptionId.
+  // Cleared when the promise settles (success or failure).
+  #vipFeesFetchInFlight: Map<string, Promise<VipFeesResponseDto | 0>> =
+    new Map();
 
   /**
    * Perform silent re-authentication for a given subscription ID.
@@ -508,12 +530,14 @@ export class RewardsController extends BaseController<
     isDisabled,
     isBitcoinDisabled,
     isTronDisabled,
+    isVipDisabled,
   }: {
     messenger: RewardsControllerMessenger;
     state?: Partial<RewardsControllerState>;
     isDisabled: () => boolean;
     isBitcoinDisabled: () => boolean;
     isTronDisabled: () => boolean;
+    isVipDisabled: () => boolean;
   }) {
     super({
       name: controllerName,
@@ -533,6 +557,7 @@ export class RewardsController extends BaseController<
     this.#isDisabled = isDisabled;
     this.#isBitcoinDisabled = isBitcoinDisabled;
     this.#isTronDisabled = isTronDisabled;
+    this.#isVipDisabled = isVipDisabled;
   }
 
   /**
@@ -585,6 +610,202 @@ export class RewardsController extends BaseController<
   getActualSubscriptionId(account: CaipAccountId): string | null {
     const accountState = this.#getAccountState(account);
     return accountState?.subscriptionId || null;
+  }
+
+  /**
+   * Get perps fee discount for an account.
+   *
+   * Calls the authenticated `/vip/fees` endpoint (bypassing the local
+   * `subscription.features.vip.enabled` flag — the backend is the source of
+   * truth) and converts the absolute VIP builder fee into a discount fraction
+   * relative to `baseFeeBips`. Responses are cached per-subscription for
+   * `VIP_PERPS_FEES_CACHE_THRESHOLD_MS` to keep traffic low. When the backend
+   * returns a valid fee response, the controller also flips the
+   * subscription's `features.vip.enabled` flag to `true` so the rest of the
+   * app reflects the user's VIP status.
+   *
+   * @param account - The account address in CAIP-10 format
+   * @param baseFeeBips - The perps MetaMask builder base fee in basis points
+   * that the caller would apply absent any discount. Used to convert the VIP
+   * absolute fee into a discount fraction (caller owns the source of truth
+   * for the base fee; the controller is a pure transformer).
+   * @returns Promise<number | null> - Discount in basis points (0-10000), or
+   * null when the discount is currently unknowable (rewards disabled, no
+   * subscription, unhydrated cache, fetch error). Callers should treat null
+   * as "no discount available yet" — skip caching and retry next call. A
+   * literal 0 means "no discount applies — safe to cache" (tier 0 / non-VIP
+   * response, out-of-range bips).
+   */
+  async getPerpsDiscountForAccount(
+    account: CaipAccountId,
+    baseFeeBips: number,
+  ): Promise<number | null> {
+    if (!this.isRewardsFeatureEnabled()) {
+      return null;
+    }
+
+    const vipDiscountBips = await this.#getVipPerpsDiscountBips(
+      account,
+      baseFeeBips,
+    );
+    return vipDiscountBips;
+  }
+
+  async #getVipFeesForAccount(
+    subscriptionId: string,
+  ): Promise<VipFeesResponseDto | 0 | null> {
+    // Deduplicate concurrent fetches: if there's already an in-flight
+    // request for this subscriptionId, await it instead of firing another.
+    let inFlight = this.#vipFeesFetchInFlight.get(subscriptionId);
+    if (!inFlight) {
+      inFlight = this.#withAuthRetry(() => {
+        const subscriptionToken = this.#getSubscriptionToken(subscriptionId);
+        if (!subscriptionToken) {
+          throw new AuthorizationFailedError(
+            `No subscription token found for subscription ID: ${subscriptionId}`,
+          );
+        }
+        return this.messenger.call(
+          'RewardsDataService:getVipFees',
+          subscriptionToken,
+        );
+      }, subscriptionId).then((vipFeeResponse): VipFeesResponseDto | 0 => {
+        // Backend contract: tier-0 responses have fees=null and vipTier=0.
+        if (!vipFeeResponse?.fees || vipFeeResponse.vipTier <= 0) {
+          return 0;
+        }
+        return vipFeeResponse;
+      });
+      this.#vipFeesFetchInFlight.set(subscriptionId, inFlight);
+      const cleanup = () => this.#vipFeesFetchInFlight.delete(subscriptionId);
+      inFlight.then(cleanup, cleanup);
+    }
+
+    const result = await inFlight;
+    return result;
+  }
+
+  async getVipTierForAccount(account: CaipAccountId): Promise<number | null> {
+    if (!this.isRewardsFeatureEnabled()) {
+      return null;
+    }
+
+    const subscriptionId = this.getActualSubscriptionId(account);
+    if (!subscriptionId) {
+      return null;
+    }
+    if (!this.state.rewardsSubscriptions[subscriptionId]) {
+      // Subscription record missing from state — treat as unhydrated so the
+      // caller can retry once the subscription is loaded.
+      return null;
+    }
+
+    const vipFeeResponse = await this.#getVipFeesForAccount(subscriptionId);
+    if (!vipFeeResponse) {
+      return null;
+    }
+    return vipFeeResponse.vipTier;
+  }
+
+  /**
+   * Resolve a VIP-driven perps discount for the given account. Returns null
+   * when the discount is currently unknowable (invalid input, no subscription,
+   * fetch error). Returns 0 when no discount applies (tier-0 response,
+   * out-of-range bips).
+   */
+  async #getVipPerpsDiscountBips(
+    account: CaipAccountId,
+    baseFeeBips: number,
+  ): Promise<number | null> {
+    if (!Number.isFinite(baseFeeBips) || baseFeeBips <= 0) {
+      return null;
+    }
+
+    const subscriptionId = this.getActualSubscriptionId(account);
+    if (!subscriptionId) {
+      return null;
+    }
+
+    const subscription = this.state.rewardsSubscriptions[subscriptionId];
+    if (!subscription) {
+      // Subscription record missing from state — treat as unhydrated so the
+      // caller can retry once the subscription is loaded.
+      return null;
+    }
+
+    let builderFeeBipsRaw: string;
+    const cached = this.state.rewardsVipPerpsFees[subscriptionId];
+    const cacheAgeMs = cached ? Date.now() - cached.lastFetched : null;
+    if (
+      cached &&
+      cacheAgeMs !== null &&
+      cacheAgeMs < VIP_PERPS_FEES_CACHE_THRESHOLD_MS
+    ) {
+      builderFeeBipsRaw = cached.hyperliquidBuilderFeeBips;
+    } else {
+      const feeResponse = this.#getVipFeesForAccount(subscriptionId).then(
+        (vipFeeResponse): VipFeesResponseDto | 0 | null => {
+          if (!vipFeeResponse) {
+            return vipFeeResponse;
+          }
+          if (!vipFeeResponse.fees?.hyperliquid?.builderFeeBips) {
+            // VIP tier may be set while perps builder fee is absent — treat as
+            // no discount (0), not unknowable (null).
+            return 0;
+          }
+          const rawBips = vipFeeResponse.fees.hyperliquid.builderFeeBips;
+          const next: VipPerpsFeesState = {
+            hyperliquidBuilderFeeBips: rawBips,
+            lastFetched: Date.now(),
+          };
+          this.update((state) => {
+            state.rewardsVipPerpsFees[subscriptionId] = next;
+            const subState = state.rewardsSubscriptions[subscriptionId];
+            if (subState) {
+              subState.features = {
+                ...subState.features,
+                vip: { enabled: true },
+              };
+            }
+          });
+          return vipFeeResponse;
+        },
+      );
+      try {
+        const result = await feeResponse;
+        if (!result) {
+          return result;
+        }
+        builderFeeBipsRaw = result.fees?.hyperliquid?.builderFeeBips ?? '';
+      } catch (error) {
+        log.warn(
+          'RewardsController: VIP fees fetch failed; returning no discount:',
+          error instanceof Error ? error.message : String(error),
+        );
+        return null;
+      }
+    }
+
+    const builderFeeBips = parseFloat(builderFeeBipsRaw);
+    if (!Number.isFinite(builderFeeBips) || builderFeeBips < 0) {
+      log.warn(
+        'RewardsController: VIP fees returned a non-numeric builderFeeBips:',
+        builderFeeBipsRaw,
+      );
+      return null;
+    }
+
+    // Valid range is [0, 10000]: 0 means VIP fee equals base (no discount),
+    // 10000 means VIP fee is 0 (100% discount). Anything outside that range
+    // would require a negative builder fee or one larger than the base —
+    // both indicate backend misconfig, so log and return 0.
+    const rawDiscountBips = Math.round(
+      10000 * (1 - builderFeeBips / baseFeeBips),
+    );
+    if (rawDiscountBips < 0 || rawDiscountBips > 10000) {
+      return 0;
+    }
+    return rawDiscountBips;
   }
 
   /**
@@ -1487,6 +1708,24 @@ export class RewardsController extends BaseController<
   }
 
   /**
+   * Check if the VIP feature is enabled.
+   *
+   * VIP surfaces (the VIP referral tag, VIP fee discounts) require both the
+   * rewards feature to be on AND the VIP program flag to be enabled locally.
+   *
+   * @returns boolean - True if the VIP feature is enabled, false otherwise
+   */
+  isVipFeatureEnabled(): boolean {
+    if (!this.isRewardsFeatureEnabled()) {
+      return false;
+    }
+    if (this.#isVipDisabled()) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
    * Get season metadata with caching. This fetches and caches the season metadata including id, name, dates, and tiers.
    *
    * @param type - The type of season to get
@@ -1674,6 +1913,7 @@ export class RewardsController extends BaseController<
       }
 
       delete state.rewardsSubscriptionTokens[subscriptionId];
+      delete state.rewardsVipPerpsFees[subscriptionId];
     });
 
     log.debug(
@@ -1935,27 +2175,32 @@ export class RewardsController extends BaseController<
    * Validate a referral code
    *
    * @param code - The referral code to validate
-   * @returns Promise<boolean> - True if the code is valid, false otherwise
+   * @returns Promise<{ valid: boolean; isVipCode: boolean }> - Whether the code
+   * is valid and whether it is a VIP code. A code is only treated as a VIP code
+   * when the backend says so AND the VIP feature is enabled locally (rewards on
+   * and VIP not disabled).
    */
-  async validateReferralCode(code: string): Promise<boolean> {
+  async validateReferralCode(
+    code: string,
+  ): Promise<{ valid: boolean; isVipCode: boolean }> {
     const rewardsEnabled = this.isRewardsFeatureEnabled();
     if (!rewardsEnabled) {
-      return false;
+      return { valid: false, isVipCode: false };
     }
 
     if (!code.trim()) {
-      return false;
-    }
-
-    if (code.length !== 6) {
-      return false;
+      return { valid: false, isVipCode: false };
     }
 
     const response = await this.messenger.call(
       'RewardsDataService:validateReferralCode',
       code,
     );
-    return response.valid;
+    // A referral code is only treated as a VIP code when the backend says so
+    // AND the VIP feature is enabled locally (rewards on and VIP not disabled).
+    const isVipCode =
+      (response.isVipCode ?? false) && this.isVipFeatureEnabled();
+    return { valid: response.valid, isVipCode };
   }
 
   /**

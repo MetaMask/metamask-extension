@@ -1,26 +1,24 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
-  AlignItems,
-  Display,
-  JustifyContent,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { I18nContext } from '../../../contexts/i18n';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { TextVariant } from '../../../helpers/constants/design-system';
+import { ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 
 export default class PermissionsConnectFooter extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
     return (
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        className="flex"
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
       >
         <Text variant={TextVariant.bodyMd}>
           {t('onlyConnectTrust', [

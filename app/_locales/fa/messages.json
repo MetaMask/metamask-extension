@@ -199,9 +199,6 @@
   "done": {
     "message": "تمام"
   },
-  "downloadGoogleChrome": {
-    "message": "دانلود گوگل کروم"
-  },
   "downloadStateLogs": {
     "message": "دانلود دفترچه وضعیت"
   },
@@ -259,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "به کیف سخت افزار وصل کنید"
-  },
-  "hardwareWalletsMsg": {
-    "message": "یک کیف سخت افزار را که میخواهید با MetaMast استفاده نمایید، انتخاب کنید"
   },
   "here": {
     "message": "اینجا",

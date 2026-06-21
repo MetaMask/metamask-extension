@@ -21,7 +21,10 @@ import {
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOptIn } from '../../../../hooks/rewards/useOptIn';
-import { useValidateReferralCode } from '../../../../hooks/rewards/useValidateReferralCode';
+import {
+  REFERRAL_CODE_MIN_LENGTH,
+  useValidateReferralCode,
+} from '../../../../hooks/rewards/useValidateReferralCode';
 import { useGeoRewardsMetadata } from '../../../../hooks/rewards/useGeoRewardsMetadata';
 import { useCandidateSubscriptionId } from '../../../../hooks/rewards/useCandidateSubscriptionId';
 import { setErrorToast } from '../../../../ducks/rewards';
@@ -31,10 +34,12 @@ import {
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoError,
   selectOptinAllowedForGeoLoading,
+  selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
 import { useAppSelector } from '../../../../store/store';
 import LoadingIndicator from '../../../ui/loading-indicator';
 import RewardsErrorBanner from '../RewardsErrorBanner';
+import { RewardsVipReferralTag } from '../RewardsVipReferralTag';
 import {
   REWARDS_ONBOARD_HERO_IMAGE_URL,
   REWARDS_ONBOARD_OPTIN_LEGAL_LEARN_MORE_URL,
@@ -96,15 +101,25 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
     setReferralCode: handleReferralCodeChange,
     isValidating: isValidatingReferralCode,
     isValid: referralCodeIsValid,
+    isVipCode: referralCodeIsVip,
     isUnknownError: isUnknownErrorReferralCode,
   } = useValidateReferralCode(
     onboardingReferralCode
       ? onboardingReferralCode.trim().toUpperCase()
       : undefined,
   );
+  const referralCodeReadyForValidation =
+    referralCode.length >= REFERRAL_CODE_MIN_LENGTH;
+
+  // Reactive UI gate (in addition to the controller's gating): hides the VIP
+  // tag immediately if the program flag flips off, so a stale cached
+  // `isVipCode` can't keep the tag on screen.
+  const vipProgramEnabled = useSelector(selectVipProgramEnabled);
+  const showVipReferralTag =
+    referralCodeIsValid && referralCodeIsVip && vipProgramEnabled;
 
   const referralCodeIsError =
-    referralCode.length >= 6 &&
+    referralCodeReadyForValidation &&
     !referralCodeIsValid &&
     !isValidatingReferralCode &&
     !isUnknownErrorReferralCode;
@@ -188,6 +203,10 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
       );
     }
 
+    if (showVipReferralTag) {
+      return <RewardsVipReferralTag />;
+    }
+
     if (referralCodeIsValid) {
       return (
         <Icon
@@ -198,7 +217,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
       );
     }
 
-    if (referralCode.length >= 6) {
+    if (referralCodeReadyForValidation && !isValidatingReferralCode) {
       return (
         <Icon
           name={IconName.Error}

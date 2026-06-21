@@ -11,6 +11,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
+import { processAssetParams } from './util';
 
 type LocationState = {
   token?: {
@@ -26,15 +27,14 @@ type LocationState = {
 
 const Asset = () => {
   const params = useParams<{
-    chainId: Hex;
+    chainId: Hex | CaipChainId;
     asset: string;
     id: string;
   }>();
   const location = useLocation();
   const locationState = location.state as LocationState | undefined;
 
-  const { chainId, asset, id } = params;
-  const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
+  const { chainId, id, decodedAsset } = processAssetParams(params);
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
@@ -74,10 +74,10 @@ const Asset = () => {
 
     const shouldShowToken = !token.isNative && token.address;
     if (shouldShowToken) {
-      return <TokenAsset chainId={chainId} token={token} />;
+      return <TokenAsset chainId={chainId as Hex} token={token} />;
     }
 
-    return <NativeAsset chainId={chainId} token={token} />;
+    return <NativeAsset chainId={chainId as Hex} token={token} />;
   })();
 
   return (

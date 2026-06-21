@@ -1,4 +1,4 @@
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -47,7 +47,7 @@ export default function CancelButton({
     <Tooltip
       title={t('notEnoughGas')}
       data-testid="not-enough-gas__tooltip"
-      position="bottom"
+      placement="bottom"
     >
       <div>{btn}</div>
     </Tooltip>

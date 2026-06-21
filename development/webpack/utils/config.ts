@@ -68,7 +68,7 @@ export function getBuildName(
   type: string,
   build: BuildType,
   isDev: boolean,
-  args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow'>,
+  args: Pick<Args, 'manifestVersion' | 'lavamoat' | 'snow'>,
 ) {
   const buildName =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -76,7 +76,7 @@ export function getBuildName(
     build.buildNameOverride ||
     `MetaMask ${type.slice(0, 1).toUpperCase()}${type.slice(1)}`;
   if (isDev) {
-    const mv3Str = args.manifest_version === 3 ? ' MV3' : '';
+    const mv3Str = args.manifestVersion === 3 ? ' MV3' : '';
     const lavamoatStr = args.lavamoat ? ' lavamoat' : '';
     const snowStr = args.snow ? ' snow' : '';
     return `${buildName}${mv3Str}${lavamoatStr}${snowStr}`;

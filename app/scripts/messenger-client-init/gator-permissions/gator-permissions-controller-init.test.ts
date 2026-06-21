@@ -1,6 +1,7 @@
 import {
   GatorPermissionsController,
   SupportedPermissionType,
+  GatorPermissionsControllerMessenger,
 } from '@metamask/gator-permissions-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { MessengerClientInitRequest } from '../types';
@@ -8,10 +9,7 @@ import {
   ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
   getEnabledAdvancedPermissions,
 } from '../../../../shared/lib/gator-permissions/feature-flags';
-import {
-  getGatorPermissionsControllerMessenger,
-  GatorPermissionsControllerMessenger,
-} from '../messengers/gator-permissions';
+import { getGatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
 import { getRootMessenger } from '../../lib/messenger';
 import { GatorPermissionsControllerInit } from './gator-permissions-controller-init';
 

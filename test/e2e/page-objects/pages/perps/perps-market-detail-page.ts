@@ -38,11 +38,8 @@ export class PerpsMarketDetailPage {
    */
   private readonly closeAmountSliderInCloseModal = `[data-testid="${PerpsMarketDetailPage.perpsClosePositionModalTestId}"] [data-testid^="${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}"]`;
 
-  /**
-   * MUI `Slider` thumb / track (`role="slider"`) inside the close modal.
-   * Keyboard handling matches @material-ui/core/Slider (End = max, ArrowLeft = step down in LTR).
-   */
-  private readonly closeAmountSliderRoleInCloseModal = `${this.closeAmountSliderInCloseModal} [role="slider"]`;
+  /** MUI v5 Slider keyboard target inside the close modal (visually-hidden `input[type="range"]`). */
+  private readonly closeAmountSliderRoleInCloseModal = `${this.closeAmountSliderInCloseModal} input[type="range"]`;
 
   private readonly closeCtaButton = { testId: 'perps-close-cta-button' };
 
@@ -75,6 +72,10 @@ export class PerpsMarketDetailPage {
 
   private readonly editMarginModalSave = {
     testId: 'perps-edit-margin-modal-save',
+  };
+
+  private readonly favoriteButton = {
+    testId: 'perps-market-detail-favorite-button',
   };
 
   private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
@@ -184,8 +185,6 @@ export class PerpsMarketDetailPage {
     xpath: `(//*[@data-testid="perps-update-tpsl-modal"]//input[contains(@class,"mm-text-field__input")])[1]`,
   };
 
-  private readonly tradeCtaButtons = { testId: 'perps-trade-cta-buttons' };
-
   private readonly updateTpslModal = { testId: 'perps-update-tpsl-modal' };
 
   private readonly updateTpslModalSubmit = {
@@ -287,6 +286,35 @@ export class PerpsMarketDetailPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.marketDetailBackButton,
     );
+  }
+
+  /**
+   * Clicks the favourite (star) button to toggle watchlist for this market.
+   * The button is always visible in the market detail header.
+   */
+  async clickFavoriteButton(): Promise<void> {
+    await this.driver.clickElement(this.favoriteButton);
+  }
+
+  /**
+   * Waits for the favorite (star) button to reach the given state.
+   * Pass `'favorited'` for aria-label "Remove from favorites",
+   * `'unfavorited'` for "Add to favorites", or omit to wait for any state.
+   *
+   * @param state - Target button state, or undefined for any state.
+   */
+  async waitForFavoriteButton(
+    state?: 'favorited' | 'unfavorited',
+  ): Promise<void> {
+    if (state === undefined) {
+      await this.driver.waitForSelector(this.favoriteButton);
+      return;
+    }
+    const ariaLabel =
+      state === 'favorited' ? 'Remove from favorites' : 'Add to favorites';
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid='perps-market-detail-favorite-button'][@aria-label='${ariaLabel}']`,
+    });
   }
 
   /**
@@ -509,9 +537,10 @@ export class PerpsMarketDetailPage {
   /**
    * Sets the close-position slider to the given percentage (0–100) in the close modal.
    *
-   * Uses the MUI Slider keyboard model: `End` jumps to `max` (100), then `ArrowLeft`
-   * steps by 1 (see `handleKeyDown` in @material-ui/core/Slider/Slider.js). This
-   * avoids hit-testing / coordinate issues with WebDriver in the extension.
+   * Uses the MUI v5 Slider keyboard model: `End` jumps to `max` (100), then
+   * `ArrowLeft` steps by 1 (handled by `createHandleHiddenInputKeyDown` in
+   * MUI v5's `useSlider`). Targets the hidden `input[type="range"]` directly,
+   * which avoids hit-testing / coordinate issues with WebDriver in the extension.
    *
    * @param percent - Target 0–100; must match `close-amount-slider-pct-{n}` on the wrapper.
    */
@@ -521,7 +550,12 @@ export class PerpsMarketDetailPage {
     }
     await this.driver.waitForSelector(this.closeAmountSliderInCloseModal);
     const handleCss = this.closeAmountSliderRoleInCloseModal;
-    await this.driver.clickElement(handleCss);
+    // MUI v5 Slider renders a visually-hidden input that Selenium cannot
+    // click or scroll into view. Focus it via JS so keyboard events work.
+    await this.driver.executeScript(
+      `document.querySelector(arguments[0]).focus()`,
+      handleCss,
+    );
     await this.driver.press(handleCss, Key.END);
     await this.driver.wait(
       async () => (await this.getCloseAmountSliderPercentInModal()) === 100,

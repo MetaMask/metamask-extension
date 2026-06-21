@@ -102,6 +102,8 @@ jest.mock('@metamask/perps-controller', () => ({
     clearPendingTransactionRequests: jest.fn(),
     saveOrderBookGrouping: jest.fn(),
     getOrderBookGrouping: jest.fn(),
+    getMaxSlippage: jest.fn(),
+    setMaxSlippage: jest.fn(),
     getActiveProvider: jest.fn().mockReturnValue({
       getUserHistory: jest.fn(),
       getUserNonFundingLedgerUpdates: jest.fn(),
@@ -296,7 +298,40 @@ describe('PerpsControllerInit', () => {
         setStorageItem: expect.any(Function),
         removeStorageItem: expect.any(Function),
         isDisconnecting: expect.any(Function),
+        getPerpsDiscountForAccount: expect.any(Function),
       });
+    });
+
+    it('getPerpsDiscountForAccount from createPerpsInfrastructure delegates to RewardsController:getPerpsDiscountForAccount', async () => {
+      const call = jest.fn().mockResolvedValue(5000);
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+      let capturedDeps: InfrastructureDeps | undefined;
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          capturedDeps = deps;
+          return {} as PerpsPlatformDependencies;
+        });
+
+      PerpsControllerInit(request);
+      expect(capturedDeps).toBeDefined();
+      const deps = capturedDeps as InfrastructureDeps;
+
+      const result = await deps.getPerpsDiscountForAccount(
+        'eip155:42161:0xabc',
+        10,
+      );
+
+      expect(result).toBe(5000);
+      expect(call).toHaveBeenCalledWith(
+        'RewardsController:getPerpsDiscountForAccount',
+        'eip155:42161:0xabc',
+        10,
+      );
     });
 
     it('trackEvent from createPerpsInfrastructure delegates to MetaMetricsController:trackEvent', () => {
@@ -548,6 +583,8 @@ describe('PerpsControllerInit', () => {
       ],
       ['perpsSaveOrderBookGrouping', 'saveOrderBookGrouping'],
       ['perpsGetOrderBookGrouping', 'getOrderBookGrouping'],
+      ['perpsGetMaxSlippage', 'getMaxSlippage'],
+      ['perpsSetMaxSlippage', 'setMaxSlippage'],
       ['perpsClearDepositResult', 'clearDepositResult'],
       ['perpsClearWithdrawResult', 'clearWithdrawResult'],
       ['perpsGetBlockExplorerUrl', 'getBlockExplorerUrl'],

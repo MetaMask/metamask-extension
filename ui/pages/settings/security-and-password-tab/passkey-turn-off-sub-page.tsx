@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import log from 'loglevel';
 import {
   Box,
   BoxAlignItems,
@@ -18,10 +17,12 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
   cancelPasskeyCeremony,
 } from '../../../../shared/lib/passkey';
+import { captureException } from '../../../../shared/lib/sentry';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   forceUpdateMetamaskState,
@@ -127,6 +128,8 @@ export default function PasskeyTurnOffSubPage() {
         });
         goToSettings();
       } catch (error: unknown) {
+        const durationMs = Date.now() - startedAt;
+        const errorCode = getPasskeyErrorCode(error);
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.PasskeyTurnOff,
@@ -134,13 +137,13 @@ export default function PasskeyTurnOffSubPage() {
             ...baseProperties,
             status: 'failed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - startedAt,
-            reason: getPasskeyErrorCode(error),
+            duration_ms: durationMs,
+            reason: errorCode,
           },
         });
-        log.error(
-          'Passkey turn off with password verification failed after password was verified',
-          error,
+        captureException(
+          createSentryError('Passkey turn off in settings failed', error),
+          { extra: { verificationMethod: 'password', durationMs, errorCode } },
         );
         toast.error(
           <ToastContent

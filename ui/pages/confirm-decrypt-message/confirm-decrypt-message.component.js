@@ -43,6 +43,7 @@ import {
   getTargetAccountWithSendEtherInfo,
   unconfirmedTransactionsListSelector,
 } from '../../selectors';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 
 const Header = ({ approvalId }) => {

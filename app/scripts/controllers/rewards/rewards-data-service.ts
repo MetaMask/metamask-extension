@@ -2,7 +2,7 @@
 // TODO: find similar functionality in extession
 // import { getSubscriptionToken } from '../utils/multi-subscription-token-vault';
 import log from 'loglevel';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import ExtensionPlatform from '../../platforms/extension';
 import {
   REWARDS_API_URL,
@@ -26,6 +26,7 @@ import type {
   ChallengeDto,
   SiweLoginDto,
   SiweJoinDto,
+  VipFeesResponseDto,
 } from './rewards-controller.types';
 import { RewardsDataServiceMethodActions } from './rewards-data-service-method-action-types';
 import { RewardsDataServiceMessenger } from './rewards-data-service-types';
@@ -81,6 +82,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getSeasonMetadata',
   'getDiscoverSeasons',
   'generateChallenge',
+  'getVipFees',
 ] as const;
 
 export type RewardsDataServiceActions = RewardsDataServiceMethodActions;
@@ -460,9 +462,12 @@ export class RewardsDataService {
    * Validate a referral code.
    *
    * @param code - The referral code to validate.
-   * @returns Promise<{valid: boolean}> - Object indicating if the code is valid.
+   * @returns Promise<{valid: boolean; isVipCode?: boolean}> - Object indicating
+   * if the code is valid and whether the backend considers it a VIP code.
    */
-  async validateReferralCode(code: string): Promise<{ valid: boolean }> {
+  async validateReferralCode(
+    code: string,
+  ): Promise<{ valid: boolean; isVipCode?: boolean }> {
     const response = await this.makeRequest(
       `/referral/validate?code=${encodeURIComponent(code)}`,
       {
@@ -476,7 +481,7 @@ export class RewardsDataService {
       );
     }
 
-    return (await response.json()) as { valid: boolean };
+    return (await response.json()) as { valid: boolean; isVipCode?: boolean };
   }
 
   /**
@@ -667,6 +672,28 @@ export class RewardsDataService {
     }
 
     return data as SeasonMetadataDto;
+  }
+
+  /**
+   * Get the VIP fee table for the current subscription.
+   *
+   * @param subscriptionToken - The subscription token used for authentication.
+   * @returns The VIP fee response (tier 0 will have `fees=null`).
+   */
+  async getVipFees(subscriptionToken: string): Promise<VipFeesResponseDto> {
+    const response = await this.makeRequest(
+      '/vip/fees',
+      {
+        method: 'GET',
+      },
+      subscriptionToken,
+    );
+
+    if (!response.ok) {
+      throw new Error(`Get VIP fees failed: ${response.status}`);
+    }
+
+    return (await response.json()) as VipFeesResponseDto;
   }
 
   /**

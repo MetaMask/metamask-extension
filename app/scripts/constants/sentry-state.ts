@@ -41,6 +41,11 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     unconnectedAccountAlertShownOrigins: false,
     web3ShimUsageOrigins: false,
   },
+  AnalyticsController: {
+    analyticsId: true,
+    eventQueue: false,
+    optedIn: true,
+  },
   AnnouncementController: {
     announcements: false,
   },
@@ -144,6 +149,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   ConnectivityController: {
     connectivityStatus: true,
   },
+  ComplianceController: {
+    walletComplianceStatusMap: false,
+    lastCheckedAt: false,
+  },
   CronjobController: {
     events: false,
   },
@@ -190,16 +199,13 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
+    completedMetaMetricsOnboarding: true,
     eventsBeforeMetricsOptIn: false,
     tracesBeforeMetricsOptIn: false,
     fragments: false,
-    metaMetricsId: true,
-    participateInMetaMetrics: true,
-    segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,
-    latestNonAnonymousEventTimestamp: true,
   },
   MetaMetricsDataDeletionController: {
     metaMetricsDataDeletionId: true,
@@ -294,6 +300,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     rewardsSeasonStatuses: false,
     rewardsSubscriptionTokens: false,
     rewardsPointsEstimateHistory: false,
+    rewardsVipPerpsFees: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,

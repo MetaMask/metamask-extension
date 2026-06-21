@@ -196,9 +196,6 @@
   "done": {
     "message": "Fet"
   },
-  "downloadGoogleChrome": {
-    "message": "Descarrega Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Descarregar Registres d'Estat"
   },
@@ -250,9 +247,6 @@
   },
   "hardwareWallets": {
     "message": "Connectar un moneder hardware"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Selecciona una cartera de hardware que t'agradaria utilizar amb MetaMask"
   },
   "here": {
     "message": "aquí",

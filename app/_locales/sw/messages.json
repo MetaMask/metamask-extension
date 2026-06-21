@@ -193,9 +193,6 @@
   "done": {
     "message": "Imekamilika"
   },
-  "downloadGoogleChrome": {
-    "message": "Pakua Google chrome"
-  },
   "downloadStateLogs": {
     "message": "Pakua Kumbukumbu za Hali"
   },
@@ -253,9 +250,6 @@
   },
   "hardwareWallets": {
     "message": "Unganisha waleti ya programu maunzi"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Chagua waleti ya programu maunzi ambayo ungependa kutumia kwenye MetaMask"
   },
   "here": {
     "message": "hapa",
