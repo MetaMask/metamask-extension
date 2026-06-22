@@ -31,6 +31,20 @@ export function isNftStandard(value?: string) {
   return value === 'erc721' || value === 'erc1155';
 }
 
+// Amounts with more integer digits than this are treated as "unlimited" and hidden.
+// Mirrors TOKEN_VALUE_UNLIMITED_THRESHOLD = 10^15 used on EVM confirmation screens.
+const APPROVE_AMOUNT_MAX_INTEGER_DIGITS = 15;
+
+// Whether an approved spending cap is effectively unlimited (e.g. uint256 max)
+export function isUnlimitedApproveAmount(amount?: string): boolean {
+  if (amount === undefined) {
+    return false;
+  }
+
+  const integerDigits = amount.split('.')[0];
+  return integerDigits.length > APPROVE_AMOUNT_MAX_INTEGER_DIGITS;
+}
+
 export function getNftPaymentTransfer({
   side,
   sentTransfer,

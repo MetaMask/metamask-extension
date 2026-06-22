@@ -23,6 +23,7 @@ import {
   getLocalTransactionStatus,
   getNativeAssetSafe,
   isNftStandard,
+  isUnlimitedApproveAmount,
 } from './helpers';
 
 const EVM_NATIVE_DECIMALS = 18;
@@ -129,7 +130,8 @@ export function mapLocalTransaction(
     const contractAddress =
       resolveApprovalTokenContractAddress(initialTransaction);
     return getContractToken({
-      amount,
+      // Unlimited approvals shouldn't be rendered as a literal amount
+      amount: isUnlimitedApproveAmount(amount) ? undefined : amount,
       transaction: initialTransaction,
       direction: 'out',
       contractAddress,

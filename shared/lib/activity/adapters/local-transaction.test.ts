@@ -420,6 +420,56 @@ describe('mapLocalTransaction', () => {
     });
   });
 
+  it('omits the literal amount for an unlimited approve tx', () => {
+    const spender = '0x80181d3ba89220cdb80234fc7aa19d5cc56229cc';
+    const maxUint256 = `0x${'f'.repeat(64)}`;
+    const data = new Interface([
+      'function approve(address spender, uint256 amountOrTokenId)',
+    ]).encodeFunctionData('approve', [spender, maxUint256]) as `0x${string}`;
+    const transaction = {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      id: 'unlimited-approve-id',
+      hash: '0xunlimitedapprove',
+      status: TransactionStatus.confirmed,
+      time: 1716367781000,
+      transferInformation: {
+        contractAddress: lineaMusd,
+        decimals: 18,
+        symbol: 'mUSD',
+      },
+      type: TransactionType.tokenMethodApprove,
+      txParams: {
+        from,
+        to: lineaMusd,
+        data,
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x6',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      data: {
+        token: {
+          direction: 'out',
+          symbol: 'mUSD',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
+        },
+      },
+    });
+    expect(
+      item.type === 'approveSpendingCap' ? item.data.token?.amount : 'unset',
+    ).toBeUndefined();
+  });
+
   it('maps an mUSD conversion to a Convert activity', () => {
     const transaction = {
       chainId: CHAIN_IDS.LINEA_MAINNET,

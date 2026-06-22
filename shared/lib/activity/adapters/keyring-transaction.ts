@@ -14,6 +14,7 @@ import type {
   Status,
   TokenAmount,
 } from '../types';
+import { isUnlimitedApproveAmount } from './helpers';
 
 type Movement = Transaction['from'][number];
 type Fee = Transaction['fees'][number];
@@ -89,10 +90,6 @@ function getFees(transaction: Transaction) {
     return mappedFee ? [mappedFee] : [];
   });
 }
-
-// Amounts with more integer digits than this are treated as "unlimited" and hidden.
-// Mirrors TOKEN_VALUE_UNLIMITED_THRESHOLD = 10^15 used on EVM confirmation screens.
-const APPROVE_AMOUNT_MAX_INTEGER_DIGITS = 15;
 
 function mapBridgeStatus(bridgeStatus: BridgeStatusTypes): Status {
   switch (bridgeStatus) {
@@ -231,12 +228,10 @@ export function mapKeyringTransaction({
 
   if (transaction.type === KeyringTransactionType.TokenApprove) {
     const rawToken = getToken(transaction.from, 'out');
-    // Hide the approved amount when its integer part exceeds 15 digits (~1 quadrillion),
+    // Hide the approved amount when it is effectively unlimited (e.g. uint256 max),
     // matching the EVM API confirmed path which never exposes the approved amount.
     // This also prevents uint256.max (78 digits) from collapsing the title column.
-    const isUnlimited =
-      rawToken?.amount !== undefined &&
-      rawToken.amount.split('.')[0].length > APPROVE_AMOUNT_MAX_INTEGER_DIGITS;
+    const isUnlimited = isUnlimitedApproveAmount(rawToken?.amount);
 
     return {
       type: 'approveSpendingCap',
