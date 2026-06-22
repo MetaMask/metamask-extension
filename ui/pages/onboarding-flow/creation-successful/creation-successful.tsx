@@ -301,7 +301,7 @@ export default function CreationSuccessful() {
     }
 
     // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
-    // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
+    // Since we will track the `Metrics Opt In/Out` event even when optedIn is false,
     // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
