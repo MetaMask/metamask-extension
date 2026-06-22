@@ -3069,7 +3069,7 @@ describe('Actions', () => {
   });
 
   describe('#setParticipateInMetaMetrics', () => {
-    it('sets participateInMetaMetrics to true', async () => {
+    it('calls background with true when opting in', async () => {
       const store = mockStore();
       const setParticipateInMetaMetricsStub = jest.fn().mockResolvedValue();
 
