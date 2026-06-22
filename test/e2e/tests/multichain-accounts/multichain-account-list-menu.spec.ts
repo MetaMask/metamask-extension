@@ -18,7 +18,7 @@ import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
 
-describe('Multichain Accounts - Account tree', function (this: Suite) {
+describe('Multichain Accounts - Account tree TEST', function (this: Suite) {
   it('should display basic wallets and accounts', async function () {
     await withFixtures(
       {

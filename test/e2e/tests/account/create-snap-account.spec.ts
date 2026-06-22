@@ -10,7 +10,7 @@ import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-k
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
-describe('Create Snap Account', function (this: Suite) {
+describe('Create Snap Account TEST', function (this: Suite) {
   it('create Snap account with custom name input ends in approval success', async function () {
     await withFixtures(
       {
