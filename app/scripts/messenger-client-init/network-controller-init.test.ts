@@ -77,11 +77,16 @@ describe('NetworkControllerInit', () => {
       infuraProjectId: undefined,
       failoverUrls: {
         '0x1': [],
-        '0x2105': [],
-        '0x89': [],
-        '0xa': [],
-        '0xa4b1': [],
         '0xe708': [],
+        '0xa4b1': [],
+        '0xa86a': [],
+        '0xa': [],
+        '0x89': [],
+        '0x2105': [],
+        '0x531': [],
+        '0x8f': [],
+        '0x3e7': [],
+        '0x13b2': [],
       },
     });
   });

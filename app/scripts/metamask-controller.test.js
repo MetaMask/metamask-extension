@@ -4610,6 +4610,7 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.POLYGON,
           CHAIN_IDS.OPTIMISM,
           CHAIN_IDS.SEI,
+          CHAIN_IDS.MONAD,
         ];
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
@@ -4617,7 +4618,6 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.BSC,
           '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
-          '0x8f', // Monad Mainnet
         ];
 
         // Assert - ensure networks with failovers have failovers, and other networks do not have failovers
