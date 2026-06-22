@@ -791,7 +791,7 @@ export class LegacyBackgroundApiService {
           throw error;
         });
 
-      // here e could be invalid password or outdated password error, which can result in following cases:
+      // Here the password could be invalid or outdated, which can result in following cases:
       // 1. Seedless controller password verification succeeded.
       // 2. Seedless controller failed but Keyring controller password verification succeeded.
       // 3. Both keyring and seedless controller password verification failed.
