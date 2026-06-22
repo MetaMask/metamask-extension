@@ -19,6 +19,7 @@ import {
 } from '../../../constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
+import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import type { Status, TokenAmount } from '../types';
 
@@ -182,6 +183,51 @@ export function getTokenMetadataFromKnownToken(
       ? {}
       : { decimals: tokenMetadata.decimals }),
     ...(tokenMetadata.assetId ? { assetId: tokenMetadata.assetId } : {}),
+  };
+}
+
+/**
+ * Resolves the user's primary send and receive legs from indexed value transfers.
+ * Prefers a receive whose symbol differs from the sent leg so dust does not win.
+ *
+ * @param valueTransfers - Indexed value transfers from the Accounts API.
+ * @param subjectAddress - The account address to match transfers against.
+ * @returns The primary sent and received transfers for the account.
+ */
+export function parseValueTransfers(
+  valueTransfers: ValueTransfer[] | undefined,
+  subjectAddress: string,
+): {
+  sentTransfer: ValueTransfer | undefined;
+  receivedTransfer: ValueTransfer | undefined;
+  sentNftTransfer: ValueTransfer | undefined;
+  receivedNftTransfer: ValueTransfer | undefined;
+} {
+  const sent = valueTransfers?.filter(({ from }) =>
+    equalsIgnoreCase(from, subjectAddress),
+  );
+  const received = valueTransfers?.filter(({ to }) =>
+    equalsIgnoreCase(to, subjectAddress),
+  );
+
+  const sentTransfer = sent?.[0];
+
+  const receivedTransfer =
+    received?.find(({ symbol }) => symbol !== sentTransfer?.symbol) ??
+    received?.[0];
+
+  const sentNftTransfer = sent?.find(({ transferType }) =>
+    isNftStandard(transferType),
+  );
+  const receivedNftTransfer = received?.find(({ transferType }) =>
+    isNftStandard(transferType),
+  );
+
+  return {
+    sentTransfer,
+    receivedTransfer,
+    sentNftTransfer,
+    receivedNftTransfer,
   };
 }
 
