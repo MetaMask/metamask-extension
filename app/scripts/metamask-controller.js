@@ -3514,6 +3514,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
       ),
+      setLocation: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:setLocation`,
+      ),
       fetchQuotes: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
