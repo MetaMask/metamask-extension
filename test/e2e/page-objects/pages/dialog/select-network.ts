@@ -10,10 +10,8 @@ class SelectNetwork {
 
   private readonly closeButton = '[data-testid="settings-header-back-button"]';
 
-  private readonly confirmDeleteNetworkButton = {
-    text: 'Delete',
-    tag: 'button',
-  };
+  private readonly confirmDeleteNetworkButton =
+    '[data-testid="confirm-delete-network-modal-delete-button"]';
 
   private readonly confirmDeleteNetworkModal = {
     testId: 'confirm-delete-network-modal',

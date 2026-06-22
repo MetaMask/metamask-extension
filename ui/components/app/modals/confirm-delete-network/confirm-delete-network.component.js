@@ -119,6 +119,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
             }}
             primaryButtonProps={{
               children: t('delete'),
+              'data-testid': 'confirm-delete-network-modal-delete-button',
               isDanger: true,
               onClick: this.handleDelete,
               size: ButtonSize.Lg,
