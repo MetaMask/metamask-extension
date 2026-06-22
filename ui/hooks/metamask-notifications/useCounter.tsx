@@ -54,19 +54,15 @@ const useWalletNotificationCount = () => {
 };
 
 export function useUnreadNotificationsCounter() {
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
   const { unreadSnapNotificationsCount } = useSnapNotificationsCount();
   const { featureAnnouncementsUnreadCount } = useFeatureAnnouncementCount();
   const { onChainMetamaskNotificationsUnreadCount } =
     useWalletNotificationCount();
 
-  const notificationsUnreadCount = isMetamaskNotificationsEnabled
-    ? unreadSnapNotificationsCount +
-      featureAnnouncementsUnreadCount +
-      onChainMetamaskNotificationsUnreadCount
-    : 0;
+  const notificationsUnreadCount =
+    unreadSnapNotificationsCount +
+    featureAnnouncementsUnreadCount +
+    onChainMetamaskNotificationsUnreadCount;
 
   return {
     notificationsUnreadCount,
@@ -74,19 +70,15 @@ export function useUnreadNotificationsCounter() {
 }
 
 export function useReadNotificationsCounter() {
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
   const { readSnapNotificationsCount } = useSnapNotificationsCount();
   const { featureAnnouncementsReadCount } = useFeatureAnnouncementCount();
   const { onChainMetamaskNotificationsReadCount } =
     useWalletNotificationCount();
 
-  const notificationsReadCount = isMetamaskNotificationsEnabled
-    ? readSnapNotificationsCount +
-      featureAnnouncementsReadCount +
-      onChainMetamaskNotificationsReadCount
-    : 0;
+  const notificationsReadCount =
+    readSnapNotificationsCount +
+    featureAnnouncementsReadCount +
+    onChainMetamaskNotificationsReadCount;
 
   return {
     notificationsReadCount,
