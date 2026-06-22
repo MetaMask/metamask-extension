@@ -16,13 +16,17 @@ import {
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS,
+  BRIDGE_ASSET_PICKER_HIDDEN_ASSETS,
+} from '../../../shared/constants/bridge';
 import { isTronSpecialAsset, toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getCurrencyRateControllerCurrencyRates,
   getTokenBalancesControllerTokenBalances,
   getTokenRatesControllerMarketData,
+  getTokensControllerAllTokens,
 } from '../../../shared/lib/selectors/assets-migration';
 import { getMultichainBalances } from '../../selectors/multichain';
 import {
@@ -74,12 +78,14 @@ const getERC20AssetsWithBalance = createSelector(
     getAllowedHexChainIds,
     getTokenBalancesControllerTokenBalances,
     ({ metamask: { tokensChainsCache } }) => tokensChainsCache,
+    getTokensControllerAllTokens,
   ],
   (
     accountAddress,
     hexChainIds,
     balancesByAccountAddress,
     tokensByChainIdByAddress,
+    allTokensByChainIdByAccount,
   ) => {
     const assetsWithBalance: BridgeToken[] = [];
     if (!accountAddress || !isStrictHexString(accountAddress)) {
@@ -101,21 +107,34 @@ const getERC20AssetsWithBalance = createSelector(
         return;
       }
       const caipChainId = formatChainIdToCaip(chainId);
+      const tokenDataByAddress = tokensByChainIdByAddress[chainId]?.data;
+
+      const allTokensForAccount =
+        allTokensByChainIdByAccount[chainId]?.[lowercasedAddress] ??
+        allTokensByChainIdByAccount[chainId]?.[normalizedAddress] ??
+        [];
+      const fallbackTokenByAddress = allTokensForAccount.reduce<
+        Record<string, (typeof allTokensForAccount)[number]>
+      >((acc, token) => {
+        acc[token.address.toLowerCase()] = token;
+        return acc;
+      }, {});
+
       Object.entries(balanceByAddress).forEach(([address, balance]) => {
-        const tokenDataByAddress = tokensByChainIdByAddress[chainId]?.data;
-        if (!tokenDataByAddress) {
+        const lowercasedTokenAddress = address.toLowerCase();
+        const assetId = toAssetId(lowercasedTokenAddress, caipChainId);
+        if (!assetId) {
           return;
         }
-        const lowercasedTokenAddress = address.toLowerCase();
-        const token =
-          tokenDataByAddress[address] ??
-          tokenDataByAddress[lowercasedTokenAddress] ??
+
+        const cacheToken =
+          tokenDataByAddress?.[address] ??
+          tokenDataByAddress?.[lowercasedTokenAddress] ??
           (isStrictHexString(address)
-            ? tokenDataByAddress[getChecksumAddress(address)]
+            ? tokenDataByAddress?.[getChecksumAddress(address)]
             : undefined);
-        const assetId = toAssetId(lowercasedTokenAddress, caipChainId);
-        if (token && assetId) {
-          const { decimals, symbol, name, rwaData } = token;
+        if (cacheToken) {
+          const { decimals, symbol, name, rwaData, iconUrl } = cacheToken;
           assetsWithBalance.push({
             rwaData,
             balance: convertHexBalanceToDecimal(balance, decimals),
@@ -124,6 +143,23 @@ const getERC20AssetsWithBalance = createSelector(
             symbol,
             name,
             decimals,
+            iconUrl,
+          });
+          return;
+        }
+
+        const fallbackToken = fallbackTokenByAddress[lowercasedTokenAddress];
+        if (fallbackToken) {
+          const { decimals, symbol, name, image, rwaData } = fallbackToken;
+          assetsWithBalance.push({
+            rwaData,
+            balance: convertHexBalanceToDecimal(balance, decimals),
+            chainId: caipChainId,
+            assetId,
+            symbol,
+            name: name ?? symbol,
+            decimals,
+            iconUrl: image,
           });
         }
       });
@@ -355,7 +391,9 @@ const getBridgeAssetsForAccountGroupId = createSelector(
           .toNumber(),
       }));
 
-    return nonEvmAssetsWithFiatBalances.concat(evmAssetsWithFiatBalances);
+    return nonEvmAssetsWithFiatBalances
+      .concat(evmAssetsWithFiatBalances)
+      .filter((item) => !BRIDGE_ASSET_PICKER_HIDDEN_ASSETS.has(item.assetId));
   },
 );
 

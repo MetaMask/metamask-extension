@@ -74,7 +74,7 @@ export default function RevealRecoveryPhrase({
   }, [navigate, hasSeedPhraseBackedUp]);
 
   const onSubmit = useCallback(
-    async (_password) => {
+    async (_password: string) => {
       try {
         const seedPhrase = await getSeedPhrase(_password);
         setSecretRecoveryPhrase(seedPhrase);

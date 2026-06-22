@@ -14,6 +14,7 @@ import { login } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import { skipOnFirefox } from '../helpers';
 import { arrangeTestUtils } from './helpers';
@@ -59,7 +60,8 @@ describe('Account syncing - Multiple SRPs', function () {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -156,7 +158,8 @@ describe('Account syncing - Multiple SRPs', function () {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
 

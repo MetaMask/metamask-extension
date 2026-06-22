@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { createDappTransaction } from '../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../page-objects/flows/transaction.flow';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import SignTypedData from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
@@ -12,7 +12,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import {
   DAPP_ONE_URL,
   DAPP_PATH,
-  MOCK_META_METRICS_ID,
+  MOCK_ANALYTICS_ID,
   WINDOW_TITLES,
 } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -124,8 +124,9 @@ describe('Confirmation Navigation', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withSnapsPrivacyWarningAlreadyShown()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         testSpecificMock: mockDialogSnap,

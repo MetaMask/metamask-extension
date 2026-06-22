@@ -1,8 +1,8 @@
 import type { CaipChainId } from '@metamask/utils';
 
-export type Status = 'pending' | 'success' | 'failed';
+export type Status = 'pending' | 'success' | 'failed' | 'cancelled';
 
-export type ActivityType =
+export type ActivityKind =
   | 'receive'
   | 'sell'
   | 'buy'
@@ -21,6 +21,9 @@ export type ActivityType =
   | 'contractDeployment'
   | 'bridge'
   | 'convert'
+  | 'nftBuy'
+  | 'nftMint'
+  | 'nftSell'
   | 'smartAccountUpgrade'
   | 'lendingDeposit'
   | 'lendingWithdrawal'
@@ -30,7 +33,7 @@ export type ActivityType =
   | 'predictionCashedOut'
   | 'predictionPlaced'
   | 'perpsAddFunds'
-  | 'perpsWithdrawFunds'
+  | 'perpsWithdraw'
   | 'perpsOpenLong'
   | 'perpsCloseLong'
   | 'perpsCloseLongLiquidated'
@@ -45,81 +48,137 @@ export type ActivityType =
   | 'perpsCloseLongTakeProfit'
   | 'marketShort'
   | 'stopMarketCloseShort'
-  | 'marketCloseShort'
-  | 'nftMint';
+  | 'marketCloseShort';
 
 export type TokenAmount = {
   amount?: string;
   decimals?: number;
   symbol?: string;
+  assetId?: string;
   direction: 'in' | 'out';
 };
 
-type ActivityItem<Type extends ActivityType, Data> = {
+export type ActivityFee = {
+  type: string;
+  amount?: string;
+  decimals?: number;
+  symbol?: string;
+  assetId?: string;
+};
+
+export type FiatAmount = {
+  amount: string;
+  currency?: string;
+};
+
+type ActivityData<Type extends ActivityKind, Data> = {
   type: Type;
   chainId: CaipChainId;
   status: Status;
   timestamp: number;
-  /** TransactionController meta id used for cancel / speed up buttons */
-  metaId?: string;
+  isEarliestNonce?: boolean;
+  hash?: string;
   data: Data & {
-    hash?: string;
+    from?: string;
   };
 };
 
 export type ActivityListItem =
-  | ActivityItem<
+  | ActivityData<
       'send' | 'receive',
       {
         from: string;
         to: string;
         token?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
-  | ActivityItem<
-      'swap',
+  | ActivityData<
+      | 'swap'
+      | 'convert'
+      | 'lendingDeposit'
+      | 'lendingWithdrawal'
+      | 'wrap'
+      | 'unwrap',
       {
         sourceToken?: TokenAmount;
         destinationToken?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'swapIncomplete',
       {
         sourceToken?: TokenAmount;
       }
     >
-  | ActivityItem<
-      'buy' | 'lendingDeposit' | 'claim',
+  | ActivityData<
+      'bridge',
+      {
+        sourceToken?: TokenAmount;
+        destinationToken?: TokenAmount;
+        fees?: ActivityFee[];
+      }
+    >
+  | ActivityData<
+      'buy' | 'claim',
       {
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
+      'deposit',
+      {
+        token?: TokenAmount;
+        from?: string;
+      }
+    >
+  | ActivityData<
+      'perpsAddFunds' | 'perpsWithdraw',
+      {
+        fiat?: FiatAmount;
+        networkFee?: FiatAmount;
+        token?: TokenAmount;
+      }
+    >
+  | ActivityData<
       'claimMusdBonus',
       {
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
       {
-        tokenSymbol?: string;
-      }
-    >
-  | ActivityItem<
-      'nftMint',
-      {
-        from: string;
-        to: string;
         token?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
-  | ActivityItem<
+  | ActivityData<
+      'nftBuy' | 'nftMint',
+      {
+        from?: string;
+        to?: string;
+        token?: TokenAmount;
+        paymentToken?: TokenAmount;
+      }
+    >
+  | ActivityData<
+      'nftSell',
+      {
+        from?: string;
+        to?: string;
+        token?: TokenAmount;
+        paymentToken?: TokenAmount;
+      }
+    >
+  | ActivityData<
       'contractInteraction',
       {
         from: string;
         to: string;
+        token?: TokenAmount;
+        fees?: ActivityFee[];
         methodId?: string;
         transactionCategory?: string;
         transactionProtocol?: string;

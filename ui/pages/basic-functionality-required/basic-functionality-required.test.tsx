@@ -124,7 +124,7 @@ describe('BasicFunctionalityOff', () => {
     renderWithStore(<BasicFunctionalityOff />);
     screen.getByTestId('basic-functionality-off-review-in-settings').click();
 
-    expect(mockNavigate).toHaveBeenCalledWith('/settings/security');
+    expect(mockNavigate).toHaveBeenCalledWith('/settings/privacy');
   });
 
   it('renders Go to the home page link', () => {

@@ -81,7 +81,7 @@ const BTC_OVERVIEW_SWAP = 'coin-overview-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
-const mockMetaMetricsId = 'deadbeef';
+const mockAnalyticsId = 'deadbeef';
 const mockNonEvmBalance = '1';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
@@ -130,6 +130,7 @@ const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
 const mockMetamaskStore = {
   ...mockState.metamask,
   remoteFeatureFlags: {
+    batchSell: { enabled: true },
     bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
     bridgeConfig: {
       support: true,
@@ -190,7 +191,7 @@ const mockMetamaskStore = {
   // selected account
   completedOnboarding: true,
   // Used when clicking on some buttons
-  metaMetricsId: mockMetaMetricsId,
+  analyticsId: mockAnalyticsId,
   // Override state if provided
   multichainNetworkConfigurationsByChainId:
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
@@ -439,13 +440,18 @@ describe('NonEvmOverview', () => {
     });
   });
 
-  it('always show the Receive button', () => {
+  it('shows the Receive button inside the more-options dropdown', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
     );
-    const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
-    expect(receiveButton).toBeInTheDocument();
+
+    // Receive moved into the "More" dropdown – it is hidden until the dropdown is opened
+    expect(queryByTestId(BTC_OVERVIEW_RECEIVE)).not.toBeInTheDocument();
+
+    fireEvent.click(queryByTestId('coin-overview-more') as HTMLElement);
+
+    expect(queryByTestId(BTC_OVERVIEW_RECEIVE)).toBeInTheDocument();
   });
 
   it('always show the Send button', () => {

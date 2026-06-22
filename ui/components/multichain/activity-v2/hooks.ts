@@ -11,10 +11,8 @@ import { parseApprovalTransactionData } from '../../../../shared/lib/transaction
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { getIsTransactionLabelsEnabled } from '../../../selectors/multichain/feature-flags';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
-import {
-  calculateFiatFromMarketRates,
-  resolveTransactionType,
-} from './helpers';
+import { calculateFiatFromMarketRates } from '../../../../shared/lib/activity/fiat';
+import { resolveTransactionType } from './helpers';
 
 function classifyNft(
   valueTransfers: TransactionViewModel['valueTransfers'],
