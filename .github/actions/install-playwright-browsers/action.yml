@@ -31,14 +31,14 @@ runs:
         slug=$(printf '%s' "$BROWSERS" | tr -s ' ' | tr ' ' '-' | sed 's/^-*//; s/-*$//')
         echo "browsers-slug=$slug" >> "$GITHUB_OUTPUT"
 
-    - name: Restore Playwright browser cache
-      id: pw-cache
-      uses: actions/cache@v5
-      with:
-        path: ~/.cache/ms-playwright
-        key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}-${{ steps.pw-version.outputs.browsers-slug }}
+    # - name: Restore Playwright browser cache
+    #   id: pw-cache
+    #   uses: actions/cache@v5
+    #   with:
+    #     path: ~/.cache/ms-playwright
+    #     key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}-${{ steps.pw-version.outputs.browsers-slug }}
 
     - name: Install browsers (cache miss only)
-      if: steps.pw-cache.outputs.cache-hit != 'true'
+      # if: steps.pw-cache.outputs.cache-hit != 'true'
       shell: bash
       run: yarn playwright install ${{ inputs.browsers }}
