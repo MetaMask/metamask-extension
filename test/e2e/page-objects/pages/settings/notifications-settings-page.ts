@@ -100,6 +100,17 @@ class NotificationsSettingsPage {
 
   private readonly shortPresenceTimeoutMs = 1000;
 
+  private async reloadNotificationsSettingsPage(): Promise<void> {
+    console.log('Reloading notifications settings page');
+    await this.driver.executeScript(() => {
+      window.location.hash = '#/settings/notifications';
+    });
+    await this.checkPageIsLoaded();
+    await this.driver.waitForSelector(this.notificationsPerTypesSection, {
+      timeout: 30000,
+    });
+  }
+
   /**
    * Waits until AUS notification preferences are loaded and section rows are navigable.
    */
@@ -108,6 +119,35 @@ class NotificationsSettingsPage {
     await this.driver.waitForSelector(this.notificationsPerTypesSection, {
       timeout: 30000,
     });
+
+    const maxAttempts = 15;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        await this.driver.waitForElementToStopMoving(
+          this.marketingSectionButton,
+        );
+        await this.driver.clickElement(this.marketingSectionButton);
+        await this.driver.waitForSelector(this.marketingSectionContent, {
+          timeout: 3000,
+        });
+        await this.goToMainSettings();
+        console.log('Notification preference sections are navigable');
+        return;
+      } catch {
+        console.log(
+          `Reloading notifications settings to refresh preferences (attempt ${
+            attempt + 1
+          }/${maxAttempts})`,
+        );
+        await this.reloadNotificationsSettingsPage();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+
+    throw new Error(
+      'Notification preference sections failed to become navigable',
+    );
   }
 
   private async goToMainSettings(): Promise<void> {
@@ -157,7 +197,7 @@ class NotificationsSettingsPage {
         ? this.walletActivitySectionButton
         : this.marketingSectionButton;
 
-    const maxAttempts = 30;
+    const maxAttempts = 15;
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       await this.driver.waitForElementToStopMoving(sectionButton);
@@ -172,7 +212,7 @@ class NotificationsSettingsPage {
             attempt + 1
           }/${maxAttempts})`,
         );
-        await this.goToMainSettings();
+        await this.reloadNotificationsSettingsPage();
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }

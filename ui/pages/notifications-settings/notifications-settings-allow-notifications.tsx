@@ -40,11 +40,13 @@ export function NotificationsSettingsAllowNotifications({
   setLoading,
   disabled,
   dataTestId,
+  refetchPreferences,
 }: {
   loading: boolean;
   setLoading: (loading: boolean) => void;
   disabled: boolean;
   dataTestId: string;
+  refetchPreferences?: () => Promise<unknown>;
 }) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -124,6 +126,7 @@ export function NotificationsSettingsAllowNotifications({
         },
       });
       await enableNotifications();
+      await refetchPreferences?.();
     }
     setLoading(false);
     setToggleValue(!toggleValue);
@@ -132,6 +135,7 @@ export function NotificationsSettingsAllowNotifications({
     isMetamaskNotificationsEnabled,
     disableNotifications,
     enableNotifications,
+    refetchPreferences,
     toggleValue,
     isBackupAndSyncEnabled,
     trackEvent,

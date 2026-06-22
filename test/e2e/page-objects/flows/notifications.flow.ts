@@ -99,6 +99,7 @@ export const enableNotificationsThroughSettingsPage = async (
     await notificationsSettingsPage.clickNotificationToggle({
       toggleType: 'general',
     });
+    await notificationsSettingsPage.waitForNotificationPreferenceSections();
   }
 };
 

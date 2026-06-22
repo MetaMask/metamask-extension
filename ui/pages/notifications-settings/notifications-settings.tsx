@@ -150,6 +150,7 @@ export function NotificationsSettingsContent() {
         setLoading={setLoadingAllowNotifications}
         dataTestId="notifications-settings-allow"
         disabled={updatingAccounts}
+        refetchPreferences={refetchPreferences}
       />
       {isMetamaskNotificationsEnabled && (
         <>
