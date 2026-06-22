@@ -39,6 +39,10 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
     );
   }, []);
 
+  const onContinue = useCallback(() => {
+    onAddWallets(AddDeviceSettingsStep.SyncingWallets);
+  }, [onAddWallets]);
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -66,16 +70,13 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           wallets={wallets}
           selectedAccountGroups={selectedAccountGroups}
           handleAccountClick={handleAccountClick}
-          showAccountCheckbox={true}
+          showAccountCheckbox={false}
           showHeaderCheckbox={true}
           showAddAccount={false}
         />
       </ScrollContainer>
       <Box className="w-full mt-auto" paddingHorizontal={4}>
-        <Button
-          className="w-full"
-          onClick={() => onAddWallets(AddDeviceSettingsStep.SyncingWallets)}
-        >
+        <Button className="w-full" onClick={onContinue}>
           {t('continue')}
         </Button>
       </Box>
