@@ -51,14 +51,19 @@ export const SettingsTab = ({ items, subHeader }: SettingsTabProps) => {
           {subHeader}
         </Text>
       )}
-      {items.map(({ id, component: Component, hasDividerBefore }, index) => (
-        <React.Fragment key={id}>
-          {hasDividerBefore && <Divider />}
-          <div ref={settingsRefs[index]}>
-            <Component />
-          </div>
-        </React.Fragment>
-      ))}
+      {items.map(
+        (
+          { id, component: Component, hasDividerBefore, isOnboarding },
+          index,
+        ) => (
+          <React.Fragment key={id}>
+            {hasDividerBefore && <Divider />}
+            <div ref={settingsRefs[index]}>
+              <Component isOnboarding={isOnboarding} />
+            </div>
+          </React.Fragment>
+        ),
+      )}
     </Box>
   );
 };

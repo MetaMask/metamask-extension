@@ -8,10 +8,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import type { SettingItemProps } from '../types';
 import { ASSET_ITEMS } from '../search-config';
 import { SettingsToggleItem } from './settings-toggle-item';
 
-export const AutodetectNftsToggleItem = () => {
+export const AutodetectNftsToggleItem = ({
+  isOnboarding = false,
+}: SettingItemProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -25,7 +28,9 @@ export const AutodetectNftsToggleItem = () => {
       value={useNftDetection}
       onToggle={(value) => {
         trackEvent({
-          category: MetaMetricsEventCategory.Settings,
+          category: isOnboarding
+            ? MetaMetricsEventCategory.Onboarding
+            : MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.NftDetected,
           properties: {
             action: MetaMetricsEventName.NftDetected,

@@ -15,33 +15,49 @@ import { DisplayNftMediaToggleItem } from '../../settings/shared/display-nft-med
 import { AutodetectNftsToggleItem } from '../../settings/shared/autodetect-nfts-item';
 /* eslint-enable import-x/no-restricted-paths */
 
-const OnboardingBasicFunctionalityItem = () => (
-  <BasicFunctionalityToggleItem isOnboarding />
-);
-
 const ONBOARDING_PRIVACY_ITEMS: SettingItemConfig[] = [
-  { id: 'basic-functionality', component: OnboardingBasicFunctionalityItem },
+  {
+    id: 'basic-functionality',
+    component: BasicFunctionalityToggleItem,
+    isOnboarding: true,
+  },
   {
     id: 'batch-account-balance-requests',
     component: BatchAccountBalanceRequestsToggleItem,
+    isOnboarding: true,
   },
-  { id: 'network-details-check', component: NetworkDetailsCheckToggleItem },
-  { id: 'show-ens-domains', component: ShowENSDomainsToggleItem },
+  {
+    id: 'network-details-check',
+    component: NetworkDetailsCheckToggleItem,
+    isOnboarding: true,
+  },
+  {
+    id: 'show-ens-domains',
+    component: ShowENSDomainsToggleItem,
+    isOnboarding: true,
+  },
   {
     id: 'make-smart-contracts-easier',
     component: MakeSmartContractsEasierToggleItem,
+    isOnboarding: true,
   },
-  { id: 'ipfs-gateway', component: IpfsGatewayItem },
+  { id: 'ipfs-gateway', component: IpfsGatewayItem, isOnboarding: true },
   {
     id: 'display-nft-media',
     component: DisplayNftMediaToggleItem,
     hasDividerBefore: true,
+    isOnboarding: true,
   },
-  { id: 'autodetect-nfts', component: AutodetectNftsToggleItem },
+  {
+    id: 'autodetect-nfts',
+    component: AutodetectNftsToggleItem,
+    isOnboarding: true,
+  },
   {
     id: 'proposed-nicknames',
     component: ProposedNicknamesToggleItem,
     hasDividerBefore: true,
+    isOnboarding: true,
   },
 ];
 

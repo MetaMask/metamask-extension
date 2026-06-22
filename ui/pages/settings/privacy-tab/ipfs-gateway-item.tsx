@@ -20,8 +20,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import type { SettingItemProps } from '../types';
 
-export const IpfsGatewayItem = () => {
+export const IpfsGatewayItem = ({ isOnboarding = false }: SettingItemProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -64,7 +65,9 @@ export const IpfsGatewayItem = () => {
     const newValue = !currentValue;
 
     trackEvent({
-      category: MetaMetricsEventCategory.Settings,
+      category: isOnboarding
+        ? MetaMetricsEventCategory.Onboarding
+        : MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention

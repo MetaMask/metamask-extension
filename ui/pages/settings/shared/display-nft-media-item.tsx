@@ -8,10 +8,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import type { SettingItemProps } from '../types';
 import { ASSET_ITEMS } from '../search-config';
 import { SettingsToggleItem } from './settings-toggle-item';
 
-export const DisplayNftMediaToggleItem = () => {
+export const DisplayNftMediaToggleItem = ({
+  isOnboarding = false,
+}: SettingItemProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -25,7 +28,9 @@ export const DisplayNftMediaToggleItem = () => {
       value={openSeaEnabled}
       onToggle={(value) => {
         trackEvent({
-          category: MetaMetricsEventCategory.Settings,
+          category: isOnboarding
+            ? MetaMetricsEventCategory.Onboarding
+            : MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.EnabledDisabledOpenSea,
           properties: {
             action: MetaMetricsEventName.EnabledDisabledOpenSea,

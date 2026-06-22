@@ -96,7 +96,9 @@ export const BackupAndSyncToggle = ({
   const trackBackupAndSyncToggleEvent = useCallback(
     (newValue: boolean) => {
       trackEvent({
-        category: MetaMetricsEventCategory.Settings,
+        category: isOnboarding
+          ? MetaMetricsEventCategory.Onboarding
+          : MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -117,7 +119,12 @@ export const BackupAndSyncToggle = ({
         },
       });
     },
-    [trackEvent, displayedBackupAndSyncEnabled, isMetamaskNotificationsEnabled],
+    [
+      trackEvent,
+      displayedBackupAndSyncEnabled,
+      isMetamaskNotificationsEnabled,
+      isOnboarding,
+    ],
   );
 
   // Cascading side effects: keep backup & sync in sync with basic functionality.

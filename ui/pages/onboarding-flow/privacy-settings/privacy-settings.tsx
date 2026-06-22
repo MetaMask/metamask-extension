@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import classnames from 'clsx';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { SettingsHeader } from '../../settings/shared';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PrivacySettingsLanding } from './privacy-settings-landing';
+import { PrivacySettingsSubPageHeader } from './privacy-settings-sub-page-header';
 import OnboardingPrivacySubPage from './onboarding-privacy-sub-page';
 import OnboardingBackupSyncSubPage from './onboarding-backup-sync-sub-page';
 import PrivacySettingsNetworkRpc from './privacy-settings-network-rpc';
@@ -66,10 +65,9 @@ export default function PrivacySettings() {
         >
           {activeView ? (
             <>
-              <SettingsHeader
+              <PrivacySettingsSubPageHeader
                 title={t(PRIVACY_SETTINGS_VIEW_TITLE_KEYS[activeView])}
-                showSearch={false}
-                onClose={handleBack}
+                onBack={handleBack}
               />
               <Box
                 flexDirection={BoxFlexDirection.Column}

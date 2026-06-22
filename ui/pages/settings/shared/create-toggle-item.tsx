@@ -48,7 +48,7 @@ export type ToggleItemConfig = {
 export const createToggleItem = (
   config: ToggleItemConfig,
 ): React.ComponentType<SettingItemProps> => {
-  const ToggleItem = () => {
+  const ToggleItem = ({ isOnboarding = false }: SettingItemProps) => {
     const t = useI18nContext();
     const dispatch = useDispatch();
     const { trackEvent } = useContext(MetaMetricsContext);
@@ -57,16 +57,19 @@ export const createToggleItem = (
 
     const handleToggle = (currentValue: boolean) => {
       const newValue = !currentValue;
+      const eventCategory = isOnboarding
+        ? MetaMetricsEventCategory.Onboarding
+        : MetaMetricsEventCategory.Settings;
 
       if (config.trackEvent) {
         trackEvent({
-          category: MetaMetricsEventCategory.Settings,
+          category: eventCategory,
           event: config.trackEvent.event,
           properties: config.trackEvent.properties(newValue),
         });
       } else if (config.trackEventProperty) {
         trackEvent({
-          category: MetaMetricsEventCategory.Settings,
+          category: eventCategory,
           event: MetaMetricsEventName.SettingsUpdated,
           properties: {
             [config.trackEventProperty]: newValue,

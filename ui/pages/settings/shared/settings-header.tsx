@@ -29,7 +29,6 @@ type SettingsHeaderProps = {
   onSearchChange?: (text: string) => void;
   onSearchClear?: () => void;
   showSearchBorder?: boolean;
-  showSearch?: boolean;
 };
 
 export const SettingsHeader = ({
@@ -45,12 +44,10 @@ export const SettingsHeader = ({
   onSearchChange,
   onSearchClear,
   showSearchBorder = true,
-  showSearch = true,
 }: SettingsHeaderProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const showSearchButton =
-    showSearch && (!isPopupOrSidepanel || isOnSettingsRoot);
+  const showSearchButton = !isPopupOrSidepanel || isOnSettingsRoot;
 
   if (isSearchOpen) {
     return (

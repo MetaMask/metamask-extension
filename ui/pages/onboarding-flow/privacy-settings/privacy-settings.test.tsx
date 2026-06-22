@@ -13,6 +13,11 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import PrivacySettings from './privacy-settings';
 
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
@@ -83,18 +88,30 @@ const renderPrivacySettings = (
       backupAndSyncOnboardingToggleState: false,
     },
   }),
+  trackEvent = jest.fn(),
 ) =>
   renderWithProvider(
-    <Routes>
-      <Route
-        path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
-        element={<PrivacySettings />}
-      />
-      <Route
-        path={ONBOARDING_COMPLETION_ROUTE}
-        element={<div data-testid="onboarding-completion-page" />}
-      />
-    </Routes>,
+    <MetaMetricsContext.Provider
+      value={
+        {
+          trackEvent,
+          bufferedTrace: jest.fn(),
+          bufferedEndTrace: jest.fn(),
+          onboardingParentContext: { current: null },
+        } as never
+      }
+    >
+      <Routes>
+        <Route
+          path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
+          element={<PrivacySettings />}
+        />
+        <Route
+          path={ONBOARDING_COMPLETION_ROUTE}
+          element={<div data-testid="onboarding-completion-page" />}
+        />
+      </Routes>
+    </MetaMetricsContext.Provider>,
     store,
     ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   );
@@ -170,8 +187,32 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(
       screen.getByTestId('onboarding-privacy-settings-item-privacy'),
     );
-    fireEvent.click(screen.getByTestId('settings-header-back-button'));
+    fireEvent.click(
+      screen.getByTestId('privacy-settings-sub-page-back-button'),
+    );
 
     expect(screen.getByTestId('privacy-settings-landing')).toBeInTheDocument();
+  });
+
+  it('tracks onboarding analytics when toggling reused privacy settings', () => {
+    const mockTrackEvent = jest.fn();
+
+    renderPrivacySettings(undefined, mockTrackEvent);
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-privacy-settings-item-privacy'),
+    );
+    fireEvent.click(
+      screen.getByTestId('batch-account-balance-requests-toggle'),
+    );
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        use_multi_account_balance_checker: false,
+      },
+    });
   });
 });
