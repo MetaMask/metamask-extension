@@ -42,14 +42,12 @@ const AddRewardsAccount = ({ account }: AddRewardsAccountProps) => {
       isDisabled={isLoading}
       loadingText={t('rewardsLinkAccount')}
       startAccessory={
-        isLoading ? undefined : (
-          <img
-            src={'./images/metamask-rewards-points-alternative.svg'}
-            alt={t('rewardsPointsIcon')}
-            width={16}
-            height={16}
-          />
-        )
+        <img
+          src={'./images/metamask-rewards-points-alternative.svg'}
+          alt={t('rewardsPointsIcon')}
+          width={16}
+          height={16}
+        />
       }
       endAccessory={
         isError ? (

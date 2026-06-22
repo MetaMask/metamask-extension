@@ -110,9 +110,6 @@ if (key === 'rewardsLinkAccountError') {
 
       const loadingIcon = container.querySelector('svg');
       expect(loadingIcon).toBeInTheDocument();
-      expect(
-        screen.queryByAltText('Rewards Points Icon'),
-      ).not.toBeInTheDocument();
     });
 
     it('should disable button when isLoading is true', () => {
