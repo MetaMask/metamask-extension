@@ -428,7 +428,6 @@ import { AlertControllerInit } from './messenger-client-init/alert-controller-in
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { ApprovalControllerInit } from './messenger-client-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
@@ -548,6 +547,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
+      showApprovalRequest: this.opts.showUserConfirmation,
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -619,7 +619,6 @@ export default class MetamaskController extends EventEmitter {
 
     /** @type {import('./messenger-client-init/utils').InitFunctions} */
     const messengerClientInitFunctions = {
-      ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
@@ -748,7 +747,7 @@ export default class MetamaskController extends EventEmitter {
     this.messengerClientsByName = messengerClientsByName;
 
     // Backwards compatibility for existing references
-    this.approvalController = messengerClientsByName.ApprovalController;
+    this.approvalController = this.wallet.getInstance('ApprovalController');
     this.loggingController = messengerClientsByName.LoggingController;
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
@@ -1727,7 +1726,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   stopNetworkRequests() {
-    this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     if (
       !this.controllerMessenger.call(
@@ -2587,16 +2585,9 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
-    const { completedMetaMetricsOnboarding } = this.metaMetricsController.state;
-    const { optedIn, analyticsId } = this.analyticsController.state;
-    const participateInMetaMetrics =
-      completedMetaMetricsOnboarding === true ? optedIn : null;
-
     return {
       isInitialized,
       ...sanitizeUIState(flatState),
-      participateInMetaMetrics,
-      metaMetricsId: analyticsId,
     };
   }
 
@@ -3432,6 +3423,8 @@ export default class MetamaskController extends EventEmitter {
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
+      exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
+      exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4007,7 +4000,7 @@ export default class MetamaskController extends EventEmitter {
 
   async exportAccount(address, password) {
     await this.verifyPassword(password);
-    return this.keyringController.exportAccount(password, address);
+    return this.keyringController.exportAccount({ password }, address);
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
@@ -4679,6 +4672,67 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
+  }
+
+  /**
+   * Exports the Secret Recovery Phrase after verifying a passkey assertion,
+   * used as a password-less alternative to {@link getSeedPhrase}.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+   * @param {string} [keyringId] - The id of the HD keyring to export. Defaults to the primary keyring.
+   * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
+   */
+  async exportSeedPhraseWithPasskey(authenticationResponse, keyringId) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+
+    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+      authenticationResponse,
+    );
+
+    const mnemonic = await this.keyringController.exportSeedPhrase(
+      { encryptionKey: vaultKey },
+      keyringId,
+    );
+
+    return convertEnglishWordlistIndicesToCodepoints(mnemonic);
+  }
+
+  /**
+   * Reveals the private keys of multiple accounts after verifying a single
+   * passkey assertion, used as a password-less alternative to
+   * {@link exportAccounts} for the multichain account group reveal.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+   * @param {string[]} addresses - The addresses whose private keys should be revealed.
+   * @returns {Promise<string[]>} The private keys as hex strings, in the same order as `addresses`.
+   */
+  async exportAccountsWithPasskey(authenticationResponse, addresses) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+
+    // Retrieve the passkey-wrapped vault key once. This also cryptographically
+    // verifies the assertion, throwing on an invalid passkey.
+    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+      authenticationResponse,
+    );
+
+    return Promise.all(
+      addresses.map((address) =>
+        this.keyringController.exportAccount(
+          { encryptionKey: vaultKey },
+          address,
+        ),
+      ),
+    );
   }
 
   /**

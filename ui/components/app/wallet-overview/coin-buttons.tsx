@@ -29,6 +29,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useAppSelector } from '../../../store/store';
 import { ChainId } from '../../../../shared/constants/network';
 import { transitionForward } from '../../ui/transition';
 
@@ -251,7 +252,7 @@ const CoinButtons = ({
   const currentChainId = useSelector(getCurrentChainId);
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
-  const defaultSwapsToken = useSelector((state) =>
+  const defaultSwapsToken = useAppSelector((state) =>
     getSwapsDefaultToken(state, chainId.toString()),
   );
 

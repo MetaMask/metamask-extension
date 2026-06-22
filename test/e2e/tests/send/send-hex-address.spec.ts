@@ -13,13 +13,12 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
-import AssetList from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
-const hexAbbreviatedAddress = '0x2f318...5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
 
 describe('Send - Hex Address Normalization', function () {
@@ -43,14 +42,14 @@ describe('Send - Hex Address Normalization', function () {
           await confirmation.clickFooterConfirmButton();
           const homePage = new HomePage(driver);
           await homePage.goToActivityList();
-          const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkConfirmedTxNumberDisplayedInActivity();
-          await activityListPage.clickConfirmedTransaction();
+          const activityTab = new ActivityTab(driver);
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+          await activityTab.clickConfirmedTransaction();
           const transactionDetailsPage = new TransactionDetailsPage(driver);
 
           // Verify address in activity log
           await transactionDetailsPage.checkAddressInActivityLog(
-            hexAbbreviatedAddress,
+            hexPrefixedAddress.toLowerCase(),
           );
         },
       );
@@ -77,8 +76,8 @@ describe('Send - Hex Address Normalization', function () {
           // Send TST
           const homePage = new HomePage(driver);
           await homePage.goToTokensTab();
-          const assetList = new AssetList(driver);
-          await assetList.clickMultichainTokenListButton();
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.clickMultichainTokenListButton();
           await homePage.clickOnSendButton();
           // Paste address without hex prefix
           const sendPage = new SendPage(driver);
@@ -109,8 +108,8 @@ describe('Send - Hex Address Normalization', function () {
           // Send TST
           const homePage = new HomePage(driver);
           await homePage.goToTokensTab();
-          const assetList = new AssetList(driver);
-          await assetList.clickMultichainTokenListButton();
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.clickMultichainTokenListButton();
           await homePage.clickOnSendButton();
 
           // Type address without hex prefix
@@ -125,14 +124,14 @@ describe('Send - Hex Address Normalization', function () {
           const confirmation = new Confirmation(driver);
           await confirmation.clickFooterConfirmButton();
           await homePage.goToActivityList();
-          const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkConfirmedTxNumberDisplayedInActivity();
-          await activityListPage.clickConfirmedTransaction();
+          const activityTab = new ActivityTab(driver);
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+          await activityTab.clickConfirmedTransaction();
           const transactionDetailsPage = new TransactionDetailsPage(driver);
 
           // Verify address in activity log
           await transactionDetailsPage.checkAddressInActivityLog(
-            hexAbbreviatedAddress,
+            hexPrefixedAddress.toLowerCase(),
           );
         },
       );

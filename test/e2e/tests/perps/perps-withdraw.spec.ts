@@ -19,7 +19,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { PerpsWithdrawConfirmation } from '../../page-objects/pages/confirmations/perps-withdraw-confirmation';
-import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
+import { PerpsTab } from '../../page-objects/pages/home/perps-tab';
 import { PerpsWithdrawPage } from '../../page-objects/pages/perps/perps-withdraw-page';
 import {
   getPerpsConfigEligible,
@@ -48,11 +48,11 @@ async function openPerpsWithdrawConfirmation(
 ): Promise<PerpsWithdrawConfirmation> {
   await login(driver, { validateBalance: false });
 
-  const perpsHomePage = new PerpsHomePage(driver);
-  await perpsHomePage.navigateToPerpsHome();
-  await perpsHomePage.checkPageIsLoaded();
-  await perpsHomePage.waitForBalanceSection();
-  await perpsHomePage.clickWithdraw();
+  const perpsTab = new PerpsTab(driver);
+  await perpsTab.navigateToPerpsHome();
+  await perpsTab.checkPageIsLoaded();
+  await perpsTab.waitForBalanceSection();
+  await perpsTab.clickWithdraw();
 
   const withdrawConfirmation = new PerpsWithdrawConfirmation(driver);
   await withdrawConfirmation.checkPageIsLoaded();
@@ -71,11 +71,11 @@ describe('Perps Withdraw', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
         await withdrawPage.checkPageIsLoaded();
@@ -92,11 +92,11 @@ describe('Perps Withdraw', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
         await withdrawPage.checkPageIsLoaded();
@@ -116,11 +116,11 @@ describe('Perps Withdraw', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
         await withdrawPage.checkPageIsLoaded();
@@ -138,11 +138,11 @@ describe('Perps Withdraw', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
         await withdrawPage.checkPageIsLoaded();
