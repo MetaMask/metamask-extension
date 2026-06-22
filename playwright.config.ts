@@ -86,7 +86,7 @@ const config: PlaywrightTestConfig = {
       workers: 1,
       timeout: 5 * 60 * 1000,
       use: {
-        trace: 'off',
+        trace: 'on-first-retry',
       },
     },
     {
@@ -97,7 +97,7 @@ const config: PlaywrightTestConfig = {
       workers: 1,
       timeout: 5 * 60 * 1000,
       use: {
-        trace: 'off',
+        trace: 'on-first-retry',
       },
     },
   ],
