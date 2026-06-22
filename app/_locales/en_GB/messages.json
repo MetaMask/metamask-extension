@@ -1977,13 +1977,13 @@
     "message": "Almost there! Confirm on your device again",
     "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
   },
-  "bridgeHwApprovedAmount": {
-    "message": "Approved $1 $2",
-    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
-  },
   "bridgeHwApproveAmount": {
     "message": "Approve $1 $2",
     "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "bridgeHwApprovedAmount": {
+    "message": "Approved $1 $2",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
   },
   "bridgeHwDeviceDisconnected": {
     "message": "Reconnect your device and try again",
