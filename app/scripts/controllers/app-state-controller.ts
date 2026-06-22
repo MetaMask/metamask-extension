@@ -801,7 +801,7 @@ export class AppStateController extends BaseController<
       this.#extension.alarms.onAlarm.addListener(
         (alarmInfo: { name: string }) => {
           if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
-            this.#onInactiveTimeout();
+            this.messenger.call('LegacyBackgroundApiService:setLocked');
             this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
           }
         },
@@ -1197,7 +1197,10 @@ export class AppStateController extends BaseController<
       });
     } else {
       this.#timer = setTimeout(
-        () => this.#onInactiveTimeout(),
+        this.messenger.call.bind(
+          this.messenger,
+          'LegacyBackgroundApiService:setLocked',
+        ),
         timeoutToSet * MINUTE,
       );
     }
@@ -1768,9 +1771,5 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.deferredDeepLink = undefined;
     });
-  }
-
-  #onInactiveTimeout(): void {
-    this.messenger.call('LegacyBackgroundApiService:setLocked');
   }
 }
