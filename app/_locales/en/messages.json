@@ -8207,6 +8207,9 @@
   "rewardsLinkAccount": {
     "message": "Add account"
   },
+  "rewardsLinkAccountLoading": {
+    "message": "Adding account"
+  },
   "rewardsLinkAccountError": {
     "message": "Failed to add account"
   },

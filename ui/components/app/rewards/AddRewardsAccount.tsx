@@ -40,7 +40,7 @@ const AddRewardsAccount = ({ account }: AddRewardsAccountProps) => {
       data-testid="add-rewards-account-button"
       isLoading={isLoading}
       isDisabled={isLoading}
-      loadingText={t('rewardsLinkAccount')}
+      loadingText={t('rewardsLinkAccountLoading')}
       startAccessory={
         isLoading ? undefined : (
           <img

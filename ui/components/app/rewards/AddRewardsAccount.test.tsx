@@ -29,6 +29,9 @@ describe('AddRewardsAccount', () => {
     if (key === 'rewardsLinkAccount') {
       return 'Link Account';
     }
+    if (key === 'rewardsLinkAccountLoading') {
+      return 'Adding account';
+    }
     if (key === 'rewardsLinkAccountError') {
       return 'Error linking account';
     }
