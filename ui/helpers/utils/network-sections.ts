@@ -28,6 +28,12 @@ const SECTION_TITLE_KEY: Record<
   test: 'testnets',
 };
 
+const FEATURED_NON_EVM_MAINNET_CHAIN_IDS: readonly CaipChainId[] = [
+  SolScope.Mainnet,
+  BtcScope.Mainnet,
+  TrxScope.Mainnet,
+];
+
 function normalizeChainId(chainId: string): string {
   if (chainId.includes(':') && isEvmChainId(chainId as CaipChainId)) {
     return convertCaipToHexChainId(chainId as CaipChainId);
@@ -58,19 +64,13 @@ export function getNetworkSectionKey(chainId: string): NetworkSectionKey {
   if (
     normalizedHexChainId
       ? FEATURED_NETWORK_CHAIN_IDS.includes(normalizedHexChainId)
-      : false
+      : FEATURED_NON_EVM_MAINNET_CHAIN_IDS.includes(chainId as CaipChainId)
   ) {
     return 'default';
   }
 
   return 'custom';
 }
-
-const FEATURED_NON_EVM_MAINNET_CHAIN_IDS: readonly CaipChainId[] = [
-  SolScope.Mainnet,
-  BtcScope.Mainnet,
-  TrxScope.Mainnet,
-];
 
 /**
  * Returns whether a network is a featured default network that can be disabled
@@ -90,7 +90,7 @@ export function isDisableableDefaultNetwork(chainId: string): boolean {
     );
   }
 
-  return FEATURED_NON_EVM_MAINNET_CHAIN_IDS.includes(chainId as CaipChainId);
+  return false;
 }
 
 export function getNetworkSections<TNetwork extends { chainId: string }>(

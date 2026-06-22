@@ -143,14 +143,12 @@ describe('useNetworkItemCallbacks', () => {
     expect(callbacks.onDelete).toBeDefined();
   });
 
-  it('shows Disable for featured non-EVM networks', () => {
+  it('does not show Disable for featured non-EVM networks', () => {
     const { result } = renderHook(() => useNetworkItemCallbacks());
     const callbacks = result.current.getItemCallbacks(solanaNetwork);
 
-    expect(callbacks.onDeleteMenuLabel).toBe('disable');
-    callbacks.onDelete?.();
-
-    expect(mockDispatch).toHaveBeenCalledWith(removeNetwork(SolScope.Mainnet));
+    expect(callbacks.onDelete).toBeUndefined();
+    expect(callbacks.onDeleteMenuLabel).toBeUndefined();
   });
 
   it('does not show Delete for non-EVM testnets', () => {

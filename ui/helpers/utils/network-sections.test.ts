@@ -19,15 +19,24 @@ describe('getNetworkSections', () => {
   it('groups networks into multiple sections with titles', () => {
     const sections = getNetworkSections([
       { chainId: '0x1', name: 'Ethereum' },
-      {
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        name: 'Solana',
-      },
+      { chainId: '0xabc', name: 'Custom Network' },
     ]);
 
     expect(sections).toHaveLength(2);
     expect(sections[0].titleKey).toBe('defaultNetworks');
     expect(sections[1].titleKey).toBe('customNetworks');
+  });
+
+  it('keeps featured non-EVM mainnets in the default section', () => {
+    const sections = getNetworkSections([
+      {
+        chainId: SolScope.Mainnet,
+        name: 'Solana',
+      },
+    ]);
+
+    expect(sections).toHaveLength(1);
+    expect(sections[0].titleKey).toBe('defaultNetworks');
   });
 });
 
@@ -42,8 +51,8 @@ describe('isDisableableDefaultNetwork', () => {
     expect(isDisableableDefaultNetwork('eip155:1')).toBe(false);
   });
 
-  it('returns true for featured non-EVM mainnets', () => {
-    expect(isDisableableDefaultNetwork(SolScope.Mainnet)).toBe(true);
+  it('returns false for featured non-EVM mainnets', () => {
+    expect(isDisableableDefaultNetwork(SolScope.Mainnet)).toBe(false);
   });
 
   it('returns false for custom networks', () => {
