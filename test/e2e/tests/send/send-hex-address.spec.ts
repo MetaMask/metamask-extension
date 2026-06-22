@@ -63,19 +63,18 @@ describe('Send - Hex Address Normalization', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2()
-            .withTokensControllerERC20()
-            .build(),
-          smartContract: SMART_CONTRACTS.HST,
+          fixtures: new FixtureBuilderV2().withTokensControllerERC20().build(),
+          smartContract,
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }) => {
           await login(driver, { localNode: localNodes[0] });
+
           // Send TST
           const homePage = new HomePage(driver);
           await homePage.goToTokensTab();
           const tokensTab = new TokensTab(driver);
-          await tokensTab.clickOnAsset('TST')
+          await tokensTab.clickOnAsset('TST');
           await tokensTab.clickMultichainTokenListButton();
           await homePage.clickOnSendButton();
           // Paste address without hex prefix
@@ -94,9 +93,7 @@ describe('Send - Hex Address Normalization', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2()
-            .withTokensControllerERC20()
-            .build(),
+          fixtures: new FixtureBuilderV2().withTokensControllerERC20().build(),
           smartContract,
           title: this.test?.fullTitle(),
         },
