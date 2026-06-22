@@ -6,7 +6,7 @@ import {
   BSC_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 
 const BSC_BAT_ADDRESS = '0x0d8775f648430679a709e98d2b0cb6250d2887ef';
@@ -228,13 +228,13 @@ describe('Add existing token using search', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenAmountIsDisplayed('25 BNB');
-        await assetListPage.importTokenBySearch({
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenAmountIsDisplayed('25 BNB');
+        await tokensTab.importTokenBySearch({
           tokenName: 'BAT',
           networkName: BSC_DISPLAY_NAME,
         });
-        await assetListPage.checkTokenAmountInTokenDetailsModal(
+        await tokensTab.checkTokenAmountInTokenDetailsModal(
           'Basic Attention Token',
           '0 BAT',
         );

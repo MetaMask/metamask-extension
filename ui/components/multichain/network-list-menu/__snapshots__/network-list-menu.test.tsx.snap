@@ -50,7 +50,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -155,7 +155,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       data-testid="network-list-item-options-button-eip155:1"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>
@@ -218,7 +218,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       data-testid="network-list-item-options-button-eip155:59144"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>
@@ -281,7 +281,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       data-testid="network-list-item-options-button-eip155:56"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>
@@ -344,7 +344,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       data-testid="network-list-item-options-button-eip155:143"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>
@@ -412,7 +412,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       data-testid="network-list-item-options-button-eip155:5"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>
@@ -1106,7 +1106,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/arrow-left.svg');"
                 />
               </button>
@@ -1129,7 +1129,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -1192,7 +1192,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                     data-testid="test-add-rpc-drop-down"
                   >
                     <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/arrow-down.svg');"
                     />
                   </button>
@@ -1274,7 +1274,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                     data-testid="test-explorer-drop-down"
                   >
                     <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/arrow-down.svg');"
                     />
                   </button>
@@ -1382,7 +1382,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -1487,7 +1487,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       data-testid="network-list-item-options-button-eip155:1"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>
@@ -1550,7 +1550,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       data-testid="network-list-item-options-button-eip155:59144"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>
@@ -1613,7 +1613,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       data-testid="network-list-item-options-button-eip155:56"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>
@@ -1676,7 +1676,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       data-testid="network-list-item-options-button-eip155:143"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>
@@ -1744,7 +1744,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       data-testid="network-list-item-options-button-eip155:5"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/more-vertical.svg');"
                       />
                     </button>

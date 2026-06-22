@@ -110,7 +110,7 @@ const AdditionalNetwork = ({ network }: { network: AddNetworkFields }) => {
         )}
       </Box>
       <ButtonIcon
-        size={ButtonIconSize.Md}
+        size={ButtonIconSize.Sm}
         color={IconColor.iconDefault}
         iconName={IconName.Add}
         padding={0}

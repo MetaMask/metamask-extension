@@ -54,7 +54,7 @@ exports[`NameDetails renders proposed names 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -151,7 +151,7 @@ exports[`NameDetails renders proposed names 1`] = `
                   class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 >
                   <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/copy.svg');"
                   />
                 </button>
@@ -184,7 +184,7 @@ exports[`NameDetails renders proposed names 1`] = `
                         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                       >
                         <span
-                          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                           style="mask-image: url('./images/icons/close.svg');"
                         />
                       </button>
@@ -311,7 +311,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -406,7 +406,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                   class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 >
                   <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/copy.svg');"
                   />
                 </button>
@@ -439,7 +439,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                       >
                         <span
-                          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                           style="mask-image: url('./images/icons/close.svg');"
                         />
                       </button>
@@ -531,7 +531,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -628,7 +628,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                   class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 >
                   <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/copy.svg');"
                   />
                 </button>
@@ -661,7 +661,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                       >
                         <span
-                          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                           style="mask-image: url('./images/icons/close.svg');"
                         />
                       </button>
@@ -753,7 +753,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -850,7 +850,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                   class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 >
                   <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/copy.svg');"
                   />
                 </button>
@@ -883,7 +883,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                       >
                         <span
-                          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                           style="mask-image: url('./images/icons/close.svg');"
                         />
                       </button>
@@ -975,7 +975,7 @@ exports[`NameDetails renders with saved name 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -1072,7 +1072,7 @@ exports[`NameDetails renders with saved name 1`] = `
                   class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 >
                   <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/copy.svg');"
                   />
                 </button>
@@ -1105,7 +1105,7 @@ exports[`NameDetails renders with saved name 1`] = `
                         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                       >
                         <span
-                          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                           style="mask-image: url('./images/icons/close.svg');"
                         />
                       </button>

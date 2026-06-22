@@ -10,10 +10,15 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
 jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useTokenBalances', () => ({
+  useTokenBalances: jest.fn(),
 }));
 
 jest.mock('../../app/assets/asset-list', () => ({
@@ -49,6 +54,11 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
 jest.mock('../../app/perps/perps-tab', () => ({
   PerpsTab: () => <div data-testid="perps-tab-mock">PerpsTab</div>,
 }));
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
+});
 
 describe('AccountOverviewTabs - event metrics', () => {
   const mockTrackEvent = jest.fn();
@@ -173,5 +183,41 @@ describe('AccountOverviewTabs - event metrics', () => {
         ],
       },
     });
+  });
+});
+
+describe('AccountOverviewTabs - TokenBalancesPoller', () => {
+  it('polls token balances for the enabled EVM chain IDs', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        enabledNetworkMap: {
+          eip155: {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.POLYGON]: true,
+          },
+        },
+      },
+    });
+
+    renderWithProvider(
+      <AccountOverviewTabs
+        showTokens={true}
+        showNfts={false}
+        showActivity={false}
+        setBasicFunctionalityModalOpen={jest.fn()}
+        onSupportLinkClick={jest.fn()}
+      />,
+      store,
+    );
+
+    expect(useTokenBalances).toHaveBeenCalledWith(
+      expect.objectContaining({
+        chainIds: expect.arrayContaining([
+          CHAIN_IDS.MAINNET,
+          CHAIN_IDS.POLYGON,
+        ]),
+      }),
+    );
   });
 });

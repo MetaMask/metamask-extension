@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { useSelector } from 'react-redux';
 import { mapApiEvmTransactions } from '../../../shared/lib/activity/adapters/api-evm-transactions';
-import { selectEvmAddress } from '../../selectors/accounts';
 import {
+  selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';

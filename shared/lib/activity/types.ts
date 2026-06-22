@@ -23,6 +23,7 @@ export type ActivityKind =
   | 'convert'
   | 'nftBuy'
   | 'nftMint'
+  | 'nftSell'
   | 'smartAccountUpgrade'
   | 'lendingDeposit'
   | 'lendingWithdrawal'
@@ -76,8 +77,8 @@ type ActivityData<Type extends ActivityKind, Data> = {
   status: Status;
   timestamp: number;
   isEarliestNonce?: boolean;
+  hash?: string;
   data: Data & {
-    hash?: string;
     from?: string;
   };
 };
@@ -159,6 +160,16 @@ export type ActivityListItem =
         from?: string;
         to?: string;
         token?: TokenAmount;
+        paymentToken?: TokenAmount;
+      }
+    >
+  | ActivityData<
+      'nftSell',
+      {
+        from?: string;
+        to?: string;
+        token?: TokenAmount;
+        paymentToken?: TokenAmount;
       }
     >
   | ActivityData<

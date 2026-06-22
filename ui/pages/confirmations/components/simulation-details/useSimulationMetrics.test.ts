@@ -530,7 +530,7 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    describe('contract address properties (anon-only in sensitiveProperties)', () => {
+    describe('contract address properties', () => {
       const ADDRESS_1 = '0xabc123';
       const ADDRESS_2 = '0xdef456';
 
@@ -550,7 +550,7 @@ describe('useSimulationMetrics', () => {
           useExpectUpdateTransactionEventFragmentCalled(
             { balanceChanges: [nativeChange] },
             expect.objectContaining({
-              sensitiveProperties: expect.objectContaining({
+              properties: expect.objectContaining({
                 simulation_receiving_assets_contract_address: [],
                 simulation_sending_assets_contract_address: [
                   NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER,
@@ -574,7 +574,7 @@ describe('useSimulationMetrics', () => {
           useExpectUpdateTransactionEventFragmentCalled(
             { balanceChanges: [receivingChange] },
             expect.objectContaining({
-              sensitiveProperties: expect.objectContaining({
+              properties: expect.objectContaining({
                 simulation_receiving_assets_contract_address: [ADDRESS_1],
                 simulation_sending_assets_contract_address: [],
               }),
@@ -596,7 +596,7 @@ describe('useSimulationMetrics', () => {
           useExpectUpdateTransactionEventFragmentCalled(
             { balanceChanges: [sendingChange] },
             expect.objectContaining({
-              sensitiveProperties: expect.objectContaining({
+              properties: expect.objectContaining({
                 simulation_receiving_assets_contract_address: [],
                 simulation_sending_assets_contract_address: [ADDRESS_1],
               }),
@@ -626,7 +626,7 @@ describe('useSimulationMetrics', () => {
           useExpectUpdateTransactionEventFragmentCalled(
             { balanceChanges: [receiving1, receiving2] },
             expect.objectContaining({
-              sensitiveProperties: expect.objectContaining({
+              properties: expect.objectContaining({
                 simulation_receiving_assets_contract_address: [
                   ADDRESS_1,
                   ADDRESS_2,
@@ -662,7 +662,7 @@ describe('useSimulationMetrics', () => {
           useExpectUpdateTransactionEventFragmentCalled(
             { balanceChanges: [nativeReceiving, tokenReceiving] },
             expect.objectContaining({
-              sensitiveProperties: expect.objectContaining({
+              properties: expect.objectContaining({
                 simulation_receiving_assets_contract_address: [
                   NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER,
                   ADDRESS_1,
@@ -691,7 +691,7 @@ describe('useSimulationMetrics', () => {
           useExpectUpdateTransactionEventFragmentCalled(
             { balanceChanges: [change] },
             expect.objectContaining({
-              sensitiveProperties: expect.objectContaining({
+              properties: expect.objectContaining({
                 simulation_sending_assets_contract_address: [addressWithPrefix],
               }),
             }),
@@ -699,7 +699,7 @@ describe('useSimulationMetrics', () => {
         );
       });
 
-      it('does not add contract address properties to non-anon properties', () => {
+      it('does not pass a sensitiveProperties bag now that the fields are in properties', () => {
         const change = {
           ...BALANCE_CHANGE_MOCK,
           asset: { address: ADDRESS_1, standard: TokenStandard.ERC20 },
@@ -719,10 +719,8 @@ describe('useSimulationMetrics', () => {
         );
 
         const [params] = updateTransactionEventFragmentMock.mock.calls[0];
-        expect(params.properties).not.toHaveProperty(
-          'simulation_receiving_assets_contract_address',
-        );
-        expect(params.properties).not.toHaveProperty(
+        expect(params).not.toHaveProperty('sensitiveProperties');
+        expect(params.properties).toHaveProperty(
           'simulation_sending_assets_contract_address',
         );
       });

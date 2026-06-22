@@ -9,7 +9,7 @@ import {
 } from '../../../hooks/useMetametrics';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
-  getParticipateInMetaMetrics,
+  getOptedIn,
   getUseExternalServices,
   getIsSocialLoginFlow,
 } from '../../../selectors';
@@ -38,7 +38,7 @@ export const MetametricsToggleItem = () => {
   const error = enableMetametricsError ?? disableMetametricsError;
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isOptedIn = useSelector(getOptedIn);
   const useExternalServices = useSelector(getUseExternalServices);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
@@ -53,7 +53,7 @@ export const MetametricsToggleItem = () => {
         event: MetaMetricsEventName.TurnOnMetaMetrics,
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
+          participateInMetaMetrics: isOptedIn,
           location: 'Settings',
         },
       });
@@ -70,7 +70,7 @@ export const MetametricsToggleItem = () => {
         event: MetaMetricsEventName.TurnOffMetaMetrics,
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
+          participateInMetaMetrics: isOptedIn,
         },
       });
 
@@ -95,7 +95,7 @@ export const MetametricsToggleItem = () => {
       <SettingsToggleItem
         title={t(PRIVACY_ITEMS.metametrics)}
         description={t('participateInMetaMetricsDescription')}
-        value={participateInMetaMetrics === true}
+        value={isOptedIn}
         onToggle={handleToggle}
         dataTestId="participate-in-meta-metrics-input"
         containerDataTestId="participate-in-meta-metrics-toggle"

@@ -21,6 +21,7 @@ import {
   TextAlign,
   TextVariant,
 } from '@metamask/design-system-react';
+import { I18nContext } from '../../../../contexts/i18n';
 
 export default class ConfirmDeleteNetwork extends PureComponent {
   static propTypes = {
@@ -33,9 +34,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     switchToEthereumNetwork: PropTypes.func,
   };
 
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   handleDelete = async () => {
     const {
@@ -62,7 +61,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   };
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
     const { networkNickname } = this.props;
 
     return (

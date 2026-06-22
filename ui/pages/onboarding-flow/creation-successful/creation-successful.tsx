@@ -37,7 +37,7 @@ import {
   getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
-  getParticipateInMetaMetrics,
+  getOptedIn,
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
@@ -94,7 +94,7 @@ export default function CreationSuccessful() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isOptedIn = useSelector(getOptedIn);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink: DeferredDeepLink | null =
     useSelector(getDeferredDeepLink);
@@ -301,13 +301,13 @@ export default function CreationSuccessful() {
     }
 
     // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
-    // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
+    // Since we will track the `Metrics Opt In/Out` event even when optedIn is false,
     // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
-        event: participateInMetaMetrics
+        event: isOptedIn
           ? MetaMetricsEventName.MetricsOptIn
           : MetaMetricsEventName.MetricsOptOut,
         properties: {
@@ -374,7 +374,7 @@ export default function CreationSuccessful() {
     isFromSettingsSecurity,
     firstTimeFlowType,
     trackEvent,
-    participateInMetaMetrics,
+    isOptedIn,
     handleOnDoneNavigation,
     isResetWalletInProgress,
     accountTypeForMetrics,

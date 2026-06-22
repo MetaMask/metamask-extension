@@ -1,4 +1,4 @@
-import { SolScope } from '@metamask/keyring-api';
+import { SolScope, TrxScope } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   getNetworkSections,
@@ -16,27 +16,51 @@ describe('getNetworkSections', () => {
     expect(sections[0].titleKey).toBe('defaultNetworks');
   });
 
-  it('groups networks into multiple sections with titles', () => {
+  it('groups non-EVM mainnets into the default section', () => {
     const sections = getNetworkSections([
       { chainId: '0x1', name: 'Ethereum' },
-      { chainId: '0xabc', name: 'Custom Network' },
-    ]);
-
-    expect(sections).toHaveLength(2);
-    expect(sections[0].titleKey).toBe('defaultNetworks');
-    expect(sections[1].titleKey).toBe('customNetworks');
-  });
-
-  it('keeps featured non-EVM mainnets in the default section', () => {
-    const sections = getNetworkSections([
       {
-        chainId: SolScope.Mainnet,
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         name: 'Solana',
+      },
+      {
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+        name: 'Bitcoin',
+      },
+      {
+        chainId: TrxScope.Mainnet,
+        name: 'Tron',
       },
     ]);
 
     expect(sections).toHaveLength(1);
     expect(sections[0].titleKey).toBe('defaultNetworks');
+    expect(sections[0].items.map(({ chainId }) => chainId)).toStrictEqual([
+      '0x1',
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      'bip122:000000000019d6689c085ae165831e93',
+      TrxScope.Mainnet,
+    ]);
+  });
+
+  it('keeps non-EVM testnets out of the default section', () => {
+    const sections = getNetworkSections([
+      {
+        chainId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+        name: 'Solana Devnet',
+      },
+      {
+        chainId: '0x539',
+        name: 'Localhost',
+      },
+    ]);
+
+    expect(sections).toHaveLength(1);
+    expect(sections[0].titleKey).toBe('testnets');
+    expect(sections[0].items.map(({ chainId }) => chainId)).toStrictEqual([
+      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+      '0x539',
+    ]);
   });
 });
 
