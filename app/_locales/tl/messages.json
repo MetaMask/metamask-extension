@@ -5873,9 +5873,6 @@
   "notificationsSettingsBoxError": {
     "message": "Nagkaproblema. Subukang muli."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Manatiling may-alam sa nangyayari sa iyong wallet sa pamamagitan ng mga notipikasyon. Para gamitin ang mga notipikasyon, gumagamit kami ng profile para i-sync ang ilang setting sa lahat ng iyong device. $1 namin pinoprotektahan ang iyong pagkapribado habang ginagamit ang feature na ito."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Alamin kung paano"
   },

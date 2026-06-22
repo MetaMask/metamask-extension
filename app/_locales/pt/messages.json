@@ -5873,9 +5873,6 @@
   "notificationsSettingsBoxError": {
     "message": "Algo deu errado. Tente novamente."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Fique por dentro de tudo o que acontece em sua carteira com as notificações. Para usar as notificações, usamos um perfil para sincronizar algumas configurações entre seus dispositivos. $1 protegemos sua privacidade durante o uso deste recurso."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Saiba como"
   },

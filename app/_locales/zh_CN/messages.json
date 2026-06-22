@@ -5873,9 +5873,6 @@
   "notificationsSettingsBoxError": {
     "message": "出错了。请重试。"
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "通过通知随时了解您的钱包动态。为了使用通知，我们使用配置文件在您的不同设备上同步一些设置。$1 我们在使用此功能时保护您的隐私。"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "了解操作方法"
   },

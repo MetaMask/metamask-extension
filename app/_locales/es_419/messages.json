@@ -5786,9 +5786,6 @@
   "notificationsSettingsBoxError": {
     "message": "Se produjo un error. Inténtalo de nuevo."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Mantente al tanto de lo que sucede en tu billetera con notificaciones. Para usar notificaciones, usamos un perfil para sincronizar algunas configuraciones en tus dispositivos. $1 protegemos su privacidad mientras usa esta función."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Más información"
   },
