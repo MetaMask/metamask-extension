@@ -82,7 +82,8 @@ export type RewardsDataServiceFetchGeoLocationAction = {
  * Validate a referral code.
  *
  * @param code - The referral code to validate.
- * @returns Promise<{valid: boolean}> - Object indicating if the code is valid.
+ * @returns Promise<{valid: boolean; isVipCode?: boolean}> - Object indicating
+ * if the code is valid and whether the backend considers it a VIP code.
  */
 export type RewardsDataServiceValidateReferralCodeAction = {
   type: `RewardsDataService:validateReferralCode`;

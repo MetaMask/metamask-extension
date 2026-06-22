@@ -9,7 +9,7 @@ import {
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 
@@ -63,8 +63,9 @@ describe('Port Stream Chunking', function () {
         fixtures: new FixtureBuilderV2()
           .withTransactionController({ transactions: largeTransactions })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),

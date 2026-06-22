@@ -23,7 +23,7 @@ export function DefaultDetails({ item }: { item: ActivityListItem }) {
       </div>
 
       <Footer>
-        <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
+        <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
       </Footer>
     </div>
   );

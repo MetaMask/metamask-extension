@@ -75,12 +75,6 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       getTransactionMetricsRequest,
       messenger: initMessenger,
     }),
-    incomingTransactions: {
-      client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
-      includeTokenTransfers: false,
-      isEnabled: () => false,
-      updateTransactions: true,
-    },
     getNetworkClientRegistry: () =>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       initMessenger.call('NetworkController:getNetworkClientRegistry') as any,
@@ -139,10 +133,6 @@ function getApi(
     getTransactions: messengerClient.getTransactions.bind(messengerClient),
     isAtomicBatchSupported:
       messengerClient.isAtomicBatchSupported.bind(messengerClient),
-    startIncomingTransactionPolling:
-      messengerClient.startIncomingTransactionPolling.bind(messengerClient),
-    stopIncomingTransactionPolling:
-      messengerClient.stopIncomingTransactionPolling.bind(messengerClient),
     updateAtomicBatchData:
       messengerClient.updateAtomicBatchData.bind(messengerClient),
     updateBatchTransactions:

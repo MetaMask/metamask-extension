@@ -7,8 +7,6 @@ import { join, resolve } from 'node:path';
 import {
   type Configuration,
   type FileCacheOptions,
-  type RuleSetRule,
-  type Stats,
   webpack,
   Compiler,
   WebpackPluginInstance,
@@ -16,7 +14,6 @@ import {
 import { noop, type Manifest } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
-import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
 import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
@@ -39,36 +36,6 @@ function getExpectedDefaultZipMtime() {
     return latestCommitTimestamp;
   }
   return DEFAULT_ZIP_MTIME;
-}
-
-async function getWebpackWarnings(config: Configuration): Promise<string[]> {
-  const compiler = webpack(config);
-
-  try {
-    const stats = await new Promise<Stats>((resolveStats, rejectStats) => {
-      compiler.run((error, result) => {
-        if (error) {
-          rejectStats(error);
-          return;
-        }
-
-        if (!result) {
-          rejectStats(new Error('Webpack finished without returning stats.'));
-          return;
-        }
-
-        resolveStats(result);
-      });
-    });
-
-    return (stats.toJson({ all: false, warnings: true }).warnings ?? []).map(
-      (warning) => warning.message,
-    );
-  } finally {
-    await new Promise<void>((resolveClose, rejectClose) =>
-      compiler.close((error) => (error ? rejectClose(error) : resolveClose())),
-    );
-  }
 }
 
 async function withWatching<T>(
@@ -131,9 +98,6 @@ describe('webpack.config.test.ts', () => {
     metamaskrc: resolve(__dirname, '../../../.metamaskrc'),
     metamaskprodrc: resolve(__dirname, '../../../.metamaskprodrc'),
   };
-  const protobufInquireWarning =
-    'Critical dependency: the request of a dependency is an expression';
-
   before(() => {
     // cache originals before we start messing with them
     originalArgv = process.argv;
@@ -298,8 +262,7 @@ ${Object.entries(env)
     assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
     assert.strictEqual(manifestPlugin.options.stats, false);
-    const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
-    assert.strictEqual(manifestOpts.zipOptions, undefined);
+    assert.strictEqual('zipOptions' in manifestPlugin.options, false);
 
     const progressPlugin = options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
@@ -323,71 +286,6 @@ ${Object.entries(env)
         (path) => !path.endsWith('.metamaskprodrc'),
       ),
       'missing .metamaskprodrc should not be a cache dependency',
-    );
-  });
-
-  it('suppresses the @protobufjs/inquire dynamic require warning only while it is still needed', async () => {
-    using tempDirectory = fs.mkdtempDisposableSync(
-      join(tmpdir(), 'protobuf-inquire-warning-test-'),
-    );
-    const entryPath = join(tempDirectory.path, 'entry.js');
-    fs.writeFileSync(
-      entryPath,
-      `
-const inquire = require('@protobufjs/inquire');
-inquire('long');
-`,
-    );
-
-    const config: Configuration = getWebpackConfig(['--no-progress']);
-    const protobufInquireRule = config.module?.rules?.find(
-      (rule) =>
-        rule &&
-        typeof rule === 'object' &&
-        'test' in rule &&
-        String(rule.test).includes('@protobufjs'),
-    ) as RuleSetRule | undefined;
-    assert(
-      protobufInquireRule,
-      'Expected a parser rule for @protobufjs/inquire.',
-    );
-
-    const getConfig = (name: string, rules: RuleSetRule[]): Configuration => ({
-      mode: 'development',
-      context: resolve(__dirname, '../../..'),
-      entry: entryPath,
-      output: {
-        path: join(tempDirectory.path, name),
-        filename: 'bundle.js',
-      },
-      cache: false,
-      stats: 'none',
-      infrastructureLogging: { level: 'none' },
-      resolve: {
-        modules: [join(__dirname, '../../../node_modules'), 'node_modules'],
-      },
-      module: { rules },
-    });
-
-    const warningsWithRule = await getWebpackWarnings(
-      getConfig('with-rule', [protobufInquireRule]),
-    );
-    assert.deepStrictEqual(
-      warningsWithRule.filter((warning) =>
-        warning.includes(protobufInquireWarning),
-      ),
-      [],
-      'Expected the @protobufjs/inquire parser rule to suppress the dynamic require warning.',
-    );
-
-    const warningsWithoutRule = await getWebpackWarnings(
-      getConfig('without-rule', []),
-    );
-    assert(
-      warningsWithoutRule.some((warning) =>
-        warning.includes(protobufInquireWarning),
-      ),
-      'Expected @protobufjs/inquire to still emit this warning without the workaround. If this fails, remove the parser rule.',
     );
   });
 
@@ -441,7 +339,7 @@ inquire('long');
 
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
-    ) as WebpackPluginInstance;
+    ) as WebpackPluginInstance & ManifestPlugin<true>;
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, []);
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
@@ -461,36 +359,16 @@ inquire('long');
       BUNDLE_SIZE_SUMMARY_FILE,
     );
     assert.strictEqual(manifestPlugin.options.stats.debug, true);
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('service-worker.ts'),
-      'background',
+    assert.deepStrictEqual(manifestPlugin.options.html, [
+      { directory: join('html', 'ui'), category: 'ui' },
+      { directory: join('html', 'background'), category: 'background' },
+      { directory: join('html', 'other'), category: 'other' },
+    ]);
+
+    const htmlBundlerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'HtmlBundlerPlugin',
     );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('background'),
-      'background',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('home'),
-      'ui',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('offscreen'),
-      'other',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('offscreen.1'),
-      'other',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint(
-        'scripts/contentscript.js',
-      ),
-      'contentScripts',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('unknown'),
-      null,
-    );
+    assert(htmlBundlerPlugin, 'HtmlBundlerPlugin should be present');
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
