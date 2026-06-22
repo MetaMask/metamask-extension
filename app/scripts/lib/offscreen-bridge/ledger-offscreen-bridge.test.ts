@@ -1,4 +1,8 @@
-import { HardwareWalletError, Severity, Category } from '@metamask/hw-wallet-sdk';
+import {
+  HardwareWalletError,
+  Severity,
+  Category,
+} from '@metamask/hw-wallet-sdk';
 import {
   LedgerAction,
   OffscreenCommunicationTarget,
@@ -20,10 +24,7 @@ describe('LedgerOffscreenBridge', () => {
     capturedResponseCallback = null;
     chromeRuntimeMock = {
       sendMessage: jest.fn(
-        (
-          _message: unknown,
-          callback: SendMessageCallback,
-        ) => {
+        (_message: unknown, callback: SendMessageCallback) => {
           capturedResponseCallback = callback;
         },
       ),
@@ -78,7 +79,10 @@ describe('LedgerOffscreenBridge', () => {
       // does. Forcing this property to exist would mislead callers into
       // reading a value that is never updated.
       const bridge = new LedgerOffscreenBridge();
-      expect((bridge as unknown as { isDeviceConnected?: unknown }).isDeviceConnected).toBeUndefined();
+      expect(
+        (bridge as unknown as { isDeviceConnected?: unknown })
+          .isDeviceConnected,
+      ).toBeUndefined();
     });
   });
 

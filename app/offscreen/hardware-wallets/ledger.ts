@@ -85,9 +85,8 @@ export class LedgerLegacyHandler {
   // them. Without these references the listeners leak for the lifetime of the
   // offscreen document, which becomes a problem now that handlers can be
   // swapped at runtime via `switchLedgerHandler`.
-  private hidConnectListener:
-    | ((event: { device: HIDDevice }) => void)
-    | null = null;
+  private hidConnectListener: ((event: { device: HIDDevice }) => void) | null =
+    null;
 
   private hidDisconnectListener:
     | ((event: { device: HIDDevice }) => void)

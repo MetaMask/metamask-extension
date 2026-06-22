@@ -118,7 +118,8 @@ export const LedgerHandlerMode = {
   Legacy: 'legacy',
 } as const;
 
-export type LedgerHandlerMode = typeof LedgerHandlerMode[keyof typeof LedgerHandlerMode];
+export type LedgerHandlerMode =
+  (typeof LedgerHandlerMode)[keyof typeof LedgerHandlerMode];
 
 /**
  * Defines domain origins that we expect to interface with in our offscreen

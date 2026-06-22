@@ -47,7 +47,10 @@ type IFrameMessage<TAction extends LedgerAction> = {
  * `@metamask/eth-ledger-bridge-keyring` so this `Omit` can go away.
  * Tracked separately.
  */
-export class LedgerOffscreenBridge implements Omit<LedgerBridge<LedgerOffscreenBridgeOptions>, 'isDeviceConnected'> {
+export class LedgerOffscreenBridge
+  implements
+    Omit<LedgerBridge<LedgerOffscreenBridgeOptions>, 'isDeviceConnected'>
+{
   init() {
     return Promise.resolve();
   }
