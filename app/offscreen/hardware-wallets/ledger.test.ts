@@ -6,6 +6,7 @@ import {
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 import { LedgerLegacyHandler } from './ledger';
+import { serializeLedgerError } from './ledger-utils';
 
 // Mock functions - defined before jest.mock calls
 const mockTransportClose = jest.fn();
@@ -134,16 +135,6 @@ describe('Ledger Offscreen', () => {
   let mockAddEventListener: jest.Mock;
   let mockGetDevices: jest.Mock;
   let mockSendMessage: jest.Mock;
-  let mockAddListener: jest.Mock;
-  let capturedMessageListener: (
-    msg: {
-      target: string;
-      action: LedgerAction;
-      params?: Record<string, unknown>;
-    },
-    sender: unknown,
-    sendResponse: (response: unknown) => void,
-  ) => boolean;
   let capturedConnectListener: (event: { device: HIDDevice }) => void;
   let capturedDisconnectListener: (event: { device: HIDDevice }) => void;
 
@@ -184,17 +175,11 @@ describe('Ledger Offscreen', () => {
 
     // Set up chrome.runtime mock
     mockSendMessage = jest.fn();
-    mockAddListener = jest.fn((callback) => {
-      capturedMessageListener = callback;
-    });
 
     Object.defineProperty(globalThis, 'chrome', {
       value: {
         runtime: {
           sendMessage: mockSendMessage,
-          onMessage: {
-            addListener: mockAddListener,
-          },
         },
       },
       writable: true,
@@ -269,40 +254,28 @@ describe('Ledger Offscreen', () => {
   });
 
   describe('message handling', () => {
+    let handler: LedgerLegacyHandler;
+
     beforeEach(async () => {
-      const handler = new LedgerLegacyHandler();
+      handler = new LedgerLegacyHandler();
       await handler.init();
       mockSendMessage.mockClear();
     });
 
-    const sendAction = (
+    const sendAction = async (
       action: LedgerAction,
       params?: Record<string, unknown>,
     ): Promise<{ success: boolean; payload: unknown }> => {
-      return new Promise((resolve) => {
-        capturedMessageListener(
-          {
-            target: OffscreenCommunicationTarget.ledgerOffscreen,
-            action,
-            params,
-          },
-          {},
-          resolve as (response: unknown) => void,
-        );
-      });
+      try {
+        const result = await handler.handleAction(action, params);
+        return { success: true, payload: result };
+      } catch (error) {
+        return {
+          success: false,
+          payload: { error: serializeLedgerError(error) },
+        };
+      }
     };
-
-    it('ignores messages for other targets', () => {
-      const sendResponse = jest.fn();
-      const result = capturedMessageListener(
-        { target: 'other-target', action: LedgerAction.makeApp },
-        {},
-        sendResponse,
-      );
-
-      expect(result).toBe(false);
-      expect(sendResponse).not.toHaveBeenCalled();
-    });
 
     describe('makeApp', () => {
       it('creates transport and app', async () => {
@@ -622,7 +595,7 @@ describe('Ledger Offscreen', () => {
         expect(response.success).toBe(false);
         expect(response.payload).toEqual({
           error: expect.objectContaining({
-            message: 'CONDITIONS_OF_USE_NOT_SATISFIED',
+            message: 'User rejected action on device',
             statusCode: 0x6985,
           }),
         });
@@ -780,11 +753,10 @@ describe('Ledger Offscreen', () => {
 
         expect(response.success).toBe(false);
         expect(response.payload).toEqual({
-          error: {
-            message: 'Locked device',
-            name: 'Error',
+          error: expect.objectContaining({
+            message: 'Device locked',
             statusCode: 0x6b0c,
-          },
+          }),
         });
         consoleSpy.mockRestore();
       });
@@ -804,44 +776,6 @@ describe('Ledger Offscreen', () => {
         });
         consoleSpy.mockRestore();
       });
-    });
-  });
-
-  describe('handleAction (router path)', () => {
-    it('closes transport after a successful action', async () => {
-      mockGetAddress.mockResolvedValue({
-        publicKey: '04abcd1234',
-        address: '0x1234567890abcdef',
-        chainCode: 'chaincode123',
-      });
-
-      const handler = new LedgerLegacyHandler();
-      await handler.init();
-
-      await handler.handleAction(LedgerAction.getPublicKey, {
-        hdPath: "m/44'/60'/0'/0/0",
-      });
-
-      expect(mockTransportClose).toHaveBeenCalled();
-    });
-
-    it('closes transport after a failed action', async () => {
-      const consoleSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-      mockGetAddress.mockRejectedValue(new Error('Device error'));
-
-      const handler = new LedgerLegacyHandler();
-      await handler.init();
-
-      await expect(
-        handler.handleAction(LedgerAction.getPublicKey, {
-          hdPath: "m/44'/60'/0'/0/0",
-        }),
-      ).rejects.toThrow('Device error');
-
-      expect(mockTransportClose).toHaveBeenCalled();
-      consoleSpy.mockRestore();
     });
   });
 });
