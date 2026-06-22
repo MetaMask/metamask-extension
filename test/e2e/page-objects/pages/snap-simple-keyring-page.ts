@@ -365,9 +365,7 @@ class SnapSimpleKeyringPage {
       },
       { interval: regularDelayMs, timeout: 10000 },
     );
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.Dialog,
-    );
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
 }
 
