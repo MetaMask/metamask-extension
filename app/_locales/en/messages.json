@@ -8207,7 +8207,7 @@
   "rewardsLinkAccount": {
     "message": "Add account"
   },
-"rewardsLinkAccountError": {
+  "rewardsLinkAccountError": {
     "message": "Failed to add account"
   },
   "rewardsOnboardingCheckingRegion": {
