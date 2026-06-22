@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
+import NotificationsSettingsPage from './settings/notifications-settings-page';
 
 class HeaderNavbar {
   protected driver: Driver;
@@ -19,9 +20,6 @@ class HeaderNavbar {
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
-
-  private readonly firstTimeTurnOnNotificationsButton =
-    '[data-testid="turn-on-notifications-button"]';
 
   private readonly globalMenuButton =
     '[data-testid="account-options-menu-button"]';
@@ -56,6 +54,15 @@ class HeaderNavbar {
 
   private readonly notificationsButton =
     '[data-testid="notifications-menu-item"]';
+
+  private readonly notificationsPage =
+    '[data-testid="notifications-page"]';
+
+  private readonly notificationsSettingsButton =
+    '[data-testid="notifications-settings-button"]';
+
+  private readonly notificationsListDisabled =
+    '[data-testid="notifications-list-disabled-notifications"]';
 
   private readonly openAccountDetailsButton =
     '[data-testid="account-list-menu-details"]';
@@ -174,16 +181,38 @@ class HeaderNavbar {
     await this.driver.clickElement(this.contactsButton);
   }
 
-  async enableNotifications(): Promise<void> {
-    console.log('Enabling notifications for the first time');
-    await this.openGlobalMenu();
+  async navigateToNotificationsPage(): Promise<void> {
+    console.log('Navigate to notifications page');
+    await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.clickElement(this.notificationsButton);
-    await this.driver.clickElement(this.firstTimeTurnOnNotificationsButton);
+    await this.driver.waitForSelector(this.notificationsPage);
+  }
+
+  async enableNotifications(): Promise<void> {
+    console.log('Enabling notifications from the notifications settings page');
+    await this.navigateToNotificationsPage();
+
+    const notificationsSettingsPage = new NotificationsSettingsPage(
+      this.driver,
+    );
+    const isDisabled = await this.driver.isElementPresent(
+      this.notificationsListDisabled,
+    );
+
+    if (!isDisabled) {
+      console.log('Notifications are already enabled.');
+      return;
+    }
+
+    await this.driver.clickElement(this.notificationsSettingsButton);
+    await notificationsSettingsPage.checkPageIsLoaded();
+    await notificationsSettingsPage.clickNotificationToggle({
+      toggleType: 'general',
+    });
   }
 
   async goToNotifications(): Promise<void> {
-    console.log('Click notifications button');
-    await this.driver.clickElement(this.notificationsButton);
+    await this.navigateToNotificationsPage();
   }
 
   async clickNotificationsOptions(): Promise<void> {

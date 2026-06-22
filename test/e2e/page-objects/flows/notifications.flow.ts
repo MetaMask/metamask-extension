@@ -18,15 +18,36 @@ export const enableNotificationsThroughGlobalMenu = async (
 ): Promise<void> => {
   console.log('Enabling notifications through global menu');
   const headerNavbar = new HeaderNavbar(driver);
+  const notificationsListPage = new NotificationsListPage(driver);
+  const notificationsSettingsPage = new NotificationsSettingsPage(driver);
+
   await headerNavbar.checkPageIsLoaded();
   await headerNavbar.enableNotifications();
 
-  if (goToNotificationsSettings === true) {
-    // Click to notifications gear icon
-    const notificationsListPage = new NotificationsListPage(driver);
-    await notificationsListPage.checkPageIsLoaded();
-    await notificationsListPage.goToNotificationsSettings();
+  if (goToNotificationsSettings) {
+    const isOnSettingsPage = await driver.isElementPresent(
+      '[data-testid="notifications-settings-allow-toggle-box"]',
+    );
+
+    if (!isOnSettingsPage) {
+      await notificationsListPage.checkPageIsLoaded();
+      await notificationsListPage.goToNotificationsSettings();
+    }
+
+    await notificationsSettingsPage.checkPageIsLoaded();
+    return;
   }
+
+  const isOnNotificationsPage = await driver.isElementPresent(
+    '[data-testid="notifications-page"]',
+  );
+
+  if (!isOnNotificationsPage) {
+    await headerNavbar.checkPageIsLoaded();
+    await headerNavbar.goToNotifications();
+  }
+
+  await notificationsListPage.checkPageIsLoaded();
 };
 
 /**
