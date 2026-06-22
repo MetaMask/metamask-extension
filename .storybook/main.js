@@ -45,6 +45,27 @@ module.exports = {
     config.resolve.alias['../../../store/actions$'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
+    const hwSwapHooksMock = require.resolve(
+      '../ui/__mocks__/hardware-wallet-swap/hooks.ts',
+    );
+    const hwSwapHookModules = [
+      'useHwSwapQuoteData',
+      'useHwSwapSubmission',
+      'useHwSwapConnectionMonitoring',
+      'useHwSwapConfirmationMonitoring',
+      'useHwSwapQrState',
+      'useHwSwapNavigation',
+      'useHwSignTracker',
+    ];
+    for (const hookModule of hwSwapHookModules) {
+      config.resolve.alias[
+        `../../../hooks/hardware-wallets/${hookModule}$`
+      ] = hwSwapHooksMock;
+    }
+    config.resolve.alias['../../../hooks/bridge/useSubmitBridgeTransaction$'] =
+      hwSwapHooksMock;
+    config.resolve.alias['../../../hooks/bridge/useBridgeNavigation$'] =
+      hwSwapHooksMock;
     config.resolve.fallback = {
       child_process: false,
       constants: false,

@@ -11,8 +11,7 @@ import {
 } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { HardwareConnectionPermissionState } from '../../../contexts/hardware-wallets/types';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import mockState from '../../../../test/data/mock-state.json';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import {
   hwSwapStoryState,
   type HwSwapStoryArgs,
@@ -30,21 +29,18 @@ import {
  * derivation, the JSX — is the genuine component output.
  */
 
-const CHAIN_ID_MOCK = '0x1';
-
 type Args = HwSwapStoryArgs;
 
 const createMockStore = () =>
-  configureStore({
-    metamask: {
-      ...mockState.metamask,
-      preferences: {
-        ...mockState.metamask.preferences,
-        useNativeCurrencyAsPrimaryCurrency: false,
+  configureStore(
+    createBridgeMockStore({
+      metamaskStateOverrides: {
+        preferences: {
+          useNativeCurrencyAsPrimaryCurrency: false,
+        },
       },
-      ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
-    },
-  });
+    }),
+  );
 
 const metricsValue = {
   trackEvent: () => Promise.resolve(),
