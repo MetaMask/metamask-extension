@@ -11,7 +11,7 @@ import {
   type OtpRequiredPayload,
 } from '@metamask/mobile-wallet-protocol-dapp-client';
 import { KeyringType } from '@metamask/keyring-api/v2';
-import { bytesToBase64 } from '@metamask/utils';
+import { bytesToBase64, stringToBytes } from '@metamask/utils';
 
 import log from 'loglevel';
 import {
@@ -29,6 +29,7 @@ import {
   type QrSyncData,
   type QrSyncError,
   type QrSyncOffer,
+  type QrSyncCancelData,
 } from './types';
 import { controllerMetadata, getDefaultQrSyncControllerState, MESSENGER_EXPOSED_METHODS } from './metadata';
 import { InMemoryKvStore } from './kv-store';
@@ -283,15 +284,36 @@ export class QrSyncController extends BaseController<
     this.#finishSubmission();
   }
 
-  async cancelSync(reason?: string): Promise<void> {
+  async cancelOtp(reason?: string): Promise<void> {
+    this.#assertPhase([QR_SYNC_PHASES.AWAITING_OTP_INPUT]);
+    await this.#notifyPeerCancel(reason);
     this.#cleanupSession({ cancelOtp: true });
 
     this.update((state) => {
       state.phase = QR_SYNC_PHASES.CANCELLED;
+      state.lastActionType = QrSyncActionTypes.SYNC_CANCEL;
       state.updatedAt = Date.now();
       if (reason) {
         state.error = {
           code: 'SYNC_FAILED',
+          message: reason,
+          retryable: true,
+        };
+      }
+    });
+  }
+
+  async cancelSync(reason?: string): Promise<void> {
+    await this.#notifyPeerCancel(reason);
+    this.#cleanupSession({ cancelOtp: true });
+
+    this.update((state) => {
+      state.phase = QR_SYNC_PHASES.CANCELLED;
+      state.lastActionType = QrSyncActionTypes.SYNC_CANCEL;
+      state.updatedAt = Date.now();
+      if (reason) {
+        state.error = {
+          code: 'SYNC_REJECTED',
           message: reason,
           retryable: true,
         };
@@ -480,8 +502,10 @@ export class QrSyncController extends BaseController<
   }
 
   #generateQrCode(request: SessionRequest): string {
-    // TODO: Encode the QR with mobile compatible format
-    const qrData = JSON.stringify(request);
+    const base64QRpayload = bytesToBase64(
+      stringToBytes(JSON.stringify(request)),
+    );
+    const qrData = `metamask://connect/mwp?p=${base64QRpayload}`;
     log.debug('QrSyncController: qrData', qrData);
     return qrData;
   }
@@ -622,6 +646,28 @@ export class QrSyncController extends BaseController<
     } catch (error) {
       log.error('QrSyncController: failed to send message', message, error);
       throw new Error('Failed to send message to mobile wallet client');
+    }
+  }
+
+  async #notifyPeerCancel(reason?: string): Promise<void> {
+    if (!this.#mwpDappClient) {
+      return;
+    }
+
+    const data: QrSyncCancelData | undefined = reason
+      ? { reason }
+      : undefined;
+
+    try {
+      await this.#sendMessage({
+        type: QrSyncActionTypes.SYNC_CANCEL,
+        ...(data ? { data } : {}),
+      });
+    } catch (error) {
+      log.warn(
+        'QrSyncController: failed to notify mobile of sync cancellation',
+        error,
+      );
     }
   }
 

@@ -92,6 +92,7 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
 export const MESSENGER_EXPOSED_METHODS = [
   'createSession',
   'submitOtp',
+  'cancelOtp',
   'syncAccounts',
   'cancelSync',
   'resetState',

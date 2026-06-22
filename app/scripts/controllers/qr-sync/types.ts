@@ -61,6 +61,10 @@ export type QrSyncOffer = {
   deadline: number;
 };
 
+export type QrSyncCancelData = {
+  reason?: string;
+};
+
 export type QrSyncErrorCode =
   | 'CHANNEL_INIT_FAILED'
   | 'CHANNEL_DISCONNECTED'
@@ -246,6 +250,11 @@ export type QrSyncControllerSubmitOtpAction = {
   handler: QrSyncController['submitOtp'];
 };
 
+export type QrSyncControllerCancelOtpAction = {
+  type: 'QrSyncController:cancelOtp';
+  handler: QrSyncController['cancelOtp'];
+};
+
 export type QrSyncControllerSyncAccountsAction = {
   type: 'QrSyncController:syncAccounts';
   handler: QrSyncController['syncAccounts'];
@@ -265,6 +274,7 @@ export type QrSyncControllerActions =
   | QrSyncControllerGetStateAction
   | QrSyncControllerCreateSessionAction
   | QrSyncControllerSubmitOtpAction
+  | QrSyncControllerCancelOtpAction
   | QrSyncControllerSyncAccountsAction
   | QrSyncControllerCancelSyncAction
   | QrSyncControllerResetStateAction;

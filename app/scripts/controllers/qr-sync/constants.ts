@@ -58,6 +58,16 @@ export const QrSyncActionTypes = {
   SYNC_COMPLETED: 'sync-completed',
 
   /**
+   * Sync Cancel
+   *
+   * This action is used by the **EXTENSION** to notify the connected mobile wallet client
+   * that the user cancelled the sync session.
+   *
+   * @type {string}
+   */
+  SYNC_CANCEL: 'sync-cancel',
+
+  /**
    * Sync Error
    *
    * This action is used to notify the any participant that the sync has encountered an error.
