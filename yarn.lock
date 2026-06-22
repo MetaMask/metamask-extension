@@ -17990,7 +17990,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wallet-standard/features@npm:1.1.0, @wallet-standard/features@npm:^1.1.0":
+"@wallet-standard/features@npm:1.1.0":
   version: 1.1.0
   resolution: "@wallet-standard/features@npm:1.1.0"
   dependencies:
@@ -17999,7 +17999,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wallet-standard/features@npm:^1.0.3":
+"@wallet-standard/features@npm:^1.0.3, @wallet-standard/features@npm:^1.1.0":
   version: 1.1.1
   resolution: "@wallet-standard/features@npm:1.1.1"
   dependencies:
