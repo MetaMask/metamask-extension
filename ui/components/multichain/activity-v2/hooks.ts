@@ -106,7 +106,7 @@ export function useGetTitle(transaction: TransactionViewModel): string {
     }
   }
 
-  if (transactionType === 'DEPLOY_CONTRACT') {
+  if (resolvedType === TransactionType.deployContract) {
     return t('contractDeployment');
   }
 
@@ -265,12 +265,6 @@ export function useGetTitle(transaction: TransactionViewModel): string {
           break;
       }
     }
-  }
-
-  // Fall back to txParams shape: a missing recipient + deployment bytecode is
-  // a contract deployment that the backend simply didn't tag.
-  if (isContractDeploymentTxParams(transaction.txParams)) {
-    return t('contractDeployment');
   }
 
   // TODO: Use enriched .readable field once ready
