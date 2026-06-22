@@ -88,6 +88,9 @@ describe('createPerpsInfrastructure', () => {
     expect(infrastructure.cacheInvalidator).toBeDefined();
     expect(infrastructure.diskCache).toBeDefined();
     expect(infrastructure.rewards).toBeDefined();
+    expect(infrastructure.terminalApiUrl).toBe(
+      'https://terminal.dev-api.cx.metamask.io',
+    );
   });
 
   describe('metrics', () => {

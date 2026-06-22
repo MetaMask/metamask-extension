@@ -39,6 +39,8 @@ import { captureException } from '../../../../shared/lib/sentry';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
 import { isBenignDisconnectError } from './perps-error-utils';
 
+const TERMINAL_API_URL = 'https://terminal.dev-api.cx.metamask.io';
+
 /**
  * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
  */
@@ -365,6 +367,7 @@ export function createPerpsInfrastructure(
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
     diskCache: createDiskCache(deps),
+    terminalApiUrl: TERMINAL_API_URL,
     rewards: {
       // The perps package only passes `caipAccountId`; the rewards controller
       // additionally needs the perps MetaMask builder base fee in bips so it
