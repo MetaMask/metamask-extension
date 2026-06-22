@@ -60,11 +60,19 @@ class ServerMochaToBackground {
     this.eventEmitter = new events.EventEmitter<ServerMochaEventEmitterType>();
   }
 
-  // This function is never explicitly called, but in the future it could be
-  stop() {
+  async stop() {
     this.ws?.close();
 
-    this.server.close();
+    await new Promise<void>((resolve, reject) => {
+      this.server.close((error?: Error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        resolve();
+      });
+    });
 
     console.debug('ServerMochaToBackground stopped');
   }
@@ -127,7 +135,7 @@ class ServerMochaToBackground {
 }
 
 // Singleton setup below
-let _serverMochaToBackground: ServerMochaToBackground;
+let _serverMochaToBackground: ServerMochaToBackground | undefined;
 
 export function getServerMochaToBackground() {
   if (!_serverMochaToBackground) {
@@ -135,6 +143,16 @@ export function getServerMochaToBackground() {
   }
 
   return _serverMochaToBackground;
+}
+
+export async function stopServerMochaToBackground() {
+  if (!_serverMochaToBackground) {
+    return;
+  }
+
+  const serverMochaToBackground = _serverMochaToBackground;
+  _serverMochaToBackground = undefined;
+  await serverMochaToBackground.stop();
 }
 
 function startServerMochaToBackground() {

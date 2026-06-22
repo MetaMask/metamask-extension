@@ -85,6 +85,9 @@ const config: PlaywrightTestConfig = {
       fullyParallel: false,
       workers: 1,
       timeout: 5 * 60 * 1000,
+      use: {
+        trace: 'off',
+      },
     },
     {
       name: 'firefox-e2e',
@@ -93,6 +96,9 @@ const config: PlaywrightTestConfig = {
       fullyParallel: false,
       workers: 1,
       timeout: 5 * 60 * 1000,
+      use: {
+        trace: 'off',
+      },
     },
   ],
 

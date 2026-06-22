@@ -21,6 +21,7 @@ const { setManifestFlags } = require('./set-manifest-flags');
 const { DAPP_PATHS, ERC_4337_ACCOUNT, E2E_DRIVER } = require('./constants');
 const {
   getServerMochaToBackground,
+  stopServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
 const WebSocketRegistry = require('./websocket/registry').default;
 const { solanaWebSocketConfig } = require('./websocket/solana-mocks');
@@ -610,6 +611,9 @@ async function withFixtures(options, testSuite) {
       }
       if (phishingPageServer.isRunning()) {
         shutdownTasks.push(phishingPageServer.quit());
+      }
+      if (!disableServerMochaToBackground) {
+        shutdownTasks.push(stopServerMochaToBackground());
       }
 
       shutdownTasks.push(
