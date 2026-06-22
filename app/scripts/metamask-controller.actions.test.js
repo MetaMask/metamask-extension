@@ -28,6 +28,7 @@ import { toAssetId } from '../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
 import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
+import { convertEnglishWordlistIndicesToCodepoints } from './lib/util';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // so unify-state tests can exercise real feature-flag gating via controller state.
@@ -1788,6 +1789,210 @@ describe('MetaMaskController', function () {
       });
     });
 
+    describe('#exportSeedPhraseWithPasskey', function () {
+      it('throws when passkey is not registered', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(false);
+
+        await expect(
+          metamaskController.exportSeedPhraseWithPasskey(
+            authenticationResponse,
+          ),
+        ).rejects.toMatchObject({
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
+      });
+
+      it('propagates the error when passkey verification fails', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockRejectedValue(new Error('invalid assertion'));
+
+        await expect(
+          metamaskController.exportSeedPhraseWithPasskey(
+            authenticationResponse,
+          ),
+        ).rejects.toThrow('invalid assertion');
+      });
+
+      it('throws when the passkey vault key cannot decrypt the vault', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockResolvedValue('passkey-vault-key');
+        jest
+          .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
+          .mockRejectedValue(new Error('Incorrect encryption key'));
+
+        await expect(
+          metamaskController.exportSeedPhraseWithPasskey(
+            authenticationResponse,
+          ),
+        ).rejects.toThrow('Incorrect encryption key');
+      });
+
+      it('returns the encoded seed phrase for the given keyring after verification', async function () {
+        const mnemonic = new Uint8Array([0, 0, 0, 1]);
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockResolvedValue('vault-key');
+        const exportSeedPhraseSpy = jest
+          .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
+          .mockResolvedValue(mnemonic);
+
+        const result = await metamaskController.exportSeedPhraseWithPasskey(
+          authenticationResponse,
+          'keyring-id',
+        );
+
+        expect(exportSeedPhraseSpy).toHaveBeenCalledWith(
+          { encryptionKey: 'vault-key' },
+          'keyring-id',
+        );
+        expect(result).toStrictEqual(
+          convertEnglishWordlistIndicesToCodepoints(mnemonic),
+        );
+      });
+
+      it('defaults to the primary keyring when no keyring id is provided', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockResolvedValue('vault-key');
+        const exportSeedPhraseSpy = jest
+          .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
+          .mockResolvedValue(new Uint8Array([0, 0, 0, 1]));
+
+        await metamaskController.exportSeedPhraseWithPasskey(
+          authenticationResponse,
+        );
+
+        expect(exportSeedPhraseSpy).toHaveBeenCalledWith(
+          { encryptionKey: 'vault-key' },
+          undefined,
+        );
+      });
+    });
+
+    describe('#exportAccountsWithPasskey', function () {
+      it('throws when passkey is not registered', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(false);
+
+        await expect(
+          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
+            '0xAddressOne',
+          ]),
+        ).rejects.toMatchObject({
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
+      });
+
+      it('propagates the error when passkey verification fails', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockRejectedValue(new Error('invalid assertion'));
+
+        await expect(
+          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
+            '0xAddressOne',
+          ]),
+        ).rejects.toThrow('invalid assertion');
+      });
+
+      it('propagates the error when account export fails', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockResolvedValue('passkey-vault-key');
+        jest
+          .spyOn(metamaskController.keyringController, 'exportAccount')
+          .mockRejectedValue(new Error('Incorrect encryption key'));
+
+        await expect(
+          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
+            '0xAddressOne',
+          ]),
+        ).rejects.toThrow('Incorrect encryption key');
+      });
+
+      it('returns private keys for each address after verification', async function () {
+        const addresses = ['0xAddressOne', '0xAddressTwo'];
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        const retrieveVaultKeyWithPasskeySpy = jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockResolvedValue('vault-key');
+        const exportAccountSpy = jest
+          .spyOn(metamaskController.keyringController, 'exportAccount')
+          .mockImplementation((_options, address) =>
+            Promise.resolve(`priv-key-${address}`),
+          );
+
+        const result = await metamaskController.exportAccountsWithPasskey(
+          authenticationResponse,
+          addresses,
+        );
+
+        expect(retrieveVaultKeyWithPasskeySpy).toHaveBeenCalledWith(
+          authenticationResponse,
+        );
+        expect(retrieveVaultKeyWithPasskeySpy).toHaveBeenCalledTimes(1);
+        expect(exportAccountSpy).toHaveBeenCalledTimes(2);
+        expect(exportAccountSpy).toHaveBeenCalledWith(
+          { encryptionKey: 'vault-key' },
+          '0xAddressOne',
+        );
+        expect(exportAccountSpy).toHaveBeenCalledWith(
+          { encryptionKey: 'vault-key' },
+          '0xAddressTwo',
+        );
+        expect(result).toStrictEqual([
+          'priv-key-0xAddressOne',
+          'priv-key-0xAddressTwo',
+        ]);
+      });
+    });
+
     describe('#changePassword', function () {
       it('does not remove passkey after keyring password change', async function () {
         const releaseLock = jest.fn();
@@ -1852,6 +2057,8 @@ describe('MetaMaskController', function () {
             removePasskeyWithPasskeyVerification: expect.any(Function),
             removePasskeyWithPasswordVerification: expect.any(Function),
             changePasswordWithPasskeyVerification: expect.any(Function),
+            exportSeedPhraseWithPasskey: expect.any(Function),
+            exportAccountsWithPasskey: expect.any(Function),
           }),
         );
       });

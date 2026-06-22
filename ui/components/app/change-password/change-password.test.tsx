@@ -439,16 +439,18 @@ describe('ChangePassword', () => {
         ).toBeInTheDocument();
       });
 
-      resolveAuth?.({
-        id: 'mock-credential',
-        rawId: 'mock-credential',
-        type: 'public-key',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'AA',
-        },
-        clientExtensionResults: {},
+      await act(async () => {
+        resolveAuth?.({
+          id: 'mock-credential',
+          rawId: 'mock-credential',
+          type: 'public-key',
+          response: {
+            clientDataJSON: 'e30',
+            authenticatorData: 'AA',
+            signature: 'AA',
+          },
+          clientExtensionResults: {},
+        });
       });
     });
 
