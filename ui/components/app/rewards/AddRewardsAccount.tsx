@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Button,
+  ButtonSize,
   ButtonVariant,
   IconSize,
   IconName,
@@ -34,10 +35,12 @@ const AddRewardsAccount = ({ account }: AddRewardsAccountProps) => {
   return (
     <Button
       variant={ButtonVariant.Tertiary}
+      size={ButtonSize.Sm}
       onClick={handleClick}
       data-testid="add-rewards-account-button"
       isLoading={isLoading}
       isDisabled={isLoading}
+      loadingText={t('rewardsLinkAccount')}
       startAccessory={
         isLoading ? undefined : (
           <img

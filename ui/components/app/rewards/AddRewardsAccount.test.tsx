@@ -123,7 +123,7 @@ describe('AddRewardsAccount', () => {
 
       render(<AddRewardsAccount account={mockAccount} />);
 
-      const button = screen.getByText('Link Account').closest('button');
+      const button = screen.getByTestId('add-rewards-account-button');
       expect(button).toBeDisabled();
     });
 
@@ -221,7 +221,7 @@ describe('AddRewardsAccount', () => {
 
       const loadingIcon = container.querySelector('svg');
       expect(loadingIcon).toBeInTheDocument();
-      const button = screen.getByText('Link Account').closest('button');
+      const button = screen.getByTestId('add-rewards-account-button');
       expect(button).toBeDisabled();
     });
 
