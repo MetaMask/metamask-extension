@@ -65,18 +65,17 @@ describe('Send - Hex Address Normalization', function () {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilderV2()
             .withTokensControllerERC20()
-            .withEnabledNetworks({ eip155: { '0x539': true } })
             .build(),
-          smartContract,
+          smartContract: SMART_CONTRACTS.HST,
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }) => {
           await login(driver, { localNode: localNodes[0] });
-
           // Send TST
           const homePage = new HomePage(driver);
           await homePage.goToTokensTab();
           const tokensTab = new TokensTab(driver);
+          await tokensTab.clickOnAsset('TST')
           await tokensTab.clickMultichainTokenListButton();
           await homePage.clickOnSendButton();
           // Paste address without hex prefix
@@ -96,7 +95,6 @@ describe('Send - Hex Address Normalization', function () {
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilderV2()
-            .withEnabledNetworks({ eip155: { '0x539': true } })
             .withTokensControllerERC20()
             .build(),
           smartContract,
@@ -109,6 +107,7 @@ describe('Send - Hex Address Normalization', function () {
           const homePage = new HomePage(driver);
           await homePage.goToTokensTab();
           const tokensTab = new TokensTab(driver);
+          await tokensTab.clickOnAsset('TST');
           await tokensTab.clickMultichainTokenListButton();
           await homePage.clickOnSendButton();
 
@@ -120,7 +119,7 @@ describe('Send - Hex Address Normalization', function () {
 
           // Confirm transaction
           const transactionConfirmation = new TransactionConfirmation(driver);
-          await transactionConfirmation.checkSendAmount('0 ETH');
+          await transactionConfirmation.checkSendAmount('0 TST');
           const confirmation = new Confirmation(driver);
           await confirmation.clickFooterConfirmButton();
           await homePage.goToActivityList();
@@ -131,7 +130,7 @@ describe('Send - Hex Address Normalization', function () {
 
           // Verify address in activity log
           await transactionDetailsPage.checkAddressInActivityLog(
-            hexPrefixedAddress.toLowerCase(),
+            hexPrefixedAddress,
           );
         },
       );

@@ -1348,10 +1348,6 @@ export const getBridgeFixtures = ({
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
-  if (withErc20) {
-    fixtureBuilder.withTokensControllerERC20({ chainId: 1 });
-  }
-
   return {
     forceBip44Version: false,
     fixtures: fixtureBuilder.build(),
@@ -1449,7 +1445,6 @@ export const getQuoteNegativeCasesFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1509,7 +1504,6 @@ export const getBridgeNegativeCasesFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1569,7 +1563,6 @@ export const getInsufficientFundsFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1844,7 +1837,6 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1943,7 +1935,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
