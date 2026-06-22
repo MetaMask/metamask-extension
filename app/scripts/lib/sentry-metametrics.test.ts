@@ -69,7 +69,7 @@ describe('metaMetricsIntegration', () => {
       expect(log).not.toHaveBeenCalled();
     });
 
-    it('does not set user when opted in but metaMetricsId is missing', async () => {
+    it('does not set user when opted in but analyticsId is missing', async () => {
       const integration = createIntegration(async () => ({
         completedMetaMetricsOnboarding: true,
         optedIn: true,
