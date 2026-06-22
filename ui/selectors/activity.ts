@@ -7,7 +7,11 @@ import {
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
-import type { Transaction as KeyringTransaction } from '@metamask/keyring-api';
+import {
+  EthScope,
+  isEvmAccountType,
+  type Transaction as KeyringTransaction,
+} from '@metamask/keyring-api';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
@@ -31,6 +35,8 @@ import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-tr
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { Status } from '../../shared/lib/activity/types';
 import { getInternalAccountsObject } from './accounts';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
 import { getAssetsMetadata } from './assets';
 import {
@@ -568,4 +574,12 @@ export const selectMarketRates = createSelector(
 
     return rates;
   },
+);
+
+// Selects the EVM address of the currently selected account group, irrespective of the currently selected network
+export const selectEvmAddress = createSelector(
+  (state: MultichainAccountsState) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
 );

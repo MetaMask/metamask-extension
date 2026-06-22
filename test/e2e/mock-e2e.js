@@ -96,6 +96,7 @@ const blocklistedHosts = [
   'sei-mainnet.infura.io',
   'sepolia.infura.io',
   'testnet-rpc.monad.xyz',
+  'monad-mainnet.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
