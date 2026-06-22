@@ -3,7 +3,7 @@ import { hexToNumber } from '@metamask/utils';
 import {
   ARC_USDC_TOKEN_ADDRESS,
   CHAIN_IDS,
-} from '../../../../../shared/constants/network.ts';
+} from '../../../../../shared/constants/network';
 
 /**
  * Arc Chain Augmentation Module
