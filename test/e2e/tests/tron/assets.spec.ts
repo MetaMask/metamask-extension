@@ -8,6 +8,7 @@ import TronAssetDetailsPage from '../../page-objects/pages/asset/tron-asset-deta
 import {
   EMPTY_TRON_ACCOUNT,
   TRON_PORTFOLIO_ACCOUNT,
+  TRON_STAKED_PORTFOLIO_ACCOUNT,
 } from './fixtures/environments';
 import { withTronFixtures } from './fixtures/with-tron-fixtures';
 
@@ -214,6 +215,28 @@ describe('Tron assets', function (this: Suite) {
         const tokensTab = new TokensTab(driver);
         await tokensTab.checkTokenExistsInList('Tron');
         await tokensTab.checkAssetIsAbsent('Staked TRX');
+      },
+    );
+  });
+
+  it('Lists Staked TRX with staked balance for a staking account', async function () {
+    await withTronFixtures(
+      {
+        accounts: [TRON_STAKED_PORTFOLIO_ACCOUNT],
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await landOnTronHome(driver);
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenExistsInList('Staked TRX', '20');
+        await tokensTab.checkTokenRowContainsAllText('Staked TRX', [
+          'Staked TRX',
+          '20 TRX',
+          '$',
+        ]);
       },
     );
   });
