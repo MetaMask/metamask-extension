@@ -2585,16 +2585,9 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
-    const { completedMetaMetricsOnboarding } = this.metaMetricsController.state;
-    const { optedIn, analyticsId } = this.analyticsController.state;
-    const participateInMetaMetrics =
-      completedMetaMetricsOnboarding === true ? optedIn : null;
-
     return {
       isInitialized,
       ...sanitizeUIState(flatState),
-      participateInMetaMetrics,
-      metaMetricsId: analyticsId,
     };
   }
 
@@ -5106,9 +5099,15 @@ export default class MetamaskController extends EventEmitter {
         });
       };
 
-      // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
-      // eslint-disable-next-line no-void
-      void syncAndDiscoverAccounts();
+      const { completedOnboarding } = this.onboardingController.state;
+      // In order to avoid premature sync and avoid potential race condition, for the actual B&S full sync after the onboarding is completed.
+      // We only sync and discover accounts if the onboarding is completed.
+      // i.e we don't sync and discover accounts for `socialImport` flow before the onboarding is completed.
+      if (completedOnboarding) {
+        // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
+        // eslint-disable-next-line no-void
+        void syncAndDiscoverAccounts();
+      }
     } finally {
       releaseLock();
     }

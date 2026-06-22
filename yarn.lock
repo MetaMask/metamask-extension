@@ -2429,7 +2429,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/util@npm:^9.0.2, @ethereumjs/util@npm:^9.0.3, @ethereumjs/util@npm:^9.1.0":
+"@ethereumjs/util@npm:^9.0.3, @ethereumjs/util@npm:^9.1.0":
   version: 9.1.0
   resolution: "@ethereumjs/util@npm:9.1.0"
   dependencies:
@@ -5917,10 +5917,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.12.0":
-  version: 1.12.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.12.0"
-  checksum: 10/ff8fd75953ddcb376c60381cca9e80a30d0c42a7f53bfb3da7f91bc4039456d0f5ec3cfe1dec0d5571e849c284c51a540cb4f05556bc5a86c57e6886464f5ed1
+"@metamask/bitcoin-wallet-snap@npm:^1.13.0":
+  version: 1.14.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:1.14.0"
+  checksum: 10/2e23f10f2e9b0249110b3419da0e585df51db5e974aa7fffb75147ece92d12f9eec6916b51c273c116caa37cf9e8b948f3b988dbe2b5bdd48b406e20d6444be6
   languageName: node
   linkType: hard
 
@@ -6126,10 +6126,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-playground@npm:0.7.2":
-  version: 0.7.2
-  resolution: "@metamask/browser-playground@npm:0.7.2"
-  checksum: 10/670bc6a041a15089770372267455f9b6442b293357962ba229336d0eed9831f1bbce63dc37e98c7bbea91c590cbb00c8b45ef392b63eda17f517c0e3cf792c9a
+"@metamask/browser-playground@npm:0.8.1":
+  version: 0.8.1
+  resolution: "@metamask/browser-playground@npm:0.8.1"
+  checksum: 10/9c8db15647bd630f72268e99bde0fccebfa0c3be46bd695fb37a87d8546ed8b66178b1102d3cfde490341720a5ecaa723f59460c00fbe364ca1a8de0d7036232
   languageName: node
   linkType: hard
 
@@ -8129,42 +8129,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^24.2.0":
-  version: 24.2.0
-  resolution: "@metamask/smart-transactions-controller@npm:24.2.0"
+"@metamask/smart-transactions-controller@npm:^24.2.2":
+  version: 24.2.2
+  resolution: "@metamask/smart-transactions-controller@npm:24.2.2"
   dependencies:
-    "@babel/runtime": "npm:^7.24.1"
-    "@ethereumjs/tx": "npm:^5.2.1"
-    "@ethereumjs/util": "npm:^9.0.2"
+    "@babel/runtime": "npm:^7.23.9"
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/keccak256": "npm:^5.8.0"
     "@ethersproject/transactions": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.1.0"
+    "@metamask/controller-utils": "npm:^12.2.0"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/network-controller": "npm:^32.0.0"
     "@metamask/polling-controller": "npm:^16.0.6"
-    "@metamask/profile-sync-controller": "npm:^28.1.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.2.1"
+    "@metamask/profile-sync-controller": "npm:^28.2.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^65.4.0"
-    "@metamask/utils": "npm:^11.0.0"
-    bignumber.js: "npm:^9.0.1"
-    fast-json-patch: "npm:^3.1.0"
+    "@metamask/transaction-controller": "npm:^68.0.1"
+    "@metamask/utils": "npm:^11.11.0"
+    bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     reselect: "npm:^5.1.1"
-  peerDependenciesMeta:
-    "@metamask/accounts-controller":
-      optional: true
-    "@metamask/approval-controller":
-      optional: true
-    "@metamask/eth-block-tracker":
-      optional: true
-    "@metamask/gas-fee-controller":
-      optional: true
-  checksum: 10/4050b60b557c7102ba0331986f3a81fbb47637c5fcc27ce1413ff03addbd170324cdab98250f4cc267a047ef3352ca4145ce3eec0c6e7d2a99b4052b65182102
+  checksum: 10/fd23c3132733185040532053db831d9d231c5d70bbfadec587d86037535332ac96689ea2b7aa535724182261bbeddb66223209efad4513f89a895ced6be5b702
   languageName: node
   linkType: hard
 
@@ -8732,9 +8720,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^68.0.0":
-  version: 68.0.0
-  resolution: "@metamask/transaction-controller@npm:68.0.0"
+"@metamask/transaction-controller@npm:^68.0.0, @metamask/transaction-controller@npm:^68.0.1":
+  version: 68.0.1
+  resolution: "@metamask/transaction-controller@npm:68.0.1"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -8766,7 +8754,7 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/f930bf5af4ea8fb69df6e5446d695659950b1c5a4ba71072c212a844a406d28ccbff3afa3b145ccb559d2192ad165eef289e71689def6deb9adaf104783cbe4d
+  checksum: 10/7876e98fcef3e1fbbb6a836d1288d6d207b08d179d439c45ca18d9d38bc5d4edd2df5f6a01e26c0fc7a4f8570994c4adcaa95dc993c7bb1d1d6a30b33ba89462
   languageName: node
   linkType: hard
 
@@ -8828,10 +8816,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.26.0":
-  version: 1.26.0
-  resolution: "@metamask/tron-wallet-snap@npm:1.26.0"
-  checksum: 10/ba7dc5d4bdae9f0a5c346744ea5eda311a1301a390c8ba3eedee4c99bf29d7d4937c65607198dcedda760223f07363638026e2649912123c4f89460de10906b4
+"@metamask/tron-wallet-snap@npm:^1.27.0":
+  version: 1.27.0
+  resolution: "@metamask/tron-wallet-snap@npm:1.27.0"
+  checksum: 10/7555f647d89502aebe5f629242113203b123ab981b9a59105cc9ae9c404cfe3ee2ac10c7d246bb58c86f15b87a874ced0629bb91429f9cc01696ac22132a5da9
   languageName: node
   linkType: hard
 
@@ -16581,12 +16569,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/http-proxy@npm:^1.17.8":
-  version: 1.17.14
-  resolution: "@types/http-proxy@npm:1.17.14"
+"@types/http-proxy@npm:^1.17.15":
+  version: 1.17.17
+  resolution: "@types/http-proxy@npm:1.17.17"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10/aa1a3e66cd43cbf06ea5901bf761d2031200a0ab42ba7e462a15c752e70f8669f21fb3be7c2f18fefcb83b95132dfa15740282e7421b856745598fbaea8e3a42
+  checksum: 10/893e46e12be576baa471cf2fc13a4f0e413eaf30a5850de8fdbea3040e138ad4171234c59b986cf7137ff20a1582b254bf0c44cfd715d5ed772e1ab94dd75cd1
   languageName: node
   linkType: hard
 
@@ -24144,27 +24132,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:3.4.10":
-  version: 3.4.10
-  resolution: "dompurify@npm:3.4.10"
+"dompurify@npm:3.4.11":
+  version: 3.4.11
+  resolution: "dompurify@npm:3.4.11"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/e051c70e7a0729d8cc04d40d7863dc8977495140857e81dc668fb548b7a43c7f80cfc973e3c9c0a6cd18b8eaa94ea7de9603daa02d38c8b15a9b32cc25a6f440
+  checksum: 10/d0473e1a22ed9cc23d86ef426717bce866913d1a725512a9478985bd917b272e0faba5f1d6ad8b2e37f3f4219206c4385162d7c984cfedcd23396e1e6ae0bc5e
   languageName: node
   linkType: hard
 
-"dompurify@patch:dompurify@npm%3A3.4.10#~/.yarn/patches/dompurify-npm-3.4.10-36824c4d4c.patch":
-  version: 3.4.10
-  resolution: "dompurify@patch:dompurify@npm%3A3.4.10#~/.yarn/patches/dompurify-npm-3.4.10-36824c4d4c.patch::version=3.4.10&hash=2fa098"
+"dompurify@patch:dompurify@npm%3A3.4.11#~/.yarn/patches/dompurify-npm-3.4.11-7df48fdceb.patch":
+  version: 3.4.11
+  resolution: "dompurify@patch:dompurify@npm%3A3.4.11#~/.yarn/patches/dompurify-npm-3.4.11-7df48fdceb.patch::version=3.4.11&hash=1fc567"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/1904c42c9e3e738511d886d5cfe8d9137674b0d9da497f181a92882f2ff33d676006cbf3172e6cb498c9b4c950a60dd413be088895339a37750d2b5a7bf4408d
+  checksum: 10/784b32c7a2e20db4788baf457c380ba4a9ba20e773824784c42cb9b0c74035fd4aae0a0e8d4e71054c78af048a9b69e27e4ba20eeac156a2a7b8fe62f6a3d7f1
   languageName: node
   linkType: hard
 
@@ -29178,21 +29166,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-middleware@npm:^2.0.9":
-  version: 2.0.9
-  resolution: "http-proxy-middleware@npm:2.0.9"
+"http-proxy-middleware@npm:^3.0.7":
+  version: 3.0.7
+  resolution: "http-proxy-middleware@npm:3.0.7"
   dependencies:
-    "@types/http-proxy": "npm:^1.17.8"
+    "@types/http-proxy": "npm:^1.17.15"
+    debug: "npm:^4.3.6"
     http-proxy: "npm:^1.18.1"
-    is-glob: "npm:^4.0.1"
-    is-plain-obj: "npm:^3.0.0"
-    micromatch: "npm:^4.0.2"
-  peerDependencies:
-    "@types/express": ^4.17.13
-  peerDependenciesMeta:
-    "@types/express":
-      optional: true
-  checksum: 10/4ece416a91d52e96f8136c5f4abfbf7ac2f39becbad21fa8b158a12d7e7d8f808287ff1ae342b903fd1f15f2249dee87fabc09e1f0e73106b83331c496d67660
+    is-glob: "npm:^4.0.3"
+    is-plain-object: "npm:^5.0.0"
+    micromatch: "npm:^4.0.8"
+  checksum: 10/a44135de721e55517b0fca596855e1e4da92b5fdad247425b4253a345fface37b2a800fcfe37dc28863e9021d8c56cf9cb33ebd20d63c9eca6918a46b39082d4
   languageName: node
   linkType: hard
 
@@ -30263,13 +30247,6 @@ __metadata:
   version: 2.1.0
   resolution: "is-plain-obj@npm:2.1.0"
   checksum: 10/cec9100678b0a9fe0248a81743041ed990c2d4c99f893d935545cfbc42876cbe86d207f3b895700c690ad2fa520e568c44afc1605044b535a7820c1d40e38daa
-  languageName: node
-  linkType: hard
-
-"is-plain-obj@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "is-plain-obj@npm:3.0.0"
-  checksum: 10/a6ebdf8e12ab73f33530641972a72a4b8aed6df04f762070d823808303e4f76d87d5ea5bd76f96a7bbe83d93f04ac7764429c29413bd9049853a69cb630fb21c
   languageName: node
   linkType: hard
 
@@ -33507,12 +33484,12 @@ __metadata:
     "@metamask/assets-controllers": "npm:^109.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.12.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^1.13.0"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^73.2.0"
     "@metamask/bridge-status-controller": "npm:^72.0.1"
     "@metamask/browser-passworder": "npm:^6.0.0"
-    "@metamask/browser-playground": "npm:0.7.2"
+    "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"
     "@metamask/claims-controller": "npm:^0.4.2"
@@ -33612,7 +33589,7 @@ __metadata:
     "@metamask/shield-controller": "npm:^5.0.1"
     "@metamask/signature-controller": "npm:^39.2.0"
     "@metamask/skills": "npm:^0.1.0"
-    "@metamask/smart-transactions-controller": "npm:^24.2.0"
+    "@metamask/smart-transactions-controller": "npm:^24.2.2"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-account-service": "npm:^0.3.1"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
@@ -33636,7 +33613,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.4.2"
     "@metamask/transaction-controller": "npm:^68.0.0"
     "@metamask/transaction-pay-controller": "npm:^22.6.0"
-    "@metamask/tron-wallet-snap": "npm:^1.26.0"
+    "@metamask/tron-wallet-snap": "npm:^1.27.0"
     "@metamask/user-operation-controller": "npm:^41.2.0"
     "@metamask/utils": "npm:^11.11.0"
     "@metamask/wallet": "npm:^3.0.0"
@@ -33777,7 +33754,7 @@ __metadata:
     del: "npm:^6.1.1"
     depcheck: "npm:^1.4.7"
     detect-port: "npm:^1.5.1"
-    dompurify: "patch:dompurify@npm%3A3.4.10#~/.yarn/patches/dompurify-npm-3.4.10-36824c4d4c.patch"
+    dompurify: "patch:dompurify@npm%3A3.4.11#~/.yarn/patches/dompurify-npm-3.4.11-7df48fdceb.patch"
     dotenv: "npm:^16.4.5"
     duplexify: "npm:^4.1.1"
     eslint: "patch:eslint@npm%3A8.57.0#~/.yarn/patches/eslint-npm-8.57.0-4286e12a3a.patch"
@@ -43490,17 +43467,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^6.23.0":
-  version: 6.25.0
-  resolution: "undici@npm:6.25.0"
-  checksum: 10/a475e45da3e1d1073283bb70531666f09a432eabff2b857bd7063d469a1ee1486192ff61dc0dadbb526673ce1120fee14d66a59b6b17d1e0bd3a4d5f0a52d0a6
-  languageName: node
-  linkType: hard
-
-"undici@npm:^7.19.0":
-  version: 7.25.0
-  resolution: "undici@npm:7.25.0"
-  checksum: 10/038d3568c72bb976e3cc389284f7f1cc64cd70d578300e4676a449fbcb624a35fe99ac127b5f3729f18b8246d6c090444ab61b1b67736bb88f52a3e913d76bf8
+"undici@npm:^7.28.0":
+  version: 7.28.0
+  resolution: "undici@npm:7.28.0"
+  checksum: 10/154423b280d623278a61decb437f8a7e581fb18b8c95556ef956b32a58cd668eadbb812d28e20678cb2dc545a566f35a3afc0962307ca801da30f4741117986d
   languageName: node
   linkType: hard
 
