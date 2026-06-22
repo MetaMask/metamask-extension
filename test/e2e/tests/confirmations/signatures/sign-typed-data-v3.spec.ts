@@ -108,9 +108,13 @@ async function assertInfoValues(driver: Driver) {
   await signTypedData.verifyContractPetName(SIGN_TYPED_DATA_EXPECTED.contract);
   await signTypedData.verifyPrimaryType(SIGN_TYPED_DATA_EXPECTED.primaryType);
   await signTypedData.verifyFromName(SIGN_TYPED_DATA_EXPECTED.fromName);
-  await signTypedData.verifyFromAddress(SIGN_TYPED_DATA_EXPECTED.fromAddress);
+  await signTypedData.verifyFromWalletAddress(
+    SIGN_TYPED_DATA_EXPECTED.fromAddress,
+  );
   await signTypedData.verifyToName(SIGN_TYPED_DATA_EXPECTED.toName);
-  await signTypedData.verifyToAddress(SIGN_TYPED_DATA_EXPECTED.toAddress);
+  await signTypedData.verifyToWalletAddress(
+    SIGN_TYPED_DATA_EXPECTED.toAddress,
+  );
   await signTypedData.verifyContents(SIGN_TYPED_DATA_EXPECTED.contents);
 }
 

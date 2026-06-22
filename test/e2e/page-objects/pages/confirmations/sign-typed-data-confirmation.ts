@@ -98,6 +98,15 @@ export default class SignTypedData extends Confirmation {
     );
   }
 
+  async verifyFromWalletAddress(fromAddress: string): Promise<void> {
+    console.log(
+      `Verify from wallet address ${fromAddress} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(
+      this.dataTreeRowWithText('wallet', fromAddress),
+    );
+  }
+
   async verifyToName(toName: string): Promise<void> {
     console.log(
       `Verify to name ${toName} is displayed on sign typed data confirmation page`,
@@ -110,6 +119,15 @@ export default class SignTypedData extends Confirmation {
       `Verify to address ${toAddress} is displayed on sign typed data confirmation page`,
     );
     await this.driver.waitForSelector(this.dataTreeRowWithText('0', toAddress));
+  }
+
+  async verifyToWalletAddress(toAddress: string): Promise<void> {
+    console.log(
+      `Verify to wallet address ${toAddress} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(
+      this.dataTreeRowWithText('wallet', toAddress),
+    );
   }
 
   async verifyContents(contents: string): Promise<void> {
@@ -152,8 +170,8 @@ export default class SignTypedData extends Confirmation {
       'Verify sign typed data v3 info on sign typed data confirmation page',
     );
     await this.verifyOrigin(expected.origin);
-    await this.verifyFromAddress(expected.fromAddress);
-    await this.verifyToAddress(expected.toAddress);
+    await this.verifyFromWalletAddress(expected.fromAddress);
+    await this.verifyToWalletAddress(expected.toAddress);
     await this.verifyContents(expected.contents);
   }
 
@@ -163,7 +181,10 @@ export default class SignTypedData extends Confirmation {
     console.log(
       'Verify sign typed data v4 info on sign typed data confirmation page',
     );
-    await this.verifySignTypedDataV3Info(expected);
+    await this.verifyOrigin(expected.origin);
+    await this.verifyFromAddress(expected.fromAddress);
+    await this.verifyToAddress(expected.toAddress);
+    await this.verifyContents(expected.contents);
     await this.verifyAttachment(expected.attachment);
   }
 
