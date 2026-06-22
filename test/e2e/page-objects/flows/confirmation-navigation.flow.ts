@@ -14,6 +14,7 @@ export const queueSignatures = async (driver: Driver): Promise<void> => {
   const testDapp = new TestDapp(driver);
   const confirmation = new SignTypedData(driver);
 
+  // Sign Typed Data
   await testDapp.clickSignTypedData();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await confirmation.verifySignTypedDataMessage(
@@ -22,12 +23,14 @@ export const queueSignatures = async (driver: Driver): Promise<void> => {
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
+  // Sign Typed Data V3
   await testDapp.clickSignTypedDatav3();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await confirmation.checkPageNumbers(1, 2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
+  // Sign Typed Data V4
   await testDapp.clickSignTypedDatav4();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await confirmation.checkPageNumbers(1, 3);
@@ -45,6 +48,7 @@ export const queueSignaturesAndTransactions = async (
   const testDapp = new TestDapp(driver);
   const confirmation = new SignTypedData(driver);
 
+  // Sign Typed Data
   await testDapp.clickSignTypedData();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await confirmation.verifySignTypedDataMessage(
@@ -53,12 +57,14 @@ export const queueSignaturesAndTransactions = async (
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
+  // Send Transaction
   await testDapp.clickSimpleSendButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await confirmation.checkPageNumbers(1, 2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
+  // Sign Typed Data V3
   await testDapp.clickSignTypedDatav3();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await confirmation.checkPageNumbers(1, 3);

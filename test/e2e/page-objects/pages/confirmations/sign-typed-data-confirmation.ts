@@ -53,58 +53,94 @@ export default class SignTypedData extends Confirmation {
   }
 
   async verifyOrigin(origin: string): Promise<void> {
+    console.log(
+      `Verify origin ${origin} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(this.origin(origin));
   }
 
   async verifySignTypedDataMessage(message: string): Promise<void> {
+    console.log(
+      `Verify sign typed data message ${message} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(this.signTypedDataMessage(message));
   }
 
   async verifyContractPetName(contract: string): Promise<void> {
+    console.log(
+      `Verify contract ${contract} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(this.contractAddress(contract));
   }
 
   async verifyPrimaryType(primaryType: string): Promise<void> {
+    console.log(
+      `Verify primary type ${primaryType} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(this.primaryType(primaryType));
   }
 
   async verifyFromName(fromName: string): Promise<void> {
+    console.log(
+      `Verify from name ${fromName} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(
       this.dataTreeRowWithText('name', fromName),
     );
   }
 
   async verifyFromAddress(fromAddress: string): Promise<void> {
+    console.log(
+      `Verify from address ${fromAddress} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(
       this.dataTreeRowWithText('0', fromAddress),
     );
   }
 
   async verifyToName(toName: string): Promise<void> {
+    console.log(
+      `Verify to name ${toName} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(this.dataTreeRowWithText('name', toName));
   }
 
   async verifyToAddress(toAddress: string): Promise<void> {
+    console.log(
+      `Verify to address ${toAddress} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(this.dataTreeRowWithText('0', toAddress));
   }
 
   async verifyContents(contents: string): Promise<void> {
+    console.log(
+      `Verify contents ${contents} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(
       this.dataTreeRowWithText('contents', contents),
     );
   }
 
   async verifyAttachment(attachment: string): Promise<void> {
+    console.log(
+      `Verify attachment ${attachment} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(
       this.dataTreeRowWithText('attachment', attachment),
     );
   }
 
   async verifyToAddressNum2(toAddress: string): Promise<void> {
+    console.log(
+      `Verify to address num2 ${toAddress} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(this.dataTreeRowWithText('2', toAddress));
   }
 
   async verifySignTypedDataInfo(expected: SignTypedDataV1Info): Promise<void> {
+    console.log(
+      'Verify sign typed data v1 info on sign typed data confirmation page',
+    );
     await this.verifyOrigin(expected.origin);
     await this.verifySignTypedDataMessage(expected.message);
   }
@@ -112,6 +148,9 @@ export default class SignTypedData extends Confirmation {
   async verifySignTypedDataV3Info(
     expected: SignTypedDataV3Info,
   ): Promise<void> {
+    console.log(
+      'Verify sign typed data v3 info on sign typed data confirmation page',
+    );
     await this.verifyOrigin(expected.origin);
     await this.verifyFromAddress(expected.fromAddress);
     await this.verifyToAddress(expected.toAddress);
@@ -121,12 +160,17 @@ export default class SignTypedData extends Confirmation {
   async verifySignTypedDataV4Info(
     expected: SignTypedDataV4Info,
   ): Promise<void> {
+    console.log(
+      'Verify sign typed data v4 info on sign typed data confirmation page',
+    );
     await this.verifySignTypedDataV3Info(expected);
     await this.verifyAttachment(expected.attachment);
   }
 
   async verifySignatureHeadingTitle(heading: string): Promise<void> {
-    console.log(`Verify confirmation heading title is ${heading}`);
+    console.log(
+      `Verify signature heading title ${heading} is displayed on sign typed data confirmation page`,
+    );
     await this.driver.waitForSelector(this.signatureHeadingTitle(heading));
   }
 

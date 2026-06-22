@@ -45,15 +45,18 @@ describe('Confirmation Navigation', function (this: Suite) {
         await confirmation.verifySignTypedDataInfo(SIGN_TYPED_DATA_V1_INFO);
         await confirmation.clickNextPage();
 
+        // Verify Sign Typed Data v3 confirmation is displayed
         await confirmation.verifySignTypedDataV3Info(SIGN_TYPED_DATA_V3_INFO);
         await confirmation.clickNextPage();
 
+        // Verify Sign Typed Data v4 confirmation is displayed
         await confirmation.verifySignTypedDataV4Info(SIGN_TYPED_DATA_V4_INFO);
         await confirmation.clickPreviousPage();
 
+        // Verify Sign Typed Data v3 confirmation is displayed
         await confirmation.verifySignTypedDataV3Info(SIGN_TYPED_DATA_V3_INFO);
         await confirmation.clickPreviousPage();
-
+        // Verify Sign Typed Data v3 confirmation is displayed
         await confirmation.verifySignTypedDataInfo(SIGN_TYPED_DATA_V1_INFO);
       },
     );
@@ -77,17 +80,21 @@ describe('Confirmation Navigation', function (this: Suite) {
         );
         await confirmation.clickNextPage();
 
+        // Verify simple send transaction is displayed
         await confirmation.checkDappInitiatedHeadingTitle();
         await confirmation.clickNextPage();
 
+        // Verify Sign Typed Data v3 confirmation is displayed
         await signTypedDataConfirmation.verifySignTypedDataV3Info(
           SIGN_TYPED_DATA_V3_INFO,
         );
         await confirmation.clickPreviousPage();
 
+        // Verify simple send transaction is displayed
         await confirmation.checkDappInitiatedHeadingTitle();
         await confirmation.clickPreviousPage();
 
+        // Verify Sign Typed Data v3 confirmation is displayed
         await signTypedDataConfirmation.verifySignTypedDataInfo(
           SIGN_TYPED_DATA_V1_INFO,
         );
