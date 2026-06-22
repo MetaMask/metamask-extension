@@ -4,11 +4,13 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import { formatAddressToCaipReference } from '@metamask/bridge-controller';
-import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
+import { UnifiedSwapBridgeEventName } from '@metamask/bridge-controller';
+import { useDispatch } from 'react-redux';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
-import useBridging from '../../../hooks/bridge/useBridging';
+import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
+import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionForward } from '../../../components/ui/transition';
 
@@ -20,7 +22,9 @@ export function SwapAgainButton({
   sourceToken: TokenAmount | undefined;
 }) {
   const t = useI18nContext();
-  const { openBridgeExperience } = useBridging();
+  const dispatch = useDispatch();
+  const { navigateToBridgePage } = useBridgeNavigation();
+
   const buttonLabelKey = useMemo(() => {
     if (!sourceToken?.assetId || !destinationToken?.assetId) {
       return 'swapAgain';
@@ -32,33 +36,49 @@ export function SwapAgainButton({
     return sourceChainId === destinationChainId ? 'swapAgain' : 'bridgeAgain';
   }, [destinationToken?.assetId, sourceToken?.assetId]);
 
-  const canSwapAgain =
-    sourceToken?.assetId && destinationToken?.assetId && sourceToken.symbol;
+  const searchParams = useMemo(() => {
+    if (!sourceToken?.assetId || !destinationToken?.assetId) {
+      return undefined;
+    }
+
+    const params = new URLSearchParams();
+    params.set(BridgeQueryParams.From, sourceToken.assetId);
+    params.set(BridgeQueryParams.To, destinationToken.assetId);
+
+    return params;
+  }, [destinationToken?.assetId, sourceToken?.assetId]);
 
   const handleClick = useCallback(() => {
-    const sourceAssetId = sourceToken?.assetId as CaipAssetType;
-    const sourceSymbol = sourceToken?.symbol;
-    const destinationAssetId = destinationToken?.assetId;
-
-    if (!sourceAssetId || !sourceSymbol || !destinationAssetId) {
+    if (!searchParams) {
       return;
     }
 
-    transitionForward(() =>
-      openBridgeExperience(
-        MetaMetricsSwapsEventSource.ActivityDetails,
-        {
-          symbol: sourceSymbol,
-          address: formatAddressToCaipReference(sourceAssetId),
-          chainId: parseCaipAssetType(sourceAssetId).chainId,
-          decimals: sourceToken?.decimals,
-        },
-        destinationAssetId,
-      ),
+    dispatch(
+      trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
+        location: MetaMetricsSwapsEventSource.ActivityDetails as never,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        token_symbol_source: sourceToken?.symbol ?? 'ETH',
+        token_symbol_destination: destinationToken?.symbol ?? '',
+        /* eslint-enable @typescript-eslint/naming-convention */
+      }),
     );
-  }, [destinationToken?.assetId, openBridgeExperience, sourceToken]);
 
-  if (!canSwapAgain) {
+    transitionForward(() =>
+      navigateToBridgePage({
+        token: null,
+        search: searchParams,
+        isEntrypoint: true,
+      }),
+    );
+  }, [
+    destinationToken?.symbol,
+    dispatch,
+    navigateToBridgePage,
+    searchParams,
+    sourceToken?.symbol,
+  ]);
+
+  if (!searchParams) {
     return null;
   }
 
