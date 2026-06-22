@@ -320,40 +320,18 @@ jobs:
       - name: Push Firefox bundle script
         run: .github/scripts/push-firefox-bundle-script.sh
 
-      - name: Package Firefox reviewer artifacts
+      - name: Publish AMO reviewer artifacts to S3
         if: >-
           vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT != '' ||
           vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD != ''
-        env:
-          FIREFOX_BUNDLE_SCRIPT_REF: ${{ vars.FIREFOX_BUNDLE_SCRIPT_REF }}
-          AMO_LAST_LISTED_VERSION: ${{ vars.AMO_LAST_LISTED_VERSION }}
-        run: bash .github/scripts/publish-firefox-reviewer-artifacts.sh package
-
-      - name: Configure AWS credentials (UAT reviewer publisher)
-        if: vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT != ''
-        uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
+        uses: ./.github/actions/publish-amo-reviewer-artifacts
         with:
-          role-to-assume: ${{ vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT }}
-          aws-region: us-east-2
-
-      - name: Upload Firefox reviewer artifacts (UAT)
-        if: vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT != ''
-        env:
-          AMO_REVIEWER_BUCKET: ${{ vars.AMO_REVIEWER_BUCKET_UAT }}
-        run: bash .github/scripts/publish-firefox-reviewer-artifacts.sh upload
-
-      - name: Configure AWS credentials (PRD reviewer publisher)
-        if: vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD != ''
-        uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
-        with:
-          role-to-assume: ${{ vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD }}
-          aws-region: us-east-2
-
-      - name: Upload Firefox reviewer artifacts (PRD)
-        if: vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD != ''
-        env:
-          AMO_REVIEWER_BUCKET: ${{ vars.AMO_REVIEWER_BUCKET_PRD }}
-        run: bash .github/scripts/publish-firefox-reviewer-artifacts.sh upload
+          firefox_bundle_script_ref: ${{ vars.FIREFOX_BUNDLE_SCRIPT_REF }}
+          amo_last_listed_version: ${{ vars.AMO_LAST_LISTED_VERSION }}
+          amo_reviewer_publisher_role_arn_uat: ${{ vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT }}
+          amo_reviewer_publisher_role_arn_prd: ${{ vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD }}
+          amo_reviewer_bucket_uat: ${{ vars.AMO_REVIEWER_BUCKET_UAT }}
+          amo_reviewer_bucket_prd: ${{ vars.AMO_REVIEWER_BUCKET_PRD }}
 
       - name: Summary
         env:
@@ -374,7 +352,7 @@ jobs:
             echo "| Sentry (Flask MV2 webpack) | ✅ Published |"
             echo "| GitHub Release | ✅ Created |"
             echo "| Firefox Bundle | ✅ Pushed |"
-            echo "| AMO reviewer S3 | see upload steps (skipped until infra vars wired) |"
+            echo "| AMO reviewer S3 | publish-amo-reviewer-artifacts action (skipped until vars wired) |"
             echo ""
             echo "**Release:** [${RELEASE_TAG}](https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG})"
           } >> "${GITHUB_STEP_SUMMARY}"

@@ -1,0 +1,75 @@
+name: Publish AMO reviewer artifacts
+description: >-
+  Package Firefox reviewer source + approval notes (firefox-bundle-script) and
+  upload to private S3 via OIDC. Requires caller job env RELEASE_TAG,
+  FIREFOX_BUNDLE_SCRIPT_TOKEN, and id-token write for AWS OIDC.
+
+inputs:
+  firefox_bundle_script_ref:
+    description: Git ref for MetaMask/firefox-bundle-script (empty = main in script)
+    required: false
+    default: ''
+  amo_last_listed_version:
+    description: Previous AMO-listed version for submission notes (optional)
+    required: false
+    default: ''
+  amo_reviewer_publisher_role_arn_uat:
+    description: OIDC role ARN for UAT reviewer-source bucket PutObject
+    required: false
+    default: ''
+  amo_reviewer_publisher_role_arn_prd:
+    description: OIDC role ARN for PRD reviewer-source bucket PutObject
+    required: false
+    default: ''
+  amo_reviewer_bucket_uat:
+    description: UAT S3 bucket id for reviewer-source prefix
+    required: false
+    default: ''
+  amo_reviewer_bucket_prd:
+    description: PRD S3 bucket id for reviewer-source prefix
+    required: false
+    default: ''
+  aws_region:
+    description: AWS region for S3 uploads
+    required: false
+    default: us-east-2
+
+runs:
+  using: composite
+  steps:
+    - name: Package Firefox reviewer artifacts
+      shell: bash
+      env:
+        FIREFOX_BUNDLE_SCRIPT_REF: ${{ inputs.firefox_bundle_script_ref }}
+        AMO_LAST_LISTED_VERSION: ${{ inputs.amo_last_listed_version }}
+      run: bash "${GITHUB_WORKSPACE}/.github/scripts/publish-firefox-reviewer-artifacts.sh" package
+
+    - name: Configure AWS credentials (UAT reviewer publisher)
+      if: inputs.amo_reviewer_publisher_role_arn_uat != ''
+      uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
+      with:
+        role-to-assume: ${{ inputs.amo_reviewer_publisher_role_arn_uat }}
+        aws-region: ${{ inputs.aws_region }}
+
+    - name: Upload Firefox reviewer artifacts (UAT)
+      if: inputs.amo_reviewer_publisher_role_arn_uat != ''
+      shell: bash
+      env:
+        AMO_REVIEWER_BUCKET: ${{ inputs.amo_reviewer_bucket_uat }}
+        AWS_DEFAULT_REGION: ${{ inputs.aws_region }}
+      run: bash "${GITHUB_WORKSPACE}/.github/scripts/publish-firefox-reviewer-artifacts.sh" upload
+
+    - name: Configure AWS credentials (PRD reviewer publisher)
+      if: inputs.amo_reviewer_publisher_role_arn_prd != ''
+      uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
+      with:
+        role-to-assume: ${{ inputs.amo_reviewer_publisher_role_arn_prd }}
+        aws-region: ${{ inputs.aws_region }}
+
+    - name: Upload Firefox reviewer artifacts (PRD)
+      if: inputs.amo_reviewer_publisher_role_arn_prd != ''
+      shell: bash
+      env:
+        AMO_REVIEWER_BUCKET: ${{ inputs.amo_reviewer_bucket_prd }}
+        AWS_DEFAULT_REGION: ${{ inputs.aws_region }}
+      run: bash "${GITHUB_WORKSPACE}/.github/scripts/publish-firefox-reviewer-artifacts.sh" upload
