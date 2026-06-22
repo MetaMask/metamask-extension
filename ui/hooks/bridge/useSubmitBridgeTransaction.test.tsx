@@ -21,6 +21,7 @@ import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../ducks/bridge/actions';
+import { getIsStxEnabled } from '../../ducks/bridge/selectors';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
@@ -144,6 +145,11 @@ jest.mock('../../selectors', () => {
     checkNetworkAndAccountSupports1559: () => true,
   };
 });
+
+jest.mock('../../ducks/bridge/selectors', () => ({
+  ...jest.requireActual('../../ducks/bridge/selectors'),
+  getIsStxEnabled: jest.fn(),
+}));
 jest.mock('../../../shared/lib/selectors/keyring', () => ({
   ...jest.requireActual('../../../shared/lib/selectors/keyring'),
   getHardwareWalletType: jest.fn(() => undefined),
@@ -190,6 +196,7 @@ const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
+const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
 const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
@@ -199,6 +206,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      mockGetIsStxEnabled.mockReturnValue(true);
       isHardwareWalletSpy.mockImplementation(() => false);
       mockEnsureDeviceReady.mockResolvedValue(true);
       captureExceptionSpy.mockReturnValue(undefined);
