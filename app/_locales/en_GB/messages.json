@@ -11080,6 +11080,10 @@
     "message": "You sent",
     "description": "Label indicating the amount and asset the user sent."
   },
+  "youWithdrew": {
+    "message": "You withdrew",
+    "description": "Label indicating the amount and asset the user withdrew."
+  },
   "youllReceive": {
     "message": "You'll receive",
     "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
