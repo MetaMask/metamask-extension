@@ -157,9 +157,6 @@
   "addACustomNetwork": {
     "message": "Cuir líonra saincheaptha leis"
   },
-  "addANetwork": {
-    "message": "Cuir líonra leis"
-  },
   "addANickname": {
     "message": "Cuir leasainm leis"
   },
@@ -561,9 +558,6 @@
   "assets": {
     "message": "Sócmhainní"
   },
-  "assetsDescription": {
-    "message": "Braith comharthaí i do sparán go huathoibríoch, taispeáin NFTanna, agus faigh nuashonruithe baisce ar iarmhéid an chuntais"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Iarracht an malartú a chealú saor in aisce"
   },
@@ -656,10 +650,6 @@
   },
   "basic": {
     "message": "Bunúsach"
-  },
-  "basicConfigurationDescription": {
-    "message": "Cuireann MetaMask gnéithe bunúsacha ar fáil ar nós sonraí comharthaí agus socruithe gáis trí sheirbhísí idirlín. Nuair a úsáideann tú seirbhísí idirlín, roinntear do sheoladh IP, sa chás seo le MetaMask. Tá sé seo díreach mar a tharlaíonn nuair a thugann tú cuairt ar aon suíomh Gréasáin. Úsáideann MetaMask na sonraí seo go sealadach agus ní dhíolann sé do shonraí riamh. Is féidir leat VPN a úsáid nó na seirbhísí seo a mhúchadh, ach d'fhéadfadh sé difear a dhéanamh do do thaithí MetaMask. Chun tuilleadh eolais a fháil léigh ár $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
     "message": "Feidhmiúlacht bhunúsach"
@@ -1020,9 +1010,6 @@
   },
   "closeWindowAnytime": {
     "message": "Is féidir leat an fhuinneog seo a dhúnadh am ar bith."
-  },
-  "coingecko": {
-    "message": "CoinGecko"
   },
   "collectionName": {
     "message": "Ainm an bhailiúcháin"
@@ -1405,16 +1392,6 @@
   },
   "creatorAddress": {
     "message": "Seoladh an chruthaitheora"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Taispeáin an t-iarmhéid agus seiceálaí praghsanna comharthaí"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Úsáidimid APIanna $1 agus $2 chun d’iarmhéid agus praghas do chomhartha a thaispeáint. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Siombail airgeadra"
@@ -2102,9 +2079,6 @@
   "externalNameSourcesSetting": {
     "message": "Leasainmneacha molta"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Gheobhaimid leasainmneacha molta do sheoltaí a mbíonn tú ag idirghníomhú leo ó fhoinsí tríú páirtí ar nós Etherscan, Infura, agus Lens Protocol. Beidh na foinsí seo in ann na seoltaí sin agus do sheoladh IP a fheiceáil. Ní nochtfar seoladh do chuntais do thríú páirtithe."
-  },
   "failed": {
     "message": "Theip air"
   },
@@ -2254,9 +2228,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Chuaigh rud éigin mícheart...."
-  },
-  "generalDescription": {
-    "message": "Sioncrónaigh socruithe trasna gléasanna, roghnaigh roghanna líonra, agus rianaigh sonraí comharthaí"
   },
   "genericExplorerView": {
     "message": "Féach ar chuntas ar $1"
@@ -3621,18 +3592,6 @@
   "onboardedMetametricsTitle": {
     "message": "Cabhraigh linn feabhas a chur ar do thaithí"
   },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Leis an ngeata IPFS is féidir rochtain a fháil ar shonraí atá á óstáil ag tríú páirtithe agus iad a fheiceáil. Is féidir leat geata IPFS saincheaptha a chur leis nó leanúint ar aghaidh ag úsáid an gheata réamhshocraithe."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Cuir isteach URL bailí le do thoil"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Cuir Geata IPFS saincheaptha leis"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Tá URL geata IPFS bailí"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Nuair a úsáideann tú ár socruithe agus cumraíochtaí réamhshocraithe, úsáidimid Infura mar ár soláthraí glaonna nós imeachta cianda (RPC) réamhshocraithe chun an rochtain is iontaofa agus is príobháideacha is féidir a thairiscint ar shonraí Ethereum. I gcásanna teoranta, féadfaimid soláthraithe RPC eile a úsáid chun an taithí is fearr a sholáthar dár n-úsáideoirí. Is féidir leat do RPC féin a roghnú, ach cuimhnigh go bhfaighidh aon RPC do sheoladh IP agus do sparán Ethereum chun idirbhearta a dhéanamh. Chun tuilleadh a fhoghlaim faoi mar a láimhseálann Infura sonraí le haghaidh cuntais EVM, léigh ár $1; le haghaidh cuntais Solana, $2."
   },
@@ -4603,21 +4562,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Pasfhocal nua sábháilte"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Slándáil & príobháideacht"
-  },
-  "securityDescription": {
-    "message": "Laghdaigh do sheans go mbeidh tú páirteach i líonraí neamhshábháilte agus cosain do chuntais"
-  },
   "securityMessageLinkForNetworks": {
     "message": "camscéimeanna líonra agus rioscaí slándála"
   },
   "securityProviderPoweredBy": {
     "message": "Cumhachtaithe ag $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Laghdaigh do sheansanna dul isteach i líonraí neamhshábháilte agus cosain do chuntais agus do shonraí"
   },
   "securitySocialLoginEnabled": {
     "message": "Cumasaithe"
@@ -5056,9 +5006,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Ní raibh muid in ann gás a mheas. D’fhéadfadh earráid a bheith sa chonradh agus d’fhéadfadh teip a bheith ar an idirbheart seo."
-  },
-  "simulationsSettingDescription": {
-    "message": "Cas air seo chun athruithe ar iarmhéid idirbheart agus sínithe a mheas sula ndeimhníonn tú iad. Ní ráthaíonn sé seo a dtoradh deiridh. $1"
   },
   "simulationsSettingSubHeader": {
     "message": "Athruithe ar an iarmhéid meastacháin"
@@ -5993,9 +5940,6 @@
   "to": {
     "message": "Chuig"
   },
-  "toggleDecodeDescription": {
-    "message": "Úsáidimid seirbhísí 4byte.directory agus Sourcify chun sonraí idirbhearta a dhíchódú agus a thaispeáint níos inléite. Cuidíonn sé seo leat toradh idirbhearta atá ar feitheamh agus san am atá thart a thuiscint, ach d’fhéadfadh sé go roinnfí do sheoladh IP dá bharr."
-  },
   "token": {
     "message": "Comhartha"
   },
@@ -6194,9 +6138,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Is féidir leat fógraí a mhúchadh ag am ar bith sa $1"
   },
-  "turnOnTokenDetection": {
-    "message": "Cuir feabhas ar bhrath comharthaí i bhfeidhm"
-  },
   "tutorial": {
     "message": "Rang teagaisc"
   },
@@ -6327,9 +6268,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Iarratais ar iarmhéid cuntais bhaisc"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Faigh nuashonruithe níos tapúla ar iarmhéid trí iarratais ar iarmhéid cuntais a chomhdhéanamh i mbaisceanna. Ligeann sé seo dúinn iarmhéideanna do chuntais a bhailiú le chéile, ionas go bhfaighidh tú nuashonruithe níos tapúla le haghaidh eispéireas feabhsaithe. Nuair a bhíonn an ghné seo múchta, is lú an seans go mbeidh tríú páirtithe ag baint le do chuntais lena chéile."
-  },
   "useNftDetection": {
     "message": "NFTanna a bhrath go huathoibríoch"
   },
@@ -6345,9 +6283,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "Baineann cumarsáid le freastalaithe tríú páirtí chun íomhánna na gcomharthaí a aisghabháil le taispeáint uathoibríoch comharthaí a sheoltar chuig do chuntas. Beidh rochtain ag na freastalaithe sin ar do sheoladh IP."
   },
   "usedByClients": {
     "message": "Úsáidte ag réimse cliant éagsúil"

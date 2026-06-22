@@ -65,9 +65,7 @@ const PrivacySettingsNetworkRpc = () => {
           .map((network) => {
             const rpcUrl =
               network?.rpcEndpoints[network?.defaultRpcEndpointIndex]?.url;
-            const rpcOrigin = rpcUrl
-              ? new URL(rpcUrl).origin
-              : undefined;
+            const rpcOrigin = rpcUrl ? new URL(rpcUrl).origin : undefined;
 
             return (
               <NetworkListItem

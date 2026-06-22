@@ -32,6 +32,29 @@ jest.mock('../../../ducks/app/app.ts', () => {
   };
 });
 
+// Avoid unit test warning from react-toggle-button (deprecated componentWillReceiveProps via react-motion).
+jest.mock('react-toggle-button', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  function mockToggle({
+    value,
+    onToggle,
+    passThroughInputProps,
+  }: {
+    value: boolean;
+    onToggle: (v: boolean) => void;
+    passThroughInputProps?: { 'data-testid'?: string };
+  }) {
+    return ReactActual.createElement('input', {
+      type: 'checkbox',
+      checked: value,
+      'data-testid': passThroughInputProps?.['data-testid'],
+      onChange: () => onToggle(value),
+      readOnly: true,
+    });
+  }
+  return mockToggle;
+});
+
 const renderPrivacySettings = (
   store = configureMockStore([thunk])({
     metamask: {
@@ -113,7 +136,9 @@ describe('Privacy Settings Onboarding View', () => {
 
     fireEvent.click(screen.getByTestId('privacy-settings-back-button'));
 
-    expect(screen.getByTestId('onboarding-completion-page')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('onboarding-completion-page'),
+    ).toBeInTheDocument();
   });
 
   it('renders privacy settings and dispatches immediately on toggle', () => {
@@ -124,7 +149,9 @@ describe('Privacy Settings Onboarding View', () => {
     );
 
     expect(screen.getByTestId('privacy-settings-settings')).toBeInTheDocument();
-    expect(screen.getByTestId('basic-functionality-toggle')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('basic-functionality-toggle'),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('batch-account-balance-requests-toggle'),
     ).toBeInTheDocument();

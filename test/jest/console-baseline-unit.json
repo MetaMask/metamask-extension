@@ -999,11 +999,6 @@
     "ui/pages/onboarding-flow/onboarding-flow.test.tsx": {
       "MetaMask: Background connection not initialized": 13
     },
-    "ui/pages/onboarding-flow/privacy-settings/privacy-settings.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Input stability warnings": 1,
-      "error: Warning: Encountered two children with": 1
-    },
     "ui/pages/onboarding-flow/welcome/welcome.test.tsx": {
       "MetaMask: Background connection not initialized": 16,
       "React: State updates on unmounted components": 1

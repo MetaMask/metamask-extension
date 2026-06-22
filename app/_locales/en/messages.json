@@ -1070,9 +1070,6 @@
   "addACustomNetwork": {
     "message": "Add a custom network"
   },
-  "addANetwork": {
-    "message": "Add a network"
-  },
   "addANickname": {
     "message": "Add a nickname"
   },
@@ -1585,9 +1582,6 @@
   "assets": {
     "message": "Assets"
   },
-  "assetsDescription": {
-    "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
-  },
   "asterdexReferralSubtitle": {
     "message": "Get 4% back on trades with a MetaMask referral code.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1714,10 +1708,6 @@
   },
   "basic": {
     "message": "Basic"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Includes basic features like token details and gas settings. Keep this feature on for the best experience.  Read our $1 to learn more.",
@@ -2484,9 +2474,6 @@
   "closeWindowAnytime": {
     "message": "You may close this window anytime."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Collection name"
   },
@@ -2971,16 +2958,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "Still having issues?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Show balance and token price checker"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "We use $1 and $2 APIs to display your balance and token price. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Currency symbol"
@@ -3827,9 +3804,6 @@
   "externalNameSourcesSetting": {
     "message": "Proposed nicknames"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "We’ll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens Protocol. These sources will be able to see those addresses and your IP address. Your account address won’t be exposed to third parties."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Fetches proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens protocol."
   },
@@ -4129,9 +4103,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
-  },
-  "generalDescription": {
-    "message": "Sync settings across devices, select network preferences, and track token data"
   },
   "genericExplorerView": {
     "message": "View account on $1"
@@ -6021,18 +5992,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Help us enhance your experience"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Please enter a valid URL"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Add custom IPFS Gateway"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFS gateway URL is valid"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1; for Solana accounts, $2."
@@ -8407,21 +8366,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Security & privacy"
-  },
-  "securityDescription": {
-    "message": "Reduce your chances of joining unsafe networks and protect your accounts"
-  },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
   },
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Reduce your chances of joining unsafe networks and protect your accounts and data"
   },
   "securitySocialLoginEnabled": {
     "message": "Enabled"
@@ -9337,9 +9287,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
-  },
-  "simulationsSettingDescription": {
-    "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Estimates balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. $1"
@@ -10388,9 +10335,6 @@
   "to": {
     "message": "To"
   },
-  "toggleDecodeDescription": {
-    "message": "We use 4byte.directory and Sourcify services to decode and display more readable transaction data. This helps you understand the outcome of pending and past transactions, but can result in your IP address being shared."
-  },
   "token": {
     "message": "Token"
   },
@@ -10692,9 +10636,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "You can turn off notifications at any time in the $1"
   },
-  "turnOnTokenDetection": {
-    "message": "Turn on enhanced token detection"
-  },
   "tutorial": {
     "message": "Tutorial"
   },
@@ -10853,9 +10794,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Get faster balance updates by batching account balance requests. This lets us fetch your account balances together, so you get quicker updates for an improved experience. When this feature is off, third parties may be less likely to associate your accounts with each other."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Sends balance updates for all your accounts at once. Allows for a faster and overall better experience managing multiple accounts."
   },
@@ -10883,9 +10821,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"

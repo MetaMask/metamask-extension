@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "एक कस्टम नेटवर्क जोड़ें"
   },
-  "addANetwork": {
-    "message": "एक नेटवर्क जोड़ें"
-  },
   "addANickname": {
     "message": "एक उपनाम जोड़ें"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "परिसंपत्तियां"
   },
-  "assetsDescription": {
-    "message": "अपने वॉलेट में टोकन ऑटोडिटेक्ट करें, NFT प्रदर्शित करें, और बैच अकाउंट बैलेंस संबंधी अपडेट प्राप्त करें"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 4% वापस पाएं।",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "बुनियादी"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask इंटरनेट सेवाओं के माध्यम से टोकन विवरण और गैस सेटिंग्स जैसी बुनियादी सुविधाएं प्रदान करता है। जब आप इंटरनेट सेवाओं का उपयोग करते हैं, तो आपका आईपी ​​एड्रेस साझा किया जाता है, इस मामले में MetaMask के साथ। यह बिल्कुल वैसा ही है जैसे आप किसी वेबसाइट पर जाते हैं। MetaMask इस डेटा का अस्थायी रूप से उपयोग करता है और कभी भी आपका डेटा नहीं बेचता है। आप वीपीएन का उपयोग कर सकते हैं या इन सेवाओं को बंद कर सकते हैं, लेकिन यह आपके MetaMask अनुभव को प्रभावित कर सकता है। अधिक जानने के लिए हमारी $1 पढ़ें।",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "इसमें टोकन डिटेल्स और गैस सेटिंग जैसे बेसिक फ़ीचर्स शामिल हैं। सबसे अच्छे अनुभव के लिए इस फ़ीचर को चालू रखें। ज़्यादा जानने के लिए हमारा $1 पढ़ें।",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "आप इस विंडो को कभी भी बंद कर सकते हैं।"
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "संग्रह का नाम"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "अभी भी समस्या आ रही है?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "बैलेंस और टोकन प्राइस चेकर दिखाएं"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "हम आपका बैलेंस और टोकन प्राइस दिखाने के लिए $1 और $2 API का इस्तेमाल करते हैं। $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "करेंसी का प्रतीक"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "प्रस्तावित उपनाम"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "हम Etherscan, Infura और Lens Protocol जैसे थर्ड पार्टी सोर्सों से उन एड्रेसों के लिए प्रस्तावित उपनाम लाएंगे जिनके साथ आप इंटरैक्ट करते हैं। ये सोर्स उन एड्रेसों और आपके आईपी एड्रेस को देख सकेंगे। आपके अकाउंट का एड्रेस थर्ड पार्टी के सामने नहीं आएगा।"
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Etherscan, Infura और Lens प्रोटोकॉल जैसे थर्ड-पार्टी सोर्स से आपके इंटरैक्ट करने वाले एड्रेस के लिए सुझाए गए निकनेम लेकर आता है।"
   },
@@ -4056,9 +4030,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "कुछ गलत हो गया..."
-  },
-  "generalDescription": {
-    "message": "सभी डिवाइसों में सेटिंग्स सिंक करें, नेटवर्क प्राथमिकताएं चुनें और टोकन डेटा ट्रैक करें"
   },
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
@@ -5936,18 +5907,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "आपके अनुभव को बेहतर करने में हमारी सहायता करें"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "IPFS (आईपीएफएस) गेटवे थर्ड पार्टियों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का इस्तेमाल जारी रख सकते हैं।"
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "कृपया एक मान्य URL (यूआरएल) को डालें"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "कस्टम IPFS गेटवे जोड़ें"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFS गेटवे URL मान्य है"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "जब आप हमारी डिफॉल्ट सेटिंग्स और कॉन्फ़िगरेशन का उपयोग करते हैं, तो हम Ethereum डेटा तक सबसे विश्वसनीय और निजी पहुँच प्रदान करने के लिए Infura को अपने डिफॉल्ट रिमोट प्रोसीजर कॉल (RPC) प्रदाता के रूप में उपयोग करते हैं। सीमित मामलों में, हम अपने उपयोगकर्ताओं को सर्वश्रेष्ठ अनुभव प्रदान करने के लिए अन्य RPC प्रदाताओं का उपयोग कर सकते हैं। आप अपना खुद का RPC चुन सकते हैं, लेकिन याद रखें कि कोई भी RPC ट्रांसेक्शन करने के लिए आपका आईपी ​​एड्रेस और Ethereum वॉलेट प्राप्त करेगा। EVM एकाउंट्स के लिए Infura डेटा को कैसे संभालता है, इसके बारे में अधिक जानने के लिए, हमारी $1 पढ़ें; Solana एकाउंट्स, $2 के लिए।"
@@ -8288,21 +8247,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "नया पासवर्ड सेव किया गया"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "सुरक्षा और गोपनीयता"
-  },
-  "securityDescription": {
-    "message": "असुरक्षित नेटवर्क में शामिल होने की संभावना कम करें और अपने एकाउंट्स की सुरक्षा करें"
-  },
   "securityMessageLinkForNetworks": {
     "message": "नेटवर्क संबंधी स्कैम और सुरक्षा जोखिम"
   },
   "securityProviderPoweredBy": {
     "message": "$1 द्वारा पावर्ड",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "असुरक्षित नेटवर्क में शामिल होने की संभावना कम करें और अपने एकाउंट्स और डेटा की सुरक्षा करें"
   },
   "securitySocialLoginEnabled": {
     "message": "चालू किया गया"
@@ -9218,9 +9168,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "हम गैस का अनुमान नहीं लगा पाए। कॉन्ट्रैक्ट में कोई गड़बड़ी हो सकती है और यह ट्रांसेक्शन विफल हो सकता है।"
-  },
-  "simulationsSettingDescription": {
-    "message": "ट्रांसेक्शन और सिग्नेचर्स को कन्फर्म करने से पहले उनके बैलेंस में बदलाव का अनुमान लगाने के लिए इसे चालू करें। यह उनके अंतिम परिणाम की गारंटी नहीं देता। $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "ट्रांसेक्शन को कन्फर्म करने से पहले बैलेंस अमाउंट में बदलाव का अनुमान लगाता है। यह आपके ट्रांसेक्शन के फाइनल आउटकम की गारंटी नहीं देता है।$1"
@@ -10269,9 +10216,6 @@
   "to": {
     "message": "प्रति"
   },
-  "toggleDecodeDescription": {
-    "message": "हम अधिक पठनीय ट्रांसेक्शन डेटा को डिकोड करने और प्रदर्शित करने के लिए 4byte.directory और Sourcify सेवाओं का उपयोग करते हैं। इससे आपको लंबित और पिछले ट्रांसेक्शन के परिणाम को समझने में मदद मिलती है, लेकिन इसके परिणामस्वरूप आपका आईपी ​​एड्रेस साझा किया जा सकता है।"
-  },
   "token": {
     "message": "टोकन"
   },
@@ -10569,9 +10513,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "आप किसी भी समय $1 में नोटिफिकेशंस बंद कर सकते हैं"
   },
-  "turnOnTokenDetection": {
-    "message": "एडवांस्ड टोकन डिटेक्शन चालू करें"
-  },
   "tutorial": {
     "message": "ट्यूटोरियल"
   },
@@ -10730,9 +10671,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "बैच खाता बैलेन्स रिक्वेस्ट"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "अकाउंट बैलेंस रिक्वेस्ट्स को बैच कर तेज़ी से बैलेंस अपडेट प्राप्त करें। इससे हमें आपके अकाउंट का बैलेंस एक साथ मिल जाती है, जिससे आपको बेहतर अनुभव के लिए जल्द अपडेट प्राप्त होते हैं। जब यह सुविधा बंद हो जाती है, तो थर्ड पार्टियों द्वारा आपके एकाउंट्स को एक-दूसरे के साथ संबद्ध करने की संभावना कम हो जाती है।"
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "आपके सभी अकाउंट्स के लिए एक साथ बैलेंस अपडेट भेजता है। इससे कई अकाउंट्स को मैनेज करने का अनुभव तेज़ और कुल मिलाकर बेहतर होता है।"
   },
@@ -10760,9 +10698,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "आपके खाते में भेजे गए टोकन को स्वतः प्रदर्शित करने में टोकन की इमेज के लिए तीसरे पक्ष के सर्वर के साथ संचार करना शामिल है। उन सेवाओं की पहुंच आपके आईपी पते तक होगी।"
   },
   "usedByClients": {
     "message": "विभिन्न क्लाइंट द्वारा इस्तेमाल किया जाता है"

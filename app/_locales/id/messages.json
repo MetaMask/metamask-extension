@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
-  "addANetwork": {
-    "message": "Tambahkan jaringan"
-  },
   "addANickname": {
     "message": "Tambahkan nama panggilan"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "Aset"
   },
-  "assetsDescription": {
-    "message": "Autodeteksi token di dompet Anda, tampilkan NFT, dan dapatkan pembaruan saldo akun secara batch"
-  },
   "asterdexReferralSubtitle": {
     "message": "Dapatkan cashback 4% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "Dasar"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask menawarkan fitur dasar seperti detail token dan pengaturan gas melalui layanan internet. Alamat IP dibagikan saat menggunakan layanan internet, dalam hal ini kepada MetaMask. Ini sama seperti saat Anda mengunjungi situs web mana pun. MetaMask menggunakan data ini untuk sementara dan tidak akan pernah menjual data Anda. Anda dapat menggunakan VPN atau menonaktifkan layanan ini, akan tetapi hal ini dapat memengaruhi pengalaman dalam menggunakan MetaMask. Untuk selengkapnya, baca $1 kami.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Mencakup fitur dasar seperti detail token dan pengaturan gas. Aktifkan fitur ini untuk menikmati pengalaman terbaik. Baca panduan $1 kami untuk mempelajari selengkapnya.",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "Anda dapat menutup jendela ini setiap saat."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Nama koleksi"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "Masih mengalami masalah?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Tampilkan saldo dan pemeriksa harga token"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Kami menggunakan API $1 dan $2 untuk menampilkan saldo serta harga token Anda. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Simbol mata uang"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "Nama panggilan yang diusulkan"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Kami akan mengambil nama panggilan yang diusulkan untuk alamat yang berinteraksi dengan Anda dari sumber pihak ketiga seperti Etherscan, Infura, dan Lens Protocol. Sumber-sumber ini dapat melihat alamat-alamat tersebut dan alamat IP Anda. Alamat akun Anda tidak akan diketahui oleh pihak ketiga."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Mengambil nama panggilan yang disarankan untuk alamat yang berinteraksi dengan Anda dari sumber pihak ketiga seperti Etherscan, Infura, dan Lens protocol."
   },
@@ -4060,9 +4034,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Terjadi kesalahan...."
-  },
-  "generalDescription": {
-    "message": "Sinkronkan pengaturan di seluruh perangkat, pilih preferensi jaringan, dan lacak data token"
   },
   "genericExplorerView": {
     "message": "Lihat akun di $1"
@@ -5940,18 +5911,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Bantu kami meningkatkan pengalaman Anda"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Gateway IPFS memungkinkan untuk mengakses dan melihat data yang disimpan oleh pihak ketiga. Anda dapat menambahkan gateway IPFS khusus atau melanjutkan menggunakan default."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Masukkan URL yang valid"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Tambahkan Gateway IPFS khusus"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL gateway IPFS valid"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Bila Anda menggunakan pengaturan dan konfigurasi default, kami menggunakan Infura sebagai penyedia panggilan prosedur jarak jauh (RPC) default kami untuk menawarkan akses paling andal dan pribadi ke data Ethereum yang kami bisa. Dalam kasus terbatas, kami dapat menggunakan penyedia RPC lain untuk memberikan pengalaman terbaik bagi pengguna kami. Anda dapat memilih RPC sendiri, tetapi ingatlah bahwa setiap RPC akan menerima alamat IP dan dompet Ethereum Anda untuk melakukan transaksi. Untuk mempelajari selengkapnya tentang cara Infura menangani data untuk akun EVM, baca $1; untuk akun Solana, $2."
@@ -8296,21 +8255,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Kata sandi baru tersimpan"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Keamanan & privasi"
-  },
-  "securityDescription": {
-    "message": "Kurangi kemungkinan Anda bergabung dengan jaringan yang tidak aman dan lindungi akun Anda"
-  },
   "securityMessageLinkForNetworks": {
     "message": "penipuan jaringan dan risiko keamanan"
   },
   "securityProviderPoweredBy": {
     "message": "Didukung oleh $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Kurangi kemungkinan Anda bergabung dengan jaringan yang tidak aman serta lindungi akun dan data Anda"
   },
   "securitySocialLoginEnabled": {
     "message": "Diaktifkan"
@@ -9226,9 +9176,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Kami tidak dapat memperkirakan gas. Tampaknya ada kesalahan dalam kontrak dan transaksi ini berpotensi gagal."
-  },
-  "simulationsSettingDescription": {
-    "message": "Aktifkan untuk mengestimasikan perubahan saldo transaksi dan tanda tangan sebelum Anda mengonfirmasikannya. Ini tidak menjamin hasil akhirnya. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Mengestimasikan perubahan saldo transaksi sebelum Anda mengonfirmasinya. Ini tidak menjamin hasil akhir transaksi Anda. $1"
@@ -10277,9 +10224,6 @@
   "to": {
     "message": "Ke"
   },
-  "toggleDecodeDescription": {
-    "message": "Kami menggunakan layanan 4byte.directory dan Sourcify untuk mengonversi kode dan menampilkan data transaksi yang lebih mudah dibaca. Ini membantu Anda memahami hasil transaksi yang tertunda dan yang sudah lewat, tetapi alamat IP Anda berpotensi tersebar."
-  },
   "token": {
     "message": "Token"
   },
@@ -10577,9 +10521,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Notifikasi dapat dinonaktifkan setiap saat di $1"
   },
-  "turnOnTokenDetection": {
-    "message": "Aktifkan deteksi token yang ditingkatkan"
-  },
   "tutorial": {
     "message": "Tutorial"
   },
@@ -10738,9 +10679,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Kelompokkan permintaan saldo akun"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Dapatkan pembaruan saldo yang lebih cepat dengan mengelompokkan permintaan saldo akun. Ini membantu kami untuk mengambil saldo akun Anda secara bersamaan, sehingga Anda mendapatkan pembaruan lebih cepat untuk pengalaman yang lebih baik. Saat fitur ini dinonaktifkan, pihak ketiga kemungkinan kecil akan menghubungkan akun Anda yang satu dengan yang lainnya."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Mengirimkan pembaruan saldo untuk semua akun Anda sekaligus. Memungkinkan pengalaman yang lebih cepat dan lebih baik secara keseluruhan dalam mengelola banyak akun."
   },
@@ -10768,9 +10706,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "Menampilkan token yang dikirim ke akun Anda secara otomatis yang melibatkan komunikasi dengan server pihak ketiga untuk mengambil gambar token. Server tersebut akan memiliki akses ke alamat IP Anda."
   },
   "usedByClients": {
     "message": "Digunakan oleh berbagai klien yang berbeda"

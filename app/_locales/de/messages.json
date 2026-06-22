@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
   },
-  "addANetwork": {
-    "message": "Ein Netzwerk hinzufügen"
-  },
   "addANickname": {
     "message": "Spitznamen hinzufügen"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "Assets"
   },
-  "assetsDescription": {
-    "message": "Automatische Erkennung von Tokens in Ihrer Wallet, Anzeige von NFTs und stapelweise Aktualisierung des Kontostands"
-  },
   "asterdexReferralSubtitle": {
     "message": "Erhalten Sie 4 % zurück auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "Grundlegend"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask bietet grundlegende Funktionen wie Token-Details und Gas-Einstellungen über Internetdienste. Wenn Sie Internetdienste nutzen, wird Ihre IP-Adresse weitergegeben, in diesem Fall an MetaMask. Das ist genau so, wie wenn Sie eine beliebige Website besuchen. MetaMask verwendet diese Daten vorübergehend und verkauft Ihre Daten niemals. Sie können ein VPN verwenden oder diese Dienste abschalten, aber das kann Ihr MetaMask-Erlebnis beeinträchtigen. Um mehr zu erfahren, lesen Sie unsere $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Enthält grundlegende Funktionen wie Token-Details und Gaseinstellungen. Lassen Sie diese Funktion für ein optimales Erlebnis eingeschaltet.  Lesen Sie unsere $1, um mehr zu erfahren.",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "Sie können dieses Fenster jederzeit schließen."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Name der Sammlung"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "Haben Sie immer noch Probleme?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Guthaben und Token-Preisprüfer anzeigen"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Wie verwenden $1- und $2-APIs, um Ihr Guthaben und den Tokenpreis anzuzeigen. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Währungszeichen"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "Vorgeschlagene Spitznamen"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Wir rufen die vorgeschlagenen Spitznamen für Adressen, mit denen Sie interagieren, aus Drittanbieterquellen wie Etherscan, Infura und Lens Protocol ab. Diese Anbieter sind in der Lage, die betreffenden Adressen sowie Ihre IP-Adresse einzusehen. Ihre Kontoadresse wird jedoch nicht an Drittparteien weitergegeben."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Ruft vorgeschlagene Spitznamen aus Drittanbieterquellen wie Etherscan, Infura und dem Lens-Protokoll für Adressen ab, mit denen Sie interagieren."
   },
@@ -4056,9 +4030,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Etwas ist schiefgelaufen...."
-  },
-  "generalDescription": {
-    "message": "Synchronisieren Sie Einstellungen geräteübergreifend, wählen Sie Netzwerkeinstellungen aus und verfolgen Sie Token-Daten"
   },
   "genericExplorerView": {
     "message": "Konto auf $1 ansehen"
@@ -5936,18 +5907,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Helfen Sie uns, Ihr Erlebnis zu verbessern"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Das IPFS-Gateway ermöglicht den Zugriff auf Daten, die von Drittanbietern gehostet werden. Sie können ein benutzerdefiniertes IPFS-Gateway hinzufügen oder weiterhin das Standard-Gateway verwenden."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Bitte geben Sie eine gültige URL ein."
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Benutzerdefiniertes IPFS-Gateway hinzufügen"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL für IPFS-Gateway ist gültig"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Wenn Sie unsere Standardeinstellungen und -konfigurationen verwenden, nutzen wir Infura als Standard-RPC-Anbieter (Remote Procedure Call), um einen möglichst zuverlässigen und privaten Zugriff auf Ethereum-Daten zu gewährleisten. In Ausnahmefällen können wir auch andere RPC-Anbieter einsetzen, um unseren Nutzern das bestmögliche Erlebnis zu bieten. Sie können Ihren eigenen RPC wählen, doch bedenken Sie dabei, dass jeder RPC Ihre IP-Adresse und Ihr Ethereum-Wallet zur Durchführung von Transaktionen erhalten wird. Weitere Informationen darüber, wie Infura Daten für EVM-Konten verarbeitet, finden Sie in unserer $1; und für Solana-Konten in der $2."
@@ -8288,21 +8247,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Neues Passwort gespeichert"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Sicherheit und Datenschutz"
-  },
-  "securityDescription": {
-    "message": "Verringern Sie das Risiko, sich mit unsicheren Netzwerken zu verbinden und sichern Sie Ihre Konten"
-  },
   "securityMessageLinkForNetworks": {
     "message": "Netzwerk-Betrügereien und Sicherheitsrisiken"
   },
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Verringern Sie das Risiko, sich mit unsicheren Netzwerken zu verbinden und sichern Sie Ihre Konten und Daten."
   },
   "securitySocialLoginEnabled": {
     "message": "Aktiviert"
@@ -9218,9 +9168,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Contract geben und diese Transaktion könnte fehlschlagen."
-  },
-  "simulationsSettingDescription": {
-    "message": "Aktivieren Sie diese Funktion, um Änderungen Ihres Kontostands durch Transaktionen und Signaturen vor der Bestätigung abzuschätzen. Dies garantiert nicht das endgültige Ergebnis. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Schätzen Sie die Saldoänderungen von Transaktionen ab, bevor Sie diese bestätigen. Dies ist jedoch keine Garantie für das endgültige Ergebnis Ihrer Transaktionen. $1"
@@ -10269,9 +10216,6 @@
   "to": {
     "message": "An"
   },
-  "toggleDecodeDescription": {
-    "message": "Wir nutzen die Dienste von 4byte.directory und Sourcify, um Transaktionsdaten zu dekodieren und lesbarer anzuzeigen. Dadurch können Sie das Ergebnis ausstehender und vergangener Transaktionen leichter einsehen, allerdings kann dies zur Weitergabe Ihrer IP-Adresse führen."
-  },
   "token": {
     "message": "Token"
   },
@@ -10569,9 +10513,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Sie können die Benachrichtigungen jederzeit unter $1 ausschalten"
   },
-  "turnOnTokenDetection": {
-    "message": "Erweiterte Token-Erkennung aktivieren"
-  },
   "tutorial": {
     "message": "Tutorial"
   },
@@ -10730,9 +10671,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Kontoguthaben-Anfragen sammeln"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Erhalten Sie Aktualisierungen von Kontoständen schneller, indem Sie Anfragen zum Kontostand bündeln. Auf diese Weise können wir Ihre Kontostände auf einmal abrufen, wodurch Sie schnellere Aktualisierungen erhalten und eine bessere Erfahrung machen. Wenn diese Funktion deaktiviert ist, ist es für Dritte weniger wahrscheinlich, dass sie Ihre Konten miteinander in Verbindung bringen können."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Sendet Aktualisierungen des Kontostands Ihrer sämtlichen Konten zugleich. Ermöglicht eine schnellere und insgesamt bessere Verwaltung mehrerer Konten."
   },
@@ -10760,9 +10698,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "Die automatische Anzeige von Tokens, die an Ihr Konto gesendet werden, erfordert die Kommunikation mit Servern von Drittanbietern, um Token-Bilder abzurufen. Diese Server erhalten Zugriff auf Ihre IP-Adresse."
   },
   "usedByClients": {
     "message": "Verwendet von einer Reihe von Kunden"

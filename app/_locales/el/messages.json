@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
   },
-  "addANetwork": {
-    "message": "Προσθήκη δικτύου"
-  },
   "addANickname": {
     "message": "Προσθήκη ενός ψευδωνύμου"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "Περιουσιακά στοιχεία"
   },
-  "assetsDescription": {
-    "message": "Αυτόματος εντοπισμός των tokens στο πορτοφόλι σας, εμφάνιση NFT και ομαδοποιημένες ενημερώσεις υπολοίπων λογαριασμών"
-  },
   "asterdexReferralSubtitle": {
     "message": "Λάβετε 4% επιστροφή στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "Βασική"
-  },
-  "basicConfigurationDescription": {
-    "message": "Το MetaMask παρέχει βασικές λειτουργίες, όπως λεπτομέρειες για τα tokens και ρυθμίσεις τελών συναλλαγών μέσω υπηρεσιών διαδικτύου. Όταν χρησιμοποιείτε υπηρεσίες διαδικτύου, η διεύθυνση IP σας κοινοποιείται, σε αυτή την περίπτωση με στο MetaMask. Αυτό συμβαίνει ακριβώς όπως όταν επισκέπτεστε οποιονδήποτε ιστότοπο. Το MetaMask χρησιμοποιεί αυτά τα δεδομένα προσωρινά και δεν πωλεί ποτέ τα δεδομένα σας. Μπορείτε να χρησιμοποιήσετε ένα VPN ή να απενεργοποιήσετε αυτές τις υπηρεσίες, αλλά αυτό μπορεί να επηρεάσει την εμπειρία σας στο MetaMask. Για να μάθετε περισσότερα διαβάστε την $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Περιλαμβάνει βασικές λειτουργίες όπως λεπτομέρειες για tokens και ρυθμίσεις χρεώσεων. Διατηρήστε αυτή τη λειτουργία ενεργή για καλύτερη εμπειρία. Διαβάστε την $1 για να μάθετε περισσότερα.",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "Μπορείτε να κλείσετε αυτό το παράθυρο ανά πάσα στιγμή."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Όνομα συλλογής"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "Ακόμα αντιμετωπίζετε προβλήματα;"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Εμφάνιση υπολοίπου και έλεγχος τιμών για token"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Χρησιμοποιούμε τα API $1 και $2 για να εμφανίσουμε το υπόλοιπό σας και την τιμή του token. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Σύμβολο νομίσματος"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "Προτεινόμενα ψευδώνυμα"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Θα παρέχουμε προτεινόμενα ψευδώνυμα για διευθύνσεις με τις οποίες αλληλεπιδράτε από πηγές τρίτων, όπως τα Etherscan, Infura και Lens Protocol. Αυτές οι πηγές θα είναι σε θέση να δουν τις εν λόγω διευθύνσεις και τη διεύθυνση IP σας. Η διεύθυνση του λογαριασμού σας δεν θα εκτεθεί σε τρίτους."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Ανακτά προτεινόμενα ψευδώνυμα για διευθύνσεις με τις οποίες αλληλεπιδράτε από τρίτες πηγές, όπως τα Etherscan, Infura και το Lens protocol."
   },
@@ -4056,9 +4030,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Κάτι πήγε στραβά...."
-  },
-  "generalDescription": {
-    "message": "Συγχρονισμός ρυθμίσεων σε όλες τις συσκευές, επιλογή προτιμήσεων δικτύου και παρακολούθηση δεδομένων των tokens"
   },
   "genericExplorerView": {
     "message": "Προβολή λογαριασμού σε $1"
@@ -5936,18 +5907,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε την εμπειρία σας"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Η πύλη IPFS επιτρέπει την πρόσβαση και την προβολή δεδομένων που φιλοξενούνται από τρίτους. Μπορείτε να προσθέσετε μια προσαρμοσμένη πύλη IPFS ή να συνεχίσετε να χρησιμοποιείτε την προεπιλεγμένη."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Εισάγετε μια έγκυρη διεύθυνση URL"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Προσθήκη προσαρμοσμένης πύλης IPFS"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Η διεύθυνση URL της πύλης IPFS είναι έγκυρη"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Όταν χρησιμοποιείτε τις προεπιλεγμένες ρυθμίσεις και παραμέτρους μας, χρησιμοποιούμε την Infura ως προεπιλεγμένο πάροχο κλήσεων απομακρυσμένης διαδικασίας (RPC) για να προσφέρουμε την πιο αξιόπιστη και ιδιωτική πρόσβαση στα δεδομένα του Ethereum που μπορούμε. Σε ορισμένες περιπτώσεις, ενδέχεται να χρησιμοποιήσουμε άλλους παρόχους RPC προκειμένου να παρέχουμε την καλύτερη δυνατή εμπειρία στους χρήστες μας. Μπορείτε να επιλέξετε το δικό σας RPC, αλλά να θυμάστε ότι οποιοδήποτε RPC θα λάβει τη διεύθυνση IP και το πορτοφόλι σας στο Ethereum για να πραγματοποιήσει συναλλαγές. Για να μάθετε περισσότερα σχετικά με το πώς η Infura χειρίζεται τα δεδομένα για λογαριασμούς EVM, διαβάστε την $1 μας, ενώ για λογαριασμούς Solana, $2."
@@ -8288,21 +8247,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Ασφάλεια & προστασία προσωπικών δεδομένων"
-  },
-  "securityDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς σας"
-  },
   "securityMessageLinkForNetworks": {
     "message": "διαδικτυακές απάτες και κίνδυνοι ασφαλείας"
   },
   "securityProviderPoweredBy": {
     "message": "Με την υποστήριξη του $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς και τα δεδομένα σας"
   },
   "securitySocialLoginEnabled": {
     "message": "Ενεργοποιημένο"
@@ -9218,9 +9168,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Δεν ήμασταν σε θέση να εκτιμήσουμε το τέλος συναλλαγής. Μπορεί να υπάρχει σφάλμα στο συμβόλαιο και η συναλλαγή αυτή να αποτύχει."
-  },
-  "simulationsSettingDescription": {
-    "message": "Ενεργοποιήστε το για να κάνετε εκτίμηση των αλλαγών υπολοίπου των συναλλαγών και των υπογραφών πριν τις επιβεβαιώσετε. Αυτό δεν εγγυάται το τελικό τους αποτέλεσμα. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Υπολογίζει τις αλλαγές στο υπόλοιπό σας πριν επιβεβαιώσετε τις συναλλαγές. Δεν αποτελεί εγγύηση για το τελικό αποτέλεσμα των συναλλαγών σας. $1"
@@ -10269,9 +10216,6 @@
   "to": {
     "message": "Προς"
   },
-  "toggleDecodeDescription": {
-    "message": "Χρησιμοποιούμε τις υπηρεσίες 4byte.directory και Sourcify για να αποκωδικοποιήσουμε και να εμφανίσουμε πιο ευανάγνωστα τα δεδομένα συναλλαγών. Έτσι μπορείτε να κατανοήσετε το αποτέλεσμα των εκκρεμών και προηγούμενων συναλλαγών, αλλά μπορεί να προκαλέσει στην κοινοποίηση της διεύθυνσης IP σας."
-  },
   "token": {
     "message": "Token"
   },
@@ -10569,9 +10513,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Μπορείτε να απενεργοποιήσετε τις ειδοποιήσεις ανά πάσα στιγμή στις $1"
   },
-  "turnOnTokenDetection": {
-    "message": "Ενεργοποίηση της ενισχυμένης ανίχνευσης των token"
-  },
   "tutorial": {
     "message": "Εκμάθηση"
   },
@@ -10730,9 +10671,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Αιτήματα υπολοίπου μαζικών λογαριασμών"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Γρηγορότερες ενημερώσεις υπολοίπου με ομαδοποίηση αιτημάτων υπολοίπου λογαριασμού. Αυτό μας επιτρέπει να συγκεντρώνουμε τα υπόλοιπα των λογαριασμών σας μαζί, ώστε να λαμβάνετε ταχύτερες ενημερώσεις για βελτιωμένη εμπειρία. Όταν αυτή η λειτουργία είναι απενεργοποιημένη, τα τρίτα μέρη ενδέχεται να είναι λιγότερο πιθανό να συσχετίσουν τους λογαριασμούς σας μεταξύ τους."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Στέλνει ενημερώσεις υπολοίπου για όλους τους λογαριασμούς σας ταυτόχρονα. Προσφέρει ταχύτερη και συνολικά καλύτερη εμπειρία στη διαχείριση πολλών λογαριασμών."
   },
@@ -10760,9 +10698,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "Η αυτόματη εμφάνιση tokens που έχουν σταλεί στον λογαριασμό σας περιλαμβάνει επικοινωνία με εξυπηρετητές τρίτων για την εμφάνιση των εικόνων των token. Αυτοί οι εξυπηρετητές θα έχουν πρόσβαση στη διεύθυνσή IP σας."
   },
   "usedByClients": {
     "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"

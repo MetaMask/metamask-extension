@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "カスタムネットワークを追加"
   },
-  "addANetwork": {
-    "message": "ネットワークを追加"
-  },
   "addANickname": {
     "message": "ニックネームを追加"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "アセット"
   },
-  "assetsDescription": {
-    "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引額の4%が返ってきます。",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "基本"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMaskにより、インターネットサービスを通じてトークンの詳細やガス設定などの基本的な機能が提供されます。インターネットサービスを使用すると、ユーザーのIPアドレスが共有されます。この場合の共有先はMetaMaskです。これは他のどのWebサイトにアクセスした場合も同様です。MetaMaskによりこのデータが一時的に使用され、ユーザーのデータが販売されることは一切ありません。VPNを使用したり、これらのサービスをオフにしたりすることもできますが、MetaMaskでのエクスペリエンスに影響を与える可能性があります。詳細は$1をお読みください。",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "トークンの詳細やガス設定などの基本機能が含まれます。この機能をオンにすることで、最適な体験が得られます。詳細については、$1をお読みください。",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "このウィンドウはいつでも閉じることができます。"
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "コレクション名"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "問題が解決されませんか？"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "残高とトークン価格チェッカーを表示"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "$1APIと$2APIにより残高とトークンの価格が表示されます。$3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "通貨記号"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "ニックネームの提案"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "当社は、Etherscan、Infura、Lensプロトコルなどのサードパーティソースから、やり取りするアドレスに使用するニックネーム候補を取得します。これらのソースでは対象となるアドレスとユーザーのIPアドレスの把握が可能になります。ユーザーのアカウントアドレスはサードパーティに公開されません。"
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Etherscan、Infura、Lensプロトコルなどのサードパーティソースから、ユーザーがやり取りするアドレスのニックネームの提案を取得します。"
   },
@@ -4060,9 +4034,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "問題が発生しました...."
-  },
-  "generalDescription": {
-    "message": "デバイス間で設定を同期して、ネットワーク設定を選択し、トークンデータを追跡します"
   },
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
@@ -5940,18 +5911,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "エクスペリエンスの改善にご協力ください"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "IPFSゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタムIPFSゲートウェイの追加、または継続的なデフォルト使用が可能です。"
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "有効なURLを入力してください"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "カスタムIPFSゲートウェイを追加"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFSゲートウェイのURLが有効です"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "デフォルトの設定と構成を使用する場合、当社はInfuraをデフォルトの遠隔手続き呼び出し (RPC) プロバイダーとして使用し、イーサリアムデータへの可能な限り最も信頼性が高くプライベートなアクセスを提供します。まれに、ユーザーに最も優れたエクスペリエンスを提供するために、他のRPCプロバイダーが使用される場合もあります。ユーザーが自らRPCを選択することもできますが、どのRPCもトランザクションを実行するために、ユーザーのIPアドレスとイーサリアムウォレットを取得する点にご注意ください。InfuraによるEVMアカウントのデータの取り扱いに関する詳細は、$1をご覧ください。Solanaアカウントの場合は、$2。"
@@ -8292,21 +8251,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "新しいパスワードを保存しました"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "セキュリティとプライバシー"
-  },
-  "securityDescription": {
-    "message": "安全ではないネットワークに参加してしまう可能性を減らし、アカウントを守ります"
-  },
   "securityMessageLinkForNetworks": {
     "message": "ネットワーク詐欺とセキュリティのリスク"
   },
   "securityProviderPoweredBy": {
     "message": "データソース: $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "安全ではないネットワークに参加する可能性を減らし、アカウントとデータを保護します"
   },
   "securitySocialLoginEnabled": {
     "message": "有効"
@@ -9222,9 +9172,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "ガス代を見積もることができませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
-  },
-  "simulationsSettingDescription": {
-    "message": "トランザクションと署名を確定する前に残高の増減を予測するには、この機能をオンにします。これは最終的な結果を保証するものではありません。$1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "トランザクションを確定する前に残高の増減を予測します。これはトランザクションの最終的な結果を保証するものではありません。$1"
@@ -10273,9 +10220,6 @@
   "to": {
     "message": "送り先"
   },
-  "toggleDecodeDescription": {
-    "message": "当社は4byte.directoryとSourcifyサービスを使用してトランザクションデータを解読し、より読みやすい形で表示しています。これにより、保留中および過去のトランザクションの結果を理解しやすくなりますが、IPアドレスが共有される可能性があります。"
-  },
   "token": {
     "message": "トークン"
   },
@@ -10573,9 +10517,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "通知は$1でいつでもオフにできます"
   },
-  "turnOnTokenDetection": {
-    "message": "強化されたトークン検出をオンにする"
-  },
   "tutorial": {
     "message": "チュートリアル"
   },
@@ -10734,9 +10675,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "アカウント残高の一括リクエスト"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "アカウントの残高リクエストを一斉に行うことで、より素早く残高更新を取得できます。これにより、アカウントの残高を一斉に取得できるので、更新がより迅速になり、エクスペリエンスが向上します。この機能がオフの場合、サードパーティによるユーザーの各種アカウントの関連付けが難しくなります。"
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "すべてのアカウントの残高の最新情報を一度に送信します。複数アカウントをより迅速に管理でき、総合的なユーザー体験が向上します。"
   },
@@ -10764,9 +10702,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "アカウントに送信されたトークンを自動的に表示するには、サードパーティサーバーと通信してトークンの画像を取得する必要があります。これらのサーバーにより、あなたのIPアドレスにアクセスされることになります。"
   },
   "usedByClients": {
     "message": "さまざまな異なるクライアントによって使用されています"

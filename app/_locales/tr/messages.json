@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "Özel bir ağ ekle"
   },
-  "addANetwork": {
-    "message": "Ağ ekle"
-  },
   "addANickname": {
     "message": "Takma ad ekle"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "Varlıklar"
   },
-  "assetsDescription": {
-    "message": "Cüzdanınızdaki tokenlar otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask referans kodu ile işlemlerde %4'e varan iade alın.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "Temel"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask, internet hizmetleri üzerinden token bilgileri ve gaz ayarları gibi temel özellikler sunar. İnternet hizmetlerini kullandığınızda IP adresiniz, bu durumda MetaMask ile, paylaşılır. Bu tıpkı herhangi bir web sitesini ziyaret ettiğinizde olduğu gibidir. MetaMask bu verileri geçici olarak kullanır ve verilerinizi hiçbir zaman satmaz. Bir VPN kullanabilir veya bu hizmetleri kapatabilirsiniz ancak bu durum MetaMask deneyiminizi etkileyebilir. Daha fazla bilgi için $1 bölümümüzü okuyun.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Token bilgileri ve gaz ayarları gibi temel özellikleri içerir. En iyi deneyim için bu özelliği açık tutun. Daha fazla bilgi almak için $1 bölümümüzü okuyun.",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "Dilediğiniz zaman bu pencereyi kapatabilirsiniz."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Koleksiyon adı"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "Hala sorun mu yaşıyorsunuz?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Bakiyeyi ve token fiyat denetleyicisini göster"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Bakiyenizi ve token fiyatınızı göstermek için $1 ve $2 API'lerini kullanırız. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Para birimi sembolü"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "Önerilen takma adlar"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Etherscan, Infura ve Lens Protocol gibi üçüncü taraf kaynaklardan etkileşimde bulunduğunuz adresler için önerilen takma adları alırız. Bu kaynaklar o adresleri ve sizin IP adresinizi görebilir. Hesap adresiniz üçüncü taraflarla paylaşılmaz."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Etkileşimde bulunduğunuz adresler için Etherscan, Infura ve Lens protokolü gibi üçüncü taraf kaynaklardan önerilen takma adları getirir."
   },
@@ -4060,9 +4034,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Bir şeyler ters gitti...."
-  },
-  "generalDescription": {
-    "message": "Cihazlar genelindeki ayarları senkronize edin, ağ tercihlerini seçin ve token verilerini takip edin"
   },
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
@@ -5940,18 +5911,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Deneyiminizi iyileştirmemize yardımcı olun"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "IPFS ağ geçidi üçüncü tarafların barındırdığı veriler için erişim ve görüntülemeyi mümkün kılar. Özel bir IPFS ağ geçidi ekleyebilir veya varsayılanı kullanmaya devam edebilirsiniz."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Lütfen geçerli bir URL adresi girin"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Özel IPFS Ağ Geçidi Ekle"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFS ağ geçidi URL adresi geçerli"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Varsayılan ayarlarınızı ve yapılandırmalarınızı kullandığımızda, Ethereum verilerine mümkün olan en güvenilir ve gizli erişimi sunmak amacıyla varsayılan uzak yordam çağrısı (RPC) sağlayıcısı olarak Infura'yı kullanırız. Sınırlı durumlarda, kullanıcılarımıza en iyi deneyimi sağlamak amacıyla başka RPC sağlayıcıları kullanabiliriz. Kendi RPC'nizi seçebilirsiniz ancak her RPC'nin işlem yapmak için IP adresinize ve Ethereum cüzdanınıza ulaşacağını unutmayın. Infura'nın, EVM hesapları için verileri nasıl kullandığı hakkında bilgi edinmek için $1 bölümümüzü; Solana hesapları için ise $2 bölümümüzü okuyun."
@@ -8296,21 +8255,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Yeni şifre kaydedildi"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Güvenlik ve gizlilik"
-  },
-  "securityDescription": {
-    "message": "Güvensiz ağlara katılma şansınızı azaltın ve hesaplarınızı koruyun"
-  },
   "securityMessageLinkForNetworks": {
     "message": "ağ dolandırıcılıkları ve güvenlik riskleri"
   },
   "securityProviderPoweredBy": {
     "message": "$1 hizmetidir",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Güvensiz ağlara katılma şansınızı azaltın ve hesaplarınızı ve verilerinizi koruyun"
   },
   "securitySocialLoginEnabled": {
     "message": "Etkinleştirildi"
@@ -9226,9 +9176,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
-  },
-  "simulationsSettingDescription": {
-    "message": "Onaylamadan önce işlemlerdeki ve imzalardaki bakiye değişikliklerini tahmin etmek için bunu açın. Nihai sonucunu garanti etmez. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Onaylamadan önce işlemlerdeki bakiye değişikliklerini tahmin eder. İşlemlerinizin nihai sonucunu garanti etmez. $1"
@@ -10277,9 +10224,6 @@
   "to": {
     "message": "Alıcı"
   },
-  "toggleDecodeDescription": {
-    "message": "Şifre çözmek ve daha okunabilir işlem verileri göstermek için 4byte.directory ve Sourcify hizmetlerini kullanıyoruz. Bu da, bekleyen ve geçmiş işlemlerinin sonucunu anlamanıza yardımcı olur ancak IP adresinizin paylaşılmasıyla sonuçlanabilir."
-  },
   "token": {
     "message": "Token"
   },
@@ -10577,9 +10521,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Bildirimleri dilediğiniz zaman $1 kısmında kapatabilirsiniz"
   },
-  "turnOnTokenDetection": {
-    "message": "Gelişmiş token algılamayı açın"
-  },
   "tutorial": {
     "message": "Öğretici"
   },
@@ -10738,9 +10679,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Hesap bakiyesi taleplerini gruplandırın"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Hesap bakiyesi taleplerini toplu ödeme olarak gerçekleştirerek daha hızlı bakiye güncellemeleri alın. Bu, hesap bakiyelerinizi bir arada almanızı sağlar, böylece gelişmiş bir deneyim için daha hızlı güncellemeler alacaksınız. Bu özellik kapalı olduğunda üçüncü tarafların sizin hesaplarınızı birbirleriyle ilişkilendirme olasılığı daha düşük olur."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Tüm hesaplarınız için aynı anda bakiye güncellemeleri gönderir. Birden fazla hesabın yönetiminde daha hızlı ve genel olarak daha iyi bir deneyim sağlar."
   },
@@ -10768,9 +10706,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "Hesabına gönderilen tokenların otomatik olarak görüntülenmesi, tokenın görüntülerini almak için üçüncü parti sunucularla iletişimi içerir. Bu servislerin IP adresine erişimi olacaktır."
   },
   "usedByClients": {
     "message": "Çeşitli müşteriler tarafından kullanılıyor"

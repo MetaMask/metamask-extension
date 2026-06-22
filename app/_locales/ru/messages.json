@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "Добавить пользовательскую сеть"
   },
-  "addANetwork": {
-    "message": "Добавить сеть"
-  },
   "addANickname": {
     "message": "Добавить ник"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "Активы"
   },
-  "assetsDescription": {
-    "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
-  },
   "asterdexReferralSubtitle": {
     "message": "Получайте 4% кэшбэка от сделок с реферальным кодом MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "Базовые"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask предлагает базовые функции, такие как сведения о токенах и настройки газа, через интернет-службы. Когда вы пользуетесь интернет-службами, ваш IP-адрес передается, в данном случае MetaMask. Это похоже на посещенеи вами любого веб-сайта. MetaMask временно использует ваши данные и никогда не продает их. Вы можете использовать VPN или отключить эти службы, но это может негативно повлиять на вашу работу с MetaMask. Чтобы узнать больше, прочитайте нашу $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Включает в себя основные функции, такие как информация о токене и настройки газа. Оставьте эту функцию включенной для удобства использования. Прочитайте нашу $1, чтобы узнать больше.",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "Вы можете закрыть это окно в любое время."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Имя коллекции"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "Проблема не устранена?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Показать средство проверки баланса и цены токена"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Мы используем API $1 и $2 для отображения вашего баланса и цены токена. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Символ валюты"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "Предлагаемые псевдонимы"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Мы будем получать предлагаемые псевдонимы для адресов, с которыми вы взаимодействуете, из сторонних источников, таких как Etherscan, Infura и Lens Protocol. Эти источники могут видеть эти адреса и ваш IP-адрес. Адрес вашего счета не будет доступен третьим сторонам."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Функция получения предлагаемых псевдонимов для адресов, с которыми вы взаимодействуете, из сторонних источников, таких как Etherscan, Infura и протокол Lens."
   },
@@ -4056,9 +4030,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Что-то пошло не так...."
-  },
-  "generalDescription": {
-    "message": "Синхронизируйте настройки между устройствами, выбирайте настройки сети и отслеживайте данные токенов"
   },
   "genericExplorerView": {
     "message": "Посмотреть счет на $1"
@@ -5936,18 +5907,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Помогите нам улучшить ваш опыт"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Шлюз IPFS позволяет получать доступ к данным, размещенным третьими сторонами, и просматривать их. Вы можете добавить пользовательский шлюз IPFS или продолжить использовать шлюз по умолчанию."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Введите действительный URL"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Добавить пользовательский шлюз IPFS"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL шлюза IPFS действителен"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Когда вы используете наши настройки и конфигурации по умолчанию, мы используем Infura в качестве нашего поставщика удаленного вызова процедур (RPC) по умолчанию, чтобы предложить наиболее надежный и конфиденциальный доступ к данным Ethereum, который мы можем предложить. В ограниченных случаях мы можем использовать других поставщиков RPC, чтобы обеспечить наилучший опыт для наших пользователей. Вы можете выбрать свой собственный RPC, но помните, что любой RPC получит ваш IP-адрес и кошелек Ethereum для совершения транзакций. Чтобы узнать больше о том, как Infura обрабатывает данные для учетных записей EVM, прочтите нашу статью $1; для счетов Solana — $2."
@@ -8288,21 +8247,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Новый пароль сохранен"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Безопасность и конфиденциальность"
-  },
-  "securityDescription": {
-    "message": "Уменьшите свои шансы присоединиться к небезопасным сетям и защитите свои счета"
-  },
   "securityMessageLinkForNetworks": {
     "message": "мошенничества с сетью и угроз безопасности"
   },
   "securityProviderPoweredBy": {
     "message": "На основе $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Уменьшите свои шансы присоединиться к небезопасным сетям и защитите свои счета и данные"
   },
   "securitySocialLoginEnabled": {
     "message": "Включено"
@@ -9218,9 +9168,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Мы не смогли оценить размер платы за газ. В контракте может быть ошибка, и эта транзакция может завершиться неудачно."
-  },
-  "simulationsSettingDescription": {
-    "message": "Включите эту опцию, чтобы оценить изменения баланса транзакций и подписей перед их подтверждением. Это не гарантирует их окончательный результат. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Прогнозирует изменения баланса транзакций перед их подтверждением. Это не гарантирует окончательный результат ваших транзакций. $1"
@@ -10269,9 +10216,6 @@
   "to": {
     "message": "Место назначения"
   },
-  "toggleDecodeDescription": {
-    "message": "Мы используем сервисы 4byte.directory и Sourcify для декодирования и отображения более читаемых данных транзакций. Это поможет Вам понять результат ожидающих и прошлых транзакций, но может привести к раскрытию вашего IP-адреса."
-  },
   "token": {
     "message": "Токен"
   },
@@ -10569,9 +10513,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Вы можете отключить уведомления в любое время в $1"
   },
-  "turnOnTokenDetection": {
-    "message": "Включите расширенное определение токенов"
-  },
   "tutorial": {
     "message": "Руководство"
   },
@@ -10730,9 +10671,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Пакетные запросы баланса счета"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Получайте более быстрые обновления сведений о балансе, группируя запросы по балансу счета. Это позволяет нам извлекать совокупные данные о балансах ваших счетов, чтобы вы могли быстрее получать обновления для улучшения впечатлений от использования. Когда эта функция отключена, снижается вероятность того, что третьи стороны свяжут ваши счета друг с другом."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Отправляет обновления баланса для всех ваших счетов одновременно. Обеспечивает более быстрое и удобное управление несколькими счетами."
   },
@@ -10760,9 +10698,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "Автоматическое отображение токенов, отправленных на ваш счет, включает коммуникацию со сторонними серверами для получения изображений токенов. Эти сервера получают доступ к вашему IP-адресу."
   },
   "usedByClients": {
     "message": "Используется множеством разных клиентов"
