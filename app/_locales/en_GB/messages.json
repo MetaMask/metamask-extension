@@ -3207,6 +3207,9 @@
   "deepLink_theHomePage": {
     "message": "the home page"
   },
+  "deepLink_theMoneyPage": {
+    "message": "the Money page"
+  },
   "deepLink_theMusdEducationPage": {
     "message": "the MUSD conversion education page"
   },
