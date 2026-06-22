@@ -48,7 +48,9 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityTab.clickConfirmedTransaction();
-        await activityTab.checkTransactionDetailsTitle('Increased spending cap');
+        await activityTab.checkTransactionDetailsTitle(
+          'Increased spending cap',
+        );
       },
     );
   });
