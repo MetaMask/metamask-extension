@@ -34,10 +34,6 @@ import {
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  ARC_USDC_TOKEN_ADDRESS,
-  CHAIN_IDS,
-} from '../../../../shared/constants/network';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
