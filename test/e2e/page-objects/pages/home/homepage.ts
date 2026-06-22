@@ -1,5 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
-import { Driver } from '../../../webdriver/driver';
+import { Driver, STARTUP_LOAD_TIMEOUT } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
@@ -214,12 +214,13 @@ class HomePage {
     // The Solana/Bitcoin icons only render after their snaps resolve accounts.
     // That render completes in well under a second locally, but on constrained
     // 2-core CI runners the v10 Sentry SDK's heavier startup can push it past
-    // the default 10s wait, so allow extra headroom for these snap-backed icons.
+    // the default 10s wait, so use the CI-scoped startup headroom for these
+    // snap-backed icons (still polled — it returns as soon as they render).
     await this.driver.waitForSelector(this.solanaAccountIcon, {
-      timeout: 30000,
+      timeout: STARTUP_LOAD_TIMEOUT,
     });
     await this.driver.waitForSelector(this.bitcoinAccountIcon, {
-      timeout: 30000,
+      timeout: STARTUP_LOAD_TIMEOUT,
     });
   }
 
