@@ -202,6 +202,7 @@ type WithControllerArgs<ReturnValue> = [
     isDisabled?: boolean;
     isBitcoinDisabled?: boolean;
     isTronDisabled?: boolean;
+    isVipDisabled?: boolean;
   },
   WithControllerCallback<ReturnValue>,
 ];
@@ -215,6 +216,7 @@ async function withController<ReturnValue>(
     isDisabled = false,
     isBitcoinDisabled = false,
     isTronDisabled = false,
+    isVipDisabled = false,
   } = options;
 
   type TestAllowedActions =
@@ -297,6 +299,7 @@ async function withController<ReturnValue>(
     isDisabled: () => isDisabled,
     isBitcoinDisabled: () => isBitcoinDisabled,
     isTronDisabled: () => isTronDisabled,
+    isVipDisabled: () => isVipDisabled,
   });
 
   return await fn({
@@ -3462,18 +3465,24 @@ describe('RewardsController', () => {
   });
 
   describe('validateReferralCode', () => {
-    it('should return false when rewards are disabled', async () => {
+    it('should return invalid when rewards are disabled', async () => {
       await withController({ isDisabled: true }, async ({ controller }) => {
         const result = await controller.validateReferralCode('TEST123');
 
-        expect(result).toBe(false);
+        expect(result).toStrictEqual({ valid: false, isVipCode: false });
       });
     });
 
-    it('should return false for empty / whitespace-only input', async () => {
+    it('should return invalid for empty / whitespace-only input', async () => {
       await withController({ isDisabled: false }, async ({ controller }) => {
-        expect(await controller.validateReferralCode('')).toBe(false);
-        expect(await controller.validateReferralCode('   ')).toBe(false);
+        expect(await controller.validateReferralCode('')).toStrictEqual({
+          valid: false,
+          isVipCode: false,
+        });
+        expect(await controller.validateReferralCode('   ')).toStrictEqual({
+          valid: false,
+          isVipCode: false,
+        });
       });
     });
 
@@ -3490,7 +3499,7 @@ describe('RewardsController', () => {
 
           const result = await controller.validateReferralCode('TEST12');
 
-          expect(result).toBe(true);
+          expect(result).toStrictEqual({ valid: true, isVipCode: false });
         },
       );
     });
@@ -3508,11 +3517,76 @@ describe('RewardsController', () => {
 
           const result = await controller.validateReferralCode('BANKLESS');
 
-          expect(result).toBe(true);
+          expect(result).toStrictEqual({ valid: true, isVipCode: false });
           expect(mockMessengerCall).toHaveBeenCalledWith(
             'RewardsDataService:validateReferralCode',
             'BANKLESS',
           );
+        },
+      );
+    });
+
+    it('should mark a backend VIP code as VIP when the VIP feature is enabled', async () => {
+      await withController(
+        { isDisabled: false, isVipDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:validateReferralCode') {
+              return Promise.resolve({ valid: true, isVipCode: true });
+            }
+            return undefined;
+          });
+
+          const result = await controller.validateReferralCode('VIPCODE');
+
+          expect(result).toStrictEqual({ valid: true, isVipCode: true });
+        },
+      );
+    });
+
+    it('should not mark a backend VIP code as VIP when the VIP feature is disabled', async () => {
+      await withController(
+        { isDisabled: false, isVipDisabled: true },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:validateReferralCode') {
+              return Promise.resolve({ valid: true, isVipCode: true });
+            }
+            return undefined;
+          });
+
+          const result = await controller.validateReferralCode('VIPCODE');
+
+          expect(result).toStrictEqual({ valid: true, isVipCode: false });
+        },
+      );
+    });
+  });
+
+  describe('isVipFeatureEnabled', () => {
+    it('returns false when rewards are disabled', async () => {
+      await withController(
+        { isDisabled: true, isVipDisabled: false },
+        ({ controller }) => {
+          expect(controller.isVipFeatureEnabled()).toBe(false);
+        },
+      );
+    });
+
+    it('returns false when the VIP program is disabled', async () => {
+      await withController(
+        { isDisabled: false, isVipDisabled: true },
+        ({ controller }) => {
+          expect(controller.isVipFeatureEnabled()).toBe(false);
+        },
+      );
+    });
+
+    it('returns true when rewards are on and VIP is not disabled', async () => {
+      await withController(
+        { isDisabled: false, isVipDisabled: false },
+        ({ controller }) => {
+          expect(controller.isVipFeatureEnabled()).toBe(true);
         },
       );
     });

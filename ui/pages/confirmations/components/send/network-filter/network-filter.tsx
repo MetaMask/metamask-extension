@@ -33,6 +33,7 @@ import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSe
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { type Asset } from '../../../types/send';
+import { getNetworkSections } from '../../../../../helpers/utils/network-sections';
 import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   NetworkSelectionModal,
@@ -45,6 +46,33 @@ type NetworkFilterProps = {
   selectedChainId?: string | null;
   onChainIdChange?: (chainId: string | null) => void;
 };
+
+type ChainNetworkDetails = {
+  networkName?: string;
+  networkImage?: string;
+};
+
+function getNetworkSelectionItem({
+  chainId,
+  selectedChainId,
+  chainNetworkDetails,
+  handleNetworkSelection,
+}: {
+  chainId: string;
+  selectedChainId: string | null;
+  chainNetworkDetails?: ChainNetworkDetails;
+  handleNetworkSelection: (chainId: string | null) => void;
+}): NetworkSelectionSection['items'][number] {
+  return {
+    key: chainId,
+    chainId,
+    name: chainNetworkDetails?.networkName || `Chain ${chainId}`,
+    iconSrc: chainNetworkDetails?.networkImage || '',
+    selected: selectedChainId === chainId,
+    onClick: () => handleNetworkSelection(chainId),
+    testId: `send-network-filter-${chainId}`,
+  };
+}
 
 export const NetworkFilter = ({
   tokens,
@@ -117,8 +145,8 @@ export const NetworkFilter = ({
   }, [selectedChainId, chainNetworkNAmeAndImageMap]);
 
   const handleNetworkFilterClick = useCallback(() => {
-    setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
-  }, [isNetworkFilterPopoverOpen]);
+    setIsNetworkFilterPopoverOpen((isOpen) => !isOpen);
+  }, []);
 
   const closePopover = useCallback(() => {
     setIsNetworkFilterPopoverOpen(false);
@@ -143,35 +171,43 @@ export const NetworkFilter = ({
     ],
   );
 
+  // Group the networks the user holds assets on into Default / Custom / Testnets
+  // sections (sorted by fiat balance within each), so custom networks such as
+  // newly added chains surface under the "Custom networks" header.
+  const networkSections = useMemo(
+    () =>
+      getNetworkSections(
+        uniqueChainIds.map((chainId) => ({
+          chainId,
+          balance: tokens
+            .filter((token) => String(token.chainId) === chainId)
+            .reduce((total, token) => total + (token.fiat?.balance ?? 0), 0),
+        })),
+        (networkA, networkB) => networkB.balance - networkA.balance,
+      ),
+    [tokens, uniqueChainIds],
+  );
+
   const sharedModalSections = useMemo<NetworkSelectionSection[]>(
     () =>
-      [
-        {
-          key: 'send-network-filter-section',
-          items: uniqueChainIds.map((chainId) => {
-            const networkName =
-              chainNetworkNAmeAndImageMap.get(chainId)?.networkName;
-            const networkImage =
-              chainNetworkNAmeAndImageMap.get(chainId)?.networkImage;
-
-            return {
-              key: chainId,
-              chainId,
-              name: networkName || `Chain ${chainId}`,
-              iconSrc: networkImage || '',
-              selected: selectedChainId === chainId,
-              onClick: () => handleNetworkSelection(chainId),
-              testId: `send-network-filter-${chainId}`,
-            };
+      networkSections.map((section) => ({
+        key: section.key,
+        title: section.titleKey ? t(section.titleKey) : undefined,
+        items: section.items.map(({ chainId }) =>
+          getNetworkSelectionItem({
+            chainId,
+            selectedChainId,
+            chainNetworkDetails: chainNetworkNAmeAndImageMap.get(chainId),
+            handleNetworkSelection,
           }),
-        },
-      ] satisfies NetworkSelectionSection[],
+        ),
+      })),
     [
       chainNetworkNAmeAndImageMap,
       handleNetworkSelection,
+      networkSections,
       selectedChainId,
       t,
-      uniqueChainIds,
     ],
   );
 

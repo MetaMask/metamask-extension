@@ -2607,16 +2607,9 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
-    const { completedMetaMetricsOnboarding } = this.metaMetricsController.state;
-    const { optedIn, analyticsId } = this.analyticsController.state;
-    const participateInMetaMetrics =
-      completedMetaMetricsOnboarding === true ? optedIn : null;
-
     return {
       isInitialized,
       ...sanitizeUIState(flatState),
-      participateInMetaMetrics,
-      metaMetricsId: analyticsId,
     };
   }
 
@@ -3452,6 +3445,8 @@ export default class MetamaskController extends EventEmitter {
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
+      exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
+      exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4702,6 +4697,67 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Exports the Secret Recovery Phrase after verifying a passkey assertion,
+   * used as a password-less alternative to {@link getSeedPhrase}.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+   * @param {string} [keyringId] - The id of the HD keyring to export. Defaults to the primary keyring.
+   * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
+   */
+  async exportSeedPhraseWithPasskey(authenticationResponse, keyringId) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+
+    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+      authenticationResponse,
+    );
+
+    const mnemonic = await this.keyringController.exportSeedPhrase(
+      { encryptionKey: vaultKey },
+      keyringId,
+    );
+
+    return convertEnglishWordlistIndicesToCodepoints(mnemonic);
+  }
+
+  /**
+   * Reveals the private keys of multiple accounts after verifying a single
+   * passkey assertion, used as a password-less alternative to
+   * {@link exportAccounts} for the multichain account group reveal.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+   * @param {string[]} addresses - The addresses whose private keys should be revealed.
+   * @returns {Promise<string[]>} The private keys as hex strings, in the same order as `addresses`.
+   */
+  async exportAccountsWithPasskey(authenticationResponse, addresses) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+
+    // Retrieve the passkey-wrapped vault key once. This also cryptographically
+    // verifies the assertion, throwing on an invalid passkey.
+    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+      authenticationResponse,
+    );
+
+    return Promise.all(
+      addresses.map((address) =>
+        this.keyringController.exportAccount(
+          { encryptionKey: vaultKey },
+          address,
+        ),
+      ),
+    );
+  }
+
+  /**
    * Syncs the keyring encryption key with the seedless onboarding controller.
    *
    * @returns {Promise<void>}
@@ -5128,9 +5184,15 @@ export default class MetamaskController extends EventEmitter {
         });
       };
 
-      // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
-      // eslint-disable-next-line no-void
-      void syncAndDiscoverAccounts();
+      const { completedOnboarding } = this.onboardingController.state;
+      // In order to avoid premature sync and avoid potential race condition, for the actual B&S full sync after the onboarding is completed.
+      // We only sync and discover accounts if the onboarding is completed.
+      // i.e we don't sync and discover accounts for `socialImport` flow before the onboarding is completed.
+      if (completedOnboarding) {
+        // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
+        // eslint-disable-next-line no-void
+        void syncAndDiscoverAccounts();
+      }
     } finally {
       releaseLock();
     }

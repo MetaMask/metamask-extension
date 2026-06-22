@@ -16,7 +16,6 @@ export const getBatchMetricsProperties: TransactionMetricsBuilder = async ({
   transactionMetricsRequest,
 }) => {
   const properties: MetricsProperties = {};
-  const sensitiveProperties: MetricsProperties = {};
 
   const isExternal =
     transactionMeta.origin && transactionMeta.origin !== ORIGIN_METAMASK;
@@ -51,7 +50,7 @@ export const getBatchMetricsProperties: TransactionMetricsBuilder = async ({
       .map((result) => result?.name)
       .filter((name) => name?.length);
 
-    sensitiveProperties.transaction_contract_address = nestedTransactions
+    properties.transaction_contract_address = nestedTransactions
       ?.filter(
         (tx) =>
           CONTRACT_INTERACTION_TYPES.includes(tx.type as TransactionType) &&
@@ -69,10 +68,10 @@ export const getBatchMetricsProperties: TransactionMetricsBuilder = async ({
   }
 
   properties.eip7702_upgrade_transaction = isUpgrade;
-  sensitiveProperties.account_eip7702_upgraded = delegationAddress;
+  properties.account_eip7702_upgraded = delegationAddress;
 
   return {
     properties,
-    sensitiveProperties,
+    sensitiveProperties: {},
   };
 };
