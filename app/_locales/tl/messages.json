@@ -85,9 +85,6 @@
   "accountActivity": {
     "message": "Aktibidad ng account"
   },
-  "accountActivityText": {
-    "message": "Piliin ang mga account na nais mong makakuha ng abiso:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Mag-log in"
   },
@@ -2990,12 +2987,6 @@
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
-  },
-  "customizeYourNotifications": {
-    "message": "I-customize ang mga notipikasyon mo"
-  },
-  "customizeYourNotificationsText": {
-    "message": "I-on ang mga uri ng notipikasyon na nais mong matanggap:"
   },
   "dappConnections": {
     "message": "Mga koneksyon ng Dapp"
@@ -7546,9 +7537,6 @@
   },
   "proceedWithTransaction": {
     "message": "Gusto ko pa ring magpatuloy"
-  },
-  "productAnnouncements": {
-    "message": "Mga anunsiyo ng produkto"
   },
   "provide": {
     "message": "Ibigay"

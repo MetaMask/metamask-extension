@@ -85,9 +85,6 @@
   "accountActivity": {
     "message": "Hesap aktivitesi"
   },
-  "accountActivityText": {
-    "message": "Hakkında bildirim almak istediğiniz hesapları seçin:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Oturum aç"
   },
@@ -2990,12 +2987,6 @@
   },
   "customerSupport": {
     "message": "müşteri hizmetleri"
-  },
-  "customizeYourNotifications": {
-    "message": "Bildirimlerinizi özelleştirin"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Almak istediğiniz bildirim türlerini açın:"
   },
   "dappConnections": {
     "message": "Dapp Bağlantıları"
@@ -7554,9 +7545,6 @@
   },
   "proceedWithTransaction": {
     "message": "Yine de devam etmek istiyorum"
-  },
-  "productAnnouncements": {
-    "message": "Ürün duyuruları"
   },
   "provide": {
     "message": "Sun"

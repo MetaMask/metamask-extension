@@ -85,9 +85,6 @@
   "accountActivity": {
     "message": "계정 활동"
   },
-  "accountActivityText": {
-    "message": "알림을 수신할 계정을 선택하세요:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "로그인"
   },
@@ -2990,12 +2987,6 @@
   },
   "customerSupport": {
     "message": "고객 지원"
-  },
-  "customizeYourNotifications": {
-    "message": "알림 맞춤 설정"
-  },
-  "customizeYourNotificationsText": {
-    "message": "수신하려는 알림의 유형을 켜세요."
   },
   "dappConnections": {
     "message": "디앱 연결"
@@ -7554,9 +7545,6 @@
   },
   "proceedWithTransaction": {
     "message": "계속 진행"
-  },
-  "productAnnouncements": {
-    "message": "제품 공지"
   },
   "provide": {
     "message": "제공"

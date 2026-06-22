@@ -85,9 +85,6 @@
   "accountActivity": {
     "message": "Kontoaktivität"
   },
-  "accountActivityText": {
-    "message": "Wählen Sie die Konten aus, über die Sie benachrichtigt werden möchten:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Anmelden"
   },
@@ -2990,12 +2987,6 @@
   },
   "customerSupport": {
     "message": "Kundendienst"
-  },
-  "customizeYourNotifications": {
-    "message": "Passen Sie Ihre Benachrichtigungen an"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Schalten Sie die Arten von Benachrichtigungen ein, die Sie erhalten möchten:"
   },
   "dappConnections": {
     "message": "dApp-Verbindungen"
@@ -7546,9 +7537,6 @@
   },
   "proceedWithTransaction": {
     "message": "Ich möchte dennoch fortfahren."
-  },
-  "productAnnouncements": {
-    "message": "Produktankündigungen"
   },
   "provide": {
     "message": "Bereitstellen"

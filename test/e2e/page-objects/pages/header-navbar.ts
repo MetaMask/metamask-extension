@@ -124,12 +124,18 @@ class HeaderNavbar {
 
   async openGlobalMenu(): Promise<void> {
     console.log('Open account options menu');
-    // Always click via mouse-move so a notification counter badge overlapping the
-    // menu icon cannot intercept the click. The previous "wait for the badge to be
-    // absent" approach (assertElementNotPresent) blocks for the full driver timeout
-    // whenever the badge is legitimately present (e.g. unread notifications while
-    // notifications are enabled), which caused the global menu open to hang.
-    await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
+    // Use a normal click by default — it is reliable in headless and already
+    // retries on ElementClickInterceptedError. A notification counter badge can
+    // overlap the menu icon and intercept the click; if it persists through those
+    // retries, fall back to a mouse-move click that targets an offset clear of the
+    // badge. We intentionally do NOT wait for the badge to disappear
+    // (assertElementNotPresent), which blocks for the full driver timeout when the
+    // badge is legitimately present (e.g. unread notifications).
+    try {
+      await this.driver.clickElement(this.globalMenuButton);
+    } catch {
+      await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
+    }
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 

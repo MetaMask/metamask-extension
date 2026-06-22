@@ -67,9 +67,6 @@
   "accountActivity": {
     "message": "Gníomhaíocht chuntais"
   },
-  "accountActivityText": {
-    "message": "Roghnaigh na cuntais ar mhaith leat fógra a fháil fúthu:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Logáil isteach"
   },
@@ -1465,12 +1462,6 @@
   },
   "customerSupport": {
     "message": "tacaíocht do chustaiméirí"
-  },
-  "customizeYourNotifications": {
-    "message": "Saincheap do fhógraí"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Cas air na cineálacha fógraí is mian leat a fháil:"
   },
   "dappSuggested": {
     "message": "Suíomh molta"
@@ -4175,9 +4166,6 @@
   },
   "proceedWithTransaction": {
     "message": "Ba mhaith liom dul ar aghaidh ar aon nós"
-  },
-  "productAnnouncements": {
-    "message": "Fógraí táirgí"
   },
   "provide": {
     "message": "Cuir ar fáil"

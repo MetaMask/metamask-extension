@@ -85,9 +85,6 @@
   "accountActivity": {
     "message": "Aktivitas akun"
   },
-  "accountActivityText": {
-    "message": "Pilih akun yang ingin mendapatkan notifikasi:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Masuk"
   },
@@ -2990,12 +2987,6 @@
   },
   "customerSupport": {
     "message": "dukungan pelanggan"
-  },
-  "customizeYourNotifications": {
-    "message": "Sesuaikan notifikasi"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Aktifkan jenis notifikasi yang ingin diterima:"
   },
   "dappConnections": {
     "message": "Koneksi Dapp"
@@ -7554,9 +7545,6 @@
   },
   "proceedWithTransaction": {
     "message": "Saya tetap ingin melanjutkan"
-  },
-  "productAnnouncements": {
-    "message": "Pengumuman produk"
   },
   "provide": {
     "message": "Berikan"

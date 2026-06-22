@@ -85,9 +85,6 @@
   "accountActivity": {
     "message": "账户活动"
   },
-  "accountActivityText": {
-    "message": "选择您想要接收通知的账户："
-  },
   "accountAlreadyExistsLogin": {
     "message": "登录"
   },
@@ -2990,12 +2987,6 @@
   },
   "customerSupport": {
     "message": "客户支持团队"
-  },
-  "customizeYourNotifications": {
-    "message": "自定义您的通知"
-  },
-  "customizeYourNotificationsText": {
-    "message": "开启您想要接收的通知类型："
   },
   "dappConnections": {
     "message": "去中心化应用连接"
@@ -7546,9 +7537,6 @@
   },
   "proceedWithTransaction": {
     "message": "我仍然想继续"
-  },
-  "productAnnouncements": {
-    "message": "产品公告"
   },
   "provide": {
     "message": "提供"

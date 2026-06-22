@@ -32,7 +32,10 @@ async function getNotificationsMockResponse() {
 }
 
 describe('Enable Notifications - With Accounts Syncing On', function () {
-  this.timeout(120000); // Multiple Syncing features can cause this test to take some time
+  // This test runs two full identity onboarding flows back-to-back, each
+  // incurring SRP import, sign-in and account-sync settling, so it needs more
+  // than the default budget.
+  this.timeout(180000);
 
   describe('from inside MetaMask', function () {
     /**

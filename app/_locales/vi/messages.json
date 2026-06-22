@@ -85,9 +85,6 @@
   "accountActivity": {
     "message": "Hoạt động của tài khoản"
   },
-  "accountActivityText": {
-    "message": "Chọn tài khoản mà bạn muốn nhận thông báo:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Đăng nhập"
   },
@@ -2990,12 +2987,6 @@
   },
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
-  },
-  "customizeYourNotifications": {
-    "message": "Tùy chỉnh thông báo"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Bật các loại thông báo mà bạn muốn nhận:"
   },
   "dappConnections": {
     "message": "Kết nối Dapp"
@@ -7554,9 +7545,6 @@
   },
   "proceedWithTransaction": {
     "message": "Tôi vẫn muốn tiếp tục"
-  },
-  "productAnnouncements": {
-    "message": "Thông báo về sản phẩm"
   },
   "provide": {
     "message": "Cung cấp"

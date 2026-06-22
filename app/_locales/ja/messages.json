@@ -85,9 +85,6 @@
   "accountActivity": {
     "message": "アカウントのアクティビティ"
   },
-  "accountActivityText": {
-    "message": "通知を受けたいアカウントを選択してください:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "ログイン"
   },
@@ -2990,12 +2987,6 @@
   },
   "customerSupport": {
     "message": "カスタマーサポート"
-  },
-  "customizeYourNotifications": {
-    "message": "通知のカスタマイズ"
-  },
-  "customizeYourNotificationsText": {
-    "message": "受け取る通知の種類をオンにします"
   },
   "dappConnections": {
     "message": "DAppの接続"
@@ -7550,9 +7541,6 @@
   },
   "proceedWithTransaction": {
     "message": "それでも続行"
-  },
-  "productAnnouncements": {
-    "message": "製品に関するお知らせ"
   },
   "provide": {
     "message": "提供"

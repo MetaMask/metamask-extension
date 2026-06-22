@@ -82,8 +82,8 @@
   "account": {
     "message": "Account"
   },
-  "accountActivityText": {
-    "message": "Select the accounts you want to be notified about:"
+  "accountActivity": {
+    "message": "Account activity"
   },
   "accountAlreadyExistsLogin": {
     "message": "Log in"
@@ -3047,12 +3047,6 @@
   "customerSupport": {
     "message": "customer support"
   },
-  "customizeYourNotifications": {
-    "message": "Customize your notifications"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Turn on the types of notifications you want to receive:"
-  },
   "dappConnections": {
     "message": "Dapp Connections"
   },
@@ -5980,7 +5974,7 @@
     "message": "Updates and rewards"
   },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Choose what you're notified about and how."
+    "message": "Choose what you're notified about and how. $1"
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"

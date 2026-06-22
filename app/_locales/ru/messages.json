@@ -85,9 +85,6 @@
   "accountActivity": {
     "message": "Активность счета"
   },
-  "accountActivityText": {
-    "message": "Выберите счета, о которых хотите получать уведомления:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Войти"
   },
@@ -2990,12 +2987,6 @@
   },
   "customerSupport": {
     "message": "поддержка пользователя"
-  },
-  "customizeYourNotifications": {
-    "message": "Настройте свои уведомления"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Включите типы уведомлений, которые хотите получать:"
   },
   "dappConnections": {
     "message": "Соединения dapp"
@@ -7546,9 +7537,6 @@
   },
   "proceedWithTransaction": {
     "message": "Я все равно хочу продолжить"
-  },
-  "productAnnouncements": {
-    "message": "Объявления о продуктах"
   },
   "provide": {
     "message": "Предоставить"

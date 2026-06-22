@@ -36,7 +36,10 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
 }
 
 describe('Enable Notifications - Without Accounts Syncing', function () {
-  this.timeout(120000); // Notifications tests can take longer due to identity/sync operations
+  // This test runs two full identity onboarding flows back-to-back (initial
+  // setup + persistence re-check), each incurring SRP import, sign-in and the
+  // account-sync settling delay, so it needs more than the default budget.
+  this.timeout(180000);
 
   describe('from inside MetaMask', function () {
     /**
