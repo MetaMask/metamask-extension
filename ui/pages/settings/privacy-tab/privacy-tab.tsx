@@ -16,7 +16,7 @@ import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
 import { ExportYourDataItem } from './export-your-data-item';
 
-const BatchAccountBalanceRequestsToggleItem = createToggleItem({
+export const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
   titleKey: PRIVACY_ITEMS['batch-account-balance-requests'],
   descriptionKey: 'useMultiAccountBalanceCheckerSettingDescriptionV2',

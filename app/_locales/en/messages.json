@@ -3256,7 +3256,10 @@
     "message": "MetaMask uses default settings to best balance safety and ease of use. Change these settings to further increase your privacy."
   },
   "defaultSettingsTitle": {
-    "message": "Default privacy settings"
+    "message": "Advanced default settings"
+  },
+  "onboardingNetworkRpcNavLabel": {
+    "message": "Network RPC"
   },
   "defi": {
     "message": "DeFi"

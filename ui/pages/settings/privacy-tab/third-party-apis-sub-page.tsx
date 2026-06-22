@@ -14,7 +14,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { THIRD_PARTY_API_ITEMS } from '../search-config';
 import { IpfsGatewayItem } from './ipfs-gateway-item';
 
-const NetworkDetailsCheckToggleItem = createToggleItem({
+export const NetworkDetailsCheckToggleItem = createToggleItem({
   name: 'NetworkDetailsCheckToggleItem',
   titleKey: THIRD_PARTY_API_ITEMS['network-details-check'],
   formatDescription: (t) =>
@@ -30,7 +30,7 @@ const NetworkDetailsCheckToggleItem = createToggleItem({
   containerDataTestId: 'useSafeChainsListValidation',
 });
 
-const ShowENSDomainsToggleItem = createToggleItem({
+export const ShowENSDomainsToggleItem = createToggleItem({
   name: 'ShowENSDomainsToggleItem',
   titleKey: THIRD_PARTY_API_ITEMS['show-ens-domains'],
   formatDescription: (t) => (
@@ -51,7 +51,7 @@ const ShowENSDomainsToggleItem = createToggleItem({
   trackEventProperty: 'use_address_bar_ens_resolution',
 });
 
-const MakeSmartContractsEasierToggleItem = createToggleItem({
+export const MakeSmartContractsEasierToggleItem = createToggleItem({
   name: 'MakeSmartContractsEasierToggleItem',
   titleKey: THIRD_PARTY_API_ITEMS['make-smart-contracts-easier'],
   descriptionKey: 'makeSmartContractsEasierDescription',
@@ -61,7 +61,7 @@ const MakeSmartContractsEasierToggleItem = createToggleItem({
   trackEventProperty: 'use_4byte_resolution',
 });
 
-const ProposedNicknamesToggleItem = createToggleItem({
+export const ProposedNicknamesToggleItem = createToggleItem({
   name: 'ProposedNicknamesToggleItem',
   titleKey: THIRD_PARTY_API_ITEMS['proposed-nicknames'],
   descriptionKey: 'externalNameSourcesSettingDescriptionV2',
