@@ -3235,9 +3235,6 @@
   "defaultSettingsTitle": {
     "message": "Advanced default settings"
   },
-  "onboardingNetworkRpcNavLabel": {
-    "message": "Network RPC"
-  },
   "defi": {
     "message": "DeFi"
   },
@@ -6041,6 +6038,9 @@
   },
   "onboardingMetametricsTitle": {
     "message": "Help improve MetaMask"
+  },
+  "onboardingNetworkRpcNavLabel": {
+    "message": "Network RPC"
   },
   "onboardingSignInWith": {
     "message": "Sign in with $1",

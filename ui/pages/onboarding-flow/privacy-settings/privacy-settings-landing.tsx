@@ -17,7 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { PrivacySettingsView } from './privacy-settings.types';
+import type { PrivacySettingsView } from './types';
 
 const LANDING_ITEMS: {
   id: PrivacySettingsView;

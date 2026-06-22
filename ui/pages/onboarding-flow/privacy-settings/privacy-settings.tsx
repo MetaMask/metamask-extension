@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import classnames from 'clsx';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+import BackupAndSyncTab from '../../settings/backup-and-sync-tab/backup-and-sync-tab';
 import { PrivacySettingsLanding } from './privacy-settings-landing';
 import { PrivacySettingsSubPageHeader } from './privacy-settings-sub-page-header';
 import OnboardingPrivacySubPage from './onboarding-privacy-sub-page';
-import OnboardingBackupSyncSubPage from './onboarding-backup-sync-sub-page';
 import PrivacySettingsNetworkRpc from './privacy-settings-network-rpc';
 import { useOnboardingPrivacyCompletion } from './use-onboarding-privacy-completion';
 import {
   PRIVACY_SETTINGS_VIEW_TITLE_KEYS,
   type PrivacySettingsView,
-} from './privacy-settings.types';
+} from './types';
 
 const ANIMATION_TIME = 500;
 
@@ -76,7 +77,7 @@ export default function PrivacySettings() {
               >
                 {activeView === 'privacy' ? <OnboardingPrivacySubPage /> : null}
                 {activeView === 'backup-and-sync' ? (
-                  <OnboardingBackupSyncSubPage />
+                  <BackupAndSyncTab isOnboarding />
                 ) : null}
                 {activeView === 'network-rpc' ? (
                   <PrivacySettingsNetworkRpc />
