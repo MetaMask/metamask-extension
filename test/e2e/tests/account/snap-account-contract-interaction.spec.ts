@@ -22,7 +22,7 @@ import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-k
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
-describe('Snap Account Contract interaction', function (this: Suite) {
+describe('Snap Account Contract interaction TEST', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
   it('deposits to piggybank contract', async function () {
     await withFixtures(
