@@ -185,7 +185,7 @@ jobs:
       - build-flask-mv2-webpack
     runs-on: ubuntu-latest
     environment: release-branch
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
       RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
@@ -320,6 +320,41 @@ jobs:
       - name: Push Firefox bundle script
         run: .github/scripts/push-firefox-bundle-script.sh
 
+      - name: Package Firefox reviewer artifacts
+        if: >-
+          vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT != '' ||
+          vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD != ''
+        env:
+          FIREFOX_BUNDLE_SCRIPT_REF: ${{ vars.FIREFOX_BUNDLE_SCRIPT_REF }}
+          AMO_LAST_LISTED_VERSION: ${{ vars.AMO_LAST_LISTED_VERSION }}
+        run: bash .github/scripts/publish-firefox-reviewer-artifacts.sh package
+
+      - name: Configure AWS credentials (UAT reviewer publisher)
+        if: vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT != ''
+        uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
+        with:
+          role-to-assume: ${{ vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT }}
+          aws-region: us-east-2
+
+      - name: Upload Firefox reviewer artifacts (UAT)
+        if: vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT != ''
+        env:
+          AMO_REVIEWER_BUCKET: ${{ vars.AMO_REVIEWER_BUCKET_UAT }}
+        run: bash .github/scripts/publish-firefox-reviewer-artifacts.sh upload
+
+      - name: Configure AWS credentials (PRD reviewer publisher)
+        if: vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD != ''
+        uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
+        with:
+          role-to-assume: ${{ vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD }}
+          aws-region: us-east-2
+
+      - name: Upload Firefox reviewer artifacts (PRD)
+        if: vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD != ''
+        env:
+          AMO_REVIEWER_BUCKET: ${{ vars.AMO_REVIEWER_BUCKET_PRD }}
+        run: bash .github/scripts/publish-firefox-reviewer-artifacts.sh upload
+
       - name: Summary
         env:
           VERSION: ${{ needs.validate-branch.outputs.version }}
@@ -339,6 +374,7 @@ jobs:
             echo "| Sentry (Flask MV2 webpack) | ✅ Published |"
             echo "| GitHub Release | ✅ Created |"
             echo "| Firefox Bundle | ✅ Pushed |"
+            echo "| AMO reviewer S3 | see upload steps (skipped until infra vars wired) |"
             echo ""
             echo "**Release:** [${RELEASE_TAG}](https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG})"
           } >> "${GITHUB_STEP_SUMMARY}"
