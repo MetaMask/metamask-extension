@@ -55,8 +55,7 @@ class HeaderNavbar {
   private readonly notificationsButton =
     '[data-testid="notifications-menu-item"]';
 
-  private readonly notificationsPage =
-    '[data-testid="notifications-page"]';
+  private readonly notificationsPage = '[data-testid="notifications-page"]';
 
   private readonly notificationsSettingsButton =
     '[data-testid="notifications-settings-button"]';
@@ -209,6 +208,7 @@ class HeaderNavbar {
     await notificationsSettingsPage.clickNotificationToggle({
       toggleType: 'general',
     });
+    await notificationsSettingsPage.waitForNotificationPreferenceSections();
   }
 
   async goToNotifications(): Promise<void> {

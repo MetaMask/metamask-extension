@@ -98,13 +98,35 @@ class NotificationsSettingsPage {
     }
   }
 
+  private readonly shortPresenceTimeoutMs = 1000;
+
+  /**
+   * Waits until AUS notification preferences are loaded and section rows are navigable.
+   */
+  async waitForNotificationPreferenceSections(): Promise<void> {
+    console.log('Waiting for notification preference sections to load');
+    await this.driver.waitForSelector(this.notificationsPerTypesSection, {
+      timeout: 30000,
+    });
+  }
+
   private async goToMainSettings(): Promise<void> {
-    if (await this.driver.isElementPresent(this.walletActivitySectionContent)) {
+    if (
+      await this.driver.isElementPresentAndVisible(
+        this.walletActivitySectionContent,
+        this.shortPresenceTimeoutMs,
+      )
+    ) {
       await this.driver.clickElement(this.headerBackButton);
       await this.driver.waitForSelector(this.notificationsPerTypesSection);
     }
 
-    if (await this.driver.isElementPresent(this.marketingSectionContent)) {
+    if (
+      await this.driver.isElementPresentAndVisible(
+        this.marketingSectionContent,
+        this.shortPresenceTimeoutMs,
+      )
+    ) {
       await this.driver.clickElement(this.headerBackButton);
       await this.driver.waitForSelector(this.notificationsPerTypesSection);
     }
@@ -118,20 +140,46 @@ class NotificationsSettingsPage {
         ? this.walletActivitySectionContent
         : this.marketingSectionContent;
 
-    if (await this.driver.isElementPresent(sectionContent)) {
+    if (
+      await this.driver.isElementPresentAndVisible(
+        sectionContent,
+        this.shortPresenceTimeoutMs,
+      )
+    ) {
       return;
     }
 
     await this.goToMainSettings();
+    await this.waitForNotificationPreferenceSections();
 
     const sectionButton =
       section === 'walletActivity'
         ? this.walletActivitySectionButton
         : this.marketingSectionButton;
 
-    await this.driver.waitForElementToStopMoving(sectionButton);
-    await this.driver.clickElement(sectionButton);
-    await this.driver.waitForSelector(sectionContent);
+    const maxAttempts = 30;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      await this.driver.waitForElementToStopMoving(sectionButton);
+      await this.driver.clickElement(sectionButton);
+
+      try {
+        await this.driver.waitForSelector(sectionContent, { timeout: 3000 });
+        return;
+      } catch {
+        console.log(
+          `Waiting for ${section} notification preferences to load (attempt ${
+            attempt + 1
+          }/${maxAttempts})`,
+        );
+        await this.goToMainSettings();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+
+    throw new Error(
+      `Failed to navigate to ${section} notification settings section`,
+    );
   }
 
   /**
@@ -282,6 +330,7 @@ class NotificationsSettingsPage {
   ) {
     const notificationsSettingsPage = new NotificationsSettingsPage(driver);
     await notificationsSettingsPage.checkPageIsLoaded();
+    await notificationsSettingsPage.waitForNotificationPreferenceSections();
     await notificationsSettingsPage.checkNotificationState({
       toggleType: 'general',
       expectedState: generalExpectedState,
