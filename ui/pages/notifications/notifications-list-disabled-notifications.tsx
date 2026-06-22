@@ -13,14 +13,31 @@ import {
   IconName,
   IconSize,
   Text,
+  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../helpers/constants/routes';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
 export const NotificationsListDisabledNotifications = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+
+  // `notificationsSettingsPageAllowNotifications` includes a `$1` substitution
+  // for the privacy link; pass it here too so the empty state doesn't render a
+  // literal "$1".
+  const privacyLink = (
+    <Text asChild color={TextColor.InfoDefault} key="privacy-link">
+      <a
+        href={ZENDESK_URLS.PROFILE_PRIVACY}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('notificationsSettingsPageAllowNotificationsLink')}
+      </a>
+    </Text>
+  );
 
   return (
     <Box
@@ -37,7 +54,7 @@ export const NotificationsListDisabledNotifications = () => {
           {t('metamaskNotificationsAreOff')}
         </Text>
         <Text variant={TextVariant.BodySm}>
-          {t('notificationsSettingsPageAllowNotifications')}
+          {t('notificationsSettingsPageAllowNotifications', [privacyLink])}
         </Text>
       </Box>
       <Button
