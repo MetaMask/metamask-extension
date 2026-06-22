@@ -1244,7 +1244,7 @@
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
-    "proofBackfillCompleted": "boolean",
+    "proofBackfillEnqueued": "boolean",
     "quoteFetchError": "null",
     "quoteRequest": [
       {

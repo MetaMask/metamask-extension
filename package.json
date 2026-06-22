@@ -420,7 +420,7 @@
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/ppom-validator": "0.39.1",
     "@metamask/preinstalled-example-snap": "^0.7.2",
-    "@metamask/profile-metrics-controller": "npm:@metamask-previews/profile-metrics-controller@3.2.0-preview-8cbb66949",
+    "@metamask/profile-metrics-controller": "^4.0.0",
     "@metamask/profile-sync-controller": "^28.2.0",
     "@metamask/providers": "^22.1.1",
     "@metamask/rate-limit-controller": "^7.0.0",
