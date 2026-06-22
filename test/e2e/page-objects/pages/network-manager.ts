@@ -52,10 +52,8 @@ class NetworkManager {
 
   private readonly networkManagerToggle = '[data-testid="sort-by-networks"]';
 
-  private readonly networkPopupDeleteButton = {
-    text: 'Delete',
-    tag: 'button',
-  };
+  private readonly networkPopupDeleteButton =
+    '[data-testid="confirm-delete-network-modal-delete-button"]';
 
   private readonly selectedNetworkListItem = (selector: string) =>
     `:is(${selector}.multichain-network-list-item--selected, ${selector} .multichain-network-list-item--selected)`;
