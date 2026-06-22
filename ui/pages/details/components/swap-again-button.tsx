@@ -4,9 +4,11 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
+import { formatAddressToCaipReference } from '@metamask/bridge-controller';
+import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
-import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
-import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
+import useBridging from '../../../hooks/bridge/useBridging';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionForward } from '../../../components/ui/transition';
 
@@ -18,7 +20,7 @@ export function SwapAgainButton({
   sourceToken: TokenAmount | undefined;
 }) {
   const t = useI18nContext();
-  const { navigateToBridgePage } = useBridgeNavigation();
+  const { openBridgeExperience } = useBridging();
   const buttonLabelKey = useMemo(() => {
     if (!sourceToken?.assetId || !destinationToken?.assetId) {
       return 'swapAgain';
@@ -30,34 +32,33 @@ export function SwapAgainButton({
     return sourceChainId === destinationChainId ? 'swapAgain' : 'bridgeAgain';
   }, [destinationToken?.assetId, sourceToken?.assetId]);
 
-  const searchParams = useMemo(() => {
-    if (!sourceToken?.assetId || !destinationToken?.assetId) {
-      return undefined;
-    }
-
-    const params = new URLSearchParams();
-
-    params.set(BridgeQueryParams.From, sourceToken.assetId);
-    params.set(BridgeQueryParams.To, destinationToken.assetId);
-
-    return params;
-  }, [destinationToken, sourceToken]);
+  const canSwapAgain =
+    sourceToken?.assetId && destinationToken?.assetId && sourceToken.symbol;
 
   const handleClick = useCallback(() => {
-    if (!searchParams) {
+    const sourceAssetId = sourceToken?.assetId as CaipAssetType;
+    const sourceSymbol = sourceToken?.symbol;
+    const destinationAssetId = destinationToken?.assetId;
+
+    if (!sourceAssetId || !sourceSymbol || !destinationAssetId) {
       return;
     }
 
     transitionForward(() =>
-      navigateToBridgePage({
-        token: null,
-        search: searchParams,
-        isEntrypoint: true,
-      }),
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.ActivityDetails,
+        {
+          symbol: sourceSymbol,
+          address: formatAddressToCaipReference(sourceAssetId),
+          chainId: parseCaipAssetType(sourceAssetId).chainId,
+          decimals: sourceToken?.decimals,
+        },
+        destinationAssetId,
+      ),
     );
-  }, [navigateToBridgePage, searchParams]);
+  }, [destinationToken?.assetId, openBridgeExperience, sourceToken]);
 
-  if (!searchParams) {
+  if (!canSwapAgain) {
     return null;
   }
 
