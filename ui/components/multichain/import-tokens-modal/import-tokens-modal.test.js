@@ -297,6 +297,31 @@ describe('ImportTokensModal', () => {
       ).toStrictEqual(tokenPrecision);
     });
 
+    it('flags a fractional decimals value as invalid', async () => {
+      const { getByText, getByTestId } = render();
+      const customTokenButton = getByText(messages.customToken.message);
+      fireEvent.click(customTokenButton);
+
+      const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
+      fireEvent.change(getByTestId('import-tokens-modal-custom-address'), {
+        target: { value: tokenAddress },
+      });
+
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-decimals'),
+        ).toBeInTheDocument(),
+      );
+
+      fireEvent.change(getByTestId('import-tokens-modal-custom-decimals'), {
+        target: { value: '1.5' },
+      });
+
+      expect(
+        getByText(messages.decimalsMustZerotoTen.message),
+      ).toBeInTheDocument();
+    });
+
     it('adds custom tokens successfully', async () => {
       const { getByText, getByTestId } = render({ tokens: [], tokenList: {} });
       const customTokenButton = getByText(messages.customToken.message);

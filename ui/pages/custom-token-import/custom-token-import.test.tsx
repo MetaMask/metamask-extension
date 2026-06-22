@@ -312,6 +312,27 @@ describe('CustomTokenImportPage', () => {
     );
   });
 
+  it('flags a fractional decimals value as invalid and disables submit', async () => {
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: '0x1111111111111111111111111111111111111111' },
+    });
+    await screen.findByTestId('custom-token-import-symbol-input');
+
+    const decimalsInput = screen.getByTestId(
+      'custom-token-import-decimal-input',
+    );
+    fireEvent.change(decimalsInput, { target: { value: '1.5' } });
+
+    expect(
+      screen.getByText(messages.decimalsMustZerotoTen.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('custom-token-import-submit-button'),
+    ).toBeDisabled();
+  });
+
   it('opens the custom import network selector when the network picker is clicked', () => {
     renderPage();
 

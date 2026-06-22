@@ -529,8 +529,14 @@ export const ImportTokensModal = ({ onClose }) => {
 
       if (value) {
         decimals = Number(value.trim());
+        // ERC-20 `decimals()` is a `uint8`, so token decimals must be a
+        // non-negative integer. Fractional values like `1.5` would otherwise
+        // pass the range check and later break balance formatting.
         decimalsError =
-          value < MIN_DECIMAL_VALUE || value > MAX_DECIMAL_VALUE
+          Number.isNaN(decimals) ||
+          !Number.isInteger(decimals) ||
+          decimals < MIN_DECIMAL_VALUE ||
+          decimals > MAX_DECIMAL_VALUE
             ? t('decimalsMustZerotoTen')
             : null;
       } else {
