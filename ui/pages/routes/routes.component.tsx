@@ -144,6 +144,7 @@ import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
+import { GlobalMenuRouteTransition } from './global-menu-route-transition';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
@@ -200,19 +201,27 @@ const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
 const PermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/permissions-page/permissions-page.js'),
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page.js'
+    ),
 );
 const GatorPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    ),
 );
 const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    ),
 );
 const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
+    ),
 );
 const Home = mmLazy(() => import('../home/index.ts'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
@@ -337,7 +346,11 @@ export const routeConfig = [
       },
       {
         path: NETWORKS_ROUTE,
-        element: <NetworksPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <NetworksPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: TOKEN_MANAGEMENT_ROUTE,
@@ -349,7 +362,11 @@ export const routeConfig = [
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
-        element: <Settings />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Settings />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
@@ -401,11 +418,19 @@ export const routeConfig = [
       },
       {
         path: PERMISSIONS,
-        element: <PermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <PermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: GATOR_PERMISSIONS,
-        element: <GatorPermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <GatorPermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
@@ -453,6 +478,11 @@ export const routeConfig = [
       },
       {
         path: CONTACTS_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Outlet />
+          </GlobalMenuRouteTransition>
+        ),
         children: contactsRoutes,
       },
       {
@@ -476,11 +506,19 @@ export const routeConfig = [
           },
           {
             path: NOTIFICATIONS_ROUTE,
-            element: <Notifications />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <Notifications />
+              </GlobalMenuRouteTransition>
+            ),
           },
           {
             path: SNAPS_ROUTE,
-            element: <SnapList />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <SnapList />
+              </GlobalMenuRouteTransition>
+            ),
           },
           createRouteWithMessenger({
             path: SNAPS_VIEW_ROUTE,
