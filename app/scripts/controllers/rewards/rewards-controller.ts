@@ -277,6 +277,8 @@ export class RewardsController extends BaseController<
 
   #isTronDisabled: () => boolean;
 
+  #isVipDisabled: () => boolean;
+
   #reauthPromises: Map<string, Promise<void>> = new Map();
 
   // Deduplicates concurrent /vip/fees fetches for the same subscriptionId.
@@ -528,12 +530,14 @@ export class RewardsController extends BaseController<
     isDisabled,
     isBitcoinDisabled,
     isTronDisabled,
+    isVipDisabled,
   }: {
     messenger: RewardsControllerMessenger;
     state?: Partial<RewardsControllerState>;
     isDisabled: () => boolean;
     isBitcoinDisabled: () => boolean;
     isTronDisabled: () => boolean;
+    isVipDisabled: () => boolean;
   }) {
     super({
       name: controllerName,
@@ -553,6 +557,7 @@ export class RewardsController extends BaseController<
     this.#isDisabled = isDisabled;
     this.#isBitcoinDisabled = isBitcoinDisabled;
     this.#isTronDisabled = isTronDisabled;
+    this.#isVipDisabled = isVipDisabled;
   }
 
   /**
@@ -1703,6 +1708,24 @@ export class RewardsController extends BaseController<
   }
 
   /**
+   * Check if the VIP feature is enabled.
+   *
+   * VIP surfaces (the VIP referral tag, VIP fee discounts) require both the
+   * rewards feature to be on AND the VIP program flag to be enabled locally.
+   *
+   * @returns boolean - True if the VIP feature is enabled, false otherwise
+   */
+  isVipFeatureEnabled(): boolean {
+    if (!this.isRewardsFeatureEnabled()) {
+      return false;
+    }
+    if (this.#isVipDisabled()) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
    * Get season metadata with caching. This fetches and caches the season metadata including id, name, dates, and tiers.
    *
    * @param type - The type of season to get
@@ -2152,23 +2175,32 @@ export class RewardsController extends BaseController<
    * Validate a referral code
    *
    * @param code - The referral code to validate
-   * @returns Promise<boolean> - True if the code is valid, false otherwise
+   * @returns Promise<{ valid: boolean; isVipCode: boolean }> - Whether the code
+   * is valid and whether it is a VIP code. A code is only treated as a VIP code
+   * when the backend says so AND the VIP feature is enabled locally (rewards on
+   * and VIP not disabled).
    */
-  async validateReferralCode(code: string): Promise<boolean> {
+  async validateReferralCode(
+    code: string,
+  ): Promise<{ valid: boolean; isVipCode: boolean }> {
     const rewardsEnabled = this.isRewardsFeatureEnabled();
     if (!rewardsEnabled) {
-      return false;
+      return { valid: false, isVipCode: false };
     }
 
     if (!code.trim()) {
-      return false;
+      return { valid: false, isVipCode: false };
     }
 
     const response = await this.messenger.call(
       'RewardsDataService:validateReferralCode',
       code,
     );
-    return response.valid;
+    // A referral code is only treated as a VIP code when the backend says so
+    // AND the VIP feature is enabled locally (rewards on and VIP not disabled).
+    const isVipCode =
+      (response.isVipCode ?? false) && this.isVipFeatureEnabled();
+    return { valid: response.valid, isVipCode };
   }
 
   /**

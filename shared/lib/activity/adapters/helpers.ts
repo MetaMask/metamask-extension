@@ -21,7 +21,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { TransactionGroup } from '../../multichain/types';
-import type { Status, TokenAmount } from '../types';
+import type { ActivityFee, Status, TokenAmount } from '../types';
 
 export type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
@@ -29,6 +29,59 @@ export type ValueTransfer = NonNullable<
 
 export function isNftStandard(value?: string) {
   return value === 'erc721' || value === 'erc1155';
+}
+
+export function getNftPaymentTransfer({
+  side,
+  sentTransfer,
+  receivedTransfer,
+  sentNativeTransfer,
+  nftCounterparty,
+  transactionFrom,
+  subjectAddress,
+}: {
+  side: 'buy' | 'sell';
+  sentTransfer?: ValueTransfer;
+  receivedTransfer?: ValueTransfer;
+  sentNativeTransfer?: ValueTransfer;
+  nftCounterparty: string;
+  transactionFrom?: string;
+  subjectAddress: string;
+}) {
+  const isFungible = (transfer?: ValueTransfer) =>
+    Boolean(transfer && !isNftStandard(transfer.transferType));
+
+  if (side === 'buy') {
+    for (const transfer of [sentNativeTransfer, sentTransfer]) {
+      if (!transfer || !isFungible(transfer)) {
+        continue;
+      }
+
+      if (
+        equalsIgnoreCase(transfer.to, nftCounterparty) ||
+        transfer.transferType === 'normal'
+      ) {
+        return transfer;
+      }
+    }
+
+    return undefined;
+  }
+
+  if (!receivedTransfer || !isFungible(receivedTransfer)) {
+    return undefined;
+  }
+
+  if (
+    equalsIgnoreCase(receivedTransfer.from, nftCounterparty) ||
+    (transactionFrom &&
+      !equalsIgnoreCase(transactionFrom, subjectAddress) &&
+      equalsIgnoreCase(receivedTransfer.from, transactionFrom))
+  ) {
+    return receivedTransfer;
+  }
+
+  return undefined;
 }
 
 /**
@@ -44,6 +97,76 @@ export function getNativeAssetSafe(chainId: string | number) {
   } catch {
     return undefined;
   }
+}
+
+const nativeTokenDecimals = 18;
+
+function toNetworkFeeAmount(
+  gasUsed: string | number | undefined,
+  gasPrice: string | number | undefined,
+): string | undefined {
+  if (gasUsed === undefined || gasPrice === undefined) {
+    return undefined;
+  }
+
+  try {
+    return String(BigInt(gasUsed) * BigInt(gasPrice));
+  } catch {
+    return undefined;
+  }
+}
+
+function buildBaseNetworkFee(
+  amount: string,
+  chainId: string | number,
+): ActivityFee {
+  const nativeAsset = getNativeAssetSafe(chainId);
+
+  return {
+    type: 'base',
+    amount,
+    ...(nativeAsset?.decimals === undefined
+      ? { decimals: nativeTokenDecimals }
+      : { decimals: nativeAsset.decimals }),
+    ...(nativeAsset?.symbol ? { symbol: nativeAsset.symbol } : {}),
+    ...(nativeAsset?.assetId ? { assetId: nativeAsset.assetId } : {}),
+  };
+}
+
+function getNetworkFee(
+  transaction: V1TransactionByHashResponse,
+  chainId: string,
+): ActivityFee | undefined {
+  const amount = toNetworkFeeAmount(
+    transaction.gasUsed,
+    transaction.effectiveGasPrice,
+  );
+
+  return amount ? buildBaseNetworkFee(amount, chainId) : undefined;
+}
+
+export function getFees(
+  transaction: V1TransactionByHashResponse,
+  chainId: string,
+): ActivityFee[] | undefined {
+  const networkFee = getNetworkFee(transaction, chainId);
+
+  return networkFee ? [networkFee] : undefined;
+}
+
+export function getLocalTransactionFees(
+  transactionGroup: Pick<TransactionGroup, 'primaryTransaction'>,
+): ActivityFee[] | undefined {
+  const { primaryTransaction } = transactionGroup;
+  const amount = toNetworkFeeAmount(
+    primaryTransaction.txReceipt?.gasUsed,
+    primaryTransaction.txReceipt?.effectiveGasPrice ??
+      primaryTransaction.txParams?.gasPrice,
+  );
+
+  return amount
+    ? [buildBaseNetworkFee(amount, primaryTransaction.chainId)]
+    : undefined;
 }
 
 const resolveAssetId = (
@@ -200,6 +323,7 @@ export function parseValueTransfers(
 ): {
   sentTransfer: ValueTransfer | undefined;
   receivedTransfer: ValueTransfer | undefined;
+  sentNativeTransfer: ValueTransfer | undefined;
   sentNftTransfer: ValueTransfer | undefined;
   receivedNftTransfer: ValueTransfer | undefined;
 } {
@@ -216,6 +340,10 @@ export function parseValueTransfers(
     received?.find(({ symbol }) => symbol !== sentTransfer?.symbol) ??
     received?.[0];
 
+  const sentNativeTransfer = sent?.find(
+    ({ transferType }) => transferType === 'normal',
+  );
+
   const sentNftTransfer = sent?.find(({ transferType }) =>
     isNftStandard(transferType),
   );
@@ -226,6 +354,7 @@ export function parseValueTransfers(
   return {
     sentTransfer,
     receivedTransfer,
+    sentNativeTransfer,
     sentNftTransfer,
     receivedNftTransfer,
   };

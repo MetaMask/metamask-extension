@@ -12,7 +12,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
+import { PerpsTab } from '../../page-objects/pages/home/perps-tab';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
 import { getPerpsConfigEligible } from './perps-fixture-config';
@@ -27,9 +27,9 @@ describe('Perps Watchlist', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
 
         // Navigate to the BTC market detail page
         const marketListPage = new PerpsMarketListPage(driver);
@@ -47,7 +47,7 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketListPage.clickBack();
 
         // Verify the watchlist section is now visible and contains BTC
-        await perpsHomePage.waitForWatchlistMarket('BTC');
+        await perpsTab.waitForWatchlistMarket('BTC');
       },
     );
   });
@@ -61,9 +61,9 @@ describe('Perps Watchlist', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
 
         const marketListPage = new PerpsMarketListPage(driver);
         const marketDetailPage = new PerpsMarketDetailPage(driver);
@@ -74,7 +74,7 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketDetailPage.clickFavoriteButton();
         await marketDetailPage.clickBack();
         await marketListPage.clickBack();
-        await perpsHomePage.waitForWatchlistMarket('ETH');
+        await perpsTab.waitForWatchlistMarket('ETH');
 
         // Remove ETH from the watchlist
         await marketListPage.navigateToMarketList();
@@ -88,7 +88,7 @@ describe('Perps Watchlist', function (this: Suite) {
         // Navigate back to Perps home and verify the watchlist section is gone
         await marketDetailPage.clickBack();
         await marketListPage.clickBack();
-        await perpsHomePage.checkWatchlistSectionGone();
+        await perpsTab.checkWatchlistSectionGone();
       },
     );
   });
@@ -102,9 +102,9 @@ describe('Perps Watchlist', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
 
         const marketListPage = new PerpsMarketListPage(driver);
         const marketDetailPage = new PerpsMarketDetailPage(driver);
@@ -123,8 +123,8 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketDetailPage.clickBack();
         await marketListPage.clickBack();
 
-        await perpsHomePage.waitForWatchlistMarket('ETH');
-        await perpsHomePage.waitForWatchlistMarket('AVAX');
+        await perpsTab.waitForWatchlistMarket('ETH');
+        await perpsTab.waitForWatchlistMarket('AVAX');
       },
     );
   });

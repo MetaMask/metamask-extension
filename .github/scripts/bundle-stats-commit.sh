@@ -27,7 +27,7 @@ git config --global user.name "MetaMask Bot"
 
 git clone --depth 1 https://github.com/MetaMask/extension_bundlesize_stats.git temp
 
-BUNDLE_SIZE_FILE="test-artifacts/chrome/bundle_size_stats.json"
+BUNDLE_SIZE_FILE="test-artifacts/chrome/chrome.json"
 STATS_FILE="temp/stats/bundle_size_data.json"
 TEMP_FILE="temp/stats/bundle_size_data.temp.json"
 

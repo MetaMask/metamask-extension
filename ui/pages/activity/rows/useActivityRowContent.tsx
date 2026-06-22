@@ -144,7 +144,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       // Token in title. API bridge rows may only include the source leg.
       case 'bridge': {
         const { sourceToken, destinationToken } = activity.data;
-        const symbol = destinationToken?.symbol ?? sourceToken?.symbol ?? '';
+        const symbol = sourceToken?.symbol ?? destinationToken?.symbol ?? '';
 
         return {
           avatarTokens: destinationToken
@@ -207,6 +207,17 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         };
       }
       case 'nftBuy':
+      case 'nftSell': {
+        const { token, paymentToken } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
+          primaryAmount: formatTokenAmount(paymentToken),
+          primaryDirection: paymentToken?.direction,
+          secondaryAmount: formatAsFiat(paymentToken),
+        };
+      }
       case 'nftMint': {
         const { token } = activity.data;
 

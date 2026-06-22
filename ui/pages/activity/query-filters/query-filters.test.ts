@@ -185,7 +185,7 @@ describe('query filters', () => {
         chainId: 'eip155:1',
         status: 'success',
         timestamp: 1778593067000,
-        raw: { type: 'apiEvmTransaction', data: validTransaction },
+        hash: '0xvalid',
         data: {
           from: subjectAddress,
           to: otherAddress,
@@ -196,7 +196,6 @@ describe('query filters', () => {
             symbol: 'USDC',
             assetId: toAssetId(tokenAddress, 'eip155:1'),
           },
-          hash: '0xvalid',
         },
       },
     ]);

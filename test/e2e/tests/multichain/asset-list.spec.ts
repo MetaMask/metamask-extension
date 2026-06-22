@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -109,17 +109,17 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         await switchToNetworkFromNetworkSelect(
           driver,
           'Popular',
           NETWORK_NAME_MAINNET,
         );
         // Only Ethereum network is selected so only 1 token visible
-        await assetListPage.checkTokenItemNumber(2);
-        await assetListPage.clickOnAsset('Ether');
-        await assetListPage.checkBuySellButtonIsPresent();
-        await assetListPage.checkMultichainTokenListButtonIsPresent();
+        await tokensTab.checkTokenItemNumber(2);
+        await tokensTab.clickOnAsset('Ether');
+        await tokensTab.checkBuySellButtonIsPresent();
+        await tokensTab.checkMultichainTokenListButtonIsPresent();
       },
     );
   });
@@ -129,15 +129,15 @@ describe('Multichain Asset List', function (this: Suite) {
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         const sendPage = new SendPage(driver);
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           '0x89',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
         );
         // Currently only polygon is selected, so only see polygon tokens
         // 1 native token (POL), and 1 ERC-20 (TST)
-        await assetListPage.checkTokenItemNumber(2);
+        await tokensTab.checkTokenItemNumber(2);
 
         await homePage.startSendFlow();
         await sendPage.selectToken('0x89', 'TST');

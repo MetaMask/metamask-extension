@@ -15,7 +15,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { LegacyDetails } from './legacy-details';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { TransactionDetailsModal } from '../details/transaction-details-modal';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
@@ -81,6 +82,10 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   });
 
   const handleClick = (item: ActivityListItem) => {
+    if (!item.hash) {
+      return;
+    }
+
     trackEvent({
       event: MetaMetricsEventName.ActivityDetailsOpened,
       category: MetaMetricsEventCategory.Navigation,
@@ -154,7 +159,12 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         }}
       />
 
-      <LegacyDetails item={selectedItem} onClose={handleClose} />
+      <TransactionDetailsModal
+        isOpen={Boolean(selectedItem?.hash)}
+        chainId={selectedItem?.chainId}
+        txIdentifier={selectedItem?.hash}
+        onClose={handleClose}
+      />
     </PendingTransactionCancelSpeedUpProvider>
   );
 }
