@@ -11,7 +11,7 @@ import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-k
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
-describe('Create and remove Snap Account TEST', function (this: Suite) {
+describe('Create and remove Snap Account', function (this: Suite) {
   it('create snap account and remove it by removing snap', async function () {
     await withFixtures(
       {
