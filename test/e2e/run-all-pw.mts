@@ -106,21 +106,16 @@ async function resolveTestListForGitHubActions(
     `GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs (attempt ${runAttempt})`,
   );
 
-  const chunks = splitTestsByTimings(
-    fullTestList,
-    changedOrNewTests,
-    matrixTotal,
-  );
+  // Playwright applies the quality gate with `--repeat-each`, so changed specs
+  // must not also be duplicated by the timing splitter. Otherwise every shard
+  // can receive the same changed specs and run the full quality gate.
+  const chunks = splitTestsByTimings(fullTestList, [], matrixTotal);
 
   console.log(
     `Expected chunk run time: ${formatTime(chunks[matrixIndex].time)}`,
   );
 
-  // Dedupe: `splitTestsByTimings` may list a changed spec twice (its weighting
-  // trick). We run extras via `--repeat-each`, so a unique set is what we want.
-  const myOriginalTestList = [...new Set(chunks[matrixIndex].paths)].filter(
-    Boolean,
-  );
+  const myOriginalTestList = chunks[matrixIndex].paths.filter(Boolean);
 
   if (runAttempt > 1 && previousResultsPath) {
     console.log(
