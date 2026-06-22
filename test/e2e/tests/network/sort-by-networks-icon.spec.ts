@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 describe('Sort By Networks Icon', function (this: Suite) {
@@ -21,13 +21,13 @@ describe('Sort By Networks Icon', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         // Wait for the sort-by-networks button to be present
         await driver.waitForSelector('[data-testid="sort-by-networks"]');
 
         // Check that the button text shows the correct network name
-        const networkLabel = await assetListPage.getNetworksFilterLabel();
+        const networkLabel = await tokensTab.getNetworksFilterLabel();
         console.log(`Network label: ${networkLabel}`);
 
         // For single network, it should show the network name (e.g., "Ethereum Mainnet")
@@ -56,7 +56,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
           '/images/',
         ];
 
-        await assetListPage.checkNetworkIconContains(expectedIconIndicators);
+        await tokensTab.checkNetworkIconContains(expectedIconIndicators);
       },
     );
   });
@@ -74,13 +74,13 @@ describe('Sort By Networks Icon', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         // Wait for the sort-by-networks button to be present
         await driver.waitForSelector('[data-testid="sort-by-networks"]');
 
         // Check that the button text shows the correct network name
-        const networkLabel = await assetListPage.getNetworksFilterLabel();
+        const networkLabel = await tokensTab.getNetworksFilterLabel();
         console.log(`Network label: ${networkLabel}`);
 
         // For Linea, it should show "Linea Mainnet" or similar
@@ -105,7 +105,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
           '/images/',
         ];
 
-        await assetListPage.checkNetworkIconContains(expectedIconIndicators);
+        await tokensTab.checkNetworkIconContains(expectedIconIndicators);
       },
     );
   });
@@ -123,13 +123,13 @@ describe('Sort By Networks Icon', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         // Wait for the sort-by-networks button to be present
         await driver.waitForSelector('[data-testid="sort-by-networks"]');
 
         // Check that the button text shows the correct network name
-        const networkLabel = await assetListPage.getNetworksFilterLabel();
+        const networkLabel = await tokensTab.getNetworksFilterLabel();
         console.log(`Network label: ${networkLabel}`);
 
         // For Polygon, it should show "Polygon Mainnet" or similar
@@ -158,7 +158,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
           '/images/',
         ];
 
-        await assetListPage.checkNetworkIconContains(expectedIconIndicators);
+        await tokensTab.checkNetworkIconContains(expectedIconIndicators);
       },
     );
   });

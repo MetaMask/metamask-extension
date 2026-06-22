@@ -81,7 +81,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           wallets={wallets}
           selectedAccountGroups={selectedAccountGroups}
           handleAccountClick={handleAccountClick}
-          showAccountCheckbox={true}
+          showAccountCheckbox={false}
           showHeaderCheckbox={true}
           showAddAccount={false}
         />

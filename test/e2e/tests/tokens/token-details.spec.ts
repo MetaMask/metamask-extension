@@ -7,7 +7,7 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
@@ -50,19 +50,12 @@ describe('Token Details', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-        );
-        await assetListPage.dismissTokenImportedMessage();
-        await assetListPage.openTokenDetails(symbol);
-        await assetListPage.checkTokenSymbolAndAddressDetails(
-          symbol,
-          tokenAddress,
-        );
+        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
+        await tokensTab.dismissTokenImportedMessage();
+        await tokensTab.openTokenDetails(symbol);
+        await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
       },
     );
   });
@@ -116,26 +109,19 @@ describe('Token Details', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-        );
-        await assetListPage.dismissTokenImportedMessage();
-        await assetListPage.openTokenDetails(symbol);
-        await assetListPage.checkTokenSymbolAndAddressDetails(
-          symbol,
-          tokenAddress,
-        );
+        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
+        await tokensTab.dismissTokenImportedMessage();
+        await tokensTab.openTokenDetails(symbol);
+        await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
 
-        await assetListPage.checkTokenPriceAndMarketCap(
+        await tokensTab.checkTokenPriceAndMarketCap(
           expectedPrice,
           expectedMarketCap,
         );
 
-        await assetListPage.checkPriceChartIsShown();
+        await tokensTab.checkPriceChartIsShown();
       },
     );
   });
@@ -165,11 +151,11 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.openTokenDetails('Ethereum');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.openTokenDetails('Ethereum');
 
         // check display of price in details
-        await assetListPage.checkTokenPrice('$1,700.00');
+        await tokensTab.checkTokenPrice('$1,700.00');
       },
     );
   });

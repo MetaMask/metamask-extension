@@ -46,7 +46,7 @@ export const HeaderStory = (args) => (
       <Header
         startAccessory={
           <ButtonIcon
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
           />
@@ -67,7 +67,7 @@ export const FullscreenStory = (args) => (
       <Header
         startAccessory={
           <ButtonIcon
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
           />
@@ -100,7 +100,7 @@ export const HeaderFooterStory = (args) => (
       <Header
         startAccessory={
           <ButtonIcon
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
           />
@@ -130,7 +130,7 @@ export const ScrollingStory = (args) => (
       <Header
         startAccessory={
           <ButtonIcon
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
           />

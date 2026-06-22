@@ -6,15 +6,7 @@ import mockState from '../../../test/data/mock-state.json';
 import PerpsLayout from './perps-layout';
 
 jest.mock('@metamask/perps-controller', () => ({
-  MARKET_CATEGORIES: [
-    'crypto',
-    'stock',
-    'pre-ipo',
-    'index',
-    'etf',
-    'commodity',
-    'forex',
-  ],
+  ...jest.requireActual('@metamask/perps-controller'),
   PROVIDER_CONFIG: { DefaultProvider: 'hyperliquid' },
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',

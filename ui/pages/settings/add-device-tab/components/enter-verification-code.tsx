@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   Text,
@@ -9,6 +9,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
+  TextButton,
 } from '@metamask/design-system-react';
 import log from 'loglevel';
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -17,6 +18,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
 const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
+// TODO: source this from the controller
+const VERIFICATION_CODE_EXPIRY_SECONDS = 15;
 
 const createEmptyCode = () => Array<string>(CODE_LENGTH).fill('');
 
@@ -24,7 +27,27 @@ const EnterVerificationCode = () => {
   const t = useI18nContext();
   const [isError, setIsError] = useState(false);
   const [code, setCode] = useState<string[]>(createEmptyCode);
+  const [secondsLeft, setSecondsLeft] = useState(
+    VERIFICATION_CODE_EXPIRY_SECONDS,
+  );
+  const isExpired = secondsLeft <= 0;
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    if (isExpired) {
+      return undefined;
+    }
+
+    const intervalId = setInterval(() => {
+      setSecondsLeft((prev) => Math.max(prev - 1, 0));
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [isExpired]);
+
+  const handleRestart = useCallback(() => {
+    onContinue(AddDeviceSettingsStep.ScanQrCode);
+  }, [onContinue]);
 
   const focusInput = useCallback((index: number) => {
     const clampedIndex = Math.max(0, Math.min(index, CODE_LENGTH - 1));
@@ -203,15 +226,31 @@ const EnterVerificationCode = () => {
             aria-label={`${t('enter_verification_code')} ${index + 1}`}
             maxLength={1}
             autoFocus={index === 0}
+            isDisabled={isExpired}
             className="w-12 h-[54px] rounded-lg border border-muted bg-default text-center text-l-medium"
           />
         ))}
       </Box>
-      {isError && (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+      >
+        {!isExpired && (
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('enter_verification_code_expires_in', [secondsLeft])}
+          </Text>
+        )}
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-          {t('enter_verification_code_error')}
+          {isError && !isExpired && t('enter_verification_code_error')}
+          {isExpired && t('enter_verification_code_expired')}
         </Text>
-      )}
+        {(isExpired || isError) && (
+          <TextButton onClick={handleRestart}>
+            {t('start_with_new_qr_code')}
+          </TextButton>
+        )}
+      </Box>
     </Box>
   );
 };
