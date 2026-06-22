@@ -5,6 +5,10 @@ class SendPage {
 
   private readonly amountInput = { testId: 'send-amount-input' };
 
+  private readonly amountBalance = { testId: 'send-amount-balance' };
+
+  private readonly amountFiatValue = { testId: 'send-amount-fiat-value' };
+
   private readonly continueButton = { testId: 'send-continue-button' };
 
   private readonly header = {
@@ -213,9 +217,23 @@ class SendPage {
     return true;
   }
 
+  async waitForSendAmountBalance(): Promise<void> {
+    console.log('Waiting for send amount balance to be displayed');
+    await this.driver.waitForSelector(this.amountBalance);
+  }
+
+  async waitForSendAmountFiatValue(expectedValue: string): Promise<void> {
+    console.log(
+      `Waiting for send amount fiat value "${expectedValue}" to be displayed`,
+    );
+    await this.driver.waitForSelector({
+      ...this.amountFiatValue,
+      text: expectedValue,
+    });
+  }
+
   async pressContinueButton(): Promise<void> {
     console.log('Pressing continue button');
-    await this.driver.waitForSelector(this.continueButton);
     await this.driver.clickElement(this.continueButton);
   }
 
