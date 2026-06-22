@@ -254,7 +254,7 @@ export const NetworksPageList = ({
           name={network.name}
           iconSrc={getNetworkIcon(network)}
           focus={false}
-          selected={false}
+          selected={network.chainId === currentMultichainChainId}
           rpcEndpoint={
             network.isEvm && hasMultiRpcOptions(network)
               ? getRpcDataByChainId(network.chainId, evmNetworks)
@@ -272,6 +272,7 @@ export const NetworksPageList = ({
       );
     },
     [
+      currentMultichainChainId,
       evmNetworks,
       getItemCallbacks,
       handleNetworkChange,

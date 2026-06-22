@@ -7,7 +7,14 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { NETWORKS_ROUTE } from '../../helpers/constants/routes';
+import { setBackgroundConnection } from '../../store/background-connection';
 import { NetworksPage } from './networks-page';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  { get: () => jest.fn().mockResolvedValue(undefined) },
+);
+setBackgroundConnection(backgroundConnectionMock as never);
 
 jest.mock('../../components/ui/toggle-button', () => {
   const ReactActual = jest.requireActual('react');
@@ -184,6 +191,29 @@ describe('NetworksPage', () => {
 
     expect(testnetToggle).toBeChecked();
     expect(testnetToggle).toBeDisabled();
+
+    // The active network must be visually marked as selected so users can tell
+    // which one is active and why the Delete action is hidden for it.
+    expect(screen.getByTestId('network-list-item-eip155:1')).not.toHaveClass(
+      'multichain-network-list-item--selected',
+    );
+  });
+
+  it('marks the currently selected network as selected in the list', () => {
+    renderNetworksPage({
+      networkConfigurationsByChainId: mockNetworkConfigurations,
+      selectedNetworkClientId: 'mainnet',
+      selectedProviderChainId: '0x1',
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+        },
+      },
+    });
+
+    expect(screen.getByTestId('network-list-item-eip155:1')).toHaveClass(
+      'multichain-network-list-item--selected',
+    );
   });
 
   it('renders the add network flow from the query param', () => {
