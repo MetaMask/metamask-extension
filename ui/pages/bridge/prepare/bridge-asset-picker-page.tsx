@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
@@ -83,6 +83,13 @@ const BridgeAssetPickerPage = () => {
   );
 
   const contentRef = useRef<BridgeAssetPickerContentHandle>(null);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setIsDestAssetPickerOpen(false));
+      dispatch(setIsSrcAssetPickerOpen(false));
+    };
+  }, [dispatch]);
 
   const handleClose = () => {
     dispatch(setIsDestAssetPickerOpen(false));
