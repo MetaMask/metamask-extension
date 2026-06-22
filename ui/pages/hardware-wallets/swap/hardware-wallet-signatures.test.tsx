@@ -571,9 +571,13 @@ describe('HardwareWalletSignatures', () => {
 
       const { getByText, getByRole } = renderWithQuote(APPROVAL_QUOTE());
 
-      expect(getByText(messages.bridgeHwDeviceDisconnected.message)).toBeDefined();
       expect(
-        getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+        getByText(messages.bridgeHwDeviceDisconnected.message),
+      ).toBeDefined();
+      expect(
+        getByRole('button', {
+          name: messages.hardwareWalletErrorReconnectButton.message,
+        }),
       ).toBeDefined();
     });
 
@@ -637,9 +641,13 @@ describe('HardwareWalletSignatures', () => {
 
       const { getByText, getByRole } = renderWithQuote(APPROVAL_QUOTE());
 
-      expect(getByText(messages.bridgeHwDeviceDisconnected.message)).toBeDefined();
       expect(
-        getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+        getByText(messages.bridgeHwDeviceDisconnected.message),
+      ).toBeDefined();
+      expect(
+        getByRole('button', {
+          name: messages.hardwareWalletErrorReconnectButton.message,
+        }),
       ).toBeDefined();
     });
   });
@@ -747,7 +755,9 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          result.getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          result.getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
         await jest.advanceTimersByTimeAsync(1_000);
       });
@@ -771,7 +781,9 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          result.getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          result.getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
         await jest.advanceTimersByTimeAsync(1_000);
       });
@@ -794,7 +806,9 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          result.getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          result.getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
       });
 
@@ -810,7 +824,9 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          result.getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          result.getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
         await jest.advanceTimersByTimeAsync(1_000);
       });
@@ -875,7 +891,9 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          result.getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          result.getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
         await jest.advanceTimersByTimeAsync(1_000);
       });

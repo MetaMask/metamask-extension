@@ -75,9 +75,7 @@ export function useHwSwapQrState({
       signatureState.status ===
         HardwareWalletSignatureStatus.AwaitingFinalSignature);
 
-  const activeQrStep = showInlineQrSigning
-    ? signatureState.status
-    : undefined;
+  const activeQrStep = showInlineQrSigning ? signatureState.status : undefined;
 
   const handleQrScanSuccess = useCallback(
     async (response: SerializedUR) => dispatch(completeQrCodeScan(response)),

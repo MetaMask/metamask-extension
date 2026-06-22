@@ -75,8 +75,8 @@ export const BridgeAlertModal = ({
     activeAlert?.modalProps?.alertModalErrorMessage;
   const isModalOpen = Boolean(
     isOpen &&
-      activeAlert &&
-      (shouldShowSubmitCTA ? !(isQuoteExpired || isStockMarketClosed) : true),
+    activeAlert &&
+    (shouldShowSubmitCTA ? !(isQuoteExpired || isStockMarketClosed) : true),
   );
 
   /**
