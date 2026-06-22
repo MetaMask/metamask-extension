@@ -33,6 +33,7 @@ import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSe
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { type Asset } from '../../../types/send';
+import { getNetworkSections } from '../../../../../helpers/utils/network-sections';
 import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   NetworkSelectionModal,
@@ -204,9 +205,9 @@ export const NetworkFilter = ({
     [
       chainNetworkNAmeAndImageMap,
       handleNetworkSelection,
+      networkSections,
       selectedChainId,
       t,
-      uniqueChainIds,
     ],
   );
 
