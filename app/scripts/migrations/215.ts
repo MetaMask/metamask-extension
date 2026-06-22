@@ -263,21 +263,28 @@ function getAssetsController(
   }
 
   const ac = data.AssetsController as Record<string, unknown>;
-
-  if (!isObject(ac.assetsInfo)) {
-    ac.assetsInfo = {};
-  }
-  if (!isObject(ac.assetsBalance)) {
-    ac.assetsBalance = {};
-  }
-  if (!isObject(ac.customAssets)) {
-    ac.customAssets = {};
-  }
-  if (!isObject(ac.assetPreferences)) {
-    ac.assetPreferences = {};
-  }
+  ensureRecordObject(ac, 'assetsInfo');
+  ensureRecordObject(ac, 'assetsBalance');
+  ensureRecordObject(ac, 'customAssets');
+  ensureRecordObject(ac, 'assetPreferences');
 
   return ac as unknown as AssetsControllerShape;
+}
+
+/**
+ * Ensure a controller sub-key is an object map, creating an empty object when
+ * absent or invalid.
+ *
+ * @param container - Parent object containing the map field.
+ * @param key - Field name to verify.
+ */
+function ensureRecordObject(
+  container: Record<string, unknown>,
+  key: string,
+): void {
+  if (!isObject(container[key])) {
+    container[key] = {};
+  }
 }
 
 /**
@@ -298,17 +305,19 @@ function buildAddressToIdMap(
     return {};
   }
 
-  const map: Record<string, string> = {};
-  for (const [id, account] of Object.entries(accounts)) {
-    if (
-      isObject(account) &&
-      typeof account.address === 'string' &&
-      account.address
-    ) {
-      map[account.address.toLowerCase()] = id;
-    }
-  }
-  return map;
+  return Object.entries(accounts).reduce<Record<string, string>>(
+    (accumulator, [id, account]) => {
+      if (
+        isObject(account) &&
+        typeof account.address === 'string' &&
+        account.address.length > 0
+      ) {
+        accumulator[account.address.toLowerCase()] = id;
+      }
+      return accumulator;
+    },
+    {},
+  );
 }
 
 /**
@@ -416,14 +425,12 @@ function buildErc20AssetId(caip2: string, tokenAddress: Hex): string | null {
  * @param path - Sequence of keys to traverse.
  */
 function readPath(root: unknown, path: string[]): unknown {
-  let cursor: unknown = root;
-  for (const key of path) {
+  return path.reduce<unknown>((cursor, key) => {
     if (!isObject(cursor) || !hasProperty(cursor, key)) {
       return undefined;
     }
-    cursor = cursor[key];
-  }
-  return cursor;
+    return cursor[key];
+  }, root);
 }
 
 /**
@@ -433,22 +440,28 @@ function readPath(root: unknown, path: string[]): unknown {
  */
 function buildEvmAssetInfo(token: Record<string, unknown>): AssetInfo {
   const symbol = typeof token.symbol === 'string' ? token.symbol : '';
-  const name =
-    typeof token.name === 'string' && token.name ? token.name : symbol;
+  const normalizedName =
+    typeof token.name === 'string' && token.name.length > 0
+      ? token.name
+      : symbol;
+  const decimals = typeof token.decimals === 'number' ? token.decimals : 0;
 
-  const info: AssetInfo = {
+  const image =
+    typeof token.image === 'string' && token.image.length > 0
+      ? token.image
+      : undefined;
+  const aggregators = Array.isArray(token.aggregators)
+    ? token.aggregators
+    : undefined;
+
+  return {
     type: 'erc20',
     symbol,
-    name,
-    decimals: typeof token.decimals === 'number' ? token.decimals : 0,
+    name: normalizedName,
+    decimals,
+    ...(image ? { image } : {}),
+    ...(aggregators ? { aggregators } : {}),
   };
-  if (typeof token.image === 'string' && token.image) {
-    info.image = token.image;
-  }
-  if (Array.isArray(token.aggregators)) {
-    info.aggregators = token.aggregators;
-  }
-  return info;
 }
 
 /**
@@ -468,10 +481,12 @@ function addCustomAsset(
   if (ac.assetsBalance[accountId]?.[assetId]) {
     return false;
   }
-  ac.customAssets[accountId] ??= [];
-  if (ac.customAssets[accountId].includes(assetId)) {
+
+  const accountCustomAssets = ac.customAssets[accountId] ?? [];
+  if (accountCustomAssets.includes(assetId)) {
     return false;
   }
-  ac.customAssets[accountId].push(assetId);
+
+  ac.customAssets[accountId] = [...accountCustomAssets, assetId];
   return true;
 }
