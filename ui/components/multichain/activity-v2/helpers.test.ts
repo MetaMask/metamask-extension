@@ -411,6 +411,34 @@ describe('resolveTransactionType', () => {
     expect(result).toBe(TransactionType.deployContract);
   });
 
+  it('classifies as deployContract when txParams has no recipient and carries bytecode, even if the backend omits DEPLOY_CONTRACT', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        // Backend left these blank; only txParams shape identifies the deploy.
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          data: '0x60806040',
+        },
+      }),
+    );
+    expect(result).toBe(TransactionType.deployContract);
+  });
+
+  it('does not classify a normal call as deployContract', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+          to: '0x1111111111111111111111111111111111111111',
+          data: '0x60806040',
+        },
+      }),
+    );
+    expect(result).not.toBe(TransactionType.deployContract);
+  });
+
   it('returns the correct transaction type for a token method transfer transaction', () => {
     const result = resolveTransactionType(
       makeApiTx({ time: Date.now(), transactionType: 'ERC_20_TRANSFER' }),

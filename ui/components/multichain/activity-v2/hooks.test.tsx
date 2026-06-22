@@ -269,7 +269,7 @@ describe('useGetTitle', () => {
     expect(result.current).toBe('sentSpecifiedTokens:ETH');
   });
 
-  it('returns contractInteraction for zero-value STANDARD tx with no transfers', () => {
+  it('returns contractDeployment for a deploy tx when the backend omits the DEPLOY_CONTRACT label', () => {
     const tx = {
       amounts: {
         from: {
@@ -289,6 +289,36 @@ describe('useGetTitle', () => {
         data: '0x608060405234801561001057600080fd5b50',
         from: selectedAddress,
         to: null,
+        value: '0x0',
+      },
+      valueTransfers: [],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('contractDeployment');
+  });
+
+  it('returns contractInteraction for zero-value STANDARD tx with a recipient and no transfers', () => {
+    const tx = {
+      amounts: {
+        from: {
+          amount: 0n,
+          token: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: '0x1',
+            decimals: 18,
+            symbol: 'ETH',
+          },
+        },
+      },
+      transactionCategory: 'STANDARD',
+      transactionProtocol: '',
+      transactionType: 'STANDARD',
+      txParams: {
+        data: '0x608060405234801561001057600080fd5b50',
+        from: selectedAddress,
+        to: '0x1111111111111111111111111111111111111111',
         value: '0x0',
       },
       valueTransfers: [],

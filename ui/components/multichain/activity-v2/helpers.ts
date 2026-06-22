@@ -314,6 +314,27 @@ export function matchesNonEvmTransaction(
   });
 }
 
+/**
+ * Returns true when txParams describe a contract deployment: no recipient and
+ * non-empty calldata (the deployment bytecode). Mirrors the rule used by
+ * the transaction-controller's determineTransactionType, so the activity list
+ * can identify deployments even when the backend omits the `DEPLOY_CONTRACT`
+ * label.
+ *
+ * @param txParams - The transaction parameters to inspect.
+ */
+export function isContractDeploymentTxParams(
+  txParams: TransactionViewModel['txParams'] | undefined,
+): boolean {
+  const to = txParams?.to;
+  const data = txParams?.data;
+  const hasNoRecipient = !to || to === '0x';
+  const hasDeploymentData =
+    typeof data === 'string' && data.length > 2 && data !== '0x';
+  return hasNoRecipient && hasDeploymentData;
+}
+
+
 // Map API transactionCategory to TransactionType for legacy modal
 export function resolveTransactionType(
   tx: TransactionViewModel,
@@ -357,6 +378,12 @@ export function resolveTransactionType(
     if (tx.amounts?.from) {
       return TransactionType.simpleSend;
     }
+  }
+
+  // Fall back to txParams shape: a missing recipient + deployment bytecode is
+  // a contract deployment that the backend simply didn't tag.
+  if (isContractDeploymentTxParams(tx.txParams)) {
+    return TransactionType.deployContract;
   }
 
   // Detect Merkl claim transactions — only when the tx would otherwise be
