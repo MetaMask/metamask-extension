@@ -32,8 +32,6 @@ export type SnapKeyringV2AdaptedAsV1Builder = {
  */
 export type SnapKeyringV2Builder = {
   (keyring: Keyring): SnapKeyringV2;
-  // We use the same keyring type (v2 type here) even for the v1 adapter. Otherwise, that would conflict with
-  // the existing legacy Snap keyring.
   type: KeyringType.Snap;
 };
 
