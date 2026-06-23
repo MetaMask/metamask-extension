@@ -2,6 +2,19 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { Driver } from '../../../webdriver/driver';
 import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 
+export type NotificationPreferenceSection =
+  | 'walletActivity'
+  | 'perps'
+  | 'marketing'
+  | 'agenticCli';
+
+const NOTIFICATION_PREFERENCE_SECTIONS: NotificationPreferenceSection[] = [
+  'walletActivity',
+  'perps',
+  'marketing',
+  'agenticCli',
+];
+
 class NotificationsSettingsPage {
   private driver: Driver;
 
@@ -21,26 +34,22 @@ class NotificationsSettingsPage {
     )}-notifications-settings-toggle-${elementType}"]`;
   };
 
-  private readonly walletActivitySectionButton =
-    '[data-testid="notifications-settings-section-walletActivity"]';
+  private readonly sectionButton = (section: NotificationPreferenceSection) =>
+    `[data-testid="notifications-settings-section-${section}"]`;
 
-  private readonly marketingSectionButton =
-    '[data-testid="notifications-settings-section-marketing"]';
+  private readonly sectionContent = (section: NotificationPreferenceSection) =>
+    `[data-testid="notifications-settings-section-content-${section}"]`;
+
+  private readonly sectionInAppNotificationsToggle = (
+    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
+  ) => `[data-testid="${section}-in-app-notifications-toggle-box"]`;
+
+  private readonly sectionInAppNotificationsInput = (
+    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
+  ) => `[data-testid="${section}-in-app-notifications-toggle-input"]`;
 
   private readonly headerBackButton =
     '[data-testid="settings-header-back-button"]';
-
-  private readonly walletActivitySectionContent =
-    '[data-testid="notifications-settings-section-content-walletActivity"]';
-
-  private readonly marketingSectionContent =
-    '[data-testid="notifications-settings-section-content-marketing"]';
-
-  private readonly marketingInAppNotificationsToggle =
-    '[data-testid="marketing-in-app-notifications-toggle-box"]';
-
-  private readonly marketingInAppNotificationsInput =
-    '[data-testid="marketing-in-app-notifications-toggle-input"]';
 
   private readonly notificationsPerAccountSection =
     '[data-testid="notifications-settings-per-account"]';
@@ -81,8 +90,9 @@ class NotificationsSettingsPage {
     const selectors = [
       this.notificationsPerAccountSection,
       this.notificationsPerTypesSection,
-      this.walletActivitySectionButton,
-      this.marketingSectionButton,
+      ...NOTIFICATION_PREFERENCE_SECTIONS.map((section) =>
+        this.sectionButton(section),
+      ),
     ];
     try {
       for (const selector of selectors) {
@@ -125,10 +135,10 @@ class NotificationsSettingsPage {
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       try {
         await this.driver.waitForElementToStopMoving(
-          this.marketingSectionButton,
+          this.sectionButton('marketing'),
         );
-        await this.driver.clickElement(this.marketingSectionButton);
-        await this.driver.waitForSelector(this.marketingSectionContent, {
+        await this.driver.clickElement(this.sectionButton('marketing'));
+        await this.driver.waitForSelector(this.sectionContent('marketing'), {
           timeout: 3000,
         });
         await this.goToMainSettings();
@@ -150,39 +160,38 @@ class NotificationsSettingsPage {
     );
   }
 
-  private async goToMainSettings(): Promise<void> {
-    if (
-      await this.driver.isElementPresentAndVisible(
-        this.walletActivitySectionContent,
-        this.shortPresenceTimeoutMs,
-      )
-    ) {
-      await this.driver.clickElement(this.headerBackButton);
-      await this.driver.waitForSelector(this.notificationsPerTypesSection);
+  async assertNotificationPreferenceSectionsListed(): Promise<void> {
+    console.log('Checking notification preference sections are listed');
+    await this.waitForNotificationPreferenceSections();
+
+    for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
+      await this.driver.waitForSelector(this.sectionButton(section));
     }
 
-    if (
-      await this.driver.isElementPresentAndVisible(
-        this.marketingSectionContent,
-        this.shortPresenceTimeoutMs,
-      )
-    ) {
-      await this.driver.clickElement(this.headerBackButton);
-      await this.driver.waitForSelector(this.notificationsPerTypesSection);
+    console.log('All notification preference sections are listed');
+  }
+
+  private async goToMainSettings(): Promise<void> {
+    for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
+      if (
+        await this.driver.isElementPresentAndVisible(
+          this.sectionContent(section),
+          this.shortPresenceTimeoutMs,
+        )
+      ) {
+        await this.driver.clickElement(this.headerBackButton);
+        await this.driver.waitForSelector(this.notificationsPerTypesSection);
+        return;
+      }
     }
   }
 
   private async goToNotificationSection(
-    section: 'walletActivity' | 'marketing',
+    section: NotificationPreferenceSection,
   ): Promise<void> {
-    const sectionContent =
-      section === 'walletActivity'
-        ? this.walletActivitySectionContent
-        : this.marketingSectionContent;
-
     if (
       await this.driver.isElementPresentAndVisible(
-        sectionContent,
+        this.sectionContent(section),
         this.shortPresenceTimeoutMs,
       )
     ) {
@@ -192,19 +201,16 @@ class NotificationsSettingsPage {
     await this.goToMainSettings();
     await this.waitForNotificationPreferenceSections();
 
-    const sectionButton =
-      section === 'walletActivity'
-        ? this.walletActivitySectionButton
-        : this.marketingSectionButton;
-
     const maxAttempts = 15;
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      await this.driver.waitForElementToStopMoving(sectionButton);
-      await this.driver.clickElement(sectionButton);
+      await this.driver.waitForElementToStopMoving(this.sectionButton(section));
+      await this.driver.clickElement(this.sectionButton(section));
 
       try {
-        await this.driver.waitForSelector(sectionContent, { timeout: 3000 });
+        await this.driver.waitForSelector(this.sectionContent(section), {
+          timeout: 3000,
+        });
         return;
       } catch {
         console.log(
@@ -251,7 +257,7 @@ class NotificationsSettingsPage {
         break;
       case 'product':
         await this.goToNotificationSection('marketing');
-        selector = this.marketingInAppNotificationsInput;
+        selector = this.sectionInAppNotificationsInput('marketing');
         break;
       case 'address':
         if (!address) {
@@ -268,13 +274,60 @@ class NotificationsSettingsPage {
         throw new Error(`Invalid toggle type: ${toggleType}`);
     }
 
-    console.log(
-      `Checking if ${toggleType} notifications ${description} are ${expectedState}`,
-    );
+    await this.assertToggleInputState({
+      selector,
+      description: `${toggleType} notifications ${description}`,
+      expectedState,
+    });
+  }
+
+  async navigateToNotificationPreferenceSection(
+    section: NotificationPreferenceSection,
+  ): Promise<void> {
+    await this.goToNotificationSection(section);
+  }
+
+  async getSectionInAppNotificationState(
+    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
+  ): Promise<'enabled' | 'disabled'> {
+    await this.goToNotificationSection(section);
+    const selector = this.sectionInAppNotificationsInput(section);
+    await this.driver.waitForElementToStopMoving(selector);
+    const toggle = await this.driver.findElement(selector);
+    return (await toggle.getAttribute('value')) === 'true'
+      ? 'enabled'
+      : 'disabled';
+  }
+
+  async checkSectionInAppNotificationState({
+    section,
+    expectedState,
+  }: {
+    section: Exclude<NotificationPreferenceSection, 'walletActivity'>;
+    expectedState: 'enabled' | 'disabled';
+  }): Promise<void> {
+    await this.goToNotificationSection(section);
+    await this.assertToggleInputState({
+      selector: this.sectionInAppNotificationsInput(section),
+      description: `${section} in-app notifications`,
+      expectedState,
+    });
+  }
+
+  private async assertToggleInputState({
+    selector,
+    description,
+    expectedState,
+  }: {
+    selector: string;
+    description: string;
+    expectedState: 'enabled' | 'disabled';
+  }): Promise<void> {
+    console.log(`Checking if ${description} are ${expectedState}`);
     const expectedValue = expectedState === 'enabled' ? 'true' : 'false';
 
     const maxRetries = 5;
-    const retryInterval = 1000; // 1 second
+    const retryInterval = 1000;
     let attempts = 0;
 
     try {
@@ -283,7 +336,7 @@ class NotificationsSettingsPage {
         const toggle = await this.driver.findElement(selector);
         if ((await toggle.getAttribute('value')) === expectedValue) {
           console.log(
-            `Successfully verified ${toggleType} notifications ${description} to be ${expectedState}`,
+            `Successfully verified ${description} to be ${expectedState}`,
           );
           return;
         }
@@ -291,12 +344,12 @@ class NotificationsSettingsPage {
         await new Promise((resolve) => setTimeout(resolve, retryInterval));
       }
       throw new Error(
-        `Expected ${toggleType} notifications ${description} state to be: ${expectedState}`,
+        `Expected ${description} state to be: ${expectedState}`,
       );
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(
-          `Failed to verify ${toggleType} notifications ${description} state: ${error.message}`,
+          `Failed to verify ${description} state: ${error.message}`,
         );
       }
       throw error;
@@ -328,7 +381,7 @@ class NotificationsSettingsPage {
         break;
       case 'product':
         await this.goToNotificationSection('marketing');
-        selector = this.marketingInAppNotificationsToggle;
+        selector = this.sectionInAppNotificationsToggle('marketing');
         console.log('Clicking marketing in-app notifications toggle');
         break;
       case 'address':
@@ -347,13 +400,27 @@ class NotificationsSettingsPage {
         throw new Error(`Invalid toggle type: ${toggleType}`);
     }
 
+    await this.clickToggle(selector, `${toggleType} notifications toggle`);
+  }
+
+  async clickSectionInAppNotificationToggle(
+    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
+  ): Promise<void> {
+    await this.goToNotificationSection(section);
+    await this.clickToggle(
+      this.sectionInAppNotificationsToggle(section),
+      `${section} in-app notifications toggle`,
+    );
+  }
+
+  private async clickToggle(selector: string, description: string) {
     try {
       await this.driver.waitForElementToStopMoving(selector);
       await this.driver.clickElement(selector);
       await this.driver.waitForElementToStopMoving(selector);
-      console.log(`Successfully clicked ${toggleType} notifications toggle`);
+      console.log(`Successfully clicked ${description}`);
     } catch (error) {
-      console.error(`Error clicking ${toggleType} notifications toggle`, error);
+      console.error(`Error clicking ${description}`, error);
       throw error;
     }
   }
@@ -381,6 +448,7 @@ class NotificationsSettingsPage {
     });
     return notificationsSettingsPage;
   }
+
 }
 
 export default NotificationsSettingsPage;
