@@ -4,12 +4,10 @@ import { BackupAndSyncFeaturesToggles } from '../../../components/app/identity/b
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { getBackupAndSyncOnboardingToggleState } from '../../../selectors';
-import { SettingItemConfig } from '../types';
+import { SettingItemConfig, SettingItemProps } from '../types';
 import { SettingsTab } from '../shared';
 
-type BackupAndSyncTabProps = {
-  isOnboarding?: boolean;
-};
+type BackupAndSyncTabProps = React.PropsWithChildren<SettingItemProps>;
 
 const BackupAndSyncToggleSettingItem = ({
   isOnboarding = false,
