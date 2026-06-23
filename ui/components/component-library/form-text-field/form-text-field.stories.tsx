@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 
