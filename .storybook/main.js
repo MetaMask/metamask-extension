@@ -61,10 +61,17 @@ module.exports = {
       config.resolve.alias[
         `../../../hooks/hardware-wallets/${hookModule}$`
       ] = hwSwapHooksMock;
+      config.resolve.alias[
+        `../../../../hooks/hardware-wallets/${hookModule}$`
+      ] = hwSwapHooksMock;
     }
     config.resolve.alias['../../../hooks/bridge/useSubmitBridgeTransaction$'] =
       hwSwapHooksMock;
+    config.resolve.alias['../../../../hooks/bridge/useSubmitBridgeTransaction$'] =
+      hwSwapHooksMock;
     config.resolve.alias['../../../hooks/bridge/useBridgeNavigation$'] =
+      hwSwapHooksMock;
+    config.resolve.alias['../../../../hooks/bridge/useBridgeNavigation$'] =
       hwSwapHooksMock;
     config.resolve.fallback = {
       child_process: false,
