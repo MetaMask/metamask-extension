@@ -35,6 +35,8 @@ import { TokenIcon } from '../../token-icon';
 
 export { ConfirmInfoRowSize };
 
+const DEFAULT_ROW_PADDING_LEFT = 8;
+
 type PayWithRowContentProps = {
   displayToken: {
     chainId: string;
@@ -50,6 +52,12 @@ type PayWithRowContentProps = {
 
 export type PayWithRowProps = {
   variant?: ConfirmInfoRowSize;
+  /**
+   * Indents the row so its label aligns with `Default`-sized sibling rows when
+   * it is rendered inside a `ConfirmInfoSection`.
+   * Only required for `small` variant which has no left padding.
+   */
+  isInConfirmInfoSection?: boolean;
 };
 
 export const PayWithRowSkeleton = () => {
@@ -77,6 +85,7 @@ export const PayWithRowSkeleton = () => {
 
 export function PayWithRow({
   variant = ConfirmInfoRowSize.Small,
+  isInConfirmInfoSection = false,
 }: PayWithRowProps = {}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
@@ -132,6 +141,7 @@ export function PayWithRow({
         isPerpsWithdraw={isPerpsWithdraw}
         ownerId={currentConfirmation?.id ?? ''}
         rowVariant={variant}
+        isInConfirmInfoSection={isInConfirmInfoSection}
       />
     </>
   );
@@ -145,9 +155,11 @@ function PayWithRowInline({
   ownerId,
   isPerpsWithdraw,
   rowVariant,
+  isInConfirmInfoSection,
 }: PayWithRowContentProps & {
   ownerId: string;
   rowVariant: ConfirmInfoRowSize;
+  isInConfirmInfoSection: boolean;
 }) {
   const t = useI18nContext();
 
@@ -158,6 +170,11 @@ function PayWithRowInline({
       data-testid="pay-with-row"
       label={isPerpsWithdraw ? t('withdrawTo') : t('payWith')}
       rowVariant={rowVariant}
+      style={
+        isInConfirmInfoSection
+          ? { paddingLeft: DEFAULT_ROW_PADDING_LEFT }
+          : undefined
+      }
     >
       <Box
         data-testid="pay-with-pill"
