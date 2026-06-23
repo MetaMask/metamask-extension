@@ -540,7 +540,7 @@
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "wait-on>axios": true,
-        "@metamask/ppom-validator>crypto-js": true
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": true
       }
     },
     "@ledgerhq/hw-app-eth": {
@@ -871,7 +871,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/network-controller>@metamask/eth-block-tracker": {
@@ -883,7 +883,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/eth-hd-keyring": {
@@ -973,7 +973,7 @@
     },
     "@metamask/controller-utils>@metamask/eth-query": {
       "packages": {
-        "@metamask/ppom-validator>json-rpc-random-id": true,
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true,
         "watchify>xtend": true
       }
     },
@@ -2957,7 +2957,7 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@metamask/ppom-validator>crypto-js": {
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": {
       "globals": {
         "crypto": true,
         "define": true,
