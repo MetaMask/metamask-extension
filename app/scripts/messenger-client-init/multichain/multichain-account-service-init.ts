@@ -52,7 +52,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
   };
 
-  const providerConfigs: { [key: string]: any } = {
+  const providerConfigs: Record<string, typeof snapAccountProviderConfig> = {
     [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
     [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
     [TRX_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
@@ -122,8 +122,18 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
   const initialStellarEnabled = isMultichainFeatureEnabled(
     initialRemoteFeatureFlagsState?.remoteFeatureFlags?.stellarAccounts,
   );
-  xlmProvider.setEnabled(initialStellarEnabled);
 
+  // Defer enabling Stellar provider to avoid race condition with SnapKeyring registration
+  // on first load. This allows the SnapKeyring handler to be registered before the Snap
+  // tries to sync accounts.
+  if (initialStellarEnabled) {
+    Promise.resolve().then(() => {
+      xlmProvider.setEnabled(true);
+    });
+  }
+
+  // Subscribe to feature flag changes
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (controllerMessenger.subscribe as any)(
     'RemoteFeatureFlagController:stateChange',
     previousValueComparator((prevState, currState) => {
