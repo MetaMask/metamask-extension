@@ -28,7 +28,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { buildSupportLinkWithUserData } from '../../../../../shared/lib/build-support-link';
+import {
+  buildSupportLinkWithUserData,
+  type SupportLinkUserData,
+} from '../../../../../shared/lib/build-support-link';
 import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
 
@@ -51,13 +54,7 @@ const VisitSupportDataConsentModal = ({
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
   const handleClickContactSupportButton = useCallback(
-    (params: {
-      version: string;
-      profileId?: string;
-      canonicalProfileId?: string;
-      analyticsId?: string;
-      shieldCustomerId?: string;
-    }) => {
+    (params: SupportLinkUserData) => {
       onClose();
       const supportLinkWithUserId = buildSupportLinkWithUserData(
         SUPPORT_LINK as string,

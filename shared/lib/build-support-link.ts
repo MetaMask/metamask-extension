@@ -7,10 +7,11 @@ export type SupportLinkUserData = {
 };
 
 /**
- * Builds a MetaMask support URL with optional user-identifying query parameters.
+ * Builds a MetaMask support URL with user-identifying query parameters.
  *
  * @param supportLink - Base support URL from environment configuration.
- * @param userData - Optional user data to append as query parameters.
+ * @param userData - User data to append as query parameters. `version` is required;
+ * other fields are included only when provided.
  * @param userData.version
  * @param userData.profileId
  * @param userData.canonicalProfileId
