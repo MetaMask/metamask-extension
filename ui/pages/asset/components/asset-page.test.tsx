@@ -492,6 +492,38 @@ describe('AssetPage', () => {
     expect(queryByTestId('eth-overview-send')).toBeInTheDocument();
   });
 
+  it('uses the Arc native balance on the ERC20 USDC token page', () => {
+    (
+      getAssetsBySelectedAccountGroup as unknown as jest.Mock
+    ).mockReturnValueOnce({
+      [CHAIN_IDS.ARC]: [
+        {
+          assetId: '0x0000000000000000000000000000000000000000',
+          isNative: true,
+          rawBalance: '0x75bcd15',
+          balance: '123.456789',
+          fiat: { balance: 123.456789 },
+        },
+      ],
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage
+        asset={{
+          ...token,
+          chainId: CHAIN_IDS.ARC,
+          address: '0x3600000000000000000000000000000000000000',
+          symbol: 'USDC',
+          decimals: 6,
+        }}
+        optionsButton={null}
+      />,
+      store,
+    );
+
+    expect(queryByTestId('eth-overview-send')).toBeInTheDocument();
+  });
+
   it('should show the Swap button if chain id is supported', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
