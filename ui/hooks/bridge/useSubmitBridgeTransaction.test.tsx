@@ -200,6 +200,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       setBackgroundConnection({
         submitTx: submitTxSpy,
         submitIntent: submitIntentSpy,
+        getLocation: jest.fn().mockResolvedValue('Main View'),
         getStatePatches: jest.fn(),
         setEnabledAllPopularNetworks: jest.fn(),
         resetState: () => mockResetState(),

@@ -74,7 +74,6 @@ export function SwapAgainButton({
         token: null,
         search: searchParams,
         isEntrypoint: true,
-        location,
       });
     });
   }, [dispatch, navigateToBridgePage, searchParams, sourceToken?.symbol, destinationToken?.symbol]);

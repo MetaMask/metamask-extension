@@ -98,6 +98,9 @@ export const resetBridgeController = () => {
 export const setBridgeLocation = (location: MetaMetricsSwapsEventSource) =>
   callBridgeControllerMethod('setLocation', location);
 
+export const getBridgeLocation = (): Promise<MetaMetricsSwapsEventSource> =>
+  submitRequestToBackground('getLocation');
+
 export const trackUnifiedSwapBridgeEvent = <
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

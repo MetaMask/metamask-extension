@@ -13,7 +13,10 @@ import {
   submitBridgeIntent,
   submitBridgeTx,
 } from '../../ducks/bridge-status/actions';
-import { setWasTxDeclined } from '../../ducks/bridge/actions';
+import {
+  getBridgeLocation,
+  setWasTxDeclined,
+} from '../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
   getFromAccount,
@@ -49,7 +52,7 @@ export const isApprovalTxError = (error: unknown): boolean => {
 
 export default function useSubmitBridgeTransaction() {
   const navigate = useNavigate();
-  const { navigateToBridgePage, navigateToHwSigningPage, metricsLocation } =
+  const { navigateToBridgePage, navigateToHwSigningPage } =
     useBridgeNavigation();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
@@ -111,12 +114,15 @@ export default function useSubmitBridgeTransaction() {
     }
 
     try {
+      const location = await getBridgeLocation();
+      console.log('HELLO location', location);
+
       if (intentData) {
         await dispatch(
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
-            location: metricsLocation,
+            location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
@@ -134,7 +140,7 @@ export default function useSubmitBridgeTransaction() {
               fromTokenBalanceInUsd,
               getHasSufficientGasForQuote(quoteResponse),
             ),
-            metricsLocation,
+            location,
             toToken?.securityData?.type ?? null,
           ),
         );

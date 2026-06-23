@@ -158,7 +158,6 @@ const useBridging = () => {
         token: tokenToUse,
         search,
         isEntrypoint: true,
-        location,
       });
     },
     [
