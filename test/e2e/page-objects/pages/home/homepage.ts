@@ -16,6 +16,14 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
+// Stopgap. On constrained 2-core CI, non-EVM (Solana/Bitcoin) snap account
+// discovery hits an unmocked-network retry storm (~9s: 2s timeout × 3 attempts
+// with doubling backoff) before the icons render, landing right at the default
+// 10s wait. Give margin until the root-cause mock fix lands.
+// TODO(#43817): remove this and use the default timeout once the snap discovery
+// mocks are globalized in `mock-e2e.js`. Not a Sentry/v10 issue.
+const NON_EVM_ICON_TIMEOUT = 20_000;
+
 class HomePage {
   protected driver: Driver;
 
@@ -218,8 +226,14 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
-    await this.driver.waitForSelector(this.solanaAccountIcon);
-    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+    // See `NON_EVM_ICON_TIMEOUT` — stopgap for the snap discovery retry storm
+    // on constrained CI. Still polled: returns as soon as the icons render.
+    await this.driver.waitForSelector(this.solanaAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
+    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
