@@ -61,6 +61,7 @@ export const PerpsWatchlist = ({ markets }: PerpsWatchlistProps) => {
             price={market.price}
             change24hPercent={market.change24hPercent}
             volume={market.volume}
+            maxLeverage={market.maxLeverage}
             onClick={handleMarketClick}
             data-testid={`perps-watchlist-${market.symbol}`}
           />
