@@ -12,9 +12,9 @@ import {
 } from '@metamask/design-system-react';
 import { AddDeviceSettingsStep } from '../constant';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MultichainAccountList } from '../../../../components/multichain-accounts/multichain-account-list';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
+import { WalletSelectionList } from './wallet-selection-list';
 
 type AddWalletsProps = {
   onAddWallets: (type: AddDeviceSettingsStep) => void;
@@ -44,14 +44,6 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
     ),
   );
 
-  const handleAccountClick = useCallback((accountGroupId: AccountGroupId) => {
-    setSelectedAccountGroups((prev) =>
-      prev.includes(accountGroupId)
-        ? prev.filter((id) => id !== accountGroupId)
-        : [...prev, accountGroupId],
-    );
-  }, []);
-
   const onContinue = useCallback(() => {
     onAddWallets(AddDeviceSettingsStep.SyncingWallets);
   }, [onAddWallets]);
@@ -79,11 +71,10 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
         </Text>
       </Box>
       <ScrollContainer className="flex flex-1 flex-col overflow-y-auto mt-4">
-        <MultichainAccountList
+        <WalletSelectionList
           wallets={sortedWallets}
           selectedAccountGroups={selectedAccountGroups}
-          handleAccountClick={handleAccountClick}
-          showAccountCheckbox={true}
+          onSelectionChange={setSelectedAccountGroups}
         />
       </ScrollContainer>
       <Box className="w-full mt-auto" paddingHorizontal={4}>
