@@ -323,8 +323,13 @@ const DefaultNetworks = memo(() => {
         return null;
       }
 
-      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-        getItemCallbacks(network);
+      const {
+        onDelete,
+        onDeleteMenuLabel,
+        onEdit,
+        onDiscoverClick,
+        onRpcSelect,
+      } = getItemCallbacks(network);
       const iconSrc = getNetworkIcon(network);
       const isSelected = isSingleNetworkSelected(hexChainId as Hex);
 
@@ -354,6 +359,7 @@ const DefaultNetworks = memo(() => {
             await dispatch(hideModal());
           }}
           onDeleteClick={onDelete}
+          deleteMenuLabel={onDeleteMenuLabel}
           onEditClick={onEdit}
           onDiscoverClick={onDiscoverClick}
           onRpcEndpointClick={onRpcSelect}
