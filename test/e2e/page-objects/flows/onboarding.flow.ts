@@ -680,10 +680,10 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
     driver,
   );
   if (toggleBasicFunctionality) {
-    await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+    await onboardingPrivacySettingsPage.toggleBasicFunctionality();
   }
   if (toggleAssetsPrivacy) {
-    await onboardingPrivacySettingsPage.toggleAssetsSettings();
+    await onboardingPrivacySettingsPage.toggleAdvancedPrivacySettings();
   }
 
   await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();

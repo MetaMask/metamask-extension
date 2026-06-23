@@ -89,6 +89,7 @@ export const BasicFunctionalityToggleItem = ({
       value={value}
       onToggle={handleToggle}
       dataTestId="basic-functionality-toggle"
+      containerDataTestId="basic-functionality-toggle-container"
     />
   );
 };

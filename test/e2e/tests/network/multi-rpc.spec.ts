@@ -533,7 +533,7 @@ describe('MultiRpc:', function (this: Suite) {
           driver,
         );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
-        await onboardingPrivacySettingsPage.navigateToGeneralSettings();
+        await onboardingPrivacySettingsPage.navigateToNetworkRpcSettings();
 
         // open edit network modal during onboarding and select the second rpc
         await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');

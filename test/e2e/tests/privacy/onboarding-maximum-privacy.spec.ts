@@ -98,15 +98,15 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
 
-        // Navigate to privacy settings and toggle them OFF (maximum privacy)
+        // Navigate to the onboarding privacy settings and turn the privacy toggles off.
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
           driver,
         );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAssetsSettings();
+        await onboardingPrivacySettingsPage.toggleBasicFunctionality();
+        await onboardingPrivacySettingsPage.toggleAdvancedPrivacySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
@@ -205,15 +205,15 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
 
-        // Navigate to privacy settings and toggle them OFF (maximum privacy)
+        // Navigate to the onboarding privacy settings and turn the privacy toggles off.
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
           driver,
         );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAssetsSettings();
+        await onboardingPrivacySettingsPage.toggleBasicFunctionality();
+        await onboardingPrivacySettingsPage.toggleAdvancedPrivacySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();

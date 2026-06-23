@@ -3,26 +3,39 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingPrivacySettingsPage {
   private driver: Driver;
 
-  private readonly assetsSettings = '[data-testid="category-item-Assets"]';
+  private readonly privacySettingsLanding =
+    '[data-testid="privacy-settings-landing"]';
 
-  private readonly categoryBackButton = '[data-testid="category-back-button"]';
+  private readonly privacySettingsItem =
+    '[data-testid="onboarding-privacy-settings-item-privacy"]';
 
-  private readonly generalSettings = '[data-testid="category-item-General"]';
+  private readonly backupAndSyncSettingsItem =
+    '[data-testid="onboarding-privacy-settings-item-backup-and-sync"]';
+
+  private readonly networkRpcSettingsItem =
+    '[data-testid="onboarding-privacy-settings-item-network-rpc"]';
 
   private readonly privacySettingsBackButton =
     '[data-testid="privacy-settings-back-button"]';
 
-  private readonly securitySettings = '[data-testid="category-item-Security"]';
+  private readonly subPageBackButton =
+    '[data-testid="privacy-settings-sub-page-back-button"]';
 
-  // General settings
+  private readonly privacySettingsDetail =
+    '[data-testid="privacy-settings-settings"]';
+
+  private readonly privacySettingsNetworkRpc =
+    '[data-testid="privacy-settings-network-rpc"]';
+
+  // Privacy subpage
   private readonly basicFunctionalityCheckbox =
     '[data-testid="basic-configuration-checkbox"]';
 
   private readonly basicFunctionalityToggle =
-    '[data-testid="basic-functionality-toggle"] .toggle-button';
+    '[data-testid="basic-functionality-toggle-container"] .toggle-button';
 
   private readonly basicFunctionalityToggleOffState =
-    '[data-testid="basic-functionality-toggle"] .toggle-button.toggle-button--off';
+    '[data-testid="basic-functionality-toggle-container"] .toggle-button.toggle-button--off';
 
   private readonly basicFunctionalityTurnOffButton =
     '[data-testid="basic-configuration-modal-toggle-button"]';
@@ -32,9 +45,7 @@ class OnboardingPrivacySettingsPage {
     tag: 'h4',
   };
 
-  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
-
-  // General settings - add custom network section
+  // Network RPC subpage
   private readonly addCustomNetworkButton = {
     text: 'Add a network',
     tag: 'p',
@@ -67,10 +78,8 @@ class OnboardingPrivacySettingsPage {
 
   private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
 
-  // Assets settings
+  // Shared toggle state used on the privacy subpage
   private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
-
-  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -79,9 +88,10 @@ class OnboardingPrivacySettingsPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.generalSettings,
-        this.assetsSettings,
-        this.securitySettings,
+        this.privacySettingsLanding,
+        this.privacySettingsItem,
+        this.backupAndSyncSettingsItem,
+        this.networkRpcSettingsItem,
       ]);
     } catch (e) {
       console.log(
@@ -108,7 +118,7 @@ class OnboardingPrivacySettingsPage {
     currencySymbol: string,
     networkUrl: string,
   ): Promise<void> {
-    await this.navigateToGeneralSettings();
+    await this.navigateToNetworkRpcSettings();
     console.log('Adding custom network');
     await this.driver.clickElement(this.addCustomNetworkButton);
     await this.driver.waitForMultipleSelectors([
@@ -128,7 +138,7 @@ class OnboardingPrivacySettingsPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddCustomNetworkButton,
     );
-    // Navigate back to default privacy settings
+    // Navigate back to the onboarding privacy landing page
     await this.navigateBackToSettingsPage();
   }
 
@@ -151,16 +161,30 @@ class OnboardingPrivacySettingsPage {
    */
   async navigateBackToSettingsPage(): Promise<void> {
     console.log('Navigate back to onboarding privacy settings page');
-    // Wait until the onboarding carousel has stopped moving otherwise the click has no effect.
-    await this.driver.clickElement(this.categoryBackButton);
-    await this.driver.waitForElementToStopMoving(this.categoryBackButton);
+    await this.driver.waitForElementToStopMoving(this.subPageBackButton);
+    await this.driver.clickElement(this.subPageBackButton);
+    await this.checkPageIsLoaded();
   }
 
-  async navigateToGeneralSettings(): Promise<void> {
-    console.log('Navigate to general settings');
+  async navigateToPrivacySettings(): Promise<void> {
+    console.log('Navigate to privacy settings');
     await this.checkPageIsLoaded();
-    await this.driver.clickElement(this.generalSettings);
-    await this.driver.waitForSelector(this.generalSettingsMessage);
+    await this.driver.clickElement(this.privacySettingsItem);
+    await this.driver.waitForMultipleSelectors([
+      this.privacySettingsDetail,
+      this.subPageBackButton,
+    ]);
+  }
+
+  async navigateToNetworkRpcSettings(): Promise<void> {
+    console.log('Navigate to network RPC settings');
+    await this.checkPageIsLoaded();
+    await this.driver.clickElement(this.networkRpcSettingsItem);
+    await this.driver.waitForMultipleSelectors([
+      this.privacySettingsDetail,
+      this.privacySettingsNetworkRpc,
+      this.subPageBackButton,
+    ]);
   }
 
   /**
@@ -175,13 +199,11 @@ class OnboardingPrivacySettingsPage {
   }
 
   /**
-   * Go to assets settings and toggle options, then navigate back.
+   * Go to the privacy subpage, turn off the advanced privacy toggles, then navigate back.
    */
-  async toggleAssetsSettings(): Promise<void> {
-    console.log('Toggle advanced assets settings in privacy settings');
-    await this.checkPageIsLoaded();
-    await this.driver.clickElement(this.assetsSettings);
-    await this.driver.waitForSelector(this.assetsSettingsMessage);
+  async toggleAdvancedPrivacySettings(): Promise<void> {
+    console.log('Toggle advanced privacy settings');
+    await this.navigateToPrivacySettings();
     await Promise.all(
       (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
         (toggle) => toggle.click(),
@@ -194,11 +216,12 @@ class OnboardingPrivacySettingsPage {
   }
 
   /**
-   * Go to general settings and toggle options, then navigate back.
+   * Go to the privacy subpage, turn off basic functionality, then navigate back.
    */
-  async toggleBasicFunctionalitySettings(): Promise<void> {
-    console.log('Toggle basic functionality settings in privacy settings');
-    await this.navigateToGeneralSettings();
+  async toggleBasicFunctionality(): Promise<void> {
+    console.log('Toggle basic functionality');
+    await this.navigateToPrivacySettings();
+    await this.driver.waitForSelector(this.basicFunctionalityToggle);
     await this.driver.clickElement(this.basicFunctionalityToggle);
     await this.driver.waitForSelector(this.basicFunctionalityTurnOffMessage);
     await this.driver.clickElement(this.basicFunctionalityCheckbox);
