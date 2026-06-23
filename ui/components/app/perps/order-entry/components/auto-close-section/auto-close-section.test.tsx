@@ -1044,4 +1044,118 @@ describe('AutoCloseSection', () => {
       expect(onTakeProfitPriceChange).not.toHaveBeenCalled();
     });
   });
+
+  describe('leverage changes', () => {
+    it('rescales TP/SL prices to preserve user-set RoE% when leverage changes', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      const onStopLossPriceChange = jest.fn();
+      const entryPrice = 1000;
+      // 15% TP RoE at 10x leverage on long => priceChange% = 1.5%, price = 1015.
+      const tpPriceAt10x = '1015';
+      // -15% SL RoE at 10x leverage on long => price = 985.
+      const slPriceAt10x = '985';
+
+      const { rerender } = renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          currentPrice={entryPrice}
+          leverage={10}
+          takeProfitPrice={tpPriceAt10x}
+          stopLossPrice={slPriceAt10x}
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      // Bumping leverage to 20x should halve the price-distance from entry so
+      // that priceChange% * leverage = same RoE the user set.
+      rerender(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          currentPrice={entryPrice}
+          leverage={20}
+          takeProfitPrice={tpPriceAt10x}
+          stopLossPrice={slPriceAt10x}
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+      );
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('1007.5');
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('992.5');
+    });
+
+    it('does not call price handlers when leverage is unchanged', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      const onStopLossPriceChange = jest.fn();
+
+      const { rerender } = renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          currentPrice={1000}
+          leverage={10}
+          takeProfitPrice="1015"
+          stopLossPrice="985"
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      rerender(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          currentPrice={1000}
+          leverage={10}
+          takeProfitPrice="1015"
+          stopLossPrice="985"
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+      );
+
+      expect(onTakeProfitPriceChange).not.toHaveBeenCalled();
+      expect(onStopLossPriceChange).not.toHaveBeenCalled();
+    });
+
+    it('skips empty TP/SL prices when leverage changes', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      const onStopLossPriceChange = jest.fn();
+
+      const { rerender } = renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          currentPrice={1000}
+          leverage={10}
+          takeProfitPrice=""
+          stopLossPrice=""
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      rerender(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          currentPrice={1000}
+          leverage={20}
+          takeProfitPrice=""
+          stopLossPrice=""
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+      );
+
+      expect(onTakeProfitPriceChange).not.toHaveBeenCalled();
+      expect(onStopLossPriceChange).not.toHaveBeenCalled();
+    });
+  });
 });
