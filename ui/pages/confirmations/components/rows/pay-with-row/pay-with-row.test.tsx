@@ -317,6 +317,26 @@ describe('PayWithRow', () => {
       expect(screen.queryByTestId('pay-with-arrow')).not.toBeInTheDocument();
     });
   });
+
+  describe('alignWithDefaultRows', () => {
+    it('indents the row to align with default-sized rows when set', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow alignWithDefaultRows />, store);
+
+      expect(screen.getByTestId('pay-with-row')).toHaveStyle({
+        paddingLeft: '8px',
+      });
+    });
+
+    it('does not indent the row by default', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow />, store);
+
+      expect(screen.getByTestId('pay-with-row')).not.toHaveStyle({
+        paddingLeft: '8px',
+      });
+    });
+  });
 });
 
 describe('PayWithRowSkeleton', () => {

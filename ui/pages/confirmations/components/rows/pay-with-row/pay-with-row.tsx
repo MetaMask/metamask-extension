@@ -35,6 +35,14 @@ import { TokenIcon } from '../../token-icon';
 
 export { ConfirmInfoRowSize };
 
+/**
+ * Left padding (in px) that `Default`-sized `ConfirmInfoRow`s add (`paddingLeft={2}`).
+ * A `Small` row has `paddingLeft: 0`, so when this row is rendered alongside
+ * default-sized rows inside a `ConfirmInfoSection` its label needs this padding
+ * to line up with its siblings.
+ */
+const DEFAULT_ROW_PADDING_LEFT = 8;
+
 type PayWithRowContentProps = {
   displayToken: {
     chainId: string;
@@ -50,6 +58,12 @@ type PayWithRowContentProps = {
 
 export type PayWithRowProps = {
   variant?: ConfirmInfoRowSize;
+  /**
+   * Indents the row so its label aligns with `Default`-sized sibling rows when
+   * it is rendered inside a `ConfirmInfoSection` alongside them. Only required
+   * for the `Small` variant, which otherwise has no left padding.
+   */
+  alignWithDefaultRows?: boolean;
 };
 
 export const PayWithRowSkeleton = () => {
@@ -77,6 +91,7 @@ export const PayWithRowSkeleton = () => {
 
 export function PayWithRow({
   variant = ConfirmInfoRowSize.Small,
+  alignWithDefaultRows = false,
 }: PayWithRowProps = {}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
@@ -132,6 +147,7 @@ export function PayWithRow({
         isPerpsWithdraw={isPerpsWithdraw}
         ownerId={currentConfirmation?.id ?? ''}
         rowVariant={variant}
+        alignWithDefaultRows={alignWithDefaultRows}
       />
     </>
   );
@@ -145,9 +161,11 @@ function PayWithRowInline({
   ownerId,
   isPerpsWithdraw,
   rowVariant,
+  alignWithDefaultRows,
 }: PayWithRowContentProps & {
   ownerId: string;
   rowVariant: ConfirmInfoRowSize;
+  alignWithDefaultRows: boolean;
 }) {
   const t = useI18nContext();
 
@@ -158,6 +176,11 @@ function PayWithRowInline({
       data-testid="pay-with-row"
       label={isPerpsWithdraw ? t('withdrawTo') : t('payWith')}
       rowVariant={rowVariant}
+      style={
+        alignWithDefaultRows
+          ? { paddingLeft: DEFAULT_ROW_PADDING_LEFT }
+          : undefined
+      }
     >
       <Box
         data-testid="pay-with-pill"
