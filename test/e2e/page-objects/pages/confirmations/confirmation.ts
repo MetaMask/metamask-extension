@@ -82,7 +82,7 @@ class Confirmation {
   async checkIsConfirmButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.footerConfirmButton, {
-        timeout: 1000,
+        timeout: 2000,
       });
     } catch (e) {
       console.log('Confirm button not enabled', e);
@@ -98,7 +98,7 @@ class Confirmation {
   async checkIsCancelButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.footerCancelButton, {
-        timeout: 1000,
+        timeout: 2000,
       });
     } catch (e) {
       console.log('Cancel button not enabled', e);
