@@ -12,7 +12,10 @@ import { useDispatch } from 'react-redux';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
-import { setBridgeLocation, trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
+import {
+  setBridgeLocation,
+  trackUnifiedSwapBridgeEvent,
+} from '../../../ducks/bridge/actions';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionForward } from '../../../components/ui/transition';
@@ -76,7 +79,13 @@ export function SwapAgainButton({
         isEntrypoint: true,
       });
     });
-  }, [dispatch, navigateToBridgePage, searchParams, sourceToken?.symbol, destinationToken?.symbol]);
+  }, [
+    dispatch,
+    navigateToBridgePage,
+    searchParams,
+    sourceToken?.symbol,
+    destinationToken?.symbol,
+  ]);
 
   if (!searchParams) {
     return null;
