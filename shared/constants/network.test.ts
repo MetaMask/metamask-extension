@@ -42,6 +42,7 @@ describe('NetworkConstants', () => {
         MegaETH: CHAIN_IDS.MEGAETH_MAINNET,
         Tempo: CHAIN_IDS.TEMPO_MAINNET,
         Arc: CHAIN_IDS.ARC,
+        BIE: CHAIN_IDS.BIE,
       };
 
       FEATURED_RPCS.forEach((rpc) => {
