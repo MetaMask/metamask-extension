@@ -128,15 +128,11 @@ export const BackupAndSyncToggle = ({
   );
 
   // Cascading side effects: keep backup & sync in sync with basic functionality.
-  // Disabling does not call `signIn()` so it's safe in either context.
+  // During onboarding, this cascade runs in `privacy-settings.tsx` so it fires
+  // even when this toggle is unmounted (e.g. user disables basic functionality
+  // on the Privacy sub-page).
   useEffect(() => {
     if (isOnboarding) {
-      if (
-        isOnboardingBasicFunctionalityEnabled === false &&
-        isOnboardingBackupAndSyncEnabled === true
-      ) {
-        dispatch(onboardingToggleBackupAndSyncOff());
-      }
       return;
     }
 
@@ -163,11 +159,8 @@ export const BackupAndSyncToggle = ({
   }, [
     isOnboarding,
     isBasicFunctionalityEnabled,
-    isOnboardingBasicFunctionalityEnabled,
     isBackupAndSyncEnabled,
-    isOnboardingBackupAndSyncEnabled,
     setIsBackupAndSyncFeatureEnabled,
-    dispatch,
   ]);
 
   const handleBackupAndSyncToggleSetValue = async () => {

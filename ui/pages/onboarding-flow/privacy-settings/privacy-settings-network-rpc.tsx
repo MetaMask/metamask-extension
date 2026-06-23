@@ -67,6 +67,15 @@ const PrivacySettingsNetworkRpc = () => {
               network?.rpcEndpoints[network?.defaultRpcEndpointIndex]?.url;
             const rpcOrigin = rpcUrl ? new URL(rpcUrl).origin : undefined;
 
+            const handleNetworkClick = () => {
+              dispatch(
+                setEditedNetwork({
+                  chainId: network.chainId,
+                }),
+              );
+              dispatch(toggleNetworkMenu());
+            };
+
             return (
               <NetworkListItem
                 key={network.chainId}
@@ -74,14 +83,8 @@ const PrivacySettingsNetworkRpc = () => {
                 name={network.name}
                 iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
                 rpcEndpoint={rpcOrigin ? { url: rpcOrigin } : undefined}
-                onClick={() => {
-                  dispatch(
-                    setEditedNetwork({
-                      chainId: network.chainId,
-                    }),
-                  );
-                  dispatch(toggleNetworkMenu());
-                }}
+                onClick={handleNetworkClick}
+                onRpcEndpointClick={handleNetworkClick}
               />
             );
           })}

@@ -987,9 +987,6 @@
     "ui/pages/onboarding-flow/account-not-found/account-not-found.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },
-    "ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx": {
-      "error: Error opening side panel: Error:": 4
-    },
     "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },

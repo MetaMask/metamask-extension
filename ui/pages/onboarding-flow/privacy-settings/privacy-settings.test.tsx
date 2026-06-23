@@ -82,6 +82,10 @@ const renderPrivacySettings = (
       openSeaEnabled: true,
       useNftDetection: false,
       isIpfsGatewayEnabled: true,
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
     appState: {
       externalServicesOnboardingToggleState: true,
@@ -213,6 +217,60 @@ describe('Privacy Settings Onboarding View', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         use_multi_account_balance_checker: false,
       },
+    });
+  });
+
+  it('opens the network edit menu when clicking the RPC URL on the network RPC page', () => {
+    const store = configureMockStore([thunk])({
+      metamask: {
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.MAINNET },
+          { chainId: CHAIN_IDS.LINEA_MAINNET },
+          { chainId: CHAIN_IDS.SEPOLIA },
+          { chainId: CHAIN_IDS.LINEA_SEPOLIA },
+        ),
+        use4ByteResolution: true,
+        useTokenDetection: false,
+        useCurrencyRateCheck: true,
+        useMultiAccountBalanceChecker: true,
+        ipfsGateway: 'test.link',
+        useAddressBarEnsResolution: true,
+        useTransactionSimulations: true,
+        useExternalServices: true,
+        useSafeChainsListValidation: true,
+        useExternalNameSources: true,
+        openSeaEnabled: true,
+        useNftDetection: false,
+        isIpfsGatewayEnabled: true,
+        internalAccounts: {
+          accounts: {},
+          selectedAccount: '',
+        },
+      },
+      appState: {
+        externalServicesOnboardingToggleState: true,
+        backupAndSyncOnboardingToggleState: false,
+      },
+    });
+
+    renderPrivacySettings(store);
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-privacy-settings-item-network-rpc'),
+    );
+
+    fireEvent.click(
+      screen.getByTestId(`network-rpc-name-button-${CHAIN_IDS.MAINNET}`),
+    );
+
+    const actions = store.getActions();
+    expect(actions).toContainEqual({
+      type: 'SET_EDIT_NETWORK',
+      payload: { chainId: CHAIN_IDS.MAINNET },
+    });
+    expect(actions).toContainEqual({
+      type: 'TOGGLE_NETWORK_MENU',
+      payload: undefined,
     });
   });
 });

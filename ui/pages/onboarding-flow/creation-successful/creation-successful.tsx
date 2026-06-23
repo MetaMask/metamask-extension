@@ -294,7 +294,10 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
-    if (!backupAndSyncOnboardingToggleState) {
+    if (
+      !backupAndSyncOnboardingToggleState ||
+      !externalServicesOnboardingToggleState
+    ) {
       await dispatch(
         setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false),
       );

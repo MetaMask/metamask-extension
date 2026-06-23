@@ -216,7 +216,33 @@ describe('Wallet Ready Page', () => {
       expect(mockSetIsBackupAndSyncFeatureEnabled).toHaveBeenCalledTimes(1);
     });
 
-    it('does not call the backup & sync controller on completion when the onboarding flag is on (default)', async () => {
+    it('disables backup & sync on completion when basic functionality is off even if the backup flag is still on', async () => {
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        appState: {
+          ...mockState.appState,
+          externalServicesOnboardingToggleState: false,
+          backupAndSyncOnboardingToggleState: true,
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      fireEvent.click(getByTestId('onboarding-complete-done'));
+
+      await waitFor(() => {
+        expect(mockSetIsBackupAndSyncFeatureEnabled).toHaveBeenCalledWith(
+          'main',
+          false,
+        );
+      });
+      expect(mockSetIsBackupAndSyncFeatureEnabled).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not call the backup & sync controller on completion when both onboarding flags are on (default)', async () => {
       const mockStore = configureMockStore([thunk])(mockState);
 
       const { getByTestId } = renderWithProvider(

@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import classnames from 'clsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import {
+  getBackupAndSyncOnboardingToggleState,
+  getExternalServicesOnboardingToggleState,
+} from '../../../selectors';
+import { onboardingToggleBackupAndSyncOff } from '../../../ducks/app/app';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import BackupAndSyncTab from '../../settings/backup-and-sync-tab/backup-and-sync-tab';
 import { PrivacySettingsLanding } from './privacy-settings-landing';
 import { PrivacySettingsSubPageHeader } from './privacy-settings-sub-page-header';
 import OnboardingPrivacySubPage from './onboarding-privacy-sub-page';
 import PrivacySettingsNetworkRpc from './privacy-settings-network-rpc';
-import { useOnboardingPrivacyCompletion } from './use-onboarding-privacy-completion';
 import {
   PRIVACY_SETTINGS_VIEW_TITLE_KEYS,
   type PrivacySettingsView,
@@ -20,7 +33,60 @@ const ANIMATION_TIME = 500;
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function PrivacySettings() {
   const t = useI18nContext();
-  const handleComplete = useOnboardingPrivacyCompletion();
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const dispatch = useDispatch();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const externalServicesOnboardingToggleState = useSelector(
+    getExternalServicesOnboardingToggleState,
+  );
+  const isOnboardingBackupAndSyncEnabled = useSelector(
+    getBackupAndSyncOnboardingToggleState,
+  );
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+
+  const searchParams = new URLSearchParams(search);
+  const isFromReminder = searchParams.get('isFromReminder');
+
+  const handleComplete = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        settings_group: 'onboarding_advanced_configuration',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        is_profile_syncing_enabled:
+          isOnboardingBackupAndSyncEnabled || isBackupAndSyncEnabled,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        is_basic_functionality_enabled: externalServicesOnboardingToggleState,
+      },
+    });
+
+    if (isFromReminder) {
+      navigate(`${ONBOARDING_COMPLETION_ROUTE}?isFromReminder=true`, {
+        replace: true,
+      });
+      return;
+    }
+
+    navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+  }, [
+    externalServicesOnboardingToggleState,
+    isBackupAndSyncEnabled,
+    isFromReminder,
+    isOnboardingBackupAndSyncEnabled,
+    navigate,
+    trackEvent,
+  ]);
+
+  // Keep backup & sync intent in sync with basic functionality even when the
+  // Backup & Sync sub-page (and its toggle) is not mounted.
+  useEffect(() => {
+    if (externalServicesOnboardingToggleState === false) {
+      dispatch(onboardingToggleBackupAndSyncOff());
+    }
+  }, [externalServicesOnboardingToggleState, dispatch]);
   const [showDetail, setShowDetail] = useState(false);
   const [activeView, setActiveView] = useState<PrivacySettingsView | null>(
     null,
