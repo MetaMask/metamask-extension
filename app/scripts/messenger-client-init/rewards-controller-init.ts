@@ -105,6 +105,24 @@ export const RewardsControllerInit: MessengerClientInitFunction<
 
       return !featureFlagEnabled;
     },
+    isVipDisabled: () => {
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      const vipFeatureFlag = remoteFeatureFlags?.vipProgramEnabled as
+        | VersionGatedFeatureFlag
+        | undefined;
+
+      // Seed with manifest override first; fallback to remote flag
+      const manifestFlag =
+        getManifestFlags().remoteFeatureFlags?.vipProgramEnabled;
+      const featureFlagEnabled =
+        manifestFlag === undefined
+          ? resolveFlag(vipFeatureFlag)
+          : resolveFlag(manifestFlag);
+
+      return !featureFlagEnabled;
+    },
   });
 
   return { messengerClient };
