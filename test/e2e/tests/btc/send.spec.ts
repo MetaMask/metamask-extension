@@ -174,4 +174,31 @@ describe('BTC Account - Send', function (this: Suite) {
       },
     );
   });
+
+  it('sends the total BTC balance and shows it pending in Activity', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
+        testSpecificMock: mockBtcSendMocks,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const { sendPage } = await landOnBitcoinSendForm(driver);
+
+        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillAmount(`${DEFAULT_BTC_BALANCE}`);
+        await sendPage.isContinueButtonEnabled();
+        await sendPage.pressContinueButton();
+
+        const reviewPage = new BitcoinReviewTxPage(driver);
+        await reviewPage.checkPageIsLoaded();
+        await reviewPage.clickConfirmButton();
+
+        const activityListPage = new ActivityTab(driver);
+        await activityListPage.checkTransactionActivityByText('Sending BTC');
+        await activityListPage.checkWaitForTransactionStatus('pending');
+      },
+    );
+  });
 });
