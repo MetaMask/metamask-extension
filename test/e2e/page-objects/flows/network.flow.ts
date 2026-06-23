@@ -17,3 +17,15 @@ export const switchToNetworkFromNetworkSelect = async (
   await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
 };
+
+export const checkNetworkIsListedInNetworkManager = async (
+  driver: Driver,
+  networkCategory: string,
+  networkName: string,
+) => {
+  const networkManager = new NetworkManager(driver);
+
+  await networkManager.openNetworkManager();
+  await networkManager.selectTab(networkCategory);
+  await networkManager.checkNetworkIsListed(networkName);
+};
