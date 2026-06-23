@@ -99,14 +99,6 @@ const QrCodeScan = ({ onScanSuccess }: QrCodeScanProps) => {
         </Box>
         {statusContent}
       </Box>
-      <Button
-        className="w-full"
-        onClick={() =>
-          onScanSuccess(AddDeviceSettingsStep.EnterVerificationCode)
-        }
-      >
-        {t('continue')} (remove later)
-      </Button>
     </Box>
   );
 };
