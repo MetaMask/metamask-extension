@@ -4,7 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   FillType,
@@ -283,18 +286,36 @@ describe('PerpsRecentActivity', () => {
     );
   });
 
-  it('navigates to activity route when a row is tapped and no onTransactionClick is provided', () => {
+  it('navigates to the market detail page when an order row is tapped and no onTransactionClick is provided', () => {
     renderWithProvider(
       <PerpsRecentActivity transactions={mockTransactions} />,
       mockStore,
     );
 
-    const card = screen.getByTestId('transaction-card-tx-001');
-    expect(card).toHaveClass('cursor-pointer');
+    // tx-004 is a SOL order. It should route to the per-symbol market
+    // detail page, not the general activity list.
+    const orderCard = screen.getByTestId('transaction-card-tx-004');
+    fireEvent.click(orderCard);
 
-    fireEvent.click(card);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      `${PERPS_MARKET_DETAIL_ROUTE}/SOL`,
+    );
+    expect(mockNavigate).not.toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+  });
 
-    expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+  it('does not navigate when a non-order row is tapped and no onTransactionClick is provided', () => {
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} />,
+      mockStore,
+    );
+
+    // tx-001 is a trade fill (not an order); without a caller-supplied
+    // handler the row should remain a no-op rather than redirecting to
+    // the general activity list.
+    const tradeCard = screen.getByTestId('transaction-card-tx-001');
+    fireEvent.click(tradeCard);
+
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -20,7 +20,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TransactionCard } from '../transaction-card';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../../shared/constants/perps';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
-import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { PerpsCardSkeleton } from '../perps-skeletons/perps-card-skeleton';
 import type { PerpsTransaction } from '../types';
 
@@ -65,7 +68,24 @@ export const PerpsRecentActivity = ({
     navigate(PERPS_ACTIVITY_ROUTE);
   };
 
-  const handleRowClick = onTransactionClick ?? handleSeeAll;
+  // Default row click opens the per-transaction detail (market detail for
+  // orders), matching the PerpsActivityPage. Falling back to `handleSeeAll`
+  // — as the previous default did — routes the user to the general activity
+  // list regardless of which item they tapped.
+  const handleRowClick = useCallback(
+    (transaction: PerpsTransaction) => {
+      if (onTransactionClick) {
+        onTransactionClick(transaction);
+        return;
+      }
+      if (transaction.type === 'order') {
+        navigate(
+          `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(transaction.symbol)}`,
+        );
+      }
+    },
+    [navigate, onTransactionClick],
+  );
 
   if (showLoadingSkeleton) {
     return (
