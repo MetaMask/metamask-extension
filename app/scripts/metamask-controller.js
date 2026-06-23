@@ -1925,19 +1925,8 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
-    const remoteFeatureFlagToggleMessenger = new Messenger({
-      namespace: 'RemoteFeatureFlagToggle',
-      parent: this.controllerMessenger,
-    });
-    this.controllerMessenger.delegate({
-      messenger: remoteFeatureFlagToggleMessenger,
-      events: [
-        'PreferencesController:stateChange',
-        'OnboardingController:stateChange',
-      ],
-    });
     setupRemoteFeatureFlagToggle({
-      messenger: remoteFeatureFlagToggleMessenger,
+      messenger: this.controllerMessenger,
       remoteFeatureFlagController: this.remoteFeatureFlagController,
       preferencesState: this.preferencesController.state,
       onboardingState: this.onboardingController.state,

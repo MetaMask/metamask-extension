@@ -1,10 +1,15 @@
 import { ClientConfigApiService } from '@metamask/remote-feature-flag-controller';
+import { Messenger } from '@metamask/messenger';
 import { ENVIRONMENT } from '../../../shared/constants/build';
 import {
   getConfigForRemoteFeatureFlagRequest,
   getRemoteFeatureFlagClientConfigApiService,
   setupRemoteFeatureFlagToggle,
 } from './remote-feature-flags';
+
+jest.mock('@metamask/messenger', () => ({
+  Messenger: jest.fn(),
+}));
 
 type ToggleArgs = Parameters<typeof setupRemoteFeatureFlagToggle>[0];
 
@@ -24,11 +29,17 @@ function setupToggle(
   onboardingState: Partial<ToggleArgs['onboardingState']>,
 ) {
   const handlers: Record<string, (state: unknown) => void> = {};
-  const messenger = {
+  // The function creates a namespaced child messenger internally and subscribes
+  // on it, so capture the handlers via the mocked `Messenger` constructor.
+  const toggleMessenger = {
     subscribe: jest.fn((event: string, handler: (state: unknown) => void) => {
       handlers[event] = handler;
     }),
-  } as unknown as ToggleArgs['messenger'];
+  };
+  (Messenger as jest.Mock).mockImplementation(() => toggleMessenger);
+
+  const delegate = jest.fn();
+  const messenger = { delegate } as unknown as ToggleArgs['messenger'];
 
   const remoteFeatureFlagController = {
     enable: jest.fn(),
@@ -44,16 +55,28 @@ function setupToggle(
     onboardingState: onboardingState as ToggleArgs['onboardingState'],
   });
 
-  return { handlers, remoteFeatureFlagController };
+  return { handlers, remoteFeatureFlagController, delegate };
 }
 
 describe('setupRemoteFeatureFlagToggle', () => {
-  it('subscribes to Preferences and Onboarding state changes', () => {
-    const { handlers } = setupToggle(
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('delegates the watched events and subscribes to Preferences and Onboarding state changes', () => {
+    const { handlers, delegate } = setupToggle(
       { useExternalServices: true },
       { completedOnboarding: true },
     );
 
+    expect(delegate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: [
+          'PreferencesController:stateChange',
+          'OnboardingController:stateChange',
+        ],
+      }),
+    );
     expect(Object.keys(handlers)).toStrictEqual([
       'PreferencesController:stateChange',
       'OnboardingController:stateChange',

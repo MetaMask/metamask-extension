@@ -1,4 +1,5 @@
 import { assert } from '@metamask/utils';
+import { Messenger } from '@metamask/messenger';
 import {
   ClientConfigApiService,
   ClientType,
@@ -83,7 +84,7 @@ export function getRemoteFeatureFlagClientConfigApiService() {
   });
 }
 
-type RemoteFeatureFlagToggleMessenger = RootMessenger<
+type RemoteFeatureFlagToggleParentMessenger = RootMessenger<
   never,
   PreferencesControllerStateChangeEvent | OnboardingControllerStateChangeEvent
 >;
@@ -99,7 +100,8 @@ type RemoteFeatureFlagToggleMessenger = RootMessenger<
  * complete and external services are enabled.
  *
  * @param options - Options bag.
- * @param options.messenger - The root messenger to subscribe on.
+ * @param options.messenger - The root messenger to delegate from; a namespaced
+ * child is created internally and subscribed on.
  * @param options.remoteFeatureFlagController - The wallet-owned controller.
  * @param options.preferencesState - The initial `PreferencesController` state.
  * @param options.onboardingState - The initial `OnboardingController` state.
@@ -110,7 +112,7 @@ export function setupRemoteFeatureFlagToggle({
   preferencesState,
   onboardingState,
 }: {
-  messenger: RemoteFeatureFlagToggleMessenger;
+  messenger: RemoteFeatureFlagToggleParentMessenger;
   remoteFeatureFlagController: Pick<
     RemoteFeatureFlagController,
     'enable' | 'disable' | 'updateRemoteFeatureFlags'
@@ -118,6 +120,24 @@ export function setupRemoteFeatureFlagToggle({
   preferencesState: PreferencesControllerState;
   onboardingState: OnboardingControllerState;
 }): void {
+  const toggleMessenger = new Messenger<
+    'RemoteFeatureFlagToggle',
+    never,
+    | PreferencesControllerStateChangeEvent
+    | OnboardingControllerStateChangeEvent,
+    RemoteFeatureFlagToggleParentMessenger
+  >({
+    namespace: 'RemoteFeatureFlagToggle',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: toggleMessenger,
+    events: [
+      'PreferencesController:stateChange',
+      'OnboardingController:stateChange',
+    ],
+  });
+
   let canUseExternalServices = preferencesState.useExternalServices === true;
   let hasCompletedOnboarding = onboardingState.completedOnboarding === true;
 
@@ -132,7 +152,7 @@ export function setupRemoteFeatureFlagToggle({
     }
   };
 
-  messenger.subscribe(
+  toggleMessenger.subscribe(
     'PreferencesController:stateChange',
     previousValueComparator((prevState, currState) => {
       const { useExternalServices: prev } = prevState;
@@ -145,7 +165,7 @@ export function setupRemoteFeatureFlagToggle({
     }, preferencesState),
   );
 
-  messenger.subscribe(
+  toggleMessenger.subscribe(
     'OnboardingController:stateChange',
     previousValueComparator((prevState, currState) => {
       const { completedOnboarding: prev } = prevState;
