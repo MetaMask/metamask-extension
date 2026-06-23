@@ -1,39 +1,8 @@
-diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 29ebb46584bab3c7b344af501b16f91d81471d44..0726c0201656228b8a51394665835f3cf9142e02 100644
---- a/CHANGELOG.md
-+++ b/CHANGELOG.md
-@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
- 
- ## [Unreleased]
- 
-+### Added
-+
-+- Added `getLocation()` method to `BridgeController` for reading the current swap/bridge entry point ([#9243](https://github.com/MetaMask/core/pull/9243))
-+- Added `Unknown` value to `MetaMetricsSwapsEventSource` enum for unattributed swap and bridge flows ([#9243](https://github.com/MetaMask/core/pull/9243))
-+
-+### Changed
-+
-+- **BREAKING:** Default `location` fallback for Unified SwapBridge events now uses `Unknown` instead of `Main View` when no entry point is set ([#9243](https://github.com/MetaMask/core/pull/9243))
-+
- ## [73.2.0]
- 
- ### Added
 diff --git a/dist/bridge-controller-method-action-types.d.cts b/dist/bridge-controller-method-action-types.d.cts
-index c3366f67dfcd203737deabcb854400b60db6d1a2..1535e781c1df11cb8cb9272fc5e481438c0c2267 100644
+index c3366f67dfcd203737deabcb854400b60db6d1a2..ab1c49f0a19f0c1096e3e12773d7d155fd0551ff 100644
 --- a/dist/bridge-controller-method-action-types.d.cts
 +++ b/dist/bridge-controller-method-action-types.d.cts
-@@ -11,6 +11,10 @@ export type BridgeControllerFetchQuotesAction = {
-     type: `BridgeController:fetchQuotes`;
-     handler: BridgeController['fetchQuotes'];
- };
-+export type BridgeControllerUpdateBatchSellTradesAction = {
-+    type: `BridgeController:updateBatchSellTrades`;
-+    handler: BridgeController['updateBatchSellTrades'];
-+};
- export type BridgeControllerStopPollingForQuotesAction = {
-     type: `BridgeController:stopPollingForQuotes`;
-     handler: BridgeController['stopPollingForQuotes'];
-@@ -19,6 +23,10 @@ export type BridgeControllerSetLocationAction = {
+@@ -19,6 +19,10 @@ export type BridgeControllerSetLocationAction = {
      type: `BridgeController:setLocation`;
      handler: BridgeController['setLocation'];
  };
@@ -44,14 +13,7 @@ index c3366f67dfcd203737deabcb854400b60db6d1a2..1535e781c1df11cb8cb9272fc5e48143
  export type BridgeControllerResetStateAction = {
      type: `BridgeController:resetState`;
      handler: BridgeController['resetState'];
-@@ -31,12 +39,8 @@ export type BridgeControllerTrackUnifiedSwapBridgeEventAction = {
-     type: `BridgeController:trackUnifiedSwapBridgeEvent`;
-     handler: BridgeController['trackUnifiedSwapBridgeEvent'];
- };
--export type BridgeControllerUpdateBatchSellTradesAction = {
--    type: `BridgeController:updateBatchSellTrades`;
--    handler: BridgeController['updateBatchSellTrades'];
--};
+@@ -38,5 +42,5 @@ export type BridgeControllerUpdateBatchSellTradesAction = {
  /**
   * Union of all BridgeController action types.
   */
@@ -60,21 +22,10 @@ index c3366f67dfcd203737deabcb854400b60db6d1a2..1535e781c1df11cb8cb9272fc5e48143
  //# sourceMappingURL=bridge-controller-method-action-types.d.cts.map
 \ No newline at end of file
 diff --git a/dist/bridge-controller-method-action-types.d.mts b/dist/bridge-controller-method-action-types.d.mts
-index eb4b39d539ab7cc00b8d703d4794dae15a80a3ce..d511d3bf9dd41c1629e5f70a0cbb05b2dfa3945d 100644
+index eb4b39d539ab7cc00b8d703d4794dae15a80a3ce..e21e5bb7710c70c86a287a2112167feaea284a32 100644
 --- a/dist/bridge-controller-method-action-types.d.mts
 +++ b/dist/bridge-controller-method-action-types.d.mts
-@@ -11,6 +11,10 @@ export type BridgeControllerFetchQuotesAction = {
-     type: `BridgeController:fetchQuotes`;
-     handler: BridgeController['fetchQuotes'];
- };
-+export type BridgeControllerUpdateBatchSellTradesAction = {
-+    type: `BridgeController:updateBatchSellTrades`;
-+    handler: BridgeController['updateBatchSellTrades'];
-+};
- export type BridgeControllerStopPollingForQuotesAction = {
-     type: `BridgeController:stopPollingForQuotes`;
-     handler: BridgeController['stopPollingForQuotes'];
-@@ -19,6 +23,10 @@ export type BridgeControllerSetLocationAction = {
+@@ -19,6 +19,10 @@ export type BridgeControllerSetLocationAction = {
      type: `BridgeController:setLocation`;
      handler: BridgeController['setLocation'];
  };
@@ -85,14 +36,7 @@ index eb4b39d539ab7cc00b8d703d4794dae15a80a3ce..d511d3bf9dd41c1629e5f70a0cbb05b2
  export type BridgeControllerResetStateAction = {
      type: `BridgeController:resetState`;
      handler: BridgeController['resetState'];
-@@ -31,12 +39,8 @@ export type BridgeControllerTrackUnifiedSwapBridgeEventAction = {
-     type: `BridgeController:trackUnifiedSwapBridgeEvent`;
-     handler: BridgeController['trackUnifiedSwapBridgeEvent'];
- };
--export type BridgeControllerUpdateBatchSellTradesAction = {
--    type: `BridgeController:updateBatchSellTrades`;
--    handler: BridgeController['updateBatchSellTrades'];
--};
+@@ -38,5 +42,5 @@ export type BridgeControllerUpdateBatchSellTradesAction = {
  /**
   * Union of all BridgeController action types.
   */
@@ -284,11 +228,121 @@ index 0d37eac89e0a8da0aba112e29cea64a6bf72f525..703f99d4fbaf0d2a614f3a9f85584d10
  })(MetaMetricsSwapsEventSource || (MetaMetricsSwapsEventSource = {}));
  export var InputAmountPreset;
  (function (InputAmountPreset) {
+diff --git a/dist/utils/metrics/properties.cjs b/dist/utils/metrics/properties.cjs
+index 377731f8c16da3a55ff15573b181482da8fc98ec..4d743ed0d2cf54392acb8c2ba20a68d083e6f763 100644
+--- a/dist/utils/metrics/properties.cjs
++++ b/dist/utils/metrics/properties.cjs
+@@ -46,8 +46,9 @@ exports.formatProviderLabel = formatProviderLabel;
+  * @param tokenSecurityTypeDestination - The security classification of the destination token,
+  * supplied by the client (e.g. from token security/scanning data). Pass `null` when no
+  * security data is available for the selected destination token.
+- * @returns The analytics request params derived from the quote request, minus token symbols
+- * which the caller provides separately.
++ * @returns The analytics request params derived from the quote request. Token symbols are
++ * omitted because the quote request only stores addresses; use
++ * {@link getQuotesReceivedProperties} when building a `QuotesReceived` payload.
+  */
+ const getRequestParams = ({ srcChainId, destChainId, srcTokenAddress, destTokenAddress, }, tokenSecurityTypeDestination) => {
+     // Fallback to ETH if srcChainId is not defined. This is ok since the clients default to Ethereum as the source chain
+@@ -114,6 +115,8 @@ const getQuotesReceivedProperties = (activeQuote, warnings = [], isSubmittable =
+             ? (0, exports.formatProviderLabel)(recommendedQuote.quote)
+             : provider,
+         provider,
++        token_symbol_source: activeQuote?.quote.srcAsset.symbol ?? '',
++        token_symbol_destination: activeQuote?.quote.destAsset.symbol ?? null,
+         warnings,
+         price_impact: Number(activeQuote?.quote.priceData?.priceImpact ?? 0),
+         ...(hasSufficientGasForQuote !== undefined && {
+diff --git a/dist/utils/metrics/properties.d.cts b/dist/utils/metrics/properties.d.cts
+index 5ceb3355a14d417a52bae2d489b0dfe267cdc891..ae6375141d4a038ccd481819b51bc6dde055c44e 100644
+--- a/dist/utils/metrics/properties.d.cts
++++ b/dist/utils/metrics/properties.d.cts
+@@ -16,8 +16,9 @@ export declare const formatProviderLabel: ({ bridgeId, bridges, }: QuoteResponse
+  * @param tokenSecurityTypeDestination - The security classification of the destination token,
+  * supplied by the client (e.g. from token security/scanning data). Pass `null` when no
+  * security data is available for the selected destination token.
+- * @returns The analytics request params derived from the quote request, minus token symbols
+- * which the caller provides separately.
++ * @returns The analytics request params derived from the quote request. Token symbols are
++ * omitted because the quote request only stores addresses; use
++ * {@link getQuotesReceivedProperties} when building a `QuotesReceived` payload.
+  */
+ export declare const getRequestParams: ({ srcChainId, destChainId, srcTokenAddress, destTokenAddress, }: Partial<GenericQuoteRequest>, tokenSecurityTypeDestination: string | null) => Omit<RequestParams, 'token_symbol_source' | 'token_symbol_destination'>;
+ export declare const getAccountHardwareType: (selectedAccount?: AccountsControllerState['internalAccounts']['accounts'][string]) => AccountHardwareType;
+@@ -40,6 +41,8 @@ export declare const getQuotesReceivedProperties: (activeQuote: null | (QuoteRes
+     usd_balance_source: number;
+     best_quote_provider: `${string}_${string}`;
+     provider: `${string}_${string}`;
++    token_symbol_source: string;
++    token_symbol_destination: string | null;
+     warnings: QuoteWarning[];
+     price_impact: number;
+ };
+diff --git a/dist/utils/metrics/properties.d.mts b/dist/utils/metrics/properties.d.mts
+index 862d81d76faeab0276ce9d9aadb9f26793029d02..a396855315b6c432ccbe655289cfd653a882b716 100644
+--- a/dist/utils/metrics/properties.d.mts
++++ b/dist/utils/metrics/properties.d.mts
+@@ -16,8 +16,9 @@ export declare const formatProviderLabel: ({ bridgeId, bridges, }: QuoteResponse
+  * @param tokenSecurityTypeDestination - The security classification of the destination token,
+  * supplied by the client (e.g. from token security/scanning data). Pass `null` when no
+  * security data is available for the selected destination token.
+- * @returns The analytics request params derived from the quote request, minus token symbols
+- * which the caller provides separately.
++ * @returns The analytics request params derived from the quote request. Token symbols are
++ * omitted because the quote request only stores addresses; use
++ * {@link getQuotesReceivedProperties} when building a `QuotesReceived` payload.
+  */
+ export declare const getRequestParams: ({ srcChainId, destChainId, srcTokenAddress, destTokenAddress, }: Partial<GenericQuoteRequest>, tokenSecurityTypeDestination: string | null) => Omit<RequestParams, 'token_symbol_source' | 'token_symbol_destination'>;
+ export declare const getAccountHardwareType: (selectedAccount?: AccountsControllerState['internalAccounts']['accounts'][string]) => AccountHardwareType;
+@@ -40,6 +41,8 @@ export declare const getQuotesReceivedProperties: (activeQuote: null | (QuoteRes
+     usd_balance_source: number;
+     best_quote_provider: `${string}_${string}`;
+     provider: `${string}_${string}`;
++    token_symbol_source: string;
++    token_symbol_destination: string | null;
+     warnings: QuoteWarning[];
+     price_impact: number;
+ };
+diff --git a/dist/utils/metrics/properties.mjs b/dist/utils/metrics/properties.mjs
+index 23b45c295ea58206ebcea7b268b63bc0c6e61402..a92e4d0ef21d1c020f284f5e881d6986fb2d9d7c 100644
+--- a/dist/utils/metrics/properties.mjs
++++ b/dist/utils/metrics/properties.mjs
+@@ -40,8 +40,9 @@ export const formatProviderLabel = ({ bridgeId, bridges, }) => `${bridgeId}_${br
+  * @param tokenSecurityTypeDestination - The security classification of the destination token,
+  * supplied by the client (e.g. from token security/scanning data). Pass `null` when no
+  * security data is available for the selected destination token.
+- * @returns The analytics request params derived from the quote request, minus token symbols
+- * which the caller provides separately.
++ * @returns The analytics request params derived from the quote request. Token symbols are
++ * omitted because the quote request only stores addresses; use
++ * {@link getQuotesReceivedProperties} when building a `QuotesReceived` payload.
+  */
+ export const getRequestParams = ({ srcChainId, destChainId, srcTokenAddress, destTokenAddress, }, tokenSecurityTypeDestination) => {
+     // Fallback to ETH if srcChainId is not defined. This is ok since the clients default to Ethereum as the source chain
+@@ -104,6 +105,8 @@ export const getQuotesReceivedProperties = (activeQuote, warnings = [], isSubmit
+             ? formatProviderLabel(recommendedQuote.quote)
+             : provider,
+         provider,
++        token_symbol_source: activeQuote?.quote.srcAsset.symbol ?? '',
++        token_symbol_destination: activeQuote?.quote.destAsset.symbol ?? null,
+         warnings,
+         price_impact: Number(activeQuote?.quote.priceData?.priceImpact ?? 0),
+         ...(hasSufficientGasForQuote !== undefined && {
 diff --git a/dist/utils/metrics/types.d.cts b/dist/utils/metrics/types.d.cts
-index 60158bb2246f253824629097bb18b84d15356e96..18e1acaba535472af3bc1c13795d0b48e7ebcb9c 100644
+index 60158bb2246f253824629097bb18b84d15356e96..bcdf203d4e6290182385cf1e6d01732823680a17 100644
 --- a/dist/utils/metrics/types.d.cts
 +++ b/dist/utils/metrics/types.d.cts
-@@ -156,7 +156,7 @@ type RequiredEventContextFromClientBase = {
+@@ -83,7 +83,8 @@ type RequiredEventContextFromClientBase = {
+         token_symbol_source: RequestParams['token_symbol_source'];
+         token_symbol_destination: RequestParams['token_symbol_destination'];
+     };
+-    [UnifiedSwapBridgeEventName.QuotesReceived]: TradeData & {
++    [UnifiedSwapBridgeEventName.QuotesReceived]: TradeData &
++        Pick<RequestParams, 'token_symbol_source' | 'token_symbol_destination'> & {
+         warnings: QuoteWarning[];
+         best_quote_provider: QuoteFetchData['best_quote_provider'];
+         price_impact: QuoteFetchData['price_impact'];
+@@ -156,7 +157,7 @@ type RequiredEventContextFromClientBase = {
   * Properties that are required to be provided when trackUnifiedSwapBridgeEvent is called.
   * This combines the event-specific properties from RequiredEventContextFromClientBase
   * with an optional `location` property. When `location` is omitted, the controller
@@ -298,10 +352,20 @@ index 60158bb2246f253824629097bb18b84d15356e96..18e1acaba535472af3bc1c13795d0b48
   * `ab_tests` is the legacy field and `active_ab_tests` is the newer field.
   * Both are kept for a migration window and are treated as separate payloads.
 diff --git a/dist/utils/metrics/types.d.mts b/dist/utils/metrics/types.d.mts
-index 201d12ed74c4f3043ae82e55430ade2a1407af1f..b54b768df266a33012e1fc36c13b2e7c125a879f 100644
+index 201d12ed74c4f3043ae82e55430ade2a1407af1f..3045efc02e2c25cc843ed4a690d935b6a7894368 100644
 --- a/dist/utils/metrics/types.d.mts
 +++ b/dist/utils/metrics/types.d.mts
-@@ -156,7 +156,7 @@ type RequiredEventContextFromClientBase = {
+@@ -83,7 +83,8 @@ type RequiredEventContextFromClientBase = {
+         token_symbol_source: RequestParams['token_symbol_source'];
+         token_symbol_destination: RequestParams['token_symbol_destination'];
+     };
+-    [UnifiedSwapBridgeEventName.QuotesReceived]: TradeData & {
++    [UnifiedSwapBridgeEventName.QuotesReceived]: TradeData &
++        Pick<RequestParams, 'token_symbol_source' | 'token_symbol_destination'> & {
+         warnings: QuoteWarning[];
+         best_quote_provider: QuoteFetchData['best_quote_provider'];
+         price_impact: QuoteFetchData['price_impact'];
+@@ -156,7 +157,7 @@ type RequiredEventContextFromClientBase = {
   * Properties that are required to be provided when trackUnifiedSwapBridgeEvent is called.
   * This combines the event-specific properties from RequiredEventContextFromClientBase
   * with an optional `location` property. When `location` is omitted, the controller
