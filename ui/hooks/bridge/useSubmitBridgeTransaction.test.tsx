@@ -99,9 +99,7 @@ const MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID = {
 };
 
 jest.mock('../../../shared/lib/selectors/networks', () => {
-  const original = jest.requireActual(
-    '../../../shared/lib/selectors/networks',
-  );
+  const original = jest.requireActual('../../../shared/lib/selectors/networks');
   return {
     ...original,
     getSelectedNetworkClientId: () => 'mainnet',
