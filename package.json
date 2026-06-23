@@ -885,7 +885,7 @@
   "previewBuilds": {
     "@metamask/wallet": {
       "type": "breaking",
-      "previewVersion": "3.0.0-preview-45710f449"
+      "previewVersion": "4.0.0-preview-ed0047684"
     }
   }
 }
