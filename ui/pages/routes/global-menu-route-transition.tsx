@@ -3,7 +3,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -29,10 +29,12 @@ export const GlobalMenuRouteTransition = ({
   const location = useLocation();
   const shouldAnimate = location.state?.globalMenuTransition === 'forward';
   const [transitionDirection, setTransitionDirection] =
-    useState<TransitionDirection | null>(null);
+    useState<TransitionDirection | null>(() =>
+      shouldAnimate ? 'forward' : null,
+    );
   const onCloseCompleteRef = useRef<(() => void) | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setTransitionDirection(shouldAnimate ? 'forward' : null);
   }, [location.key, shouldAnimate]);
 
