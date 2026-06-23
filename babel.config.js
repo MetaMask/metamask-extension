@@ -21,6 +21,7 @@ module.exports = function (api) {
       },
     ],
     plugins: [
+      path.resolve(__dirname, 'development/build/transforms/import-alias.js'),
       // `browserify` is old and busted, and doesn't support `??=` (and other
       // logical assignment operators) or private class features. Keep these
       // syntax transforms enabled even when our browser support floor is high
