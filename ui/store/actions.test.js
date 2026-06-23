@@ -767,10 +767,14 @@ describe('Actions', () => {
     it('calls syncPasswordAndUnlockWallet', async () => {
       const store = mockStore();
 
-      const syncPasswordAndUnlockWallet =
-        background.syncPasswordAndUnlockWallet.resolves(true);
+      const syncPasswordAndUnlockWalletStub = sinon.stub().resolves(true);
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        syncPasswordAndUnlockWallet: syncPasswordAndUnlockWalletStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -779,7 +783,7 @@ describe('Actions', () => {
 
       await store.dispatch(actions.tryUnlockMetamask());
 
-      expect(syncPasswordAndUnlockWallet.callCount).toStrictEqual(1);
+      expect(syncPasswordAndUnlockWalletStub.callCount).toStrictEqual(1);
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
@@ -787,9 +791,15 @@ describe('Actions', () => {
     it('errors on syncPasswordAndUnlockWallet will fail', async () => {
       const store = mockStore();
 
-      background.syncPasswordAndUnlockWallet.rejects(new Error('error'));
+      const syncPasswordAndUnlockWalletStub = sinon
+        .stub()
+        .rejects(new Error('error'));
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        syncPasswordAndUnlockWallet: syncPasswordAndUnlockWalletStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -1922,21 +1932,29 @@ describe('Actions', () => {
     it('calls setLocked', async () => {
       const store = mockStore();
 
-      const backgroundSetLocked = background.setLocked.resolves();
+      const setLockedStub = sinon.stub().resolves();
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        setLocked: setLockedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.lockMetamask());
-      expect(backgroundSetLocked.callCount).toStrictEqual(1);
-      expect(backgroundSetLocked.firstCall.args).toStrictEqual([]);
+      expect(setLockedStub.callCount).toStrictEqual(1);
+      expect(setLockedStub.firstCall.args).toStrictEqual([]);
     });
 
     it('hides loading indicator and dispatches lock action when background callback errors', async () => {
       const store = mockStore();
 
-      background.setLocked.rejects(new Error('error'));
+      const setLockedStub = sinon.stub().rejects(new Error('error'));
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        setLocked: setLockedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
