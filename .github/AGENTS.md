@@ -220,3 +220,54 @@ creating new workflow files.
 - It requires a different runner type or container
 - It has complex matrix strategies or conditional job graphs
 - It needs to report as a separate required status check
+
+---
+
+## Automated Security Dependency Update
+
+**Workflow file:** [`.github/workflows/automated-security-dep-update.yml`](.github/workflows/automated-security-dep-update.yml)
+**Script:** [`.github/scripts/security-dep-update.mts`](.github/scripts/security-dep-update.mts)
+
+### How it runs
+
+The workflow fires automatically on a **biweekly schedule** (1st and 15th of every month, 08:00 UTC) and can also be triggered manually.
+
+On each run it:
+
+1. Runs `yarn npm audit --recursive --environment production --severity moderate` to find CVEs
+2. Skips any advisory IDs listed in `npmAuditIgnoreAdvisories` in `.yarnrc.yml`
+3. Skips packages that have a local `.yarn/patches/` patch applied (would break the patch)
+4. For each remaining vulnerable package: runs `yarn up "pkg@^<currentMajor>"` to update to the latest patch/minor in the same major (no major bumps)
+5. Runs the post-dep-change chain: `yarn install --immutable` → `yarn dedupe` → `yarn allow-scripts auto` → `yarn lavamoat:auto` → `yarn attributions:generate` → `yarn lint:changed:fix`
+6. Validates: `yarn lint:tsc` → `yarn test:unit` → `yarn dist`
+
+**If all validations pass:** creates a branch named `refactor/deps-security-update-YYYY-MM-DD` and opens a **DRAFT PR** against `main`.
+
+**If any validation fails:** opens a **GitHub Issue** with the full list of attempted updates and which step failed. No branch is pushed.
+
+### How to trigger manually
+
+1. Go to **Actions → Automated Security Dependency Update → Run workflow**
+2. Leave `dry_run` unchecked for a real update run, or check it to scan and report without making any changes
+3. Review the step summary in the workflow run for the vulnerability report
+
+### How to read the PR / issue report
+
+**DRAFT PR body contains:**
+
+| Section | What it means |
+|---------|---------------|
+| ✅ Updated Packages | Packages updated with old→new version and the advisory IDs fixed |
+| ⚠️ Packages with patches | Cannot be auto-updated — update the `.yarn/patches/` file manually |
+| ⚠️ Requires major bump | Only a major-version upgrade fixes the CVE — evaluate the breaking changes manually |
+| ⚠️ Failed updates | `yarn up` exited non-zero — check the workflow log for details |
+
+**GitHub Issue (failure case):**
+The issue includes a "Validation Step Results" table with ✅/❌ for each step, the list of packages that were attempted before the failure, and a direct link to the workflow run log.
+
+### Operational notes
+
+- **Token:** Uses `MetaMask/github-tools/.github/actions/get-token@v1` via `TOKEN_EXCHANGE_URL`. Without this variable, the workflow will fail at the auth step.
+- **E2E tests are intentionally skipped** inside the workflow — they run normally as part of CI on the resulting DRAFT PR.
+- **LavaMoat step** (`yarn lavamoat:auto`) can take 20–30 minutes and is the most likely step to fail. If it fails, check the workflow log for policy diff errors.
+- To permanently ignore a new advisory, add its numeric ID to `npmAuditIgnoreAdvisories` in `.yarnrc.yml` with a comment explaining why.
