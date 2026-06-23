@@ -256,10 +256,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 3
     },
-    "ui/components/app/modals/confirm-delete-network/confirm-delete-network.test.js": {
-      "React: PropTypes validation failures": 1,
-      "error: Error: Insufficient number of substitutions": 1
-    },
     "ui/components/app/modals/customize-nonce/customize-nonce.test.js": {
       "React: PropTypes validation failures": 1
     },

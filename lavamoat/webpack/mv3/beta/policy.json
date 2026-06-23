@@ -614,6 +614,42 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/account-api": {
+      "packages": {
+        "@metamask/keyring-utils": true
+      }
+    },
+    "@metamask/account-tree-controller": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/account-api": true,
+        "@metamask/accounts-controller": true,
+        "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/profile-sync-controller": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "@metamask/accounts-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/accounts-controller>ethereum-cryptography": true,
+        "uuid": true
+      }
+    },
     "@metamask/approval-controller": {
       "globals": {
         "console.info": true
@@ -626,12 +662,32 @@
     },
     "@metamask/assets-controller": {
       "globals": {
-        "performance.now": true
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch.bind": true,
+        "performance.now": true,
+        "setInterval": true,
+        "setTimeout": true
       },
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/providers": true,
+        "@metamask/assets-controller>@metamask/assets-controllers": true,
+        "@metamask/base-controller": true,
+        "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/core-backend": true,
+        "@metamask/keyring-snap-client": true,
+        "@metamask/phishing-controller": true,
+        "@metamask/polling-controller": true,
+        "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controller>bignumber.js": true
+        "async-mutex": true,
+        "@metamask/assets-controller>bignumber.js": true,
+        "lodash": true,
+        "@metamask/assets-controller>p-limit": true
       }
     },
     "@metamask/assets-controllers": {
@@ -651,6 +707,15 @@
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true
+      }
+    },
+    "@metamask/assets-controller>@metamask/assets-controllers": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/base-controller": {
@@ -1692,6 +1757,11 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
@@ -3064,6 +3134,16 @@
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
       }
     },
+    "@metamask/accounts-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true,
+        "module": true
+      },
+      "packages": {
+        "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
     "@metamask/eth-hd-keyring>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
@@ -3780,6 +3860,11 @@
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
+    "@metamask/assets-controller>p-limit": {
+      "packages": {
+        "@metamask/assets-controller>p-limit>yocto-queue": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
