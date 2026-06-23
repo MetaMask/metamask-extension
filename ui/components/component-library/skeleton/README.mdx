@@ -6,7 +6,6 @@ import * as SkeletonStories from './skeleton.stories';
 
 `Skeleton` is a placeholder component that is used while the content is loading.
 
-
 ## Props
 
 <Controls of={SkeletonStories.DefaultStory} />
@@ -14,7 +13,6 @@ import * as SkeletonStories from './skeleton.stories';
 ### Width Height
 
 Use the `width` and `height` props to specify the width and height of the `Skeleton` component. It accepts both numbers and strings.
-
 
 ```jsx
 import { Skeleton } from '../../component-library';
@@ -28,7 +26,6 @@ import { Skeleton } from '../../component-library';
 
 Use the `isLoading` prop to control whether to show the skeleton loading state or the actual content. When `true`, shows skeleton with hidden children. When `false`, shows just the children content.
 
-
 ```jsx
 import { Skeleton, Text, TextVariant } from '../../component-library';
 
@@ -41,7 +38,6 @@ import { Skeleton, Text, TextVariant } from '../../component-library';
 
 Use the `borderRadius` prop and `BorderRadius` enum to specify the border radius of the `Skeleton` component.
 
-
 ```jsx
 import { BorderRadius } from '../../../helpers/constants/design-system'
 import { Skeleton } from '../../component-library';
@@ -53,4 +49,5 @@ import { Skeleton } from '../../component-library';
 <Skeleton borderRadius={BorderRadius.SM} height={32} width="100%" />
 <Skeleton borderRadius={BorderRadius.XS} height={32} width="100%" />
 ```
+
 <Canvas of={SkeletonStories.DefaultStory} />

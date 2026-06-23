@@ -6,7 +6,6 @@ import * as ModalFooterStories from './modal-footer.stories';
 
 `ModalFooter` is a footer component that handles the submit and cancel buttons of the [`Modal`](?path=/docs/components-componentlibrary-modal--docs)
 
-
 ## Props
 
 <Controls of={ModalFooterStories.DefaultStory} />
@@ -14,7 +13,6 @@ import * as ModalFooterStories from './modal-footer.stories';
 ### On Submit
 
 The `onSubmit` prop is a function that will be called when the submit button is clicked.
-
 
 ```jsx
 import { ModalFooter } from '../../component-library';
@@ -25,7 +23,6 @@ import { ModalFooter } from '../../component-library';
 ### On Cancel
 
 The `onCancel` prop is a function that will be called when the cancel button is clicked.
-
 
 ```jsx
 import { ModalFooter } from '../../component-library';
@@ -38,7 +35,6 @@ import { ModalFooter } from '../../component-library';
 The `submitButtonProps` and `cancelButtonProps` props are objects that will be spread onto the submit and cancel buttons respectively. This allows you to pass in any valid `Button` props to the submit and cancel buttons. Ideally button strings are short but if they are long the submit and cancel buttons will stack vertically.
 
 Note: The stacking of the submit and cancel button will not work if you construct your own `ModalFooter` component using the `Button` components. Additonal CSS is needed.
-
 
 ```jsx
 import { ModalFooter } from '../../component-library';
@@ -56,7 +52,6 @@ import { ModalFooter } from '../../component-library';
 ### Children
 
 Use the `children` prop to pass any in any valid React children to the `ModalFooter`. The children will appear above the submit and cancel buttons and outside of the internal `Container` component. If you require children above the buttons, you can build your own `ModalFooter` component using the `Button` and `Container` components.
-
 
 ```jsx
 import {
@@ -104,7 +99,6 @@ The `ModalFooter` has an internal container that prevents the buttons from being
 - Light red shows the `Container` bounding box
 - Light blue shows the `ModalFooter` bounding box
 
-
 ```jsx
 import {
   ModalFooter,
@@ -139,4 +133,5 @@ import {
   />
 </Box>;
 ```
+
 <Canvas of={ModalFooterStories.DefaultStory} />
