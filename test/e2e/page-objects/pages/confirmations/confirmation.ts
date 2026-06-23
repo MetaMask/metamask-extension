@@ -62,15 +62,10 @@ class Confirmation {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.wait(async () => {
-        try {
-          await this.driver.findClickableElement(this.footerCancelButton);
-          await this.driver.findClickableElement(this.footerConfirmButton);
-          return true;
-        } catch {
-          return false;
-        }
-      });
+      await this.driver.waitForMultipleSelectors([
+        this.footerCancelButton,
+        this.footerConfirmButton,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for confirmation page to be loaded',
@@ -79,6 +74,38 @@ class Confirmation {
       throw e;
     }
     console.log('Confirmation page is loaded');
+  }
+
+  /**
+   * Checks if the confirm button is enabled on the confirmation page.
+   */
+  async checkIsConfirmButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.footerConfirmButton, {
+        timeout: 1000,
+      });
+    } catch (e) {
+      console.log('Confirm button not enabled', e);
+      return false;
+    }
+    console.log('Confirm button is enabled');
+    return true;
+  }
+
+  /**
+   * Checks if the cancel button is enabled on the confirmation page.
+   */
+  async checkIsCancelButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.footerCancelButton, {
+        timeout: 1000,
+      });
+    } catch (e) {
+      console.log('Cancel button not enabled', e);
+      return false;
+    }
+    console.log('Cancel button is enabled');
+    return true;
   }
 
   async clickScrollToBottomButton() {
