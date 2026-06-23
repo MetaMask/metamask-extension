@@ -753,13 +753,7 @@ export const useHandleSubscriptionSupportAction = () => {
     );
 
     openWindow(supportLinkWithUserId);
-  }, [
-    version,
-    profileId,
-    canonicalProfileId,
-    analyticsId,
-    shieldCustomerId,
-  ]);
+  }, [version, profileId, canonicalProfileId, analyticsId, shieldCustomerId]);
 
   return {
     handleClickContactSupport,
