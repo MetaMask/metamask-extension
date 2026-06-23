@@ -1774,12 +1774,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ecies/ciphers@npm:^0.2.6":
+"@ecies/ciphers@npm:0.2.6":
   version: 0.2.6
   resolution: "@ecies/ciphers@npm:0.2.6"
   peerDependencies:
     "@noble/ciphers": ^1.0.0
   checksum: 10/48e98971161497b7b4a49f70e20e2b807096d477262cd86bff7b6aa7e065f7ca10e6199529f41207ab65f4486ad6689c158798cd3a0ba20b875df3c68bec6281
+  languageName: node
+  linkType: hard
+
+"@ecies/ciphers@patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch":
+  version: 0.2.6
+  resolution: "@ecies/ciphers@patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch::version=0.2.6&hash=c774ec"
+  peerDependencies:
+    "@noble/ciphers": ^1.0.0
+  checksum: 10/c9e0bfa0943f66b5fafe3455e95cf4af0dd4787a913fa7fd13aa0d29a729ecd492b92da7b6a9438e045fc80ace00566a3380a228d7df82fdf07fb32483b39af3
   languageName: node
   linkType: hard
 

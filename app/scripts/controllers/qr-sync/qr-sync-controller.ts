@@ -506,7 +506,7 @@ export class QrSyncController extends BaseController<
       stringToBytes(JSON.stringify(request)),
     );
     const qrData = `metamask://connect/mwp?p=${base64QRpayload}`;
-    log.debug('QrSyncController: qrData', qrData);
+    console.log('QrSyncController: qrData', qrData);
     return qrData;
   }
 
