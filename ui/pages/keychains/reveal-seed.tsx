@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import copyToClipboard from 'copy-to-clipboard';
+import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   TextButton,
   Text,
@@ -13,24 +14,37 @@ import {
   RecommendedAction,
   type PhishingDetectionScanResult,
 } from '@metamask/phishing-controller';
-import { getErrorMessage } from '../../../shared/lib/error';
+import { createSentryError, getErrorMessage } from '../../../shared/lib/error';
+import { captureException } from '../../../shared/lib/sentry';
+import { cancelPasskeyCeremony } from '../../../shared/lib/passkey';
+import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
+  MetaMetricsEventVerificationMethod,
 } from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   requestRevealSeedWords,
+  getSeedPhraseWithPasskey,
   scanUrlForPhishing,
 } from '../../store/actions';
 import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
+import {
+  useIsPasskeyActive,
+  useIsPasskeyIncompatibleInSidepanel,
+} from '../../hooks/usePasskeyAvailability';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
-import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
-import { Toast, ToastContainer } from '../../components/multichain/toast';
+import {
+  PREVIOUS_ROUTE,
+  REVEAL_SEED_ROUTE,
+} from '../../helpers/constants/routes';
+import { PasskeyVerification } from '../../components/app/passkey-verification';
 import { useBoolean } from '../../hooks/useBoolean';
+import { Toast, ToastContainer } from '../../components/multichain/toast';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
 import { RevealSeedWarning } from './reveal-seed-warning';
@@ -42,6 +56,7 @@ import { RevealSeedContent } from './reveal-seed-content';
 
 const QUIZ_INTRODUCTION_SCREEN: RevealSeedScreen = 'QUIZ_INTRODUCTION_SCREEN';
 const QUIZ_QUESTIONS_SCREEN: RevealSeedScreen = 'QUIZ_QUESTIONS_SCREEN';
+const VERIFY_PASSKEY_SCREEN: RevealSeedScreen = 'VERIFY_PASSKEY_SCREEN';
 // Screen identifier for the unlock step (not a credential)
 const PASSWORD_PROMPT_SCREEN: RevealSeedScreen = 'PASSWORD_PROMPT_SCREEN'; // NOSONAR
 const REVEAL_SEED_SCREEN: RevealSeedScreen = 'REVEAL_SEED_SCREEN';
@@ -56,8 +71,18 @@ function RevealSeedPage() {
   const locationState = useLocation().state as RevealSeedLocationState | null;
   const skipQuiz = locationState?.skipQuiz ?? false;
 
+  const isPasskeyActive = useIsPasskeyActive();
+  const isPasskeyIncompatibleInSidepanel =
+    useIsPasskeyIncompatibleInSidepanel();
+
+  // The credential step after the quiz: passkey when active, else password.
+  const initialCredentialScreen =
+    isPasskeyActive && !isPasskeyIncompatibleInSidepanel
+      ? VERIFY_PASSKEY_SCREEN
+      : PASSWORD_PROMPT_SCREEN;
+
   const [screen, setScreen] = useState<RevealSeedScreen>(
-    skipQuiz ? PASSWORD_PROMPT_SCREEN : QUIZ_INTRODUCTION_SCREEN,
+    skipQuiz ? initialCredentialScreen : QUIZ_INTRODUCTION_SCREEN,
   );
   const [password, setPassword] = useState('');
   const [seedWords, setSeedWords] = useState<string | null>(null);
@@ -71,23 +96,28 @@ function RevealSeedPage() {
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const [scanResult, setScanResult] =
     useState<PhishingDetectionScanResult | null>(null);
+  const scanResultPromiseRef = React.useRef<
+    Promise<PhishingDetectionScanResult | null>
+  >(Promise.resolve(null));
 
   useEffect(() => {
     let cancelled = false;
     setScanResult(null);
 
     if (activeTabOrigin) {
-      const originToScan = activeTabOrigin;
-      scanUrlForPhishing(originToScan)
-        .then((result) => {
-          if (cancelled) {
-            return;
-          }
-          setScanResult(result);
-        })
-        .catch(() => {
-          // Scan failed — no action needed
-        });
+      const scanPromise = scanUrlForPhishing(activeTabOrigin).catch(() => {
+        // Scan failed — no action needed
+        return null;
+      });
+      scanResultPromiseRef.current = scanPromise;
+      scanPromise.then((result) => {
+        if (cancelled) {
+          return;
+        }
+        setScanResult(result);
+      });
+    } else {
+      scanResultPromiseRef.current = Promise.resolve(null);
     }
 
     return () => {
@@ -174,6 +204,8 @@ function RevealSeedPage() {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Srp,
               // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Password,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
             },
           });
@@ -187,6 +219,8 @@ function RevealSeedPage() {
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Srp,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Password,
               reason: e.message,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
@@ -240,8 +274,104 @@ function RevealSeedPage() {
   }, [trackEvent, screen, hdEntropyIndex, navigate]);
 
   const handleQuizComplete = useCallback(() => {
+    setScreen(initialCredentialScreen);
+  }, [initialCredentialScreen]);
+
+  const handleRevealWithPasskey = useCallback(
+    async (authenticationResponse: PasskeyAuthenticationResponse) => {
+      const latestScanResult = await scanResultPromiseRef.current;
+      const isMaliciousAction =
+        latestScanResult?.recommendedAction === RecommendedAction.Block;
+      if (isMaliciousAction) {
+        setScreen(PASSWORD_PROMPT_SCREEN);
+        return false;
+      }
+
+      trace({ name: TraceName.RevealSeed });
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportRequested,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Passkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        },
+      });
+
+      try {
+        const revealedSeedWords = await (dispatch(
+          getSeedPhraseWithPasskey(authenticationResponse, keyringId),
+        ) as unknown as Promise<string>);
+
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportRevealed,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          },
+        });
+
+        setSeedWords(revealedSeedWords);
+        setScreen(REVEAL_SEED_SCREEN);
+        return true;
+      } catch (e) {
+        const revealError = e as Error;
+        const errorCode = getPasskeyErrorCode(revealError);
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportFailed,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            reason: errorCode,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          },
+        });
+        captureException(
+          createSentryError('Reveal SRP with passkey failed', revealError),
+        );
+        // Fall back to password verification on any passkey reveal failure.
+        setScreen(PASSWORD_PROMPT_SCREEN);
+        return false;
+      } finally {
+        endTrace({ name: TraceName.RevealSeed });
+      }
+    },
+    [dispatch, keyringId, trackEvent, hdEntropyIndex],
+  );
+
+  const handleUsePassword = useCallback(() => {
     setScreen(PASSWORD_PROMPT_SCREEN);
   }, []);
+
+  const handlePasskeyCeremonyFailed = useCallback(() => {
+    setScreen(PASSWORD_PROMPT_SCREEN);
+  }, []);
+
+  const handlePasskeyVerified = useCallback(
+    async (authenticationResponse: PasskeyAuthenticationResponse) => {
+      await handleRevealWithPasskey(authenticationResponse);
+    },
+    [handleRevealWithPasskey],
+  );
+
+  const openRevealSeedInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
+    globalThis.platform?.openExtensionInBrowser?.(
+      keyringId ? `${REVEAL_SEED_ROUTE}/${keyringId}` : REVEAL_SEED_ROUTE,
+    );
+  }, [keyringId]);
 
   useEffect(() => {
     if (screen === REVEAL_SEED_SCREEN && !srpViewEventTracked) {
@@ -303,6 +433,8 @@ function RevealSeedPage() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       });
@@ -347,6 +479,26 @@ function RevealSeedPage() {
         <QuizQuestion
           onQuizComplete={handleQuizComplete}
           onLearnMore={openSupportArticle}
+        />
+      );
+    }
+    if (screen === VERIFY_PASSKEY_SCREEN) {
+      if (isMalicious) {
+        return (
+          <RevealSeedMaliciousBlock
+            onDismiss={handleBack}
+            hostname={scanResult?.hostname ?? undefined}
+          />
+        );
+      }
+      return (
+        <PasskeyVerification
+          flow="reveal-seed"
+          troubleshootLocation="reveal-srp"
+          onOpenFullScreen={openRevealSeedInFullScreen}
+          onVerified={handlePasskeyVerified}
+          onCeremonyFailed={handlePasskeyCeremonyFailed}
+          onUsePassword={handleUsePassword}
         />
       );
     }
