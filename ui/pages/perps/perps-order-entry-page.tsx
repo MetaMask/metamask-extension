@@ -136,6 +136,7 @@ import {
   type PerpsToastRouteState,
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
+import { ExpandableOrderBook } from '../../components/app/perps/order-book';
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
 
@@ -1701,6 +1702,9 @@ const PerpsOrderEntryPage = () => {
             direction={orderDirection}
             onDirectionChange={handleDirectionChange}
           />
+        )}
+        {decodedSymbol && (
+          <ExpandableOrderBook symbol={decodedSymbol} />
         )}
         <OrderEntry
           asset={decodedSymbol}
