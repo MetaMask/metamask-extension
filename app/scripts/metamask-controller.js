@@ -120,11 +120,10 @@ import {
 import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controller';
 
 import {
-  SeedlessOnboardingControllerErrorMessage,
-  SeedlessOnboardingMigrationVersion,
   SecretType,
   RecoveryError,
   EncAccountDataType,
+  SeedlessOnboardingMigrationVersion,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -153,7 +152,6 @@ import {
   LEDGER_LIVE_PATH,
 } from '../../shared/constants/hardware-wallets';
 import { RestrictedMethods } from '../../shared/constants/permissions';
-import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -872,6 +870,7 @@ export default class MetamaskController extends EventEmitter {
         'MetaMetricsController:trackEvent',
       ),
     });
+    this.geolocationController = messengerClientsByName.GeolocationController;
 
     // Record installation info if this is the first time the extension is running.
     // This captures the version and date when MetaMask was first installed.
@@ -2846,7 +2845,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
       ),
-      syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
+      syncPasswordAndUnlockWallet: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+      ),
 
       // subscription
       subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
@@ -3376,6 +3378,9 @@ export default class MetamaskController extends EventEmitter {
       getMarketingConsent: this.oauthService.getMarketingConsent.bind(
         this.oauthService,
       ),
+      getGeolocation: this.geolocationController.getGeolocation.bind(
+        this.geolocationController,
+      ),
 
       // SeedlessOnboardingController
       preloadToprfNodeDetails:
@@ -3418,7 +3423,10 @@ export default class MetamaskController extends EventEmitter {
       checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
 
       // KeyringController
-      setLocked: this.setLocked.bind(this),
+      setLocked: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setLocked',
+      ),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
@@ -4310,7 +4318,7 @@ export default class MetamaskController extends EventEmitter {
         SeedlessOnboardingMigrationVersion.V1,
       );
 
-      await this.syncKeyringEncryptionKey();
+      await this.legacyBackgroundApiService.syncKeyringEncryptionKey();
     } catch (error) {
       this.controllerMessenger?.captureException?.(
         createSentryError(
@@ -4352,142 +4360,6 @@ export default class MetamaskController extends EventEmitter {
         name: TraceName.OnboardingFetchSrps,
         data: { success: fetchAllSeedPhrasesSuccess },
       });
-    }
-  }
-
-  /**
-   * Sync latest global seedless password and override the current device password with latest global password.
-   * Unlock the vault with the latest global password.
-   *
-   * @param {string} password - latest global seedless password
-   * @returns {void}
-   */
-  async syncPasswordAndUnlockWallet(password) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    // check if the password is outdated
-    let isPasswordOutdated = false;
-    if (isSocialLoginFlow) {
-      try {
-        isPasswordOutdated =
-          await this.legacyBackgroundApiService.checkIsSeedlessPasswordOutdated(
-            {
-              skipCache: false,
-              captureSentryError: true,
-            },
-          );
-      } catch (error) {
-        // we don't want to block the unlock flow if the password outdated check fails
-        log.error('error while checking if password is outdated', error);
-      }
-    }
-
-    // if the flow is not social login or the password is not outdated,
-    // we will proceed with the normal flow and use the password to unlock the vault
-    if (!isSocialLoginFlow || !isPasswordOutdated) {
-      await this.submitPassword(password);
-      if (isSocialLoginFlow) {
-        // try to revoke pending refresh tokens asynchronously
-        this.seedlessOnboardingController
-          .revokePendingRefreshTokens()
-          .catch((err) => {
-            log.error('error while revoking pending refresh tokens', err);
-          });
-      }
-      return;
-    }
-    const releaseLock = await this.seedlessOperationMutex.acquire();
-
-    try {
-      const isKeyringPasswordValid = await this.keyringController
-        .verifyPassword(password)
-        .then(() => true)
-        .catch((err) => {
-          if (err.message.includes('Incorrect password')) {
-            return false;
-          }
-          log.error('error while verifying keyring password', err.message);
-          throw err;
-        });
-
-      // here e could be invalid password or outdated password error, which can result in following cases:
-      // 1. Seedless controller password verification succeeded.
-      // 2. Seedless controller failed but Keyring controller password verification succeeded.
-      // 3. Both keyring and seedless controller password verification failed.
-      await this.seedlessOnboardingController
-        .submitGlobalPassword({
-          globalPassword: password,
-          maxKeyChainLength: 20,
-        })
-        .catch((err) => {
-          if (err instanceof RecoveryError) {
-            // Keyring controller password verification succeeds and seedless controller failed.
-            if (
-              err?.message ===
-                SeedlessOnboardingControllerErrorMessage.IncorrectPassword &&
-              isKeyringPasswordValid
-            ) {
-              throw new Error(
-                SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-              );
-            }
-            throw new JsonRpcError(-32603, err.message, err.data);
-          }
-          log.error(`error while submitting global password: ${err.message}`);
-          throw err;
-        });
-
-      // re-encrypt the old vault data with the latest global password
-      const keyringEncryptionKey =
-        await this.seedlessOnboardingController.loadKeyringEncryptionKey();
-      // use encryption key to unlock the keyring vault
-      await this.submitEncryptionKey(keyringEncryptionKey);
-
-      let changePasswordSuccess = false;
-      try {
-        // update seedlessOnboardingController to use latest global password
-        await this.seedlessOnboardingController.syncLatestGlobalPassword({
-          globalPassword: password,
-        });
-
-        this.metaMetricsController.bufferedTrace?.({
-          name: TraceName.OnboardingResetPassword,
-          op: TraceOperation.OnboardingSecurityOp,
-        });
-        // update vault password to global password
-        await this.keyringController.changePassword(password);
-        changePasswordSuccess = true;
-        // sync the new keyring encryption key after keyring changePassword to the seedless onboarding controller
-        await this.syncKeyringEncryptionKey();
-
-        // check password outdated again skip cache to reset the cache after successful syncing
-        await this.legacyBackgroundApiService.checkIsSeedlessPasswordOutdated({
-          skipCache: true,
-          captureSentryError: true,
-        });
-
-        // revoke pending refresh tokens asynchronously
-        this.seedlessOnboardingController
-          .revokePendingRefreshTokens()
-          .catch((err) => {
-            log.error('error while revoking pending refresh tokens', err);
-          });
-      } catch (err) {
-        this.controllerMessenger?.captureException?.(
-          createSentryError(TraceName.OnboardingResetPasswordError, err),
-        );
-
-        // lock app again on error after submitPassword succeeded
-        // here we skip the seedless operation lock as we are already in the seedless operation lock
-        await this.setLocked({ skipSeedlessOperationLock: true });
-        throw err;
-      } finally {
-        this.metaMetricsController.bufferedEndTrace?.({
-          name: TraceName.OnboardingResetPassword,
-          data: { success: changePasswordSuccess },
-        });
-      }
-    } finally {
-      releaseLock();
     }
   }
 
@@ -4732,20 +4604,6 @@ export default class MetamaskController extends EventEmitter {
           address,
         ),
       ),
-    );
-  }
-
-  /**
-   * Syncs the keyring encryption key with the seedless onboarding controller.
-   *
-   * @returns {Promise<void>}
-   */
-  async syncKeyringEncryptionKey() {
-    // store the keyring encryption key in the seedless onboarding controller
-    const keyringEncryptionKey =
-      await this.keyringController.exportEncryptionKey();
-    await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-      keyringEncryptionKey,
     );
   }
 
@@ -5375,7 +5233,9 @@ export default class MetamaskController extends EventEmitter {
             type: SecretType.Mnemonic,
           });
 
-          await this.syncKeyringEncryptionKey();
+          await this.controllerMessenger.call(
+            'LegacyBackgroundApiService:syncKeyringEncryptionKey',
+          );
         }
       }
     } finally {
@@ -5439,7 +5299,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} password - The user's password
    */
   async submitPassword(password) {
-    await this.submitPasswordOrEncryptionKey({ password });
+    await this.controllerMessenger.call(
+      'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
+      { password },
+    );
   }
 
   /**
@@ -5450,65 +5313,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} encryptionKey - The user's encryption key
    */
   async submitEncryptionKey(encryptionKey) {
-    await this.submitPasswordOrEncryptionKey({ encryptionKey });
-  }
-
-  /**
-   * Attempts to unlock the vault using either the user's password or encryption
-   * key. Also synchronizes the preferencesController, to ensure its schema is
-   * up to date with known accounts once the vault is decrypted.
-   *
-   * @param {object} params - The function parameters.
-   * @param {string} params.password - The user's password.
-   * @param {string} params.encryptionKey - The user's encryption key.
-   */
-  async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
-    await this.offscreenPromise;
-
-    if (encryptionKey) {
-      await this.keyringController.submitEncryptionKey(encryptionKey);
-    } else {
-      await this.keyringController.submitPassword(password);
-      if (isSocialLoginFlow) {
-        // unlock the seedless onboarding vault
-        await this.seedlessOnboardingController.submitPassword(password);
-      }
-    }
-
-    // Re-create accounts in the accounts-controller, after the keyring-controller gets
-    // unlocked.
-    await this.accountsController.updateAccounts();
-
-    // Init multichain accounts after creating internal accounts.
-    await this.multichainAccountService.init();
-
-    // Force account-tree refresh after all accounts have been updated.
-    this.accountTreeController.init();
-
-    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
-    // available as soon as possible (enabling faster keyring access for future operations).
-    await getSnapKeyring(this.controllerMessenger);
-
-    const resyncAndAlignAccounts = async () => {
-      // READ THIS CAREFULLY:
-      // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
-      // automatically "fix" this corrupted state, we run this method which will re-sync
-      // MetaMask accounts and Snap accounts upon login.
-      // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
-      await this.multichainAccountService.resyncAccounts();
-
-      // This allows to create missing accounts if new account providers have been added.
-      await this.multichainAccountService.alignWallets();
-    };
-
-    // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-    // for mobile.
-    // NOTE: We run this asynchronously on purpose, see FIXME^.
-    // eslint-disable-next-line no-void
-    void resyncAndAlignAccounts();
+    await this.controllerMessenger.call(
+      'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
+      { encryptionKey },
+    );
   }
 
   async _loginUser(password) {
@@ -8701,58 +8509,6 @@ export default class MetamaskController extends EventEmitter {
     await this.platform.switchToAnotherURL(undefined, portfolioURL);
   }
 
-  /**
-   * Locks MetaMask
-   *
-   * @param {object} options - The options for setting the locked state.
-   * @param {boolean} options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
-   */
-  async setLocked(options = { skipSeedlessOperationLock: false }) {
-    const { skipSeedlessOperationLock } = options;
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    let releaseLock;
-    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
-      releaseLock = await this.seedlessOperationMutex.acquire();
-    }
-
-    try {
-      if (isSocialLoginFlow) {
-        await this.seedlessOnboardingController.setLocked();
-      }
-      await this.keyringController.setLocked();
-
-      // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
-      this.subscriptionController.stopAllPolling();
-
-      // sign out from Authentication service and clear the Session Data if user is signed in
-      // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
-      // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
-      const { isSignedIn } = this.authenticationController.state;
-      if (isSignedIn) {
-        this.authenticationController.performSignOut();
-      }
-
-      // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
-      if (this.passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
-        clearTimeout(this.passkeyAutoUnlockSuppressedResetTimeoutId);
-        this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
-      }
-      this.appStateController.setPasskeyAutoUnlockSuppressed(true);
-      this.passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
-        this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
-        this.appStateController.setPasskeyAutoUnlockSuppressed(false);
-      }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
-    } catch (error) {
-      log.error('Error setting locked state', error);
-      throw error;
-    } finally {
-      if (releaseLock) {
-        releaseLock();
-      }
-    }
-  }
-
   removePermissionsFor = (subjects) => {
     try {
       this.permissionController.revokePermissions(subjects);
@@ -9550,7 +9306,6 @@ export default class MetamaskController extends EventEmitter {
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:
         this.setupUntrustedCommunicationCaip.bind(this),
-      setLocked: this.setLocked.bind(this),
       showNotification: this.platform._showNotification,
       showUserConfirmation: this.opts.showUserConfirmation,
       getAccountType: this.getAccountType.bind(this),
