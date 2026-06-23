@@ -1244,10 +1244,10 @@ describe('Bridge selectors', () => {
       );
     });
 
-    it('returns null valueInCurrency when currencyRates is empty and assets-unify is not enabled', () => {
-      // Verifies the baseline: without migration selectors bridging the data,
-      // empty currencyRates would produce null fiat values. This confirms that
-      // the augmentation in getBridgeQuotes is necessary for the migration path.
+    it('returns null valueInCurrency when both currencyRates and assetsPrice are empty', () => {
+      // Verifies the fallback path: when CurrencyRateController is deprecated
+      // (currencyRates: {}) AND AssetsController has no prices yet (assetsPrice: {}),
+      // cost.valueInCurrency cannot be computed and falls back to null.
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
