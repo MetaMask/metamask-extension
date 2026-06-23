@@ -33,7 +33,7 @@ import { selectBridgeHistoryItemForTxHash } from '../ducks/bridge-status/selecto
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
-import { Status } from '../../shared/lib/activity/types';
+import { ActivityListItem, Status } from '../../shared/lib/activity/types';
 import { getInternalAccountsObject } from './accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
@@ -528,7 +528,7 @@ export const selectLocalActivityItems = createSelector(
 export const selectLocalActivityItemsByIdentifier = createSelector(
   selectLocalActivityItems,
   (items) => {
-    const itemsByIdentifier = new Map();
+    const itemsByIdentifier = new Map<string, ActivityListItem>();
 
     for (const item of items) {
       const hash = item.hash?.toLowerCase();

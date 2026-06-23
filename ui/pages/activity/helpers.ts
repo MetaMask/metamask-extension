@@ -129,7 +129,10 @@ export function dedupeItems(...sources: ActivityListItem[][]) {
 
     // More categorized items take precedence, unless it's a generic interaction
     const existingItem = dedupedItems[existingIndex];
-    if (existingItem.type !== 'contractInteraction') {
+    const hasMatchingActivityType = existingItem.type === item.type;
+    const isLocalUncategorized = existingItem.type === 'contractInteraction';
+
+    if (!hasMatchingActivityType && !isLocalUncategorized) {
       continue;
     }
 
