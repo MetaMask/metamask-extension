@@ -36,10 +36,38 @@ import {
   type MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
 import { isBenignDisconnectError } from './perps-error-utils';
 
-const TERMINAL_API_URL = 'https://terminal.dev-api.cx.metamask.io';
+const TERMINAL_API_URLS = {
+  dev: 'https://terminal.dev-api.cx.metamask.io',
+  uat: 'https://terminal.uat-api.cx.metamask.io',
+  prd: 'https://terminal.api.cx.metamask.io',
+} as const;
+
+function getTerminalApiUrl(): string {
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  ) {
+    return TERMINAL_API_URLS.dev;
+  }
+
+  const buildType = process.env.METAMASK_BUILD_TYPE;
+  if (buildType === 'beta') {
+    return TERMINAL_API_URLS.uat;
+  }
+
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE
+  ) {
+    return TERMINAL_API_URLS.prd;
+  }
+
+  return TERMINAL_API_URLS.uat;
+}
 
 /**
  * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
@@ -367,7 +395,7 @@ export function createPerpsInfrastructure(
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
     diskCache: createDiskCache(deps),
-    terminalApiUrl: TERMINAL_API_URL,
+    terminalApiUrl: getTerminalApiUrl(),
     rewards: {
       // The perps package only passes `caipAccountId`; the rewards controller
       // additionally needs the perps MetaMask builder base fee in bips so it

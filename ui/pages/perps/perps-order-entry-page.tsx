@@ -458,6 +458,7 @@ const PerpsOrderEntryPage = () => {
           timestamp: ts ?? Date.now(),
           markPrice: mark,
           percentChange24h,
+          isTradable: (update as { isTradable?: boolean }).isTradable ?? true,
         });
       }
     });
