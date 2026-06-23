@@ -1243,6 +1243,59 @@ describe('Bridge selectors', () => {
         mockBridgeQuotesNativeErc20[0]?.quote.requestId,
       );
     });
+
+    it('returns null valueInCurrency when currencyRates is empty and assets-unify is not enabled', () => {
+      // Verifies the baseline: without migration selectors bridging the data,
+      // empty currencyRates would produce null fiat values. This confirms that
+      // the augmentation in getBridgeQuotes is necessary for the migration path.
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            maxRefreshCount: 5,
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenExchangeRate: 1,
+          fromToken: { address: zeroAddress(), symbol: 'TEST' },
+          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
+        },
+        bridgeStateOverrides: {
+          quoteRequest: {
+            insufficientBal: false,
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
+          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotesRefreshCount: 5,
+          quotesLastFetched: 100,
+          quotesInitialLoadTime: 11000,
+        },
+        metamaskStateOverrides: {
+          // Empty currencyRates with no assetsPrice fallback (assets-unify not enabled)
+          currencyRates: {},
+          marketData: {},
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+            { chainId: CHAIN_IDS.POLYGON },
+            { chainId: CHAIN_IDS.OPTIMISM },
+          ),
+        },
+      });
+
+      const result = getBridgeQuotes(state as never);
+      expect(result.sortedQuotes).toHaveLength(2);
+
+      // Without rates, fiat values cannot be computed
+      const { recommendedQuote } = result;
+      expect(recommendedQuote?.gasFee.effective?.valueInCurrency).toBeNull();
+    });
   });
 
   describe('getBatchSellQuotes', () => {

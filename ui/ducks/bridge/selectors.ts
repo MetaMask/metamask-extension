@@ -58,6 +58,7 @@ import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
+  getMultichainAssetsRatesControllerConversionRates,
   getTokenRatesControllerMarketData,
 } from '../../../shared/lib/selectors/assets-migration';
 import {
@@ -719,8 +720,16 @@ export const getBridgeQuotes = createSelector(
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, sortOrder, selectedQuote) => {
-    const quotes = selectBridgeQuotes(controllerStates, {
+  (metamask, sortOrder, selectedQuote) => {
+    const augmentedState = {
+      ...metamask,
+      currencyRates: getCurrencyRateControllerCurrencyRates({ metamask }),
+      marketData: getTokenRatesControllerMarketData({ metamask }),
+      conversionRates: getMultichainAssetsRatesControllerConversionRates({
+        metamask,
+      }),
+    };
+    const quotes = selectBridgeQuotes(augmentedState, {
       sortOrder,
       selectedQuote,
     });

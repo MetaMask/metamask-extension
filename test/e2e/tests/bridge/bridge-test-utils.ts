@@ -1454,6 +1454,9 @@ export const getQuoteNegativeCasesFixtures = (
       eip155: {
         '0x1': true,
       },
+    })
+    .withAssetsController({
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {
@@ -1514,6 +1517,9 @@ export const getBridgeNegativeCasesFixtures = (
       eip155: {
         '0x1': true,
       },
+    })
+    .withAssetsController({
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {
@@ -1574,6 +1580,9 @@ export const getInsufficientFundsFixtures = (
       eip155: {
         '0x1': true,
       },
+    })
+    .withAssetsController({
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {
