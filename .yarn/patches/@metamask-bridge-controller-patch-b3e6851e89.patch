@@ -1,0 +1,312 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 29ebb46584bab3c7b344af501b16f91d81471d44..0726c0201656228b8a51394665835f3cf9142e02 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
+ 
+ ## [Unreleased]
+ 
++### Added
++
++- Added `getLocation()` method to `BridgeController` for reading the current swap/bridge entry point ([#9243](https://github.com/MetaMask/core/pull/9243))
++- Added `Unknown` value to `MetaMetricsSwapsEventSource` enum for unattributed swap and bridge flows ([#9243](https://github.com/MetaMask/core/pull/9243))
++
++### Changed
++
++- **BREAKING:** Default `location` fallback for Unified SwapBridge events now uses `Unknown` instead of `Main View` when no entry point is set ([#9243](https://github.com/MetaMask/core/pull/9243))
++
+ ## [73.2.0]
+ 
+ ### Added
+diff --git a/dist/bridge-controller-method-action-types.d.cts b/dist/bridge-controller-method-action-types.d.cts
+index c3366f67dfcd203737deabcb854400b60db6d1a2..1535e781c1df11cb8cb9272fc5e481438c0c2267 100644
+--- a/dist/bridge-controller-method-action-types.d.cts
++++ b/dist/bridge-controller-method-action-types.d.cts
+@@ -11,6 +11,10 @@ export type BridgeControllerFetchQuotesAction = {
+     type: `BridgeController:fetchQuotes`;
+     handler: BridgeController['fetchQuotes'];
+ };
++export type BridgeControllerUpdateBatchSellTradesAction = {
++    type: `BridgeController:updateBatchSellTrades`;
++    handler: BridgeController['updateBatchSellTrades'];
++};
+ export type BridgeControllerStopPollingForQuotesAction = {
+     type: `BridgeController:stopPollingForQuotes`;
+     handler: BridgeController['stopPollingForQuotes'];
+@@ -19,6 +23,10 @@ export type BridgeControllerSetLocationAction = {
+     type: `BridgeController:setLocation`;
+     handler: BridgeController['setLocation'];
+ };
++export type BridgeControllerGetLocationAction = {
++    type: `BridgeController:getLocation`;
++    handler: BridgeController['getLocation'];
++};
+ export type BridgeControllerResetStateAction = {
+     type: `BridgeController:resetState`;
+     handler: BridgeController['resetState'];
+@@ -31,12 +39,8 @@ export type BridgeControllerTrackUnifiedSwapBridgeEventAction = {
+     type: `BridgeController:trackUnifiedSwapBridgeEvent`;
+     handler: BridgeController['trackUnifiedSwapBridgeEvent'];
+ };
+-export type BridgeControllerUpdateBatchSellTradesAction = {
+-    type: `BridgeController:updateBatchSellTrades`;
+-    handler: BridgeController['updateBatchSellTrades'];
+-};
+ /**
+  * Union of all BridgeController action types.
+  */
+-export type BridgeControllerMethodActions = BridgeControllerUpdateBridgeQuoteRequestParamsAction | BridgeControllerFetchQuotesAction | BridgeControllerStopPollingForQuotesAction | BridgeControllerSetLocationAction | BridgeControllerResetStateAction | BridgeControllerSetChainIntervalLengthAction | BridgeControllerTrackUnifiedSwapBridgeEventAction | BridgeControllerUpdateBatchSellTradesAction;
++export type BridgeControllerMethodActions = BridgeControllerUpdateBridgeQuoteRequestParamsAction | BridgeControllerFetchQuotesAction | BridgeControllerUpdateBatchSellTradesAction | BridgeControllerStopPollingForQuotesAction | BridgeControllerSetLocationAction | BridgeControllerGetLocationAction | BridgeControllerResetStateAction | BridgeControllerSetChainIntervalLengthAction | BridgeControllerTrackUnifiedSwapBridgeEventAction;
+ //# sourceMappingURL=bridge-controller-method-action-types.d.cts.map
+\ No newline at end of file
+diff --git a/dist/bridge-controller-method-action-types.d.mts b/dist/bridge-controller-method-action-types.d.mts
+index eb4b39d539ab7cc00b8d703d4794dae15a80a3ce..d511d3bf9dd41c1629e5f70a0cbb05b2dfa3945d 100644
+--- a/dist/bridge-controller-method-action-types.d.mts
++++ b/dist/bridge-controller-method-action-types.d.mts
+@@ -11,6 +11,10 @@ export type BridgeControllerFetchQuotesAction = {
+     type: `BridgeController:fetchQuotes`;
+     handler: BridgeController['fetchQuotes'];
+ };
++export type BridgeControllerUpdateBatchSellTradesAction = {
++    type: `BridgeController:updateBatchSellTrades`;
++    handler: BridgeController['updateBatchSellTrades'];
++};
+ export type BridgeControllerStopPollingForQuotesAction = {
+     type: `BridgeController:stopPollingForQuotes`;
+     handler: BridgeController['stopPollingForQuotes'];
+@@ -19,6 +23,10 @@ export type BridgeControllerSetLocationAction = {
+     type: `BridgeController:setLocation`;
+     handler: BridgeController['setLocation'];
+ };
++export type BridgeControllerGetLocationAction = {
++    type: `BridgeController:getLocation`;
++    handler: BridgeController['getLocation'];
++};
+ export type BridgeControllerResetStateAction = {
+     type: `BridgeController:resetState`;
+     handler: BridgeController['resetState'];
+@@ -31,12 +39,8 @@ export type BridgeControllerTrackUnifiedSwapBridgeEventAction = {
+     type: `BridgeController:trackUnifiedSwapBridgeEvent`;
+     handler: BridgeController['trackUnifiedSwapBridgeEvent'];
+ };
+-export type BridgeControllerUpdateBatchSellTradesAction = {
+-    type: `BridgeController:updateBatchSellTrades`;
+-    handler: BridgeController['updateBatchSellTrades'];
+-};
+ /**
+  * Union of all BridgeController action types.
+  */
+-export type BridgeControllerMethodActions = BridgeControllerUpdateBridgeQuoteRequestParamsAction | BridgeControllerFetchQuotesAction | BridgeControllerStopPollingForQuotesAction | BridgeControllerSetLocationAction | BridgeControllerResetStateAction | BridgeControllerSetChainIntervalLengthAction | BridgeControllerTrackUnifiedSwapBridgeEventAction | BridgeControllerUpdateBatchSellTradesAction;
++export type BridgeControllerMethodActions = BridgeControllerUpdateBridgeQuoteRequestParamsAction | BridgeControllerFetchQuotesAction | BridgeControllerUpdateBatchSellTradesAction | BridgeControllerStopPollingForQuotesAction | BridgeControllerSetLocationAction | BridgeControllerGetLocationAction | BridgeControllerResetStateAction | BridgeControllerSetChainIntervalLengthAction | BridgeControllerTrackUnifiedSwapBridgeEventAction;
+ //# sourceMappingURL=bridge-controller-method-action-types.d.mts.map
+\ No newline at end of file
+diff --git a/dist/bridge-controller.cjs b/dist/bridge-controller.cjs
+index bc79879d97cb812307e70d1a6731bf1720ca2e26..0b763209e850d38b999bcae78ce415686ea8fdfc 100644
+--- a/dist/bridge-controller.cjs
++++ b/dist/bridge-controller.cjs
+@@ -128,6 +128,7 @@ const MESSENGER_EXPOSED_METHODS = [
+     'updateBatchSellTrades',
+     'stopPollingForQuotes',
+     'setLocation',
++    'getLocation',
+     'resetState',
+     'setChainIntervalLength',
+     'trackUnifiedSwapBridgeEvent',
+@@ -152,7 +153,7 @@ class BridgeController extends (0, polling_controller_1.StaticIntervalPollingCon
+          * Set via setLocation() before navigating to the swap/bridge flow.
+          * Used as default for all subsequent internal events.
+          */
+-        _BridgeController_location.set(this, constants_1.MetaMetricsSwapsEventSource.MainView);
++        _BridgeController_location.set(this, constants_1.MetaMetricsSwapsEventSource.Unknown);
+         _BridgeController_clientId.set(this, void 0);
+         _BridgeController_clientVersion.set(this, void 0);
+         _BridgeController_getLayer1GasFee.set(this, void 0);
+@@ -440,6 +441,14 @@ class BridgeController extends (0, polling_controller_1.StaticIntervalPollingCon
+         this.setLocation = (location) => {
+             __classPrivateFieldSet(this, _BridgeController_location, location, "f");
+         };
++        /**
++         * Returns the location/entry point for the current swap or bridge flow.
++         *
++         * @returns The entry point from which the user initiated the flow
++         */
++        this.getLocation = () => {
++            return __classPrivateFieldGet(this, _BridgeController_location, "f");
++        };
+         this.resetState = (reason = constants_1.AbortReason.ResetState, quoteRequestIndex = null) => {
+             this.stopPollingForQuotes(reason);
+             this.update((state) => {
+diff --git a/dist/bridge-controller.d.cts b/dist/bridge-controller.d.cts
+index 2b143274b03c95a30465f74267ad027bc1abdf3e..0391f86cecae2e6cac793bed45a9b971ef7eafcd 100644
+--- a/dist/bridge-controller.d.cts
++++ b/dist/bridge-controller.d.cts
+@@ -102,6 +102,12 @@ export declare class BridgeController extends BridgeController_base<typeof BRIDG
+      * @param location - The entry point from which the user initiated the flow
+      */
+     setLocation: (location: MetaMetricsSwapsEventSource) => void;
++    /**
++     * Returns the location/entry point for the current swap or bridge flow.
++     *
++     * @returns The entry point from which the user initiated the flow
++     */
++    getLocation: () => MetaMetricsSwapsEventSource;
+     resetState: (reason?: AbortReason, quoteRequestIndex?: number | null) => void;
+     /**
+      * Sets the interval length based on the source chain
+diff --git a/dist/bridge-controller.d.mts b/dist/bridge-controller.d.mts
+index fde92107cd95beef9d9b77c9f28e3fcfa6d9a9ef..c6bb6ab4dc4bc82c0d0f55fa6670170f640baadf 100644
+--- a/dist/bridge-controller.d.mts
++++ b/dist/bridge-controller.d.mts
+@@ -102,6 +102,12 @@ export declare class BridgeController extends BridgeController_base<typeof BRIDG
+      * @param location - The entry point from which the user initiated the flow
+      */
+     setLocation: (location: MetaMetricsSwapsEventSource) => void;
++    /**
++     * Returns the location/entry point for the current swap or bridge flow.
++     *
++     * @returns The entry point from which the user initiated the flow
++     */
++    getLocation: () => MetaMetricsSwapsEventSource;
+     resetState: (reason?: AbortReason, quoteRequestIndex?: number | null) => void;
+     /**
+      * Sets the interval length based on the source chain
+diff --git a/dist/bridge-controller.mjs b/dist/bridge-controller.mjs
+index e85fbf3f8f3e7f2951b04787b7c9ec63ac68aa90..d76701c08109f2e1cadef5b0b1b34e57a712f5ff 100644
+--- a/dist/bridge-controller.mjs
++++ b/dist/bridge-controller.mjs
+@@ -125,6 +125,7 @@ const MESSENGER_EXPOSED_METHODS = [
+     'updateBatchSellTrades',
+     'stopPollingForQuotes',
+     'setLocation',
++    'getLocation',
+     'resetState',
+     'setChainIntervalLength',
+     'trackUnifiedSwapBridgeEvent',
+@@ -149,7 +150,7 @@ export class BridgeController extends StaticIntervalPollingController() {
+          * Set via setLocation() before navigating to the swap/bridge flow.
+          * Used as default for all subsequent internal events.
+          */
+-        _BridgeController_location.set(this, MetaMetricsSwapsEventSource.MainView);
++        _BridgeController_location.set(this, MetaMetricsSwapsEventSource.Unknown);
+         _BridgeController_clientId.set(this, void 0);
+         _BridgeController_clientVersion.set(this, void 0);
+         _BridgeController_getLayer1GasFee.set(this, void 0);
+@@ -437,6 +438,14 @@ export class BridgeController extends StaticIntervalPollingController() {
+         this.setLocation = (location) => {
+             __classPrivateFieldSet(this, _BridgeController_location, location, "f");
+         };
++        /**
++         * Returns the location/entry point for the current swap or bridge flow.
++         *
++         * @returns The entry point from which the user initiated the flow
++         */
++        this.getLocation = () => {
++            return __classPrivateFieldGet(this, _BridgeController_location, "f");
++        };
+         this.resetState = (reason = AbortReason.ResetState, quoteRequestIndex = null) => {
+             this.stopPollingForQuotes(reason);
+             this.update((state) => {
+diff --git a/dist/index.d.cts b/dist/index.d.cts
+index 57c3c89e85e96e1e7b30b1bc55c837debb0f80c0..f6a9bde6453bd6ed90c3b5242fb994ea7c5f3e04 100644
+--- a/dist/index.d.cts
++++ b/dist/index.d.cts
+@@ -3,7 +3,7 @@ export { UnifiedSwapBridgeEventName, UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY, InputAm
+ export type { AccountHardwareType, RequiredEventContextFromClient, CrossChainSwapsEventProperties, TradeData, RequestParams, RequestMetadata, TxStatusData, QuoteFetchData, QuoteWarning, } from "./utils/metrics/types.cjs";
+ export { getAccountHardwareType, formatProviderLabel, getRequestParams, getSwapType, isHardwareWallet, isCustomSlippage, getQuotesReceivedProperties, } from "./utils/metrics/properties.cjs";
+ export type { ChainConfiguration, L1GasFees, NonEvmFees, QuoteMetadata, GasMultiplierByChainId, FeatureFlagResponse, BridgeAsset, GenericQuoteRequest, Protocol, BatchSellTradesResponse, GaslessProperties, SimulatedGasFeeLimits, TokenAmountValues, Step, RefuelData, Quote, QuoteResponse, FeeData, TxData, Intent, IntentOrderLike, BitcoinTradeData, TronTradeData, BridgeControllerState, BridgeControllerAction, BridgeControllerActions, BridgeControllerEvents, BridgeControllerMessenger, FeatureFlagsPlatformConfig, TxFeeGasLimits, } from "./types.cjs";
+-export type { BridgeControllerUpdateBridgeQuoteRequestParamsAction, BridgeControllerFetchQuotesAction, BridgeControllerStopPollingForQuotesAction, BridgeControllerSetLocationAction, BridgeControllerResetStateAction, BridgeControllerSetChainIntervalLengthAction, BridgeControllerTrackUnifiedSwapBridgeEventAction, BridgeControllerUpdateBatchSellTradesAction, } from "./bridge-controller-method-action-types.cjs";
++export type { BridgeControllerUpdateBridgeQuoteRequestParamsAction, BridgeControllerFetchQuotesAction, BridgeControllerStopPollingForQuotesAction, BridgeControllerSetLocationAction, BridgeControllerGetLocationAction, BridgeControllerResetStateAction, BridgeControllerSetChainIntervalLengthAction, BridgeControllerTrackUnifiedSwapBridgeEventAction, BridgeControllerUpdateBatchSellTradesAction, } from "./bridge-controller-method-action-types.cjs";
+ export { AbortReason } from "./utils/metrics/constants.cjs";
+ export { StatusTypes } from "./types.cjs";
+ export { AssetType, SortOrder, ChainId, RequestStatus, type TokenFeature, type QuoteStreamCompleteData, type BridgeControllerGetStateAction, type BridgeControllerStateChangeEvent, } from "./types.cjs";
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index 123315f0b9cd24d97c0a62325bbf63500e1dc704..d595899a4f056e2a5a6c2ed235557f350980f408 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -3,7 +3,7 @@ export { UnifiedSwapBridgeEventName, UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY, InputAm
+ export type { AccountHardwareType, RequiredEventContextFromClient, CrossChainSwapsEventProperties, TradeData, RequestParams, RequestMetadata, TxStatusData, QuoteFetchData, QuoteWarning, } from "./utils/metrics/types.mjs";
+ export { getAccountHardwareType, formatProviderLabel, getRequestParams, getSwapType, isHardwareWallet, isCustomSlippage, getQuotesReceivedProperties, } from "./utils/metrics/properties.mjs";
+ export type { ChainConfiguration, L1GasFees, NonEvmFees, QuoteMetadata, GasMultiplierByChainId, FeatureFlagResponse, BridgeAsset, GenericQuoteRequest, Protocol, BatchSellTradesResponse, GaslessProperties, SimulatedGasFeeLimits, TokenAmountValues, Step, RefuelData, Quote, QuoteResponse, FeeData, TxData, Intent, IntentOrderLike, BitcoinTradeData, TronTradeData, BridgeControllerState, BridgeControllerAction, BridgeControllerActions, BridgeControllerEvents, BridgeControllerMessenger, FeatureFlagsPlatformConfig, TxFeeGasLimits, } from "./types.mjs";
+-export type { BridgeControllerUpdateBridgeQuoteRequestParamsAction, BridgeControllerFetchQuotesAction, BridgeControllerStopPollingForQuotesAction, BridgeControllerSetLocationAction, BridgeControllerResetStateAction, BridgeControllerSetChainIntervalLengthAction, BridgeControllerTrackUnifiedSwapBridgeEventAction, BridgeControllerUpdateBatchSellTradesAction, } from "./bridge-controller-method-action-types.mjs";
++export type { BridgeControllerUpdateBridgeQuoteRequestParamsAction, BridgeControllerFetchQuotesAction, BridgeControllerStopPollingForQuotesAction, BridgeControllerSetLocationAction, BridgeControllerGetLocationAction, BridgeControllerResetStateAction, BridgeControllerSetChainIntervalLengthAction, BridgeControllerTrackUnifiedSwapBridgeEventAction, BridgeControllerUpdateBatchSellTradesAction, } from "./bridge-controller-method-action-types.mjs";
+ export { AbortReason } from "./utils/metrics/constants.mjs";
+ export { StatusTypes } from "./types.mjs";
+ export { AssetType, SortOrder, ChainId, RequestStatus, type TokenFeature, type QuoteStreamCompleteData, type BridgeControllerGetStateAction, type BridgeControllerStateChangeEvent, } from "./types.mjs";
+diff --git a/dist/utils/metrics/constants.cjs b/dist/utils/metrics/constants.cjs
+index fff03ba56fd99dd5def2a103dd8e23ac852a0818..86c904883f9238784975061074d80e973d4623bf 100644
+--- a/dist/utils/metrics/constants.cjs
++++ b/dist/utils/metrics/constants.cjs
+@@ -52,6 +52,7 @@ var MetaMetricsSwapsEventSource;
+     MetaMetricsSwapsEventSource["TokenView"] = "Token View";
+     MetaMetricsSwapsEventSource["TrendingExplore"] = "Trending Explore";
+     MetaMetricsSwapsEventSource["Rewards"] = "Rewards";
++    MetaMetricsSwapsEventSource["Unknown"] = "Unknown";
+ })(MetaMetricsSwapsEventSource || (exports.MetaMetricsSwapsEventSource = MetaMetricsSwapsEventSource = {}));
+ var InputAmountPreset;
+ (function (InputAmountPreset) {
+diff --git a/dist/utils/metrics/constants.d.cts b/dist/utils/metrics/constants.d.cts
+index 42b2f77cd8197e664e632cc4d34662c2d37d64ca..0389e1ef6d42afe54ea712573dc514856dd50a80 100644
+--- a/dist/utils/metrics/constants.d.cts
++++ b/dist/utils/metrics/constants.d.cts
+@@ -43,7 +43,8 @@ export declare enum MetaMetricsSwapsEventSource {
+     MainView = "Main View",
+     TokenView = "Token View",
+     TrendingExplore = "Trending Explore",
+-    Rewards = "Rewards"
++    Rewards = "Rewards",
++    Unknown = "Unknown"
+ }
+ export declare enum InputAmountPreset {
+     PERCENT_25 = "25%",
+diff --git a/dist/utils/metrics/constants.d.mts b/dist/utils/metrics/constants.d.mts
+index d5f922e0768bb9b4d460d1c1f4bad24bef02b495..ed1199dddac6d121da803c0a166c9b4a2e8e49ef 100644
+--- a/dist/utils/metrics/constants.d.mts
++++ b/dist/utils/metrics/constants.d.mts
+@@ -43,7 +43,8 @@ export declare enum MetaMetricsSwapsEventSource {
+     MainView = "Main View",
+     TokenView = "Token View",
+     TrendingExplore = "Trending Explore",
+-    Rewards = "Rewards"
++    Rewards = "Rewards",
++    Unknown = "Unknown"
+ }
+ export declare enum InputAmountPreset {
+     PERCENT_25 = "25%",
+diff --git a/dist/utils/metrics/constants.mjs b/dist/utils/metrics/constants.mjs
+index 0d37eac89e0a8da0aba112e29cea64a6bf72f525..703f99d4fbaf0d2a614f3a9f85584d10a2e35c05 100644
+--- a/dist/utils/metrics/constants.mjs
++++ b/dist/utils/metrics/constants.mjs
+@@ -49,6 +49,7 @@ export var MetaMetricsSwapsEventSource;
+     MetaMetricsSwapsEventSource["TokenView"] = "Token View";
+     MetaMetricsSwapsEventSource["TrendingExplore"] = "Trending Explore";
+     MetaMetricsSwapsEventSource["Rewards"] = "Rewards";
++    MetaMetricsSwapsEventSource["Unknown"] = "Unknown";
+ })(MetaMetricsSwapsEventSource || (MetaMetricsSwapsEventSource = {}));
+ export var InputAmountPreset;
+ (function (InputAmountPreset) {
+diff --git a/dist/utils/metrics/types.d.cts b/dist/utils/metrics/types.d.cts
+index 60158bb2246f253824629097bb18b84d15356e96..18e1acaba535472af3bc1c13795d0b48e7ebcb9c 100644
+--- a/dist/utils/metrics/types.d.cts
++++ b/dist/utils/metrics/types.d.cts
+@@ -156,7 +156,7 @@ type RequiredEventContextFromClientBase = {
+  * Properties that are required to be provided when trackUnifiedSwapBridgeEvent is called.
+  * This combines the event-specific properties from RequiredEventContextFromClientBase
+  * with an optional `location` property. When `location` is omitted, the controller
+- * falls back to the value stored via `setLocation()` (defaults to MainView).
++ * falls back to the value stored via `setLocation()` (defaults to Unknown).
+  *
+  * `ab_tests` is the legacy field and `active_ab_tests` is the newer field.
+  * Both are kept for a migration window and are treated as separate payloads.
+diff --git a/dist/utils/metrics/types.d.mts b/dist/utils/metrics/types.d.mts
+index 201d12ed74c4f3043ae82e55430ade2a1407af1f..b54b768df266a33012e1fc36c13b2e7c125a879f 100644
+--- a/dist/utils/metrics/types.d.mts
++++ b/dist/utils/metrics/types.d.mts
+@@ -156,7 +156,7 @@ type RequiredEventContextFromClientBase = {
+  * Properties that are required to be provided when trackUnifiedSwapBridgeEvent is called.
+  * This combines the event-specific properties from RequiredEventContextFromClientBase
+  * with an optional `location` property. When `location` is omitted, the controller
+- * falls back to the value stored via `setLocation()` (defaults to MainView).
++ * falls back to the value stored via `setLocation()` (defaults to Unknown).
+  *
+  * `ab_tests` is the legacy field and `active_ab_tests` is the newer field.
+  * Both are kept for a migration window and are treated as separate payloads.

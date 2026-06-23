@@ -1,0 +1,52 @@
+diff --git a/dist/bridge-status-controller.cjs b/dist/bridge-status-controller.cjs
+index 764dd9e34ab413f50131c3f5c3a54a92bd31ab89..c213bf09c0cdf1627da2345cc4bc18e3a8ee6604 100644
+--- a/dist/bridge-status-controller.cjs
++++ b/dist/bridge-status-controller.cjs
+@@ -590,7 +590,7 @@ class BridgeStatusController extends (0, polling_controller_1.StaticIntervalPoll
+          * @returns The transaction meta
+          * @throws An error if transaction submission fails before it gets published
+          */
+-        this.submitTx = async (accountAddress, maybeQuoteResponses, isStxEnabled, quotesReceivedContext, location = bridge_controller_2.MetaMetricsSwapsEventSource.MainView, abTests, activeAbTests, tokenSecurityTypeDestination, batchSellTrades) => {
++        this.submitTx = async (accountAddress, maybeQuoteResponses, isStxEnabled, quotesReceivedContext, location = bridge_controller_2.MetaMetricsSwapsEventSource.Unknown, abTests, activeAbTests, tokenSecurityTypeDestination, batchSellTrades) => {
+             /**
+              * If there are multiple quote responses, we assume that they all originate from the same src chain
+              * and the same account. In this case its safe to use the first quote response's properties for
+@@ -725,9 +725,9 @@ class BridgeStatusController extends (0, polling_controller_1.StaticIntervalPoll
+                 : undefined;
+             const resolvedAbTests = eventProperties?.ab_tests ?? historyAbTests;
+             const resolvedActiveAbTests = eventProperties?.active_ab_tests ?? historyActiveAbTests;
+-            const location = (txHistoryKey
+-                ? this.state.txHistory?.[txHistoryKey]?.location
+-                : undefined) ?? bridge_controller_2.MetaMetricsSwapsEventSource.MainView;
++            const location = historyItem?.location ??
++                eventProperties?.location ??
++                bridge_controller_2.MetaMetricsSwapsEventSource.Unknown;
+             const baseProperties = {
+                 action_type: bridge_controller_2.MetricsActionType.SWAPBRIDGE_V1,
+                 feature_id: featureId ?? bridge_controller_1.FeatureId.UNIFIED_SWAP_BRIDGE,
+diff --git a/dist/bridge-status-controller.mjs b/dist/bridge-status-controller.mjs
+index f89acfa42de45e86dee194877631a853391f08c4..bf2704a1942e07228aab2e61302fc341436a55ad 100644
+--- a/dist/bridge-status-controller.mjs
++++ b/dist/bridge-status-controller.mjs
+@@ -584,7 +584,7 @@ export class BridgeStatusController extends StaticIntervalPollingController() {
+          * @returns The transaction meta
+          * @throws An error if transaction submission fails before it gets published
+          */
+-        this.submitTx = async (accountAddress, maybeQuoteResponses, isStxEnabled, quotesReceivedContext, location = MetaMetricsSwapsEventSource.MainView, abTests, activeAbTests, tokenSecurityTypeDestination, batchSellTrades) => {
++        this.submitTx = async (accountAddress, maybeQuoteResponses, isStxEnabled, quotesReceivedContext, location = MetaMetricsSwapsEventSource.Unknown, abTests, activeAbTests, tokenSecurityTypeDestination, batchSellTrades) => {
+             /**
+              * If there are multiple quote responses, we assume that they all originate from the same src chain
+              * and the same account. In this case its safe to use the first quote response's properties for
+@@ -719,9 +719,9 @@ export class BridgeStatusController extends StaticIntervalPollingController() {
+                 : undefined;
+             const resolvedAbTests = eventProperties?.ab_tests ?? historyAbTests;
+             const resolvedActiveAbTests = eventProperties?.active_ab_tests ?? historyActiveAbTests;
+-            const location = (txHistoryKey
+-                ? this.state.txHistory?.[txHistoryKey]?.location
+-                : undefined) ?? MetaMetricsSwapsEventSource.MainView;
++            const location = historyItem?.location ??
++                eventProperties?.location ??
++                MetaMetricsSwapsEventSource.Unknown;
+             const baseProperties = {
+                 action_type: MetricsActionType.SWAPBRIDGE_V1,
+                 feature_id: featureId ?? FeatureId.UNIFIED_SWAP_BRIDGE,
