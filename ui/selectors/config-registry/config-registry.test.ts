@@ -313,9 +313,7 @@ describe('config-registry selectors', () => {
     });
 
     it('skips entries with malformed chainId and falls back to FEATURED_RPCS when no valid entries remain', () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
@@ -357,9 +355,7 @@ describe('config-registry selectors', () => {
     });
 
     it('skips malformed chainId entries but includes valid ones', () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
