@@ -134,6 +134,9 @@ describe('useBridging', () => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const setBridgeLocationSpy = jest
+          .spyOn(bridgeActions, 'setBridgeLocation')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
           .spyOn(bridgeActions, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
@@ -211,6 +214,7 @@ describe('useBridging', () => {
           ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+        expect(setBridgeLocationSpy).toHaveBeenCalledWith(location);
 
         expect(mockUseNavigate).toHaveBeenCalledWith(
           { pathname: expectedUrl, search: '' },
@@ -218,7 +222,6 @@ describe('useBridging', () => {
             replace: false,
             state: {
               ...expectedState,
-              location,
               token: expectedState.token
                 ? {
                     ...expectedState.token,
@@ -477,6 +480,9 @@ describe('useBridging', () => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const setBridgeLocationSpy = jest
+          .spyOn(bridgeActions, 'setBridgeLocation')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
           .spyOn(bridgeActions, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
@@ -558,12 +564,12 @@ describe('useBridging', () => {
           ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+        expect(setBridgeLocationSpy).toHaveBeenCalledWith(location);
 
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
           replace: false,
           state: {
             ...expectedState,
-            location,
             token: expectedState.token
               ? {
                   ...expectedState.token,
