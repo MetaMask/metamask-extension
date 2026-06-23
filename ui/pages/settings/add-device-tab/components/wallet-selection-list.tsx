@@ -224,6 +224,7 @@ export const WalletSelectionList = ({
           accountNameString={item.groupData.metadata.name}
           balance={formatCurrencyWithMinThreshold(balance, currency)}
           selected={false}
+          showDefaultAddress={true}
           onClick={
             item.selectable ? () => toggleGroup(item.groupId) : undefined
           }
