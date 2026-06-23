@@ -1,5 +1,5 @@
 import { BridgeAsset } from '@metamask/bridge-controller';
-import { hexToNumber } from '@metamask/utils';
+import { hexToNumber, CaipAssetType } from '@metamask/utils';
 import {
   ARC_USDC_TOKEN_ADDRESS,
   CHAIN_IDS,
@@ -91,4 +91,14 @@ export function filterOutArcNativeAsset<
   TAsset extends { chainId?: string; isNative?: boolean },
 >(assets: TAsset[]): TAsset[] {
   return assets.filter((asset) => !isNativeArcAsset(asset));
+}
+
+/**
+ * Checks if a CAIP assetId corresponds to the ERC20 version of USDC on Arc.
+ * Which is eip155:5042/erc20:0x3600000000000000000000000000000000000000
+ * @param assetId
+ * @returns true if input assetId corresponds to the ERC20 version of USDC on Arc.
+ */
+export function isArcTokenUSDC(assetId: CaipAssetType): boolean {
+  return assetId === ARC_ERC20_USDC_BRIDGE_ASSET.assetId;
 }
