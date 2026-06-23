@@ -2277,33 +2277,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  // A/B test (TAT-3382): "New" badge on the Perps tab label. Mirrors the exact
-  // production remote JSON value (see docs/ab-testing.md): a version-scoped
-  // threshold array so the E2E mock drives the same client-side resolution as
-  // production — RemoteFeatureFlagController selects the array for the client
-  // version, then buckets on metaMetricsId (control 0.5 / treatment 1, ~50/50;
-  // falls back to control when metaMetricsId is absent).
-  perpsTAT3382AbtestTabBadge: {
-    name: 'perpsTAT3382AbtestTabBadge',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: {
-      versions: {
-        '13.37.0': [
-          {
-            name: 'control',
-            scope: { type: 'threshold', value: 0.5 },
-          },
-          {
-            name: 'treatment',
-            scope: { type: 'threshold', value: 1 },
-          },
-        ],
-      },
-    },
-    status: FeatureFlagStatus.Active,
-  },
-
   vipProgramEnabled: {
     name: 'vipProgramEnabled',
     type: FeatureFlagType.Remote,
