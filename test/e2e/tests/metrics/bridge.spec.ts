@@ -32,7 +32,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, {
