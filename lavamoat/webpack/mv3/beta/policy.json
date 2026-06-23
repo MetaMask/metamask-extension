@@ -653,6 +653,11 @@
         "@metamask/assets-controllers>single-call-balance-checker-abi": true
       }
     },
+    "@metamask/authenticated-user-storage": {
+      "packages": {
+        "@metamask/superstruct": true
+      }
+    },
     "@metamask/base-controller": {
       "globals": {
         "console.error": true
@@ -1202,6 +1207,7 @@
       },
       "packages": {
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
+        "@metamask/authenticated-user-storage": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
