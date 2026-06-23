@@ -18,7 +18,7 @@ import { GlobalMenuListProps, isRouteItem } from './global-menu-list.types';
 
 const getRouteState = (state?: object) => ({
   ...state,
-  globalMenuTransition: 'slide-forward',
+  globalMenuTransition: 'forward',
 });
 
 /**

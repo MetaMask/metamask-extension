@@ -186,7 +186,7 @@ export function useGlobalMenuSections(
     });
     navigate(
       `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
-      { state: { globalMenuTransition: 'slide-forward' } },
+      { state: { globalMenuTransition: 'forward' } },
     );
   }, [
     hasThirdPartyNotifySnaps,

@@ -4,7 +4,6 @@
   --page-transition-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
   --page-transition-ease-in: cubic-bezier(0.4, 0, 1, 1);
   --page-scale-distance: 0.97;
-  --global-menu-page-transition-duration: 300ms;
 }
 
 .global-menu-route-transition-wrapper {
@@ -40,12 +39,12 @@
   background: var(--color-background-default);
 }
 
-.global-menu-route-transition-wrapper__content--slide-forward {
-  animation: global-menu-page-slide-in var(--global-menu-page-transition-duration) ease-in-out both;
+.global-menu-route-transition-wrapper__content--forward {
+  animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out) both;
 }
 
-.global-menu-route-transition-wrapper__content--slide-back {
-  animation: global-menu-page-slide-out var(--global-menu-page-transition-duration) ease-in-out both;
+.global-menu-route-transition-wrapper__content--back {
+  animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) both;
 }
 
 /* Clip overflow and make size changes instant (don't animate height) */
@@ -121,26 +120,6 @@
   to { transform: translateX(100%); }
 }
 
-@keyframes global-menu-page-slide-in {
-  from {
-    transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes global-menu-page-slide-out {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(100%);
-  }
-}
-
 @keyframes fade-out {
   from { opacity: 1; }
   to { opacity: 0; }
@@ -182,8 +161,8 @@
     animation-duration: 0.01ms !important;
   }
 
-  .global-menu-route-transition-wrapper__content--slide-forward,
-  .global-menu-route-transition-wrapper__content--slide-back {
+  .global-menu-route-transition-wrapper__content--forward,
+  .global-menu-route-transition-wrapper__content--back {
     animation-duration: 0.01ms !important;
   }
 }

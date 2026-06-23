@@ -27,8 +27,7 @@ export const GlobalMenuRouteTransition = ({
   children: React.ReactNode;
 }) => {
   const location = useLocation();
-  const shouldAnimate =
-    location.state?.globalMenuTransition === 'slide-forward';
+  const shouldAnimate = location.state?.globalMenuTransition === 'forward';
   const [transitionDirection, setTransitionDirection] =
     useState<TransitionDirection | null>(null);
   const onCloseCompleteRef = useRef<(() => void) | null>(null);
@@ -71,9 +70,9 @@ export const GlobalMenuRouteTransition = ({
           className={classnames(
             'global-menu-route-transition-wrapper__content',
             {
-              'global-menu-route-transition-wrapper__content--slide-forward':
+              'global-menu-route-transition-wrapper__content--forward':
                 transitionDirection === 'forward',
-              'global-menu-route-transition-wrapper__content--slide-back':
+              'global-menu-route-transition-wrapper__content--back':
                 transitionDirection === 'back',
             },
           )}
