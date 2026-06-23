@@ -1172,10 +1172,45 @@
         "lodash": true
       }
     },
-    "@metamask/ppom-validator>@metamask/controller-utils": {
+    "@metamask/notification-services-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
-        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
+    "@metamask/profile-metrics-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
+    "@metamask/shield-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
         "console.error": true,
         "fetch": true,
         "setTimeout": true
@@ -1287,7 +1322,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/network-controller>@metamask/eth-block-tracker": {
@@ -1299,7 +1334,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/eth-hd-keyring": {
@@ -1422,8 +1457,8 @@
     },
     "@metamask/controller-utils>@metamask/eth-query": {
       "packages": {
-        "@metamask/ppom-validator>json-rpc-random-id": true,
-        "browserify>xtend": true
+        "@metamask/controller-utils>@metamask/eth-query>json-rpc-random-id": true,
+        "watchify>xtend": true
       }
     },
     "@metamask/eth-sig-util": {
@@ -2090,23 +2125,6 @@
       "packages": {
         "@metamask/utils": true,
         "@metamask/post-message-stream>readable-stream": true
-      }
-    },
-    "@metamask/ppom-validator": {
-      "globals": {
-        "Buffer.from": true,
-        "URL": true,
-        "console.error": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/ppom-validator>@metamask/controller-utils": true,
-        "@metamask/ppom-validator>await-semaphore": true,
-        "buffer": true,
-        "@metamask/ppom-validator>crypto-js": true,
-        "@toruslabs/eccrypto>elliptic": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
     "@metamask/profile-metrics-controller": {
@@ -3856,16 +3874,6 @@
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
       }
     },
-    "@metamask/ppom-validator>await-semaphore": {
-      "globals": {
-        "process": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "core-js-pure": true,
-        "process": true
-      }
-    },
     "@metamask/snaps-controllers>tar-stream>b4a": {
       "globals": {
         "TextDecoder": true,
@@ -4238,7 +4246,6 @@
         "AbortController": true,
         "AbortSignal": true,
         "WeakRef": true,
-        "clearTimeout": true,
         "performance": true,
         "process.hrtime.bigint": true,
         "setTimeout": true
@@ -4383,14 +4390,7 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@metamask/ppom-validator>crypto-js": {
-      "globals": {
-        "crypto": true,
-        "define": true,
-        "msCrypto": true
-      }
-    },
-    "@hello-pangea/dnd>css-box-model": {
+    "react-beautiful-dnd>css-box-model": {
       "globals": {
         "getComputedStyle": true,
         "pageXOffset": true,
