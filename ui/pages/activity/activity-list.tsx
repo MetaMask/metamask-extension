@@ -30,7 +30,7 @@ import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
 
-const itemHeight = 70;
+const itemHeight = 62;
 const headerHeight = 40;
 
 export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {

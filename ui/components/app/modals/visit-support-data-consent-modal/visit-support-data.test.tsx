@@ -365,7 +365,7 @@ describe('VisitSupportDataConsentModal', () => {
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
 
-  it('handles accept button with only metaMetricsId defined', async () => {
+  it('handles accept button with only analyticsId defined', async () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === selectSessionData) {
         return { profile: { profileId: undefined } };

@@ -1863,26 +1863,23 @@
     },
     "webpack-dev-server>http-proxy-middleware": {
       "builtin": {
-        "querystring.stringify": true,
-        "url.parse": true,
-        "util.format": true,
-        "zlib.createBrotliDecompress": true,
-        "zlib.createGunzip": true,
-        "zlib.createInflate": true
+        "node:querystring.stringify": true,
+        "node:url.URL": true,
+        "node:url.parse": true,
+        "node:zlib.createBrotliDecompress": true,
+        "node:zlib.createGunzip": true,
+        "node:zlib.createInflate": true
       },
       "globals": {
         "Buffer.byteLength": true,
         "Buffer.concat": true,
-        "Buffer.from": true,
-        "console.error": true,
-        "console.info": true,
-        "console.log": true,
-        "console.warn": true
+        "Buffer.from": true
       },
       "packages": {
+        "nock>debug": true,
         "@viem/anvil>http-proxy": true,
         "del>is-glob": true,
-        "webpack-dev-server>http-proxy-middleware>is-plain-obj": true,
+        "webpack-dev-server>http-proxy-middleware>is-plain-object": true,
         "micromatch": true
       }
     },
