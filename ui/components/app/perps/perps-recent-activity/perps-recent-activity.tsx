@@ -168,14 +168,22 @@ export const PerpsRecentActivity = ({
 
       {/* Transaction List */}
       <Box flexDirection={BoxFlexDirection.Column}>
-        {recentTransactions.map((transaction) => (
-          <TransactionCard
-            key={transaction.id}
-            transaction={transaction}
-            onClick={handleRowClick}
-            screenName={PERPS_EVENT_VALUE.SCREEN_NAME.WALLET_HOME_PERPS_TAB}
-          />
-        ))}
+        {recentTransactions.map((transaction) => {
+          // Only forward an onClick when the row is actually actionable —
+          // otherwise TransactionCard renders as an interactive ButtonBase
+          // with `cursor-pointer` and the row looks tappable but does
+          // nothing. PerpsActivityPage applies the same rule.
+          const isClickable =
+            Boolean(onTransactionClick) || transaction.type === 'order';
+          return (
+            <TransactionCard
+              key={transaction.id}
+              transaction={transaction}
+              onClick={isClickable ? handleRowClick : undefined}
+              screenName={PERPS_EVENT_VALUE.SCREEN_NAME.WALLET_HOME_PERPS_TAB}
+            />
+          );
+        })}
       </Box>
     </Box>
   );

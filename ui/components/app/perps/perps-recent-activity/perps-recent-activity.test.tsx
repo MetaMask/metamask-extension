@@ -303,19 +303,39 @@ describe('PerpsRecentActivity', () => {
     expect(mockNavigate).not.toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
   });
 
-  it('does not navigate when a non-order row is tapped and no onTransactionClick is provided', () => {
+  it('renders non-order rows as non-interactive when no onTransactionClick is provided', () => {
     renderWithProvider(
       <PerpsRecentActivity transactions={mockTransactions} />,
       mockStore,
     );
 
-    // tx-001 is a trade fill (not an order); without a caller-supplied
-    // handler the row should remain a no-op rather than redirecting to
-    // the general activity list.
+    // tx-001 is a trade fill (not an order). Without an actionable
+    // destination the row must not advertise itself as clickable, and
+    // tapping it must not redirect to the general activity list.
     const tradeCard = screen.getByTestId('transaction-card-tx-001');
+    expect(tradeCard).not.toHaveClass('cursor-pointer');
+
     fireEvent.click(tradeCard);
 
     expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('still forwards onClick for non-order rows when onTransactionClick is provided', () => {
+    const handleClick = jest.fn();
+    renderWithProvider(
+      <PerpsRecentActivity
+        transactions={mockTransactions}
+        onTransactionClick={handleClick}
+      />,
+      mockStore,
+    );
+
+    const tradeCard = screen.getByTestId('transaction-card-tx-001');
+    fireEvent.click(tradeCard);
+
+    expect(handleClick).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'tx-001' }),
+    );
   });
 });
 
