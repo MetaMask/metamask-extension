@@ -455,6 +455,70 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('finalizeAbandonedFragments', function () {
+    const NOW = 1730798303333;
+    const TIMEOUT_SECONDS = 60;
+
+    it('finalizes a fragment whose timeout has elapsed', async function () {
+      const lastUpdated = NOW - (TIMEOUT_SECONDS + 1) * 1000;
+      await withController(
+        {
+          options: {
+            state: {
+              fragments: {
+                abandoned: {
+                  ...SAMPLE_PERSISTED_EVENT_NO_ID,
+                  id: 'abandoned',
+                  canDeleteIfAbandoned: true,
+                  timeout: TIMEOUT_SECONDS,
+                  lastUpdated,
+                },
+              },
+            },
+          },
+        },
+        ({ controller }) => {
+          jest.useFakeTimers().setSystemTime(NOW);
+
+          controller.finalizeAbandonedFragments();
+
+          expect(controller.state.fragments.abandoned).toBeUndefined();
+        },
+      );
+    });
+
+    it('leaves a fragment whose timeout has not elapsed', async function () {
+      // Pre-fix, the precedence bug `Date.now() - fragment.lastUpdated / 1000`
+      // would treat any fresh fragment as abandoned because the subtraction
+      // produced a value many orders of magnitude larger than the timeout.
+      const lastUpdated = NOW - (TIMEOUT_SECONDS - 1) * 1000;
+      await withController(
+        {
+          options: {
+            state: {
+              fragments: {
+                fresh: {
+                  ...SAMPLE_PERSISTED_EVENT_NO_ID,
+                  id: 'fresh',
+                  canDeleteIfAbandoned: true,
+                  timeout: TIMEOUT_SECONDS,
+                  lastUpdated,
+                },
+              },
+            },
+          },
+        },
+        ({ controller }) => {
+          jest.useFakeTimers().setSystemTime(NOW);
+
+          controller.finalizeAbandonedFragments();
+
+          expect(controller.state.fragments.fresh).toBeDefined();
+        },
+      );
+    });
+  });
+
   describe('getMetaMetricsId', function () {
     it('returns the analytics metametrics id and keeps it stable across calls', async function () {
       await withController(({ controller, controllerMessenger }) => {
