@@ -71,10 +71,6 @@ export function initializeWallet({
           | string
           | undefined,
         fetchInterval: REMOTE_FEATURE_FLAG_FETCH_INTERVAL,
-        // `useExternalServices` defaults to `true`, so only treat an explicit
-        // `false` as opting out — a missing field (e.g. pre-existing state)
-        // should remain enabled, matching the live `PreferencesController`
-        // default.
         disabled:
           state.OnboardingController?.completedOnboarding !== true ||
           state.PreferencesController?.useExternalServices === false,
