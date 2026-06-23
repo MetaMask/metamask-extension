@@ -10,7 +10,7 @@ import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state'
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/login-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
@@ -297,8 +297,9 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
-                metaMetricsId: null,
-                participateInMetaMetrics: false,
+                analyticsId: null,
+                completedMetaMetricsOnboarding: true,
+                optedIn: false,
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -369,8 +370,9 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
+              analyticsId: null,
+              completedMetaMetricsOnboarding: true,
+              optedIn: false,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -445,8 +447,9 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
-                metaMetricsId: MOCK_META_METRICS_ID,
-                participateInMetaMetrics: true,
+                analyticsId: MOCK_ANALYTICS_ID,
+                completedMetaMetricsOnboarding: true,
+                optedIn: true,
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -529,8 +532,9 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
-                metaMetricsId: MOCK_META_METRICS_ID,
-                participateInMetaMetrics: true,
+                analyticsId: MOCK_ANALYTICS_ID,
+                completedMetaMetricsOnboarding: true,
+                optedIn: true,
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -630,8 +634,9 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
-                metaMetricsId: MOCK_META_METRICS_ID,
-                participateInMetaMetrics: true,
+                analyticsId: MOCK_ANALYTICS_ID,
+                completedMetaMetricsOnboarding: true,
+                optedIn: true,
               })
               .withBadPreferencesControllerState()
               .build(),
@@ -719,8 +724,9 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+              analyticsId: MOCK_ANALYTICS_ID,
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -802,8 +808,9 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+              analyticsId: MOCK_ANALYTICS_ID,
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -908,8 +915,9 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
+              analyticsId: null,
+              completedMetaMetricsOnboarding: true,
+              optedIn: false,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -981,8 +989,9 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
+              analyticsId: null,
+              completedMetaMetricsOnboarding: true,
+              optedIn: false,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -1054,8 +1063,9 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+              analyticsId: MOCK_ANALYTICS_ID,
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -1143,8 +1153,9 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+              analyticsId: MOCK_ANALYTICS_ID,
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -1244,8 +1255,9 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+              analyticsId: MOCK_ANALYTICS_ID,
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),
@@ -1327,8 +1339,9 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
+              analyticsId: MOCK_ANALYTICS_ID,
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
             })
             .build(),
           title: this.test?.fullTitle(),

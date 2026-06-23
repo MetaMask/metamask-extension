@@ -110,7 +110,7 @@ const AdditionalNetwork = ({ network }: { network: AddNetworkFields }) => {
         )}
       </Box>
       <ButtonIcon
-        size={ButtonIconSize.Md}
+        size={ButtonIconSize.Sm}
         color={IconColor.iconDefault}
         iconName={IconName.Add}
         padding={0}
@@ -312,8 +312,13 @@ const DefaultNetworks = memo(() => {
         return null;
       }
 
-      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-        getItemCallbacks(network);
+      const {
+        onDelete,
+        onDeleteMenuLabel,
+        onEdit,
+        onDiscoverClick,
+        onRpcSelect,
+      } = getItemCallbacks(network);
       const iconSrc = getNetworkIcon(network);
       const isSelected = isSingleNetworkSelected(hexChainId as Hex);
 
@@ -343,6 +348,7 @@ const DefaultNetworks = memo(() => {
             await dispatch(hideModal());
           }}
           onDeleteClick={onDelete}
+          deleteMenuLabel={onDeleteMenuLabel}
           onEditClick={onEdit}
           onDiscoverClick={onDiscoverClick}
           onRpcEndpointClick={onRpcSelect}

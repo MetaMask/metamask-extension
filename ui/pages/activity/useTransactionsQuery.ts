@@ -8,7 +8,7 @@ import { getErrorBodyMessage } from '../../../shared/lib/error';
 import { getIntlLocale } from '../../ducks/locale/locale';
 import { apiClient } from '../../helpers/api-client';
 import { getUseExternalServices } from '../../selectors';
-import { selectEvmAddress } from '../../selectors/accounts';
+import { selectEvmAddress } from '../../selectors/activity';
 import type { ActivityListFilter } from './helpers';
 import { useQueryFilters } from './query-filters/useQueryFilters';
 

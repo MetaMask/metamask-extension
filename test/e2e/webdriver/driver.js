@@ -30,14 +30,6 @@ const PAGES = {
   SIDEPANEL: 'sidepanel',
 };
 
-// App startup — controllers initializing, snaps resolving non-EVM accounts —
-// takes longer on constrained 2-core CI runners under the heavier Sentry v10
-// SDK init. Give startup-gated waits extra headroom there, while keeping the
-// default 10s locally so a genuine hang fails fast instead of stalling. These
-// are ceilings, not delays: the underlying waits poll and return as soon as
-// their readiness signal appears, so the happy path is unaffected either way.
-const STARTUP_LOAD_TIMEOUT = process.env.CI ? 30 * 1000 : 10 * 1000;
-
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -1131,8 +1123,7 @@ class Driver {
    * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
    * Defaults to true.
    * @param {number} [options.waitForControllersTimeout] - optional parameter to specify the timeout in milliseconds for waiting
-   * for the controllers to be loaded. Defaults to `max(this.timeout, STARTUP_LOAD_TIMEOUT)`
-   * so startup gets CI headroom (and honors a larger custom `this.timeout`).
+   * for the controllers to be loaded. Defaults to 10000 (10 seconds).
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
@@ -1140,12 +1131,7 @@ class Driver {
     page = PAGES.HOME,
     {
       waitForControllers = true,
-      // The `.controller-loaded` marker can take well past the default selenium
-      // `this.timeout` (10s) on 2-core CI when the v10 Sentry SDK's heavier
-      // startup runs during (re)initialization — e.g. after a wallet unlock.
-      // Give the startup wait CI headroom without slowing every other
-      // `waitForSelector`, which still uses `this.timeout`.
-      waitForControllersTimeout = Math.max(this.timeout, STARTUP_LOAD_TIMEOUT),
+      waitForControllersTimeout = this.timeout,
     } = {},
   ) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
@@ -1163,12 +1149,11 @@ class Driver {
    * indicating that the controllers have finished loading.
    *
    * @param {number} [timeout] - optional timeout in milliseconds for waiting for the controllers to be loaded.
-   * Defaults to `STARTUP_LOAD_TIMEOUT` (30s on CI, 10s locally) so startup gets
-   * headroom for the heavier Sentry v10 SDK init on constrained CI runners.
+   * Defaults to 10000 (10 seconds).
    * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
    * @throws {Error} Will throw an error if the element is not located within the timeout period.
    */
-  async waitForControllersLoaded(timeout = STARTUP_LOAD_TIMEOUT) {
+  async waitForControllersLoaded(timeout = 10000) {
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.controller-loaded')),
       timeout,
@@ -1985,4 +1970,4 @@ function sanitizeTestTitle(testTitle) {
   return sanitized;
 }
 
-module.exports = { Driver, PAGES, STARTUP_LOAD_TIMEOUT, errorMessages };
+module.exports = { Driver, PAGES, errorMessages };
