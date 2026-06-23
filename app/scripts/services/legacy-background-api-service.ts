@@ -921,10 +921,6 @@ export class LegacyBackgroundApiService {
     // Force account-tree refresh after all accounts have been updated.
     this.#messenger.call('AccountTreeController:init');
 
-    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
-    // available as soon as possible (enabling faster keyring access for future operations).
-    await getSnapKeyring(this.#messenger);
-
     // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
     // for mobile.
     // NOTE: We run this asynchronously on purpose, see FIXME^.
