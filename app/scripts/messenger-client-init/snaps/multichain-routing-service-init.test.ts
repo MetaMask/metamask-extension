@@ -3,6 +3,7 @@ import {
   MultichainRoutingServiceMessenger,
 } from '@metamask/snaps-controllers';
 import { KeyringType } from '@metamask/keyring-api/v2';
+import { EthMethod, EthScope } from '@metamask/keyring-api';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -15,7 +16,6 @@ import {
   MultichainRoutingServiceInit,
   withSnapKeyring,
 } from './multichain-routing-service-init';
-import { EthMethod, EthScope } from '@metamask/keyring-api';
 
 jest.mock('@metamask/snaps-controllers');
 

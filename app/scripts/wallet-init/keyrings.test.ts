@@ -8,9 +8,9 @@ import {
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { SnapKeyring as SnapKeyringV2 } from '@metamask/eth-snap-keyring/v2';
 import { LatticeKeyringV2 } from '../lib/offscreen-bridge/lattice-keyring-v2';
 import { getKeyringV2Builders } from './keyrings';
-import { SnapKeyring as SnapKeyringV2 } from '@metamask/eth-snap-keyring/v2';
 
 // The V2 wrappers have their own tests; here we only verify that
 // `getKeyringV2Builders` wires each one up correctly, so stub them out.
