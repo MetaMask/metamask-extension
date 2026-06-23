@@ -28,8 +28,11 @@ import { isEqual } from 'lodash';
 import chalk from 'chalk';
 import {
   FEATURE_FLAG_REGISTRY,
+  FeatureFlagStatus,
+  FeatureFlagType,
   getProductionRemoteFlagDefaults,
 } from './feature-flag-registry';
+import type { FeatureFlagRegistryEntry } from './feature-flag-registry';
 
 const PRODUCTION_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod';
@@ -332,8 +335,37 @@ function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
 }
 
+/**
+ * Registry keys that use computed property syntax instead of string literals.
+ */
+const COMPUTED_REGISTRY_KEYS: Readonly<Record<string, string>> = {
+  enabledAdvancedPermissions: '[ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]',
+  extensionUxActiveDomainMetrics: '[ACTIVE_TAB_DOMAIN_METRICS_FLAG]',
+};
+
+/**
+ * Recursively sorts object keys alphabetically for deterministic serialization.
+ * Arrays preserve element order; only object keys are sorted.
+ *
+ * @param value - Value to normalize
+ * @returns Copy with sorted object keys at every nesting level
+ */
+export function sortKeysDeep(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(sortKeysDeep);
+  }
+  if (value !== null && typeof value === 'object') {
+    const sorted: Record<string, unknown> = {};
+    for (const key of Object.keys(value as Record<string, unknown>).sort()) {
+      sorted[key] = sortKeysDeep((value as Record<string, unknown>)[key]);
+    }
+    return sorted;
+  }
+  return value;
+}
+
 function serializeValue(value: unknown, indent = 0): string {
-  const json = JSON.stringify(value, null, 2);
+  const json = JSON.stringify(sortKeysDeep(value), null, 2);
   if (indent <= 0) {
     return json;
   }
@@ -395,6 +427,279 @@ function findBalancedEnd(content: string, openIndex: number): number {
     i += 1;
   }
   return -1;
+}
+
+type RegistryEntryBlock = {
+  sortKey: string;
+  text: string;
+};
+
+const REGISTRY_START =
+  'export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {';
+const REGISTRY_ESLINT_DISABLE =
+  '/* eslint-disable @typescript-eslint/naming-convention -- production API flag names */';
+const REGISTRY_ESLINT_ENABLE =
+  '/* eslint-enable @typescript-eslint/naming-convention */';
+const REGISTRY_END_MARKER = '\n};';
+const REGISTRY_HELPER_MARKER = '// Helper Functions';
+
+function findRegistryBodyEnd(content: string, openBrace: number): number {
+  const helperIndex = content.indexOf(REGISTRY_HELPER_MARKER, openBrace);
+  if (helperIndex !== -1) {
+    return content.lastIndexOf(REGISTRY_END_MARKER, helperIndex);
+  }
+  return content.indexOf(REGISTRY_END_MARKER, openBrace);
+}
+
+function getRegistryKeyLine(name: string): string {
+  return COMPUTED_REGISTRY_KEYS[name] ?? name;
+}
+
+function buildNewEntryBlock(name: string, value: unknown): string {
+  const serialized = serializeValue(value, 4);
+  const keyLine = getRegistryKeyLine(name);
+  return [
+    `  ${keyLine}: {`,
+    `    name: '${name.replace(/'/gu, "\\'")}',`,
+    '    type: FeatureFlagType.Remote,',
+    '    inProd: true,',
+    `    productionDefault: ${serialized},`,
+    '    status: FeatureFlagStatus.Active,',
+    '  },',
+  ].join('\n');
+}
+
+function buildRegistryEntryBlockFromEntry(
+  name: string,
+  entry: FeatureFlagRegistryEntry,
+): string {
+  const serialized = serializeValue(entry.productionDefault, 4);
+  const keyLine = getRegistryKeyLine(name);
+  const typeName = entry.type === FeatureFlagType.Remote ? 'Remote' : 'Build';
+  const statusName =
+    entry.status === FeatureFlagStatus.Active ? 'Active' : 'Deprecated';
+
+  return [
+    `  ${keyLine}: {`,
+    `    name: '${entry.name.replace(/'/gu, "\\'")}',`,
+    `    type: FeatureFlagType.${typeName},`,
+    `    inProd: ${entry.inProd},`,
+    `    productionDefault: ${serialized},`,
+    `    status: FeatureFlagStatus.${statusName},`,
+    '  },',
+  ].join('\n');
+}
+
+/**
+ * Extracts the sort key (`name` field) from a registry entry block.
+ *
+ * @param blockText - Source text for a single registry entry
+ */
+function extractEntrySortKey(blockText: string): string {
+  const nameMatch = blockText.match(/^\s*name:\s*'([^']+)'/mu);
+  if (nameMatch) {
+    return nameMatch[1];
+  }
+  const keyMatch = blockText.match(/^\s*(?:\[[^\]]+\]|([\w]+)):\s*\{/mu);
+  return keyMatch?.[1] ?? '';
+}
+
+/**
+ * Parses registry entry blocks from the registry file content.
+ *
+ * @param content - Full registry file source
+ */
+function extractRegistryEntryBlocks(content: string): RegistryEntryBlock[] {
+  const registryStart = content.indexOf(REGISTRY_START);
+  if (registryStart === -1) {
+    return [];
+  }
+
+  const openBrace = content.indexOf('{', registryStart);
+  const registryEnd = findRegistryBodyEnd(content, openBrace);
+  if (openBrace === -1 || registryEnd === -1) {
+    return [];
+  }
+
+  const blocks: RegistryEntryBlock[] = [];
+  let index = openBrace + 1;
+
+  while (index < registryEnd) {
+    while (index < registryEnd && /\s/u.test(content[index])) {
+      index += 1;
+    }
+    if (index >= registryEnd) {
+      break;
+    }
+
+    let blockStart = index;
+    if (content.slice(index, index + 2) === '//') {
+      const lineEnd = content.indexOf('\n', index);
+      blockStart = lineEnd === -1 ? index : lineEnd + 1;
+      while (blockStart < registryEnd && /\s/u.test(content[blockStart])) {
+        blockStart += 1;
+      }
+      index = blockStart;
+    }
+
+    const entryMatch = content
+      .slice(index)
+      .match(/^(\s*(?:\[[^\]]+\]|[A-Za-z_][\w]*):\s*\{)/u);
+    if (!entryMatch) {
+      index += 1;
+      continue;
+    }
+
+    blockStart = index;
+    if (blockStart > openBrace + 1) {
+      const prevNewline = content.lastIndexOf('\n', blockStart - 1);
+      if (prevNewline >= openBrace) {
+        const between = content.slice(prevNewline + 1, blockStart);
+        if (between.trim().startsWith('// eslint-disable')) {
+          blockStart = prevNewline + 1;
+        }
+      }
+    }
+
+    const entryOpenBrace = content.indexOf('{', index);
+    const entryEnd = findBalancedEnd(content, entryOpenBrace);
+    if (entryEnd === -1) {
+      break;
+    }
+
+    let blockEnd = entryEnd;
+    if (blockEnd < content.length && content[blockEnd] === ',') {
+      blockEnd += 1;
+    }
+
+    const blockText = content.slice(blockStart, blockEnd);
+    blocks.push({
+      sortKey: extractEntrySortKey(blockText),
+      text: blockText,
+    });
+
+    index = blockEnd;
+  }
+
+  return blocks;
+}
+
+/**
+ * Reorders registry entries alphabetically.
+ *
+ * @param content - Full registry file source
+ */
+export function normalizeRegistryOrdering(content: string): string {
+  const registryStart = content.indexOf(REGISTRY_START);
+  if (registryStart === -1) {
+    return content;
+  }
+
+  const openBrace = content.indexOf('{', registryStart);
+  const registryEnd = findRegistryBodyEnd(content, openBrace);
+  if (openBrace === -1 || registryEnd === -1) {
+    return content;
+  }
+
+  const blocks = extractRegistryEntryBlocks(content).sort((a, b) =>
+    a.sortKey.localeCompare(b.sortKey),
+  );
+
+  const sortedBody = blocks.map((block) => block.text.trimEnd()).join('\n\n');
+  return `${content.slice(0, openBrace + 1)}\n${sortedBody}\n${content.slice(registryEnd)}`;
+}
+
+function ensureRegistryEslintWrappers(content: string): string {
+  let updated = content.replace(
+    /\s*\/\* eslint-disable @typescript-eslint\/naming-convention[^\n]*\*\/\s*\nexport const FEATURE_FLAG_REGISTRY/u,
+    '\nexport const FEATURE_FLAG_REGISTRY',
+  );
+  updated = updated.replace(
+    /\n\/\* eslint-enable @typescript-eslint\/naming-convention \*\/\n/gu,
+    '\n',
+  );
+
+  updated = updated.replace(
+    /export const FEATURE_FLAG_REGISTRY/u,
+    `${REGISTRY_ESLINT_DISABLE}\nexport const FEATURE_FLAG_REGISTRY`,
+  );
+
+  const helperMarker = REGISTRY_HELPER_MARKER;
+  const helperIndex = updated.indexOf(helperMarker);
+  if (helperIndex === -1) {
+    return updated;
+  }
+
+  const registryEnd = updated.lastIndexOf(REGISTRY_END_MARKER, helperIndex);
+  if (registryEnd !== -1) {
+    updated = `${updated.slice(0, registryEnd + 3)}\n${REGISTRY_ESLINT_ENABLE}${updated.slice(registryEnd + 3)}`;
+  }
+
+  return updated;
+}
+
+/**
+ * Inserts a new registry entry block at its alphabetical position.
+ *
+ * @param content - Full registry file source
+ * @param name - Flag name
+ * @param value - Production default value
+ */
+export function insertRegistryEntryAlphabetically(
+  content: string,
+  name: string,
+  value: unknown,
+): string {
+  const newBlock = buildNewEntryBlock(name, value);
+  const blocks = extractRegistryEntryBlocks(content);
+  const newSortKey = name;
+  const insertIndex = blocks.findIndex(
+    (block) => block.sortKey.localeCompare(newSortKey) > 0,
+  );
+  const targetIndex = insertIndex === -1 ? blocks.length : insertIndex;
+
+  const registryStart = content.indexOf(REGISTRY_START);
+  const openBrace = content.indexOf('{', registryStart);
+  const registryEnd = findRegistryBodyEnd(content, openBrace);
+  if (openBrace === -1 || registryEnd === -1) {
+    return content;
+  }
+
+  const existingBlocks = blocks.map((block) => block.text.trimEnd());
+  existingBlocks.splice(targetIndex, 0, newBlock.trimEnd());
+  const sortedBody = existingBlocks.join('\n\n');
+  return `${content.slice(0, openBrace + 1)}\n${sortedBody}\n${content.slice(registryEnd)}`;
+}
+
+/**
+ * Normalizes registry entry ordering and productionDefault key ordering in place.
+ */
+export async function normalizeRegistryFile(): Promise<void> {
+  let content = fs.readFileSync(REGISTRY_FILE_PATH, 'utf-8');
+  const sortedNames = Object.keys(FEATURE_FLAG_REGISTRY).sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const blocks = sortedNames.map((name) =>
+    buildRegistryEntryBlockFromEntry(name, FEATURE_FLAG_REGISTRY[name]),
+  );
+
+  const registryStart = content.indexOf(REGISTRY_START);
+  const openBrace = content.indexOf('{', registryStart);
+  const registryEnd = findRegistryBodyEnd(content, openBrace);
+  if (openBrace === -1 || registryEnd === -1) {
+    throw new Error('Could not locate FEATURE_FLAG_REGISTRY block');
+  }
+
+  content = `${content.slice(0, openBrace + 1)}\n${blocks.join('\n\n')}\n${content.slice(registryEnd)}`;
+  content = ensureRegistryEslintWrappers(content);
+
+  const prettier = (await import('prettier')).default;
+  const prettierOptions = await prettier.resolveConfig(REGISTRY_FILE_PATH);
+  const formatted = await prettier.format(content, {
+    ...prettierOptions,
+    filepath: REGISTRY_FILE_PATH,
+  });
+  fs.writeFileSync(REGISTRY_FILE_PATH, formatted ?? content, 'utf-8');
 }
 
 /**
@@ -587,26 +892,15 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
   }
 
   if (result.newInProduction.length > 0) {
-    const newEntries = result.newInProduction
-      .map(({ name, value }) => {
-        const serialized = serializeValue(value, 4);
-        return [
-          `  ${name}: {`,
-          `    name: '${name.replace(/'/gu, "\\'")}',`,
-          '    type: FeatureFlagType.Remote,',
-          '    inProd: true,',
-          `    productionDefault: ${serialized},`,
-          '    status: FeatureFlagStatus.Active,',
-          '  },',
-        ].join('\n');
-      })
-      .join('\n\n');
-
-    content = content.replace(
-      /(\n)(\};[\s\n]*\/\/ =+\s*\n\/\/ Helper Functions)/u,
-      (_, g1, g2) => `\n${newEntries}\n${g1}${g2}`,
-    );
+    for (const { name, value } of [...result.newInProduction].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    )) {
+      content = insertRegistryEntryAlphabetically(content, name, value);
+    }
   }
+
+  content = normalizeRegistryOrdering(content);
+  content = ensureRegistryEslintWrappers(content);
 
   const prettier = (await import('prettier')).default;
   const prettierOptions = await prettier.resolveConfig(REGISTRY_FILE_PATH);
@@ -656,7 +950,11 @@ async function main(): Promise<void> {
   }
 }
 
-// Only run when executed directly (not when imported for tests)
-if (typeof jest === 'undefined') {
+// Only run when executed directly (not when imported for tests or scripts)
+const isDirectExecution =
+  typeof jest === 'undefined' &&
+  Boolean(process.argv[1]?.includes('sync-production-flags'));
+
+if (isDirectExecution) {
   main();
 }

@@ -2,7 +2,146 @@ import {
   getProductionRemoteFlagApiResponse,
   getProductionRemoteFlagDefaults,
 } from './feature-flag-registry';
-import { compareProductionFlagsToRegistry } from './sync-production-flags';
+import {
+  compareProductionFlagsToRegistry,
+  insertRegistryEntryAlphabetically,
+  normalizeRegistryOrdering,
+  sortKeysDeep,
+} from './sync-production-flags';
+
+const MINIMAL_REGISTRY_CONTENT = `export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
+  alphaFlag: {
+    name: 'alphaFlag',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: true,
+    status: FeatureFlagStatus.Active,
+  },
+
+  zuluFlag: {
+    name: 'zuluFlag',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '1.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+};
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+`;
+
+const SHUFFLED_REGISTRY_CONTENT = `export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
+  zuluFlag: {
+    name: 'zuluFlag',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '1.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  alphaFlag: {
+    name: 'alphaFlag',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: true,
+    status: FeatureFlagStatus.Active,
+  },
+};
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+`;
+
+describe('sortKeysDeep', () => {
+  it('sorts object keys alphabetically at every nesting level', () => {
+    const input = {
+      zebra: 1,
+      alpha: {
+        zeta: 2,
+        beta: 3,
+      },
+    };
+
+    expect(sortKeysDeep(input)).toStrictEqual({
+      alpha: {
+        beta: 3,
+        zeta: 2,
+      },
+      zebra: 1,
+    });
+  });
+
+  it('preserves array element order', () => {
+    const input = [{ value: false, name: 'sentinel off' }];
+
+    expect(sortKeysDeep(input)).toStrictEqual([
+      { name: 'sentinel off', value: false },
+    ]);
+  });
+
+  it('produces identical output for key-order-only differences', () => {
+    const first = sortKeysDeep({
+      enabled: true,
+      minimumVersion: '13.33.0',
+      featureVersion: '1',
+    });
+    const second = sortKeysDeep({
+      featureVersion: '1',
+      minimumVersion: '13.33.0',
+      enabled: true,
+    });
+
+    expect(first).toStrictEqual(second);
+    expect(JSON.stringify(first)).toBe(JSON.stringify(second));
+  });
+});
+
+describe('insertRegistryEntryAlphabetically', () => {
+  it('inserts a new entry before later alphabetical entries', () => {
+    const updated = insertRegistryEntryAlphabetically(
+      MINIMAL_REGISTRY_CONTENT,
+      'mikeFlag',
+      { enabled: true },
+    );
+
+    const mikeIndex = updated.indexOf('mikeFlag:');
+    const zuluIndex = updated.indexOf('zuluFlag:');
+    expect(mikeIndex).toBeGreaterThan(-1);
+    expect(mikeIndex).toBeLessThan(zuluIndex);
+  });
+
+  it('inserts a new entry after earlier alphabetical entries', () => {
+    const updated = insertRegistryEntryAlphabetically(
+      MINIMAL_REGISTRY_CONTENT,
+      'betaFlag',
+      false,
+    );
+
+    const alphaIndex = updated.indexOf('alphaFlag:');
+    const betaIndex = updated.indexOf('betaFlag:');
+    const zuluIndex = updated.indexOf('zuluFlag:');
+    expect(betaIndex).toBeGreaterThan(alphaIndex);
+    expect(betaIndex).toBeLessThan(zuluIndex);
+  });
+});
+
+describe('normalizeRegistryOrdering', () => {
+  it('sorts registry entries alphabetically by flag name', () => {
+    const normalized = normalizeRegistryOrdering(SHUFFLED_REGISTRY_CONTENT);
+    expect(normalized.indexOf('alphaFlag:')).toBeLessThan(
+      normalized.indexOf('zuluFlag:'),
+    );
+  });
+});
 
 describe('compareProductionFlagsToRegistry', () => {
   it('detects new flags in production not in registry', () => {
