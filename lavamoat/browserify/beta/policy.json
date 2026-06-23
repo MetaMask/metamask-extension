@@ -911,7 +911,7 @@
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/assets-controller>@metamask/core-backend": true,
+        "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
@@ -1096,7 +1096,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1125,7 +1125,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1434,22 +1434,6 @@
       }
     },
     "@metamask/core-backend": {
-      "globals": {
-        "URL": true,
-        "WebSocket": true,
-        "clearTimeout": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
-        "@metamask/core-backend>@tanstack/query-core": true,
-        "async-mutex": true,
-        "uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/core-backend": {
       "globals": {
         "URL": true,
         "WebSocket": true,
@@ -2090,45 +2074,6 @@
         "lodash": true
       }
     },
-    "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
-    "@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -2187,7 +2132,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
-        "@metamask/network-enablement-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/utils": true,
         "reselect": true
@@ -3175,7 +3120,6 @@
     },
     "@mui/x-date-pickers>@mui/utils": {
       "globals": {
-        "ShadowRoot": true,
         "URL": true,
         "clearTimeout": true,
         "console.error": true,
