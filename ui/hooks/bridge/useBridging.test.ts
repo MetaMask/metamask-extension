@@ -183,7 +183,7 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token);
 
-        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
@@ -218,6 +218,7 @@ describe('useBridging', () => {
             replace: false,
             state: {
               ...expectedState,
+              location,
               token: expectedState.token
                 ? {
                     ...expectedState.token,
@@ -530,7 +531,7 @@ describe('useBridging', () => {
         result.current.openBridgeExperience(location, token);
 
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
-        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
             UnifiedSwapBridgeEventName.ButtonClicked,
@@ -562,6 +563,7 @@ describe('useBridging', () => {
           replace: false,
           state: {
             ...expectedState,
+            location,
             token: expectedState.token
               ? {
                   ...expectedState.token,

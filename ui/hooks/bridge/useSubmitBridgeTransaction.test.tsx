@@ -404,6 +404,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(submitIntentSpy).toHaveBeenCalledWith({
         quoteResponse: quoteWithIntent,
         accountAddress: expect.any(String),
+        location: 'Main View',
         tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();

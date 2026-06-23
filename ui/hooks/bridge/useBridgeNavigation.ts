@@ -20,6 +20,7 @@ import {
   isNonEvmChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
+import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import {
   ASSET_ROUTE,
@@ -64,6 +65,10 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
      * page after transaction submission.
      */
     stayOnHomePage?: boolean;
+    /**
+     * Entry point from which the user initiated the swap or bridge flow.
+     */
+    location?: MetaMetricsSwapsEventSource;
   };
 };
 
@@ -84,6 +89,21 @@ export const useBridgeNavigation = () => {
     [maybeState],
   );
   const bridgeState = useSelector(getBridgeState);
+
+  const metricsLocation = useMemo((): MetaMetricsSwapsEventSource => {
+    if (state.location) {
+      return state.location;
+    }
+
+    const isFromTransactionShield = new URLSearchParams(search || '').get(
+      BridgeQueryParams.IsFromTransactionShield,
+    );
+    if (isFromTransactionShield) {
+      return MetaMetricsSwapsEventSource.TransactionShield;
+    }
+
+    return MetaMetricsSwapsEventSource.MainView;
+  }, [state.location, search]);
 
   /**
    * Navigates to the current route and clears the location state.
@@ -141,13 +161,14 @@ export const useBridgeNavigation = () => {
         token: BridgeNavigationOptions['state']['token'];
         search: URLSearchParams;
         isEntrypoint: boolean;
+        location?: MetaMetricsSwapsEventSource;
       } = {
         token: state?.token,
         search: new URLSearchParams(''),
         isEntrypoint: false,
       },
     ) => {
-      const { token, search: searchParams, isEntrypoint } = params;
+      const { token, search: searchParams, isEntrypoint, location } = params;
       // Publish PageViewed event on initial page view
       isEntrypoint &&
         dispatch(
@@ -168,6 +189,7 @@ export const useBridgeNavigation = () => {
           state: {
             ...state,
             token,
+            ...(location ? { location } : {}),
           },
           replace: !isEntrypoint,
         },
@@ -267,6 +289,7 @@ export const useBridgeNavigation = () => {
 
   return {
     bridgeState: memoizedBridgeState,
+    metricsLocation,
     /**
      * The token propagated through the bridge navigation state when the Swap button is clicked
      * from the asset page

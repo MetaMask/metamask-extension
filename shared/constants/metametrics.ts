@@ -1351,6 +1351,7 @@ export enum MetaMetricsSwapsEventSource {
   ActivityTabEmptyState = 'Activity Tab Empty State',
   ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
+  TransactionDetails = 'Transaction Details',
 }
 
 export enum MetaMetricsTokenEventSource {

@@ -49,7 +49,7 @@ export const isApprovalTxError = (error: unknown): boolean => {
 
 export default function useSubmitBridgeTransaction() {
   const navigate = useNavigate();
-  const { navigateToBridgePage, navigateToHwSigningPage } =
+  const { navigateToBridgePage, navigateToHwSigningPage, metricsLocation } =
     useBridgeNavigation();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
@@ -116,6 +116,7 @@ export default function useSubmitBridgeTransaction() {
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            location: metricsLocation,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
@@ -133,6 +134,7 @@ export default function useSubmitBridgeTransaction() {
               fromTokenBalanceInUsd,
               getHasSufficientGasForQuote(quoteResponse),
             ),
+            metricsLocation,
             toToken?.securityData?.type ?? null,
           ),
         );
