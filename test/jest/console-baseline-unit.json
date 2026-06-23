@@ -1036,9 +1036,6 @@
     "ui/pages/settings/privacy-tab/metametrics-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings/privacy-tab/privacy-tab.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
-    },
     "ui/pages/settings/privacy-tab/third-party-apis-sub-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },

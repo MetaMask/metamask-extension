@@ -46,10 +46,8 @@ class OnboardingPrivacySettingsPage {
   };
 
   // Network RPC subpage
-  private readonly addCustomNetworkButton = {
-    text: 'Add a network',
-    tag: 'p',
-  };
+  private readonly addCustomNetworkButton =
+    '[data-testid="onboarding-network-rpc-add-custom-network-button"]';
 
   private readonly addRpcUrlButton = {
     text: 'Add RPC URL',

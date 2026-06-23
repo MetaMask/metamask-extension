@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
+  Button,
+  ButtonVariant,
   FontWeight,
   Text,
   TextColor,
@@ -22,6 +24,14 @@ const PrivacySettingsNetworkRpc = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const handleAddCustomNetwork = () => {
+    dispatch(
+      toggleNetworkMenu({
+        isAddingNewNetwork: true,
+        isMultiRpcOnboarding: true,
+      }),
+    );
+  };
 
   return (
     <Box
@@ -88,6 +98,16 @@ const PrivacySettingsNetworkRpc = () => {
               />
             );
           })}
+      </Box>
+      <Box padding={4}>
+        <Button
+          className="w-full"
+          variant={ButtonVariant.Secondary}
+          data-testid="onboarding-network-rpc-add-custom-network-button"
+          onClick={handleAddCustomNetwork}
+        >
+          {t('addACustomNetwork')}
+        </Button>
       </Box>
     </Box>
   );

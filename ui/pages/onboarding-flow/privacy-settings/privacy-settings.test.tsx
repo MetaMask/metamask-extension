@@ -273,4 +273,56 @@ describe('Privacy Settings Onboarding View', () => {
       payload: undefined,
     });
   });
+
+  it('opens add custom network from the network RPC page', () => {
+    const store = configureMockStore([thunk])({
+      metamask: {
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.MAINNET },
+          { chainId: CHAIN_IDS.LINEA_MAINNET },
+          { chainId: CHAIN_IDS.SEPOLIA },
+          { chainId: CHAIN_IDS.LINEA_SEPOLIA },
+        ),
+        use4ByteResolution: true,
+        useTokenDetection: false,
+        useCurrencyRateCheck: true,
+        useMultiAccountBalanceChecker: true,
+        ipfsGateway: 'test.link',
+        useAddressBarEnsResolution: true,
+        useTransactionSimulations: true,
+        useExternalServices: true,
+        useSafeChainsListValidation: true,
+        useExternalNameSources: true,
+        openSeaEnabled: true,
+        useNftDetection: false,
+        isIpfsGatewayEnabled: true,
+        internalAccounts: {
+          accounts: {},
+          selectedAccount: '',
+        },
+      },
+      appState: {
+        externalServicesOnboardingToggleState: true,
+        backupAndSyncOnboardingToggleState: false,
+      },
+    });
+
+    renderPrivacySettings(store);
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-privacy-settings-item-network-rpc'),
+    );
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-network-rpc-add-custom-network-button'),
+    );
+
+    expect(store.getActions()).toContainEqual({
+      type: 'TOGGLE_NETWORK_MENU',
+      payload: {
+        isAddingNewNetwork: true,
+        isMultiRpcOnboarding: true,
+      },
+    });
+  });
 });
