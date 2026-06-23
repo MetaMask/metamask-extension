@@ -115,7 +115,6 @@ export default function useSubmitBridgeTransaction() {
 
     try {
       const location = await getBridgeLocation();
-      console.log('HELLO location', location);
 
       if (intentData) {
         await dispatch(
