@@ -19,6 +19,7 @@ import {
   isNonEvmChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import {
   ASSET_ROUTE,
@@ -62,6 +63,23 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
      * page after transaction submission.
      */
     stayOnHomePage?: boolean;
+    /**
+     * Prepared sendBundle transaction metadata for hardware-wallet signing on
+     * the shared signing page.
+     */
+    sendBundle?: {
+      txMeta: TransactionMeta;
+      needsTwoConfirmations: boolean;
+      returnRoute?: string;
+      /**
+       * The pending approval id captured at navigation time. The signing page
+       * refuses to submit unless this id is still present in
+       * `state.metamask.pendingApprovals` — prevents signing a stale txMeta
+       * after back/forward navigation or stale nav state. Wallet-safety guard
+       * ported from mobile's `useHardwareWalletSubmit.submitSendFlow`.
+       */
+      approvalRequestId: string;
+    } | null;
   };
 };
 
@@ -94,11 +112,12 @@ export const useBridgeNavigation = () => {
           ...state,
           bridgeState: null,
           token: null,
+          sendBundle: null,
           stayOnHomePage,
         },
       });
     },
-    [state, pathname],
+    [navigate, state, pathname],
   );
 
   /**
@@ -124,7 +143,7 @@ export const useBridgeNavigation = () => {
         },
       );
     },
-    [search, pathname, state],
+    [navigate, search, pathname, state],
   );
 
   /**
@@ -163,12 +182,13 @@ export const useBridgeNavigation = () => {
           state: {
             ...state,
             token,
+            sendBundle: null,
           },
           replace: !isEntrypoint,
         },
       );
     },
-    [state],
+    [dispatch, navigate, state],
   );
 
   /**
@@ -215,17 +235,28 @@ export const useBridgeNavigation = () => {
         },
       );
     },
-    [navigate, state],
+    [bridgeState, navigate, state],
   );
 
   /**
    * Navigates to the hw transaction signing page.
    */
-  const navigateToHwSigningPage = useCallback(() => {
-    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
-      state,
-    });
-  }, [state]);
+  const navigateToHwSigningPage = useCallback(
+    (nextState: Partial<BridgeNavigationOptions['state']> = {}) => {
+      const hasSendBundleState = Object.prototype.hasOwnProperty.call(
+        nextState,
+        'sendBundle',
+      );
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
+        state: {
+          ...state,
+          ...nextState,
+          sendBundle: hasSendBundleState ? nextState.sendBundle : null,
+        },
+      });
+    },
+    [navigate, state],
+  );
 
   /**
    * Navigates to the activity page and clears the navigation state.
@@ -236,11 +267,12 @@ export const useBridgeNavigation = () => {
         ...state,
         bridgeState: null,
         token: null,
+        sendBundle: null,
         stayOnHomePage: true,
       },
       replace: true,
     });
-  }, [state]);
+  }, [navigate, state]);
 
   const navigateToDefaultRoute = useCallback(async () => {
     dispatch(resetBridgeController());
@@ -252,7 +284,7 @@ export const useBridgeNavigation = () => {
     } else {
       resetLocationState(DEFAULT_ROUTE, true);
     }
-  }, [search, resetLocationState]);
+  }, [dispatch, search, resetLocationState]);
 
   const memoizedToken = useMemo(() => state.token, [state.token]);
   const memoizedBridgeState = useMemo(

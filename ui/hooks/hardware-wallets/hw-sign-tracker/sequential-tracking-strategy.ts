@@ -1,8 +1,12 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { EventResult, TrackingStrategy } from './types';
-import { classifySignedEvent } from './shared-filters';
+import type {
+  EventResult,
+  SignedEventClassifier,
+  TrackingStrategy,
+} from './types';
+import { classifySignedEvent as defaultClassifySignedEvent } from './shared-filters';
 import { applyRetryGenerationBump } from './utils';
 
 /**
@@ -55,9 +59,14 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
    * statuses to the corresponding signature-state-machine action.
    *
    * @param transactionMeta - The updated transaction.
+   * @param classifySignedEvent
    * @returns The resulting action, or `{ action: null }` to emit nothing.
    */
-  processStatusUpdated(transactionMeta: TransactionMeta): EventResult {
+  processStatusUpdated(
+    transactionMeta: TransactionMeta,
+    classifySignedEvent: SignedEventClassifier = (txMeta) =>
+      txMeta.type ? defaultClassifySignedEvent(txMeta.type) : null,
+  ): EventResult {
     const { status, type } = transactionMeta;
 
     if (this.#staleTxIds.has(transactionMeta.id)) {
@@ -70,7 +79,7 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
       if (!type) {
         return { action: null };
       }
-      const action = classifySignedEvent(type);
+      const action = classifySignedEvent(transactionMeta);
       return action ? { action } : { action: null };
     }
 

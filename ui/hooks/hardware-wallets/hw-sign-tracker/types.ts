@@ -1,4 +1,5 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 
 /** Action types dispatched by the sign tracker to the hardware wallet state machine. */
@@ -10,6 +11,10 @@ export type HwSignTrackerAction =
 
 /** Result of processing a transaction event through a tracking strategy. */
 export type EventResult = { action: HwSignTrackerAction | null };
+
+export type SignedEventClassifier = (
+  transactionMeta: TransactionMeta,
+) => HwSignTrackerAction | null;
 
 /**
  * Strategy interface for batch or sequential tracking.
@@ -32,7 +37,10 @@ export type TrackingStrategy = {
    * Process a transactionStatusUpdated event.
    * Handles `signed` and `failed` statuses.
    */
-  processStatusUpdated(transactionMeta: TransactionMeta): EventResult;
+  processStatusUpdated(
+    transactionMeta: TransactionMeta,
+    classifySignedEvent?: SignedEventClassifier,
+  ): EventResult;
 
   /** Process a transactionRejected event. */
   processRejected(transactionMeta: TransactionMeta): EventResult;
@@ -48,7 +56,24 @@ export type TrackingStrategy = {
 };
 
 /** Options for configuring the hardware wallet signature tracker. */
+export type ExpectedTransactionParams = {
+  data?: Hex;
+  to?: string;
+  value?: string;
+};
+
 export type UseHwSignTrackerOptions = {
   enabled?: boolean;
   useBatchTracking: boolean;
+  includeSendBundleTransactions?: boolean;
+  /**
+   * Optional transaction ID allowlist for flows that can otherwise share broad
+   * transaction types with unrelated same-address sends.
+   */
+  expectedTxIds?: string[];
+  /**
+   * Optional transaction param allowlist for generated batch members whose IDs
+   * are not known before TransactionController creates the batch.
+   */
+  expectedTransactionParams?: ExpectedTransactionParams[];
 };

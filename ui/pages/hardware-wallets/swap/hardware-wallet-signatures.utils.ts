@@ -266,6 +266,122 @@ export const getFinalStepDescription = ({
 };
 
 /**
+ * Computes the localized labels for the first and final signature steps,
+ * branching on flow.
+ *
+ * sendBundle: first step = the SEND tx (signed first on the device), final
+ * step = the GAS-PAYMENT tx (signed second).
+ * bridge/swap: first step = approval (or "approved" once complete), final
+ * step = trade (delegated to {@link getFinalStepLabel}).
+ *
+ * @param options - Configuration object.
+ * @param options.isSendBundleFlow - True when rendering the sendBundle flow.
+ * @param options.status - The current signature state machine status.
+ * @param options.firstStepStatus - The display status of the first step.
+ * @param options.finalStepStatus - The display status of the final step.
+ * @param options.fromAmount - The amount being sent.
+ * @param options.fromTokenSymbol - The symbol of the token being sent.
+ * @param options.t - The i18n translation function.
+ * @returns An object containing the localized `firstStepLabel` and
+ * `finalStepLabel` strings.
+ */
+export const getStepLabels = ({
+  isSendBundleFlow,
+  status,
+  firstStepStatus,
+  finalStepStatus,
+  fromAmount,
+  fromTokenSymbol,
+  t,
+}: {
+  isSendBundleFlow: boolean;
+  status: HardwareWalletSignatureStatus;
+  firstStepStatus: SignatureStepStatus;
+  finalStepStatus: SignatureStepStatus;
+  fromAmount?: string;
+  fromTokenSymbol?: string;
+  t: ReturnType<typeof useI18nContext>;
+}): {
+  firstStepLabel: string;
+  finalStepLabel: string;
+} => {
+  if (isSendBundleFlow) {
+    return {
+      firstStepLabel: t('sendBundleHwTransaction'),
+      finalStepLabel: t('sendBundleHwGasPayment'),
+    };
+  }
+
+  const firstStepLabel =
+    status === HardwareWalletSignatureStatus.Submitted ||
+    firstStepStatus === SignatureStepStatus.Complete
+      ? t('bridgeHwApprovedAmount', [fromAmount, fromTokenSymbol])
+      : t('bridgeHwApproveAmount', [fromAmount, fromTokenSymbol]);
+
+  return {
+    firstStepLabel,
+    finalStepLabel: getFinalStepLabel({
+      status,
+      finalStepStatus,
+      fromAmount,
+      fromTokenSymbol,
+      t,
+    }),
+  };
+};
+
+/**
+ * Computes the optional localized descriptions for the first and final
+ * signature steps, branching on flow.
+ *
+ * sendBundle: first step (SEND) shows the destination address; final step
+ * (GAS-PAYMENT) has no description.
+ * bridge/swap: delegates to {@link getFirstStepDescription} and
+ * {@link getFinalStepDescription}.
+ *
+ * @param options - Configuration object.
+ * @param options.isSendBundleFlow - True when rendering the sendBundle flow.
+ * @param options.firstStepStatus - The display status of the first step.
+ * @param options.spenderAddress - The spender contract address (bridge only).
+ * @param options.toAddress - The destination address.
+ * @param options.t - The i18n translation function.
+ * @returns An object containing optional `firstStepDescription` and
+ * `finalStepDescription` strings (either may be `undefined`).
+ */
+export const getStepDescriptions = ({
+  isSendBundleFlow,
+  firstStepStatus,
+  spenderAddress,
+  toAddress,
+  t,
+}: {
+  isSendBundleFlow: boolean;
+  firstStepStatus: SignatureStepStatus;
+  spenderAddress?: string;
+  toAddress?: string;
+  t: ReturnType<typeof useI18nContext>;
+}): {
+  firstStepDescription?: string;
+  finalStepDescription?: string;
+} => {
+  if (isSendBundleFlow) {
+    return {
+      firstStepDescription: getFinalStepDescription({ toAddress, t }),
+      finalStepDescription: undefined,
+    };
+  }
+
+  return {
+    firstStepDescription: getFirstStepDescription({
+      firstStepStatus,
+      spenderAddress,
+      t,
+    }),
+    finalStepDescription: getFinalStepDescription({ toAddress, t }),
+  };
+};
+
+/**
  * Returns true when the first signature step should display as complete because
  * the flow has already progressed to (or failed on) the final signature step.
  *

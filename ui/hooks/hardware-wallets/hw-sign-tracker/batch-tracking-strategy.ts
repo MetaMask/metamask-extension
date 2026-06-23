@@ -4,8 +4,12 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { EventResult, TrackingStrategy } from './types';
-import { classifySignedEvent } from './shared-filters';
+import type {
+  EventResult,
+  SignedEventClassifier,
+  TrackingStrategy,
+} from './types';
+import { classifySignedEvent as defaultClassifySignedEvent } from './shared-filters';
 import { UNKNOWN_BATCH_ID } from './constants';
 import { applyRetryGenerationBump, shouldIgnoreBatchEvent } from './utils';
 
@@ -63,9 +67,14 @@ export class BatchTrackingStrategy implements TrackingStrategy {
    * `#handleFailed` (which ignores stale/non-current batches).
    *
    * @param transactionMeta - The updated transaction.
+   * @param classifySignedEvent
    * @returns The resulting action, or `{ action: null }` to emit nothing.
    */
-  processStatusUpdated(transactionMeta: TransactionMeta): EventResult {
+  processStatusUpdated(
+    transactionMeta: TransactionMeta,
+    classifySignedEvent: SignedEventClassifier = (txMeta) =>
+      txMeta.type ? defaultClassifySignedEvent(txMeta.type) : null,
+  ): EventResult {
     const { status, type } = transactionMeta;
     const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
 
@@ -73,7 +82,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     this.#trackedTxIds.add(transactionMeta.id);
 
     if (status === TransactionStatus.signed) {
-      return this.#handleSigned(transactionMeta, batchId, type);
+      return this.#handleSigned(transactionMeta, batchId, type, classifySignedEvent);
     }
 
     if (status === TransactionStatus.failed) {
@@ -184,6 +193,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     transactionMeta: TransactionMeta,
     batchId: string,
     type: TransactionType | undefined,
+    classifySignedEvent: SignedEventClassifier,
   ): EventResult {
     if (this.#currentBatchId === undefined) {
       this.#currentBatchId = batchId;
@@ -199,7 +209,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     if (!type) {
       return { action: null };
     }
-    const action = classifySignedEvent(type);
+    const action = classifySignedEvent(transactionMeta);
     return action ? { action } : { action: null };
   }
 

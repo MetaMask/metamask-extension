@@ -2025,6 +2025,14 @@
     "message": "Resend transaction",
     "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
   },
+  "sendBundleHwGasPayment": {
+    "message": "Gas payment",
+    "description": "Generic label for the gas payment step in a hardware-wallet sendBundle signing flow."
+  },
+  "sendBundleHwTransaction": {
+    "message": "Transaction",
+    "description": "Generic label for the final transaction step in a hardware-wallet sendBundle signing flow."
+  },
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },

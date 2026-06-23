@@ -2,7 +2,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -19,6 +18,7 @@ import {
 } from '../../../../contexts/hardware-wallets';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
+import { useSendBundleHwNavigation } from './useSendBundleHwNavigation';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
@@ -33,9 +33,11 @@ export function useTransactionConfirm() {
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
   const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
     useDappSwapActions();
+  const { shouldRedirectToHwSigningPage, redirectToHwSigningPage } =
+    useSendBundleHwNavigation();
 
   const newTransactionMeta = useMemo(
-    () => cloneDeep(transactionMeta),
+    () => ({ ...transactionMeta }),
     [transactionMeta],
   );
 
@@ -71,7 +73,7 @@ export function useTransactionConfirm() {
     isGaslessSupported,
     newTransactionMeta,
     selectedGasFeeToken,
-    transactionMeta?.isGasFeeSponsored,
+    transactionMeta,
   ]);
 
   const handleGasless7702 = useCallback(() => {
@@ -81,7 +83,7 @@ export function useTransactionConfirm() {
   }, [
     isGaslessSupported,
     newTransactionMeta,
-    transactionMeta?.isGasFeeSponsored,
+    transactionMeta,
   ]);
 
   const {
@@ -98,6 +100,11 @@ export function useTransactionConfirm() {
       handleSmartTransaction();
     } else if (selectedGasFeeToken) {
       handleGasless7702();
+    }
+
+    if (shouldRedirectToHwSigningPage) {
+      redirectToHwSigningPage(newTransactionMeta);
+      return false;
     }
 
     // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
@@ -132,6 +139,9 @@ export function useTransactionConfirm() {
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
+    transactionMeta,
+    shouldRedirectToHwSigningPage,
+    redirectToHwSigningPage,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     onDappSwapCompleted,

@@ -4,19 +4,21 @@ import type {
 } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HwSignTrackerAction } from './types';
-import { ALL_BATCH_TYPES, APPROVAL_TYPES, TRADE_TYPES } from './constants';
+import { APPROVAL_TYPES, BRIDGE_TRANSACTION_TYPES, TRADE_TYPES } from './constants';
 
 /**
  * Checks whether a transaction matches the expected sender address and is one
- * of the tracked bridge/swap types.
+ * of the tracked hardware-wallet signing types.
  *
  * @param transactionMeta - The transaction metadata to check.
  * @param targetFrom - The expected sender address (lowercased).
+ * @param trackedTypes
  * @returns True if the transaction matches.
  */
 export function matchesTx(
   transactionMeta: TransactionMeta,
   targetFrom: string | undefined,
+  trackedTypes: Set<TransactionType> | null = BRIDGE_TRANSACTION_TYPES,
 ): boolean {
   if (!targetFrom) {
     return false;
@@ -25,7 +27,9 @@ export function matchesTx(
   if (normalizedFrom !== targetFrom) {
     return false;
   }
-  return ALL_BATCH_TYPES.has(transactionMeta.type as TransactionType);
+  return trackedTypes
+    ? trackedTypes.has(transactionMeta.type as TransactionType)
+    : true;
 }
 
 /**
