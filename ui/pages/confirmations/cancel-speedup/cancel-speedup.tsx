@@ -300,7 +300,9 @@ const CancelSpeedupModal = ({
     ? isBalanceSufficient({
         amount: '0x0',
         gasTotal: getMaximumGasTotalInHexWei({
-          gasLimit: effectiveTransaction.txParams?.gas,
+          gasLimit:
+            effectiveTransaction.txParams?.gas ??
+            effectiveTransaction.txParams?.gasLimit,
           gasPrice: effectiveTransaction.txParams?.gasPrice,
           maxFeePerGas: effectiveTransaction.txParams?.maxFeePerGas,
         }),
