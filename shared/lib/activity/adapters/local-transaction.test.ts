@@ -11,7 +11,10 @@ import {
   buildApproveTransactionData,
   buildPermit2ApproveTransactionData,
 } from '../../../../test/data/confirmations/token-approve';
-import { localStateFixtures } from './fixtures/local-state';
+import {
+  localStateFixtures,
+  setApprovalForAllAddresses,
+} from './fixtures/local-state';
 import { mapLocalTransaction } from './local-transaction';
 
 const from = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
@@ -462,6 +465,83 @@ describe('mapLocalTransaction', () => {
     expect(
       item.type === 'approveSpendingCap' ? item.data.token?.amount : 'unset',
     ).toBeUndefined();
+  });
+
+  describe('setApprovalForAll', () => {
+    const { sender, collection, hash } = setApprovalForAllAddresses;
+
+    it('maps a confirmed grant to approveSpendingCap', () => {
+      const item = mapLocalTransaction(
+        localStateFixtures.setApprovalForAllGrantConfirmed
+          .transactionGroup as unknown as TransactionGroup,
+      );
+
+      expect(item).toStrictEqual({
+        type: 'approveSpendingCap',
+        chainId: 'eip155:8453',
+        status: 'success',
+        timestamp: 1782176077811,
+        hash,
+        data: {
+          from: sender,
+          token: {
+            direction: 'out',
+            assetId: toAssetId(collection, 'eip155:8453'),
+          },
+        },
+      });
+    });
+
+    it('maps a pending grant to approveSpendingCap', () => {
+      const item = mapLocalTransaction(
+        localStateFixtures.setApprovalForAllGrantPending
+          .transactionGroup as unknown as TransactionGroup,
+      );
+
+      expect(item.type).toBe('approveSpendingCap');
+      expect(item.status).toBe('pending');
+    });
+
+    it('maps a confirmed revoke to revokeSpendingCap', () => {
+      const item = mapLocalTransaction(
+        localStateFixtures.setApprovalForAllRevokeConfirmed
+          .transactionGroup as unknown as TransactionGroup,
+      );
+
+      expect(item).toStrictEqual({
+        type: 'revokeSpendingCap',
+        chainId: 'eip155:8453',
+        status: 'success',
+        timestamp: 1782176077811,
+        hash,
+        data: {
+          from: sender,
+          token: {
+            direction: 'out',
+            assetId: toAssetId(collection, 'eip155:8453'),
+          },
+        },
+      });
+    });
+
+    it('maps a pending revoke to revokeSpendingCap', () => {
+      const item = mapLocalTransaction(
+        localStateFixtures.setApprovalForAllRevokePending
+          .transactionGroup as unknown as TransactionGroup,
+      );
+
+      expect(item.type).toBe('revokeSpendingCap');
+      expect(item.status).toBe('pending');
+    });
+
+    it('falls back to approveSpendingCap when calldata is missing', () => {
+      const item = mapLocalTransaction(
+        localStateFixtures.setApprovalForAllMissingData
+          .transactionGroup as unknown as TransactionGroup,
+      );
+
+      expect(item.type).toBe('approveSpendingCap');
+    });
   });
 
   it('maps an mUSD conversion to a Convert activity', () => {
