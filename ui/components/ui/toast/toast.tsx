@@ -90,7 +90,7 @@ export const ToastContent = ({
   return (
     <div data-testid={dataTestId}>
       <div className="flex min-w-0 flex-col">
-        <p className="text-m-body-md font-bold">{title}</p>
+        <p className="text-m-body-md">{title}</p>
 
         {description && (
           <p className="mt-1 text-s-body-sm text-text-alternative">

@@ -7,25 +7,19 @@ import type { ToastListenerMessenger } from './messenger';
 
 const FAILED_STATUSES = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
 
-// Module-level so the pending set survives component remounts during re-render cycles.
-const pendingToastIds = new Set<string>();
-
 function generateToastId(id: string): string {
   return `tx-${id}`;
 }
 
 /**
  * Subscribes to background transaction lifecycle events via the UI messenger
- * and shows toasts imperatively for EVM and non-EVM transactions.
- *
- * No Redux reads. No state diffing. No dispatch calls.
- * Subscriptions are automatically torn down when the component unmounts.
+ * and shows toasts imperatively for EVM and non-EVM transactions
  */
 export function useTransactionEventToasts(): void {
   const messenger = useMessenger<ToastListenerMessenger>();
 
   useEffect(() => {
-    // EVM — single event covers all status transitions.
+    // EVM — single event covers all status transitions
     // The payload arrives wrapped in an array because MessengerSubscriptions
     // captures rest-args before UIMessenger re-spreads into the route messenger.
     const handleEvmStatusUpdate = (rawPayload: unknown) => {
@@ -40,60 +34,34 @@ export function useTransactionEventToasts(): void {
       }
 
       const toastId = generateToastId(id);
-      console.log('>>> [useTransactionEventToasts] EVM status:', status, toastId);
 
-      if (status === 'submitted' && !pendingToastIds.has(toastId)) {
-        pendingToastIds.add(toastId);
+      if (status === 'submitted') {
         showPendingToast(toastId);
-        return;
-      }
-
-      if (!pendingToastIds.has(toastId)) {
-        return;
-      }
-
-      if (status === 'confirmed') {
-        // Defer to the next tick so the pending toast renders before transitioning.
-        setTimeout(() => {
-          showSuccessToast(toastId);
-          pendingToastIds.delete(toastId);
-        }, 0);
-        return;
-      }
-
-      if (FAILED_STATUSES.has(status)) {
-        setTimeout(() => {
-          showFailedToast(toastId);
-          pendingToastIds.delete(toastId);
-        }, 0);
+      } else if (status === 'confirmed') {
+        // Defer so the pending toast has at least one frame to render
+        // before transitioning to success on fast transactions.
+        setTimeout(() => showSuccessToast(toastId), 0);
+      } else if (FAILED_STATUSES.has(status)) {
+        setTimeout(() => showFailedToast(toastId), 0);
       }
     };
 
-    // Non-EVM — separate submitted / confirmed events.
+    // Non-EVM — submitted events
     const handleNonEvmSubmitted = (rawPayload: unknown) => {
       const transaction = (
         Array.isArray(rawPayload) ? rawPayload[0] : rawPayload
       ) as Transaction;
       const toastId = generateToastId(transaction.id);
-      console.log('>>> [useTransactionEventToasts] non-EVM submitted:', toastId);
-      if (!pendingToastIds.has(toastId)) {
-        pendingToastIds.add(toastId);
-        showPendingToast(toastId);
-      }
+      showPendingToast(toastId);
     };
 
+    // Non-EVM — confirmed events
     const handleNonEvmConfirmed = (rawPayload: unknown) => {
       const transaction = (
         Array.isArray(rawPayload) ? rawPayload[0] : rawPayload
       ) as Transaction;
       const toastId = generateToastId(transaction.id);
-      console.log('>>> [useTransactionEventToasts] non-EVM confirmed:', toastId);
-      if (pendingToastIds.has(toastId)) {
-        setTimeout(() => {
-          showSuccessToast(toastId);
-          pendingToastIds.delete(toastId);
-        }, 0);
-      }
+      setTimeout(() => showSuccessToast(toastId), 0);
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
