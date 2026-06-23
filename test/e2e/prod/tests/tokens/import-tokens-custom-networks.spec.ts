@@ -23,7 +23,7 @@ import SelectNetwork from '../../../page-objects/pages/dialog/select-network';
 import AddEditNetworkModal from '../../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../../page-objects/pages/dialog/add-network-rpc-url';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import AssetListPage from '../../../page-objects/pages/home/tokens-tab';
 import { NETWORK_CONFIGS, NetworkConfig } from './network-configs';
 import {
   downloadImage,
@@ -204,8 +204,7 @@ async function runTokenImportTest(
       // Select custom network from network selector
       // ================================================================
 
-      const chainIdHex = networkConfig.chainId;
-      const networkListItemSelector = `[data-testid="network-list-item-eip155:${chainIdHex}"]`;
+      const networkListItemSelector = `[data-testid="network-list-item-${networkConfig.chainIdHex}"]`;
       console.log(`[TEST] Clicking on network in list: ${networkListItemSelector}...`);
       await driver.clickElement(networkListItemSelector);
       await driver.delay(PROD_DELAYS.MODAL_TRANSITION);

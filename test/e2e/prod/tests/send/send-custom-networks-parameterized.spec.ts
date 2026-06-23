@@ -11,7 +11,7 @@ import AddNetworkRpcUrlModal from '../../../page-objects/pages/dialog/add-networ
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
 import SendTokenConfirmPage from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityListPage from '../../../page-objects/pages/home/activity-tab';
 import { Driver } from '../../../webdriver/driver';
 import { getRequiredE2EEnv } from '../../../helpers/e2e-env';
 import {
@@ -325,8 +325,7 @@ async function runNetworkSendTest(
       // Select custom network from network selector
       // ================================================================
 
-      const chainIdHexVal = networkConfig.chainId;
-      const networkListItemSelector = `[data-testid="network-list-item-eip155:${chainIdHexVal}"]`;
+      const networkListItemSelector = `[data-testid="network-list-item-${networkConfig.chainIdHex}"]`;
       console.log(`[TEST] Clicking on network in list: ${networkListItemSelector}...`);
       await driver.clickElement(networkListItemSelector);
       await driver.delay(PROD_DELAYS.MODAL_TRANSITION);
@@ -843,4 +842,3 @@ async function runNetworkSendTest(
     return reporter.getCurrentResult();
   }
 }
-
