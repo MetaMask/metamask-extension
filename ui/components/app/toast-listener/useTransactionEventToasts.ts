@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { Json } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Transaction } from '@metamask/keyring-api';
 import { useMessenger } from '../../../hooks/useMessenger';
 import { showPendingToast, showSuccessToast, showFailedToast } from './shared';
@@ -11,24 +11,28 @@ function generateToastId(id: string): string {
   return `tx-${id}`;
 }
 
+function extractPayload<T>(raw: T | [T]): T {
+  return Array.isArray(raw) ? raw[0] : raw;
+}
+
 /**
  * Subscribes to background transaction lifecycle events via the UI messenger
- * and shows toasts imperatively for EVM and non-EVM transactions
+ * and shows toasts imperatively for EVM and non-EVM transactions.
  */
 export function useTransactionEventToasts(): void {
   const messenger = useMessenger<ToastListenerMessenger>();
 
   useEffect(() => {
-    // EVM — single event covers all status transitions
-    // The payload arrives wrapped in an array because MessengerSubscriptions
-    // captures rest-args before UIMessenger re-spreads into the route messenger.
-    const handleEvmStatusUpdate = (rawPayload: unknown) => {
-      const payload = Array.isArray(rawPayload) ? rawPayload[0] : rawPayload;
-      const transactionMeta = (payload as Record<string, unknown>)
-        ?.transactionMeta as Record<string, Json> | undefined;
+    // EVM — single event covers all status transitions.
+    const handleEvmStatusUpdate = (raw: {
+      transactionMeta: TransactionMeta;
+    }) => {
+      const { transactionMeta } = extractPayload(raw);
+      if (!transactionMeta) {
+        return;
+      }
 
-      const id = transactionMeta?.id as string | undefined;
-      const status = transactionMeta?.status as string | undefined;
+      const { id, status } = transactionMeta;
       if (!id || !status) {
         return;
       }
@@ -46,54 +50,49 @@ export function useTransactionEventToasts(): void {
       }
     };
 
-    // Non-EVM — submitted events
-    const handleNonEvmSubmitted = (rawPayload: unknown) => {
-      const transaction = (
-        Array.isArray(rawPayload) ? rawPayload[0] : rawPayload
-      ) as Transaction;
-      const toastId = generateToastId(transaction.id);
-      showPendingToast(toastId);
+    // Non-EVM — submitted events.
+    const handleNonEvmSubmitted = (raw: Transaction) => {
+      const transaction = extractPayload(raw);
+      if (!transaction?.id) {
+        return;
+      }
+      showPendingToast(generateToastId(transaction.id));
     };
 
-    // Non-EVM — confirmed events
-    const handleNonEvmConfirmed = (rawPayload: unknown) => {
-      const transaction = (
-        Array.isArray(rawPayload) ? rawPayload[0] : rawPayload
-      ) as Transaction;
-      const toastId = generateToastId(transaction.id);
-      setTimeout(() => showSuccessToast(toastId), 0);
+    // Non-EVM — confirmed events.
+    // react-hot-toast is idempotent on the same ID, so duplicate confirmed
+    // events for the same tx just update the same toast.
+    const handleNonEvmConfirmed = (raw: Transaction) => {
+      const transaction = extractPayload(raw);
+      if (!transaction?.id) {
+        return;
+      }
+      setTimeout(() => showSuccessToast(generateToastId(transaction.id)), 0);
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const subscribe = (event: string, handler: (payload: unknown) => void) =>
-      messenger.subscribe(event as any, handler as any);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const unsubscribe = (event: string, handler: (payload: unknown) => void) =>
-      messenger.unsubscribe(event as any, handler as any);
-
-    subscribe(
+    messenger.subscribe(
       'TransactionController:transactionStatusUpdated',
       handleEvmStatusUpdate,
     );
-    subscribe(
+    messenger.subscribe(
       'MultichainTransactionsController:transactionSubmitted',
       handleNonEvmSubmitted,
     );
-    subscribe(
+    messenger.subscribe(
       'MultichainTransactionsController:transactionConfirmed',
       handleNonEvmConfirmed,
     );
 
     return () => {
-      unsubscribe(
+      messenger.unsubscribe(
         'TransactionController:transactionStatusUpdated',
         handleEvmStatusUpdate,
       );
-      unsubscribe(
+      messenger.unsubscribe(
         'MultichainTransactionsController:transactionSubmitted',
         handleNonEvmSubmitted,
       );
-      unsubscribe(
+      messenger.unsubscribe(
         'MultichainTransactionsController:transactionConfirmed',
         handleNonEvmConfirmed,
       );
