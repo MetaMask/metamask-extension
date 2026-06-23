@@ -1,4 +1,3 @@
-import BlockaidPackage from '@blockaid/ppom_release/package.json';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -94,7 +93,6 @@ const useBlockaidAlerts = (): Alert[] => {
 
     const reportData = {
       blockNumber: block,
-      blockaidVersion: BlockaidPackage.version,
       chain: (NETWORK_TO_NAME_MAP as Record<string, string>)[chainId],
       classification: isFailedResultType ? 'error' : reason,
       domain: origin ?? msgParams?.origin ?? origin,

@@ -1384,7 +1384,6 @@
       }
     },
     "status": "string",
-    "storageMetadata": [],
     "subjectMetadata": {
       "npm:@metamask/bitcoin-wallet-snap": {
         "extensionId": "null",
@@ -1511,7 +1510,6 @@
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
-    "versionInfo": [],
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {
       "testnet": [],

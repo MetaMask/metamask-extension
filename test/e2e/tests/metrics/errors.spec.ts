@@ -103,8 +103,6 @@ const removedBackgroundFields = [
   'AppStateController.lastUpdatedFromVersion',
   'BridgeController.quoteRequest.walletAddress',
   'BridgeController.quoteRequest.slippage',
-  'PPOMController.chainStatus.0x539.lastVisited',
-  'PPOMController.versionInfo',
   // PhishingController properties (except urlScanCache which is masked)
   'PhishingController.c2DomainBlocklistLastFetched',
   'PhishingController.hotlistLastFetched',

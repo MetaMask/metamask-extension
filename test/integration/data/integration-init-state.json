@@ -1159,7 +1159,6 @@
     }
   },
   "snapsAddSnapAccountModalDismissed": false,
-  "storageMetadata": [],
   "subjectMetadata": {
     "npm:@metamask/test-snap-bip44": {
       "name": "@metamask/test-snap-bip44",
@@ -2145,6 +2144,5 @@
   "useTransactionSimulations": true,
   "userOperations": {},
   "versionFileETag": "W/\"598946a37f16c5b882a0bebbadf4509f\"",
-  "versionInfo": [],
   "web3ShimUsageOrigins": {}
 }

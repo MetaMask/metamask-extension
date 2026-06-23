@@ -356,7 +356,6 @@
     }
   },
   "snapsAddSnapAccountModalDismissed": false,
-  "storageMetadata": [],
   "storageWriteErrorType": null,
   "subjectMetadata": {
     "npm:@metamask/message-signing-snap": {
@@ -486,6 +485,5 @@
   "useTransactionSimulations": true,
   "userOperations": {},
   "versionFileETag": "",
-  "versionInfo": [],
   "web3ShimUsageOrigins": {}
 }

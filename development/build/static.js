@@ -190,11 +190,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `scripts/runtime-lavamoat.js`,
       pattern: '',
     },
-    {
-      src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
-      pattern: '*.wasm',
-      dest: isManifestV3 ? 'scripts/' : '',
-    },
     ...(isManifestV3
       ? [
           {
