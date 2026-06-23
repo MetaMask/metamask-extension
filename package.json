@@ -308,7 +308,6 @@
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
     "@metamask/bridge-controller": "npm:@metamask-previews/bridge-controller@75.2.1-preview-b2742a2fc",
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A66.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-66.0.0-23fe4d7dfe.patch",
     "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@109.0.0-preview-280f4f25b",
     "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@10.0.3-preview-153490ebd",
     "@metamask/multichain-network-controller": "npm:@metamask-previews/multichain-network-controller@3.1.0-preview-6c5b6b08f",
