@@ -2665,7 +2665,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {object} Object containing API functions.
    *
    * @deprecated This method is deprecated and will be removed in a future release.
-   * All legacy methods from getApi() are being migrated to the LegacyBackgroundApiService and accessed via the controllerMessenger.
+   * All legacy methods from getApi() are being migrated to the LegacyBackgroundApiService and can be accessed via the messenger.
    * New methods should be defined in controllers and exposed via the controllerMessenger, rather than being added to this API object.
    */
   getApi() {
