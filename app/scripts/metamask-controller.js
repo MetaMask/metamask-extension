@@ -2663,6 +2663,10 @@ export default class MetamaskController extends EventEmitter {
    * The API object can be transmitted over a stream via JSON-RPC.
    *
    * @returns {object} Object containing API functions.
+   *
+   * @deprecated This method is deprecated and will be removed in a future release.
+   * All legacy methods from getApi() are being migrated to the LegacyBackgroundApiService and accessed via the controllerMessenger.
+   * New methods should be defined in controllers and exposed via the controllerMessenger, rather than being added to this API object.
    */
   getApi() {
     const {
