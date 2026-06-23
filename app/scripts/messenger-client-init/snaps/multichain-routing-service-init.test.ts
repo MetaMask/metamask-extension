@@ -15,6 +15,7 @@ import {
   MultichainRoutingServiceInit,
   withSnapKeyring,
 } from './multichain-routing-service-init';
+import { EthMethod, EthScope } from '@metamask/keyring-api';
 
 jest.mock('@metamask/snaps-controllers');
 
@@ -31,8 +32,8 @@ const mockAppStateController = {
 const mockRequest = {
   account: '0xabc',
   origin: 'test-origin',
-  scope: 'eip155:1' as const,
-  method: 'eth_sendTransaction',
+  scope: EthScope.Mainnet,
+  method: EthMethod.SignTransaction,
   params: [],
 };
 
