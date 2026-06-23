@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du måste välja ett konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Lägg till de tokens du har skaffat med MetaMask"
-  },
   "addAlias": {
     "message": "Lägg till alias"
   },
@@ -174,9 +171,6 @@
   },
   "custom": {
     "message": "Avancerat"
-  },
-  "customToken": {
-    "message": "Anpassad token"
   },
   "decimal": {
     "message": "Decimalprecision"
@@ -335,9 +329,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask-version"
-  },
-  "mustSelectOne": {
-    "message": "Minst 1 token måste väljas."
   },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",

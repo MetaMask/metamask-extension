@@ -1026,9 +1026,6 @@
   "addAccount": {
     "message": "添加账户"
   },
-  "addAcquiredTokens": {
-    "message": "添加您通过MetaMask获得的代币"
-  },
   "addAlias": {
     "message": "添加别名"
   },
@@ -2982,9 +2979,6 @@
   "customSlippage": {
     "message": "自定义"
   },
-  "customToken": {
-    "message": "自定义代币"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "任何人都可以创建代币，包括创建现有代币的虚假版本。了解 $1"
   },
@@ -3520,9 +3514,6 @@
   "enableAutoDetect": {
     "message": " 启用自动检测"
   },
-  "enableFromSettings": {
-    "message": " 从设置中启用它。"
-  },
   "enableSmartContractAccount": {
     "message": "使用智能账户"
   },
@@ -3549,9 +3540,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "您输入的 RPC（远程过程调用）URL 返回了不同的链 ID（$1）。",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "$1. $2目前提供增强型代币检测"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask 让您可以直接在浏览器地址栏中看到 ENS（Ethereum 域名服务）域。其工作原理如下："
@@ -4395,15 +4383,6 @@
   "importSecretRecoveryPhrase": {
     "message": "导入私钥助记词"
   },
-  "importTokenQuestion": {
-    "message": "导入代币？"
-  },
-  "importTokenWarning": {
-    "message": "任何人都可以用任何名称创建代币，包括现有代币的虚假版本。添加和交易风险自负！"
-  },
-  "importTokensCamelCase": {
-    "message": "添加代币"
-  },
   "importTokensError": {
     "message": "我们无法导入代币。请稍后再试。"
   },
@@ -4704,9 +4683,6 @@
   },
   "lightTheme": {
     "message": "浅色"
-  },
-  "likeToImportToken": {
-    "message": "您想导入此代币吗？"
   },
   "likeToImportTokens": {
     "message": "您想导入这些代币吗？"
@@ -5278,9 +5254,6 @@
   },
   "musdTermsApply": {
     "message": "具体条款适用。"
-  },
-  "mustSelectOne": {
-    "message": "至少选择1种代币。"
   },
   "name": {
     "message": "名称"
@@ -10299,9 +10272,6 @@
   },
   "tokenDecimal": {
     "message": "代币小数位"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "需要代币小数位。请在下方查找：$1"
   },
   "tokenDetails": {
     "message": "代币详情"

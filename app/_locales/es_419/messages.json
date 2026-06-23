@@ -1007,9 +1007,6 @@
   "addAccount": {
     "message": "Agregar cuenta"
   },
-  "addAcquiredTokens": {
-    "message": "Agregar los tokens que adquirió con MetaMask"
-  },
   "addAlias": {
     "message": "Agregar alias"
   },
@@ -2942,9 +2939,6 @@
   "customSlippage": {
     "message": "Personalizado"
   },
-  "customToken": {
-    "message": "Token personalizado"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Cualquiera puede crear un token, incluida la creación de versiones falsas de tokens existentes. Aprenda más sobre $1"
   },
@@ -3468,9 +3462,6 @@
   "enableAutoDetect": {
     "message": " Activar autodetección"
   },
-  "enableFromSettings": {
-    "message": " Actívela en Configuración."
-  },
   "enableSmartContractAccount": {
     "message": "Usar cuenta inteligente"
   },
@@ -3497,9 +3488,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "La URL de RPC que ingresó devolvió un ID de cadena diferente ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Actualmente, la detección mejorada de token se encuentra disponible en $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask le permite ver los dominios de ENS directamente en la barra de direcciones de su navegador. Así es como funciona:"
@@ -4311,15 +4299,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Importar frase secreta de recuperación"
   },
-  "importTokenQuestion": {
-    "message": "¿Importar token?"
-  },
-  "importTokenWarning": {
-    "message": "Toda persona puede crear un token con cualquier nombre, incluso versiones falsas de tokens existentes. ¡Agréguelo y realice transacciones bajo su propio riesgo!"
-  },
-  "importTokensCamelCase": {
-    "message": "Importar tokens"
-  },
   "importTokensError": {
     "message": "No pudimos importar los tokens. Por favor, inténtelo de nuevo más tarde."
   },
@@ -4620,9 +4599,6 @@
   },
   "lightTheme": {
     "message": "Claro"
-  },
-  "likeToImportToken": {
-    "message": "¿Te gustaría importar este token?"
   },
   "likeToImportTokens": {
     "message": "¿Quieres agregar estos tokens?"
@@ -5194,9 +5170,6 @@
   },
   "musdTermsApply": {
     "message": "Se aplican términos y condiciones."
-  },
-  "mustSelectOne": {
-    "message": "Debe seleccionar al menos 1 token."
   },
   "name": {
     "message": "Nombre"
@@ -10185,9 +10158,6 @@
   },
   "tokenDecimal": {
     "message": "Decimales del token"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "Se requiere decimal del token. Encuéntrelo en: $1"
   },
   "tokenDetails": {
     "message": "Detalles del token"
