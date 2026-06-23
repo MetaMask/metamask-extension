@@ -2040,8 +2040,4 @@ function registerUnlockSideEffectHandlers(rootMessenger: RootMessenger): void {
     'MultichainAccountService:alignWallets',
     jest.fn(),
   );
-  rootMessenger.registerActionHandler(
-    'SnapAccountService:getLegacySnapKeyring',
-    jest.fn(),
-  );
 }
