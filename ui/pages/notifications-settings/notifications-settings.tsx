@@ -108,8 +108,6 @@ export function NotificationsSettingsContent() {
       return;
     }
 
-    console.log(" NAVIGATING TO SECTION", section.type);
-
     navigate(`${NOTIFICATIONS_SETTINGS_ROUTE}?section=${section.type}`);
   };
 
