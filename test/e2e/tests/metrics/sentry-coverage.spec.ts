@@ -1,7 +1,7 @@
 import { resolve } from 'path';
-import { promises as fs } from 'fs';
+import { existsSync, promises as fs } from 'fs';
 import { strict as assert } from 'assert';
-import { MockttpServer } from 'mockttp';
+import { CompletedRequest, MockttpServer } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
@@ -41,80 +41,89 @@ const WAIT_FOR_FIRST_SENTRY_MS = 15_000;
 // Let the envelope batch accumulate after the first arrives before snapshotting.
 const SETTLE_MS = 3_000;
 
+// A manual cross-build harness, not a standard always-on e2e check: generate
+// the baseline on v8 (`UPDATE_SENTRY_COVERAGE_BASELINE=true`), then compare on
+// v10. The baseline is intentionally not committed, so skip by default in normal
+// CI runs rather than fail on a missing baseline.
+const runOrSkip = UPDATE_BASELINE || existsSync(BASELINE_PATH) ? it : it.skip;
+
 describe('Sentry coverage equivalence (#43819)', function () {
-  it('captures the envelope set for a fixed flow and matches the v8 baseline', async function () {
-    await withFixtures(
-      {
-        fixtures: {
-          ...new FixtureBuilderV2()
-            .withMetaMetricsController({
-              analyticsId: MOCK_ANALYTICS_ID,
-              completedMetaMetricsOnboarding: true,
-              optedIn: true,
-            })
-            .build(),
-          // Corrupt state to provoke a deterministic init/migration error event,
-          // so every run emits a comparable error envelope alongside the
-          // pageload transactions.
-          meta: undefined,
+  runOrSkip(
+    'captures the envelope set for a fixed flow and matches the v8 baseline',
+    async function () {
+      await withFixtures(
+        {
+          fixtures: {
+            ...new FixtureBuilderV2()
+              .withMetaMetricsController({
+                analyticsId: MOCK_ANALYTICS_ID,
+                completedMetaMetricsOnboarding: true,
+                optedIn: true,
+              })
+              .build(),
+            // Corrupt state to provoke a deterministic init/migration error event,
+            // so every run emits a comparable error envelope alongside the
+            // pageload transactions.
+            meta: undefined,
+          },
+          title: this.test?.fullTitle(),
+          // Capture EVERY Sentry POST (no `withBodyIncluding` filter), returning a
+          // 200 so the SDK doesn't retry. One endpoint accumulates all envelopes.
+          testSpecificMock: async (mockServer: MockttpServer) =>
+            mockServer
+              .forPost(sentryRegEx)
+              .thenCallback(() => ({ statusCode: 200, json: {} })),
+          manifestFlags: { sentry: { forceEnable: true } },
         },
-        title: this.test?.fullTitle(),
-        // Capture EVERY Sentry POST (no `withBodyIncluding` filter), returning a
-        // 200 so the SDK doesn't retry. One endpoint accumulates all envelopes.
-        testSpecificMock: async (mockServer: MockttpServer) =>
-          mockServer
-            .forPost(sentryRegEx)
-            .thenCallback(() => ({ statusCode: 200, json: {} })),
-        manifestFlags: { sentry: { forceEnable: true } },
-      },
-      async ({ driver, mockedEndpoint }) => {
-        // Pageload (transactions) + the migration error (event).
-        await driver.navigate(PAGES.HOME, { waitForControllers: false });
-        await driver
-          .wait(
-            async () => !(await mockedEndpoint.isPending()),
-            WAIT_FOR_FIRST_SENTRY_MS,
-          )
-          .catch(() => undefined);
-        await driver.delay(SETTLE_MS);
+        async ({ driver, mockedEndpoint }) => {
+          // Pageload (transactions) + the migration error (event).
+          await driver.navigate(PAGES.HOME, { waitForControllers: false });
+          await driver
+            .wait(
+              async () => !(await mockedEndpoint.isPending()),
+              WAIT_FOR_FIRST_SENTRY_MS,
+            )
+            .catch(() => undefined);
+          await driver.delay(SETTLE_MS);
 
-        const requests = await mockedEndpoint.getSeenRequests();
-        const rawBodies = await Promise.all(
-          requests.map((request) => request.body.getText()),
-        );
-        const current = summarizeCoverage(parseSentryEnvelopes(rawBodies));
-
-        if (UPDATE_BASELINE) {
-          await fs.writeFile(
-            BASELINE_PATH,
-            `${JSON.stringify(current, null, 2)}\n`,
+          const requests = await mockedEndpoint.getSeenRequests();
+          const rawBodies = await Promise.all(
+            requests.map((request: CompletedRequest) => request.body.getText()),
           );
-          console.log(
-            `Wrote Sentry coverage baseline (${current.items.length} items) to ${BASELINE_PATH}`,
-          );
-          return;
-        }
+          const current = summarizeCoverage(parseSentryEnvelopes(rawBodies));
 
-        const baselineRaw = await fs
-          .readFile(BASELINE_PATH, 'utf8')
-          .catch(() => {
-            throw new Error(
-              `No Sentry coverage baseline at ${BASELINE_PATH}. Generate it on a v8 build first: ` +
-                `UPDATE_SENTRY_COVERAGE_BASELINE=true run this spec.`,
+          if (UPDATE_BASELINE) {
+            await fs.writeFile(
+              BASELINE_PATH,
+              `${JSON.stringify(current, null, 2)}\n`,
             );
-          });
-        const baseline = JSON.parse(baselineRaw) as CoverageSummary;
-        const diff = diffCoverage(baseline, current);
+            console.log(
+              `Wrote Sentry coverage baseline (${current.items.length} items) to ${BASELINE_PATH}`,
+            );
+            return;
+          }
 
-        assert.ok(
-          diff.equivalent,
-          `Sentry coverage diverged from the v8 baseline — triage each delta as benign (timing) vs regression:\n${JSON.stringify(
-            diff,
-            null,
-            2,
-          )}`,
-        );
-      },
-    );
-  });
+          const baselineRaw = await fs
+            .readFile(BASELINE_PATH, 'utf8')
+            .catch(() => {
+              throw new Error(
+                `No Sentry coverage baseline at ${BASELINE_PATH}. Generate it on a v8 build first: ` +
+                  `UPDATE_SENTRY_COVERAGE_BASELINE=true run this spec.`,
+              );
+            });
+          const baseline = JSON.parse(baselineRaw) as CoverageSummary;
+          const diff = diffCoverage(baseline, current);
+
+          assert.ok(
+            diff.equivalent,
+            `Sentry coverage diverged from the v8 baseline — triage each delta as benign (timing) vs regression:\n${JSON.stringify(
+              diff,
+              null,
+              2,
+            )}`,
+          );
+        },
+      );
+    },
+  );
 });
