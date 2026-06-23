@@ -85,6 +85,7 @@ import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
+import { useOnboardingSearchParams } from './hooks/useOnboardingSearchParams';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
@@ -111,17 +112,14 @@ export default function OnboardingFlow() {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const location = useLocation();
-  const { pathname, search } = location;
+  const { pathname } = location;
   const navigate = useNavigate();
   const theme = useTheme();
   const isSidePanelEnabled = useSidePanelEnabled();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
-  const isFromReminder = new URLSearchParams(search).get('isFromReminder');
-  const isFromSettingsSecurity = new URLSearchParams(search).get(
-    'isFromSettingsSecurity',
-  );
+  const { isFromReminder, isFromSettingsSecurity } = useOnboardingSearchParams();
   const { bufferedTrace, onboardingParentContext, trackEvent } =
     useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);

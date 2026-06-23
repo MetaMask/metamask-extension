@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
@@ -15,10 +15,7 @@ import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../../shared/constants/onboarding';
-import {
-  forceUpdateMetamaskState,
-  resetOnboarding,
-} from '../../../store/actions';
+import { useOnboardingReset } from '../hooks/useOnboardingReset';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -31,7 +28,7 @@ import { AccountStatusLayout } from '../account-status-layout';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountExist() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const resetOnboardingAndReturn = useOnboardingReset();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const socialLoginType = useSelector(getSocialLoginType);
@@ -61,9 +58,7 @@ export default function AccountExist() {
     e?: React.MouseEvent<HTMLButtonElement>,
   ) => {
     e?.preventDefault();
-    await dispatch(resetOnboarding());
-    await forceUpdateMetamaskState(dispatch);
-    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    await resetOnboardingAndReturn();
   };
 
   const onDone = async () => {

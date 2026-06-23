@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -15,10 +15,7 @@ import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../../shared/constants/onboarding';
-import {
-  forceUpdateMetamaskState,
-  resetOnboarding,
-} from '../../../store/actions';
+import { useOnboardingReset } from '../hooks/useOnboardingReset';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -31,7 +28,8 @@ import { AccountStatusLayout } from '../account-status-layout';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountNotFound() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const resetOnboardingAndReturn = useOnboardingReset();
+
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const socialLoginType = useSelector(getSocialLoginType);
@@ -58,9 +56,7 @@ export default function AccountNotFound() {
   }, [socialLoginType, userSocialLoginEmail]);
 
   const onLoginWithDifferentMethod = async () => {
-    await dispatch(resetOnboarding());
-    await forceUpdateMetamaskState(dispatch);
-    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    await resetOnboardingAndReturn();
   };
 
   const onCreateNewAccount = () => {
