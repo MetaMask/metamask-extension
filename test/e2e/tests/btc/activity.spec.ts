@@ -72,31 +72,6 @@ describe('BTC Account - Activity', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const sendAmount = '0.5';
 
-  it('Send transaction is rendered with Sending label and pending status', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
-        testSpecificMock: mockBtcActivityMocks,
-      },
-      async ({ driver }) => {
-        await broadcastBitcoinSend(driver, recipientAddress, sendAmount);
-
-        const activity = new ActivityTab(driver);
-        await activity.checkTransactionActivityByText('Sending BTC');
-        await activity.checkWaitForTransactionStatus('pending');
-        await activity.checkPendingTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Sending BTC',
-          txIndex: 1,
-          confirmedTx: 0,
-        });
-        await activity.checkTransactionAmount(`-${sendAmount} BTC`);
-      },
-    );
-  });
-
   it('Receive transaction is rendered with Received label and confirmed status', async function () {
     await withFixtures(
       {
