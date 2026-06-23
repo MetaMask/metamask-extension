@@ -3207,6 +3207,9 @@
   "deepLink_theHomePage": {
     "message": "the home page"
   },
+  "deepLink_theMoneyPage": {
+    "message": "the Money page"
+  },
   "deepLink_theMusdEducationPage": {
     "message": "the MUSD conversion education page"
   },
@@ -3267,6 +3270,10 @@
   "defiReferralCheckboxLabel": {
     "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "terms",
+    "description": "The text for the partner terms link in the DeFi referral confirmation screen"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3364,6 +3371,9 @@
   },
   "developerTools": {
     "message": "Developer tools"
+  },
+  "disable": {
+    "message": "Disable"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -4386,9 +4396,21 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidReferralCheckboxLabel": {
+    "message": "Apply a MetaMask referral code to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
+    "description": "The checkbox label in the redesigned Hyperliquid referral confirmation screen. $1 is the terms link"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "Save 4% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the redesigned Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Save 4% on Hyperliquid",
+    "description": "The title of the redesigned Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "I understand"
@@ -8292,6 +8314,10 @@
     "message": "Signing in...",
     "description": "Text shown while the user is signing in to view their rewards points"
   },
+  "rewardsVipReferralTagLabel": {
+    "description": "Label on the gold VIP tag shown next to a VIP referral code",
+    "message": "VIP"
+  },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
@@ -11053,6 +11079,10 @@
   "youSent": {
     "message": "You sent",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youWithdrew": {
+    "message": "You withdrew",
+    "description": "Label indicating the amount and asset the user withdrew."
   },
   "youllReceive": {
     "message": "You'll receive",

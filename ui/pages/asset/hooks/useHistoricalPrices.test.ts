@@ -131,6 +131,10 @@ const mockBaseState = {
 };
 
 describe('useHistoricalPrices', () => {
+  const neverResolvingPricesFetch = new Promise<{ prices: [number, number][] }>(
+    () => undefined,
+  );
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockPricesFetch.mockResolvedValue({ prices: [] });
@@ -153,6 +157,8 @@ describe('useHistoricalPrices', () => {
     };
 
     it('returns placeholder data initially while fetching', () => {
+      mockPricesFetch.mockReturnValue(neverResolvingPricesFetch);
+
       const { result, unmount } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
         state,
@@ -277,6 +283,8 @@ describe('useHistoricalPrices', () => {
     };
 
     it('returns placeholder data initially while fetching', () => {
+      mockPricesFetch.mockReturnValue(neverResolvingPricesFetch);
+
       const { result, unmount } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
         state,

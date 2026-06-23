@@ -378,14 +378,6 @@ export function getAnalyticsId(state) {
   return analyticsId;
 }
 
-/**
- * @param state
- * @deprecated Use `getAnalyticsId` instead.
- */
-export function getMetaMetricsId(state) {
-  return getAnalyticsId(state);
-}
-
 export function isCurrentProviderCustom(state) {
   const provider = getProviderConfig(state);
   return (
@@ -1757,10 +1749,11 @@ export const getAnySnapUpdateAvailable = createSelector(
 /**
  * Return if the snap branding should show in the UI.
  *
- * Deep-equal memo: snap install map / inputs can change reference without changing branding flag.
+ * Parameterized selector for snap-specific branding visibility.
  */
-export const getHideSnapBranding = createDeepEqualSelector(
-  [selectInstalledSnaps, selectSnapId],
+export const getHideSnapBranding = createParameterizedSelector(10)(
+  selectInstalledSnaps,
+  selectSnapId,
   (installedSnaps, snapId) => {
     return installedSnaps[snapId]?.hideSnapBranding;
   },
@@ -2225,8 +2218,8 @@ export function getLocale(state) {
   return state.metamask.currentLocale;
 }
 
-// Deep-equal memo: keyed snap lookup; parent snaps object identity can churn without snap change.
-export const getSnap = createDeepEqualSelector(
+// Parameterized selector with bounded snap ID cache.
+export const getSnap = createParameterizedSelector(20)(
   getSnaps,
   (_, snapId) => snapId,
   (snaps, snapId) => {
@@ -2274,9 +2267,9 @@ export const getSnapsMetadata = createDeepEqualSelector(
  * @param {string} snapId - The snap ID to get the metadata for.
  * @returns {object} An object containing the snap name and description.
  *
- * Deep-equal memo: metadata lookup + default object; parent metadata map can churn references.
+ * Parameterized selector with bounded snap ID cache.
  */
-export const getSnapMetadata = createDeepEqualSelector(
+export const getSnapMetadata = createParameterizedSelector(20)(
   getSnapsMetadata,
   (_, snapId) => snapId,
   (metadata, snapId) => {
@@ -2288,8 +2281,8 @@ export const getSnapMetadata = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: reduce into enabled map; new object when snap list identity shifts.
-const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
+// Selector for enabled snaps.
+const getEnabledSnaps = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).reduce((acc, cur) => {
     if (cur.enabled) {
       acc[cur.id] = cur;
@@ -2298,21 +2291,18 @@ const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
   }, {});
 });
 
-// Deep-equal memo: reduce into preinstalled map; same rationale as getEnabledSnaps.
-export const getPreinstalledSnaps = createDeepEqualSelector(
-  getSnaps,
-  (snaps) => {
-    return Object.values(snaps).reduce((acc, snap) => {
-      if (snap.preinstalled) {
-        acc[snap.id] = snap;
-      }
-      return acc;
-    }, {});
-  },
-);
+// Selector for preinstalled snaps.
+export const getPreinstalledSnaps = createSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).reduce((acc, snap) => {
+    if (snap.preinstalled) {
+      acc[snap.id] = snap;
+    }
+    return acc;
+  }, {});
+});
 
-// Deep-equal memo: filter + permissions join yields new array refs for unchanged snap set.
-const getSettingsPageSnaps = createDeepEqualSelector(
+// Selector for settings page snaps.
+const getSettingsPageSnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2325,8 +2315,8 @@ const getSettingsPageSnaps = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: filtered id list is a new array when underlying snaps/permissions churn.
-export const getNameLookupSnapsIds = createDeepEqualSelector(
+// Selector for name lookup snap IDs.
+export const getNameLookupSnapsIds = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2336,8 +2326,8 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: mapped {id, permission} rows are new objects each evaluation.
-export const getNameLookupSnaps = createDeepEqualSelector(
+// Selector for name lookup snaps and permissions.
+export const getNameLookupSnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2350,14 +2340,14 @@ export const getNameLookupSnaps = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: map over filtered snaps always allocates a new ids array.
-export const getSettingsPageSnapsIds = createDeepEqualSelector(
+// Selector for settings page snap IDs.
+export const getSettingsPageSnapsIds = createSelector(
   getSettingsPageSnaps,
   (snaps) => snaps.map((snap) => snap.id),
 );
 
-// Deep-equal memo: filter notify-capable snaps; new array when permissions map identity shifts.
-export const getNotifySnaps = createDeepEqualSelector(
+// Selector for notify-enabled snaps.
+export const getNotifySnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2372,9 +2362,9 @@ export const getNotifySnaps = createDeepEqualSelector(
  * @param {object} state - The Redux state object.
  * @returns {object[]} An array of notify snaps that are not preinstalled.
  *
- * Deep-equal memo: second filter layer; notify snap array identity can flicker.
+ * Selector for non-preinstalled notify-enabled snaps.
  */
-export const getThirdPartyNotifySnaps = createDeepEqualSelector(
+export const getThirdPartyNotifySnaps = createSelector(
   getNotifySnaps,
   (snaps) => snaps.filter((snap) => !snap.preinstalled),
 );
@@ -2383,8 +2373,8 @@ function getAllSnapInsights(state) {
   return state.metamask.insights;
 }
 
-// Deep-equal memo: indexed read on insights map; insights object can be replaced with equal contents.
-export const getSnapInsights = createDeepEqualSelector(
+// Parameterized selector with bounded insight ID cache.
+export const getSnapInsights = createParameterizedSelector(10)(
   getAllSnapInsights,
   (_, id) => id,
   (insights, id) => insights?.[id],
