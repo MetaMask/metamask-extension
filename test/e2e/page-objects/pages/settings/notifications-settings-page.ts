@@ -343,9 +343,7 @@ class NotificationsSettingsPage {
         attempts += 1;
         await new Promise((resolve) => setTimeout(resolve, retryInterval));
       }
-      throw new Error(
-        `Expected ${description} state to be: ${expectedState}`,
-      );
+      throw new Error(`Expected ${description} state to be: ${expectedState}`);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(
@@ -448,7 +446,6 @@ class NotificationsSettingsPage {
     });
     return notificationsSettingsPage;
   }
-
 }
 
 export default NotificationsSettingsPage;
