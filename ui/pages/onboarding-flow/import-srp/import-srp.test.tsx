@@ -10,6 +10,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import ImportSrp from './import-srp';
 
 const mockUseNavigate = jest.fn();
@@ -20,6 +21,13 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 const mockSubmitSecretRecoveryPhrase = jest.fn();
 
@@ -46,6 +54,10 @@ describe('Import SRP', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  beforeEach(() => {
+    setBackgroundConnection(backgroundConnectionMock as never);
   });
 
   it('should route to create password route when keyring is already initialized', () => {
