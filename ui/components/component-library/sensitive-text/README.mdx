@@ -6,7 +6,6 @@ import * as SensitiveTextStories from './sensitive-text.stories';
 
 SensitiveText is a component that extends the Text component to handle sensitive information. It provides the ability to hide or show the text content, replacing it with dots when hidden.
 
-<Canvas of={SensitiveTextStories.DefaultStory} />
 
 ## Props
 
@@ -18,7 +17,6 @@ The `SensitiveText` component extends the `Text` component. See the `Text` compo
 
 The text content to be displayed or hidden.
 
-<Canvas of={SensitiveTextStories.Children} />
 
 ```jsx
 import { SensitiveText } from '../../component-library';
@@ -30,7 +28,6 @@ import { SensitiveText } from '../../component-library';
 
 Use the `isHidden` prop to determine whether the text should be hidden or visible. When `isHidden` is `true`, the component will display dots instead of the actual text.
 
-<Canvas of={SensitiveTextStories.IsHidden} />
 
 ```jsx
 import { SensitiveText } from '../../component-library';
@@ -53,7 +50,6 @@ The following predefined length options are available:
 - If an invalid `length` is provided, the component will fall back to `SensitiveTextLength.Short` and log a warning.
 - Custom length values can be provided as strings, e.g. `15`.
 
-<Canvas of={SensitiveTextStories.Length} />
 
 ```jsx
 import { SensitiveText, SensitiveTextLength } from '../../component-library';
@@ -74,3 +70,4 @@ import { SensitiveText, SensitiveTextLength } from '../../component-library';
   Length "15" (15 characters)
 </SensitiveText>
 ```
+<Canvas of={SensitiveTextStories.DefaultStory} />
