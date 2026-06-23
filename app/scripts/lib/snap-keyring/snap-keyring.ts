@@ -7,7 +7,6 @@ import {
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
-import { Messenger } from '@metamask/messenger';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
