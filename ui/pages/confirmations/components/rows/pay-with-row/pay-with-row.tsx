@@ -50,6 +50,7 @@ type PayWithRowContentProps = {
 
 export type PayWithRowProps = {
   variant?: ConfirmInfoRowSize;
+  style?: React.CSSProperties;
 };
 
 export const PayWithRowSkeleton = () => {
@@ -77,6 +78,7 @@ export const PayWithRowSkeleton = () => {
 
 export function PayWithRow({
   variant = ConfirmInfoRowSize.Small,
+  style,
 }: PayWithRowProps = {}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
@@ -132,6 +134,7 @@ export function PayWithRow({
         isPerpsWithdraw={isPerpsWithdraw}
         ownerId={currentConfirmation?.id ?? ''}
         rowVariant={variant}
+        style={style}
       />
     </>
   );
@@ -145,9 +148,11 @@ function PayWithRowInline({
   ownerId,
   isPerpsWithdraw,
   rowVariant,
+  style,
 }: PayWithRowContentProps & {
   ownerId: string;
   rowVariant: ConfirmInfoRowSize;
+  style?: React.CSSProperties;
 }) {
   const t = useI18nContext();
 
@@ -158,6 +163,7 @@ function PayWithRowInline({
       data-testid="pay-with-row"
       label={isPerpsWithdraw ? t('withdrawTo') : t('payWith')}
       rowVariant={rowVariant}
+      style={style}
     >
       <Box
         data-testid="pay-with-pill"
