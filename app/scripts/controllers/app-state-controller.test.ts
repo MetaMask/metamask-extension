@@ -1308,6 +1308,7 @@ async function withController<ReturnValue>(
       'ApprovalController:acceptRequest',
       'KeyringController:getState',
       'PreferencesController:getState',
+      'LegacyBackgroundApiService:setLocked',
     ],
     events: ['PreferencesController:stateChange', 'KeyringController:unlock'],
   });
@@ -1328,9 +1329,13 @@ async function withController<ReturnValue>(
     addRequestMock || jest.fn().mockResolvedValue(undefined),
   );
 
+  rootMessenger.registerActionHandler(
+    'LegacyBackgroundApiService:setLocked',
+    jest.fn(),
+  );
+
   return fn({
     controller: new AppStateController({
-      onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,
       state,

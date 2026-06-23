@@ -55,6 +55,16 @@ export type AppStateControllerSetLastViewedUserSurveyAction = {
   handler: AppStateController['setLastViewedUserSurvey'];
 };
 
+/**
+ * Sets whether the unlock screen should suppress automatic passkey WebAuthn.
+ *
+ * @param suppressed - When true, auto passkey unlock is suppressed.
+ */
+export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
+  type: `AppStateController:setPasskeyAutoUnlockSuppressed`;
+  handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
+};
+
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
   type: `AppStateController:setNewPrivacyPolicyToastClickedOrClosed`;
   handler: AppStateController['setNewPrivacyPolicyToastClickedOrClosed'];
@@ -572,6 +582,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetRecoveryPhraseReminderHasBeenShownAction
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
+  | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
   | AppStateControllerSetPna25AcknowledgedAction
