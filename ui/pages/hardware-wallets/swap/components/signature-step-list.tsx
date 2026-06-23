@@ -89,7 +89,10 @@ export default function SignatureStepList({
               {firstStepLabel}
             </Text>
             {firstStepDescription && (
-              <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
+              <Text
+                color={TextColor.TextAlternative}
+                variant={TextVariant.BodyMd}
+              >
                 {firstStepDescription}
               </Text>
             )}
@@ -118,10 +121,7 @@ export default function SignatureStepList({
           status={finalStepStatus}
           stepNumber={needsTwoConfirmations ? 2 : 1}
         />
-        <Box
-          className="min-w-0 flex-1"
-          flexDirection={BoxFlexDirection.Column}
-        >
+        <Box className="min-w-0 flex-1" flexDirection={BoxFlexDirection.Column}>
           <Text
             color={getStepLabelColor(finalStepStatus)}
             variant={TextVariant.BodyMd}
@@ -130,7 +130,10 @@ export default function SignatureStepList({
             {finalStepLabel}
           </Text>
           {finalStepDescription && (
-            <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
+            <Text
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodyMd}
+            >
               {finalStepDescription}
             </Text>
           )}

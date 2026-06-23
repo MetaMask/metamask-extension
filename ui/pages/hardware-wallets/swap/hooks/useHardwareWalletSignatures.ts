@@ -112,8 +112,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
-  const sendBundleState = (location.state as HardwareWalletSignaturesLocationState)
-    ?.sendBundle;
+  const sendBundleState = (
+    location.state as HardwareWalletSignaturesLocationState
+  )?.sendBundle;
   // `sendBundleTxMeta` is reactive: retry replaces it with a fresh
   // TransactionMeta (created via `addTransaction`). All consumers — the
   // tracker's expectedTxIds, the safety check, the auto-submit effect —
@@ -333,7 +334,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       return;
     }
 
-    const {chainId} = sendBundleTxMeta;
+    const { chainId } = sendBundleTxMeta;
     if (!chainId) {
       log.warn('[HW-SendBundle] retry: no chainId on txMeta');
       dispatchSignatureEvent({
@@ -537,7 +538,8 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   useEffect(() => {
     if (
-      signatureState.status === HardwareWalletSignatureStatus.AwaitingFinalSignature ||
+      signatureState.status ===
+        HardwareWalletSignatureStatus.AwaitingFinalSignature ||
       signatureState.status === HardwareWalletSignatureStatus.Submitted
     ) {
       setFirstSignatureDone(true);

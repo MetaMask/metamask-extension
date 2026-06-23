@@ -29,21 +29,21 @@ export const isQrHardwareSignRequest = (
 ): request is QrHardwareSignRequest =>
   Boolean(
     request &&
-      typeof request === 'object' &&
-      'type' in request &&
-      request.type === QrScanRequestType.SIGN &&
-      'request' in request &&
-      request.request &&
-      typeof request.request === 'object' &&
-      'requestId' in request.request &&
-      typeof request.request.requestId === 'string' &&
-      'payload' in request.request &&
-      request.request.payload &&
-      typeof request.request.payload === 'object' &&
-      'type' in request.request.payload &&
-      typeof request.request.payload.type === 'string' &&
-      'cbor' in request.request.payload &&
-      typeof request.request.payload.cbor === 'string',
+    typeof request === 'object' &&
+    'type' in request &&
+    request.type === QrScanRequestType.SIGN &&
+    'request' in request &&
+    request.request &&
+    typeof request.request === 'object' &&
+    'requestId' in request.request &&
+    typeof request.request.requestId === 'string' &&
+    'payload' in request.request &&
+    request.request.payload &&
+    typeof request.request.payload === 'object' &&
+    'type' in request.request.payload &&
+    typeof request.request.payload.type === 'string' &&
+    'cbor' in request.request.payload &&
+    typeof request.request.payload.cbor === 'string',
   );
 
 /**
@@ -115,11 +115,11 @@ export const getTitle = ({
   t: ReturnType<typeof useI18nContext>;
 }) => {
   if (status === HardwareWalletSignatureStatus.Submitted) {
-    return t('bridgeHwAllSetTitle');
+    return t('hardwareWalletsHwAllSetTitle');
   }
 
   if (status === HardwareWalletSignatureStatus.Rejected) {
-    return t('bridgeHwTransactionRejected');
+    return t('hardwareWalletsHwTransactionRejected');
   }
 
   if (status === HardwareWalletSignatureStatus.Failed) {
@@ -127,14 +127,14 @@ export const getTitle = ({
   }
 
   if (status === HardwareWalletSignatureStatus.Disconnected) {
-    return t('bridgeHwDeviceDisconnected');
+    return t('hardwareWalletsHwDeviceDisconnected');
   }
 
   if (
     needsTwoConfirmations &&
     status === HardwareWalletSignatureStatus.AwaitingFinalSignature
   ) {
-    return t('bridgeHwAlmostThereTitle');
+    return t('hardwareWalletsHwAlmostThereTitle');
   }
 
   return t('swapConfirmWithHwWallet');
@@ -159,14 +159,14 @@ export const getQrHardwareSigningPageTitle = ({
   t: ReturnType<typeof useI18nContext>;
 }) => {
   if (activeQrStep === HardwareWalletSignatureStatus.AwaitingFinalSignature) {
-    return t('bridgeQrHardwareSignLastStepTitle');
+    return t('hardwareWalletsQrHardwareSignLastStepTitle');
   }
 
   if (needsTwoConfirmations) {
-    return t('bridgeQrHardwareSignStepTitle', ['2', '4']);
+    return t('hardwareWalletsQrHardwareSignStepTitle', ['2', '4']);
   }
 
-  return t('bridgeQrHardwareSignTitle', ['1', '1']);
+  return t('hardwareWalletsQrHardwareSignTitle', ['1', '1']);
 };
 
 /**
@@ -194,14 +194,14 @@ export const getFinalStepLabel = ({
   t: ReturnType<typeof useI18nContext>;
 }) => {
   if (status === HardwareWalletSignatureStatus.Submitted) {
-    return t('bridgeHwSentAmount', [fromAmount, fromTokenSymbol]);
+    return t('hardwareWalletsHwSentAmount', [fromAmount, fromTokenSymbol]);
   }
 
   if (finalStepStatus === SignatureStepStatus.Active) {
-    return t('bridgeHwSendingAmount', [fromAmount, fromTokenSymbol]);
+    return t('hardwareWalletsHwSendingAmount', [fromAmount, fromTokenSymbol]);
   }
 
-  return t('bridgeHwSendAmount', [fromAmount, fromTokenSymbol]);
+  return t('hardwareWalletsHwSendAmount', [fromAmount, fromTokenSymbol]);
 };
 
 /**
@@ -224,11 +224,11 @@ export const getFirstStepDescription = ({
   t: ReturnType<typeof useI18nContext>;
 }) => {
   if (firstStepStatus === SignatureStepStatus.Rejected) {
-    return t('bridgeHwRejected');
+    return t('hardwareWalletsHwRejected');
   }
 
   if (firstStepStatus === SignatureStepStatus.Disconnected) {
-    return t('bridgeHwReconnectDevice');
+    return t('hardwareWalletsHwReconnectDevice');
   }
 
   if (firstStepStatus === SignatureStepStatus.Failed) {
@@ -236,7 +236,7 @@ export const getFirstStepDescription = ({
   }
 
   if (spenderAddress) {
-    return t('bridgeHwSpender', [shortenAddress(spenderAddress)]);
+    return t('hardwareWalletsHwSpender', [shortenAddress(spenderAddress)]);
   }
 
   return undefined;
@@ -262,7 +262,7 @@ export const getFinalStepDescription = ({
     return undefined;
   }
 
-  return t('bridgeHwToAddress', [shortenAddress(toAddress)]);
+  return t('hardwareWalletsHwToAddress', [shortenAddress(toAddress)]);
 };
 
 /**
@@ -307,16 +307,16 @@ export const getStepLabels = ({
 } => {
   if (isSendBundleFlow) {
     return {
-      firstStepLabel: t('sendBundleHwTransaction'),
-      finalStepLabel: t('sendBundleHwGasPayment'),
+      firstStepLabel: t('hardwareWalletsSendBundleTransaction'),
+      finalStepLabel: t('hardwareWalletsSendBundleGasPayment'),
     };
   }
 
   const firstStepLabel =
     status === HardwareWalletSignatureStatus.Submitted ||
     firstStepStatus === SignatureStepStatus.Complete
-      ? t('bridgeHwApprovedAmount', [fromAmount, fromTokenSymbol])
-      : t('bridgeHwApproveAmount', [fromAmount, fromTokenSymbol]);
+      ? t('hardwareWalletsHwApprovedAmount', [fromAmount, fromTokenSymbol])
+      : t('hardwareWalletsHwApproveAmount', [fromAmount, fromTokenSymbol]);
 
   return {
     firstStepLabel,

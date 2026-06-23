@@ -69,7 +69,7 @@ export default function SignatureFooter({
           onClick={handleRetry}
           data-testid="hardware-wallet-signatures__resend-button"
         >
-          {t('bridgeHwResendTransaction')}
+          {t('hardwareWalletsHwResendTransaction')}
         </Button>
       )}
       {showInlineQrCode && !isRetryable && (
@@ -80,7 +80,7 @@ export default function SignatureFooter({
           onClick={handleOpenQrSigningPage}
           data-testid="hardware-wallet-signatures__scan-button"
         >
-          {t('bridgeQrHardwareScanSignature')}
+          {t('hardwareWalletsQrHardwareScanSignature')}
         </Button>
       )}
       <Button

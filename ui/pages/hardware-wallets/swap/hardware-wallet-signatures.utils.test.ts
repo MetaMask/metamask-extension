@@ -210,7 +210,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: false,
           t,
         }),
-      ).toBe('bridgeHwAllSetTitle');
+      ).toBe('hardwareWalletsHwAllSetTitle');
     });
 
     it('returns rejected title', () => {
@@ -220,7 +220,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: false,
           t,
         }),
-      ).toBe('bridgeHwTransactionRejected');
+      ).toBe('hardwareWalletsHwTransactionRejected');
     });
 
     it('returns failed title', () => {
@@ -240,7 +240,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: false,
           t,
         }),
-      ).toBe('bridgeHwDeviceDisconnected');
+      ).toBe('hardwareWalletsHwDeviceDisconnected');
     });
 
     it('returns almost there title when needs two confirmations and awaiting final', () => {
@@ -250,7 +250,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: true,
           t,
         }),
-      ).toBe('bridgeHwAlmostThereTitle');
+      ).toBe('hardwareWalletsHwAlmostThereTitle');
     });
 
     it('returns default confirm title', () => {
@@ -284,7 +284,7 @@ describe('hardware-wallet-signatures utils', () => {
           fromTokenSymbol: 'ETH',
           t,
         }),
-      ).toBe('bridgeHwSentAmount[1.5,ETH]');
+      ).toBe('hardwareWalletsHwSentAmount[1.5,ETH]');
     });
 
     it('returns sending amount when active', () => {
@@ -296,7 +296,7 @@ describe('hardware-wallet-signatures utils', () => {
           fromTokenSymbol: 'ETH',
           t,
         }),
-      ).toBe('bridgeHwSendingAmount[1.5,ETH]');
+      ).toBe('hardwareWalletsHwSendingAmount[1.5,ETH]');
     });
 
     it('returns send amount when pending', () => {
@@ -308,7 +308,7 @@ describe('hardware-wallet-signatures utils', () => {
           fromTokenSymbol: 'ETH',
           t,
         }),
-      ).toBe('bridgeHwSendAmount[1.5,ETH]');
+      ).toBe('hardwareWalletsHwSendAmount[1.5,ETH]');
     });
   });
 
@@ -320,7 +320,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('bridgeHwRejected');
+      ).toBe('hardwareWalletsHwRejected');
     });
 
     it('returns reconnect text', () => {
@@ -330,7 +330,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('bridgeHwReconnectDevice');
+      ).toBe('hardwareWalletsHwReconnectDevice');
     });
 
     it('returns failed text', () => {
@@ -350,7 +350,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('bridgeHwSpender[0x12345...45678]');
+      ).toBe('hardwareWalletsHwSpender[0x12345...45678]');
     });
 
     it('returns undefined when no spender address', () => {
@@ -371,7 +371,7 @@ describe('hardware-wallet-signatures utils', () => {
           toAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('bridgeHwToAddress[0x12345...45678]');
+      ).toBe('hardwareWalletsHwToAddress[0x12345...45678]');
     });
 
     it('returns undefined when no to address', () => {
@@ -392,7 +392,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: true,
           t,
         }),
-      ).toBe('bridgeQrHardwareSignStepTitle[2,4]');
+      ).toBe('hardwareWalletsQrHardwareSignStepTitle[2,4]');
     });
 
     it('returns the last step title when awaiting the final signature', () => {
@@ -402,7 +402,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: true,
           t,
         }),
-      ).toBe('bridgeQrHardwareSignLastStepTitle');
+      ).toBe('hardwareWalletsQrHardwareSignLastStepTitle');
     });
   });
 

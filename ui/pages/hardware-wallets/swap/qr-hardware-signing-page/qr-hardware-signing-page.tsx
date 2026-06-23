@@ -113,7 +113,7 @@ export const QrHardwareSigningPage = ({
             onClick={onContinueToScan}
             data-testid="qr-hardware-signing-page__continue-button"
           >
-            {t('bridgeQrHardwareScanSignature')}
+            {t('hardwareWalletsQrHardwareScanSignature')}
           </Button>
         )}
         <Button
