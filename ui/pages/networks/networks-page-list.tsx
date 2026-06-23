@@ -244,8 +244,13 @@ export const NetworksPageList = ({
 
   const renderNetworkListItem = useCallback(
     (network: MultichainNetworkConfiguration) => {
-      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-        getItemCallbacks(network);
+      const {
+        onDelete,
+        onDeleteMenuLabel,
+        onEdit,
+        onDiscoverClick,
+        onRpcSelect,
+      } = getItemCallbacks(network);
 
       return (
         <NetworkListItem
@@ -263,6 +268,7 @@ export const NetworksPageList = ({
           }
           onClick={() => handleNetworkChange(network.chainId)}
           onDeleteClick={onDelete}
+          deleteMenuLabel={onDeleteMenuLabel}
           onEditClick={onEdit}
           onDiscoverClick={onDiscoverClick}
           onRpcEndpointClick={onRpcSelect}
