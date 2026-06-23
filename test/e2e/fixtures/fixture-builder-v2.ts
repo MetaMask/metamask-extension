@@ -127,10 +127,6 @@ type TransactionControllerFixtureInput = Partial<
 };
 
 type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
-  /** @deprecated Patches `AnalyticsController` via shim. Prefer `optedIn`. */
-  participateInMetaMetrics?: boolean | null;
-  /** @deprecated Patches `AnalyticsController` via shim. Prefer `analyticsId`. */
-  metaMetricsId?: string | null;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   analyticsId?: string | null;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
@@ -299,37 +295,11 @@ class FixtureBuilderV2 {
   }
 
   withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
-    const {
-      participateInMetaMetrics,
-      metaMetricsId,
-      analyticsId,
-      optedIn,
-      ...metaMetricsControllerPatch
-    } = data;
+    const { analyticsId, optedIn, ...metaMetricsControllerPatch } = data;
 
     merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 
-    if (participateInMetaMetrics !== undefined) {
-      merge(this.fixture.data.MetaMetricsController, {
-        completedMetaMetricsOnboarding: participateInMetaMetrics !== null,
-      });
-    }
-
-    let resolvedAnalyticsId: string | null | undefined;
-    if (analyticsId === undefined) {
-      resolvedAnalyticsId = metaMetricsId;
-    } else {
-      resolvedAnalyticsId = analyticsId;
-    }
-
-    let resolvedOptedIn: boolean | undefined;
-    if (optedIn !== undefined) {
-      resolvedOptedIn = optedIn;
-    } else if (participateInMetaMetrics !== undefined) {
-      resolvedOptedIn = participateInMetaMetrics === true;
-    }
-
-    if (resolvedAnalyticsId !== undefined || resolvedOptedIn !== undefined) {
+    if (analyticsId !== undefined || optedIn !== undefined) {
       const fixtureData = this.fixture.data as Record<string, unknown>;
       if (!fixtureData.AnalyticsController) {
         fixtureData.AnalyticsController = {};
@@ -339,11 +309,11 @@ class FixtureBuilderV2 {
         unknown
       >;
       const analyticsPatch: Record<string, unknown> = {};
-      if (resolvedAnalyticsId !== undefined) {
-        analyticsPatch.analyticsId = resolvedAnalyticsId;
+      if (analyticsId !== undefined) {
+        analyticsPatch.analyticsId = analyticsId;
       }
-      if (resolvedOptedIn !== undefined) {
-        analyticsPatch.optedIn = resolvedOptedIn;
+      if (optedIn !== undefined) {
+        analyticsPatch.optedIn = optedIn;
       }
       merge(analyticsController, analyticsPatch);
     }

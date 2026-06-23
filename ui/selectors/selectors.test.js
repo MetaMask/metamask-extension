@@ -7,6 +7,7 @@ import {
   SolAccountType,
 } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -4603,5 +4604,98 @@ describe('getLastVisitedPerpsRoute', () => {
     const state = { metamask: {} };
 
     expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
+  });
+});
+
+describe('snap selectors', () => {
+  const snapState = {
+    metamask: {
+      currentLocale: 'en',
+      snaps: {
+        'npm:foo': {
+          id: 'npm:foo',
+          enabled: true,
+          preinstalled: true,
+          hideSnapBranding: true,
+          hidden: false,
+          manifest: {
+            proposedName: 'Foo',
+            description: 'Foo snap',
+          },
+        },
+        'npm:bar': {
+          id: 'npm:bar',
+          enabled: true,
+          preinstalled: false,
+          hidden: false,
+          manifest: {
+            proposedName: 'Bar',
+            description: 'Bar snap',
+          },
+        },
+        'npm:baz': {
+          id: 'npm:baz',
+          enabled: false,
+          preinstalled: true,
+          hidden: false,
+          manifest: {
+            proposedName: 'Baz',
+            description: 'Baz snap',
+          },
+        },
+      },
+      subjects: {
+        'npm:foo': {
+          permissions: {
+            [SnapEndowments.SettingsPage]: {},
+            snap_notify: {},
+            'endowment:name-lookup': { caveat: true },
+          },
+        },
+        'npm:bar': {
+          permissions: {
+            snap_notify: {},
+            'endowment:name-lookup': { caveat: true },
+          },
+        },
+      },
+      insights: {
+        one: { value: 1 },
+      },
+    },
+  };
+
+  it('selects parameterized snap values', () => {
+    expect(selectors.getHideSnapBranding(snapState, 'npm:foo')).toBe(true);
+    expect(selectors.getSnap(snapState, 'npm:foo')).toStrictEqual(
+      snapState.metamask.snaps['npm:foo'],
+    );
+    expect(selectors.getSnapMetadata(snapState, 'npm:foo')).toStrictEqual({
+      name: 'Foo',
+      description: 'Foo snap',
+      hidden: false,
+    });
+    expect(selectors.getSnapInsights(snapState, 'one')).toStrictEqual({
+      value: 1,
+    });
+  });
+
+  it('filters snap collections for snap permissions and enabled state', () => {
+    expect(
+      Object.keys(selectors.getPreinstalledSnaps(snapState)),
+    ).toStrictEqual(['npm:foo', 'npm:baz']);
+    expect(selectors.getNameLookupSnapsIds(snapState)).toStrictEqual([
+      'npm:foo',
+      'npm:bar',
+    ]);
+    expect(selectors.getSettingsPageSnapsIds(snapState)).toStrictEqual([
+      'npm:foo',
+    ]);
+    expect(
+      selectors.getNotifySnaps(snapState).map(({ id }) => id),
+    ).toStrictEqual(['npm:foo', 'npm:bar']);
+    expect(
+      selectors.getThirdPartyNotifySnaps(snapState).map(({ id }) => id),
+    ).toStrictEqual(['npm:bar']);
   });
 });

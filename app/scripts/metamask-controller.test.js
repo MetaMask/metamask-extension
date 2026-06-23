@@ -4474,7 +4474,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('calls discoverAndCreateAccounts when importMnemonicToVault runs', async () => {
+      it('calls discoverAndCreateAccounts when importMnemonicToVault runs after onboarding completes', async () => {
         jest
           .spyOn(
             metamaskController.accountTreeController,
@@ -4488,6 +4488,10 @@ describe('MetaMaskController', () => {
 
         await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
 
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
           shouldCreateSocialBackup: false,
           shouldSelectAccount: false,
@@ -4497,6 +4501,31 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => setImmediate(resolve));
 
         expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
+      });
+
+      it('does not call discoverAndCreateAccounts before onboarding completes', async () => {
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorage',
+          )
+          .mockResolvedValue();
+        jest
+          .spyOn(metamaskController, 'discoverAndCreateAccounts')
+          .mockResolvedValue({});
+
+        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
+
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
+          shouldCreateSocialBackup: false,
+          shouldSelectAccount: false,
+        });
+
+        await waitForAllPromises();
+
+        expect(
+          metamaskController.discoverAndCreateAccounts,
+        ).not.toHaveBeenCalled();
       });
     });
 
@@ -4541,7 +4570,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('ensures initial network state networks contain failover RPCs', () => {
+      it('ensures default networks contain failover RPCs', () => {
         jest
           .spyOn(NetworkConstantsModule, 'getFailoverUrlsForInfuraNetwork')
           .mockReturnValue(['https://mock_rpc']);
@@ -4581,6 +4610,7 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.POLYGON,
           CHAIN_IDS.OPTIMISM,
           CHAIN_IDS.SEI,
+          CHAIN_IDS.MONAD,
         ];
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
@@ -4588,8 +4618,6 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.BSC,
           '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
-          '0x539', // Localhost
-          '0x8f', // Monad Mainnet
         ];
 
         // Assert - ensure networks with failovers have failovers, and other networks do not have failovers
@@ -4608,23 +4636,26 @@ describe('MetaMaskController', () => {
           },
         );
 
+        const getFailoverRpcUrls = (chainId) => {
+          const { networkClientId } =
+            networkState.networkConfigurationsByChainId[chainId]
+              .rpcEndpoints[0];
+          return metamaskController.networkController.getNetworkClientById(
+            networkClientId,
+          ).configuration.failoverRpcUrls;
+        };
+
         // Assert - networks have failovers
         networksWithFailoverUrls.forEach((chainId) => {
           if (chainId === CHAIN_IDS.SEI) {
             return;
           }
-          expect(
-            networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
-              .failoverUrls,
-          ).toHaveLength(1);
+          expect(getFailoverRpcUrls(chainId)).toHaveLength(1);
         });
 
         // Assert - networks without failovers
         networksWithoutFailoverUrls.forEach((chainId) => {
-          expect(
-            networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
-              .failoverUrls,
-          ).toHaveLength(0);
+          expect(getFailoverRpcUrls(chainId)).toHaveLength(0);
         });
       });
 
