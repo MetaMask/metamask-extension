@@ -42,6 +42,12 @@ jest.mock('../../stock-badge/stock-badge', () => ({
   ),
 }));
 
+jest.mock('../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge', () => ({
+  StellarTrustlineInactiveBadge: () => (
+    <span data-testid="stellar-trustline-inactive-badge" />
+  ),
+}));
+
 const mockIsStockToken = jest.fn();
 const mockIsTokenTradingOpen = jest.fn();
 
@@ -50,6 +56,10 @@ jest.mock('../../../../../pages/bridge/hooks/useRWAToken', () => ({
     isStockToken: mockIsStockToken,
     isTokenTradingOpen: mockIsTokenTradingOpen,
   }),
+}));
+
+jest.mock('../../../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
 }));
 
 describe('TokenCellTitle', () => {
@@ -94,6 +104,17 @@ describe('TokenCellTitle', () => {
     const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
     expect(queryByTestId('tag')).not.toBeInTheDocument();
+  });
+
+  it('renders stellar trustline inactive badge when extra has zero limit', () => {
+    const token = createMockToken({
+      accountType: undefined,
+      isStellarTrustlineInactive: true,
+      extra: { limit: '0' },
+    });
+    const { getByTestId } = render(<TokenCellTitle token={token} />);
+
+    expect(getByTestId('stellar-trustline-inactive-badge')).toBeInTheDocument();
   });
 
   it('does not render tag when accountType is undefined', () => {

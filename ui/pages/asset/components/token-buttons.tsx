@@ -1,4 +1,6 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import { errorCodes } from '@metamask/rpc-errors';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
@@ -8,7 +10,7 @@ import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { showModal } from '../../../store/actions';
+import { forceUpdateMetamaskState, showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
@@ -18,6 +20,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { IconColor } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
+import Tooltip from '../../../components/ui/tooltip/tooltip';
 import {
   Icon,
   IconName,
@@ -29,17 +32,29 @@ import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { requestStellarChangeTrustOptDelete } from '../utils/stellar-snap-client-requests';
+import { StellarClassicTrustlineErrorToast } from './stellar-classic-trustline-error-toast';
+
+export type StellarClassicTrustlineRemoveConfig = {
+  hasTrustline: boolean;
+  accountId: string;
+  assetId: CaipAssetType;
+  scope: CaipChainId;
+};
 
 const TokenButtons = ({
   token,
   disableSendForNonEvm = false,
   isMarketClosed = false,
+  stellarClassicTrustlineRemove,
 }: {
   token: Asset & { type: AssetType.token };
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
   /** When true, disables the swap button because the stock market is closed */
   isMarketClosed?: boolean;
+  /** When set, shows a fourth action to remove the Stellar classic trustline (asset page). */
+  stellarClassicTrustlineRemove?: StellarClassicTrustlineRemoveConfig;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -47,9 +62,10 @@ const TokenButtons = ({
   const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
-  const shouldShowSendButton = Boolean(
+  const hasNonZeroTokenBalance = Boolean(
     token.balance?.value && token.balance.value !== '0',
   );
+  const shouldShowSendButton = hasNonZeroTokenBalance;
 
   const currentChainId = token.chainId;
 
@@ -124,6 +140,56 @@ const TokenButtons = ({
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
   }, [token, openBridgeExperience]);
 
+  const [isRemovingStellarTrustline, setIsRemovingStellarTrustline] =
+    useState(false);
+  const [trustlineRemoveErrorMessage, setTrustlineRemoveErrorMessage] =
+    useState<string | null>(null);
+
+  const dismissTrustlineRemoveErrorToast = useCallback(() => {
+    setTrustlineRemoveErrorMessage(null);
+  }, []);
+
+  const handleRemoveStellarTrustline = useCallback(async () => {
+    if (!stellarClassicTrustlineRemove?.hasTrustline) {
+      return;
+    }
+    const { accountId, assetId, scope } = stellarClassicTrustlineRemove;
+    setTrustlineRemoveErrorMessage(null);
+    setIsRemovingStellarTrustline(true);
+    try {
+      await requestStellarChangeTrustOptDelete({
+        accountId,
+        assetId,
+        scope,
+      });
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error: unknown) {
+      const errorCode = (error as { code?: number })?.code;
+      const isUserRejection =
+        errorCode === errorCodes.provider.userRejectedRequest;
+      if (!isUserRejection) {
+        setTrustlineRemoveErrorMessage(
+          hasNonZeroTokenBalance
+            ? (t('stellarClassicTrustlineRemoveNonZeroBalanceError', [
+                token.balance?.display ?? token.balance?.value ?? '0',
+                token.symbol,
+              ]) as string)
+            : (t('stellarClassicTrustlineRemoveError') as string),
+        );
+      }
+    } finally {
+      setIsRemovingStellarTrustline(false);
+    }
+  }, [
+    dispatch,
+    hasNonZeroTokenBalance,
+    stellarClassicTrustlineRemove,
+    t,
+    token.balance?.display,
+    token.balance?.value,
+    token.symbol,
+  ]);
+
   return (
     <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
       <IconButton
@@ -176,6 +242,39 @@ const TokenButtons = ({
         data-testid="token-overview-swap"
         label={t('swap')}
         disabled={!isExternalServicesEnabled || isMarketClosed}
+      />
+
+      {stellarClassicTrustlineRemove ? (
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.Trash}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          onClick={handleRemoveStellarTrustline}
+          data-testid="token-overview-stellar-remove-trustline"
+          label={t('stellarClassicDeactivateOnStellar', [token.symbol]) as string}
+          tooltipRender={(contents) => (
+            <Tooltip
+              title={t('stellarClassicDeactivateOnStellarDetail') as string}
+              position="bottom"
+            >
+              {contents}
+            </Tooltip>
+          )}
+          disabled={
+            !stellarClassicTrustlineRemove.hasTrustline ||
+            isRemovingStellarTrustline
+          }
+        />
+      ) : null}
+      <StellarClassicTrustlineErrorToast
+        message={trustlineRemoveErrorMessage}
+        onClose={dismissTrustlineRemoveErrorToast}
+        dataTestId="stellar-classic-trustline-remove-error-toast"
       />
     </Box>
   );
