@@ -45,6 +45,8 @@ export async function withSnapKeyring(
               throw new Error('Expected v2 Snap keyring');
             }
             return keyring.submitRequest({
+              // NOTE: The `id` field is required but not used in this context. The Snap keyring will
+              // generate its own unique ID for the request.
               id: '',
               origin: request.origin,
               scope: request.scope,
