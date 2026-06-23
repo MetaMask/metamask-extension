@@ -8,6 +8,7 @@ import type { EvmNetworkConfiguration } from '@metamask/multichain-network-contr
 import { StatusTypes } from '@metamask/bridge-controller';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
+import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { MINUTE } from '../../../../shared/constants/time';
 import { TextColor } from '../../../helpers/constants/design-system';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -38,7 +39,15 @@ export const getBlockExplorerUrl = (chainInfo?: ChainInfo, txHash?: string) => {
     return undefined;
   }
   if (!chainInfo.isEvm) {
-    return getBlockExploreTxUrl(chainInfo.blockExplorerUrl, txHash);
+    // Non-EVM explorers don't share a common `/tx/{hash}` path format (e.g.
+    // Stellar uses `/explorer/public/tx/`, Tron uses `/#/transaction/`), so
+    // use the per-network transaction template instead of assuming `/tx/`.
+    const transactionUrlTemplate =
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[chainInfo.chainId]
+        ?.transaction;
+    return transactionUrlTemplate
+      ? transactionUrlTemplate.replace('{txId}', txHash)
+      : undefined;
   }
 
   const index = chainInfo.defaultBlockExplorerUrlIndex;
@@ -135,11 +144,11 @@ export const getIsDelayed = (
   const tenMinutesInMs = 10 * MINUTE;
   return Boolean(
     status === StatusTypes.PENDING &&
-    bridgeHistoryItem?.startTime &&
-    Date.now() >
-      bridgeHistoryItem.startTime +
-        tenMinutesInMs +
-        bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
+      bridgeHistoryItem?.startTime &&
+      Date.now() >
+        bridgeHistoryItem.startTime +
+          tenMinutesInMs +
+          bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };
 
