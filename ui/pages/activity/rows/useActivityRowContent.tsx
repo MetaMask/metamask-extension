@@ -207,6 +207,17 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         };
       }
       case 'nftBuy':
+      case 'nftSell': {
+        const { token, paymentToken } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
+          primaryAmount: formatTokenAmount(paymentToken),
+          primaryDirection: paymentToken?.direction,
+          secondaryAmount: formatAsFiat(paymentToken),
+        };
+      }
       case 'nftMint': {
         const { token } = activity.data;
 

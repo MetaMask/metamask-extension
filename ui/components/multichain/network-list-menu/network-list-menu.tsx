@@ -30,6 +30,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
 import { NetworkListItem } from '../network-list-item';
 import {
+  removeNetwork,
   setActiveNetwork,
   setShowTestNetworks,
   showModal,
@@ -44,12 +45,15 @@ import {
   setTokenNetworkFilter,
   detectNfts,
 } from '../../../store/actions';
+import { isDisableableDefaultNetwork } from '../../../helpers/utils/network-sections';
+import type { NetworkItemCallbacks } from '../network-manager/hooks/useNetworkItemCallbacks';
 import {
+  CHAIN_IDS,
+  FEATURED_RPCS,
   TEST_CHAINS,
   CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
   BUILT_IN_NETWORKS,
   CAIP_FORMATTED_TEST_CHAINS,
-  FEATURED_RPCS,
 } from '../../../../shared/constants/network';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
@@ -505,68 +509,87 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   );
 
   const getItemCallbacks = useCallback(
-    (
-      network: MultichainNetworkConfiguration,
-    ): Record<string, (() => void) | undefined> => {
+    (network: MultichainNetworkConfiguration): NetworkItemCallbacks => {
       const { chainId, isEvm } = network;
+      const hexChainId = isEvm ? convertCaipToHexChainId(chainId) : undefined;
+      const isDisableableDefault = isDisableableDefaultNetwork(chainId);
+      const isEthereumMainnet =
+        chainId === EthScope.Mainnet ||
+        (isEvm && hexChainId === CHAIN_IDS.MAINNET);
+
+      const canRemoveOrDisable =
+        isUnlocked &&
+        (isDisableableDefault
+          ? !isEthereumMainnet
+          : isEvm &&
+            chainId !== currentChainId &&
+            chainId !== EthScope.Mainnet);
+
+      let onDeleteMenuLabel: 'disable' | 'delete' | undefined;
+      if (canRemoveOrDisable) {
+        onDeleteMenuLabel = isDisableableDefault ? 'disable' : 'delete';
+      }
+
+      const discoverChainId = isEvm ? hexChainId : chainId;
+      const onDiscoverClick = isDiscoverBtnEnabled(
+        discoverChainId as Hex | `${string}:${string}`,
+      )
+        ? () => {
+            openWindow(
+              CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[
+                discoverChainId as keyof typeof CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP
+              ],
+              '_blank',
+            );
+          }
+        : undefined;
+
+      const onDelete = canRemoveOrDisable
+        ? () => {
+            dispatch(toggleNetworkMenu());
+            if (isDisableableDefault) {
+              dispatch(removeNetwork(chainId as CaipChainId));
+              return;
+            }
+            dispatch(
+              showModal({
+                name: 'CONFIRM_DELETE_NETWORK',
+                target: hexChainId,
+                onConfirm: () => undefined,
+              }),
+            );
+          }
+        : undefined;
 
       if (!isEvm) {
         return {
-          onDiscoverClick: isDiscoverBtnEnabled(chainId)
-            ? () => {
-                openWindow(
-                  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId],
-                  '_blank',
-                );
-              }
-            : undefined,
+          onDelete,
+          onDeleteMenuLabel,
+          onDiscoverClick,
         };
       }
 
-      // Non-EVM networks cannot be deleted, edited or have
-      // RPC endpoints so it's safe to call this conversion function here.
-      const hexChainId = convertCaipToHexChainId(chainId);
-      const isDeletable =
-        isUnlocked &&
-        network.chainId !== currentChainId &&
-        network.chainId !== EthScope.Mainnet;
+      const evmHexChainId = convertCaipToHexChainId(chainId);
 
       return {
-        onDelete: isDeletable
-          ? () => {
-              dispatch(toggleNetworkMenu());
-              dispatch(
-                showModal({
-                  name: 'CONFIRM_DELETE_NETWORK',
-                  target: hexChainId,
-                  onConfirm: () => undefined,
-                }),
-              );
-            }
-          : undefined,
+        onDelete,
+        onDeleteMenuLabel,
         onEdit: () => {
           dispatch(
             setEditedNetwork({
-              chainId: hexChainId,
+              chainId: evmHexChainId,
               nickname: network.name,
             }),
           );
           setActionMode(ACTION_MODE.ADD_EDIT);
         },
-        onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
-          ? () => {
-              openWindow(
-                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
-                '_blank',
-              );
-            }
-          : undefined,
+        onDiscoverClick,
         onRpcConfigEdit: hasMultiRpcOptions(network)
           ? () => {
               setActionMode(ACTION_MODE.SELECT_RPC);
               dispatch(
                 setEditedNetwork({
-                  chainId: hexChainId,
+                  chainId: evmHexChainId,
                 }),
               );
             }
@@ -575,7 +598,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           setActionMode(ACTION_MODE.SELECT_RPC);
           dispatch(
             setEditedNetwork({
-              chainId: hexChainId,
+              chainId: evmHexChainId,
             }),
           );
         },
@@ -595,8 +618,13 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     network: MultichainNetworkConfiguration,
   ) => {
     const isCurrentNetwork = network.chainId === currentChainId;
-    const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-      getItemCallbacks(network);
+    const {
+      onDelete,
+      onDeleteMenuLabel,
+      onEdit,
+      onDiscoverClick,
+      onRpcSelect,
+    } = getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
 
     return (
@@ -622,6 +650,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           }
         }}
         onDeleteClick={onDelete}
+        deleteMenuLabel={onDeleteMenuLabel}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
         onRpcEndpointClick={onRpcSelect}

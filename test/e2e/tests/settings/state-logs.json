@@ -263,6 +263,7 @@
     "accountWalletsMetadata": {},
     "activeProvider": "string",
     "activeQrCodeScanRequest": "null",
+    "lastQrScanCompletedSuccessfully": "null",
     "addressBook": {},
     "addressScanCache": {},
     "addressSecurityAlertResponses": {},
@@ -283,6 +284,7 @@
     "allNftContracts": {},
     "allNfts": {},
     "allTokens": {},
+    "analyticsId": "string",
     "announcements": {},
     "appActiveTab": {
       "favIconUrl": "null",
@@ -973,11 +975,6 @@
           "address": "string",
           "options": {
             "exportable": "boolean",
-            "addressType": "string",
-            "scope": "string",
-            "index": "number",
-            "groupIndex": "number",
-            "entropySource": "string",
             "entropy": {
               "type": "string",
               "id": "string",
@@ -1061,7 +1058,6 @@
     "lastUpdatedFromVersion": "null",
     "lastVisitedRoute": "null",
     "lastViewedUserSurvey": "null",
-    "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
     "logs": {},
     "lastWithdrawResult": "null",
@@ -1078,9 +1074,6 @@
     "metamaskNotificationsReadList": [],
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
-    "metaMetricsId": "string",
-    "analyticsId": "string",
-    "optedIn": "boolean",
     "methodData": {},
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
@@ -1186,6 +1179,7 @@
     "onboardingDate": "null",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
+    "optedIn": "boolean",
     "orderedNetworkList": [
       {
         "networkId": "string"
@@ -1194,7 +1188,6 @@
     "orderedTransactionHistory": [],
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
-    "participateInMetaMetrics": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",

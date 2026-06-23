@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 213,
+      "currentMigrationVersion": 214,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -194,7 +194,6 @@
         }
       ],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
       "completedMetaMetricsOnboarding": false,
       "tracesBeforeMetricsOptIn": [
@@ -2282,6 +2281,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 213
+    "version": 214
   }
 }

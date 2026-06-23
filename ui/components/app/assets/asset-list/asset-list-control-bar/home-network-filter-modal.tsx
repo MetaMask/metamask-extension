@@ -40,6 +40,7 @@ import {
   ModalOverlay,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { transitionSlideForward } from '../../../../ui/transition';
 import { NETWORKS_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   addNetwork,
@@ -115,12 +116,18 @@ const getSelectableChainId = (network: MultichainNetworkConfiguration) =>
 const isIconName = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);
 
-const SectionHeader = ({ children }: { children: React.ReactNode }) => (
+const SectionHeader = ({
+  children,
+  className = 'px-4 py-2',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => (
   <Text
     variant={TextVariant.BodyMd}
     color={TextColor.TextAlternative}
     fontWeight={FontWeight.Medium}
-    className="px-4 py-2"
+    className={className}
   >
     {children}
   </Text>
@@ -148,7 +155,9 @@ const HomeNetworkFilterRow = ({
         focus={false}
         endAccessory={
           endIconName ? (
-            <Icon name={endIconName} size={IconSize.Sm} />
+            <Box className="flex items-center justify-center rounded-lg p-1 hover:bg-hover">
+              <Icon name={endIconName} size={IconSize.Lg} />
+            </Box>
           ) : undefined
         }
         showEndAccessory={!selected}
@@ -223,13 +232,10 @@ export const NetworkSelectionModal = ({
                         ? IconName.Check
                         : (topItem.endIconName as IconName)
                     }
-                    size={IconSize.Sm}
+                    size={IconSize.Lg}
                   />
                 )}
               </button>
-            ) : null}
-            {topItem && sections.length > 0 ? (
-              <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
             ) : null}
             {sections.map((section, index) => (
               <Box key={section.key} className="flex flex-col">
@@ -237,7 +243,11 @@ export const NetworkSelectionModal = ({
                   <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
                 ) : null}
                 {section.title ? (
-                  <SectionHeader>{section.title}</SectionHeader>
+                  <SectionHeader
+                    className={index > 0 ? 'px-4 pb-2 pt-4' : 'px-4 py-2'}
+                  >
+                    {section.title}
+                  </SectionHeader>
                 ) : null}
                 {section.items.map(({ key, ...item }) => (
                   <HomeNetworkFilterRow key={key} {...item} />
@@ -346,6 +356,15 @@ const HomeNetworkFilterModalContent = ({
     );
   }, [orderedNetworksList, testNetworkMap, useExternalServices]);
 
+  // When there are no custom networks and no visible test networks, the default
+  // (popular) list is the *only* list: the redundant "Default networks" header
+  // is hidden and the top "select all" row reads "All default networks". Once a
+  // custom network exists or test networks are shown, multiple sections appear,
+  // so the top row becomes "All networks" and the default section shows its
+  // "Default networks" header.
+  const hasOnlyDefaultNetworks =
+    customNetworks.length === 0 && !(showTestnets && testNetworks.length > 0);
+
   const additionalNetworks = useMemo(() => {
     const availableNetworks = FEATURED_RPCS.filter(
       ({ chainId }) => !evmNetworks[chainId],
@@ -382,15 +401,18 @@ const HomeNetworkFilterModalContent = ({
   );
 
   const handleManageNetworks = useCallback(() => {
-    onClose();
-    navigate(`${NETWORKS_ROUTE}?drawerOpen=true`);
-  }, [navigate, onClose]);
+    // Don't close the modal first — letting the whole current view (modal
+    // included) slide out as one view-transition snapshot keeps the motion
+    // smooth. The modal's open state resets when the home route unmounts on
+    // navigation. Slide in from the right, mirroring the global menu.
+    transitionSlideForward(() => navigate(`${NETWORKS_ROUTE}?drawerOpen=true`));
+  }, [navigate]);
 
   const sections = useMemo<NetworkSelectionSection[]>(() => {
     const nextSections: NetworkSelectionSection[] = [
       {
         key: 'default-networks',
-        title: t('defaultNetworks'),
+        title: hasOnlyDefaultNetworks ? undefined : t('defaultNetworks'),
         items: defaultNetworks.map((network) => ({
           key: network.chainId,
           name: network.name,
@@ -461,6 +483,7 @@ const HomeNetworkFilterModalContent = ({
     defaultNetworks,
     handleAddNetwork,
     handleSelectNetwork,
+    hasOnlyDefaultNetworks,
     isNetworkSelected,
     showTestnets,
     t,
@@ -474,7 +497,9 @@ const HomeNetworkFilterModalContent = ({
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',
-        name: t('allDefaultNetworks'),
+        name: hasOnlyDefaultNetworks
+          ? t('allDefaultNetworks')
+          : t('allNetworks'),
         iconSrc: IconName.Global,
         selected: isAllDefaultSelected,
         onClick: handleSelectAllDefaultNetworks,
