@@ -91,4 +91,13 @@ describe('initializeWallet — RemoteFeatureFlagController options', () => {
 
     expect(options?.disabled).toBe(true);
   });
+
+  it('stays enabled when onboarding is complete and useExternalServices is absent (defaults to on)', () => {
+    const options = getRemoteFeatureFlagOptions({
+      OnboardingController: { completedOnboarding: true },
+      PreferencesController: {},
+    });
+
+    expect(options?.disabled).toBe(false);
+  });
 });
