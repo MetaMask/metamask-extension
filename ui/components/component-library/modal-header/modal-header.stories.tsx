@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 
 import { ModalHeader } from './modal-header';
@@ -10,7 +9,6 @@ export default {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [ModalHeader from @metamask/design-system-react](https://metamask.github.io/metamask-design-system/?path=/docs/components-modalheader--docs) instead.',

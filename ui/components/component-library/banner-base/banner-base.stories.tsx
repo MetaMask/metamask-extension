@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { Meta, StoryFn } from '@storybook/react';
 import { BannerBase } from './banner-base';
 import { Icon, IconName, IconSize } from '../icon';
@@ -10,7 +9,6 @@ export default {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use BannerBase from @metamask/design-system-react instead.',

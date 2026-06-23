@@ -1,4 +1,3 @@
-import README from './README.mdx';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Skeleton } from './skeleton';
 
@@ -8,7 +7,6 @@ const meta: Meta<typeof Skeleton> = {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the Skeleton component from @metamask/design-system-react instead.',

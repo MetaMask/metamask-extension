@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import README from './README.mdx';
 import { SensitiveText } from './sensitive-text';
 import { SensitiveTextLength } from './sensitive-text.types';
 
@@ -9,7 +8,6 @@ const meta: Meta<typeof SensitiveText> = {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [SensitiveText from @metamask/design-system-react] instead.',

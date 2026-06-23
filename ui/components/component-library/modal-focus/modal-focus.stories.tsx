@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Box from '../../ui/box';
 
@@ -17,7 +16,6 @@ export default {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [ModalFocus from @metamask/design-system-react] instead.',

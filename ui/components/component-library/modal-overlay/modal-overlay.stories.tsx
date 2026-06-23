@@ -1,6 +1,5 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import README from './README.mdx';
 import { ModalOverlay } from './modal-overlay';
 
 export default {
@@ -9,7 +8,6 @@ export default {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the ModalOverlay from @metamask/design-system-react instead.',

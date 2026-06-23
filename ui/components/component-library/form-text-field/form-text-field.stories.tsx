@@ -1,7 +1,6 @@
 import { ChangeEvent } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
-import README from './README.mdx';
 
 import { FormTextField } from './form-text-field';
 
@@ -11,7 +10,6 @@ export default {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the `FormTextField` from `@metamask/design-system-react` instead.',

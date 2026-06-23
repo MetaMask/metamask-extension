@@ -1,7 +1,6 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
-import README from './README.mdx';
 
 import { TextFieldSize, TextFieldType } from './text-field.types';
 import { TextField } from './text-field';
@@ -12,7 +11,6 @@ export default {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use `TextField` from `@metamask/design-system-react` instead.',

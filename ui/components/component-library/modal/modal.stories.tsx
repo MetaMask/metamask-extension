@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import README from './README.mdx';
 import { BlockSize, Display } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';
@@ -22,7 +21,6 @@ export default {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [Modal from @metamask/design-system-react] instead.',

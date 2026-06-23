@@ -1,4 +1,3 @@
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 import { Text } from '../text';
 
@@ -16,7 +15,6 @@ export default {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [HeaderBase from @metamask/design-system-react] instead.',
