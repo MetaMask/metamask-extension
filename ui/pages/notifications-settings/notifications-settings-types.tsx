@@ -20,7 +20,8 @@ import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 export type NotificationsSettingsSectionType =
   | 'walletActivity'
   | 'perps'
-  | 'marketing';
+  | 'marketing'
+  | 'agenticCli';
 
 export type NotificationsSettingsSectionConfig = {
   type: NotificationsSettingsSectionType;
@@ -141,6 +142,13 @@ export const getNotificationsSettingsSectionConfigs = (
     title: t('notificationsSettingsMarketingTitle'),
     description: t('notificationsSettingsMarketingDescription'),
     iconName: IconName.Campaign,
+  });
+
+  nextSections.push({
+    type: 'agenticCli',
+    title: t('notificationsSettingsAgenticCliTitle'),
+    description: t('notificationsSettingsAgenticCliDescription'),
+    iconName: IconName.Code,
   });
 
   return nextSections;

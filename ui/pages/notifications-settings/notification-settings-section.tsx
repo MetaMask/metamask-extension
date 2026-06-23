@@ -357,7 +357,10 @@ export function NotificationSettingsSection({
     null,
   );
 
-  const sectionPreferences = preferences[section.type];
+  // TODO: type casting until agentic cli preferences are not optional (next release)
+  const sectionPreferences = section.type === 'agenticCli'
+    ? preferences[section.type] as NonNullable<typeof preferences['agenticCli']>
+    : preferences[section.type];
   const SectionContent = SECTION_CONTENT_BY_TYPE[section.type];
 
   const handleTogglePreference = useCallback(

@@ -5955,6 +5955,12 @@
   "notificationsPageNoNotificationsContent": {
     "message": "You have not received any notifications yet."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "CLI connection requests, approvals, and session updates for Agentic"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "Agentic CLI"
+  },
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."
   },

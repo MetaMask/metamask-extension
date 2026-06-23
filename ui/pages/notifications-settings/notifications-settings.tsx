@@ -39,7 +39,8 @@ const isNotificationsSettingsSectionType = (
 ): section is NotificationsSettingsSectionType =>
   section === 'walletActivity' ||
   section === 'perps' ||
-  section === 'marketing';
+  section === 'marketing' ||
+  section === 'agenticCli';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -106,6 +107,8 @@ export function NotificationsSettingsContent() {
       navigate(NOTIFICATIONS_SETTINGS_ROUTE);
       return;
     }
+
+    console.log(" NAVIGATING TO SECTION", section.type);
 
     navigate(`${NOTIFICATIONS_SETTINGS_ROUTE}?section=${section.type}`);
   };
