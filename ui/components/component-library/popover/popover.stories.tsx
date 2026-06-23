@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { BackgroundColor, TextColor } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 import { Popover } from './popover';
 import { PopoverPosition } from './popover.types';

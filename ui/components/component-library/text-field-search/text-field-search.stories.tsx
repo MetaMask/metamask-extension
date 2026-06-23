@@ -13,7 +13,8 @@ const meta: Meta<typeof TextFieldSearch> = {
   parameters: {
     docs: {
       description: {
-        component: '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the `TextFieldSearch` component from `@metamask/design-system-react` instead.',
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the `TextFieldSearch` component from `@metamask/design-system-react` instead.',
       },
     },
   },

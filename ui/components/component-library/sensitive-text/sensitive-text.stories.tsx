@@ -11,7 +11,8 @@ const meta: Meta<typeof SensitiveText> = {
     docs: {
       page: README,
       description: {
-        component: '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [SensitiveText from @metamask/design-system-react] instead.',
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [SensitiveText from @metamask/design-system-react] instead.',
       },
     },
   },

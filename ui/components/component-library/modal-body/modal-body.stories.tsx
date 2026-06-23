@@ -9,7 +9,8 @@ const meta: Meta<typeof ModalBody> = {
   parameters: {
     docs: {
       description: {
-        component: '**Deprecated**: This component is deprecated and will be removed in a future release. Please use `ModalBody` from `@metamask/design-system-react` instead.',
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use `ModalBody` from `@metamask/design-system-react` instead.',
       },
     },
   },
