@@ -188,11 +188,6 @@ export type MessengerClientInitRequest<
   }): void;
 
   /**
-   * Lock the extension.
-   */
-  setLocked(): void;
-
-  /**
    * Show a native notification.
    *
    * @param title - The title of the notification.
