@@ -51,8 +51,8 @@ describe('Token persistence on custom network', function () {
           { amountTimeout: 20000 },
         );
 
-        // reload the extension
-        await driver.navigate();
+        // reload the extension — restarts the service worker and restores from storage
+        await driver.refresh();
 
         // verify token still exists after reload
         await homePage.checkPageIsLoaded();
