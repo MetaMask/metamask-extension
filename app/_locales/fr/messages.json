@@ -5577,9 +5577,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Nous avons mis à jour notre politique de confidentialité"
   },
-  "newRpcUrl": {
-    "message": "Nouvelle URL de RPC"
-  },
   "newTokensImportedMessage": {
     "message": "Vous avez importé avec succès $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
