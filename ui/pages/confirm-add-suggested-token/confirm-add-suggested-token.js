@@ -173,10 +173,8 @@ const ConfirmAddSuggestedToken = () => {
     navigate(mostRecentOverviewPage);
   }, [dispatch, navigate, mostRecentOverviewPage, suggestedTokens]);
 
+  // Go back if there are no suggested tokens to render
   useEffect(() => {
-    // Also fires when the approval is resolved in another window (popup or
-    // sidepanel) while the full-page view is open, leaving this tab with no
-    // suggested tokens to display.
     if (!suggestedTokens.length) {
       navigate(mostRecentOverviewPage);
     }
