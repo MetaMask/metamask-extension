@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { Text } from '../../../../../components/component-library';
 import {
-  Display,
-  FlexDirection,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -23,7 +22,7 @@ export function TransactionDetailsDateRow() {
       label={t('date')}
       data-testid="transaction-details-date-row"
     >
-      <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
+      <Box className="flex" flexDirection={BoxFlexDirection.Row} gap={1}>
         <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
           {time},
         </Text>

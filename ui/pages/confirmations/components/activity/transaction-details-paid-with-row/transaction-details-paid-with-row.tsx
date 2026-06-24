@@ -1,13 +1,13 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Text, Box } from '../../../../../components/component-library';
 import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { Text } from '../../../../../components/component-library';
+import { TextVariant } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
@@ -43,9 +43,9 @@ export function TransactionDetailsPaidWithRow() {
       data-testid="transaction-details-paid-with-row"
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={2}
       >
         <TokenIcon

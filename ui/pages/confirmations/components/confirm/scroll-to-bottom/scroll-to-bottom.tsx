@@ -2,6 +2,10 @@ import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -10,10 +14,7 @@ import { I18nContext } from '../../../../../contexts/i18n';
 
 import {
   BackgroundColor,
-  BlockSize,
   BorderRadius,
-  Display,
-  FlexDirection,
   IconColor,
 } from '../../../../../helpers/constants/design-system';
 import { usePrevious } from '../../../../../hooks/usePrevious';
@@ -89,9 +90,8 @@ const ScrollToBottom = ({ children }: ContentProps) => {
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      width={BlockSize.Full}
-      height={BlockSize.Full}
+      className="w-full h-full"
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
       style={{
         /** As a flex child, this ensures the element stretches the full available space without overflowing */
         minHeight: '0',
@@ -105,10 +105,8 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       }}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        width={BlockSize.Full}
-        height={BlockSize.Full}
+        className="flex w-full h-full"
+        flexDirection={BoxFlexDirection.Column}
         paddingLeft={4}
         paddingRight={4}
         onScroll={onScroll}

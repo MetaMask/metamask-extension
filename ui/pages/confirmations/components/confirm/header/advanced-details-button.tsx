@@ -4,18 +4,14 @@ import {
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../../../../components/component-library';
 import Tooltip from '../../../../../components/ui/tooltip';
-import {
-  BackgroundColor,
-  BorderRadius,
-  IconColor,
-} from '../../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
@@ -36,12 +32,12 @@ export const AdvancedDetailsButton = () => {
 
   return (
     <Box
+      className="rounded-md"
       backgroundColor={
         showAdvancedDetails
-          ? BackgroundColor.infoMuted
-          : BackgroundColor.transparent
+          ? BoxBackgroundColor.InfoMuted
+          : BoxBackgroundColor.Transparent
       }
-      borderRadius={BorderRadius.MD}
       // hiding through visibility instead of rendering conditionally so the
       // header layout is not affected
       style={

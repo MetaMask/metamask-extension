@@ -3,6 +3,12 @@ import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   Button,
   ButtonIcon,
   ButtonIconSize,
@@ -11,15 +17,10 @@ import {
   Text,
 } from '../../../../../components/component-library';
 import {
-  AlignItems,
   BackgroundColor,
-  BlockSize,
   BorderRadius,
-  Display,
-  FlexDirection,
   FontWeight,
   IconColor,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -57,19 +58,18 @@ export const Nav = ({ confirmationId }: NavProps) => {
 
   return (
     <Box
-      alignItems={AlignItems.center}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
+      className="flex w-full"
+      alignItems={BoxAlignItems.Center}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
       padding={3}
-      width={BlockSize.Full}
       style={{
         zIndex: 2,
         position: 'relative',
       }}
     >
-      <Box alignItems={AlignItems.center} display={Display.Flex}>
+      <Box className="flex" alignItems={BoxAlignItems.Center}>
         <ButtonIcon
           ariaLabel="Previous Confirmation"
           data-testid="confirm-nav__previous-confirmation"

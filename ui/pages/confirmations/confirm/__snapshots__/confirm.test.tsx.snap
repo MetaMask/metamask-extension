@@ -10,14 +10,14 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        class="items-center justify-between flex confirm_header__wrapper"
         data-testid="confirm-header"
       >
         <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
+          class="items-start p-4 flex"
         >
           <div
-            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
+            class="mt-2 flex"
           >
             <div
               class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
@@ -64,7 +64,8 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
+            class="mt-0"
+            margininlinestart="4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -81,10 +82,10 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
+          class="items-end p-4 flex"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
+            class="gap-4 justify-end flex"
             style="align-self: flex-end;"
           >
             <div>
@@ -112,11 +113,11 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+        class="bg-default w-full h-full"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          class="flex-col pr-4 pl-4 flex w-full h-full"
           style="overflow: auto;"
         >
           <h2
@@ -154,7 +155,8 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                class="flex-wrap gap-2 items-center flex"
+                style="min-width: 0;"
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -277,7 +279,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
         class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+          class="flex-row gap-4 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -308,11 +310,11 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+        class="bg-default w-full h-full"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          class="flex-col pr-4 pl-4 flex w-full h-full"
           style="overflow: auto;"
         >
           <h2
@@ -396,11 +398,11 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 </div>
               </div>
               <div
-                class="mm-box"
+                class=""
                 style="margin-left: auto; max-width: 100%;"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+                  class="flex-col gap-2 flex"
                 >
                   <div
                     class="mm-box mm-box--margin-left-auto"
@@ -584,7 +586,8 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                class="flex-wrap gap-2 items-center flex"
+                style="min-width: 0;"
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -757,7 +760,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
         class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+          class="flex-row gap-4 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -788,11 +791,11 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+        class="bg-default w-full h-full"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          class="flex-col pr-4 pl-4 flex w-full h-full"
           style="overflow: auto;"
         >
           <h2
@@ -876,11 +879,11 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 </div>
               </div>
               <div
-                class="mm-box"
+                class=""
                 style="margin-left: auto; max-width: 100%;"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+                  class="flex-col gap-2 flex"
                 >
                   <div
                     class="mm-box mm-box--margin-left-auto"
@@ -1011,7 +1014,8 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                class="flex-wrap gap-2 items-center flex"
+                style="min-width: 0;"
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -1184,7 +1188,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
         class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+          class="flex-row gap-4 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -1215,14 +1219,14 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        class="items-center justify-between flex confirm_header__wrapper"
         data-testid="confirm-header"
       >
         <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
+          class="items-start p-4 flex"
         >
           <div
-            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
+            class="mt-2 flex"
           >
             <div
               class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
@@ -1269,7 +1273,8 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
+            class="mt-0"
+            margininlinestart="4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -1286,10 +1291,10 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
+          class="items-end p-4 flex"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
+            class="gap-4 justify-end flex"
             style="align-self: flex-end;"
           >
             <div>
@@ -1317,11 +1322,11 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+        class="bg-default w-full h-full"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          class="flex-col pr-4 pl-4 flex w-full h-full"
           style="overflow: auto;"
         >
           <h2
@@ -1360,7 +1365,8 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                class="flex-wrap gap-2 items-center flex"
+                style="min-width: 0;"
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -1512,7 +1518,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--width-full"
+                class="w-full"
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1546,11 +1552,11 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   </div>
                 </div>
                 <div
-                  class="mm-box"
+                  class=""
                   style="margin-left: -8px;"
                 >
                   <div
-                    class="mm-box mm-box--width-full"
+                    class="w-full"
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1604,7 +1610,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--width-full"
+                        class="w-full"
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1658,7 +1664,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             </div>
                           </div>
                           <div
-                            class="mm-box mm-box--width-full"
+                            class="w-full"
                           >
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1811,7 +1817,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--width-full"
+                        class="w-full"
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1834,7 +1840,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             </div>
                           </div>
                           <div
-                            class="mm-box mm-box--width-full"
+                            class="w-full"
                           >
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1888,7 +1894,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 </div>
                               </div>
                               <div
-                                class="mm-box mm-box--width-full"
+                                class="w-full"
                               >
                                 <div
                                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2033,7 +2039,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
         class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+          class="flex-row gap-4 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -2064,11 +2070,11 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+        class="bg-default w-full h-full"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          class="flex-col pr-4 pl-4 flex w-full h-full"
           style="overflow: auto;"
         >
           <h2
@@ -2152,7 +2158,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 </div>
               </div>
               <div
-                class="mm-box"
+                class=""
                 style="margin-left: auto; max-width: 100%;"
               >
                 <div
@@ -2283,7 +2289,8 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                class="flex-wrap gap-2 items-center flex"
+                style="min-width: 0;"
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -2453,7 +2460,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
         class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+          class="flex-row gap-4 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -2484,11 +2491,11 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+        class="bg-default w-full h-full"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          class="flex-col pr-4 pl-4 flex w-full h-full"
           style="overflow: auto;"
         >
           <h2
@@ -2527,7 +2534,8 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                class="flex-wrap gap-2 items-center flex"
+                style="min-width: 0;"
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -2690,7 +2698,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--width-full"
+                class="w-full"
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2724,11 +2732,11 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   </div>
                 </div>
                 <div
-                  class="mm-box"
+                  class=""
                   style="margin-left: -8px;"
                 >
                   <div
-                    class="mm-box mm-box--width-full"
+                    class="w-full"
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -3046,7 +3054,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--width-full"
+                        class="w-full"
                       />
                     </div>
                     <div
@@ -3143,7 +3151,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--width-full"
+                        class="w-full"
                       />
                     </div>
                   </div>
@@ -3157,7 +3165,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
         class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+          class="flex-row gap-4 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -3188,15 +3196,15 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+        class="bg-default w-full h-full"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          class="flex-col pr-4 pl-4 flex w-full h-full"
           style="overflow: auto;"
         >
           <div
-            class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+            class="flex-col items-center pt-4 pb-4 flex"
           >
             <div
               class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
@@ -3241,14 +3249,14 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        class="items-center justify-between flex confirm_header__wrapper"
         data-testid="confirm-header"
       >
         <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
+          class="items-start p-4 flex"
         >
           <div
-            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
+            class="mt-2 flex"
           >
             <div
               class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
@@ -3259,7 +3267,8 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
+            class="mt-0"
+            margininlinestart="4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -3276,10 +3285,10 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
+          class="items-end p-4 flex"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
+            class="gap-4 justify-end flex"
             style="align-self: flex-end;"
           >
             <div>
@@ -3307,11 +3316,11 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+        class="bg-default w-full h-full"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          class="flex-col pr-4 pl-4 flex w-full h-full"
           style="overflow: auto;"
         >
           <h2
@@ -3350,7 +3359,8 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                class="flex-wrap gap-2 items-center flex"
+                style="min-width: 0;"
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -3505,7 +3515,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 </div>
               </div>
               <div
-                class="mm-box mm-box--width-full"
+                class="w-full"
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -3539,11 +3549,11 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                   </div>
                 </div>
                 <div
-                  class="mm-box"
+                  class=""
                   style="margin-left: -8px;"
                 >
                   <div
-                    class="mm-box mm-box--width-full"
+                    class="w-full"
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -3597,7 +3607,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--width-full"
+                        class="w-full"
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -3651,7 +3661,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                             </div>
                           </div>
                           <div
-                            class="mm-box mm-box--width-full"
+                            class="w-full"
                           >
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -3804,7 +3814,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--width-full"
+                        class="w-full"
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -3827,7 +3837,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                             </div>
                           </div>
                           <div
-                            class="mm-box mm-box--width-full"
+                            class="w-full"
                           >
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -3881,7 +3891,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 </div>
                               </div>
                               <div
-                                class="mm-box mm-box--width-full"
+                                class="w-full"
                               >
                                 <div
                                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -4026,7 +4036,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
         class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+          class="flex-row gap-4 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"

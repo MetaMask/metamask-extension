@@ -4,13 +4,15 @@ import {
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
-import { Box, Text } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
   TextAlign,
   TextColor,
   TextVariant,
@@ -258,9 +260,9 @@ const getDescription = (
 export function TitleSkeleton() {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
       paddingTop={4}
       paddingBottom={4}
     >

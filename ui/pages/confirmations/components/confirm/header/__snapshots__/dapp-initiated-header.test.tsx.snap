@@ -11,7 +11,7 @@ exports[`<DAppInitiatedHeader /> should match snapshot 1`] = `
       style="margin-left: auto; position: absolute; right: 0px;"
     >
       <div
-        class="mm-box mm-box--background-color-transparent mm-box--rounded-md"
+        class="bg-transparent rounded-md"
       >
         <div>
           <div

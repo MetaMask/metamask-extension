@@ -7,13 +7,14 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { Box, Text } from '../../../../../components/component-library';
 import {
-  AlignItems,
-  BackgroundColor,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { Text } from '../../../../../components/component-library';
+import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -69,15 +70,15 @@ export function TransactionDetailsSummary() {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       gap={3}
       data-testid="transaction-details-summary"
     >
       <Text color={TextColor.textAlternative}>{t('summary')}</Text>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        className="flex"
+        flexDirection={BoxFlexDirection.Column}
         paddingLeft={2}
       >
         {transactions.map((tx, index) => (
@@ -357,17 +358,17 @@ function SummaryLine({
   const { time: timeString, date } = formatTransactionDateTime(time);
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+    <Box className="flex" flexDirection={BoxFlexDirection.Column}>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Between}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          className="flex"
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={2}
         >
           <TransactionStatusIcon status={status} />
@@ -379,16 +380,16 @@ function SummaryLine({
           isHyperliquid={isHyperliquid}
         />
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+      <Box className="flex" flexDirection={BoxFlexDirection.Row}>
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
+          className="flex"
+          justifyContent={BoxJustifyContent.Center}
           style={{ width: '16px' }}
         >
           {!isLast && (
             <Box
-              backgroundColor={BackgroundColor.iconAlternative}
               style={{
+                backgroundColor: 'var(--color-icon-alternative)',
                 width: '2px',
                 minHeight: '16px',
               }}

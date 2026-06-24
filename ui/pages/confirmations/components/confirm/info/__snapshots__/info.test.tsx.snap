@@ -197,7 +197,8 @@ exports[`Info renders info section for approve request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex"
+        style="min-width: 0;"
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -444,7 +445,7 @@ exports[`Info renders info section for approve request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center"
+        class="items-center flex"
       >
         <div
           class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
@@ -553,7 +554,8 @@ exports[`Info renders info section for contract interaction request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex"
+        style="min-width: 0;"
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -800,7 +802,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center"
+        class="items-center flex"
       >
         <div
           class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
@@ -851,7 +853,8 @@ exports[`Info renders info section for personal sign request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex"
+        style="min-width: 0;"
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -1168,7 +1171,8 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex"
+        style="min-width: 0;"
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -1415,7 +1419,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center"
+        class="items-center flex"
       >
         <div
           class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
@@ -1467,7 +1471,8 @@ exports[`Info renders info section for typed sign request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex"
+        style="min-width: 0;"
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -1619,7 +1624,7 @@ exports[`Info renders info section for typed sign request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full"
+        class="w-full"
       >
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1653,11 +1658,11 @@ exports[`Info renders info section for typed sign request 1`] = `
           </div>
         </div>
         <div
-          class="mm-box"
+          class=""
           style="margin-left: -8px;"
         >
           <div
-            class="mm-box mm-box--width-full"
+            class="w-full"
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1711,7 +1716,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--width-full"
+                class="w-full"
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1765,7 +1770,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                     </div>
                   </div>
                   <div
-                    class="mm-box mm-box--width-full"
+                    class="w-full"
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1918,7 +1923,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--width-full"
+                class="w-full"
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1941,7 +1946,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                     </div>
                   </div>
                   <div
-                    class="mm-box mm-box--width-full"
+                    class="w-full"
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1995,7 +2000,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--width-full"
+                        class="w-full"
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2294,7 +2299,8 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex"
+        style="min-width: 0;"
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"

@@ -1,10 +1,12 @@
 import React from 'react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { Box, Text } from '../../../../../components/component-library';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { Text } from '../../../../../components/component-library';
+import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -49,9 +51,9 @@ export function TransactionDetailsStatusRow() {
       data-testid="transaction-details-status-row"
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={1}
       >
         <TransactionStatusIcon status={status} />

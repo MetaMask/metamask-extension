@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { Box } from '../../../../../../components/component-library';
-import { BlockSize } from '../../../../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 import { TypedSignDataV1Type } from '../../../../types/confirm';
 import { DataTree } from '../dataTree';
 
@@ -22,7 +21,7 @@ export const ConfirmInfoRowTypedSignDataV1 = ({
   );
 
   return (
-    <Box width={BlockSize.Full}>
+    <Box className="w-full">
       <Box style={{ marginLeft: -8 }}>
         <DataTree data={parsedData} chainId={chainId} />
       </Box>

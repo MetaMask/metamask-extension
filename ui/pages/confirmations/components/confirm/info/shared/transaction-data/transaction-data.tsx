@@ -6,6 +6,11 @@ import { hexStripZeros } from '@ethersproject/bytes';
 import _ from 'lodash';
 import { Hex, isHexString } from '@metamask/utils';
 
+import {
+  Box,
+  BoxFlexWrap,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
@@ -15,12 +20,6 @@ import {
   ConfirmInfoRowDivider,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import {
-  Display,
-  FlexWrap,
-  JustifyContent,
-} from '../../../../../../../helpers/constants/design-system';
-import { Box } from '../../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import Preloader from '../../../../../../../components/ui/icon/preloader';
@@ -314,9 +313,9 @@ function UniswapPath({
 }) {
   return (
     <Box
-      display={Display.Flex}
-      flexWrap={FlexWrap.Wrap}
-      justifyContent={JustifyContent.flexEnd}
+      className="flex"
+      flexWrap={BoxFlexWrap.Wrap}
+      justifyContent={BoxJustifyContent.End}
     >
       {pathPools.map((pool, index) => (
         <>

@@ -1,6 +1,7 @@
 import { Hex } from '@metamask/utils';
 import React, { memo } from 'react';
 
+import { Box } from '@metamask/design-system-react';
 import {
   PrimaryType,
   PRIMARY_TYPES_ORDER,
@@ -9,8 +10,6 @@ import {
 import { isValidHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 
 import { sanitizeString } from '../../../../../helpers/utils/util';
-import { Box } from '../../../../../components/component-library';
-import { BlockSize } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   ConfirmInfoRow,
@@ -113,7 +112,7 @@ export const DataTree = ({
     typeof decimalsNumber === 'number' ? decimalsNumber : tokenDecimalsProp;
 
   return (
-    <Box width={BlockSize.Full}>
+    <Box className="w-full">
       {Object.entries(data).map(([label, { value, type }], i) => (
         <ConfirmInfoRow
           label={`${sanitizeString(
