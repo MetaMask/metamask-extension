@@ -186,7 +186,9 @@ describe('HardwareWalletSignatures', () => {
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
     const { getByRole } = renderWithQuote(quote);
 
-    expect(getByRole('button', { name: messages.cancel.message })).toBeDefined();
+    expect(
+      getByRole('button', { name: messages.cancel.message }),
+    ).toBeDefined();
   });
 
   it('subscribes to TransactionController events via useHwSignTracker', async () => {
@@ -408,7 +410,9 @@ describe('HardwareWalletSignatures', () => {
       ]);
     });
 
-    expect(getAllByText(messages.transactionFailed.message).length).toBeGreaterThan(0);
+    expect(
+      getAllByText(messages.transactionFailed.message).length,
+    ).toBeGreaterThan(0);
 
     jest.restoreAllMocks();
   });
@@ -620,7 +624,9 @@ describe('HardwareWalletSignatures', () => {
     expect(queryByTestId('qr-hardware-signing-page')).toBeNull();
     expect(getByTestId('hardware-wallet-signatures__steps')).toBeDefined();
     expect(
-      getByRole('button', { name: messages.hardwareWalletsQrHardwareScanSignature.message }),
+      getByRole('button', {
+        name: messages.hardwareWalletsQrHardwareScanSignature.message,
+      }),
     ).toBeDefined();
   });
 
@@ -681,7 +687,9 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole } = renderQrWallet();
 
       expect(
-        getByRole('button', { name: messages.hardwareWalletsQrHardwareScanSignature.message }),
+        getByRole('button', {
+          name: messages.hardwareWalletsQrHardwareScanSignature.message,
+        }),
       ).toBeDefined();
     });
 
@@ -689,7 +697,9 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole, queryByRole } = renderQrWallet();
 
       fireEvent.click(
-        getByRole('button', { name: messages.hardwareWalletsQrHardwareScanSignature.message }),
+        getByRole('button', {
+          name: messages.hardwareWalletsQrHardwareScanSignature.message,
+        }),
       );
 
       expect(
@@ -701,12 +711,16 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole } = renderQrWallet();
 
       fireEvent.click(
-        getByRole('button', { name: messages.hardwareWalletsQrHardwareScanSignature.message }),
+        getByRole('button', {
+          name: messages.hardwareWalletsQrHardwareScanSignature.message,
+        }),
       );
       fireEvent.click(getByRole('button', { name: messages.back.message }));
 
       expect(
-        getByRole('button', { name: messages.hardwareWalletsQrHardwareScanSignature.message }),
+        getByRole('button', {
+          name: messages.hardwareWalletsQrHardwareScanSignature.message,
+        }),
       ).toBeDefined();
     });
   });
@@ -732,9 +746,13 @@ describe('HardwareWalletSignatures', () => {
 
       const { getByText, getByRole } = renderWithLedgerAccount();
 
-      expect(getByText(messages.hardwareWalletsHwDeviceDisconnected.message)).toBeDefined();
       expect(
-        getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+        getByText(messages.hardwareWalletsHwDeviceDisconnected.message),
+      ).toBeDefined();
+      expect(
+        getByRole('button', {
+          name: messages.hardwareWalletErrorReconnectButton.message,
+        }),
       ).toBeDefined();
     });
 
@@ -756,7 +774,9 @@ describe('HardwareWalletSignatures', () => {
       expect(
         getByText(messages.hardwareWalletsHwTransactionRejected.message),
       ).toBeDefined();
-      expect(getByRole('button', { name: messages.errorPageTryAgain.message })).toBeDefined();
+      expect(
+        getByRole('button', { name: messages.errorPageTryAgain.message }),
+      ).toBeDefined();
     });
 
     it('shows "Transaction failed" for other connection errors', () => {
@@ -774,8 +794,12 @@ describe('HardwareWalletSignatures', () => {
 
       const { getAllByText, getByRole } = renderWithLedgerAccount();
 
-      expect(getAllByText(messages.transactionFailed.message).length).toBeGreaterThan(0);
-      expect(getByRole('button', { name: messages.errorPageTryAgain.message })).toBeDefined();
+      expect(
+        getAllByText(messages.transactionFailed.message).length,
+      ).toBeGreaterThan(0);
+      expect(
+        getByRole('button', { name: messages.errorPageTryAgain.message }),
+      ).toBeDefined();
     });
 
     it('does not transition out of "You\'re all set" when an error appears afterwards', async () => {
@@ -826,9 +850,13 @@ describe('HardwareWalletSignatures', () => {
 
       const { getByText, getByRole } = renderWithLedgerAccount();
 
-      expect(getByText(messages.hardwareWalletsHwDeviceDisconnected.message)).toBeDefined();
       expect(
-        getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+        getByText(messages.hardwareWalletsHwDeviceDisconnected.message),
+      ).toBeDefined();
+      expect(
+        getByRole('button', {
+          name: messages.hardwareWalletErrorReconnectButton.message,
+        }),
       ).toBeDefined();
     });
   });
@@ -888,7 +916,9 @@ describe('HardwareWalletSignatures', () => {
       ).toBeDefined();
 
       await act(async () => {
-        fireEvent.click(getByRole('button', { name: messages.errorPageTryAgain.message }));
+        fireEvent.click(
+          getByRole('button', { name: messages.errorPageTryAgain.message }),
+        );
         await jest.advanceTimersByTimeAsync(6_000);
       });
 
@@ -942,7 +972,9 @@ describe('HardwareWalletSignatures', () => {
       expect(getByText(messages.transactionFailed.message)).toBeDefined();
 
       await act(async () => {
-        fireEvent.click(getByRole('button', { name: messages.errorPageTryAgain.message }));
+        fireEvent.click(
+          getByRole('button', { name: messages.errorPageTryAgain.message }),
+        );
         await jest.advanceTimersByTimeAsync(6_000);
       });
 
@@ -974,7 +1006,9 @@ describe('HardwareWalletSignatures', () => {
       const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
       const { getByRole, getByText, rerender } = renderWithQuote(quote);
 
-      expect(getByText(messages.hardwareWalletsHwDeviceDisconnected.message)).toBeDefined();
+      expect(
+        getByText(messages.hardwareWalletsHwDeviceDisconnected.message),
+      ).toBeDefined();
 
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -983,7 +1017,9 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
         await jest.advanceTimersByTimeAsync(1_000);
       });
@@ -1015,7 +1051,9 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole, getByText, queryByText, rerender } =
         renderWithQuote(quote);
 
-      expect(getByText(messages.hardwareWalletsHwDeviceDisconnected.message)).toBeDefined();
+      expect(
+        getByText(messages.hardwareWalletsHwDeviceDisconnected.message),
+      ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;
 
@@ -1027,14 +1065,18 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
         await jest.advanceTimersByTimeAsync(1_000);
       });
 
       expect(mockSubmit).toHaveBeenCalledTimes(submitCountBeforeRetry + 1);
       expect(getByText(messages.swapConfirmWithHwWallet.message)).toBeDefined();
-      expect(queryByText(messages.hardwareWalletsHwDeviceDisconnected.message)).toBeNull();
+      expect(
+        queryByText(messages.hardwareWalletsHwDeviceDisconnected.message),
+      ).toBeNull();
     });
 
     it('does not resubmit on retry after disconnect when device is still Connecting', async () => {
@@ -1057,7 +1099,9 @@ describe('HardwareWalletSignatures', () => {
       const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
       const { getByRole, getByText, rerender } = renderWithQuote(quote);
 
-      expect(getByText(messages.hardwareWalletsHwDeviceDisconnected.message)).toBeDefined();
+      expect(
+        getByText(messages.hardwareWalletsHwDeviceDisconnected.message),
+      ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;
 
@@ -1070,7 +1114,9 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
       });
 
@@ -1097,7 +1143,9 @@ describe('HardwareWalletSignatures', () => {
       const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
       const { getByRole, getByText, rerender } = renderWithQuote(quote);
 
-      expect(getByText(messages.hardwareWalletsHwDeviceDisconnected.message)).toBeDefined();
+      expect(
+        getByText(messages.hardwareWalletsHwDeviceDisconnected.message),
+      ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;
 
@@ -1110,7 +1158,9 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
         await jest.advanceTimersByTimeAsync(1_000);
       });
@@ -1174,7 +1224,9 @@ describe('HardwareWalletSignatures', () => {
       rerender(<HardwareWalletSignatures />);
 
       await act(async () => {
-        fireEvent.click(getByRole('button', { name: messages.errorPageTryAgain.message }));
+        fireEvent.click(
+          getByRole('button', { name: messages.errorPageTryAgain.message }),
+        );
       });
 
       expect(mockSubmit).toHaveBeenCalledTimes(submitCountBeforeRetry);
@@ -1202,7 +1254,9 @@ describe('HardwareWalletSignatures', () => {
       const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
       const { getByRole, getByText, rerender } = renderWithQuote(quote);
 
-      expect(getByText(messages.hardwareWalletsHwDeviceDisconnected.message)).toBeDefined();
+      expect(
+        getByText(messages.hardwareWalletsHwDeviceDisconnected.message),
+      ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;
 
@@ -1220,7 +1274,9 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(
-          getByRole('button', { name: messages.hardwareWalletErrorReconnectButton.message }),
+          getByRole('button', {
+            name: messages.hardwareWalletErrorReconnectButton.message,
+          }),
         );
         await jest.advanceTimersByTimeAsync(1_000);
       });
@@ -1287,7 +1343,9 @@ describe('HardwareWalletSignatures', () => {
       rerender(<HardwareWalletSignatures />);
 
       await act(async () => {
-        fireEvent.click(getByRole('button', { name: messages.errorPageTryAgain.message }));
+        fireEvent.click(
+          getByRole('button', { name: messages.errorPageTryAgain.message }),
+        );
         await jest.advanceTimersByTimeAsync(6_000);
       });
 

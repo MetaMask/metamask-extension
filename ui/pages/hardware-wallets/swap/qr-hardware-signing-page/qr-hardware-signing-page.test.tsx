@@ -22,11 +22,14 @@ function renderQrHardwareSigningPage(
   );
 }
 
-jest.mock('../../../../components/app/qr-hardware-popover/qr-hardware-sign-request/qr-reader', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: jest.fn(() => <div data-testid="qr-reader-mock" />),
-}));
+jest.mock(
+  '../../../../components/app/qr-hardware-popover/qr-hardware-sign-request/qr-reader',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: jest.fn(() => <div data-testid="qr-reader-mock" />),
+  }),
+);
 
 jest.mock('../qr-signature-code', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -56,9 +59,9 @@ describe('QrHardwareSigningPage', () => {
   it('renders the title and animated QR code in display mode', () => {
     renderQrHardwareSigningPage(defaultProps);
 
-    expect(screen.getByTestId('qr-hardware-signing-page__title')).toHaveTextContent(
-      defaultProps.title,
-    );
+    expect(
+      screen.getByTestId('qr-hardware-signing-page__title'),
+    ).toHaveTextContent(defaultProps.title);
     expect(screen.getByTestId('qr-signature-code-mock')).toBeInTheDocument();
     expect(screen.queryByTestId('qr-reader-mock')).not.toBeInTheDocument();
     expect(
@@ -74,7 +77,9 @@ describe('QrHardwareSigningPage', () => {
     });
 
     expect(screen.getByTestId('qr-reader-mock')).toBeInTheDocument();
-    expect(screen.queryByTestId('qr-signature-code-mock')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('qr-signature-code-mock'),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByTestId('qr-hardware-signing-page__continue-button'),
     ).not.toBeInTheDocument();
@@ -83,9 +88,15 @@ describe('QrHardwareSigningPage', () => {
   it('calls the expected handlers from footer and header actions', () => {
     renderQrHardwareSigningPage(defaultProps);
 
-    fireEvent.click(screen.getByTestId('qr-hardware-signing-page__back-button'));
-    fireEvent.click(screen.getByTestId('qr-hardware-signing-page__continue-button'));
-    fireEvent.click(screen.getByTestId('qr-hardware-signing-page__cancel-button'));
+    fireEvent.click(
+      screen.getByTestId('qr-hardware-signing-page__back-button'),
+    );
+    fireEvent.click(
+      screen.getByTestId('qr-hardware-signing-page__continue-button'),
+    );
+    fireEvent.click(
+      screen.getByTestId('qr-hardware-signing-page__cancel-button'),
+    );
 
     expect(defaultProps.onBack).toHaveBeenCalledTimes(1);
     expect(defaultProps.onContinueToScan).toHaveBeenCalledTimes(1);
