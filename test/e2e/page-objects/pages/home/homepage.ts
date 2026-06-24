@@ -605,6 +605,11 @@ class HomePage {
     await this.driver.waitForSelector(this.shieldEntryModal);
   }
 
+  async clickOnReceiveButton(): Promise<void> {
+    await this.driver.waitForSelector(this.receiveButton);
+    await this.driver.clickElement(this.receiveButton);
+  }
+
   async clickOnSendButton(): Promise<void> {
     await this.driver.waitForSelector(this.sendButton);
     await this.driver.clickElement(this.sendButton);
