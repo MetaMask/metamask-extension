@@ -1,5 +1,4 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { SWAPS_WRAPPED_TOKENS_ADDRESSES } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
@@ -23,7 +22,6 @@ import {
   getLocalTransactionFees,
   getLocalTransactionStatus,
   getNativeAssetSafe,
-  getTokenMetadataFromKnownToken,
   isNftStandard,
 } from './helpers';
 
@@ -123,15 +121,11 @@ export function mapLocalTransaction(
     };
   };
 
-  const mapApprovalToken = ({
-    amount,
-  }: {
-    amount?: string;
-  } = {}) => {
+  // EVM approvals mirror the API path, which never returns an approved amount
+  const mapApprovalToken = () => {
     const contractAddress =
       resolveApprovalTokenContractAddress(initialTransaction);
     return getContractToken({
-      amount,
       transaction: initialTransaction,
       direction: 'out',
       contractAddress,
@@ -358,16 +352,11 @@ export function mapLocalTransaction(
     case TransactionType.perpsDepositAndOrder:
     case TransactionType.perpsWithdraw: {
       const { metamaskPay } = initialTransaction;
-      const payChainId = metamaskPay?.chainId
-        ? toEvmCaipChainId(metamaskPay.chainId)
-        : undefined;
-
-      const token = payChainId
-        ? getTokenMetadataFromKnownToken(
-            metamaskPay?.tokenAddress,
-            'out',
-            payChainId,
-          )
+      const token = to
+        ? {
+            direction: 'out' as const,
+            assetId: toAssetId(to, chainId),
+          }
         : undefined;
 
       const fiat = metamaskPay?.targetFiat
@@ -383,7 +372,7 @@ export function mapLocalTransaction(
           initialTransaction.type === TransactionType.perpsWithdraw
             ? 'perpsWithdraw'
             : 'perpsAddFunds',
-        chainId: payChainId ?? chainId,
+        chainId,
         status,
         timestamp,
         hash,
@@ -428,18 +417,12 @@ export function mapLocalTransaction(
         hash,
         data: {
           from,
-          token: mapApprovalToken({ amount: approveAmount }),
+          token: mapApprovalToken(),
         },
       };
     }
 
-    case TransactionType.tokenMethodIncreaseAllowance: {
-      const increaseData = initialTransaction.txParams.data
-        ? parseApprovalTransactionData(
-            initialTransaction.txParams.data as `0x${string}`,
-          )
-        : undefined;
-      const increaseAmount = increaseData?.amountOrTokenId?.toFixed(0);
+    case TransactionType.tokenMethodIncreaseAllowance:
       return {
         type: 'increaseSpendingCap',
         chainId,
@@ -448,10 +431,9 @@ export function mapLocalTransaction(
         hash,
         data: {
           from,
-          token: mapApprovalToken({ amount: increaseAmount }),
+          token: mapApprovalToken(),
         },
       };
-    }
 
     case TransactionType.lendingDeposit:
       return {
@@ -462,11 +444,6 @@ export function mapLocalTransaction(
         hash,
         data: {
           from,
-          sourceToken: getContractToken({
-            transaction: initialTransaction,
-            direction: 'out',
-            contractAddress: initialTransaction.txParams.to,
-          }),
         },
       };
 
@@ -552,12 +529,6 @@ export function mapLocalTransaction(
           hash,
           data: {
             from,
-            sourceToken: getContractToken({
-              amount: BigInt(suppliedTokenBalanceChange.difference).toString(),
-              transaction: initialTransaction,
-              direction: 'out',
-              contractAddress: suppliedTokenBalanceChange.address,
-            }),
           },
         };
       }

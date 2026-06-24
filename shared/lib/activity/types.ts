@@ -23,6 +23,7 @@ export type ActivityKind =
   | 'convert'
   | 'nftBuy'
   | 'nftMint'
+  | 'nftSell'
   | 'smartAccountUpgrade'
   | 'lendingDeposit'
   | 'lendingWithdrawal'
@@ -159,6 +160,16 @@ export type ActivityListItem =
         from?: string;
         to?: string;
         token?: TokenAmount;
+        paymentToken?: TokenAmount;
+      }
+    >
+  | ActivityData<
+      'nftSell',
+      {
+        from?: string;
+        to?: string;
+        token?: TokenAmount;
+        paymentToken?: TokenAmount;
       }
     >
   | ActivityData<

@@ -64,7 +64,6 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { SECOND } from '../../shared/constants/time';
-import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
 import * as NetworkConstantsModule from '../../shared/constants/network';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
@@ -1125,95 +1124,7 @@ describe('MetaMaskController', () => {
         });
 
         // + 1 in `createNewVaultAndKeychain` (onboarding)
-        // + 1 in `submitPassword`
-        expect(accountsControllerSpy).toHaveBeenCalledTimes(2);
-      });
-    });
-
-    describe('#submitPasswordOrEncryptionKey', () => {
-      const password = 'a-fake-password';
-
-      it('should call resyncAccounts and alignWallets asynchronously when submitPasswordOrEncryptionKey is called', async () => {
-        const resyncAccountsSpy = jest.spyOn(
-          metamaskController.multichainAccountService,
-          'resyncAccounts',
-        );
-        const alignWalletsSpy = jest.spyOn(
-          metamaskController.multichainAccountService,
-          'alignWallets',
-        );
-
-        // Make them resolved right away for the test.
-        resyncAccountsSpy.mockResolvedValue();
-        alignWalletsSpy.mockResolvedValue();
-
-        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
-        await metamaskController.submitPasswordOrEncryptionKey({ password });
-
-        await waitForAllPromises();
-
-        expect(resyncAccountsSpy).toHaveBeenCalled();
-        expect(alignWalletsSpy).toHaveBeenCalled();
-      });
-    });
-
-    describe('setLocked', () => {
-      it('should lock KeyringController', async () => {
-        await metamaskController.createNewVaultAndKeychain('password');
-        jest.spyOn(metamaskController.keyringController, 'setLocked');
-
-        await metamaskController.setLocked();
-
-        expect(
-          metamaskController.keyringController.setLocked,
-        ).toHaveBeenCalled();
-        expect(
-          metamaskController.keyringController.state.isUnlocked,
-        ).toStrictEqual(false);
-      });
-
-      it('sets passkeyAutoUnlockSuppressed on lock and clears after suppression duration', async () => {
-        jest.useFakeTimers({ legacyFakeTimers: true });
-        try {
-          await metamaskController.createNewVaultAndKeychain('password');
-          await metamaskController.setLocked();
-          expect(
-            metamaskController.appStateController.state
-              .passkeyAutoUnlockSuppressed,
-          ).toStrictEqual(true);
-          jest.advanceTimersByTime(PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
-          expect(
-            metamaskController.appStateController.state
-              .passkeyAutoUnlockSuppressed,
-          ).toStrictEqual(false);
-        } finally {
-          jest.useRealTimers();
-        }
-      });
-
-      it('keeps passkeyAutoUnlockSuppressed true until suppression elapses after lock even if user unlocks sooner', async () => {
-        jest.useFakeTimers({ legacyFakeTimers: true });
-        try {
-          const password = 'password';
-          await metamaskController.createNewVaultAndKeychain(password);
-          await metamaskController.setLocked();
-          expect(
-            metamaskController.appStateController.state
-              .passkeyAutoUnlockSuppressed,
-          ).toStrictEqual(true);
-          await metamaskController.submitPasswordOrEncryptionKey({ password });
-          expect(
-            metamaskController.appStateController.state
-              .passkeyAutoUnlockSuppressed,
-          ).toStrictEqual(true);
-          jest.advanceTimersByTime(PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
-          expect(
-            metamaskController.appStateController.state
-              .passkeyAutoUnlockSuppressed,
-          ).toStrictEqual(false);
-        } finally {
-          jest.useRealTimers();
-        }
+        expect(accountsControllerSpy).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -1316,12 +1227,13 @@ describe('MetaMaskController', () => {
             'createToprfKeyAndBackupSeedPhrase',
           )
           .mockResolvedValueOnce();
-        const storeKeyringEncryptionKey = jest
+
+        const syncKeyringEncryptionKey = jest
           .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'storeKeyringEncryptionKey',
+            metamaskController.legacyBackgroundApiService,
+            'syncKeyringEncryptionKey',
           )
-          .mockResolvedValueOnce();
+          .mockResolvedValue();
 
         const primaryKeyring =
           await metamaskController.createNewVaultAndKeychain(password);
@@ -1332,13 +1244,8 @@ describe('MetaMaskController', () => {
           primaryKeyring.metadata.id,
         );
 
-        const keyringEncryptionKey =
-          await metamaskController.keyringController.exportEncryptionKey();
-
         expect(createToprfKeyAndBackupSeedPhraseSpy).toHaveBeenCalled();
-        expect(storeKeyringEncryptionKey).toHaveBeenCalledWith(
-          keyringEncryptionKey,
-        );
+        expect(syncKeyringEncryptionKey).toHaveBeenCalled();
       });
     });
 
@@ -4474,7 +4381,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('calls discoverAndCreateAccounts when importMnemonicToVault runs', async () => {
+      it('calls discoverAndCreateAccounts when importMnemonicToVault runs after onboarding completes', async () => {
         jest
           .spyOn(
             metamaskController.accountTreeController,
@@ -4488,6 +4395,10 @@ describe('MetaMaskController', () => {
 
         await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
 
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
           shouldCreateSocialBackup: false,
           shouldSelectAccount: false,
@@ -4497,6 +4408,31 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => setImmediate(resolve));
 
         expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
+      });
+
+      it('does not call discoverAndCreateAccounts before onboarding completes', async () => {
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorage',
+          )
+          .mockResolvedValue();
+        jest
+          .spyOn(metamaskController, 'discoverAndCreateAccounts')
+          .mockResolvedValue({});
+
+        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
+
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
+          shouldCreateSocialBackup: false,
+          shouldSelectAccount: false,
+        });
+
+        await waitForAllPromises();
+
+        expect(
+          metamaskController.discoverAndCreateAccounts,
+        ).not.toHaveBeenCalled();
       });
     });
 
@@ -4541,7 +4477,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('ensures initial network state networks contain failover RPCs', () => {
+      it('ensures default networks contain failover RPCs', () => {
         jest
           .spyOn(NetworkConstantsModule, 'getFailoverUrlsForInfuraNetwork')
           .mockReturnValue(['https://mock_rpc']);
@@ -4581,6 +4517,7 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.POLYGON,
           CHAIN_IDS.OPTIMISM,
           CHAIN_IDS.SEI,
+          CHAIN_IDS.MONAD,
         ];
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
@@ -4588,8 +4525,6 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.BSC,
           '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
-          '0x539', // Localhost
-          '0x8f', // Monad Mainnet
         ];
 
         // Assert - ensure networks with failovers have failovers, and other networks do not have failovers
@@ -4608,23 +4543,26 @@ describe('MetaMaskController', () => {
           },
         );
 
+        const getFailoverRpcUrls = (chainId) => {
+          const { networkClientId } =
+            networkState.networkConfigurationsByChainId[chainId]
+              .rpcEndpoints[0];
+          return metamaskController.networkController.getNetworkClientById(
+            networkClientId,
+          ).configuration.failoverRpcUrls;
+        };
+
         // Assert - networks have failovers
         networksWithFailoverUrls.forEach((chainId) => {
           if (chainId === CHAIN_IDS.SEI) {
             return;
           }
-          expect(
-            networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
-              .failoverUrls,
-          ).toHaveLength(1);
+          expect(getFailoverRpcUrls(chainId)).toHaveLength(1);
         });
 
         // Assert - networks without failovers
         networksWithoutFailoverUrls.forEach((chainId) => {
-          expect(
-            networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
-              .failoverUrls,
-          ).toHaveLength(0);
+          expect(getFailoverRpcUrls(chainId)).toHaveLength(0);
         });
       });
 
