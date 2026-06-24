@@ -71,7 +71,11 @@ const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
           />
         </form>
       </Box>
-      <Button className="w-full mt-auto" onClick={onSubmit}>
+      <Button
+        className="w-full mt-auto"
+        onClick={onSubmit}
+        isDisabled={isIncorrectPasswordError || !password}
+      >
         {t('continue')}
       </Button>
     </Box>

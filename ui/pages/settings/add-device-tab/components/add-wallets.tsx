@@ -78,7 +78,11 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
         />
       </ScrollContainer>
       <Box className="w-full mt-auto" paddingHorizontal={4}>
-        <Button className="w-full" onClick={onContinue}>
+        <Button
+          className="w-full"
+          onClick={onContinue}
+          isDisabled={selectedAccountGroups.length === 0}
+        >
           {t('continue')}
         </Button>
       </Box>
