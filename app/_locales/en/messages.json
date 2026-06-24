@@ -6739,7 +6739,7 @@
     "message": "Available to subtract"
   },
   "perpsAvailableToTrade": {
-    "message": "Available to trade",
+    "message": "Available",
     "description": "Label for the available balance that can be used for trading"
   },
   "perpsBalance": {

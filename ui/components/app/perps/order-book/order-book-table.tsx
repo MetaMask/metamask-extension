@@ -44,61 +44,42 @@ export const OrderBookTable: React.FC<OrderBookTableProps> = ({
   symbol,
   isLoading = false,
 }) => {
-  const renderBidRow = useCallback(
-    (level: OrderBookLevel, index: number) => {
+  const renderRow = useCallback(
+    (
+      level: OrderBookLevel,
+      index: number,
+      side: 'bid' | 'ask',
+    ) => {
       const depthWidth = orderBook
         ? getDepthBarWidth(level, orderBook.maxTotal)
         : 0;
+      const isBid = side === 'bid';
+      const depthPosition = isBid ? 'left-0' : 'right-0';
+      const depthColor = isBid ? 'bg-success-default' : 'bg-error-default';
+      const priceColor = isBid
+        ? TextColor.SuccessDefault
+        : TextColor.ErrorDefault;
 
       return (
         <div
-          key={`bid-${level.price}`}
+          key={`${side}-${level.price}`}
           className="relative flex flex-row py-0.5"
-          data-testid={`perps-order-book-bid-row-${index}`}
+          data-testid={`perps-order-book-${side}-row-${index}`}
         >
           <div
-            className="absolute inset-y-0 right-0 bg-success-default opacity-15"
+            className={`absolute inset-y-0 ${depthPosition} ${depthColor} opacity-15`}
             style={{ width: `${depthWidth}%` }}
           />
           <div className="z-[1] flex-1">
-            <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-              {formatTotal(level)}
-            </Text>
-          </div>
-          <div className="z-[1] flex-1 text-right pr-2">
-            <Text variant={TextVariant.BodyXs} color={TextColor.SuccessDefault}>
-              {formatPrice(level.price)}
-            </Text>
-          </div>
-        </div>
-      );
-    },
-    [orderBook],
-  );
-
-  const renderAskRow = useCallback(
-    (level: OrderBookLevel, index: number) => {
-      const depthWidth = orderBook
-        ? getDepthBarWidth(level, orderBook.maxTotal)
-        : 0;
-
-      return (
-        <div
-          key={`ask-${level.price}`}
-          className="relative flex flex-row py-0.5"
-          data-testid={`perps-order-book-ask-row-${index}`}
-        >
-          <div
-            className="absolute inset-y-0 left-0 bg-error-default opacity-15"
-            style={{ width: `${depthWidth}%` }}
-          />
-          <div className="z-[1] flex-1 pl-2">
-            <Text variant={TextVariant.BodyXs} color={TextColor.ErrorDefault}>
+            <Text variant={TextVariant.BodyXs} color={priceColor}>
               {formatPrice(level.price)}
             </Text>
           </div>
           <div className="z-[1] flex-1 text-right">
-            <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
               {formatTotal(level)}
             </Text>
           </div>
@@ -107,20 +88,20 @@ export const OrderBookTable: React.FC<OrderBookTableProps> = ({
     },
     [orderBook],
   );
-
-  const bidRows = useMemo(() => {
-    if (!orderBook?.bids) {
-      return null;
-    }
-    return orderBook.bids.map((level, index) => renderBidRow(level, index));
-  }, [orderBook?.bids, renderBidRow]);
 
   const askRows = useMemo(() => {
     if (!orderBook?.asks) {
       return null;
     }
-    return orderBook.asks.map((level, index) => renderAskRow(level, index));
-  }, [orderBook?.asks, renderAskRow]);
+    return [...orderBook.asks].reverse().map((level, index) => renderRow(level, index, 'ask'));
+  }, [orderBook?.asks, renderRow]);
+
+  const bidRows = useMemo(() => {
+    if (!orderBook?.bids) {
+      return null;
+    }
+    return orderBook.bids.map((level, index) => renderRow(level, index, 'bid'));
+  }, [orderBook?.bids, renderRow]);
 
   if (!orderBook) {
     return (
@@ -143,17 +124,7 @@ export const OrderBookTable: React.FC<OrderBookTableProps> = ({
       <div className="flex flex-row pb-1 border-b border-border-muted">
         <div className="flex-1">
           <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            Total (USD)
-          </Text>
-        </div>
-        <div className="flex-1 text-right pr-2">
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            Bid
-          </Text>
-        </div>
-        <div className="flex-1 pl-2">
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            Ask
+            Price
           </Text>
         </div>
         <div className="flex-1 text-right">
@@ -163,11 +134,14 @@ export const OrderBookTable: React.FC<OrderBookTableProps> = ({
         </div>
       </div>
 
-      {/* Split bid/ask view */}
-      <div className="flex flex-row">
-        <div className="flex-1">{bidRows}</div>
-        <div className="flex-1">{askRows}</div>
-      </div>
+      {/* Asks (top, reversed so lowest ask is near the spread) */}
+      <div>{askRows}</div>
+
+      {/* Spread divider */}
+      <div className="border-b border-border-muted my-1" />
+
+      {/* Bids (bottom, highest bid first) */}
+      <div>{bidRows}</div>
     </div>
   );
 };

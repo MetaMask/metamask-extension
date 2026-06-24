@@ -92,10 +92,8 @@ describe('OrderBookTable', () => {
   it('renders column headers', () => {
     render(<OrderBookTable orderBook={sampleOrderBook} symbol="BTC" />);
 
-    const totalHeaders = screen.getAllByText('Total (USD)');
-    expect(totalHeaders).toHaveLength(2);
-    expect(screen.getByText('Bid')).toBeInTheDocument();
-    expect(screen.getByText('Ask')).toBeInTheDocument();
+    expect(screen.getByText('Price')).toBeInTheDocument();
+    expect(screen.getByText('Total (USD)')).toBeInTheDocument();
   });
 });
 
