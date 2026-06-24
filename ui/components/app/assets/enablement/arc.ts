@@ -1,9 +1,6 @@
 import { BridgeAsset } from '@metamask/bridge-controller';
-import { hexToNumber, CaipAssetType } from '@metamask/utils';
-import {
-  ARC_USDC_TOKEN_ADDRESS,
-  CHAIN_IDS,
-} from '../../../../../shared/constants/network';
+import { hexToNumber } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 /**
  * Arc Chain Augmentation Module
@@ -11,16 +8,15 @@ import {
  *
  * Listed Augmentations:
  * - Arc does not show the ERC20 token in the UI, instead the ERC20 token is synced with its native token.
- * - E.g. USDC ERC20: 0x0000000000000000000000000000000000000000
- * - E.g. USDC Native: 0x3600000000000000000000000000000000000000
- *
- * - Exception to showing ERC20 token in the UI: Swaps/Bridge flow - as the router has been validated for this token only.
+ * - E.g. USDC ERC20: 0x3600000000000000000000000000000000000000
+ * - E.g. USDC Native: 0x0000000000000000000000000000000000000000
  */
 export const ARC_HEX_CHAIN_ID = '0x13b2';
 export const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
-const ARC_NATIVE_ASSET_ID =
-  'eip155:5042/erc20:0x0000000000000000000000000000000000000000';
-const ARC_NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
+const ARC_ERC20_USDC_ASSET_ID =
+  'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
+const ARC_ERC20_USDC_ADDRESS = '0x3600000000000000000000000000000000000000';
+const ARC_NATIVE_USDC_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const ARC_ERC20_USDC_BRIDGE_ASSET: BridgeAsset = {
   symbol: 'USDC',
@@ -31,7 +27,7 @@ export const ARC_ERC20_USDC_BRIDGE_ASSET: BridgeAsset = {
   decimals: 6,
 };
 
-function isNativeArcAsset(asset: {
+function isERC20USDCArcAsset(asset: {
   address?: string;
   assetId?: string;
   chainId?: string;
@@ -43,14 +39,14 @@ function isNativeArcAsset(asset: {
   if (
     isArcChainId &&
     'address' in asset &&
-    asset.address?.toLowerCase() === ARC_NATIVE_ADDRESS
+    asset.address?.toLowerCase() === ARC_ERC20_USDC_ADDRESS
   ) {
     return true;
   }
   if (
     isArcChainId &&
     'assetId' in asset &&
-    asset.assetId?.toLowerCase() === ARC_NATIVE_ASSET_ID
+    asset.assetId?.toLowerCase() === ARC_ERC20_USDC_ASSET_ID
   ) {
     return true;
   }
@@ -67,7 +63,7 @@ function isNativeArcAsset(asset: {
  * @param item.isNative - Whether the asset is marked as native.
  * @returns Whether the asset is the native Arc USDC bridge token.
  */
-export function isArcUsdcForBridge(
+export function isArcERC20USDC(
   chainId: `0x${string}`,
   address: string,
   item: {
@@ -76,7 +72,7 @@ export function isArcUsdcForBridge(
 ) {
   return (
     chainId === CHAIN_IDS.ARC &&
-    address.toLowerCase() === ARC_USDC_TOKEN_ADDRESS.toLowerCase() &&
+    address.toLowerCase() === ARC_ERC20_USDC_ADDRESS.toLowerCase() &&
     item.isNative
   );
 }
@@ -87,18 +83,8 @@ export function isArcUsdcForBridge(
  * @param assets
  * @returns assets without the Arc Native Asset.
  */
-export function filterOutArcNativeAsset<
+export function filterOutArcERC20USDAsset<
   TAsset extends { chainId?: string; isNative?: boolean },
 >(assets: TAsset[]): TAsset[] {
-  return assets.filter((asset) => !isNativeArcAsset(asset));
-}
-
-/**
- * Checks if a CAIP assetId corresponds to the ERC20 version of USDC on Arc.
- * Which is eip155:5042/erc20:0x3600000000000000000000000000000000000000
- * @param assetId
- * @returns true if input assetId corresponds to the ERC20 version of USDC on Arc.
- */
-export function isArcTokenUSDC(assetId: CaipAssetType): boolean {
-  return assetId === ARC_ERC20_USDC_BRIDGE_ASSET.assetId;
+  return assets.filter((asset) => !isERC20USDCArcAsset(asset));
 }
