@@ -122,6 +122,12 @@ class TokensTab extends HomePage {
   private readonly tokenManagementAddCustomTokenButton =
     '[data-testid="token-management-add-custom-token-button"]';
 
+  private readonly tokenManagementBackButton =
+    '[data-testid="token-management-header-back-button"]';
+
+  private readonly tokenManagementCustomTokenSuccessToast =
+    '[data-testid="token-management-custom-token-success-toast"]';
+
   private readonly tokenManagementPage =
     '[data-testid="token-management-page"]';
 
@@ -195,8 +201,13 @@ class TokensTab extends HomePage {
    */
   async dismissTokenImportedMessage(): Promise<void> {
     console.log('Dismissing token imported success message');
-    await this.driver.clickElement(this.tokenImportedMessageCloseButton);
+    await this.driver.clickElementSafe(this.tokenImportedMessageCloseButton);
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
+  }
+
+  private async returnFromTokenManagementToHome(): Promise<void> {
+    await this.driver.clickElement(this.tokenManagementBackButton);
+    await this.driver.waitForSelector(this.multichainTokenListButton);
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
@@ -316,7 +327,10 @@ class TokensTab extends HomePage {
       20000,
     );
 
-    await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
+    await this.driver.waitForSelector(
+      this.tokenManagementCustomTokenSuccessToast,
+    );
+    await this.returnFromTokenManagementToHome();
   }
 
   async importTokenBySearch({
@@ -347,6 +361,7 @@ class TokensTab extends HomePage {
       state: 'enabled',
       waitAtLeastGuard: 1000,
     });
+    await this.returnFromTokenManagementToHome();
   }
 
   async importMultipleTokensBySearch(tokenNames: string[]) {
@@ -370,6 +385,7 @@ class TokensTab extends HomePage {
         waitAtLeastGuard: 1000,
       });
     }
+    await this.returnFromTokenManagementToHome();
   }
 
   async openNetworksFilter(): Promise<void> {
