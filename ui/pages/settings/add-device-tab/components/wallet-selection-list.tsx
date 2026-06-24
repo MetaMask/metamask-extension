@@ -207,9 +207,7 @@ export const WalletSelectionList = ({
                   {item.walletName}
                 </Text>
                 <Icon
-                  name={
-                    item.isExpanded ? IconName.ArrowUp : IconName.ArrowDown
-                  }
+                  name={item.isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
                   size={IconSize.Md}
                   color={IconColor.IconAlternative}
                 />
