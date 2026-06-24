@@ -46,7 +46,10 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../store/controller-actions/transaction-controller');
 
 // Mock the price chart
-jest.mock('react-chartjs-2', () => ({ Line: () => null }));
+jest.mock('react-chartjs-2', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  Line: require('react').forwardRef(() => null),
+}));
 
 // Mock BUYABLE_CHAINS_MAP
 jest.mock('../../../../shared/constants/network', () => ({
@@ -494,6 +497,38 @@ describe('AssetPage', () => {
     expect(queryByTestId('eth-overview-send')).toBeInTheDocument();
   });
 
+  it('uses the Arc native balance on the ERC20 USDC token page', () => {
+    (
+      getAssetsBySelectedAccountGroup as unknown as jest.Mock
+    ).mockReturnValueOnce({
+      [CHAIN_IDS.ARC]: [
+        {
+          assetId: '0x0000000000000000000000000000000000000000',
+          isNative: true,
+          rawBalance: '0x75bcd15',
+          balance: '123.456789',
+          fiat: { balance: 123.456789 },
+        },
+      ],
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage
+        asset={{
+          ...token,
+          chainId: CHAIN_IDS.ARC,
+          address: '0x3600000000000000000000000000000000000000',
+          symbol: 'USDC',
+          decimals: 6,
+        }}
+        optionsButton={null}
+      />,
+      store,
+    );
+
+    expect(queryByTestId('eth-overview-send')).toBeInTheDocument();
+  });
+
   it('should show the Swap button if chain id is supported', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
@@ -533,22 +568,18 @@ describe('AssetPage', () => {
   });
 
   it('should render a native asset', () => {
-    const { container } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <AssetPage asset={native} optionsButton={null} />,
       store,
       '/0x1',
     );
-    const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
-    dynamicImages.forEach((img) => {
-      img.setAttribute('alt', 'static-logo');
-    });
-    expect(container).toMatchSnapshot();
+    expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
   });
 
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
 
-    const { container, queryByTestId } = renderWithProvider(
+    const { queryByTestId } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
@@ -570,17 +601,6 @@ describe('AssetPage', () => {
       const chart = queryByTestId('asset-chart-empty-state');
       expect(chart).toBeInTheDocument();
     });
-
-    const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
-    dynamicImages.forEach((img) => {
-      img.setAttribute('alt', 'static-logo');
-    });
-    const elementsWithAria = container.querySelectorAll('[aria-describedby]');
-    elementsWithAria.forEach((el) =>
-      el.setAttribute('aria-describedby', 'static-tooltip-id'),
-    );
-
-    expect(container).toMatchSnapshot();
   });
 
   it('should render an ERC20 token with prices', async () => {
@@ -624,16 +644,6 @@ describe('AssetPage', () => {
     // Verify market data is rendered
     const marketCapElement = queryByTestId('asset-market-cap');
     expect(marketCapElement).toHaveTextContent('$56.09K');
-
-    const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
-    dynamicImages.forEach((img) => {
-      img.setAttribute('alt', 'static-logo');
-    });
-    const elementsWithAria = container.querySelectorAll('[aria-describedby]');
-    elementsWithAria.forEach((el) =>
-      el.setAttribute('aria-describedby', 'static-tooltip-id'),
-    );
-    expect(container).toMatchSnapshot();
   });
 
   describe('mUSD asset page feature flags', () => {

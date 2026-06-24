@@ -19,6 +19,7 @@
 import type { Json } from '@metamask/utils';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
 
 // ============================================================================
 // Types
@@ -66,7 +67,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-06-09
+ * Production defaults last synced: 2026-06-23
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
@@ -193,7 +194,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'additionalNetworksBlacklist',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: ['0x1079'],
+    productionDefault: ['0x1079', '0x13b2'],
     status: FeatureFlagStatus.Active,
   },
 
@@ -255,10 +256,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: {
       versions: {
         '13.33.0': {
-          enabled: true,
           featureVersion: '1',
           minimumVersion: '13.33.0',
           deprecatedControllers: [],
+          enabled: true,
         },
         '13.15.0': {
           deprecatedControllers: [],
@@ -284,6 +285,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     },
     status: FeatureFlagStatus.Active,
   },
+  batchSell: {
+    name: 'batchSell',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      versions: {},
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   bridgeConfig: {
     name: 'bridgeConfig',
     type: FeatureFlagType.Remote,
@@ -2103,6 +2114,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  coreExtensionUxCeux1096AbtestReferralUi: {
+    name: 'coreExtensionUxCeux1096AbtestReferralUi',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
+  },
+
   extensionUpdatePromptMinimumVersion: {
     name: 'extensionUpdatePromptMinimumVersion',
     type: FeatureFlagType.Remote,
@@ -2129,17 +2148,20 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      enabled: true,
       minimumVersion: '0.0.0',
+      enabled: true,
     },
     status: FeatureFlagStatus.Active,
   },
 
-  extensionUxDefiReferral: {
-    name: 'extensionUxDefiReferral',
+  [ACTIVE_TAB_DOMAIN_METRICS_FLAG]: {
+    name: ACTIVE_TAB_DOMAIN_METRICS_FLAG,
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: true,
+    productionDefault: {
+      value: ['x.com', 'twitter.com'],
+      minimumVersion: '0.0.0',
+    },
     status: FeatureFlagStatus.Active,
   },
 
@@ -2148,18 +2170,11 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      asterdex: true,
       gmx: true,
       hyperliquid: true,
+      variational: true,
+      asterdex: true,
     },
-    status: FeatureFlagStatus.Active,
-  },
-
-  coreExtensionUxCeux1024AbtestReferralUi: {
-    name: 'coreExtensionUxCeux1024AbtestReferralUi',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: [],
     status: FeatureFlagStatus.Active,
   },
 
@@ -2177,7 +2192,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: {
       enabled: false,
-      minimumVersion: '13.33.0',
+      minimumVersion: '13.36.0',
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2375,6 +2390,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: {
       enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2480,6 +2496,21 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   },
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_pay_extended: {
+    name: 'confirmations_pay_extended',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      payStrategies: {
+        relay: {
+          gaslessEnabled: true,
+        },
+      },
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_post_quote: {
     name: 'confirmations_pay_post_quote',
     type: FeatureFlagType.Remote,
@@ -2487,10 +2518,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: {
       versions: {
         '13.33.0': {
-          default: {
-            enabled: false,
-            tokens: {},
-          },
           overrides: {
             perpsWithdraw: {
               tokens: {
@@ -2527,6 +2554,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               },
               enabled: false,
             },
+          },
+          default: {
+            enabled: false,
+            tokens: {},
           },
         },
       },
@@ -2694,37 +2725,12 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     ],
     status: FeatureFlagStatus.Active,
   },
-  batchSell: {
-    name: 'batchSell',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: {
-      versions: {},
-    },
-    status: FeatureFlagStatus.Active,
-  },
-
   // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_enforced_simulations: {
     name: 'confirmations_enforced_simulations',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {},
-    status: FeatureFlagStatus.Active,
-  },
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  confirmations_pay_extended: {
-    name: 'confirmations_pay_extended',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: {
-      payStrategies: {
-        relay: {
-          gaslessEnabled: true,
-        },
-      },
-    },
     status: FeatureFlagStatus.Active,
   },
 
@@ -2762,6 +2768,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  ledgerDmk: {
+    name: 'ledgerDmk',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
     status: FeatureFlagStatus.Active,
   },
 
@@ -2829,12 +2847,12 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         },
       },
       {
-        name: 'sentinel off',
         scope: {
           type: 'threshold',
           value: 0,
         },
         value: false,
+        name: 'sentinel off',
       },
     ],
     status: FeatureFlagStatus.Active,
@@ -2846,33 +2864,63 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: [
       {
+        name: 'sentinel on',
         scope: {
           type: 'threshold',
           value: 1,
         },
         value: true,
-        name: 'sentinel on',
       },
       {
+        value: false,
         name: 'sentinel off',
         scope: {
           type: 'threshold',
           value: 0,
         },
-        value: false,
       },
     ],
     status: FeatureFlagStatus.Active,
   },
+  corePlatformRpcFailoverForceEnabled: {
+    name: 'corePlatformRpcFailoverForceEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
 
-  ledgerDmk: {
-    name: 'ledgerDmk',
+  coreExtensionUxCeux1024AbtestReferralUi: {
+    name: 'coreExtensionUxCeux1024AbtestReferralUi',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
+  },
+
+  perpsTAT3382AbtestTabBadge: {
+    name: 'perpsTAT3382AbtestTabBadge',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      featureVersion: null,
-      minimumVersion: null,
-      enabled: false,
+      versions: {
+        '13.37.0': [
+          {
+            name: 'control',
+            scope: {
+              type: 'threshold',
+              value: 0.5,
+            },
+          },
+          {
+            scope: {
+              type: 'threshold',
+              value: 1,
+            },
+            name: 'treatment',
+          },
+        ],
+      },
     },
     status: FeatureFlagStatus.Active,
   },
