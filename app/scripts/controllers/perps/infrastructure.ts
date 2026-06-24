@@ -55,6 +55,7 @@ function getTerminalApiUrl(): string {
     return TERMINAL_API_URLS.dev;
   }
 
+  // Beta builds always target UAT regardless of METAMASK_ENVIRONMENT.
   if (isBeta()) {
     return TERMINAL_API_URLS.uat;
   }
