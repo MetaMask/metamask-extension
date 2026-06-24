@@ -45,7 +45,8 @@ export function useNetworkFilterButtonLabel(): string {
         : chainId;
       return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
     }
-
+    // > 1 network selected, show whether that means every visible network or
+    // only the default-network set.
     if (totalEnabledNetworkCount > 1) {
       return hasOnlyDefaultNetworks
         ? t('allNetworks')
