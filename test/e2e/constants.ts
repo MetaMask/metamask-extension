@@ -274,6 +274,22 @@ export const MOCK_ANALYTICS_ID =
 /** @deprecated Use `MOCK_ANALYTICS_ID` instead. */
 export const MOCK_META_METRICS_ID = MOCK_ANALYTICS_ID;
 
+/** Profile ID assigned to the first SRP in E2E identity auth mocks. */
+export const MOCK_PROFILE_ID = 'MOCK_SRP_IDENTIFIER_1';
+
+/** Canonical profile ID assigned to the first SRP in E2E identity auth mocks. */
+export const MOCK_CANONICAL_PROFILE_ID = 'MOCK_SRP_IDENTIFIER_1';
+
+/** Profile identity properties injected into linkable MetaMetrics events in E2E. */
+export const MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  profile_id: MOCK_PROFILE_ID,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  canonical_profile_id: MOCK_CANONICAL_PROFILE_ID,
+} as const;
+
 /* Mock remote feature flags response */
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,

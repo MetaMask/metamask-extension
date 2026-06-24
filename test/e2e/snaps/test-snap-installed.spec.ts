@@ -14,6 +14,7 @@ import { DAPP_PATH } from '../constants';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
+const { MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES } = require('../constants');
 
 type TestSuiteArguments = {
   driver: Driver;
@@ -102,6 +103,7 @@ describe('Test Snap installed', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'background',
+          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
 
         // Click to connect to errors snap and validate the install snaps result

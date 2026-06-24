@@ -5,6 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_FIXTURE_ACCOUNT,
   MOCK_ANALYTICS_ID,
+  MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
   WINDOW_TITLES,
 } from '../../constants';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
@@ -87,6 +88,7 @@ const expectedEventPropertiesBase = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   top_level_origin: null,
+  ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
 } as const;
 
 describe('Signature Approved Event', function () {
