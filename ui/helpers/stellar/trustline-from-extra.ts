@@ -27,7 +27,7 @@ function isStellarTrustlineInactiveFromExtra(
 }
 
 function isStellarChainId(chainId: CaipChainId | string): boolean {
-  return chainId === XlmScope.Pubnet || chainId === XlmScope.Testnet;
+  return chainId === XlmScope.Pubnet;
 }
 
 function isStellarClassicAssetCaip19(assetId: CaipAssetType): boolean {

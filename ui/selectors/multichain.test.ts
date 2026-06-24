@@ -28,7 +28,6 @@ import {
   MOCK_ACCOUNT_TRON_SHASTA,
   MOCK_ACCOUNT_SOLANA_MAINNET,
   MOCK_ACCOUNT_STELLAR_PUBNET,
-  MOCK_ACCOUNT_STELLAR_TESTNET,
   MOCK_ACCOUNT_ID_BY_ADDRESS,
 } from '../../test/data/mock-accounts';
 import {
@@ -164,12 +163,6 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
             unit: 'XLM',
           },
         },
-        [MOCK_ACCOUNT_STELLAR_TESTNET.id]: {
-          [MultichainNativeAssets.STELLAR_TESTNET]: {
-            amount: '10.0000000',
-            unit: 'tXLM',
-          },
-        },
       },
       fiatCurrency: 'usd',
       cryptocurrencies: [Cryptocurrency.Btc],
@@ -248,7 +241,6 @@ function getStellarState(
         accounts: {
           ...MOCK_ACCOUNTS,
           [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
-          [MOCK_ACCOUNT_STELLAR_TESTNET.id]: MOCK_ACCOUNT_STELLAR_TESTNET,
         },
       },
       selectedMultichainNetworkChainId: selectedChainId,
@@ -791,14 +783,6 @@ describe('Multichain Selectors', () => {
       const state = getStellarState(MOCK_ACCOUNT_STELLAR_PUBNET, XlmScope.Pubnet);
       expect(getMultichainIsTestnet(state)).toBe(false);
     });
-
-    it('returns true for Stellar testnet account', () => {
-      const state = getStellarState(
-        MOCK_ACCOUNT_STELLAR_TESTNET,
-        XlmScope.Testnet,
-      );
-      expect(getMultichainIsTestnet(state)).toBe(true);
-    });
   });
 
   describe('getMultichainSelectedAccountCachedBalance', () => {
@@ -937,12 +921,6 @@ describe('Multichain Selectors', () => {
         account: MOCK_ACCOUNT_STELLAR_PUBNET,
         asset: MultichainNativeAssets.STELLAR,
         chainId: XlmScope.Pubnet,
-      },
-      {
-        network: 'Stellar testnet',
-        account: MOCK_ACCOUNT_STELLAR_TESTNET,
-        asset: MultichainNativeAssets.STELLAR_TESTNET,
-        chainId: XlmScope.Testnet,
       },
     ] as const)(
       'returns cached balance if account is Stellar: $network',

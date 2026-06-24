@@ -74,9 +74,6 @@ export enum MultichainNetworks {
   TRON_SHASTA = TrxScope.Shasta,
 
   STELLAR = XlmScope.Pubnet,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  STELLAR_TESTNET = XlmScope.Testnet,
 }
 
 // TODO: This data should be provided by the snap
@@ -96,7 +93,6 @@ export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
   [TrxScope.Nile]: 'Tron',
   [TrxScope.Shasta]: 'Tron',
   [XlmScope.Pubnet]: 'Stellar',
-  [XlmScope.Testnet]: 'Stellar',
 } as const;
 
 export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
@@ -120,7 +116,6 @@ export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
   [MultichainNetworks.TRON_NILE]: 'Tron Nile Testnet',
   [MultichainNetworks.TRON_SHASTA]: 'Tron Shasta Testnet',
   [MultichainNetworks.STELLAR]: 'Stellar',
-  [MultichainNetworks.STELLAR_TESTNET]: 'Stellar Testnet',
 } as const;
 
 // TODO: This data should be provided by the snap
@@ -218,12 +213,6 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
     address: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/account/{address}`,
     transaction: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/tx/{txId}`,
   },
-  [MultichainNetworks.STELLAR_TESTNET]: {
-    name: STELLAR_BLOCK_EXPLORER_NAME,
-    url: STELLAR_BLOCK_EXPLORER_URL,
-    address: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/testnet/account/{address}`,
-    transaction: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/testnet/tx/{txId}`,
-  },
 } as const;
 
 export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
@@ -237,7 +226,6 @@ export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.TRON_NILE]: TRON_NILE_TOKEN_IMAGE_URL,
   [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_TOKEN_IMAGE_URL,
   [MultichainNetworks.STELLAR]: STELLAR_TOKEN_IMAGE_URL,
-  [MultichainNetworks.STELLAR_TESTNET]: STELLAR_TOKEN_IMAGE_URL,
 } as const;
 
 /**
@@ -471,27 +459,6 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
       ],
     isAddressCompatible: isStellarAddress,
   },
-  [MultichainNetworks.STELLAR_TESTNET]: {
-    chainId: MultichainNetworks.STELLAR_TESTNET,
-    rpcUrl: '', // not used
-    ticker: 'XLM',
-    nickname: 'Stellar (testnet)',
-    id: 'stellar-testnet',
-    type: 'rpc',
-    decimals: 7,
-    rpcPrefs: {
-      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.STELLAR_TESTNET],
-      blockExplorerUrl:
-        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
-          MultichainNetworks.STELLAR_TESTNET
-        ].url,
-    },
-    blockExplorerFormatUrls:
-      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
-        MultichainNetworks.STELLAR_TESTNET
-      ],
-    isAddressCompatible: isStellarAddress,
-  },
 };
 
 export const SOLANA_TEST_CHAINS: CaipChainId[] = [
@@ -515,7 +482,6 @@ export const BTC_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
 
 export const STELLAR_CHAINS: CaipChainId[] = [
   MultichainNetworks.STELLAR,
-  MultichainNetworks.STELLAR_TESTNET,
 ];
 
 type NonEvmAccountChangedConfig = {
