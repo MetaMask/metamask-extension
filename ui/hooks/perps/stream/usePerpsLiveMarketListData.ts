@@ -82,6 +82,7 @@ export function usePerpsLiveMarketListData(
           : market.price,
         change24hPercent:
           liveUpdate.percentChange24h ?? market.change24hPercent,
+        isTradable: liveUpdate.isTradable ?? market.isTradable,
       };
     });
   }, [markets, prices]);

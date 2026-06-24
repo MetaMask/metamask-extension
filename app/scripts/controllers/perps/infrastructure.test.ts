@@ -162,6 +162,24 @@ describe('createPerpsInfrastructure', () => {
         'https://terminal.uat-api.cx.metamask.io',
       );
     });
+
+    it('returns uat URL for flask build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'flask';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io',
+      );
+    });
+
+    it('returns uat URL for experimental build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'experimental';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io',
+      );
+    });
   });
 
   describe('metrics', () => {

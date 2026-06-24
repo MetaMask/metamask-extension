@@ -37,6 +37,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
+import { isBeta } from '../../../../shared/lib/build-types';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
 import { isBenignDisconnectError } from './perps-error-utils';
 
@@ -54,8 +55,7 @@ function getTerminalApiUrl(): string {
     return TERMINAL_API_URLS.dev;
   }
 
-  const buildType = process.env.METAMASK_BUILD_TYPE;
-  if (buildType === 'beta') {
+  if (isBeta()) {
     return TERMINAL_API_URLS.uat;
   }
 

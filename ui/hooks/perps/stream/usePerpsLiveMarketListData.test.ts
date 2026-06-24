@@ -101,6 +101,7 @@ describe('usePerpsLiveMarketListData', () => {
       // Formatted via formatPerpsFiatUniversal: $10k-$100k range → 0 decimals
       price: '$78,338',
       change24hPercent: '+9.9%',
+      isTradable: true,
     });
   });
 

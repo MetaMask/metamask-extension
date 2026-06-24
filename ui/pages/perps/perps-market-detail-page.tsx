@@ -424,7 +424,7 @@ const PerpsMarketDetailPage = () => {
           timestamp: ts ?? Date.now(),
           percentChange24h: update.percentChange24h,
           markPrice: mark,
-          isTradable: (update as { isTradable?: boolean }).isTradable ?? true,
+          isTradable: update.isTradable,
         });
       }
     });
