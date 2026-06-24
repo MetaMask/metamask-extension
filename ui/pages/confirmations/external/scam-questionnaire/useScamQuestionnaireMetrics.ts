@@ -4,7 +4,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsContext,
+  type UIMetricsEventPayload,
+} from '../../../../contexts/metametrics';
 import {
   Answers,
   QuestionId,
@@ -18,7 +21,7 @@ export function useScamQuestionnaireMetrics() {
   return useMemo(() => {
     const fire = (
       event: MetaMetricsEventName,
-      properties: Record<string, unknown> = {},
+      properties: UIMetricsEventPayload['properties'] = {},
     ) => {
       trackEvent({
         category: MetaMetricsEventCategory.Confirmations,
