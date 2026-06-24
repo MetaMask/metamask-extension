@@ -45,22 +45,18 @@ describe('Token persistence on custom network', function () {
 
         // import TST token and verify it exists
         await tokensTab.importCustomTokenByChain('0x539', tokenAddress);
-        await tokensTab.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('10'),
-          { amountTimeout: 20000 },
-        );
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('10'), {
+          amountTimeout: 20000,
+        });
 
         // reload the extension — restarts the service worker and restores from storage
         await driver.refresh();
 
         // verify token still exists after reload
         await homePage.checkPageIsLoaded();
-        await tokensTab.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('10'),
-          { amountTimeout: 20000 },
-        );
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('10'), {
+          amountTimeout: 20000,
+        });
       },
     );
   });
