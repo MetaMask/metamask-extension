@@ -4,6 +4,7 @@ import {
   CurrencyRateMessenger,
 } from '@metamask/assets-controllers';
 import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { CurrencyRateControllerInitMessenger } from './messengers';
 import { MessengerClientInitFunction } from './types';
 
@@ -31,6 +32,12 @@ export const CurrencyRateControllerInit: MessengerClientInitFunction<
       initMessenger.call('PreferencesController:getState').useExternalServices,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
     isDeprecated: () => {
+      // Only deprecate when AssetsController is actually included in this build
+      // and can act as the replacement. When the build flag is off, AssetsController
+      // is never initialized, so CurrencyRateController must remain active.
+      if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+        return false;
+      }
       const { remoteFeatureFlags } = initMessenger.call(
         'RemoteFeatureFlagController:getState',
       );

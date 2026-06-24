@@ -45,10 +45,6 @@ import type {
   TokenRatesControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import {
-  type AssetsControllerState,
-  formatExchangeRatesForBridge,
-} from '@metamask/assets-controller';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
@@ -62,7 +58,6 @@ import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
-  getMultichainAssetsRatesControllerConversionRates,
   getTokenRatesControllerMarketData,
 } from '../../../shared/lib/selectors/assets-migration';
 import {
@@ -151,8 +146,7 @@ export type BridgeAppState = {
     MultichainNetworkControllerState &
     TokenListState &
     RemoteFeatureFlagControllerState &
-    CurrencyRateState &
-    AssetsControllerState & {
+    CurrencyRateState & {
       useExternalServices: boolean;
     };
   bridge: BridgeState;
@@ -719,61 +713,14 @@ export const getIsStockMarketClosed = (
   return isFromClosed || isToClosed;
 };
 
-// Pre-build the map of CAIP-2 chain ID -> native CAIP-19 asset ID once so we
-// don't recreate it on every selector invocation.
-const NATIVE_ASSET_IDENTIFIERS_BY_CHAIN: Record<string, string> =
-  ALLOWED_BRIDGE_CHAIN_IDS.reduce(
-    (acc, chainId) => {
-      try {
-        const caipChainId = formatChainIdToCaip(chainId);
-        const nativeAsset = getNativeAssetForChainId(chainId);
-        acc[caipChainId] = nativeAsset.assetId;
-      } catch {
-        // Unsupported chain — skip
-      }
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
-
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (metamask, sortOrder, selectedQuote) => {
-    // Build bridge-compatible exchange rates directly from AssetsController
-    // state.  formatExchangeRatesForBridge has no ASSETS_UNIFIED_STATE_ENABLED
-    // gate so it works even when that build flag is off while
-    // CurrencyRateController is already deprecated.
-    const assetsControllerRates = formatExchangeRatesForBridge({
-      assetsInfo: metamask.assetsInfo ?? {},
-      assetsPrice: metamask.assetsPrice ?? {},
-      selectedCurrency: metamask.selectedCurrency ?? metamask.currentCurrency,
-      nativeAssetIdentifiers: NATIVE_ASSET_IDENTIFIERS_BY_CHAIN,
-      networkConfigurationsByChainId:
-        metamask.networkConfigurationsByChainId ?? {},
-    });
-
-    const augmentedState = {
-      ...metamask,
-      // Prefer AssetsController-derived rates when available; fall back to
-      // whatever the deprecated CurrencyRateController still holds.
-      currencyRates:
-        Object.keys(assetsControllerRates.currencyRates).length > 0
-          ? assetsControllerRates.currencyRates
-          : metamask.currencyRates,
-      marketData:
-        Object.keys(assetsControllerRates.marketData).length > 0
-          ? assetsControllerRates.marketData
-          : metamask.marketData,
-      conversionRates:
-        Object.keys(assetsControllerRates.conversionRates).length > 0
-          ? assetsControllerRates.conversionRates
-          : metamask.conversionRates,
-    };
-    const quotes = selectBridgeQuotes(augmentedState, {
+  (controllerStates, sortOrder, selectedQuote) => {
+    const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
     });

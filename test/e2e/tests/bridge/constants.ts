@@ -111,9 +111,8 @@ const ETH_ASSETS_INFO_ENTRY = (name: string = 'Ethereum') => ({
 
 /**
  * Returns a mock assetsInfo map for native ETH across chains used in bridge tests.
- * This is required alongside assetsPrice so that migration selectors
- * (e.g. getCurrencyRateControllerCurrencyRates) can identify native assets
- * by their `type: 'native'` field and derive currency rates from assetsPrice.
+ * Required alongside assetsPrice so the AssetsController state is complete —
+ * formatExchangeRatesForBridge uses `type === 'native'` to build currencyRates.
  */
 export const getMockAssetsInfo = () => ({
   'eip155:1/slip44:60': ETH_ASSETS_INFO_ENTRY('Ethereum'),

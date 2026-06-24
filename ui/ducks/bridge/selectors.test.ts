@@ -1244,58 +1244,6 @@ describe('Bridge selectors', () => {
       );
     });
 
-    it('returns null valueInCurrency when both currencyRates and assetsPrice are empty', () => {
-      // Verifies the fallback path: when CurrencyRateController is deprecated
-      // (currencyRates: {}) AND AssetsController has no prices yet (assetsPrice: {}),
-      // cost.valueInCurrency cannot be computed and falls back to null.
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            maxRefreshCount: 5,
-            chainRanking: [
-              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
-              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
-            ],
-          },
-        },
-        bridgeSliceOverrides: {
-          fromTokenExchangeRate: 1,
-          fromToken: { address: zeroAddress(), symbol: 'TEST' },
-          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
-        },
-        bridgeStateOverrides: {
-          quoteRequest: {
-            insufficientBal: false,
-            srcChainId: 10,
-            srcTokenAddress: zeroAddress(),
-            destChainId: '0x89',
-            destTokenAddress: zeroAddress(),
-          },
-          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
-          quotesRefreshCount: 5,
-          quotesLastFetched: 100,
-          quotesInitialLoadTime: 11000,
-        },
-        metamaskStateOverrides: {
-          // Empty currencyRates with no assetsPrice fallback (assets-unify not enabled)
-          currencyRates: {},
-          marketData: {},
-          ...mockNetworkState(
-            { chainId: CHAIN_IDS.MAINNET },
-            { chainId: CHAIN_IDS.LINEA_MAINNET },
-            { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
-          ),
-        },
-      });
-
-      const result = getBridgeQuotes(state as never);
-      expect(result.sortedQuotes).toHaveLength(2);
-
-      // Without rates, fiat values cannot be computed
-      const { recommendedQuote } = result;
-      expect(recommendedQuote?.gasFee.effective?.valueInCurrency).toBeNull();
-    });
   });
 
   describe('getBatchSellQuotes', () => {
