@@ -4,7 +4,10 @@ import { isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
-import { getShowTestNetworks, getUseExternalServices } from '../../../../selectors';
+import {
+  getShowTestNetworks,
+  getUseExternalServices,
+} from '../../../../selectors';
 import { useNetworkManagerState } from '../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 

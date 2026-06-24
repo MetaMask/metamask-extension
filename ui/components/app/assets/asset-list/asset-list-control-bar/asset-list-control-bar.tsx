@@ -22,9 +22,7 @@ import {
   getEnabledNetworksByNamespace,
   selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
-import {
-  getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/lib/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
