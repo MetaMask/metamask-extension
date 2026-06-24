@@ -46,7 +46,10 @@ export function setPassThroughInterceptor(
  */
 export async function setupMockingPassThrough(
   server: Mockttp,
-  testSpecificMock?: (server: Mockttp) => Promise<MockedEndpoint[]>,
+  testSpecificMock?: (
+    server: Mockttp,
+    context?: { localNodes: { quit?: () => Promise<void> }[] },
+  ) => Promise<MockedEndpoint[]>,
   _options = undefined,
   _withSolanaWebSocket = undefined,
 ): Promise<SetupMockReturn> {
