@@ -60,6 +60,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SeedlessOnboardingController:runMigrations',
       'MetaMetricsController:trackEvent',
       'KeyringController:verifyPassword',
+      'KeyringController:exportAccount',
       'KeyringController:changePassword',
       'KeyringController:exportEncryptionKey',
       'KeyringController:setLocked',

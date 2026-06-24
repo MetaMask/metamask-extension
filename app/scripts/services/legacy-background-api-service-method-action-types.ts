@@ -233,6 +233,18 @@ export type LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction = {
 };
 
 /**
+ * Verifies the password and exports the private key for the given account.
+ *
+ * @param address - The address of the account to export.
+ * @param password - The password of the vault.
+ * @returns The private key of the account.
+ */
+export type LegacyBackgroundApiServiceExportAccountAction = {
+  type: `LegacyBackgroundApiService:exportAccount`;
+  handler: LegacyBackgroundApiService['exportAccount'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -256,4 +268,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
   | LegacyBackgroundApiServiceSetLockedAction
-  | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction;
+  | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
+  | LegacyBackgroundApiServiceExportAccountAction;
