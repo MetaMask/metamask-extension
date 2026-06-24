@@ -15,9 +15,9 @@
  * cannot pass.
  */
 
-import { toHex } from '@metamask/controller-utils';
 import { strict as assert } from 'assert';
 import { merge } from 'lodash';
+import { toHex } from '@metamask/controller-utils';
 import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
