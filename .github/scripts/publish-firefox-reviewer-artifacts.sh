@@ -194,7 +194,8 @@ run_upload() {
   done
 
   for artifact in "${required[@]}"; do
-    local key="${S3_PREFIX}/$(basename "${artifact}")"
+    local key
+    key="${S3_PREFIX}/$(basename "${artifact}")"
     echo "Uploading to s3://${AMO_REVIEWER_BUCKET}/${key}"
     aws s3 cp "${artifact}" "s3://${AMO_REVIEWER_BUCKET}/${key}" --region "${AWS_DEFAULT_REGION}"
   done
