@@ -71,6 +71,21 @@ resolve_last_listed_version() {
   fi
 }
 
+clone_firefox_bundle_script() {
+  local script_ref="$1"
+  local clone_dir="$2"
+  local repo_url="https://${FIREFOX_BUNDLE_SCRIPT_TOKEN}@github.com/MetaMask/firefox-bundle-script.git"
+
+  if [[ "${script_ref}" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+    git init "${clone_dir}"
+    git -C "${clone_dir}" remote add origin "${repo_url}"
+    git -C "${clone_dir}" fetch --depth 1 origin "${script_ref}"
+    git -C "${clone_dir}" checkout FETCH_HEAD
+  else
+    git clone --depth 1 --branch "${script_ref}" "${repo_url}" "${clone_dir}"
+  fi
+}
+
 package_release_variant() {
   local variant="$1"
   local clone_dir="$2"
@@ -135,18 +150,14 @@ run_package() {
 
   local work_root script_ref clone_dir last_listed
   work_root="$(mktemp -d)"
+  trap 'rm -rf "${work_root}"' EXIT
   script_ref="${FIREFOX_BUNDLE_SCRIPT_REF:-${DEFAULT_FIREFOX_BUNDLE_SCRIPT_REF}}"
   clone_dir="${work_root}/firefox-bundle-script"
 
   mkdir -p "${PACKAGE_DIR}"
 
   echo "Cloning firefox-bundle-script at ref ${script_ref}..."
-  git clone --depth 1 --branch "${script_ref}" \
-    "https://${FIREFOX_BUNDLE_SCRIPT_TOKEN}@github.com/MetaMask/firefox-bundle-script.git" \
-    "${clone_dir}" 2>/dev/null || {
-    git clone "https://${FIREFOX_BUNDLE_SCRIPT_TOKEN}@github.com/MetaMask/firefox-bundle-script.git" "${clone_dir}"
-    git -C "${clone_dir}" checkout "${script_ref}"
-  }
+  clone_firefox_bundle_script "${script_ref}" "${clone_dir}"
 
   echo "Fetching populated bundle.sh from release branch..."
   git -C "${clone_dir}" fetch origin release --depth 1
@@ -158,8 +169,6 @@ run_package() {
 
   package_release_variant main "${clone_dir}" "${work_root}" "${last_listed}"
   package_release_variant flask "${clone_dir}" "${work_root}" "${last_listed}"
-
-  rm -rf "${work_root}"
 }
 
 run_upload() {
