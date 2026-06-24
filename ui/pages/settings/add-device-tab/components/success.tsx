@@ -18,9 +18,29 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type SuccessProps = {
   onDone: () => void;
+  accountCount?: number;
+  srpCount?: number;
 };
 
-const Success = ({ onDone }: SuccessProps) => {
+const getSuccessDescription = (
+  t: ReturnType<typeof useI18nContext>,
+  accountCount: number,
+  srpCount: number,
+): string => {
+  // A single account always belongs to a single SRP, so there is no
+  // "1 account from N Secret Recovery Phrases" case to handle.
+  if (accountCount === 1) {
+    return t('add_device_success_desc_singular_account_singular_srp');
+  }
+  if (srpCount === 1) {
+    return t('add_device_success_desc_plural_account_singular_srp', [
+      accountCount,
+    ]);
+  }
+  return t('add_device_success_desc', [accountCount, srpCount]);
+};
+
+const Success = ({ onDone, accountCount = 5, srpCount = 2 }: SuccessProps) => {
   const t = useI18nContext();
 
   return (
@@ -56,7 +76,7 @@ const Success = ({ onDone }: SuccessProps) => {
           color={TextColor.TextAlternative}
           textAlign={TextAlign.Center}
         >
-          {t('add_device_success_desc', [5, 2])}
+          {getSuccessDescription(t, accountCount, srpCount)}
         </Text>
       </Box>
       <Button className="w-full mt-10" onClick={onDone}>

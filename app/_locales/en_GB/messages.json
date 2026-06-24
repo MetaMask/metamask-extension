@@ -1196,6 +1196,14 @@
     "message": "$1 accounts from $2 Secret Recovery Phrases were synced to your phone.",
     "description": "$1 is the number of accounts, $2 is the number of Secret Recovery Phrases"
   },
+  "add_device_success_desc_plural_account_singular_srp": {
+    "message": "$1 accounts from 1 Secret Recovery Phrase were synced to your phone.",
+    "description": "$1 is the number of accounts. Used when multiple accounts from a single Secret Recovery Phrase were synced"
+  },
+  "add_device_success_desc_singular_account_singular_srp": {
+    "message": "1 account from 1 Secret Recovery Phrase was synced to your phone.",
+    "description": "Used when a single account from a single Secret Recovery Phrase was synced"
+  },
   "add_device_success_title": {
     "message": "Device paired"
   },
@@ -8378,8 +8386,8 @@
     "description": "Text shown while the user is signing in to view their rewards points"
   },
   "rewardsVipReferralTagLabel": {
-    "description": "Label on the gold VIP tag shown next to a VIP referral code",
-    "message": "VIP"
+    "message": "VIP",
+    "description": "Label on the gold VIP tag shown next to a VIP referral code"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"

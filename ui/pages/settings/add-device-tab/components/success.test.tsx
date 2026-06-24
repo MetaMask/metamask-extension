@@ -19,6 +19,30 @@ describe('Success', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders singular copy when one account from one SRP is synced', () => {
+    renderWithLocalization(
+      <Success onDone={jest.fn()} accountCount={1} srpCount={1} />,
+    );
+
+    expect(
+      screen.getByText(
+        '1 account from 1 Secret Recovery Phrase was synced to your phone.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('renders singular SRP copy when multiple accounts from one SRP are synced', () => {
+    renderWithLocalization(
+      <Success onDone={jest.fn()} accountCount={3} srpCount={1} />,
+    );
+
+    expect(
+      screen.getByText(
+        '3 accounts from 1 Secret Recovery Phrase were synced to your phone.',
+      ),
+    ).toBeInTheDocument();
+  });
+
   it('calls onDone when the done button is clicked', () => {
     const onDone = jest.fn();
     renderWithLocalization(<Success onDone={onDone} />);
