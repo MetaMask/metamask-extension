@@ -771,7 +771,7 @@ export default class MetamaskController extends EventEmitter {
     this.subjectMetadataController =
       messengerClientsByName.SubjectMetadataController;
     this.appStateController = messengerClientsByName.AppStateController;
-    this.networkController = messengerClientsByName.NetworkController;
+    this.networkController = this.wallet.getInstance('NetworkController');
     this.analyticsController = messengerClientsByName.AnalyticsController;
     this.metaMetricsController = messengerClientsByName.MetaMetricsController;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
