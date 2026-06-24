@@ -38,6 +38,7 @@ const connectivityAdapter = {} as unknown as ConnectivityAdapter;
 describe('initializeWallet', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    MockWallet.prototype.init.mockResolvedValue([]);
   });
 
   it('constructs a Wallet, wiring each builder output to its instanceOptions slot', () => {
