@@ -6,8 +6,10 @@ import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import {
   getFromAccount,
-  getIsStxEnabled,
+  type BridgeAppState,
 } from '../../../../../ducks/bridge/selectors';
+import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import type { MetaMaskReduxDispatch } from '../../../../../store/store';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
@@ -36,7 +38,11 @@ export default function useBatchSellSubmitQuotes({
 }: UseBatchSellSubmitQuotesArgs) {
   const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+  const srcChainId = quoteResponses.find((q) => q)?.quote.srcChainId;
+  const srcChainIdHex = getMaybeHexChainId(srcChainId?.toString());
+  const isStxEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as BridgeAppState, srcChainIdHex),
+  );
   const fromAccount = useSelector(getFromAccount);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -52,7 +58,7 @@ export default function useBatchSellSubmitQuotes({
         submitBatchSellTrade({
           quoteResponses,
           accountAddress: fromAccount.address,
-          isStxEnabled: smartTransactionsEnabled,
+          isStxEnabled,
           tokenSecurityTypeDestination:
             receivedAsset?.securityData?.type ?? null,
         }),
