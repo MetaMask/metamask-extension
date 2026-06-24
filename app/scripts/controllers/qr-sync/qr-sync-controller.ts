@@ -234,7 +234,7 @@ export class QrSyncController extends BaseController<
           };
         }),
       ),
-      deadline: MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000,
+      deadline: Date.now() + MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000, // 60s deadline
     };
 
     this.update((state) => {
@@ -682,10 +682,6 @@ export class QrSyncController extends BaseController<
 
   #isQrSyncOffer(value: unknown): value is QrSyncOffer {
     if (!value || typeof value !== 'object') {
-      return false;
-    }
-
-    if (!('deadline' in value) || typeof value.deadline !== 'number') {
       return false;
     }
 

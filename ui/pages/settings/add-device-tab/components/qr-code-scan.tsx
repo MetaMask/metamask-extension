@@ -11,6 +11,7 @@ import {
   TextButton,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
+import log from 'loglevel';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../../components/component-library/skeleton';
 import { QRCodeImage } from '../../../../components/app/deeplink-qr-code/deeplink-qr-code';
@@ -25,10 +26,11 @@ const QrCodeScan = () => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
   const qrSyncError = useSelector(selectQrSyncError);
+  console.log('qrSyncError', qrSyncError);
   const [secondsLeft, setSecondsLeft] = useState(MWP_SESSION_REQUEST_EXPIRY_SECONDS);
   const hasError = Boolean(qrSyncError);
   const isExpired = secondsLeft <= 0;
-  const shouldDimQr = isExpired || hasError;
+  const shouldDimQr = isExpired || Boolean(qrSyncError);
 
   useEffect(() => {
     if (shouldDimQr) {
@@ -65,6 +67,7 @@ const QrCodeScan = () => {
 
   let statusContent;
   if (hasError) {
+    log.error('qrSyncError', qrSyncError);
     statusContent = renderResetBlock(t('qrCodeScanError'));
   } else if (isExpired) {
     statusContent = renderResetBlock(t('qrCodeExpired'));
