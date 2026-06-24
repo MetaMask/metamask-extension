@@ -153,8 +153,10 @@ describe('ExpandableOrderBook', () => {
     expect(screen.getByText('Spread:')).toBeInTheDocument();
   });
 
-  it('calls usePerpsLiveOrderBook with manageStream false', () => {
+  it('calls usePerpsLiveOrderBook with manageStream false when expanded', () => {
     render(<ExpandableOrderBook symbol="BTC" />);
+
+    fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
 
     expect(mockUsePerpsLiveOrderBook).toHaveBeenCalledWith(
       expect.objectContaining({

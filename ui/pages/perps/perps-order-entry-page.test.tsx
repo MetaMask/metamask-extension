@@ -305,7 +305,8 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('../../components/app/perps/order-book', () => ({
-  ExpandableOrderBook: () => null,
+  OrderBookToggle: () => null,
+  OrderBookPanel: () => null,
 }));
 
 const mockIsNearLiquidationPrice = jest.fn();

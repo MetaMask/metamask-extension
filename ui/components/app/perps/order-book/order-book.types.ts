@@ -8,4 +8,14 @@ export type OrderBookTableProps = {
 
 export type ExpandableOrderBookProps = {
   symbol: string;
+  onExpandChange?: (isExpanded: boolean) => void;
+};
+
+export type OrderBookToggleProps = {
+  isExpanded: boolean;
+  onToggle: () => void;
+};
+
+export type OrderBookPanelProps = {
+  symbol: string;
 };

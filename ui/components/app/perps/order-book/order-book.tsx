@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
   Box,
   Text,
@@ -14,7 +14,11 @@ import {
 } from '../../../../../shared/lib/perps-formatters';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream/usePerpsLiveOrderBook';
 import { OrderBookTable } from './order-book-table';
-import type { ExpandableOrderBookProps } from './order-book.types';
+import type {
+  ExpandableOrderBookProps,
+  OrderBookToggleProps,
+  OrderBookPanelProps,
+} from './order-book.types';
 
 const ORDER_BOOK_LEVELS = 20;
 
@@ -36,11 +40,27 @@ const OrderBookIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-export const ExpandableOrderBook: React.FC<ExpandableOrderBookProps> = ({
-  symbol,
-}) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+export const OrderBookToggle: React.FC<OrderBookToggleProps> = ({
+  isExpanded,
+  onToggle,
+}) => (
+  <button
+    type="button"
+    className={`flex items-center justify-center w-8 h-8 rounded-lg cursor-pointer bg-transparent border border-solid ${
+      isExpanded
+        ? 'border-primary-default text-[var(--color-primary-inverse)]'
+        : 'border-border-muted text-text-default hover:text-text-alternative'
+    }`}
+    onClick={onToggle}
+    data-testid="perps-order-book-toggle"
+    aria-label="Toggle order book"
+    aria-expanded={isExpanded}
+  >
+    <OrderBookIcon className="w-6 h-6" />
+  </button>
+);
 
+export const OrderBookPanel: React.FC<OrderBookPanelProps> = ({ symbol }) => {
   const { orderBook, isInitialLoading } = usePerpsLiveOrderBook({
     symbol,
     levels: ORDER_BOOK_LEVELS,
@@ -99,52 +119,60 @@ export const ExpandableOrderBook: React.FC<ExpandableOrderBookProps> = ({
   }, [orderBook]);
 
   return (
+    <div
+      className="rounded-lg border border-border-muted px-3 pb-3 pt-2 h-full overflow-y-auto"
+      data-testid="perps-order-book-panel"
+    >
+      <OrderBookTable
+        orderBook={orderBook}
+        symbol={symbol}
+        isLoading={effectiveLoading}
+      />
+
+      {spreadSummary && (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          gap={1}
+          className="pt-2 mt-2 border-t border-border-muted"
+        >
+          <Text
+            variant={TextVariant.BodyXs}
+            color={TextColor.TextAlternative}
+          >
+            Spread:
+          </Text>
+          <Text variant={TextVariant.BodyXs} color={TextColor.TextDefault}>
+            {spreadSummary.spreadPct}%
+          </Text>
+        </Box>
+      )}
+    </div>
+  );
+};
+
+export const ExpandableOrderBook: React.FC<ExpandableOrderBookProps> = ({
+  symbol,
+  onExpandChange,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleToggle = useCallback(() => {
+    setIsExpanded((prev) => {
+      const next = !prev;
+      onExpandChange?.(next);
+      return next;
+    });
+  }, [onExpandChange]);
+
+  return (
     <div className="flex flex-col items-end">
-      <button
-        type="button"
-        className={`flex items-center justify-center w-8 h-8 rounded-lg cursor-pointer bg-transparent border border-solid ${
-          isExpanded
-            ? 'border-primary-default text-[var(--color-primary-inverse)]'
-            : 'border-border-muted text-text-default hover:text-text-alternative'
-        }`}
-        onClick={() => setIsExpanded((prev) => !prev)}
-        data-testid="perps-order-book-toggle"
-        aria-label="Toggle order book"
-        aria-expanded={isExpanded}
-      >
-        <OrderBookIcon className="w-6 h-6" />
-      </button>
+      <OrderBookToggle isExpanded={isExpanded} onToggle={handleToggle} />
 
       {isExpanded && (
-        <div className="mt-2 rounded-lg border border-border-muted px-3 pb-3 pt-2">
-          <OrderBookTable
-            orderBook={orderBook}
-            symbol={symbol}
-            isLoading={effectiveLoading}
-          />
-
-          {spreadSummary && (
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              justifyContent={BoxJustifyContent.Center}
-              gap={1}
-              className="pt-2 mt-2 border-t border-border-muted"
-            >
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
-              >
-                Spread:
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextDefault}
-              >
-                {spreadSummary.spreadPct}%
-              </Text>
-            </Box>
-          )}
+        <div className="mt-2 w-full">
+          <OrderBookPanel symbol={symbol} />
         </div>
       )}
     </div>
