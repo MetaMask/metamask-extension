@@ -50,9 +50,7 @@ export const SettingsTab = ({
   return (
     <Box
       paddingBottom={4}
-      className={['overflow-y-auto', containerClassName]
-        .filter(Boolean)
-        .join(' ')}
+      className={`overflow-y-auto ${containerClassName ?? ''}`}
     >
       {subHeader && (
         <Text

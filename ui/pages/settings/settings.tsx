@@ -116,14 +116,6 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const isNotificationSection =
     normalizedPathname === NOTIFICATIONS_SETTINGS_ROUTE &&
     new URLSearchParams(location.search).has('section');
-  const handleBack = useCallback(() => {
-    if (isNotificationSection) {
-      navigate(NOTIFICATIONS_SETTINGS_ROUTE);
-      return;
-    }
-
-    navigate(backRoute);
-  }, [backRoute, isNotificationSection, navigate]);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -186,13 +178,18 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const currentPageLabelKey = meta?.labelKey;
 
   const handleClose = useCallback(() => {
+    if (isNotificationSection) {
+      navigate(NOTIFICATIONS_SETTINGS_ROUTE);
+      return;
+    }
+
     if (backRoute.startsWith(DEFAULT_ROUTE)) {
       runCloseTransition(() => navigate(backRoute));
       return;
     }
 
     navigate(backRoute);
-  }, [backRoute, navigate, runCloseTransition]);
+  }, [backRoute, isNotificationSection, navigate, runCloseTransition]);
 
   // Header: "Settings" on fullscreen; tab or sub-page name on popup/sidepanel
   const headerTitle =
