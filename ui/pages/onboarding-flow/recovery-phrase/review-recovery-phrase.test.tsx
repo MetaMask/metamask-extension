@@ -191,9 +191,7 @@ describe('Review Recovery Phrase Component', () => {
       mockStore,
     );
 
-    const backButton = getByTestId(
-      'reveal-recovery-phrase-review-back-button',
-    );
+    const backButton = getByTestId('reveal-recovery-phrase-review-back-button');
 
     fireEvent.click(backButton);
 

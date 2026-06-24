@@ -90,7 +90,9 @@ describe('Account Exist Seedless Onboarding View', () => {
       });
       const { getByText } = renderWithProvider(<AccountExist />, store);
       expect(
-        getByText(messages.accountAlreadyExistsLoginDescriptionTelegram.message),
+        getByText(
+          messages.accountAlreadyExistsLoginDescriptionTelegram.message,
+        ),
       ).toBeInTheDocument();
     });
 
