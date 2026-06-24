@@ -21,9 +21,9 @@ describe('useSendBundleAmountSymbol', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     // Default safe returns so the unconditionally-called ERC20 derivation
-    // hooks can be destructured without throwing; tests override as needed.
-    useTokenValuesMock.mockReturnValue({ displayTransferValue: undefined });
-    useTokenDetailsMock.mockReturnValue({ tokenSymbol: undefined });
+    // hooks can be destructured without throwing; individual tests override.
+    (useTokenValuesMock as unknown as jest.Mock).mockReturnValue({});
+    (useTokenDetailsMock as unknown as jest.Mock).mockReturnValue({});
   });
 
   it('returns an empty object when there is no transaction', () => {
