@@ -94,28 +94,22 @@ describe('Send ERC20 - Balance Validation', function () {
 
         // verify sender balance updated to 5
         await homePage.goToTokensTab();
-        await tokensTab.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('5'),
-          { amountTimeout: 20000 },
-        );
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('5'), {
+          amountTimeout: 20000,
+        });
 
         // switch to Account 2, import TST, verify received 5 TST
         await switchToAccount(driver, 'Account 2');
         await tokensTab.importCustomTokenByChain('0x539', tokenAddress);
-        await tokensTab.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('5'),
-          { amountTimeout: 20000 },
-        );
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('5'), {
+          amountTimeout: 20000,
+        });
 
         // switch back to Account 1, verify balance is still 5
         await switchToAccount(driver, 'Account 1');
-        await tokensTab.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('5'),
-          { amountTimeout: 20000 },
-        );
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('5'), {
+          amountTimeout: 20000,
+        });
 
         // attempt to send 10 TST (more than the 5 remaining) — should be blocked
         await tokensTab.openTokenDetails(symbol);
