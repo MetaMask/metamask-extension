@@ -24,6 +24,7 @@ export const BatchAccountBalanceRequestsToggleItem = createToggleItem({
     state.metamask.useMultiAccountBalanceChecker,
   action: setUseMultiAccountBalanceChecker,
   dataTestId: 'batch-account-balance-requests-toggle',
+  containerDataTestId: 'batch-account-balance-requests-toggle-container',
   trackEventProperty: 'use_multi_account_balance_checker',
 });
 

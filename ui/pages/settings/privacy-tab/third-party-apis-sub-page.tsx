@@ -58,6 +58,7 @@ export const MakeSmartContractsEasierToggleItem = createToggleItem({
   selector: (state: MetaMaskReduxState) => state.metamask.use4ByteResolution,
   action: setUse4ByteResolution,
   dataTestId: 'make-smart-contracts-easier-toggle',
+  containerDataTestId: 'make-smart-contracts-easier-toggle-container',
   trackEventProperty: 'use_4byte_resolution',
 });
 
@@ -69,6 +70,7 @@ export const ProposedNicknamesToggleItem = createToggleItem({
     state.metamask.useExternalNameSources,
   action: setUseExternalNameSources,
   dataTestId: 'proposed-nicknames-toggle',
+  containerDataTestId: 'proposed-nicknames-toggle-container',
   trackEventProperty: 'use_external_name_sources',
 });
 

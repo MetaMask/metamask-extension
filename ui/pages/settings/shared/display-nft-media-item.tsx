@@ -44,6 +44,7 @@ export const DisplayNftMediaToggleItem = ({
         dispatch(setOpenSeaEnabled(!value));
       }}
       dataTestId="display-nft-media"
+      containerDataTestId="display-nft-media-toggle-container"
     />
   );
 };

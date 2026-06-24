@@ -76,8 +76,17 @@ class OnboardingPrivacySettingsPage {
 
   private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
 
-  // Shared toggle state used on the privacy subpage
-  private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
+  // Matches ONBOARDING_PRIVACY_ITEMS in onboarding-privacy-sub-page.tsx (basic excluded).
+  private readonly advancedPrivacyToggleContainerTestIds = [
+    'batch-account-balance-requests-toggle-container',
+    'useSafeChainsListValidation',
+    'ipfs-gateway-resolution-container',
+    'make-smart-contracts-easier-toggle-container',
+    'ipfsToggle',
+    'display-nft-media-toggle-container',
+    'use-nft-detection',
+    'proposed-nicknames-toggle-container',
+  ] as const;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -203,16 +212,45 @@ class OnboardingPrivacySettingsPage {
     console.log('Toggle advanced privacy settings');
     await this.navigateToPrivacySettings();
 
-    await Promise.all(
-      (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
-        (toggle) => toggle.click(),
-      ),
-    );
+    for (const containerTestId of this.advancedPrivacyToggleContainerTestIds) {
+      await this.turnOffPrivacyToggleIfOn(containerTestId);
+    }
 
-    console.log('Verify all asset privacy toggles are off');
-    await this.driver.assertElementNotPresent(this.assetsPrivacyToggle);
+    await this.assertAdvancedPrivacyTogglesAreOff();
 
     await this.navigateBackToSettingsPage();
+  }
+
+  private async assertAdvancedPrivacyTogglesAreOff(): Promise<void> {
+    console.log('Verify all advanced privacy toggles are off');
+    for (const containerTestId of this.advancedPrivacyToggleContainerTestIds) {
+      const toggleButton = this.getPrivacyToggleButtonSelector(containerTestId);
+      await this.driver.waitForSelector(
+        this.getPrivacyToggleOffSelector(toggleButton),
+      );
+    }
+  }
+
+  private async isPrivacyToggleOn(containerTestId: string): Promise<boolean> {
+    const toggleButton = this.getPrivacyToggleButtonSelector(containerTestId);
+    return this.driver.isElementPresentAndVisible(
+      this.getPrivacyToggleOnSelector(toggleButton),
+      500,
+    );
+  }
+
+  private async turnOffPrivacyToggleIfOn(
+    containerTestId: string,
+  ): Promise<void> {
+    const toggleButton = this.getPrivacyToggleButtonSelector(containerTestId);
+    if (!(await this.isPrivacyToggleOn(containerTestId))) {
+      return;
+    }
+
+    await this.driver.findScrollToAndClickElement(toggleButton);
+    await this.driver.waitForSelector(
+      this.getPrivacyToggleOffSelector(toggleButton),
+    );
   }
 
   /**
@@ -231,6 +269,18 @@ class OnboardingPrivacySettingsPage {
     await this.driver.waitForSelector(this.basicFunctionalityToggleOffState);
 
     await this.navigateBackToSettingsPage();
+  }
+
+  private getPrivacyToggleButtonSelector(containerTestId: string): string {
+    return `${this.privacySettingsDetail} [data-testid="${containerTestId}"] .toggle-button`;
+  }
+
+  private getPrivacyToggleOnSelector(toggleButton: string): string {
+    return `${toggleButton}.toggle-button--on:not(.toggle-button--disabled)`;
+  }
+
+  private getPrivacyToggleOffSelector(toggleButton: string): string {
+    return `${toggleButton}.toggle-button--off`;
   }
 }
 

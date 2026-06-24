@@ -98,7 +98,9 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
           >
             Batch account balance requests
           </p>
-          <div>
+          <div
+            data-testid="batch-account-balance-requests-toggle-container"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
