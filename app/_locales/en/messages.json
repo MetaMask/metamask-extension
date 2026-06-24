@@ -2138,9 +2138,13 @@
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
   },
-  "bridgeQrHardwareScanSignature": {
-    "message": "I've signed, scan signature",
-    "description": "Button label for scanning a QR hardware-wallet signature after the user signs on their device."
+  "bridgeQrHardwareScanSignatureFinal": {
+    "message": "Scan final QR code",
+    "description": "Button label for scanning the final QR hardware-wallet signature after the user signs on their device."
+  },
+  "bridgeQrHardwareScanSignatureNext": {
+    "message": "Scan next QR code",
+    "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
   },
   "bridgeQrHardwareShowQrCode": {
     "message": "Show QR code",

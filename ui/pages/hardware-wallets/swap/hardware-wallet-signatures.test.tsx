@@ -621,7 +621,7 @@ describe('HardwareWalletSignatures', () => {
       getByTestId('hardware-wallet-signatures__steps'),
     ).toBeDefined();
     expect(
-      getByRole('button', { name: "I've signed, scan signature" }),
+      getByRole('button', { name: 'Scan next QR code' }),
     ).toBeDefined();
   });
 
@@ -682,7 +682,7 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole } = renderQrWallet();
 
       expect(
-        getByRole('button', { name: "I've signed, scan signature" }),
+        getByRole('button', { name: 'Scan next QR code' }),
       ).toBeDefined();
     });
 
@@ -690,11 +690,11 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole, queryByRole } = renderQrWallet();
 
       fireEvent.click(
-        getByRole('button', { name: "I've signed, scan signature" }),
+        getByRole('button', { name: 'Scan next QR code' }),
       );
 
       expect(
-        queryByRole('button', { name: "I've signed, scan signature" }),
+        queryByRole('button', { name: 'Scan next QR code' }),
       ).toBeNull();
     });
 
@@ -702,12 +702,12 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole } = renderQrWallet();
 
       fireEvent.click(
-        getByRole('button', { name: "I've signed, scan signature" }),
+        getByRole('button', { name: 'Scan next QR code' }),
       );
       fireEvent.click(getByRole('button', { name: 'Back' }));
 
       expect(
-        getByRole('button', { name: "I've signed, scan signature" }),
+        getByRole('button', { name: 'Scan next QR code' }),
       ).toBeDefined();
     });
   });

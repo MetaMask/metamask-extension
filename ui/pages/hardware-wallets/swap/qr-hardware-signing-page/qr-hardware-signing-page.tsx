@@ -27,6 +27,7 @@ import {
 export const QrHardwareSigningPage = ({
   title,
   phase,
+  isFinalSignature = false,
   payload,
   requestId,
   onBack,
@@ -113,7 +114,9 @@ export const QrHardwareSigningPage = ({
             onClick={onContinueToScan}
             data-testid="qr-hardware-signing-page__continue-button"
           >
-            {t('bridgeQrHardwareScanSignature')}
+            {isFinalSignature
+              ? t('bridgeQrHardwareScanSignatureFinal')
+              : t('bridgeQrHardwareScanSignatureNext')}
           </Button>
         )}
         <Button

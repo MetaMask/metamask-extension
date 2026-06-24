@@ -63,7 +63,15 @@ describe('QrHardwareSigningPage', () => {
     expect(screen.queryByTestId('qr-reader-mock')).not.toBeInTheDocument();
     expect(
       screen.getByTestId('qr-hardware-signing-page__continue-button'),
-    ).toHaveTextContent("I've signed, scan signature");
+    ).toHaveTextContent('Scan next QR code');
+  });
+
+  it('shows the "Scan final QR code" label for the final signature', () => {
+    renderQrHardwareSigningPage({ ...defaultProps, isFinalSignature: true });
+
+    expect(
+      screen.getByTestId('qr-hardware-signing-page__continue-button'),
+    ).toHaveTextContent('Scan final QR code');
   });
 
   it('renders the scanner in scan mode', () => {

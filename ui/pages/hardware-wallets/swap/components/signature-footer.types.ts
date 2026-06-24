@@ -35,6 +35,12 @@ export type SignatureFooterProps = {
   showInlineQrCode: boolean;
 
   /**
+   * Whether the signature being scanned is the final one in the flow. Drives
+   * the "Scan next QR code" vs "Scan final QR code" button label.
+   */
+  isFinalSignature?: boolean;
+
+  /**
    * Current state machine status. Used to choose the retry button label
    * (reconnect vs. try-again) based on whether the device is disconnected.
    */

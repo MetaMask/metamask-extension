@@ -677,6 +677,8 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       needsTwoConfirmations,
       t,
     });
+  const isFinalSignature =
+    activeQrStep === HardwareWalletSignatureStatus.AwaitingFinalSignature;
   // During the inline QR display phase (the QR code is shown for the user to
   // scan with their wallet), replace the generic heading with a step-numbered
   // QR instruction such as "Step 1 of 4: Scan this QR code with your wallet".
@@ -842,6 +844,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     isRetrying,
     showStuckRetryButton,
     showInlineQrCode,
+    isFinalSignature,
     status: signatureState.status,
     handleRetry,
     handleCancel,
@@ -857,6 +860,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     showQrSigningPage: Boolean(showQrSigningPage),
     qrSignRequest: qrSignRequest ?? null,
     qrSigningPageTitle: qrSigningPageTitle ?? null,
+    isFinalSignature,
     handleQrSigningPageBack,
     handleCancel,
     setIsReadingQrSignature,

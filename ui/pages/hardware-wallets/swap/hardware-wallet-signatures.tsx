@@ -38,6 +38,7 @@ export default function HardwareWalletSignatures() {
     showQrSigningPage,
     qrSignRequest,
     qrSigningPageTitle,
+    isFinalSignature,
     handleQrSigningPageBack,
     handleCancel,
     setIsReadingQrSignature,
@@ -49,6 +50,7 @@ export default function HardwareWalletSignatures() {
       <QrHardwareSigningPage
         title={qrSigningPageTitle}
         phase={QrHardwareSigningPhase.ScanSignature}
+        isFinalSignature={isFinalSignature}
         payload={qrSignRequest.request.payload}
         requestId={qrSignRequest.request.requestId}
         onBack={handleQrSigningPageBack}

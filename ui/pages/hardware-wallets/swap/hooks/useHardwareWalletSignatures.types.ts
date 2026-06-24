@@ -38,6 +38,12 @@ export type UseHardwareWalletSignaturesReturn = {
   qrSignRequest: QrHardwareSignRequest | null;
   /** Title for the full-page QR signing screen, or null. */
   qrSigningPageTitle: string | null;
+  /**
+   * Whether the QR signature currently being collected is the final one in
+   * the flow. Drives the "Scan next QR code" vs "Scan final QR code" button
+   * label on both the inline footer and the full-page QR signing screen.
+   */
+  isFinalSignature: boolean;
   /** Called when the user dismisses the full-page QR screen. */
   handleQrSigningPageBack: () => void;
   /** Called when the user cancels the entire signing flow. */

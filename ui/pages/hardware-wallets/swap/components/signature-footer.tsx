@@ -22,6 +22,7 @@ import type { SignatureFooterProps } from './signature-footer.types';
  * @param props.isRetrying - Whether a retry is currently in flight. Disables the retry button to prevent double-clicks.
  * @param props.showStuckRetryButton - Whether the "Resend transaction" button should show. True only after the user has retried at least once AND the signature has been stuck for longer than the stuck-timeout window.
  * @param props.showInlineQrCode - Whether the inline-QR "Scan signature" button should be eligible. Only renders when `isRetryable` is false (mutually exclusive with retry).
+ * @param props.isFinalSignature - Whether the signature being scanned is the final one in the flow. Selects the "Scan next QR code" vs "Scan final QR code" label.
  * @param props.status - Current state machine status. Used to choose the retry button label (reconnect vs. try-again) based on whether the device is disconnected.
  * @param props.handleRetry - Called when the user clicks retry or resend.
  * @param props.handleCancel - Called when the user clicks cancel.
@@ -32,6 +33,7 @@ export default function SignatureFooter({
   isRetrying,
   showStuckRetryButton,
   showInlineQrCode,
+  isFinalSignature = false,
   status,
   handleRetry,
   handleCancel,
@@ -80,7 +82,9 @@ export default function SignatureFooter({
           onClick={handleOpenQrSigningPage}
           data-testid="hardware-wallet-signatures__scan-button"
         >
-          {t('bridgeQrHardwareScanSignature')}
+          {isFinalSignature
+            ? t('bridgeQrHardwareScanSignatureFinal')
+            : t('bridgeQrHardwareScanSignatureNext')}
         </Button>
       )}
       <Button

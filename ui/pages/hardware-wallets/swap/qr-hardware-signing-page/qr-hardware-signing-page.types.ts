@@ -15,6 +15,11 @@ export type QrHardwareSigningPageProps = {
   title: string;
   /** Whether the user is viewing the animated QR code or scanning a signature. */
   phase: QrHardwareSigningPhase;
+  /**
+   * Whether the signature being scanned is the final one in the flow. Drives
+   * the "Scan next QR code" vs "Scan final QR code" button label.
+   */
+  isFinalSignature?: boolean;
   /** Active QR hardware wallet sign request payload. */
   payload: QrHardwareSignRequest['request']['payload'];
   /** Stable request identifier used to validate scanned signatures. */
