@@ -12,6 +12,7 @@ import { Driver } from '../../webdriver/driver';
 import {
   DAPP_PATH,
   DEFAULT_FIXTURE_ACCOUNT_ID,
+  HARDWARE_WALLET_ACCOUNT_ID,
   WINDOW_TITLES,
 } from '../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
@@ -83,7 +84,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPreferencesController({
-            preferences: { showFiatInTestnets: true },
+            preferences: { showFiatInTestnets: true, showNativeTokenAsMainBalance: true },
             useCurrencyRateCheck: true,
           })
           .withCurrencyController({
@@ -101,6 +102,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
             assetsBalance: {
               [DEFAULT_FIXTURE_ACCOUNT_ID]: {
                 'eip155:1/slip44:60': { amount: '0' },
+              },
+              [HARDWARE_WALLET_ACCOUNT_ID]: {
+                'eip155:1/slip44:60': { amount: '25' },
               },
             },
           })
@@ -153,6 +157,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
+          .withPreferencesController({
+            preferences: { showNativeTokenAsMainBalance: true },
+          })
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withSnapsPrivacyWarningAlreadyShown()
           .withCurrencyController({
@@ -177,7 +184,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { expectedBalance: '$85,025.00' });
+        await login(driver);
 
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);

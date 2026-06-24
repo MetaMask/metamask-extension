@@ -573,7 +573,7 @@ describe('Import flow', function () {
         await tokenList.checkTokenItemNumber(8);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('Chain Games');
-        await tokenList.checkTokenExistsInList('Changex');
+        await tokenList.checkTokenExistsInList('ChangeX');
         await tokenList.checkTokenExistsInList('Chai');
       },
     );
