@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
+import { useStore } from 'react-redux';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -11,6 +13,7 @@ import { useMessenger } from '../../../hooks/useMessenger';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
+import type { MetaMaskReduxState } from '../../../store/store';
 import { showPendingToast, showSuccessToast, showFailedToast } from './shared';
 import {
   shouldShowPendingToast,
@@ -42,23 +45,45 @@ const excludedTransactionTypes: TransactionType[] = [
 ];
 
 function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
+  // Top-level only — nested swapApproval inside batch txs must still toast.
+  if (
+    transactionMeta.type === TransactionType.bridgeApproval ||
+    transactionMeta.type === TransactionType.swapApproval
+  ) {
+    return true;
+  }
   return hasTransactionType(transactionMeta, excludedTransactionTypes);
 }
 
 const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
 
-function generateToastId(id: string): string {
-  return `tx-${id}`;
-}
+const generateToastId = (id: string) => `tx-${id}`;
+const extractPayload = <Type>(raw: Type | [Type]) =>
+  Array.isArray(raw) ? raw[0] : raw;
 
-function extractPayload<Type>(raw: Type | [Type]): Type {
-  return Array.isArray(raw) ? raw[0] : raw;
+function isSpeedUpReplacement(
+  transactionMeta: TransactionMeta,
+  transactions: TransactionMeta[],
+) {
+  if (
+    transactionMeta.status !== TransactionStatus.dropped ||
+    !transactionMeta.replacedById
+  ) {
+    return false;
+  }
+
+  const replacement = transactions.find(
+    (tx) => tx.id === transactionMeta.replacedById,
+  );
+
+  return replacement?.type === TransactionType.retry;
 }
 
 function handleAccountsControllerTx(tx: Transaction) {
   if (!tx?.id || !tx?.status) {
     return;
   }
+
   if (tx.chain?.startsWith('eip155:')) {
     return;
   }
@@ -68,9 +93,9 @@ function handleAccountsControllerTx(tx: Transaction) {
   if (tx.status === 'unconfirmed' && shouldShowPendingToast(tx.id)) {
     showPendingToast(toastId);
   } else if (tx.status === 'confirmed' && shouldShowTerminalToast(tx.id)) {
-    setTimeout(() => showSuccessToast(toastId), 0);
+    showSuccessToast(toastId);
   } else if (tx.status === 'failed' && shouldShowTerminalToast(tx.id)) {
-    setTimeout(() => showFailedToast(toastId), 0);
+    showFailedToast(toastId);
   }
 }
 
@@ -79,9 +104,10 @@ function handleAccountsControllerTx(tx: Transaction) {
  */
 export function useTransactionEventToasts(): void {
   const messenger = useMessenger<ToastListenerMessenger>();
+  const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
-    // EVM — single event covers all status transitions
+    // EVM via TransactionController
     const handleEvmStatusUpdate = (
       raw:
         | { transactionMeta: TransactionMeta }
@@ -106,23 +132,28 @@ export function useTransactionEventToasts(): void {
       if (status === 'submitted' && shouldShowPendingToast(id)) {
         showPendingToast(toastId);
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
-        // Defer so the pending toast has at least one frame to render
-        // before transitioning to success on fast transactions
-        setTimeout(() => showSuccessToast(toastId), 0);
-      } else if (failedStatuses.has(status) && shouldShowTerminalToast(id)) {
-        setTimeout(() => showFailedToast(toastId), 0);
+        showSuccessToast(toastId);
+      } else if (
+        failedStatuses.has(status) &&
+        !isSpeedUpReplacement(
+          transactionMeta,
+          store.getState().metamask?.transactions ?? [],
+        ) &&
+        shouldShowTerminalToast(id)
+      ) {
+        showFailedToast(toastId);
       }
     };
 
-    // Non-EVM — pending, success, and failed via AccountsController.
+    // Non-EVM via AccountsController
     const handleAccountsTxUpdated = (
       raw:
         | AccountTransactionsUpdatedEventPayload
         | [AccountTransactionsUpdatedEventPayload],
     ) => {
       const payload = extractPayload(raw);
-      for (const txs of Object.values(payload?.transactions ?? {})) {
-        for (const tx of txs) {
+      for (const accountTxs of Object.values(payload?.transactions ?? {})) {
+        for (const tx of accountTxs) {
           handleAccountsControllerTx(tx);
         }
       }
@@ -147,5 +178,5 @@ export function useTransactionEventToasts(): void {
         handleAccountsTxUpdated,
       );
     };
-  }, [messenger]);
+  }, [messenger, store]);
 }
