@@ -48,9 +48,13 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .withSmartTransactionsOptedOut()
-          .withAssetsController({
-            assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
-          })
+          .withAssetsController(
+            {
+              assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+              assetsBalance: {},
+            },
+            { overwrite: true },
+          )
           .build(),
         localNodeOptions: {
           loadState:
@@ -116,9 +120,13 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
-          .withAssetsController({
-            assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
-          })
+          .withAssetsController(
+            {
+              assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+              assetsBalance: {},
+            },
+            { overwrite: true },
+          )
           .build(),
         localNodeOptions: {
           loadState:
