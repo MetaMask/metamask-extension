@@ -458,6 +458,7 @@ const PerpsOrderEntryPage = () => {
           timestamp: ts ?? Date.now(),
           markPrice: mark,
           percentChange24h,
+          isTradable: (update as { isTradable?: boolean }).isTradable ?? true,
         });
       }
     });
@@ -599,24 +600,24 @@ const PerpsOrderEntryPage = () => {
 
     const tpInvalid = Boolean(
       tp?.trim() &&
-      !isValidTakeProfitPrice(tp, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidTakeProfitPrice(tp, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-      !isValidStopLossPrice(sl, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidStopLossPrice(sl, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slLiquidationInvalid = Boolean(
       sl?.trim() &&
-      !isStopLossSafeFromLiquidation(sl, {
-        liquidationPrice,
-        direction: dir,
-      }),
+        !isStopLossSafeFromLiquidation(sl, {
+          liquidationPrice,
+          direction: dir,
+        }),
     );
 
     return tpInvalid || slInvalid || slLiquidationInvalid;

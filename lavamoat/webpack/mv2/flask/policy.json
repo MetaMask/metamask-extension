@@ -1992,6 +1992,7 @@
         "@metamask/perps-controller>@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
         "uuid": true

@@ -88,6 +88,7 @@ describe('usePerpsLiveMarketListData', () => {
           price: '78337.5',
           percentChange24h: '+9.9%',
           timestamp: 123,
+          isTradable: true,
         },
       },
       isInitialLoading: false,
