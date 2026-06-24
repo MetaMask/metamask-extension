@@ -1157,7 +1157,9 @@ export function unlockAndGetSeedPhrase(
 }
 
 export function submitPassword(password: string): Promise<void> {
-  return submitRequestToBackground('submitPassword', [password]);
+  return submitRequestToBackground('submitPasswordOrEncryptionKey', [
+    { password },
+  ]);
 }
 
 /**
