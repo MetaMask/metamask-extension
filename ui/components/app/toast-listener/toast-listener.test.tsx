@@ -12,16 +12,16 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: unknown) => mockUseSelector(selector),
 }));
 
-jest.mock('../../../../shared/lib/selectors/smart-transactions', () => ({
-  getExtensionSkipTransactionStatusPage: jest.fn(),
-}));
-
-jest.mock('../../../ducks/metamask/metamask', () => ({
+jest.mock('../../../ducks/metamask/base-selectors', () => ({
   getIsUnlocked: jest.fn(),
 }));
 
 jest.mock('../../../../shared/lib/environment-type', () => ({
   isInteractiveUI: () => mockIsInteractiveUI(),
+}));
+
+jest.mock('../../../selectors/toast', () => ({
+  selectToastImplementation: jest.fn(),
 }));
 
 jest.mock('./useSmartTransactionToasts', () => ({
@@ -52,8 +52,10 @@ describe('ToastListener', () => {
     isUnlocked?: boolean;
   }) {
     mockUseSelector
-      .mockReturnValueOnce(transactionToastEnabled)
-      .mockReturnValueOnce(isUnlocked);
+      .mockReturnValueOnce(isUnlocked)
+      .mockReturnValueOnce(
+        transactionToastEnabled ? 'redux' : undefined,
+      );
     mockIsInteractiveUI.mockReturnValue(isInteractive);
     render(<ToastListener />);
   }
