@@ -14,8 +14,10 @@ import { TokenRow } from './token-row';
 
 export function TokensSection({
   tokens,
+  showBadge,
 }: {
   tokens: { label?: string; token?: TokenAmount }[];
+  showBadge?: boolean;
 }) {
   const visibleTokens = tokens.flatMap(({ label, token }) =>
     token ? [{ label, token }] : [],
@@ -30,7 +32,7 @@ export function TokensSection({
       {visibleTokens.map(({ label, token }) => (
         <div key={token?.assetId}>
           {label && <p className="text-alternative mb-1">{label}</p>}
-          <TokenRow token={token} />
+          <TokenRow token={token} showNetworkBadge={showBadge} />
         </div>
       ))}
     </div>
@@ -83,7 +85,7 @@ export function MetadataSection({
 
       <Row
         label={t('transactionIdLabel')}
-        value={<TransactionId value={item.data.hash} />}
+        value={<TransactionId value={item.hash} />}
       />
     </Section>
   );

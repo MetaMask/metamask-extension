@@ -174,7 +174,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 213,
+      "currentMigrationVersion": 215,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -432,7 +432,6 @@
       "dataCollectionForMarketing": false,
       "eventsBeforeMetricsOptIn": [],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
       "completedMetaMetricsOnboarding": true,
       "tracesBeforeMetricsOptIn": [],
@@ -1264,6 +1263,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 213
+    "version": 215
   }
 }

@@ -48,6 +48,10 @@ class TokensTab extends HomePage {
 
   private readonly importTokensButton = '[data-testid="importTokens"]';
 
+  private readonly importTokensLoading = {
+    testId: 'import-tokens-loading',
+  };
+
   private readonly importTokensNextButton =
     '[data-testid="import-tokens-button-next"]';
 
@@ -367,6 +371,12 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.waitForSelector(this.selectedNetwork(networkName));
+    await this.driver.assertElementNotPresent(this.importTokensLoading, {
+      findElementGuard: this.importTokenModalTitle,
+    });
+    await this.driver.waitForSelector(this.tokenSearchInput);
+    // Keep paste to avoid flakiness because fill each word separately will cause the search to be triggered multiple times,
+    // and the list will be re-rendered multiple times, leading to flakiness.
     await this.driver.pasteIntoField(this.tokenSearchInput, tokenName);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);

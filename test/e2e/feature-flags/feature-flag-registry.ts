@@ -67,7 +67,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-06-02
+ * Production defaults last synced: 2026-06-23
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
@@ -194,7 +194,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'additionalNetworksBlacklist',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: ['0x1079'],
+    productionDefault: ['0x1079', '0x13b2'],
     status: FeatureFlagStatus.Active,
   },
 
@@ -255,15 +255,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: {
       versions: {
+        '13.33.0': {
+          featureVersion: '1',
+          minimumVersion: '13.33.0',
+          deprecatedControllers: [],
+          enabled: true,
+        },
         '13.15.0': {
+          deprecatedControllers: [],
           enabled: false,
           featureVersion: null,
           minimumVersion: null,
-        },
-        '13.33.0': {
-          enabled: true,
-          featureVersion: '1',
-          minimumVersion: '13.33.0',
         },
       },
     },
@@ -288,11 +290,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      versions: {
-        '0.0.0': {
-          enabled: true,
-        },
-      },
+      versions: {},
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2116,6 +2114,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  coreExtensionUxCeux1096AbtestReferralUi: {
+    name: 'coreExtensionUxCeux1096AbtestReferralUi',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
+  },
+
   extensionUpdatePromptMinimumVersion: {
     name: 'extensionUpdatePromptMinimumVersion',
     type: FeatureFlagType.Remote,
@@ -2135,13 +2141,15 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  // Value is enabled despite the flag being disabled in prod, as specs are already updated to use the redesigned activity list.
+  // See https://github.com/MetaMask/metamask-extension/pull/42837
   extensionUxActivityListRedesign: {
     name: 'extensionUxActivityListRedesign',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      enabled: true,
       minimumVersion: '0.0.0',
+      enabled: true,
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2157,31 +2165,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  extensionUxDefiReferral: {
-    name: 'extensionUxDefiReferral',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: true,
-    status: FeatureFlagStatus.Active,
-  },
-
   extensionUxDefiReferralPartners: {
     name: 'extensionUxDefiReferralPartners',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      asterdex: true,
       gmx: true,
       hyperliquid: true,
+      variational: true,
+      asterdex: true,
     },
-    status: FeatureFlagStatus.Active,
-  },
-
-  coreExtensionUxCeux1024AbtestReferralUi: {
-    name: 'coreExtensionUxCeux1024AbtestReferralUi',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: [],
     status: FeatureFlagStatus.Active,
   },
 
@@ -2199,7 +2192,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: {
       enabled: false,
-      minimumVersion: '13.33.0',
+      minimumVersion: '13.36.0',
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2397,6 +2390,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: {
       enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2507,9 +2501,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      payStrategies: { relay: { gaslessEnabled: true } },
-      prefilledAmount: {
-        default: { enabled: false },
+      payStrategies: {
+        relay: {
+          gaslessEnabled: true,
+        },
       },
     },
     status: FeatureFlagStatus.Active,
@@ -2521,17 +2516,25 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      rc: true,
       versions: {
         '13.33.0': {
-          default: {
-            enabled: true,
-            tokens: {},
-          },
           overrides: {
             perpsWithdraw: {
-              enabled: true,
               tokens: {
+                '0x2105': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                ],
+                '0x38': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x55d398326f99059fF775485246999027B3197955',
+                  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                ],
+                '0x89': [
+                  '0x0000000000000000000000000000000000001010',
+                  '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+                  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+                ],
                 '0xa4b1': [
                   '0x0000000000000000000000000000000000000000',
                   '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
@@ -2548,22 +2551,13 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
                   '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
                   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
                 ],
-                '0x2105': [
-                  '0x0000000000000000000000000000000000000000',
-                  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-                ],
-                '0x38': [
-                  '0x0000000000000000000000000000000000000000',
-                  '0x55d398326f99059fF775485246999027B3197955',
-                  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                ],
-                '0x89': [
-                  '0x0000000000000000000000000000000000001010',
-                  '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-                  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-                ],
               },
+              enabled: false,
             },
+          },
+          default: {
+            enabled: false,
+            tokens: {},
           },
         },
       },
@@ -2723,7 +2717,211 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'smartTransactionsAllowedRpcHosts',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: ['.infura.io', '.binance.org'],
+    productionDefault: [
+      '.infura.io',
+      '.binance.org',
+      'mainnet.base.org',
+      'rpc.linea.build',
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_enforced_simulations: {
+    name: 'confirmations_enforced_simulations',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {},
+    status: FeatureFlagStatus.Active,
+  },
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_pay_tokens: {
+    name: 'confirmations_pay_tokens',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  earnCONF1385AbtestPrefilledMaxAmount: {
+    name: 'earnCONF1385AbtestPrefilledMaxAmount',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  extensionUxPna25: {
+    name: 'extensionUxPna25',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: true,
+    status: FeatureFlagStatus.Active,
+  },
+
+  extensionTransactionLabels: {
+    name: 'extensionTransactionLabels',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  ledgerDmk: {
+    name: 'ledgerDmk',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  stxMigrationBatchStatus: {
+    name: 'stxMigrationBatchStatus',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+        value: true,
+        name: 'sentinel on',
+      },
+      {
+        name: 'sentinel off',
+        scope: {
+          value: 0,
+          type: 'threshold',
+        },
+        value: false,
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
+  stxMigrationCancel: {
+    name: 'stxMigrationCancel',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        value: true,
+        name: 'sentinel on',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+      },
+      {
+        scope: {
+          value: 0,
+          type: 'threshold',
+        },
+        value: false,
+        name: 'sentinel off',
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
+  stxMigrationGetFees: {
+    name: 'stxMigrationGetFees',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        value: true,
+        name: 'sentinel on',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+      },
+      {
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+        value: false,
+        name: 'sentinel off',
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
+  stxMigrationSubmitTransactions: {
+    name: 'stxMigrationSubmitTransactions',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        name: 'sentinel on',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+        value: true,
+      },
+      {
+        value: false,
+        name: 'sentinel off',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+  corePlatformRpcFailoverForceEnabled: {
+    name: 'corePlatformRpcFailoverForceEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  coreExtensionUxCeux1024AbtestReferralUi: {
+    name: 'coreExtensionUxCeux1024AbtestReferralUi',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
+  },
+
+  perpsTAT3382AbtestTabBadge: {
+    name: 'perpsTAT3382AbtestTabBadge',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      versions: {
+        '13.37.0': [
+          {
+            name: 'control',
+            scope: {
+              type: 'threshold',
+              value: 0.5,
+            },
+          },
+          {
+            scope: {
+              type: 'threshold',
+              value: 1,
+            },
+            name: 'treatment',
+          },
+        ],
+      },
+    },
     status: FeatureFlagStatus.Active,
   },
 };
