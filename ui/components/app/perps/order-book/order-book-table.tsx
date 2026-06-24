@@ -54,7 +54,7 @@ export const OrderBookTable: React.FC<OrderBookTableProps> = ({
         ? getDepthBarWidth(level, orderBook.maxTotal)
         : 0;
       const isBid = side === 'bid';
-      const depthPosition = isBid ? 'left-0' : 'right-0';
+      const depthPosition = 'right-0';
       const depthColor = isBid ? 'bg-success-default' : 'bg-error-default';
       const priceColor = isBid
         ? TextColor.SuccessDefault
