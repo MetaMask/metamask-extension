@@ -53,9 +53,7 @@ describe('ToastListener', () => {
   }) {
     mockUseSelector
       .mockReturnValueOnce(isUnlocked)
-      .mockReturnValueOnce(
-        transactionToastEnabled ? 'redux' : undefined,
-      );
+      .mockReturnValueOnce(transactionToastEnabled ? 'redux' : undefined);
     mockIsInteractiveUI.mockReturnValue(isInteractive);
     render(<ToastListener />);
   }

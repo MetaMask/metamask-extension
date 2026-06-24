@@ -1,11 +1,18 @@
 import { useEffect } from 'react';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { Transaction } from '@metamask/keyring-api';
 import { useMessenger } from '../../../hooks/useMessenger';
-import { isPerpsWithdrawTransaction } from '../../../../shared/lib/transactions.utils';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import { showPendingToast, showSuccessToast, showFailedToast } from './shared';
+import {
+  shouldShowPendingToast,
+  shouldShowTerminalToast,
+} from './toast-lifecycle';
 
 export const toastListenerCapabilities = defineAllowedRouteCapabilities({
   actions: [],
@@ -13,6 +20,7 @@ export const toastListenerCapabilities = defineAllowedRouteCapabilities({
     'TransactionController:transactionStatusUpdated',
     'MultichainTransactionsController:transactionSubmitted',
     'MultichainTransactionsController:transactionConfirmed',
+    'AccountsController:accountTransactionsUpdated',
   ],
 });
 
@@ -20,18 +28,29 @@ type ToastListenerMessenger = RouteMessengerFromCapabilities<
   typeof toastListenerCapabilities
 >;
 
-// Transactions handled by their own custom code
-const excludedToastChecks: ((tx: TransactionMeta) => boolean)[] = [
-  isPerpsWithdrawTransaction,
+// Flows with custom toasts — excluded for now from generic messenger event toasts.
+const excludedTransactionTypes: TransactionType[] = [
+  TransactionType.musdConversion,
+  TransactionType.musdClaim,
+  TransactionType.musdRelayDeposit,
+  TransactionType.perpsDeposit,
+  TransactionType.perpsDepositAndOrder,
+  TransactionType.perpsWithdraw,
+  TransactionType.perpsRelayDeposit,
+  TransactionType.shieldSubscriptionApprove,
 ];
 
-const FAILED_STATUSES = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
+function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
+  return hasTransactionType(transactionMeta, excludedTransactionTypes);
+}
+
+const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
 
 function generateToastId(id: string): string {
   return `tx-${id}`;
 }
 
-function extractPayload<T>(raw: T | [T]): T {
+function extractPayload<Type>(raw: Type | [Type]): Type {
   return Array.isArray(raw) ? raw[0] : raw;
 }
 
@@ -58,19 +77,19 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      if (excludedToastChecks.some((check) => check(transactionMeta))) {
+      if (isExcludedTransactionType(transactionMeta)) {
         return;
       }
 
       const toastId = generateToastId(id);
 
-      if (status === 'submitted') {
+      if (status === 'submitted' && shouldShowPendingToast(id)) {
         showPendingToast(toastId);
-      } else if (status === 'confirmed') {
+      } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
         // Defer so the pending toast has at least one frame to render
         // before transitioning to success on fast transactions
         setTimeout(() => showSuccessToast(toastId), 0);
-      } else if (FAILED_STATUSES.has(status)) {
+      } else if (failedStatuses.has(status) && shouldShowTerminalToast(id)) {
         setTimeout(() => showFailedToast(toastId), 0);
       }
     };
@@ -81,7 +100,9 @@ export function useTransactionEventToasts(): void {
       if (!transaction?.id) {
         return;
       }
-      showPendingToast(generateToastId(transaction.id));
+      if (shouldShowPendingToast(transaction.id)) {
+        showPendingToast(generateToastId(transaction.id));
+      }
     };
 
     // Non-EVM — confirmed events
@@ -90,7 +111,60 @@ export function useTransactionEventToasts(): void {
       if (!transaction?.id) {
         return;
       }
-      setTimeout(() => showSuccessToast(generateToastId(transaction.id)), 0);
+      if (shouldShowTerminalToast(transaction.id)) {
+        setTimeout(() => showSuccessToast(generateToastId(transaction.id)), 0);
+      }
+    };
+
+    // Non-EVM unconfirmed/failed via AccountsController; MultichainTransactionsController omits these.
+    const handleAccountsTxUpdated = (
+      raw:
+        | {
+            transactions: Record<
+              string,
+              {
+                id: string;
+                status: string;
+                type?: string;
+                chain?: string;
+                details?: { origin?: string };
+              }[]
+            >;
+          }
+        | [
+            {
+              transactions: Record<
+                string,
+                {
+                  id: string;
+                  status: string;
+                  type?: string;
+                  chain?: string;
+                  details?: { origin?: string };
+                }[]
+              >;
+            },
+          ],
+    ) => {
+      const payload = extractPayload(raw);
+      Object.values(payload?.transactions ?? {}).forEach((txs) => {
+        txs.forEach((tx) => {
+          if (!tx?.id || !tx?.status) {
+            return;
+          }
+          if (tx.chain?.startsWith('eip155:')) {
+            return;
+          }
+
+          const toastId = generateToastId(tx.id);
+
+          if (tx.status === 'unconfirmed' && shouldShowPendingToast(tx.id)) {
+            showPendingToast(toastId);
+          } else if (tx.status === 'failed' && shouldShowTerminalToast(tx.id)) {
+            setTimeout(() => showFailedToast(toastId), 0);
+          }
+        });
+      });
     };
 
     messenger.subscribe(
@@ -105,6 +179,10 @@ export function useTransactionEventToasts(): void {
       'MultichainTransactionsController:transactionConfirmed',
       handleNonEvmConfirmed,
     );
+    messenger.subscribe(
+      'AccountsController:accountTransactionsUpdated',
+      handleAccountsTxUpdated,
+    );
 
     return () => {
       messenger.unsubscribe(
@@ -118,6 +196,10 @@ export function useTransactionEventToasts(): void {
       messenger.unsubscribe(
         'MultichainTransactionsController:transactionConfirmed',
         handleNonEvmConfirmed,
+      );
+      messenger.unsubscribe(
+        'AccountsController:accountTransactionsUpdated',
+        handleAccountsTxUpdated,
       );
     };
   }, [messenger]);

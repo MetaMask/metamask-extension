@@ -342,14 +342,14 @@ export const selectPerpsWithdrawTransactionsForToast = createDeepEqualSelector(
       ),
 );
 
-const selectIsTransactionEventToastEnabled = createSelector(
+const getExtensionTransactionToastEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ extensionUxTransactionEventToast }) =>
     getBooleanFeatureFlag(extensionUxTransactionEventToast, false),
 );
 
 export const selectToastImplementation = createSelector(
-  selectIsTransactionEventToastEnabled,
+  getExtensionTransactionToastEnabled,
   getExtensionSkipTransactionStatusPage,
   (isEventBased, isSmartTxEnabled): 'messenger' | 'redux' | undefined => {
     if (isEventBased) {
