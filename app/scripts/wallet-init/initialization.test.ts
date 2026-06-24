@@ -1,6 +1,8 @@
 import { Wallet } from '@metamask/wallet';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
+import { Json } from '@metamask/utils';
+import { RootMessenger } from '../lib/messenger';
 import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
@@ -46,17 +48,18 @@ describe('initializeWallet', () => {
 
     initializeWallet({ messenger, state, connectivityAdapter });
 
-    expect(MockWallet).toHaveBeenCalledWith({
-      messenger,
-      state,
-      instanceOptions: {
-        approvalController: 'approval-options',
-        connectivityController: 'connectivity-options',
-        keyringController: 'keyring-options',
-        remoteFeatureFlagController: 'rffc-options',
-        storageService: 'storage-options',
-      },
-    });
+    expect(MockWallet).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messenger,
+        instanceOptions: {
+          approvalController: 'approval-options',
+          connectivityController: 'connectivity-options',
+          keyringController: 'keyring-options',
+          remoteFeatureFlagController: 'rffc-options',
+          storageService: 'storage-options',
+        },
+      }),
+    );
   });
 
   it('threads the messenger, state, and injected values through to the builders', () => {

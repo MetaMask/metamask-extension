@@ -64,16 +64,13 @@ export function initializeWallet({
     messenger,
     state: {
       ...state,
-      // Seed the superset PreferencesController the way the prior standalone
-      // init did: default `currentLocale` to the detected locale, then let any
-      // persisted state override it.
+      // Default `currentLocale`, letting persisted state win (mirrors prior init).
       PreferencesController: {
         currentLocale: initLangCode ?? '',
         ...state.PreferencesController,
       },
     },
-    // Override the wallet's default (package) PreferencesController with the
-    // extension's diverging superset. See `./preferences-controller`.
+    // Override the wallet's default PreferencesController with the superset.
     initializationConfigurations: [preferencesControllerConfiguration],
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
