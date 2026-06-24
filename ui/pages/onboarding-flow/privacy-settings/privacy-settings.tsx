@@ -126,7 +126,7 @@ export default function PrivacySettings() {
         </Box>
 
         <Box
-          className={classnames('detail-view', {
+          className={classnames('detail-view py-4 px-2', {
             hidden: !showDetail && hiddenClass,
           })}
         >

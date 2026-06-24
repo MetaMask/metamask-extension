@@ -66,19 +66,19 @@ export const PrivacySettingsLanding = ({
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
-        paddingHorizontal={4}
-        paddingTop={4}
+        paddingHorizontal={6}
+        paddingTop={8}
       >
         <ButtonIcon
           iconName={IconName.ArrowLeft}
           ariaLabel={t('back')}
-          size={ButtonIconSize.Lg}
+          size={ButtonIconSize.Md}
           data-testid="privacy-settings-back-button"
           onClick={onComplete}
         />
       </Box>
 
-      <Box paddingHorizontal={4} paddingTop={5} paddingBottom={4}>
+      <Box paddingHorizontal={6} paddingTop={5} paddingBottom={6}>
         <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
           {t('defaultSettingsTitle')}
         </Text>
@@ -103,14 +103,14 @@ export const PrivacySettingsLanding = ({
           <button
             key={id}
             type="button"
-            className="w-full border-0 bg-transparent p-0 text-left text-inherit cursor-pointer hover:bg-background-default-hover"
+            className="w-full border-0 bg-transparent py-0 text-left text-inherit cursor-pointer hover:bg-background-hover"
             onClick={() => onSelectView(id)}
             data-testid={testId}
           >
             <Box
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
-              className="w-full gap-2 px-4 py-3"
+              className="w-full gap-2 px-6 py-3"
             >
               <Icon
                 name={iconName}

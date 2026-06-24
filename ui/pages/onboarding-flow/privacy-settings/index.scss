@@ -7,16 +7,20 @@
   align-items: center;
   overflow-x: hidden;
 
+  margin-inline: -24px;
+  margin-top: -32px;
+  margin-bottom: -32px;
+
   @include design-system.screen-sm-max {
     margin-bottom: 24px;
   }
 
   a {
     color: var(--color-primary-default);
+    cursor: pointer;
 
     &:hover {
-      cursor: pointer;
-      color: var(--color-primary-default);
+      color: var(--color-primary-alternative);
     }
   }
 
