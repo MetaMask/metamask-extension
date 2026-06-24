@@ -1,0 +1,28 @@
+## zizmor configuration
+## Reference: https://docs.zizmor.sh/configuration/
+
+# Rule-specific tweaks. The CI workflow gates on `--min-severity` and is
+# tightened over time as findings are resolved.
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # Trusted first-party publishers — tag pins (e.g. `@v4`) are accepted.
+        # Hash pinning is still preferred but not required for these.
+        actions/*: ref-pin
+        github/*: ref-pin
+        MetaMask/*: ref-pin
+        metamask/*: ref-pin
+        # Default for everything else: require a hash pin.
+        "*": hash-pin
+
+  # The build and publish workflows call internal reusable workflows
+  # (run-build.yml, run-e2e.yml, publish-prerelease.yml, etc.) that each
+  # consume 40+ secrets. Listing every secret at every call site would
+  # produce ~1500 lines of YAML for no real security gain — caller and
+  # callee live in the same repository and share the same trust boundary.
+  secrets-inherit:
+    ignore:
+      - main.yml
+      - nightly-build.yml
+      - publish-release-from-release-head.yml

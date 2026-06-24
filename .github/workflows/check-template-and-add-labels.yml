@@ -3,9 +3,18 @@ name: Check template and add labels
 on:
   issues:
     types: [opened, edited, labeled, unlabeled, reopened]
+  # zizmor: ignore[dangerous-triggers]
+  # pull_request_target is required so PRs from forks get template-checked
+  # and labeled. The workflow does not check out PR head code — only the
+  # default-branch checkout — so the trigger cannot be used to execute
+  # attacker code.
   pull_request_target:
     types: [opened, edited, labeled, unlabeled, reopened, synchronize]
   merge_group:
+
+# Labelling uses LABEL_TOKEN (PAT); GITHUB_TOKEN only needs read.
+permissions:
+  contents: read
 
 jobs:
   check-template-and-add-labels:

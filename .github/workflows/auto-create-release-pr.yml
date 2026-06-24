@@ -3,6 +3,9 @@ name: Auto Create Release PR
 on:
   create:
 
+permissions:
+  contents: read
+
 jobs:
   extract:
     # Only run for release branch creation (not tags or other branches)
@@ -14,6 +17,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - id: out
         shell: bash

@@ -7,6 +7,11 @@ on:
     types:
       - closed
 
+# Labelling is performed with RELEASE_LABEL_TOKEN (a PAT), so the
+# workflow GITHUB_TOKEN only needs read access.
+permissions:
+  contents: read
+
 jobs:
   add-release-label:
     runs-on: ubuntu-latest

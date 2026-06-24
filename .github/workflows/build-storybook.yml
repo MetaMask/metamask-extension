@@ -6,6 +6,9 @@ on:
       STORYBOOK_TOKEN:
         required: false
 
+permissions:
+  contents: read
+
 jobs:
   build-storybook:
     name: Build storybook

@@ -5,6 +5,11 @@ on:
     types:
       - created
 
+# Push + PR ops use FIXTURE_UPDATE_TOKEN (PAT); GITHUB_TOKEN only
+# needs read access.
+permissions:
+  contents: read
+
 jobs:
   is-cross-repo-pr:
     name: Determine whether this PR is cross-repo
@@ -15,6 +20,8 @@ jobs:
       IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Determine whether this PR is cross-repo
         id: is-cross-repo
@@ -33,6 +40,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: React to the comment
         run: |
@@ -60,6 +69,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -144,6 +155,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ needs.prepare.outputs.BRANCH }}
+          persist-credentials: false
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -213,6 +225,9 @@ jobs:
     environment: default-branch
     steps:
       - name: Checkout repository
+        # zizmor: ignore[artipacked]
+        # Credentials are persisted on purpose: this job pushes the
+        # updated fixtures back to the PR. No artifacts are uploaded.
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
@@ -296,10 +311,11 @@ jobs:
       - uses: actions/checkout@v6
         with:
           token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          persist-credentials: false
 
       - name: Post comment if the update failed
         run: |
-          passed="${{ needs.check-status.outputs.PASSED }}"
+          passed="${NEEDS_CHECK_STATUS_OUTPUTS_PASSED}"
           if [[ $passed != "true" ]]; then
             gh pr comment "${PR_NUMBER}" --body "E2E fixtures update failed. You can [review the logs or retry the fixture update here](${ACTION_RUN_URL})"
           fi
@@ -307,3 +323,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
           ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          NEEDS_CHECK_STATUS_OUTPUTS_PASSED: ${{ needs.check-status.outputs.PASSED }}

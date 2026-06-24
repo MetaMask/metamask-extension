@@ -1,0 +1,48 @@
+name: zizmor
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+      - '.github/zizmor.yml'
+      - '.github/workflows/zizmor.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  zizmor:
+    name: zizmor static analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install zizmor
+        # zizmor ships prebuilt wheels on PyPI that bundle the Rust binary.
+        # pipx keeps it in its own venv so it can't conflict with anything.
+        run: pipx install zizmor==1.24.1
+
+      - name: Run zizmor
+        # Gate at the strictest possible level. Any new finding (even
+        # `informational`) fails this job.
+        run: |
+          zizmor --config .github/zizmor.yml \
+            --min-severity=informational \
+            --format=sarif \
+            .github/workflows/ > zizmor.sarif
+
+      - name: Upload SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: zizmor.sarif
+          category: zizmor

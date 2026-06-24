@@ -5,6 +5,9 @@ on:
     - cron: '0 */12 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   download-translations:
     runs-on: ubuntu-latest
@@ -15,6 +18,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
+          persist-credentials: false
 
       - name: Crowdin download approved translations
         uses: crowdin/github-action@a3160b9e5a9e00739392c23da5e580c6cabe526d

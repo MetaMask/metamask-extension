@@ -5,8 +5,10 @@ on:
     branches:
       - stable
 
+# The sync action authenticates with STABLE_SYNC_TOKEN, so the
+# workflow GITHUB_TOKEN itself only needs read access.
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   get-stable-version:
@@ -18,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Configure Git
         run: |

@@ -10,6 +10,9 @@ on:
         description: Stored coverage
         value: ${{ jobs.report-coverage.outputs.stored-coverage }}
 
+permissions:
+  contents: read
+
 jobs:
   test-unit:
     name: Unit tests
@@ -26,7 +29,9 @@ jobs:
           skip-allow-scripts: true
 
       - name: test:unit:coverage
-        run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${STRATEGY_JOB_TOTAL}
+        env:
+          STRATEGY_JOB_TOTAL: ${{ strategy.job-total }}
 
       - name: Rename coverage
         run: mv coverage/unit/coverage-final.json coverage/unit/coverage-unit-${{matrix.shard}}.json
