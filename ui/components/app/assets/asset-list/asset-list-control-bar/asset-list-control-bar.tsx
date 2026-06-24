@@ -8,15 +8,11 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { isStrictHexString } from '@metamask/utils';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
-  getShowTestNetworks,
   getTokenNetworkFilter,
-  getUseExternalServices,
   getUseNftDetection,
 } from '../../../../../selectors';
 import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
@@ -27,7 +23,6 @@ import {
   selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
 import {
-  getAllNetworkConfigurationsByCaipChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../../../shared/lib/selectors/networks';
 import {
@@ -96,7 +91,7 @@ import {
   getIsNetworkManagementEnabled,
   getIsTokenManagementFilterEnabled,
 } from '../../../../../selectors/multichain/feature-flags';
-import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
+import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
@@ -121,9 +116,6 @@ const AssetListControlBar = ({
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
-  const showTestnets = useSelector(getShowTestNetworks);
-  const useExternalServices = useSelector(getUseExternalServices);
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -152,21 +144,6 @@ const AssetListControlBar = ({
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
-  const { nonTestNetworks: customNetworkMap, testNetworks: testNetworkMap } =
-    useNetworkManagerState();
-
-  const hasOnlyDefaultNetworks = useMemo(() => {
-    const hasVisibleCustomNetworks = Object.values(customNetworkMap).some(
-      (network) => useExternalServices || network.isEvm,
-    );
-    const hasVisibleTestNetworks =
-      showTestnets &&
-      Object.values(testNetworkMap).some(
-        (network) => useExternalServices || network.isEvm,
-      );
-
-    return !hasVisibleCustomNetworks && !hasVisibleTestNetworks;
-  }, [customNetworkMap, showTestnets, testNetworkMap, useExternalServices]);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -183,6 +160,7 @@ const AssetListControlBar = ({
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
+  const networkButtonText = useNetworkFilterButtonLabel();
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -357,36 +335,6 @@ const AssetListControlBar = ({
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
   };
-
-  const networkButtonText = useMemo(() => {
-    if (totalEnabledNetworkCount === 1) {
-      const chainId = allEnabledNetworksForAllNamespaces[0];
-      const caipChainId = isStrictHexString(chainId)
-        ? toEvmCaipChainId(chainId)
-        : chainId;
-      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
-    }
-
-    // > 1 network selected, show whether that means every visible network or
-    // only the default-network set.
-    if (totalEnabledNetworkCount > 1) {
-      return hasOnlyDefaultNetworks
-        ? t('allNetworks')
-        : t('allDefaultNetworks');
-    }
-
-    if (totalEnabledNetworkCount === 0) {
-      return t('noNetworksSelected');
-    }
-
-    return t('popularNetworks');
-  }, [
-    allEnabledNetworksForAllNamespaces,
-    hasOnlyDefaultNetworks,
-    totalEnabledNetworkCount,
-    t,
-    allCaipNetworks,
-  ]);
 
   const singleNetworkIconUrl = useMemo(() => {
     const chainIds = allEnabledNetworksForAllNamespaces;

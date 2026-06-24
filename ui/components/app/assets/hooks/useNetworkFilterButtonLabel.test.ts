@@ -1,5 +1,5 @@
-import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
-import mockState from '../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import mockState from '../../../../../test/data/mock-state.json';
 import { useNetworkFilterButtonLabel } from './useNetworkFilterButtonLabel';
 
 describe('useNetworkFilterButtonLabel', () => {

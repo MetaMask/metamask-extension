@@ -51,7 +51,7 @@ import {
   getSelectedMultichainNetworkConfiguration,
   selectEnabledNetworksAsCaipChainIds,
 } from '../../selectors/multichain/networks';
-import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
+import { useNetworkFilterButtonLabel } from '../../components/app/assets/hooks/useNetworkFilterButtonLabel';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
   addCustomAsset,

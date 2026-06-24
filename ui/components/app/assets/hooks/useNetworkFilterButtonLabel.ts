@@ -2,16 +2,12 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { getAllEnabledNetworksForAllNamespaces } from '../selectors/multichain/networks';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../shared/lib/selectors/networks';
-import { getShowTestNetworks, getUseExternalServices } from '../selectors';
-import { useNetworkManagerState } from '../components/multichain/network-manager/hooks/useNetworkManagerState';
-import { useI18nContext } from './useI18nContext';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
+import { getShowTestNetworks, getUseExternalServices } from '../../../../selectors';
+import { useNetworkManagerState } from '../../../multichain/network-manager/hooks/useNetworkManagerState';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-/**
- * Returns the network filter button label used on the home asset list and
- * Manage Tokens pages, based on globally enabled networks.
- */
 export function useNetworkFilterButtonLabel(): string {
   const t = useI18nContext();
   const allEnabledNetworksForAllNamespaces = useSelector(
