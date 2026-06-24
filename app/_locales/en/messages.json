@@ -6814,6 +6814,9 @@
   "perpsCrossMarginNotSupportedTitle": {
     "message": "Cross margin not supported"
   },
+  "perpsCurrentPrice": {
+    "message": "Current price"
+  },
   "perpsDateToday": {
     "message": "Today"
   },
