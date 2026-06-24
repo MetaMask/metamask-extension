@@ -3,7 +3,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { Transaction } from '@metamask/keyring-api';
+import type {
+  AccountTransactionsUpdatedEventPayload,
+  Transaction,
+} from '@metamask/keyring-api';
 import { useMessenger } from '../../../hooks/useMessenger';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
@@ -18,8 +21,6 @@ export const toastListenerCapabilities = defineAllowedRouteCapabilities({
   actions: [],
   events: [
     'TransactionController:transactionStatusUpdated',
-    'MultichainTransactionsController:transactionSubmitted',
-    'MultichainTransactionsController:transactionConfirmed',
     'AccountsController:accountTransactionsUpdated',
   ],
 });
@@ -52,6 +53,25 @@ function generateToastId(id: string): string {
 
 function extractPayload<Type>(raw: Type | [Type]): Type {
   return Array.isArray(raw) ? raw[0] : raw;
+}
+
+function handleAccountsControllerTx(tx: Transaction) {
+  if (!tx?.id || !tx?.status) {
+    return;
+  }
+  if (tx.chain?.startsWith('eip155:')) {
+    return;
+  }
+
+  const toastId = generateToastId(tx.id);
+
+  if (tx.status === 'unconfirmed' && shouldShowPendingToast(tx.id)) {
+    showPendingToast(toastId);
+  } else if (tx.status === 'confirmed' && shouldShowTerminalToast(tx.id)) {
+    setTimeout(() => showSuccessToast(toastId), 0);
+  } else if (tx.status === 'failed' && shouldShowTerminalToast(tx.id)) {
+    setTimeout(() => showFailedToast(toastId), 0);
+  }
 }
 
 /**
@@ -94,90 +114,23 @@ export function useTransactionEventToasts(): void {
       }
     };
 
-    // Non-EVM — submitted events
-    const handleNonEvmSubmitted = (raw: Transaction | [Transaction]) => {
-      const transaction = extractPayload(raw);
-      if (!transaction?.id) {
-        return;
-      }
-      if (shouldShowPendingToast(transaction.id)) {
-        showPendingToast(generateToastId(transaction.id));
-      }
-    };
-
-    // Non-EVM — confirmed events
-    const handleNonEvmConfirmed = (raw: Transaction | [Transaction]) => {
-      const transaction = extractPayload(raw);
-      if (!transaction?.id) {
-        return;
-      }
-      if (shouldShowTerminalToast(transaction.id)) {
-        setTimeout(() => showSuccessToast(generateToastId(transaction.id)), 0);
-      }
-    };
-
-    // Non-EVM unconfirmed/failed via AccountsController; MultichainTransactionsController omits these.
+    // Non-EVM — pending, success, and failed via AccountsController.
     const handleAccountsTxUpdated = (
       raw:
-        | {
-            transactions: Record<
-              string,
-              {
-                id: string;
-                status: string;
-                type?: string;
-                chain?: string;
-                details?: { origin?: string };
-              }[]
-            >;
-          }
-        | [
-            {
-              transactions: Record<
-                string,
-                {
-                  id: string;
-                  status: string;
-                  type?: string;
-                  chain?: string;
-                  details?: { origin?: string };
-                }[]
-              >;
-            },
-          ],
+        | AccountTransactionsUpdatedEventPayload
+        | [AccountTransactionsUpdatedEventPayload],
     ) => {
       const payload = extractPayload(raw);
-      Object.values(payload?.transactions ?? {}).forEach((txs) => {
-        txs.forEach((tx) => {
-          if (!tx?.id || !tx?.status) {
-            return;
-          }
-          if (tx.chain?.startsWith('eip155:')) {
-            return;
-          }
-
-          const toastId = generateToastId(tx.id);
-
-          if (tx.status === 'unconfirmed' && shouldShowPendingToast(tx.id)) {
-            showPendingToast(toastId);
-          } else if (tx.status === 'failed' && shouldShowTerminalToast(tx.id)) {
-            setTimeout(() => showFailedToast(toastId), 0);
-          }
-        });
-      });
+      for (const txs of Object.values(payload?.transactions ?? {})) {
+        for (const tx of txs) {
+          handleAccountsControllerTx(tx);
+        }
+      }
     };
 
     messenger.subscribe(
       'TransactionController:transactionStatusUpdated',
       handleEvmStatusUpdate,
-    );
-    messenger.subscribe(
-      'MultichainTransactionsController:transactionSubmitted',
-      handleNonEvmSubmitted,
-    );
-    messenger.subscribe(
-      'MultichainTransactionsController:transactionConfirmed',
-      handleNonEvmConfirmed,
     );
     messenger.subscribe(
       'AccountsController:accountTransactionsUpdated',
@@ -188,14 +141,6 @@ export function useTransactionEventToasts(): void {
       messenger.unsubscribe(
         'TransactionController:transactionStatusUpdated',
         handleEvmStatusUpdate,
-      );
-      messenger.unsubscribe(
-        'MultichainTransactionsController:transactionSubmitted',
-        handleNonEvmSubmitted,
-      );
-      messenger.unsubscribe(
-        'MultichainTransactionsController:transactionConfirmed',
-        handleNonEvmConfirmed,
       );
       messenger.unsubscribe(
         'AccountsController:accountTransactionsUpdated',
