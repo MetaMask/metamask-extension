@@ -17,6 +17,7 @@ export const NetworkListItemMenu = ({
   onClose,
   onEditClick,
   onDeleteClick,
+  deleteMenuLabel = 'delete',
   onDiscoverClick,
   isOpen,
   finalFocusRef,
@@ -99,7 +100,7 @@ export const NetworkListItemMenu = ({
             }}
             data-testid="network-list-item-options-delete"
           >
-            <Text>{t('delete')}</Text>
+            <Text>{t(deleteMenuLabel)}</Text>
           </MenuItem>
         ) : null}
       </Box>
@@ -153,6 +154,10 @@ NetworkListItemMenu.propTypes = {
    * Function that executes when the Delete menu item is closed
    */
   onDeleteClick: PropTypes.func,
+  /**
+   * Locale key for the delete/disable menu item label
+   */
+  deleteMenuLabel: PropTypes.oneOf(['delete', 'disable']),
   /**
    * Function that executes when the Discover menu item is clicked
    */
