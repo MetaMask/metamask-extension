@@ -328,6 +328,7 @@ jobs:
           amo_last_listed_version: ${{ vars.AMO_LAST_LISTED_VERSION }}
 
       - name: Summary
+        if: always()
         env:
           VERSION: ${{ needs.validate-branch.outputs.version }}
         run: |
