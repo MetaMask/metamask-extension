@@ -15,7 +15,6 @@ export type StellarNativeBalanceSectionProps = {
   symbol: string;
   baseReserve: string;
   fiatValue: number | null;
-  showFiat: boolean;
 };
 
 function formatDisplayAmount(value: number): string {
@@ -32,14 +31,12 @@ function formatDisplayAmount(value: number): string {
  * @param options0.symbol
  * @param options0.baseReserve
  * @param options0.fiatValue
- * @param options0.showFiat
  */
 export function StellarNativeBalanceSection({
   totalBalance,
   symbol,
   baseReserve,
   fiatValue,
-  showFiat,
 }: StellarNativeBalanceSectionProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
@@ -65,7 +62,7 @@ export function StellarNativeBalanceSection({
   }, [baseReserve, symbol, totalBalance]);
 
   const valueDisplay =
-    showFiat && fiatValue !== null && Number.isFinite(fiatValue)
+    fiatValue !== null && Number.isFinite(fiatValue)
       ? formatFiat(fiatValue)
       : '—';
 
@@ -103,7 +100,6 @@ export function StellarNativeBalanceSection({
             {totalDisplay}
           </Text>
         </Box>
-        {showFiat ? (
           <Box
             flexDirection={BoxFlexDirection.Column}
             gap={1}
@@ -123,7 +119,6 @@ export function StellarNativeBalanceSection({
               {valueDisplay}
             </Text>
           </Box>
-        ) : null}
       </Box>
       <Box flexDirection={BoxFlexDirection.Row} gap={3}>
         <Box

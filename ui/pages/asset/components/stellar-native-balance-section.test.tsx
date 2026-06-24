@@ -33,7 +33,6 @@ describe('StellarNativeBalanceSection', () => {
         symbol="XLM"
         baseReserve="2.5"
         fiatValue={105}
-        showFiat
       />,
     );
 
@@ -43,9 +42,9 @@ describe('StellarNativeBalanceSection', () => {
     expect(
       screen.getByText(messages.stellarNativeBalanceTitle.message),
     ).toBeInTheDocument();
-    expect(screen.getByTestId('stellar-native-total-balance')).toHaveTextContent(
-      '250.00 XLM',
-    );
+    expect(
+      screen.getByTestId('stellar-native-total-balance'),
+    ).toHaveTextContent('250.00 XLM');
     expect(
       screen.getByTestId('stellar-native-spendable-balance'),
     ).toHaveTextContent('247.50 XLM');
@@ -64,7 +63,6 @@ describe('StellarNativeBalanceSection', () => {
         symbol="XLM"
         baseReserve="2.5"
         fiatValue={105}
-        showFiat={false}
       />,
     );
 
@@ -80,7 +78,6 @@ describe('StellarNativeBalanceSection', () => {
         symbol="XLM"
         baseReserve="2.5"
         fiatValue={null}
-        showFiat={false}
       />,
     );
 

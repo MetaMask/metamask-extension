@@ -86,12 +86,13 @@ export const useTokenDisplayInfo = ({
   const isStakeable =
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
-  const isStellarTrustlineInactive = isStellarClassicTrustlineInactiveForDisplay({
-    chainId: token.chainId,
-    assetId: token.assetId,
-    isNative: token.isNative,
-    extra: token.extra,
-  });
+  const isStellarTrustlineInactive =
+    isStellarClassicTrustlineInactiveForDisplay({
+      chainId: token.chainId,
+      assetId: token.assetId,
+      isNative: token.isNative,
+      extra: token.extra,
+    });
 
   if (isEvm) {
     const tokenData = (

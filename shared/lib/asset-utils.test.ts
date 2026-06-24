@@ -177,9 +177,9 @@ describe('asset-utils', () => {
       expect(toAssetId(contractId, chainId)).toBe(
         `${chainId}/sep41:${contractId}`,
       );
-      expect(
-        toAssetId(`sep41:${contractId}`, chainId),
-      ).toBe(`${chainId}/sep41:${contractId}`);
+      expect(toAssetId(`sep41:${contractId}`, chainId)).toBe(
+        `${chainId}/sep41:${contractId}`,
+      );
     });
   });
 
