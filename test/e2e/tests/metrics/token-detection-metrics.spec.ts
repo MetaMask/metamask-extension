@@ -3,7 +3,10 @@ import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import { MOCK_ANALYTICS_ID, MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES } from '../../constants';
+import {
+  MOCK_ANALYTICS_ID,
+  MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
+} from '../../constants';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to

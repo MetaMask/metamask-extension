@@ -204,14 +204,10 @@ function assertSignatureRequestedMetrics(
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
 ) {
-  assertEventPropertiesMatch(
-    events,
-    'Signature Requested',
-    {
-      ...signatureEventProperty,
-      ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
-    },
-  );
+  assertEventPropertiesMatch(events, 'Signature Requested', {
+    ...signatureEventProperty,
+    ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
+  });
 
   if (withAnonEvents) {
     assertEventPropertiesMatch(events, 'Signature Requested Anon', {

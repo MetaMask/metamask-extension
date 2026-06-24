@@ -4,7 +4,11 @@ import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
-import { DEFAULT_FIXTURE_ACCOUNT, MOCK_ANALYTICS_ID, MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  MOCK_ANALYTICS_ID,
+  MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
+} from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';

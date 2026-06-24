@@ -1,7 +1,10 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { MOCK_ANALYTICS_ID, MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES } from '../../constants';
+import {
+  MOCK_ANALYTICS_ID,
+  MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
+} from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';

@@ -9,7 +9,10 @@ import {
   handleSidepanelPostOnboarding,
   type OnboardingMetricsFlowOptions,
 } from '../../page-objects/flows/onboarding.flow';
-import { MOCK_ANALYTICS_ID, MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES } from '../../constants';
+import {
+  MOCK_ANALYTICS_ID,
+  MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
+} from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import { Driver } from '../../webdriver/driver';
