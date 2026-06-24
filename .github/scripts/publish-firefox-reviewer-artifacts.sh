@@ -159,6 +159,7 @@ run_package() {
   echo "Cloning firefox-bundle-script at ref ${script_ref}..."
   clone_firefox_bundle_script "${script_ref}" "${clone_dir}"
 
+  # compare_builds.sh resolves bundle.sh as dirname(work_dir)/bundle.sh (see firefox-bundle-script).
   echo "Fetching populated bundle.sh from release branch..."
   git -C "${clone_dir}" fetch origin release --depth 1
   git -C "${clone_dir}" show "origin/release:bundle.sh" > "${work_root}/bundle.sh"
