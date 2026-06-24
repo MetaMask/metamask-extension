@@ -84,7 +84,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPreferencesController({
-            preferences: { showFiatInTestnets: true, showNativeTokenAsMainBalance: true },
+            preferences: {
+              showFiatInTestnets: true,
+              showNativeTokenAsMainBalance: true,
+            },
             useCurrencyRateCheck: true,
           })
           .withCurrencyController({
