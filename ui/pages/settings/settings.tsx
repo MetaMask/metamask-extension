@@ -59,6 +59,7 @@ import ShieldEntryModal from '../../components/app/shield-entry-modal';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import TabBar from './tab-bar';
 import {
   SETTINGS_ROOT_SECTIONS,
@@ -96,6 +97,7 @@ const clearReactInternalReferences = (element: Element) => {
  */
 const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const location = useLocation();
   const t = useSettingsI18n();
   const normalizedPathname = normalizeSettingsPath(location.pathname);
@@ -182,6 +184,15 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   );
 
   const currentPageLabelKey = meta?.labelKey;
+
+  const handleClose = useCallback(() => {
+    if (backRoute.startsWith(DEFAULT_ROUTE)) {
+      runCloseTransition(() => navigate(backRoute));
+      return;
+    }
+
+    navigate(backRoute);
+  }, [backRoute, navigate, runCloseTransition]);
 
   // Header: "Settings" on fullscreen; tab or sub-page name on popup/sidepanel
   const headerTitle =
@@ -438,7 +449,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         title={headerTitle}
         isPopupOrSidepanel={isPopupOrSidepanel}
         isOnSettingsRoot={isOnSettingsRoot}
-        onClose={handleBack}
+        onClose={handleClose}
         isSearchOpen={isSearchOpen}
         onOpenSearch={() => setIsSearchOpen(true)}
         onCloseSearch={handleCloseSearch}

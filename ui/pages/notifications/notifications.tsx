@@ -39,6 +39,7 @@ import {
   deleteExpiredNotifications,
   getNotificationPreferences,
 } from '../../store/actions';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
@@ -167,6 +168,7 @@ export const filterNotifications = (
 export default function Notifications() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -174,7 +176,7 @@ export default function Notifications() {
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
     } else {
       navigate(DEFAULT_ROUTE);
     }
