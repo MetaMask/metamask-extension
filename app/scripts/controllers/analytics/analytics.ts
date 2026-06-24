@@ -12,6 +12,7 @@ import type {
   AnalyticsEventBuildOptions,
 } from '../../../../shared/lib/analytics/create-event-builder';
 import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
+import type { FlattenedBackgroundStateProxy } from '../../../../shared/types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
@@ -59,6 +60,7 @@ const MARKETING_UTM_PARAMETERS = [...UTM_PARAMETERS];
 
 let messenger: AnalyticsMessenger | undefined;
 let appVersion = '';
+let cachedSrpSessionData: FlattenedBackgroundStateProxy['srpSessionData'];
 
 function getMessenger(): AnalyticsMessenger {
   if (!messenger) {
@@ -83,6 +85,34 @@ export function configureAnalytics({
   messenger = configuredMessenger;
   appVersion =
     environment === 'production' ? version : `${version}-${environment}`;
+}
+
+/**
+ * Cache the latest SRP session data used to attach profile identity to events.
+ *
+ * @param srpSessionData - Current SRP session data from MetaMask state.
+ */
+export function updateProfileSessionData(
+  srpSessionData: FlattenedBackgroundStateProxy['srpSessionData'],
+): void {
+  cachedSrpSessionData = srpSessionData;
+}
+
+function getProfileIdentityProperties(): Record<string, string> {
+  const profile = Object.entries(cachedSrpSessionData ?? {})?.[0]?.[1]
+    ?.profile;
+
+  return omitBy(
+    {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      profile_id: profile?.profileId,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      canonical_profile_id: profile?.canonicalProfileId,
+    },
+    (value) => !value,
+  ) as Record<string, string>;
 }
 
 function getCurrentChainId(networkClientId?: NetworkClientId): Hex {
@@ -277,6 +307,7 @@ function buildTrackEventPayload(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
+        ...getProfileIdentityProperties(),
       },
       (propertyValue) => propertyValue === undefined,
     ) as AnalyticsEventProperties,
@@ -312,6 +343,7 @@ function buildTrackPagePayload(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
+        ...getProfileIdentityProperties(),
       },
       (propertyValue) => propertyValue === undefined,
     ) as AnalyticsEventProperties,
