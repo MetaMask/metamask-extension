@@ -157,6 +157,7 @@ app/scripts/lib/ppom                                                            
 app/scripts/lib/signature                                                           @MetaMask/confirmations
 app/scripts/lib/transaction                                                         @MetaMask/confirmations
 ui/pages/confirmations                                                              @MetaMask/confirmations
+ui/pages/confirmations/external/scam-questionnaire                                   @MetaMask/confirmations @MetaMask/directu-mmcx-product-safety-developer
 ui/components/multichain/pages/send                                                 @MetaMask/confirmations
 ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations
 ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission     @MetaMask/confirmations @MetaMask/delegation
