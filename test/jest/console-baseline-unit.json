@@ -283,7 +283,7 @@
       "Deprecation warnings": 1,
       "MetaMask: Background connection not initialized": 9,
       "React: PropTypes validation failures": 1,
-      "error: Warning: ReactDOM.render is no longer": 9,
+      "error: Warning: ReactDOM.render is no longer": 11,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/app/assets/asset-list/asset-list.test.tsx": {
@@ -770,6 +770,11 @@
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/app/passkey-enrollment-steps/passkey-enrollment-steps.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 3,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/app/passkey-verification/passkey-verification.test.tsx": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 3,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
@@ -1778,7 +1783,7 @@
     "ui/components/multichain-accounts/multichain-private-key-list/multichain-private-key-list.test.tsx": {
       "Deprecation warnings": 1,
       "React: Missing key props in lists": 1,
-      "error: Warning: ReactDOM.render is no longer": 2,
+      "error: Warning: ReactDOM.render is no longer": 7,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/multichain-accounts/multichain-site-cell/avatar-group/multichain-avatar-group.test.tsx": {
@@ -2094,7 +2099,7 @@
     },
     "ui/components/multichain/network-list-item/network-list-item.test.js": {
       "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 13,
+      "error: Warning: ReactDOM.render is no longer": 14,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal.test.tsx": {
@@ -2131,6 +2136,11 @@
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/multichain/network-manager/components/additional-networks-info/additional-networks-info.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 5,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/multichain/network-manager/hooks/useNetworkItemCallbacks.test.ts": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 5,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
@@ -3506,7 +3516,7 @@
       "Deprecation warnings": 1,
       "React: DOM nesting violations": 2,
       "Reselect: Identity function warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 19,
+      "error: Warning: ReactDOM.render is no longer": 20,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/asset/components/market-closed-action-button.test.tsx": {
@@ -3601,7 +3611,7 @@
     },
     "ui/pages/batch-sell/pages/review/components/review-and-confirm-modal.test.tsx": {
       "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 35,
+      "error: Warning: ReactDOM.render is no longer": 37,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/batch-sell/pages/review/components/select-received-asset-modal.test.tsx": {
@@ -3636,7 +3646,7 @@
     },
     "ui/pages/batch-sell/pages/review/hooks/useBatchSellSubmitQuotes.test.ts": {
       "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 13,
+      "error: Warning: ReactDOM.render is no longer": 14,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/batch-sell/pages/review/hooks/useBatchSellTradesFetching.test.ts": {
@@ -3887,7 +3897,7 @@
     },
     "ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.test.js": {
       "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 6,
+      "error: Warning: ReactDOM.render is no longer": 7,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.test.js": {
@@ -5833,7 +5843,7 @@
     },
     "ui/pages/create-password-form/create-password-form.test.tsx": {
       "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 2,
+      "error: Warning: ReactDOM.render is no longer": 4,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/custom-token-import/custom-token-import.test.tsx": {
@@ -5908,7 +5918,7 @@
     },
     "ui/pages/keychains/reveal-seed.test.tsx": {
       "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 16,
+      "error: Warning: ReactDOM.render is no longer": 25,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/lock/lock.container.test.tsx": {
