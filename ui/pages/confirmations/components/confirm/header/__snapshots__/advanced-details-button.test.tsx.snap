@@ -20,7 +20,7 @@ exports[`<AdvancedDetailsButton /> should match snapshot 1`] = `
           data-testid="header-advanced-details-button"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/customize.svg');"
           />
         </button>

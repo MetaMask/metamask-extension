@@ -33,6 +33,7 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
+import log from 'loglevel';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
@@ -181,20 +182,21 @@ import {
 } from '../../shared/lib/feature-flags';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
-import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
-import { getIsSocialLoginFlow } from './first-time-flow';
-import { getHasShieldEntryModalShownOnce } from './subscription';
-import { getApprovalRequestsByType } from './approvals';
+import { UTM_PARAMETERS } from '../../shared/types/metametrics';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import {
+  getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
+} from './transactions';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
   getMultichainNetwork,
 } from './multichain/networks';
-import {
-  getUnapprovedTransactions,
-  getCurrentNetworkTransactions,
-} from './transactions';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import { getApprovalRequestsByType } from './approvals';
+import { getHasShieldEntryModalShownOnce } from './subscription';
+import { getIsSocialLoginFlow } from './first-time-flow';
+import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -375,14 +377,6 @@ export function getAnalyticsId(state) {
   return analyticsId;
 }
 
-/**
- * @param state
- * @deprecated Use `getAnalyticsId` instead.
- */
-export function getMetaMetricsId(state) {
-  return getAnalyticsId(state);
-}
-
 export function isCurrentProviderCustom(state) {
   const provider = getProviderConfig(state);
   return (
@@ -393,6 +387,10 @@ export function isCurrentProviderCustom(state) {
 
 export function getActiveQrCodeScanRequest(state) {
   return state.metamask.activeQrCodeScanRequest;
+}
+
+export function getLastQrScanCompletedSuccessfully(state) {
+  return state.metamask.lastQrScanCompletedSuccessfully;
 }
 
 export function getIsSigningQRHardwareTransaction(state) {
@@ -1743,10 +1741,11 @@ export const getAnySnapUpdateAvailable = createSelector(
 /**
  * Return if the snap branding should show in the UI.
  *
- * Deep-equal memo: snap install map / inputs can change reference without changing branding flag.
+ * Parameterized selector for snap-specific branding visibility.
  */
-export const getHideSnapBranding = createDeepEqualSelector(
-  [selectInstalledSnaps, selectSnapId],
+export const getHideSnapBranding = createParameterizedSelector(10)(
+  selectInstalledSnaps,
+  selectSnapId,
   (installedSnaps, snapId) => {
     return installedSnaps[snapId]?.hideSnapBranding;
   },
@@ -1929,25 +1928,27 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsDefaultToken(state, overrideChainId = null) {
-  const selectedAccount = getSelectedAccount(state);
-  const balance = selectedAccount?.balance;
-  const currentChainId = getCurrentChainId(state);
+export const getSwapsDefaultToken = createSelector(
+  (state) => getSelectedAccount(state),
+  (state) => getCurrentChainId(state),
+  (_state, overrideChainId = null) => overrideChainId,
+  (selectedAccount, currentChainId, overrideChainId) => {
+    const balance = selectedAccount?.balance;
+    const chainId = overrideChainId ?? currentChainId;
+    const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
-  const chainId = overrideChainId ?? currentChainId;
-  const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
-
-  return {
-    ...defaultTokenObject,
-    chainId,
-    balance: hexToDecimal(balance),
-    string: getValueFromWeiHex({
-      value: balance,
-      numberOfDecimals: 4,
-      toDenomination: 'ETH',
-    }),
-  };
-}
+    return {
+      ...defaultTokenObject,
+      chainId,
+      balance: hexToDecimal(balance),
+      string: getValueFromWeiHex({
+        value: balance,
+        numberOfDecimals: 4,
+        toDenomination: 'ETH',
+      }),
+    };
+  },
+);
 
 /**
  * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
@@ -2209,8 +2210,8 @@ export function getLocale(state) {
   return state.metamask.currentLocale;
 }
 
-// Deep-equal memo: keyed snap lookup; parent snaps object identity can churn without snap change.
-export const getSnap = createDeepEqualSelector(
+// Parameterized selector with bounded snap ID cache.
+export const getSnap = createParameterizedSelector(20)(
   getSnaps,
   (_, snapId) => snapId,
   (snaps, snapId) => {
@@ -2258,9 +2259,9 @@ export const getSnapsMetadata = createDeepEqualSelector(
  * @param {string} snapId - The snap ID to get the metadata for.
  * @returns {object} An object containing the snap name and description.
  *
- * Deep-equal memo: metadata lookup + default object; parent metadata map can churn references.
+ * Parameterized selector with bounded snap ID cache.
  */
-export const getSnapMetadata = createDeepEqualSelector(
+export const getSnapMetadata = createParameterizedSelector(20)(
   getSnapsMetadata,
   (_, snapId) => snapId,
   (metadata, snapId) => {
@@ -2272,8 +2273,8 @@ export const getSnapMetadata = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: reduce into enabled map; new object when snap list identity shifts.
-const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
+// Selector for enabled snaps.
+const getEnabledSnaps = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).reduce((acc, cur) => {
     if (cur.enabled) {
       acc[cur.id] = cur;
@@ -2282,21 +2283,18 @@ const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
   }, {});
 });
 
-// Deep-equal memo: reduce into preinstalled map; same rationale as getEnabledSnaps.
-export const getPreinstalledSnaps = createDeepEqualSelector(
-  getSnaps,
-  (snaps) => {
-    return Object.values(snaps).reduce((acc, snap) => {
-      if (snap.preinstalled) {
-        acc[snap.id] = snap;
-      }
-      return acc;
-    }, {});
-  },
-);
+// Selector for preinstalled snaps.
+export const getPreinstalledSnaps = createSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).reduce((acc, snap) => {
+    if (snap.preinstalled) {
+      acc[snap.id] = snap;
+    }
+    return acc;
+  }, {});
+});
 
-// Deep-equal memo: filter + permissions join yields new array refs for unchanged snap set.
-const getSettingsPageSnaps = createDeepEqualSelector(
+// Selector for settings page snaps.
+const getSettingsPageSnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2309,8 +2307,8 @@ const getSettingsPageSnaps = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: filtered id list is a new array when underlying snaps/permissions churn.
-export const getNameLookupSnapsIds = createDeepEqualSelector(
+// Selector for name lookup snap IDs.
+export const getNameLookupSnapsIds = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2320,8 +2318,8 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: mapped {id, permission} rows are new objects each evaluation.
-export const getNameLookupSnaps = createDeepEqualSelector(
+// Selector for name lookup snaps and permissions.
+export const getNameLookupSnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2334,14 +2332,14 @@ export const getNameLookupSnaps = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: map over filtered snaps always allocates a new ids array.
-export const getSettingsPageSnapsIds = createDeepEqualSelector(
+// Selector for settings page snap IDs.
+export const getSettingsPageSnapsIds = createSelector(
   getSettingsPageSnaps,
   (snaps) => snaps.map((snap) => snap.id),
 );
 
-// Deep-equal memo: filter notify-capable snaps; new array when permissions map identity shifts.
-export const getNotifySnaps = createDeepEqualSelector(
+// Selector for notify-enabled snaps.
+export const getNotifySnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2356,9 +2354,9 @@ export const getNotifySnaps = createDeepEqualSelector(
  * @param {object} state - The Redux state object.
  * @returns {object[]} An array of notify snaps that are not preinstalled.
  *
- * Deep-equal memo: second filter layer; notify snap array identity can flicker.
+ * Selector for non-preinstalled notify-enabled snaps.
  */
-export const getThirdPartyNotifySnaps = createDeepEqualSelector(
+export const getThirdPartyNotifySnaps = createSelector(
   getNotifySnaps,
   (snaps) => snaps.filter((snap) => !snap.preinstalled),
 );
@@ -2367,8 +2365,8 @@ function getAllSnapInsights(state) {
   return state.metamask.insights;
 }
 
-// Deep-equal memo: indexed read on insights map; insights object can be replaced with equal contents.
-export const getSnapInsights = createDeepEqualSelector(
+// Parameterized selector with bounded insight ID cache.
+export const getSnapInsights = createParameterizedSelector(10)(
   getAllSnapInsights,
   (_, id) => id,
   (insights, id) => insights?.[id],
@@ -3990,4 +3988,34 @@ export function getLastVisitedPerpsRoute(state) {
  */
 export function getDeferredDeepLink(state) {
   return state.metamask?.deferredDeepLink || null;
+}
+
+/**
+ * Retrieves the deferred deep link parameters from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {Record<string, string>} The deferred deep link parameters if available, empty object otherwise.
+ */
+export function getDeferredDeepLinkParameters(state) {
+  const deferredDeepLink = getDeferredDeepLink(state);
+  if (!deferredDeepLink) {
+    return null;
+  }
+
+  const utmProperties = {};
+  try {
+    const url = new URL(deferredDeepLink.referringLink);
+
+    for (const utmParam of UTM_PARAMETERS) {
+      const value = url.searchParams.get(utmParam);
+      if (value) {
+        utmProperties[utmParam] = value;
+      }
+    }
+  } catch (error) {
+    log.error('Failed to parse deferred deep link:', deferredDeepLink, error);
+    return null;
+  }
+
+  return utmProperties;
 }

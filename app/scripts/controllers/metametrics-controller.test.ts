@@ -217,12 +217,14 @@ describe('MetaMetricsController', function () {
   describe('constructor', function () {
     it('should properly initialize', async function () {
       const spy = jest.spyOn(segmentMock, 'track');
-      await withController(({ controller }) => {
+      await withController(({ controller, controllerMessenger }) => {
         expect(controller.version).toStrictEqual(VERSION);
         expect(controller.chainId).toStrictEqual(DEFAULT_CHAIN_ID);
         expect(controller.state.completedMetaMetricsOnboarding).toBe(true);
         expect(controller.state.marketingCampaignCookieId).toStrictEqual(null);
-        expect(controller.getMetaMetricsId()).toStrictEqual(TEST_ANALYTICS_ID);
+        expect(
+          controllerMessenger.call('AnalyticsController:getState').analyticsId,
+        ).toStrictEqual(TEST_ANALYTICS_ID);
         expect(controller.locale).toStrictEqual(LOCALE.replace('_', '-'));
         expect(controller.state.fragments).toStrictEqual({
           testid: SAMPLE_PERSISTED_EVENT,
@@ -455,29 +457,12 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('getMetaMetricsId', function () {
-    it('returns the analytics metametrics id and keeps it stable across calls', async function () {
-      await withController(({ controller, controllerMessenger }) => {
-        const { analyticsId: initialAnalyticsId } = controllerMessenger.call(
-          'AnalyticsController:getState',
-        );
-        expect(initialAnalyticsId).toStrictEqual(TEST_ANALYTICS_ID);
-
-        const clientMetaMetricsId = controller.getMetaMetricsId();
-        expect(clientMetaMetricsId).toStrictEqual(TEST_ANALYTICS_ID);
-        expect(clientMetaMetricsId).toMatch(
-          /^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/iu,
-        );
-
-        const sameMetaMetricsId = controller.getMetaMetricsId();
-        expect(clientMetaMetricsId).toStrictEqual(sameMetaMetricsId);
-      });
-    });
-  });
-
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
       const spy = jest.spyOn(segmentMock, 'identify');
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {
+        return undefined;
+      });
       await withController(({ controller }) => {
         controller.identify({
           ...MOCK_TRAITS,
@@ -490,6 +475,15 @@ describe('MetaMetricsController', function () {
             traits: MOCK_TRAITS,
           }),
           undefined,
+        );
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          1,
+          'MetaMetricsController: "test_null" value is not a valid trait type',
+        );
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          2,
+          'MetaMetricsController: "test_array_multi_types" value is not a valid trait type',
         );
       });
     });
@@ -532,9 +526,21 @@ describe('MetaMetricsController', function () {
 
     it('should not call segment.identify if there are no valid traits to identify', async function () {
       const spy = jest.spyOn(segmentMock, 'identify');
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {
+        return undefined;
+      });
       await withController(({ controller }) => {
         controller.identify(MOCK_INVALID_TRAITS);
         expect(spy).toHaveBeenCalledTimes(0);
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          1,
+          'MetaMetricsController: "test_null" value is not a valid trait type',
+        );
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          2,
+          'MetaMetricsController: "test_array_multi_types" value is not a valid trait type',
+        );
       });
     });
   });
@@ -562,10 +568,12 @@ describe('MetaMetricsController', function () {
         },
       );
     });
-    it('should not nullify the metaMetricsId when set to false', async function () {
-      await withController(async ({ controller }) => {
+    it('should not nullify the analyticsId when set to false', async function () {
+      await withController(async ({ controller, controllerMessenger }) => {
         await controller.setParticipateInMetaMetrics(false);
-        expect(controller.getMetaMetricsId()).toStrictEqual(TEST_ANALYTICS_ID);
+        expect(
+          controllerMessenger.call('AnalyticsController:getState').analyticsId,
+        ).toStrictEqual(TEST_ANALYTICS_ID);
       });
     });
     it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
@@ -834,41 +842,117 @@ describe('MetaMetricsController', function () {
       });
     });
 
-    it('uses current time for latest analytics event state', async function () {
-      await withController(({ controller }) => {
-        const spy = jest.spyOn(segmentMock, 'track');
-        const currentTimestamp = new Date('2024-02-01T00:00:00.000Z').getTime();
-        const customTimestamp = '2024-01-15T00:00:00.000Z';
-        jest.setSystemTime(currentTimestamp);
-        controller.trackEvent({
-          event: 'Fake Event',
-          category: 'Unit Test',
-          timestamp: customTimestamp,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '1',
+    it('removes UTM properties when marketing consent is not granted', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              dataCollectionForMarketing: false,
+            },
           },
-        });
-        expect(spy).toHaveBeenCalledTimes(1);
-        expect(spy).toHaveBeenCalledWith(
-          {
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+          controller.trackEvent({
             event: 'Fake Event',
+            category: 'Unit Test',
             properties: {
-              ...DEFAULT_EVENT_PROPERTIES,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_source: 'newsletter',
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               chain_id: '1',
             },
-            context: DEFAULT_TEST_CONTEXT,
-            userId: TEST_ANALYTICS_ID,
+            sensitiveProperties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_campaign: 'spring-sale',
+              foo: 'bar',
+            },
+          });
+
+          expect(spy).toHaveBeenCalledTimes(2);
+          expect(spy).toHaveBeenNthCalledWith(
+            1,
+            expect.objectContaining({
+              event: 'Fake Event',
+              userId: TEST_ANALYTICS_ID,
+              context: DEFAULT_TEST_CONTEXT,
+              properties: expect.objectContaining({
+                ...DEFAULT_EVENT_PROPERTIES,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: '1',
+              }),
+            }),
+            undefined,
+          );
+          expect(spy.mock.calls[0][0].properties).not.toHaveProperty(
+            'utm_source',
+          );
+
+          expect(spy).toHaveBeenNthCalledWith(
+            2,
+            expect.objectContaining({
+              event: 'Fake Event',
+              userId: TEST_ANALYTICS_ID,
+              context: DEFAULT_TEST_CONTEXT,
+              properties: expect.objectContaining({
+                foo: 'bar',
+                ...DEFAULT_EVENT_PROPERTIES,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: '1',
+                [ANONYMOUS_EVENT_PROPERTY]: true,
+              }),
+            }),
+            undefined,
+          );
+          expect(spy.mock.calls[1][0].properties).not.toHaveProperty(
+            'utm_campaign',
+          );
+        },
+      );
+    });
+
+    it('preserves UTM properties when marketing consent is granted', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              dataCollectionForMarketing: true,
+            },
           },
-          spy.mock.calls[0][1],
-        );
-        expect(controller.state.latestNonAnonymousEventTimestamp).toBe(
-          currentTimestamp,
-        );
-      });
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+          controller.trackEvent({
+            event: 'Fake Event',
+            category: 'Unit Test',
+            properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_source: 'newsletter',
+            },
+            sensitiveProperties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_campaign: 'spring-sale',
+            },
+          });
+
+          expect(spy).toHaveBeenCalledTimes(2);
+          expect(spy.mock.calls[0][0].properties).toHaveProperty(
+            'utm_source',
+            'newsletter',
+          );
+          expect(spy.mock.calls[1][0].properties).toHaveProperty(
+            'utm_campaign',
+            'spring-sale',
+          );
+        },
+      );
     });
 
     it('should throw if event not provided', async function () {
@@ -1373,27 +1457,17 @@ describe('MetaMetricsController', function () {
   });
 
   describe('Sensitive transaction and signature events', function () {
-    it('keeps the original event name, marks anonymous-only tracks, and preserves the latest non-anonymous timestamp', async function () {
-      const previousTimestamp = new Date('2024-01-01T00:00:00.000Z').getTime();
-
+    it('keeps the original event name and marks anonymous-only tracks', async function () {
       await withController(
         {
           options: {
             state: {
               fragments: {},
-              latestNonAnonymousEventTimestamp: previousTimestamp,
             },
           },
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          expect(controller.state.latestNonAnonymousEventTimestamp).toBe(
-            previousTimestamp,
-          );
-          const currentTimestamp = new Date(
-            '2024-02-01T00:00:00.000Z',
-          ).getTime();
-          jest.setSystemTime(currentTimestamp);
           controller.trackEvent(
             {
               event: 'Signature Requested',
@@ -1413,9 +1487,6 @@ describe('MetaMetricsController', function () {
               }),
             }),
             undefined,
-          );
-          expect(controller.state.latestNonAnonymousEventTimestamp).toBe(
-            previousTimestamp,
           );
         },
       );
@@ -2785,8 +2856,7 @@ describe('MetaMetricsController', function () {
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state
-        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        // Set `fragments` to an empty object to override complex default `fragments` mock state.
         {
           options: { state: { fragments: {} } },
         },
@@ -2800,7 +2870,6 @@ describe('MetaMetricsController', function () {
           ).toMatchInlineSnapshot(`
             {
               "completedMetaMetricsOnboarding": true,
-              "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
             }
           `);
@@ -2810,8 +2879,7 @@ describe('MetaMetricsController', function () {
 
     it('includes expected state in state logs', async () => {
       await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state
-        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        // Set `fragments` to an empty object to override complex default `fragments` mock state.
         {
           options: { state: { fragments: {} } },
         },
@@ -2828,7 +2896,6 @@ describe('MetaMetricsController', function () {
               "dataCollectionForMarketing": null,
               "eventsBeforeMetricsOptIn": [],
               "fragments": {},
-              "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "tracesBeforeMetricsOptIn": [],
               "traits": {},
@@ -2840,8 +2907,7 @@ describe('MetaMetricsController', function () {
 
     it('persists expected state', async () => {
       await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state
-        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        // Set `fragments` to an empty object to override complex default `fragments` mock state.
         {
           options: { state: { fragments: {} } },
         },
@@ -2858,7 +2924,6 @@ describe('MetaMetricsController', function () {
               "dataCollectionForMarketing": null,
               "eventsBeforeMetricsOptIn": [],
               "fragments": {},
-              "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "tracesBeforeMetricsOptIn": [],
               "traits": {},
@@ -2870,8 +2935,7 @@ describe('MetaMetricsController', function () {
 
     it('exposes expected state to UI', async () => {
       await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state
-        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        // Set `fragments` to an empty object to override complex default `fragments` mock state.
         {
           options: { state: { fragments: {} } },
         },
@@ -2887,7 +2951,6 @@ describe('MetaMetricsController', function () {
               "completedMetaMetricsOnboarding": true,
               "dataCollectionForMarketing": null,
               "fragments": {},
-              "latestNonAnonymousEventTimestamp": 0,
             }
           `);
         },

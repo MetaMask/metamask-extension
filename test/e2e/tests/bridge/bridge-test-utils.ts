@@ -14,7 +14,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
@@ -1067,13 +1067,9 @@ export enum EventTypes {
   SwapBridgeInputChanged = 'Unified SwapBridge Input Changed',
   SwapBridgeQuotesRequested = 'Unified SwapBridge Quotes Requested',
   UnifiedSwapBridgeQuotesReceived = 'Unified SwapBridge Quotes Received',
-  TransactionAddedAnon = 'Transaction Added Anon',
   TransactionAdded = 'Transaction Added',
-  TransactionSubmittedAnon = 'Transaction Submitted Anon',
   TransactionSubmitted = 'Transaction Submitted',
-  TransactionApprovedAnon = 'Transaction Approved Anon',
   TransactionApproved = 'Transaction Approved',
-  TransactionFinalizedAnon = 'Transaction Finalized Anon',
   TransactionFinalized = 'Transaction Finalized',
   SwapBridgeCompleted = 'Unified SwapBridge Completed',
   UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
@@ -1276,19 +1272,18 @@ async function mockSmartTransactionsForBridge(
 export const getBridgeFixtures = ({
   title,
   featureFlags = {},
-  withErc20 = true,
   tokenWarnings = [],
 }: {
   title?: string;
   featureFlags?: Partial<FeatureFlagResponse>;
-  withErc20?: boolean;
   tokenWarnings?: TokenFeature[];
 } = {}) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withMetaMetricsController({
-      metaMetricsId: MOCK_META_METRICS_ID,
-      participateInMetaMetrics: true,
+      analyticsId: MOCK_ANALYTICS_ID,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokensController({
@@ -1351,10 +1346,6 @@ export const getBridgeFixtures = ({
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
-  if (withErc20) {
-    fixtureBuilder.withTokensControllerERC20({ chainId: 1 });
-  }
-
   return {
     forceBip44Version: false,
     fixtures: fixtureBuilder.build(),
@@ -1403,13 +1394,9 @@ export const getBridgeFixtures = ({
           EventTypes.SwapBridgeInputChanged,
           EventTypes.SwapBridgeQuotesRequested,
           EventTypes.UnifiedSwapBridgeQuotesReceived,
-          EventTypes.TransactionAddedAnon,
           EventTypes.TransactionAdded,
-          EventTypes.TransactionSubmittedAnon,
           EventTypes.TransactionSubmitted,
-          EventTypes.TransactionApprovedAnon,
           EventTypes.TransactionApproved,
-          EventTypes.TransactionFinalizedAnon,
           EventTypes.TransactionFinalized,
           EventTypes.SwapBridgeCompleted,
           EventTypes.UnifiedSwapBridgeSubmitted,
@@ -1456,7 +1443,6 @@ export const getQuoteNegativeCasesFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1516,7 +1502,6 @@ export const getBridgeNegativeCasesFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1576,7 +1561,6 @@ export const getInsufficientFundsFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1851,7 +1835,6 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1950,7 +1933,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,

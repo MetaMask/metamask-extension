@@ -174,7 +174,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 213,
+      "currentMigrationVersion": 215,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -432,7 +432,6 @@
       "dataCollectionForMarketing": false,
       "eventsBeforeMetricsOptIn": [],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
       "completedMetaMetricsOnboarding": true,
       "tracesBeforeMetricsOptIn": [],
@@ -1093,7 +1092,8 @@
     },
     "ProfileMetricsController": {
       "initialDelayEndTimestamp": 1770282498299,
-      "initialEnqueueCompleted": true,
+      "initialEnqueueCompleted": false,
+      "proofBackfillEnqueued": false,
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
@@ -1264,6 +1264,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 213
+    "version": 215
   }
 }

@@ -34,10 +34,12 @@ import {
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoError,
   selectOptinAllowedForGeoLoading,
+  selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
 import { useAppSelector } from '../../../../store/store';
 import LoadingIndicator from '../../../ui/loading-indicator';
 import RewardsErrorBanner from '../RewardsErrorBanner';
+import { RewardsVipReferralTag } from '../RewardsVipReferralTag';
 import {
   REWARDS_ONBOARD_HERO_IMAGE_URL,
   REWARDS_ONBOARD_OPTIN_LEGAL_LEARN_MORE_URL,
@@ -99,6 +101,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
     setReferralCode: handleReferralCodeChange,
     isValidating: isValidatingReferralCode,
     isValid: referralCodeIsValid,
+    isVipCode: referralCodeIsVip,
     isUnknownError: isUnknownErrorReferralCode,
   } = useValidateReferralCode(
     onboardingReferralCode
@@ -107,6 +110,13 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
   );
   const referralCodeReadyForValidation =
     referralCode.length >= REFERRAL_CODE_MIN_LENGTH;
+
+  // Reactive UI gate (in addition to the controller's gating): hides the VIP
+  // tag immediately if the program flag flips off, so a stale cached
+  // `isVipCode` can't keep the tag on screen.
+  const vipProgramEnabled = useSelector(selectVipProgramEnabled);
+  const showVipReferralTag =
+    referralCodeIsValid && referralCodeIsVip && vipProgramEnabled;
 
   const referralCodeIsError =
     referralCodeReadyForValidation &&
@@ -191,6 +201,10 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
           style={{ width: 32, height: 32, left: 5 }}
         />
       );
+    }
+
+    if (showVipReferralTag) {
+      return <RewardsVipReferralTag />;
     }
 
     if (referralCodeIsValid) {

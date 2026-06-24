@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 213,
+      "currentMigrationVersion": 215,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -186,7 +186,6 @@
         }
       ],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
       "completedMetaMetricsOnboarding": false,
       "tracesBeforeMetricsOptIn": [
@@ -2079,6 +2078,7 @@
     },
     "ProfileMetricsController": {
       "initialEnqueueCompleted": false,
+      "proofBackfillEnqueued": false,
       "syncQueue": {}
     },
     "RemoteFeatureFlagController": {
@@ -2274,6 +2274,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 213
+    "version": 215
   }
 }

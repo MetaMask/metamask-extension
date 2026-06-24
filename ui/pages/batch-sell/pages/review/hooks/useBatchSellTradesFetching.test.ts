@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
-import { updateBatchSellTrades } from '../../../../../ducks/bridge/actions';
+import { updateBatchSellTrades } from '../../../../../ducks/batch-sell/actions';
 import type { SendAssetEntry } from '../types';
 import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
 import { useBatchSellTradesFetching } from './useBatchSellTradesFetching';
@@ -11,7 +11,7 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
-jest.mock('../../../../../ducks/bridge/actions', () => ({
+jest.mock('../../../../../ducks/batch-sell/actions', () => ({
   updateBatchSellTrades: jest.fn(() => ({ type: 'UPDATE_BATCH_SELL_TRADES' })),
 }));
 
@@ -67,12 +67,14 @@ const defaultData = {
 } as never;
 
 const QUOTES_LAST_FETCHED_MS = 1234567890;
+const MOCK_CHAIN = 'eip155:1';
 
 function renderDefault(
   options: {
     data?: typeof defaultData | undefined;
     entries?: SendAssetEntry[];
     quotesLastFetchedMs?: number | null;
+    chain?: string;
     enabled?: boolean;
   } = {},
 ) {
@@ -80,12 +82,13 @@ function renderDefault(
     data = defaultData,
     entries = defaultEntries,
     quotesLastFetchedMs = QUOTES_LAST_FETCHED_MS,
+    chain = MOCK_CHAIN,
     enabled = true,
   } = options;
 
   return renderHook(() =>
     useBatchSellTradesFetching(
-      { data, entries, quotesLastFetchedMs },
+      { data, entries, quotesLastFetchedMs, chain },
       { enabled },
     ),
   );
@@ -131,6 +134,7 @@ describe('useBatchSellTradesFetching', () => {
             data: undefined,
             entries: defaultEntries,
             quotesLastFetchedMs: QUOTES_LAST_FETCHED_MS,
+            chain: MOCK_CHAIN,
           },
           { enabled: true },
         ),
@@ -144,10 +148,10 @@ describe('useBatchSellTradesFetching', () => {
     it('dispatches with the quotes for all enabled entries', () => {
       renderDefault();
 
-      expect(mockUpdateBatchSellTrades).toHaveBeenCalledWith([
-        MOCK_QUOTE_A,
-        MOCK_QUOTE_B,
-      ]);
+      expect(mockUpdateBatchSellTrades).toHaveBeenCalledWith(
+        [MOCK_QUOTE_A, MOCK_QUOTE_B],
+        MOCK_CHAIN,
+      );
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'UPDATE_BATCH_SELL_TRADES',
       });
@@ -161,7 +165,10 @@ describe('useBatchSellTradesFetching', () => {
 
       renderDefault({ entries });
 
-      expect(mockUpdateBatchSellTrades).toHaveBeenCalledWith([MOCK_QUOTE_A]);
+      expect(mockUpdateBatchSellTrades).toHaveBeenCalledWith(
+        [MOCK_QUOTE_A],
+        MOCK_CHAIN,
+      );
     });
 
     it('uses null for an enabled entry whose quote is missing from data', () => {
@@ -174,10 +181,10 @@ describe('useBatchSellTradesFetching', () => {
 
       // ASSET_A has a quote; ASSET_C resolves to null — but at least one is
       // non-null so the dispatch fires, with null in the ASSET_C slot.
-      expect(mockUpdateBatchSellTrades).toHaveBeenCalledWith([
-        MOCK_QUOTE_A,
-        null,
-      ]);
+      expect(mockUpdateBatchSellTrades).toHaveBeenCalledWith(
+        [MOCK_QUOTE_A, null],
+        MOCK_CHAIN,
+      );
     });
 
     it('does not dispatch when every enabled entry resolves to null', () => {

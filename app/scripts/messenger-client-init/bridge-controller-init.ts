@@ -3,9 +3,11 @@ import {
   BridgeController,
   BridgeControllerMessenger,
   UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { handleFetch, HttpError } from '@metamask/controller-utils';
 import { TransactionController } from '@metamask/transaction-controller';
+import type { Json } from '@metamask/utils';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import {
   ASSETS_UNIFY_STATE_FLAG,
@@ -18,6 +20,10 @@ import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
+import {
+  getActiveTabDomainAllowlist,
+  getActiveTabDomainForMetrics,
+} from '../../../shared/lib/active-tab-domain-metrics';
 import { MessengerClientInitFunction } from './types';
 import { BridgeControllerInitMessenger } from './messengers';
 
@@ -94,12 +100,47 @@ export const BridgeControllerInit: MessengerClientInitFunction<
 
     trackMetaMetricsFn: (event, properties) => {
       const actionId = (Date.now() + Math.random()).toString();
+
+      let activeTabDomain: string | undefined;
+      try {
+        // Track active tab domain for Submitted and ButtonClicked events
+        if (
+          event === UnifiedSwapBridgeEventName.Submitted ||
+          event === UnifiedSwapBridgeEventName.ButtonClicked
+        ) {
+          const appStateController = getMessengerClient('AppStateController');
+          const remoteFeatureFlagController = getMessengerClient(
+            'RemoteFeatureFlagController',
+          );
+          const activeTabOrigin =
+            appStateController?.state?.appActiveTab?.origin;
+          const allowlist = getActiveTabDomainAllowlist(
+            remoteFeatureFlagController?.state,
+          );
+          activeTabDomain = getActiveTabDomainForMetrics(
+            activeTabOrigin,
+            allowlist,
+          );
+        }
+      } catch {
+        // Intentionally empty
+      }
+
+      const propertiesObj = (properties ?? {}) as Record<string, Json> & {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        environment_type?: string;
+      };
+
       initMessenger.call('MetaMetricsController:trackEvent', {
         category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
         event,
+        // UI events (e.g. ButtonClicked) pass environment_type explicitly;
+        // background events fall back to getEnvironmentType() → 'background'.
+        environmentType: propertiesObj.environment_type ?? getEnvironmentType(),
         properties: {
-          ...(properties ?? {}),
-          environmentType: getEnvironmentType(),
+          ...propertiesObj,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
           actionId,
         },
       });
