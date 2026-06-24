@@ -2,7 +2,6 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../../helpers';
 import {
-  TRON_CHAIN_ID,
   TronLocalNodeOptions,
   TronTrc10Symbol,
   TronTrc20Symbol,
@@ -13,6 +12,7 @@ import { TronNode } from '../../../seeder/tron/node';
 import { TronSeeder } from '../../../seeder/tron/tron-seeder';
 import {
   TRON_ACCOUNT_ADDRESS,
+  TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
   mockExchangeRates,
   mockFiatExchangeRates,
@@ -85,12 +85,10 @@ export type WithTronFixturesOptions = Omit<
     context: { localNodes: unknown[] },
   ) => Promise<MockedEndpoint[]>;
   title?: string;
-  tronState?: string;
 };
 
 export function buildTronNodeOptions(
   accounts: TronFixtureAccount[],
-  options: Pick<TronLocalNodeOptions, 'loadState'> = {},
 ): TronLocalNodeOptions {
   const initialBalances: Record<string, number> = {};
   const trc10Balances: Record<
@@ -127,7 +125,6 @@ export function buildTronNodeOptions(
 
   return {
     ...(Object.keys(initialBalances).length ? { initialBalances } : {}),
-    ...(options.loadState ? { loadState: options.loadState } : {}),
     ...(Object.keys(trc10Balances).length ? { trc10Balances } : {}),
     ...(Object.keys(trc20Balances).length ? { trc20Balances } : {}),
     ...(Object.keys(stakedTrxBalances).length ? { stakedTrxBalances } : {}),
@@ -143,10 +140,9 @@ export async function withTronFixtures(
     accounts,
     includeAnvil = true,
     testSpecificMock,
-    tronState,
     ...withFixtureOptions
   } = options;
-  const nodeOptions = buildTronNodeOptions(accounts, { loadState: tronState });
+  const nodeOptions = buildTronNodeOptions(accounts);
   const { trc20Balances, ...startupNodeOptions } = nodeOptions;
   let tronSeeder: TronSeeder | undefined;
 
