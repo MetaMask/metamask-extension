@@ -7,10 +7,6 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
 } from '@metamask/design-system-react';
 import {
   formatPerpsFiat,
@@ -28,6 +24,17 @@ const ORDER_BOOK_LEVELS = 20;
  * If data hasn't arrived within this window the stream likely isn't active.
  */
 const LOADING_TIMEOUT_MS = 5_000;
+
+const OrderBookIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+  >
+    <path d="M9.5 5.331H7.831V7H6.165V17h1.667v1.668H9.5V17h1.668V7H9.499zm0 10.003H7.831V8.666H9.5zM17.835 8.666h-1.667V5.33H14.5v3.335h-1.667V14.5H14.5v4.168h1.667V14.5h1.667zm-1.667 4.168H14.5v-2.501h1.667z" />
+  </svg>
+);
 
 export const ExpandableOrderBook: React.FC<ExpandableOrderBookProps> = ({
   symbol,
@@ -71,7 +78,11 @@ export const ExpandableOrderBook: React.FC<ExpandableOrderBookProps> = ({
   const effectiveLoading = isInitialLoading && !hasTimedOut;
 
   const spreadSummary = useMemo(() => {
-    if (!orderBook || orderBook.bids.length === 0 || orderBook.asks.length === 0) {
+    if (
+      !orderBook ||
+      orderBook.bids.length === 0 ||
+      orderBook.asks.length === 0
+    ) {
       return null;
     }
     const bestBid = parseFloat(orderBook.bids[0].price);
@@ -88,75 +99,30 @@ export const ExpandableOrderBook: React.FC<ExpandableOrderBookProps> = ({
   }, [orderBook]);
 
   return (
-    <div className="rounded-lg border border-border-muted">
-      {/* Toggle header */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Between}
-        className="cursor-pointer px-3 py-2.5"
+    <div className="flex flex-col items-end">
+      <button
+        type="button"
+        className={`flex items-center justify-center w-8 h-8 rounded-lg cursor-pointer bg-transparent border border-solid ${
+          isExpanded
+            ? 'border-primary-default text-[var(--color-primary-inverse)]'
+            : 'border-border-muted text-text-default hover:text-text-alternative'
+        }`}
         onClick={() => setIsExpanded((prev) => !prev)}
         data-testid="perps-order-book-toggle"
+        aria-label="Toggle order book"
+        aria-expanded={isExpanded}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-          Order Book
-        </Text>
+        <OrderBookIcon className="w-6 h-6" />
+      </button>
 
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          {spreadSummary && !isExpanded && (
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={1}
-            >
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.SuccessDefault}
-              >
-                {spreadSummary.bestBid}
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
-              >
-                /
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.ErrorDefault}
-              >
-                {spreadSummary.bestAsk}
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
-              >
-                ({spreadSummary.spreadPct}%)
-              </Text>
-            </Box>
-          )}
-          <Icon
-            name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
-      </Box>
-
-      {/* Expanded content */}
       {isExpanded && (
-        <div className="px-3 pb-3">
+        <div className="mt-2 rounded-lg border border-border-muted px-3 pb-3 pt-2">
           <OrderBookTable
             orderBook={orderBook}
             symbol={symbol}
             isLoading={effectiveLoading}
           />
 
-          {/* Spread footer */}
           {spreadSummary && (
             <Box
               flexDirection={BoxFlexDirection.Row}

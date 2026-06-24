@@ -108,20 +108,22 @@ describe('ExpandableOrderBook', () => {
     });
   });
 
-  it('renders collapsed by default with toggle', () => {
+  it('renders collapsed by default with toggle icon button', () => {
     render(<ExpandableOrderBook symbol="BTC" />);
 
-    expect(screen.getByTestId('perps-order-book-toggle')).toBeInTheDocument();
-    expect(screen.getByText('Order Book')).toBeInTheDocument();
+    const toggle = screen.getByTestId('perps-order-book-toggle');
+    expect(toggle).toBeInTheDocument();
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
     expect(
       screen.queryByTestId('perps-order-book-table'),
     ).not.toBeInTheDocument();
   });
 
-  it('shows spread summary in collapsed state', () => {
+  it('does not show a label or spread preview when collapsed', () => {
     render(<ExpandableOrderBook symbol="BTC" />);
 
-    expect(screen.getByText(/\d+\.\d+%/u)).toBeInTheDocument();
+    expect(screen.queryByText('Order Book')).not.toBeInTheDocument();
+    expect(screen.queryByText('Spread:')).not.toBeInTheDocument();
   });
 
   it('expands when toggle is clicked', () => {
