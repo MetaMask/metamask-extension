@@ -75,9 +75,9 @@ export function useSendScamQuestionnaire({
 
   const isScamQuestionnaireRequired = Boolean(
     isMMSend &&
-      securityAlertResponse?.result_type === BlockaidResultType.Malicious &&
-      blockaidAlert &&
-      !isAlertConfirmed(blockaidAlert.key),
+    securityAlertResponse?.result_type === BlockaidResultType.Malicious &&
+    blockaidAlert &&
+    !isAlertConfirmed(blockaidAlert.key),
   );
 
   const showScamQuestionnaire = useCallback(() => {
