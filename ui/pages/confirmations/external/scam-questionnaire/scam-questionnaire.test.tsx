@@ -3,6 +3,8 @@ import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { getMockConfirmState } from '../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../app/_locales/en/messages.json';
 import { ScamQuestionnaire } from './scam-questionnaire';
 
 jest.mock('./useScamQuestionnaireMetrics', () => ({
@@ -42,7 +44,7 @@ describe('ScamQuestionnaire', () => {
   it('renders the first question', () => {
     const { getByText } = render();
     expect(
-      getByText('Did someone you only know online tell you to send this?'),
+      getByText(messages.scamQuestionnaireQ1Title.message),
     ).toBeInTheDocument();
   });
 
