@@ -41,12 +41,42 @@ describe('usePerpsEventTracking', () => {
         screen_type: 'market_list',
       });
 
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        event: MetaMetricsEventName.PerpsScreenViewed,
+        category: MetaMetricsEventCategory.Perps,
+        properties: {
+          screen_type: 'market_list',
+          [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+        },
+      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
+        event: MetaMetricsEventName.AssetViewed,
+        category: MetaMetricsEventCategory.Perps,
+        properties: {
+          screen_type: 'market_list',
+          [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+          trade_type: 'Perps',
+          implementation_type: 'native',
+        },
+      });
+    });
+
+    it('does not track Asset Viewed for cancel_all_orders screen_type', () => {
+      const { result } = renderHook(() => usePerpsEventTracking(), { wrapper });
+
+      result.current.track(MetaMetricsEventName.PerpsScreenViewed, {
+        screen_type: 'cancel_all_orders',
+        [PERPS_EVENT_PROPERTY.OPEN_POSITION]: 3,
+      });
+
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenCalledWith({
         event: MetaMetricsEventName.PerpsScreenViewed,
         category: MetaMetricsEventCategory.Perps,
         properties: {
-          screen_type: 'market_list',
+          screen_type: 'cancel_all_orders',
+          [PERPS_EVENT_PROPERTY.OPEN_POSITION]: 3,
           [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
         },
       });
@@ -72,13 +102,23 @@ describe('usePerpsEventTracking', () => {
 
       rerender({ conditions: true });
 
-      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-      expect(mockTrackEvent).toHaveBeenCalledWith({
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         event: MetaMetricsEventName.PerpsScreenViewed,
         category: MetaMetricsEventCategory.Perps,
         properties: {
           screen_type: 'trading',
           [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+        },
+      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
+        event: MetaMetricsEventName.AssetViewed,
+        category: MetaMetricsEventCategory.Perps,
+        properties: {
+          screen_type: 'trading',
+          [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+          trade_type: 'Perps',
+          implementation_type: 'native',
         },
       });
     });
@@ -96,12 +136,12 @@ describe('usePerpsEventTracking', () => {
         },
       );
 
-      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
       rerender({ conditions: true });
       rerender({ conditions: true });
 
-      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
     });
 
     it('fires again after conditions cycles false then true (modal re-open)', () => {
@@ -117,12 +157,12 @@ describe('usePerpsEventTracking', () => {
         },
       );
 
-      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
       rerender({ conditions: false });
       rerender({ conditions: true });
 
-      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(4);
     });
 
     it('fires again when resetKey changes while conditions stays true', () => {
@@ -139,13 +179,13 @@ describe('usePerpsEventTracking', () => {
         },
       );
 
-      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
       act(() => {
         rerender({ conditions: true, resetKey: 'ETH' });
       });
 
-      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(4);
     });
 
     it('does not fire again when resetKey changes while conditions is false', () => {

@@ -33,8 +33,13 @@ import {
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
 import {
   MetaMetricsEventCategory,
+  MetaMetricsEventName,
   type MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
+import {
+  mergeAssetViewedProperties,
+  shouldEmitAssetViewedForPerpsScreenViewed,
+} from '../../../../shared/lib/analytics/trade-transaction-funnel/assetViewedAnalytics';
 import { captureException } from '../../../../shared/lib/sentry';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
 import { isBenignDisconnectError } from './perps-error-utils';
@@ -149,14 +154,27 @@ function createMetrics(deps: InfrastructureDeps): PerpsMetrics {
       event: PerpsAnalyticsEvent,
       properties: PerpsAnalyticsProperties,
     ) => {
+      const props = {
+        ...properties,
+        [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
+      };
+
       deps.trackEvent({
         event,
         category: MetaMetricsEventCategory.Perps,
-        properties: {
-          ...properties,
-          [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
-        },
+        properties: props,
       });
+
+      if (
+        event === MetaMetricsEventName.PerpsScreenViewed &&
+        shouldEmitAssetViewedForPerpsScreenViewed(props)
+      ) {
+        deps.trackEvent({
+          event: MetaMetricsEventName.AssetViewed,
+          category: MetaMetricsEventCategory.Perps,
+          properties: mergeAssetViewedProperties('Perps', props),
+        });
+      }
     },
   };
 }
