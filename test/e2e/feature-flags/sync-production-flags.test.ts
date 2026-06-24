@@ -105,6 +105,62 @@ describe('sortKeysDeep', () => {
   });
 });
 
+const SHUFFLED_REGISTRY_WITH_COMPUTED_KEY = `export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
+  zuluFlag: {
+    name: 'zuluFlag',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
+    name: ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: { permissions: [] },
+    status: FeatureFlagStatus.Active,
+  },
+
+  alphaFlag: {
+    name: 'alphaFlag',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: true,
+    status: FeatureFlagStatus.Active,
+  },
+};
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+`;
+
+const REGISTRY_WITH_COMMENTS = `export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
+  zuluFlag: {
+    name: 'zuluFlag',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  // This comment explains the alpha flag.
+  // See https://github.com/MetaMask/metamask-extension/pull/12345
+  alphaFlag: {
+    name: 'alphaFlag',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: true,
+    status: FeatureFlagStatus.Active,
+  },
+};
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+`;
+
 describe('insertRegistryEntryAlphabetically', () => {
   it('inserts a new entry before later alphabetical entries', () => {
     const updated = insertRegistryEntryAlphabetically(
@@ -140,6 +196,38 @@ describe('normalizeRegistryOrdering', () => {
     expect(normalized.indexOf('alphaFlag:')).toBeLessThan(
       normalized.indexOf('zuluFlag:'),
     );
+  });
+
+  it('sorts computed-key entries by their resolved flag name', () => {
+    const normalized = normalizeRegistryOrdering(
+      SHUFFLED_REGISTRY_WITH_COMPUTED_KEY,
+    );
+    const alphaIndex = normalized.indexOf('alphaFlag:');
+    const computedIndex = normalized.indexOf(
+      '[ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]',
+    );
+    const zuluIndex = normalized.indexOf('zuluFlag:');
+
+    expect(alphaIndex).toBeGreaterThan(-1);
+    expect(computedIndex).toBeGreaterThan(-1);
+    expect(zuluIndex).toBeGreaterThan(-1);
+    expect(alphaIndex).toBeLessThan(computedIndex);
+    expect(computedIndex).toBeLessThan(zuluIndex);
+  });
+
+  it('preserves comments that precede entries', () => {
+    const normalized = normalizeRegistryOrdering(REGISTRY_WITH_COMMENTS);
+
+    expect(normalized).toContain('// This comment explains the alpha flag.');
+    expect(normalized).toContain(
+      '// See https://github.com/MetaMask/metamask-extension/pull/12345',
+    );
+
+    const commentIndex = normalized.indexOf(
+      '// This comment explains the alpha flag.',
+    );
+    const alphaIndex = normalized.indexOf('alphaFlag:');
+    expect(commentIndex).toBeLessThan(alphaIndex);
   });
 });
 

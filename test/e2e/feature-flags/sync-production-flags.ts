@@ -23,6 +23,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 import { isEqual } from 'lodash';
 import chalk from 'chalk';
@@ -343,6 +344,22 @@ const COMPUTED_REGISTRY_KEYS: Readonly<Record<string, string>> = {
   extensionUxActiveDomainMetrics: '[ACTIVE_TAB_DOMAIN_METRICS_FLAG]',
 };
 
+const COMPUTED_KEY_TO_NAME: Readonly<Record<string, string>> =
+  Object.fromEntries(
+    Object.entries(COMPUTED_REGISTRY_KEYS).map(([name, keySyntax]) => [
+      keySyntax.slice(1, -1),
+      name,
+    ]),
+  );
+
+function getEntryPattern(name: string): RegExp {
+  const computedKey = COMPUTED_REGISTRY_KEYS[name];
+  if (computedKey) {
+    return new RegExp(`^  ${escapeRegex(computedKey)}:\\s*\\{`, 'mu');
+  }
+  return new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
+}
+
 /**
  * Recursively sorts object keys alphabetically for deterministic serialization.
  * Arrays preserve element order; only object keys are sorted.
@@ -496,12 +513,29 @@ function buildRegistryEntryBlockFromEntry(
  * @param blockText - Source text for a single registry entry
  */
 function extractEntrySortKey(blockText: string): string {
-  const nameMatch = blockText.match(/^\s*name:\s*'([^']+)'/mu);
-  if (nameMatch) {
-    return nameMatch[1];
+  const quotedNameMatch = blockText.match(/^\s*name:\s*'([^']+)'/mu);
+  if (quotedNameMatch) {
+    return quotedNameMatch[1];
   }
-  const keyMatch = blockText.match(/^\s*(?:\[[^\]]+\]|([\w]+)):\s*\{/mu);
-  return keyMatch?.[1] ?? '';
+
+  const unquotedNameMatch = blockText.match(/^\s*name:\s*(\w+)/mu);
+  if (unquotedNameMatch) {
+    const resolvedName = COMPUTED_KEY_TO_NAME[unquotedNameMatch[1]];
+    if (resolvedName) {
+      return resolvedName;
+    }
+  }
+
+  const computedKeyMatch = blockText.match(/^\s*\[([^\]]+)\]:/mu);
+  if (computedKeyMatch) {
+    const resolvedName = COMPUTED_KEY_TO_NAME[computedKeyMatch[1]];
+    if (resolvedName) {
+      return resolvedName;
+    }
+  }
+
+  const literalKeyMatch = blockText.match(/^\s*([\w]+):\s*\{/mu);
+  return literalKeyMatch?.[1] ?? '';
 }
 
 /**
@@ -532,15 +566,25 @@ function extractRegistryEntryBlocks(content: string): RegistryEntryBlock[] {
       break;
     }
 
-    let blockStart = index;
-    if (content.slice(index, index + 2) === '//') {
-      const lineEnd = content.indexOf('\n', index);
-      blockStart = lineEnd === -1 ? index : lineEnd + 1;
-      while (blockStart < registryEnd && /\s/u.test(content[blockStart])) {
-        blockStart += 1;
+    let commentStart = -1;
+    let scanIndex = index;
+    while (scanIndex < registryEnd && content.slice(scanIndex, scanIndex + 2) === '//') {
+      if (commentStart === -1) {
+        commentStart = scanIndex;
       }
-      index = blockStart;
+      const lineEnd = content.indexOf('\n', scanIndex);
+      scanIndex = lineEnd === -1 ? registryEnd : lineEnd + 1;
+      while (scanIndex < registryEnd && /\s/u.test(content[scanIndex]) && content[scanIndex] !== '\n') {
+        scanIndex += 1;
+      }
+      if (scanIndex < registryEnd && content[scanIndex] === '\n') {
+        scanIndex += 1;
+      }
+      while (scanIndex < registryEnd && /[ \t]/u.test(content[scanIndex])) {
+        scanIndex += 1;
+      }
     }
+    index = scanIndex;
 
     const entryMatch = content
       .slice(index)
@@ -550,16 +594,7 @@ function extractRegistryEntryBlocks(content: string): RegistryEntryBlock[] {
       continue;
     }
 
-    blockStart = index;
-    if (blockStart > openBrace + 1) {
-      const prevNewline = content.lastIndexOf('\n', blockStart - 1);
-      if (prevNewline >= openBrace) {
-        const between = content.slice(prevNewline + 1, blockStart);
-        if (between.trim().startsWith('// eslint-disable')) {
-          blockStart = prevNewline + 1;
-        }
-      }
-    }
+    const blockStart = commentStart === -1 ? index : commentStart;
 
     const entryOpenBrace = content.indexOf('{', index);
     const entryEnd = findBalancedEnd(content, entryOpenBrace);
@@ -693,13 +728,11 @@ export async function normalizeRegistryFile(): Promise<void> {
   content = `${content.slice(0, openBrace + 1)}\n${blocks.join('\n\n')}\n${content.slice(registryEnd)}`;
   content = ensureRegistryEslintWrappers(content);
 
-  const prettier = (await import('prettier')).default;
-  const prettierOptions = await prettier.resolveConfig(REGISTRY_FILE_PATH);
-  const formatted = await prettier.format(content, {
-    ...prettierOptions,
-    filepath: REGISTRY_FILE_PATH,
+  fs.writeFileSync(REGISTRY_FILE_PATH, content, 'utf-8');
+  execSync(`yarn oxfmt -c oxfmt.config.mts ${REGISTRY_FILE_PATH}`, {
+    cwd: path.resolve(__dirname, '../../..'),
+    stdio: 'pipe',
   });
-  fs.writeFileSync(REGISTRY_FILE_PATH, formatted ?? content, 'utf-8');
 }
 
 /**
@@ -721,13 +754,13 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
   // Replace mismatched productionDefault values using brace-depth counting
   for (const { name, productionValue } of result.valueMismatches) {
     const serialized = serializeValue(productionValue, 4);
-    const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
+    const entryPattern = getEntryPattern(name);
     const entryMatch = entryPattern.exec(content);
     if (!entryMatch) {
       continue;
     }
 
-    const entryOpenBrace = content.indexOf('{', entryMatch.index + name.length);
+    const entryOpenBrace = content.indexOf('{', entryMatch.index + entryMatch[0].indexOf('{'));
     const entryEnd = findBalancedEnd(content, entryOpenBrace);
     if (entryEnd === -1) {
       continue;
@@ -777,13 +810,13 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
 
   // Flip inProd: false → true and update productionDefault for inProdMismatches
   for (const { name, productionValue } of result.inProdMismatches) {
-    const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
+    const entryPattern = getEntryPattern(name);
     const entryMatch = entryPattern.exec(content);
     if (!entryMatch) {
       continue;
     }
 
-    const entryOpenBrace = content.indexOf('{', entryMatch.index + name.length);
+    const entryOpenBrace = content.indexOf('{', entryMatch.index + entryMatch[0].indexOf('{'));
     const entryEnd = findBalancedEnd(content, entryOpenBrace);
     if (entryEnd === -1) {
       continue;
@@ -805,7 +838,7 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
     // 2. Update productionDefault (re-find entryEnd after possible content change)
     const entryEnd2 = findBalancedEnd(
       content,
-      content.indexOf('{', entryMatch.index + name.length),
+      content.indexOf('{', entryMatch.index + entryMatch[0].indexOf('{')),
     );
     if (entryEnd2 === -1) {
       continue;
@@ -853,13 +886,13 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
 
   // Remove entries no longer in production using brace-depth counting
   for (const { name } of result.removedFromProduction) {
-    const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
+    const entryPattern = getEntryPattern(name);
     const entryMatch = entryPattern.exec(content);
     if (!entryMatch) {
       continue;
     }
 
-    const openBrace = content.indexOf('{', entryMatch.index + name.length);
+    const openBrace = content.indexOf('{', entryMatch.index + entryMatch[0].indexOf('{'));
     const balancedEnd = findBalancedEnd(content, openBrace);
     if (balancedEnd === -1) {
       continue;
@@ -902,13 +935,11 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
   content = normalizeRegistryOrdering(content);
   content = ensureRegistryEslintWrappers(content);
 
-  const prettier = (await import('prettier')).default;
-  const prettierOptions = await prettier.resolveConfig(REGISTRY_FILE_PATH);
-  const formatted = await prettier.format(content, {
-    ...prettierOptions,
-    filepath: REGISTRY_FILE_PATH,
+  fs.writeFileSync(REGISTRY_FILE_PATH, content, 'utf-8');
+  execSync(`yarn oxfmt -c oxfmt.config.mts ${REGISTRY_FILE_PATH}`, {
+    cwd: path.resolve(__dirname, '../../..'),
+    stdio: 'pipe',
   });
-  fs.writeFileSync(REGISTRY_FILE_PATH, formatted ?? content, 'utf-8');
   console.log(chalk.green(`\n✓ Registry file updated: ${REGISTRY_FILE_PATH}`));
   console.log(chalk.yellow('Run `yarn feature-flags:sync` to verify.'));
 }
