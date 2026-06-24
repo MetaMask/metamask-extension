@@ -203,30 +203,11 @@ class OnboardingPrivacySettingsPage {
     console.log('Toggle advanced privacy settings');
     await this.navigateToPrivacySettings();
 
-    // Toggling a setting off updates Redux state and re-renders the whole
-    // settings list, which invalidates any previously-found element
-    // references. Click the "on" toggles one at a time, re-querying before
-    // each click to avoid stale element references, and wait for the count to
-    // drop between clicks so a not-yet-re-rendered toggle isn't clicked twice.
-    let onToggleCount = (
-      await this.driver.findElements(this.assetsPrivacyToggle)
-    ).length;
-
-    while (onToggleCount > 1) {
-      await this.driver.clickElement(this.assetsPrivacyToggle);
-      const expectedCount = onToggleCount - 1;
-      await this.driver.wait(async () => {
-        const toggles = await this.driver.findElements(
-          this.assetsPrivacyToggle,
-        );
-        return toggles.length === expectedCount;
-      });
-      onToggleCount = expectedCount;
-    }
-
-    if (onToggleCount === 1) {
-      await this.driver.clickElement(this.assetsPrivacyToggle);
-    }
+    await Promise.all(
+      (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
+        (toggle) => toggle.click(),
+      ),
+    );
 
     console.log('Verify all asset privacy toggles are off');
     await this.driver.assertElementNotPresent(this.assetsPrivacyToggle);
