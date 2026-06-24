@@ -321,17 +321,10 @@ jobs:
         run: .github/scripts/push-firefox-bundle-script.sh
 
       - name: Publish AMO reviewer artifacts to S3
-        if: >-
-          vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT != '' ||
-          vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD != ''
         uses: ./.github/actions/publish-amo-reviewer-artifacts
         with:
           firefox_bundle_script_ref: ${{ vars.FIREFOX_BUNDLE_SCRIPT_REF }}
           amo_last_listed_version: ${{ vars.AMO_LAST_LISTED_VERSION }}
-          amo_reviewer_publisher_role_arn_uat: ${{ vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_UAT }}
-          amo_reviewer_publisher_role_arn_prd: ${{ vars.AMO_REVIEWER_PUBLISHER_ROLE_ARN_PRD }}
-          amo_reviewer_bucket_uat: ${{ vars.AMO_REVIEWER_BUCKET_UAT }}
-          amo_reviewer_bucket_prd: ${{ vars.AMO_REVIEWER_BUCKET_PRD }}
 
       - name: Summary
         env:
@@ -352,7 +345,7 @@ jobs:
             echo "| Sentry (Flask MV2 webpack) | ✅ Published |"
             echo "| GitHub Release | ✅ Created |"
             echo "| Firefox Bundle | ✅ Pushed |"
-            echo "| AMO reviewer S3 | publish-amo-reviewer-artifacts action (skipped until vars wired) |"
+            echo "| AMO reviewer S3 (PRD) | ✅ Published |"
             echo ""
             echo "**Release:** [${RELEASE_TAG}](https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG})"
           } >> "${GITHUB_STEP_SUMMARY}"
