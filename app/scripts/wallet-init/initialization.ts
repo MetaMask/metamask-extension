@@ -14,10 +14,7 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
-import {
-  CHAIN_IDS,
-  getFailoverUrlsForInfuraNetwork,
-} from '../../../shared/constants/network';
+import { getNetworkControllerInstanceOptions } from './instance-options/network-controller';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -77,28 +74,7 @@ export function initializeWallet({
         messenger,
         encryptor,
       }),
-      networkController: {
-        infuraProjectId,
-        failoverUrls: {
-          [CHAIN_IDS.MAINNET]:
-            getFailoverUrlsForInfuraNetwork('ethereum-mainnet'),
-          [CHAIN_IDS.LINEA_MAINNET]:
-            getFailoverUrlsForInfuraNetwork('linea-mainnet'),
-          [CHAIN_IDS.ARBITRUM]:
-            getFailoverUrlsForInfuraNetwork('arbitrum-mainnet'),
-          [CHAIN_IDS.AVALANCHE]:
-            getFailoverUrlsForInfuraNetwork('avalanche-mainnet'),
-          [CHAIN_IDS.OPTIMISM]:
-            getFailoverUrlsForInfuraNetwork('optimism-mainnet'),
-          [CHAIN_IDS.POLYGON]:
-            getFailoverUrlsForInfuraNetwork('polygon-mainnet'),
-          [CHAIN_IDS.BASE]: getFailoverUrlsForInfuraNetwork('base-mainnet'),
-          [CHAIN_IDS.SEI]: getFailoverUrlsForInfuraNetwork('sei-mainnet'),
-          [CHAIN_IDS.MONAD]: getFailoverUrlsForInfuraNetwork('monad-mainnet'),
-          [CHAIN_IDS.HYPE]: getFailoverUrlsForInfuraNetwork('hyperevm-mainnet'),
-          [CHAIN_IDS.ARC]: getFailoverUrlsForInfuraNetwork('arc-mainnet'),
-        },
-      },
+      networkController: getNetworkControllerInstanceOptions(infuraProjectId),
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
       storageService: getStorageServiceInstanceOptions(),
@@ -122,6 +98,8 @@ export function initializeWallet({
   });
 
   wallet.init().catch((error) => console.error(error));
+
+  setupRpcEndpointMetrics(infuraProjectId, messenger);
 
   return wallet;
 }
