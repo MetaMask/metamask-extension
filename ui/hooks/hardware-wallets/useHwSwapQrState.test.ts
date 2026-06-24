@@ -92,7 +92,7 @@ describe('useHwSwapQrState', () => {
     expect(result.current.isQrHardwareWallet).toBe(true);
   });
 
-  it('identifies QR hardware wallet when activeQrCodeScanRequest is a QR sign request', () => {
+  it('does not identify a QR hardware wallet from a QR sign request alone', () => {
     mockGetHardwareWalletType.mockReturnValue(undefined);
     mockIsQrHardwareSignRequest.mockReturnValue(true);
 
@@ -105,7 +105,7 @@ describe('useHwSwapQrState', () => {
       }),
     );
 
-    expect(result.current.isQrHardwareWallet).toBe(true);
+    expect(result.current.isQrHardwareWallet).toBe(false);
   });
 
   it('returns false for isQrHardwareWallet when not a QR wallet', () => {
@@ -121,6 +121,33 @@ describe('useHwSwapQrState', () => {
     );
 
     expect(result.current.isQrHardwareWallet).toBe(false);
+  });
+
+  it('ignores a stale QR sign request for a non-QR hardware wallet', () => {
+    const mockQrSignRequest = {
+      type: QrScanRequestType.SIGN,
+      request: {
+        requestId: 'stale-qr-request',
+        payload: { type: 'test', cbor: '0x' },
+      },
+    };
+
+    mockGetHardwareWalletType.mockReturnValue(HardwareKeyringType.ledger);
+    mockGetActiveQrCodeScanRequest.mockReturnValue(mockQrSignRequest);
+    mockIsQrHardwareSignRequest.mockReturnValue(true);
+
+    const { result } = renderHook(() =>
+      useHwSwapQrState({
+        signatureState: createSignatureState(
+          HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        ),
+        confirmationTxData: undefined,
+      }),
+    );
+
+    expect(result.current.isQrHardwareWallet).toBe(false);
+    expect(result.current.qrSignRequest).toBeUndefined();
+    expect(result.current.showInlineQrSigning).toBe(false);
   });
 
   it('shows inline QR signing when qrSignRequest exists and awaiting signature', () => {

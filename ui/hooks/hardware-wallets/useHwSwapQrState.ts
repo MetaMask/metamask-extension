@@ -56,9 +56,7 @@ export function useHwSwapQrState({
 
   const [isReadingQrSignature, setIsReadingQrSignature] = useState(false);
 
-  const isQrHardwareWallet =
-    hardwareWalletType === HardwareKeyringType.qr ||
-    isQrHardwareSignRequest(activeQrCodeScanRequest);
+  const isQrHardwareWallet = hardwareWalletType === HardwareKeyringType.qr;
 
   const qrSignRequest =
     isQrHardwareWallet && isQrHardwareSignRequest(activeQrCodeScanRequest)
@@ -107,8 +105,7 @@ export function useHwSwapQrState({
     Boolean(firstStepRequestIdRef.current) &&
     currentQrRequestId !== firstStepRequestIdRef.current;
 
-  const showInlineQrSigning =
-    Boolean(qrSignRequest) && isAwaitingSignature;
+  const showInlineQrSigning = Boolean(qrSignRequest) && isAwaitingSignature;
 
   const activeQrStep = (() => {
     if (!showInlineQrSigning) {
