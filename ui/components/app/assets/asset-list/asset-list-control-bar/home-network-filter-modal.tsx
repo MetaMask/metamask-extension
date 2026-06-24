@@ -357,11 +357,9 @@ const HomeNetworkFilterModalContent = ({
   }, [orderedNetworksList, testNetworkMap, useExternalServices]);
 
   // When there are no custom networks and no visible test networks, the default
-  // (popular) list is the *only* list: the redundant "Default networks" header
-  // is hidden and the top "select all" row reads "All default networks". Once a
-  // custom network exists or test networks are shown, multiple sections appear,
-  // so the top row becomes "All networks" and the default section shows its
-  // "Default networks" header.
+  // list is the only list, so selecting default networks is equivalent to
+  // selecting all networks. Once custom or test networks are visible, the top row
+  // specifically selects "All default networks".
   const hasOnlyDefaultNetworks =
     customNetworks.length === 0 && !(showTestnets && testNetworks.length > 0);
 
@@ -498,8 +496,8 @@ const HomeNetworkFilterModalContent = ({
       topItem={{
         key: 'all-default-networks',
         name: hasOnlyDefaultNetworks
-          ? t('allDefaultNetworks')
-          : t('allNetworks'),
+          ? t('allNetworks')
+          : t('allDefaultNetworks'),
         iconSrc: IconName.Global,
         selected: isAllDefaultSelected,
         onClick: handleSelectAllDefaultNetworks,
