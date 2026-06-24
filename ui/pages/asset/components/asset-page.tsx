@@ -40,6 +40,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
+import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
 import { ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS } from '../../../components/app/musd/musd-events';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
@@ -198,6 +199,7 @@ const AssetPage = ({
   const assetWithBalance = accountGroupIdAssets[chainId]?.find(
     (item) =>
       item.assetId.toLowerCase() === address.toLowerCase() ||
+      isArcUsdcForBridge(chainId, address, item) ||
       // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
       (!address && !isEvm && item.isNative),
   );
