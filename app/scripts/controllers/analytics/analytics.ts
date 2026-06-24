@@ -60,7 +60,12 @@ const MARKETING_UTM_PARAMETERS = [...UTM_PARAMETERS];
 
 let messenger: AnalyticsMessenger | undefined;
 let appVersion = '';
-let cachedSrpSessionData: FlattenedBackgroundStateProxy['srpSessionData'];
+let cachedProfileIdentity:
+  | {
+      profileId?: string;
+      canonicalProfileId?: string;
+    }
+  | undefined;
 
 function getMessenger(): AnalyticsMessenger {
   if (!messenger) {
@@ -88,28 +93,36 @@ export function configureAnalytics({
 }
 
 /**
- * Cache the latest SRP session data used to attach profile identity to events.
+ * Cache profile identity derived from SRP session data for event properties.
+ * Only profile IDs are retained, not access tokens or other session fields.
  *
  * @param srpSessionData - Current SRP session data from MetaMask state.
  */
 export function updateProfileSessionData(
   srpSessionData: FlattenedBackgroundStateProxy['srpSessionData'],
 ): void {
-  cachedSrpSessionData = srpSessionData;
+  const profile = Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile;
+
+  if (!profile) {
+    cachedProfileIdentity = undefined;
+    return;
+  }
+
+  cachedProfileIdentity = {
+    profileId: profile.profileId,
+    canonicalProfileId: profile.canonicalProfileId,
+  };
 }
 
 function getProfileIdentityProperties(): Record<string, string> {
-  const profile = Object.entries(cachedSrpSessionData ?? {})?.[0]?.[1]
-    ?.profile;
-
   return omitBy(
     {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      profile_id: profile?.profileId,
+      profile_id: cachedProfileIdentity?.profileId,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      canonical_profile_id: profile?.canonicalProfileId,
+      canonical_profile_id: cachedProfileIdentity?.canonicalProfileId,
     },
     (value) => !value,
   ) as Record<string, string>;
