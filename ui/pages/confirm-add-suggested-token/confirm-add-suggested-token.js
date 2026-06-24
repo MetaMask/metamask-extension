@@ -173,15 +173,14 @@ const ConfirmAddSuggestedToken = () => {
     navigate(mostRecentOverviewPage);
   }, [dispatch, navigate, mostRecentOverviewPage, suggestedTokens]);
 
-  const goBackIfNoSuggestedTokensOnFirstRender = () => {
+  useEffect(() => {
+    // Also fires when the approval is resolved in another window (popup or
+    // sidepanel) while the full-page view is open, leaving this tab with no
+    // suggested tokens to display.
     if (!suggestedTokens.length) {
       navigate(mostRecentOverviewPage);
     }
-  };
-
-  useEffect(() => {
-    goBackIfNoSuggestedTokensOnFirstRender();
-  }, []);
+  }, [suggestedTokens.length, navigate, mostRecentOverviewPage]);
 
   return (
     <div className={classNames}>
