@@ -36,7 +36,7 @@ export function useSendBundleHwNavigation() {
   // Derive the send amount/symbol in the confirmations flow (where the
   // confirm-context derivation hooks are available) so the HW signing page
   // label matches what the user saw on the send screen.
-  const { sendAmount, sendSymbol } =
+  const { sendAmount, sendSymbol, gasSymbol } =
     useSendBundleAmountSymbol(transactionMeta);
 
   const transactionType = transactionMeta?.type;
@@ -61,6 +61,7 @@ export function useSendBundleHwNavigation() {
           approvalRequestId: String(transactionMeta?.id),
           sendAmount,
           sendSymbol,
+          gasSymbol,
         },
       });
     },
@@ -68,6 +69,7 @@ export function useSendBundleHwNavigation() {
       navigateToHwSigningPage,
       sendAmount,
       sendSymbol,
+      gasSymbol,
       transactionMeta?.id,
     ],
   );

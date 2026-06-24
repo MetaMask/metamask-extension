@@ -61,7 +61,11 @@ describe('useSendBundleAmountSymbol', () => {
       }),
     );
 
-    expect(result.current).toEqual({ sendAmount: '1', sendSymbol: 'ETH' });
+    expect(result.current).toEqual({
+      sendAmount: '1',
+      sendSymbol: 'ETH',
+      gasSymbol: 'ETH',
+    });
   });
 
   it('prefers txParamsOriginal.value so enforced simulations do not zero the amount', () => {
@@ -94,7 +98,11 @@ describe('useSendBundleAmountSymbol', () => {
       }),
     );
 
-    expect(result.current).toEqual({ sendAmount: '1', sendSymbol: 'ETH' });
+    expect(result.current).toEqual({
+      sendAmount: '1',
+      sendSymbol: 'ETH',
+      gasSymbol: 'ETH',
+    });
   });
 
   it('returns undefined sendAmount when the native value is missing', () => {
@@ -119,7 +127,11 @@ describe('useSendBundleAmountSymbol', () => {
       }),
     );
 
-    expect(result.current).toEqual({ sendAmount: undefined, sendSymbol: 'ETH' });
+    expect(result.current).toEqual({
+      sendAmount: undefined,
+      sendSymbol: 'ETH',
+      gasSymbol: 'ETH',
+    });
   });
 
   it('delegates to the ERC20 derivation for token sends', () => {
@@ -141,11 +153,22 @@ describe('useSendBundleAmountSymbol', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSendBundleAmountSymbol(transactionMeta),
-      getMockConfirmStateForTransaction(transactionMeta),
+      getMockConfirmStateForTransaction(transactionMeta, {
+        metamask: {
+          networkConfigurationsByChainId: {
+            '0x5': { nativeCurrency: 'ETH' },
+          },
+        },
+      }),
     );
 
     expect(useTokenValuesMock).toHaveBeenCalledWith(transactionMeta);
     expect(useTokenDetailsMock).toHaveBeenCalledWith(transactionMeta);
-    expect(result.current).toEqual({ sendAmount: '7', sendSymbol: 'TST' });
+    // The sent token is TST, but gas is paid in the native currency (ETH).
+    expect(result.current).toEqual({
+      sendAmount: '7',
+      sendSymbol: 'TST',
+      gasSymbol: 'ETH',
+    });
   });
 });

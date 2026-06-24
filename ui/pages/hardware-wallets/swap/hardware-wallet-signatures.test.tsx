@@ -570,6 +570,7 @@ describe('HardwareWalletSignatures', () => {
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
     const qrAccount = {
       ...MOCK_LEDGER_ACCOUNT,
+      id: 'qr-account-id',
       metadata: {
         ...MOCK_LEDGER_ACCOUNT.metadata,
         keyring: {
@@ -630,6 +631,7 @@ describe('HardwareWalletSignatures', () => {
   describe('QR toggle button', () => {
     const qrAccount = {
       ...MOCK_LEDGER_ACCOUNT,
+      id: 'qr-account-id',
       metadata: {
         ...MOCK_LEDGER_ACCOUNT.metadata,
         keyring: {

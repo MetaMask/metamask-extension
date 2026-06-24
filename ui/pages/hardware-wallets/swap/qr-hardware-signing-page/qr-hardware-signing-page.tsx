@@ -50,6 +50,7 @@ export const QrHardwareSigningPage = ({
         className="qr-hardware-signing-page__header"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
+        padding={4}
         style={{ width: '100%' }}
       >
         <ButtonIcon
@@ -64,6 +65,7 @@ export const QrHardwareSigningPage = ({
         className="qr-hardware-signing-page__content"
         flexDirection={BoxFlexDirection.Column}
         gap={4}
+        paddingHorizontal={4}
         alignItems={BoxAlignItems.Center}
         style={{ flex: 1, width: '100%' }}
       >

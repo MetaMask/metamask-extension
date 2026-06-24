@@ -92,6 +92,13 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
        * label the send step.
        */
       sendSymbol?: string;
+      /**
+       * The symbol of the token used to pay the network fee (always the
+       * chain's native currency, e.g. "ETH"). Used to label the gas-payment
+       * step. Distinct from `sendSymbol` for ERC20 sends (send USDC, pay gas
+       * in ETH).
+       */
+      gasSymbol?: string;
     } | null;
   };
 };

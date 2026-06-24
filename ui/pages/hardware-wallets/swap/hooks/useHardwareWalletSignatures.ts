@@ -86,6 +86,11 @@ type SendBundleHardwareWalletState = {
    * The symbol of the token being sent (e.g. "ETH" or "USDC").
    */
   sendSymbol?: string;
+  /**
+   * The symbol of the token used to pay the network fee (always the chain's
+   * native currency). Distinct from `sendSymbol` for ERC20 sends.
+   */
+  gasSymbol?: string;
 };
 
 type HardwareWalletSignaturesLocationState = {
@@ -122,8 +127,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
-  const sendBundleState = (location.state as HardwareWalletSignaturesLocationState)
-    ?.sendBundle;
+  const sendBundleState = (
+    location.state as HardwareWalletSignaturesLocationState
+  )?.sendBundle;
   // `sendBundleTxMeta` is reactive: retry replaces it with a fresh
   // TransactionMeta (created via `addTransaction`). All consumers — the
   // tracker's expectedTxIds, the safety check, the auto-submit effect —
@@ -343,7 +349,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       return;
     }
 
-    const {chainId} = sendBundleTxMeta;
+    const { chainId } = sendBundleTxMeta;
     if (!chainId) {
       log.warn('[HW-SendBundle] retry: no chainId on txMeta');
       dispatchSignatureEvent({
@@ -547,7 +553,8 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   useEffect(() => {
     if (
-      signatureState.status === HardwareWalletSignatureStatus.AwaitingFinalSignature ||
+      signatureState.status ===
+        HardwareWalletSignatureStatus.AwaitingFinalSignature ||
       signatureState.status === HardwareWalletSignatureStatus.Submitted
     ) {
       setFirstSignatureDone(true);
@@ -643,6 +650,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     fromTokenSymbol: fromToken?.symbol,
     sendAmount: sendBundleState?.sendAmount,
     sendSymbol: sendBundleState?.sendSymbol,
+    gasSymbol: sendBundleState?.gasSymbol,
     t,
   });
   const { firstStepDescription, finalStepDescription } = getStepDescriptions({
@@ -691,11 +699,13 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
           t,
         })
       : undefined;
-  const title = qrInlineTitle ?? getTitle({
-    status: signatureState.status,
-    needsTwoConfirmations,
-    t,
-  });
+  const title =
+    qrInlineTitle ??
+    getTitle({
+      status: signatureState.status,
+      needsTwoConfirmations,
+      t,
+    });
   const hasSigningRequest = Boolean(lockedQuote || sendBundleTxMeta);
 
   const handleQrSigningPageBack = useCallback(() => {

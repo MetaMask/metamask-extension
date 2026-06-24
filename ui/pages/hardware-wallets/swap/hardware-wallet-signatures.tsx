@@ -93,6 +93,7 @@ export default function HardwareWalletSignatures() {
         className="hardware-wallet-signatures__content"
         flexDirection={BoxFlexDirection.Column}
         paddingTop={6}
+        paddingHorizontal={4}
         alignItems={BoxAlignItems.Start}
         style={{ height: '100%' }}
       >

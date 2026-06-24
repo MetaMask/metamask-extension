@@ -396,11 +396,12 @@ describe('hardware-wallet-signatures utils', () => {
         finalStepStatus: SignatureStepStatus.Pending,
         sendAmount: '1.5',
         sendSymbol: 'ETH',
+        gasSymbol: 'ETH',
         t,
       });
 
       expect(firstStepLabel).toBe('bridgeHwSendingAmount[1.5,ETH]');
-      expect(finalStepLabel).toBe('sendBundleHwGasPayment');
+      expect(finalStepLabel).toBe('sendBundleHwGasPayment[ETH]');
     });
 
     it('returns the send label on the final step for a single-step sendBundle', () => {

@@ -328,6 +328,9 @@ export const getFinalStepDescription = ({
  * @param options.sendAmount - The amount being sent (sendBundle flow).
  * @param options.sendSymbol - The symbol of the token being sent
  * (sendBundle flow).
+ * @param options.gasSymbol - The symbol of the token used to pay the network
+ * fee (always the chain's native currency). Labels the gas-payment step in a
+ * two-step sendBundle flow.
  * @param options.t - The i18n translation function.
  * @returns An object containing the localized `firstStepLabel` and
  * `finalStepLabel` strings.
@@ -342,6 +345,7 @@ export const getStepLabels = ({
   fromTokenSymbol,
   sendAmount,
   sendSymbol,
+  gasSymbol,
   t,
 }: {
   isSendBundleFlow: boolean;
@@ -353,6 +357,7 @@ export const getStepLabels = ({
   fromTokenSymbol?: string;
   sendAmount?: string;
   sendSymbol?: string;
+  gasSymbol?: string;
   t: ReturnType<typeof useI18nContext>;
 }): {
   firstStepLabel: string;
@@ -364,7 +369,7 @@ export const getStepLabels = ({
     if (needsTwoConfirmations) {
       return {
         firstStepLabel: t('bridgeHwSendingAmount', [sendAmount, sendSymbol]),
-        finalStepLabel: t('sendBundleHwGasPayment'),
+        finalStepLabel: t('sendBundleHwGasPayment', [gasSymbol]),
       };
     }
 
