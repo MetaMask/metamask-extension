@@ -20,7 +20,13 @@ import { createEventBuilder } from '../../../../shared/lib/analytics/create-even
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
 import { getAnalyticsMessenger } from './analytics-messenger';
-import { configureAnalytics, identify, trackEvent, trackPage, updateProfileSessionData } from './analytics';
+import {
+  configureAnalytics,
+  identify,
+  trackEvent,
+  trackPage,
+  updateProfileSessionData,
+} from './analytics';
 
 function createConfiguredMessenger() {
   const trackEventHandler = jest.fn();
@@ -299,7 +305,9 @@ describe('analytics', () => {
       const { trackEventHandler } = createConfiguredMessenger();
 
       updateProfileSessionData(SAMPLE_SRP_SESSION_DATA);
-      trackEvent(createEventBuilder('Test Event 1').addCategory('Test Category').build());
+      trackEvent(
+        createEventBuilder('Test Event 1').addCategory('Test Category').build(),
+      );
 
       updateProfileSessionData({
         entropySourceId1: {
@@ -311,7 +319,9 @@ describe('analytics', () => {
           },
         },
       });
-      trackEvent(createEventBuilder('Test Event 2').addCategory('Test Category').build());
+      trackEvent(
+        createEventBuilder('Test Event 2').addCategory('Test Category').build(),
+      );
 
       expect(trackEventHandler).toHaveBeenLastCalledWith(
         expect.objectContaining({
