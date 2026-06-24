@@ -17,7 +17,6 @@ import {
 import { Tabs, Tab } from '../../components/ui/tabs';
 import {
   DEFAULT_ROUTE,
-  PREVIOUS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
@@ -145,11 +144,11 @@ export default function Notifications() {
   const fromPath = searchParams.get('from') ?? undefined;
 
   const handleBack = () => {
-    if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
-    } else {
-      navigate(DEFAULT_ROUTE);
-    }
+    // Navigate to an explicit destination instead of `navigate(-1)`. An
+    // auto-lock while the Notifications page is open redirects to /unlock,
+    // and a history-based back can land on /unlock and loop back to the
+    // unlock page after re-auth.
+    navigate(fromPath ?? DEFAULT_ROUTE);
   };
 
   const { isLoading, error } = useMetamaskNotificationsContext();
