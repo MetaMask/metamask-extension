@@ -1,59 +1,34 @@
-import React, { useEffect, useContext, useMemo } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import {
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
-import {
-  getAccountTypeForOnboardingMetrics,
-  getFirstTimeFlowType,
-  getSocialLoginEmail,
-  getSocialLoginType,
-} from '../../../selectors';
-import {
-  AuthConnection,
-  FirstTimeFlowType,
-} from '../../../../shared/constants/onboarding';
-import { useOnboardingReset } from '../hooks/useOnboardingReset';
+import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { AccountStatusLayout } from '../account-status-layout';
+import { useAccountStatusContext } from '../hooks/useAccountStatusContext';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountNotFound() {
   const navigate = useNavigate();
-  const resetOnboardingAndReturn = useOnboardingReset();
-
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const userSocialLoginEmail = useSelector(getSocialLoginEmail);
-  const socialLoginType = useSelector(getSocialLoginType);
-  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const {
+    accountTypeForMetrics,
+    descriptionKey,
+    descriptionInterpolation,
+    resetOnboardingAndReturn,
     trackEvent,
     bufferedTrace,
-    bufferedEndTrace,
     onboardingParentContext,
-  } = useContext(MetaMetricsContext);
-
-  const descriptionKey = useMemo(() => {
-    if (socialLoginType === AuthConnection.Telegram) {
-      return 'accountNotFoundDescriptionTelegram';
-    }
-    return 'accountNotFoundDescription';
-  }, [socialLoginType]);
-
-  const descriptionInterpolation = useMemo(() => {
-    if (socialLoginType === AuthConnection.Telegram) {
-      return [socialLoginType];
-    }
-    return [userSocialLoginEmail || '-'];
-  }, [socialLoginType, userSocialLoginEmail]);
+  } = useAccountStatusContext({
+    telegramDescriptionKey: 'accountNotFoundDescriptionTelegram',
+    defaultDescriptionKey: 'accountNotFoundDescription',
+    validFlowType: FirstTimeFlowType.socialCreate,
+    pageViewedEventName: MetaMetricsEventName.AccountNotFoundPageViewed,
+    pageTraceName: TraceName.OnboardingExistingSocialAccountNotFound,
+  });
 
   const onLoginWithDifferentMethod = async () => {
     await resetOnboardingAndReturn();
@@ -77,36 +52,6 @@ export default function AccountNotFound() {
     });
     navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
   };
-
-  useEffect(() => {
-    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.AccountNotFoundPageViewed,
-      });
-      bufferedTrace?.({
-        name: TraceName.OnboardingExistingSocialAccountNotFound,
-        op: TraceOperation.OnboardingUserJourney,
-        parentContext: onboardingParentContext?.current,
-      });
-    } else {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
-    }
-    return () => {
-      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        bufferedEndTrace?.({
-          name: TraceName.OnboardingExistingSocialAccountNotFound,
-        });
-      }
-    };
-  }, [
-    firstTimeFlowType,
-    navigate,
-    onboardingParentContext,
-    bufferedTrace,
-    bufferedEndTrace,
-    trackEvent,
-  ]);
 
   return (
     <AccountStatusLayout
