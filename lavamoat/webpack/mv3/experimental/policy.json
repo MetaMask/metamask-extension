@@ -1491,6 +1491,11 @@
         "uuid": true
       }
     },
+    "@metamask/transaction-pay-controller": {
+      "packages": {
+        "@metamask/transaction-controller": true
+      }
+    },
     "@metamask/utils": {
       "globals": {
         "Buffer": true,
