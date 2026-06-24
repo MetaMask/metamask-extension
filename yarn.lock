@@ -8392,19 +8392,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^6.1.2":
-  version: 6.1.2
-  resolution: "@metamask/subscription-controller@npm:6.1.2"
+"@metamask/subscription-controller@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "@metamask/subscription-controller@npm:6.2.0"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/controller-utils": "npm:^11.20.0"
-    "@metamask/messenger": "npm:^1.0.0"
-    "@metamask/polling-controller": "npm:^16.0.4"
-    "@metamask/profile-sync-controller": "npm:^28.0.2"
-    "@metamask/transaction-controller": "npm:^64.0.0"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.2.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/polling-controller": "npm:^16.0.6"
+    "@metamask/profile-sync-controller": "npm:^28.1.1"
+    "@metamask/transaction-controller": "npm:^68.0.0"
+    "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
-  checksum: 10/4626174686457b72bca4756577caaa922c9fdef747a17d4c14c7e7d14a8f383a5ed317ffda95886c37cde7b3b6db6ea2ff02f80e7c56d831d38c380b11095400
+  checksum: 10/249fd54ce50b7711269c782dca6d79b72a533ec507f87880b1c715766e2370bb4e718b075af67556e4972e90572822ecaf4b756365a098b3f92de89b425c827f
   languageName: node
   linkType: hard
 
@@ -8719,7 +8719,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^68.0.1, @metamask/transaction-controller@npm:^68.1.1":
+"@metamask/transaction-controller@npm:^68.0.0, @metamask/transaction-controller@npm:^68.0.1, @metamask/transaction-controller@npm:^68.1.1":
   version: 68.1.1
   resolution: "@metamask/transaction-controller@npm:68.1.1"
   dependencies:
@@ -33601,7 +33601,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.8.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
     "@metamask/storage-service": "npm:^1.0.0"
-    "@metamask/subscription-controller": "npm:^6.1.2"
+    "@metamask/subscription-controller": "npm:^6.2.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
