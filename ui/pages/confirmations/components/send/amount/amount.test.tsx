@@ -208,7 +208,6 @@ describe('Amount', () => {
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     const { getByTestId, getByText } = render();
 
-    expect(getByText('10.023 NEU available')).toBeInTheDocument();
     expect(getByTestId('send-amount-balance')).toHaveTextContent(
       '10.023 NEU available',
     );
