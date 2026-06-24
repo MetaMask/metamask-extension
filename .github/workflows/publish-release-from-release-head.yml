@@ -347,9 +347,9 @@ jobs:
             echo "| Sentry (Flask MV2 webpack) | ✅ Published |"
             echo "| GitHub Release | ✅ Created |"
             echo "| Firefox Bundle | ✅ Pushed |"
-            if [[ "${{ steps.amo-reviewer-s3.outcome }}" == "success" ]]; then
+            if [[ "${{ steps.amo-reviewer-s3.conclusion }}" == "success" ]]; then
               echo "| AMO reviewer S3 (PRD) | ✅ Published |"
-            elif [[ "${{ steps.amo-reviewer-s3.outcome }}" == "skipped" ]]; then
+            elif [[ "${{ steps.amo-reviewer-s3.conclusion }}" == "skipped" ]]; then
               echo "| AMO reviewer S3 (PRD) | ⏭ Skipped |"
             else
               echo "| AMO reviewer S3 (PRD) | ❌ Failed |"
@@ -357,6 +357,6 @@ jobs:
             echo ""
             echo "**Release:** [${RELEASE_TAG}](https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG})"
           } >> "${GITHUB_STEP_SUMMARY}"
-          if [[ "${{ steps.amo-reviewer-s3.outcome }}" == "failure" ]]; then
+          if [[ "${{ steps.amo-reviewer-s3.conclusion }}" == "failure" ]]; then
             exit 1
           fi
