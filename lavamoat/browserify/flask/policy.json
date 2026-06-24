@@ -864,6 +864,24 @@
         "uuid": true
       }
     },
+    "@metamask/wallet>@metamask/accounts-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/keyring-sdk": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/wallet>@metamask/accounts-controller>ethereum-cryptography": true,
+        "lodash": true,
+        "uuid": true
+      }
+    },
     "@metamask/address-book-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -1637,6 +1655,28 @@
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
+    "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "console.info": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
+        "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-sdk": true,
+        "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
+      }
+    },
     "@metamask/eth-token-tracker": {
       "globals": {
         "console.warn": true
@@ -1817,6 +1857,14 @@
         "bitcoin-address-validation": true
       }
     },
+    "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-sdk>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
     "@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -1883,6 +1931,23 @@
         "@metamask/keyring-sdk>uuid": true
       }
     },
+    "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-sdk": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-sdk>@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/scure-bip39": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/wallet>@metamask/accounts-controller>ethereum-cryptography": true,
+        "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
+      }
+    },
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -1892,6 +1957,15 @@
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/keyring-utils": true,
@@ -2234,6 +2308,11 @@
         "@metamask/ppom-validator>crypto-js": true,
         "@toruslabs/eccrypto>elliptic": true,
         "@metamask/ppom-validator>json-rpc-random-id": true
+      }
+    },
+    "@metamask/preferences-controller": {
+      "packages": {
+        "@metamask/base-controller": true
       }
     },
     "@metamask/profile-metrics-controller": {
@@ -2867,13 +2946,14 @@
     },
     "@metamask/wallet": {
       "packages": {
-        "@metamask/accounts-controller": true,
+        "@metamask/wallet>@metamask/accounts-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
+        "@metamask/preferences-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/scure-bip39": true,
         "@metamask/storage-service": true,
@@ -3206,6 +3286,12 @@
       }
     },
     "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/wallet>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -4754,6 +4840,15 @@
       },
       "packages": {
         "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/wallet>@metamask/accounts-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/wallet>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/eth-hd-keyring>ethereum-cryptography": {
@@ -6845,6 +6940,11 @@
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/wallet>@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
       "globals": {
         "crypto": true
       }

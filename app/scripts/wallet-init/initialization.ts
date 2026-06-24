@@ -14,6 +14,7 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
+import { preferencesControllerConfiguration } from './preferences-controller';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -50,16 +51,30 @@ export function initializeWallet({
   encryptor,
   showApprovalRequest,
   connectivityAdapter,
+  initLangCode,
 }: {
   messenger: WalletInitMessenger;
   state: Record<string, Record<string, Json>>;
   encryptor?: Encryptor;
   showApprovalRequest?: ShowApprovalRequest;
   connectivityAdapter: ConnectivityAdapter;
+  initLangCode?: string;
 }) {
   const wallet = new Wallet({
     messenger,
-    state,
+    state: {
+      ...state,
+      // Seed the superset PreferencesController the way the prior standalone
+      // init did: default `currentLocale` to the detected locale, then let any
+      // persisted state override it.
+      PreferencesController: {
+        currentLocale: initLangCode ?? '',
+        ...state.PreferencesController,
+      },
+    },
+    // Override the wallet's default (package) PreferencesController with the
+    // extension's diverging superset. See `./preferences-controller`.
+    initializationConfigurations: [preferencesControllerConfiguration],
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
