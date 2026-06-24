@@ -45,7 +45,12 @@ describe('initializeWallet', () => {
     const messenger = createMockMessenger();
     const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
 
-    initializeWallet({ messenger, state, connectivityAdapter });
+    initializeWallet({
+      messenger,
+      state,
+      connectivityAdapter,
+      infuraProjectId: 'fake-infura-project-id',
+    });
 
     expect(MockWallet).toHaveBeenCalledWith({
       messenger,
@@ -72,6 +77,7 @@ describe('initializeWallet', () => {
       encryptor,
       showApprovalRequest,
       connectivityAdapter,
+      infuraProjectId: 'fake-infura-project-id',
     });
 
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
@@ -106,6 +112,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       messenger,
       state: { OnboardingController: { completedOnboarding: true } },
       connectivityAdapter,
+      infuraProjectId: 'fake-infura-project-id',
     });
 
     expect(mockSetupToggle).toHaveBeenCalledWith({
@@ -122,6 +129,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       messenger: createMockMessenger(),
       state: { PreferencesController: { useExternalServices: false } },
       connectivityAdapter,
+      infuraProjectId: 'fake-infura-project-id',
     });
 
     expect(mockSetupToggle).toHaveBeenCalledWith(

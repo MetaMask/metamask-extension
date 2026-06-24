@@ -14,7 +14,10 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
-import { CHAIN_IDS, getFailoverUrlsForInfuraNetwork } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  getFailoverUrlsForInfuraNetwork,
+} from '../../../shared/constants/network';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
