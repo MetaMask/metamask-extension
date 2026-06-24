@@ -5349,12 +5349,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/design-system-react@npm:0.28.0-preview.25db973, @metamask/design-system-react@npm:@metamask-previews/design-system-react@0.28.0-preview.25db973":
-  version: 0.28.0-preview.25db973
-  resolution: "@metamask-previews/design-system-react@npm:0.28.0-preview.25db973"
+"@metamask-previews/design-system-react@npm:0.28.0-preview.2222cbb5, @metamask/design-system-react@npm:@metamask-previews/design-system-react@0.28.0-preview.2222cbb5":
+  version: 0.28.0-preview.2222cbb5
+  resolution: "@metamask-previews/design-system-react@npm:0.28.0-preview.2222cbb5"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
-    "@metamask-previews/design-system-shared": "npm:0.24.0-preview.25db973"
+    "@metamask-previews/design-system-shared": "npm:0.24.0-preview.2222cbb5"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -5366,35 +5366,35 @@ __metadata:
     "@metamask/utils": ^11.11.0
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/bf2a2e6d948bcebdc3673ff730b0aed862aab516f0d50cdbda466aaab1b7bc4576312f8d1c5bf175f8b0e975f4b45ed8fd807ed7c4934f0488a0adce8f7bac2a
+  checksum: 10/054fa59e2fb2cc93682a8eb96c8eedf745c29ef9ef0defa3a42f2562112fc648fedee2ad32ba90dce34dc65e53e4a8b563f98cad75d48a332ef172b2e1e4325f
   languageName: node
   linkType: hard
 
-"@metamask-previews/design-system-shared@npm:0.24.0-preview.25db973, @metamask/design-system-shared@npm:@metamask-previews/design-system-shared@0.24.0-preview.25db973":
-  version: 0.24.0-preview.25db973
-  resolution: "@metamask-previews/design-system-shared@npm:0.24.0-preview.25db973"
+"@metamask-previews/design-system-shared@npm:0.24.0-preview.2222cbb5, @metamask/design-system-shared@npm:@metamask-previews/design-system-shared@0.24.0-preview.2222cbb5":
+  version: 0.24.0-preview.2222cbb5
+  resolution: "@metamask-previews/design-system-shared@npm:0.24.0-preview.2222cbb5"
   dependencies:
     "@metamask/utils": "npm:^11.11.0"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/5db164456956605b5ccd94e7fb6fc1c5fa53d5e4d2c7447cb69a7fcbf4634591cdc596495faec86e088e4e9f40970ca1dba152e76a3d7622ac747d250185e87e
+  checksum: 10/73be621c4544aef24ceb0179d86b6841e2b70f83716571e1ee01f58bdd8a6dac0e6d86fa1a5c44c30a157660587dc1ea9579fd3baf046bcc8eb97beca4865eab
   languageName: node
   linkType: hard
 
-"@metamask-previews/design-system-tailwind-preset@npm:0.9.0-preview.25db973, @metamask/design-system-tailwind-preset@npm:@metamask-previews/design-system-tailwind-preset@0.9.0-preview.25db973":
-  version: 0.9.0-preview.25db973
-  resolution: "@metamask-previews/design-system-tailwind-preset@npm:0.9.0-preview.25db973"
+"@metamask-previews/design-system-tailwind-preset@npm:0.9.0-preview.2222cbb5, @metamask/design-system-tailwind-preset@npm:@metamask-previews/design-system-tailwind-preset@0.9.0-preview.2222cbb5":
+  version: 0.9.0-preview.2222cbb5
+  resolution: "@metamask-previews/design-system-tailwind-preset@npm:0.9.0-preview.2222cbb5"
   peerDependencies:
     "@metamask/design-tokens": ^8.0.0
     tailwindcss: ^3.0.0
-  checksum: 10/49571c909e0fa95a97670c3d7b3f74d4cb72ab50ec324f5b1630a12ef71272991209519ae54625e8b8171e4673adc3ba896965f4f6b04c047b46e9af6ecdae5b
+  checksum: 10/35769cd147e37760fce6e3d1f056f8b30fb8efd444f5bf630043eb05ce3430c2249e47499c9b46a458b558ef6dae7614b6676d0792aed6aa1aa88f471ccf1755
   languageName: node
   linkType: hard
 
-"@metamask-previews/design-tokens@npm:8.5.0-preview.25db973, @metamask/design-tokens@npm:@metamask-previews/design-tokens@8.5.0-preview.25db973":
-  version: 8.5.0-preview.25db973
-  resolution: "@metamask-previews/design-tokens@npm:8.5.0-preview.25db973"
-  checksum: 10/c8edc62d58c8c124f852e69fd701daae42452aafdf89020d06d13b197eb1ad4cd9f32624e73c7c37a19bee51983b1795264a6912df33778e39c8d6d41a6539d4
+"@metamask-previews/design-tokens@npm:8.5.0-preview.2222cbb5, @metamask/design-tokens@npm:@metamask-previews/design-tokens@8.5.0-preview.2222cbb5":
+  version: 8.5.0-preview.2222cbb5
+  resolution: "@metamask-previews/design-tokens@npm:8.5.0-preview.2222cbb5"
+  checksum: 10/09385d7c95fcba52f055089095c33b3e2f1342464bfa7bd0b77777476b81b8f38cbdfcfc8dbd3b5a85dce11772a2cb69d3b6403473a2761790f26357915ef011
   languageName: node
   linkType: hard
 
@@ -33279,10 +33279,10 @@ __metadata:
     "@ledgerhq/hw-transport": "npm:^6.31.0"
     "@ledgerhq/hw-transport-webhid": "npm:^6.31.0"
     "@lydell/node-pty": "npm:^1.1.0"
-    "@metamask-previews/design-system-react": "npm:0.28.0-preview.25db973"
-    "@metamask-previews/design-system-shared": "npm:0.24.0-preview.25db973"
-    "@metamask-previews/design-system-tailwind-preset": "npm:0.9.0-preview.25db973"
-    "@metamask-previews/design-tokens": "npm:8.5.0-preview.25db973"
+    "@metamask-previews/design-system-react": "npm:0.28.0-preview.2222cbb5"
+    "@metamask-previews/design-system-shared": "npm:0.24.0-preview.2222cbb5"
+    "@metamask-previews/design-system-tailwind-preset": "npm:0.9.0-preview.2222cbb5"
+    "@metamask-previews/design-tokens": "npm:8.5.0-preview.2222cbb5"
     "@metamask/7715-permission-types": "npm:^0.7.1"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.4"
@@ -33317,10 +33317,10 @@ __metadata:
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
-    "@metamask/design-system-react": "npm:@metamask-previews/design-system-react@0.28.0-preview.25db973"
-    "@metamask/design-system-shared": "npm:@metamask-previews/design-system-shared@0.24.0-preview.25db973"
-    "@metamask/design-system-tailwind-preset": "npm:@metamask-previews/design-system-tailwind-preset@0.9.0-preview.25db973"
-    "@metamask/design-tokens": "npm:@metamask-previews/design-tokens@8.5.0-preview.25db973"
+    "@metamask/design-system-react": "npm:@metamask-previews/design-system-react@0.28.0-preview.2222cbb5"
+    "@metamask/design-system-shared": "npm:@metamask-previews/design-system-shared@0.24.0-preview.2222cbb5"
+    "@metamask/design-system-tailwind-preset": "npm:@metamask-previews/design-system-tailwind-preset@0.9.0-preview.2222cbb5"
+    "@metamask/design-tokens": "npm:@metamask-previews/design-tokens@8.5.0-preview.2222cbb5"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.4"
