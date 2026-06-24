@@ -645,9 +645,18 @@ jobs:
     timeout-minutes: 5
     environment: release-ci
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension-regression-validation-poc
+          permissions: |
+            contents: write
+
       - name: Trigger regression validation in external repo
         env:
-          DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
+          DISPATCH_TOKEN: ${{ steps.token.outputs.token }}
           BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
         run: |
           # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
