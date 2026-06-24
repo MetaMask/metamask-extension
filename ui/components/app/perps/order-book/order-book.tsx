@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Box,
   Text,
@@ -8,16 +8,13 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import {
-  formatPerpsFiat,
-  PRICE_RANGES_UNIVERSAL,
-} from '../../../../../shared/lib/perps-formatters';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream/usePerpsLiveOrderBook';
 import { OrderBookTable } from './order-book-table';
 import type {
   ExpandableOrderBookProps,
   OrderBookToggleProps,
   OrderBookPanelProps,
+  OrderBookGrouping,
 } from './order-book.types';
 
 const ORDER_BOOK_LEVELS = 20;
@@ -60,7 +57,18 @@ export const OrderBookToggle: React.FC<OrderBookToggleProps> = ({
   </button>
 );
 
+const GROUPING_OPTIONS: OrderBookGrouping[] = [0.1, 1, 10, 100, 1000];
+
+function formatGroupingLabel(value: OrderBookGrouping): string {
+  if (value >= 1000) {
+    return '1,000';
+  }
+  return value.toString();
+}
+
 export const OrderBookPanel: React.FC<OrderBookPanelProps> = ({ symbol }) => {
+  const [grouping, setGrouping] = useState<OrderBookGrouping>(1);
+
   const { orderBook, isInitialLoading } = usePerpsLiveOrderBook({
     symbol,
     levels: ORDER_BOOK_LEVELS,
@@ -97,57 +105,42 @@ export const OrderBookPanel: React.FC<OrderBookPanelProps> = ({ symbol }) => {
 
   const effectiveLoading = isInitialLoading && !hasTimedOut;
 
-  const spreadSummary = useMemo(() => {
-    if (
-      !orderBook ||
-      orderBook.bids.length === 0 ||
-      orderBook.asks.length === 0
-    ) {
-      return null;
-    }
-    const bestBid = parseFloat(orderBook.bids[0].price);
-    const bestAsk = parseFloat(orderBook.asks[0].price);
-    const mid = (bestBid + bestAsk) / 2;
-    const spread = bestAsk - bestBid;
-    const spreadPct = mid > 0 ? ((spread / mid) * 100).toFixed(3) : '0';
-
-    return {
-      bestBid: formatPerpsFiat(bestBid, { ranges: PRICE_RANGES_UNIVERSAL }),
-      bestAsk: formatPerpsFiat(bestAsk, { ranges: PRICE_RANGES_UNIVERSAL }),
-      spreadPct,
-    };
-  }, [orderBook]);
-
   return (
     <div
       className="rounded-lg border border-border-muted px-3 pb-3 pt-2 h-full overflow-y-auto"
       data-testid="perps-order-book-panel"
     >
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Between}
+        className="pb-2 mb-2 border-b border-border-muted"
+      >
+        <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+          Group by
+        </Text>
+        <select
+          value={grouping}
+          onChange={(e) =>
+            setGrouping(parseFloat(e.target.value) as OrderBookGrouping)
+          }
+          className="bg-background-default text-text-default text-xs border border-border-muted rounded px-2 py-1 cursor-pointer"
+          data-testid="perps-order-book-grouping-select"
+        >
+          {GROUPING_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>
+              {formatGroupingLabel(opt)}
+            </option>
+          ))}
+        </select>
+      </Box>
+
       <OrderBookTable
         orderBook={orderBook}
         symbol={symbol}
         isLoading={effectiveLoading}
+        grouping={grouping}
       />
-
-      {spreadSummary && (
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          gap={1}
-          className="pt-2 mt-2 border-t border-border-muted"
-        >
-          <Text
-            variant={TextVariant.BodyXs}
-            color={TextColor.TextAlternative}
-          >
-            Spread:
-          </Text>
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextDefault}>
-            {spreadSummary.spreadPct}%
-          </Text>
-        </Box>
-      )}
     </div>
   );
 };

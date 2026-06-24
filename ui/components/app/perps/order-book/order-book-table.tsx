@@ -12,7 +12,7 @@ import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
-import type { OrderBookTableProps } from './order-book.types';
+import type { OrderBookTableProps, OrderBookGrouping } from './order-book.types';
 
 function formatTotal(level: OrderBookLevel): string {
   const value = parseFloat(level.totalNotional);
@@ -23,6 +23,61 @@ function formatTotal(level: OrderBookLevel): string {
     return `$${Math.round(value / 1000)}K`;
   }
   return formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL });
+}
+
+function groupLevels(
+  levels: OrderBookLevel[],
+  grouping: OrderBookGrouping,
+  side: 'bid' | 'ask',
+): OrderBookLevel[] {
+  if (levels.length === 0) {
+    return [];
+  }
+
+  const grouped = new Map<number, OrderBookLevel>();
+
+  for (const level of levels) {
+    const price = parseFloat(level.price);
+    const bucketPrice =
+      side === 'bid'
+        ? Math.floor(price / grouping) * grouping
+        : Math.ceil(price / grouping) * grouping;
+
+    const existing = grouped.get(bucketPrice);
+    if (existing) {
+      const newSize = parseFloat(existing.size) + parseFloat(level.size);
+      const newNotional =
+        parseFloat(existing.totalNotional) + parseFloat(level.notional);
+      grouped.set(bucketPrice, {
+        price: bucketPrice.toString(),
+        size: newSize.toString(),
+        total: newSize.toString(),
+        notional: parseFloat(level.notional).toString(),
+        totalNotional: newNotional.toString(),
+      });
+    } else {
+      grouped.set(bucketPrice, {
+        price: bucketPrice.toString(),
+        size: level.size,
+        total: level.size,
+        notional: level.notional,
+        totalNotional: level.notional,
+      });
+    }
+  }
+
+  const result = Array.from(grouped.values());
+
+  let runningTotal = 0;
+  let runningNotional = 0;
+  for (const level of result) {
+    runningTotal += parseFloat(level.size);
+    runningNotional += parseFloat(level.totalNotional);
+    level.total = runningTotal.toString();
+    level.totalNotional = runningNotional.toString();
+  }
+
+  return result;
 }
 
 function formatPrice(price: string): string {
@@ -43,6 +98,7 @@ export const OrderBookTable: React.FC<OrderBookTableProps> = ({
   orderBook,
   symbol,
   isLoading = false,
+  grouping,
 }) => {
   const renderRow = useCallback(
     (
@@ -93,15 +149,21 @@ export const OrderBookTable: React.FC<OrderBookTableProps> = ({
     if (!orderBook?.asks) {
       return null;
     }
-    return [...orderBook.asks].reverse().map((level, index) => renderRow(level, index, 'ask'));
-  }, [orderBook?.asks, renderRow]);
+    const levels = grouping
+      ? groupLevels(orderBook.asks, grouping, 'ask')
+      : orderBook.asks;
+    return [...levels].reverse().map((level, index) => renderRow(level, index, 'ask'));
+  }, [orderBook?.asks, grouping, renderRow]);
 
   const bidRows = useMemo(() => {
     if (!orderBook?.bids) {
       return null;
     }
-    return orderBook.bids.map((level, index) => renderRow(level, index, 'bid'));
-  }, [orderBook?.bids, renderRow]);
+    const levels = grouping
+      ? groupLevels(orderBook.bids, grouping, 'bid')
+      : orderBook.bids;
+    return levels.map((level, index) => renderRow(level, index, 'bid'));
+  }, [orderBook?.bids, grouping, renderRow]);
 
   if (!orderBook) {
     return (

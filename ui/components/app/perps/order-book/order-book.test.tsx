@@ -144,13 +144,6 @@ describe('ExpandableOrderBook', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('shows spread footer when expanded', () => {
-    render(<ExpandableOrderBook symbol="BTC" />);
-
-    fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
-    expect(screen.getByText('Spread:')).toBeInTheDocument();
-  });
-
   it('calls usePerpsLiveOrderBook with manageStream false when expanded', () => {
     render(<ExpandableOrderBook symbol="BTC" />);
 

@@ -5,4 +5,5 @@ export type {
   OrderBookTableProps,
   OrderBookToggleProps,
   OrderBookPanelProps,
+  OrderBookGrouping,
 } from './order-book.types';
