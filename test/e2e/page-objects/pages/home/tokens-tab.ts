@@ -79,6 +79,12 @@ class TokensTab extends HomePage {
 
   private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
 
+  private readonly coinOverviewSendButton =
+    '[data-testid="coin-overview-send"]';
+
+  private readonly coinOverviewSwapButton =
+    '[data-testid="coin-overview-swap"]';
+
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
 
@@ -513,6 +519,21 @@ class TokensTab extends HomePage {
   async checkBuySellButtonIsPresent(): Promise<void> {
     console.log(`Verify the buy/sell button is displayed`);
     await this.driver.waitForSelector(this.coinOverviewBuyButton);
+  }
+
+  /**
+   * Verifies the coin overview Send and Swap action buttons are both rendered
+   * and enabled (the action buttons are not gated on the account balance, so
+   * they remain present and actionable even for a zero-balance account).
+   */
+  async checkSendAndSwapButtonsArePresentAndEnabled(): Promise<void> {
+    console.log(`Verify the Send and Swap buttons are present and enabled`);
+    await this.driver.waitForSelector(this.coinOverviewSendButton, {
+      state: 'enabled',
+    });
+    await this.driver.waitForSelector(this.coinOverviewSwapButton, {
+      state: 'enabled',
+    });
   }
 
   async checkMultichainTokenListButtonIsPresent(): Promise<void> {

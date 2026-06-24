@@ -72,11 +72,12 @@ describe('BTC Account - Assets', function (this: Suite) {
         await tokensTab.checkTokenExistsInList('Bitcoin', '0 BTC');
         await tokensTab.checkTokenFiatAmountIsDisplayed('$');
         await tokensTab.checkConversionRateDisplayed();
+        await tokensTab.checkSendAndSwapButtonsArePresentAndEnabled();
       },
     );
   });
 
-  it('BTC is displayed with name, symbol, amount, fiat for a funded account', async function () {
+  it('BTC asset list and details for a funded account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -96,24 +97,6 @@ describe('BTC Account - Assets', function (this: Suite) {
         );
         await tokensTab.checkTokenFiatAmountIsDisplayed('$');
         await tokensTab.checkConversionRateDisplayed();
-      },
-    );
-  });
-
-  it('BTC asset details: header, chart, action buttons, sections', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockBtcAssetsFunded,
-      },
-      async ({ driver }) => {
-        await login(driver);
-        const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
-        await homePage.checkPageIsLoaded();
-
-        const tokensTab = new TokensTab(driver);
         await tokensTab.checkTokenAmountIsDisplayed(
           `${DEFAULT_BTC_BALANCE} BTC`,
         );
