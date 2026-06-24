@@ -206,3 +206,62 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
     );
   });
 });
+
+describe('initializeWallet — PreferencesController override', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  /**
+   * Calls `initializeWallet` and returns the options the wallet was
+   * constructed with.
+   *
+   * @param args - Overrides for the `initializeWallet` call.
+   * @param args.state - The persisted state.
+   * @param args.initLangCode - The initial locale code.
+   * @returns The wallet constructor options.
+   */
+  function getWalletOptions({
+    state = {},
+    initLangCode,
+  }: {
+    state?: Record<string, Record<string, Json>>;
+    initLangCode?: string;
+  }) {
+    initializeWallet({
+      messenger: {} as unknown as RootMessenger,
+      state,
+      connectivityAdapter: {} as unknown as ConnectivityAdapter,
+      initLangCode,
+    });
+    return MockWallet.mock.calls[MockWallet.mock.calls.length - 1][0];
+  }
+
+  it('overrides the default PreferencesController via initializationConfigurations', () => {
+    const { initializationConfigurations } = getWalletOptions({});
+
+    expect(
+      initializationConfigurations?.map((config) => config.name),
+    ).toContain('PreferencesController');
+  });
+
+  it('seeds currentLocale from initLangCode, with persisted state taking precedence', () => {
+    expect(
+      getWalletOptions({ initLangCode: 'fr' }).state?.PreferencesController
+        ?.currentLocale,
+    ).toBe('fr');
+
+    expect(
+      getWalletOptions({
+        state: { PreferencesController: { currentLocale: 'de' } },
+        initLangCode: 'fr',
+      }).state?.PreferencesController?.currentLocale,
+    ).toBe('de');
+  });
+
+  it('defaults currentLocale to an empty string when no locale is provided', () => {
+    expect(
+      getWalletOptions({}).state?.PreferencesController?.currentLocale,
+    ).toBe('');
+  });
+});

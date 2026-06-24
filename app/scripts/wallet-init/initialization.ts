@@ -14,6 +14,7 @@ import {
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import { preferencesControllerConfiguration } from './instance-options/preferences-controller';
 import type { InitializeWalletRequest } from './types';
 
 /**
@@ -32,6 +33,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
     getPermittedAccounts,
     getTransactionMetricsRequest,
     infuraProjectId,
+    initLangCode,
     messenger,
     showApprovalRequest,
     state,
@@ -41,6 +43,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
     getTransactionControllerInitMessenger(messenger);
 
   const wallet = new Wallet({
+    initializationConfigurations: [preferencesControllerConfiguration],
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
@@ -64,7 +67,13 @@ export function initializeWallet(request: InitializeWalletRequest) {
       }),
     },
     messenger,
-    state,
+    state: {
+      ...state,
+      PreferencesController: {
+        currentLocale: initLangCode ?? '',
+        ...state.PreferencesController,
+      },
+    },
   });
 
   // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
