@@ -3,10 +3,7 @@ import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import {
-  MOCK_ANALYTICS_ID,
-  MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
-} from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -82,7 +79,6 @@ describe('Token detection event', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
       },
     );

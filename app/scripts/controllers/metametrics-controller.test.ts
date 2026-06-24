@@ -1525,7 +1525,7 @@ describe('MetaMetricsController', function () {
         jest.spyOn(controller, '_buildUserTraitsObject').mockReturnValue(null);
         controller.handleMetaMaskStateUpdate({
           srpSessionData: SAMPLE_SRP_SESSION_DATA,
-        } as MetaMaskState);
+        } as unknown as MetaMaskState);
 
         const spy = jest.spyOn(segmentMock, 'track');
         controller.trackEvent({
@@ -1550,7 +1550,7 @@ describe('MetaMetricsController', function () {
         jest.spyOn(controller, '_buildUserTraitsObject').mockReturnValue(null);
         controller.handleMetaMaskStateUpdate({
           srpSessionData: SAMPLE_SRP_SESSION_DATA,
-        } as MetaMaskState);
+        } as unknown as MetaMaskState);
 
         const spy = jest.spyOn(segmentMock, 'page');
         controller.trackPage({
@@ -1576,7 +1576,7 @@ describe('MetaMetricsController', function () {
         jest.spyOn(controller, '_buildUserTraitsObject').mockReturnValue(null);
         controller.handleMetaMaskStateUpdate({
           srpSessionData: SAMPLE_SRP_SESSION_DATA,
-        } as MetaMaskState);
+        } as unknown as MetaMaskState);
 
         const spy = jest.spyOn(segmentMock, 'track');
         controller.trackEvent({
@@ -3326,7 +3326,7 @@ async function withController<ReturnValue>(
       }
 
       segmentMock.track(buildPayload(event.properties) as never, undefined);
-      const sanitizedProperties = {
+      const sanitizedProperties: Record<string, unknown> = {
         ...event.properties,
         ...event.sensitiveProperties,
         anonymous: true,

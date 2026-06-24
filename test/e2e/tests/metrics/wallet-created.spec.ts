@@ -9,10 +9,7 @@ import {
   handleSidepanelPostOnboarding,
   type OnboardingMetricsFlowOptions,
 } from '../../page-objects/flows/onboarding.flow';
-import {
-  MOCK_ANALYTICS_ID,
-  MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
-} from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import { Driver } from '../../webdriver/driver';
@@ -199,7 +196,6 @@ describe('Wallet Created Events', function () {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             new_wallet: true,
-            ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
           });
         }
       },
@@ -301,7 +297,6 @@ describe('Wallet Created Events', function () {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           biometrics_enabled: false,
           locale: 'en',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
 
         assert.deepEqual(events[2].event, 'Wallet Setup Completed');
@@ -323,7 +318,6 @@ describe('Wallet Created Events', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           new_wallet: true,
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
       },
     );
