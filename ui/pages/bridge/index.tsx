@@ -175,7 +175,6 @@ const CrossChainSwap = () => {
         path={toRelativeRoutePath(HARDWARE_WALLET_SIGNATURES_ROUTE)}
         element={
           <Page className="bridge__container">
-            {swapHeader}
             <Content padding={0}>
               <Content>
                 <HardwareWalletSignatures />

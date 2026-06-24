@@ -13,9 +13,12 @@ export type SendBundleAmountSymbol = {
 };
 
 // Safe placeholder so the ERC20 derivation hooks can always run (rules of
-// hooks) even when there is no current confirmation. Matches the shape used
-// internally by `useTokenDetails`.
-const FALLBACK_TRANSACTION_META = { txParams: {} } as TransactionMeta;
+// hooks) even when there is no current confirmation or the confirmation is
+// not a transaction (e.g. signatures). Matches the shape used internally by
+// `useTokenDetails`.
+const FALLBACK_TRANSACTION_META = {
+  txParams: { to: '', from: '', data: '0x' },
+} as TransactionMeta;
 
 /**
  * Derives the display amount and symbol for a hardware-wallet sendBundle
@@ -24,15 +27,15 @@ const FALLBACK_TRANSACTION_META = { txParams: {} } as TransactionMeta;
  * confirm screen.
  *
  * - Native send (`TransactionType.simpleSend`): amount from `txParams.value`
- *   (preferring `txParamsOriginal` so enforced simulations don't zero the
- *   displayed amount), formatted via `calcTokenAmount(value, 18)` +
- *   `formatAmount`; symbol from the current chain's native currency ticker.
- *   This mirrors `NativeSendHeading`.
+ * (preferring `txParamsOriginal` so enforced simulations don't zero the
+ * displayed amount), formatted via `calcTokenAmount(value, 18)` + `formatAmount`;
+ * symbol from the current chain's native currency ticker. This mirrors
+ * `NativeSendHeading`.
  * - ERC20 token send (`tokenMethod*`): reuses `useTokenValues` (amount) and
- *   `useTokenDetails` (symbol) — the exact derivation used by the ERC20
- *   `SendHeading`.
+ * `useTokenDetails` (symbol) — the exact derivation used by the ERC20
+ * `SendHeading`.
  *
- * Returns empty (`{}`) when there is no current confirmation.
+ * Returns empty (`{}`) when there is no transaction confirmation.
  *
  * @param transactionMeta - The send transaction being signed.
  * @returns `sendAmount` / `sendSymbol` (either may be `undefined`).
@@ -41,8 +44,12 @@ export function useSendBundleAmountSymbol(
   transactionMeta: TransactionMeta | undefined,
 ): SendBundleAmountSymbol {
   // Hooks must run unconditionally on every render. Pass a safe fallback when
-  // there is no current confirmation so the ERC20 derivation hooks don't throw.
-  const safeTransactionMeta = transactionMeta ?? FALLBACK_TRANSACTION_META;
+  // there is no txParams (missing confirmation, or non-transaction types like
+  // signatures) so the ERC20 derivation hooks don't throw.
+  const hasTxParams = transactionMeta?.txParams !== undefined;
+  const safeTransactionMeta = hasTxParams
+    ? transactionMeta
+    : FALLBACK_TRANSACTION_META;
   const { displayTransferValue } = useTokenValues(safeTransactionMeta);
   const { tokenSymbol } = useTokenDetails(safeTransactionMeta);
 
@@ -51,7 +58,7 @@ export function useSendBundleAmountSymbol(
     getNetworkConfigurationsByChainId,
   );
 
-  if (!transactionMeta) {
+  if (!hasTxParams) {
     return {};
   }
 

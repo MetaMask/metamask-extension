@@ -3,10 +3,15 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Header } from '../../../components/multichain/pages/page';
 import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
 import QrHardwareSigningPage, {
   QrHardwareSigningPhase,
@@ -29,6 +34,7 @@ import { useHardwareWalletSignatures } from './hooks/useHardwareWalletSignatures
  * @returns JSX for the signing-progress screen.
  */
 export default function HardwareWalletSignatures() {
+  const t = useI18nContext();
   const {
     signatureStatus,
     title,
@@ -69,6 +75,20 @@ export default function HardwareWalletSignatures() {
       style={{ flex: 1, width: '100%', minHeight: '100%' }}
       data-testid="hardware-wallet-signatures"
     >
+      <Header
+        className="hardware-wallet-signatures__header"
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Md}
+            ariaLabel={t('back')}
+            iconName={IconName.ArrowLeft}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={handleCancel}
+            data-testid="hardware-wallet-signatures__back-button"
+          />
+        }
+      />
       <Box
         className="hardware-wallet-signatures__content"
         flexDirection={BoxFlexDirection.Column}

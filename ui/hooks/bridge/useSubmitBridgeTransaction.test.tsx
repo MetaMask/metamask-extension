@@ -329,7 +329,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           [
             "/cross-chain/swaps/hardware-wallet-signatures",
             {
-              "state": {},
+              "state": {
+                "sendBundle": null,
+              },
             },
           ],
         ]
