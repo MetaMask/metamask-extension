@@ -31,7 +31,7 @@ const EnterPassword = ({ onContinue }: EnterPasswordProps) => {
     try {
       await verifyPassword(password);
       onContinue(AddDeviceSettingsStep.AddWallets);
-    } catch (error) {
+    } catch {
       setIsIncorrectPasswordError(true);
     }
   }, [password, onContinue]);

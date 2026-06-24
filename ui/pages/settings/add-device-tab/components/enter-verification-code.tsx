@@ -16,12 +16,12 @@ import { AddDeviceSettingsStep } from '../constant';
 
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
-const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
+const SINGLE_DIGIT_REGEX = /^\d$/u;
 const TEMP_VERIFICATION_CODE = '123456';
 // TODO: source this from the controller
 const VERIFICATION_CODE_EXPIRY_SECONDS = 15;
 
-const createEmptyCode = () => Array<string>(CODE_LENGTH).fill('');
+const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
 
 type EnterVerificationCodeProps = {
   onContinue: (type: AddDeviceSettingsStep) => void;

@@ -157,7 +157,8 @@ export const WalletSelectionList = ({
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: ListItem }) => {
+    (info: { item: ListItem }) => {
+      const { item } = info;
       if (item.type === 'wallet-header') {
         const selectedCount = item.groupIds.filter((id) =>
           selectedSet.has(id),
