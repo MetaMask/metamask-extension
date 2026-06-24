@@ -139,11 +139,11 @@ const BITCOIN_DISCOVERY_CHAIN_TIP_HASH =
   '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
 
 const BITCOIN_DISCOVERY_FEE_ESTIMATES = {
-  '1': 1,
-  '2': 1,
-  '3': 1,
-  '6': 1,
-  '144': 1,
+  1: 1,
+  2: 1,
+  3: 1,
+  6: 1,
+  144: 1,
 };
 
 /**
