@@ -13,21 +13,13 @@ import {
 } from '../controllers/preferences-controller';
 
 /**
- * Initialization configuration that overrides `@metamask/wallet`'s default
- * `PreferencesController` with the extension's diverging superset controller
- * (see MetaMask/core#9232).
+ * Overrides `@metamask/wallet`'s default `PreferencesController` with the
+ * extension's diverging superset (`../controllers/preferences-controller`)
+ * instead of converging to the package controller: a config whose `name`
+ * matches a default replaces it. See MetaMask/core#9232.
  *
- * The wallet wires the package `@metamask/preferences-controller` by default.
- * The extension instead runs a superset at
- * `app/scripts/controllers/preferences-controller.ts` (extra top-level fields, a
- * nested `preferences` object, a `referrals` map, extra messenger actions, and
- * two `AccountsController` dependencies). A configuration whose `name` matches a
- * default controller replaces that default, so the wallet constructs the
- * superset instead of the package controller without any state convergence.
- *
- * Initial state (the `currentLocale` default plus persisted state) is seeded via
- * `WalletOptions.state.PreferencesController` in `initializeWallet`, mirroring
- * the prior standalone init.
+ * Relies on the temporarily pinned `@metamask-previews/wallet` build; revisit
+ * when it moves to a stable release.
  */
 export const preferencesControllerConfiguration: InitializationConfiguration<
   PreferencesController,
@@ -39,19 +31,16 @@ export const preferencesControllerConfiguration: InitializationConfiguration<
   getMessenger: (parent) => {
     const messenger: PreferencesControllerMessenger = new Messenger({
       namespace: 'PreferencesController',
-      // The wallet types its root `PreferencesController` actions from the
-      // package controller, but the shared root routes the superset's actions at
-      // runtime. Cast so the child can auto-delegate its (superset) namespace
-      // actions to the root, mirroring the prior standalone messenger factory.
+      // Root is typed from the package controller, so the superset's extra
+      // actions can't type-check against the parent (they exist only at runtime).
+      // TODO(MetaMask/core#9232): drop once the wallet types the root from the
+      // configured controller.
       parent: parent as unknown as RootMessenger<
         MessengerActions<PreferencesControllerMessenger>,
         MessengerEvents<PreferencesControllerMessenger>
       >,
     });
 
-    // The superset controller calls these `AccountsController` actions; keep the
-    // allowlist exactly what it uses. `AccountsController` is a wallet default,
-    // so these actions are available on the shared root messenger.
     parent.delegate({
       messenger,
       actions: [

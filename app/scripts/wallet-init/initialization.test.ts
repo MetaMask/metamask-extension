@@ -1,6 +1,8 @@
 import { Wallet } from '@metamask/wallet';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
+import { Json } from '@metamask/utils';
+import { RootMessenger } from '../lib/messenger';
 import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
@@ -13,6 +15,7 @@ import {
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import { preferencesControllerConfiguration } from './instance-options/preferences-controller';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -51,6 +54,9 @@ jest.mock('./messengers/transaction-controller-messenger', () => ({
     () => 'transaction-controller-init-messenger',
   ),
 }));
+jest.mock('./instance-options/preferences-controller', () => ({
+  preferencesControllerConfiguration: { name: 'PreferencesController' },
+}));
 
 const MockWallet = jest.mocked(Wallet);
 const connectivityAdapter = {} as unknown as ConnectivityAdapter;
@@ -79,6 +85,7 @@ describe('initializeWallet', () => {
     });
 
     expect(MockWallet).toHaveBeenCalledWith({
+      initializationConfigurations: [preferencesControllerConfiguration],
       instanceOptions: {
         approvalController: 'approval-options',
         connectivityController: 'connectivity-options',
@@ -104,7 +111,13 @@ describe('initializeWallet', () => {
         transactionController: 'transaction-controller-options',
       },
       messenger,
-      state,
+      state: {
+        ...state,
+        PreferencesController: {
+          currentLocale: '',
+          ...state.PreferencesController,
+        },
+      },
     });
   });
 
@@ -232,6 +245,10 @@ describe('initializeWallet — PreferencesController override', () => {
       messenger: {} as unknown as RootMessenger,
       state,
       connectivityAdapter: {} as unknown as ConnectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
       initLangCode,
     });
     return MockWallet.mock.calls[MockWallet.mock.calls.length - 1][0];

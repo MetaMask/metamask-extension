@@ -766,10 +766,9 @@ export default class MetamaskController extends EventEmitter {
     this.approvalController = this.wallet.getInstance('ApprovalController');
     this.loggingController = messengerClientsByName.LoggingController;
     this.appMetadataController = messengerClientsByName.AppMetadataController;
-    // The wallet constructs the extension's superset PreferencesController via
-    // the override configuration in `wallet-init/initialization.ts`. `getInstance`
-    // is typed as the package controller, so cast to the superset that is built
-    // at runtime.
+    // `getInstance` is typed as the package controller, but the override builds
+    // the superset at runtime, so cast.
+    // TODO(MetaMask/core#9232): drop once `getInstance` reflects the override type.
     this.preferencesController =
       /** @type {import('./controllers/preferences-controller').PreferencesController} */ (
         this.wallet.getInstance('PreferencesController')
