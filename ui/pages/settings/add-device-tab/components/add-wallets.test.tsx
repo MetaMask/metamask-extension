@@ -24,9 +24,7 @@ describe('AddWallets', () => {
   it('renders the heading and description', () => {
     render();
 
-    expect(
-      screen.getByText(messages.add_wallets.message),
-    ).toBeInTheDocument();
+    expect(screen.getByText(messages.add_wallets.message)).toBeInTheDocument();
     expect(
       screen.getByText(messages.add_wallets_desc.message),
     ).toBeInTheDocument();
