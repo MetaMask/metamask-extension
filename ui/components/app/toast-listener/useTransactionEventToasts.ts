@@ -14,8 +14,14 @@ import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
-import { showPendingToast, showSuccessToast, showFailedToast } from './shared';
 import {
+  dismissToast,
+  showPendingToast,
+  showSuccessToast,
+  showFailedToast,
+} from './shared';
+import {
+  clearToastPhase,
   shouldShowPendingToast,
   shouldShowTerminalToast,
 } from './toast-lifecycle';
@@ -133,15 +139,14 @@ export function useTransactionEventToasts(): void {
         showPendingToast(toastId);
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
         showSuccessToast(toastId);
-      } else if (
-        failedStatuses.has(status) &&
-        !isSpeedUpReplacement(
-          transactionMeta,
-          store.getState().metamask?.transactions ?? [],
-        ) &&
-        shouldShowTerminalToast(id)
-      ) {
-        showFailedToast(toastId);
+      } else if (failedStatuses.has(status)) {
+        const transactions = store.getState().metamask?.transactions ?? [];
+        if (isSpeedUpReplacement(transactionMeta, transactions)) {
+          dismissToast(toastId);
+          clearToastPhase(id);
+        } else if (shouldShowTerminalToast(id)) {
+          showFailedToast(toastId);
+        }
       }
     };
 

@@ -19,3 +19,7 @@ export function shouldShowTerminalToast(id: string) {
   toastPhaseById.set(id, 'terminal');
   return true;
 }
+
+export function clearToastPhase(id: string) {
+  toastPhaseById.delete(id);
+}
