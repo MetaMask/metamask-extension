@@ -173,7 +173,6 @@ export type QrSyncControllerState = {
   error: QrSyncError | null;
   createdAt: number | null;
   updatedAt: number | null;
-  expiresAt: number | null;
 };
 
 export type QrSyncControllerStateChangeEvent = ControllerStateChangedEvent<

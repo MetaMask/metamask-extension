@@ -20,8 +20,8 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 
-import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
-import { QrSyncActionTypes } from './constants';
+import { QR_SYNC_PHASES, MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../shared/constants/qr-sync';
+import { QrSyncActionTypes, QrSyncErrorMessages } from './constants';
 import { getDefaultQrSyncControllerState } from './metadata';
 import { QrSyncController } from './qr-sync-controller';
 import type { KeyManager } from './key-manager';
@@ -197,11 +197,12 @@ function mockEmitSessionRequest(
 function mockEmitOtpRequired(
   submit: (otp: string) => Promise<void> = jest.fn().mockResolvedValue(undefined),
   cancel: () => void = jest.fn(),
+  deadline = Date.now() + 60_000,
 ): void {
   mockMwp.dappClient?.emit('otp_required', {
     submit,
     cancel,
-    deadline: Date.now() + 60_000,
+    deadline,
   });
 }
 
@@ -219,6 +220,16 @@ function mockEmitSyncOffer(deadline = Date.now() + 60_000): void {
     version: '1.0.0',
     data: { deadline },
   });
+}
+
+function mockSetReviewingSyncOffer(
+  controller: QrSyncController,
+  deadline = Date.now() + 60_000,
+): void {
+  mockEmitSyncOffer(deadline);
+  if (controller.state.phase !== QR_SYNC_PHASES.REVIEWING_SYNC_OFFER) {
+    throw new Error('Expected reviewing sync offer phase');
+  }
 }
 
 function mockEmitSyncCompleted(): void {
@@ -253,6 +264,10 @@ describe('QrSyncController', () => {
     jest.clearAllMocks();
     mockMwp.dappClient = null;
     mockMwp.connect.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('initial state', () => {
@@ -320,6 +335,49 @@ describe('QrSyncController', () => {
       expect(submitOtp).toHaveBeenCalledWith('123456');
       expect(controller.state.phase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
       expect(controller.state.otpAttempts).toBe(1);
+
+      mockEmitSyncOffer();
+    });
+
+    it('fails the session when sync offer times out', async () => {
+      const submitOtp = jest.fn().mockResolvedValue(undefined);
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+      mockEmitOtpRequired(submitOtp);
+
+      jest.useFakeTimers();
+      try {
+        await controller.submitOtp('123456');
+
+        expect(controller.state.phase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
+
+        await jest.advanceTimersByTimeAsync(
+          MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000,
+        );
+
+        expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: QrSyncActionTypes.SYNC_ERROR,
+            version: '1.0.0',
+            data: { message: QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT },
+          }),
+        );
+        expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: QrSyncActionTypes.SYNC_CANCEL,
+            version: '1.0.0',
+          }),
+        );
+        expect(controller.state.phase).toBe(QR_SYNC_PHASES.FAILED);
+        expect(controller.state.connectionStatus).toBe('errored');
+        expect(controller.state.error).toStrictEqual({
+          code: 'SESSION_EXPIRED',
+          message: QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT,
+        });
+      } finally {
+        jest.useRealTimers();
+      }
     });
 
     it('records an OTP error without advancing the flow when validation fails', async () => {
@@ -425,6 +483,8 @@ describe('QrSyncController', () => {
 
       expect(controller.state.phase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
       expect(controller.state.syncOffer).toBeNull();
+
+      mockEmitSyncOffer();
     });
   });
 
@@ -433,7 +493,7 @@ describe('QrSyncController', () => {
       const { controller, exportSeedPhrase } = setupController();
 
       await mockStartSession(controller);
-      controller.setSyncOffer({ deadline: Date.now() + 60_000 });
+      mockSetReviewingSyncOffer(controller);
 
       await controller.syncAccounts(TEST_PASSWORD, [TEST_ENTROPY_ID]);
 
@@ -465,6 +525,8 @@ describe('QrSyncController', () => {
         TEST_ENTROPY_ID,
       ]);
       expect(controller.state.selectedSyncDataType).toBe('MNEMONIC');
+
+      mockEmitSyncCompleted();
     });
 
     it('marks non-primary wallets when exporting multiple entropy sources', async () => {
@@ -476,7 +538,7 @@ describe('QrSyncController', () => {
       });
 
       await mockStartSession(controller);
-      controller.setSyncOffer({ deadline: Date.now() + 60_000 });
+      mockSetReviewingSyncOffer(controller);
 
       await controller.syncAccounts(TEST_PASSWORD, [
         TEST_ENTROPY_ID,
@@ -497,6 +559,37 @@ describe('QrSyncController', () => {
           }),
         }),
       );
+
+      mockEmitSyncCompleted();
+    });
+
+    it('fails the session when sync completion times out', async () => {
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+      mockSetReviewingSyncOffer(controller);
+
+      jest.useFakeTimers();
+      try {
+        await controller.syncAccounts(TEST_PASSWORD, [TEST_ENTROPY_ID]);
+
+        expect(controller.state.phase).toBe(
+          QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
+        );
+
+        await jest.advanceTimersByTimeAsync(
+          MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000,
+        );
+
+        expect(controller.state.phase).toBe(QR_SYNC_PHASES.FAILED);
+        expect(controller.state.connectionStatus).toBe('errored');
+        expect(controller.state.error).toStrictEqual({
+          code: 'SESSION_EXPIRED',
+          message: QrSyncErrorMessages.SYNC_COMPLETION_TIMED_OUT,
+        });
+      } finally {
+        jest.useRealTimers();
+      }
     });
   });
 
@@ -505,9 +598,8 @@ describe('QrSyncController', () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
-      controller.setSyncOffer({ deadline: Date.now() + 60_000 });
+      mockSetReviewingSyncOffer(controller);
       await controller.syncAccounts(TEST_PASSWORD, [TEST_ENTROPY_ID]);
-
       mockEmitSyncCompleted();
 
       expect(controller.state.phase).toBe(QR_SYNC_PHASES.COMPLETED);
@@ -533,10 +625,11 @@ describe('QrSyncController', () => {
       });
     });
 
-    it('returns to the default idle state', () => {
+    it('returns to the default idle state', async () => {
       const { controller } = setupController();
 
-      controller.setSyncOffer({ deadline: Date.now() + 60_000 });
+      await mockStartSession(controller);
+      mockSetReviewingSyncOffer(controller);
       controller.resetState();
 
       expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
@@ -571,7 +664,7 @@ describe('QrSyncController', () => {
       expect(controller.state.lastActionType).toBe(QrSyncActionTypes.SYNC_CANCEL);
       expect(controller.state.error).toStrictEqual({
         code: 'SYNC_REJECTED',
-        message: 'Session cancelled by peer',
+        message: QrSyncErrorMessages.SYNC_SESSION_CANCELLED_BY_PEER,
       });
     });
 
@@ -598,7 +691,9 @@ describe('QrSyncController', () => {
       mockEmitSyncCancel();
       mockEmitSyncCancel();
 
-      expect(controller.state.error?.message).toBe('Session cancelled by peer');
+      expect(controller.state.error?.message).toBe(
+        QrSyncErrorMessages.SYNC_SESSION_CANCELLED_BY_PEER,
+      );
     });
   });
 });

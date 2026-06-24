@@ -33,12 +33,6 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
     usedInUi: false,
     includeInStateLogs: true,
   },
-  expiresAt: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
   qrPayload: {
     persist: false,
     includeInDebugSnapshot: false,
@@ -105,7 +99,6 @@ export function getDefaultQrSyncControllerState(): QrSyncControllerState {
     sessionId: null,
     createdAt: null,
     updatedAt: null,
-    expiresAt: null,
     qrPayload: null,
     otpAttempts: 0,
     syncOffer: null,

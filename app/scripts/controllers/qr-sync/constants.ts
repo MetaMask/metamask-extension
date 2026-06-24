@@ -77,3 +77,18 @@ export const QrSyncActionTypes = {
    */
   SYNC_ERROR: 'sync-error',
 };
+
+export const QrSyncErrorMessages = {
+  SYNC_FAILED_TO_INITIALIZE: 'Failed to initialize the sync session',
+  SYNC_FAILED_TO_CREATE_SESSION: 'Failed to create the sync session',
+  SYNC_COMPLETION_TIMED_OUT: 'Sync completion timed out',
+  SYNC_COMPLETION_FAILED: 'Sync completion failed',
+  SYNC_OFFER_TIMED_OUT: 'Sync offer timed out',
+  SYNC_OFFER_FAILED: 'Sync offer failed',
+  SYNC_SESSION_ENDED_BEFORE_COMPLETION: 'Sync session ended before completion',
+  SYNC_SESSION_ENDED_BEFORE_SYNC_OFFER: 'Sync session ended before sync offer',
+  SYNC_SESSION_ENCOUNTERED_ERROR: 'The sync session encountered an error.',
+  OTP_VALIDATION_FAILED: 'Failed to validate OTP',
+  SYNC_SESSION_CANCELLED_BY_PEER: 'Sync session cancelled by peer',
+  SYNC_FAILED_TO_SEND_MESSAGE: 'Failed to send message to mobile wallet client',
+} as const;
