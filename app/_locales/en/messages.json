@@ -9912,7 +9912,7 @@
   },
   "stellarClassicDeactivateOnStellar": {
     "message": "Remove",
-    "description": "Button label to deactivate an active Stellar classic asset on the asset detail page. $1 is the token symbol."
+    "description": "Button label to deactivate an active Stellar classic asset on the asset detail page."
   },
   "stellarClassicTrustlineAddError": {
     "message": "Something went wrong while adding this trustline. Try again.",
