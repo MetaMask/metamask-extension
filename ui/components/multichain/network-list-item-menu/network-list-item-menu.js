@@ -93,7 +93,9 @@ export const NetworkListItemMenu = ({
         {onDeleteClick ? (
           <MenuItem
             ref={deleteRef}
-            iconNameLegacy={IconName.Trash}
+            iconNameLegacy={
+              deleteMenuLabel === 'disable' ? IconName.Ban : IconName.Trash
+            }
             onClick={(e) => {
               e.stopPropagation();
               onDeleteClick();
