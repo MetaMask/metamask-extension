@@ -5,18 +5,22 @@
 #   publish-firefox-reviewer-artifacts.sh package
 #   publish-firefox-reviewer-artifacts.sh upload
 #
-# package — clone firefox-bundle-script, compare builds, create submission package.
+# package — clone firefox-bundle-script, compare builds, create submission packages
+#           for production and Flask (requires PR #9+ script contract).
 # upload  — s3 cp artifacts (requires AMO_REVIEWER_BUCKET + active AWS creds from OIDC).
 #
 # Environment:
 #   RELEASE_TAG                  — e.g. v13.37.0 (required)
-#   FIREFOX_BUNDLE_SCRIPT_TOKEN    — clone private repo + read release branch bundle.sh
-#   FIREFOX_BUNDLE_SCRIPT_REF      — git ref (default: main)
-#   AMO_REVIEWER_PACKAGE_ROOT      — output root (default: $RUNNER_TEMP/amo-reviewer-artifacts)
+#   FIREFOX_BUNDLE_SCRIPT_TOKEN  — clone private repo + read release branch bundle.sh
+#   FIREFOX_BUNDLE_SCRIPT_REF    — git ref (default: PR #9 SHA until merged to main)
+#   AMO_REVIEWER_PACKAGE_ROOT    — output root (default: $RUNNER_TEMP/amo-reviewer-artifacts)
 #   AMO_REVIEWER_BUCKET            — required for upload
 #   AWS_DEFAULT_REGION             — default us-east-2
 
 set -euo pipefail
+
+# MetaMask/firefox-bundle-script PR #9 — Flask + webpack reproducibility. Bump after merge to main.
+DEFAULT_FIREFOX_BUNDLE_SCRIPT_REF="fea5132b24a17a4765d87d4735bd6684ce8c78c4"
 
 MODE="${1:-}"
 if [[ "${MODE}" != "package" && "${MODE}" != "upload" ]]; then
@@ -67,6 +71,60 @@ resolve_last_listed_version() {
   fi
 }
 
+package_release_variant() {
+  local variant="$1"
+  local clone_dir="$2"
+  local work_root="$3"
+  local last_listed="$4"
+
+  local work_dir production_build_file submission_dir_prefix bundle_args
+  local submission_dir source_zip notes_file source_dest notes_dest
+
+  work_dir="${work_root}/work-${variant}"
+
+  if [[ "${variant}" == "flask" ]]; then
+    local flask_version="${raw_version}-flask.0"
+    production_build_file="metamask-firefox-${flask_version}.zip"
+    submission_dir_prefix="flask_submission"
+    bundle_args="--flask"
+    source_dest="${PACKAGE_DIR}/metamask-firefox-${flask_version}-source.zip"
+    notes_dest="${PACKAGE_DIR}/metamask-firefox-${flask_version}-amo-approval-notes.txt"
+  else
+    production_build_file="metamask-firefox-${raw_version}.zip"
+    submission_dir_prefix="submission"
+    bundle_args=""
+    source_dest="${PACKAGE_DIR}/metamask-firefox-${raw_version}-source.zip"
+    notes_dest="${PACKAGE_DIR}/metamask-firefox-${raw_version}-amo-approval-notes.txt"
+  fi
+
+  mkdir -p "${work_dir}" "${PACKAGE_DIR}"
+
+  export PRODUCTION_BUILD_FILE="${production_build_file}"
+  export FIREFOX_BUNDLE_SCRIPT_ARGS="${bundle_args}"
+  export SUBMISSION_DIR_PREFIX="${submission_dir_prefix}"
+
+  echo "Packaging ${variant} reviewer artifacts (build: ${production_build_file})..."
+  bash "${clone_dir}/scripts/compare_builds.sh" "${raw_version}" "${work_dir}"
+
+  bash "${clone_dir}/scripts/create_submission_package.sh" "${raw_version}" "${last_listed}" "${work_dir}"
+
+  submission_dir="${clone_dir}/output/${submission_dir_prefix}_v${raw_version}"
+  source_zip="${submission_dir}/metamask-extension-${raw_version}.zip"
+  notes_file="${submission_dir}/reviewer_instructions_v${raw_version}.txt"
+
+  if [[ ! -f "${source_zip}" || ! -f "${notes_file}" ]]; then
+    echo "::error::Expected ${variant} package files missing under ${submission_dir}"
+    exit 1
+  fi
+
+  cp "${source_zip}" "${source_dest}"
+  cp "${notes_file}" "${notes_dest}"
+
+  echo "Packaged ${variant} reviewer artifacts:"
+  echo "  ${source_dest}"
+  echo "  ${notes_dest}"
+}
+
 run_package() {
   if [[ -z "${FIREFOX_BUNDLE_SCRIPT_TOKEN:-}" ]]; then
     echo "::error::FIREFOX_BUNDLE_SCRIPT_TOKEN is required for packaging"
@@ -75,13 +133,12 @@ run_package() {
 
   ensure_mtree
 
-  local work_root script_ref clone_dir bundle_dir work_dir last_listed
+  local work_root script_ref clone_dir last_listed
   work_root="$(mktemp -d)"
-  script_ref="${FIREFOX_BUNDLE_SCRIPT_REF:-main}"
+  script_ref="${FIREFOX_BUNDLE_SCRIPT_REF:-${DEFAULT_FIREFOX_BUNDLE_SCRIPT_REF}}"
   clone_dir="${work_root}/firefox-bundle-script"
-  work_dir="${work_root}/work"
 
-  mkdir -p "${work_dir}" "${PACKAGE_DIR}"
+  mkdir -p "${PACKAGE_DIR}"
 
   echo "Cloning firefox-bundle-script at ref ${script_ref}..."
   git clone --depth 1 --branch "${script_ref}" \
@@ -96,30 +153,11 @@ run_package() {
   git -C "${clone_dir}" show "origin/release:bundle.sh" > "${work_root}/bundle.sh"
   chmod +x "${work_root}/bundle.sh"
 
-  echo "Comparing production vs locally rebuilt Firefox build..."
-  bash "${clone_dir}/scripts/compare_builds.sh" "${raw_version}" "${work_dir}"
-
   last_listed="$(resolve_last_listed_version)"
   echo "Using last listed version: ${last_listed}"
 
-  bash "${clone_dir}/scripts/create_submission_package.sh" "${raw_version}" "${last_listed}" "${work_dir}"
-
-  local submission_dir source_zip notes_file
-  submission_dir="${clone_dir}/output/submission_v${raw_version}"
-  source_zip="${submission_dir}/metamask-extension-${raw_version}.zip"
-  notes_file="${submission_dir}/reviewer_instructions_v${raw_version}.txt"
-
-  if [[ ! -f "${source_zip}" || ! -f "${notes_file}" ]]; then
-    echo "::error::Expected package files missing under ${submission_dir}"
-    exit 1
-  fi
-
-  cp "${source_zip}" "${PACKAGE_DIR}/metamask-firefox-${raw_version}-source.zip"
-  cp "${notes_file}" "${PACKAGE_DIR}/metamask-firefox-${raw_version}-amo-approval-notes.txt"
-
-  echo "Packaged reviewer artifacts:"
-  echo "  ${PACKAGE_DIR}/metamask-firefox-${raw_version}-source.zip"
-  echo "  ${PACKAGE_DIR}/metamask-firefox-${raw_version}-amo-approval-notes.txt"
+  package_release_variant main "${clone_dir}" "${work_root}" "${last_listed}"
+  package_release_variant flask "${clone_dir}" "${work_root}" "${last_listed}"
 
   rm -rf "${work_root}"
 }
@@ -130,23 +168,26 @@ run_upload() {
     exit 1
   fi
 
-  local source_key notes_key source_path notes_path
-  source_path="${PACKAGE_DIR}/metamask-firefox-${raw_version}-source.zip"
-  notes_path="${PACKAGE_DIR}/metamask-firefox-${raw_version}-amo-approval-notes.txt"
+  local required=(
+    "${PACKAGE_DIR}/metamask-firefox-${raw_version}-source.zip"
+    "${PACKAGE_DIR}/metamask-firefox-${raw_version}-amo-approval-notes.txt"
+    "${PACKAGE_DIR}/metamask-firefox-${raw_version}-flask.0-source.zip"
+    "${PACKAGE_DIR}/metamask-firefox-${raw_version}-flask.0-amo-approval-notes.txt"
+  )
 
-  if [[ ! -f "${source_path}" || ! -f "${notes_path}" ]]; then
-    echo "::error::Package files not found in ${PACKAGE_DIR}. Run package step first."
-    exit 1
-  fi
+  local artifact
+  for artifact in "${required[@]}"; do
+    if [[ ! -f "${artifact}" ]]; then
+      echo "::error::Package file not found: ${artifact}. Run package step first."
+      exit 1
+    fi
+  done
 
-  source_key="${S3_PREFIX}/metamask-firefox-${raw_version}-source.zip"
-  notes_key="${S3_PREFIX}/metamask-firefox-${raw_version}-amo-approval-notes.txt"
-
-  echo "Uploading to s3://${AMO_REVIEWER_BUCKET}/${source_key}"
-  aws s3 cp "${source_path}" "s3://${AMO_REVIEWER_BUCKET}/${source_key}" --region "${AWS_DEFAULT_REGION}"
-
-  echo "Uploading to s3://${AMO_REVIEWER_BUCKET}/${notes_key}"
-  aws s3 cp "${notes_path}" "s3://${AMO_REVIEWER_BUCKET}/${notes_key}" --region "${AWS_DEFAULT_REGION}"
+  for artifact in "${required[@]}"; do
+    local key="${S3_PREFIX}/$(basename "${artifact}")"
+    echo "Uploading to s3://${AMO_REVIEWER_BUCKET}/${key}"
+    aws s3 cp "${artifact}" "s3://${AMO_REVIEWER_BUCKET}/${key}" --region "${AWS_DEFAULT_REGION}"
+  done
 
   echo "Reviewer artifacts uploaded to s3://${AMO_REVIEWER_BUCKET}/${S3_PREFIX}/"
 }

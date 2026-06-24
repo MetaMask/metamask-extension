@@ -11,7 +11,9 @@ description: >-
 
 inputs:
   firefox_bundle_script_ref:
-    description: Git ref for MetaMask/firefox-bundle-script (empty = main in script)
+    description: >-
+      Git ref for MetaMask/firefox-bundle-script (Flask packaging needs PR #9+;
+      empty uses script default SHA until merged to main)
     required: false
     default: ''
   amo_last_listed_version:
