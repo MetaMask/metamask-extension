@@ -2078,6 +2078,7 @@
     },
     "ProfileMetricsController": {
       "initialEnqueueCompleted": false,
+      "proofBackfillEnqueued": false,
       "syncQueue": {}
     },
     "RemoteFeatureFlagController": {
