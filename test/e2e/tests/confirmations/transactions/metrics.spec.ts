@@ -3,7 +3,7 @@ import { strict as assert } from 'assert';
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
 import { Driver } from '../../../webdriver/driver';
-import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../../constants';
+import { MOCK_ANALYTICS_ID, WINDOW_TITLES } from '../../../constants';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures, getEventPayloads } from '../../../helpers';
@@ -28,8 +28,9 @@ describe('Metrics', function () {
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),

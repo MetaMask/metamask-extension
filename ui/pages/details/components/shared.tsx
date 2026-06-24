@@ -97,10 +97,10 @@ export function Row({
   );
 }
 
-export function Section({ children }: { children: ReactNode }) {
-  return <section className="py-2">{children}</section>;
+export function Section({ children }: Readonly<{ children: ReactNode }>) {
+  return <section className="py-2 empty:hidden">{children}</section>;
 }
 
-export function Footer({ children }: { children: ReactNode }) {
+export function Footer({ children }: Readonly<{ children: ReactNode }>) {
   return <div className="mt-auto flex flex-col gap-4 pt-4">{children}</div>;
 }

@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { AccountGroupId } from '@metamask/account-api';
+import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import {
   Box,
   Text,
@@ -11,10 +11,10 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MultichainAccountList } from '../../../../components/multichain-accounts/multichain-account-list';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
+import { WalletSelectionList } from './wallet-selection-list';
 
 type AddWalletsProps = {
   onAddWallets: (entropyIds: string[]) => Promise<void>;
@@ -23,21 +23,34 @@ type AddWalletsProps = {
 const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   const t = useI18nContext();
   const { wallets } = useSelector(getAccountTree);
+
+  // Show entropy wallets first and imported/other wallets last, while
+  // preserving the relative order within each group.
+  const sortedWallets = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(wallets).sort(([, a], [, b]) => {
+        const rank = (type: string) =>
+          type === AccountWalletType.Entropy ? 0 : 1;
+        return rank(a.type) - rank(b.type);
+      }),
+    );
+  }, [wallets]);
+
   const [selectedAccountGroups, setSelectedAccountGroups] = useState<
     AccountGroupId[]
   >(() =>
-    Object.values(wallets).flatMap(
+    Object.values(sortedWallets).flatMap(
       (wallet) => Object.keys(wallet.groups) as AccountGroupId[],
     ),
   );
 
-  const handleAccountClick = useCallback((accountGroupId: AccountGroupId) => {
-    setSelectedAccountGroups((prev) =>
-      prev.includes(accountGroupId)
-        ? prev.filter((id) => id !== accountGroupId)
-        : [...prev, accountGroupId],
-    );
-  }, []);
+  // const handleAccountClick = useCallback((accountGroupId: AccountGroupId) => {
+  //   setSelectedAccountGroups((prev) =>
+  //     prev.includes(accountGroupId)
+  //       ? prev.filter((id) => id !== accountGroupId)
+  //       : [...prev, accountGroupId],
+  //   );
+  // }, []);
 
   const handleSyncWallets = useCallback(async () => {
     const selectedEntropyIds = [
@@ -77,13 +90,10 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
         </Text>
       </Box>
       <ScrollContainer className="flex flex-1 flex-col overflow-y-auto mt-4">
-        <MultichainAccountList
-          wallets={wallets}
+        <WalletSelectionList
+          wallets={sortedWallets}
           selectedAccountGroups={selectedAccountGroups}
-          handleAccountClick={handleAccountClick}
-          showAccountCheckbox={false}
-          showHeaderCheckbox={true}
-          showAddAccount={false}
+          onSelectionChange={setSelectedAccountGroups}
         />
       </ScrollContainer>
       <Box className="w-full mt-auto" paddingHorizontal={4}>

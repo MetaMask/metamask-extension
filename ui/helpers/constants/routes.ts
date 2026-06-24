@@ -140,6 +140,8 @@ export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const TX_DETAILS_ROUTE = '/tx';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+export const PREPARE_SWAP_ASSETS_ROUTE = '/swaps/prepare-bridge-page/assets';
+export const SWAP_ASSETS_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ASSETS_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
 export const HARDWARE_WALLET_SIGNATURES_ROUTE =
   '/swaps/hardware-wallet-signatures';

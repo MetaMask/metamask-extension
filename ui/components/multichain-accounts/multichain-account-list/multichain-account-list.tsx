@@ -70,10 +70,8 @@ export type MultichainAccountListProps = {
   isInSearchMode?: boolean;
   displayWalletHeader?: boolean;
   showAccountCheckbox?: boolean;
-  showHeaderCheckbox?: boolean;
   showConnectionStatus?: boolean;
   showDefaultAddress?: boolean;
-  showAddAccount?: boolean;
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
@@ -87,7 +85,6 @@ type ListItem =
       sectionKey?: string;
       isCollapsible?: boolean;
       isExpanded?: boolean;
-      accountGroupIds?: AccountGroupId[];
     }
   | {
       type: 'account';
@@ -107,10 +104,8 @@ export const MultichainAccountList = ({
   isInSearchMode = false,
   displayWalletHeader = true,
   showAccountCheckbox = false,
-  showHeaderCheckbox = false,
   showConnectionStatus = false,
   showDefaultAddress = false,
-  showAddAccount = true,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox;
 
@@ -274,27 +269,6 @@ export const MultichainAccountList = ({
     [handleAccountClick, defaultHandleAccountClick],
   );
 
-  const handleHeaderCheckboxToggle = useCallback(
-    (accountGroupIds: AccountGroupId[]) => {
-      const allSelected =
-        accountGroupIds.length > 0 &&
-        accountGroupIds.every((groupId) =>
-          selectedAccountGroupsSet.has(groupId),
-        );
-
-      // When all are selected, deselect every selected group; otherwise
-      // select every group that is not yet selected. Each call toggles a
-      // single group, relying on the parent's functional state updater.
-      accountGroupIds.forEach((groupId) => {
-        const isSelected = selectedAccountGroupsSet.has(groupId);
-        if (allSelected ? isSelected : !isSelected) {
-          handleAccountClickToUse(groupId);
-        }
-      });
-    },
-    [selectedAccountGroupsSet, handleAccountClickToUse],
-  );
-
   const renderAccountCell = useCallback(
     (
       groupId: string,
@@ -413,9 +387,6 @@ export const MultichainAccountList = ({
         sectionKey: pinnedSectionKey,
         isCollapsible: true,
         isExpanded: isPinnedExpanded,
-        accountGroupIds: pinnedGroups.map(
-          ({ groupId }) => groupId as AccountGroupId,
-        ),
       });
       if (isPinnedExpanded) {
         pinnedGroups.forEach(({ groupId, groupData, walletId }) => {
@@ -453,11 +424,7 @@ export const MultichainAccountList = ({
         },
       );
 
-      if (
-        showAddAccount &&
-        !isInSearchMode &&
-        walletData.type === AccountWalletType.Entropy
-      ) {
+      if (!isInSearchMode && walletData.type === AccountWalletType.Entropy) {
         accounts.push({
           type: 'add-account',
           key: `add-${walletId}`,
@@ -477,12 +444,6 @@ export const MultichainAccountList = ({
             sectionKey: walletSectionKey,
             isCollapsible: true,
             isExpanded: isWalletExpanded,
-            accountGroupIds: accounts
-              .filter((account) => account.type === 'account')
-              .map(
-                (account) =>
-                  (account as { groupId: string }).groupId as AccountGroupId,
-              ),
           });
           if (isWalletExpanded) {
             result.push(...accounts);
@@ -525,7 +486,6 @@ export const MultichainAccountList = ({
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
     showDefaultAddress,
-    showAddAccount,
     t,
   ]);
 
@@ -558,32 +518,13 @@ export const MultichainAccountList = ({
                     data-testid={item.testId}
                     aria-expanded={isExpanded}
                   >
-                    <Box className="flex items-center gap-2">
-                      {showHeaderCheckbox &&
-                        (item.accountGroupIds?.length ?? 0) > 0 && (
-                          <Box onClick={(event) => event.stopPropagation()}>
-                            <Checkbox
-                              id={`multichain-account-header-checkbox-${item.sectionKey}`}
-                              isSelected={(item.accountGroupIds ?? []).every(
-                                (groupId) =>
-                                  selectedAccountGroupsSet.has(groupId),
-                              )}
-                              onChange={() =>
-                                handleHeaderCheckboxToggle(
-                                  item.accountGroupIds ?? [],
-                                )
-                              }
-                            />
-                          </Box>
-                        )}
-                      <Text
-                        variant={TextVariant.BodyMd}
-                        fontWeight={FontWeight.Medium}
-                        color={TextColor.TextAlternative}
-                      >
-                        {item.text}
-                      </Text>
-                    </Box>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                      color={TextColor.TextAlternative}
+                    >
+                      {item.text}
+                    </Text>
                     <Icon
                       name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
                       size={IconSize.Md}

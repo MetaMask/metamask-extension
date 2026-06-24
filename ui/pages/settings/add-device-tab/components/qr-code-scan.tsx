@@ -5,7 +5,6 @@ import {
   FontWeight,
   TextColor,
   TextVariant,
-  ButtonVariant,
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
@@ -43,7 +42,6 @@ const QrCodeScan = () => {
 
   const handleReset = useCallback(() => {
     // TODO: regenerate the QR code via the controller
-    console.log('Regenerate QR code');
     setHasError(false);
     setSecondsLeft(QR_CODE_EXPIRY_SECONDS);
   }, []);

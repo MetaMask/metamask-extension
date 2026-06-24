@@ -288,6 +288,19 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     iconName: IconName.SwapVertical,
   },
 
+  // --- Add Device tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
+  ...(getIsAddDeviceSyncEnabled()
+    ? {
+        [ADD_DEVICE_ROUTE]: {
+          labelKey: 'addDevice',
+          parentPath: SETTINGS_ROUTE,
+          component: mmLazy(() => import('./add-device-tab/index.ts')),
+          isTab: true,
+          iconName: IconName.Mobile,
+        },
+      }
+    : {}),
+
   // --- Experimental tab ---
   [EXPERIMENTAL_ROUTE]: {
     labelKey: 'experimental',
@@ -327,19 +340,6 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     isTab: true,
     iconName: IconName.Info,
   },
-
-  // --- Add Device tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
-  ...(getIsAddDeviceSyncEnabled()
-    ? {
-        [ADD_DEVICE_ROUTE]: {
-          labelKey: 'addDevice',
-          parentPath: SETTINGS_ROUTE,
-          component: mmLazy(() => import('./add-device-tab/index.ts')),
-          isTab: true,
-          iconName: IconName.Mobile,
-        },
-      }
-    : {}),
 
   // --- Snap settings (navigated via URL, not shown as a tab) ---
   [SNAP_SETTINGS_ROUTE]: {

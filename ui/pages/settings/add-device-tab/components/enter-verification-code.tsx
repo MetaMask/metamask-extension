@@ -21,7 +21,7 @@ const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
 // TODO: source this from the controller
 const VERIFICATION_CODE_EXPIRY_SECONDS = 15;
 
-const createEmptyCode = () => Array<string>(CODE_LENGTH).fill('');
+const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
 
 const EnterVerificationCode = () => {
   const t = useI18nContext();
@@ -46,8 +46,8 @@ const EnterVerificationCode = () => {
   }, [isExpired]);
 
   const handleRestart = useCallback(() => {
-    onContinue(AddDeviceSettingsStep.ScanQrCode);
-  }, [onContinue]);
+    // onContinue(AddDeviceSettingsStep.ScanQrCode);
+  }, []);
 
   const focusInput = useCallback((index: number) => {
     const clampedIndex = Math.max(0, Math.min(index, CODE_LENGTH - 1));
