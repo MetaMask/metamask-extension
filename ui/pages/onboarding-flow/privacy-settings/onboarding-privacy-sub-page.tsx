@@ -70,6 +70,7 @@ const SOCIAL_LOGIN_PRIVACY_ITEMS: SettingItemConfig[] = [
     id: 'metametrics',
     component: MetametricsToggleItem,
     hasDividerBefore: true,
+    isOnboarding: true,
   },
   { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
 ];

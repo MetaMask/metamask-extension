@@ -4,6 +4,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { MetametricsToggleItem } from './metametrics-item';
@@ -36,7 +38,10 @@ const backgroundConnectionMock = new Proxy(
   { get: () => jest.fn().mockResolvedValue(undefined) },
 );
 
-const createMockStore = (overrides = {}) =>
+const createMockStore = (
+  metamaskOverrides = {},
+  appStateOverrides: Record<string, unknown> = {},
+) =>
   configureMockStore([thunk])({
     ...mockState,
     metamask: {
@@ -45,7 +50,12 @@ const createMockStore = (overrides = {}) =>
       completedMetaMetricsOnboarding: true,
       optedIn: false,
       dataCollectionForMarketing: false,
-      ...overrides,
+      ...metamaskOverrides,
+    },
+    appState: {
+      ...mockState.appState,
+      externalServicesOnboardingToggleState: true,
+      ...appStateOverrides,
     },
   });
 
@@ -135,6 +145,17 @@ describe('MetametricsToggleItem', () => {
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
 
+  it('is disabled during onboarding when basic functionality intent is off', () => {
+    const mockStore = createMockStore(
+      { useExternalServices: true },
+      { externalServicesOnboardingToggleState: false },
+    );
+    renderWithProvider(<MetametricsToggleItem isOnboarding />, mockStore);
+
+    const toggle = screen.getByTestId('participate-in-meta-metrics-input');
+    expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
+  });
+
   it('fires TurnOffMetaMetrics event when toggled off', async () => {
     const mockTrackEvent = jest.fn();
     const mockStore = createMockStore({ optedIn: true });
@@ -155,6 +176,32 @@ describe('MetametricsToggleItem', () => {
           event: 'MetaMetrics Turned Off',
         }),
       );
+    });
+  });
+
+  it('tracks Onboarding category when isOnboarding is true', async () => {
+    const mockTrackEvent = jest.fn();
+    const mockStore = createMockStore({ optedIn: false });
+
+    renderWithProvider(
+      <MetaMetricsContext.Provider
+        value={{ trackEvent: mockTrackEvent } as never}
+      >
+        <MetametricsToggleItem isOnboarding />
+      </MetaMetricsContext.Provider>,
+      mockStore,
+    );
+
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: 'MetaMetrics Turned On',
+        properties: expect.objectContaining({
+          location: 'onboarding_advanced_configuration',
+        }),
+      });
     });
   });
 });

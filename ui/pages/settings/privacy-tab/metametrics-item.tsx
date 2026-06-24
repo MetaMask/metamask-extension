@@ -12,6 +12,7 @@ import {
   getOptedIn,
   getUseExternalServices,
   getIsSocialLoginFlow,
+  getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
 import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
 import {
@@ -25,8 +26,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
+import type { SettingItemProps } from '../types';
 
-export const MetametricsToggleItem = () => {
+export const MetametricsToggleItem = ({
+  isOnboarding = false,
+}: SettingItemProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -40,21 +44,34 @@ export const MetametricsToggleItem = () => {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isOptedIn = useSelector(getOptedIn);
   const useExternalServices = useSelector(getUseExternalServices);
+  const externalServicesOnboardingToggleState = useSelector(
+    getExternalServicesOnboardingToggleState,
+  );
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
 
+  const isBasicFunctionalityEnabled = isOnboarding
+    ? externalServicesOnboardingToggleState
+    : useExternalServices;
+
   const handleToggle = async (currentValue: boolean) => {
     const newValue = !currentValue;
+    const eventCategory = isOnboarding
+      ? MetaMetricsEventCategory.Onboarding
+      : MetaMetricsEventCategory.Settings;
+    const location = isOnboarding
+      ? 'onboarding_advanced_configuration'
+      : 'Settings';
 
     if (newValue) {
       await enableMetametrics();
       trackEvent({
-        category: MetaMetricsEventCategory.Settings,
+        category: eventCategory,
         event: MetaMetricsEventName.TurnOnMetaMetrics,
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
           participateInMetaMetrics: isOptedIn,
-          location: 'Settings',
+          location,
         },
       });
     } else {
@@ -66,7 +83,7 @@ export const MetametricsToggleItem = () => {
       }
 
       trackEvent({
-        category: MetaMetricsEventCategory.Settings,
+        category: eventCategory,
         event: MetaMetricsEventName.TurnOffMetaMetrics,
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
@@ -75,14 +92,14 @@ export const MetametricsToggleItem = () => {
       });
 
       trackEvent({
-        category: MetaMetricsEventCategory.Settings,
+        category: eventCategory,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
           /* eslint-disable @typescript-eslint/naming-convention */
           [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
           [MetaMetricsUserTrait.HasMarketingConsent]: false,
           /* eslint-enable @typescript-eslint/naming-convention */
-          location: 'Settings',
+          location,
         },
       });
 
@@ -99,7 +116,7 @@ export const MetametricsToggleItem = () => {
         onToggle={handleToggle}
         dataTestId="participate-in-meta-metrics-input"
         containerDataTestId="participate-in-meta-metrics-toggle"
-        disabled={!useExternalServices}
+        disabled={!isBasicFunctionalityEnabled}
       />
       {error && (
         <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>
