@@ -404,8 +404,10 @@ const HomeNetworkFilterModalContent = ({
     // Don't close the modal first — letting the whole current view (modal
     // included) slide out as one view-transition snapshot keeps the motion
     // smooth. The modal's open state resets when the home route unmounts on
-    // navigation. Slide in from the right, mirroring the global menu.
-    transitionSlideForward(() => navigate(`${NETWORKS_ROUTE}?drawerOpen=true`));
+    // navigation. The `drawerOpen` query is reserved for the global menu
+    // entry point, so back from the networks page lands on home without
+    // surfacing the menu drawer.
+    transitionSlideForward(() => navigate(NETWORKS_ROUTE));
   }, [navigate]);
 
   const sections = useMemo<NetworkSelectionSection[]>(() => {
