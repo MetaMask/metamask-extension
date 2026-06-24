@@ -46,7 +46,7 @@ export default function RevealRecoveryPhrase({
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();
-  const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
+  const { isFromSettingsSecurity, nextRouteQueryString } =
     useOnboardingSearchParams();
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
@@ -69,8 +69,7 @@ export default function RevealRecoveryPhrase({
         const seedPhrase = await getSeedPhrase(_password);
         setSecretRecoveryPhrase(seedPhrase);
         navigate(
-          `${ONBOARDING_REVIEW_SRP_ROUTE}${
-            nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+          `${ONBOARDING_REVIEW_SRP_ROUTE}${nextRouteQueryString ? `?${nextRouteQueryString}` : ''
           }`,
           { replace: true },
         );
