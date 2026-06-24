@@ -27,10 +27,6 @@ export const TokenCellPrimaryDisplay = React.memo(
       selectAnyEnabledNetworksAreAvailable,
     );
 
-    if (token.isStellarTrustlineInactive) {
-      return null;
-    }
-
     return (
       <Skeleton
         hideChildren={

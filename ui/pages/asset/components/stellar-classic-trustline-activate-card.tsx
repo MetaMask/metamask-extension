@@ -122,13 +122,10 @@ export const StellarClassicTrustlineActivateCard = ({
           <Box flexDirection={BoxFlexDirection.Column} gap={1}>
             <Text
               variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
+              fontWeight={FontWeight.Regular}
               color={TextColor.TextDefault}
             >
-              {t('stellarClassicActivateOnStellarTitle', [symbol])}
-            </Text>
-            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-              {t('stellarClassicActivateOnStellarBody', [symbol])}
+              {t('stellarClassicActivateOnStellar', [symbol])}
             </Text>
           </Box>
           <Button
