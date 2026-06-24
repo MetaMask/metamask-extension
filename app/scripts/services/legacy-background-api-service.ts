@@ -50,6 +50,7 @@ import {
   EncAccountDataType,
   SecretType,
   SeedlessOnboardingControllerAddNewSecretDataAction,
+  SeedlessOnboardingControllerChangePasswordAction,
   SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerRunMigrationsAction,
@@ -123,6 +124,7 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'changePassword',
   'checkIsSeedlessPasswordOutdated',
   'exportAccount',
   'getAccountsBySnapId',
@@ -197,6 +199,7 @@ type AllowedActions =
   | PreferencesControllerSetPasswordForgottenAction
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
+  | SeedlessOnboardingControllerChangePasswordAction
   | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerRunMigrationsAction
@@ -717,6 +720,77 @@ export class LegacyBackgroundApiService {
     );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
+  }
+
+  /**
+   * Changes the password for the wallet.
+   *
+   * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
+   *
+   * @param newPassword - The new password.
+   * @param oldPassword - The old password.
+   */
+  async changePassword(
+    newPassword: string,
+    oldPassword: string,
+  ): Promise<void> {
+    const releaseLock = await this.#seedlessOperationMutex.acquire();
+    const isSocialLoginFlow = this.#messenger.call(
+      'OnboardingController:getIsSocialLoginFlow',
+    );
+    try {
+      await this.#messenger.call(
+        'KeyringController:changePassword',
+        newPassword,
+      );
+
+      if (isSocialLoginFlow) {
+        try {
+          await this.#messenger.call(
+            'SeedlessOnboardingController:changePassword',
+            newPassword,
+            oldPassword,
+          );
+          // store the new keyring encryption key in the seedless onboarding controller
+          const keyringEncKey = await this.#messenger.call(
+            'KeyringController:exportEncryptionKey',
+          );
+          await this.#messenger.call(
+            'SeedlessOnboardingController:storeKeyringEncryptionKey',
+            keyringEncKey,
+          );
+        } catch (err) {
+          log.error('error while changing seedless-onboarding password', err);
+          log.error('reverting keyring password change');
+          // revert the keyring password change by changing the password back to the old password
+          await this.#messenger.call(
+            'KeyringController:changePassword',
+            oldPassword,
+          );
+          // store the old keyring encryption key in the seedless onboarding controller
+          const revertedKeyringEncKey = await this.#messenger.call(
+            'KeyringController:exportEncryptionKey',
+          );
+          await this.#messenger.call(
+            'SeedlessOnboardingController:storeKeyringEncryptionKey',
+            revertedKeyringEncKey,
+          );
+
+          this.#messenger.captureException?.(
+            createSentryError(
+              'error while changing password for social login flow',
+              err,
+            ),
+          );
+          throw err;
+        }
+      }
+    } catch (error) {
+      log.error('error while changing password', error);
+      throw error;
+    } finally {
+      releaseLock();
+    }
   }
 
   /**
