@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
-import { RequestStatus } from '@metamask/bridge-controller';
+import { FeatureId, RequestStatus } from '@metamask/bridge-controller';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import * as networkConstants from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
@@ -273,6 +273,8 @@ describe('Ducks - Bridge', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_amount_source: 1000,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
           },
         ) as never,
       );
@@ -304,6 +306,8 @@ describe('Ducks - Bridge', () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source: 1000,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
         },
         0,
         1,
