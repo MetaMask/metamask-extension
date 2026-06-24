@@ -4,9 +4,6 @@ import { keccak256 } from 'ethereum-cryptography/keccak';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { type JavaTronPrivateNetworkPorts } from './java-tron-config';
 
-export const TRON_CHAIN_ID = 'tron:728126428';
-export const SUN_PER_TRX = 1_000_000;
-
 export type TronTrc10Symbol = 'GAS_FREE';
 export type TronTrc20Symbol = 'HTX' | 'SEED' | 'USDD' | 'USDT';
 export type TronAssetSymbol = TronTrc10Symbol | TronTrc20Symbol;
@@ -30,13 +27,6 @@ export type TronTrc20Token = TronAssetMetadata & {
 
 export type TronLocalNodeOptions = {
   initialBalances?: Record<string, number>;
-  /**
-   * Path to a JSON state file. Unlike Anvil's storage-level state, this is a
-   * java-tron seeder state file: it may contain the same balance maps accepted
-   * here, or fixture-style `accounts[].assets` entries that are normalized into
-   * those maps before the node is seeded.
-   */
-  loadState?: string;
   ports?: Partial<JavaTronPrivateNetworkPorts>;
   trc10Balances?: Record<string, Partial<Record<TronTrc10Symbol, string>>>;
   trc20Balances?: Record<string, Partial<Record<TronTrc20Symbol, string>>>;
@@ -47,17 +37,6 @@ export type TronLocalNodeOptions = {
    * in MetaMask, so we don't need a mutable stake API.
    */
   stakedTrxBalances?: Record<string, string>;
-  /**
-   * Placeholder for a future TRC721 implementation. The seeder accepts and
-   * ignores this field today so test code can be authored against the final
-   * shape before the runtime work lands.
-   */
-  trc721Balances?: Record<string, Record<string, string[]>>;
-  /**
-   * Placeholder for a future TRC1155 implementation. Same accept-and-ignore
-   * contract as `trc721Balances`.
-   */
-  trc1155Balances?: Record<string, Record<string, Record<string, string>>>;
 };
 
 export type TronNativeAccount = {

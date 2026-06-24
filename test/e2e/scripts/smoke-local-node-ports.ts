@@ -1,14 +1,5 @@
-// TODO(bitcoin-regtest-up PR): import { BitcoinRegtestNode } from '../seeder/bitcoin/node';
-// TODO(solana-test-validator PR): import { SolanaNode, type SolanaValidatorPorts, resolveSolanaValidatorPorts } from '../seeder/solana/node';
 import { getAvailablePorts } from '../seeder/ports';
-// TODO(solana-test-validator PR): also import { parsePortRange } from '../seeder/ports' when Solana sections are restored
 import { TronNode } from '../seeder/tron/node';
-
-// TODO: re-add 'bitcoin' | 'solana' once their upstream PRs land
-type ChainName = 'tron';
-
-// TODO(bitcoin-regtest-up PR): type BitcoinBlockchainInfo = { blocks: number; chain: string };
-// TODO(bitcoin-regtest-up PR): type BitcoinRpcResponse<ResponseBody> = { error?: { message: string }; result?: ResponseBody };
 
 type TronBlockResponse = Partial<
   Record<
@@ -17,27 +8,7 @@ type TronBlockResponse = Partial<
   >
 >;
 
-// TODO(bitcoin-regtest-up PR, solana-test-validator PR): re-add 'bitcoin' and 'solana' once their upstream PRs land
-const CHAIN_NAMES = ['tron'] as const;
 async function main(): Promise<void> {
-  const chainName = process.argv[2] ?? 'all';
-  const chains =
-    chainName === 'all' ? CHAIN_NAMES : [assertChainName(chainName)];
-
-  for (const chain of chains) {
-    // TODO(bitcoin-regtest-up PR): if (chain === 'bitcoin') { await runBitcoinSmoke(); } else
-    // TODO(solana-test-validator PR): if (chain === 'solana') { await runSolanaSmoke(); } else
-    await runTronSmoke();
-  }
-}
-
-// TODO(bitcoin-regtest-up PR): restore runBitcoinSmoke() once bitcoin/node exists on this branch
-// async function runBitcoinSmoke(): Promise<void> { ... }
-
-// TODO(solana-test-validator PR): restore runSolanaSmoke() once solana/node exists on this branch
-// async function runSolanaSmoke(): Promise<void> { ... }
-
-async function runTronSmoke(): Promise<void> {
   const [firstFullNodePort, secondFullNodePort] =
     await getAvailablePortsWithGaps(2);
   const ports = [
@@ -82,9 +53,6 @@ async function runTronSmoke(): Promise<void> {
   }
 }
 
-// TODO(solana-test-validator PR): restore getSolanaValidatorPorts() and getSolanaReservedPorts()
-// once solana/node and solana/ports exist on this branch.
-
 async function getAvailablePortsWithGaps(
   count: number,
   gapSize = 8,
@@ -107,8 +75,6 @@ async function getAvailablePortsWithGaps(
   return ports;
 }
 
-// TODO(bitcoin-regtest-up PR): restore requestBitcoinRpc() once bitcoin/node exists on this branch.
-
 async function startAll(starts: (() => Promise<void>)[]): Promise<void> {
   for (const start of starts) {
     await start();
@@ -126,18 +92,6 @@ async function quitAll(
   if (failure) {
     throw failure.reason;
   }
-}
-
-function assertChainName(chainName: string): ChainName {
-  if ((CHAIN_NAMES as readonly string[]).includes(chainName)) {
-    return chainName as ChainName;
-  }
-
-  throw new Error(
-    `Unknown chain "${chainName}". Expected one of: all, ${CHAIN_NAMES.join(
-      ', ',
-    )}`,
-  );
 }
 
 function formatNodeUrls(ports: readonly number[]): string {

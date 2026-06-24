@@ -1,4 +1,14 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex */
+/**
+ * java-tron private-network HOCON config used by {@link TronNode}.
+ *
+ * Derived from the upstream java-tron default template installed by
+ * `@metamask/java-tron-up`. Only `fullNodePort` is substituted at
+ * runtime; the genesis block and committee flags match the upstream private-net
+ * defaults.
+ *
+ * @see https://github.com/tronprotocol/java-tron
+ */
 export type JavaTronPrivateNetworkPorts = {
   fullNodePort: number;
 };

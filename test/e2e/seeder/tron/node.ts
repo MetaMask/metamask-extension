@@ -3,7 +3,7 @@
  * @file node.ts — Tron local node seeder
  *
  * The local node runs a native java-tron private network. The
- * `@metamask-previews/java-tron-up` package installs the managed Java runtime,
+ * `@metamask/java-tron-up` package installs the managed Java runtime,
  * FullNode.jar, and the node_modules/.bin/java-tron wrapper used here.
  */
 import { spawn, type ChildProcess } from 'child_process';
@@ -11,6 +11,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join, resolve } from 'path';
 import { createRequire } from 'module';
+import { installJavaTron } from '@metamask/java-tron-up';
 import { keccak256 } from 'ethereum-cryptography/keccak';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1';
@@ -42,7 +43,6 @@ import {
   encodeTrc20ConstructorParameters,
   getTronSmartContractConfig,
 } from './smart-contracts';
-import { resolveTronLocalNodeOptions } from './state';
 
 type Base58Encoder = {
   encode(input: Uint8Array): string;
@@ -146,19 +146,16 @@ export class TronNode {
    * @param options.trc10Balances - Map of Tron address to named TRC10 balances.
    * @param options.trc20Balances - Map of Tron address to named TRC20 balances.
    * @param options.stakedTrxBalances - Map of Tron address to staked TRX in SUN.
-   * @param options.trc721Balances - Accepted and ignored placeholder for TRC721.
-   * @param options.trc1155Balances - Accepted and ignored placeholder for TRC1155.
    */
   async start(options: TronLocalNodeOptions = {}): Promise<void> {
     this.#fundingAccount = undefined;
-    const resolvedOptions = await resolveTronLocalNodeOptions(options);
 
     try {
-      await this.#startNativeJavaTron(resolvedOptions.ports);
+      await this.#startNativeJavaTron(options.ports);
       await this.waitForReady(120_000);
 
       for (const [address, amountInSun] of Object.entries(
-        resolvedOptions.initialBalances ?? {},
+        options.initialBalances ?? {},
       )) {
         if (amountInSun > 0) {
           await this.fundAccount(address, amountInSun);
@@ -166,14 +163,10 @@ export class TronNode {
       }
 
       await Promise.all([
-        this.initializeTrc10Balances(resolvedOptions.trc10Balances ?? {}),
-        this.initializeTrc20Balances(resolvedOptions.trc20Balances ?? {}),
-        this.initializeStakedTrxBalances(
-          resolvedOptions.stakedTrxBalances ?? {},
-        ),
+        this.initializeTrc10Balances(options.trc10Balances ?? {}),
+        this.initializeTrc20Balances(options.trc20Balances ?? {}),
+        this.initializeStakedTrxBalances(options.stakedTrxBalances ?? {}),
       ]);
-      // `trc721Balances` and `trc1155Balances` are accepted and ignored — see the
-      // JSDoc on TronLocalNodeOptions.
     } catch (error) {
       await this.quit();
       throw error;
@@ -183,7 +176,7 @@ export class TronNode {
   async #startNativeJavaTron(
     ports: TronLocalNodeOptions['ports'] = {},
   ): Promise<void> {
-    await this.#runPackageBinary('java-tron-up', ['install']);
+    await installJavaTron({ cwd: process.cwd() });
 
     const runtimeDirectory = await mkdtemp(join(tmpdir(), 'java-tron-e2e-'));
     const configPath = join(runtimeDirectory, 'fullnode.conf');
@@ -237,43 +230,6 @@ export class TronNode {
           signal ?? 'null'
         }.${this.#formatProcessOutput()}`,
       );
-    });
-  }
-
-  async #runPackageBinary(command: string, args: string[]): Promise<void> {
-    const binaryPath = getPackageBinaryPath(command);
-
-    await new Promise<void>((resolvePromise, rejectPromise) => {
-      const child = spawn(binaryPath, args, {
-        cwd: process.cwd(),
-        stdio: ['ignore', 'pipe', 'pipe'],
-      });
-      let stdout = '';
-      let stderr = '';
-      child.stdout.on('data', (chunk: Buffer) => {
-        stdout = appendProcessOutput(stdout, chunk);
-      });
-      child.stderr.on('data', (chunk: Buffer) => {
-        stderr = appendProcessOutput(stderr, chunk);
-      });
-      child.once('error', rejectPromise);
-      child.once('close', (code, signal) => {
-        if (code === 0) {
-          resolvePromise();
-          return;
-        }
-
-        rejectPromise(
-          new Error(
-            `${command} ${args.join(' ')} exited with code ${
-              code ?? 'null'
-            } and signal ${signal ?? 'null'}.${formatProcessOutput(
-              stdout,
-              stderr,
-            )}`,
-          ),
-        );
-      });
     });
   }
 
