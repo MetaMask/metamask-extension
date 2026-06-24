@@ -443,22 +443,13 @@ const PerpsOrderEntryPage = () => {
     const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
       const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
       if (update) {
-        const {
-          timestamp: ts,
-          markPrice: mark,
-          percentChange24h,
-        } = update as {
-          timestamp?: number;
-          markPrice?: string;
-          percentChange24h?: string;
-        };
         setLivePrice({
           symbol: update.symbol,
           price: update.price,
-          timestamp: ts ?? Date.now(),
-          markPrice: mark,
-          percentChange24h,
-          isTradable: (update as { isTradable?: boolean }).isTradable ?? true,
+          timestamp: update.timestamp,
+          markPrice: update.markPrice,
+          percentChange24h: update.percentChange24h,
+          isTradable: update.isTradable,
         });
       }
     });
