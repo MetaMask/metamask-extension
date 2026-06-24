@@ -104,7 +104,8 @@ export default function CreationSuccessful() {
 
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
-  const { isFromReminder, isFromSettingsSecurity } = useOnboardingSearchParams();
+  const { isFromReminder, isFromSettingsSecurity } =
+    useOnboardingSearchParams();
   const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);

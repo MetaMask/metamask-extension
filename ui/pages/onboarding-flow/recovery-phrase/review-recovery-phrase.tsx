@@ -63,11 +63,8 @@ export default function RecoveryPhrase({
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
   const isFirefox = useIsFirefox();
-  const {
-    isFromReminder,
-    isFromSettingsSecurity,
-    nextRouteQueryString,
-  } = useOnboardingSearchParams();
+  const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
+    useOnboardingSearchParams();
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {

@@ -46,11 +46,8 @@ export default function RevealRecoveryPhrase({
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();
-  const {
-    isFromReminder,
-    isFromSettingsSecurity,
-    nextRouteQueryString,
-  } = useOnboardingSearchParams();
+  const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
+    useOnboardingSearchParams();
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
   const [password, setPassword] = useState('');

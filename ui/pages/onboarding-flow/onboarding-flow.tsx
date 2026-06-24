@@ -119,7 +119,8 @@ export default function OnboardingFlow() {
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
-  const { isFromReminder, isFromSettingsSecurity } = useOnboardingSearchParams();
+  const { isFromReminder, isFromSettingsSecurity } =
+    useOnboardingSearchParams();
   const { bufferedTrace, onboardingParentContext, trackEvent } =
     useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);

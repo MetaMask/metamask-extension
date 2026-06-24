@@ -82,11 +82,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();
-  const {
-    isFromReminder,
-    isFromSettingsSecurity,
-    nextRouteQueryString,
-  } = useOnboardingSearchParams();
+  const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
+    useOnboardingSearchParams();
   const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);

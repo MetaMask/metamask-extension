@@ -28,7 +28,6 @@ export default function SetupPasskey() {
   );
 
   const handleNext = useCallback(() => {
-
     let nextRoute: string;
 
     if (firstTimeFlowType === FirstTimeFlowType.create) {

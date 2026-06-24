@@ -58,7 +58,8 @@ export default function OnboardingAppHeader({
     };
   });
 
-  const { isFromReminder, isFromSettingsSecurity } = useOnboardingSearchParams();
+  const { isFromReminder, isFromSettingsSecurity } =
+    useOnboardingSearchParams();
   const isFromSettingsSRPBackup = isFromReminder || isFromSettingsSecurity;
 
   // We don't wanna show the logo and locale dropdown in the sidepanel view
