@@ -1,5 +1,6 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
+  FeatureId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
@@ -194,10 +195,20 @@ describe('useBridging', () => {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: '',
               // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               environment_type: 'background',
             },
           ],
-          [UnifiedSwapBridgeEventName.PageViewed, {}],
+          [
+            UnifiedSwapBridgeEventName.PageViewed,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
+            },
+          ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
 
@@ -530,10 +541,20 @@ describe('useBridging', () => {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_source: token?.symbol ?? 'ETH',
               // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               environment_type: 'background',
             },
           ],
-          [UnifiedSwapBridgeEventName.PageViewed, {}],
+          [
+            UnifiedSwapBridgeEventName.PageViewed,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
+            },
+          ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
 
