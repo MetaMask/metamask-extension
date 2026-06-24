@@ -14,12 +14,12 @@ import {
 import log from 'loglevel';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
 
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
 const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
 // TODO: source this from the controller
-const VERIFICATION_CODE_EXPIRY_SECONDS = 15;
 
 const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
 
@@ -28,7 +28,7 @@ const EnterVerificationCode = () => {
   const [isError, setIsError] = useState(false);
   const [code, setCode] = useState<string[]>(createEmptyCode);
   const [secondsLeft, setSecondsLeft] = useState(
-    VERIFICATION_CODE_EXPIRY_SECONDS,
+    MWP_SESSION_REQUEST_EXPIRY_SECONDS,
   );
   const isExpired = secondsLeft <= 0;
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -45,8 +45,11 @@ const EnterVerificationCode = () => {
     return () => clearInterval(intervalId);
   }, [isExpired]);
 
-  const handleRestart = useCallback(() => {
-    // onContinue(AddDeviceSettingsStep.ScanQrCode);
+  const handleRestart = useCallback(async () => {
+    await submitRequestToBackground<void>('messengerCall', [
+      'QrSyncController:createSession',
+      [],
+    ])
   }, []);
 
   const focusInput = useCallback((index: number) => {

@@ -18,6 +18,7 @@ import {
   QrCodeScan,
   Success,
 } from './components';
+import type { AddDeviceSyncRequest } from './types';
 
 const AddDeviceSettings = () => {
   const navigate = useNavigate();
@@ -27,6 +28,9 @@ const AddDeviceSettings = () => {
   const isQrSyncTerminal = useSelector(selectIsQrSyncTerminal);
   const [isExiting, setIsExiting] = useState(false);
   const [password, setPassword] = useState<string | undefined>();
+  const [syncSummary, setSyncSummary] = useState<
+    Pick<AddDeviceSyncRequest, 'syncedAccountCount' | 'syncedWalletCount'> | null
+  >(null);
 
   useEffect(() => {
     if (!shouldCreateSession || isExiting) {
@@ -72,16 +76,25 @@ const AddDeviceSettings = () => {
     handleExit().catch(() => undefined);
   }, [handleExit, isQrSyncTerminal]);
 
-  const handleAddWallets = useCallback(async (entropyIds: string[]) => {
-    if (!password) {
-      throw new Error('Password is required before syncing accounts.');
-    }
+  const handleAddWallets = useCallback(
+    async ({
+      entropyIds,
+      syncedAccountCount,
+      syncedWalletCount,
+    }: AddDeviceSyncRequest) => {
+      if (!password) {
+        throw new Error('Password is required before syncing accounts.');
+      }
 
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:syncAccounts',
-      [password, entropyIds],
-    ]);
-  }, [password]);
+      setSyncSummary({ syncedAccountCount, syncedWalletCount });
+
+      await submitRequestToBackground<void>('messengerCall', [
+        'QrSyncController:syncAccounts',
+        [password, entropyIds],
+      ]);
+    },
+    [password],
+  );
 
   const renderStep = () => {
     switch (qrSyncPhase) {
@@ -111,7 +124,13 @@ const AddDeviceSettings = () => {
           />
         );
       case QR_SYNC_PHASES.COMPLETED:
-        return <Success onDone={() => handleExit().catch(() => undefined)} />;
+        return syncSummary ? (
+          <Success
+            syncedAccountCount={syncSummary.syncedAccountCount}
+            syncedWalletCount={syncSummary.syncedWalletCount}
+            onDone={() => handleExit().catch(() => undefined)}
+          />
+        ) : null;
       case QR_SYNC_PHASES.CANCELLED:
       case QR_SYNC_PHASES.FAILED:
       default:

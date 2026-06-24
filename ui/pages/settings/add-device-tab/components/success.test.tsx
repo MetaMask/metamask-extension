@@ -6,22 +6,34 @@ import messages from '../../../../../app/_locales/en/messages.json';
 import Success from './success';
 
 describe('Success', () => {
-  it('renders the title and description', () => {
-    renderWithLocalization(<Success onDone={jest.fn()} />);
+  it('renders the title and synced counts from props', () => {
+    renderWithLocalization(
+      <Success
+        syncedAccountCount={3}
+        syncedWalletCount={2}
+        onDone={jest.fn()}
+      />,
+    );
 
     expect(
       screen.getByText(messages.add_device_success_title.message),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        '5 accounts from 2 Secret Recovery Phrases were synced to your phone.',
+        '3 accounts from 2 Secret Recovery Phrases were synced to your phone.',
       ),
     ).toBeInTheDocument();
   });
 
   it('calls onDone when the done button is clicked', () => {
     const onDone = jest.fn();
-    renderWithLocalization(<Success onDone={onDone} />);
+    renderWithLocalization(
+      <Success
+        syncedAccountCount={1}
+        syncedWalletCount={1}
+        onDone={onDone}
+      />,
+    );
 
     fireEvent.click(screen.getByText(messages.done.message));
 

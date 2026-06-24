@@ -18,9 +18,15 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type SuccessProps = {
   onDone: () => void;
+  syncedAccountCount: number;
+  syncedWalletCount: number;
 };
 
-const Success = ({ onDone }: SuccessProps) => {
+const Success = ({
+  onDone,
+  syncedAccountCount,
+  syncedWalletCount,
+}: SuccessProps) => {
   const t = useI18nContext();
 
   return (
@@ -56,7 +62,10 @@ const Success = ({ onDone }: SuccessProps) => {
           color={TextColor.TextAlternative}
           textAlign={TextAlign.Center}
         >
-          {t('add_device_success_desc', [5, 2])}
+          {t('add_device_success_desc', [
+            syncedAccountCount,
+            syncedWalletCount,
+          ])}
         </Text>
       </Box>
       <Button className="w-full mt-10" onClick={onDone}>

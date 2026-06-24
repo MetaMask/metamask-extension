@@ -14,10 +14,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
+import type { AddDeviceSyncRequest } from '../types';
 import { WalletSelectionList } from './wallet-selection-list';
 
 type AddWalletsProps = {
-  onAddWallets: (entropyIds: string[]) => Promise<void>;
+  onAddWallets: (syncRequest: AddDeviceSyncRequest) => Promise<void>;
 };
 
 const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
@@ -44,14 +45,6 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
     ),
   );
 
-  // const handleAccountClick = useCallback((accountGroupId: AccountGroupId) => {
-  //   setSelectedAccountGroups((prev) =>
-  //     prev.includes(accountGroupId)
-  //       ? prev.filter((id) => id !== accountGroupId)
-  //       : [...prev, accountGroupId],
-  //   );
-  // }, []);
-
   const handleSyncWallets = useCallback(async () => {
     const selectedEntropyIds = [
       ...new Set(
@@ -64,7 +57,11 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
       ),
     ];
 
-    await onAddWallets(selectedEntropyIds);
+    await onAddWallets({
+      entropyIds: selectedEntropyIds,
+      syncedAccountCount: selectedAccountGroups.length,
+      syncedWalletCount: selectedEntropyIds.length,
+    });
   }, [onAddWallets, selectedAccountGroups]);
 
   return (

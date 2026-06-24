@@ -8,7 +8,6 @@ import type {
   KeyringControllerGetStateAction,
   KeyringControllerWithKeyringV2Action,
 } from '@metamask/keyring-controller';
-import type { IKVStore } from '@metamask/mobile-wallet-protocol-core';
 import type { Messenger } from '@metamask/messenger';
 
 import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
@@ -45,24 +44,9 @@ export type QrSyncMessage<DataType = undefined> = {
 
 export type SyncDataType = 'MNEMONIC' | 'PRIVATE_KEY';
 
-export type QrSyncAccountCandidate = {
-  id: string;
-  address: string;
-  name?: string;
-  type: SyncDataType;
-  metadata?: {
-    accountName?: string;
-    hiddenIndexes: number[];
-  };
-};
-
 export type QrSyncOffer = {
   sessionId?: string;
   deadline: number;
-};
-
-export type QrSyncCancelData = {
-  reason?: string;
 };
 
 export type QrSyncErrorCode =
@@ -78,7 +62,6 @@ export type QrSyncErrorCode =
 export type QrSyncError = {
   code: QrSyncErrorCode;
   message: string;
-  retryable: boolean;
 };
 
 /**
@@ -198,42 +181,7 @@ export type QrSyncControllerStateChangeEvent = ControllerStateChangedEvent<
   QrSyncControllerState
 >;
 
-export type QrSyncControllerSyncCompletedEvent = {
-  type: 'QrSyncController:syncCompleted';
-  payload: [
-    {
-      sessionId: string | null;
-      importedAccountIds: string[];
-    },
-  ];
-};
-
-export type QrSyncControllerChannelDisconnectedEvent = {
-  type: 'QrSyncController:channelDisconnected';
-  payload: [
-    {
-      sessionId: string | null;
-      retryable: boolean;
-      error?: QrSyncError;
-    },
-  ];
-};
-
-export type QrSyncControllerSyncOfferReceivedEvent = {
-  type: 'QrSyncController:syncOfferReceived';
-  payload: [
-    {
-      sessionId: string | null;
-      syncOffer: QrSyncOffer;
-    },
-  ];
-};
-
-export type QrSyncControllerEvents =
-  | QrSyncControllerStateChangeEvent
-  | QrSyncControllerSyncCompletedEvent
-  | QrSyncControllerChannelDisconnectedEvent
-  | QrSyncControllerSyncOfferReceivedEvent;
+export type QrSyncControllerEvents = QrSyncControllerStateChangeEvent;
 
 export type QrSyncControllerGetStateAction = ControllerGetStateAction<
   typeof QR_SYNC_CONTROLLER_NAME,

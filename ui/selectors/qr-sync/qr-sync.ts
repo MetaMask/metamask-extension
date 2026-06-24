@@ -28,6 +28,11 @@ export const selectQrSyncQrPayload = createSelector(
   (qrSyncState) => qrSyncState.qrPayload,
 );
 
+export const selectQrSyncError = createSelector(
+  [selectQrSyncState],
+  (qrSyncState) => qrSyncState.error,
+);
+
 export const selectIsQrSyncTerminal = createSelector(
   [selectQrSyncPhase],
   (phase) => {

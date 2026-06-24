@@ -14,17 +14,19 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../../components/component-library/skeleton';
 import { QRCodeImage } from '../../../../components/app/deeplink-qr-code/deeplink-qr-code';
-
-// TODO: source this from the controller
-const QR_CODE_EXPIRY_SECONDS = 15;
-import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
+import { submitRequestToBackground } from '../../../../store/background-connection';
+import {
+  selectQrSyncError,
+  selectQrSyncQrPayload,
+} from '../../../../selectors/qr-sync/qr-sync';
+import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
 
 const QrCodeScan = () => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
-  const [secondsLeft, setSecondsLeft] = useState(QR_CODE_EXPIRY_SECONDS);
-  // TODO: source scan errors from the controller
-  const [hasError, setHasError] = useState(false);
+  const qrSyncError = useSelector(selectQrSyncError);
+  const [secondsLeft, setSecondsLeft] = useState(MWP_SESSION_REQUEST_EXPIRY_SECONDS);
+  const hasError = Boolean(qrSyncError);
   const isExpired = secondsLeft <= 0;
   const shouldDimQr = isExpired || hasError;
 
@@ -40,10 +42,12 @@ const QrCodeScan = () => {
     return () => clearInterval(intervalId);
   }, [shouldDimQr]);
 
-  const handleReset = useCallback(() => {
-    // TODO: regenerate the QR code via the controller
-    setHasError(false);
-    setSecondsLeft(QR_CODE_EXPIRY_SECONDS);
+  const handleReset = useCallback(async () => {
+    setSecondsLeft(MWP_SESSION_REQUEST_EXPIRY_SECONDS);
+    await submitRequestToBackground<void>('messengerCall', [
+      'QrSyncController:createSession',
+      [],
+    ]).catch(() => undefined);
   }, []);
 
   const renderResetBlock = (message: string) => (

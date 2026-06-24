@@ -29,7 +29,6 @@ import {
   type QrSyncData,
   type QrSyncError,
   type QrSyncOffer,
-  type QrSyncCancelData,
 } from './types';
 import { controllerMetadata, getDefaultQrSyncControllerState, MESSENGER_EXPOSED_METHODS } from './metadata';
 import { InMemoryKvStore } from './kv-store';
@@ -105,7 +104,6 @@ export class QrSyncController extends BaseController<
           error instanceof Error
             ? error.message
             : 'Failed to create sync session',
-        retryable: true,
       });
       throw error;
     } finally {
@@ -136,7 +134,6 @@ export class QrSyncController extends BaseController<
           code: 'OTP_INVALID',
           message:
             error instanceof Error ? error.message : 'Failed to validate OTP',
-          retryable: true,
         };
         state.updatedAt = Date.now();
       });
@@ -262,7 +259,6 @@ export class QrSyncController extends BaseController<
         code: 'CHANNEL_INIT_FAILED',
         message:
           error instanceof Error ? error.message : 'Failed to initialize sync',
-        retryable: true,
       });
       throw error;
     } finally {
@@ -286,7 +282,7 @@ export class QrSyncController extends BaseController<
 
   async cancelOtp(reason?: string): Promise<void> {
     this.#assertPhase([QR_SYNC_PHASES.AWAITING_OTP_INPUT]);
-    await this.#notifyPeerCancel(reason);
+    await this.#notifyPeerCancel();
     this.#cleanupSession({ cancelOtp: true });
 
     this.update((state) => {
@@ -297,14 +293,13 @@ export class QrSyncController extends BaseController<
         state.error = {
           code: 'SYNC_FAILED',
           message: reason,
-          retryable: true,
         };
       }
     });
   }
 
   async cancelSync(reason?: string): Promise<void> {
-    await this.#notifyPeerCancel(reason);
+    await this.#notifyPeerCancel();
     this.#cleanupSession({ cancelOtp: true });
 
     this.update((state) => {
@@ -315,7 +310,6 @@ export class QrSyncController extends BaseController<
         state.error = {
           code: 'SYNC_REJECTED',
           message: reason,
-          retryable: true,
         };
       }
     });
@@ -335,11 +329,6 @@ export class QrSyncController extends BaseController<
       state.lastActionType = QrSyncActionTypes.SYNC_OFFER;
       state.updatedAt = Date.now();
     });
-
-    this.messenger.publish('QrSyncController:syncOfferReceived', {
-      sessionId: this.state.sessionId,
-      syncOffer,
-    });
   }
 
   completeSync(importedAccountIds: string[]): void {
@@ -348,11 +337,6 @@ export class QrSyncController extends BaseController<
       state.importedAccountIds = [...importedAccountIds];
       state.lastActionType = QrSyncActionTypes.SYNC_COMPLETED;
       state.updatedAt = Date.now();
-    });
-
-    this.messenger.publish('QrSyncController:syncCompleted', {
-      sessionId: this.state.sessionId,
-      importedAccountIds,
     });
 
     this.#cleanupSession();
@@ -388,7 +372,6 @@ export class QrSyncController extends BaseController<
             error instanceof Error
               ? error.message
               : 'Failed to handle OTP requirement',
-          retryable: true,
         });
       });
     };
@@ -405,7 +388,6 @@ export class QrSyncController extends BaseController<
       this.#setError({
         code: 'CHANNEL_DISCONNECTED',
         message: 'The sync channel disconnected.',
-        retryable: true,
       });
     };
 
@@ -414,7 +396,6 @@ export class QrSyncController extends BaseController<
       this.#setError({
         code: 'UNKNOWN',
         message: error.message,
-        retryable: true,
       });
     };
 
@@ -493,6 +474,17 @@ export class QrSyncController extends BaseController<
         this.completeSync(this.state.importedAccountIds);
         return;
 
+      case QrSyncActionTypes.SYNC_CANCEL:
+        this.#handlePeerCancel();
+        return;
+
+      case QrSyncActionTypes.SYNC_ERROR:
+        this.#setError({
+          code: 'SYNC_FAILED',
+          message: (parsedMessage.data as { message?: string })?.message ?? 'The sync session encountered an error.',
+        });
+        return;
+
       default:
         log.debug(
           'QrSyncController: ignoring unsupported message type',
@@ -565,6 +557,25 @@ export class QrSyncController extends BaseController<
     return true;
   }
 
+  #handlePeerCancel(): void {
+    this.#cleanupSession({ cancelOtp: true });
+
+    this.update((state) => {
+      state.phase = QR_SYNC_PHASES.CANCELLED;
+      state.connectionStatus = 'disconnected';
+      state.lastActionType = QrSyncActionTypes.SYNC_CANCEL;
+      state.error = {
+        code: 'SYNC_REJECTED',
+        message: 'Session cancelled by peer',
+      };
+      state.syncOffer = null;
+      state.qrPayload = null;
+      state.selectedAccountIds = [];
+      state.selectedSyncDataType = null;
+      state.updatedAt = Date.now();
+    });
+  }
+
   #finishSubmission(): void {
     this.update((state) => {
       state.updatedAt = Date.now();
@@ -594,12 +605,6 @@ export class QrSyncController extends BaseController<
       state.selectedAccountIds = [];
       state.selectedSyncDataType = null;
       state.updatedAt = Date.now();
-    });
-
-    this.messenger.publish('QrSyncController:channelDisconnected', {
-      sessionId: this.state.sessionId,
-      retryable: error.retryable,
-      error,
     });
   }
 
@@ -649,19 +654,14 @@ export class QrSyncController extends BaseController<
     }
   }
 
-  async #notifyPeerCancel(reason?: string): Promise<void> {
+  async #notifyPeerCancel(): Promise<void> {
     if (!this.#mwpDappClient) {
       return;
     }
 
-    const data: QrSyncCancelData | undefined = reason
-      ? { reason }
-      : undefined;
-
     try {
       await this.#sendMessage({
         type: QrSyncActionTypes.SYNC_CANCEL,
-        ...(data ? { data } : {}),
       });
     } catch (error) {
       log.warn(
