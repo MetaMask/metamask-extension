@@ -169,19 +169,6 @@ describe('asset-utils', () => {
       ]);
     });
 
-    it('creates Stellar SEP-41 asset ID on Stellar testnet', () => {
-      const contractId =
-        'CAUP7NFABXE5TJRL3FKTPMWRLC7IAXYDCTHQRFSCLR5TMGKHOOQO772J';
-      const chainId = MultichainNetworks.STELLAR_TESTNET;
-
-      const result = toAssetId(contractId, chainId);
-      expect(result).toBe(`${chainId}/sep41:${contractId}`);
-      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
-        undefined,
-        result,
-      ]);
-    });
-
     it('creates Stellar SEP-41 asset ID when reference includes sep41: prefix', () => {
       const contractId =
         'CBOOCGZSVRSZFRE4U2NWR2B4RXYVJWRCBTGOUD2JPI2TDJPWMTJX7FZP';

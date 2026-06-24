@@ -11,9 +11,7 @@ import {
 import { getNativeCurrencyForChain } from '../../../../../selectors';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import {
-  getAssetImageUrl,
-} from '../../../../../../shared/lib/asset-utils';
+import { getAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;
