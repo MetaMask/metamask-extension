@@ -493,6 +493,12 @@
       "error: Warning: ReactDOM.render is no longer": 8,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
+    "ui/components/app/connected-accounts-permissions/connected-accounts-permissions.test.tsx": {
+      "Deprecation warnings": 1,
+      "React: DOM nesting violations": 1,
+      "error: Warning: ReactDOM.render is no longer": 8,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
     "ui/components/app/connections-removed-modal/connections-removed-modal.test.tsx": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 4,
@@ -657,6 +663,11 @@
     "ui/components/app/modals/keyring-snap-removal-modal/keyring-snap-removal-result-modal.test.tsx": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 2,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/app/modals/loading-network-error/loading-network-error.component.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 4,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/app/modals/nickname-popovers/nickname-popovers.component.test.tsx": {

@@ -78,6 +78,7 @@ const ConnectedAccountsPermissions = ({ permissions = [] }) => {
             'connected-accounts-permissions__list-container-expanded',
           )}
           marginTop={4}
+          data-testid="connected-accounts-permissions-list"
         >
           <Text as="h6" variant={TextVariant.bodySm}>
             {t('authorizedPermissions')}:

@@ -284,7 +284,7 @@ class ConsoleBaselineReporter {
    *
    * @param {string} type - Console message type (log, warn, error, etc.)
    * @param {string} text - Console message text
-   * @returns {string} Category name for this message
+   * @returns {string|null} Category name, or null if the rule set suppressed this message
    */
   #categorizeMessage(type, text) {
     let categorizer;
