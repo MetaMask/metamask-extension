@@ -8,10 +8,8 @@ import { AddDeviceSettingsStep } from '../constant';
 import AddWallets from './add-wallets';
 
 jest.mock('../../../../selectors/multichain-accounts/account-tree', () => {
-  const {
-    AccountWalletType: WalletType,
-    toAccountWalletId: toWalletId,
-  } = jest.requireActual('@metamask/account-api');
+  const { AccountWalletType: WalletType, toAccountWalletId: toWalletId } =
+    jest.requireActual('@metamask/account-api');
   const mockWalletId = toWalletId(WalletType.Keyring, 'wallet1');
   const mockGroupId = `${mockWalletId}/0`;
   return {
