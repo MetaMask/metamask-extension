@@ -6,6 +6,8 @@ import thunk from 'redux-thunk';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import * as Environment from '../../../../shared/lib/environment';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -323,6 +325,111 @@ describe('Privacy Settings Onboarding View', () => {
         isAddingNewNetwork: true,
         isMultiRpcOnboarding: true,
       },
+    });
+  });
+
+  describe('Social login flow', () => {
+    const createSocialLoginStore = () =>
+      configureMockStore([thunk])({
+        metamask: {
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+          ),
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+          use4ByteResolution: true,
+          useTokenDetection: false,
+          useCurrencyRateCheck: true,
+          useMultiAccountBalanceChecker: true,
+          ipfsGateway: 'test.link',
+          useAddressBarEnsResolution: true,
+          useTransactionSimulations: true,
+          useExternalServices: true,
+          useSafeChainsListValidation: true,
+          useExternalNameSources: true,
+          openSeaEnabled: true,
+          useNftDetection: false,
+          isIpfsGatewayEnabled: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: 'test-metrics-id',
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
+        },
+        appState: {
+          externalServicesOnboardingToggleState: true,
+          backupAndSyncOnboardingToggleState: false,
+        },
+      });
+
+    beforeEach(() => {
+      jest
+        .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+        .mockReturnValue(true);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('renders MetaMetrics and delete data controls on the privacy sub-page', () => {
+      renderPrivacySettings(createSocialLoginStore());
+
+      fireEvent.click(
+        screen.getByTestId('onboarding-privacy-settings-item-privacy'),
+      );
+
+      expect(
+        screen.getByTestId('participate-in-meta-metrics-toggle'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('delete-metametrics-data-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not render MetaMetrics controls outside social login flow', () => {
+      const store = configureMockStore([thunk])({
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          firstTimeFlowType: FirstTimeFlowType.create,
+          use4ByteResolution: true,
+          useTokenDetection: false,
+          useCurrencyRateCheck: true,
+          useMultiAccountBalanceChecker: true,
+          ipfsGateway: 'test.link',
+          useAddressBarEnsResolution: true,
+          useTransactionSimulations: true,
+          useExternalServices: true,
+          useSafeChainsListValidation: true,
+          useExternalNameSources: true,
+          openSeaEnabled: true,
+          useNftDetection: false,
+          isIpfsGatewayEnabled: true,
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
+        },
+        appState: {
+          externalServicesOnboardingToggleState: true,
+          backupAndSyncOnboardingToggleState: false,
+        },
+      });
+
+      renderPrivacySettings(store);
+
+      fireEvent.click(
+        screen.getByTestId('onboarding-privacy-settings-item-privacy'),
+      );
+
+      expect(
+        screen.queryByTestId('participate-in-meta-metrics-toggle'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('delete-metametrics-data-button'),
+      ).not.toBeInTheDocument();
     });
   });
 });

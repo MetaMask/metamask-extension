@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import type { Hex } from '@metamask/utils';
 import {
   Box,
   BoxFlexDirection,
@@ -24,14 +25,57 @@ const PrivacySettingsNetworkRpc = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const handleAddCustomNetwork = () => {
+
+  const handleAddCustomNetwork = useCallback(() => {
     dispatch(
       toggleNetworkMenu({
         isAddingNewNetwork: true,
         isMultiRpcOnboarding: true,
       }),
     );
-  };
+  }, [dispatch]);
+
+  const handleNetworkClick = useCallback(
+    (chainId: Hex) => {
+      dispatch(
+        setEditedNetwork({
+          chainId,
+        }),
+      );
+      dispatch(toggleNetworkMenu());
+    },
+    [dispatch],
+  );
+
+  const networkListItems = useMemo(
+    () =>
+      Object.values(networkConfigurations).reduce<React.ReactElement[]>(
+        (items, network) => {
+          if (TEST_CHAINS.includes(network.chainId)) {
+            return items;
+          }
+
+          const rpcUrl =
+            network?.rpcEndpoints[network?.defaultRpcEndpointIndex]?.url;
+          const rpcOrigin = rpcUrl ? new URL(rpcUrl).origin : undefined;
+
+          return [
+            ...items,
+            <NetworkListItem
+              key={network.chainId}
+              chainId={network.chainId}
+              name={network.name}
+              iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+              rpcEndpoint={rpcOrigin ? { url: rpcOrigin } : undefined}
+              onClick={() => handleNetworkClick(network.chainId)}
+              onRpcEndpointClick={() => handleNetworkClick(network.chainId)}
+            />,
+          ];
+        },
+        [],
+      ),
+    [handleNetworkClick, networkConfigurations],
+  );
 
   return (
     <Box
@@ -70,34 +114,7 @@ const PrivacySettingsNetworkRpc = () => {
       </Box>
 
       <Box flexDirection={BoxFlexDirection.Column} className="w-full px-2">
-        {Object.values(networkConfigurations)
-          .filter(({ chainId }) => !TEST_CHAINS.includes(chainId))
-          .map((network) => {
-            const rpcUrl =
-              network?.rpcEndpoints[network?.defaultRpcEndpointIndex]?.url;
-            const rpcOrigin = rpcUrl ? new URL(rpcUrl).origin : undefined;
-
-            const handleNetworkClick = () => {
-              dispatch(
-                setEditedNetwork({
-                  chainId: network.chainId,
-                }),
-              );
-              dispatch(toggleNetworkMenu());
-            };
-
-            return (
-              <NetworkListItem
-                key={network.chainId}
-                chainId={network.chainId}
-                name={network.name}
-                iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
-                rpcEndpoint={rpcOrigin ? { url: rpcOrigin } : undefined}
-                onClick={handleNetworkClick}
-                onRpcEndpointClick={handleNetworkClick}
-              />
-            );
-          })}
+        {networkListItems}
       </Box>
       <Box padding={4}>
         <Button
