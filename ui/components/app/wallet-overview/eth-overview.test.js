@@ -20,6 +20,15 @@ import {
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
 
+jest.mock('../../../pages/routes/preloaded-lazy-routes', () => ({
+  SendPage: { preload: jest.fn() },
+  CrossChainSwap: { preload: jest.fn() },
+}));
+
+const { SendPage, CrossChainSwap } = jest.requireMock(
+  '../../../pages/routes/preloaded-lazy-routes',
+);
+
 const mockOpenBatchSellExperience = jest.fn();
 
 jest.mock('../../../hooks/batch-sell/useBatchSell', () => ({
@@ -237,6 +246,8 @@ describe('EthOverview', () => {
 
     beforeEach(() => {
       openTabSpy.mockClear();
+      SendPage.preload.mockClear();
+      CrossChainSwap.preload.mockClear();
       // Clear previous mock implementations
       useMultiPolling.mockClear();
 
@@ -254,6 +265,16 @@ describe('EthOverview', () => {
 
         return { startPolling, stopPollingByPollingToken };
       });
+    });
+
+    it('preloads send and swap routes on hover or focus', () => {
+      const { getByTestId } = renderWithProvider(<EthOverview />, store);
+
+      fireEvent.mouseEnter(getByTestId(ETH_OVERVIEW_SEND));
+      fireEvent.focus(getByTestId(ETH_OVERVIEW_SWAP));
+
+      expect(SendPage.preload).toHaveBeenCalledTimes(1);
+      expect(CrossChainSwap.preload).toHaveBeenCalledTimes(1);
     });
 
     it('should show the primary balance', async () => {

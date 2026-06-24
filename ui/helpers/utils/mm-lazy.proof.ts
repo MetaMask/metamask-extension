@@ -1,7 +1,12 @@
 import type React from 'react';
 import type { IsEquivalent } from '../../../shared/types/type-level-utils';
 import type { Expect } from '../../../shared/types/type-test-utils';
-import type { AnyComponent, AssertComponent, InferComponent } from './mm-lazy';
+import type {
+  AnyComponent,
+  AssertComponent,
+  InferComponent,
+  PreloadableLazyComponent,
+} from './mm-lazy';
 import { mmLazy } from './mm-lazy';
 
 /**
@@ -209,11 +214,11 @@ type Describe_GenericTypeParameter = [
    */
   Expect<
     ReturnType<typeof mmLazy<{ default: ButtonComponent }>>,
-    React.LazyExoticComponent<ButtonComponent>
+    PreloadableLazyComponent<ButtonComponent>
   >,
 
   /**
    * Uninstantiated generic degrades to `AnyComponent`
    */
-  Expect<ReturnType<typeof mmLazy>, React.LazyExoticComponent<AnyComponent>>,
+  Expect<ReturnType<typeof mmLazy>, PreloadableLazyComponent<AnyComponent>>,
 ];
