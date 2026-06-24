@@ -264,15 +264,6 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
           multichainNetworkConfigurationsByChainId[XlmScope.Pubnet];
       }
 
-      if (
-        stellarEnabled &&
-        multichainNetworkConfigurationsByChainId &&
-        multichainNetworkConfigurationsByChainId[XlmScope.Testnet]
-      ) {
-        filteredNonEvmNetworkConfigurationsByChainId[XlmScope.Testnet] =
-          multichainNetworkConfigurationsByChainId[XlmScope.Testnet];
-      }
-
       return filteredNonEvmNetworkConfigurationsByChainId;
     },
   );

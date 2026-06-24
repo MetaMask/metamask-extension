@@ -330,7 +330,6 @@ export function getMultichainIsTestnet(
     MultichainNetworks.SOLANA_TESTNET,
     MultichainNetworks.TRON_NILE,
     MultichainNetworks.TRON_SHASTA,
-    MultichainNetworks.STELLAR_TESTNET,
   ].includes(providerConfig.chainId as MultichainNetworks);
 }
 

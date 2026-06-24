@@ -280,8 +280,7 @@ const AssetPage = ({
     extra: assetWithBalance?.extra,
   };
 
-  const isStellarChainId =
-    chainId === XlmScope.Pubnet || chainId === XlmScope.Testnet;
+  const isStellarChainId = (chainId as string) === XlmScope.Pubnet;
   let isSep41StellarAsset = false;
   if (assetId && isStellarChainId) {
     try {
