@@ -2,6 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -37,7 +38,7 @@ export function useTransactionConfirm() {
     useSendBundleHwNavigation();
 
   const newTransactionMeta = useMemo(
-    () => ({ ...transactionMeta }),
+    () => cloneDeep(transactionMeta),
     [transactionMeta],
   );
 
@@ -80,11 +81,7 @@ export function useTransactionConfirm() {
     newTransactionMeta.isExternalSign = true;
     newTransactionMeta.isGasFeeSponsored =
       isGaslessSupported && transactionMeta.isGasFeeSponsored;
-  }, [
-    isGaslessSupported,
-    newTransactionMeta,
-    transactionMeta,
-  ]);
+  }, [isGaslessSupported, newTransactionMeta, transactionMeta]);
 
   const {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,

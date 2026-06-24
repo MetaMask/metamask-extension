@@ -16,18 +16,15 @@ hardware-wallet-signatures.tsx
   │
   ├── useSelector(getIsStxEnabled) → isStxEnabled
   │
-  ├── useHwBatchSignTracker(..., { enabled: isStxEnabled })
-  │     Active when STX is enabled
-  │     Tracks events by batchId
-  │
-  ├── useHwSequentialSignTracker(..., { enabled: !isStxEnabled })
-  │     Active when STX is disabled
-  │     Tracks events by tx ID
-  │
-  └── cancelCurrentBatch = isStxEnabled ? cancelBatch : cancelSequential
+  └── useHwSignTracker({ isStxEnabled })
+        │
+        ├── isStxEnabled  → new BatchTrackingStrategy()      (tracks by batchId)
+        └── !isStxEnabled → new SequentialTrackingStrategy() (tracks by tx ID)
+
+        cancelCurrentBatch delegates to the active strategy
 ```
 
-Both hooks are always called (React rules of hooks), but only one subscribes to events based on its `enabled` flag. The inactive hook is a no-op.
+A single `useHwSignTracker` hook is called once. It instantiates `BatchTrackingStrategy` (STX enabled) or `SequentialTrackingStrategy` (STX disabled) based on `isStxEnabled`. Only the active strategy subscribes to `TransactionController` events; the other is unused.
 
 ## Full Submission Flow
 
@@ -91,13 +88,13 @@ TransactionController.addTransactionBatch → addTransactionBatchWithHook
 │                                                     │
 │  Hooks active simultaneously:                       │
 │                                                     │
-│  useHwBatchSignTracker (STX enabled)                │
+│  BatchTrackingStrategy (STX enabled)                │
 │    Subscribes to TransactionController events       │
 │    Filters by batchId                               │
 │    Detects approval signed → FirstSignatureSubmitted│
 │    cancelCurrentBatch() aborts tracked txs          │
 │                                                     │
-│  useHwSequentialSignTracker (STX disabled)          │
+│  SequentialTrackingStrategy (STX disabled)          │
 │    Subscribes to TransactionController events       │
 │    Tracks by tx ID (no batchId)                     │
 │    Detects approval signed → FirstSignatureSubmitted│
@@ -130,7 +127,7 @@ Confirmation system shows tx #1 for HW signing
   │  User signs approve on device → status changes to "signed"
   │
   ▼
-useHwBatchSignTracker detects approval signed
+BatchTrackingStrategy detects approval signed
   │  Filters: fromAddress match + approval type + status=signed
   │  Dispatches FirstSignatureSubmitted → AwaitingFirstSignature → AwaitingFinalSignature
   │
@@ -139,7 +136,7 @@ Confirmation system shows tx #2 for HW signing
   │  User signs trade on device → status changes to "signed"
   │
   ▼
-useHwBatchSignTracker detects trade signed → TransactionSubmitted
+BatchTrackingStrategy detects trade signed → TransactionSubmitted
   │
   ▼
 useHwSwapNavigation: 1s delay → toast + navigateToDefaultRoute
@@ -158,7 +155,7 @@ handleRetry (unified):
   hasRetriedRef = true           ← enables "Resend transaction" button later
   setIsRetrying(true)
   │
-  retryGenerationRef += 1        ← signal useHwBatchSignTracker to stale old batch IDs
+  retryGenerationRef += 1        ← signal BatchTrackingStrategy to stale old batch IDs
   │
   await cancelCurrentBatch()     ← aborts all tracked tx IDs via abortTransactionSigning RPC
   │                               ← waits up to 5s for abort events to settle
@@ -275,13 +272,15 @@ hardware-wallet-signatures.tsx (main component)
   │     Skips if isDeviceDisconnectedRef is true
   │     Resets previousTxId on retryGenerationRef change
   │
-  ├── useHwBatchSignTracker
-  │     Subscribes to 3 TransactionController messenger events
-  │     Filters by fromAddress + batch type + batchId
-  │     3-state currentBatchIdRef + staleBatchIdsRef Set for stale batch filtering
-  │     retryGenerationRef to reset tracking on retries
-  │     cancelCurrentBatch(): aborts tracked txs, waits for settle (5s max)
+  ├── useHwSignTracker
+  │     Called once with isStxEnabled; instantiates BatchTrackingStrategy or SequentialTrackingStrategy
+  │     Owns cancelCurrentBatch(): aborts tracked txs, waits for settle (5s max)
   │     pendingAbortTxIdsRef: filters events from aborted txs (resolves abort promise)
+  │     retryGenerationRef to reset tracking on retries
+  │
+  │   Active strategy subscribes to 3 TransactionController messenger events:
+  │     BatchTrackingStrategy      → filters by batchId, 3-state currentBatchIdRef + staleBatchIdsRef
+  │     SequentialTrackingStrategy → tracks tx IDs in a Set (cleared on retry)
   │
   ├── useHwSwapQrState
   │     QR hardware wallet: inline signing, scan/cancel handlers
@@ -304,7 +303,7 @@ hardware-wallet-signatures.tsx (main component)
 
 ## Stale Event Filtering
 
-### Batch Path: `useHwBatchSignTracker`
+### Batch Path: `BatchTrackingStrategy`
 
 Uses a 3-state `currentBatchIdRef` to prevent stale events from old batches (created before a retry) from causing false state transitions:
 
@@ -330,7 +329,7 @@ Uses a 3-state `currentBatchIdRef` to prevent stale events from old batches (cre
 
 **Why this matters:** When the user retries after rejection/failure/disconnect, a new batch is created. The old batch's `transactionRejected`/`transactionFinished` events may still arrive asynchronously. Without filtering, these stale events would immediately transition the state machine back to Rejected/Failed, preventing the retry from succeeding.
 
-### Sequential Path: `useHwSequentialSignTracker`
+### Sequential Path: `SequentialTrackingStrategy`
 
 Uses a `Set<string>` of tracked tx IDs to correlate events. Simpler than batch tracking:
 
@@ -385,7 +384,7 @@ This suppresses spurious WebUSB disconnect teardowns during Trezor signing sessi
 ## Critical Details
 
 **Why not Redux/polling for batch status:**
-`TransactionController` is NOT in `memStore` (metamask-controller.js:1397+), so its state never arrives in Redux via the patch-store substream. The event-driven approach via `useHwBatchSignTracker` subscribing directly to `TransactionController` messenger events is more reliable and immediate than polling.
+`TransactionController` is NOT in `memStore` (metamask-controller.js:1397+), so its state never arrives in Redux via the patch-store substream. The event-driven approach via `BatchTrackingStrategy` subscribing directly to `TransactionController` messenger events is more reliable and immediate than polling.
 
 **Why not 7702 for HW wallets:**
 `bridge-status-controller-init.ts:44-51` forces `disable7702=true` and clears gas sponsorship for non-7702 accounts (including HW wallets). This routes through `addTransactionBatchWithHook` instead of `addTransactionBatchWith7702`, creating separate transactions instead of a single batch tx.
@@ -400,7 +399,7 @@ longer cancels stale `unapproved` batch txs before retrying.
 
 **How the step-1→step-2 transition works:**
 
-Batch path (`useHwBatchSignTracker`):
+Batch path (`BatchTrackingStrategy`):
 - Subscribes to three `TransactionController` messenger events
 - Filters by `fromAddress` match + batch type (bridgeApproval/swapApproval/bridge/swap) + batch ID (when known)
 - Stale batch filtering uses a `Set<string>` (`staleBatchIdsRef`) to track all seen batch IDs that become stale on retry
@@ -408,7 +407,7 @@ Batch path (`useHwBatchSignTracker`):
 - `TransactionController:transactionRejected` — detects tx rejection on batch txs → `TransactionRejected` (skipped if stale batch)
 - `TransactionController:transactionFinished` — detects `status=rejected` or `status=failed` → `TransactionRejected` or `TransactionFailed` (skipped if stale batch)
 
-Sequential path (`useHwSequentialSignTracker`):
+Sequential path (`SequentialTrackingStrategy`):
 - Subscribes to the same three `TransactionController` messenger events
 - Filters by `fromAddress` match + batch type (same as batch tracker)
 - Tracks tx IDs in `trackedTxIdsRef` Set — only dispatches rejection/finished events if the tx ID was previously tracked
@@ -428,7 +427,7 @@ Note: `transactionStatusUpdated` does NOT fire for rejections with `status=rejec
 If none are true, falls through to sequential non-batch path (approve → trade as separate `addTransaction` calls), with NO `batchId`.
 
 **Sequential path (STX disabled, non-batch):**
-No `batchId` exists. The background handles approve + swap as separate sequential transactions via `submitEvmTransaction` → `addTransaction`. Both txs go through the confirmation system. The approval tx is fully processed (signed + published) before the trade tx is created (the RPC blocks on each `addTransaction` call). `useHwSequentialSignTracker` tracks these by tx ID instead of batch ID.
+No `batchId` exists. The background handles approve + swap as separate sequential transactions via `submitEvmTransaction` → `addTransaction`. Both txs go through the confirmation system. The approval tx is fully processed (signed + published) before the trade tx is created (the RPC blocks on each `addTransaction` call). `SequentialTrackingStrategy` tracks these by tx ID instead of batch ID.
 
 **ErrorCode import:**
 `useHwSwapConnectionMonitoring` imports `ErrorCode` directly from `@metamask/hw-wallet-sdk`, NOT from the barrel export at `ui/contexts/hardware-wallets/index.ts` (which does not re-export it).
@@ -452,19 +451,20 @@ User rejection → `onHardwareWalletRejected`. All other errors → `onHardwareW
 
 | File | Role |
 |------|------|
-| `ui/pages/bridge/hardware-wallets/hardware-wallet-signatures.tsx` | Main component, state machine via `useReducer`, unified `handleRetry`, `isRetryingRef` guard, `cancelCurrentBatch`, signature stuck timeout, Trezor workaround, analytics, JSX render |
-| `ui/pages/bridge/hardware-wallets/useHwBatchSignTracker.ts` | Centralized hook: subscribes to 3 `TransactionController` events, batch ID filtering, `cancelCurrentBatch()` with abort settle tracking, `pendingAbortTxIdsRef` filtering |
-| `ui/pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine.ts` | Pure reducer: AwaitingFirst → AwaitingFinal → Submitted/Rejected/Failed/Disconnected + Reset |
-| `ui/pages/bridge/hardware-wallets/hardware-wallet-signatures.utils.ts` | `SignatureStepStatus`, `getStepStatus()`, `getTitle()`, label/description helpers, `getTransactionField()` |
-| `ui/pages/bridge/hardware-wallets/types.ts` | `BridgeStatusState`, `QrHardwareSignRequest` types |
-| `ui/pages/bridge/hardware-wallets/useHwSequentialSignTracker.ts` | Sequential tracker: subscribes to 3 TransactionController events, tracks by tx ID (no batchId), `cancelCurrentBatch()` with abort settle tracking |
-| `ui/hooks/swap/hardware-wallets/useHwSwapQuoteData.ts` | Hook: Redux selectors + `lockedQuoteRef` quote latching |
-| `ui/hooks/swap/hardware-wallets/useHwSwapSubmission.ts` | Hook: quote reset, auto-submission (`submitActiveQuote`), retry submission with `{ rpcTimeoutMs: 120_000 }`, `hasStartedSubmission` ref with error reset |
-| `ui/hooks/swap/hardware-wallets/useHwSwapConnectionMonitoring.ts` | Hook: device disconnect/error detection via `connectionState`, `resetConnectionError`, `isDeviceDisconnectedRef` |
-| `ui/hooks/swap/hardware-wallets/useHwSwapConfirmationMonitoring.ts` | Hook: `confirmationTxData` monitoring for mid-signature rejection, skips during disconnect |
-| `ui/hooks/swap/hardware-wallets/useHwSwapQrState.ts` | Hook: QR hardware wallet detection, inline signing state, QR scan/cancel handlers |
-| `ui/hooks/swap/hardware-wallets/useHwSwapNavigation.ts` | Hook: post-submission toast + navigation via `useBridgeNavigation` |
-| `ui/pages/bridge/hooks/useSubmitBridgeTransaction.ts` | Entry point, `ensureDeviceReady()`, dispatches `submitBridgeTx`, accepts `{ rpcTimeoutMs }` option, HW error classification |
+| `ui/pages/hardware-wallets/swap/hardware-wallet-signatures.tsx` | Main component, state machine via `useReducer`, unified `handleRetry`, `isRetryingRef` guard, `cancelCurrentBatch`, signature stuck timeout, Trezor workaround, analytics, JSX render |
+| `ui/hooks/hardware-wallets/useHwSignTracker.ts` | Unified tracker hook (entrypoint used by `hardware-wallet-signatures.tsx`): selects `BatchTrackingStrategy` vs `SequentialTrackingStrategy` via `isStxEnabled`; owns `cancelCurrentBatch()` with abort settle tracking |
+| `ui/hooks/hardware-wallets/hw-sign-tracker/batch-tracking-strategy.ts` | Batch strategy (STX-enabled path): subscribes to 3 `TransactionController` events, `batchId` filtering, `staleBatchIdsRef` + `pendingAbortTxIdsRef` filtering |
+| `ui/hooks/hardware-wallets/hw-sign-tracker/sequential-tracking-strategy.ts` | Sequential strategy (STX-disabled path): subscribes to 3 `TransactionController` events, tracks by tx ID (no `batchId`), abort settle tracking |
+| `ui/pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/hardware-wallet-signatures-state-machine.ts` | Pure reducer: AwaitingFirst → AwaitingFinal → Submitted/Rejected/Failed/Disconnected + Reset |
+| `ui/pages/hardware-wallets/swap/hardware-wallet-signatures.utils.ts` | `SignatureStepStatus`, `getStepStatus()`, `getTitle()`, label/description helpers, `getTransactionField()` |
+| `ui/pages/hardware-wallets/swap/types.ts` | `BridgeStatusState`, `QrHardwareSignRequest` types |
+| `ui/hooks/hardware-wallets/useHwSwapQuoteData.ts` | Hook: Redux selectors + `lockedQuoteRef` quote latching |
+| `ui/hooks/hardware-wallets/useHwSwapSubmission.ts` | Hook: quote reset, auto-submission (`submitActiveQuote`), retry submission with `{ rpcTimeoutMs: 120_000 }`, `hasStartedSubmission` ref with error reset |
+| `ui/hooks/hardware-wallets/useHwSwapConnectionMonitoring.ts` | Hook: device disconnect/error detection via `connectionState`, `resetConnectionError`, `isDeviceDisconnectedRef` |
+| `ui/hooks/hardware-wallets/useHwSwapConfirmationMonitoring.ts` | Hook: `confirmationTxData` monitoring for mid-signature rejection, skips during disconnect |
+| `ui/hooks/hardware-wallets/useHwSwapQrState.ts` | Hook: QR hardware wallet detection, inline signing state, QR scan/cancel handlers |
+| `ui/hooks/hardware-wallets/useHwSwapNavigation.ts` | Hook: post-submission toast + navigation via `useBridgeNavigation` |
+| `ui/hooks/bridge/useSubmitBridgeTransaction.ts` | Entry point, `ensureDeviceReady()`, dispatches `submitBridgeTx`, accepts `{ rpcTimeoutMs }` option, HW error classification |
 | `ui/ducks/bridge-status/actions.ts` | `submitBridgeTx` → RPC call to background |
 | `app/scripts/messenger-client-init/bridge-status-controller-init.ts` | `addTransactionBatchFn` wrapper — forces `disable7702=true` for HW wallets |
 | `node_modules/@metamask/bridge-status-controller/dist/bridge-status-controller.mjs` | `submitTx` — routes to batch path when STX/7702/delegated |
@@ -482,7 +482,7 @@ User rejection → `onHardwareWalletRejected`. All other errors → `onHardwareW
 3. useHwSwapConnectionMonitoring detects Disconnected
    → dispatches DeviceDisconnected
    → isDeviceDisconnectedRef = true (used by useHwSwapConfirmationMonitoring only)
-   → useHwBatchSignTracker relies on stale batch filtering (staleBatchIdsRef) to ignore old batch events
+   → BatchTrackingStrategy relies on stale batch filtering (staleBatchIdsRef) to ignore old batch events
       │
       ▼
 4. UI shows "Reconnect your device and try again"
@@ -508,7 +508,7 @@ User rejection → `onHardwareWalletRejected`. All other errors → `onHardwareW
     → dispatches submitBridgeTx → NEW batch created
       │
       ▼
-8. useHwBatchSignTracker:
+8. BatchTrackingStrategy:
    retryGenerationRef changed → currentBatchIdRef = null
    Old batch events blocked (null = reject all)
    First signed event from new batch → sets new batchId
@@ -525,8 +525,8 @@ and handleRetry returns early without retrying.
 ## Maintenance
 
 If any file in the Key Files table or the flow described above is modified, **update this AGENTS.md** to keep it accurate. Specifically:
-- Changes to `useHwBatchSignTracker.ts`, `useHwSequentialSignTracker.ts`, or the state machine
-- Changes to any hook in `ui/hooks/swap/hardware-wallets/` (`useHwSwapQuoteData`, `useHwSwapSubmission`, `useHwSwapConnectionMonitoring`, `useHwSwapConfirmationMonitoring`, `useHwSwapQrState`, `useHwSwapNavigation`)
+- Changes to `useHwSignTracker.ts` or the tracking strategies in `ui/hooks/hardware-wallets/hw-sign-tracker/`, or the state machine
+- Changes to any hook in `ui/hooks/hardware-wallets/` (`useHwSwapQuoteData`, `useHwSwapSubmission`, `useHwSwapConnectionMonitoring`, `useHwSwapConfirmationMonitoring`, `useHwSwapQrState`, `useHwSwapNavigation`)
 - Changes to the batch path logic in `bridge-status-controller` or `transaction-controller`
 - Changes to the sequential path logic (non-batch `addTransaction` flow)
 - Changes to how the component selects between batch and sequential trackers (`getIsStxEnabled`)

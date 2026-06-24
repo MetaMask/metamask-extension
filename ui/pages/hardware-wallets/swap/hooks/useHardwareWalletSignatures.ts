@@ -63,7 +63,7 @@ import {
   getInitialHardwareWalletSignaturesState,
   hardwareWalletSignaturesReducer,
 } from '../hardware-wallet-signatures-state-machine';
-import type { UseHardwareWalletSignaturesReturn } from './use-hardware-wallet-signatures.types';
+import type { UseHardwareWalletSignaturesReturn } from './useHardwareWalletSignatures.types';
 
 const SIGNATURE_STUCK_TIMEOUT_MS = 5_000;
 
@@ -76,6 +76,16 @@ type SendBundleHardwareWalletState = {
    * to submit unless this id is still in `state.metamask.pendingApprovals`.
    */
   approvalRequestId: string;
+  /**
+   * The display amount being sent (e.g. "1.5"), used to label the send step.
+   * Derived in the confirmations flow from the same source the send screen
+   * uses.
+   */
+  sendAmount?: string;
+  /**
+   * The symbol of the token being sent (e.g. "ETH" or "USDC").
+   */
+  sendSymbol?: string;
 };
 
 type HardwareWalletSignaturesLocationState = {
@@ -625,15 +635,19 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   );
   const { firstStepLabel, finalStepLabel } = getStepLabels({
     isSendBundleFlow,
+    needsTwoConfirmations,
     status: signatureState.status,
     firstStepStatus,
     finalStepStatus,
     fromAmount,
     fromTokenSymbol: fromToken?.symbol,
+    sendAmount: sendBundleState?.sendAmount,
+    sendSymbol: sendBundleState?.sendSymbol,
     t,
   });
   const { firstStepDescription, finalStepDescription } = getStepDescriptions({
     isSendBundleFlow,
+    needsTwoConfirmations,
     firstStepStatus,
     spenderAddress,
     toAddress,
@@ -653,11 +667,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     hasRetriedRef.current;
   const showFooter =
     signatureState.status !== HardwareWalletSignatureStatus.Submitted;
-  const title = getTitle({
-    status: signatureState.status,
-    needsTwoConfirmations,
-    t,
-  });
   const showInlineQrCode = showInlineQrSigning && !isReadingQrSignature;
   const showQrSigningPage =
     showInlineQrSigning && activeQrStep && isReadingQrSignature;
@@ -668,6 +677,23 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       needsTwoConfirmations,
       t,
     });
+  // During the inline QR display phase (the QR code is shown for the user to
+  // scan with their wallet), replace the generic heading with a step-numbered
+  // QR instruction such as "Step 1 of 4: Scan this QR code with your wallet".
+  const qrInlineTitle =
+    showInlineQrCode && activeQrStep
+      ? getQrHardwareSigningPageTitle({
+          activeQrStep,
+          isDisplayPhase: true,
+          needsTwoConfirmations,
+          t,
+        })
+      : undefined;
+  const title = qrInlineTitle ?? getTitle({
+    status: signatureState.status,
+    needsTwoConfirmations,
+    t,
+  });
   const hasSigningRequest = Boolean(lockedQuote || sendBundleTxMeta);
 
   const handleQrSigningPageBack = useCallback(() => {

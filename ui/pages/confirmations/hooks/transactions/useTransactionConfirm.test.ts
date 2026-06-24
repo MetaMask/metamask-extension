@@ -87,6 +87,16 @@ jest.mock('../../../../hooks/bridge/useBridgeNavigation', () => ({
   }),
 }));
 
+// Mock the sendBundle amount/symbol derivation so the confirm orchestrator
+// unit tests don't pull in the heavier confirm-info derivation hooks
+// (useTokenValues/useAssetDetails) and so the sendBundle navigation payload
+// is deterministic.
+const mockUseSendBundleAmountSymbol = jest.fn();
+jest.mock('./useSendBundleAmountSymbol', () => ({
+  useSendBundleAmountSymbol: (...args: unknown[]) =>
+    mockUseSendBundleAmountSymbol(...args),
+}));
+
 const CUSTOM_NONCE_VALUE = '1234';
 const originalConsoleWarn = console.warn;
 
@@ -177,6 +187,11 @@ describe('useTransactionConfirm', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
     isHardwareWalletMock.mockReturnValue(false);
     mockNavigateToHwSigningPage.mockReset();
+    mockUseSendBundleAmountSymbol.mockReset();
+    mockUseSendBundleAmountSymbol.mockReturnValue({
+      sendAmount: '1.5',
+      sendSymbol: 'ETH',
+    });
     mockIsHardwareWalletError.mockReturnValue(false);
     mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
     useHardwareWalletErrorMock.mockReturnValue({
@@ -283,12 +298,45 @@ describe('useTransactionConfirm', () => {
           needsTwoConfirmations: true,
           returnRoute: `${CONFIRM_TRANSACTION_ROUTE}/${navigateState.sendBundle.txMeta.id}`,
           approvalRequestId: String(navigateState.sendBundle.txMeta.id),
+          sendAmount: '1.5',
+          sendSymbol: 'ETH',
           txMeta: expect.objectContaining({
             batchTransactions: [
               expect.objectContaining({
                 type: TransactionType.gasPayment,
               }),
             ],
+            type: TransactionType.simpleSend,
+          }),
+        }),
+      }),
+    );
+  });
+
+  it('routes hardware wallet sends to signing page even when STX is disabled', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+
+    const { onTransactionConfirm } = runHook({
+      type: TransactionType.simpleSend,
+    });
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+    expect(mockNavigateToHwSigningPage).toHaveBeenCalledTimes(1);
+    const navigateState = mockNavigateToHwSigningPage.mock.calls[0][0];
+    expect(navigateState).toStrictEqual(
+      expect.objectContaining({
+        bridgeState: null,
+        token: null,
+        sendBundle: expect.objectContaining({
+          needsTwoConfirmations: false,
+          returnRoute: `${CONFIRM_TRANSACTION_ROUTE}/${navigateState.sendBundle.txMeta.id}`,
+          approvalRequestId: String(navigateState.sendBundle.txMeta.id),
+          sendAmount: '1.5',
+          sendSymbol: 'ETH',
+          txMeta: expect.objectContaining({
             type: TransactionType.simpleSend,
           }),
         }),

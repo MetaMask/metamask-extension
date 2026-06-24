@@ -2036,9 +2036,9 @@
     "message": "Resend transaction",
     "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
   },
-  "sendBundleHwGasPayment": {
-    "message": "Gas payment",
-    "description": "Generic label for the gas payment step in a hardware-wallet sendBundle signing flow."
+  "sendBundleHwGasPayment":{
+    "message": "Paying network fee with $1",
+    "description": "$1 is the symbol of the token being used to pay the network fee"
   },
   "sendBundleHwTransaction": {
     "message": "Transaction",
@@ -2145,6 +2145,10 @@
   "bridgeQrHardwareShowQrCode": {
     "message": "Show QR code",
     "description": "Button label to go back to showing the QR code from the scanner view."
+  },
+  "bridgeQrHardwareSignDisplayStepTitle": {
+    "message": "Step $1 of $2: Scan this QR code with your wallet",
+    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
   },
   "bridgeQrHardwareSignTitle": {
     "message": "Scan QR code below and sign on your device ($1/$2)",

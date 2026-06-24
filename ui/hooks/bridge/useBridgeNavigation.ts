@@ -79,6 +79,17 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
        * ported from mobile's `useHardwareWalletSubmit.submitSendFlow`.
        */
       approvalRequestId: string;
+      /**
+       * The display amount being sent (e.g. "1.5"), used to label the send
+       * step. Derived in the confirmations flow from the same source the send
+       * screen uses, so the HW signing label matches what the user saw.
+       */
+      sendAmount?: string;
+      /**
+       * The symbol of the token being sent (e.g. "ETH" or "USDC"), used to
+       * label the send step.
+       */
+      sendSymbol?: string;
     } | null;
   };
 };
