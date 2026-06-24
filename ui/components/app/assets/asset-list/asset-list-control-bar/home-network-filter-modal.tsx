@@ -40,7 +40,7 @@ import {
   ModalOverlay,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { transitionSlideForward } from '../../../../ui/transition';
+import { transitionForward } from '../../../../ui/transition';
 import { NETWORKS_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   addNetwork,
@@ -402,10 +402,9 @@ const HomeNetworkFilterModalContent = ({
 
   const handleManageNetworks = useCallback(() => {
     // Don't close the modal first — letting the whole current view (modal
-    // included) slide out as one view-transition snapshot keeps the motion
-    // smooth. The modal's open state resets when the home route unmounts on
-    // navigation. Slide in from the right, mirroring the global menu.
-    transitionSlideForward(() => navigate(`${NETWORKS_ROUTE}?drawerOpen=true`));
+    // included) transition as one view-transition snapshot keeps the motion
+    // smooth. The modal's open state resets when the home route unmounts.
+    transitionForward(() => navigate(`${NETWORKS_ROUTE}?drawerOpen=true`));
   }, [navigate]);
 
   const sections = useMemo<NetworkSelectionSection[]>(() => {
