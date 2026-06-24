@@ -11,10 +11,11 @@
 
 import { toHex } from '@metamask/controller-utils';
 import { Driver } from '../../../webdriver/driver';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import AssetListPage from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../../page-objects/pages/bridge/quote-page';
 import { PROD_DELAYS } from '../../helpers/prod-test-helpers';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import {
   Token,
   QuotationSnapshot,
@@ -237,7 +238,8 @@ export async function importTokensIntoWallet(
       `[HELPER] Importing token in wallet: ${token.symbol} (${token.address})`,
     );
     try {
-      await assetListPage.importCustomTokenByChain(chainIdHex, token.address);
+      const tokensTab = new TokensTab(driver);
+      await tokensTab.importCustomTokenByChain(chainIdHex, token.address);
       await driver.delay(PROD_DELAYS.API_RESPONSE);
       console.log(
         `[HELPER] Successfully imported token: ${token.symbol}`,
@@ -819,16 +821,46 @@ export async function navigateBack(
   const { timeout = 3000 } = options;
 
   console.log(`[HELPER] Navigating back...`);
-  const backButton = '[aria-label="Back"]';
 
+  // Try transaction detail page back button first (XPath version for better compatibility)
+  const transactionDetailBackButtonXPath = `//*[@data-testid="transaction-details-back-button"]`;
+  // Fallback to generic back button
+  const genericBackButton = '[aria-label="Back"]';
+
+  // Strategy 1: Try transaction detail back button with XPath
   try {
-    await driver.findElement(backButton, timeout);
-    await driver.clickElement(backButton);
+    console.log(`[HELPER] Strategy 1: Trying transaction detail back button (XPath)...`);
+    const backElement = await driver.findElement(transactionDetailBackButtonXPath, timeout);
+
+    // Scroll into view before clicking
+    await driver.executeScript('arguments[0].scrollIntoView(true);', backElement);
+    await driver.delay(300);
+
+    console.log(`[HELPER] Found transaction detail back button, clicking...`);
+    await driver.clickElement(transactionDetailBackButtonXPath);
     await driver.delay(PROD_DELAYS.API_RESPONSE);
-    console.log(`[HELPER] Back navigation completed`);
+    console.log(`[HELPER] Back navigation completed (Strategy 1)`);
     return true;
-  } catch (_error) {
-    console.warn(`[WARN] Back button not found`);
+  } catch (_detailError) {
+    console.log(`[HELPER] Strategy 1 failed, trying Strategy 2...`);
+  }
+
+  // Strategy 2: Try generic back button
+  try {
+    console.log(`[HELPER] Strategy 2: Trying generic back button...`);
+    const genericElement = await driver.findElement(genericBackButton, timeout);
+
+    // Scroll into view before clicking
+    await driver.executeScript('arguments[0].scrollIntoView(true);', genericElement);
+    await driver.delay(300);
+
+    console.log(`[HELPER] Found generic back button, clicking...`);
+    await driver.clickElement(genericBackButton);
+    await driver.delay(PROD_DELAYS.API_RESPONSE);
+    console.log(`[HELPER] Back navigation completed (Strategy 2)`);
+    return true;
+  } catch (_genericError) {
+    console.warn(`[WARN] All back navigation strategies failed (tried transaction detail button and generic back button)`);
     return false;
   }
 }

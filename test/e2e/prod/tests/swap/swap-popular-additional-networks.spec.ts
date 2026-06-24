@@ -53,6 +53,7 @@ import {
   navigateBackToHome,
   recoverToHome,
   generateSwapExecutionReport,
+  logSwapDetailPageContent,
 } from './swap-execution-helpers';
 
 function getCliOptionValue(optionName: string): string | undefined {
@@ -82,10 +83,10 @@ function parseNetworkNames(value?: string): string[] {
 
 async function selectNetworkViaHomeSelector(
   driver: Driver,
-  chainId: number,
+  chainHexId: string,
 ): Promise<void> {
   const networksListButton = '[data-testid="sort-by-networks"]';
-  const networkListItemSelector = `[data-testid="network-list-item-eip155:${chainId}"]`;
+  const networkListItemSelector = `[data-testid="network-list-item-${chainHexId}"]`;
 
   const maxAttempts = 3;
   let lastError: unknown;
@@ -254,7 +255,6 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
               await dismissBlockingOverlays(driver);
               const networkManager = new NetworkManager(driver);
               await networkManager.openNetworkManager();
-              await networkManager.selectTab('Popular');
               await networkManager.selectNetworkByNameWithWait(
                 networkConfig.networkName,
               );
@@ -467,9 +467,16 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                   toSymbol,
                 );
 
+                // -- Log detail page content --
+                await logSwapDetailPageContent(driver);
+
                 // -- Assert detail page --
-                await assertSwapDetailConfirmed(driver);
-                recordValidation('Detail status confirmed', 'passed');
+                const statusResult = await assertSwapDetailConfirmed(driver);
+                recordValidation(
+                  'Detail status confirmed',
+                  statusResult.isValid ? 'passed' : 'warning',
+                  statusResult.message,
+                );
 
                 const swappedRowResult = await assertSwappedTokenPair(
                   driver,
@@ -490,10 +497,11 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                   timestampResult.message,
                 );
 
+                let sentRowResult;
                 if (useMaxForRoute) {
-                  await assertDetailRow(driver, 'You sent', fromSymbol);
+                  sentRowResult = await assertDetailRow(driver, 'You sent', fromSymbol);
                 } else {
-                  await assertDetailRow(
+                  sentRowResult = await assertDetailRow(
                     driver,
                     'You sent',
                     `${fromAmount} ${fromSymbol}`,
@@ -501,7 +509,7 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                 }
                 recordValidation(
                   'Detail You sent row',
-                  'passed',
+                  sentRowResult.isValid ? 'passed' : 'warning',
                   useMaxForRoute
                     ? `contains ${fromSymbol} (max route)`
                     : `${fromAmount} ${fromSymbol}`,

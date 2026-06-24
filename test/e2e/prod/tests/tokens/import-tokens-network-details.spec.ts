@@ -32,7 +32,7 @@ import SelectNetwork from '../../../page-objects/pages/dialog/select-network';
 import AddEditNetworkModal from '../../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../../page-objects/pages/dialog/add-network-rpc-url';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import AssetListPage from '../../../page-objects/pages/home/activity-tab';
 import { NETWORK_CONFIGS, NetworkConfig } from './network-configs';
 import {
   fetchTokenList,

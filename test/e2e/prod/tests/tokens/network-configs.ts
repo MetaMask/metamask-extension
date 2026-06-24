@@ -27,6 +27,10 @@ export type NetworkConfig = {
   chainId: number;
 
   /**
+   * Chain ID (decimal number)
+   */
+  chainIdHex: string;
+  /**
    * Native currency symbol (e.g., 'ETH', 'XTZ')
    */
   symbol: string;
@@ -268,6 +272,7 @@ export type NetworkConfigAdditional = {
    */
   chainId: number;
 
+  chainIdHex: string;
   /**
    * URL to the tokenlist JSON file
    */
@@ -306,6 +311,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'bob',
     networkName: 'BOB',
     chainId: 60808,
+    chainIdHex: '0xed88',
     symbol: 'ETH',
     rpcUrl: 'https://rpc.gobob.xyz',
     rpcName: 'BOB RPC',
@@ -316,6 +322,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
      networkId: 'etherlink',
      networkName: 'Etherlink Mainnet',
      chainId: 42793,
+     chainIdHex: '0xa7f1',
      symbol: 'XTZ',
      rpcUrl: 'https://node.mainnet.etherlink.com',
      rpcName: 'Etherlink RPC',
@@ -326,6 +333,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Injective',
     networkName: 'Injective',
     chainId: 1776,
+    chainIdHex: '0x6f0',
     symbol: 'INJ',
     rpcUrl: 'https://sentry.evm-rpc.injective.network',
     rpcName: 'Injective RPC',
@@ -336,6 +344,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Rootstock',
     networkName: 'Rootstock Mainnet',
     chainId: 30,
+    chainIdHex: '0x1e',
     symbol: 'RBTC',
     rpcUrl: 'https://public-node.rsk.co',
     rpcName: 'Rootstock RPC',
@@ -346,6 +355,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //   networkId: 'Genesys',
   //   networkName: 'Genesys Mainnet',
   //   chainId: 16507,
+  //   chainIdHex: '0x4073',
   //   symbol: 'GSYS',
   //   rpcUrl: 'https://rpc.genesys.network',
   //   rpcName: 'Genesys RPC',
@@ -356,6 +366,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Matchain',
     networkName: 'Matchain',
     chainId: 698,
+    chainIdHex: '0x2ba',
     symbol: 'BNB',
     rpcUrl: 'https://rpc.matchain.io',
     rpcName: 'Matchain RPC',
@@ -366,6 +377,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'EDUchain',
     networkName: 'EDU Chain',
     chainId: 41923,
+    chainIdHex: '0xa3d3',
     symbol: 'EDU',
     rpcUrl: 'https://rpc.edu-chain.raas.gelato.cloud',
     rpcName: 'EDU Chain RPC',
@@ -376,6 +388,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'ApeChain',
     networkName: 'ApeChain',
     chainId: 33139, // 0x8173 in hex
+    chainIdHex: '0x8173',
     symbol: 'APE',
     rpcUrl: 'https://apechain.drpc.org',
     rpcName: 'ApeChain RPC',
@@ -386,6 +399,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Berachain',
     networkName: 'Berachain',
     chainId: 80094,
+    chainIdHex: '0x13836',
     symbol: 'BERA',
     rpcUrl: 'https://rpc.berachain.com',
     rpcName: 'Berachain RPC',
@@ -396,26 +410,29 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'XRPLEVM',
     networkName: 'XRPL EVM',
     chainId: 1440000,
+    chainIdHex: '0x160000',
     symbol: 'XRP',
     rpcUrl: 'https://rpc.xrplevm.org',
     rpcName: 'XRPL EVM RPC',
     tokenlistUrl: 'https://raw.githubusercontent.com/vriveraPeersyst/xrplevm-tokenlist/main/tokenlist.json',
     blockExplorerUrl: 'https://explorer.xrplevm.org',
   },
-  // {
-  //   networkId: 'OmniaChain',
-  //   networkName: 'Omnia Chain',
-  //   chainId: 2342,
-  //   symbol: 'OMNIA',
-  //   rpcUrl: 'https://rpc.omniaverse.io',
-  //   rpcName: 'Omnia Chain RPC',
-  //   tokenlistUrl: 'https://raw.githubusercontent.com/omni-network/omni/refs/heads/main/docs/docs/public/nom/tokenlist.json',
-  //   blockExplorerUrl: 'https://scan.omniaverse.io',
-  // },
+  {
+    networkId: 'OmniaChain',
+    networkName: 'Omnia Chain',
+    chainId: 2342,
+    chainIdHex: '0x926',
+    symbol: 'OMNIA',
+    rpcUrl: 'https://rpc.omniaverse.io',
+    rpcName: 'Omnia Chain RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/omni-network/omni/refs/heads/main/docs/docs/public/nom/tokenlist.json',
+    blockExplorerUrl: 'https://scan.omniaverse.io',
+  },
   {
     networkId: 'Fraxtal',
     networkName: 'Fraxtal',
     chainId: 252,
+    chainIdHex: '0xfc',
     symbol: 'FRAX',
     rpcUrl: 'https://rpc.frax.com',
     rpcName: 'Fraxtal RPC',
@@ -426,6 +443,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'XDC',
     networkName: 'XDC Network',
     chainId: 50,
+    chainIdHex: '0x32',
     symbol: 'XDC',
     rpcUrl: 'https://rpc.xdcrpc.com',
     rpcName: 'XDC Network RPC',
@@ -436,6 +454,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Plasma',
     networkName: 'Plasma Network',
     chainId: 9745,
+    chainIdHex: '0x2601',
     symbol: 'XPL',
     rpcUrl: 'https://plasma.drpc.org',
     rpcName: 'Plasma Network RPC',
@@ -447,6 +466,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Hemi',
     networkName: 'Hemi Network',
     chainId: 43111,
+    chainIdHex: '0xa8c7',
     symbol: 'ETH',
     rpcUrl: 'https://rpc.hemi.network/rpc',
     rpcName: 'Hemi Network RPC',
@@ -457,6 +477,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Cronos',
     networkName: 'Cronos Mainnet',
     chainId: 25,
+    chainIdHex: '0x19',
     symbol: 'CRO',
     rpcUrl: 'https://cronos.drpc.org',
     rpcName: 'Cronos Mainnet RPC',
@@ -467,6 +488,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'XLayer',
     networkName: 'X Layer Mainnet',
     chainId: 196,
+    chainIdHex: '0xc4',
     symbol: 'OKB',
     rpcUrl: 'https://xlayer.drpc.org',
     rpcName: 'X Layer Mainnet',
@@ -477,6 +499,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Chiliz',
     networkName: 'Chiliz Chain',
     chainId: 88888,
+    chainIdHex: '0x15f90',
     symbol: 'CHZ',
     rpcUrl: 'https://chiliz.publicnode.com',
     rpcName: 'Chiliz RPC',
@@ -488,6 +511,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Tempo',
     networkName: 'Tempo Mainnet',
     chainId: 4217,
+    chainIdHex: '0x1079',
     symbol: 'USD',
     rpcUrl: 'https://tempo-mainnet.drpc.org',
     rpcName: 'Tempo Mainnet RPC',
@@ -495,21 +519,23 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
       'https://raw.githubusercontent.com/tempoxyz/tempo-apps/refs/heads/main/apps/tokenlist/data/4217/tokenlist.json',
     blockExplorerUrl: 'https://explore.mainnet.tempo.xyz',
   },
-  // {
-  //   networkId: 'Tempo Testnet',
-  //   networkName: 'Tempo Testnet Moderato',
-  //   chainId: 42429,
-  //   symbol: 'USD',
-  //   rpcUrl: 'https://rpc.testnet.tempo.xyz',
-  //   rpcName: 'Tempo Testnet RPC',
-  //   tokenlistUrl:
-  //     'https://raw.githubusercontent.com/tempoxyz/tempo-apps/main/apps/tokenlist/data/42429/tokenlist.json',
-  //   blockExplorerUrl: 'https://explorer.tempo.xyz',
-  // },
+  {
+    networkId: 'Tempo Testnet',
+    networkName: 'Tempo Testnet Moderato',
+    chainId: 42429,
+    chainIdHex: '0xa5f5',
+    symbol: 'USD',
+    rpcUrl: 'https://rpc.testnet.tempo.xyz',
+    rpcName: 'Tempo Testnet RPC',
+    tokenlistUrl:
+      'https://raw.githubusercontent.com/tempoxyz/tempo-apps/main/apps/tokenlist/data/42429/tokenlist.json',
+    blockExplorerUrl: 'https://explorer.tempo.xyz',
+  },
   {
     networkId: 'Stable',
     networkName: 'Stable',
     chainId: 988,
+    chainIdHex: '0x3dc',
     symbol: 'USDT0', // adjust if the native symbol differs
     rpcUrl: 'https://rpc.stable.xyz', // placeholder, replace with real RPC
     rpcName: 'Stable RPC',
@@ -520,6 +546,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Ink',
     networkName: 'Ink',
     chainId: 57073,
+    chainIdHex: '0xdef1',
     symbol: 'ETH', // adjust if the native symbol differs
     rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
     rpcName: 'Ink RPC',
@@ -530,6 +557,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     networkId: 'Mantle',
     networkName: 'Mantle',
     chainId: 5000,
+    chainIdHex: '0x1388',
     symbol: 'MNT',
     rpcUrl: 'https://rpc.mantle.xyz',
     rpcName: 'Mantle RPC',
@@ -547,6 +575,7 @@ export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
     networkId: 'Mon',
     networkName: 'Monad',
     chainId: 143,
+    chainIdHex: '0x8f',
     manualTokens: [
       {
         symbol: 'USDC',
@@ -570,6 +599,7 @@ export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
     networkId: 'Base',
     networkName: 'Base',
     chainId: 8453,
+    chainIdHex: '0x2105',
     manualTokens: [
       {
         symbol: 'USDC',
@@ -593,6 +623,7 @@ export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
     networkId: 'Ethereum',
     networkName: 'Ethereum',
     chainId: 1,
+    chainIdHex: '0x1',
     manualTokens: [
       {
         symbol: 'USDT',
@@ -623,6 +654,7 @@ export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
     networkId: 'Arbitrum',
     networkName: 'Arbitrum',
     chainId: 42161,
+    chainIdHex: '0xa4b1',
     manualTokens: [
       {
         symbol: 'WBTC',

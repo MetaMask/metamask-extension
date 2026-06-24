@@ -23,7 +23,7 @@ import SelectNetwork from '../../../page-objects/pages/dialog/select-network';
 import AddEditNetworkModal from '../../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../../page-objects/pages/dialog/add-network-rpc-url';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import AssetListPage from '../../../page-objects/pages/home/tokens-tab';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import {
   NETWORK_CONFIGS_ADDITIONAL,
@@ -165,7 +165,6 @@ async function runTokenImportTest(
       const networkManager = new NetworkManager(driver);
       await networkManager.openNetworkManager();
       console.log(`[PROD TEST] ✅ Clicked on Network manager successfully`);
-      await networkManager.selectTab("Popular");
       await networkManager.selectNetworkByNameWithWait(
         networkConfig.networkName,
       );

@@ -182,6 +182,16 @@ class TokensTab extends HomePage {
     testId: 'refreshList',
   };
 
+  // New selectors for updated popover menu structure
+  private readonly importTokensButtonLegacy =
+    '[data-testid="importTokens"]';
+
+  private readonly manageTokensButton =
+    '[data-testid="manageTokens__button"]';
+
+  private readonly manageTokensMenuItem =
+    '[data-testid="manageTokens"]';
+
   async clickNetworkSelectorDropdown(): Promise<void> {
     console.log(`Clicking on the network selector dropdown`);
     await this.driver.clickElement(this.sortByPopoverToggle);
@@ -311,24 +321,25 @@ class TokensTab extends HomePage {
     });
     await this.driver.clickElement(this.tokenOptionsButton);
 
-    const hasPrimaryImportTokensEntry =
-      await this.driver.isElementPresentAndVisible(this.importTokensButton, 1500);
-    const hasLegacyImportTokensEntry =
-      await this.driver.isElementPresentAndVisible(
-        this.importTokensButtonLegacy,
-        1500,
-      );
-    const hasImportTokensEntry =
-      hasPrimaryImportTokensEntry || hasLegacyImportTokensEntry;
+    // Wait for popover to become visible after clicking 3-dots button
+    await this.driver.delay(300);
 
-    if (!hasImportTokensEntry) {
+    // Check for Import Tokens menu item (primary option in popover)
+    const hasImportTokensEntry =
+      await this.driver.isElementPresentAndVisible(this.importTokensButton, 1500);
+
+    if (hasImportTokensEntry) {
+      console.log('[IMPORT] Found Import Tokens menu item in popover, using it');
+      await this.driver.clickElement(this.importTokensButton);
+    } else {
+      // Fallback: Check for Manage Tokens menu item (shown when isTokenManagementFilterEnabled=true)
       const hasManageTokensEntry =
         (await this.driver.isElementPresentAndVisible(
-          this.manageTokensButton,
+          this.manageTokensMenuItem,
           1500,
         )) ||
         (await this.driver.isElementPresentAndVisible(
-          this.manageTokensMenuItem,
+          this.manageTokensButton,
           1500,
         ));
 
@@ -340,15 +351,11 @@ class TokensTab extends HomePage {
         return;
       }
 
+      // Enhanced error message with attempted selectors for debugging
+      const debugInfo = `Attempted selectors: importTokens (${this.importTokensButton}), manageTokens (${this.manageTokensMenuItem}), manageTokens__button (${this.manageTokensButton})`;
       throw new Error(
-        'Neither Import Tokens nor Manage Tokens entry is available in asset options',
+        `Neither Import Tokens nor Manage Tokens entry is available in asset options. ${debugInfo}`,
       );
-    }
-
-    if (hasPrimaryImportTokensEntry) {
-      await this.driver.clickElement(this.importTokensButton);
-    } else {
-      await this.driver.clickElement(this.importTokensButtonLegacy);
     }
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.clickElement(this.tokenChainDropdown);

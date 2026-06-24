@@ -7,7 +7,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
 import SendTokenConfirmPage from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityListPage from '../../../page-objects/pages/home/activity-tab';
 import { Driver } from '../../../webdriver/driver';
 import { getRequiredE2EEnv } from '../../../helpers/e2e-env';
 import NetworkManager from '../../../page-objects/pages/network-manager';
@@ -233,9 +233,6 @@ async function runNetworkSendTest(
     console.log(`[PROD TEST] Selecting ${networkName} network...`);
     const networkManager = new NetworkManager(driver);
     await networkManager.openNetworkManager();
-    if (tab) {
-      await networkManager.selectTab(tab);
-    }
     await networkManager.selectNetworkByNameWithWait(networkName);
 
     // Ensure network switch is fully applied before opening account import flow.
@@ -452,7 +449,7 @@ async function runNetworkSendTest(
     await homePage.goToActivityList();
     await driver.delay(PROD_DELAYS.API_RESPONSE);
     try {
-      await activityListPage.checkTransactionActivityByText('Sent');
+      await activityListPage.checkTransactionActivityByText(`Sent ${symbol}`);
       reporter.setSentActivityStatus('pass');
       await activityListPage.checkWaitForTransactionStatus('confirmed');
       await activityListPage.checkTransactionAmount(`-${sendAmount} ${symbol}`);
