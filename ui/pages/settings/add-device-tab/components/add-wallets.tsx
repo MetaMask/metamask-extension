@@ -100,6 +100,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
         <Button
           className="w-full"
           onClick={handleSyncWallets}
+          isDisabled={selectedAccountGroups.length === 0}
         >
           {t('continue')}
         </Button>

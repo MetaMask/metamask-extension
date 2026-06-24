@@ -38,9 +38,7 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
   '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
-export const GENERAL_ROUTE = '/settings/general';
 export const ADD_DEVICE_ROUTE = '/settings/add-device';
-export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';

@@ -7,9 +7,29 @@ import messages from '../../../../../app/_locales/en/messages.json';
 import { AddDeviceSettingsStep } from '../constant';
 import AddWallets from './add-wallets';
 
-jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
-  getAccountTree: jest.fn(() => ({ wallets: {} })),
-}));
+jest.mock('../../../../selectors/multichain-accounts/account-tree', () => {
+  const { AccountWalletType: WalletType, toAccountWalletId: toWalletId } =
+    jest.requireActual('@metamask/account-api');
+  const mockWalletId = toWalletId(WalletType.Keyring, 'wallet1');
+  const mockGroupId = `${mockWalletId}/0`;
+  return {
+    getAccountTree: jest.fn(() => ({
+      wallets: {
+        [mockWalletId]: {
+          id: mockWalletId,
+          type: WalletType.Keyring,
+          metadata: { name: 'My Wallet' },
+          groups: {
+            [mockGroupId]: {
+              id: mockGroupId,
+              metadata: { name: 'Account 1' },
+            },
+          },
+        },
+      },
+    })),
+  };
+});
 
 jest.mock('./wallet-selection-list', () => ({
   WalletSelectionList: () => <div data-testid="wallet-selection-list" />,
