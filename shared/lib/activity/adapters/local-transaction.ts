@@ -121,15 +121,11 @@ export function mapLocalTransaction(
     };
   };
 
-  const mapApprovalToken = ({
-    amount,
-  }: {
-    amount?: string;
-  } = {}) => {
+  // EVM approvals mirror the API path, which never returns an approved amount
+  const mapApprovalToken = () => {
     const contractAddress =
       resolveApprovalTokenContractAddress(initialTransaction);
     return getContractToken({
-      amount,
       transaction: initialTransaction,
       direction: 'out',
       contractAddress,
@@ -421,18 +417,12 @@ export function mapLocalTransaction(
         hash,
         data: {
           from,
-          token: mapApprovalToken({ amount: approveAmount }),
+          token: mapApprovalToken(),
         },
       };
     }
 
-    case TransactionType.tokenMethodIncreaseAllowance: {
-      const increaseData = initialTransaction.txParams.data
-        ? parseApprovalTransactionData(
-            initialTransaction.txParams.data as `0x${string}`,
-          )
-        : undefined;
-      const increaseAmount = increaseData?.amountOrTokenId?.toFixed(0);
+    case TransactionType.tokenMethodIncreaseAllowance:
       return {
         type: 'increaseSpendingCap',
         chainId,
@@ -441,10 +431,9 @@ export function mapLocalTransaction(
         hash,
         data: {
           from,
-          token: mapApprovalToken({ amount: increaseAmount }),
+          token: mapApprovalToken(),
         },
       };
-    }
 
     case TransactionType.lendingDeposit:
       return {
@@ -455,11 +444,6 @@ export function mapLocalTransaction(
         hash,
         data: {
           from,
-          sourceToken: getContractToken({
-            transaction: initialTransaction,
-            direction: 'out',
-            contractAddress: initialTransaction.txParams.to,
-          }),
         },
       };
 
@@ -545,12 +529,6 @@ export function mapLocalTransaction(
           hash,
           data: {
             from,
-            sourceToken: getContractToken({
-              amount: BigInt(suppliedTokenBalanceChange.difference).toString(),
-              transaction: initialTransaction,
-              direction: 'out',
-              contractAddress: suppliedTokenBalanceChange.address,
-            }),
           },
         };
       }
