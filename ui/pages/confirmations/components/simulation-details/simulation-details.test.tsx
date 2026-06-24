@@ -131,7 +131,9 @@ describe('SimulationDetails', () => {
 
   it('renders skeleton loader when simulation data is not available', () => {
     const { container } = renderSimulationDetails();
-    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="simulation-details-skeleton"]'),
+    ).toBeInTheDocument();
   });
 
   it('renders skeleton loader when balance changes are pending', () => {
@@ -142,7 +144,9 @@ describe('SimulationDetails', () => {
 
     const { container } = renderSimulationDetails({});
 
-    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="simulation-details-skeleton"]'),
+    ).toBeInTheDocument();
   });
 
   it('renders error content when simulation error is reverted', () => {
