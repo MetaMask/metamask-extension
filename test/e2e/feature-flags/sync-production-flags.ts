@@ -568,13 +568,20 @@ function extractRegistryEntryBlocks(content: string): RegistryEntryBlock[] {
 
     let commentStart = -1;
     let scanIndex = index;
-    while (scanIndex < registryEnd && content.slice(scanIndex, scanIndex + 2) === '//') {
+    while (
+      scanIndex < registryEnd &&
+      content.slice(scanIndex, scanIndex + 2) === '//'
+    ) {
       if (commentStart === -1) {
         commentStart = scanIndex;
       }
       const lineEnd = content.indexOf('\n', scanIndex);
       scanIndex = lineEnd === -1 ? registryEnd : lineEnd + 1;
-      while (scanIndex < registryEnd && /\s/u.test(content[scanIndex]) && content[scanIndex] !== '\n') {
+      while (
+        scanIndex < registryEnd &&
+        /\s/u.test(content[scanIndex]) &&
+        content[scanIndex] !== '\n'
+      ) {
         scanIndex += 1;
       }
       if (scanIndex < registryEnd && content[scanIndex] === '\n') {
@@ -760,7 +767,10 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
       continue;
     }
 
-    const entryOpenBrace = content.indexOf('{', entryMatch.index + entryMatch[0].indexOf('{'));
+    const entryOpenBrace = content.indexOf(
+      '{',
+      entryMatch.index + entryMatch[0].indexOf('{'),
+    );
     const entryEnd = findBalancedEnd(content, entryOpenBrace);
     if (entryEnd === -1) {
       continue;
@@ -816,7 +826,10 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
       continue;
     }
 
-    const entryOpenBrace = content.indexOf('{', entryMatch.index + entryMatch[0].indexOf('{'));
+    const entryOpenBrace = content.indexOf(
+      '{',
+      entryMatch.index + entryMatch[0].indexOf('{'),
+    );
     const entryEnd = findBalancedEnd(content, entryOpenBrace);
     if (entryEnd === -1) {
       continue;
@@ -892,7 +905,10 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
       continue;
     }
 
-    const openBrace = content.indexOf('{', entryMatch.index + entryMatch[0].indexOf('{'));
+    const openBrace = content.indexOf(
+      '{',
+      entryMatch.index + entryMatch[0].indexOf('{'),
+    );
     const balancedEnd = findBalancedEnd(content, openBrace);
     if (balancedEnd === -1) {
       continue;
