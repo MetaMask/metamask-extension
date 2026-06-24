@@ -2,6 +2,7 @@ import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
@@ -124,6 +125,7 @@ const serviceName = 'LegacyBackgroundApiService';
  */
 const MESSENGER_EXPOSED_METHODS = [
   'checkIsSeedlessPasswordOutdated',
+  'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
   'getCode',
@@ -189,6 +191,7 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceResyncAccountsAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
@@ -404,6 +407,31 @@ export class LegacyBackgroundApiService {
       method: 'eth_getCode',
       params: [address],
     });
+  }
+
+  /**
+   * Estimates the gas for a given transaction using the currently selected
+   * network client.
+   *
+   * @param estimateGasParams - The parameters of the transaction to estimate
+   * the gas for.
+   * @returns The estimated gas as a hexadecimal string.
+   */
+  async estimateGas(estimateGasParams: Json): Promise<string> {
+    const networkClient = this.#messenger.call(
+      'NetworkController:getSelectedNetworkClient',
+    );
+
+    if (!networkClient) {
+      throw new Error('No network client available for gas estimation');
+    }
+
+    const result = await networkClient.provider.request<Json[], number>({
+      method: 'eth_estimateGas',
+      params: [estimateGasParams],
+    });
+
+    return result.toString(16);
   }
 
   /**

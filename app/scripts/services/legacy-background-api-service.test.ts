@@ -413,6 +413,50 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('estimateGas', () => {
+    it('estimates the gas for a transaction using the selected network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const request = jest.fn().mockResolvedValue(21000);
+        rootMessenger.registerActionHandler(
+          'NetworkController:getSelectedNetworkClient',
+          jest.fn().mockReturnValue({
+            provider: {
+              request,
+            },
+          }),
+        );
+
+        const estimateGasParams = { to: '0x123', value: '0x0' };
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:estimateGas',
+          estimateGasParams,
+        );
+
+        expect(request).toHaveBeenCalledWith({
+          method: 'eth_estimateGas',
+          params: [estimateGasParams],
+        });
+        expect(result).toStrictEqual((21000).toString(16));
+      });
+    });
+
+    it('throws if there is no selected network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getSelectedNetworkClient',
+          jest.fn().mockReturnValue(undefined),
+        );
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:estimateGas', {
+            to: '0x123',
+          }),
+        ).rejects.toThrow('No network client available for gas estimation');
+      });
+    });
+  });
+
   describe('getSeedPhrase', () => {
     it('returns the seed phrase', async () => {
       const mnemonic =
@@ -2025,6 +2069,7 @@ function getMessenger(
     actions: [
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getSelectedNetworkClient',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:setSelectedCurrency',
