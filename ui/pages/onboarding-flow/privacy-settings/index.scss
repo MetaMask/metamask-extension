@@ -7,9 +7,18 @@
   align-items: center;
   overflow-x: hidden;
 
-  margin-inline: -24px;
-  margin-top: -32px;
-  margin-bottom: -32px;
+  // Offset `.onboarding-flow__container` padding so the view spans full width.
+  // Below the sm breakpoint the container uses 16px padding; at/above it uses
+  // 24px inline and 32px top/bottom.
+  margin-inline: -16px;
+  margin-top: -16px;
+  margin-bottom: -16px;
+
+  @include design-system.screen-sm-min {
+    margin-inline: -24px;
+    margin-top: -32px;
+    margin-bottom: -32px;
+  }
 
   @include design-system.screen-sm-max {
     margin-bottom: 24px;
