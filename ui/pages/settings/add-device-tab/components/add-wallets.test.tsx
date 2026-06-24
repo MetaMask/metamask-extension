@@ -2,6 +2,8 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../app/_locales/en/messages.json';
 import { AddDeviceSettingsStep } from '../constant';
 import AddWallets from './add-wallets';
 
@@ -22,11 +24,11 @@ describe('AddWallets', () => {
   it('renders the heading and description', () => {
     render();
 
-    expect(screen.getByText('Choose what to sync')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Pick the wallets and accounts to import to your phone. You can change this later.',
-      ),
+      screen.getByText(messages.add_wallets.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.add_wallets_desc.message),
     ).toBeInTheDocument();
   });
 
@@ -40,7 +42,7 @@ describe('AddWallets', () => {
     const onAddWallets = jest.fn();
     render(onAddWallets);
 
-    fireEvent.click(screen.getByText('Continue'));
+    fireEvent.click(screen.getByText(messages.continue.message));
 
     expect(onAddWallets).toHaveBeenCalledWith(
       AddDeviceSettingsStep.SyncingWallets,

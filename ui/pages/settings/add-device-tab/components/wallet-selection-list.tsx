@@ -52,18 +52,6 @@ export type WalletSelectionListProps = {
   onSelectionChange: (selected: AccountGroupId[]) => void;
 };
 
-/**
- * Wallet/account selection list for the add-device flow.
- *
- * Selection rules:
- * - Each wallet header exposes a checkbox that toggles every account group in
- *   that wallet at once (and reflects an indeterminate state for partial
- *   selections).
- * - Entropy wallet accounts are selected at the wallet level only and cannot be
- *   toggled individually.
- * - Non-entropy wallet accounts (e.g. imported accounts) can be toggled
- *   individually via their own checkbox.
- */
 export const WalletSelectionList = ({
   wallets,
   selectedAccountGroups,
