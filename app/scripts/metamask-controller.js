@@ -3000,7 +3000,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.cancelQrCodeScan.bind(appStateController),
 
       // vault management
-      submitPassword: this.submitPassword.bind(this),
+      submitPasswordOrEncryptionKey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
+      ),
       verifyPassword: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'KeyringController:verifyPassword',
@@ -5304,20 +5307,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Submits the user's password and attempts to unlock the vault.
-   * Also synchronizes the preferencesController, to ensure its schema
-   * is up to date with known accounts once the vault is decrypted.
-   *
-   * @param {string} password - The user's password
-   */
-  async submitPassword(password) {
-    await this.controllerMessenger.call(
-      'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-      { password },
-    );
-  }
-
-  /**
    * Submits the user's encryption key and attempts to unlock the vault.
    * Also synchronizes the preferencesController, to ensure its schema
    * is up to date with known accounts once the vault is decrypted.
@@ -5334,7 +5323,9 @@ export default class MetamaskController extends EventEmitter {
   async _loginUser(password) {
     try {
       // Automatic login via config password
-      await this.submitPassword(password);
+      await this.legacyBackgroundApiService.submitPasswordOrEncryptionKey({
+        password,
+      });
     } finally {
       this._startUISync();
     }
