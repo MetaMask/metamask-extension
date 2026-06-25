@@ -30,15 +30,13 @@ import {
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
-  forceUpdateMetamaskState,
   getIsSeedlessOnboardingUserAuthenticated,
-  resetOnboarding,
   setDataCollectionForMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
+import { useOnboardingReset } from '../hooks/useOnboardingReset';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -53,8 +51,6 @@ type CreatePasswordProps = {
   secretRecoveryPhrase: string;
 };
 
-const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
-
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CreatePassword({
@@ -66,6 +62,8 @@ export default function CreatePassword({
     useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isFirefox = useIsFirefox();
+  const resetOnboardingAndReturn = useOnboardingReset();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const {
     trackEvent,
@@ -152,6 +150,7 @@ export default function CreatePassword({
     }
   }, [
     currentKeyring,
+    isFirefox,
     navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
@@ -304,11 +303,7 @@ export default function CreatePassword({
       // for SRP import flow, we will just navigate back to the import SRP page
       navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true });
     } else {
-      // reset onboarding flow
-      await dispatch(resetOnboarding());
-      await forceUpdateMetamaskState(dispatch);
-
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+      await resetOnboardingAndReturn();
     }
   };
 
