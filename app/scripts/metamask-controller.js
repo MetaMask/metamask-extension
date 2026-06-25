@@ -449,7 +449,6 @@ import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-b
 import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
-import { setupRemoteFeatureFlagToggle } from './wallet-init/remote-feature-flags';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1924,13 +1923,6 @@ export default class MetamaskController extends EventEmitter {
         return true;
       }, this.preferencesController.state),
     );
-
-    setupRemoteFeatureFlagToggle({
-      messenger: this.controllerMessenger,
-      remoteFeatureFlagController: this.remoteFeatureFlagController,
-      preferencesState: this.preferencesController.state,
-      onboardingState: this.onboardingController.state,
-    });
 
     this.controllerMessenger.subscribe(
       `${this.accountsController.name}:selectedAccountChange`,

@@ -8,11 +8,16 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import { RootMessenger } from '../lib/messenger';
+import type { PreferencesControllerStateChangeEvent } from '../controllers/preferences-controller';
+import type { OnboardingControllerStateChangeEvent } from '../controllers/onboarding';
 import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
 import { getKeyringBuilders, getKeyringV2Builders } from './keyrings';
-import { getRemoteFeatureFlagClientConfigApiService } from './remote-feature-flags';
+import {
+  getRemoteFeatureFlagClientConfigApiService,
+  setupRemoteFeatureFlagToggle,
+} from './remote-feature-flags';
 
 const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
 
@@ -25,14 +30,16 @@ export function initializeWallet({
 }: {
   messenger: RootMessenger<
     DefaultActions | AnalyticsControllerGetStateAction,
-    DefaultEvents
+    | DefaultEvents
+    | PreferencesControllerStateChangeEvent
+    | OnboardingControllerStateChangeEvent
   >;
   state: Record<string, Record<string, Json>>;
   encryptor?: Encryptor;
   showApprovalRequest?: ShowApprovalRequest;
   connectivityAdapter: ConnectivityAdapter;
 }) {
-  return new Wallet({
+  const wallet = new Wallet({
     messenger,
     state,
     instanceOptions: {
@@ -84,4 +91,26 @@ export function initializeWallet({
       },
     },
   });
+
+  // Keep the wallet-owned `RemoteFeatureFlagController` enabled/disabled in sync
+  // with onboarding and the external-services preference. The baseline mirrors
+  // each controller's default (external services on unless explicitly opted out,
+  // onboarding incomplete by default), matching the `disabled` value computed
+  // above.
+  setupRemoteFeatureFlagToggle({
+    messenger,
+    remoteFeatureFlagController: wallet.getInstance(
+      'RemoteFeatureFlagController',
+    ),
+    preferencesState: {
+      useExternalServices:
+        state.PreferencesController?.useExternalServices !== false,
+    },
+    onboardingState: {
+      completedOnboarding:
+        state.OnboardingController?.completedOnboarding === true,
+    },
+  });
+
+  return wallet;
 }

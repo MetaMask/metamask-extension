@@ -3,6 +3,7 @@ import { Json } from '@metamask/utils';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import { RootMessenger } from '../lib/messenger';
 import { initializeWallet } from './initialization';
+import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 
 jest.mock('@metamask/wallet');
 jest.mock('./keyrings', () => ({
@@ -13,6 +14,7 @@ jest.mock('./remote-feature-flags', () => ({
   getRemoteFeatureFlagClientConfigApiService: jest.fn(() => ({
     fetchRemoteFeatureFlags: jest.fn(),
   })),
+  setupRemoteFeatureFlagToggle: jest.fn(),
 }));
 jest.mock('../../../shared/lib/feature-flags/version-gating', () => ({
   getBaseSemVerVersion: jest.fn(() => '1.2.3'),
@@ -99,5 +101,53 @@ describe('initializeWallet — RemoteFeatureFlagController options', () => {
     });
 
     expect(options?.disabled).toBe(false);
+  });
+});
+
+describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
+  const mockSetupToggle = jest.mocked(setupRemoteFeatureFlagToggle);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('wires the enable/disable toggle with the wallet-owned controller and a default-preserving baseline', () => {
+    const controller = { name: 'RemoteFeatureFlagController' };
+    MockWallet.prototype.getInstance = jest
+      .fn()
+      .mockReturnValue(controller) as never;
+    const messenger = {} as unknown as RootMessenger;
+
+    initializeWallet({
+      messenger,
+      state: { OnboardingController: { completedOnboarding: true } },
+      connectivityAdapter: {} as unknown as ConnectivityAdapter,
+    });
+
+    expect(mockSetupToggle).toHaveBeenCalledWith({
+      messenger,
+      remoteFeatureFlagController: controller,
+      // `useExternalServices` is absent, so it defaults to on, matching the
+      // live `PreferencesController` default.
+      preferencesState: { useExternalServices: true },
+      onboardingState: { completedOnboarding: true },
+    });
+  });
+
+  it('treats an explicit useExternalServices=false as opting out in the baseline', () => {
+    MockWallet.prototype.getInstance = jest.fn().mockReturnValue({}) as never;
+
+    initializeWallet({
+      messenger: {} as unknown as RootMessenger,
+      state: { PreferencesController: { useExternalServices: false } },
+      connectivityAdapter: {} as unknown as ConnectivityAdapter,
+    });
+
+    expect(mockSetupToggle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        preferencesState: { useExternalServices: false },
+        onboardingState: { completedOnboarding: false },
+      }),
+    );
   });
 });

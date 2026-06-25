@@ -117,8 +117,8 @@ export function setupRemoteFeatureFlagToggle({
     RemoteFeatureFlagController,
     'enable' | 'disable' | 'updateRemoteFeatureFlags'
   >;
-  preferencesState: PreferencesControllerState;
-  onboardingState: OnboardingControllerState;
+  preferencesState: Pick<PreferencesControllerState, 'useExternalServices'>;
+  onboardingState: Pick<OnboardingControllerState, 'completedOnboarding'>;
 }): void {
   const toggleMessenger = new Messenger<
     'RemoteFeatureFlagToggle',
