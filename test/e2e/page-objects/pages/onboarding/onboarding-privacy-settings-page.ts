@@ -193,6 +193,15 @@ class OnboardingPrivacySettingsPage {
       this.privacySettingsDetail,
       this.subPageBackButton,
     ]);
+    // The privacy sub-page slides in over 500ms; wait until it settles before
+    // reading or clicking toggles, otherwise clicks can miss and state checks
+    // can falsely report a toggle as already off.
+    await this.driver.waitForElementToStopMoving(this.subPageBackButton);
+    await this.driver.waitForSelector(
+      this.getPrivacyToggleButtonSelector(
+        this.advancedPrivacyToggleContainerTestIds[0],
+      ),
+    );
   }
 
   async navigateToNetworkRpcSettings(): Promise<void> {
@@ -225,44 +234,28 @@ class OnboardingPrivacySettingsPage {
     await this.navigateToPrivacySettings();
 
     for (const containerTestId of this.advancedPrivacyToggleContainerTestIds) {
-      await this.turnOffPrivacyToggleIfOn(containerTestId);
+      await this.ensurePrivacyToggleIsOff(containerTestId);
     }
-
-    await this.assertAdvancedPrivacyTogglesAreOff();
 
     await this.navigateBackToSettingsPage();
   }
 
-  private async assertAdvancedPrivacyTogglesAreOff(): Promise<void> {
-    console.log('Verify all advanced privacy toggles are off');
-    for (const containerTestId of this.advancedPrivacyToggleContainerTestIds) {
-      const toggleButton = this.getPrivacyToggleButtonSelector(containerTestId);
-      await this.driver.waitForSelector(
-        this.getPrivacyToggleOffSelector(toggleButton),
-      );
-    }
-  }
-
-  private async isPrivacyToggleOn(containerTestId: string): Promise<boolean> {
-    const toggleButton = this.getPrivacyToggleButtonSelector(containerTestId);
-    return this.driver.isElementPresentAndVisible(
-      this.getPrivacyToggleOnSelector(toggleButton),
-      500,
-    );
-  }
-
-  private async turnOffPrivacyToggleIfOn(
+  private async ensurePrivacyToggleIsOff(
     containerTestId: string,
   ): Promise<void> {
     const toggleButton = this.getPrivacyToggleButtonSelector(containerTestId);
-    if (!(await this.isPrivacyToggleOn(containerTestId))) {
+    const offSelector = this.getPrivacyToggleOffSelector(toggleButton);
+    const onSelector = this.getPrivacyToggleOnSelector(toggleButton);
+
+    await this.driver.waitForSelector(toggleButton);
+
+    if (await this.driver.isElementPresentAndVisible(offSelector, 1000)) {
       return;
     }
 
+    await this.driver.waitForSelector(onSelector);
     await this.driver.findScrollToAndClickElement(toggleButton);
-    await this.driver.waitForSelector(
-      this.getPrivacyToggleOffSelector(toggleButton),
-    );
+    await this.driver.waitForSelector(offSelector);
   }
 
   /**
