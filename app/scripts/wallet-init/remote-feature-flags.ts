@@ -5,9 +5,7 @@ import {
   ClientType,
   DistributionType,
   EnvironmentType,
-  type RemoteFeatureFlagControllerEnableAction,
-  type RemoteFeatureFlagControllerDisableAction,
-  type RemoteFeatureFlagControllerUpdateRemoteFeatureFlagsAction,
+  type RemoteFeatureFlagController,
 } from '@metamask/remote-feature-flag-controller';
 import { ENVIRONMENT } from '../../../shared/constants/build';
 import { previousValueComparator } from '../lib/util';
@@ -86,13 +84,8 @@ export function getRemoteFeatureFlagClientConfigApiService() {
   });
 }
 
-type RemoteFeatureFlagToggleActions =
-  | RemoteFeatureFlagControllerEnableAction
-  | RemoteFeatureFlagControllerDisableAction
-  | RemoteFeatureFlagControllerUpdateRemoteFeatureFlagsAction;
-
 type RemoteFeatureFlagToggleParentMessenger = RootMessenger<
-  RemoteFeatureFlagToggleActions,
+  never,
   PreferencesControllerStateChangeEvent | OnboardingControllerStateChangeEvent
 >;
 
@@ -104,28 +97,32 @@ type RemoteFeatureFlagToggleParentMessenger = RootMessenger<
  * `disabled` value; this keeps it in sync as the user completes onboarding or
  * toggles the external-services preference, and refreshes the flags whenever
  * the controller is (re-)enabled. Flags are only fetched once onboarding is
- * complete and external services are enabled. The controller is driven entirely
- * over the messenger, so no controller instance needs to be passed in.
+ * complete and external services are enabled.
  *
  * @param options - Options bag.
  * @param options.messenger - The root messenger to delegate from; a namespaced
- * child is created internally, subscribed on, and used to call the
- * `RemoteFeatureFlagController` enable/disable/update actions.
+ * child is created internally and subscribed on.
+ * @param options.remoteFeatureFlagController - The wallet-owned controller.
  * @param options.preferencesState - The initial `PreferencesController` state.
  * @param options.onboardingState - The initial `OnboardingController` state.
  */
 export function setupRemoteFeatureFlagToggle({
   messenger,
+  remoteFeatureFlagController,
   preferencesState,
   onboardingState,
 }: {
   messenger: RemoteFeatureFlagToggleParentMessenger;
+  remoteFeatureFlagController: Pick<
+    RemoteFeatureFlagController,
+    'enable' | 'disable' | 'updateRemoteFeatureFlags'
+  >;
   preferencesState: Pick<PreferencesControllerState, 'useExternalServices'>;
   onboardingState: Pick<OnboardingControllerState, 'completedOnboarding'>;
 }): void {
   const toggleMessenger = new Messenger<
     'RemoteFeatureFlagToggle',
-    RemoteFeatureFlagToggleActions,
+    never,
     | PreferencesControllerStateChangeEvent
     | OnboardingControllerStateChangeEvent,
     RemoteFeatureFlagToggleParentMessenger
@@ -135,11 +132,6 @@ export function setupRemoteFeatureFlagToggle({
   });
   messenger.delegate({
     messenger: toggleMessenger,
-    actions: [
-      'RemoteFeatureFlagController:enable',
-      'RemoteFeatureFlagController:disable',
-      'RemoteFeatureFlagController:updateRemoteFeatureFlags',
-    ],
     events: [
       'PreferencesController:stateChange',
       'OnboardingController:stateChange',
@@ -151,14 +143,12 @@ export function setupRemoteFeatureFlagToggle({
 
   const toggle = () => {
     if (!hasCompletedOnboarding || !canUseExternalServices) {
-      toggleMessenger.call('RemoteFeatureFlagController:disable');
+      remoteFeatureFlagController.disable();
     } else {
-      toggleMessenger.call('RemoteFeatureFlagController:enable');
-      toggleMessenger
-        .call('RemoteFeatureFlagController:updateRemoteFeatureFlags')
-        .catch((error) => {
-          console.error('Failed to update remote feature flags:', error);
-        });
+      remoteFeatureFlagController.enable();
+      remoteFeatureFlagController.updateRemoteFeatureFlags().catch((error) => {
+        console.error('Failed to update remote feature flags:', error);
+      });
     }
   };
 
