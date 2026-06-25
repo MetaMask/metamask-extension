@@ -47,11 +47,11 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getAllMultichainNetworkConfigurations,
-  getEnabledNetworksByNamespace,
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
   selectEnabledNetworksAsCaipChainIds,
 } from '../../selectors/multichain/networks';
+import { useNetworkFilterButtonLabel } from '../../components/app/assets/hooks/useNetworkFilterButtonLabel';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
   addCustomAsset,
@@ -479,15 +479,6 @@ export const TokenManagementPage = () => {
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
-  const enabledNetworksByNamespace = useSelector((state: unknown) => {
-    try {
-      return getEnabledNetworksByNamespace(
-        state as Parameters<typeof getEnabledNetworksByNamespace>[0],
-      );
-    } catch {
-      return {} as Record<string, boolean>;
-    }
-  });
   const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allMultichainNetworkConfigurations = useSelector(
@@ -515,14 +506,6 @@ export const TokenManagementPage = () => {
         caipChainId,
       ),
     [store],
-  );
-
-  const enabledChainIds = useMemo(
-    () =>
-      Object.entries(enabledNetworksByNamespace ?? {})
-        .filter(([, enabled]) => Boolean(enabled))
-        .map(([chainId]) => chainId as Hex),
-    [enabledNetworksByNamespace],
   );
 
   const getNetworkMeta = useCallback(
@@ -804,28 +787,7 @@ export const TokenManagementPage = () => {
     setSearchQuery('');
   }, [commitStagedHides]);
 
-  const networkFilterLabel = useMemo(() => {
-    const enabledCount = enabledChainIds.length;
-    if (enabledCount === 0) {
-      return t('noNetworksSelected');
-    }
-    if (enabledCount === 1) {
-      const onlyChain = enabledChainIds[0];
-      const evmName = networkConfigurations?.[onlyChain]?.name;
-      const multichainName =
-        allMultichainNetworkConfigurations?.[onlyChain as CaipChainId]?.name;
-      return (
-        evmName ?? multichainName ?? currentNetwork?.name ?? t('currentNetwork')
-      );
-    }
-    return t('allDefaultNetworks');
-  }, [
-    allMultichainNetworkConfigurations,
-    currentNetwork?.name,
-    enabledChainIds,
-    networkConfigurations,
-    t,
-  ]);
+  const networkFilterLabel = useNetworkFilterButtonLabel();
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;

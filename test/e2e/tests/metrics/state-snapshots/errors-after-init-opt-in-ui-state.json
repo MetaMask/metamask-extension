@@ -313,6 +313,7 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "productTour": "accountIcon",
+    "proofBackfillEnqueued": "boolean",
     "quoteFetchError": null,
     "quoteRequest": "object",
     "quoteStreamComplete": null,
