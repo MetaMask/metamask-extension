@@ -11,6 +11,11 @@ class NotificationsListPage {
   private readonly notificationsSettingsButton =
     '[data-testid="notifications-settings-button"]';
 
+  private readonly notificationsPage = '[data-testid="notifications-page"]';
+
+  private readonly notificationsListDisabled =
+    '[data-testid="notifications-list-disabled-notifications"]';
+
   private readonly notificationListItem = (id: string) =>
     `[data-testid="notification-list-item-${id}"]`;
 
@@ -35,6 +40,14 @@ class NotificationsListPage {
       throw e;
     }
     console.log('Notifications List page is loaded');
+  }
+
+  async isDisplayed(): Promise<boolean> {
+    return this.driver.isElementPresent(this.notificationsPage);
+  }
+
+  async isNotificationsDisabled(): Promise<boolean> {
+    return this.driver.isElementPresent(this.notificationsListDisabled);
   }
 
   /**

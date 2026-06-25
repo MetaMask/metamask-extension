@@ -6,6 +6,34 @@ import SettingsPage from '../pages/settings/settings-page';
 import NotificationDetailsPage from '../pages/notification-details-page';
 
 /**
+ * Navigates to the notifications page and enables notifications if they are
+ * currently disabled.
+ *
+ * @param driver - The webdriver instance used to interact with the browser.
+ * @returns A promise that resolves once notifications are enabled.
+ */
+export const enableNotifications = async (driver: Driver): Promise<void> => {
+  console.log('Enabling notifications from the notifications list page');
+  const headerNavbar = new HeaderNavbar(driver);
+  const notificationsListPage = new NotificationsListPage(driver);
+  const notificationsSettingsPage = new NotificationsSettingsPage(driver);
+
+  await headerNavbar.navigateToNotificationsPage();
+
+  if (!(await notificationsListPage.isNotificationsDisabled())) {
+    console.log('Notifications are already enabled.');
+    return;
+  }
+
+  await notificationsListPage.goToNotificationsSettings();
+  await notificationsSettingsPage.checkPageIsLoaded();
+  await notificationsSettingsPage.clickNotificationToggle({
+    toggleType: 'general',
+  });
+  await notificationsSettingsPage.waitForNotificationPreferenceSections();
+};
+
+/**
  * Enables notifications through the global menu and optionally navigates to the notifications settings.
  *
  * @param driver - The webdriver instance used to interact with the browser.
@@ -22,14 +50,10 @@ export const enableNotificationsThroughGlobalMenu = async (
   const notificationsSettingsPage = new NotificationsSettingsPage(driver);
 
   await headerNavbar.checkPageIsLoaded();
-  await headerNavbar.enableNotifications();
+  await enableNotifications(driver);
 
   if (goToNotificationsSettings) {
-    const isOnSettingsPage = await driver.isElementPresent(
-      '[data-testid="notifications-settings-allow-toggle-box"]',
-    );
-
-    if (!isOnSettingsPage) {
+    if (!(await notificationsSettingsPage.isNotificationsSettingsPageDisplayed())) {
       await notificationsListPage.checkPageIsLoaded();
       await notificationsListPage.goToNotificationsSettings();
     }
@@ -38,11 +62,7 @@ export const enableNotificationsThroughGlobalMenu = async (
     return;
   }
 
-  const isOnNotificationsPage = await driver.isElementPresent(
-    '[data-testid="notifications-page"]',
-  );
-
-  if (!isOnNotificationsPage) {
+  if (!(await notificationsListPage.isDisplayed())) {
     await headerNavbar.checkPageIsLoaded();
     await headerNavbar.goToNotifications();
   }

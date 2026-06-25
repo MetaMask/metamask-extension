@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
-import NotificationsSettingsPage from './settings/notifications-settings-page';
 
 class HeaderNavbar {
   protected driver: Driver;
@@ -51,12 +50,6 @@ class HeaderNavbar {
     '[data-testid="notifications-menu-item"]';
 
   private readonly notificationsPage = '[data-testid="notifications-page"]';
-
-  private readonly notificationsSettingsButton =
-    '[data-testid="notifications-settings-button"]';
-
-  private readonly notificationsListDisabled =
-    '[data-testid="notifications-list-disabled-notifications"]';
 
   private readonly openAccountDetailsButton =
     '[data-testid="account-list-menu-details"]';
@@ -177,30 +170,6 @@ class HeaderNavbar {
     await this.openGlobalMenu();
     await this.driver.clickElement(this.notificationsButton);
     await this.driver.waitForSelector(this.notificationsPage);
-  }
-
-  async enableNotifications(): Promise<void> {
-    console.log('Enabling notifications from the notifications settings page');
-    await this.navigateToNotificationsPage();
-
-    const notificationsSettingsPage = new NotificationsSettingsPage(
-      this.driver,
-    );
-    const isDisabled = await this.driver.isElementPresent(
-      this.notificationsListDisabled,
-    );
-
-    if (!isDisabled) {
-      console.log('Notifications are already enabled.');
-      return;
-    }
-
-    await this.driver.clickElement(this.notificationsSettingsButton);
-    await notificationsSettingsPage.checkPageIsLoaded();
-    await notificationsSettingsPage.clickNotificationToggle({
-      toggleType: 'general',
-    });
-    await notificationsSettingsPage.waitForNotificationPreferenceSections();
   }
 
   async goToNotifications(): Promise<void> {

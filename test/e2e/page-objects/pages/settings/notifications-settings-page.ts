@@ -79,6 +79,10 @@ class NotificationsSettingsPage {
     console.log('Notifications Settings page is loaded');
   }
 
+  async isNotificationsSettingsPageDisplayed(): Promise<boolean> {
+    return this.driver.isElementPresent(this.allowNotificationsToggle);
+  }
+
   async disableNotifications(): Promise<void> {
     console.log('Clicking on the disable notifications toggle');
     await this.driver.clickElement(this.allowNotificationsToggle);
@@ -110,19 +114,11 @@ class NotificationsSettingsPage {
 
   private readonly shortPresenceTimeoutMs = 1000;
 
-  private async reloadNotificationsSettingsPage(): Promise<void> {
-    console.log('Reloading notifications settings page');
-    await this.driver.executeScript(() => {
-      window.location.hash = '#/settings/notifications';
-    });
-    await this.checkPageIsLoaded();
-    await this.driver.waitForSelector(this.notificationsPerTypesSection, {
-      timeout: 30000,
-    });
-  }
-
   /**
-   * Waits until AUS notification preferences are loaded and section rows are navigable.
+   * Waits until the AUS notification preferences have loaded. The section rows
+   * are rendered asynchronously once the authenticated user storage
+   * preferences resolve, so we wait for every section row to be present before
+   * any navigation into a section is attempted.
    */
   async waitForNotificationPreferenceSections(): Promise<void> {
     console.log('Waiting for notification preference sections to load');
@@ -130,34 +126,10 @@ class NotificationsSettingsPage {
       timeout: 30000,
     });
 
-    const maxAttempts = 15;
-
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      try {
-        await this.driver.waitForElementToStopMoving(
-          this.sectionButton('marketing'),
-        );
-        await this.driver.clickElement(this.sectionButton('marketing'));
-        await this.driver.waitForSelector(this.sectionContent('marketing'), {
-          timeout: 3000,
-        });
-        await this.goToMainSettings();
-        console.log('Notification preference sections are navigable');
-        return;
-      } catch {
-        console.log(
-          `Reloading notifications settings to refresh preferences (attempt ${
-            attempt + 1
-          }/${maxAttempts})`,
-        );
-        await this.reloadNotificationsSettingsPage();
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
+    for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
+      await this.driver.waitForSelector(this.sectionButton(section));
     }
-
-    throw new Error(
-      'Notification preference sections failed to become navigable',
-    );
+    console.log('Notification preference sections are loaded');
   }
 
   async assertNotificationPreferenceSectionsListed(): Promise<void> {
@@ -201,31 +173,9 @@ class NotificationsSettingsPage {
     await this.goToMainSettings();
     await this.waitForNotificationPreferenceSections();
 
-    const maxAttempts = 15;
-
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      await this.driver.waitForElementToStopMoving(this.sectionButton(section));
-      await this.driver.clickElement(this.sectionButton(section));
-
-      try {
-        await this.driver.waitForSelector(this.sectionContent(section), {
-          timeout: 3000,
-        });
-        return;
-      } catch {
-        console.log(
-          `Waiting for ${section} notification preferences to load (attempt ${
-            attempt + 1
-          }/${maxAttempts})`,
-        );
-        await this.reloadNotificationsSettingsPage();
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    }
-
-    throw new Error(
-      `Failed to navigate to ${section} notification settings section`,
-    );
+    await this.driver.waitForElementToStopMoving(this.sectionButton(section));
+    await this.driver.clickElement(this.sectionButton(section));
+    await this.driver.waitForSelector(this.sectionContent(section));
   }
 
   /**
@@ -326,24 +276,16 @@ class NotificationsSettingsPage {
     console.log(`Checking if ${description} are ${expectedState}`);
     const expectedValue = expectedState === 'enabled' ? 'true' : 'false';
 
-    const maxRetries = 5;
-    const retryInterval = 1000;
-    let attempts = 0;
-
     try {
       await this.driver.waitForElementToStopMoving(selector);
-      while (attempts < maxRetries) {
-        const toggle = await this.driver.findElement(selector);
-        if ((await toggle.getAttribute('value')) === expectedValue) {
-          console.log(
-            `Successfully verified ${description} to be ${expectedState}`,
-          );
-          return;
-        }
-        attempts += 1;
-        await new Promise((resolve) => setTimeout(resolve, retryInterval));
-      }
-      throw new Error(`Expected ${description} state to be: ${expectedState}`);
+      await this.driver.waitUntil(
+        async () => {
+          const toggle = await this.driver.findElement(selector);
+          return (await toggle.getAttribute('value')) === expectedValue;
+        },
+        { interval: 500, timeout: this.driver.timeout },
+      );
+      console.log(`Successfully verified ${description} to be ${expectedState}`);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(
