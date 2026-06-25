@@ -1,5 +1,4 @@
 const { privateKeyToAccount } = require('viem/accounts');
-const { DEFAULT_FIXTURE_ACCOUNT, ENTRYPOINT } = require('../constants');
 const ContractAddressRegistry = require('./contract-address-registry');
 const { contractConfiguration, SMART_CONTRACTS } = require('./smart-contracts');
 
@@ -151,31 +150,6 @@ class AnvilSeeder {
     console.log('Completed transfer', { to, value });
   }
 
-  async paymasterDeposit(amount) {
-    const paymasterAddress = this.smartContractRegistry.getContractAddress(
-      SMART_CONTRACTS.VERIFYING_PAYMASTER,
-    );
-
-    const { publicClient, walletClient, testClient } = this.provider;
-    const fromAddress = (await walletClient.getAddresses())[0];
-
-    const transaction = await walletClient.writeContract({
-      account: fromAddress,
-      abi: contractConfiguration[SMART_CONTRACTS.VERIFYING_PAYMASTER].abi,
-      functionName: 'deposit',
-      address: paymasterAddress,
-      value: amount,
-    });
-
-    await testClient.mine({
-      blocks: 1,
-    });
-
-    await publicClient.getTransactionReceipt({ hash: transaction });
-
-    console.log('Completed paymaster deposit', { amount });
-  }
-
   /**
    * Store deployed smart contract address within the environment variables
    * to make it available everywhere.
@@ -217,10 +191,6 @@ class AnvilSeeder {
         contractConfig.decimalUnits,
         contractConfig.tokenSymbol,
       ];
-    } else if (contractName === SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY) {
-      return [ENTRYPOINT];
-    } else if (contractName === SMART_CONTRACTS.VERIFYING_PAYMASTER) {
-      return [ENTRYPOINT, DEFAULT_FIXTURE_ACCOUNT];
     }
     return [];
   }

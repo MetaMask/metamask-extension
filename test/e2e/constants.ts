@@ -90,26 +90,9 @@ export const HARDWARE_WALLET_ACCOUNT_ID =
 /** Trezor hardware wallet address (lowercase) */
 export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
-/* Address of the 4337 entrypoint smart contract. */
-export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
-
-/* Address of the generated ERC-4337 account. */
-export const ERC_4337_ACCOUNT = '0x8FCd29A7887f82463E0eA7332CB1ce431A4430F7';
-
-/* URL of the 4337 account snap site. */
-export const ERC_4337_ACCOUNT_SNAP_URL =
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/';
-
-/* Address of the SimpleAccountFactory smart contract deployed to the local node. */
-export const SIMPLE_ACCOUNT_FACTORY =
-  '0x4aFf835038b16dccDb1670103C4877A8F93E5219';
-
 /* URL of the Snap Simple Keyring site. */
 export const TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL =
   'https://metamask.github.io/snap-simple-keyring/1.1.6/';
-
-/* Address of the VerifyingPaymaster smart contract deployed to the local node. */
-export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
 
 /* Default local node ETH balance in decimal when first login */
 export const DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC = '25';
@@ -140,10 +123,6 @@ const mm = (pkg: string, ...rest: string[]): readonly string[] => [
 export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
   Object.freeze({
     'snap-simple-keyring-site': mm('snap-simple-keyring-site', 'public'),
-    'snap-account-abstraction-keyring': mm(
-      'snap-account-abstraction-keyring-site',
-      'public',
-    ),
     'test-dapp': mm('test-dapp', 'dist'),
     'test-dapp-multichain': mm('test-dapp-multichain', 'build'),
     'test-dapp-mm-connect': mm('browser-playground', 'build'),
@@ -161,7 +140,6 @@ export const DAPP_PATH = Object.freeze({
   TEST_DAPP_TRON: 'test-dapp-tron',
   TEST_SNAPS: 'test-snaps',
   SNAP_SIMPLE_KEYRING_SITE: 'snap-simple-keyring-site',
-  SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
 } as const);
 
 /* Default BTC address created using test SRP (E2E_SRP) with BIP84 derivation */
@@ -326,5 +304,4 @@ export const WINDOW_TITLES = Object.freeze({
   TronTestDApp: 'Tron Test Dapp',
   TestE2EPage: 'E2E Test Page',
   TestSnaps: 'Test Snaps',
-  ERC4337Snap: 'Account Abstraction Snap',
 });

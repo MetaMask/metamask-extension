@@ -4,7 +4,6 @@ import { setEnvironmentVariables } from './set-environment-variables';
 
 const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'DEBUG',
-  'EIP_4337_ENTRYPOINT',
   'IN_TEST',
   'INFURA_PROJECT_ID',
   'INFURA_ENV_KEY_REF',
@@ -37,7 +36,6 @@ function getVariablesForSetEnvironmentVariables() {
 
   variables.set({
     DEBUG: false,
-    EIP_4337_ENTRYPOINT: '0x0000000000000000000000000000000000000000',
     INFURA_PROJECT_ID: 'direct-infura-project-id',
     INFURA_ENV_KEY_REF: 'INFURA_PROD_PROJECT_ID',
     INFURA_PROD_PROJECT_ID: 'prod-infura-project-id',
