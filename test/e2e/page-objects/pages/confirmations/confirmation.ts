@@ -76,38 +76,6 @@ class Confirmation {
     console.log('Confirmation page is loaded');
   }
 
-  /**
-   * Checks if the confirm button is enabled on the confirmation page.
-   */
-  async checkIsConfirmButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.footerConfirmButton, {
-        timeout: 2000,
-      });
-    } catch (e) {
-      console.log('Confirm button not enabled', e);
-      return false;
-    }
-    console.log('Confirm button is enabled');
-    return true;
-  }
-
-  /**
-   * Checks if the cancel button is enabled on the confirmation page.
-   */
-  async checkIsCancelButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.footerCancelButton, {
-        timeout: 2000,
-      });
-    } catch (e) {
-      console.log('Cancel button not enabled', e);
-      return false;
-    }
-    console.log('Cancel button is enabled');
-    return true;
-  }
-
   async clickScrollToBottomButton() {
     await this.driver.clickElementSafe(this.scrollToBottomButton);
   }

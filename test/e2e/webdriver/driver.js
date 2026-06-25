@@ -1296,8 +1296,28 @@ class Driver {
    */
   async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
     const handle = await this.driver.getWindowHandle();
+
+    // First attempt preserves the existing behavior: it throws if the element
+    // is genuinely missing and retries on stale/intercepted/not-interactable.
     await this.clickElement(rawLocator, retries);
-    await this.waitForWindowToClose(handle);
+
+    // A React re-render can swallow a click without throwing (the click lands
+    // but the handler was re-attached), leaving the window open and the old
+    // single click + wait timing out. Re-click until the window actually
+    // closes, which is the concrete effect we can verify here.
+    // `clickElementSafe` is bounded and non-throwing, so a button/window that
+    // has already gone away as it closes doesn't abort the loop.
+    await this.waitUntil(
+      async () => {
+        const handles = await this.getAllWindowHandles();
+        if (!handles.includes(handle)) {
+          return true;
+        }
+        await this.clickElementSafe(rawLocator);
+        return false;
+      },
+      { interval: 500, timeout: this.timeout },
+    );
   }
 
   /**
