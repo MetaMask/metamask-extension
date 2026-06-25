@@ -1,5 +1,5 @@
 import React, { FormEvent, useCallback, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Text,
@@ -33,8 +33,8 @@ import {
   MANAGE_WALLET_RECOVERY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -45,19 +45,10 @@ export default function RevealRecoveryPhrase({
 }) {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+  const isFirefox = useIsFirefox();
+  const { isFromSettingsSecurity, nextRouteQueryString } =
+    useOnboardingSearchParams();
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
-  const queryParams = new URLSearchParams();
-  if (isFromReminder) {
-    queryParams.set('isFromReminder', isFromReminder);
-  }
-  if (isFromSettingsSecurity) {
-    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
-  }
-  const nextRouteQueryString = queryParams.toString();
 
   const [password, setPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -65,13 +56,12 @@ export default function RevealRecoveryPhrase({
 
   useEffect(() => {
     if (hasSeedPhraseBackedUp) {
-      const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
       navigate(
         isFirefox ? ONBOARDING_COMPLETION_ROUTE : ONBOARDING_METAMETRICS,
         { replace: true },
       );
     }
-  }, [navigate, hasSeedPhraseBackedUp]);
+  }, [navigate, hasSeedPhraseBackedUp, isFirefox]);
 
   const onSubmit = useCallback(
     async (_password: string) => {
