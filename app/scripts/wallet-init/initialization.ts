@@ -88,11 +88,9 @@ export function initializeWallet({
     },
   });
 
-  // Keep the wallet-owned `RemoteFeatureFlagController` enabled/disabled in sync
-  // with onboarding and the external-services preference. The baseline mirrors
-  // each controller's default (external services on unless explicitly opted out,
-  // onboarding incomplete by default), matching the `disabled` value computed
-  // above.
+  // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
+  // and the external-services preference, seeded from the same persisted state
+  // as the initial `disabled` value above.
   setupRemoteFeatureFlagToggle({
     messenger,
     remoteFeatureFlagController: wallet.getInstance(
