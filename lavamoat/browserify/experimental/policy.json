@@ -3292,7 +3292,6 @@
     },
     "@mui/x-date-pickers>@mui/utils": {
       "globals": {
-        "ShadowRoot": true,
         "URL": true,
         "clearTimeout": true,
         "console.error": true,

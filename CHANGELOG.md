@@ -41,10 +41,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added Blockaid spender scanning for legacy ERC-20 `increaseApproval` transactions (e.g. LINK, stLINK, BAT). (#43141)
-- Perps market search now matches full market names — e.g. searching "bitcoin" finds BTC (and BCH), "tesla" finds TSLA,"spacex" finds SPCX. (#43456)
-- Added design changes for swaps filter (#43453)
-- UI update for network filter (#43310)
-- Updated MM Pay token picker to use inline row layout with error messages shown above the payment details (#43313)
+- Perps market search now matches full market names — e.g. searching "bitcoin" finds BTC (and BCH), "tesla" finds TSLA, "spacex" finds SPCX. (#43456)
+- Added design changes for swaps filter. (#43453)
+- UI update for network filter. (#43310)
+- Updated MM Pay token picker to use inline row layout with error messages shown above the payment details. (#43313)
 - Added compliance blocking for restricted wallets using Perps. (#42519)
 - Extends dapp scanning capability to include path-based domains. (#42311)
 - Added a Batch Sell entry point in the wallet overview action area, allowing users to select and sell multiple tokens across supported networks in one flow. (#42408)
@@ -59,13 +59,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed a false "Insufficient funds" error on perps when the size slider is set to 100%. (#43383)
-- Asset picker network (#43465)
+- Asset picker network. (#43465)
 - Updated gas token picker design to remove background pill and show a right-facing arrow. (#43165)
 - Routed the default zkSync Era RPC through Infura for improved performance and reliability. (#43407)
 - Fixed a bug where Firefox clipped the top of the search field focus outline in Send and Receive. (#43120)
 - Fix trezor connection for Firefox browser. (#43179)
 - Exclude Ondo assets from batch sell select screen. (#43327)
 - Fixed a bug where switching the extension between side panel and popup view and back could reopen MetaMask in the popup, sometimes leaving both the side panel and popup open at the same time. (#43221)
+- Fixed a bug where switching the extension between side panel and popup view and back could reopen MetaMask in the popup,
+  sometimes leaving both the side panel and popup open at the same time. (#43221)
 - Delete token list. (#43108)
 - Fixed the Perps withdraw button doing nothing when a non-EVM network (Solana, Bitcoin, Tron) was selected. (#43212)
 
@@ -74,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added Arc network integration (#43509)
+- Added swap bridge for Arc mainnet (#43485)
 
 ### Changed
 
@@ -94,6 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Arc as Default Network (network/native logo + native price + multicall) (#43114)
 - Added a confirmation modal when closing all perpetual positions (#42613)
 - Add Telegram provider to Social Login options (#43125)
+- Add new hardware wallet reconnection page. (#42680)
 
 ### Changed
 
@@ -103,18 +107,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - chore(6921): upgrade React type definitions to v18 and codemod explicit children typing (#42616)
 - Updated the Sei network and token logo to Sei's new brand mark. (#43117)
 - chore: migrate `checkIsSeedlessPasswordOutdated` to `LegacyBackgroundApiService` (#43131)
+- Removes `toggleNetworkMenuAfterSubmit ?` pre-condition for replacement RPC networks-form. (#42980)
+- Update legacy settings routes to new correct ones. (#43111)
+- Updated API for token management list. (#43401)
+- Updated assets-controller patch to add reconciliation/self-healing metadata. (#43500)
 
 ### Fixed
 
 - Fixed missing token icons (e.g. mUSD) in transaction confirmation rows and estimated changes. (#43133)
-- Removes `toggleNetworkMenuAfterSubmit ?` pre-condition for replacement RPC networks-form (#42980)
-- Update legacy settings routes to new correct ones (#43111)
-- Fixed navigation issue where tapping "Add Funds" in the perps order screen caused the back button to require two taps (#43002)
-- Add new hardware wallet reconnection page. (#42680)
-- Fix aggregated balance (#43061)
+- Fixed navigation issue where tapping "Add Funds" in the perps order screen caused the back button to require two taps. (#43002)
+- Fix aggregated balance. (#43061)
 - Disabled passkey unlock and setup on mobile browsers where the experience is unreliable. (#43009)
-- Fix routing after hardware wallet onboarding (#42952)
-- Updated onboarding metrics for Telegram Login. fixed onboarding unlock metrics. (#43052)
+- Fix routing after hardware wallet onboarding. (#42952)
+- Updated onboarding metrics for Telegram Login, fixed onboarding unlock metrics. (#43052)
+- Fixed tokens without symbol breaking the app. (#43514)
+- Fixed native tokens disappearing and gas issues. (#43448)
+- Fixed NFT buy activity type. (#43289)
+- Fixed stringified numeric values to be numeric in token details page. (#43420)
+- Fixed token list font size. (#43326)
+- Fixed PNL display to limit to 2 decimal places in close all positions modal. (#43400)
+- Fixed Telegram logo in onboarding. (#43368)
+- Fixed stale swap status. (#43300)
+- Fixed OAuth client IDs configuration. (#43283)
 
 ## [13.34.1]
 
