@@ -1,5 +1,8 @@
 import { Driver } from '../../../webdriver/driver';
 
+// Matches ANIMATION_TIME in ui/pages/onboarding-flow/privacy-settings/privacy-settings.tsx.
+const PRIVACY_SUB_PAGE_ANIMATION_MS = 600;
+
 class OnboardingPrivacySettingsPage {
   private driver: Driver;
 
@@ -176,11 +179,22 @@ class OnboardingPrivacySettingsPage {
   }
 
   /**
+   * Wait for the privacy sub-page slide transition to finish.
+   *
+   * Do not use waitForElementToStopMoving on sub-page controls here — React
+   * remounts the detail view during the transition, which causes stale element
+   * references while the container is still animating.
+   */
+  private async waitForPrivacySubPageAnimation(): Promise<void> {
+    await this.driver.delay(PRIVACY_SUB_PAGE_ANIMATION_MS);
+  }
+
+  /**
    * Navigate back to the onboarding privacy settings page.
    */
   async navigateBackToSettingsPage(): Promise<void> {
     console.log('Navigate back to onboarding privacy settings page');
-    await this.driver.waitForElementToStopMoving(this.subPageBackButton);
+    await this.waitForPrivacySubPageAnimation();
     await this.driver.clickElement(this.subPageBackButton);
     await this.checkPageIsLoaded();
   }
@@ -193,10 +207,7 @@ class OnboardingPrivacySettingsPage {
       this.privacySettingsDetail,
       this.subPageBackButton,
     ]);
-    // The privacy sub-page slides in over 500ms; wait until it settles before
-    // reading or clicking toggles, otherwise clicks can miss and state checks
-    // can falsely report a toggle as already off.
-    await this.driver.waitForElementToStopMoving(this.subPageBackButton);
+    await this.waitForPrivacySubPageAnimation();
     await this.driver.waitForSelector(
       this.getPrivacyToggleButtonSelector(
         this.advancedPrivacyToggleContainerTestIds[0],
@@ -213,6 +224,7 @@ class OnboardingPrivacySettingsPage {
       this.privacySettingsNetworkRpc,
       this.subPageBackButton,
     ]);
+    await this.waitForPrivacySubPageAnimation();
   }
 
   /**
