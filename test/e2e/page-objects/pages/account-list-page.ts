@@ -108,10 +108,14 @@ class AccountListPage {
   private readonly hiddenAccountOptionsMenuButton =
     '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
 
-  private readonly hiddenAccountsList = '[data-testid="hidden-accounts-list"]';
+  private readonly hiddenAccountsList =
+    '[data-testid="multichain-account-tree-hidden-header"]';
 
-  private readonly hideUnhideAccountButton =
-    '[data-testid="account-list-menu-hide"]';
+  private readonly hideAccountButton =
+    '[data-testid="multichain-account-menu-item-hideAccount"]';
+
+  private readonly unhideAccountButton =
+    '[data-testid="multichain-account-menu-item-showAccount"]';
 
   private readonly importAccountConfirmButton =
     '[data-testid="import-account-confirm-button"]';
@@ -156,10 +160,14 @@ class AccountListPage {
     text: 'Rename',
   };
 
-  private readonly pinUnpinAccountButton =
-    '[data-testid="account-list-menu-pin"]';
+  private readonly pinAccountButton =
+    '[data-testid="multichain-account-menu-item-pinToTop"]';
 
-  private readonly pinnedIcon = '[data-testid="account-pinned-icon"]';
+  private readonly unpinAccountButton =
+    '[data-testid="multichain-account-menu-item-unpin"]';
+
+  private readonly pinnedHeader =
+    '[data-testid="multichain-account-tree-pinned-header"]';
 
   private readonly removeAccountButton =
     '[data-testid="account-list-menu-remove"]';
@@ -255,10 +263,8 @@ class AccountListPage {
     await this.driver.clickElement(this.addEoaAccountButton);
     await this.driver.waitForSelector(this.watchAccountModalTitle);
     await this.driver.fill(this.watchAccountAddressInput, address);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.watchAccountConfirmButton,
-    );
     if (expectedErrorMessage) {
+      await this.driver.clickElement(this.watchAccountConfirmButton);
       console.log(
         `Check if error message is displayed: ${expectedErrorMessage}`,
       );
@@ -268,7 +274,7 @@ class AccountListPage {
       });
     } else {
       await this.driver.clickElementAndWaitToDisappear(
-        this.addAccountConfirmButton,
+        this.watchAccountConfirmButton,
       );
     }
   }
@@ -400,7 +406,8 @@ class AccountListPage {
 
   async hideAccount(): Promise<void> {
     console.log(`Hide account in account list`);
-    await this.driver.clickElement(this.hideUnhideAccountButton);
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.hideAccountButton);
   }
 
   /**
@@ -557,7 +564,7 @@ class AccountListPage {
   async openAccountOptionsMenu(): Promise<void> {
     console.log(`Open account option menu`);
     await this.driver.waitForSelector(this.accountListItem);
-    await this.driver.clickElement(this.accountOptionsMenuButton);
+    await this.driver.clickElement(this.multichainAccountOptionsMenuButton);
   }
 
   async openConnectHardwareWalletModal(): Promise<void> {
@@ -581,7 +588,8 @@ class AccountListPage {
 
   async pinAccount(): Promise<void> {
     console.log(`Pin account in account list`);
-    await this.driver.clickElement(this.pinUnpinAccountButton);
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.pinAccountButton);
   }
 
   /**
@@ -619,12 +627,14 @@ class AccountListPage {
 
   async unhideAccount(): Promise<void> {
     console.log(`Unhide account in account list`);
-    await this.driver.clickElement(this.hideUnhideAccountButton);
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.unhideAccountButton);
   }
 
   async unpinAccount(): Promise<void> {
     console.log(`Unpin account in account list`);
-    await this.driver.clickElement(this.pinUnpinAccountButton);
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.unpinAccountButton);
   }
 
   /**
@@ -783,12 +793,12 @@ class AccountListPage {
 
   async checkAccountIsPinned(): Promise<void> {
     console.log(`Check that account is pinned`);
-    await this.driver.waitForSelector(this.pinnedIcon);
+    await this.driver.waitForSelector(this.pinnedHeader);
   }
 
   async checkAccountIsUnpinned(): Promise<void> {
     console.log(`Check that account is unpinned`);
-    await this.driver.assertElementNotPresent(this.pinnedIcon);
+    await this.driver.assertElementNotPresent(this.pinnedHeader);
   }
 
   async checkAddAccountSnapButtonIsDisplayed(): Promise<void> {

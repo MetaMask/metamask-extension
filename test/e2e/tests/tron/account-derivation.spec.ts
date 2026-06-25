@@ -3,7 +3,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import { waitUntilAccountTreeSyncIdle } from '../../page-objects/flows/tron-account-derivation.flow';
+import { waitUntilAccountTreeSyncIdle, addNHdAccountsForTronDerivation } from '../../page-objects/flows/tron-account-derivation.flow';
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -96,32 +96,19 @@ async function assertTronAddressesForAccounts(
   await accountList.closeMultichainAccountsPage();
 }
 
-async function addMultichainAccountsThrough(
-  driver: Driver,
-  total: number,
-): Promise<void> {
-  if (total < 2) {
-    return;
-  }
-
-  const homepage = new HomePage(driver);
-  const accountList = new AccountListPage(driver);
-
-  await waitUntilAccountTreeSyncIdle(driver);
-  await homepage.headerNavbar.openAccountMenu();
-  await accountList.checkPageIsLoaded();
-
-  for (let accountNumber = 2; accountNumber <= total; accountNumber += 1) {
-    await waitUntilAccountTreeSyncIdle(driver);
-    await accountList.addMultichainAccount();
-    await accountList.checkMultichainAccountNameDisplayed(
-      `Account ${accountNumber}`,
-    );
-  }
-
-  await accountList.closeMultichainAccountsPage();
-}
-
+/**
+ * Tron HD address derivation E2E cluster (WPN-685).
+ *
+ * Two concepts:
+ * - Tron address derivation (automatic): BIP44 Stage 2 derives Tron for each HD index once Tron is enabled (mocked via BIP44_STAGE_TWO).
+ * - HD account groups (manual in most tests): a fresh wallet only has Account 1; Accounts 2-8 are added via "Add account" or asset discovery.
+ *
+ * Coverage map:
+ * - incremental add 1-8: add + assert per step — derivation correct at each new HD index
+ * - 8 existing groups: add 8, then enable Tron — retroactive alignment when network enabled later
+ * - asset discovery 1-5: mocked txs, no manual add — automatic discovery; Account 6 absent
+ * - quick-copy / QR / Receive: add 8 upfront — Tron address on each surface for all indices
+ */
 describe('Tron account derivation', function (this: Suite) {
   this.timeout(240_000);
 
@@ -183,7 +170,7 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        await addMultichainAccountsThrough(driver, 8);
+        await addNHdAccountsForTronDerivation(driver, 8);
 
         await selectTronNetwork(driver);
         await waitUntilAccountTreeSyncIdle(driver);
@@ -222,7 +209,7 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addMultichainAccountsThrough(driver, 8);
+        await addNHdAccountsForTronDerivation(driver, 8);
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -297,7 +284,7 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addMultichainAccountsThrough(driver, 8);
+        await addNHdAccountsForTronDerivation(driver, 8);
 
         const homepage = new NonEvmHomepage(driver);
         const accountList = new AccountListPage(driver);
