@@ -1,4 +1,5 @@
 import { noop } from 'lodash';
+import { getAnalyticsMessenger } from '../../controllers/analytics';
 import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 import {
   getPPOMControllerMessenger,
@@ -376,7 +377,7 @@ export const MESSENGER_FACTORIES = {
   },
   AnalyticsController: {
     getMessenger: getAnalyticsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getAnalyticsMessenger,
   },
   AssetsController: {
     getMessenger: getAssetsControllerMessenger,

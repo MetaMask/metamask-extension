@@ -270,9 +270,7 @@ describe('NFTs options', () => {
     fireEvent.click(await findByTestId('sort-by-networks'));
     fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${NETWORKS_ROUTE}?drawerOpen=true`,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
   });
 
   it('labels selected default networks as All networks when there are no custom or test networks visible', async () => {
@@ -368,9 +366,7 @@ describe('NFTs options', () => {
 
     fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${NETWORKS_ROUTE}?drawerOpen=true`,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
   });
 
   it('opens the legacy Network Manager modal when network management feature flag is disabled', async () => {
