@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
 import {
-  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
