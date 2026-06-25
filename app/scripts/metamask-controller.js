@@ -3440,7 +3440,10 @@ export default class MetamaskController extends EventEmitter {
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
-      exportAccount: this.exportAccount.bind(this),
+      exportAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:exportAccount',
+      ),
       exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
       exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
 
@@ -4018,11 +4021,6 @@ export default class MetamaskController extends EventEmitter {
       this.onboardingController.resetOnboarding();
       this.appStateController.setIsWalletResetInProgress(true);
     }
-  }
-
-  async exportAccount(address, password) {
-    await this.keyringController.verifyPassword(password);
-    return this.keyringController.exportAccount({ password }, address);
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
