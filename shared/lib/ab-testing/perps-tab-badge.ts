@@ -1,5 +1,6 @@
 import { MetaMetricsEventName } from '../../constants/metametrics';
 import type { ABTestAnalyticsMapping } from './ab-test-analytics';
+import { ABTestVariant, type ABTestVariantName } from './variants';
 
 /**
  * Remote feature flag key for the Perps tab "New" badge A/B test.
@@ -9,27 +10,22 @@ import type { ABTestAnalyticsMapping } from './ab-test-analytics';
  */
 export const PERPS_TAB_BADGE_AB_KEY = 'perpsTAT3382AbtestTabBadge';
 
-export const PerpsTabBadgeVariant = {
-  Control: 'control',
-  Treatment: 'treatment',
-} as const;
-
 export type PerpsTabBadgeVariants = {
   control: { showBadge: false };
   treatment: { showBadge: true };
 };
 
 export const PERPS_TAB_BADGE_VARIANTS: PerpsTabBadgeVariants = {
-  [PerpsTabBadgeVariant.Control]: { showBadge: false },
-  [PerpsTabBadgeVariant.Treatment]: { showBadge: true },
+  [ABTestVariant.Control]: { showBadge: false },
+  [ABTestVariant.Treatment]: { showBadge: true },
 };
 
 export const PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA = {
   experimentName: 'Perps Tab Badge',
   variationNames: {
-    control: 'No badge on Perps tab',
-    treatment: '"New" badge on Perps tab',
-  },
+    [ABTestVariant.Control]: 'No badge on Perps tab',
+    [ABTestVariant.Treatment]: '"New" badge on Perps tab',
+  } satisfies Record<ABTestVariantName, string>,
 } as const;
 
 /**
@@ -41,6 +37,6 @@ export const PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA = {
 export const PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping =
   {
     flagKey: PERPS_TAB_BADGE_AB_KEY,
-    validVariants: Object.values(PerpsTabBadgeVariant),
+    validVariants: [ABTestVariant.Control, ABTestVariant.Treatment],
     eventNames: [MetaMetricsEventName.PerpsScreenViewed],
   };

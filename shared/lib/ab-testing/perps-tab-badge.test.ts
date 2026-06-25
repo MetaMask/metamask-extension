@@ -13,8 +13,8 @@ import {
   PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING,
   PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
   PERPS_TAB_BADGE_VARIANTS,
-  PerpsTabBadgeVariant,
 } from './perps-tab-badge';
+import { ABTestVariant } from './variants';
 
 describe('perps-tab-badge config', () => {
   it('uses a compliant remote feature flag key', () => {
@@ -37,8 +37,8 @@ describe('perps-tab-badge config', () => {
     expect(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING).toStrictEqual({
       flagKey: PERPS_TAB_BADGE_AB_KEY,
       validVariants: [
-        PerpsTabBadgeVariant.Control,
-        PerpsTabBadgeVariant.Treatment,
+        ABTestVariant.Control,
+        ABTestVariant.Treatment,
       ],
       eventNames: [MetaMetricsEventName.PerpsScreenViewed],
     });

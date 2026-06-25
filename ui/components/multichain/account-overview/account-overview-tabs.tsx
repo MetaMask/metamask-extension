@@ -2,7 +2,15 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
-import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
@@ -35,14 +43,7 @@ import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
-import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-} from '../../../helpers/constants/design-system';
 import { useABTest } from '../../../hooks/useABTest';
 import {
   PERPS_TAB_BADGE_AB_KEY,
@@ -265,30 +266,34 @@ export const AccountOverviewTabs = ({
             name={
               showPerpsTabBadge ? (
                 <Box
-                  as="span"
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
+                  asChild
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
                   gap={1}
                 >
-                  {t('perps')}
-                  <Box
-                    as="span"
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    backgroundColor={BackgroundColor.primaryMuted}
-                    borderRadius={BorderRadius.SM}
-                    paddingLeft={2}
-                    paddingRight={2}
-                    data-testid="perps-tab-new-badge"
-                  >
-                    <Text
+                  <span>
+                    {t('perps')}
+                    <Box
                       asChild
-                      variant={TextVariant.BodySm}
-                      color={TextColor.PrimaryDefault}
+                      flexDirection={BoxFlexDirection.Row}
+                      alignItems={BoxAlignItems.Center}
+                      backgroundColor={BoxBackgroundColor.PrimaryMuted}
+                      paddingLeft={2}
+                      paddingRight={2}
+                      className="rounded-sm"
+                      data-testid="perps-tab-new-badge"
                     >
-                      <span>{t('perpsFilterNew')}</span>
-                    </Text>
-                  </Box>
+                      <span>
+                        <Text
+                          asChild
+                          variant={TextVariant.BodySm}
+                          color={TextColor.PrimaryDefault}
+                        >
+                          <span>{t('perpsFilterNew')}</span>
+                        </Text>
+                      </span>
+                    </Box>
+                  </span>
                 </Box>
               ) : (
                 t('perps')
