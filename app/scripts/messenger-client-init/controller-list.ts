@@ -94,6 +94,7 @@ import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
+  ProofOfOwnershipService,
 } from '@metamask/profile-metrics-controller';
 import {
   GeolocationApiService,
@@ -239,6 +240,7 @@ export type MessengerClient =
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
+  | ProofOfOwnershipService
   | ConnectivityController;
 
 /**

@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   Box,
   Button,
   ButtonSize,
   ButtonVariant,
 } from '../../../../components/component-library';
-import { Skeleton } from '../../../../components/component-library/skeleton';
 import {
   Display,
   FlexDirection,

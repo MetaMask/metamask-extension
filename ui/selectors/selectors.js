@@ -1466,10 +1466,9 @@ export function getTokenSortConfig(state) {
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
  *
- * Deep-equal memo: merged tokenNetworkFilter object is often a new reference for the same filter.
  */
 // @deprecated('Use `getEnabledNetworks` instead')
-export const getTokenNetworkFilter = createDeepEqualSelector(
+export const getTokenNetworkFilter = createSelector(
   getCurrentChainId,
   getPreferences,
   getIsEvmMultichainNetworkSelected,
@@ -2988,9 +2987,8 @@ export function getTokenScanCache(state) {
  * @param {string[]} tokenAddresses
  * @returns {Record<string, TokenScanCacheResult>}
  *
- * Deep-equal memo: builds a fresh results object from cache + address list args.
  */
-export const getTokenScanResultsForAddresses = createDeepEqualSelector(
+export const getTokenScanResultsForAddresses = createParameterizedSelector(30)(
   getTokenScanCache,
   (_state, chainId) => chainId,
   (_state, _chainId, tokenAddresses) => tokenAddresses,
