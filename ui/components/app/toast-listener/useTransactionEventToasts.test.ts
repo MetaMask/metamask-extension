@@ -42,18 +42,10 @@ jest.mock('./shared', () => ({
   showFailedToast: jest.fn(),
 }));
 
-const mockShowPendingToast = showPendingToast as jest.MockedFunction<
-  typeof showPendingToast
->;
-const mockShowSuccessToast = showSuccessToast as jest.MockedFunction<
-  typeof showSuccessToast
->;
-const mockShowFailedToast = showFailedToast as jest.MockedFunction<
-  typeof showFailedToast
->;
-const mockDismissToast = dismissToast as jest.MockedFunction<
-  typeof dismissToast
->;
+const mockShowPendingToast = jest.mocked(showPendingToast);
+const mockShowSuccessToast = jest.mocked(showSuccessToast);
+const mockShowFailedToast = jest.mocked(showFailedToast);
+const mockDismissToast = jest.mocked(dismissToast);
 
 function createTransactionMeta(
   overrides: Partial<TransactionMeta> & Pick<TransactionMeta, 'id' | 'status'>,
@@ -62,7 +54,7 @@ function createTransactionMeta(
     chainId: '0x1',
     networkClientId: 'network-1',
     time: 1,
-    txParams: {},
+    txParams: { from: '0x0' },
     type: TransactionType.contractInteraction,
     ...overrides,
   };
