@@ -79,14 +79,26 @@ class OnboardingPrivacySettingsPage {
   // Matches ONBOARDING_PRIVACY_ITEMS in onboarding-privacy-sub-page.tsx (basic excluded).
   private readonly advancedPrivacyToggleContainerTestIds = [
     'batch-account-balance-requests-toggle-container',
-    'useSafeChainsListValidation',
-    'ipfs-gateway-resolution-container',
-    'make-smart-contracts-easier-toggle-container',
-    'ipfsToggle',
     'display-nft-media-toggle-container',
-    'use-nft-detection',
+    'ipfs-gateway-resolution-container',
+    'ipfsToggle',
+    'make-smart-contracts-easier-toggle-container',
     'proposed-nicknames-toggle-container',
+    'use-nft-detection',
+    'useSafeChainsListValidation'
   ] as const;
+
+  private getPrivacyToggleButtonSelector(containerTestId: string): string {
+    return `${this.privacySettingsDetail} [data-testid="${containerTestId}"] .toggle-button`;
+  }
+
+  private getPrivacyToggleOnSelector(toggleButton: string): string {
+    return `${toggleButton}.toggle-button--on:not(.toggle-button--disabled)`;
+  }
+
+  private getPrivacyToggleOffSelector(toggleButton: string): string {
+    return `${toggleButton}.toggle-button--off`;
+  }
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -269,18 +281,6 @@ class OnboardingPrivacySettingsPage {
     await this.driver.waitForSelector(this.basicFunctionalityToggleOffState);
 
     await this.navigateBackToSettingsPage();
-  }
-
-  private getPrivacyToggleButtonSelector(containerTestId: string): string {
-    return `${this.privacySettingsDetail} [data-testid="${containerTestId}"] .toggle-button`;
-  }
-
-  private getPrivacyToggleOnSelector(toggleButton: string): string {
-    return `${toggleButton}.toggle-button--on:not(.toggle-button--disabled)`;
-  }
-
-  private getPrivacyToggleOffSelector(toggleButton: string): string {
-    return `${toggleButton}.toggle-button--off`;
   }
 }
 
