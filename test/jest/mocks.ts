@@ -172,16 +172,6 @@ export function createMockInternalAccount({
         EthMethod.SignTypedDataV4,
       ];
       break;
-    case EthAccountType.Erc4337:
-      // NOTE: This is not really valid here, cause a SC account might not be deployed on
-      // every EVM chains, but for testing purposes we enable everything.
-      scopes = [EthScope.Testnet];
-      methods = [
-        EthMethod.PatchUserOperation,
-        EthMethod.PrepareUserOperation,
-        EthMethod.SignUserOperation,
-      ];
-      break;
     case BtcAccountType.P2wpkh: {
       // If no address is given, we fallback to testnet
       const isMainnet = Boolean(address) && isBtcMainnetAddress(address);

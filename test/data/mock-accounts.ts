@@ -12,10 +12,7 @@ import {
   SolScope,
   TrxScope,
 } from '@metamask/keyring-api';
-import {
-  ETH_EOA_METHODS,
-  ETH_4337_METHODS,
-} from '../../shared/constants/eth-methods';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 
 export const MOCK_ACCOUNT_EOA: InternalAccount = {
   id: '4974fc00-c0fb-4a18-8535-8407ec6d1952',
@@ -112,7 +109,7 @@ export const MOCK_ACCOUNT_ERC4337: InternalAccount = {
   id: '4d5921f2-2022-44ce-a84f-9f6a0f142a5c',
   address: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
   options: {},
-  methods: ETH_EOA_METHODS.concat(ETH_4337_METHODS),
+  methods: ETH_EOA_METHODS,
   // Smart accounts might not be available on every EVM chains, but that's ok for mock purposes.
   scopes: [EthScope.Testnet],
   type: EthAccountType.Erc4337,
