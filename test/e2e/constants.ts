@@ -96,15 +96,9 @@ export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 /* Address of the generated ERC-4337 account. */
 export const ERC_4337_ACCOUNT = '0x8FCd29A7887f82463E0eA7332CB1ce431A4430F7';
 
-/* URL of the local bundler server. */
-export const BUNDLER_URL = 'http://localhost:3000/rpc';
-
 /* URL of the 4337 account snap site. */
 export const ERC_4337_ACCOUNT_SNAP_URL =
   'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/';
-
-/* Salt used to generate the 4337 account. */
-export const ERC_4337_ACCOUNT_SALT = '0x1';
 
 /* Address of the SimpleAccountFactory smart contract deployed to the local node. */
 export const SIMPLE_ACCOUNT_FACTORY =

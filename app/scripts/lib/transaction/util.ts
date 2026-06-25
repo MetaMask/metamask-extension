@@ -1,5 +1,4 @@
 import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
-import { EthAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   TransactionController,
@@ -7,12 +6,7 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  AddUserOperationOptions,
-  UserOperationController,
-} from '@metamask/user-operation-controller';
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
-import { addHexPrefix } from 'ethereumjs-util';
 import { PPOMController } from '@metamask/ppom-validator';
 
 import { KeyringController } from '@metamask/keyring-controller';
@@ -63,7 +57,6 @@ type BaseAddTransactionRequest = {
   transactionController: TransactionController;
   keyringController: KeyringController;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
-  userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
   getSecurityAlertResponse: GetAddressSecurityAlertResponse;
   addSecurityAlertResponse: AddAddressSecurityAlertResponse;
@@ -234,25 +227,15 @@ export async function addTransaction(
 async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
 ) {
-  const { selectedAccount } = request;
   const isTempoChainId = isTempoChain(request.chainId);
   if (isTempoChainId) {
     return addTransactionOnTempo(request);
   }
 
-  const isSmartContractAccount =
-    selectedAccount.type === EthAccountType.Erc4337;
-
-  if (isSmartContractAccount) {
-    return addUserOperationWithController(request);
-  }
-
   return addTransactionWithController(request);
 }
 
-async function addTransactionWithController(
-  request: FinalAddTransactionRequest,
-) {
+async function addTransactionWithController(request: FinalAddTransactionRequest) {
   const {
     transactionController,
     transactionOptions,
@@ -269,58 +252,6 @@ async function addTransactionWithController(
   return {
     transactionMeta,
     waitForHash: () => result,
-  };
-}
-
-async function addUserOperationWithController(
-  request: FinalAddTransactionRequest,
-) {
-  const {
-    networkClientId,
-    transactionController,
-    transactionOptions,
-    transactionParams,
-    userOperationController,
-  } = request;
-
-  const { maxFeePerGas, maxPriorityFeePerGas } = transactionParams;
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { origin, requireApproval, type } = transactionOptions as any;
-
-  const normalisedTransaction: TransactionParams = {
-    ...transactionParams,
-    maxFeePerGas: addHexPrefix(maxFeePerGas as string),
-    maxPriorityFeePerGas: addHexPrefix(maxPriorityFeePerGas as string),
-  };
-
-  const swaps = transactionOptions?.swaps?.meta;
-
-  if (swaps?.type) {
-    delete swaps.type;
-  }
-
-  const options: AddUserOperationOptions = {
-    networkClientId,
-    origin,
-    requireApproval,
-    swaps,
-    type,
-  };
-
-  const result = await userOperationController.addUserOperationFromTransaction(
-    normalisedTransaction,
-    options,
-  );
-
-  userOperationController.startPollingByNetworkClientId(networkClientId);
-
-  const transactionMeta = getTransactionById(result.id, transactionController);
-
-  return {
-    transactionMeta,
-    waitForHash: result.transactionHash,
   };
 }
 

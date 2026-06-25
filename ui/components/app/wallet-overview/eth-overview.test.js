@@ -590,9 +590,7 @@ describe('EthOverview', () => {
                   ...mockEvmAccount1,
                   // Filter out all methods used for signing transactions.
                   methods: Object.values(EthMethod).filter(
-                    (method) =>
-                      method !== EthMethod.SignTransaction &&
-                      method !== EthMethod.SignUserOperation,
+                    (method) => method !== EthMethod.SignTransaction,
                   ),
                 },
               },

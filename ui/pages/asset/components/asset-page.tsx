@@ -144,7 +144,6 @@ const AssetPage = ({
 
   const isSigningEnabled =
     selectedAccount.methods.includes(EthMethod.SignTransaction) ||
-    selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
     selectedAccount.methods.includes(SolMethod.SignTransaction) ||
     selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
     selectedAccount.type === TrxAccountType.Eoa;
