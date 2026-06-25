@@ -67,7 +67,6 @@ import {
 import type { Preferences } from '../../../shared/types/preferences';
 import * as sentry from '../../../shared/lib/sentry';
 import { ANONYMOUS_EVENT_PROPERTY } from './analytics/platform-adapter';
-import { configureAnalytics, getAnalyticsMessenger } from './analytics';
 import {
   configureAnalytics,
   getAnalyticsMessenger,
