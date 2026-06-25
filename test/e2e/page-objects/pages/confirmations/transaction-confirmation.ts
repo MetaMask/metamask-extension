@@ -277,12 +277,16 @@ class TransactionConfirmation extends Confirmation {
   }
 
   /**
-   * Waits until the network fee is displayed, confirming the gas fee row (which
-   * contains the edit gas fee icon) has rendered on the confirmation page.
+   * Waits until the network fee value is displayed, confirming the gas fee row
+   * (which contains the edit gas fee icon) has rendered on the confirmation
+   * page. The fee renders as fiat (`native-currency`) or token
+   * (`first-gas-field`) depending on preferences, so we accept either.
    */
   async checkGasFeeIsDisplayed(): Promise<void> {
     console.log('Checking the network fee is displayed');
-    await this.driver.waitForSelector(this.gasFeeText);
+    await this.driver.waitForSelector(
+      `${this.gasFeeFiatText as string}, ${this.gasFeeText as string}`,
+    );
   }
 
   async checkGasFeeLabel(label: string): Promise<void> {
