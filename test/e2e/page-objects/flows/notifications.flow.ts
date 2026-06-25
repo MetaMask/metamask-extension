@@ -53,7 +53,9 @@ export const enableNotificationsThroughGlobalMenu = async (
   await enableNotifications(driver);
 
   if (goToNotificationsSettings) {
-    if (!(await notificationsSettingsPage.isNotificationsSettingsPageDisplayed())) {
+    if (
+      !(await notificationsSettingsPage.isNotificationsSettingsPageDisplayed())
+    ) {
       await notificationsListPage.checkPageIsLoaded();
       await notificationsListPage.goToNotificationsSettings();
     }

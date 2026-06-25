@@ -285,7 +285,9 @@ class NotificationsSettingsPage {
         },
         { interval: 500, timeout: this.driver.timeout },
       );
-      console.log(`Successfully verified ${description} to be ${expectedState}`);
+      console.log(
+        `Successfully verified ${description} to be ${expectedState}`,
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(
