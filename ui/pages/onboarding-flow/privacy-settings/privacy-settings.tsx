@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import classnames from 'clsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
@@ -35,7 +35,6 @@ const ANIMATION_TIME = 500;
 export default function PrivacySettings() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { search } = useLocation();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
   const externalServicesOnboardingToggleState = useSelector(

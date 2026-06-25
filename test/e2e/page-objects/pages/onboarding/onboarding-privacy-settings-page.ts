@@ -190,12 +190,33 @@ class OnboardingPrivacySettingsPage {
   }
 
   /**
+   * Wait until the privacy detail view is fully torn down after navigating back.
+   *
+   * handleBack() clears activeView after ANIMATION_TIME, so the detail shell can
+   * still exist briefly while the landing page is already visible.
+   */
+  private async waitForPrivacySubPageToClose(): Promise<void> {
+    await this.driver.waitForSelector(this.privacySettingsDetail, {
+      state: 'detached',
+    });
+  }
+
+  /**
+   * Wait until privacy sub-page content is interactable.
+   */
+  private async waitForPrivacySubPageContent(): Promise<void> {
+    await this.driver.waitForSelector(this.subPageBackButton);
+    await this.driver.waitForSelector(this.basicFunctionalityToggle);
+  }
+
+  /**
    * Navigate back to the onboarding privacy settings page.
    */
   async navigateBackToSettingsPage(): Promise<void> {
     console.log('Navigate back to onboarding privacy settings page');
     await this.waitForPrivacySubPageAnimation();
     await this.driver.clickElement(this.subPageBackButton);
+    await this.waitForPrivacySubPageToClose();
     await this.checkPageIsLoaded();
   }
 
@@ -203,28 +224,17 @@ class OnboardingPrivacySettingsPage {
     console.log('Navigate to privacy settings');
     await this.checkPageIsLoaded();
     await this.driver.clickElement(this.privacySettingsItem);
-    await this.driver.waitForMultipleSelectors([
-      this.privacySettingsDetail,
-      this.subPageBackButton,
-    ]);
     await this.waitForPrivacySubPageAnimation();
-    await this.driver.waitForSelector(
-      this.getPrivacyToggleButtonSelector(
-        this.advancedPrivacyToggleContainerTestIds[0],
-      ),
-    );
+    await this.waitForPrivacySubPageContent();
   }
 
   async navigateToNetworkRpcSettings(): Promise<void> {
     console.log('Navigate to network RPC settings');
     await this.checkPageIsLoaded();
     await this.driver.clickElement(this.networkRpcSettingsItem);
-    await this.driver.waitForMultipleSelectors([
-      this.privacySettingsDetail,
-      this.privacySettingsNetworkRpc,
-      this.subPageBackButton,
-    ]);
     await this.waitForPrivacySubPageAnimation();
+    await this.driver.waitForSelector(this.subPageBackButton);
+    await this.driver.waitForSelector(this.privacySettingsNetworkRpc);
   }
 
   /**
