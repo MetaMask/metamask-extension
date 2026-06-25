@@ -113,7 +113,9 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
 
   it('wires the enable/disable toggle with the wallet-owned controller and a default-preserving baseline', () => {
     const controller = { name: 'RemoteFeatureFlagController' };
-    jest.mocked(MockWallet.prototype.getInstance).mockReturnValue(controller);
+    MockWallet.prototype.getInstance = jest
+      .fn()
+      .mockReturnValue(controller) as never;
     const messenger = createMockMessenger();
 
     initializeWallet({
@@ -133,7 +135,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
   });
 
   it('treats an explicit useExternalServices=false as opting out in the baseline', () => {
-    jest.mocked(MockWallet.prototype.getInstance).mockReturnValue({});
+    MockWallet.prototype.getInstance = jest.fn().mockReturnValue({}) as never;
 
     initializeWallet({
       messenger: createMockMessenger(),
