@@ -1,5 +1,5 @@
-import type { MetaMetricsEventPayload } from '../../constants/metametrics';
 import { MetaMetricsEventName } from '../../constants/metametrics';
+import type { AnalyticsEvent } from '../analytics/create-event-builder';
 import {
   AB_TEST_ANALYTICS_MAPPINGS,
   clearABTestAnalyticsMappings,
@@ -36,10 +36,7 @@ describe('perps-tab-badge config', () => {
   it('maps analytics enrichment to the existing Perp Screen Viewed event', () => {
     expect(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING).toStrictEqual({
       flagKey: PERPS_TAB_BADGE_AB_KEY,
-      validVariants: [
-        ABTestVariant.Control,
-        ABTestVariant.Treatment,
-      ],
+      validVariants: [ABTestVariant.Control, ABTestVariant.Treatment],
       eventNames: [MetaMetricsEventName.PerpsScreenViewed],
     });
   });
@@ -55,10 +52,10 @@ describe('perps-tab-badge config', () => {
 });
 
 describe('perps-tab-badge analytics enrichment', () => {
-  const createEvent = (event: string): MetaMetricsEventPayload => ({
-    event,
-    category: 'Unit Test',
+  const createEvent = (name: string): AnalyticsEvent => ({
+    name,
     properties: {},
+    sensitiveProperties: {},
   });
 
   beforeEach(() => clearABTestAnalyticsMappings());
