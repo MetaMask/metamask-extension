@@ -17,6 +17,7 @@ import type { TextColor as TextColorLegacyType } from '../../../helpers/constant
 
 import { TagComponent, TagProps } from './tag.types';
 
+/** @deprecated Use `Tag` from `@metamask/design-system-react` instead. */
 export const Tag: TagComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
