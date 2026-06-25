@@ -451,7 +451,7 @@ const AssetListControlBar = ({
                   }
                   ariaLabel={
                     isTokenManagementFilterEnabled
-                      ? t('assetOptions')
+                      ? t('manageTokens')
                       : t('importTokensCamelCase')
                   }
                 />
