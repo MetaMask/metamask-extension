@@ -276,6 +276,15 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  /**
+   * Waits until the network fee is displayed, confirming the gas fee row (which
+   * contains the edit gas fee icon) has rendered on the confirmation page.
+   */
+  async checkGasFeeIsDisplayed(): Promise<void> {
+    console.log('Checking the network fee is displayed');
+    await this.driver.waitForSelector(this.gasFeeText);
+  }
+
   async checkGasFeeLabel(label: string): Promise<void> {
     console.log(`Checking gas fee label is ${label}`);
     await this.driver.waitForSelector({ text: label });
