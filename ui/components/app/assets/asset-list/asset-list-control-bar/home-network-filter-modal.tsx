@@ -430,7 +430,7 @@ const HomeNetworkFilterModalContent = ({
     // Don't close the modal first — letting the whole current view (modal
     // included) transition as one view-transition snapshot keeps the motion
     // smooth. The modal's open state resets when the home route unmounts.
-    transitionForward(() => navigate(`${NETWORKS_ROUTE}?drawerOpen=true`));
+    transitionForward(() => navigate(NETWORKS_ROUTE));
   }, [navigate]);
 
   const sections = useMemo<NetworkSelectionSection[]>(() => {
