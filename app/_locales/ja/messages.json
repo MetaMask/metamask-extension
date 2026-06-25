@@ -5572,9 +5572,6 @@
   "newPrivacyPolicyTitle": {
     "message": "プライバシーポリシーが更新されました"
   },
-  "newRpcUrl": {
-    "message": "新しいRPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "$1をインポートしました。",
     "description": "$1 is the string of symbols of all the tokens imported"

@@ -5572,9 +5572,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Chúng tôi đã cập nhật chính sách quyền riêng tư"
   },
-  "newRpcUrl": {
-    "message": "URL RPC mới"
-  },
   "newTokensImportedMessage": {
     "message": "Bạn đã nhập thành công $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
