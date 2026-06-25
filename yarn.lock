@@ -5517,16 +5517,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:@metamask-previews/analytics-controller@1.1.1-preview-5133205c8":
-  version: 1.1.1-preview-5133205c8
-  resolution: "@metamask-previews/analytics-controller@npm:1.1.1-preview-5133205c8"
+"@metamask/analytics-controller@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/analytics-controller@npm:1.2.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/utils": "npm:^11.11.0"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/d7e91aa8fd30c560348af90633846339f493636a13c699ecd39c40884e70fd41bd2d3a121fdbb4a0a86a0832827071c32f422d275e858742a835ec264d440888
+  checksum: 10/b3f2f660aa8d9ecbb8f1c0491c8f409249adb17499503c3786536f975fa8f29608e58e82eca33a642d60e38cf68bb462810286a33f5bca74fbc6f06d55a1bc7b
   languageName: node
   linkType: hard
 
@@ -33293,7 +33293,7 @@ __metadata:
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^39.0.2"
     "@metamask/address-book-controller": "npm:^7.1.2"
-    "@metamask/analytics-controller": "npm:^1.1.1"
+    "@metamask/analytics-controller": "npm:^1.2.0"
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
