@@ -5723,9 +5723,6 @@
   "newPrivacyPolicyTitle": {
     "message": "We’ve updated our privacy policy"
   },
-  "newRpcUrl": {
-    "message": "New RPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "You’ve successfully imported $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -10566,7 +10563,7 @@
     "message": "Total volume"
   },
   "transaction": {
-    "message": "transaction"
+    "message": "Transaction"
   },
   "transactionConfirmed": {
     "message": "Transaction confirmed"

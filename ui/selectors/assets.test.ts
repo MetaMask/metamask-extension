@@ -393,14 +393,12 @@ describe('getMultiChainAssets', () => {
         balances: mockMultichainBalances,
       },
     };
-    const result1 = getMultiChainAssets(mockState, {
-      address: '0xAddress',
-      id: mockAccountId,
-    });
-    const result2 = getMultiChainAssets(mockState, {
-      address: '0xAddress',
-      id: mockAccountId,
-    });
+    // getMultiChainAssets uses createSelector (weakMapMemoize) which keys the
+    // cache on argument *references*.  Use the same account object both times so
+    // the second call is a cache hit and the result is the same reference.
+    const account = { address: '0xAddress', id: mockAccountId };
+    const result1 = getMultiChainAssets(mockState, account);
+    const result2 = getMultiChainAssets(mockState, account);
     expect(result1 === result2).toBe(true);
   });
 });
