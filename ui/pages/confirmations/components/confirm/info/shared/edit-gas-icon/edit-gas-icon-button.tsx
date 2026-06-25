@@ -1,17 +1,17 @@
 import React, { useCallback } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
-  Button,
-  ButtonSize,
-  ButtonVariant,
+  ButtonIcon,
+  ButtonIconSize,
   IconName,
-} from '../../../../../../../components/component-library';
-import { IconColor } from '../../../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useTransactionEventFragment } from '../../../../../hooks/useTransactionEventFragment';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useGasFeeModalContext } from '../../../../../context/gas-fee-modal';
 
 export const EditGasIconButton = (): JSX.Element => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -34,12 +34,10 @@ export const EditGasIconButton = (): JSX.Element => {
   );
 
   return (
-    <Button
-      style={{ textDecoration: 'none' }}
-      size={ButtonSize.Auto}
-      variant={ButtonVariant.Link}
-      startIconName={IconName.Edit}
-      color={IconColor.primaryDefault}
+    <ButtonIcon
+      iconName={IconName.Edit}
+      size={ButtonIconSize.Sm}
+      ariaLabel={t('edit')}
       data-testid="edit-gas-fee-icon"
       onClick={handleOpenGasFeeModal}
     />

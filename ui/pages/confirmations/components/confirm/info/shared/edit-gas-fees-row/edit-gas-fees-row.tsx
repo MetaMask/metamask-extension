@@ -5,28 +5,24 @@ import {
 import { Hex } from '@metamask/utils';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Skeleton,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../../../../../components/component-library';
-import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
@@ -117,7 +113,7 @@ export const EditGasFeesRow = ({
     showFiat && hasFiatValue && !showAdvancedDetails && !isGasFeeSponsored;
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+    <Box flexDirection={BoxFlexDirection.Column}>
       {isSponsorshipModalOpen && (
         <GasSponsorshipModal onClose={handleCloseSponsorshipModal} />
       )}
@@ -127,22 +123,20 @@ export const EditGasFeesRow = ({
         data-testid="edit-gas-fees-row"
         label={t('networkFee')}
         tooltip={tooltip}
-        style={{ alignItems: AlignItems.center }}
+        style={{ alignItems: BoxAlignItems.Center }}
       >
         {isLoadingGasUsed ? (
           <Skeleton height={16} width={128} />
         ) : (
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexEnd}
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.End}
           >
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.spaceBetween}
-              alignItems={AlignItems.center}
-              textAlign={TextAlign.Center}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+              className="text-center"
               gap={1}
               onClick={
                 isSponsorshipEligible ? handleOpenSponsorshipModal : undefined
@@ -154,7 +148,7 @@ export const EditGasFeesRow = ({
               {isGasFeeSponsored && <GasFeeSponsoredByMetaMask />}
               {isGasFeeEditable && <EditGasIconButton />}
               {estimationFailed && !isGasFeeSponsored && (
-                <Text color={TextColor.textDefault}>{t('unavailable')}</Text>
+                <Text color={TextColor.TextDefault}>{t('unavailable')}</Text>
               )}
               {!estimationFailed && (
                 <>
@@ -174,15 +168,15 @@ export const EditGasFeesRow = ({
                 <Icon
                   name={IconName.ArrowRight}
                   size={IconSize.Xs}
-                  color={IconColor.iconAlternative}
+                  color={IconColor.IconAlternative}
                   data-testid="gas-sponsorship-chevron"
                 />
               )}
             </Box>
             {isGasFeeSponsored && (
               <Text
-                variant={TextVariant.bodyXs}
-                color={TextColor.textAlternative}
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
                 data-testid="smart-account-activation-label"
               >
                 {t('includesSmartAccountActivation')}
@@ -193,16 +187,16 @@ export const EditGasFeesRow = ({
       </ConfirmInfoAlertRow>
       {!isGasFeeSponsored && (
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          paddingInline={2}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          paddingHorizontal={2}
         >
           <Box style={{ marginTop: gasFeeToken ? -8 : 0 }}>
             <Text
               data-testid="gas-fee-token-fee"
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              paddingBottom={gasFeeToken ? 2 : 0}
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              className={gasFeeToken ? 'pb-2' : ''}
             >
               {gasFeeToken?.metaMaskFee && gasFeeToken?.metaMaskFee !== '0x0'
                 ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
@@ -213,8 +207,8 @@ export const EditGasFeesRow = ({
             <FiatValue
               fullValue={fiatFeeWith18SignificantDigits}
               roundedValue={fiatValue}
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
             />
           )}
         </Box>
@@ -227,7 +221,7 @@ export const EditGasFeesRow = ({
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenValue({ roundedValue }: { roundedValue: string }) {
   return (
-    <Text color={TextColor.textDefault} data-testid="first-gas-field">
+    <Text color={TextColor.TextDefault} data-testid="first-gas-field">
       {roundedValue}
     </Text>
   );
@@ -267,17 +261,17 @@ function GasFeeSponsoredByMetaMask() {
 
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
       gap={1}
       data-testid="paid-by-meta-mask"
     >
       <Icon
         name={IconName.Check}
         size={IconSize.Sm}
-        color={IconColor.successDefault}
+        color={IconColor.SuccessDefault}
       />
-      <Text color={TextColor.successDefault}>{t('paidByMetaMask')}</Text>
+      <Text color={TextColor.SuccessDefault}>{t('paidByMetaMask')}</Text>
     </Box>
   );
 }

@@ -1,10 +1,15 @@
 import React, { useCallback } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
-
 import {
+  AvatarToken,
+  AvatarTokenSize,
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Modal,
@@ -14,18 +19,9 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-} from '../../../../../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useGasSponsorshipPreference } from '../../../../../hooks/gas/useGasSponsorshipPreference';
@@ -66,15 +62,14 @@ export function GasSponsorshipModal({ onClose }: { onClose: () => void }) {
         size={ModalContentSize.Md}
         modalDialogProps={{ paddingBottom: 0 }}
       >
-        <ModalHeader onClose={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           {t('gasSponsorshipModalTitle')}
         </ModalHeader>
         <ModalBody
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          paddingLeft={0}
-          paddingRight={0}
-          paddingBottom={0}
+          className="flex flex-col pl-0 pr-0 pb-0"
         >
           <SponsorshipOption
             isSelected={isSponsoredSelected}
@@ -138,26 +133,24 @@ function SponsorshipOption({
   return (
     <Box
       data-testid={`gas-sponsorship-option-${primaryText}`}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
-      backgroundColor={isSelected ? BackgroundColor.primaryMuted : undefined}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
+      backgroundColor={isSelected ? BoxBackgroundColor.PrimaryMuted : undefined}
       padding={4}
       marginBottom={0}
       onClick={onClick}
       style={{ cursor: 'pointer' }}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={3}
       >
         {icon}
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <Text variant={TextVariant.bodyMdMedium}>{primaryText}</Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Box flexDirection={BoxFlexDirection.Column}>
+          <Text variant={TextVariant.BodyMd} className="font-medium">{primaryText}</Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {secondaryText}
           </Text>
         </Box>
@@ -166,7 +159,7 @@ function SponsorshipOption({
         <Icon
           name={IconName.Check}
           size={IconSize.Lg}
-          color={IconColor.primaryDefault}
+          color={IconColor.PrimaryDefault}
           data-testid="gas-sponsorship-selected-check"
         />
       )}
@@ -179,12 +172,9 @@ function SponsorshipOption({
 function CircularIconWrapper({ children }: { children: React.ReactNode }) {
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      backgroundColor={BackgroundColor.backgroundMuted}
-      borderRadius={BorderRadius.full}
-      style={{ width: 40, height: 40, flexShrink: 0 }}
+      backgroundColor={BoxBackgroundColor.BackgroundMuted}
+      className="flex items-center justify-center rounded-full shrink-0"
+      style={{ width: 40, height: 40 }}
     >
       {children}
     </Box>

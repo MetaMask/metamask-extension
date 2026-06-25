@@ -89,6 +89,15 @@ export function useTransactionConfirm() {
       transactionMeta.isGasFeeSponsored &&
       !isSponsorshipOptedOut;
 
+    // When the user opts out of gas sponsorship, clear `isExternalSign` so the
+    // transaction goes through the normal sign-and-publish flow instead of
+    // being routed to the relay. The TransactionController sets
+    // `isExternalSign = true` whenever `isGasFeeSponsored` is true during gas
+    // estimation, so we must explicitly revert it here.
+    if (isSponsorshipOptedOut && transactionMeta.isExternalSign) {
+      newTransactionMeta.isExternalSign = false;
+    }
+
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
     } else if (selectedGasFeeToken) {
@@ -125,6 +134,7 @@ export function useTransactionConfirm() {
     isGaslessSupportedSTX,
     isSponsorshipOptedOut,
     transactionMeta?.isGasFeeSponsored,
+    transactionMeta?.isExternalSign,
     dispatch,
     showErrorModal,
     handleSmartTransaction,
