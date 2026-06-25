@@ -3,7 +3,10 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import type { MultichainNetwork } from '../../../selectors/multichain/networks';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
-import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import {
+  formatBlockExplorerAddressUrl,
+  formatBlockExplorerAssetUrl,
+} from '../../../../shared/lib/multichain/networks';
 
 export const getMultichainBlockExplorerUrl = (
   network: MultichainNetwork,
@@ -47,6 +50,15 @@ export const getAssetDetailsAccountUrl = (
   const { blockExplorerFormatUrls } =
     network.network as MultichainProviderConfig;
   if (blockExplorerFormatUrls) {
+    // For Stellar and other networks with asset support, use asset URL format
+    const assetUrl = formatBlockExplorerAssetUrl(
+      blockExplorerFormatUrls,
+      address,
+    );
+    if (assetUrl) {
+      return assetUrl;
+    }
+    // Fallback to address format for networks without asset support
     return formatBlockExplorerAddressUrl(blockExplorerFormatUrls, address);
   }
 

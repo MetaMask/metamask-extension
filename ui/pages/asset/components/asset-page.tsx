@@ -37,9 +37,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getBaseReserveFromExtra } from '../../../helpers/stellar/base-reserve-from-extra';
-import {
-  isStellarClassicTrustlineInactiveForDisplay,
-} from '../../../helpers/stellar/trustline-from-extra';
+import { isStellarClassicTrustlineInactiveForDisplay } from '../../../helpers/stellar/trustline-from-extra';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -339,12 +337,14 @@ const AssetPage = ({
 
   const stellarNativeBaseReserve =
     isStellarChainId && type === AssetType.native
-      ? getBaseReserveFromExtra(assetWithBalance?.extra)
+      ? getBaseReserveFromExtra(
+          assetWithBalance?.extra as { baseReserve?: string } | undefined,
+        ) ?? '0' // Default to '0' instead of undefined
       : undefined;
+
   const showStellarNativeBalanceSection =
     isStellarChainId &&
-    type === AssetType.native &&
-    stellarNativeBaseReserve !== undefined;
+    type === AssetType.native; // Always show for Stellar native
 
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
@@ -428,11 +428,7 @@ const AssetPage = ({
             />
           )}
           <MusdConvertSection />
-          <Box
-            marginTop={5}
-            marginBottom={5}
-            className="asset-page__divider"
-          />
+          <Box marginTop={5} marginBottom={5} className="asset-page__divider" />
         </>
       );
     }
@@ -442,9 +438,8 @@ const AssetPage = ({
         <StellarNativeBalanceSection
           totalBalance={String(balance)}
           symbol={symbol}
-          baseReserve={stellarNativeBaseReserve}
-          fiatValue={showFiat ? tokenFiatAmount : null}
-          showFiat={showFiat}
+          baseReserve={stellarNativeBaseReserve ?? '0'}
+          fiatValue={tokenFiatAmount}
         />
       );
     }
@@ -491,9 +486,6 @@ const AssetPage = ({
         </Box>
         {optionsButton}
       </Box>
-      <Box paddingLeft={4}>
-        {renderAssetTitleSection()}
-      </Box>
       <StellarClassicTrustlineActivateCard
         visible={showStellarClassicTrustlineActivate}
         account={selectedAccount}
@@ -501,6 +493,7 @@ const AssetPage = ({
         assetId={assetId as CaipAssetType}
         symbol={symbol}
       />
+      <Box paddingLeft={4}>{renderAssetTitleSection()}</Box>
       <AssetChart
         chainId={chainId}
         address={address}

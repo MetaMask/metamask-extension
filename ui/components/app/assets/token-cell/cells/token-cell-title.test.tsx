@@ -42,11 +42,14 @@ jest.mock('../../stock-badge/stock-badge', () => ({
   ),
 }));
 
-jest.mock('../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge', () => ({
-  StellarTrustlineInactiveBadge: () => (
-    <span data-testid="stellar-trustline-inactive-badge" />
-  ),
-}));
+jest.mock(
+  '../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge',
+  () => ({
+    StellarTrustlineInactiveBadge: () => (
+      <span data-testid="stellar-trustline-inactive-badge" />
+    ),
+  }),
+);
 
 const mockIsStockToken = jest.fn();
 const mockIsTokenTradingOpen = jest.fn();

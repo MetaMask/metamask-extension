@@ -9902,25 +9902,17 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
-  "stellarClassicActivateOnStellarBody": {
-    "message": "Two steps: fund wallet with XLM, then add $1",
+  "stellarClassicActivateOnStellar": {
+    "message": "Activate $1 on Stellar to get started.",
     "description": "Explainer for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
   },
   "stellarClassicActivateOnStellarButton": {
     "message": "Activate",
     "description": "Primary button to submit a Stellar classic trustline add via the wallet snap"
   },
-  "stellarClassicActivateOnStellarTitle": {
-    "message": "Activate $1 on Stellar",
-    "description": "Title for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
-  },
   "stellarClassicDeactivateOnStellar": {
-    "message": "Deactivate $1 on Stellar",
-    "description": "Button label to deactivate an active Stellar classic asset on the asset detail page. $1 is the token symbol."
-  },
-  "stellarClassicDeactivateOnStellarDetail": {
-    "message": "Remove trustline to deactivate",
-    "description": "Tooltip for the deactivate Stellar classic asset button on the asset detail page"
+    "message": "Remove",
+    "description": "Button label to deactivate an active Stellar classic asset on the asset detail page."
   },
   "stellarClassicTrustlineAddError": {
     "message": "Something went wrong while adding this trustline. Try again.",

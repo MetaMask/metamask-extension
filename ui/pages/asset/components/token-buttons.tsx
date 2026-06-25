@@ -191,92 +191,83 @@ const TokenButtons = ({
   ]);
 
   return (
-    <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.Dollar}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        label={t('buy')}
-        data-testid="token-overview-buy"
-        onClick={handleBuyAndSellOnClick}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        disabled={token.isERC721 || !isBuyableChain}
-      />
-
-      {shouldShowSendButton ? (
-        <IconButton
-          className="token-overview__button"
-          onClick={handleSendOnClick}
-          Icon={
-            <Icon
-              name={IconName.Send}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          }
-          label={t('send')}
-          data-testid="eth-overview-send"
-          disabled={
-            token.isERC721 ||
-            (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
-          }
-        />
-      ) : null}
-
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.SwapVertical}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        onClick={handleSwapOnClick}
-        data-testid="token-overview-swap"
-        label={t('swap')}
-        disabled={!isExternalServicesEnabled || isMarketClosed}
-      />
-
-      {stellarClassicTrustlineRemove ? (
+    <>
+      <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
         <IconButton
           className="token-overview__button"
           Icon={
             <Icon
-              name={IconName.Trash}
+              name={IconName.Dollar}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
           }
-          onClick={handleRemoveStellarTrustline}
-          data-testid="token-overview-stellar-remove-trustline"
-          label={t('stellarClassicDeactivateOnStellar', [token.symbol]) as string}
-          tooltipRender={(contents) => (
-            <Tooltip
-              title={t('stellarClassicDeactivateOnStellarDetail') as string}
-              position="bottom"
-            >
-              {contents}
-            </Tooltip>
-          )}
-          disabled={
-            !stellarClassicTrustlineRemove.hasTrustline ||
-            isRemovingStellarTrustline
-          }
+          label={t('buy')}
+          data-testid="token-overview-buy"
+          onClick={handleBuyAndSellOnClick}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          disabled={token.isERC721 || !isBuyableChain}
         />
-      ) : null}
+
+        {shouldShowSendButton ? (
+          <IconButton
+            className="token-overview__button"
+            onClick={handleSendOnClick}
+            Icon={
+              <Icon
+                name={IconName.Send}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            label={t('send')}
+            data-testid="eth-overview-send"
+            disabled={
+              token.isERC721 ||
+              (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+            }
+          />
+        ) : null}
+
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.SwapVertical}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          onClick={handleSwapOnClick}
+          data-testid="token-overview-swap"
+          label={t('swap')}
+          disabled={!isExternalServicesEnabled || isMarketClosed}
+        />
+
+        {stellarClassicTrustlineRemove?.hasTrustline ? (
+          <IconButton
+            className="token-overview__button"
+            Icon={
+              <Icon
+                name={IconName.Trash}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            onClick={handleRemoveStellarTrustline}
+            data-testid="token-overview-stellar-remove-trustline"
+            label={t('stellarClassicDeactivateOnStellar') as string}
+            disabled={isRemovingStellarTrustline}
+          />
+        ) : null}
+      </Box>
       <StellarClassicTrustlineErrorToast
         message={trustlineRemoveErrorMessage}
         onClose={dismissTrustlineRemoveErrorToast}
         dataTestId="stellar-classic-trustline-remove-error-toast"
       />
-    </Box>
+    </>
   );
 };
 

@@ -1,6 +1,9 @@
 import React from 'react';
 import { TextColor, TextVariant } from '@metamask/design-system-react';
-import { BackgroundColor, BorderRadius } from '../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../helpers/constants/design-system';
 import { Tag } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 

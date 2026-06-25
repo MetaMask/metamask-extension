@@ -161,17 +161,7 @@ export default function TokenCell({
         />
       );
     }
-    if (displayToken.isStellarTrustlineInactive) {
-      return (
-        <Text
-          variant={TextVariant.BodySmMedium}
-          color={TextColor.TextAlternative}
-          data-testid="stellar-trustline-inactive-network-label"
-        >
-          {t('networkNameStellar')}
-        </Text>
-      );
-    }
+
     return <TokenCellPercentChange token={displayToken} />;
   };
 

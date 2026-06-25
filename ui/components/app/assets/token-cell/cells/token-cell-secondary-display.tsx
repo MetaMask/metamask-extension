@@ -60,10 +60,6 @@ export const TokenCellSecondaryDisplay = React.memo(
       selectAnyEnabledNetworksAreAvailable,
     );
 
-    if (token.isStellarTrustlineInactive) {
-      return null;
-    }
-
     const secondaryDisplayText = useCurrencyRateCheck
       ? token.secondary || '—'
       : '';

@@ -211,6 +211,7 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
     name: STELLAR_BLOCK_EXPLORER_NAME,
     url: STELLAR_BLOCK_EXPLORER_URL,
     address: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/account/{address}`,
+    asset: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/asset/{asset}`,
     transaction: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/tx/{txId}`,
   },
 } as const;
