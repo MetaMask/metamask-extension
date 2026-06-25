@@ -1,25 +1,21 @@
 import React from 'react';
-import README from './README.mdx';
 import { useArgs } from '@storybook/client-api';
 import type { Meta } from '@storybook/react';
-
-import {
-  Size,
-  Color,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
 
 import { TextFieldSize, TextFieldType } from '../text-field';
 
 import { TextFieldSearch } from './text-field-search';
 
 const meta: Meta<typeof TextFieldSearch> = {
-  title: 'Components/ComponentLibrary/TextFieldSearch',
+  title: 'Components/ComponentLibrary/TextFieldSearch (deprecated)',
   component: TextFieldSearch,
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the `TextFieldSearch` component from `@metamask/design-system-react` instead.',
+      },
     },
   },
   argTypes: {
@@ -154,19 +150,3 @@ const Template = (args) => {
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const ClearButtonOnClick = Template.bind({});
-
-ClearButtonOnClick.args = {
-  value: 'Text to clear',
-};
-
-export const ClearButtonProps = Template.bind({});
-ClearButtonProps.args = {
-  value: 'clear button props',
-  size: Size.LG,
-  clearButtonProps: {
-    backgroundColor: Color.backgroundAlternative,
-    borderRadius: BorderRadius.XS,
-  },
-};

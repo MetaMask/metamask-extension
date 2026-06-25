@@ -373,7 +373,7 @@
   "ui/components/app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice.stories.js",
   "ui/components/app/assets/nfts/nfts-tab/nfts-tab.test.js",
   "ui/components/app/assets/token-cell/token-cell.stories.js",
-  "ui/components/app/cancel-button/cancel-buitton.stories.js",
+  "ui/components/app/cancel-button/cancel-button.stories.js",
   "ui/components/app/cancel-button/cancel-button.js",
   "ui/components/app/cancel-button/index.js",
   "ui/components/app/configure-snap-popup/index.js",
