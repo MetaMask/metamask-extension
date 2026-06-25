@@ -18,6 +18,7 @@ import {
 import { onboardingToggleBackupAndSyncOff } from '../../../ducks/app/app';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import BackupAndSyncTab from '../../settings/backup-and-sync-tab/backup-and-sync-tab';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { PrivacySettingsLanding } from './privacy-settings-landing';
 import { PrivacySettingsSubPageHeader } from './privacy-settings-sub-page-header';
 import OnboardingPrivacySubPage from './onboarding-privacy-sub-page';
@@ -45,8 +46,7 @@ export default function PrivacySettings() {
   );
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
+  const { isFromReminder } = useOnboardingSearchParams();
 
   const handleComplete = useCallback(() => {
     trackEvent({

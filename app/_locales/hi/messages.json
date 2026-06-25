@@ -5548,9 +5548,6 @@
   "newPrivacyPolicyTitle": {
     "message": "हमने अपनी गोपनीयता नीति अपडेट कर दी है"
   },
-  "newRpcUrl": {
-    "message": "नया RPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "आपने सफलतापूर्वक $1 इम्पोर्ट कर लिया है।",
     "description": "$1 is the string of symbols of all the tokens imported"
