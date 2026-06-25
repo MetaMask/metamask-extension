@@ -3452,7 +3452,10 @@ export default class MetamaskController extends EventEmitter {
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       estimateGasFee: txController.estimateGasFee.bind(txController),
-      getNextNonce: this.getNextNonce.bind(this),
+      getNextNonce: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getNextNonce',
+      ),
       addTransaction: (transactionParams, transactionOptions) =>
         addTransaction(
           this.getAddTransactionRequest({
@@ -8093,22 +8096,6 @@ export default class MetamaskController extends EventEmitter {
 
     releaseLock();
     return pendingNonce;
-  }
-
-  /**
-   * Returns the next nonce according to the nonce-tracker
-   *
-   * @param {string} address - The hex string address for the transaction
-   * @param networkClientId - The networkClientId to get the nonce lock with
-   * @returns {Promise<number>}
-   */
-  async getNextNonce(address, networkClientId) {
-    const nonceLock = await this.txController.getNonceLock(
-      address,
-      networkClientId,
-    );
-    nonceLock.releaseLock();
-    return nonceLock.nextNonce;
   }
 
   /**
