@@ -92,10 +92,10 @@
   "approvalFlows": [],
   "assetsMetadata": {},
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
-  "consentDecisionMade": true,
   "completedOnboarding": false,
   "confirmationExchangeRates": {},
   "connectedStatusPopoverHasBeenShown": true,
+  "consentDecisionMade": true,
   "contractExchangeRates": {},
   "contractExchangeRatesByChainId": {},
   "currencyRates": {

@@ -1129,9 +1129,8 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { optedIn } = extra.appState.state.AnalyticsController;
-          const { consentDecisionMade } =
-            extra.appState.state.MetaMetricsController;
+          const { optedIn, consentDecisionMade } =
+            extra.appState.state.AnalyticsController;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
