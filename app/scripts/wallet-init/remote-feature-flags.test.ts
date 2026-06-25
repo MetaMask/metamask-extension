@@ -15,23 +15,32 @@ type ToggleArgs = Parameters<typeof setupRemoteFeatureFlagToggle>[0];
 
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
+const UPDATE_ACTION = 'RemoteFeatureFlagController:updateRemoteFeatureFlags';
+
 /**
- * Wires `setupRemoteFeatureFlagToggle` with a mock messenger (that captures the
- * subscribed handlers by event name) and a mock controller, so tests can drive
- * the handlers directly.
+ * Wires `setupRemoteFeatureFlagToggle` with a mock messenger that captures the
+ * subscribed handlers by event name and the controller actions it calls, so
+ * tests can drive the handlers directly.
  *
  * @param preferencesState - The initial PreferencesController state.
  * @param onboardingState - The initial OnboardingController state.
- * @returns The captured stateChange handlers and the mock controller.
+ * @returns The captured stateChange handlers, the child messenger `call` mock,
+ * and the parent `delegate` mock.
  */
 function setupToggle(
   preferencesState: Partial<ToggleArgs['preferencesState']>,
   onboardingState: Partial<ToggleArgs['onboardingState']>,
 ) {
   const handlers: Record<string, (state: unknown) => void> = {};
-  // The function creates a namespaced child messenger internally and subscribes
-  // on it, so capture the handlers via the mocked `Messenger` constructor.
+  // The toggle drives the controller over a namespaced child messenger it
+  // creates internally, so capture its `call`s and subscribed handlers via the
+  // mocked `Messenger` constructor. `updateRemoteFeatureFlags` is awaited, so
+  // it must return a promise.
+  const call = jest.fn((action: string) =>
+    action === UPDATE_ACTION ? Promise.resolve() : undefined,
+  );
   const toggleMessenger = {
+    call,
     subscribe: jest.fn((event: string, handler: (state: unknown) => void) => {
       handlers[event] = handler;
     }),
@@ -41,21 +50,13 @@ function setupToggle(
   const delegate = jest.fn();
   const messenger = { delegate } as unknown as ToggleArgs['messenger'];
 
-  const remoteFeatureFlagController = {
-    enable: jest.fn(),
-    disable: jest.fn(),
-    updateRemoteFeatureFlags: jest.fn().mockResolvedValue(undefined),
-  };
-
   setupRemoteFeatureFlagToggle({
     messenger,
-    remoteFeatureFlagController:
-      remoteFeatureFlagController as unknown as ToggleArgs['remoteFeatureFlagController'],
     preferencesState: preferencesState as ToggleArgs['preferencesState'],
     onboardingState: onboardingState as ToggleArgs['onboardingState'],
   });
 
-  return { handlers, remoteFeatureFlagController, delegate };
+  return { handlers, call, delegate };
 }
 
 describe('setupRemoteFeatureFlagToggle', () => {
@@ -63,7 +64,7 @@ describe('setupRemoteFeatureFlagToggle', () => {
     jest.clearAllMocks();
   });
 
-  it('delegates the watched events and subscribes to Preferences and Onboarding state changes', () => {
+  it('delegates the watched actions and events and subscribes to Preferences and Onboarding state changes', () => {
     const { handlers, delegate } = setupToggle(
       { useExternalServices: true },
       { completedOnboarding: true },
@@ -71,6 +72,11 @@ describe('setupRemoteFeatureFlagToggle', () => {
 
     expect(delegate).toHaveBeenCalledWith(
       expect.objectContaining({
+        actions: [
+          'RemoteFeatureFlagController:enable',
+          'RemoteFeatureFlagController:disable',
+          UPDATE_ACTION,
+        ],
         events: [
           'PreferencesController:stateChange',
           'OnboardingController:stateChange',
@@ -84,22 +90,22 @@ describe('setupRemoteFeatureFlagToggle', () => {
   });
 
   it('enables and refreshes flags when onboarding completes (external services already on)', () => {
-    const { handlers, remoteFeatureFlagController } = setupToggle(
+    const { handlers, call } = setupToggle(
       { useExternalServices: true },
       { completedOnboarding: false },
     );
 
     handlers['OnboardingController:stateChange']({ completedOnboarding: true });
 
-    expect(remoteFeatureFlagController.enable).toHaveBeenCalledTimes(1);
-    expect(
-      remoteFeatureFlagController.updateRemoteFeatureFlags,
-    ).toHaveBeenCalledTimes(1);
-    expect(remoteFeatureFlagController.disable).not.toHaveBeenCalled();
+    expect(call).toHaveBeenCalledWith('RemoteFeatureFlagController:enable');
+    expect(call).toHaveBeenCalledWith(UPDATE_ACTION);
+    expect(call).not.toHaveBeenCalledWith(
+      'RemoteFeatureFlagController:disable',
+    );
   });
 
   it('disables when external services are turned off', () => {
-    const { handlers, remoteFeatureFlagController } = setupToggle(
+    const { handlers, call } = setupToggle(
       { useExternalServices: true },
       { completedOnboarding: true },
     );
@@ -108,15 +114,13 @@ describe('setupRemoteFeatureFlagToggle', () => {
       useExternalServices: false,
     });
 
-    expect(remoteFeatureFlagController.disable).toHaveBeenCalledTimes(1);
-    expect(remoteFeatureFlagController.enable).not.toHaveBeenCalled();
-    expect(
-      remoteFeatureFlagController.updateRemoteFeatureFlags,
-    ).not.toHaveBeenCalled();
+    expect(call).toHaveBeenCalledWith('RemoteFeatureFlagController:disable');
+    expect(call).not.toHaveBeenCalledWith('RemoteFeatureFlagController:enable');
+    expect(call).not.toHaveBeenCalledWith(UPDATE_ACTION);
   });
 
   it('does nothing when the watched field does not change', () => {
-    const { handlers, remoteFeatureFlagController } = setupToggle(
+    const { handlers, call } = setupToggle(
       { useExternalServices: true },
       { completedOnboarding: true },
     );
@@ -126,15 +130,11 @@ describe('setupRemoteFeatureFlagToggle', () => {
       useExternalServices: true,
     });
 
-    expect(remoteFeatureFlagController.enable).not.toHaveBeenCalled();
-    expect(remoteFeatureFlagController.disable).not.toHaveBeenCalled();
-    expect(
-      remoteFeatureFlagController.updateRemoteFeatureFlags,
-    ).not.toHaveBeenCalled();
+    expect(call).not.toHaveBeenCalled();
   });
 
   it('disables again when onboarding is reverted to incomplete', () => {
-    const { handlers, remoteFeatureFlagController } = setupToggle(
+    const { handlers, call } = setupToggle(
       { useExternalServices: true },
       { completedOnboarding: true },
     );
@@ -144,15 +144,13 @@ describe('setupRemoteFeatureFlagToggle', () => {
       completedOnboarding: false,
     });
 
-    expect(remoteFeatureFlagController.disable).toHaveBeenCalledTimes(1);
-    expect(remoteFeatureFlagController.enable).not.toHaveBeenCalled();
-    expect(
-      remoteFeatureFlagController.updateRemoteFeatureFlags,
-    ).not.toHaveBeenCalled();
+    expect(call).toHaveBeenCalledWith('RemoteFeatureFlagController:disable');
+    expect(call).not.toHaveBeenCalledWith('RemoteFeatureFlagController:enable');
+    expect(call).not.toHaveBeenCalledWith(UPDATE_ACTION);
   });
 
   it('tracks successive changes (enable, then no-op, then disable)', () => {
-    const { handlers, remoteFeatureFlagController } = setupToggle(
+    const { handlers, call } = setupToggle(
       { useExternalServices: true },
       { completedOnboarding: false },
     );
@@ -167,11 +165,12 @@ describe('setupRemoteFeatureFlagToggle', () => {
       completedOnboarding: false,
     });
 
-    expect(remoteFeatureFlagController.enable).toHaveBeenCalledTimes(1);
-    expect(
-      remoteFeatureFlagController.updateRemoteFeatureFlags,
-    ).toHaveBeenCalledTimes(1);
-    expect(remoteFeatureFlagController.disable).toHaveBeenCalledTimes(1);
+    expect(call).toHaveBeenCalledWith('RemoteFeatureFlagController:enable');
+    expect(call).toHaveBeenCalledWith(UPDATE_ACTION);
+    expect(call).toHaveBeenCalledWith('RemoteFeatureFlagController:disable');
+    // enable + update (from the single enable) + disable, with no extra calls
+    // for the no-op middle change.
+    expect(call).toHaveBeenCalledTimes(3);
   });
 
   it('logs and swallows a failed flag refresh instead of throwing', async () => {
@@ -179,12 +178,12 @@ describe('setupRemoteFeatureFlagToggle', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
     const error = new Error('network down');
-    const { handlers, remoteFeatureFlagController } = setupToggle(
+    const { handlers, call } = setupToggle(
       { useExternalServices: true },
       { completedOnboarding: false },
     );
-    remoteFeatureFlagController.updateRemoteFeatureFlags.mockRejectedValue(
-      error,
+    call.mockImplementation((action: string) =>
+      action === UPDATE_ACTION ? Promise.reject(error) : undefined,
     );
 
     expect(() =>
