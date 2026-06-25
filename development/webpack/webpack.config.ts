@@ -299,20 +299,19 @@ if (args.bundleAnalyzer) {
 // #endregion plugins
 
 const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
-const refreshSwcConfig = { ...swcConfig, refresh: true };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const reactRefreshTsxLoader = getSwcLoader(
   'typescript',
   true,
   safeVariables,
-  refreshSwcConfig,
+  { ...swcConfig, refresh: true },
 );
 const reactRefreshJsxLoader = getSwcLoader(
   'ecmascript',
   true,
   safeVariables,
-  refreshSwcConfig,
+  { ...swcConfig, refresh: true },
 );
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
@@ -395,8 +394,11 @@ const config = {
     // 2. @metamask/design-system-react could patch the Radix UI packages
     // 3. @metamask/design-system-react could re-export components with a build step that fixes imports
     alias: {
+      // Use a guarded React Refresh runtime entry so extension-only scripts,
+      // such as bootstrap and reload clients, do not install React Refresh.
       [REACT_REFRESH_ENTRY_PATH]:
         require.resolve('./utils/dev-server/react-refresh-entry'),
+      //
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
     },
