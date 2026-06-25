@@ -6,7 +6,7 @@ import { setupBackgroundReload } from './background-reload';
 
 export const DEV_SERVER_OPTIONS: Configuration = {
   // Keep WDS from injecting its HMR runtime into every extension entry. React
-  // Refresh mode wires HMR manually into the UI entrypoints below.
+  // Refresh mode wires HMR manually into the UI entrypoints.
   hot: false,
   // We use our own logic to decide when to reload.
   liveReload: false,
@@ -15,7 +15,8 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   // pick a free port at startup.
   port: 'auto',
   // client injection is disabled because the client is registered
-  // as a webpack entry by `setupMiddlewares` below.
+  // as a webpack entry by `setupMiddlewares` below
+  // and injected into UI pages by `HtmlBundlerPlugin`'s `beforeEmit` hook.
   client: false,
   devMiddleware: {
     // browsers need actual files on disk; extension pages are loaded via
@@ -25,7 +26,7 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   // we don't need/have a "static" directory, so disable it
   static: false,
   allowedHosts: 'all',
-  // Wire up the ui and background reload clients here so that we can read the resolved port from
+  // Wire up the ui and background clients here so that we can read the resolved port from
   // `devServer.options` — by this point `port: 'auto'` has been replaced with
   // the actual numeric port the server is listening on.
   setupMiddlewares: (middlewares, devServer) => {
@@ -33,9 +34,9 @@ export const DEV_SERVER_OPTIONS: Configuration = {
       'compilers' in devServer.compiler
         ? devServer.compiler.compilers
         : [devServer.compiler];
-    // Registers the ui reload client and the hot-update bridge.
+    // Registers the ui client and the hot-update bridge.
     setupUiReload(devServer, compilers);
-    // Registers the background reload client into the background/service worker context.
+    // Registers the background client into the background/service worker context.
     setupBackgroundReload(devServer, compilers);
     return middlewares;
   },
