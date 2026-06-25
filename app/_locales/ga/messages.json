@@ -3300,9 +3300,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Tá ár mbeartas príobháideachais nuashonraithe againn"
   },
-  "newRpcUrl": {
-    "message": "URL RPC nua"
-  },
   "newTokensImportedMessage": {
     "message": "D'éirigh leat $1 a allmhairiú.",
     "description": "$1 is the string of symbols of all the tokens imported"
