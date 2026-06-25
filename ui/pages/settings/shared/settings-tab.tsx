@@ -12,16 +12,9 @@ import { Divider } from './divider';
 type SettingsTabProps = {
   items: SettingItemConfig[];
   subHeader?: string;
-  itemClassName?: string;
-  containerClassName?: string;
 };
 
-export const SettingsTab = ({
-  items,
-  subHeader,
-  itemClassName,
-  containerClassName,
-}: SettingsTabProps) => {
+export const SettingsTab = ({ items, subHeader }: SettingsTabProps) => {
   const { hash } = useLocation();
 
   const itemCount = items.length;
@@ -48,10 +41,7 @@ export const SettingsTab = ({
   }, [hash, items, settingsRefs]);
 
   return (
-    <Box
-      paddingBottom={4}
-      className={`overflow-y-auto ${containerClassName ?? ''}`}
-    >
+    <Box paddingBottom={4} className="overflow-y-auto">
       {subHeader && (
         <Text
           variant={TextVariant.BodyMd}
@@ -64,7 +54,7 @@ export const SettingsTab = ({
       {items.map(({ id, component: Component, hasDividerBefore }, index) => (
         <React.Fragment key={id}>
           {hasDividerBefore && <Divider />}
-          <div ref={settingsRefs[index]} className={itemClassName}>
+          <div ref={settingsRefs[index]}>
             <Component />
           </div>
         </React.Fragment>
