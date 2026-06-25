@@ -188,10 +188,6 @@ import {
   getSignatureControllerInitMessenger,
   getSignatureControllerMessenger,
 } from './signature-controller-messenger';
-import {
-  getUserOperationControllerInitMessenger,
-  getUserOperationControllerMessenger,
-} from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 import {
   getClaimsControllerInitMessenger,
@@ -331,11 +327,6 @@ export {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
-export type { UserOperationControllerInitMessenger } from './user-operation-controller-messenger';
-export {
-  getUserOperationControllerMessenger,
-  getUserOperationControllerInitMessenger,
-} from './user-operation-controller-messenger';
 export { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 export { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 
@@ -671,10 +662,6 @@ export const MESSENGER_FACTORIES = {
   TransactionPayController: {
     getMessenger: getTransactionPayControllerMessenger,
     getInitMessenger: getTransactionPayControllerInitMessenger,
-  },
-  UserOperationController: {
-    getMessenger: getUserOperationControllerMessenger,
-    getInitMessenger: getUserOperationControllerInitMessenger,
   },
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,

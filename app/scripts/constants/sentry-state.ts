@@ -382,9 +382,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   TxController: {
     transactions: false,
   },
-  UserOperationController: {
-    userOperations: false,
-  },
   UserStorageController: {
     isBackupAndSyncEnabled: true,
     isBackupAndSyncUpdateLoading: false,
