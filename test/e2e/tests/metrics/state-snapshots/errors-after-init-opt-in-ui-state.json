@@ -285,6 +285,7 @@
     "permissionActivityLog": "object",
     "permissionHistory": "object",
     "perpsBalances": "object",
+    "perpsTabBadgeSeen": "boolean",
     "pinnedAccountList": "object",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
