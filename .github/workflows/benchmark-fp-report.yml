@@ -51,7 +51,7 @@ jobs:
           EXTENSION_BENCHMARK_STATS_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           rm -rf "${STATS_CLONE_DIR}"
-          git clone --depth 1 "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${STATS_REPO}.git" "${STATS_CLONE_DIR}"
+          git clone --depth 1 "https://x-access-token:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${STATS_REPO}.git" "${STATS_CLONE_DIR}"
 
       - name: Compute FP rate and update ${{ env.STATS_FILE }}
         run: yarn tsx .github/scripts/benchmark-fp-rate.mts
