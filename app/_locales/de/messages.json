@@ -5714,9 +5714,6 @@
   "notCurrentAccount": {
     "message": "Ist dies das richtige Konto? Es unterscheidet sich von dem aktuell ausgewählten Konto in Ihrem Wallet"
   },
-  "notEnoughGas": {
-    "message": "Nicht genügend Gas"
-  },
   "notificationDetail": {
     "message": "Details"
   },
