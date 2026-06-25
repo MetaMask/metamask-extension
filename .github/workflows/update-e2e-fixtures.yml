@@ -32,6 +32,7 @@ jobs:
     environment: default-branch
     permissions:
       id-token: write
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -68,6 +69,7 @@ jobs:
     environment: default-branch
     permissions:
       id-token: write
+      contents: read
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
       BRANCH: ${{ steps.branch.outputs.BRANCH }}
@@ -237,6 +239,7 @@ jobs:
     environment: default-branch
     permissions:
       id-token: write
+      contents: read
     steps:
       - name: Get token
         id: token
@@ -330,6 +333,7 @@ jobs:
     environment: default-branch
     permissions:
       id-token: write
+      contents: read
     steps:
       - name: Get token
         id: token
