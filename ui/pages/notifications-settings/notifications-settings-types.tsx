@@ -63,7 +63,7 @@ const NotificationSectionRow = ({
 }) => {
   return (
     <button
-      className="w-full border-0 bg-transparent p-0 text-left text-inherit cursor-pointer hover:bg-background-default-hover"
+      className="border-0 bg-transparent py-0 px-4 -mx-4 text-left text-inherit cursor-pointer hover:bg-background-default-hover"
       data-testid={`notifications-settings-section-${section.type}`}
       onClick={onClick}
     >
