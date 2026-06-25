@@ -298,24 +298,21 @@ if (args.bundleAnalyzer) {
 
 // #endregion plugins
 
-const swcConfig = { browsersListQuery, isDevelopment };
-const reactRefreshSwcConfig = {
-  ...swcConfig,
-  reactRefresh: isDevelopmentWatchMode,
-};
+const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
+const refreshSwcConfig = { ...swcConfig, refresh: true };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const reactRefreshTsxLoader = getSwcLoader(
   'typescript',
   true,
   safeVariables,
-  reactRefreshSwcConfig,
+  refreshSwcConfig,
 );
 const reactRefreshJsxLoader = getSwcLoader(
   'ecmascript',
   true,
   safeVariables,
-  reactRefreshSwcConfig,
+  refreshSwcConfig,
 );
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');

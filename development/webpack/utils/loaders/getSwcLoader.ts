@@ -3,7 +3,7 @@ import type { SwcLoaderOptions } from './swcLoader';
 export type SwcConfig = {
   browsersListQuery: string;
   isDevelopment: boolean;
-  reactRefresh?: boolean;
+  refresh: boolean;
 };
 
 /**
@@ -33,7 +33,7 @@ export function getSwcLoader(
         transform: {
           react: {
             development: swcConfig.isDevelopment,
-            ...(swcConfig.reactRefresh ? { refresh: true } : {}),
+            refresh: swcConfig.refresh,
           },
           optimizer: {
             globals: {
