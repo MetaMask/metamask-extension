@@ -39,11 +39,6 @@ class TronTransactionDetailsPage {
 
   private readonly tronExplorerUrl = 'https://tronscan.org';
 
-  // The legacy EVM "View details" link does not exist in the multichain
-  // transaction details modal — the modal IS the details view. Tests should
-  // call `checkHashLink` to verify the explorer link instead.
-  private readonly viewDetailsLink = { tag: 'button', text: 'View details' };
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -81,10 +76,6 @@ class TronTransactionDetailsPage {
 
   async checkTitle(text: string): Promise<void> {
     await this.driver.waitForSelector(this.titleSelector(text));
-  }
-
-  async checkViewDetailsLink(): Promise<void> {
-    await this.driver.waitForSelector(this.viewDetailsLink);
   }
 
   private hashLink(txHash: string) {

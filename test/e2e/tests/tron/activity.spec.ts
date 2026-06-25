@@ -5,15 +5,12 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TronTransactionDetailsPage from '../../page-objects/pages/home/tron-transaction-details';
 import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
 import { TRON_PORTFOLIO_ACCOUNT } from './fixtures/environments';
-import {
-  TronFixtureAccount,
-  withTronFixtures,
-} from './fixtures/with-tron-fixtures';
+import { withTronFixtures } from './fixtures/with-tron-fixtures';
 import { TRON_ACCOUNT_ADDRESS } from './mocks/common-tron';
 import {
   trxSendTx,
@@ -25,37 +22,53 @@ import {
   unfreezeV2Tx,
 } from './mocks/tron-tx-fixtures';
 
-type ScenarioMocks = {
-  trxTransactions?: unknown[];
-  trc20Transactions?: unknown[];
+type TronDetailsExpectation = {
+  title: string;
+  status: 'Confirmed' | 'Pending' | 'Failed';
+  amount: string;
+  txId: string;
+  addresses?: string[];
+  networkFee?: string;
+  checkTime?: boolean;
 };
 
-function buildActivityAccount({
-  trxTransactions,
-  trc20Transactions,
-}: ScenarioMocks): TronFixtureAccount {
-  return {
-    ...TRON_PORTFOLIO_ACCOUNT,
-    transactions: {
-      raw: trxTransactions ?? [],
-      trc20: trc20Transactions ?? [],
-    },
-  };
-}
-
-async function landOnTronActivity(driver: Driver): Promise<ActivityListPage> {
+async function landOnTronActivity(driver: Driver): Promise<ActivityTab> {
   await login(driver, { validateBalance: false });
   await selectTronNetwork(driver);
   const home = new NonEvmHomepage(driver);
   await home.checkPageIsLoaded();
-  const activity = new ActivityListPage(driver);
-  await activity.openActivityTab();
+  const activity = new ActivityTab(driver);
+  await activity.goToActivityList();
   return activity;
+}
+
+async function assertTronTransactionDetails(
+  driver: Driver,
+  activity: ActivityTab,
+  txIndex: number,
+  expected: TronDetailsExpectation,
+): Promise<void> {
+  await activity.clickOnActivity(txIndex);
+  const details = new TronTransactionDetailsPage(driver);
+  await details.checkTitle(expected.title);
+  if (expected.checkTime) {
+    await details.checkTime();
+  }
+  await details.checkStatus(expected.status);
+  await details.checkAmount(expected.amount);
+  await details.checkHashLink(expected.txId);
+  for (const address of expected.addresses ?? []) {
+    await details.checkAddressInLog(address);
+  }
+  if (expected.networkFee) {
+    await details.checkNetworkFee(expected.networkFee);
+  }
 }
 
 const A_RECIPIENT = 'TBEPnZeEVRJWtJwqY4f3VWEtf9jKyQ4HAu';
 const A_SENDER = 'TPwezUWpEGmFBENNWJHwXHRG1D2NCEEt5s';
 const A_SPENDER = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+const SUNSWAP_ROUTER_ADDRESS = 'TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax';
 const EVM_ACTIVITY_TRANSACTION = {
   hash: '0x1000000000000000000000000000000000000000000000000000000000000001',
   timestamp: new Date(1_234).toISOString(),
@@ -105,422 +118,482 @@ async function mockAccountsApiWithEvmActivity(mockServer: Mockttp) {
   ];
 }
 
-describe('Tron activity', function (this: Suite) {
+describe('Tron - Activity', function (this: Suite) {
   this.timeout(180_000);
 
-  it('Approve transaction is rendered as Interaction', async function () {
-    const approve = trc20ApproveTx({
-      symbol: 'USDT',
-      amount: '10000000',
-      spender: A_SPENDER,
-      status: 'Confirmed',
+  describe('Mapping per type', function () {
+    it('Approve transaction is rendered as Interaction', async function () {
+      const approve = trc20ApproveTx({
+        symbol: 'USDT',
+        amount: '10000000',
+        spender: A_SPENDER,
+        status: 'Confirmed',
+      });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [approve.raw],
+                trc20: [approve.trc20],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activity.checkTxAction({
+            action: 'Interaction',
+            txIndex: 1,
+            confirmedTx: 1,
+          });
+          await activity.checkTxAmountInActivity('10 USDT', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Interaction',
+            status: 'Confirmed',
+            amount: '10 USDT',
+            txId: approve.raw.txID,
+            addresses: [A_SPENDER, TRON_ACCOUNT_ADDRESS],
+          });
+        },
+      );
     });
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [approve.raw],
-            trc20Transactions: [approve.trc20],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Interaction',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
-        await activity.checkTxAmountInActivity('10 USDT', 1);
-      },
-    );
-  });
 
-  it('Send transaction is rendered with Send label and -amount', async function () {
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [
-              trxSendTx({
-                amountSun: 1_000_000,
-                to: A_RECIPIENT,
-                status: 'Confirmed',
-              }),
-            ],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Sent',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
-        await activity.checkTxAmountInActivity('-1 TRX', 1);
-      },
-    );
-  });
-
-  it('Receive transaction is rendered with Receive label and +amount', async function () {
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [
-              trxReceiveTx({
-                amountSun: 2_500_000,
-                from: A_SENDER,
-                status: 'Confirmed',
-              }),
-            ],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Received',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
-        // useMultichainTransactionDisplay only adds a `-` prefix for sends; it
-        // never prefixes incoming amounts with `+`, so the rendered text is
-        // just the bare amount.
-        await activity.checkTxAmountInActivity('2.5 TRX', 1);
-      },
-    );
-  });
-
-  it('Swap transaction is rendered with Swap A to B label and -srcAmount', async function () {
-    const swap = swapTx({
-      srcSymbol: 'TRX',
-      srcAmount: '5',
-      destSymbol: 'USDT',
-      destAmount: '1.42',
-      status: 'Confirmed',
+    it('Send transaction is rendered with Send label and -amount', async function () {
+      const tx = trxSendTx({
+        amountSun: 1_000_000,
+        to: A_RECIPIENT,
+        status: 'Confirmed',
+      });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [tx],
+                trc20: [],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activity.checkTxAction({
+            action: 'Sent',
+            txIndex: 1,
+            confirmedTx: 1,
+          });
+          await activity.checkTxAmountInActivity('-1 TRX', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Send',
+            status: 'Confirmed',
+            amount: '-1 TRX',
+            txId: tx.txID,
+            addresses: [A_RECIPIENT, TRON_ACCOUNT_ADDRESS],
+            networkFee: '-2.7995 TRX',
+            checkTime: true,
+          });
+        },
+      );
     });
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [swap.raw],
-            trc20Transactions: [swap.trc20],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Swap TRX to USDT',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
-        await activity.checkTxAmountInActivity('-5 TRX', 1);
-      },
-    );
-  });
 
-  it('Bridge transaction is rendered as Interaction without bridge history', async function () {
-    const bridge = bridgeTx({
-      srcSymbol: 'USDT',
-      srcAmount: '5000000',
-      destChain: 'eip155:1',
-      status: 'Confirmed',
+    it('Receive transaction is rendered with Receive label and +amount', async function () {
+      const tx = trxReceiveTx({
+        amountSun: 2_500_000,
+        from: A_SENDER,
+        status: 'Confirmed',
+      });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [tx],
+                trc20: [],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activity.checkTxAction({
+            action: 'Received',
+            txIndex: 1,
+            confirmedTx: 1,
+          });
+          // useMultichainTransactionDisplay only adds a `-` prefix for sends; it
+          // never prefixes incoming amounts with `+`, so the rendered text is
+          // just the bare amount.
+          await activity.checkTxAmountInActivity('2.5 TRX', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Receive',
+            status: 'Confirmed',
+            amount: '2.5 TRX',
+            txId: tx.txID,
+            addresses: [A_SENDER, TRON_ACCOUNT_ADDRESS],
+          });
+        },
+      );
     });
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [bridge.raw],
-            trc20Transactions: [bridge.trc20],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkCompletedBridgeTransactionActivity(1);
-        await activity.checkTxAction({
-          action: 'Interaction',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
-        await activity.checkTxAmountInActivity('5 USDT', 1);
-      },
-    );
-  });
 
-  it('Staking deposit is rendered with Staking deposit label and -amount', async function () {
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [
-              freezeV2Tx({ amountSun: 20_000_000, status: 'Confirmed' }),
-            ],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Staking deposit',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
-        // The snap maps a Freeze as `to[0] = stakedForEnergy`, so the activity
-        // row renders the destination asset (sTRX-ENERGY), not the source TRX.
-        await activity.checkTxAmountInActivity('20 sTRX-ENERGY', 1);
-      },
-    );
-  });
-
-  it('Staking withdrawal is rendered with Staking withdrawal label and +amount', async function () {
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [
-              unfreezeV2Tx({ amountSun: 20_000_000, status: 'Confirmed' }),
-            ],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Staking withdrawal',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
-        // useMultichainTransactionDisplay only prefixes sends with `-`; positive
-        // (received) amounts render without a `+` sign.
-        await activity.checkTxAmountInActivity('20 TRX', 1);
-      },
-    );
-  });
-
-  it('Pending status: shows pending counter', async function () {
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [
-              trxSendTx({
-                amountSun: 1_000_000,
-                to: A_RECIPIENT,
-                status: 'Pending',
-              }),
-            ],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkPendingTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Sent',
-          txIndex: 1,
-          confirmedTx: 0,
-        });
-        await activity.checkTxAmountInActivity('-1 TRX', 1);
-      },
-    );
-  });
-
-  it('Confirmed status: shows confirmed counter', async function () {
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [
-              trxSendTx({
-                amountSun: 1_000_000,
-                to: A_RECIPIENT,
-                status: 'Confirmed',
-              }),
-            ],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Sent',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
-        await activity.checkTxAmountInActivity('-1 TRX', 1);
-      },
-    );
-  });
-
-  it('Failed status: shows failed counter', async function () {
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [
-              trxSendTx({
-                amountSun: 1_000_000,
-                to: A_RECIPIENT,
-                status: 'Failed',
-              }),
-            ],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkFailedTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Sent',
-          txIndex: 1,
-          confirmedTx: 0,
-        });
-        await activity.checkTxAmountInActivity('-1 TRX', 1);
-      },
-    );
-  });
-
-  it('Current network filter shows only Tron transactions', async function () {
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [
-              trxSendTx({
-                amountSun: 1_000_000,
-                to: A_RECIPIENT,
-                status: 'Confirmed',
-              }),
-            ],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        testSpecificMock: mockAccountsApiWithEvmActivity,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        const assetList = new AssetListPage(driver);
-        await assetList.selectOnlyTronInNetworkFilter();
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTransactionAmount('-1 TRX');
-        await activity.checkTransactionActivityNotPresentByText('Sent ETH');
-        await activity.checkTransactionAmountNotPresent('-4.56 ETH');
-      },
-    );
-  });
-
-  it('All networks filter shows EVM and Tron transactions before filtering to Tron', async function () {
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [
-              trxSendTx({
-                amountSun: 1_000_000,
-                to: A_RECIPIENT,
-                status: 'Confirmed',
-              }),
-            ],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        testSpecificMock: mockAccountsApiWithEvmActivity,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        const assetList = new AssetListPage(driver);
-        await assetList.selectAllNetworksInNetworkFilter();
-        await activity.checkCompletedTxNumberDisplayedInActivity(2);
-        await activity.checkTransactionActivityByText('Sent ETH');
-        await activity.checkTransactionAmount('-4.56 ETH');
-        await activity.checkTransactionAmount('-1 TRX');
-
-        await assetList.selectOnlyTronInNetworkFilter();
-        await activity.checkCompletedTxNumberDisplayedInActivity(1);
-        await activity.checkTransactionAmount('-1 TRX');
-        await activity.checkTransactionActivityNotPresentByText('Sent ETH');
-        await activity.checkTransactionAmountNotPresent('-4.56 ETH');
-      },
-    );
-  });
-
-  it('Transaction details show Title / Time / Status / TXID / From / To / Amount / Network fee / View details', async function () {
-    const tx = trxSendTx({
-      amountSun: 1_000_000,
-      to: A_RECIPIENT,
-      status: 'Confirmed',
+    it('Swap transaction is rendered with Swap A to B label and -srcAmount', async function () {
+      const swap = swapTx({
+        srcSymbol: 'TRX',
+        srcAmount: '5',
+        destSymbol: 'USDT',
+        destAmount: '1.42',
+        status: 'Confirmed',
+      });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [swap.raw],
+                trc20: [swap.trc20],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activity.checkTxAction({
+            action: 'Swap TRX to USDT',
+            txIndex: 1,
+            confirmedTx: 1,
+          });
+          await activity.checkTxAmountInActivity('-5 TRX', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Swap',
+            status: 'Confirmed',
+            amount: '-5 TRX',
+            txId: swap.raw.txID,
+            addresses: [SUNSWAP_ROUTER_ADDRESS, TRON_ACCOUNT_ADDRESS],
+          });
+        },
+      );
     });
-    await withTronFixtures(
-      {
-        accounts: [
-          buildActivityAccount({
-            trxTransactions: [tx],
-            trc20Transactions: [],
-          }),
-        ],
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activity = await landOnTronActivity(driver);
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.clickOnActivity(1);
-        const details = new TronTransactionDetailsPage(driver);
-        // The multichain transaction details modal renders the type label via
-        // its own `typeToTitle` map (multichain-transaction-details-modal.tsx)
-        // which uses `t('send')` ('Send'), not the activity list's `t('sent')`.
-        await details.checkTitle('Send');
-        await details.checkTime();
-        await details.checkStatus('Confirmed');
-        await details.checkAmount('-1 TRX');
-        await details.checkAddressInLog(A_RECIPIENT);
-        await details.checkAddressInLog(TRON_ACCOUNT_ADDRESS);
-        await details.checkHashLink(tx.txID);
-        await details.checkNetworkFee('-2.7995 TRX');
-        await details.checkViewDetailsLink();
-      },
-    );
+
+    it('Bridge transaction is rendered as Interaction without bridge history', async function () {
+      const bridge = bridgeTx({
+        srcSymbol: 'USDT',
+        srcAmount: '5000000',
+        destChain: 'eip155:1',
+        status: 'Confirmed',
+      });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [bridge.raw],
+                trc20: [bridge.trc20],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkCompletedBridgeTransactionActivity(1);
+          await activity.checkTxAction({
+            action: 'Interaction',
+            txIndex: 1,
+            confirmedTx: 1,
+          });
+          await activity.checkTxAmountInActivity('5 USDT', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Interaction',
+            status: 'Confirmed',
+            amount: '5 USDT',
+            txId: bridge.raw.txID,
+            addresses: [SUNSWAP_ROUTER_ADDRESS, TRON_ACCOUNT_ADDRESS],
+          });
+        },
+      );
+    });
+
+    it('Staking deposit is rendered with Staking deposit label and -amount', async function () {
+      const tx = freezeV2Tx({ amountSun: 20_000_000, status: 'Confirmed' });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [tx],
+                trc20: [],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activity.checkTxAction({
+            action: 'Staking deposit',
+            txIndex: 1,
+            confirmedTx: 1,
+          });
+          // The snap maps a Freeze as `to[0] = stakedForEnergy`, so the activity
+          // row renders the destination asset (sTRX-ENERGY), not the source TRX.
+          await activity.checkTxAmountInActivity('20 sTRX-ENERGY', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Staking deposit',
+            status: 'Confirmed',
+            amount: '20 sTRX-ENERGY',
+            txId: tx.txID,
+            addresses: [TRON_ACCOUNT_ADDRESS],
+          });
+        },
+      );
+    });
+
+    it('Staking withdrawal is rendered with Staking withdrawal label and +amount', async function () {
+      const tx = unfreezeV2Tx({ amountSun: 20_000_000, status: 'Confirmed' });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [tx],
+                trc20: [],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activity.checkTxAction({
+            action: 'Staking withdrawal',
+            txIndex: 1,
+            confirmedTx: 1,
+          });
+          // useMultichainTransactionDisplay only prefixes sends with `-`; positive
+          // (received) amounts render without a `+` sign.
+          await activity.checkTxAmountInActivity('20 TRX', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Staking withdrawal',
+            status: 'Confirmed',
+            amount: '20 TRX',
+            txId: tx.txID,
+            addresses: [TRON_ACCOUNT_ADDRESS],
+          });
+        },
+      );
+    });
+  });
+
+  describe('Mapping per status', function () {
+    it('Pending status: shows pending counter', async function () {
+      const tx = trxSendTx({
+        amountSun: 1_000_000,
+        to: A_RECIPIENT,
+        status: 'Pending',
+      });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [tx],
+                trc20: [],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkPendingTxNumberDisplayedInActivity(1);
+          await activity.checkTxAction({
+            action: 'Sent',
+            txIndex: 1,
+            confirmedTx: 0,
+          });
+          await activity.checkTxAmountInActivity('-1 TRX', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Send',
+            status: 'Pending',
+            amount: '-1 TRX',
+            txId: tx.txID,
+          });
+        },
+      );
+    });
+
+    it('Confirmed status: shows confirmed counter', async function () {
+      const tx = trxSendTx({
+        amountSun: 1_000_000,
+        to: A_RECIPIENT,
+        status: 'Confirmed',
+      });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [tx],
+                trc20: [],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activity.checkTxAction({
+            action: 'Sent',
+            txIndex: 1,
+            confirmedTx: 1,
+          });
+          await activity.checkTxAmountInActivity('-1 TRX', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Send',
+            status: 'Confirmed',
+            amount: '-1 TRX',
+            txId: tx.txID,
+          });
+        },
+      );
+    });
+
+    it('Failed status: shows failed counter', async function () {
+      const tx = trxSendTx({
+        amountSun: 1_000_000,
+        to: A_RECIPIENT,
+        status: 'Failed',
+      });
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [tx],
+                trc20: [],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          await activity.checkFailedTxNumberDisplayedInActivity(1);
+          await activity.checkTxAction({
+            action: 'Sent',
+            txIndex: 1,
+            confirmedTx: 0,
+          });
+          await activity.checkTxAmountInActivity('-1 TRX', 1);
+          await assertTronTransactionDetails(driver, activity, 1, {
+            title: 'Send',
+            status: 'Failed',
+            amount: '-1 TRX',
+            txId: tx.txID,
+          });
+        },
+      );
+    });
+  });
+
+  describe('Network filter', function () {
+    it('All networks filter shows EVM and Tron transactions', async function () {
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [
+                  trxSendTx({
+                    amountSun: 1_000_000,
+                    to: A_RECIPIENT,
+                    status: 'Confirmed',
+                  }),
+                ],
+                trc20: [],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          testSpecificMock: mockAccountsApiWithEvmActivity,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          const assetList = new AssetListPage(driver);
+          await assetList.selectAllNetworksInNetworkFilter();
+          await activity.checkCompletedTxNumberDisplayedInActivity(2);
+          await activity.checkTransactionActivityByText('Sent ETH');
+          await activity.checkTransactionAmount('-4.56 ETH');
+          await activity.checkTransactionAmount('-1 TRX');
+        },
+      );
+    });
+
+    it('Tron-only filter hides EVM transactions', async function () {
+      await withTronFixtures(
+        {
+          accounts: [
+            {
+              ...TRON_PORTFOLIO_ACCOUNT,
+              transactions: {
+                raw: [
+                  trxSendTx({
+                    amountSun: 1_000_000,
+                    to: A_RECIPIENT,
+                    status: 'Confirmed',
+                  }),
+                ],
+                trc20: [],
+              },
+            },
+          ],
+          fixtures: new FixtureBuilderV2().build(),
+          testSpecificMock: mockAccountsApiWithEvmActivity,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          const activity = await landOnTronActivity(driver);
+          const assetList = new AssetListPage(driver);
+          await assetList.selectOnlyTronInNetworkFilter();
+          await activity.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activity.checkTransactionAmount('-1 TRX');
+          await activity.checkTransactionActivityNotPresentByText('Sent ETH');
+          await activity.checkTransactionAmountNotPresent('-4.56 ETH');
+        },
+      );
+    });
   });
 });

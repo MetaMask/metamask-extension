@@ -573,6 +573,26 @@ class ActivityTab extends HomePage {
     });
   }
 
+  async checkTransactionActivityNotPresentByText(
+    txnText: string,
+  ): Promise<void> {
+    console.log(`Check transaction activity is absent with text: ${txnText}`);
+    await this.driver.assertElementNotPresent({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
+  async checkTransactionAmountNotPresent(
+    transactionAmount: string,
+  ): Promise<void> {
+    console.log(`Check transaction amount is absent: ${transactionAmount}`);
+    await this.driver.assertElementNotPresent({
+      css: this.transactionAmountsInActivity,
+      text: transactionAmount,
+    });
+  }
+
   /**
    * Waiting for the pending tx to clear from acitivity.
    *

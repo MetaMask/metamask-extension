@@ -852,7 +852,6 @@ module.exports = {
         'test/e2e/page-objects/pages/hardware-wallet/connect-hardware-wallet-page.ts',
         'test/e2e/page-objects/pages/hardware-wallet/select-hardware-wallet-account-page.ts',
         'test/e2e/page-objects/pages/header-navbar.ts',
-        'test/e2e/page-objects/pages/home/activity-list.ts',
         'test/e2e/page-objects/pages/home/activity-tab.ts',
         'test/e2e/page-objects/pages/home/defi-tab.ts',
         'test/e2e/page-objects/pages/home/homepage.ts',
