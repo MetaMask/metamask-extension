@@ -38,7 +38,7 @@ import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
-import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
+import { DEV_SERVER_OPTIONS, injectEntryScripts } from './utils/dev-server';
 import {
   BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
   UI_RELOAD_CLIENT_ENTRY_NAME,
@@ -57,7 +57,7 @@ const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
-const isReactRefreshEnabled = isDevelopment && args.watch && !args.test;
+const isDevelopmentWatchMode = isDevelopment && args.watch;
 const MANIFEST_VERSION = args.manifestVersion;
 const REACT_REFRESH_ENTRY_PATH =
   require.resolve('@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry');
@@ -281,14 +281,11 @@ if (args.reactCompilerVerbose) {
   plugins.push(new ReactCompilerPlugin());
 }
 
-if (isReactRefreshEnabled) {
+if (isDevelopmentWatchMode) {
   const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
   plugins.push(
     new HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin({
-      include: UI_DIR_RE,
-      overlay: false,
-    }),
+    new ReactRefreshWebpackPlugin({ include: UI_DIR_RE, overlay: false }),
   );
 }
 
@@ -304,7 +301,7 @@ if (args.bundleAnalyzer) {
 const swcConfig = { browsersListQuery, isDevelopment };
 const reactRefreshSwcConfig = {
   ...swcConfig,
-  reactRefresh: isReactRefreshEnabled,
+  reactRefresh: isDevelopmentWatchMode,
 };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
@@ -401,12 +398,8 @@ const config = {
     // 2. @metamask/design-system-react could patch the Radix UI packages
     // 3. @metamask/design-system-react could re-export components with a build step that fixes imports
     alias: {
-      ...(isReactRefreshEnabled
-        ? {
-            [REACT_REFRESH_ENTRY_PATH]:
-              require.resolve('./utils/dev-server/react-refresh-entry'),
-          }
-        : {}),
+      [REACT_REFRESH_ENTRY_PATH]:
+        require.resolve('./utils/dev-server/react-refresh-entry'),
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
     },
@@ -472,7 +465,7 @@ const config = {
         use: threadLoader,
       },
       // own typescript, and own typescript with jsx
-      ...(isReactRefreshEnabled
+      ...(isDevelopmentWatchMode
         ? [
             {
               test: /\.(?:ts|mts|tsx)$/u,
@@ -494,7 +487,7 @@ const config = {
             },
           ]),
       // own javascript, and own javascript with jsx
-      ...(isReactRefreshEnabled
+      ...(isDevelopmentWatchMode
         ? [
             {
               test: /\.(?:js|mjs|jsx)$/u,
@@ -675,7 +668,7 @@ const config = {
   // don't warn about large JS assets, unless they are going to be too big for Firefox
   performance: { maxAssetSize: 1 << 22 },
   watch: args.watch,
-  devServer: getDevServerOptions({ reactRefresh: isReactRefreshEnabled }),
+  devServer: DEV_SERVER_OPTIONS,
   watchOptions: {
     aggregateTimeout: 5, // ms
     ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues

@@ -1,4 +1,4 @@
-import { closeSocket, connectToDevServer } from './connect-to-dev-server';
+import { connectToDevServer } from './connect-to-dev-server';
 import {
   UI_HOT_UPDATE_MESSAGE_TYPE,
   UI_RELOAD_MESSAGE_TYPE,
@@ -10,15 +10,11 @@ import {
 // URL at server start (the port is only known then).
 declare const __resourceQuery: string;
 
-const params = new URLSearchParams(__resourceQuery.slice(1));
-const socketUrl = params.get('url');
-const reactRefresh = params.get('reactRefresh') === 'true';
+const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 
 // Storage key holding the UI build hash this page's code was loaded under.
 // `self.sessionStorage` (not `browser.storage.session`) on purpose: it is
-// scoped to the tab, so concurrently open pages each keep their own record,
-// and it survives the page reload — which is what lets the reloaded page
-// settle instead of reloading in a loop.
+// scoped to the tab, so concurrently open pages each keep their own record.
 const HASH_KEY = 'MM_UI_RELOAD_HASH';
 
 /**
@@ -30,7 +26,7 @@ function getStoredHash(): string | null {
     return self.sessionStorage.getItem(HASH_KEY);
   } catch {
     // Unreadable storage reads as "nothing recorded": the announcement gets
-    // treated as a baseline rather than triggering a reload.
+    // treated as a baseline rather than triggering a hot update.
     return null;
   }
 }
@@ -45,65 +41,42 @@ function setStoredHash(hash: string): void {
     self.sessionStorage.setItem(HASH_KEY, hash);
   } catch {
     // Without storage every announcement looks like a baseline, so the page
-    // degrades to never auto-reloading rather than reloading in a loop.
+    // degrades to never hot-updating rather than hot-updating in a loop.
   }
 }
 
-let reloading = false;
-
 /**
- * Handles a UI build-hash announcement from the dev server: reloads the page
- * when the announced hash differs from the one this page's code was loaded
- * under. Announcements are state, not events — the server re-sends the
+ * Handles a UI build-hash announcement from the dev server: posts a hot-update
+ * message when the announced hash differs from the one this page's code was
+ * loaded under. Announcements are state, not events — the server re-sends the
  * current hash to every (re)connecting client — so a build that completes
- * while this page is reloading or disconnected still takes effect once the
- * new page connects, instead of being missed.
+ * while this page is disconnected still takes effect once the page reconnects,
+ * instead of being missed.
  *
  * @param hash - The announced hash of the server's latest UI build.
- * @param socket - The WebSocket the announcement arrived on.
  */
-async function onHash(hash: string, socket: WebSocket): Promise<void> {
-  if (reloading) {
-    return;
-  }
+function onHash(hash: string): void {
   const stored = getStoredHash();
-  // Re-check `reloading`: another announcement may have begun
-  // a reload while this one was reading storage.
-  if (reloading || stored === hash) {
+  if (stored === hash) {
     return;
   }
-  // Record before reloading: after the reload the new tab receives the same
-  // announcement again, finds it already recorded, and settles instead of
-  // reloading in a loop.
   setStoredHash(hash);
   if (stored === null) {
     // First announcement this tab has seen: the page was just loaded from the
     // dev server's own output, so only record the baseline.
     return;
   }
-  if (reactRefresh) {
-    console.info('[webpack-dev-server] App hot update...');
-    (self as Window).postMessage(
-      { type: UI_HOT_UPDATE_MESSAGE_TYPE, hash },
-      '*',
-    );
-    return;
-  }
-  reloading = true;
-  console.info('[webpack-dev-server] UI updated. Reloading...');
-  // Wait for the close handshake so the navigation is not reported as an
-  // unexpected disconnect by the dev server.
-  await closeSocket(socket);
-  self.location.reload();
+  console.info('[webpack-dev-server] App hot update...');
+  (self as Window).postMessage({ type: UI_HOT_UPDATE_MESSAGE_TYPE, hash }, '*');
 }
 
 if (socketUrl) {
   connectToDevServer(
     socketUrl,
-    () => reloading,
-    (type, data, socket) => {
+    () => false,
+    (type, data) => {
       if (type === UI_RELOAD_MESSAGE_TYPE && typeof data === 'string') {
-        void onHash(data, socket);
+        onHash(data);
       }
     },
   );

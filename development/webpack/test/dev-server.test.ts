@@ -7,10 +7,7 @@ import {
   logWatchBuildStats,
   suppressDevServerInfoLogs,
 } from '../utils/dev-server';
-import {
-  getDevServerClientEntry,
-  setupUiReload,
-} from '../utils/dev-server/ui-reload';
+import { setupUiReload } from '../utils/dev-server/ui-reload';
 import { setupBackgroundReload } from '../utils/dev-server/background-reload';
 import {
   closeSocket,
@@ -278,6 +275,37 @@ describe('./utils/dev-server', () => {
       assert.strictEqual(DEV_SERVER_OPTIONS.liveReload, false);
       assert.strictEqual(DEV_SERVER_OPTIONS.client, false);
     });
+
+    it('registers React Refresh UI reload entries from the static middleware config', () => {
+      const manifestPlugin = createManifestPlugin({
+        serviceWorkerEntryName: 'service-worker',
+      });
+      const { compiler, entryPluginCalls } = createCompiler({
+        plugins: [manifestPlugin],
+      });
+      const { devServer } = createDevServer();
+      const { setupMiddlewares } = DEV_SERVER_OPTIONS;
+      assert(setupMiddlewares, 'setupMiddlewares should be set');
+      const middlewares = [];
+
+      const result = setupMiddlewares(middlewares, {
+        ...devServer,
+        compiler,
+      } as never);
+
+      assert.strictEqual(result, middlewares);
+      assert.strictEqual(entryPluginCalls.length, 3);
+      assert.match(entryPluginCalls[0].entry, /react-refresh-runtime-client/u);
+      assert.deepStrictEqual(entryPluginCalls[0].options, {});
+      assert.match(
+        entryPluginCalls[1].entry,
+        /ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
+      );
+      assert.deepStrictEqual(entryPluginCalls[1].options, {
+        name: UI_RELOAD_CLIENT_ENTRY_NAME,
+        chunkLoading: false,
+      });
+    });
   });
 
   describe('injectEntryScripts', () => {
@@ -355,28 +383,26 @@ describe('./utils/dev-server', () => {
   });
 
   describe('setupUiReload', () => {
-    it('registers the webpack-dev-server client and UI reload client in the same entrypoint', () => {
+    it('registers the React Refresh runtime client and UI reload client', () => {
       const { compiler, entryPluginCalls } = createCompiler();
       const { devServer } = createDevServer({ host: 'localhost', port: 24680 });
 
       setupUiReload(devServer as never, [compiler]);
 
       assert.strictEqual(entryPluginCalls.length, 2);
-      assert.deepStrictEqual(entryPluginCalls[0].options, {
-        name: UI_RELOAD_CLIENT_ENTRY_NAME,
-        chunkLoading: false,
-      });
-      assert.strictEqual(
+      assert.match(
         entryPluginCalls[0].entry,
-        'webpack-dev-server/client/index?protocol=ws&hostname=localhost&port=24680&hot=false&live-reload=false',
+        /react-refresh-runtime-client/u,
       );
-      assert.deepStrictEqual(entryPluginCalls[1].options, {
-        name: UI_RELOAD_CLIENT_ENTRY_NAME,
-      });
+      assert.deepStrictEqual(entryPluginCalls[0].options, {});
       assert.match(
         entryPluginCalls[1].entry,
         /development[\\/]webpack[\\/]utils[\\/]dev-server[\\/]ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A24680%2Fws/u,
       );
+      assert.deepStrictEqual(entryPluginCalls[1].options, {
+        name: UI_RELOAD_CLIENT_ENTRY_NAME,
+        chunkLoading: false,
+      });
     });
   });
 
@@ -858,70 +884,4 @@ describe('./utils/dev-server', () => {
     });
   });
 
-  describe('getDevServerClientEntry', () => {
-    const parse = (url: string) => {
-      const [base, query] = url.split('?');
-      return { base, params: new URLSearchParams(query) };
-    };
-
-    it('returns the webpack-dev-server client base path', () => {
-      const { base } = parse(getDevServerClientEntry({}));
-      assert.strictEqual(base, 'webpack-dev-server/client/index');
-    });
-
-    it('always sets protocol=ws (extension pages cannot auto-detect WS protocol)', () => {
-      const { params } = parse(getDevServerClientEntry({}));
-      assert.strictEqual(params.get('protocol'), 'ws');
-    });
-
-    it('omits hostname/port/hot/live-reload when the corresponding fields are unset', () => {
-      const { params } = parse(getDevServerClientEntry({}));
-      assert.strictEqual(params.has('hostname'), false);
-      assert.strictEqual(params.has('port'), false);
-      assert.strictEqual(params.has('hot'), false);
-      assert.strictEqual(params.has('live-reload'), false);
-    });
-
-    it('maps `host` to the `hostname` param', () => {
-      const { params } = parse(getDevServerClientEntry({ host: 'localhost' }));
-      assert.strictEqual(params.get('hostname'), 'localhost');
-    });
-
-    it('forwards a numeric port as a string', () => {
-      const { params } = parse(getDevServerClientEntry({ port: 12345 }));
-      assert.strictEqual(params.get('port'), '12345');
-    });
-
-    it("forwards `port: 'auto'` as the string 'auto'", () => {
-      const { params } = parse(getDevServerClientEntry({ port: 'auto' }));
-      assert.strictEqual(params.get('port'), 'auto');
-    });
-
-    it('forwards `hot` as a string', () => {
-      const hotTrue = parse(getDevServerClientEntry({ hot: true }));
-      assert.strictEqual(hotTrue.params.get('hot'), 'true');
-
-      const hotFalse = parse(getDevServerClientEntry({ hot: false }));
-      assert.strictEqual(hotFalse.params.get('hot'), 'false');
-    });
-
-    it('maps `liveReload` to the `live-reload` param', () => {
-      const { params } = parse(getDevServerClientEntry({ liveReload: true }));
-      assert.strictEqual(params.get('live-reload'), 'true');
-      assert.strictEqual(params.has('liveReload'), false);
-    });
-
-    it('combines all fields into a single query string', () => {
-      const url = getDevServerClientEntry({
-        host: 'localhost',
-        port: 8080,
-        hot: false,
-        liveReload: true,
-      });
-      assert.strictEqual(
-        url,
-        'webpack-dev-server/client/index?protocol=ws&hostname=localhost&port=8080&hot=false&live-reload=true',
-      );
-    });
-  });
 });
