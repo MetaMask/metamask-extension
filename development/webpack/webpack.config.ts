@@ -59,8 +59,6 @@ const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const isDevelopmentWatchMode = isDevelopment && args.watch;
 const MANIFEST_VERSION = args.manifestVersion;
-const REACT_REFRESH_ENTRY_PATH =
-  require.resolve('@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry');
 const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -396,7 +394,7 @@ const config = {
     alias: {
       // Use a guarded React Refresh runtime entry so extension-only scripts,
       // such as bootstrap and reload clients, do not install React Refresh.
-      [REACT_REFRESH_ENTRY_PATH]:
+      '@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry':
         require.resolve('./utils/dev-server/react-refresh-entry'),
       //
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
