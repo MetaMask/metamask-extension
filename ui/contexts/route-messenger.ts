@@ -1,5 +1,4 @@
-import React, { Component, createContext, useContext } from 'react';
-import PropTypes from 'prop-types';
+import { createContext, useContext } from 'react';
 
 import { RouteMessenger } from '../messengers/route-messenger';
 
@@ -26,38 +25,4 @@ export function useRouteMessenger(): RouteMessenger {
   }
 
   return messenger;
-}
-
-/**
- * Utility component which provides messengers to routes. Designed specifically
- * for legacy class components.
- *
- * @see {@link RouteWithMessenger}
- */
-export class LegacyRouteMessengerProvider extends Component<{
-  children?: React.ReactNode;
-}> {
-  static propTypes = {
-    children: PropTypes.node,
-  };
-
-  static defaultProps = {
-    children: undefined,
-  };
-
-  static contextType = RouteMessengerContext;
-
-  static childContextTypes = {
-    messenger: PropTypes.object,
-  };
-
-  getChildContext() {
-    return {
-      messenger: this.context,
-    };
-  }
-
-  render() {
-    return this.props.children;
-  }
 }

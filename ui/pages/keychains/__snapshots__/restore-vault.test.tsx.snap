@@ -105,7 +105,6 @@ exports[`Restore vault Component renders match snapshot 1`] = `
                 </button>
               </div>
             </div>
-            
           </form>
         </div>
       </div>

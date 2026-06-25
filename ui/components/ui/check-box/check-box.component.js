@@ -20,9 +20,9 @@ export const { CHECKED, INDETERMINATE, UNCHECKED } = CHECKBOX_STATE;
  */
 
 const CheckBox = ({
-  className,
-  disabled,
-  id,
+  className = undefined,
+  disabled = false,
+  id = undefined,
   onClick,
   checked,
   title,
@@ -96,12 +96,6 @@ CheckBox.propTypes = {
    * Data test ID for checkbox Component
    */
   dataTestId: PropTypes.string,
-};
-
-CheckBox.defaultProps = {
-  className: undefined,
-  disabled: false,
-  id: undefined,
 };
 
 export default CheckBox;

@@ -14,12 +14,12 @@ import classnames from 'clsx';
  */
 
 const Menu = ({
-  anchorElement,
+  anchorElement = undefined,
   children,
-  className,
+  className = undefined,
   'data-testid': dataTestId,
   onHide,
-  popperOptions,
+  popperOptions = undefined,
 }) => {
   const [popperElement, setPopperElement] = useState(null);
   const popoverContainerElement = useRef(
@@ -60,12 +60,6 @@ Menu.propTypes = {
   onHide: PropTypes.func.isRequired,
   popperOptions: PropTypes.object,
   dataTestId: PropTypes.string,
-};
-
-Menu.defaultProps = {
-  anchorElement: undefined,
-  className: undefined,
-  popperOptions: undefined,
 };
 
 export default Menu;
