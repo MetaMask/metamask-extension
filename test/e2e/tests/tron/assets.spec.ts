@@ -8,19 +8,37 @@ import TronAssetDetailsPage from '../../page-objects/pages/asset/tron-asset-deta
 import {
   EMPTY_TRON_ACCOUNT,
   TRON_PORTFOLIO_ACCOUNT,
+  TRON_PORTFOLIO_LOW_VALUE_ASSET_NAMES,
+  TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES,
   TRON_STAKED_PORTFOLIO_ACCOUNT,
 } from './fixtures/environments';
 import { withTronFixtures } from './fixtures/with-tron-fixtures';
+
+/**
+ * Enables the batch-sell remote flag so native coin overflow uses the More menu
+ * (Receive + Batch sell) rather than the legacy sole-default button layout.
+ */
+const TRON_ASSETS_REMOTE_FEATURE_FLAGS = {
+  remoteFeatureFlags: {
+    batchSell: { enabled: true },
+  },
+} as const;
+
+function buildTronAssetsFixture(): FixtureBuilderV2 {
+  return new FixtureBuilderV2()
+    .withShowNativeTokenAsMainBalanceDisabled()
+    .withRemoteFeatureFlagController(TRON_ASSETS_REMOTE_FEATURE_FLAGS);
+}
 
 async function landOnTronHome(driver: Driver): Promise<void> {
   await login(driver, { validateBalance: false });
   await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 }
 
-describe('Tron assets', function (this: Suite) {
+describe('Tron - Assets', function (this: Suite) {
   this.timeout(180_000);
 
-  it('TRX is the only asset and shows 0 for an empty account', async function () {
+  it('For an empty account, TRX should be present with a balance of 0', async function () {
     await withTronFixtures(
       {
         accounts: [EMPTY_TRON_ACCOUNT],
@@ -48,9 +66,7 @@ describe('Tron assets', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],
-        fixtures: new FixtureBuilderV2()
-          .withShowNativeTokenAsMainBalanceDisabled()
-          .build(),
+        fixtures: buildTronAssetsFixture().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -100,13 +116,65 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
+  it('Low-value assets section hides tokens under $1 until expanded', async function () {
+    await withTronFixtures(
+      {
+        accounts: [TRON_PORTFOLIO_ACCOUNT],
+        fixtures: buildTronAssetsFixture().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await landOnTronHome(driver);
+        const tokensTab = new TokensTab(driver);
+
+        await tokensTab.checkCollapsedTokenItemNumber(
+          TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES.length,
+        );
+        await tokensTab.checkLowValueAssetsToggleIsPresent(
+          TRON_PORTFOLIO_LOW_VALUE_ASSET_NAMES.length,
+        );
+        for (const tokenName of TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES) {
+          await tokensTab.checkTokenNameVisible(tokenName);
+        }
+        await tokensTab.checkAssetIsAbsent('GasFreeTransferSolution');
+        await tokensTab.checkAssetIsAbsent('SEED');
+        await tokensTab.checkAssetIsAbsent('USDD');
+
+        await tokensTab.expandLowValueAssets();
+        for (const tokenName of TRON_PORTFOLIO_LOW_VALUE_ASSET_NAMES) {
+          await tokensTab.checkTokenNameVisible(tokenName);
+        }
+        await tokensTab.checkOnlyAssetsArePresent([
+          ...TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES,
+          ...TRON_PORTFOLIO_LOW_VALUE_ASSET_NAMES,
+        ]);
+      },
+    );
+  });
+
+  it('All networks filter shows other chains alongside Tron', async function () {
+    await withTronFixtures(
+      {
+        accounts: [TRON_PORTFOLIO_ACCOUNT],
+        fixtures: buildTronAssetsFixture().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await landOnTronHome(driver);
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.selectAllNetworksInNetworkFilter();
+        await tokensTab.checkTokenExistsInList('Tron');
+        await tokensTab.checkTokenExistsInList('Tether');
+        await tokensTab.checkTokenExistsInList('Ethereum');
+      },
+    );
+  });
+
   it('Current network filter shows only Tron assets', async function () {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],
-        fixtures: new FixtureBuilderV2()
-          .withShowNativeTokenAsMainBalanceDisabled()
-          .build(),
+        fixtures: buildTronAssetsFixture().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -126,33 +194,11 @@ describe('Tron assets', function (this: Suite) {
     );
   });
 
-  it('All networks filter shows other chains alongside Tron', async function () {
-    await withTronFixtures(
-      {
-        accounts: [TRON_PORTFOLIO_ACCOUNT],
-        fixtures: new FixtureBuilderV2()
-          .withShowNativeTokenAsMainBalanceDisabled()
-          .build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await landOnTronHome(driver);
-        const tokensTab = new TokensTab(driver);
-        await tokensTab.selectAllNetworksInNetworkFilter();
-        await tokensTab.checkTokenExistsInList('Tron');
-        await tokensTab.checkTokenExistsInList('Tether');
-        await tokensTab.checkTokenExistsInList('Ethereum');
-      },
-    );
-  });
-
   it('TRX asset details: header, chart, action buttons, daily resource, sections', async function () {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],
-        fixtures: new FixtureBuilderV2()
-          .withShowNativeTokenAsMainBalanceDisabled()
-          .build(),
+        fixtures: buildTronAssetsFixture().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -163,6 +209,7 @@ describe('Tron assets', function (this: Suite) {
         await details.checkPageIsLoaded();
         await details.checkCurrentPriceHeader();
         await details.checkPriceChart();
+        // batchSell enabled → Receive lives in the More overflow menu (latest UI).
         await details.checkActionButtons({
           swap: true,
           send: true,
@@ -178,9 +225,7 @@ describe('Tron assets', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],
-        fixtures: new FixtureBuilderV2()
-          .withShowNativeTokenAsMainBalanceDisabled()
-          .build(),
+        fixtures: buildTronAssetsFixture().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -205,9 +250,7 @@ describe('Tron assets', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],
-        fixtures: new FixtureBuilderV2()
-          .withShowNativeTokenAsMainBalanceDisabled()
-          .build(),
+        fixtures: buildTronAssetsFixture().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -223,9 +266,7 @@ describe('Tron assets', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_STAKED_PORTFOLIO_ACCOUNT],
-        fixtures: new FixtureBuilderV2()
-          .withShowNativeTokenAsMainBalanceDisabled()
-          .build(),
+        fixtures: buildTronAssetsFixture().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

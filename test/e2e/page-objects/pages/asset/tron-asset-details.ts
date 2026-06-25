@@ -11,12 +11,26 @@ type SectionTitle = (typeof SECTION_TITLES)[number];
 class TronAssetDetailsPage {
   private driver: Driver;
 
-  private readonly nativeReceiveButton =
-    '[data-testid="coin-overview-receive"]';
-
   private readonly nativeSendButton = '[data-testid="coin-overview-send"]';
 
   private readonly nativeSwapButton = '[data-testid="coin-overview-swap"]';
+
+  /**
+   * Native coin overflow when `batchSell` remote flag is enabled (latest UI):
+   * Send/Swap are primary buttons; Receive and Batch sell live in the More menu.
+   */
+  private readonly nativeOverflowMoreButton =
+    '[data-testid="coin-overview-more"]';
+
+  private readonly nativeOverflowReceiveInMenu =
+    '[data-testid="coin-overview-receive"]';
+
+  private readonly nativeOverflowBatchSellInMenu =
+    '[data-testid="coin-overview-batchSell"]';
+
+  /** Legacy sole-overflow layout when batch sell is disabled. */
+  private readonly nativeOverflowSoleAction =
+    '[data-testid="coin-overview-default"]';
 
   private readonly priceChart = '[data-testid="asset-price-chart"]';
 
@@ -48,9 +62,12 @@ class TronAssetDetailsPage {
       await this.driver.assertElementNotPresent(this.nativeSwapButton);
     }
     if (options.receive === true) {
-      await this.driver.waitForSelector(this.nativeReceiveButton);
+      await this.checkNativeReceiveInOverflowMenu();
     } else if (options.receive === false) {
-      await this.driver.assertElementNotPresent(this.nativeReceiveButton);
+      await this.driver.assertElementNotPresent(
+        this.nativeOverflowReceiveInMenu,
+      );
+      await this.driver.assertElementNotPresent(this.nativeOverflowSoleAction);
     }
   }
 
@@ -76,6 +93,17 @@ class TronAssetDetailsPage {
     await this.driver.waitForSelector({ text: 'TRX transfer' });
   }
 
+  /**
+   * Asserts Receive is available via the batch-sell-enabled More overflow menu.
+   * Requires `batchSell: { enabled: true }` in test fixtures.
+   */
+  async checkNativeReceiveInOverflowMenu(): Promise<void> {
+    await this.driver.waitForSelector(this.nativeOverflowMoreButton);
+    await this.driver.clickElement(this.nativeOverflowMoreButton);
+    await this.driver.waitForSelector(this.nativeOverflowReceiveInMenu);
+    await this.driver.waitForSelector(this.nativeOverflowBatchSellInMenu);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     // Use a section title that is rendered for every Tron asset (including
     // view-only assets like Staked TRX which have no action buttons).
@@ -94,7 +122,10 @@ class TronAssetDetailsPage {
     await this.driver.waitForSelector(this.tokenBuyButton);
     await this.driver.waitForSelector(this.tokenSendButton);
     await this.driver.waitForSelector(this.tokenSwapButton);
-    await this.driver.assertElementNotPresent(this.nativeReceiveButton);
+    await this.driver.assertElementNotPresent(
+      this.nativeOverflowReceiveInMenu,
+    );
+    await this.driver.assertElementNotPresent(this.nativeOverflowSoleAction);
   }
 }
 

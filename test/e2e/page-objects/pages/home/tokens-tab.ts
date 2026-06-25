@@ -228,6 +228,13 @@ class TokensTab extends HomePage {
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
   }
 
+  /**
+   * Expands the collapsed low-value assets section when the toggle is present.
+   */
+  async expandLowValueAssets(): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
+  }
+
   private async expandLowValueAssetsIfPresent(): Promise<void> {
     // If the low value assets section is already expanded, no action is required.
     try {
@@ -680,6 +687,7 @@ class TokensTab extends HomePage {
     console.log(
       `Checking only these assets are present: ${symbols.join(', ')}`,
     );
+    await this.expandLowValueAssetsIfPresent();
     for (const symbol of symbols) {
       await this.driver.waitForSelector({
         css: this.tokenName,
@@ -687,6 +695,51 @@ class TokensTab extends HomePage {
       });
     }
     await this.checkTokenItemNumber(symbols.length);
+  }
+
+  /**
+   * Waits for the low-value assets toggle with the expected token count label.
+   *
+   * @param expectedCount - Number of tokens in the collapsed low-value section.
+   */
+  async checkLowValueAssetsToggleIsPresent(
+    expectedCount: number,
+  ): Promise<void> {
+    console.log(
+      `Checking low-value assets toggle is present with count ${expectedCount}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.lowValueAssetsToggle,
+      text: `Low value tokens (${expectedCount})`,
+    });
+  }
+
+  /**
+   * Asserts the token list row count without expanding the low-value section.
+   *
+   * @param expectedNumber - Visible token rows in the main list.
+   */
+  async checkCollapsedTokenItemNumber(expectedNumber: number): Promise<void> {
+    console.log(
+      `Waiting for ${expectedNumber} collapsed token items to be displayed`,
+    );
+    await this.driver.wait(async () => {
+      const tokenItemsNumber = await this.getNumberOfAssets();
+      return tokenItemsNumber === expectedNumber;
+    }, 10000);
+  }
+
+  /**
+   * Waits for a token name cell without expanding the low-value section.
+   *
+   * @param tokenName - Token name text to match.
+   */
+  async checkTokenNameVisible(tokenName: string): Promise<void> {
+    console.log(`Checking token name "${tokenName}" is visible`);
+    await this.driver.waitForSelector({
+      css: this.tokenName,
+      text: tokenName,
+    });
   }
 
   async checkAssetIsAbsent(symbol: string): Promise<void> {
@@ -945,6 +998,8 @@ class TokensTab extends HomePage {
   }
 
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
+    await this.expandLowValueAssetsIfPresent();
+
     let matchingRow: WebElement | undefined;
 
     await this.driver.waitUntil(
