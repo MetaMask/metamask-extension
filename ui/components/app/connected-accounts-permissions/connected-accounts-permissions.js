@@ -25,7 +25,7 @@ import {
 import { getSnapName } from '../../../helpers/utils/util';
 import { getSnapsMetadata } from '../../../selectors';
 
-const ConnectedAccountsPermissions = ({ permissions = [] }) => {
+const ConnectedAccountsPermissions = ({ permissions }) => {
   const t = useI18nContext();
   const [expanded, setExpanded] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
@@ -34,7 +34,7 @@ const ConnectedAccountsPermissions = ({ permissions = [] }) => {
     setExpanded((_expanded) => !_expanded);
   };
 
-  if (!permissions.length) {
+  if (!permissions?.length) {
     return null;
   }
 

@@ -20,9 +20,9 @@ export const { CHECKED, INDETERMINATE, UNCHECKED } = CHECKBOX_STATE;
  */
 
 const CheckBox = ({
-  className = undefined,
+  className,
   disabled = false,
-  id = undefined,
+  id,
   onClick,
   checked,
   title,

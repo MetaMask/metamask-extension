@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import LoadingNetworkError from './loading-network-error.component';
 
 describe('LoadingNetworkError Component', () => {
@@ -23,21 +24,21 @@ describe('LoadingNetworkError Component', () => {
     const { getByText } = renderWithProvider(
       <LoadingNetworkError {...props} />,
     );
-    expect(getByText('Try again')).toBeInTheDocument();
+    expect(getByText(messages.tryAgain.message)).toBeInTheDocument();
   });
 
   it('renders the description text', () => {
     const { getByText } = renderWithProvider(
       <LoadingNetworkError {...props} />,
     );
-    expect(getByText("We couldn't load this page.")).toBeInTheDocument();
+    expect(getByText(messages.somethingWentWrong.message)).toBeInTheDocument();
   });
 
   it('calls hideModal when submit button is clicked', () => {
     const { getByText } = renderWithProvider(
       <LoadingNetworkError {...props} />,
     );
-    fireEvent.click(getByText('Try again'));
+    fireEvent.click(getByText(messages.tryAgain.message));
     expect(props.hideModal).toHaveBeenCalledTimes(1);
   });
 });

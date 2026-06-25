@@ -25,7 +25,7 @@ describe('Menu Component', () => {
   const defaultProps = {
     onHide: jest.fn(),
     children: <div data-testid="menu-child">Menu Content</div>,
-  };
+  } as React.ComponentProps<typeof Menu>;
 
   it('renders children in the portal', () => {
     const { getByTestId } = render(<Menu {...defaultProps} />);

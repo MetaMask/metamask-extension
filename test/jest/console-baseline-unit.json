@@ -67,6 +67,7 @@
       "error: AssertionError: The Snaps platform requires": 1,
       "error: Error: NetworkController state is invalid:": 1,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
+      "error: This browser doesn't support cancelAnimationFrame.": 1,
       "error: {": 1,
       "warn: Error during SnapController initialization. AssertionError:": 2
     },
@@ -311,6 +312,11 @@
       "Deprecation warnings": 1,
       "MetaMask: Background connection not initialized": 4,
       "error: Warning: ReactDOM.render is no longer": 4,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/app/assets/hooks/useNetworkFilterButtonLabel.test.ts": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/app/assets/nfts/nft-default-image/nft-default-image.test.js": {
@@ -1884,6 +1890,7 @@
     "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
       "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
@@ -2171,6 +2178,7 @@
       "Deprecation warnings": 1,
       "React: Act warnings (component updates not wrapped)": 1,
       "React: State updates on unmounted components": 1,
+      "Reselect: Input stability warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 13,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
@@ -2412,6 +2420,11 @@
       "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
+    "ui/components/ui/check-box/check-box.component.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 13,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
     "ui/components/ui/confusable/confusable.component.test.js": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 4,
@@ -2452,14 +2465,39 @@
       "error: Warning: ReactDOM.render is no longer": 5,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
+    "ui/components/ui/icon/approve-icon.component.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 5,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/ui/icon/interaction-icon.component.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 5,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/ui/icon/receive-icon.component.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 5,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
     "ui/components/ui/icon/status-icon.test.tsx": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 3,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
+    "ui/components/ui/icon/swap-icon-for-list.component.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 5,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
     "ui/components/ui/list-item/list-item.component.test.js": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 3,
+      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
+    },
+    "ui/components/ui/menu/menu.test.tsx": {
+      "Deprecation warnings": 1,
+      "error: Warning: ReactDOM.render is no longer": 7,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/components/ui/metafox-logo/metafox-logo.component.test.js": {
@@ -5872,6 +5910,7 @@
     "ui/pages/defi/components/defi-details-page.test.tsx": {
       "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
@@ -6787,7 +6826,7 @@
     "ui/pages/token-management/token-management.test.tsx": {
       "Deprecation warnings": 1,
       "MetaMask: Background connection not initialized": 4,
-      "error: Warning: ReactDOM.render is no longer": 39,
+      "error: Warning: ReactDOM.render is no longer": 40,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/trust-signals/hooks/useTrustSignalMetrics.test.ts": {

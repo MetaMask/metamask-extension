@@ -5577,9 +5577,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Мы обновили нашу политику конфиденциальности"
   },
-  "newRpcUrl": {
-    "message": "Новый URL RPC"
-  },
   "newTokensImportedMessage": {
     "message": "Вы успешно импортировали $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
