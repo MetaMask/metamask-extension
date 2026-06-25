@@ -67,6 +67,7 @@
       "error: AssertionError: The Snaps platform requires": 1,
       "error: Error: NetworkController state is invalid:": 1,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
+      "error: This browser doesn't support cancelAnimationFrame.": 1,
       "error: {": 1,
       "warn: Error during SnapController initialization. AssertionError:": 2
     },
@@ -1884,6 +1885,7 @@
     "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
       "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
@@ -2171,6 +2173,7 @@
       "Deprecation warnings": 1,
       "React: Act warnings (component updates not wrapped)": 1,
       "React: State updates on unmounted components": 1,
+      "Reselect: Input stability warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 13,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
@@ -5872,6 +5875,7 @@
     "ui/pages/defi/components/defi-details-page.test.tsx": {
       "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },

@@ -5577,9 +5577,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Ενημερώσαμε την πολιτική απορρήτου μας"
   },
-  "newRpcUrl": {
-    "message": "Νέα διεύθυνση URL του RPC"
-  },
   "newTokensImportedMessage": {
     "message": "Έχετε εισάγει με επιτυχία το $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
