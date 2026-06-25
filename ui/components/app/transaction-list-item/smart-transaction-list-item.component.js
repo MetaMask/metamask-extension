@@ -26,6 +26,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
 import { useBoolean } from '../../../hooks/useBoolean';
+import {
+  mapTransactionTypeToCategory,
+  resolveTransactionType,
+} from './helpers';
 
 export default function SmartTransactionListItem({
   smartTransaction,
@@ -36,8 +40,15 @@ export default function SmartTransactionListItem({
   const dispatch = useDispatch();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const { value: showDetails, toggle: toggleShowDetails } = useBoolean();
-  const { title, category, primaryCurrency, recipientAddress, isPending } =
+  const { title, primaryCurrency, recipientAddress, isPending } =
     useTransactionDisplayData(transactionGroup);
+  const category = mapTransactionTypeToCategory(
+    resolveTransactionType(
+      transactionGroup.initialTransaction.type,
+      transactionGroup.initialTransaction.txParams?.to,
+      transactionGroup.initialTransaction.txParams?.data,
+    ),
+  );
   const currentChain = useSelector(getCurrentNetwork);
 
   const { status } = smartTransaction;
