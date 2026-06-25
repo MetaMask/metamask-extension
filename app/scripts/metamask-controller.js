@@ -444,6 +444,7 @@ import {
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
+import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ownership-service-init';
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
@@ -721,6 +722,7 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
+      ProofOfOwnershipService: ProofOfOwnershipServiceInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
@@ -2661,6 +2663,10 @@ export default class MetamaskController extends EventEmitter {
    * The API object can be transmitted over a stream via JSON-RPC.
    *
    * @returns {object} Object containing API functions.
+   *
+   * @deprecated This method is deprecated and will be removed in a future release.
+   * All legacy methods from getApi() are being migrated to the LegacyBackgroundApiService and can be accessed via the messenger.
+   * New methods should be defined in controllers and exposed via the messenger, rather than being added to this API object.
    */
   getApi() {
     const {
