@@ -451,7 +451,7 @@
     "@metamask/tron-wallet-snap": "^1.27.0",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^11.11.0",
-    "@metamask/wallet": "^4.0.0",
+    "@metamask/wallet": "^5.0.0",
     "@mui/material": "^5.18.0",
     "@mui/system": "^5.18.0",
     "@mui/x-date-pickers": "^7.29.4",
@@ -881,11 +881,5 @@
       }
     },
     "version": "v0.3.0"
-  },
-  "previewBuilds": {
-    "@metamask/wallet": {
-      "type": "breaking",
-      "previewVersion": "4.0.0-preview-ed0047684"
-    }
   }
 }

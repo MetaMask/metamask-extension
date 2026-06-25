@@ -8567,11 +8567,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:@metamask-previews/wallet@4.0.0-preview-ed0047684":
-  version: 4.0.0-preview-ed0047684
-  resolution: "@metamask-previews/wallet@npm:4.0.0-preview-ed0047684"
+"@metamask/wallet@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/wallet@npm:5.0.0"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.2"
+    "@metamask/accounts-controller": "npm:^39.0.3"
     "@metamask/approval-controller": "npm:^9.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
@@ -8584,7 +8584,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/storage-service": "npm:^1.0.2"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/0eacd2566bc2f826dbe963411de2eb30e7eebb2a6ed5fcfcd67a8f1c83eac1626e06f17c68568c49a7a6c78cc87092462c52c11c46e11462432e2159cace5d77
+  checksum: 10/30957bdda09c767fd6f4564421350a0ad5f6584095e060313af5a59fc4b0c987433d04a84cb5d7f924880a61aa180529da1f943b11c9665ccbe286e163485524
   languageName: node
   linkType: hard
 
@@ -33207,7 +33207,7 @@ __metadata:
     "@metamask/tron-wallet-snap": "npm:^1.27.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
-    "@metamask/wallet": "npm:^4.0.0"
+    "@metamask/wallet": "npm:^5.0.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
     "@mui/x-date-pickers": "npm:^7.29.4"
