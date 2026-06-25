@@ -173,6 +173,18 @@ const MultichainBridgeTransactionListItem = ({
                 );
                 return `-${displayAmount} ${bridgeHistoryItem.quote.srcAsset.symbol ?? sourceAsset.unit}`;
               }
+
+              // Fall back to the bridge quote, whose `srcTokenAmount` is in the smallest unit.
+              const { srcTokenAmount, srcAsset } = bridgeHistoryItem.quote;
+              if (srcTokenAmount && srcAsset?.symbol) {
+                const displayAmount = formatAmount(
+                  locale,
+                  new BigNumber(srcTokenAmount).dividedBy(
+                    new BigNumber(10).pow(srcAsset.decimals),
+                  ),
+                );
+                return `-${displayAmount} ${srcAsset.symbol}`;
+              }
               return '';
             })()}
           </Text>
