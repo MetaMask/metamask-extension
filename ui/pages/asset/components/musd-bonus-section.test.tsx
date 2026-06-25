@@ -34,8 +34,6 @@ jest.mock('../../../contexts/metametrics', () => {
     )) as unknown as typeof MetaMetricsContext.Provider;
   return {
     MetaMetricsContext,
-    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
-      ReactActual.createElement(ReactActual.Fragment, null, children),
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __mockTrackEvent: _trackEvent,
   };
@@ -46,10 +44,12 @@ const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
   __mockTrackEvent: jest.Mock;
 }>('../../../contexts/metametrics');
 
+const MOCK_NETWORK_CONFIGS_BY_CHAIN_ID = {
+  '0x1': { name: 'Ethereum Mainnet' },
+};
 jest.mock('../../../selectors/multichain', () => ({
-  getMultichainNetworkConfigurationsByChainId: jest.fn(() => ({
-    '0x1': { name: 'Ethereum Mainnet' },
-  })),
+  getMultichainNetworkConfigurationsByChainId: () =>
+    MOCK_NETWORK_CONFIGS_BY_CHAIN_ID,
 }));
 
 const mockRefetchRewards = jest.fn();

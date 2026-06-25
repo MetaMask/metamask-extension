@@ -1,4 +1,4 @@
-import React, { ReactChildren } from 'react';
+import React from 'react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
@@ -13,7 +13,7 @@ const mockMetaMetricsContext = {
   onboardingParentContext: { current: null },
 };
 
-const Container = ({ children }: { children: ReactChildren }) => (
+const Container = ({ children }: { children: React.ReactNode }) => (
   <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
     {children}
   </MetaMetricsContext.Provider>

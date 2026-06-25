@@ -27,9 +27,10 @@ import {
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
+import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
 import { NetworkListItem } from '../network-list-item';
 import {
+  removeNetwork,
   setActiveNetwork,
   setShowTestNetworks,
   showModal,
@@ -44,17 +45,17 @@ import {
   setTokenNetworkFilter,
   detectNfts,
 } from '../../../store/actions';
+import { isDisableableDefaultNetwork } from '../../../helpers/utils/network-sections';
+import type { NetworkItemCallbacks } from '../network-manager/hooks/useNetworkItemCallbacks';
 import {
+  CHAIN_IDS,
   FEATURED_RPCS,
   TEST_CHAINS,
   CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
   BUILT_IN_NETWORKS,
   CAIP_FORMATTED_TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import {
-  MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOriginOfCurrentTab,
@@ -106,10 +107,8 @@ import {
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
 } from '../../../../shared/lib/network.utils';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import NetworksForm from '../networks-form';
 import { useNetworkFormState } from '../networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
@@ -119,7 +118,6 @@ import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
-import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -142,21 +140,38 @@ export enum ACTION_MODE {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   SELECT_RPC,
-  // Add account for non EVM networks
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ADD_NON_EVM_ACCOUNT,
 }
 
 type NetworkListMenuProps = {
   onClose: () => void;
 };
 
+const isCustomNetworkConfiguration = (
+  network: MultichainNetworkConfiguration,
+): boolean => {
+  const chainId = network.isEvm
+    ? convertCaipToHexChainId(network.chainId)
+    : network.chainId;
+
+  const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
+    (builtInNetwork) => builtInNetwork.chainId === chainId,
+  );
+  const isFeaturedRpc = FEATURED_RPCS.some(
+    (featuredRpc) => featuredRpc.chainId === chainId,
+  );
+  const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
+    (multichainNetwork) =>
+      multichainNetwork === network.chainId || multichainNetwork === chainId,
+  );
+
+  return !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
+};
+
 export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
+  const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const showTestnets = useSelector(getShowTestNetworks);
@@ -272,17 +287,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     [nonTestNetworks, orderedNetworksList],
   );
 
-  // Re-orders networks when the user drag + drops them
-  const onDragEnd = (result: DropResult) => {
-    if (result.destination) {
-      const newOrderedNetworks = [...orderedNetworks];
-      const [removed] = newOrderedNetworks.splice(result.source.index, 1);
-      newOrderedNetworks.splice(result.destination.index, 0, removed);
-      dispatch(updateNetworksList(newOrderedNetworks.map((n) => n.chainId)));
-      setOrderedNetworks(newOrderedNetworks);
-    }
-  };
-
   const featuredNetworksNotYetEnabled = useMemo(() => {
     // Filter out networks that are already enabled
     const availableNetworks = FEATURED_RPCS.filter(
@@ -298,12 +302,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     // Sort alphabetically
     return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
   }, [evmNetworks, blacklistedChainIds]);
-
-  // This value needs to be tracked in case the user changes to a Non EVM
-  // network and there is no account created for that network. This will
-  // allow the user to add an account for that network.
-  const [selectedNonEvmNetwork, setSelectedNonEvmNetwork] =
-    useState<CaipChainId>();
 
   // Searches networks by user input
   const [searchQuery, setSearchQuery] = useState('');
@@ -333,6 +331,39 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     Object.values(testNetworks),
     searchQuery,
   );
+  const searchedDefaultNetworks = searchedEnabledNetworks.filter(
+    (network) => !isCustomNetworkConfiguration(network),
+  );
+  const searchedCustomNetworks = searchedEnabledNetworks.filter(
+    isCustomNetworkConfiguration,
+  );
+  const searchedEnabledNetworkSections = [
+    {
+      title: t('defaultNetworks'),
+      networks: searchedDefaultNetworks,
+    },
+    {
+      title: t('customNetworks'),
+      networks: searchedCustomNetworks,
+    },
+  ].filter(({ networks }) => networks.length > 0);
+  const displayedEnabledNetworks = searchedEnabledNetworkSections.flatMap(
+    ({ networks }) => networks,
+  );
+  const hasEnabledNetworkResults =
+    searchedDefaultNetworks.length > 0 || searchedCustomNetworks.length > 0;
+
+  // Re-orders networks when the user drag + drops them.
+  const onDragEnd = (result: DropResult) => {
+    if (result.destination) {
+      const newOrderedNetworks = [...displayedEnabledNetworks];
+      const [removed] = newOrderedNetworks.splice(result.source.index, 1);
+      newOrderedNetworks.splice(result.destination.index, 0, removed);
+      dispatch(updateNetworksList(newOrderedNetworks.map((n) => n.chainId)));
+      setOrderedNetworks(newOrderedNetworks);
+    }
+  };
+
   // A sorted list of test networks that put Sepolia first then Linea Sepolia at the top
   // and the rest of the test networks in alphabetical order.
   const sortedTestNetworks = useMemo(() => {
@@ -399,14 +430,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   };
 
   const handleNonEvmNetworkChange = async (chainId: CaipChainId) => {
-    if (hasAnyAccountsInNetwork(chainId)) {
-      dispatch(toggleNetworkMenu());
-      dispatch(setActiveNetwork(chainId));
-      return;
-    }
-
-    setSelectedNonEvmNetwork(chainId);
-    setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
+    dispatch(toggleNetworkMenu());
+    dispatch(setActiveNetwork(chainId));
   };
 
   const handleNetworkChange = async (chainId: CaipChainId) => {
@@ -427,28 +452,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       ? convertCaipToHexChainId(currentChainId)
       : currentChainId;
 
-    // Check if the destination network is custom (not built-in, featured, or multichain)
-    const hexChainId = chain.isEvm
-      ? convertCaipToHexChainId(chain.chainId)
-      : chain.chainId;
-
-    const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
-      (builtInNetwork) => builtInNetwork.chainId === hexChainId,
-    );
-    const isFeaturedRpc = FEATURED_RPCS.some(
-      (featuredRpc) => featuredRpc.chainId === hexChainId,
-    );
-    const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
-      (multichainNetwork) =>
-        multichainNetwork === chain.chainId ||
-        (chain.isEvm
-          ? convertCaipToHexChainId(chain.chainId)
-          : chain.chainId) === multichainNetwork,
-    );
-
-    const isCustomNetwork =
-      !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
-
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
       category: MetaMetricsEventCategory.Network,
@@ -465,7 +468,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         to_network: chainIdToTrack,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        custom_network: isCustomNetwork,
+        custom_network: isCustomNetworkConfiguration(chain),
       },
     });
   };
@@ -504,68 +507,87 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   );
 
   const getItemCallbacks = useCallback(
-    (
-      network: MultichainNetworkConfiguration,
-    ): Record<string, (() => void) | undefined> => {
+    (network: MultichainNetworkConfiguration): NetworkItemCallbacks => {
       const { chainId, isEvm } = network;
+      const hexChainId = isEvm ? convertCaipToHexChainId(chainId) : undefined;
+      const isDisableableDefault = isDisableableDefaultNetwork(chainId);
+      const isEthereumMainnet =
+        chainId === EthScope.Mainnet ||
+        (isEvm && hexChainId === CHAIN_IDS.MAINNET);
+
+      const canRemoveOrDisable =
+        isUnlocked &&
+        (isDisableableDefault
+          ? !isEthereumMainnet
+          : isEvm &&
+            chainId !== currentChainId &&
+            chainId !== EthScope.Mainnet);
+
+      let onDeleteMenuLabel: 'disable' | 'delete' | undefined;
+      if (canRemoveOrDisable) {
+        onDeleteMenuLabel = isDisableableDefault ? 'disable' : 'delete';
+      }
+
+      const discoverChainId = isEvm ? hexChainId : chainId;
+      const onDiscoverClick = isDiscoverBtnEnabled(
+        discoverChainId as Hex | `${string}:${string}`,
+      )
+        ? () => {
+            openWindow(
+              CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[
+                discoverChainId as keyof typeof CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP
+              ],
+              '_blank',
+            );
+          }
+        : undefined;
+
+      const onDelete = canRemoveOrDisable
+        ? () => {
+            dispatch(toggleNetworkMenu());
+            if (isDisableableDefault) {
+              dispatch(removeNetwork(chainId as CaipChainId));
+              return;
+            }
+            dispatch(
+              showModal({
+                name: 'CONFIRM_DELETE_NETWORK',
+                target: hexChainId,
+                onConfirm: () => undefined,
+              }),
+            );
+          }
+        : undefined;
 
       if (!isEvm) {
         return {
-          onDiscoverClick: isDiscoverBtnEnabled(chainId)
-            ? () => {
-                openWindow(
-                  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId],
-                  '_blank',
-                );
-              }
-            : undefined,
+          onDelete,
+          onDeleteMenuLabel,
+          onDiscoverClick,
         };
       }
 
-      // Non-EVM networks cannot be deleted, edited or have
-      // RPC endpoints so it's safe to call this conversion function here.
-      const hexChainId = convertCaipToHexChainId(chainId);
-      const isDeletable =
-        isUnlocked &&
-        network.chainId !== currentChainId &&
-        network.chainId !== EthScope.Mainnet;
+      const evmHexChainId = convertCaipToHexChainId(chainId);
 
       return {
-        onDelete: isDeletable
-          ? () => {
-              dispatch(toggleNetworkMenu());
-              dispatch(
-                showModal({
-                  name: 'CONFIRM_DELETE_NETWORK',
-                  target: hexChainId,
-                  onConfirm: () => undefined,
-                }),
-              );
-            }
-          : undefined,
+        onDelete,
+        onDeleteMenuLabel,
         onEdit: () => {
           dispatch(
             setEditedNetwork({
-              chainId: hexChainId,
+              chainId: evmHexChainId,
               nickname: network.name,
             }),
           );
           setActionMode(ACTION_MODE.ADD_EDIT);
         },
-        onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
-          ? () => {
-              openWindow(
-                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
-                '_blank',
-              );
-            }
-          : undefined,
+        onDiscoverClick,
         onRpcConfigEdit: hasMultiRpcOptions(network)
           ? () => {
               setActionMode(ACTION_MODE.SELECT_RPC);
               dispatch(
                 setEditedNetwork({
-                  chainId: hexChainId,
+                  chainId: evmHexChainId,
                 }),
               );
             }
@@ -574,7 +596,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           setActionMode(ACTION_MODE.SELECT_RPC);
           dispatch(
             setEditedNetwork({
-              chainId: hexChainId,
+              chainId: evmHexChainId,
             }),
           );
         },
@@ -594,8 +616,13 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     network: MultichainNetworkConfiguration,
   ) => {
     const isCurrentNetwork = network.chainId === currentChainId;
-    const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-      getItemCallbacks(network);
+    const {
+      onDelete,
+      onDeleteMenuLabel,
+      onEdit,
+      onDiscoverClick,
+      onRpcSelect,
+    } = getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
 
     return (
@@ -621,6 +648,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           }
         }}
         onDeleteClick={onDelete}
+        deleteMenuLabel={onDeleteMenuLabel}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
         onRpcEndpointClick={onRpcSelect}
@@ -632,6 +660,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   const render = () => {
     if (actionMode === ACTION_MODE.LIST) {
+      let draggableIndex = 0;
+
       return (
         <>
           <Box className="multichain-network-list-menu">
@@ -641,19 +671,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               setFocusSearch={setFocusSearch}
             />
             <Box>
-              {searchedEnabledNetworks.length > 0 && (
-                <Box
-                  padding={4}
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.spaceBetween}
-                >
-                  <Text color={TextColor.textAlternative}>
-                    {t('enabledNetworks')}
-                  </Text>
-                </Box>
-              )}
-
-              {searchedEnabledNetworks.length === 0 &&
+              {!hasEnabledNetworkResults &&
               searchedFeaturedNetworks.length === 0 &&
               searchedTestNetworks.length === 0 &&
               focusSearch ? (
@@ -674,25 +692,46 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                       >
-                        {searchedEnabledNetworks.map((network, index) => {
-                          return (
-                            <Draggable
-                              key={network.chainId}
-                              draggableId={network.chainId}
-                              index={index}
-                            >
-                              {(providedDrag) => (
-                                <Box
-                                  ref={providedDrag.innerRef}
-                                  {...providedDrag.draggableProps}
-                                  {...providedDrag.dragHandleProps}
-                                >
-                                  {generateMultichainNetworkListItem(network)}
-                                </Box>
-                              )}
-                            </Draggable>
-                          );
-                        })}
+                        {searchedEnabledNetworkSections.map(
+                          ({ title: sectionTitle, networks }) => (
+                            <React.Fragment key={sectionTitle}>
+                              <Box
+                                padding={4}
+                                display={Display.Flex}
+                                justifyContent={JustifyContent.spaceBetween}
+                              >
+                                <Text color={TextColor.textAlternative}>
+                                  {sectionTitle}
+                                </Text>
+                              </Box>
+                              {networks.map((network) => {
+                                const index = draggableIndex;
+                                draggableIndex += 1;
+
+                                return (
+                                  <Draggable
+                                    key={network.chainId}
+                                    draggableId={network.chainId}
+                                    index={index}
+                                    isDragDisabled={searchQuery !== ''}
+                                  >
+                                    {(providedDrag) => (
+                                      <Box
+                                        ref={providedDrag.innerRef}
+                                        {...providedDrag.draggableProps}
+                                        {...providedDrag.dragHandleProps}
+                                      >
+                                        {generateMultichainNetworkListItem(
+                                          network,
+                                        )}
+                                      </Box>
+                                    )}
+                                  </Draggable>
+                                );
+                              })}
+                            </React.Fragment>
+                          ),
+                        )}
                         {provided.placeholder}
                       </Box>
                     )}
@@ -700,15 +739,12 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                 </DragDropContext>
               )}
 
-              <PopularNetworkList
-                searchAddNetworkResults={searchedFeaturedNetworks}
-                data-testid="add-popular-network-view"
-              />
               {searchedTestNetworks.length > 0 ? (
                 <Box
                   paddingBottom={4}
                   paddingTop={4}
                   paddingLeft={4}
+                  paddingRight={4}
                   display={Display.Flex}
                   justifyContent={JustifyContent.spaceBetween}
                 >
@@ -741,6 +777,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                   )}
                 </Box>
               ) : null}
+
+              <PopularNetworkList
+                searchAddNetworkResults={searchedFeaturedNetworks}
+                data-testid="add-popular-network-view"
+              />
             </Box>
           </Box>
 
@@ -813,11 +854,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           onNetworkChange={handleEvmNetworkChange}
         />
       );
-    } else if (
-      actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT &&
-      selectedNonEvmNetwork
-    ) {
-      return <AddNonEvmAccountModal chainId={selectedNonEvmNetwork} />;
     }
     return null; // Should not be reachable
   };
@@ -833,13 +869,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     title = t('addBlockExplorerUrl');
   } else if (actionMode === ACTION_MODE.SELECT_RPC) {
     title = t('selectRpcUrl');
-  } else if (
-    actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT &&
-    selectedNonEvmNetwork
-  ) {
-    title = t('addNonEvmAccount', [
-      MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME[selectedNonEvmNetwork],
-    ]);
   } else {
     title = editedNetwork?.name ?? '';
   }
@@ -856,8 +885,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     actionMode === ACTION_MODE.ADD_EXPLORER_URL
   ) {
     onBack = () => setActionMode(ACTION_MODE.ADD_EDIT);
-  } else if (actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT) {
-    onBack = () => setActionMode(ACTION_MODE.LIST);
   }
 
   if (isMultiRpcOnboarding) {

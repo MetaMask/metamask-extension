@@ -18,7 +18,7 @@ import {
 import { Row, Tooltip } from '../layout';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-import { bpsToPercentage } from '../../../ducks/bridge/utils';
+import { readMmFee } from '../utils/quote';
 
 export const BridgeCTAInfoText = () => {
   const t = useI18nContext();
@@ -42,38 +42,38 @@ export const BridgeCTAInfoText = () => {
     return null;
   }
 
-  if (!hasMMFee && !hasApproval) {
-    return null;
-  }
-
   if (isQuoteExpired) {
     return null;
   }
 
-  // Get the fee percentage from the quote or fallback to default
-  // @ts-expect-error: controller types are not up to date yet
-  const quoteBpsFee = activeQuote.quote.feeData?.metabridge?.quoteBpsFee;
-  const feePercentage = bpsToPercentage(quoteBpsFee) ?? BRIDGE_MM_FEE_RATE;
+  const { isDiscounted, quoteFeePercentage } = readMmFee(activeQuote);
+  const showMmFeeText = hasMMFee && !isDiscounted;
+  const showApprovalText = Boolean(hasApproval);
 
-  return hasMMFee || hasApproval ? (
+  const infoText = [
+    showMmFeeText
+      ? t('rateIncludesMMFee', [quoteFeePercentage ?? BRIDGE_MM_FEE_RATE])
+      : null,
+    showApprovalText &&
+      (isCrossChain(activeQuote.quote.srcChainId, activeQuote.quote.destChainId)
+        ? t('willApproveAmountForBridging')
+        : t('willApproveAmountForSwapping')),
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  if (!infoText) {
+    return null;
+  }
+
+  return (
     <Row
       gap={1}
       justifyContent={JustifyContent.center}
       data-testid="bridge-cta-info-text"
     >
       <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
-        {[
-          hasMMFee ? t('rateIncludesMMFee', [feePercentage]) : null,
-          hasApproval &&
-            (isCrossChain(
-              activeQuote.quote.srcChainId,
-              activeQuote.quote.destChainId,
-            )
-              ? t('willApproveAmountForBridging')
-              : t('willApproveAmountForSwapping')),
-        ]
-          .filter(Boolean)
-          .join(' ')}
+        {infoText}
       </Text>
 
       {hasApproval ? (
@@ -96,5 +96,5 @@ export const BridgeCTAInfoText = () => {
         </Tooltip>
       ) : null}
     </Row>
-  ) : null;
+  );
 };

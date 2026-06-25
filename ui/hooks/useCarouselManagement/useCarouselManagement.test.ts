@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react-hooks';
+import { waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getSelectedAccountCachedBalance,
@@ -62,6 +63,8 @@ const mockGetCurrentLocale = jest.fn().mockReturnValue('en-US');
 
 describe('useCarouselManagement (simple Contentful tests)', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+
     mockFetch.mockResolvedValue({
       prioritySlides: [],
       regularSlides: [slide('fund'), slide('downloadMobileApp')],
@@ -105,8 +108,6 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
       contentfulCarouselEnabled: true,
     });
     mockGetCurrentLocale.mockReturnValue('en');
-
-    jest.clearAllMocks();
   });
 
   const getDispatchedSlides = (): CarouselSlide[] => {
@@ -148,7 +149,14 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
 
     const { rerender } = renderHook(() => useCarouselManagement());
 
-    await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+    // Flush async state updates from getUserProfileLineageAction() (React 18 requires act()).
+    await act(async () => {
+      await mockGetUserProfileLineage.mock.results[0]?.value;
+    });
+    await act(async () => {
+      await mockFetch.mock.results[0]?.value;
+    });
+    expect(mockUpdateSlides).toHaveBeenCalled();
 
     mockGetUserProfileLineage.mockClear();
     mockUpdateSlides.mockClear();

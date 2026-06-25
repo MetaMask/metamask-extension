@@ -49,7 +49,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
                 class="account-list-item__top-row items-center gap-2"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -111,7 +111,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
           <div
             class="request-decrypt-message__balance-value"
           >
-            966.987986 ETH
+            0 ETH
           </div>
         </div>
       </div>
@@ -141,7 +141,6 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
             class="request-decrypt-message__message-text"
           >
             {"domain":{"chainId":97,"name":"Ether Mail","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","version":"1"}}
-            
           </div>
           <div
             class="request-decrypt-message__message-cover"
@@ -240,7 +239,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
                 class="account-list-item__top-row items-center gap-2"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -302,7 +301,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
           <div
             class="request-decrypt-message__balance-value"
           >
-            966.987986 ETH
+            0 ETH
           </div>
         </div>
       </div>
@@ -331,7 +330,6 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
           <div
             class="request-decrypt-message__message-text"
           >
-            
             This message cannot be decrypted due to error: Decrypt inline error
           </div>
           <div
@@ -429,7 +427,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
                 class="account-list-item__top-row items-center gap-2"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -491,7 +489,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
           <div
             class="request-decrypt-message__balance-value"
           >
-            966.987986 ETH
+            0 ETH
           </div>
         </div>
       </div>
@@ -521,7 +519,6 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
             class="request-decrypt-message__message-text"
           >
             raw message
-            
           </div>
           <div
             class="request-decrypt-message__message-cover request-decrypt-message__message-lock--pressed"

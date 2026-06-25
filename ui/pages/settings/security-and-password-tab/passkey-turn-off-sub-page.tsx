@@ -17,10 +17,13 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
   cancelPasskeyCeremony,
 } from '../../../../shared/lib/passkey';
+import { captureException } from '../../../../shared/lib/sentry';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   forceUpdateMetamaskState,
   removePasskeyWithPasswordVerification,
@@ -79,9 +82,32 @@ export default function PasskeyTurnOffSubPage() {
         return;
       }
 
+      const startedAt = Date.now();
+      const baseProperties = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        verification_method: 'password',
+      };
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOff,
+        properties: {
+          ...baseProperties,
+          status: 'started',
+        },
+      });
       try {
         await removePasskeyWithPasswordVerification(walletPassword);
         await forceUpdateMetamaskState(dispatch);
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeyTurnOff,
+          properties: {
+            ...baseProperties,
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+          },
+        });
         toast.success(
           <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
           {
@@ -92,12 +118,33 @@ export default function PasskeyTurnOffSubPage() {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.SettingsUpdated,
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention -- MetaMetrics snake_case contract
-            passkey_registered: false,
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'passkey',
+            old_value: true,
+            new_value: false,
+            /* eslint-enable @typescript-eslint/naming-convention */
           },
         });
         goToSettings();
-      } catch {
+      } catch (error: unknown) {
+        const durationMs = Date.now() - startedAt;
+        const errorCode = getPasskeyErrorCode(error);
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeyTurnOff,
+          properties: {
+            ...baseProperties,
+            status: 'failed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+            reason: errorCode,
+          },
+        });
+        captureException(
+          createSentryError('Passkey turn off in settings failed', error),
+          { extra: { verificationMethod: 'password', durationMs, errorCode } },
+        );
         toast.error(
           <ToastContent
             title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}

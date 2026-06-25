@@ -14,15 +14,15 @@ import {
 import {
   getCompletedOnboarding,
   getIsInitialized,
-  getIsUnlocked,
   getIsWalletResetInProgress,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import {
   getFirstTimeFlowType,
-  getIsParticipateInMetaMetricsSet,
+  getCompletedMetaMetricsOnboarding,
   getIsSocialLoginFlow,
   getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
@@ -48,8 +48,8 @@ export default function OnboardingFlowSwitch() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isUnlocked = useSelector(getIsUnlocked);
-  const isParticipateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
 
   if (completedOnboarding) {
@@ -60,7 +60,7 @@ export default function OnboardingFlowSwitch() {
     return (
       <Navigate
         to={
-          isParticipateInMetaMetricsSet
+          completedMetaMetricsOnboarding
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS
         }

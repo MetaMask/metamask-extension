@@ -1,8 +1,10 @@
 import React from 'react';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as actionsModule from '../../../store/actions';
 import * as passkeyCeremony from '../../../../shared/lib/passkey/passkey-ceremony';
@@ -10,6 +12,13 @@ import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { UnlockPasskeySection } from './unlock-passkey-section';
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
+}));
 
 jest.mock('../../../../shared/lib/environment-type', () => {
   const actual = jest.requireActual<
@@ -36,7 +45,30 @@ beforeAll(() => {
   } as unknown as typeof globalThis.platform;
 });
 
-const mockStore = configureMockStore([thunk])({ metamask: {} });
+const selectedTestAccountId = 'test-unlock-passkey-section-account-id';
+
+const mockStore = configureMockStore([thunk])({
+  metamask: {
+    passkeyRecord: null,
+    internalAccounts: {
+      selectedAccount: selectedTestAccountId,
+      accounts: {
+        [selectedTestAccountId]: {
+          address: '0x0000000000000000000000000000000000000001',
+          id: selectedTestAccountId,
+          metadata: {
+            name: 'Test',
+            keyring: { type: 'HD Key Tree' },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
+        },
+      },
+    },
+  },
+});
 
 describe('UnlockPasskeySection', () => {
   const baseProps = {

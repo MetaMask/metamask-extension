@@ -5,6 +5,8 @@ class EditConnectedAccountsModal {
 
   private readonly accountCheckbox = 'input[type="checkbox"]';
 
+  private readonly accountCell = '.multichain-account-cell';
+
   private readonly addNewAccountButton = {
     testId: 'add-multichain-account-button',
   };
@@ -14,24 +16,9 @@ class EditConnectedAccountsModal {
     text: 'Add account',
   };
 
-  private readonly disconnectButton = {
-    testId: 'disconnect-accounts-button',
-  };
-
   private readonly editAccountsModalTitle = {
     text: 'Edit accounts',
     tag: 'h4',
-  };
-
-  private readonly ethereumAccountButton = {
-    text: 'Ethereum account',
-    tag: 'button',
-  };
-
-  private readonly selectAllAccountsCheckbox = 'input[title="Select all"]';
-
-  private readonly submitAddAccountButton = {
-    testId: 'submit-add-account-with-name',
   };
 
   private readonly connectAccountsButton = {
@@ -100,17 +87,31 @@ class EditConnectedAccountsModal {
   }
 
   /**
-   * Selects an account at the specified index
+   * Toggles an account at the specified index.
    *
-   * @param accountIndex - The index of the account to select (1-based)
+   * @param accountIndex - The index of the account to toggle (1-based)
    */
   async selectAccount(accountIndex: number): Promise<void> {
-    console.log(
-      `Select account number ${accountIndex} on edit connected accounts modal`,
-    );
     const checkboxes = await this.driver.findElements(this.accountCheckbox);
+    const accountCells = await this.driver.findElements(this.accountCell);
+
+    if (
+      accountCells.length < accountIndex ||
+      checkboxes.length < accountIndex
+    ) {
+      throw new Error(
+        `Unable to select account ${accountIndex}: found ${accountCells.length} account rows and ${checkboxes.length} checkboxes`,
+      );
+    }
+
     const accountCheckbox = checkboxes[accountIndex - 1];
-    await accountCheckbox.click();
+    const isSelected = await accountCheckbox.isSelected();
+
+    await accountCells[accountIndex - 1].click();
+    await this.waitForAccountSelectedStatus({
+      accountIndex,
+      status: isSelected ? 'unselected' : 'selected',
+    });
   }
 
   /**

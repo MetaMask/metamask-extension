@@ -32,7 +32,9 @@ import {
   getSelectedMultichainNetworkChainId,
 } from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsHeader } from '../settings/shared/settings-header';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import { NetworksPageList } from './networks-page-list';
 
@@ -92,6 +94,7 @@ export const NetworksPage = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -188,8 +191,8 @@ export const NetworksPage = () => {
 
   const handleClose = useCallback(() => {
     dispatch(setEditedNetwork());
-    navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate]);
+    runCloseTransition(() => navigate(DEFAULT_ROUTE));
+  }, [dispatch, navigate, runCloseTransition]);
 
   const [pageToast, setPageToast] = useState<{
     chainId: string;
@@ -253,12 +256,13 @@ export const NetworksPage = () => {
 
   const handleRootBack = useCallback(() => {
     dispatch(setEditedNetwork());
-    navigate(
+    const route =
       searchParams.get('drawerOpen') === 'true'
         ? `${DEFAULT_ROUTE}?drawerOpen=true`
-        : DEFAULT_ROUTE,
-    );
-  }, [dispatch, navigate, searchParams]);
+        : DEFAULT_ROUTE;
+
+    runCloseTransition(() => navigate(route));
+  }, [dispatch, navigate, runCloseTransition, searchParams]);
 
   return (
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">

@@ -91,7 +91,7 @@ describe('useUnreadNotificationsCounter', () => {
       },
     };
     const { result } = renderHook(() => useUnreadNotificationsCounter(), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={mockStore(disabledState)}>{children}</Provider>
       ),
     });
@@ -117,7 +117,7 @@ describe('useReadNotificationsCounter', () => {
       },
     };
     const { result } = renderHook(() => useReadNotificationsCounter(), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={mockStore(disabledState)}>{children}</Provider>
       ),
     });

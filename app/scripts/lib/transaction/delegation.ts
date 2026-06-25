@@ -2,12 +2,13 @@ import {
   AuthorizationList,
   TransactionEnvelopeType,
   TransactionMeta,
+  decodeAuthorizationSignature,
 } from '@metamask/transaction-controller';
 import type {
   TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerGetNonceLockAction,
 } from '@metamask/transaction-controller';
-import { Hex, add0x, bytesToHex, createProjectLogger } from '@metamask/utils';
+import { Hex, bytesToHex, createProjectLogger } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import type { Messenger } from '@metamask/messenger';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
@@ -30,7 +31,6 @@ import {
   type Delegation,
   type UnsignedDelegation,
 } from '../../../../shared/lib/delegation';
-import { stripSingleLeadingZero } from './util';
 
 const log = createProjectLogger('transaction-delegation');
 
@@ -345,19 +345,6 @@ async function getNextNonce(
 
   nonceLock.releaseLock();
   return toHex(nonceLock.nextNonce);
-}
-
-function decodeAuthorizationSignature(signature: Hex) {
-  const r = stripSingleLeadingZero(signature.slice(0, 66)) as Hex;
-  const s = stripSingleLeadingZero(add0x(signature.slice(66, 130))) as Hex;
-  const v = parseInt(signature.slice(130, 132), 16);
-  const yParity = toHex(v - 27 === 0 ? 0 : 1);
-
-  return {
-    r,
-    s,
-    yParity,
-  };
 }
 
 async function resolveUpgradeContractAddress(

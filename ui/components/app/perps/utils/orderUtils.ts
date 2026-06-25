@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { capitalize } from 'lodash';
-import type { Order, Position } from '@metamask/perps-controller';
+import type { Order, OrderParams, Position } from '@metamask/perps-controller';
 
 const FULL_POSITION_SIZE_TOLERANCE = new BigNumber('0.00000001');
 const ORDER_PRICE_MATCH_TOLERANCE = new BigNumber('0.00000001');
@@ -153,17 +153,117 @@ export const isOrderAssociatedWithFullPosition = (
     return false;
   }
 
+  // Only fall back to size matching when the provider did not send the flag.
+  // An explicit `isPositionTpsl: false` (e.g. normalTpsl grouping from a
+  // limit-order's TP/SL children) is authoritative — do not size-match,
+  // otherwise a limit-order TP/SL whose size coincidentally equals the
+  // current position would be misclassified as full-position.
   if (order.isPositionTpsl === false) {
     return false;
   }
 
   const orderSize = getAbsoluteOrderSize(order);
   const positionSize = getAbsolutePositionSize(position);
-  if (!orderSize || !positionSize) {
+
+  // Hyperliquid positionTPSL trigger orders may also be placed with size 0
+  // (the trigger acts on whatever the current position size is). When the
+  // adapter cannot back-fill the size, treat a reduce-only trigger on a
+  // matching position+closing-side as position-bound.
+  if (!orderSize) {
+    return order.isTrigger === true;
+  }
+
+  if (!positionSize) {
     return false;
   }
 
   return orderSize.minus(positionSize).abs().lte(FULL_POSITION_SIZE_TOLERANCE);
+};
+
+/**
+ * Returns true when a non-reduce-only market order is large enough to flip the
+ * current position (close the existing side and open the opposite side).
+ * Mirrors `app/components/UI/Perps/utils/orderUtils.ts:willFlipPosition` on
+ * mobile so the order-entry page can replicate the two-step market+TPSL
+ * flow that yields `grouping: 'positionTpsl'` on Hyperliquid.
+ *
+ * @param currentPosition - The existing position
+ * @param orderParams - The order about to be submitted
+ * @returns Whether the order will flip the position
+ */
+export const willFlipPosition = (
+  currentPosition: Position,
+  orderParams: OrderParams,
+): boolean => {
+  if (orderParams.reduceOnly === true) {
+    return false;
+  }
+  if (orderParams.orderType !== 'market') {
+    return false;
+  }
+  // Hyperliquid position/order size strings can carry thousand separators
+  // (e.g. `'1,234.5'`); strip commas before parseFloat so the magnitude
+  // comparison stays correct for large positions.
+  const currentPositionSize = parseFloat(
+    currentPosition.size.replaceAll(',', ''),
+  );
+  // A zero-size position is not a position — short-circuit so a sell market
+  // does not match the phantom `'short'` direction below and falsely report
+  // "no flip". The caller also guards on size === 0, but keep this safe in
+  // isolation.
+  if (currentPositionSize === 0 || !Number.isFinite(currentPositionSize)) {
+    return false;
+  }
+  const positionDirection = currentPositionSize > 0 ? 'long' : 'short';
+  const orderDirection = orderParams.isBuy ? 'long' : 'short';
+  if (positionDirection === orderDirection) {
+    return false;
+  }
+  const orderSize = parseFloat(orderParams.size.replaceAll(',', ''));
+  return orderSize > Math.abs(currentPositionSize);
+};
+
+/**
+ * Derives the take-profit and stop-loss prices for the active position by
+ * inspecting full-position reduce-only trigger orders. Used as a UI fallback
+ * when the controller fails to populate `position.takeProfitPrice` /
+ * `position.stopLossPrice` (e.g. Hyperliquid WebSocket order updates that
+ * omit `isPositionTpsl`).
+ *
+ * @param orders - The orders to inspect
+ * @param position - The current position
+ * @returns Object with takeProfitPrice / stopLossPrice when discoverable
+ */
+export const derivePositionTpslPricesFromOrders = (
+  orders: Order[],
+  position?: Position,
+): { takeProfitPrice?: string; stopLossPrice?: string } => {
+  if (!position) {
+    return {};
+  }
+
+  const result: { takeProfitPrice?: string; stopLossPrice?: string } = {};
+  for (const order of orders) {
+    if (
+      !order.isTrigger ||
+      !isOrderAssociatedWithFullPosition(order, position)
+    ) {
+      continue;
+    }
+
+    const triggerPrice = getOrderTriggerPrice(order)?.toFixed();
+    if (!triggerPrice) {
+      continue;
+    }
+
+    const detailedType = (order.detailedOrderType ?? '').toLowerCase();
+    if (!result.takeProfitPrice && detailedType.includes('take profit')) {
+      result.takeProfitPrice = triggerPrice;
+    } else if (!result.stopLossPrice && detailedType.includes('stop')) {
+      result.stopLossPrice = triggerPrice;
+    }
+  }
+  return result;
 };
 
 /**

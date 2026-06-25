@@ -6,7 +6,7 @@
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import { createInternalTransaction } from '../../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../../page-objects/flows/transaction.flow';
 import { Driver } from '../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
 import {
@@ -51,11 +51,11 @@ export async function run(): Promise<BenchmarkRunResult> {
         );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-status-label--confirmed',
+            '[data-tx-status="confirmed"]',
           );
           return confirmedTxes.length === 1;
         }, 10000);
-        await driver.waitForSelector('.transaction-status-label--confirmed');
+        await driver.waitForSelector('[data-tx-status="confirmed"]');
         const timestampAfterAction = new Date();
         loadingTimes =
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();

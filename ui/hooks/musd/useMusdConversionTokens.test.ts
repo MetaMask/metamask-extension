@@ -132,8 +132,10 @@ const createWrapper = () => {
     },
   });
 
-  const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
-    React.createElement(Provider, { store }, children);
+  const Wrapper = ({
+    children,
+  }: React.PropsWithChildren<{ children: React.ReactNode }>) =>
+    React.createElement(Provider, { store, children });
 
   return Wrapper;
 };

@@ -33,10 +33,10 @@ import {
   getRatesControllerRates,
 } from '../../shared/lib/selectors/assets-migration';
 import {
-  getConversionRate,
   getCurrentCurrency,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
+import { getConversionRate } from '../ducks/metamask/base-selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
@@ -50,8 +50,7 @@ import {
   getProviderConfig,
   NetworkState,
 } from '../../shared/lib/selectors/networks';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
+import { getConversionRatesForNativeAsset } from '../../shared/lib/asset-conversion-rates';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import {
   type AccountsState,
@@ -149,6 +148,22 @@ export const InternalAccountPropType = PropTypes.shape({
   }).isRequired,
   type: PropTypes.string.isRequired,
 });
+
+export const getMultichainDefaultToken = createSelector(
+  [
+    (state: MultichainState, account?: InternalAccount) =>
+      getMultichainIsEvm(state, account),
+    (state: MultichainState, account?: InternalAccount) =>
+      getMultichainIsEvm(state, account)
+        ? getProviderConfig(state).ticker
+        : undefined,
+    (state: MultichainState, account?: InternalAccount) =>
+      getMultichainProviderConfig(state, account).ticker,
+  ],
+  (isEvm, evmTicker, multichainTicker) => ({
+    symbol: isEvm ? (evmTicker ?? 'ETH') : multichainTicker,
+  }),
+);
 
 export function getMultichainIsBitcoin(
   state: MultichainState,
@@ -249,18 +264,6 @@ export function getMultichainShouldShowFiat(
     ? getShouldShowFiat(state, chainId)
     : (useCurrencyRateCheck && isMainnet) ||
         (useCurrencyRateCheck && isTestnet && getShowFiatInTestnets(state));
-}
-
-export function getMultichainDefaultToken(
-  state: MultichainState,
-  account?: InternalAccount,
-) {
-  const symbol = getMultichainIsEvm(state, account)
-    ? // We fallback to 'ETH' to keep original behavior of `getSwapsDefaultToken`
-      (getProviderConfig(state)?.ticker ?? 'ETH')
-    : getMultichainProviderConfig(state, account).ticker;
-
-  return { symbol };
 }
 
 export function getMultichainCurrentChainId(state: MultichainState) {
@@ -406,7 +409,7 @@ export function getMultichainConversionRate(
   const { chainId } = getMultichainNetwork(state, account);
 
   const conversionRate = getMultichainIsEvm(state, account)
-    ? getConversionRate(state)
+    ? getConversionRate(state as Parameters<typeof getConversionRate>[0])
     : getConversionRatesForNativeAsset({
         conversionRates:
           getMultichainAssetsRatesControllerConversionRates(state),

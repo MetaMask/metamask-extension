@@ -64,6 +64,18 @@ export function getIsEnforcedSimulationsEnabled(
 }
 
 /**
+ * Whether enforced simulations are force-enabled via the
+ * `FORCE_ENFORCED_SIMULATIONS` build flag. When `true`, callers should
+ * skip the remote feature flag check and bypass trust signals.
+ * Intended for local development and QA only.
+ *
+ * @returns Whether enforced simulations are force-enabled.
+ */
+export function isEnforcedSimulationsForceEnabled(): boolean {
+  return process.env.FORCE_ENFORCED_SIMULATIONS?.toString() === 'true';
+}
+
+/**
  * Reads the `slippage` field from the `confirmations_enforced_simulations`
  * remote feature flag. Falls back to
  * {@link DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE} when the flag or field is
@@ -115,10 +127,7 @@ export function isEnforcedSimulationsEligible(
     return false;
   }
 
-  // When forcing is enabled, skip the trust signal check so enforced
-  // simulations always applies as long as balance changes are present.
-  // Intended for local development and QA only.
-  if (isForceEnabled()) {
+  if (isEnforcedSimulationsForceEnabled()) {
     return true;
   }
 
@@ -135,10 +144,6 @@ function getEnforcedSimulationsFlag({
   return (remoteFeatureFlags as RemoteFlagsWithEnforcedSimulations)?.[
     ENFORCED_SIMULATIONS_FEATURE_FLAG
   ];
-}
-
-function isForceEnabled(): boolean {
-  return process.env.FORCE_ENABLE_SIMULATIONS === 'true';
 }
 
 function isTrusted(

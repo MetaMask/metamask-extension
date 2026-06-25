@@ -21,6 +21,7 @@ export const useIsTxSubmittable = () => {
     isInsufficientGasBalance,
     isInsufficientNativeReserve,
     isInsufficientGasForQuote,
+    isNetworkFeeUnavailable,
     isTxAlertPresent,
     isTxAlertLoading,
   } = useSelector(getValidationErrors, shallowEqual);
@@ -35,6 +36,7 @@ export const useIsTxSubmittable = () => {
     !isInsufficientGasBalance &&
     !isInsufficientGasForQuote &&
     !isInsufficientNativeReserve &&
+    !isNetworkFeeUnavailable &&
     !(isTxAlertLoading || isTxAlertPresent),
   );
 };

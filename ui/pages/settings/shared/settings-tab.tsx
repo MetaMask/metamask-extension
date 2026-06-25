@@ -6,24 +6,15 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import { SettingItemConfig } from '../types';
 import { Divider } from './divider';
 
 type SettingsTabProps = {
   items: SettingItemConfig[];
   subHeader?: string;
-  /** Tab message key for settings search (e.g., 'developerOptions'). If provided, handles scroll-to-setting automatically. */
-  tabMessageKey?: string;
 };
 
-export const SettingsTab = ({
-  items,
-  subHeader,
-  tabMessageKey,
-}: SettingsTabProps) => {
-  const t = useI18nContext();
+export const SettingsTab = ({ items, subHeader }: SettingsTabProps) => {
   const { hash } = useLocation();
 
   const itemCount = items.length;
@@ -34,12 +25,6 @@ export const SettingsTab = ({
       ),
     [itemCount],
   );
-
-  useEffect(() => {
-    if (tabMessageKey) {
-      handleSettingsRefs(t, t(tabMessageKey), settingsRefs);
-    }
-  }, [t, tabMessageKey, settingsRefs]);
 
   useEffect(() => {
     if (!hash) {

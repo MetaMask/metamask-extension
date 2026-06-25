@@ -72,9 +72,6 @@
   "autoLockTimeLimit": {
     "message": "በራስ ሰር ዘግቶ መውጫ ሰዓት ቆጣሪ (ደቂቃ)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "MetaMask በራስ ሰር መንገድ ዘግቶ ከመውጣቱ በፊት የቦዘነ ጊዜን በደቂቃዎች ሙላ"
-  },
   "average": {
     "message": "አማካይ"
   },
@@ -175,12 +172,6 @@
   "createPassword": {
     "message": "የይለፍ ቃል ፍጠር"
   },
-  "currencyConversion": {
-    "message": "የገንዘብ ልወጣ"
-  },
-  "currentLanguage": {
-    "message": "ወቅታዊ ቋንቋ"
-  },
   "customToken": {
     "message": "ብጁ ተለዋጭ ስም"
   },
@@ -198,9 +189,6 @@
   },
   "done": {
     "message": "ተጠናቅቋል"
-  },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome አውርድ"
   },
   "downloadStateLogs": {
     "message": "የስቴት መዛግብትን አውርድ"
@@ -259,9 +247,6 @@
   },
   "hardwareWallets": {
     "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
-  },
-  "hardwareWalletsMsg": {
-    "message": "ከ MetaMask ጋር ሊጠቀሙበት የሚፈልጉትን የሃርድዌር ቋት ይምረጡ"
   },
   "here": {
     "message": "እዚህ",
@@ -327,12 +312,6 @@
   "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
   },
-  "lineaGoerli": {
-    "message": "የ Linea Goerli የሙከራ አውታረ መረብ"
-  },
-  "links": {
-    "message": "ማስፈንጠሪያዎች"
-  },
   "loading": {
     "message": "በመጫን ላይ…"
   },
@@ -369,9 +348,6 @@
   },
   "nevermind": {
     "message": "ምንም አይደል"
-  },
-  "newAccount": {
-    "message": "አዲስ መለያ"
   },
   "newAccountNumberName": {
     "message": "መለያ $1",
@@ -478,9 +454,6 @@
   "restore": {
     "message": "እነበረበት መልስ"
   },
-  "revealSeedWords": {
-    "message": "የዘር ቃላትን ይግለጹ"
-  },
   "revealSeedWordsWarning": {
     "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -527,9 +500,6 @@
   "showFiatConversionInTestnets": {
     "message": "ልወጣን በ Testnets ላይ አሳይ"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "በ Testnets ላይ ወጥ የሆነ ልወጣን ለማሳየት ይህን ይምረጡ"
-  },
   "showHexData": {
     "message": "Hex ውሂብ አሳይ"
   },
@@ -559,9 +529,6 @@
   },
   "stateLogs": {
     "message": "የስቴት መዛግብት"
-  },
-  "stateLogsDescription": {
-    "message": "ስቴት መዛግብት ይፋዊ የመለያ አድራሻዎትንና የተላኩ ግብይቶችን ይይዛሉ።"
   },
   "submitted": {
     "message": "የቀረበ"

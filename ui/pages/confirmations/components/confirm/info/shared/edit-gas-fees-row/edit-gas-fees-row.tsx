@@ -1,7 +1,11 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
@@ -10,7 +14,6 @@ import {
   SuccessPill,
   Text,
 } from '../../../../../../../components/component-library';
-import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -58,6 +61,7 @@ export const EditGasFeesRow = ({
     chainId,
     isGasFeeSponsored: doesSentinelAllowSponsorship,
     simulationData,
+    type: transactionType,
   } = transactionMeta;
 
   const estimationFailed = useEstimationFailed();
@@ -75,7 +79,10 @@ export const EditGasFeesRow = ({
   // This prevents the gas fee row from showing as sponsored if stx is disabled
   // by the user and 7702 is not supported in the chain.
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
+  const isGasFeeSponsored =
+    isGaslessSupported &&
+    doesSentinelAllowSponsorship &&
+    transactionType !== TransactionType.revokeDelegation;
 
   let tooltip = t('estimatedFeeTooltip');
   if (isGasFeeSponsored) {

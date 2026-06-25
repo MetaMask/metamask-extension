@@ -11,6 +11,7 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
+import { selectIsPayAmountPrefillEnabled } from '../../../selectors/feature-flags';
 import { useConfirmContext } from '../../../context/confirm';
 import { CustomAmountInfo } from '../custom-amount-info';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
@@ -18,6 +19,7 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useMusdConversionTokens } from '../../../../../hooks/musd';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
@@ -31,6 +33,7 @@ const MusdBottomContent = () => {
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
   const { hideResults } = useTransactionCustomAmountAlerts();
+  const isPaidByMetaMask = useIsPaidByMetaMask();
 
   const isResultReady = isQuotesLoading || Boolean(quotes?.length);
 
@@ -45,7 +48,7 @@ const MusdBottomContent = () => {
         tooltipDescription={t('musdConversionFeeTooltipDescription')}
       />
       <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
-      <TotalRow variant={ConfirmInfoRowSize.Small} />
+      {!isPaidByMetaMask && <TotalRow variant={ConfirmInfoRowSize.Small} />}
     </Box>
   );
 };
@@ -73,6 +76,14 @@ export const MusdConversionInfo = () => {
 
   const existingPayToken = useSelector((state: TransactionPayState) =>
     selectTransactionPaymentTokenByTransactionId(state, transactionId),
+  );
+
+  // Treatment (max pre-filled) vs control (empty field) is configured under
+  // confirmations_pay_extended and split via LD targeting. The matching
+  // mm_pay_prefilled_amount metric is emitted from the MetaMask Pay metrics
+  // builder so it reaches the executed transactions' events.
+  const prefillMaxOnLoad = useSelector((state) =>
+    selectIsPayAmountPrefillEnabled(state, TransactionType.musdConversion),
   );
 
   // Track quote fetch time via Sentry trace
@@ -127,6 +138,7 @@ export const MusdConversionInfo = () => {
       disableAutomaticToken={true}
       preferredToken={preferredToken}
       hasMax={true}
+      prefillMaxOnLoad={prefillMaxOnLoad}
       overrideCenterContent={renderOverrideContent}
       overrideBottomContent={<MusdBottomContent />}
     />

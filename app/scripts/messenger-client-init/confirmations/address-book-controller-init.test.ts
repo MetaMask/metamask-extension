@@ -1,10 +1,10 @@
-import { AddressBookController } from '@metamask/address-book-controller';
+import {
+  AddressBookController,
+  AddressBookControllerMessenger,
+} from '@metamask/address-book-controller';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  getAddressBookControllerMessenger,
-  AddressBookControllerMessenger,
-} from '../messengers';
+import { getAddressBookControllerMessenger } from '../messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import { AddressBookControllerInit } from './address-book-controller-init';
 

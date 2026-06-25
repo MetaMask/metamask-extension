@@ -14,11 +14,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
-import {
-  formatPerpsFiat,
-  formatPositionSize,
-  PRICE_RANGES_MINIMAL_VIEW,
-} from '../../../../../shared/lib/perps-formatters';
+import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
 import {
   Modal,
   ModalContent,
@@ -40,12 +36,15 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { getPositionDirection } from '../utils';
+import { getPositionDirection, buildPerpsVipTrackingData } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
+import { useVipTier } from '../../../../hooks/rewards/useVipTier';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 
 export type ReversePositionModalProps = {
   isOpen: boolean;
@@ -66,16 +65,17 @@ function toFlipPositionPayload(pos: Position): Position {
   };
 }
 
-export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
+export const ReversePositionModal = ({
   isOpen,
   onClose,
   position,
   currentPrice,
   sizeDecimals,
-}) => {
+}: ReversePositionModalProps) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { gate } = useSelectedAccountComplianceGate();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   useEffect(() => {
@@ -95,6 +95,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     },
   });
   const { replacePerpsToastByKey } = usePerpsToast();
+  const vipTier = useVipTier();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -108,8 +109,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
 
   const {
     feeRate,
+    undiscountedFeeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
+    metamaskFeeRateDiscountPercentage,
   } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
@@ -121,6 +124,14 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     [sizeNum, currentPrice, feeRate],
   );
 
+  const originalEstimatedFees = useMemo(
+    () =>
+      undiscountedFeeRate === undefined
+        ? undefined
+        : 2 * sizeNum * currentPrice * undiscountedFeeRate,
+    [sizeNum, currentPrice, undiscountedFeeRate],
+  );
+
   const shouldShowFeePlaceholder =
     isFeeLoading || hasFeeError || estimatedFees === undefined;
 
@@ -130,52 +141,65 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   );
 
   const handleSave = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError(null);
-
-    replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
-
-    try {
-      const flipResult = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsFlipPosition', [
-        { symbol: position.symbol, position: positionForFlip },
-      ]);
-      if (flipResult?.success !== true) {
-        throw new Error(flipResult?.error || 'Failed to flip position');
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
       }
-      const streamManager = getPerpsStreamManager();
-      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
-        'perpsGetPositions',
-        [{ skipCache: true }],
-      );
-      streamManager.pushPositionsWithOverrides(freshPositions);
 
-      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
-      onClose();
-    } catch (err) {
-      const raw =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
-      });
-      const message = handlePerpsError(err, t as (key: string) => string);
-      setError(message);
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.REVERSE_FAILED,
-        description: message,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+      setIsSubmitting(true);
+      setError(null);
+
+      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
+
+      try {
+        const flipResult = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsFlipPosition', [
+          {
+            symbol: position.symbol,
+            position: positionForFlip,
+            trackingData: buildPerpsVipTrackingData({
+              totalFee: estimatedFees ?? 0,
+              marketPrice: currentPrice,
+              vipTier,
+              vipDiscount: metamaskFeeRateDiscountPercentage,
+            }),
+          },
+        ]);
+        if (flipResult?.success !== true) {
+          throw new Error(flipResult?.error || 'Failed to flip position');
+        }
+        const streamManager = getPerpsStreamManager();
+        const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+          'perpsGetPositions',
+          [{ skipCache: true }],
+        );
+        streamManager.pushPositionsWithOverrides(freshPositions);
+
+        replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
+        onClose();
+      } catch (err) {
+        const raw =
+          err instanceof Error ? err.message : 'An unknown error occurred';
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
+        });
+        const message = handlePerpsError(err, t as (key: string) => string);
+        setError(message);
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.REVERSE_FAILED,
+          description: message,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    });
   }, [
+    gate,
     isEligible,
     onClose,
     position.symbol,
@@ -183,6 +207,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     replacePerpsToastByKey,
     track,
     t,
+    estimatedFees,
+    currentPrice,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   return (
@@ -259,17 +287,18 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 >
                   {t('perpsFees')}
                 </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  data-testid="perps-reverse-fee-value"
-                >
-                  {shouldShowFeePlaceholder
-                    ? '--'
-                    : formatPerpsFiat(estimatedFees, {
-                        ranges: PRICE_RANGES_MINIMAL_VIEW,
-                      })}
-                </Text>
+                <PerpsFeesDisplay
+                  metamaskFeeRateDiscountPercentage={
+                    shouldShowFeePlaceholder
+                      ? undefined
+                      : metamaskFeeRateDiscountPercentage
+                  }
+                  originalFee={originalEstimatedFees}
+                  fee={shouldShowFeePlaceholder ? undefined : estimatedFees}
+                  placeholder="--"
+                  feeTextFontWeight={FontWeight.Medium}
+                  feeTextTestId="perps-reverse-fee-value"
+                />
               </Box>
               {error && (
                 <Box

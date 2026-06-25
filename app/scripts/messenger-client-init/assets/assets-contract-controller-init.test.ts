@@ -4,7 +4,10 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { AssetsContractController } from '@metamask/assets-controllers';
+import {
+  AssetsContractController,
+  AssetsContractControllerMessenger,
+} from '@metamask/assets-controllers';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -13,7 +16,6 @@ import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
   AssetsContractControllerInitMessenger,
-  AssetsContractControllerMessenger,
   getAssetsContractControllerInitMessenger,
   getAssetsContractControllerMessenger,
 } from '../messengers/assets';

@@ -10,7 +10,6 @@ import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import reduceMetamask, {
-  getConversionRate,
   getGasEstimateType,
   getGasEstimateTypeByChainId,
   getGasFeeEstimates,
@@ -20,11 +19,11 @@ import reduceMetamask, {
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
-  isNotEIP1559Network,
   getCurrentCurrency,
   getAllNfts,
   getTokensByChainId,
 } from './metamask';
+import { getConversionRate, isNotEIP1559Network } from './base-selectors';
 
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
@@ -209,6 +208,62 @@ describe('MetaMask Reducers', () => {
     });
 
     expect(lockMetaMask.isUnlocked).toStrictEqual(false);
+  });
+
+  it('updates metrics participation state', () => {
+    expect(
+      reduceMetamask(
+        {
+          analyticsId: 'old-analytics-id',
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+        },
+        {
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+          value: null,
+        },
+      ),
+    ).toMatchObject({
+      analyticsId: 'old-analytics-id',
+      completedMetaMetricsOnboarding: false,
+      optedIn: false,
+    });
+
+    expect(
+      reduceMetamask(
+        {
+          analyticsId: null,
+          completedMetaMetricsOnboarding: false,
+          optedIn: false,
+        },
+        {
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+          value: true,
+        },
+      ),
+    ).toMatchObject({
+      analyticsId: null,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
+    });
+
+    expect(
+      reduceMetamask(
+        {
+          analyticsId: 'old-analytics-id',
+          completedMetaMetricsOnboarding: false,
+          optedIn: true,
+        },
+        {
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+          value: false,
+        },
+      ),
+    ).toMatchObject({
+      analyticsId: 'old-analytics-id',
+      completedMetaMetricsOnboarding: true,
+      optedIn: false,
+    });
   });
 
   it('sets account label', () => {

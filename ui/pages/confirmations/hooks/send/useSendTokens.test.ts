@@ -4,7 +4,11 @@ import type { Hex } from '@metamask/utils';
 
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  getAssetsBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroupIncludingHidden,
+} from '../../../../selectors/assets';
+import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
 import * as useFiatFormatterModule from '../../../../hooks/useFiatFormatter';
 import { AssetStandard, type Asset } from '../../types/send';
 import * as useChainNetworkNameAndImageModule from '../useChainNetworkNameAndImage';
@@ -102,6 +106,9 @@ describe('useSendTokens', () => {
     jest.clearAllMocks();
 
     mockUseSelector.mockImplementation((selector) => {
+      if (selector === getIsTokenManagementFilterEnabled) {
+        return false;
+      }
       if (selector === getAssetsBySelectedAccountGroup) {
         return mockAssetsData;
       }
@@ -166,6 +173,40 @@ describe('useSendTokens', () => {
       (asset: Asset) => asset.symbol === 'ZERO',
     );
     expect(zeroBalanceAsset).toBeDefined();
+  });
+
+  it('uses hidden-inclusive assets when the token management flag is enabled', async () => {
+    const hiddenAsset = {
+      address: '0xHiddenToken',
+      chainId: '0x1',
+      balance: '1000000000000000000',
+      rawBalance: '0xde0b6b3a7640000',
+      isNative: false,
+      symbol: 'HIDDEN',
+      decimals: 18,
+      fiat: {
+        balance: 100,
+        currency: 'USD',
+      },
+    };
+
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getIsTokenManagementFilterEnabled) {
+        return true;
+      }
+      if (selector === getAssetsBySelectedAccountGroupIncludingHidden) {
+        return [hiddenAsset];
+      }
+      if (selector === getAssetsBySelectedAccountGroup) {
+        return [];
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].symbol).toBe('HIDDEN');
   });
 
   it('filters tokens by chain ID and address when tokenFilter is provided', async () => {

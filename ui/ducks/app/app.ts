@@ -62,7 +62,6 @@ type AppState = {
   isLoading: boolean;
   isNftStillFetchingIndication: boolean;
   loadingMessage: string | null;
-  warning: string | null | undefined;
 
   defaultHdPaths: {
     trezor: string;
@@ -82,6 +81,7 @@ type AppState = {
   ledgerTransportStatus: HardwareTransportStates;
   showBasicFunctionalityModal: boolean;
   externalServicesOnboardingToggleState: boolean;
+  backupAndSyncOnboardingToggleState: boolean;
   newNetworkAddedName: string;
   editedNetwork:
     | {
@@ -150,6 +150,7 @@ const initialState: AppState = {
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
+  backupAndSyncOnboardingToggleState: true,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
@@ -165,8 +166,6 @@ const initialState: AppState = {
   // Used to show a spinner at the bottom of the page when we are still fetching nfts
   isNftStillFetchingIndication: false,
   loadingMessage: null,
-  // Used to display error text
-  warning: null,
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     oneKey: `m/44'/60'/0'/0`,
@@ -299,6 +298,17 @@ export default function reduceApp(
         externalServicesOnboardingToggleState: false,
       };
 
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: true,
+      };
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: false,
+      };
+
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
       return {
         ...appState,
@@ -417,17 +427,6 @@ export default function reduceApp(
           privateKey: '',
         },
       };
-    case actionConstants.SHOW_SEND_TOKEN_PAGE:
-      return {
-        ...appState,
-        warning: null,
-      };
-
-    case actionConstants.LOCK_METAMASK:
-      return {
-        ...appState,
-        warning: null,
-      };
 
     // accounts
     case actionConstants.GO_HOME:
@@ -436,41 +435,25 @@ export default function reduceApp(
         accountDetail: {
           privateKey: '',
         },
-        warning: null,
       };
 
     case actionConstants.SHOW_ACCOUNTS_PAGE:
       return {
         ...appState,
         isLoading: false,
-        warning: null,
       };
 
     case actionConstants.SHOW_CONF_TX_PAGE:
       return {
         ...appState,
         txId: action.id,
-        warning: null,
         isLoading: false,
       };
 
     case actionConstants.COMPLETED_TX:
       return {
         ...appState,
-        warning: null,
         txId: null,
-      };
-
-    case actionConstants.UNLOCK_FAILED:
-      return {
-        ...appState,
-        warning: action.value || 'Incorrect password. Try again.',
-      };
-
-    case actionConstants.UNLOCK_SUCCEEDED:
-      return {
-        ...appState,
-        warning: '',
       };
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
@@ -510,19 +493,6 @@ export default function reduceApp(
       return {
         ...appState,
         isNftStillFetchingIndication: false,
-      };
-
-    case actionConstants.DISPLAY_WARNING:
-      return {
-        ...appState,
-        warning: action.payload,
-        isLoading: false,
-      };
-
-    case actionConstants.HIDE_WARNING:
-      return {
-        ...appState,
-        warning: undefined,
       };
 
     case actionConstants.SHOW_PRIVATE_KEY:
@@ -730,6 +700,18 @@ export function onboardingToggleBasicFunctionalityOff(): Action {
   };
 }
 
+export function onboardingToggleBackupAndSyncOn(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON,
+  };
+}
+
+export function onboardingToggleBackupAndSyncOff(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF,
+  };
+}
+
 export function toggleGasLoadingAnimation(
   payload: boolean,
 ): PayloadAction<boolean> {
@@ -764,11 +746,11 @@ export function setCustomTokenAmount(payload: string): PayloadAction<string> {
 
 /**
  * An action creator for display a error to the user in various places in the
- * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * UI. It will not be cleared until a new error replaces it or `hideErrorInSettings`
  * is called.
  *
- * @param payload - The warning to show.
- * @returns The action to display the warning.
+ * @param payload - The error to show.
+ * @returns The action to display the error.
  */
 export function displayErrorInSettings(payload: string): PayloadAction<string> {
   return {

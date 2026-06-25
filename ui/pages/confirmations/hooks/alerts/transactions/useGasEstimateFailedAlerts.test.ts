@@ -17,11 +17,27 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { useIsGasSponsored } from '../../gas/useIsGasSponsored';
 import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
+
+jest.mock('../../gas/useIsGasSponsored');
 
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
   chainId: '0x5',
 }) as TransactionMeta;
+
+const GAS_ALERT = {
+  actions: [
+    {
+      key: AlertActionKey.ShowAdvancedGasFeeModal,
+      label: 'Update gas limit',
+    },
+  ],
+  field: RowAlertKey.EstimatedFee,
+  key: 'gasEstimateFailed',
+  reason: 'Inaccurate fee',
+  severity: Severity.Warning,
+};
 
 function runHook(state: Record<string, unknown>) {
   const response = renderHookWithConfirmContextProvider(
@@ -33,8 +49,12 @@ function runHook(state: Record<string, unknown>) {
 }
 
 describe('useGasEstimateFailedAlerts', () => {
+  const useIsGasSponsoredMock = jest.mocked(useIsGasSponsored);
+
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useIsGasSponsoredMock.mockReturnValue(false);
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -61,18 +81,7 @@ describe('useGasEstimateFailedAlerts', () => {
     );
 
     expect(alerts).toHaveLength(1);
-    expect(alerts[0]).toMatchObject({
-      actions: [
-        {
-          key: AlertActionKey.ShowAdvancedGasFeeModal,
-          label: 'Update gas limit',
-        },
-      ],
-      field: RowAlertKey.EstimatedFee,
-      key: 'gasEstimateFailed',
-      reason: 'Inaccurate fee',
-      severity: Severity.Warning,
-    });
+    expect(alerts[0]).toMatchObject(GAS_ALERT);
     expect(alerts[0].content).toBeDefined();
   });
 
@@ -105,6 +114,19 @@ describe('useGasEstimateFailedAlerts', () => {
           ...CONFIRMATION_MOCK,
           simulationFails: { debug: {} },
           userFeeLevel: UserFeeLevel.CUSTOM,
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('returns no alerts if simulation fails but network is sponsored', () => {
+    useIsGasSponsoredMock.mockReturnValue(true);
+    expect(
+      runHook(
+        getMockConfirmStateForTransaction({
+          ...CONFIRMATION_MOCK,
+          isGasFeeSponsored: true,
+          simulationFails: { debug: {} },
         }),
       ),
     ).toEqual([]);

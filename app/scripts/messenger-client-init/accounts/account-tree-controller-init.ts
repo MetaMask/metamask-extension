@@ -1,7 +1,9 @@
-import { AccountTreeController } from '@metamask/account-tree-controller';
+import {
+  AccountTreeController,
+  AccountTreeControllerMessenger,
+} from '@metamask/account-tree-controller';
 import { AccountId } from '@metamask/keyring-utils';
 import { MessengerClientInitFunction } from '../types';
-import { AccountTreeControllerMessenger } from '../messengers/accounts';
 import { trace } from '../../../../shared/lib/trace';
 import { AccountTreeControllerInitMessenger } from '../messengers/accounts/account-tree-controller-messenger';
 import {

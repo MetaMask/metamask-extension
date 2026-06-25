@@ -168,6 +168,7 @@ class BridgeQuotePage {
           this.assetPrickerSearchInput,
           quote.tokenTo,
         );
+        await this.driver.delay(2000);
         await this.driver.clickElementAndWaitToDisappear({
           text: quote.tokenTo,
           css: this.tokenButton,
@@ -390,8 +391,8 @@ class BridgeQuotePage {
     try {
       const balance = await this.driver.waitForSelector(this.networkFees);
       const currentBalanceText = await balance.getText();
-      // Verify that the text matches the pattern $XXX.XX
-      const pricePattern = /^\$\d+\.\d{2}$/u;
+      // Verify that the text matches the pattern $XXX.XX or $0.00X (for small fees < $0.01)
+      const pricePattern = /^\$\d+\.\d{2,4}$/u;
       if (!pricePattern.test(currentBalanceText)) {
         throw new Error(`Price format is not valid: ${currentBalanceText}`);
       }

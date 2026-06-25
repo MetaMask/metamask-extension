@@ -79,7 +79,7 @@ describe('useGatorPermissions', () => {
     const storeWithCache = createStoreWithCache();
 
     const { result } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={storeWithCache}>{children}</Provider>
       ),
     });
@@ -91,7 +91,9 @@ describe('useGatorPermissions', () => {
 
   it('should start with loading true when no cache exists', async () => {
     const { result } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     expect(result.current.loading).toBe(true);
@@ -101,7 +103,9 @@ describe('useGatorPermissions', () => {
 
   it('should call fetchAndUpdateGatorPermissions on mount', async () => {
     const { result } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
@@ -113,7 +117,7 @@ describe('useGatorPermissions', () => {
     const storeWithCache = createStoreWithCache();
 
     const { result } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={storeWithCache}>{children}</Provider>
       ),
     });
@@ -131,7 +135,9 @@ describe('useGatorPermissions', () => {
     );
 
     const { result } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     await waitFor(() => expect(result.current.loading).toBe(false));
@@ -141,7 +147,7 @@ describe('useGatorPermissions', () => {
     const storeWithCache = createStoreWithCache();
 
     const { result, unmount } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={storeWithCache}>{children}</Provider>
       ),
     });
@@ -153,7 +159,9 @@ describe('useGatorPermissions', () => {
 
   it('should only run the effect once on mount', async () => {
     const { result, rerender } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     await act(async () => {
@@ -169,7 +177,9 @@ describe('useGatorPermissions', () => {
 
   it('should start with loading true when grantedPermissions is empty', async () => {
     const { result } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     expect(result.current.loading).toBe(true);
@@ -183,7 +193,7 @@ describe('useGatorPermissions', () => {
     const { result } = renderHook(
       () => useGatorPermissions({ refreshInBackground: false }),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={storeWithCache}>{children}</Provider>
         ),
       },
@@ -202,7 +212,7 @@ describe('useGatorPermissions', () => {
     const { result } = renderHook(
       () => useGatorPermissions(),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={store}>{children}</Provider>
         ),
       },
@@ -224,7 +234,7 @@ describe('useGatorPermissions', () => {
     const { result } = renderHook(
       () => useGatorPermissions({ refreshInBackground: false }),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={store}>{children}</Provider>
         ),
       },
@@ -237,7 +247,7 @@ describe('useGatorPermissions', () => {
     const { result: result2, rerender } = renderHook(
       () => useGatorPermissions({ refreshInBackground: false }),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={store}>{children}</Provider>
         ),
       },

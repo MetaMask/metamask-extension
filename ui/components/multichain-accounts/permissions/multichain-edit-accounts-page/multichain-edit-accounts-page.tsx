@@ -2,14 +2,15 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   IconName,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSecondary,
-  ButtonSecondarySize,
-} from '../../../component-library';
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import {
   BackgroundColor,
@@ -49,9 +50,7 @@ type MultichainEditAccountsPageProps = {
   snapsPermissionsRequestType?: SnapsPermissionsRequestType;
 };
 
-export const MultichainEditAccountsPage: React.FC<
-  MultichainEditAccountsPageProps
-> = ({
+export const MultichainEditAccountsPage = ({
   title,
   confirmButtonText,
   defaultSelectedAccountGroups,
@@ -59,7 +58,7 @@ export const MultichainEditAccountsPage: React.FC<
   onSubmit,
   onClose,
   snapsPermissionsRequestType = SnapsPermissionsRequestType.None,
-}) => {
+}: MultichainEditAccountsPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
@@ -138,18 +137,11 @@ export const MultichainEditAccountsPage: React.FC<
   return (
     <Page
       data-testid="modal-page"
-      className={classnames(
-        'main-container',
-        'connect-page',
-        'multichain-edit-accounts-page',
-        {
-          'multichain-edit-accounts-page--snap':
-            snapsPermissionsRequestType ===
-              SnapsPermissionsRequestType.Initial ||
-            snapsPermissionsRequestType ===
-              SnapsPermissionsRequestType.Existing,
-        },
-      )}
+      className={classnames('main-container', 'multichain-edit-accounts-page', {
+        'multichain-edit-accounts-page--snap':
+          snapsPermissionsRequestType === SnapsPermissionsRequestType.Initial ||
+          snapsPermissionsRequestType === SnapsPermissionsRequestType.Existing,
+      })}
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       {snapsPermissionsRequestType === SnapsPermissionsRequestType.None && (
@@ -179,20 +171,21 @@ export const MultichainEditAccountsPage: React.FC<
         />
       </ScrollContainer>
       <Footer className="multichain-edit-accounts-page__footer">
-        <ButtonSecondary
+        <Button
           data-testid="connect-more-accounts-button"
           onClick={handleConnect}
-          size={ButtonSecondarySize.Lg}
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
           // Allow 0 accounts selected for existing Snaps and non-Snaps revoke flows,
           // but require at least 1 account for initial Snaps permission requests
-          disabled={
+          isDisabled={
             selectedAccountGroups.length === 0 &&
             snapsPermissionsRequestType === SnapsPermissionsRequestType.Initial
           }
-          block
+          isFullWidth
         >
           {confirmButtonText ?? t('connect')}
-        </ButtonSecondary>
+        </Button>
       </Footer>
     </Page>
   );

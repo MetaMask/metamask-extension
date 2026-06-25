@@ -49,7 +49,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
              
             Enter your 
             <button
-              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+              class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
               role="button"
             >
               <span
@@ -93,7 +93,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
                 class="flex flex-row justify-end srp-input-import__actions"
               >
                 <button
-                  class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-transparent text-default hover:bg-hover active:bg-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                  class="inline-flex items-center justify-center rounded-xl px-3 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-transparent text-default hover:bg-hover active:bg-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                   data-testid="srp-input-import__paste-button"
                   role="button"
                 >
@@ -105,7 +105,6 @@ exports[`Restore vault Component renders match snapshot 1`] = `
                 </button>
               </div>
             </div>
-            
           </form>
         </div>
       </div>
@@ -114,7 +113,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
       class="flex flex-col items-center justify-center w-full text-left"
     >
       <button
-        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default import-srp__continue-button w-full"
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default import-srp__continue-button w-full"
         data-testid="import-srp-confirm"
         disabled=""
         role="button"

@@ -12,7 +12,6 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  hideWarning,
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
 } from '../../../store/actions';
@@ -27,6 +26,7 @@ import {
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 import { MetaMaskReduxDispatch } from '../../../store/store';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -44,14 +44,6 @@ export const ImportSrp = () => {
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
   const { trackEvent } = useContext(MetaMetricsContext);
-
-  // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
-  // We want to hide the warning when the component unmounts
-  useEffect(() => {
-    return () => {
-      dispatch(hideWarning());
-    };
-  }, [dispatch]);
 
   async function importWallet() {
     try {

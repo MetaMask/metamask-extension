@@ -91,7 +91,7 @@ export function maintenanceMarginRateFromMaxLeverage(
 
 /**
  * Liquidation distance as % of mark: `|mark − liq| / mark × 100`.
- * Returns 0 when mark is 0 or liq is null/0 (UI fallback per parity spec).
+ * Returns 0 when mark is 0 or liq is null/non-positive (UI fallback per parity spec).
  *
  * @param markPrice - Live mark / current price for the symbol
  * @param liquidationPrice - Liquidation price (anchor or estimate)
@@ -106,7 +106,7 @@ export function liquidationDistancePercent(
     !Number.isFinite(liquidationPrice) ||
     !Number.isFinite(markPrice) ||
     markPrice === 0 ||
-    liquidationPrice === 0
+    liquidationPrice <= 0
   ) {
     return 0;
   }

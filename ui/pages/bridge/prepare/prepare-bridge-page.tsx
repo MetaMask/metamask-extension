@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
+  FeatureId,
   formatChainIdToCaip,
   isValidQuoteRequest,
   isNativeAddress,
@@ -11,6 +12,7 @@ import {
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -37,7 +39,6 @@ import {
   getToToken,
   getWasTxDeclined,
   getFromAmountInCurrency,
-  getValidationErrors,
   getIsToOrFromNonEvm,
   getFromAccount,
   getIsStxEnabled,
@@ -45,18 +46,17 @@ import {
   getValidatedFromValue,
   getIsSrcAssetPickerOpen,
   getIsDestAssetPickerOpen,
+  getQuoteRequestInsufficientBal,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
-  Box,
   ButtonIcon,
   IconName,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
-  Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -74,6 +74,7 @@ import { Toast, ToastContainer } from '../../../components/multichain';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
+import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import {
@@ -135,8 +136,9 @@ const PrepareBridgePage = ({
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
-  const { isInsufficientBalance, isInsufficientNativeReserve } =
-    useSelector(getValidationErrors);
+  const isQuoteRequestInsufficientBal = useSelector(
+    getQuoteRequestInsufficientBal,
+  );
   const { securityWarnings } = useSecurityAlerts(toToken);
   const { confirmationAlerts, alertsById } = useBridgeAlerts();
 
@@ -156,7 +158,9 @@ const PrepareBridgePage = ({
   const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
 
   const shouldShowMaxButton =
-    fromToken && isNativeAddress(fromToken.assetId)
+    fromToken &&
+    // Always show for non-native tokens. Arc ERC20 USDC considered as native.
+    (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId))
       ? !isSolanaChainId(fromToken.chainId) &&
         (effectiveGasIncluded || effectiveGasIncluded7702)
       : true;
@@ -226,7 +230,7 @@ const PrepareBridgePage = ({
       // balance is less than the tenderly balance
       insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
         ? true
-        : isInsufficientBalance || isInsufficientNativeReserve,
+        : isQuoteRequestInsufficientBal,
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
@@ -245,8 +249,7 @@ const PrepareBridgePage = ({
     providerConfig?.rpcUrl,
     effectiveGasIncluded,
     effectiveGasIncluded7702,
-    isInsufficientBalance,
-    isInsufficientNativeReserve,
+    isQuoteRequestInsufficientBal,
   ]);
 
   // `useRef` is used here to manually memoize a function reference.
@@ -283,6 +286,8 @@ const PrepareBridgePage = ({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
     };
     debouncedUpdateQuoteRequestInController.current(
       quoteParams,
@@ -397,9 +402,8 @@ const PrepareBridgePage = ({
           }}
         >
           <Box
-            className="prepare-bridge-page__switch-tokens"
-            display={Display.Flex}
-            backgroundColor={BackgroundColor.backgroundSection}
+            className="prepare-bridge-page__switch-tokens flex"
+            backgroundColor={BoxBackgroundColor.BackgroundSection}
             style={{
               position: 'absolute',
               top: '-20px',
@@ -472,6 +476,8 @@ const PrepareBridgePage = ({
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                       // eslint-disable-next-line @typescript-eslint/naming-convention
                       security_warnings: securityWarnings,
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
                     },
                   ),
                 );
@@ -491,7 +497,7 @@ const PrepareBridgePage = ({
           </Box>
 
           <Box
-            paddingInline={4}
+            className="px-4"
             style={{
               borderTop: '1px solid var(--color-border-muted)',
               marginTop: '-16px',
@@ -615,6 +621,8 @@ const PrepareBridgePage = ({
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
                 });
               }}
               needsDestinationAddress={

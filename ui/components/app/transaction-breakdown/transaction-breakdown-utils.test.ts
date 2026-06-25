@@ -1,6 +1,7 @@
 import {
   TransactionMeta,
   TransactionStatus,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import { getTransactionBreakdownData } from './transaction-breakdown-utils';
 
@@ -103,5 +104,22 @@ describe('getTransactionBreakdownData', () => {
     });
 
     expect(result.isGasFeeSponsored).toBeFalsy();
+  });
+
+  it('returns isGasFeeSponsored false for revokeDelegation even when sponsored flag is true', () => {
+    const result = getTransactionBreakdownData({
+      state: MOCK_STATE,
+      transaction: {
+        ...BASE_TX,
+        type: TransactionType.revokeDelegation,
+        status: TransactionStatus.confirmed,
+        isGasFeeSponsored: true,
+        txReceipt: { gasUsed: '0x5208' } as TransactionMeta['txReceipt'],
+      } as TransactionMeta,
+      isTokenApprove: false,
+      isHardwareWalletAccount: false,
+    });
+
+    expect(result.isGasFeeSponsored).toBe(false);
   });
 });

@@ -9,7 +9,7 @@ import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { useDispatch } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { updateTransactionGasFees } from '../../../../store/actions';
+import { updateTransactionGasFees } from '../../../../store/actions/update-transaction-gas-fees';
 import { useConfirmContext } from '../../context/confirm';
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';

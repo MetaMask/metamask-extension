@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import PropTypes from 'prop-types';
-import Fuse from 'fuse.js';
-import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
 import {
   BlockSize,
@@ -9,27 +13,41 @@ import {
   Size,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
+import { searchTokens } from '../../../../../shared/lib/token-search/token-search-api';
+import { getAssetImageUrl } from '../../../../../shared/lib/asset-utils';
 
-const getTokens = (tokenList = {}) => Object.values(tokenList);
+const SEARCH_DEBOUNCE_MS = 300;
 
-const createTokenSearchFuse = (tokenList) => {
-  return new Fuse(getTokens(tokenList), {
-    shouldSort: true,
-    threshold: 0.45,
-    location: 0,
-    distance: 100,
-    maxPatternLength: 32,
-    minMatchCharLength: 1,
-    keys: [
-      { name: 'name', weight: 0.5 },
-      { name: 'symbol', weight: 0.5 },
-    ],
-  });
+const toCaip2Network = (networkId) => {
+  if (!networkId) {
+    return null;
+  }
+  // Non-EVM networks are already expressed as CAIP-2 chain ids (e.g. "solana:…").
+  if (networkId.includes(':')) {
+    return networkId;
+  }
+  const decimal = parseInt(networkId, 16);
+  return Number.isNaN(decimal) ? null : `eip155:${decimal}`;
 };
+
+// Re-derive the network id used by the asset list from a CAIP-2 namespace.
+// EVM namespaces are converted back to a hex chain id ("eip155:1" → "0x1");
+// non-EVM namespaces are returned as-is (e.g. "solana:5eyk…").
+const caip2NamespaceToNetworkId = (namespace, fallbackNetworkId) => {
+  if (!namespace) {
+    return fallbackNetworkId;
+  }
+  const [chainNamespace, reference] = namespace.split(':');
+  if (chainNamespace === 'eip155' && reference) {
+    return `0x${parseInt(reference, 10).toString(16)}`;
+  }
+  return namespace;
+};
+
 export default function TokenSearch({
   onSearch,
   error,
-  tokenList,
   searchClassName,
   networkFilter,
   setSearchResults,
@@ -39,44 +57,27 @@ export default function TokenSearch({
   const isTokenNetworkFilterEqualCurrentNetwork =
     Object.keys(networkFilter).length === 1;
 
-  const filteredTokenList = useMemo(() => {
-    if (isTokenNetworkFilterEqualCurrentNetwork) {
-      const dataObject = tokenList?.[chainId]?.data || {};
-      return Object.fromEntries(
-        Object.entries(dataObject).map(([key, value]) => [
-          key,
-          { ...value, chainId },
-        ]),
-      );
-    }
-    return Object.entries(tokenList).flatMap(([networkId, { data }]) =>
-      Object.values(data).map((item) => ({ ...item, chainId: networkId })),
-    );
-  }, [tokenList, isTokenNetworkFilterEqualCurrentNetwork, chainId]);
-
   const [searchQuery, setSearchQuery] = useState('');
-
-  const [tokenSearchFuse, setTokenSearchFuse] = useState(
-    createTokenSearchFuse(filteredTokenList),
+  const debouncedSearchQuery = useDebouncedValue(
+    searchQuery,
+    SEARCH_DEBOUNCE_MS,
   );
+  const abortRef = useRef(null);
 
+  // `onSearch` is recreated on every parent render; keep it in a ref so the
+  // search effect does not re-run (and re-trigger requests) on each render.
+  const onSearchRef = useRef(onSearch);
   useEffect(() => {
-    setTokenSearchFuse(createTokenSearchFuse(filteredTokenList));
-  }, [filteredTokenList]);
+    onSearchRef.current = onSearch;
+  }, [onSearch]);
 
-  const handleSearch = (newSearchQuery) => {
-    setSearchQuery(newSearchQuery);
-    const fuseSearchResult = tokenSearchFuse.search(newSearchQuery);
-    const addressSearchResult = getTokens(filteredTokenList).filter((token) => {
-      return (
-        token.address &&
-        newSearchQuery &&
-        isEqualCaseInsensitive(token.address, newSearchQuery)
-      );
-    });
-    const results = [...addressSearchResult, ...fuseSearchResult];
-    onSearch({ newSearchQuery, results });
-  };
+  const networks = useMemo(() => {
+    if (isTokenNetworkFilterEqualCurrentNetwork) {
+      const caip2 = toCaip2Network(chainId);
+      return caip2 ? [caip2] : [];
+    }
+    return Object.keys(networkFilter).map(toCaip2Network).filter(Boolean);
+  }, [isTokenNetworkFilterEqualCurrentNetwork, chainId, networkFilter]);
 
   const clear = useCallback(() => {
     setSearchQuery('');
@@ -87,12 +88,90 @@ export default function TokenSearch({
     clear();
   }, [isTokenNetworkFilterEqualCurrentNetwork, clear]);
 
+  // Run the API search whenever the debounced query (or network scope) changes.
+  useEffect(() => {
+    const trimmedQuery = debouncedSearchQuery.trim();
+
+    if (abortRef.current) {
+      abortRef.current.abort();
+    }
+
+    if (!trimmedQuery) {
+      setSearchResults([]);
+      onSearchRef.current({
+        newSearchQuery: debouncedSearchQuery,
+        results: [],
+      });
+      return undefined;
+    }
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    searchTokens({
+      query: trimmedQuery,
+      networks: networks.length > 0 ? networks : undefined,
+      first: 12,
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        // Map the API result to the shape TokenList expects:
+        // { address, symbol, name, decimals, iconUrl, chainId }
+        const results = response.data.map((token) => {
+          // assetId looks like "eip155:1/erc20:0xABC…" or "solana:…/token:…".
+          const [namespace, assetRef] = token.assetId.split('/');
+          // The token reference (contract address for EVM) is everything after
+          // the asset-type prefix ("erc20:", "token:", …).
+          const address = assetRef?.includes(':')
+            ? assetRef.slice(assetRef.indexOf(':') + 1)
+            : assetRef;
+
+          const tokenChainId = caip2NamespaceToNetworkId(namespace, chainId);
+
+          // The search endpoint frequently omits `iconUrl`; fall back to the
+          // static asset-icon URL derived from the CAIP asset id.
+          const iconUrl =
+            token.iconUrl ||
+            getAssetImageUrl(token.assetId, tokenChainId) ||
+            undefined;
+
+          return {
+            address,
+            symbol: token.symbol,
+            name: token.name,
+            decimals: token.decimals,
+            iconUrl,
+            chainId: tokenChainId,
+          };
+        });
+
+        setSearchResults(results);
+        onSearchRef.current({ newSearchQuery: debouncedSearchQuery, results });
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') {
+          return;
+        }
+        setSearchResults([]);
+        onSearchRef.current({
+          newSearchQuery: debouncedSearchQuery,
+          results: [],
+        });
+      });
+
+    return () => controller.abort();
+  }, [debouncedSearchQuery, networks, chainId, setSearchResults]);
+
   return (
     <TextFieldSearch
       className={searchClassName}
       placeholder={t('searchTokens')}
       value={searchQuery}
-      onChange={(e) => handleSearch(e.target.value)}
+      onChange={(e) => setSearchQuery(e.target.value)}
       error={error}
       autoFocus
       autoComplete={false}
@@ -111,7 +190,6 @@ export default function TokenSearch({
 TokenSearch.propTypes = {
   onSearch: PropTypes.func.isRequired,
   error: PropTypes.object,
-  tokenList: PropTypes.object.isRequired,
   searchClassName: PropTypes.string.isRequired,
   networkFilter: PropTypes.object.isRequired,
   setSearchResults: PropTypes.func.isRequired,

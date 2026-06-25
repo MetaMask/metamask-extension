@@ -2,7 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
-import { CHAIN_IDS, GasFeeToken } from '@metamask/transaction-controller';
+import {
+  CHAIN_IDS,
+  GasFeeToken,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
@@ -41,6 +45,7 @@ function render({
   nativeFee = '0.001 ETH',
   estimationFailed = false,
   isGaslessSupported = false,
+  transactionType,
 }: {
   chainId?: Hex;
   gasFeeTokens?: GasFeeToken[];
@@ -49,6 +54,7 @@ function render({
   nativeFee?: string;
   estimationFailed?: boolean;
   isGaslessSupported?: boolean;
+  transactionType?: TransactionType;
 } = {}) {
   mockUseEstimationFailed.mockReturnValue(estimationFailed);
   mockUseIsGaslessSupported.mockReturnValue({
@@ -57,14 +63,18 @@ function render({
     pending: false,
   });
 
-  const state = getMockConfirmStateForTransaction(
-    genUnapprovedContractInteractionConfirmation({
-      chainId,
-      gasFeeTokens,
-      selectedGasFeeToken,
-      isGasFeeSponsored: isGaslessSupported,
-    }),
-  );
+  const confirmation = genUnapprovedContractInteractionConfirmation({
+    chainId,
+    gasFeeTokens,
+    selectedGasFeeToken,
+    isGasFeeSponsored: isGaslessSupported,
+  });
+
+  if (transactionType) {
+    confirmation.type = transactionType;
+  }
+
+  const state = getMockConfirmStateForTransaction(confirmation);
 
   const mockStore = configureMockStore()(state);
 
@@ -152,5 +162,14 @@ describe('<EditGasFeesRow />', () => {
       expect(queryByText(messages.unavailable.message)).toBeNull();
       expect(getByTestId('paid-by-meta-mask')).toBeInTheDocument();
     });
+  });
+
+  it('does not render "Paid by MetaMask" pill for revokeDelegation even on sponsored networks', () => {
+    const { queryByTestId } = render({
+      isGaslessSupported: true,
+      transactionType: TransactionType.revokeDelegation,
+    });
+
+    expect(queryByTestId('paid-by-meta-mask')).toBeNull();
   });
 });

@@ -3,10 +3,18 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Button, ButtonSize } from '@metamask/design-system-react';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Button,
+  ButtonSize,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionBreakdown from '../transaction-breakdown';
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
@@ -16,16 +24,15 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { I18nContext } from '../../../contexts/i18n';
 
 export default class TransactionListItemDetails extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   static defaultProps = {};
 
   static propTypes = {
+    trackEvent: PropTypes.func.isRequired,
     onCancel: PropTypes.func,
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
@@ -51,6 +58,7 @@ export default class TransactionListItemDetails extends PureComponent {
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
     isHardwareWalletAccount: PropTypes.bool,
+    isProtectedByEnforcedSimulations: PropTypes.bool,
   };
 
   state = {
@@ -85,7 +93,7 @@ export default class TransactionListItemDetails extends PureComponent {
       onClose();
       navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
-      this.context.trackEvent({
+      this.props.trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Clicked Block Explorer Link',
         properties: {
@@ -118,7 +126,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { primaryTransaction: transaction } = transactionGroup;
     const { hash } = transaction;
 
-    this.context.trackEvent({
+    this.props.trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: 'Copied Transaction ID',
       properties: {
@@ -142,7 +150,7 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
     const { justCopied } = this.state;
     const {
       transactionGroup,
@@ -158,16 +166,30 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
       isHardwareWalletAccount,
+      isProtectedByEnforcedSimulations,
     } = this.props;
     const {
       primaryTransaction: transaction,
       initialTransaction: { type },
+      hasCancelled,
     } = transactionGroup;
     const { chainId, hash } = transaction;
+    const speedUpLabel = hasCancelled ? 'speedUpCancellation' : 'speedUp';
 
     return (
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
+          {isProtectedByEnforcedSimulations && (
+            <BannerAlert
+              severity={BannerAlertSeverity.Info}
+              className="mx-4"
+              data-testid="transaction-protected-by-enforced-simulations"
+            >
+              <Text variant={TextVariant.BodySm}>
+                {t('transactionProtectedByEnforcedSimulations')}
+              </Text>
+            </BannerAlert>
+          )}
           <div className="transaction-list-item-details__operations">
             <div className="flex gap-2">
               {showSpeedUp && (
@@ -176,7 +198,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   onClick={this.handleRetry}
                   data-testid="speedup-button"
                 >
-                  {t('speedUp')}
+                  {t(speedUpLabel)}
                 </Button>
               )}
               {showCancel && (
@@ -208,7 +230,14 @@ export default class TransactionListItemDetails extends PureComponent {
             >
               <div>{t('status')}</div>
               <div>
-                <TransactionStatus />
+                {isProtectedByEnforcedSimulations ? (
+                  <TransactionStatusLabel
+                    label={t('cancelled')}
+                    tooltip={t('transactionProtectedByEnforcedSimulations')}
+                  />
+                ) : (
+                  <TransactionStatus />
+                )}
               </div>
             </div>
             <div className="transaction-list-item-details__tx-hash gap-1">

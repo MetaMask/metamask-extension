@@ -116,10 +116,13 @@ jest.mock('../../../store/actions.ts', () => ({
   abortTransactionSigning: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue({}),
   updatePreviousGasParams: jest.fn().mockReturnValue({ type: 'TYPE' }),
-  updateTransactionGasFees: jest.fn().mockReturnValue({ type: 'TYPE' }),
   createCancelTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
   createSpeedUpTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
   captureSingleException: jest.fn().mockReturnValue({ type: 'TYPE' }),
+}));
+
+jest.mock('../../../store/actions/update-transaction-gas-fees', () => ({
+  updateTransactionGasFees: jest.fn().mockReturnValue({ type: 'TYPE' }),
 }));
 
 const mockStore = configureStore();
@@ -226,8 +229,7 @@ describe('TransactionListItem', () => {
           activity_type: 'send',
         },
       });
-      const popoverClose = queryByTestId('popover-close');
-      fireEvent.click(popoverClose);
+      fireEvent.click(activityListItem);
       expect(mockTrackEvent).toHaveBeenCalledWith({
         event: MetaMetricsEventName.ActivityDetailsClosed,
         category: MetaMetricsEventCategory.Navigation,

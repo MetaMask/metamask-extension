@@ -65,7 +65,8 @@ export const container: UIComponentFactory<ContainerElement> = ({
       ...DEFAULT_FOOTER,
       props: {
         ...DEFAULT_FOOTER.props,
-        className: 'snap-ui-renderer__footer snap-ui-renderer__footer-centered',
+        className:
+          'snap-ui-renderer__footer snap-ui-renderer__footer-centered cta-footer',
       },
       children: {
         element: 'SnapUIFooterButton',

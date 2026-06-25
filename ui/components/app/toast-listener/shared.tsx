@@ -8,21 +8,39 @@ import { ToastContent as ToastContentBase } from '../../ui/toast/toast';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
-export const ToastContent = ({ status }: { status: TransactionStatus }) => {
-  const { title } = useTransactionDisplay(status);
-  return <ToastContentBase title={title} />;
+type ToastContentOptions = {
+  title?: string;
+  description?: string;
+  dataTestId?: string;
 };
 
-export function showPendingToast(id: string) {
-  toast.loading(<ToastContent status="pending" />, { id });
+export const ToastContent = ({
+  status,
+  title,
+  description,
+  dataTestId,
+}: { status: TransactionStatus } & ToastContentOptions) => {
+  const { title: statusTitle } = useTransactionDisplay(status);
+
+  return (
+    <ToastContentBase
+      title={title ?? statusTitle}
+      description={description}
+      dataTestId={dataTestId}
+    />
+  );
+};
+
+export function showPendingToast(id: string, options?: ToastContentOptions) {
+  toast.loading(<ToastContent status="pending" {...options} />, { id });
 }
 
-export function showSuccessToast(id: string) {
-  toast.success(<ToastContent status="success" />, { id });
+export function showSuccessToast(id: string, options?: ToastContentOptions) {
+  toast.success(<ToastContent status="success" {...options} />, { id });
 }
 
-export function showFailedToast(id: string) {
-  toast.error(<ToastContent status="failed" />, { id });
+export function showFailedToast(id: string, options?: ToastContentOptions) {
+  toast.error(<ToastContent status="failed" {...options} />, { id });
 }
 
 export function dismissToast(id: string) {

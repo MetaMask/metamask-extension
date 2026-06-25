@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
@@ -142,11 +142,11 @@ const iconComponents = {
  * @param props.badge - The badge of the notification item icon.
  * @returns A JSX element.
  */
-export const NotificationListItemIcon: FC<NotificationListItemIconProps> = ({
+export const NotificationListItemIcon = ({
   type,
   value,
   badge,
-}): JSX.Element => {
+}: NotificationListItemIconProps): JSX.Element => {
   const IconComponent = iconComponents[type] || iconComponents.default;
   const NotificationIcon = <IconComponent src={value} />;
 

@@ -154,7 +154,7 @@ const wrapper = ({
 }: {
   children: React.ReactNode;
   store: ReturnType<typeof createMockStore>;
-}) => React.createElement(Provider, { store }, children);
+}) => React.createElement(Provider, { store, children });
 
 describe('useMusdCtaVisibility', () => {
   beforeEach(() => {
@@ -173,7 +173,8 @@ describe('useMusdCtaVisibility', () => {
       });
 
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const ctaState = result.current.shouldShowBuyGetMusdCta();
@@ -189,7 +190,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const ctaState = result.current.shouldShowBuyGetMusdCta();
@@ -205,7 +207,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const ctaState = result.current.shouldShowBuyGetMusdCta({
@@ -224,7 +227,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const ctaState = result.current.shouldShowBuyGetMusdCta({
@@ -246,7 +250,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const ctaState = result.current.shouldShowBuyGetMusdCta({
@@ -263,7 +268,8 @@ describe('useMusdCtaVisibility', () => {
     it('returns shouldShowCta: false when user already has mUSD balance', () => {
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const ctaState = result.current.shouldShowBuyGetMusdCta({
@@ -288,7 +294,8 @@ describe('useMusdCtaVisibility', () => {
       });
 
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowTokenListItemCta({
@@ -309,7 +316,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowTokenListItemCta({
@@ -330,7 +338,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowTokenListItemCta(
@@ -366,7 +375,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowTokenListItemCta(
@@ -390,7 +400,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowTokenListItemCta(
@@ -418,7 +429,8 @@ describe('useMusdCtaVisibility', () => {
       });
 
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowAssetOverviewCta({
@@ -439,7 +451,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowAssetOverviewCta({
@@ -461,7 +474,8 @@ describe('useMusdCtaVisibility', () => {
       });
 
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowAssetOverviewCta({
@@ -494,7 +508,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowAssetOverviewCta({
@@ -511,7 +526,8 @@ describe('useMusdCtaVisibility', () => {
     it('returns true for tokens in the CTA allowlist', () => {
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       expect(result.current.isTokenWithCta('USDC', '0x1' as Hex)).toBe(true);
@@ -522,7 +538,8 @@ describe('useMusdCtaVisibility', () => {
     it('returns false for tokens not in the CTA allowlist', () => {
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       expect(result.current.isTokenWithCta('WETH', '0x1' as Hex)).toBe(false);
@@ -534,7 +551,8 @@ describe('useMusdCtaVisibility', () => {
     it('generates correct CTA key from chainId and address', () => {
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const key = result.current.getCtaKey(

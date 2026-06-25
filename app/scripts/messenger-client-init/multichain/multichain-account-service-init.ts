@@ -1,14 +1,12 @@
 import {
   MultichainAccountService,
+  MultichainAccountServiceMessenger,
   SOL_ACCOUNT_PROVIDER_NAME,
   TRX_ACCOUNT_PROVIDER_NAME,
   BTC_ACCOUNT_PROVIDER_NAME,
 } from '@metamask/multichain-account-service';
 import { MessengerClientInitFunction } from '../types';
-import {
-  MultichainAccountServiceMessenger,
-  MultichainAccountServiceInitMessenger,
-} from '../messengers/accounts';
+import { MultichainAccountServiceInitMessenger } from '../messengers/accounts';
 import { previousValueComparator } from '../../lib/util';
 import { trace } from '../../../../shared/lib/trace';
 
@@ -39,7 +37,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
     createAccounts: {
       timeoutMs: 3000,
-      batched: false,
+      batched: true,
     },
     resyncAccounts: {
       autoRemoveExtraSnapAccounts: false,
@@ -49,13 +47,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
   const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
     providerConfigs: {
-      [SOL_ACCOUNT_PROVIDER_NAME]: {
-        ...snapAccountProviderConfig,
-        createAccounts: {
-          ...snapAccountProviderConfig.createAccounts,
-          batched: true,
-        },
-      },
+      [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [TRX_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
     },

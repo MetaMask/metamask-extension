@@ -6,7 +6,7 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { triggerCrash } from '../../page-objects/flows/crash.flow';
 import ErrorPage from '../../page-objects/pages/error-page';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 
 async function mockSentryError(mockServer: MockttpServer) {
   return [
@@ -28,14 +28,15 @@ describe('Developer Options - Sentry', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryError,
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -55,13 +56,14 @@ describe('Developer Options - Sentry', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -83,7 +85,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {

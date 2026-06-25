@@ -29,7 +29,7 @@ import { shouldCreateRpcServiceEvents } from './utils';
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
- * @param args.metaMetricsId - The MetaMetrics ID of the user.
+ * @param args.analyticsId - The analytics ID of the user.
  * @param args.trackEvent - The function that will create the Segment event.
  */
 export function onRpcEndpointUnavailable({
@@ -37,14 +37,14 @@ export function onRpcEndpointUnavailable({
   endpointUrl,
   error,
   infuraProjectId,
-  metaMetricsId,
+  analyticsId,
   trackEvent,
 }: {
   chainId: Hex;
   endpointUrl: string;
   error: unknown;
   infuraProjectId: string;
-  metaMetricsId: string | null | undefined;
+  analyticsId: string | null | undefined;
   trackEvent: MetaMetricsController['trackEvent'];
 }): void {
   trackRpcEndpointEvent(MetaMetricsEventName.RpcServiceUnavailable, {
@@ -52,7 +52,7 @@ export function onRpcEndpointUnavailable({
     endpointUrl,
     error,
     infuraProjectId,
-    metaMetricsId,
+    analyticsId,
     trackEvent,
   });
 }
@@ -68,47 +68,57 @@ export function onRpcEndpointUnavailable({
  *
  * @param args - The arguments.
  * @param args.chainId - The chain ID that the endpoint represents.
+ * @param args.duration - The policy execution time in milliseconds when the
+ * request succeeded but was slow. `undefined` when retries were exhausted.
  * @param args.endpointUrl - The URL of the endpoint.
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
- * @param args.metaMetricsId - The MetaMetrics ID of the user.
+ * @param args.analyticsId - The analytics ID of the user.
  * @param args.retryReason - The category of error that was retried (only
  * present when `type` is `'retries_exhausted'`).
  * @param args.rpcMethodName - The JSON-RPC method that was being executed.
+ * @param args.traceId - The value of the `X-Trace-Id` response header from the
+ * last request attempt, or `undefined` if the header was not present.
  * @param args.trackEvent - The function that will create the Segment event.
  * @param args.type - Why the endpoint became degraded (`'slow_success'` or
  * `'retries_exhausted'`).
  */
 export function onRpcEndpointDegraded({
   chainId,
+  duration,
   endpointUrl,
   error,
   infuraProjectId,
-  metaMetricsId,
+  analyticsId,
   retryReason,
   rpcMethodName,
+  traceId,
   trackEvent,
   type,
 }: {
   chainId: Hex;
+  duration?: number;
   endpointUrl: string;
   error: unknown;
   infuraProjectId: string;
-  metaMetricsId: string | null | undefined;
+  analyticsId: string | null | undefined;
   retryReason?: RetryReason;
   rpcMethodName: string;
+  traceId?: string;
   trackEvent: MetaMetricsController['trackEvent'];
   type: DegradedEventType;
 }): void {
   trackRpcEndpointEvent(MetaMetricsEventName.RpcServiceDegraded, {
     chainId,
+    duration,
     endpointUrl,
     error,
     infuraProjectId,
-    metaMetricsId,
+    analyticsId,
     retryReason,
     rpcMethodName,
+    traceId,
     trackEvent,
     type,
   });
@@ -121,15 +131,20 @@ export function onRpcEndpointDegraded({
  * @param event - The Segment event to create.
  * @param args - The remaining arguments.
  * @param args.chainId - The chain ID that the endpoint represents.
+ * @param args.duration - The policy execution time in milliseconds when the
+ * request succeeded but was slow (only present for degraded events from a
+ * slow success).
  * @param args.endpointUrl - The URL of the endpoint.
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
- * @param args.metaMetricsId - The MetaMetrics ID of the user.
+ * @param args.analyticsId - The analytics ID of the user.
  * @param args.retryReason - The category of error that was retried (only
  * present for degraded events when `type` is `'retries_exhausted'`).
  * @param args.rpcMethodName - The JSON-RPC method that was being executed
  * (only present for degraded events).
+ * @param args.traceId - The value of the `X-Trace-Id` response header from the
+ * last request attempt (only present for degraded events).
  * @param args.trackEvent - The function that will create the Segment event.
  * @param args.type - Why the endpoint became degraded (only present for
  * degraded events).
@@ -138,30 +153,34 @@ export function trackRpcEndpointEvent(
   event: string,
   {
     chainId,
+    duration,
     endpointUrl,
     error,
     infuraProjectId,
     retryReason,
     rpcMethodName,
+    traceId,
     trackEvent,
     type,
-    metaMetricsId,
+    analyticsId,
   }: {
     chainId: Hex;
+    duration?: number;
     endpointUrl: string;
     error: unknown;
     infuraProjectId: string;
     retryReason?: RetryReason;
     rpcMethodName?: string;
+    traceId?: string;
     trackEvent: MetaMetricsController['trackEvent'];
     type?: DegradedEventType;
-    metaMetricsId: string | null | undefined;
+    analyticsId: string | null | undefined;
   },
 ): void {
   if (
     !shouldCreateRpcServiceEvents({
       error,
-      metaMetricsId,
+      analyticsId,
     })
   ) {
     return;
@@ -180,6 +199,8 @@ export function trackRpcEndpointEvent(
     ...(rpcMethodName ? { rpc_method_name: rpcMethodName } : {}),
     ...(type ? { type } : {}),
     ...(retryReason ? { retry_reason: retryReason } : {}),
+    ...(duration === undefined ? {} : { duration_ms: duration }),
+    ...(traceId === undefined ? {} : { trace_id: traceId }),
     ...(isObject(error) &&
     'httpStatus' in error &&
     isValidJson(error.httpStatus)

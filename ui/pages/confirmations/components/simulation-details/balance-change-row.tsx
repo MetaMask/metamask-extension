@@ -35,15 +35,7 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.hasIncomingTokens
  * @param props.confirmationId
  */
-export const BalanceChangeRow: React.FC<{
-  label?: string;
-  showFiat?: boolean;
-  balanceChange: BalanceChange;
-  labelColor?: TextColor;
-  isFirstRow?: boolean;
-  hasIncomingTokens?: boolean;
-  confirmationId?: string;
-}> = ({
+export const BalanceChangeRow = ({
   label,
   showFiat,
   balanceChange,
@@ -51,6 +43,14 @@ export const BalanceChangeRow: React.FC<{
   isFirstRow,
   hasIncomingTokens,
   confirmationId,
+}: {
+  label?: string;
+  showFiat?: boolean;
+  balanceChange: BalanceChange;
+  labelColor?: TextColor;
+  isFirstRow?: boolean;
+  hasIncomingTokens?: boolean;
+  confirmationId?: string;
 }) => {
   const t = useI18nContext();
 

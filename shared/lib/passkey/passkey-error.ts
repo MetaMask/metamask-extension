@@ -1,11 +1,15 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 
+import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
+
 /**
  * Stable programmatic codes for passkey-related errors thrown by the extension.
  */
 export const ExtensionPasskeyErrorCode = {
   VaultKeyRenewalFailed: 'extension_vault_key_renewal_failed',
 } as const;
+
+export type TranslateFn = (key: string, substitutions?: string[]) => string;
 
 /**
  * Maps passkey error `code` strings (controller + extension) to extension `messages.json` keys.
@@ -52,9 +56,30 @@ export function getPasskeyControllerErrorCode(error: unknown): string | null {
   return null;
 }
 
+/**
+ * Analytics-oriented passkey ceremony failure: `timeout`, WebAuthn `not_allowed` /
+ * `aborted`, else {@link getPasskeyControllerErrorCode}, else `unknown`.
+ *
+ * @param err - Thrown value from a passkey ceremony.
+ */
+export function getPasskeyErrorCode(err: unknown): string {
+  if (err instanceof PasskeyCeremonyTimeoutError) {
+    return 'timeout';
+  }
+  if (err instanceof Error) {
+    if (err.name === 'NotAllowedError') {
+      return 'not_allowed';
+    }
+    if (err.name === 'AbortError') {
+      return 'aborted';
+    }
+  }
+  return getPasskeyControllerErrorCode(err) ?? 'unknown';
+}
+
 function translatePasskeyCode(
   code: string,
-  t: (key: string, substitutions?: string[]) => string,
+  t: TranslateFn,
   authMethodLabel: string,
 ): string | null {
   const i18nKey = PASSKEY_ERROR_CODE_TO_I18N_KEY[code];
@@ -98,7 +123,7 @@ function getCauseCode(data: unknown): unknown {
  */
 export function translatePasskeyError(
   error: unknown,
-  t: (key: string, substitutions?: string[]) => string,
+  t: TranslateFn,
   authMethodLabel: string,
 ): string | null {
   const code = getPasskeyControllerErrorCode(error);

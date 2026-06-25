@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ErrorPage from '../../page-objects/pages/error-page';
 import { triggerCrash } from '../../page-objects/flows/crash.flow';
@@ -34,14 +34,15 @@ describe('Error Page', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -74,14 +75,15 @@ describe('Error Page', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
         ignoredConsoleErrors: [
-          'Unable to find value of key "developerOptions" for locale "en"',
+          'Unable to find value of key "debug" for locale "en"',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

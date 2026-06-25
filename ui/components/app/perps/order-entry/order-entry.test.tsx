@@ -202,6 +202,13 @@ describe('OrderEntry', () => {
     it('shows dash when no amount entered', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '' },
+      });
+
       const dashElements = screen.getAllByText('-');
       expect(dashElements.length).toBeGreaterThanOrEqual(3);
     });
@@ -310,6 +317,21 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
+    });
+
+    it('shows current position size in modify mode', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
+          existingPosition={existingPosition}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-current-position-size-value'),
+      ).toHaveTextContent('2.5 BTC');
     });
 
     it('shows leverage slider in modify mode', () => {

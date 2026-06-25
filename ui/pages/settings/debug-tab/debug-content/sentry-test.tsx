@@ -192,7 +192,7 @@ function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
       setCurrentLocale(currentLocale, {
         ...localeMessages,
         // @ts-expect-error - remove a language string in this page to trigger a page crash
-        developerOptions: undefined,
+        debug: undefined,
       }),
     );
     await forceUpdateMetamaskState(dispatch);

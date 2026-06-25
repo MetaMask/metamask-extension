@@ -1,10 +1,10 @@
-import { NftController } from '@metamask/assets-controllers';
+import {
+  NftController,
+  NftControllerMessenger,
+} from '@metamask/assets-controllers';
 import { AssetType } from '@metamask/bridge-controller';
 import { MessengerClientInitFunction } from '../types';
-import {
-  NftControllerMessenger,
-  NftControllerInitMessenger,
-} from '../messengers/assets';
+import { NftControllerInitMessenger } from '../messengers/assets';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
