@@ -161,6 +161,18 @@ export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
 };
 
 /**
+ * Returns the next nonce according to the nonce-tracker
+ *
+ * @param address - The hex string address for the transaction
+ * @param networkClientId - The networkClientId to get the nonce lock with
+ * @returns The next nonce.
+ */
+export type LegacyBackgroundApiServiceGetNextNonceAction = {
+  type: `LegacyBackgroundApiService:getNextNonce`;
+  handler: LegacyBackgroundApiService['getNextNonce'];
+};
+
+/**
  * Checks if the seedless password is outdated.
  *
  * @param args - The arguments for the checkIsSeedlessPasswordOutdated method.
@@ -239,6 +251,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceOnAccountRemovedAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
+  | LegacyBackgroundApiServiceGetNextNonceAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction

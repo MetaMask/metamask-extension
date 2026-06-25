@@ -265,6 +265,7 @@ import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
+import { trackEvent } from './controllers/analytics';
 import Backup from './lib/backup';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -3005,7 +3006,10 @@ export default class MetamaskController extends EventEmitter {
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
-      verifyPassword: this.verifyPassword.bind(this),
+      verifyPassword: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'KeyringController:verifyPassword',
+      ),
 
       // passkey management
       generatePasskeyRegistrationOptions:
@@ -3453,7 +3457,10 @@ export default class MetamaskController extends EventEmitter {
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       estimateGasFee: txController.estimateGasFee.bind(txController),
-      getNextNonce: this.getNextNonce.bind(this),
+      getNextNonce: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getNextNonce',
+      ),
       addTransaction: (transactionParams, transactionOptions) =>
         addTransaction(
           this.getAddTransactionRequest({
@@ -3647,6 +3654,7 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
         metaMetricsController,
       ),
+      trackAnalyticsEvent: trackEvent,
       trackMetaMetricsPage: metaMetricsController.trackPage.bind(
         metaMetricsController,
       ),
@@ -4024,7 +4032,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async exportAccount(address, password) {
-    await this.verifyPassword(password);
+    await this.keyringController.verifyPassword(password);
     return this.keyringController.exportAccount({ password }, address);
   }
 
@@ -4401,7 +4409,7 @@ export default class MetamaskController extends EventEmitter {
         throw new Error('Password required to register passkey');
       }
       // verify password
-      await this.verifyPassword(password);
+      await this.keyringController.verifyPassword(password);
     }
 
     const vaultKey = await this.keyringController.exportEncryptionKey();
@@ -4476,7 +4484,7 @@ export default class MetamaskController extends EventEmitter {
         },
       );
     }
-    await this.verifyPassword(password);
+    await this.keyringController.verifyPassword(password);
     this.passkeyController.removePasskey();
   }
 
@@ -5386,15 +5394,6 @@ export default class MetamaskController extends EventEmitter {
 
   async clearLoginArtifacts() {
     await this.extension.storage.session.remove(['loginToken', 'loginSalt']);
-  }
-
-  /**
-   * Submits a user's password to check its validity.
-   *
-   * @param {string} password - The user's password
-   */
-  async verifyPassword(password) {
-    await this.keyringController.verifyPassword(password);
   }
 
   //
@@ -8108,22 +8107,6 @@ export default class MetamaskController extends EventEmitter {
 
     releaseLock();
     return pendingNonce;
-  }
-
-  /**
-   * Returns the next nonce according to the nonce-tracker
-   *
-   * @param {string} address - The hex string address for the transaction
-   * @param networkClientId - The networkClientId to get the nonce lock with
-   * @returns {Promise<number>}
-   */
-  async getNextNonce(address, networkClientId) {
-    const nonceLock = await this.txController.getNonceLock(
-      address,
-      networkClientId,
-    );
-    nonceLock.releaseLock();
-    return nonceLock.nextNonce;
   }
 
   /**
