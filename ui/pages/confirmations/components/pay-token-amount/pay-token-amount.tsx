@@ -3,8 +3,8 @@ import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
 import { Box, Text } from '../../../../components/component-library';
-import { Skeleton } from '../../../../components/component-library/skeleton';
 import {
   TextColor,
   TextVariant,

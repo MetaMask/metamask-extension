@@ -8,8 +8,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { isStrictHexString } from '@metamask/utils';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -24,10 +22,7 @@ import {
   getEnabledNetworksByNamespace,
   selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
-import {
-  getAllNetworkConfigurationsByCaipChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/lib/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -94,6 +89,7 @@ import {
   getIsNetworkManagementEnabled,
   getIsTokenManagementFilterEnabled,
 } from '../../../../../selectors/multichain/feature-flags';
+import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
@@ -118,7 +114,6 @@ const AssetListControlBar = ({
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -163,6 +158,7 @@ const AssetListControlBar = ({
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
+  const networkButtonText = useNetworkFilterButtonLabel();
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -337,32 +333,6 @@ const AssetListControlBar = ({
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
   };
-
-  const networkButtonText = useMemo(() => {
-    if (totalEnabledNetworkCount === 1) {
-      const chainId = allEnabledNetworksForAllNamespaces[0];
-      const caipChainId = isStrictHexString(chainId)
-        ? toEvmCaipChainId(chainId)
-        : chainId;
-      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
-    }
-
-    // > 1 network selected, show "all networks"
-    if (totalEnabledNetworkCount > 1) {
-      return t('allPopularNetworks');
-    }
-
-    if (totalEnabledNetworkCount === 0) {
-      return t('noNetworksSelected');
-    }
-
-    return t('popularNetworks');
-  }, [
-    allEnabledNetworksForAllNamespaces,
-    totalEnabledNetworkCount,
-    t,
-    allCaipNetworks,
-  ]);
 
   const singleNetworkIconUrl = useMemo(() => {
     const chainIds = allEnabledNetworksForAllNamespaces;
