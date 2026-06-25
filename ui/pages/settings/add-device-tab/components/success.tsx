@@ -18,30 +18,65 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type SuccessProps = {
   onDone: () => void;
-  accountCount?: number;
-  srpCount?: number;
+  walletCount?: number;
+  importedAccountCount?: number;
 };
 
 const getSuccessDescription = (
   t: ReturnType<typeof useI18nContext>,
-  accountCount: number,
-  srpCount: number,
+  walletCount: number,
+  importedAccountCount: number,
 ): string => {
-  // A single account always belongs to a single SRP, so there is no
-  // "1 account from N Secret Recovery Phrases" case to handle.
-  if (accountCount === 1) {
-    return t('add_device_success_desc_singular_account_singular_srp');
-  }
-  if (srpCount === 1) {
-    return t('add_device_success_desc_plural_account_singular_srp', [
-      accountCount,
+  const hasWallets = walletCount > 0;
+  const hasImported = importedAccountCount > 0;
+
+  if (hasWallets && hasImported) {
+    if (walletCount === 1 && importedAccountCount === 1) {
+      return t('add_device_success_desc_wallet_singular_imported_singular');
+    }
+    if (walletCount === 1) {
+      return t('add_device_success_desc_wallet_singular_imported_plural', [
+        importedAccountCount,
+      ]);
+    }
+    if (importedAccountCount === 1) {
+      return t('add_device_success_desc_wallet_plural_imported_singular', [
+        walletCount,
+      ]);
+    }
+    return t('add_device_success_desc_wallet_plural_imported_plural', [
+      walletCount,
+      importedAccountCount,
     ]);
   }
-  return t('add_device_success_desc', [accountCount, srpCount]);
+
+  if (hasWallets) {
+    return walletCount === 1
+      ? t('add_device_success_desc_wallet_singular')
+      : t('add_device_success_desc_wallet_plural', [walletCount]);
+  }
+
+  if (hasImported) {
+    return importedAccountCount === 1
+      ? t('add_device_success_desc_imported_singular')
+      : t('add_device_success_desc_imported_plural', [importedAccountCount]);
+  }
+
+  return '';
 };
 
-const Success = ({ onDone, accountCount = 5, srpCount = 2 }: SuccessProps) => {
+const Success = ({
+  onDone,
+  walletCount = 2,
+  importedAccountCount = 5,
+}: SuccessProps) => {
   const t = useI18nContext();
+
+  const description = getSuccessDescription(
+    t,
+    walletCount,
+    importedAccountCount,
+  );
 
   return (
     <Box
@@ -71,13 +106,15 @@ const Success = ({ onDone, accountCount = 5, srpCount = 2 }: SuccessProps) => {
         >
           {t('add_device_success_title')}
         </Text>
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          textAlign={TextAlign.Center}
-        >
-          {getSuccessDescription(t, accountCount, srpCount)}
-        </Text>
+        {description && (
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            textAlign={TextAlign.Center}
+          >
+            {description}
+          </Text>
+        )}
       </Box>
       <Button className="w-full mt-10" onClick={onDone}>
         {t('done')}

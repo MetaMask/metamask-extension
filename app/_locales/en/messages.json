@@ -1192,17 +1192,37 @@
   "addWallet": {
     "message": "Add wallet"
   },
-  "add_device_success_desc": {
-    "message": "$1 accounts from $2 Secret Recovery Phrases were synced to your phone.",
-    "description": "$1 is the number of accounts, $2 is the number of Secret Recovery Phrases"
+  "add_device_success_desc_imported_plural": {
+    "message": "$1 imported accounts were synced to your phone.",
+    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
   },
-  "add_device_success_desc_plural_account_singular_srp": {
-    "message": "$1 accounts from 1 Secret Recovery Phrase were synced to your phone.",
-    "description": "$1 is the number of accounts. Used when multiple accounts from a single Secret Recovery Phrase were synced"
+  "add_device_success_desc_imported_singular": {
+    "message": "1 imported account was synced to your phone.",
+    "description": "Used when a single imported account was synced"
   },
-  "add_device_success_desc_singular_account_singular_srp": {
-    "message": "1 account from 1 Secret Recovery Phrase was synced to your phone.",
-    "description": "Used when a single account from a single Secret Recovery Phrase was synced"
+  "add_device_success_desc_wallet_plural": {
+    "message": "$1 wallets were synced to your phone.",
+    "description": "$1 is the number of wallets. Used when only wallets were synced"
+  },
+  "add_device_success_desc_wallet_plural_imported_plural": {
+    "message": "$1 wallets and $2 imported accounts were synced to your phone.",
+    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
+  },
+  "add_device_success_desc_wallet_plural_imported_singular": {
+    "message": "$1 wallets and 1 imported account were synced to your phone.",
+    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
+  },
+  "add_device_success_desc_wallet_singular": {
+    "message": "1 wallet was synced to your phone.",
+    "description": "Used when a single wallet was synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_plural": {
+    "message": "1 wallet and $1 imported accounts were synced to your phone.",
+    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_singular": {
+    "message": "1 wallet and 1 imported account were synced to your phone.",
+    "description": "Used when a single wallet and a single imported account were synced"
   },
   "add_device_success_title": {
     "message": "Device paired"
