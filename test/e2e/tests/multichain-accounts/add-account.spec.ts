@@ -263,6 +263,15 @@ describe('Add account', function () {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => [
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 3010,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          }),
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$75,250.00' });
