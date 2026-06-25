@@ -30,6 +30,7 @@ import {
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import {
+  TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
@@ -125,6 +126,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getAccountsBySnapId',
   'getCode',
   'getGlobalChainId',
+  'getNextNonce',
   'getOpenMetamaskTabsIds',
   'getRequestAccountTabIds',
   'getSeedPhrase',
@@ -205,6 +207,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SubscriptionControllerStopAllPollingAction
+  | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerWipeTransactionsAction
   | SnapAccountServiceGetLegacySnapKeyringAction;
@@ -691,6 +694,26 @@ export class LegacyBackgroundApiService {
       getSnapKeyring.bind(null, this.#messenger),
       snapId,
     );
+  }
+
+  /**
+   * Returns the next nonce according to the nonce-tracker
+   *
+   * @param address - The hex string address for the transaction
+   * @param networkClientId - The networkClientId to get the nonce lock with
+   * @returns The next nonce.
+   */
+  async getNextNonce(
+    address: string,
+    networkClientId: string,
+  ): Promise<number> {
+    const nonceLock = await this.#messenger.call(
+      'TransactionController:getNonceLock',
+      address,
+      networkClientId,
+    );
+    nonceLock.releaseLock();
+    return nonceLock.nextNonce;
   }
 
   /**

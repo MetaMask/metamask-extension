@@ -83,6 +83,7 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
+import { createEventBuilder, trackEvent } from './controllers/analytics';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -1394,14 +1395,14 @@ function emitAppOpenedMetricEvent(environmentType) {
     allowlist,
   );
 
-  controller.metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.AppOpened,
-    category: MetaMetricsEventCategory.App,
-    environmentType,
-    properties: {
-      ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
-    },
-  });
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.AppOpened)
+      .addCategory(MetaMetricsEventCategory.App)
+      .addProperties(
+        activeTabDomain ? { active_tab_domain: activeTabDomain } : {},
+      )
+      .build({ environmentType }),
+  );
 }
 
 /**
@@ -2201,25 +2202,14 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     properties: eventProperties,
   };
 
-  const { consentDecisionMade, optedIn, analyticsId } = controller.getState();
+  const { consentDecisionMade, optedIn } = controller.getState();
 
   if (consentDecisionMade === true && optedIn === false) {
     // We can skip tracking completely if they've already explicitly opted out
     return;
   }
 
-  // Track immediately only once consent is active and the analytics ID is
-  // available. Otherwise keep the event buffered for the opt-in flush path so
-  // it is not dropped.
-  if (consentDecisionMade === true && optedIn === true && analyticsId) {
-    controller.metaMetricsController.trackEvent(appInstalledEvent);
-  } else {
-    // Onboarding is incomplete, or the user opted in without an analytics ID yet,
-    // so we queue the metrics event for possible submission later.
-    controller.metaMetricsController.addEventBeforeMetricsOptIn(
-      appInstalledEvent,
-    );
-  }
+  controller.metaMetricsController.trackEvent(appInstalledEvent);
 };
 
 /**

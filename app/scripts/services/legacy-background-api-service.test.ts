@@ -389,6 +389,30 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('getNextNonce', () => {
+    it('returns the next nonce and releases the nonce lock', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const releaseLock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:getNonceLock',
+          jest.fn().mockResolvedValue({
+            nextNonce: 5,
+            releaseLock,
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getNextNonce',
+          '0x123',
+          'networkClientId',
+        );
+
+        expect(result).toStrictEqual(5);
+        expect(releaseLock).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('getSeedPhrase', () => {
     it('returns the seed phrase', async () => {
       const mnemonic =
@@ -1930,6 +1954,7 @@ function getMessenger(
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',
       'ApprovalController:getState',
+      'TransactionController:getNonceLock',
       'TransactionController:getState',
       'ApprovalController:rejectRequest',
       'TransactionController:wipeTransactions',

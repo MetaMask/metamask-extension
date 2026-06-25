@@ -13,6 +13,7 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import { buildSolanaTestSpecificMock } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
+const solSendAmountFiatValue = '$11.28';
 
 describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
@@ -78,6 +79,8 @@ describe('Send flow', function (this: Suite) {
         );
         await sendPage.fillRecipient(commonSolanaAddress);
         await sendPage.fillAmount('0.1');
+        await sendPage.waitForSendAmountBalance();
+        await sendPage.waitForSendAmountFiatValue(solSendAmountFiatValue);
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
           true,

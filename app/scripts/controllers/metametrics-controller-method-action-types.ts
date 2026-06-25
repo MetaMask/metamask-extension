@@ -141,11 +141,6 @@ export type MetaMetricsControllerHandleMetaMaskStateUpdateAction = {
   handler: MetaMetricsController['handleMetaMaskStateUpdate'];
 };
 
-export type MetaMetricsControllerAddEventBeforeMetricsOptInAction = {
-  type: `MetaMetricsController:addEventBeforeMetricsOptIn`;
-  handler: MetaMetricsController['addEventBeforeMetricsOptIn'];
-};
-
 export type MetaMetricsControllerTrackTracesAfterMetricsOptInAction = {
   type: `MetaMetricsController:trackTracesAfterMetricsOptIn`;
   handler: MetaMetricsController['trackTracesAfterMetricsOptIn'];
@@ -188,11 +183,6 @@ export type MetaMetricsControllerUpdateTraitsAction = {
   handler: MetaMetricsController['updateTraits'];
 };
 
-export type MetaMetricsControllerGetMetaMetricsIdAction = {
-  type: `MetaMetricsController:getMetaMetricsId`;
-  handler: MetaMetricsController['getMetaMetricsId'];
-};
-
 /**
  * Union of all MetaMetricsController action types.
  */
@@ -212,11 +202,9 @@ export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerIdentifyAction
   | MetaMetricsControllerTrackPageAction
   | MetaMetricsControllerHandleMetaMaskStateUpdateAction
-  | MetaMetricsControllerAddEventBeforeMetricsOptInAction
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
   | MetaMetricsControllerClearTracesAfterMetricsOptInAction
   | MetaMetricsControllerAddTraceBeforeMetricsOptInAction
   | MetaMetricsControllerBufferedTraceAction
   | MetaMetricsControllerBufferedEndTraceAction
-  | MetaMetricsControllerUpdateTraitsAction
-  | MetaMetricsControllerGetMetaMetricsIdAction;
+  | MetaMetricsControllerUpdateTraitsAction;

@@ -85,7 +85,7 @@ describe('MetaMetricsProvider', () => {
     jest.clearAllMocks();
   });
 
-  it('buffers events when participation is enabled but analyticsId is missing', async () => {
+  it('tracks events when participation is enabled but analyticsId is missing', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
@@ -98,18 +98,16 @@ describe('MetaMetricsProvider', () => {
     });
 
     await waitFor(() => {
-      expect(mockedSubmitRequestToBackground).toHaveBeenCalledWith(
-        'addEventBeforeMetricsOptIn',
-        [
-          expect.objectContaining({
-            category: MetaMetricsEventCategory.Onboarding,
-            event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          }),
-        ],
+      expect(mockedTrackMetaMetricsEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        }),
+        undefined,
       );
     });
 
-    expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
+    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('tracks events immediately when participation is enabled and analyticsId exists', async () => {

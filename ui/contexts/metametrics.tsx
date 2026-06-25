@@ -185,14 +185,11 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
 
       if (
         canTrackImmediately ||
+        canMaybeTrackLater ||
         payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
       ) {
-        // If metrics are enabled, track immediately
+        // AnalyticsController queues, delivers, or drops based on consent state.
         trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
-      } else if (canMaybeTrackLater) {
-        await submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          fullPayload,
-        ]);
       }
     },
     [
