@@ -287,11 +287,11 @@ export const UpdateTPSLModalContent = ({
     () =>
       Boolean(
         editingTpPrice.replaceAll(',', '').trim() &&
-          currentPrice > 0 &&
-          !isValidTakeProfitPrice(editingTpPrice, {
-            currentPrice,
-            direction: positionDirection,
-          }),
+        currentPrice > 0 &&
+        !isValidTakeProfitPrice(editingTpPrice, {
+          currentPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingTpPrice, currentPrice, positionDirection],
   );
@@ -300,11 +300,11 @@ export const UpdateTPSLModalContent = ({
     () =>
       Boolean(
         editingSlPrice.replaceAll(',', '').trim() &&
-          currentPrice > 0 &&
-          !isValidStopLossPrice(editingSlPrice, {
-            currentPrice,
-            direction: positionDirection,
-          }),
+        currentPrice > 0 &&
+        !isValidStopLossPrice(editingSlPrice, {
+          currentPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingSlPrice, currentPrice, positionDirection],
   );
@@ -313,10 +313,10 @@ export const UpdateTPSLModalContent = ({
     () =>
       Boolean(
         editingSlPrice.trim() &&
-          !isStopLossSafeFromLiquidation(editingSlPrice, {
-            liquidationPrice,
-            direction: positionDirection,
-          }),
+        !isStopLossSafeFromLiquidation(editingSlPrice, {
+          liquidationPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingSlPrice, liquidationPrice, positionDirection],
   );

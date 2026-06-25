@@ -276,7 +276,9 @@ describe('UpdateTPSLModalContent', () => {
 
       expect(
         screen.getByTestId('perps-update-tpsl-entry-price-value'),
-      ).toHaveTextContent(formatPerpsFiatUniversal(positionWithTPSL.entryPrice));
+      ).toHaveTextContent(
+        formatPerpsFiatUniversal(positionWithTPSL.entryPrice),
+      );
     });
 
     it('formats the liquidation price with the adaptive perps formatter', () => {
