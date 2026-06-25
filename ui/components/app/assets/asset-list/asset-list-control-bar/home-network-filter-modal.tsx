@@ -189,12 +189,12 @@ export const NetworkSelectionModal = ({
           size={ModalContentSize.Sm}
           modalDialogProps={{
             padding: 0,
-            className: 'overflow-hidden',
+            className: 'flex h-full flex-col overflow-hidden',
           }}
         >
           <ModalHeader onClose={onClose}>{title}</ModalHeader>
           <Box
-            className="max-h-[calc(100vh-168px)] overflow-y-auto"
+            className="min-h-0 flex-1 overflow-y-auto"
             flexDirection={BoxFlexDirection.Column}
           >
             {topItem ? (
@@ -208,7 +208,7 @@ export const NetworkSelectionModal = ({
               >
                 <Box className="flex min-w-0 items-center gap-3">
                   {isIconName(topItem.iconSrc) ? (
-                    <Icon name={topItem.iconSrc} size={IconSize.Sm} />
+                    <Icon name={topItem.iconSrc} size={IconSize.Lg} />
                   ) : (
                     <AvatarNetwork
                       name={topItem.name}

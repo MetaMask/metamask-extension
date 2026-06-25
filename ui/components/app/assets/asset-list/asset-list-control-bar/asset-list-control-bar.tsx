@@ -408,6 +408,8 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
+          startIconName={IconName.Filter}
+          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           endIconName={IconName.ArrowDown}
           backgroundColor={
             isNetworkFilterModalOpen
@@ -452,7 +454,7 @@ const AssetListControlBar = ({
                 className="asset-list-control-bar__button"
                 onClick={toggleTokenSortPopover}
                 size={ButtonBaseSize.Sm}
-                startIconName={IconName.Filter}
+                startIconName={IconName.Sort}
                 startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
                 backgroundColor={
                   isTokenSortPopoverOpen
