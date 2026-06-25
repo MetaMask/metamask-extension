@@ -1,18 +1,18 @@
 import React from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import AddDeviceSettings from './add-device-settings';
+import SyncAccountsSettings from './sync-accounts-settings';
 
-const AddDeviceTab = () => {
+const SyncAccountsTab = () => {
   return (
     <Box
       paddingHorizontal={3}
       paddingVertical={4}
       flexDirection={BoxFlexDirection.Column}
-      className="add-device-tab h-full"
+      className="sync-accounts h-full"
     >
-      <AddDeviceSettings />
+      <SyncAccountsSettings />
     </Box>
   );
 };
 
-export default AddDeviceTab;
+export default SyncAccountsTab;

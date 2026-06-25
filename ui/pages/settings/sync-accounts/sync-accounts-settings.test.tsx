@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import AddDeviceSettings from './add-device-settings';
+import SyncAccountsSettings from './sync-accounts-settings';
 
 const mockNavigate = jest.fn();
 
@@ -12,7 +12,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('./components', () => {
-  const { AddDeviceSettingsStep } = jest.requireActual('./constant');
+  const { SyncAccountsStep } = jest.requireActual('./constant');
   return {
     QrCodeScan: ({
       onScanSuccess,
@@ -22,7 +22,7 @@ jest.mock('./components', () => {
       <button
         data-testid="qr-code-scan"
         onClick={() =>
-          onScanSuccess(AddDeviceSettingsStep.EnterVerificationCode)
+          onScanSuccess(SyncAccountsStep.EnterVerificationCode)
         }
       >
         qr
@@ -35,7 +35,7 @@ jest.mock('./components', () => {
     }) => (
       <button
         data-testid="enter-verification-code"
-        onClick={() => onContinue(AddDeviceSettingsStep.ValidatingDevice)}
+        onClick={() => onContinue(SyncAccountsStep.ValidatingDevice)}
       >
         verify
       </button>
@@ -43,7 +43,7 @@ jest.mock('./components', () => {
     EnterPassword: ({ onContinue }: { onContinue: (step: string) => void }) => (
       <button
         data-testid="enter-password"
-        onClick={() => onContinue(AddDeviceSettingsStep.AddWallets)}
+        onClick={() => onContinue(SyncAccountsStep.AddWallets)}
       >
         password
       </button>
@@ -55,7 +55,7 @@ jest.mock('./components', () => {
     }) => (
       <button
         data-testid="add-wallets"
-        onClick={() => onAddWallets(AddDeviceSettingsStep.SyncingWallets)}
+        onClick={() => onAddWallets(SyncAccountsStep.SyncingWallets)}
       >
         wallets
       </button>
@@ -79,19 +79,19 @@ jest.mock('./components', () => {
   };
 });
 
-describe('AddDeviceSettings', () => {
+describe('SyncAccountsSettings', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
   });
 
   it('starts on the QR code scan step', () => {
-    renderWithLocalization(<AddDeviceSettings />);
+    renderWithLocalization(<SyncAccountsSettings />);
 
     expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
   });
 
   it('advances through the full add device flow', () => {
-    renderWithLocalization(<AddDeviceSettings />);
+    renderWithLocalization(<SyncAccountsSettings />);
 
     fireEvent.click(screen.getByTestId('qr-code-scan'));
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
@@ -113,7 +113,7 @@ describe('AddDeviceSettings', () => {
   });
 
   it('navigates to the default route when the success step is done', () => {
-    renderWithLocalization(<AddDeviceSettings />);
+    renderWithLocalization(<SyncAccountsSettings />);
 
     fireEvent.click(screen.getByTestId('qr-code-scan'));
     fireEvent.click(screen.getByTestId('enter-verification-code'));

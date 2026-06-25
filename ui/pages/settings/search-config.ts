@@ -112,8 +112,8 @@ export const ABOUT_ITEMS = {
   'contact-us': 'contactUs',
 } as const;
 
-export const ADD_DEVICE_ITEMS = {
-  'add-device': 'addDevice',
+export const SYNC_ACCOUNTS_ITEMS = {
+  'sync-accounts': 'syncAccounts',
 } as const;
 
 // ── Registry (auto-derived) ─────────────────────────────────────────────
@@ -150,5 +150,5 @@ export const SETTINGS_SEARCH_CONFIG: TabSearchConfig[] = [
     items: createSearchItemMeta(DEVELOPER_TOOLS_ITEMS),
   },
   { tabId: 'about-us', items: createSearchItemMeta(ABOUT_ITEMS) },
-  { tabId: 'add-device', items: createSearchItemMeta(ADD_DEVICE_ITEMS) },
+  { tabId: 'sync-accounts', items: createSearchItemMeta(SYNC_ACCOUNTS_ITEMS) },
 ];

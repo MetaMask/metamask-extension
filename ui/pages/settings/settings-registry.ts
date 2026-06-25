@@ -31,7 +31,7 @@ import {
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
-  ADD_DEVICE_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { getIsAddDeviceSyncEnabled } from '../../../shared/lib/environment';
@@ -77,7 +77,7 @@ export const SETTINGS_ROOT_SECTIONS: readonly {
       DEVELOPER_OPTIONS_ROUTE,
       DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
-      ...(getIsAddDeviceSyncEnabled() ? [ADD_DEVICE_ROUTE] : []),
+      ...(getIsAddDeviceSyncEnabled() ? [SYNC_ACCOUNTS_ROUTE] : []),
     ],
   },
 ] as const;
@@ -288,13 +288,13 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     iconName: IconName.SwapVertical,
   },
 
-  // --- Add Device tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
+  // --- Sync Accounts tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
   ...(getIsAddDeviceSyncEnabled()
     ? {
-        [ADD_DEVICE_ROUTE]: {
-          labelKey: 'addDevice',
+        [SYNC_ACCOUNTS_ROUTE]: {
+          labelKey: 'syncAccounts',
           parentPath: SETTINGS_ROUTE,
-          component: mmLazy(() => import('./add-device-tab/index.ts')),
+          component: mmLazy(() => import('./sync-accounts/index.ts')),
           isTab: true,
           iconName: IconName.Mobile,
         },

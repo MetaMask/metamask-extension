@@ -10,16 +10,16 @@ import configureStore from '../../../../store/store';
 import { AccountTreeWallets } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { WalletSelectionList } from './wallet-selection-list';
 
-jest.mock('../../../../selectors/assets', () => ({
+jest.mock('../../../selectors/assets', () => ({
   selectBalanceForAllWallets: () => ({ wallets: {} }),
 }));
 
-jest.mock('../../../../selectors', () => ({
+jest.mock('../../../selectors', () => ({
   getIsDefaultAddressEnabled: () => false,
   getShowDefaultAddressPreference: () => false,
 }));
 
-jest.mock('../../../../hooks/useFormatters', () => ({
+jest.mock('../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
     formatCurrencyWithMinThreshold: (value: number, currency: string) =>
       `${value} ${currency}`,
@@ -27,7 +27,7 @@ jest.mock('../../../../hooks/useFormatters', () => ({
 }));
 
 jest.mock(
-  '../../../../components/ui/virtualized-list/virtualized-list',
+  '../../../components/ui/virtualized-list/virtualized-list',
   () => ({
     VirtualizedList: ({
       data,
@@ -48,7 +48,7 @@ jest.mock(
 );
 
 jest.mock(
-  '../../../../components/multichain-accounts/multichain-account-cell',
+  '../../../components/multichain-accounts/multichain-account-cell',
   () => ({
     MultichainAccountCell: ({
       accountName,

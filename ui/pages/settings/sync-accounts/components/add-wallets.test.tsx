@@ -6,7 +6,7 @@ import configureStore from '../../../../store/store';
 import messages from '../../../../../app/_locales/en/messages.json';
 import AddWallets from './add-wallets';
 
-jest.mock('../../../../selectors/multichain-accounts/account-tree', () => {
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => {
   const { AccountWalletType: WalletType, toAccountWalletId: toWalletId } =
     jest.requireActual('@metamask/account-api');
   const mockWalletId = toWalletId(WalletType.Keyring, 'wallet1');

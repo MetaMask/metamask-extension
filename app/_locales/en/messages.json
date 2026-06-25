@@ -1106,7 +1106,7 @@
   "addCustomToken": {
     "message": "Add a custom token"
   },
-  "addDevice": {
+  "syncAccounts": {
     "message": "Sync with mobile"
   },
   "addEthereumChainWarningModalHeader": {

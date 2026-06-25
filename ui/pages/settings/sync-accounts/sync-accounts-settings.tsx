@@ -18,9 +18,9 @@ import {
   QrCodeScan,
   Success,
 } from './components';
-import type { AddDeviceSyncRequest } from './types';
+import type { SyncAccountsRequest } from './types';
 
-const AddDeviceSettings = () => {
+const SyncAccountsSettings = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const qrSyncPhase = useSelector(selectQrSyncPhase);
@@ -29,7 +29,7 @@ const AddDeviceSettings = () => {
   const [isExiting, setIsExiting] = useState(false);
   const [password, setPassword] = useState<string | undefined>();
   const [syncSummary, setSyncSummary] = useState<
-    Pick<AddDeviceSyncRequest, 'syncedAccountCount' | 'syncedWalletCount'> | null
+    Pick<SyncAccountsRequest, 'syncedAccountCount' | 'syncedWalletCount'> | null
   >(null);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const AddDeviceSettings = () => {
       entropyIds,
       syncedAccountCount,
       syncedWalletCount,
-    }: AddDeviceSyncRequest) => {
+    }: SyncAccountsRequest) => {
       if (!password) {
         throw new Error('Password is required before syncing accounts.');
       }
@@ -141,4 +141,4 @@ const AddDeviceSettings = () => {
   return <>{renderStep()}</>;
 };
 
-export default AddDeviceSettings;
+export default SyncAccountsSettings;

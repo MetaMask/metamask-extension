@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import { AddDeviceSettingsStep } from '../constant';
+import { SyncAccountsStep } from '../constant';
 import EnterVerificationCode from './enter-verification-code';
 
 const getInputs = () =>
@@ -36,7 +36,7 @@ describe('EnterVerificationCode', () => {
     typeCode('123456');
 
     expect(onContinue).toHaveBeenCalledWith(
-      AddDeviceSettingsStep.ValidatingDevice,
+      SyncAccountsStep.ValidatingDevice,
     );
   });
 
@@ -50,11 +50,11 @@ describe('EnterVerificationCode', () => {
       screen.getByText(messages.enter_verification_code_error.message),
     ).toBeInTheDocument();
     expect(onContinue).not.toHaveBeenCalledWith(
-      AddDeviceSettingsStep.ValidatingDevice,
+      SyncAccountsStep.ValidatingDevice,
     );
 
     fireEvent.click(screen.getByText(messages.start_with_new_qr_code.message));
 
-    expect(onContinue).toHaveBeenCalledWith(AddDeviceSettingsStep.ScanQrCode);
+    expect(onContinue).toHaveBeenCalledWith(SyncAccountsStep.ScanQrCode);
   });
 });
