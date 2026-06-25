@@ -434,29 +434,26 @@ const AssetListControlBar = ({
                 position="bottom"
                 distance={20}
               >
-                <ButtonBase
+                <DsButtonIcon
                   ref={importButtonRef}
                   data-testid="importTokens-button"
-                  className="asset-list-control-bar__button"
+                  className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
                   onClick={
                     isTokenManagementFilterEnabled
                       ? handleOpenTokenManagement
                       : handleTokenImportModal
                   }
-                  size={ButtonBaseSize.Sm}
-                  startIconName={
+                  size={DsButtonIconSize.Sm}
+                  iconName={
                     isTokenManagementFilterEnabled
-                      ? IconName.MoreVertical
-                      : IconName.Add
+                      ? DsIconName.MoreVertical
+                      : DsIconName.Add
                   }
-                  startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                  backgroundColor={
-                    isTokenSortPopoverOpen
-                      ? BackgroundColor.backgroundPressed
-                      : BackgroundColor.backgroundDefault
+                  ariaLabel={
+                    isTokenManagementFilterEnabled
+                      ? t('assetOptions')
+                      : t('importTokensCamelCase')
                   }
-                  color={TextColor.textDefault}
-                  marginRight={isFullScreen ? 2 : null}
                 />
               </Tooltip>
             ))}
