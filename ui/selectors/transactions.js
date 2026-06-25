@@ -23,7 +23,6 @@ import {
 } from '../../shared/lib/selectors/networks';
 
 import {
-  createDeepEqualSelector,
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
@@ -108,47 +107,38 @@ export const getCurrentNetworkTransactions = (state) => {
   return getTransactionsByChainId(state, providerConfig.chainId);
 };
 
-export const incomingTxListSelectorAllChains = createDeepEqualSelector(
-  (state) => {
-    const allNetworkTransactions = getTransactions(state);
-    const { address: selectedAddress } = getSelectedInternalAccount(state);
-
-    return allNetworkTransactions.filter(
+export const incomingTxListSelectorAllChains = createSelector(
+  getTransactions,
+  getSelectedInternalAccount,
+  (allNetworkTransactions, { address: selectedAddress }) =>
+    allNetworkTransactions.filter(
       (tx) =>
         tx.type === TransactionType.incoming &&
         tx.txParams.to === selectedAddress,
-    );
-  },
-  (transactions) => transactions,
+    ),
 );
 
-export const getApprovedAndSignedTransactions = createDeepEqualSelector(
-  (state) => {
-    // Fetch transactions across all networks to address a nonce management limitation.
-    // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
-    const transactions = getTransactions(state);
-
-    return transactions.filter((transaction) =>
+export const getApprovedAndSignedTransactions = createSelector(
+  getTransactions,
+  // Fetch transactions across all networks to address a nonce management limitation.
+  // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
+  (transactions) =>
+    transactions.filter((transaction) =>
       [TransactionStatus.approved, TransactionStatus.signed].includes(
         transaction.status,
       ),
-    );
-  },
-  (transactions) => transactions,
+    ),
 );
 
-export const incomingTxListSelector = createDeepEqualSelector(
-  (state) => {
-    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-    const { address: selectedAddress } = getSelectedInternalAccount(state);
-
-    return currentNetworkTransactions.filter(
+export const incomingTxListSelector = createSelector(
+  getCurrentNetworkTransactions,
+  getSelectedInternalAccount,
+  (currentNetworkTransactions, { address: selectedAddress }) =>
+    currentNetworkTransactions.filter(
       (tx) =>
         tx.type === TransactionType.incoming &&
         tx.txParams.to === selectedAddress,
-    );
-  },
-  (transactions) => transactions,
+    ),
 );
 
 export const unapprovedPersonalMsgsSelector = (state) =>

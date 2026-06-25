@@ -172,6 +172,7 @@ import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   createDeepEqualSelector,
   createParameterizedSelector,
+  createParameterizedDeepEqualSelector,
   createParameterizedShallowEqualSelector,
   createResultEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
@@ -1340,9 +1341,8 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
-// Deep-equal memo: pendingApprovals map identity can change while approvals list is unchanged.
-export const getUnapprovedConfirmations = createDeepEqualSelector(
-  (state) => state.metamask.pendingApprovals || {},
+export const getUnapprovedConfirmations = createSelector(
+  (state) => state.metamask.pendingApprovals ?? EMPTY_OBJECT,
   (pendingApprovals) => Object.values(pendingApprovals),
 );
 
@@ -2064,16 +2064,19 @@ export const getMetadataContractName = createSelector(
 
 export const getTxData = (state) => state.confirmTransaction.txData;
 
-// Deep-equal memo: tx map lookups; controller-backed maps can get new references with same txs.
-export const getUnapprovedTransaction = createDeepEqualSelector(
+const unapprovedTransactionSelectorFactory =
+  createParameterizedDeepEqualSelector(20);
+
+export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
   (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) =>
     Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
 );
 
-// Deep-equal memo: find + EMPTY_OBJECT fallback makes output reference unstable without deep memo.
-export const getTransaction = createDeepEqualSelector(
+const transactionSelectorFactory = createParameterizedDeepEqualSelector(50);
+
+export const getTransaction = transactionSelectorFactory(
   getCurrentNetworkTransactions,
   (_, transactionId) => transactionId,
   (transactions, transactionId) => {
@@ -2081,8 +2084,9 @@ export const getTransaction = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: merges txData and tx meta; nested objects often re-created for the same tx.
-export const getFullTxData = createDeepEqualSelector(
+const fullTxDataSelectorFactory = createParameterizedSelector(20);
+
+export const getFullTxData = fullTxDataSelectorFactory(
   getTxData,
   (state, transactionId, status) => {
     if (status === TransactionStatus.unapproved) {
@@ -2090,17 +2094,15 @@ export const getFullTxData = createDeepEqualSelector(
     }
     return getTransaction(state, transactionId);
   },
+  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
   (
     _state,
     _transactionId,
     _status,
-    customTxParamsData,
+    _customTxParamsData,
     hexTransactionAmount,
-  ) => ({
-    customTxParamsData,
-    hexTransactionAmount,
-  }),
-  (txData, transaction, { customTxParamsData, hexTransactionAmount }) => {
+  ) => hexTransactionAmount,
+  (txData, transaction, customTxParamsData, hexTransactionAmount) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       fullTxData.simulationFails = { ...transaction.simulationFails };

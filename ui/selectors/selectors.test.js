@@ -1065,6 +1065,118 @@ describe('Selectors', () => {
     expect(totalUnapprovedCount).toStrictEqual(1);
   });
 
+  describe('transaction lookup selector memoization', () => {
+    const state = {
+      confirmTransaction: {
+        txData: {
+          txParams: {
+            data: '0x',
+            value: '0x0',
+          },
+        },
+      },
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        pendingApprovals: {},
+        transactions: [
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-1',
+            status: TransactionStatus.submitted,
+            txParams: { to: '0x1' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-2',
+            status: TransactionStatus.submitted,
+            txParams: { to: '0x2' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-3',
+            status: TransactionStatus.unapproved,
+            txParams: { to: '0x3' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-4',
+            status: TransactionStatus.unapproved,
+            txParams: { to: '0x4' },
+          },
+        ],
+      },
+    };
+
+    beforeEach(() => {
+      selectors.getUnapprovedTransaction.clearCache();
+      selectors.getUnapprovedTransaction.resetRecomputations();
+      selectors.getTransaction.clearCache();
+      selectors.getTransaction.resetRecomputations();
+      selectors.getFullTxData.clearCache();
+      selectors.getFullTxData.resetRecomputations();
+    });
+
+    it('caches unapproved transaction lookups per transaction ID', () => {
+      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
+      expect(selectors.getUnapprovedTransaction(state, 'tx-4').id).toBe('tx-4');
+      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
+
+      expect(selectors.getUnapprovedTransaction.recomputations()).toBe(2);
+    });
+
+    it('caches current-network transaction lookups per transaction ID', () => {
+      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
+      expect(selectors.getTransaction(state, 'tx-2').id).toBe('tx-2');
+      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
+
+      expect(selectors.getTransaction.recomputations()).toBe(2);
+    });
+
+    it('caches full transaction data per transaction ID', () => {
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x1',
+        value: '0x10',
+      });
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-2',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x2',
+        value: '0x10',
+      });
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x1',
+        value: '0x10',
+      });
+
+      expect(selectors.getFullTxData.recomputations()).toBe(2);
+    });
+  });
+
   it('#getUseTokenDetection', () => {
     const useTokenDetection = selectors.getUseTokenDetection(mockState);
     expect(useTokenDetection).toStrictEqual(true);
