@@ -6,6 +6,9 @@ import { type AddNetworkFields } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -14,6 +17,8 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  IconColor as DsIconColor,
+  IconName as DsIconName,
   Text,
   TextColor,
   TextVariant,
@@ -166,6 +171,34 @@ const HomeNetworkFilterRow = ({
   );
 };
 
+const getDsIconName = (iconName: IconName): DsIconName =>
+  Object.keys(IconName).find(
+    (key) => IconName[key as keyof typeof IconName] === iconName,
+  ) as DsIconName;
+
+const NetworkSelectionItemIcon = ({
+  name,
+  iconSrc,
+}: {
+  name: string;
+  iconSrc?: string;
+}) => {
+  if (isIconName(iconSrc)) {
+    return (
+      <AvatarIcon
+        iconName={getDsIconName(iconSrc)}
+        size={AvatarIconSize.Md}
+        severity={AvatarIconSeverity.Neutral}
+        iconProps={{ color: DsIconColor.IconDefault }}
+      />
+    );
+  }
+
+  return (
+    <AvatarNetwork name={name} src={iconSrc} size={AvatarNetworkSize.Md} />
+  );
+};
+
 export const NetworkSelectionModal = ({
   isOpen,
   onClose,
@@ -207,15 +240,10 @@ export const NetworkSelectionModal = ({
                 onClick={topItem.onClick}
               >
                 <Box className="flex min-w-0 items-center gap-3">
-                  {isIconName(topItem.iconSrc) ? (
-                    <Icon name={topItem.iconSrc} size={IconSize.Lg} />
-                  ) : (
-                    <AvatarNetwork
-                      name={topItem.name}
-                      src={topItem.iconSrc}
-                      size={AvatarNetworkSize.Md}
-                    />
-                  )}
+                  <NetworkSelectionItemIcon
+                    name={topItem.name}
+                    iconSrc={topItem.iconSrc}
+                  />
                   <Text
                     variant={TextVariant.BodyMd}
                     color={TextColor.TextDefault}
