@@ -14,6 +14,7 @@ import {
   Text,
   TextColor,
   TextVariant,
+  Skeleton,
 } from '@metamask/design-system-react';
 import {
   Modal,
@@ -24,7 +25,6 @@ import {
   AvatarToken,
   AvatarTokenSize,
 } from '../../../components/component-library';
-import { Skeleton } from '../../../components/component-library/skeleton';
 
 import { EditGasModes } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
