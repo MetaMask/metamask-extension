@@ -99,7 +99,9 @@ describe('setupRemoteFeatureFlagToggle', () => {
 
     expect(call).toHaveBeenCalledWith('RemoteFeatureFlagController:enable');
     expect(call).toHaveBeenCalledWith(UPDATE_ACTION);
-    expect(call).not.toHaveBeenCalledWith('RemoteFeatureFlagController:disable');
+    expect(call).not.toHaveBeenCalledWith(
+      'RemoteFeatureFlagController:disable',
+    );
   });
 
   it('disables when external services are turned off', () => {
