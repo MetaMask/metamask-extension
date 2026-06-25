@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
+import { useStore } from 'react-redux';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -11,6 +13,7 @@ import { useMessenger } from '../../../hooks/useMessenger';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
+import type { MetaMaskReduxState } from '../../../store/store';
 import {
   dismissToast,
   showPendingToast,
@@ -64,6 +67,20 @@ const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
   Array.isArray(raw) ? raw[0] : raw;
 
+function isSpeedUpReplacement(
+  replacedById: string,
+  transactions: TransactionMeta[],
+) {
+  const replacement = transactions.find((tx) => tx.id === replacedById);
+
+  if (replacement?.type === TransactionType.cancel) {
+    return false;
+  }
+
+  // Retry replacement, or replacement not in Redux yet
+  return true;
+}
+
 function handleAccountsControllerTx(tx: Transaction) {
   if (!tx?.id || !tx?.status) {
     return;
@@ -89,6 +106,7 @@ function handleAccountsControllerTx(tx: Transaction) {
  */
 export function useTransactionEventToasts(): void {
   const messenger = useMessenger<ToastListenerMessenger>();
+  const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
     // EVM via TransactionController
@@ -119,8 +137,15 @@ export function useTransactionEventToasts(): void {
         showSuccessToast(toastId);
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
-          dismissToast(toastId);
-          clearToastPhase(id);
+          const transactions = store.getState().metamask?.transactions ?? [];
+          if (
+            isSpeedUpReplacement(transactionMeta.replacedById, transactions)
+          ) {
+            dismissToast(toastId);
+            clearToastPhase(id);
+          } else if (shouldShowTerminalToast(id)) {
+            showFailedToast(toastId);
+          }
         } else if (shouldShowTerminalToast(id)) {
           showFailedToast(toastId);
         }
@@ -160,5 +185,5 @@ export function useTransactionEventToasts(): void {
         handleAccountsTxUpdated,
       );
     };
-  }, [messenger]);
+  }, [messenger, store]);
 }

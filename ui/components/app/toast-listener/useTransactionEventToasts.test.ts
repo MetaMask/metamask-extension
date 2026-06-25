@@ -215,6 +215,44 @@ describe('useTransactionEventToasts', () => {
       expect(mockShowFailedToast).not.toHaveBeenCalled();
     });
 
+    it('shows a failed toast when a pending tx is dropped for cancel', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'cancel-id1',
+              status: TransactionStatus.dropped,
+              replacedById: 'cancel-id2',
+            }),
+            createTransactionMeta({
+              id: 'cancel-id2',
+              status: TransactionStatus.confirmed,
+              type: TransactionType.cancel,
+            }),
+          ],
+        },
+      });
+
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'cancel-id1',
+          status: TransactionStatus.submitted,
+        }),
+      });
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'cancel-id1',
+          status: TransactionStatus.dropped,
+          replacedById: 'cancel-id2',
+        }),
+      });
+
+      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-cancel-id1');
+      expect(mockDismissToast).not.toHaveBeenCalled();
+    });
+
     it('shows a failed toast when a pending tx fails', () => {
       const { handlers } = mountHook();
 
