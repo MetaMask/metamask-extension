@@ -359,6 +359,8 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
+          startIconName={IconName.Filter}
+          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           backgroundColor={
             isNetworkFilterModalOpen
               ? BackgroundColor.backgroundPressed
@@ -397,7 +399,7 @@ const AssetListControlBar = ({
               distance={20}
               disabled={isTokenSortPopoverOpen}
             >
-              <DsButtonIcon
+                            <DsButtonIcon
                 ref={sortButtonRef}
                 data-testid="sort-by-popover-toggle"
                 className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
