@@ -11,6 +11,7 @@ jobs:
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     permissions:
       id-token: write
+      contents: read
     env:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
