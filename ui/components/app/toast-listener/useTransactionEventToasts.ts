@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
-import { useStore } from 'react-redux';
 import {
-  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -13,7 +11,6 @@ import { useMessenger } from '../../../hooks/useMessenger';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
-import type { MetaMaskReduxState } from '../../../store/store';
 import {
   dismissToast,
   showPendingToast,
@@ -67,24 +64,6 @@ const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
   Array.isArray(raw) ? raw[0] : raw;
 
-function isSpeedUpReplacement(
-  transactionMeta: TransactionMeta,
-  transactions: TransactionMeta[],
-) {
-  if (
-    transactionMeta.status !== TransactionStatus.dropped ||
-    !transactionMeta.replacedById
-  ) {
-    return false;
-  }
-
-  const replacement = transactions.find(
-    (tx) => tx.id === transactionMeta.replacedById,
-  );
-
-  return replacement?.type === TransactionType.retry;
-}
-
 function handleAccountsControllerTx(tx: Transaction) {
   if (!tx?.id || !tx?.status) {
     return;
@@ -110,7 +89,6 @@ function handleAccountsControllerTx(tx: Transaction) {
  */
 export function useTransactionEventToasts(): void {
   const messenger = useMessenger<ToastListenerMessenger>();
-  const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
     // EVM via TransactionController
@@ -140,8 +118,7 @@ export function useTransactionEventToasts(): void {
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
         showSuccessToast(toastId);
       } else if (failedStatuses.has(status)) {
-        const transactions = store.getState().metamask?.transactions ?? [];
-        if (isSpeedUpReplacement(transactionMeta, transactions)) {
+        if (transactionMeta.replacedById) {
           dismissToast(toastId);
           clearToastPhase(id);
         } else if (shouldShowTerminalToast(id)) {
@@ -183,5 +160,5 @@ export function useTransactionEventToasts(): void {
         handleAccountsTxUpdated,
       );
     };
-  }, [messenger, store]);
+  }, [messenger]);
 }

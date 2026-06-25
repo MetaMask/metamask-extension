@@ -183,6 +183,38 @@ describe('useTransactionEventToasts', () => {
       expect(mockShowFailedToast).not.toHaveBeenCalled();
     });
 
+    it('dismisses the original pending toast on speed-up before the replacement tx is in Redux', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'id1',
+              status: TransactionStatus.submitted,
+            }),
+          ],
+        },
+      });
+
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'id1',
+          status: TransactionStatus.submitted,
+        }),
+      });
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'id1',
+          status: TransactionStatus.dropped,
+          replacedById: 'id2',
+        }),
+      });
+
+      expect(mockDismissToast).toHaveBeenCalledWith('tx-id1');
+      expect(mockShowFailedToast).not.toHaveBeenCalled();
+    });
+
     it('shows a failed toast when a pending tx fails', () => {
       const { handlers } = mountHook();
 
