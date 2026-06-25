@@ -161,6 +161,18 @@ export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
 };
 
 /**
+ * Returns the next nonce according to the nonce-tracker
+ *
+ * @param address - The hex string address for the transaction
+ * @param networkClientId - The networkClientId to get the nonce lock with
+ * @returns The next nonce.
+ */
+export type LegacyBackgroundApiServiceGetNextNonceAction = {
+  type: `LegacyBackgroundApiService:getNextNonce`;
+  handler: LegacyBackgroundApiService['getNextNonce'];
+};
+
+/**
  * Checks if the seedless password is outdated.
  *
  * @param args - The arguments for the checkIsSeedlessPasswordOutdated method.
@@ -171,6 +183,53 @@ export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
 export type LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction = {
   type: `LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated`;
   handler: LegacyBackgroundApiService['checkIsSeedlessPasswordOutdated'];
+};
+
+/**
+ * Sync latest global seedless password and override the current device password with latest global password.
+ * Unlock the vault with the latest global password.
+ *
+ * @param password - latest global seedless password
+ * @returns
+ */
+export type LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction = {
+  type: `LegacyBackgroundApiService:syncPasswordAndUnlockWallet`;
+  handler: LegacyBackgroundApiService['syncPasswordAndUnlockWallet'];
+};
+
+/**
+ * Attempts to unlock the vault using either the user's password or encryption
+ * key. Also synchronizes the preferencesController, to ensure its schema is
+ * up to date with known accounts once the vault is decrypted.
+ *
+ * @param params - The function parameters.
+ * @param params.password - The user's password.
+ * @param params.encryptionKey - The user's encryption key.
+ */
+export type LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction = {
+  type: `LegacyBackgroundApiService:submitPasswordOrEncryptionKey`;
+  handler: LegacyBackgroundApiService['submitPasswordOrEncryptionKey'];
+};
+
+/**
+ * Locks MetaMask
+ *
+ * @param options - The options for setting the locked state.
+ * @param options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
+ */
+export type LegacyBackgroundApiServiceSetLockedAction = {
+  type: `LegacyBackgroundApiService:setLocked`;
+  handler: LegacyBackgroundApiService['setLocked'];
+};
+
+/**
+ * Syncs the keyring encryption key with the seedless onboarding controller.
+ *
+ * @returns
+ */
+export type LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction = {
+  type: `LegacyBackgroundApiService:syncKeyringEncryptionKey`;
+  handler: LegacyBackgroundApiService['syncKeyringEncryptionKey'];
 };
 
 /**
@@ -192,4 +251,9 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceOnAccountRemovedAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
-  | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction;
+  | LegacyBackgroundApiServiceGetNextNonceAction
+  | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
+  | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
+  | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
+  | LegacyBackgroundApiServiceSetLockedAction
+  | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction;

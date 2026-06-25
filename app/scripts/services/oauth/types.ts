@@ -5,6 +5,7 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
+import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import type {
   MetaMetricsEventPayload,
   MetaMetricsEventOptions,
@@ -38,7 +39,8 @@ export type OAuthServiceAction =
   | OAuthServiceMethodActions
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerGetAccessTokenAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | GeolocationControllerGetGeolocationAction;
 
 /**
  * All possible events that the OAuthService can emit.
