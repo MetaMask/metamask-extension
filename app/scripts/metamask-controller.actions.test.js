@@ -1507,8 +1507,6 @@ describe('MetaMaskController', function () {
         jest
           .spyOn(metamaskController, 'clearLoginArtifacts')
           .mockResolvedValue();
-        jest.spyOn(metamaskController, 'submitPassword').mockResolvedValue();
-
         await metamaskController.resetWallet(true);
 
         expect(clearPasskeyStateSpy).toHaveBeenCalledTimes(1);
