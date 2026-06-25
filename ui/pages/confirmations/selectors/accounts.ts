@@ -9,18 +9,16 @@ import {
 const accountSelectorFactory = createParameterizedSelector(20);
 
 export const selectAccountGroupNameByInternalAccount = accountSelectorFactory(
-  (state: MultichainAccountsState) => state,
-  (_state: MultichainAccountsState, internalAccount: string | undefined) =>
-    internalAccount,
-  (state, internalAccount): string | null => {
+  (state: MultichainAccountsState, internalAccount: string | undefined) => {
     if (!internalAccount) {
       return null;
     }
-
-    const groups = getAccountGroupsByAddress(state, [internalAccount]);
-    const address = internalAccount.toLowerCase();
-
-    if (!groups.length) {
+    return getAccountGroupsByAddress(state, [internalAccount]);
+  },
+  (_state: MultichainAccountsState, internalAccount: string | undefined) =>
+    internalAccount?.toLowerCase() ?? null,
+  (groups, address): string | null => {
+    if (!address || !groups?.length) {
       return null;
     }
 

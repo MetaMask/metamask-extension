@@ -1175,6 +1175,56 @@ describe('Selectors', () => {
 
       expect(selectors.getFullTxData.recomputations()).toBe(2);
     });
+
+    it('recomputes full transaction data when nested transaction fields mutate in place', () => {
+      const mutableState = {
+        confirmTransaction: {
+          txData: {
+            txParams: {
+              data: '0x',
+              value: '0x0',
+            },
+          },
+        },
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-1',
+              status: TransactionStatus.submitted,
+              txParams: { to: '0x1' },
+              simulationFails: { reason: 'initial' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getFullTxData(
+          mutableState,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          null,
+        ).simulationFails,
+      ).toStrictEqual({ reason: 'initial' });
+
+      mutableState.metamask.transactions[0].simulationFails.reason = 'updated';
+
+      expect(
+        selectors.getFullTxData(
+          mutableState,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          null,
+        ).simulationFails,
+      ).toStrictEqual({ reason: 'updated' });
+
+      expect(selectors.getFullTxData.recomputations()).toBe(2);
+    });
   });
 
   it('#getUseTokenDetection', () => {

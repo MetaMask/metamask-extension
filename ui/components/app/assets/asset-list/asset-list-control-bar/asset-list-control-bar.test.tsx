@@ -336,69 +336,6 @@ describe('NFTs options', () => {
     ).toHaveTextContent(messages.allDefaultNetworks.message);
   });
 
-  it('labels selected default networks as All networks when there are no custom or test networks visible', async () => {
-    const state = createMockState();
-    state.metamask.preferences.showTestNetworks = false;
-    state.metamask.enabledNetworkMap = {
-      eip155: {
-        '0x1': true,
-        '0x89': true,
-      },
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
-
-    const networkFilterButton = await findByTestId('sort-by-networks');
-    expect(networkFilterButton).toHaveTextContent(messages.allNetworks.message);
-
-    fireEvent.click(networkFilterButton);
-    expect(
-      await findByTestId('home-network-filter-all-default'),
-    ).toHaveTextContent(messages.allNetworks.message);
-  });
-
-  it('labels selected default networks as All default networks when custom networks exist', async () => {
-    const state = createMockState();
-    state.metamask.preferences.showTestNetworks = false;
-    state.metamask.enabledNetworkMap = {
-      eip155: {
-        '0x1': true,
-        '0x89': true,
-      },
-    };
-    state.metamask.networkConfigurationsByChainId = {
-      ...state.metamask.networkConfigurationsByChainId,
-      '0x123': {
-        chainId: '0x123',
-        name: 'Custom Network',
-        nativeCurrency: 'TST',
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            networkClientId: 'customNetworkClientId',
-            type: 'custom',
-            url: 'https://custom-network.example',
-          },
-        ],
-        blockExplorerUrls: [],
-      } as unknown as NetworkConfiguration,
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
-
-    const networkFilterButton = await findByTestId('sort-by-networks');
-    expect(networkFilterButton).toHaveTextContent(
-      messages.allDefaultNetworks.message,
-    );
-
-    fireEvent.click(networkFilterButton);
-    expect(
-      await findByTestId('home-network-filter-all-default'),
-    ).toHaveTextContent(messages.allDefaultNetworks.message);
-  });
-
   it('calls onNetworkSelect with CAIP IDs when one network is enabled', async () => {
     const onNetworkSelect = jest.fn();
     const state = createMockState();

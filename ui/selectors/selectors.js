@@ -6,9 +6,9 @@ import {
   getLocalizedSnapManifest,
   SnapStatus,
 } from '@metamask/snaps-utils';
-import { memoize } from 'lodash';
+import { cloneDeep, memoize } from 'lodash';
 import semver from 'semver';
-import { createSelector } from 'reselect';
+import { createSelector, lruMemoize } from 'reselect';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
@@ -2070,8 +2070,7 @@ const unapprovedTransactionSelectorFactory =
 export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
   (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) =>
-    Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
+  (unapprovedTxs, transactionId) => unapprovedTxs?.[transactionId],
 );
 
 const transactionSelectorFactory = createParameterizedDeepEqualSelector(50);
@@ -2084,15 +2083,21 @@ export const getTransaction = transactionSelectorFactory(
   },
 );
 
-const fullTxDataSelectorFactory = createParameterizedSelector(20);
+const fullTxDataSelectorFactory = createParameterizedDeepEqualSelector(20);
 
 export const getFullTxData = fullTxDataSelectorFactory(
   getTxData,
   (state, transactionId, status) => {
-    if (status === TransactionStatus.unapproved) {
-      return getUnapprovedTransaction(state, transactionId) ?? {};
+    const transaction =
+      status === TransactionStatus.unapproved
+        ? getUnapprovedTransaction(state, transactionId)
+        : getTransaction(state, transactionId);
+    if (!transaction?.id) {
+      return EMPTY_OBJECT;
     }
-    return getTransaction(state, transactionId);
+    // Snapshot for memoization: child selectors may return live transaction
+    // objects that mutate in place, which reference/deep input checks miss.
+    return cloneDeep(transaction);
   },
   (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
   (
@@ -2126,6 +2131,16 @@ export const getFullTxData = fullTxDataSelectorFactory(
       };
     }
     return fullTxData;
+  },
+  {
+    // Always re-run input selectors so in-place transaction mutations are visible.
+    // argsMemoize defaults to weakMapMemoize keyed by state reference, which skips
+    // input selectors when the Redux state object is unchanged.
+    argsMemoize: lruMemoize,
+    argsMemoizeOptions: {
+      maxSize: 1,
+      equalityCheck: () => false,
+    },
   },
 );
 

@@ -154,7 +154,7 @@ export const unapprovedTypedMessagesSelector = (state) =>
 export const smartTransactionsListSelector = createSelector(
   getSelectedInternalAccount,
   (state) => state.metamask.smartTransactionsState?.smartTransactions,
-  getCurrentChainId,
+  getCurrentChainIdSafe,
   (selectedInternalAccount, smartTransactions, chainId) => {
     // The statuses listed below are allowed in the Activity list for Smart Swaps.
     // SUCCESS and REVERTED statuses are excluded because smart transactions with
@@ -759,6 +759,11 @@ function getProviderConfigSafe(state) {
   } catch {
     return null;
   }
+}
+
+function getCurrentChainIdSafe(state) {
+  const providerConfig = getProviderConfigSafe(state);
+  return providerConfig?.chainId;
 }
 
 const selectIsTransactionTypeRedesigned = createSelector(
