@@ -50,7 +50,9 @@ describe('Success', () => {
     );
 
     expect(
-      screen.getByText(messages.add_device_success_desc_wallet_singular.message),
+      screen.getByText(
+        messages.add_device_success_desc_wallet_singular.message,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -84,9 +86,7 @@ describe('Success', () => {
     expect(
       screen.getByText(messages.add_device_success_title.message),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/synced to your phone/u),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/synced to your phone/u)).not.toBeInTheDocument();
   });
 
   it('calls onDone when the done button is clicked', () => {
