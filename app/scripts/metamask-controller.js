@@ -265,6 +265,7 @@ import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
+import { trackEvent } from './controllers/analytics';
 import Backup from './lib/backup';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -3642,6 +3643,7 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
         metaMetricsController,
       ),
+      trackAnalyticsEvent: trackEvent,
       trackMetaMetricsPage: metaMetricsController.trackPage.bind(
         metaMetricsController,
       ),
