@@ -115,13 +115,14 @@ class NotificationsSettingsPage {
   private readonly shortPresenceTimeoutMs = 1000;
 
   /**
-   * Waits until the AUS notification preferences have loaded. The section rows
-   * are rendered asynchronously once the authenticated user storage
-   * preferences resolve, so we wait for every section row to be present before
-   * any navigation into a section is attempted.
+   * Waits for the notification preference section list to render. The section
+   * rows appear as soon as notifications are enabled; note that selecting a row
+   * only opens the section once the authenticated user storage preferences have
+   * finished loading (otherwise the app redirects back to the list), which is
+   * handled by `goToNotificationSection`.
    */
   async waitForNotificationPreferenceSections(): Promise<void> {
-    console.log('Waiting for notification preference sections to load');
+    console.log('Waiting for notification preference section list to render');
     await this.driver.waitForSelector(this.notificationsPerTypesSection, {
       timeout: 30000,
     });
@@ -129,7 +130,7 @@ class NotificationsSettingsPage {
     for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
       await this.driver.waitForSelector(this.sectionButton(section));
     }
-    console.log('Notification preference sections are loaded');
+    console.log('Notification preference section list is rendered');
   }
 
   async assertNotificationPreferenceSectionsListed(): Promise<void> {
@@ -173,9 +174,37 @@ class NotificationsSettingsPage {
     await this.goToMainSettings();
     await this.waitForNotificationPreferenceSections();
 
-    await this.driver.waitForElementToStopMoving(this.sectionButton(section));
-    await this.driver.clickElement(this.sectionButton(section));
-    await this.driver.waitForSelector(this.sectionContent(section));
+    // Section rows render as soon as notifications are enabled, but selecting
+    // one only opens the section once the authenticated user storage
+    // preferences have finished loading; until then the app redirects back to
+    // the list. Retry the selection until the section content is shown.
+    await this.driver.waitUntil(
+      async () => {
+        if (
+          await this.driver.isElementPresentAndVisible(
+            this.sectionContent(section),
+            this.shortPresenceTimeoutMs,
+          )
+        ) {
+          return true;
+        }
+
+        if (
+          await this.driver.isElementPresentAndVisible(
+            this.sectionButton(section),
+            this.shortPresenceTimeoutMs,
+          )
+        ) {
+          await this.driver.clickElement(this.sectionButton(section));
+        }
+
+        return this.driver.isElementPresentAndVisible(
+          this.sectionContent(section),
+          this.shortPresenceTimeoutMs,
+        );
+      },
+      { interval: 500, timeout: this.driver.timeout },
+    );
   }
 
   /**
