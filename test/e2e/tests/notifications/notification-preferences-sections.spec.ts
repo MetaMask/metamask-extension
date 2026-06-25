@@ -8,9 +8,7 @@ import {
 import { withFixtures } from '../../helpers';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { enableNotificationsThroughSettingsPage } from '../../page-objects/flows/notifications.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { goToNotificationsSettingsPage } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices } from './mocks';
@@ -48,10 +46,7 @@ async function reopenNotificationsSettingsAfterUnlock(
 ): Promise<void> {
   await lockAndWaitForLoginPage(driver);
   await login(driver);
-  await new HeaderNavbar(driver).openSettingsPage();
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToNotificationsSettings();
+  await goToNotificationsSettingsPage(driver);
 }
 
 /**
@@ -77,7 +72,9 @@ describe('Notification Preferences Sections', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        await enableNotificationsThroughSettingsPage(driver);
+        // Notifications are enabled by default in the fixture, so we navigate
+        // straight to the notifications settings page.
+        await goToNotificationsSettingsPage(driver);
 
         const notificationsSettingsPage = new NotificationsSettingsPage(driver);
 
