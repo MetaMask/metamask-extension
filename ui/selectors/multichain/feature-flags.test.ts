@@ -1,5 +1,4 @@
 import {
-  getIsBasicFunctionalityToggleEnabled,
   getIsNetworkManagementEnabled,
   getIsTokenManagementFilterEnabled,
 } from './feature-flags';
