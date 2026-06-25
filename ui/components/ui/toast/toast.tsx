@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type CSSProperties } from 'react';
 import { toast, ToastBar, Toaster as ToasterBase } from 'react-hot-toast';
 import {
   ButtonIcon,
@@ -33,7 +33,8 @@ export function Toaster() {
       position="bottom-center"
       containerClassName="toast-container"
       containerStyle={{
-        display: 'var(--toast-display, flex)',
+        visibility:
+          'var(--toast-visibility, visible)' as CSSProperties['visibility'],
         bottom: 'var(--toaster-bottom-offset, 16px)',
       }}
       toastOptions={{

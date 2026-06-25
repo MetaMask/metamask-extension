@@ -22,8 +22,8 @@ const PerpsWithdrawTransactionToastListener = () => {
 };
 
 export function ToastListener() {
-  const isUnlocked = useSelector(getIsUnlocked);
   const toastImplementation = useSelector(selectToastImplementation);
+  const isUnlocked = useSelector(getIsUnlocked);
   const isInteractive = isInteractiveUI();
 
   if (!isInteractive) {
