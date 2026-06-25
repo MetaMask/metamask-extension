@@ -137,7 +137,7 @@ describe('usePerpsLiveMarketListData', () => {
     });
   });
 
-  it('defaults isTradable to true when live update omits the field', () => {
+  it('defaults isTradable to true when live update and snapshot both omit the field', () => {
     const market = createMockMarket({ symbol: 'BTC' });
 
     mockUsePerpsLiveMarketData.mockReturnValue({
@@ -165,6 +165,40 @@ describe('usePerpsLiveMarketListData', () => {
     expect(result.current.markets[0]).toMatchObject({
       symbol: 'BTC',
       isTradable: true,
+    });
+  });
+
+  it('preserves snapshot isTradable: false when live update omits the field', () => {
+    const market = {
+      ...createMockMarket({ symbol: 'BTC' }),
+      isTradable: false,
+    } as PerpsMarketData;
+
+    mockUsePerpsLiveMarketData.mockReturnValue({
+      markets: [market],
+      cryptoMarkets: [market],
+      hip3Markets: [],
+      isInitialLoading: false,
+      error: null,
+      refresh: jest.fn(),
+    });
+    mockUsePerpsLivePrices.mockReturnValue({
+      prices: {
+        BTC: {
+          symbol: 'BTC',
+          price: '78337.5',
+          percentChange24h: '+9.9%',
+          timestamp: 123,
+        } as never,
+      },
+      isInitialLoading: false,
+    });
+
+    const { result } = renderHook(() => usePerpsLiveMarketListData());
+
+    expect(result.current.markets[0]).toMatchObject({
+      symbol: 'BTC',
+      isTradable: false,
     });
   });
 

@@ -106,7 +106,7 @@ describe('createPerpsInfrastructure', () => {
       process.env.METAMASK_ENVIRONMENT = 'development';
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.terminalApiUrl).toBe(
-        'https://terminal.dev-api.cx.metamask.io',
+        'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
       );
     });
 
@@ -114,7 +114,7 @@ describe('createPerpsInfrastructure', () => {
       process.env.METAMASK_ENVIRONMENT = 'testing';
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.terminalApiUrl).toBe(
-        'https://terminal.dev-api.cx.metamask.io',
+        'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
       );
     });
 
@@ -123,7 +123,7 @@ describe('createPerpsInfrastructure', () => {
       process.env.METAMASK_BUILD_TYPE = 'beta';
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.terminalApiUrl).toBe(
-        'https://terminal.uat-api.cx.metamask.io',
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
       );
     });
 
@@ -132,7 +132,7 @@ describe('createPerpsInfrastructure', () => {
       process.env.METAMASK_BUILD_TYPE = 'main';
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.terminalApiUrl).toBe(
-        'https://terminal.api.cx.metamask.io',
+        'https://terminal.api.cx.metamask.io/v1/perpetuals',
       );
     });
 
@@ -141,7 +141,7 @@ describe('createPerpsInfrastructure', () => {
       process.env.METAMASK_BUILD_TYPE = 'main';
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.terminalApiUrl).toBe(
-        'https://terminal.api.cx.metamask.io',
+        'https://terminal.api.cx.metamask.io/v1/perpetuals',
       );
     });
 
@@ -150,7 +150,7 @@ describe('createPerpsInfrastructure', () => {
       process.env.METAMASK_BUILD_TYPE = 'main';
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.terminalApiUrl).toBe(
-        'https://terminal.uat-api.cx.metamask.io',
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
       );
     });
 
@@ -159,7 +159,7 @@ describe('createPerpsInfrastructure', () => {
       process.env.METAMASK_BUILD_TYPE = 'main';
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.terminalApiUrl).toBe(
-        'https://terminal.uat-api.cx.metamask.io',
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
       );
     });
 
@@ -168,7 +168,7 @@ describe('createPerpsInfrastructure', () => {
       process.env.METAMASK_BUILD_TYPE = 'flask';
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.terminalApiUrl).toBe(
-        'https://terminal.uat-api.cx.metamask.io',
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
       );
     });
 
@@ -177,7 +177,7 @@ describe('createPerpsInfrastructure', () => {
       process.env.METAMASK_BUILD_TYPE = 'experimental';
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.terminalApiUrl).toBe(
-        'https://terminal.uat-api.cx.metamask.io',
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
       );
     });
   });

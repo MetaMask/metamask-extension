@@ -42,9 +42,9 @@ import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature
 import { isBenignDisconnectError } from './perps-error-utils';
 
 const TERMINAL_API_URLS = {
-  dev: 'https://terminal.dev-api.cx.metamask.io',
-  uat: 'https://terminal.uat-api.cx.metamask.io',
-  prd: 'https://terminal.api.cx.metamask.io',
+  dev: 'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+  uat: 'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+  prd: 'https://terminal.api.cx.metamask.io/v1/perpetuals',
 } as const;
 
 function getTerminalApiUrl(): string {
