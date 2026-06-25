@@ -17,7 +17,6 @@ import { Anvil } from '../../seeder/anvil';
  * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
  * @param options.waitForNonEvmAccounts - Whether to wait for non-EVM accounts to load on the homepage. Defaults to true; set to false to skip.
  * @param options.ignorePasskeyUnlock - Whether to ignore the passkey unlock and use password instead. Defaults to false.
- * @param options.balanceTimeout - Max ms to wait for homepage balance when {@link localNode} is set. Defaults to `driver.timeout`.
  */
 export const login = async (
   driver: Driver,
@@ -28,7 +27,6 @@ export const login = async (
     validateBalance?: boolean;
     waitForNonEvmAccounts?: boolean;
     ignorePasskeyUnlock?: boolean;
-    balanceTimeout?: number;
   },
 ) => {
   console.log('Navigate to unlock page and try to login with password');
@@ -48,11 +46,7 @@ export const login = async (
   }
 
   if (options?.localNode) {
-    await homePage.checkLocalNodeBalanceIsDisplayed(
-      options.localNode,
-      null,
-      options.balanceTimeout ?? driver.timeout,
-    );
+    await homePage.checkLocalNodeBalanceIsDisplayed(options.localNode);
   } else if (options?.expectedBalance !== undefined) {
     await homePage.checkExpectedBalanceIsDisplayed(options.expectedBalance);
   } else if (options?.validateBalance !== false) {
