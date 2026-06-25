@@ -85,7 +85,7 @@ class OnboardingPrivacySettingsPage {
     'make-smart-contracts-easier-toggle-container',
     'proposed-nicknames-toggle-container',
     'use-nft-detection',
-    'useSafeChainsListValidation'
+    'useSafeChainsListValidation',
   ] as const;
 
   private getPrivacyToggleButtonSelector(containerTestId: string): string {
