@@ -6,8 +6,8 @@ import { ShowApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
+import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import { RootMessenger } from '../lib/messenger';
-import type { MetaMetricsControllerGetMetaMetricsIdAction } from '../controllers/metametrics-controller-method-action-types';
 import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
@@ -24,7 +24,7 @@ export function initializeWallet({
   connectivityAdapter,
 }: {
   messenger: RootMessenger<
-    DefaultActions | MetaMetricsControllerGetMetaMetricsIdAction,
+    DefaultActions | AnalyticsControllerGetStateAction,
     DefaultEvents
   >;
   state: Record<string, Record<string, Json>>;
@@ -65,7 +65,7 @@ export function initializeWallet({
       remoteFeatureFlagController: {
         clientConfigApiService: getRemoteFeatureFlagClientConfigApiService(),
         getMetaMetricsId: () =>
-          messenger.call('MetaMetricsController:getMetaMetricsId'),
+          messenger.call('AnalyticsController:getState').analyticsId,
         clientVersion: getBaseSemVerVersion(),
         prevClientVersion: state.AppMetadataController?.currentAppVersion as
           | string
