@@ -84,6 +84,14 @@ export class MockttpNotificationTriggerServer {
     return this.notificationConfigs.get(address.toLowerCase());
   }
 
+  /**
+   * Returns the notification preferences last persisted to authenticated user
+   * storage (via PUT), or null if none have been written yet.
+   */
+  getNotificationPreferences(): NotificationPreferences | null {
+    return this.notificationPreferences;
+  }
+
   clearConfigs() {
     this.notificationConfigs.clear();
     this.notificationPreferences = null;

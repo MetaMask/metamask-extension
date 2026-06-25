@@ -5,7 +5,10 @@ import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createMockNotificationPreferences } from '../../hooks/metamask-notifications/mocks';
-import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
+import {
+  useNotificationPreferences,
+  type NotificationPreferences,
+} from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { NotificationsSettingsContent } from './notifications-settings';
 
@@ -450,5 +453,89 @@ describe('NotificationsSettingsContent', () => {
         'notifications-settings-account-0x1111111111111111111111111111111111111111',
       ),
     ).toBeInTheDocument();
+  });
+
+  // Verifies the per-section toggle -> preference-field wiring (i.e. each
+  // section's in-app/push toggle updates its own field). This is the mapping
+  // concern the AUS persistence e2e intentionally skips, since persistence
+  // itself is a single shared request and is proven once there.
+  describe('section notification toggle wiring', () => {
+    const buildStore = () =>
+      mockStore({
+        metamask: {
+          isNotificationServicesEnabled: true,
+          isUpdatingMetamaskNotifications: false,
+          isUpdatingMetamaskNotificationsAccount: [],
+          subscriptionAccountsSeen: [],
+          accountTree: { selectedAccountGroup: '', wallets: {} },
+          internalAccounts: { selectedAccount: '', accounts: {} },
+        },
+      });
+
+    const renderSection = (
+      section: string,
+      preferences: NotificationPreferences,
+    ) => {
+      const updatePreference = jest.fn();
+      jest.mocked(useNotificationPreferences).mockReturnValue({
+        preferences,
+        hasNotificationPreferences: true,
+        isLoading: false,
+        isUpdatingPreferences: false,
+        error: null,
+        refetchPreferences: jest.fn(),
+        updatePreference,
+        updatePreferencesSection: jest.fn(),
+      });
+      renderWithProvider(
+        <NotificationsSettingsContent />,
+        buildStore(),
+        `/settings/notifications?section=${section}`,
+      );
+      return updatePreference;
+    };
+
+    const cases: { section: string; preferences: NotificationPreferences }[] = [
+      {
+        section: 'marketing',
+        preferences: createMockNotificationPreferences(),
+      },
+      {
+        section: 'agenticCli',
+        preferences: {
+          ...createMockNotificationPreferences(),
+          agenticCli: {
+            inAppNotificationsEnabled: true,
+            pushNotificationsEnabled: true,
+          },
+        },
+      },
+    ];
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each(cases)(
+      'writes the $section in-app and push toggles to their own preference fields',
+      ({ section, preferences }: (typeof cases)[number]) => {
+        const updatePreference = renderSection(section, preferences);
+
+        fireEvent.click(
+          screen.getByTestId(`${section}-in-app-notifications-toggle-input`),
+        );
+        expect(updatePreference).toHaveBeenCalledWith(
+          section,
+          'inAppNotificationsEnabled',
+          false,
+        );
+
+        fireEvent.click(
+          screen.getByTestId(`${section}-push-notifications-toggle-input`),
+        );
+        expect(updatePreference).toHaveBeenCalledWith(
+          section,
+          'pushNotificationsEnabled',
+          false,
+        );
+      },
+    );
   });
 });

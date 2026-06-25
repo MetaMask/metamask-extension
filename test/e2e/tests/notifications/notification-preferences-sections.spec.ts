@@ -1,9 +1,16 @@
+import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { login } from '../../page-objects/flows/login.flow';
+import { Driver } from '../../webdriver/driver';
+import {
+  login,
+  lockAndWaitForLoginPage,
+} from '../../page-objects/flows/login.flow';
 import { withFixtures } from '../../helpers';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { enableNotificationsThroughSettingsPage } from '../../page-objects/flows/notifications.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices } from './mocks';
@@ -30,11 +37,34 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
 }
 
 /**
+ * Re-opens Settings > Notifications from a fresh (locked then unlocked) session
+ * so the notification preferences are re-fetched from authenticated user storage
+ * rather than read from in-memory state.
+ *
+ * @param driver - The webdriver instance used to interact with the browser.
+ */
+async function reopenNotificationsSettingsAfterUnlock(
+  driver: Driver,
+): Promise<void> {
+  await lockAndWaitForLoginPage(driver);
+  await login(driver);
+  await new HeaderNavbar(driver).openSettingsPage();
+  const settingsPage = new SettingsPage(driver);
+  await settingsPage.checkPageIsLoaded();
+  await settingsPage.goToNotificationsSettings();
+}
+
+/**
+ * All section preferences are persisted as a single object via one request to
+ * the authenticated user storage notification-preferences endpoint, so a single
+ * section exercises the full persistence round-trip (PUT -> storage -> GET) for
+ * every section. Per-section toggle-to-field wiring is covered by unit tests.
+ *
  * PREREQUISITE: PERPS_ENABLED=true in the extension build so the perps
  * notification preference section is included (enabled by default in test builds).
  */
 describe('Notification Preferences Sections', function () {
-  it('lists all notification preference sections and navigates to perps and agentic cli', async function () {
+  it('persists section in-app notification preferences to authenticated user storage', async function () {
     const triggerServer = new MockttpNotificationTriggerServer();
     await withFixtures(
       {
@@ -46,43 +76,43 @@ describe('Notification Preferences Sections', function () {
         },
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         await enableNotificationsThroughSettingsPage(driver);
 
         const notificationsSettingsPage = new NotificationsSettingsPage(driver);
-        await notificationsSettingsPage.assertNotificationPreferenceSectionsListed();
 
-        await notificationsSettingsPage.navigateToNotificationPreferenceSection(
-          'perps',
-        );
-        await notificationsSettingsPage.navigateToNotificationPreferenceSection(
-          'agenticCli',
-        );
-
-        const initialPerpsState =
+        // Flip the perps in-app toggle and capture the new expected state.
+        const initialState =
           await notificationsSettingsPage.getSectionInAppNotificationState(
             'perps',
           );
+        const expectedState =
+          initialState === 'enabled' ? 'disabled' : 'enabled';
         await notificationsSettingsPage.clickSectionInAppNotificationToggle(
           'perps',
         );
         await notificationsSettingsPage.checkSectionInAppNotificationState({
           section: 'perps',
-          expectedState:
-            initialPerpsState === 'enabled' ? 'disabled' : 'enabled',
+          expectedState,
         });
 
-        const initialAgenticCliState =
-          await notificationsSettingsPage.getSectionInAppNotificationState(
-            'agenticCli',
-          );
-        await notificationsSettingsPage.clickSectionInAppNotificationToggle(
-          'agenticCli',
+        // The toggle was written to authenticated user storage (PUT payload).
+        const persistedPreferences = triggerServer.getNotificationPreferences();
+        assert.ok(
+          persistedPreferences,
+          'Section preferences should be persisted to authenticated user storage',
         );
+        assert.equal(
+          persistedPreferences.perps.inAppNotificationsEnabled,
+          expectedState === 'enabled',
+        );
+
+        // After a fresh session, the persisted state is re-fetched from
+        // authenticated user storage and reflected in the UI.
+        await reopenNotificationsSettingsAfterUnlock(driver);
         await notificationsSettingsPage.checkSectionInAppNotificationState({
-          section: 'agenticCli',
-          expectedState:
-            initialAgenticCliState === 'enabled' ? 'disabled' : 'enabled',
+          section: 'perps',
+          expectedState,
         });
       },
     );

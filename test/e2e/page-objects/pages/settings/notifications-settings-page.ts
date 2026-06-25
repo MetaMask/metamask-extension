@@ -129,17 +129,6 @@ class NotificationsSettingsPage {
     console.log('Notification preference section list is rendered');
   }
 
-  async assertNotificationPreferenceSectionsListed(): Promise<void> {
-    console.log('Checking notification preference sections are listed');
-    await this.waitForNotificationPreferenceSections();
-
-    for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
-      await this.driver.waitForSelector(this.sectionButton(section));
-    }
-
-    console.log('All notification preference sections are listed');
-  }
-
   private async goToMainSettings(): Promise<void> {
     for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
       if (
@@ -254,12 +243,6 @@ class NotificationsSettingsPage {
       description: `${toggleType} notifications ${description}`,
       expectedState,
     });
-  }
-
-  async navigateToNotificationPreferenceSection(
-    section: NotificationPreferenceSection,
-  ): Promise<void> {
-    await this.goToNotificationSection(section);
   }
 
   async getSectionInAppNotificationState(
