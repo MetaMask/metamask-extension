@@ -71,7 +71,7 @@ export type FeaturedNetwork = AddNetworkFields & {
 
 function caipChainIdReferenceToHex(reference: string): Hex {
   const decimalChainId = parseInt(reference, 10);
-  if (isNaN(decimalChainId)) {
+  if (Number.isNaN(decimalChainId)) {
     throw new Error(`Invalid CAIP reference: ${reference}`);
   }
   return add0x(decimalChainId.toString(16));
