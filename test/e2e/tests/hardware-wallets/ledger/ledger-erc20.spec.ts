@@ -67,7 +67,7 @@ describe('Ledger Hardware', function (this: Suite) {
       },
     );
   });
-  it('can transfer an ERC20 token', async function () {
+  it('can transfer an ERC20 token TEST', async function () {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
