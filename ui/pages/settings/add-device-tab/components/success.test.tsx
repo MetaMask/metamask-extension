@@ -26,7 +26,7 @@ describe('Success', () => {
 
     expect(
       screen.getByText(
-        '1 account from 1 Secret Recovery Phrase was synced to your phone.',
+        messages.add_device_success_desc_singular_account_singular_srp.message,
       ),
     ).toBeInTheDocument();
   });
