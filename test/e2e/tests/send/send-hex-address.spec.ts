@@ -7,7 +7,6 @@
 
 import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import SendPage from '../../page-objects/pages/send/send-page';
-import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -69,10 +68,7 @@ describe('Send - Hex Address Normalization', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }) => {
-          await login(driver, {
-            localNode: localNodes[0],
-            balanceTimeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
-          });
+          await login(driver, { localNode: localNodes[0] });
 
           // Send TST
           const homePage = new HomePage(driver);
@@ -102,10 +98,7 @@ describe('Send - Hex Address Normalization', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }) => {
-          await login(driver, {
-            localNode: localNodes[0],
-            balanceTimeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
-          });
+          await login(driver, { localNode: localNodes[0] });
 
           // Send TST
           const homePage = new HomePage(driver);

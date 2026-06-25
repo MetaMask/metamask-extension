@@ -3,6 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../../constants';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
   BASE_ACCOUNT_SYNC_TIMEOUT,
@@ -516,7 +517,6 @@ class HomePage {
   async checkLocalNodeBalanceIsDisplayed(
     localNode?: Anvil,
     address = null,
-    timeout: number = this.driver.timeout,
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
@@ -528,7 +528,7 @@ class HomePage {
     }
     await this.checkExpectedBalanceIsDisplayed({
       expectedBalance,
-      timeout,
+      timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
     });
   }
 
