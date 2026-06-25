@@ -1338,6 +1338,11 @@ export enum MetaMetricsEventKeyType {
   Srp = 'srp',
 }
 
+export enum MetaMetricsEventVerificationMethod {
+  Password = 'password',
+  Passkey = 'passkey',
+}
+
 export enum MetaMetricsEventErrorType {
   InsufficientGas = 'insufficient_gas',
   GasTimeout = 'gas_timeout',
@@ -1356,6 +1361,7 @@ export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
   ActivityTabEmptyState = 'Activity Tab Empty State',
+  ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
 }
 

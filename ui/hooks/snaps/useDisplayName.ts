@@ -59,8 +59,12 @@ export const useDisplayName = (
 
   const hexChainId = `0x${decimalToHex(isEip155 ? reference : `0`)}` as Hex;
 
-  const addressBookEntry = useSelector((state: AddressBookMetaMaskState) =>
-    getAddressBookEntryByNetwork(state, parsedAddress, hexChainId),
+  const addressBookEntry = useSelector((state) =>
+    getAddressBookEntryByNetwork(
+      state as AddressBookMetaMaskState,
+      parsedAddress,
+      hexChainId,
+    ),
   );
 
   const contractNames = Object.keys(

@@ -271,9 +271,6 @@ export enum ACCOUNT_TYPE {
 export const MOCK_ANALYTICS_ID =
   '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420';
 
-/** @deprecated Use `MOCK_ANALYTICS_ID` instead. */
-export const MOCK_META_METRICS_ID = MOCK_ANALYTICS_ID;
-
 /** Profile ID assigned to the first SRP in E2E identity auth mocks. */
 export const MOCK_PROFILE_ID = 'MOCK_SRP_IDENTIFIER_1';
 
