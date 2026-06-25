@@ -132,6 +132,45 @@ async function mockPulseChainRpc(mockServer: Mockttp): Promise<void> {
     });
 }
 
+// The shared e2e mocks only cover the local node's chainId, so the PulseChain
+// (chain 369) token list and spot-price requests fall through to the empty-200
+// fallback. An empty/invalid body makes the client retry repeatedly, which adds
+// noticeable background load (and slows the already-heavy token UI). Returning
+// valid bodies keeps those requests one-shot.
+//
+// Note: the spot-price echo gives the imported token a fiat value, so the
+// aggregated balance at the top of the wallet shows a non-zero amount before
+// restart. That aggregate is sourced separately and is not what this test
+// asserts (we check the token row amount "100 UFO"), so its value is cosmetic.
+async function mockPulseChainAssetApis(mockServer: Mockttp): Promise<void> {
+  await mockServer
+    .forGet(
+      `https://token.api.cx.metamask.io/tokens/${PULSECHAIN_CHAIN_ID_DECIMAL}`,
+    )
+    .always()
+    .thenCallback(() => ({ statusCode: 200, json: [] }));
+
+  // Echo a price for whatever assetIds are requested. Matching by query is
+  // brittle here because token assetIds use checksummed (mixed-case) addresses,
+  // so we respond generically and case-agnostically instead.
+  await mockServer
+    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    .always()
+    .thenCallback((request) => {
+      const assetIds = (new URL(request.url).searchParams.get('assetIds') ?? '')
+        .split(',')
+        .filter(Boolean);
+      return {
+        statusCode: 200,
+        json: Object.fromEntries(
+          assetIds.map((assetId) => [
+            assetId,
+            { price: 1, marketCap: 0, pricePercentChange1d: 0 },
+          ]),
+        ),
+      };
+    });
+}
 
 async function testSpecificMock(mockServer: Mockttp): Promise<void> {
   const prodFlags = getProductionRemoteFlagApiResponse();
@@ -149,6 +188,7 @@ async function testSpecificMock(mockServer: Mockttp): Promise<void> {
     }));
 
   await mockPulseChainRpc(mockServer);
+  await mockPulseChainAssetApis(mockServer);
 }
 
 /**
