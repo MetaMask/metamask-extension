@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.37.0]
 
+### Uncategorized
+
+- chore: sync stable into release/13.37.0 (#43763)
+- chore: Set `core-platform` as codeowners of `LegacyBackgroundApiService` (#43625)
+- Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6927 (#43209)
+
 ### Added
 
 - Display a VIP tag when using a VIP referral code. (#43527)
@@ -28,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Null (#43555)
 - Correct state migration to be identical to real TokenBalancesController (#43626)
 - Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and trades no longer leave the user on the order screen). (#43367)
 - Fixed product announcement notification links opening MetaMask deeplinks externally before routing. (#42805)
