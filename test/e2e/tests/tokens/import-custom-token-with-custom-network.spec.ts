@@ -1,15 +1,50 @@
 import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
+import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
+import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import TokenManagementPage from '../../page-objects/pages/token-management/token-management-page';
 import CustomTokenImportPage from '../../page-objects/pages/token-management/custom-token-import-page';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
+import { WINDOW_TITLES } from '../../constants';
+import { PAGES, type Driver } from '../../webdriver/driver';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+// Disabling the non-EVM account types removes the flood of Bitcoin / Solana /
+// Tron background requests that otherwise slow the UI down enough to time out
+// in CI. Mirrors the approach in state-persistence.spec.ts.
+const NON_EVM_ACCOUNT_FLAG_OVERRIDES = [
+  { bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { solanaAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { tronAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  {
+    enableMultichainAccounts: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+  },
+  {
+    enableMultichainAccountsState2: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+  },
+];
 
 const PULSECHAIN_CHAIN_ID_DECIMAL = 369;
 const PULSECHAIN_RPC_URL = 'https://rpc.pulsechain.com';
+const PULSECHAIN_NETWORK_NAME = 'PulseChain';
+const PULSECHAIN_CURRENCY_SYMBOL = 'PLS';
 
 const UFO_TOKEN_ADDRESS = '0x249e38ea4102d0cf8264d3701f1a0e39c4f2dc3b';
 const UFO_SYMBOL = 'UFO';
@@ -97,27 +132,121 @@ async function mockPulseChainRpc(mockServer: Mockttp): Promise<void> {
     });
 }
 
-describe('Import custom token on a custom network', function () {
-  it('shows the imported token in the wallet after importing on PulseChain', async function () {
-    const fixture = new FixtureBuilderV2()
-      .withNetworkControllerOnPulseChain()
-      .withAssetsController({
-        assetsBalance: {
-          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-            'eip155:369/slip44:60': { amount: '100' },
-          },
-        },
-      })
-      .build();
 
+async function testSpecificMock(mockServer: Mockttp): Promise<void> {
+  const prodFlags = getProductionRemoteFlagApiResponse();
+  await mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [...prodFlags, ...NON_EVM_ACCOUNT_FLAG_OVERRIDES],
+    }));
+
+  await mockPulseChainRpc(mockServer);
+}
+
+/**
+ * Fully restarts the extension via `browser.runtime.reload()`.
+ *
+ * Unlike `driver.refresh()` (which only reloads the UI tab while the background
+ * keeps its in-memory state), this restarts the background service worker so
+ * controllers must rehydrate from `storage.local`. This is what actually
+ * exercises persistence across sessions.
+ *
+ * @param driver - The webdriver instance.
+ */
+async function reloadExtension(driver: Driver): Promise<void> {
+  const extensionWindow = await driver.driver.getWindowHandle();
+  const blankWindow = await driver.openNewPage('about:blank');
+
+  await driver.switchToWindow(extensionWindow);
+  await driver.executeScript(
+    `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
+  );
+
+  await driver.switchToWindow(blankWindow);
+  // A fresh tab is required (notably on Firefox) after the reload kills the
+  // extension's tabs.
+  await driver.openNewPage('about:blank');
+
+  // Navigating to HOME returns a browser error page until the background has
+  // restarted; retry until the extension's title comes back.
+  await driver.waitUntil(
+    async () => {
+      await driver.navigate(PAGES.HOME, { waitForControllers: false });
+      const title = await driver.driver.getTitle();
+      return title === WINDOW_TITLES.ExtensionInFullScreenView;
+    },
+    { interval: 100, timeout: 10000 },
+  );
+}
+
+describe('Import custom token on a custom network', function () {
+  it('keeps the imported token after a full extension restart on PulseChain', async function () {
     await withFixtures(
       {
-        fixtures: fixture,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPulseChainRpc,
+        testSpecificMock,
+
+        manifestFlags: { testing: { forceExtensionStore: true } },
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        // Onboard from scratch (no wallet fixture) so the imported token lives
+        // in real storage and survives a genuine background restart.
+        await completeImportSRPOnboardingFlow({ driver });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        // Add PulseChain as a custom network from the wallet (post-onboarding).
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
+
+        const selectNetworkDialog = new SelectNetwork(driver);
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.openAddCustomNetworkModal();
+
+        const addEditNetworkModal = new AddEditNetworkModal(driver);
+        await addEditNetworkModal.checkPageIsLoaded();
+        await addEditNetworkModal.fillNetworkNameInputField(
+          PULSECHAIN_NETWORK_NAME,
+        );
+        await addEditNetworkModal.fillNetworkChainIdInputField(
+          PULSECHAIN_CHAIN_ID_DECIMAL.toString(),
+        );
+        await addEditNetworkModal.fillCurrencySymbolInputField(
+          PULSECHAIN_CURRENCY_SYMBOL,
+        );
+        await addEditNetworkModal.openAddRpcUrlModal();
+
+        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
+        await addRpcUrlModal.checkPageIsLoaded();
+        await addRpcUrlModal.fillAddRpcUrlInput(PULSECHAIN_RPC_URL);
+        await addRpcUrlModal.fillAddRpcNameInput(PULSECHAIN_NETWORK_NAME);
+        await addRpcUrlModal.saveAddRpcUrl();
+        await addEditNetworkModal.saveEditedNetwork();
+
+        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
+          PULSECHAIN_NETWORK_NAME,
+        );
+        await selectNetworkDialog.clickCloseButton();
+        await homePage.checkPageIsLoaded();
+
+        // Switch the active network to PulseChain so the "Add a custom token"
+        // page defaults to it.
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          PULSECHAIN_NETWORK_NAME,
+        );
+        await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);
         await tokensTab.clickTokenOptionsButton();
@@ -135,12 +264,21 @@ describe('Import custom token on a custom network', function () {
         await tokenManagementPage.checkSuccessToastIsDisplayed();
         await tokenManagementPage.goBackToHomepage();
 
-        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('100', UFO_SYMBOL);
 
-        // Reload the extension to verify the token persists across sessions.
-        await driver.refresh();
+        // Give the debounced persistence a moment to flush the imported token
+        // to storage.local before the background restarts.
+        await driver.delay(2000);
+
+        // Fully restart the extension (not just the UI tab) so controllers
+        // rehydrate from storage. This is what reproduces the incident where
+        // imported assets on custom networks disappear after a real restart.
+        await reloadExtension(driver);
+        await login(driver, {
+          validateBalance: false,
+          waitForNonEvmAccounts: false,
+        });
 
         await homePage.checkPageIsLoaded();
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('100', UFO_SYMBOL);
