@@ -298,8 +298,12 @@ class FixtureBuilderV2 {
   }
 
   withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
-    const { analyticsId, optedIn, consentDecisionMade, ...metaMetricsControllerPatch } =
-      data;
+    const {
+      analyticsId,
+      optedIn,
+      consentDecisionMade,
+      ...metaMetricsControllerPatch
+    } = data;
 
     merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 

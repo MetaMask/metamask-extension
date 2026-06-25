@@ -221,8 +221,8 @@ describe('sentry-make-transport', () => {
           AnalyticsController: {
             analyticsId: 'backup-id',
             optedIn: true,
-              consentDecisionMade: true,
-            },
+            consentDecisionMade: true,
+          },
         }),
       };
 

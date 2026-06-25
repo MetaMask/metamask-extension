@@ -8196,8 +8196,7 @@ export default class MetamaskController extends EventEmitter {
         this.upsertTransactionUIMetricsFragment.bind(this),
       // Metametrics Actions
       getParticipateInMetrics: () => {
-        const { consentDecisionMade, optedIn } =
-          this.analyticsController.state;
+        const { consentDecisionMade, optedIn } = this.analyticsController.state;
         return consentDecisionMade === true && optedIn === true;
       },
       trackEvent: this.controllerMessenger.call.bind(
