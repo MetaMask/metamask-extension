@@ -1,6 +1,5 @@
 import type { Json } from '@metamask/utils';
 
-import type { MetaMetricsEventPayload } from '../../constants/metametrics';
 import { getManifestFlags } from '../manifestFlags';
 import { DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING } from './configs/defi-referral-ui';
 import {
@@ -41,6 +40,11 @@ export function registerABTestAnalyticsMapping(
   }
 }
 
+type ABTestAnalyticsEvent = {
+  name: string;
+  properties?: Record<string, Json>;
+};
+
 const hasEventName = (
   mapping: ABTestAnalyticsMapping,
   eventName: string,
@@ -62,7 +66,7 @@ export function getRemoteFeatureFlagsWithManifestOverrides(
   };
 }
 
-const cloneEventWithAssignments = <TEvent extends MetaMetricsEventPayload>(
+const cloneEventWithAssignments = <TEvent extends ABTestAnalyticsEvent>(
   event: TEvent,
   assignments: ActiveABTestAssignment[],
 ): TEvent => ({
@@ -74,7 +78,7 @@ const cloneEventWithAssignments = <TEvent extends MetaMetricsEventPayload>(
   },
 });
 
-export function enrichWithABTests<TEvent extends MetaMetricsEventPayload>(
+export function enrichWithABTests<TEvent extends ABTestAnalyticsEvent>(
   event: TEvent,
   featureFlags: Record<string, unknown> | null | undefined,
   mappings: readonly ABTestAnalyticsMapping[] = AB_TEST_ANALYTICS_MAPPINGS,
@@ -83,7 +87,7 @@ export function enrichWithABTests<TEvent extends MetaMetricsEventPayload>(
     event.properties?.active_ab_tests,
   );
   const relevantMappings = mappings.filter((mapping) =>
-    hasEventName(mapping, event.event),
+    hasEventName(mapping, event.name),
   );
 
   if (relevantMappings.length === 0) {
