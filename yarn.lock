@@ -17550,6 +17550,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ulissesferreira/bitcoin-regtest-up@github:ulissesferreira/bitcoin-regtest-up":
+  version: 0.1.2
+  resolution: "@ulissesferreira/bitcoin-regtest-up@https://github.com/ulissesferreira/bitcoin-regtest-up.git#commit=b7fd2e45e5b68841c6c1ed385254ae8a7860b9a9"
+  bin:
+    bitcoin-regtest-up: dist/bin/bitcoin-regtest-up.js
+  checksum: 10/c09ec081bf0c1d387f6a876aa152a73a3ee9f746dd35e5c955d8cfd24b730d374e6c647edf3cda232f0df20239d697fcd9725b35cca6e71448a2868c299581fc
+  languageName: node
+  linkType: hard
+
 "@ungap/structured-clone@npm:^1.2.0":
   version: 1.2.0
   resolution: "@ungap/structured-clone@npm:1.2.0"
@@ -33532,6 +33541,7 @@ __metadata:
     "@types/yazl": "npm:^3.3.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.1.0"
     "@typescript-eslint/parser": "npm:^8.1.0"
+    "@ulissesferreira/bitcoin-regtest-up": "github:ulissesferreira/bitcoin-regtest-up"
     "@viem/anvil": "npm:^0.0.10"
     "@welldone-software/why-did-you-render": "npm:^8.0.3"
     "@zxing/browser": "npm:^0.1.5"
