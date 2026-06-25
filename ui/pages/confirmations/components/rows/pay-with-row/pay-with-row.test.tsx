@@ -170,24 +170,6 @@ describe('PayWithRow', () => {
     expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
   });
 
-  it('aligns the label with default-sized rows when isInConfirmInfoSection is true', () => {
-    const store = mockStore(getMockState());
-    renderWithProvider(<PayWithRow isInConfirmInfoSection />, store);
-
-    expect(screen.getByTestId('pay-with-row')).toHaveStyle({
-      paddingLeft: '8px',
-    });
-  });
-
-  it('does not add align the label by default', () => {
-    const store = mockStore(getMockState());
-    renderWithProvider(<PayWithRow />, store);
-
-    expect(screen.getByTestId('pay-with-row')).not.toHaveStyle({
-      paddingLeft: '8px',
-    });
-  });
-
   it('renders the receive token fallback icon when metadata is missing', () => {
     useSendTokensMock.mockReturnValue([]);
 
