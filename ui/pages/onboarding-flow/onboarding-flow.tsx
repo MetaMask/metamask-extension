@@ -244,6 +244,7 @@ export default function OnboardingFlow() {
       }
     } catch (error) {
       log.error('OnboardingFlow: failed to create new account', error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -272,6 +273,7 @@ export default function OnboardingFlow() {
       }
     } catch (error) {
       log.error('OnboardingFlow: failed to unlock wallet', error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
