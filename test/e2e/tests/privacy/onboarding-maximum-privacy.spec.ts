@@ -80,9 +80,6 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         testSpecificMock: mockApis,
       },
       async ({ driver, mockServer }) => {
-        const t0 = Date.now();
-        const mark = (label: string) =>
-          console.log(`[STEP +${Date.now() - t0}ms] ${label}`);
         // Listen to all network requests and capture them
         mockServer.on(
           'request-initiated',
@@ -90,24 +87,16 @@ describe('Onboarding with Maximum Privacy Settings', function () {
             const { host } = request.headers;
             if (host) {
               capturedCalls.add(host);
-              if (/infura|token\.api|bridge\.api/u.test(host)) {
-                console.log(
-                  `[NETCALL +${Date.now() - t0}ms] ${request.url}`,
-                );
-              }
             }
           },
         );
 
         // Complete onboarding up to the complete page
-        mark('before importSRPOnboardingFlow');
         await importSRPOnboardingFlow({ driver });
-        mark('after importSRPOnboardingFlow');
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        mark('complete page loaded (wallet ready)');
 
         // Navigate to privacy settings and toggle them OFF (maximum privacy)
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
@@ -118,11 +107,9 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
         await onboardingPrivacySettingsPage.toggleAssetsSettings();
-        mark('toggled basic-functionality + assets OFF');
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
-        mark('back on complete page, before Phase 1 delay');
 
         // Intended delay to ensure we cover at least 1 polling loop for network requests
         await driver.delay(veryLargeDelayMs);
