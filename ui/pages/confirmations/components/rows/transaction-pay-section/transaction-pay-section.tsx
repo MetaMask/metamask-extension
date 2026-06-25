@@ -34,7 +34,7 @@ export const TransactionPaySection = () => {
   return (
     <ConfirmInfoSection data-testid="transaction-pay-section">
       <RequiredTokensRow />
-      <PayWithRow />
+      <PayWithRow variant={ConfirmInfoRowSize.Default} />
       {hasPaymentToken && (
         <>
           <BridgeFeeRow />
