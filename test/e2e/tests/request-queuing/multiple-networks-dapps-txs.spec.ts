@@ -119,6 +119,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Reject Transaction
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkPageNumbers(1, 2);
         await transactionConfirmation.clickFooterCancelButton();
 
         // TODO: No second confirmation from dapp two will show, have to go back to the extension to see the switch chain & dapp two's tx.
