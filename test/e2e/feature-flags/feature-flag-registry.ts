@@ -2208,6 +2208,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  extensionBasicFunctionalityToggle: {
+    name: 'extensionBasicFunctionalityToggle',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      minimumVersion: '0.0.0',
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   neNetworkDiscoverButton: {
     name: 'neNetworkDiscoverButton',
     type: FeatureFlagType.Remote,

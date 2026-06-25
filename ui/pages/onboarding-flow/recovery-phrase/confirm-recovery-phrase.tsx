@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -40,9 +40,9 @@ import {
   ONBOARDING_REVEAL_SRP_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
 } from '../../../helpers/constants/routes';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TraceName } from '../../../../shared/lib/trace';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
@@ -80,8 +80,10 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  const { search } = useLocation();
   const t = useI18nContext();
+  const isFirefox = useIsFirefox();
+  const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
+    useOnboardingSearchParams();
   const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
@@ -90,18 +92,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
     [secretRecoveryPhrase],
   );
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
-
-  const queryParams = new URLSearchParams();
-  if (isFromReminder) {
-    queryParams.set('isFromReminder', isFromReminder);
-  }
-  if (isFromSettingsSecurity) {
-    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
-  }
-  const nextRouteQueryString = queryParams.toString();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
@@ -119,7 +109,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         { replace: true },
       );
     } else if (hasSeedPhraseBackedUp) {
-      const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
       // if user has already done the Secure Wallet flow, we can redirect to the next page
       navigate(
         isFirefox || isFromReminder
@@ -134,6 +123,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     nextRouteQueryString,
     hasSeedPhraseBackedUp,
     isFromReminder,
+    isFirefox,
   ]);
 
   const resetQuizWords = useCallback(() => {
@@ -179,7 +169,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
     const nextRoute =
-      getBrowserName() === PLATFORM_FIREFOX || isFromReminder
+      isFirefox || isFromReminder
         ? ONBOARDING_COMPLETION_ROUTE
         : ONBOARDING_METAMETRICS;
 
@@ -190,6 +180,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   }, [
     dispatch,
     hdEntropyIndex,
+    isFirefox,
     navigate,
     trackEvent,
     isFromReminder,
