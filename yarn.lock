@@ -5580,9 +5580,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@file:../core/packages/assets-controller::locator=metamask-crx%40workspace%3A.":
-  version: 9.1.0
-  resolution: "@metamask/assets-controller@file:../core/packages/assets-controller#../core/packages/assets-controller::hash=cd0623&locator=metamask-crx%40workspace%3A."
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@9.1.0-preview-aabb3f2e3":
+  version: 9.1.0-preview-aabb3f2e3
+  resolution: "@metamask-previews/assets-controller@npm:9.1.0-preview-aabb3f2e3"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5613,7 +5613,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/e15b31b8757ce94938d5f128bce2b2b85e5f56de2fd9b191d17cdfb79a4d33855449499433c08e99c72919fd7b22d730c12a1d9c4ec780d610429577d754891e
+  checksum: 10/ff6abe9e8b298f5886eaf05d12a83ddc38e0ec55e52a5a3fd795e7f4b8930dfe751e699bd66ee986e25466bc3e3e1b9d846c29d47a74f5147a47525ec2f36edf
   languageName: node
   linkType: hard
 
@@ -5978,20 +5978,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.1.1, @metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.3.0, @metamask/core-backend@npm:^6.3.3":
-  version: 6.3.3
-  resolution: "@metamask/core-backend@npm:6.3.3"
+"@metamask/core-backend@npm:@metamask-previews/core-backend@6.3.3-preview-aabb3f2e3":
+  version: 6.3.3-preview-aabb3f2e3
+  resolution: "@metamask-previews/core-backend@npm:6.3.3-preview-aabb3f2e3"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.1"
-    "@metamask/controller-utils": "npm:^12.1.1"
-    "@metamask/keyring-controller": "npm:^27.0.0"
+    "@metamask/accounts-controller": "npm:^39.0.3"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/profile-sync-controller": "npm:^28.1.1"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/profile-sync-controller": "npm:^28.2.0"
+    "@metamask/utils": "npm:^11.11.0"
     "@tanstack/query-core": "npm:^5.62.16"
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/be94b9131e1babea048a60f058c345d42ea8423fc3a7121013be4713f7d6298a2b9e3d2c454d0a8ddfd21216f3520bf517556b9d7b5b16600f700bf7cb5d98b6
+  checksum: 10/189de894e60e792ee0215f7b651bd5eccf5844901e8184fee0cf8c4c0b98c062b43f8c95dee936b65bb620b71a57ee6494bee7a80f725aea13e0597a882eb505
   languageName: node
   linkType: hard
 
@@ -33197,7 +33197,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^6.3.0"
+    "@metamask/core-backend": "npm:^6.3.3"
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"

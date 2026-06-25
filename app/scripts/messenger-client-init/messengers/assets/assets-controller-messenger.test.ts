@@ -5,6 +5,42 @@ import {
   getAssetsControllerInitMessenger,
 } from './assets-controller-messenger';
 
+const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
+  'AccountTreeController:getAccountsFromSelectedAccountGroup',
+  'NetworkEnablementController:getState',
+  'NetworkController:getState',
+  'NetworkController:getNetworkClientById',
+  'BackendWebSocketService:subscribe',
+  'BackendWebSocketService:getConnectionInfo',
+  'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+  'BackendWebSocketService:addChannelCallback',
+  'BackendWebSocketService:removeChannelCallback',
+  'SnapController:handleRequest',
+  'SnapController:getRunnableSnaps',
+  'PermissionController:getPermissions',
+  'PhishingController:bulkScanTokens',
+  'AccountsController:getSelectedAccount',
+] as const;
+
+const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
+  'AccountTreeController:selectedAccountGroupChange',
+  'ClientController:stateChange',
+  'NetworkEnablementController:stateChange',
+  'KeyringController:lock',
+  'KeyringController:unlock',
+  'NetworkController:stateChange',
+  'NetworkController:networkRemoved',
+  'NetworkController:networkAdded',
+  'BackendWebSocketService:connectionStateChanged',
+  'AccountsController:accountBalancesUpdated',
+  'PermissionController:stateChange',
+  'SnapController:snapInstalled',
+  'PreferencesController:stateChange',
+  'AccountTreeController:stateChange',
+  'TransactionController:transactionConfirmed',
+  'TransactionController:unapprovedTransactionAdded',
+] as const;
+
 describe('getAssetsControllerMessenger', () => {
   it('returns a messenger instance', () => {
     const messenger = getRootMessenger<never, never>();
@@ -28,22 +64,25 @@ describe('getAssetsControllerMessenger', () => {
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
+        actions: expect.arrayContaining([...ASSETS_CONTROLLER_DELEGATED_ACTIONS]),
+      }),
+    );
+  });
+
+  it('delegates BackendWebsocketDataSource WebSocket actions', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
         actions: expect.arrayContaining([
-          // Core dependencies
-          'AccountTreeController:getAccountsFromSelectedAccountGroup',
-          'NetworkEnablementController:getState',
-          // Network dependencies
-          'NetworkController:getState',
-          'NetworkController:getNetworkClientById',
-          // Backend WebSocket dependencies
           'BackendWebSocketService:subscribe',
           'BackendWebSocketService:getConnectionInfo',
           'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-          // SnapDataSource dependencies
-          'SnapController:handleRequest',
-          'SnapController:getRunnableSnaps',
-          'PermissionController:getPermissions',
-          'PhishingController:bulkScanTokens',
+          'BackendWebSocketService:addChannelCallback',
+          'BackendWebSocketService:removeChannelCallback',
         ]),
       }),
     );
@@ -57,19 +96,7 @@ describe('getAssetsControllerMessenger', () => {
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        events: expect.arrayContaining([
-          // Core events
-          'AccountTreeController:selectedAccountGroupChange',
-          'NetworkEnablementController:stateChange',
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          // Data source events
-          'NetworkController:stateChange',
-          'BackendWebSocketService:connectionStateChanged',
-          'AccountsController:accountBalancesUpdated',
-          'PermissionController:stateChange',
-          'PreferencesController:stateChange',
-        ]),
+        events: expect.arrayContaining([...ASSETS_CONTROLLER_DELEGATED_EVENTS]),
       }),
     );
   });
@@ -104,6 +131,7 @@ describe('getAssetsControllerInitMessenger', () => {
           'AuthenticationController:getBearerToken',
           'SnapController:handleRequest',
           'PreferencesController:getState',
+          'OnboardingController:getState',
         ]),
       }),
     );
