@@ -1,7 +1,5 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { Driver } from '../../webdriver/driver';
-import SelectNetwork from './dialog/select-network';
-import HeaderNavbar from './header-navbar';
 
 export enum NetworkId {
   ETHEREUM = 'eip155:1',
@@ -71,47 +69,6 @@ class NetworkManager {
     console.log(`Opening the network manager`);
     await this.driver.clickElement(this.networkManagerToggle);
     await this.driver.waitForSelector(this.networkManagerCloseButton);
-  }
-
-  private readonly showTestNetworksToggle =
-    '[data-testid="networks-page-show-test-networks"]';
-
-  async toggleShowTestNetworks(): Promise<void> {
-    // The home network filter / legacy Network Manager modal does not expose
-    // the test-network toggle. Enable testnets from Settings → Networks.
-    console.log('Toggling "Show test networks" via Settings → Networks');
-    const headerNavbar = new HeaderNavbar(this.driver);
-    await headerNavbar.openGlobalNetworksMenu();
-    const selectNetwork = new SelectNetwork(this.driver);
-    await selectNetwork.checkPageIsLoaded();
-    await this.driver.clickElement(this.showTestNetworksToggle);
-    await this.driver.waitForElementToStopMoving(this.showTestNetworksToggle);
-    await selectNetwork.clickCloseButton();
-    await headerNavbar.clickDrawerBackButton();
-  }
-
-  async checkNetworkIsListed(networkName: string): Promise<void> {
-    console.log(`Verify network "${networkName}" appears in the list`);
-    await this.driver.waitForSelector(
-      this.multichainNetworkListItemByName(networkName),
-    );
-  }
-
-  async checkContextMenuHasOption(
-    caipChainId: string,
-    optionText: string,
-  ): Promise<void> {
-    console.log(
-      `Open context menu for ${caipChainId} and verify "${optionText}" entry`,
-    );
-    await this.driver.clickElement(
-      this.networkItemMenuButtonByChainId(caipChainId),
-    );
-    await this.driver.waitForSelector({
-      text: optionText,
-    });
-    // Close the menu by clicking outside so subsequent assertions aren't blocked.
-    await this.driver.clickElement(this.tabList);
   }
 
   async closeNetworkManager(): Promise<void> {

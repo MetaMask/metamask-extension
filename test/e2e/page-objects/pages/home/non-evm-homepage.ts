@@ -1,13 +1,9 @@
-import { Driver } from '../../../webdriver/driver';
 import HomePage from './homepage';
 import TokensTab from './tokens-tab';
 
 class NonEvmHomepage extends HomePage {
-  private readonly receiveButtonTestId = '[data-testid="coin-overview-receive"]';
-
-  constructor(driver: Driver) {
-    super(driver);
-  }
+  private readonly receiveButtonTestId =
+    '[data-testid="coin-overview-receive"]';
 
   async clickOnReceiveButton(): Promise<void> {
     console.log('Click Receive on non-EVM homepage');
