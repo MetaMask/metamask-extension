@@ -5705,9 +5705,6 @@
   "notCurrentAccount": {
     "message": "क्या यह सही अकाउंट है? यह आपके वॉलेट में वर्तमान में चुना गया अकाउंट से अलग है"
   },
-  "notEnoughGas": {
-    "message": "गैस कम है"
-  },
   "notificationDetail": {
     "message": "विवरण"
   },

@@ -5705,9 +5705,6 @@
   "notCurrentAccount": {
     "message": "S’agit-il du bon compte ? Il est différent de celui actuellement sélectionné dans votre portefeuille"
   },
-  "notEnoughGas": {
-    "message": "Pas assez de gaz"
-  },
   "notificationDetail": {
     "message": "Détails"
   },

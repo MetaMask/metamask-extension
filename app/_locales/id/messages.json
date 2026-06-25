@@ -5709,9 +5709,6 @@
   "notCurrentAccount": {
     "message": "Apa ini akun yang benar? Ini berbeda dari akun yang saat ini dipilih di dompet Anda"
   },
-  "notEnoughGas": {
-    "message": "Gas tidak cukup"
-  },
   "notificationDetail": {
     "message": "Detail"
   },

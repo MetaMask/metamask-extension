@@ -5709,9 +5709,6 @@
   "notCurrentAccount": {
     "message": "これは正しいアカウントですか？ウォレットで現在選択されているアカウントと異なっています"
   },
-  "notEnoughGas": {
-    "message": "ガスが不足しています"
-  },
   "notificationDetail": {
     "message": "詳細"
   },

@@ -5790,9 +5790,6 @@
   "notCurrentAccount": {
     "message": "Is this the correct account? It's different from the currently selected account in your wallet"
   },
-  "notEnoughGas": {
-    "message": "Not enough gas"
-  },
   "notificationDetail": {
     "message": "Details"
   },
