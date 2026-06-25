@@ -14,7 +14,7 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
-import { getNetworkControllerInstanceOptions } from './instance-options/network-controller';
+import { getNetworkControllerInstanceOptions, setupRpcEndpointMetrics } from './instance-options/network-controller';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -97,9 +97,9 @@ export function initializeWallet({
     },
   });
 
-  wallet.init().catch((error) => console.error(error));
-
   setupRpcEndpointMetrics(infuraProjectId, messenger);
+
+  wallet.init().catch((error) => console.error(error));
 
   return wallet;
 }
