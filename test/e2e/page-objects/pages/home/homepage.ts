@@ -3,6 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../../constants';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
   BASE_ACCOUNT_SYNC_TIMEOUT,
@@ -535,7 +536,10 @@ class HomePage {
     } else {
       expectedBalance = '25';
     }
-    await this.checkExpectedBalanceIsDisplayed(expectedBalance);
+    await this.checkExpectedBalanceIsDisplayed({
+      expectedBalance,
+      timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+    });
   }
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
