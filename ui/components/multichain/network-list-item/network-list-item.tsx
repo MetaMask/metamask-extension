@@ -54,6 +54,7 @@ export const NetworkListItem = ({
   focus = true,
   onClick,
   onDeleteClick,
+  deleteMenuLabel = 'delete',
   onEditClick,
   onDiscoverClick,
   onRpcEndpointClick,
@@ -73,6 +74,7 @@ export const NetworkListItem = ({
   onClick: () => void;
   onRpcEndpointClick?: () => void;
   onDeleteClick?: () => void;
+  deleteMenuLabel?: 'disable' | 'delete';
   onEditClick?: () => void;
   onDiscoverClick?: () => void;
   focus?: boolean;
@@ -306,6 +308,7 @@ export const NetworkListItem = ({
               anchorElement={networkListItemMenuElement}
               isOpen={networkOptionsMenuOpen}
               onDeleteClick={handleMenuItemClick(onDeleteClick)}
+              deleteMenuLabel={deleteMenuLabel}
               onEditClick={handleMenuItemClick(onEditClick)}
               onDiscoverClick={handleMenuItemClick(onDiscoverClick)}
               onClose={() => {
@@ -349,6 +352,10 @@ NetworkListItem.propTypes = {
    * Executes when the delete icon is clicked
    */
   onDeleteClick: PropTypes.func,
+  /**
+   * Locale key for the delete/disable menu item label
+   */
+  deleteMenuLabel: PropTypes.oneOf(['delete', 'disable']),
   /**
    * Executes when the edit icon is clicked
    */

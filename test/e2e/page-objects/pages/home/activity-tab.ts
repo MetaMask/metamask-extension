@@ -241,19 +241,16 @@ class ActivityTab extends HomePage {
   }
 
   /**
-   * Checks that the spending cap value is displayed in the transaction details view.
+   * Checks the title shown in the transaction details view.
    * Must be called after clicking on a transaction to open its details.
    *
-   * @param expectedValue - The expected spending cap text (e.g. '3 TST').
+   * @param expectedTitle - The expected details title (e.g. 'Revoked spending cap').
    */
-  async checkSpendingCapValueInDetails(expectedValue: string): Promise<void> {
-    console.log(
-      `Check spending cap value ${expectedValue} in transaction details`,
-    );
-    await this.driver.waitForSelector({
-      css: this.transactionBreakdownAmount,
-      text: expectedValue,
-    });
+  async checkTransactionDetailsTitle(expectedTitle: string): Promise<void> {
+    console.log(`Check transaction details title is "${expectedTitle}"`);
+    // Ensure the details view has opened before asserting on its content.
+    await this.driver.waitForSelector(this.backButton);
+    await this.driver.waitForSelector({ text: expectedTitle });
   }
 
   /**

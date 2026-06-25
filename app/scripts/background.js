@@ -83,6 +83,7 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
+import { createEventBuilder, trackEvent } from './controllers/analytics';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -642,8 +643,11 @@ const handleOnConnect = async (port) => {
     // Notify UI that background initialization is complete, before sending state.
     // This is sent on the raw port (like ALIVE) so the UI can distinguish between
     // "background still initializing" vs "background initialized but state sync failed".
-    if (!tryPostMessage(port, BACKGROUND_INITIALIZED_METHOD)) {
-      return;
+    // Only MetaMask UI ports listen for this message (contentscripts do not).
+    if (isMetaMaskUIPort) {
+      if (!tryPostMessage(port, BACKGROUND_INITIALIZED_METHOD)) {
+        return;
+      }
     }
 
     // For testing: skip connectWindowPostMessage to simulate state sync hang.
@@ -1388,14 +1392,14 @@ function emitAppOpenedMetricEvent(environmentType) {
     allowlist,
   );
 
-  controller.metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.AppOpened,
-    category: MetaMetricsEventCategory.App,
-    environmentType,
-    properties: {
-      ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
-    },
-  });
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.AppOpened)
+      .addCategory(MetaMetricsEventCategory.App)
+      .addProperties(
+        activeTabDomain ? { active_tab_domain: activeTabDomain } : {},
+      )
+      .build({ environmentType }),
+  );
 }
 
 /**
