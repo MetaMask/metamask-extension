@@ -44,6 +44,7 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
 async function reopenNotificationsSettingsAfterUnlock(
   driver: Driver,
 ): Promise<void> {
+  await driver.navigate();
   await lockAndWaitForLoginPage(driver);
   await login(driver);
   await goToNotificationsSettingsPage(driver);
