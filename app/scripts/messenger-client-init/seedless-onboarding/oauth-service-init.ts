@@ -40,7 +40,7 @@ export const OAuthServiceInit: MessengerClientInitFunction<
       ),
 
     getCompletedMetaMetricsOnboarding: () =>
-      metaMetricsController.state.completedMetaMetricsOnboarding === true,
+      analyticsController.state.consentDecisionMade === true,
     getOptedIn: () => analyticsController.state.optedIn === true,
   });
 

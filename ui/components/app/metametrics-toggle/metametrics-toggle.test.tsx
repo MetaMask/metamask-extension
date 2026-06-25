@@ -11,7 +11,7 @@ const disableMetametricsMock = jest.fn(() => Promise.resolve());
 type StateOverrides = {
   isSignedIn?: boolean;
   useExternalServices?: boolean;
-  completedMetaMetricsOnboarding?: boolean;
+  consentDecisionMade?: boolean;
   optedIn?: boolean;
   isBackupAndSyncEnabled?: boolean;
 };
@@ -19,7 +19,7 @@ type StateOverrides = {
 const initialState: StateOverrides = {
   isSignedIn: true,
   useExternalServices: true,
-  completedMetaMetricsOnboarding: true,
+  consentDecisionMade: true,
   optedIn: true,
   isBackupAndSyncEnabled: true,
 };
@@ -96,7 +96,7 @@ describe('MetametricsToggle', () => {
   it('calls enableMetametrics when toggle is turned on', () => {
     const { metaMetricsToggleButton } = arrangeMocks({
       useExternalServices: true,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: false,
     });
     fireEvent.click(metaMetricsToggleButton);
@@ -107,7 +107,7 @@ describe('MetametricsToggle', () => {
   it('calls disableMetametrics when toggle is turned off', () => {
     const { metaMetricsToggleButton } = arrangeMocks({
       useExternalServices: true,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
     });
 

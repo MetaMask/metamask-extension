@@ -91,7 +91,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: null,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -123,7 +123,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId, // 1% sample rate for dapp viewed event
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -166,7 +166,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -212,7 +212,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -261,7 +261,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -307,7 +307,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

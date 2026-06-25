@@ -30,7 +30,7 @@ describe('trackVaultCorruptionEvent', () => {
         analyticsId: 'test-metrics-id-123',
       },
       MetaMetricsController: {
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
       },
     };
 

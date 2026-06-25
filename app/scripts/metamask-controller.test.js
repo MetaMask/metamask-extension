@@ -2689,7 +2689,7 @@ describe('MetaMaskController', () => {
               optedIn: true,
             },
             MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               dataCollectionForMarketing: true,
             },
           },

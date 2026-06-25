@@ -5517,16 +5517,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@metamask/analytics-controller@npm:1.1.1"
+"@metamask/analytics-controller@npm:@metamask-previews/analytics-controller@1.1.1-preview-5133205c8":
+  version: 1.1.1-preview-5133205c8
+  resolution: "@metamask-previews/analytics-controller@npm:1.1.1-preview-5133205c8"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/utils": "npm:^11.11.0"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/2a64ac0e397a27ac029a324646ebd91c8f9afa6ae2d1b5786042eaf5ad9b4b946c85b6d311ad75319562f8952649c54e80a9e8efb37879bef82ee1b5afe3513b
+  checksum: 10/d7e91aa8fd30c560348af90633846339f493636a13c699ecd39c40884e70fd41bd2d3a121fdbb4a0a86a0832827071c32f422d275e858742a835ec264d440888
   languageName: node
   linkType: hard
 

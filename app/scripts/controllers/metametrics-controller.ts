@@ -153,7 +153,7 @@ export type MetaMaskState = Pick<
   | 'firstTimeFlowType'
   | 'analyticsId'
   | 'optedIn'
-  | 'completedMetaMetricsOnboarding'
+  | 'consentDecisionMade'
   // TODO: Remove as this is no longer a top-level property of the flattened background state object.
   // | 'security_providers'
 > & {
@@ -174,23 +174,11 @@ export type MetaMaskState = Pick<
  * the `anonymous` flag.
  */
 const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
-  completedMetaMetricsOnboarding: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   fragments: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: false,
     usedInUi: true,
-  },
-  eventsBeforeMetricsOptIn: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: false,
   },
   tracesBeforeMetricsOptIn: {
     includeInStateLogs: true,
@@ -221,9 +209,7 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
 /**
  * The state that MetaMetricsController stores.
  *
- * @property completedMetaMetricsOnboarding - Whether the user has completed the metrics participation prompt (onboarding/settings).
  * @property fragments - Object keyed by UUID with stored fragments as values.
- * @property eventsBeforeMetricsOptIn - Array of queued events added before a user opts into metrics.
  * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
  * @property traits - Traits that are not derived from other state keys.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
@@ -244,9 +230,7 @@ type SegmentPagePayload = {
 };
 
 export type MetaMetricsControllerState = {
-  completedMetaMetricsOnboarding: boolean;
   fragments: Record<string, MetaMetricsEventFragment>;
-  eventsBeforeMetricsOptIn: MetaMetricsEventPayload[];
   tracesBeforeMetricsOptIn: BufferedTrace[];
   traits: MetaMetricsUserTraits;
   dataCollectionForMarketing: boolean | null;
@@ -322,10 +306,8 @@ export type MetaMetricsControllerOptions = {
  */
 export const getDefaultMetaMetricsControllerState =
   (): MetaMetricsControllerState => ({
-    completedMetaMetricsOnboarding: false,
     dataCollectionForMarketing: null,
     marketingCampaignCookieId: null,
-    eventsBeforeMetricsOptIn: [],
     tracesBeforeMetricsOptIn: [],
     traits: {},
     fragments: {},
@@ -336,7 +318,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'addTraceBeforeMetricsOptIn',
   'bufferedEndTrace',
   'bufferedTrace',
-  'clearEventsAfterMetricsOptIn',
   'clearTracesAfterMetricsOptIn',
   'createEventFragment',
   'deleteEventFragment',
@@ -351,7 +332,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'setMarketingCampaignCookieId',
   'setParticipateInMetaMetrics',
   'trackEvent',
-  'trackEventsAfterMetricsOptIn',
   'trackPage',
   'trackTracesAfterMetricsOptIn',
   'updateEventFragment',
@@ -788,26 +768,21 @@ export class MetaMetricsController extends BaseController<
   ): Promise<string | null> {
     const analyticsId = this.getMetaMetricsId();
 
+    // Opt-in/out and the undecided reset are owned by AnalyticsController, which
+    // also replays/clears its pre-consent event queue. Traces remain buffered
+    // here (out of scope) and are flushed/cleared alongside.
     if (participateInMetaMetrics === true) {
       this.messenger.call('AnalyticsController:optIn');
-    } else {
-      this.messenger.call('AnalyticsController:optOut');
-    }
-
-    this.update((state) => {
-      state.completedMetaMetricsOnboarding = participateInMetaMetrics !== null;
-    });
-
-    if (participateInMetaMetrics) {
-      this.trackEventsAfterMetricsOptIn();
-      this.clearEventsAfterMetricsOptIn();
       this.trackTracesAfterMetricsOptIn();
       this.clearTracesAfterMetricsOptIn();
     } else {
       if (participateInMetaMetrics === false) {
-        // Drop any UI-buffered pre-submit events/traces; they must not be sent after opt-out.
-        this.clearEventsAfterMetricsOptIn();
+        this.messenger.call('AnalyticsController:optOut');
+        // Drop any UI-buffered pre-submit traces; they must not be sent after opt-out.
         this.clearTracesAfterMetricsOptIn();
+      } else {
+        // `null` returns the user to the undecided state.
+        this.messenger.call('AnalyticsController:resetConsentDecision');
       }
       if (this.state.marketingCampaignCookieId) {
         this.setMarketingCampaignCookieId(null);
@@ -876,30 +851,41 @@ export class MetaMetricsController extends BaseController<
       this.#applyAnonymousEventOptions(eventPayload, options);
       this.#applyLegacyEventOptions(eventPayload, options);
 
-      const properties = this.#removeUtmPropertiesWithoutMarketingConsent(
-        eventPayload.properties,
-      );
-      const sensitiveProperties =
-        this.#removeUtmPropertiesWithoutMarketingConsent(
-          eventPayload.sensitiveProperties ?? {},
-        );
-
-      this.messenger.call(
-        'AnalyticsController:trackEvent',
-        {
-          name: eventPayload.event,
-          properties,
-          sensitiveProperties,
-          saveDataRecording: false, // Legacy property that is ignored by the analytics controller and will be removed from the type in the future.
-          hasProperties:
-            Object.keys(properties).length > 0 ||
-            Object.keys(sensitiveProperties).length > 0,
-        } satisfies AnalyticsTrackingEvent,
-        eventPayload.context as AnalyticsContext | undefined,
-      );
+      this.#forwardTrackEventToAnalytics(eventPayload);
     } catch (err) {
       this.#captureException(err);
     }
+  }
+
+  /**
+   * Shapes an enriched event payload and forwards it to the AnalyticsController,
+   * which delivers it, buffers it (while the user is undecided), or drops it
+   * (after opt-out) based on its own consent state.
+   *
+   * @param eventPayload - The enriched payload built by #buildTrackEventPayload.
+   */
+  #forwardTrackEventToAnalytics(eventPayload: SegmentTrackPayload): void {
+    const properties = this.#removeUtmPropertiesWithoutMarketingConsent(
+      eventPayload.properties,
+    );
+    const sensitiveProperties =
+      this.#removeUtmPropertiesWithoutMarketingConsent(
+        eventPayload.sensitiveProperties ?? {},
+      );
+
+    this.messenger.call(
+      'AnalyticsController:trackEvent',
+      {
+        name: eventPayload.event,
+        properties,
+        sensitiveProperties,
+        saveDataRecording: false, // Legacy property that is ignored by the analytics controller and will be removed from the type in the future.
+        hasProperties:
+          Object.keys(properties).length > 0 ||
+          Object.keys(sensitiveProperties).length > 0,
+      } satisfies AnalyticsTrackingEvent,
+      eventPayload.context as AnalyticsContext | undefined,
+    );
   }
 
   #isAnonymousTrackEvent(eventPayload: SegmentTrackPayload): boolean {
@@ -1133,28 +1119,18 @@ export class MetaMetricsController extends BaseController<
     }
   }
 
-  // Track all queued events after a user opted into metrics.
-  trackEventsAfterMetricsOptIn(): void {
-    const { eventsBeforeMetricsOptIn } = this.state;
-    eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
-      this.trackEvent(eventBeforeMetricsOptIn);
-    });
-  }
-
-  // Once we track queued events after a user opts into metrics, we want to clear the event queue.
-  clearEventsAfterMetricsOptIn(): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.eventsBeforeMetricsOptIn = [];
-    });
-  }
-
-  // It adds an event into a queue, which is only tracked if a user opts into metrics.
+  // Enriches an event and forwards it to the AnalyticsController, which buffers
+  // it in its pre-consent queue while the user is undecided and replays it on
+  // opt-in (or drops it on opt-out). Bypasses #canSubmitAnalytics so undecided
+  // events still reach the queue.
   addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.eventsBeforeMetricsOptIn.push(event);
-    });
+    try {
+      this.#validateTrackEventPayload(event);
+      const eventPayload = this.#buildTrackEventPayload(event);
+      this.#forwardTrackEventToAnalytics(eventPayload);
+    } catch (err) {
+      this.#captureException(err);
+    }
   }
 
   // Track all queued traces after a user opted into metrics.
@@ -1459,7 +1435,7 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this.#getPetnameAddressCount(metamaskState),
       [MetaMetricsUserTrait.IsMetricsOptedIn]:
-        metamaskState.completedMetaMetricsOnboarding === true
+        metamaskState.consentDecisionMade === true
           ? metamaskState.optedIn === true
           : null,
       [MetaMetricsUserTrait.HasMarketingConsent]:
@@ -1494,7 +1470,7 @@ export class MetaMetricsController extends BaseController<
 
     if (
       !this.previousUserTraits &&
-      metamaskState.completedMetaMetricsOnboarding === true &&
+      metamaskState.consentDecisionMade === true &&
       metamaskState.optedIn === true
     ) {
       this.previousUserTraits = currentTraits;
@@ -1512,7 +1488,7 @@ export class MetaMetricsController extends BaseController<
       });
 
       if (
-        metamaskState.completedMetaMetricsOnboarding === true &&
+        metamaskState.consentDecisionMade === true &&
         metamaskState.optedIn === true
       ) {
         this.previousUserTraits = currentTraits;

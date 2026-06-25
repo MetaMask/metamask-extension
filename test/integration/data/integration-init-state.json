@@ -349,7 +349,7 @@
     "os": "mac",
     "browser": "chrome"
   },
-  "completedMetaMetricsOnboarding": true,
+  "consentDecisionMade": true,
   "completedOnboarding": true,
   "confirmationExchangeRates": {},
   "connectedStatusPopoverHasBeenShown": true,

@@ -111,9 +111,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'transport-test-id',
               optedIn: false,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
@@ -150,9 +148,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'transport-test-id',
               optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
@@ -187,9 +183,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'app-state-id',
               optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
@@ -227,10 +221,8 @@ describe('sentry-make-transport', () => {
           AnalyticsController: {
             analyticsId: 'backup-id',
             optedIn: true,
-          },
-          MetaMetricsController: {
-            completedMetaMetricsOnboarding: true,
-          },
+              consentDecisionMade: true,
+            },
         }),
       };
 
@@ -304,9 +296,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'init-session-test-id',
               optedIn: false,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
@@ -344,9 +334,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'init-session-test-id',
               optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),

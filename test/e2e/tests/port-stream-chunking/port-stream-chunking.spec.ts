@@ -64,7 +64,7 @@ describe('Port Stream Chunking', function () {
           .withTransactionController({ transactions: largeTransactions })
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

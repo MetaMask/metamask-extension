@@ -311,7 +311,7 @@ describe('PersistenceManager', () => {
           currentAppVersion: '13.34.0',
         },
         MetaMetricsController: {
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
         },
         AnalyticsController: {
           analyticsId: '0xabc123',
@@ -330,7 +330,7 @@ describe('PersistenceManager', () => {
           currentAppVersion: '13.34.0',
         },
         MetaMetricsController: {
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
         },
         AnalyticsController: {
           analyticsId: '0xabc123',

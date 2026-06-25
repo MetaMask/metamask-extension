@@ -29,7 +29,7 @@ describe('OAuthServiceInit', () => {
         bufferedEndTrace: jest.fn(),
         trackEvent: jest.fn(),
         addEventBeforeMetricsOptIn: jest.fn(),
-        state: { completedMetaMetricsOnboarding: true, optedIn: false },
+        state: { consentDecisionMade: true, optedIn: false },
       };
     });
 

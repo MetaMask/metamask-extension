@@ -93,6 +93,7 @@ const TEST_GA_COOKIE_ID = '123456.123455';
 
 const MOCK_ANALYTICS_CONTROLLER_OPTED_IN: AnalyticsControllerState = {
   optedIn: true,
+  consentDecisionMade: true,
   analyticsId: TEST_ANALYTICS_ID,
 };
 const MOCK_EXTENSION_ID = 'testid';
@@ -220,7 +221,6 @@ describe('MetaMetricsController', function () {
       await withController(({ controller }) => {
         expect(controller.version).toStrictEqual(VERSION);
         expect(controller.chainId).toStrictEqual(DEFAULT_CHAIN_ID);
-        expect(controller.state.completedMetaMetricsOnboarding).toBe(true);
         expect(controller.state.marketingCampaignCookieId).toStrictEqual(null);
         expect(controller.getMetaMetricsId()).toStrictEqual(TEST_ANALYTICS_ID);
         expect(controller.locale).toStrictEqual(LOCALE.replace('_', '-'));
@@ -564,25 +564,52 @@ describe('MetaMetricsController', function () {
   });
 
   describe('setParticipateInMetaMetrics', function () {
-    it('should update the value of participateInMetaMetrics', async function () {
+    it('opts in/out via AnalyticsController and records the consent decision', async function () {
       await withController(
         {
-          options: {
-            state: { completedMetaMetricsOnboarding: false },
+          analyticsControllerState: {
+            optedIn: false,
+            consentDecisionMade: false,
           },
-          analyticsControllerState: { optedIn: false },
         },
         async ({ controller, controllerMessenger }) => {
-          expect(controller.state.completedMetaMetricsOnboarding).toBe(false);
-          await controller.setParticipateInMetaMetrics(true);
-          expect(controller.state.completedMetaMetricsOnboarding).toBe(true);
           expect(
-            controllerMessenger.call('AnalyticsController:getState').optedIn,
-          ).toBe(true);
-          await controller.setParticipateInMetaMetrics(false);
-          expect(
-            controllerMessenger.call('AnalyticsController:getState').optedIn,
+            controllerMessenger.call('AnalyticsController:getState')
+              .consentDecisionMade,
           ).toBe(false);
+
+          await controller.setParticipateInMetaMetrics(true);
+          const afterOptIn = controllerMessenger.call(
+            'AnalyticsController:getState',
+          );
+          expect(afterOptIn.optedIn).toBe(true);
+          expect(afterOptIn.consentDecisionMade).toBe(true);
+
+          await controller.setParticipateInMetaMetrics(false);
+          const afterOptOut = controllerMessenger.call(
+            'AnalyticsController:getState',
+          );
+          expect(afterOptOut.optedIn).toBe(false);
+          expect(afterOptOut.consentDecisionMade).toBe(true);
+        },
+      );
+    });
+
+    it('resets the consent decision when set to null', async function () {
+      await withController(
+        {
+          analyticsControllerState: {
+            optedIn: true,
+            consentDecisionMade: true,
+          },
+        },
+        async ({ controller, controllerMessenger }) => {
+          await controller.setParticipateInMetaMetrics(null);
+          const afterReset = controllerMessenger.call(
+            'AnalyticsController:getState',
+          );
+          expect(afterReset.optedIn).toBe(false);
+          expect(afterReset.consentDecisionMade).toBe(false);
         },
       );
     });
@@ -619,10 +646,12 @@ describe('MetaMetricsController', function () {
     it('updates the profile when install attribution traits arrive after opt-in', async function () {
       await withController(
         {
-          analyticsControllerState: { optedIn: false },
+          analyticsControllerState: {
+            optedIn: false,
+            consentDecisionMade: false,
+          },
           options: {
             state: {
-              completedMetaMetricsOnboarding: false,
               dataCollectionForMarketing: false,
               traits: {},
             },
@@ -655,7 +684,7 @@ describe('MetaMetricsController', function () {
             names: {
               ethereumAddress: {},
             },
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
             currentCurrency: 'usd',
@@ -1755,7 +1784,7 @@ describe('MetaMetricsController', function () {
       },
       currentCurrency: 'usd',
       securityAlertsEnabled: false,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
       analyticsId: '',
       dataCollectionForMarketing: false,
@@ -1947,7 +1976,7 @@ describe('MetaMetricsController', function () {
               },
             },
           },
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           currentCurrency: 'usd',
@@ -2046,7 +2075,7 @@ describe('MetaMetricsController', function () {
             theme: 'default' as ThemeType,
             useTokenDetection: true,
             allNfts: {},
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
             dataCollectionForMarketing: false,
@@ -2102,7 +2131,7 @@ describe('MetaMetricsController', function () {
             theme: 'default' as ThemeType,
             useTokenDetection: true,
             allNfts: {},
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
             dataCollectionForMarketing: false,
@@ -2171,7 +2200,7 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
@@ -2239,7 +2268,7 @@ describe('MetaMetricsController', function () {
           },
           currentCurrency: 'usd',
           allNfts: {},
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
@@ -2324,7 +2353,7 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
@@ -2392,7 +2421,7 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
@@ -2885,7 +2914,6 @@ describe('MetaMetricsController', function () {
             ),
           ).toMatchInlineSnapshot(`
             {
-              "completedMetaMetricsOnboarding": true,
               "marketingCampaignCookieId": null,
             }
           `);
@@ -2908,9 +2936,7 @@ describe('MetaMetricsController', function () {
             ),
           ).toMatchInlineSnapshot(`
             {
-              "completedMetaMetricsOnboarding": true,
               "dataCollectionForMarketing": null,
-              "eventsBeforeMetricsOptIn": [],
               "fragments": {},
               "marketingCampaignCookieId": null,
               "tracesBeforeMetricsOptIn": [],
@@ -2936,9 +2962,7 @@ describe('MetaMetricsController', function () {
             ),
           ).toMatchInlineSnapshot(`
             {
-              "completedMetaMetricsOnboarding": true,
               "dataCollectionForMarketing": null,
-              "eventsBeforeMetricsOptIn": [],
               "fragments": {},
               "marketingCampaignCookieId": null,
               "tracesBeforeMetricsOptIn": [],
@@ -2964,7 +2988,6 @@ describe('MetaMetricsController', function () {
             ),
           ).toMatchInlineSnapshot(`
             {
-              "completedMetaMetricsOnboarding": true,
               "dataCollectionForMarketing": null,
               "fragments": {},
             }
@@ -3058,7 +3081,6 @@ async function withController<ReturnValue>(
     const mmcState = merge(
       {},
       {
-        completedMetaMetricsOnboarding: true,
         marketingCampaignCookieId: null,
         fragments: {
           testid: SAMPLE_PERSISTED_EVENT,
@@ -3130,11 +3152,21 @@ async function withController<ReturnValue>(
 
     messenger.registerActionHandler('AnalyticsController:optIn', () => {
       mockAnalyticsControllerState.optedIn = true;
+      mockAnalyticsControllerState.consentDecisionMade = true;
     });
 
     messenger.registerActionHandler('AnalyticsController:optOut', () => {
       mockAnalyticsControllerState.optedIn = false;
+      mockAnalyticsControllerState.consentDecisionMade = true;
     });
+
+    messenger.registerActionHandler(
+      'AnalyticsController:resetConsentDecision',
+      () => {
+        mockAnalyticsControllerState.optedIn = false;
+        mockAnalyticsControllerState.consentDecisionMade = false;
+      },
+    );
 
     // Emulate the analytics platform adapter: every Segment payload is built
     // here and passed straight to `segmentMock`, preserving the existing
@@ -3239,6 +3271,7 @@ async function withController<ReturnValue>(
         'AnalyticsController:identify',
         'AnalyticsController:optIn',
         'AnalyticsController:optOut',
+        'AnalyticsController:resetConsentDecision',
         'AnalyticsController:trackEvent',
         'AnalyticsController:trackView',
         'PreferencesController:getState',

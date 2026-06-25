@@ -62,7 +62,7 @@ describe('Onboaring Flow Switch Component', () => {
     const mockState = {
       metamask: {
         seedPhraseBackedUp: false,
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
       },
     };
 
@@ -86,7 +86,7 @@ describe('Onboaring Flow Switch Component', () => {
     const mockState = {
       metamask: {
         seedPhraseBackedUp: false,
-        completedMetaMetricsOnboarding: false,
+        consentDecisionMade: false,
       },
     };
 

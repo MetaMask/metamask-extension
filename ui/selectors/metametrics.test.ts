@@ -11,12 +11,12 @@ describe('MetaMetrics selectors', () => {
   it('returns whether metrics onboarding has been completed', () => {
     expect(
       getCompletedMetaMetricsOnboarding(
-        state({ completedMetaMetricsOnboarding: true }),
+        state({ consentDecisionMade: true }),
       ),
     ).toBe(true);
     expect(
       getCompletedMetaMetricsOnboarding(
-        state({ completedMetaMetricsOnboarding: false }),
+        state({ consentDecisionMade: false }),
       ),
     ).toBe(false);
   });

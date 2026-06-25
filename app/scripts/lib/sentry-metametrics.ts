@@ -40,7 +40,7 @@ export function metaMetricsIntegration({
       const analyticsState = await getAnalyticsState();
 
       if (
-        !analyticsState?.completedMetaMetricsOnboarding ||
+        !analyticsState?.consentDecisionMade ||
         !analyticsState.optedIn
       ) {
         log('Event dropped as metrics disabled');

@@ -30,7 +30,7 @@ describe('trackCriticalErrorEvent', () => {
         analyticsId: 'test-metrics-id-123',
       },
       MetaMetricsController: {
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
       },
     };
 
@@ -67,7 +67,7 @@ describe('trackCriticalErrorEvent', () => {
         analyticsId: 'test-metrics-id-456',
       },
       MetaMetricsController: {
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
       },
     };
 

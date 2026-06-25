@@ -34,7 +34,7 @@ const renderProvider = ({
   state: {
     metamask: {
       analyticsId: string | null;
-      completedMetaMetricsOnboarding: boolean;
+      consentDecisionMade: boolean;
       optedIn: boolean;
     };
   };
@@ -91,7 +91,7 @@ describe('MetaMetricsProvider', () => {
       state: {
         metamask: {
           analyticsId: null,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         },
       },
@@ -118,7 +118,7 @@ describe('MetaMetricsProvider', () => {
       state: {
         metamask: {
           analyticsId: '0x123',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         },
       },
@@ -143,7 +143,7 @@ describe('MetaMetricsProvider', () => {
       state: {
         metamask: {
           analyticsId: null,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
         },
       },
@@ -168,7 +168,7 @@ describe('MetaMetricsProvider', () => {
       state: {
         metamask: {
           analyticsId: '0x123',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
         },
       },

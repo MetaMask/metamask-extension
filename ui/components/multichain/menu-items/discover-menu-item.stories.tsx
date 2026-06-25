@@ -10,7 +10,7 @@ const mockStore = configureStore({
     currentLocale: 'en',
     analyticsId: 'test-metrics-id',
     optedIn: true,
-    completedMetaMetricsOnboarding: true,
+    consentDecisionMade: true,
     dataCollectionForMarketing: false,
   },
 });

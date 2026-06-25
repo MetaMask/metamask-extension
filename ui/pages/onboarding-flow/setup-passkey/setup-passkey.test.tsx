@@ -128,7 +128,7 @@ const buildMockStore = (
   configureStore({
     metamask: {
       firstTimeFlowType,
-      completedMetaMetricsOnboarding: false,
+      consentDecisionMade: false,
       optedIn: false,
       ...metamaskOverrides,
     },
@@ -291,7 +291,7 @@ describe('SetupPasskey', () => {
         .spyOn(BrowserRuntimeUtils, 'getBrowserName')
         .mockReturnValue('chrome');
       const mockStore = buildMockStore(FirstTimeFlowType.import, {
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
       });
       const { getByText } = renderSetupPasskey(mockStore);

@@ -132,6 +132,8 @@ type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
   analyticsId?: string | null;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   optedIn?: boolean;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  consentDecisionMade?: boolean;
 };
 
 type StorageServiceNamespaceMap = {
@@ -296,11 +298,16 @@ class FixtureBuilderV2 {
   }
 
   withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
-    const { analyticsId, optedIn, ...metaMetricsControllerPatch } = data;
+    const { analyticsId, optedIn, consentDecisionMade, ...metaMetricsControllerPatch } =
+      data;
 
     merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 
-    if (analyticsId !== undefined || optedIn !== undefined) {
+    if (
+      analyticsId !== undefined ||
+      optedIn !== undefined ||
+      consentDecisionMade !== undefined
+    ) {
       const fixtureData = this.fixture.data as Record<string, unknown>;
       if (!fixtureData.AnalyticsController) {
         fixtureData.AnalyticsController = {};
@@ -315,6 +322,9 @@ class FixtureBuilderV2 {
       }
       if (optedIn !== undefined) {
         analyticsPatch.optedIn = optedIn;
+      }
+      if (consentDecisionMade !== undefined) {
+        analyticsPatch.consentDecisionMade = consentDecisionMade;
       }
       merge(analyticsController, analyticsPatch);
     }

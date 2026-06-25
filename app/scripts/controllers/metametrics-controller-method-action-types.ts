@@ -141,16 +141,6 @@ export type MetaMetricsControllerHandleMetaMaskStateUpdateAction = {
   handler: MetaMetricsController['handleMetaMaskStateUpdate'];
 };
 
-export type MetaMetricsControllerTrackEventsAfterMetricsOptInAction = {
-  type: `MetaMetricsController:trackEventsAfterMetricsOptIn`;
-  handler: MetaMetricsController['trackEventsAfterMetricsOptIn'];
-};
-
-export type MetaMetricsControllerClearEventsAfterMetricsOptInAction = {
-  type: `MetaMetricsController:clearEventsAfterMetricsOptIn`;
-  handler: MetaMetricsController['clearEventsAfterMetricsOptIn'];
-};
-
 export type MetaMetricsControllerAddEventBeforeMetricsOptInAction = {
   type: `MetaMetricsController:addEventBeforeMetricsOptIn`;
   handler: MetaMetricsController['addEventBeforeMetricsOptIn'];
@@ -222,8 +212,6 @@ export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerIdentifyAction
   | MetaMetricsControllerTrackPageAction
   | MetaMetricsControllerHandleMetaMaskStateUpdateAction
-  | MetaMetricsControllerTrackEventsAfterMetricsOptInAction
-  | MetaMetricsControllerClearEventsAfterMetricsOptInAction
   | MetaMetricsControllerAddEventBeforeMetricsOptInAction
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
   | MetaMetricsControllerClearTracesAfterMetricsOptInAction

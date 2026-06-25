@@ -162,6 +162,7 @@
   },
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
+    "@metamask/analytics-controller": "npm:@metamask-previews/analytics-controller@1.1.1-preview-5133205c8",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "33.0.0",
     "follow-redirects": "^1.16.0",

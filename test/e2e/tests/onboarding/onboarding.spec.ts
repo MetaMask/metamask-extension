@@ -328,7 +328,7 @@ describe('MetaMask onboarding', function () {
             seedPhraseBackedUp: null,
           })
           .withMetaMetricsController({
-            completedMetaMetricsOnboarding: false,
+            consentDecisionMade: false,
             optedIn: false,
             analyticsId: null,
           })
