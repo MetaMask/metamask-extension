@@ -495,11 +495,7 @@ describe('TokenManagementPage', () => {
       await screen.findByTestId('home-network-filter-manage-networks'),
     );
 
-    await waitFor(() =>
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${NETWORKS_ROUTE}?drawerOpen=true`,
-      ),
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
   });
 
   it('shows tokens from all enabled networks when the home page filter is all networks', () => {
