@@ -300,6 +300,7 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.confirmAddtoMetamask);
 
     await this.driver.waitForSelector(this.installationCompleteMessage);
+    await this.checkSnapIsReady();
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmCompleteButton,
     );
@@ -308,7 +309,6 @@ class SnapSimpleKeyringPage {
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
     await this.checkSimpleKeyringSnapConnected();
-    await this.checkSnapIsReady();
   }
 
   /**
@@ -365,9 +365,7 @@ class SnapSimpleKeyringPage {
       },
       { interval: regularDelayMs, timeout: 10000 },
     );
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.SnapSimpleKeyringDapp,
-    );
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
 }
 

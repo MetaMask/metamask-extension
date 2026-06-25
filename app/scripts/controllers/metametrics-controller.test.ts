@@ -219,12 +219,14 @@ describe('MetaMetricsController', function () {
   describe('constructor', function () {
     it('should properly initialize', async function () {
       const spy = jest.spyOn(segmentMock, 'track');
-      await withController(({ controller }) => {
+      await withController(({ controller, controllerMessenger }) => {
         expect(controller.version).toStrictEqual(VERSION);
         expect(controller.chainId).toStrictEqual(DEFAULT_CHAIN_ID);
         expect(controller.state.completedMetaMetricsOnboarding).toBe(true);
         expect(controller.state.marketingCampaignCookieId).toStrictEqual(null);
-        expect(controller.getMetaMetricsId()).toStrictEqual(TEST_ANALYTICS_ID);
+        expect(
+          controllerMessenger.call('AnalyticsController:getState').analyticsId,
+        ).toStrictEqual(TEST_ANALYTICS_ID);
         expect(controller.locale).toStrictEqual(LOCALE.replace('_', '-'));
         expect(controller.state.fragments).toStrictEqual({
           testid: SAMPLE_PERSISTED_EVENT,
@@ -457,26 +459,6 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('getMetaMetricsId', function () {
-    it('returns the analytics metametrics id and keeps it stable across calls', async function () {
-      await withController(({ controller, controllerMessenger }) => {
-        const { analyticsId: initialAnalyticsId } = controllerMessenger.call(
-          'AnalyticsController:getState',
-        );
-        expect(initialAnalyticsId).toStrictEqual(TEST_ANALYTICS_ID);
-
-        const clientMetaMetricsId = controller.getMetaMetricsId();
-        expect(clientMetaMetricsId).toStrictEqual(TEST_ANALYTICS_ID);
-        expect(clientMetaMetricsId).toMatch(
-          /^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/iu,
-        );
-
-        const sameMetaMetricsId = controller.getMetaMetricsId();
-        expect(clientMetaMetricsId).toStrictEqual(sameMetaMetricsId);
-      });
-    });
-  });
-
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
       const spy = jest.spyOn(segmentMock, 'identify');
@@ -588,10 +570,12 @@ describe('MetaMetricsController', function () {
         },
       );
     });
-    it('should not nullify the metaMetricsId when set to false', async function () {
-      await withController(async ({ controller }) => {
+    it('should not nullify the analyticsId when set to false', async function () {
+      await withController(async ({ controller, controllerMessenger }) => {
         await controller.setParticipateInMetaMetrics(false);
-        expect(controller.getMetaMetricsId()).toStrictEqual(TEST_ANALYTICS_ID);
+        expect(
+          controllerMessenger.call('AnalyticsController:getState').analyticsId,
+        ).toStrictEqual(TEST_ANALYTICS_ID);
       });
     });
     it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
