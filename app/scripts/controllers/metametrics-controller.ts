@@ -343,7 +343,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'finalizeAbandonedFragments',
   'finalizeEventFragment',
   'getEventFragmentById',
-  'getMetaMetricsId',
   'handleMetaMaskStateUpdate',
   'identify',
   'processAbandonedFragment',
@@ -786,7 +785,7 @@ export class MetaMetricsController extends BaseController<
   async setParticipateInMetaMetrics(
     participateInMetaMetrics: boolean | null,
   ): Promise<string | null> {
-    const analyticsId = this.getMetaMetricsId();
+    const { analyticsId } = this.#analyticsGetState();
 
     if (participateInMetaMetrics === true) {
       this.messenger.call('AnalyticsController:optIn');
@@ -1248,12 +1247,6 @@ export class MetaMetricsController extends BaseController<
     this.update((state) => {
       state.traits = { ...state.traits, ...newTraits };
     });
-  }
-
-  // Retrieve the client metametrics id from AnalyticsController state
-  getMetaMetricsId(): string {
-    const { analyticsId } = this.#analyticsGetState();
-    return analyticsId;
   }
 
   #isBasicFunctionalityEnabled(): boolean {
