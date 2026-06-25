@@ -1,9 +1,9 @@
 import { Wallet } from '@metamask/wallet';
 import { Json } from '@metamask/utils';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
-import { RootMessenger } from '../lib/messenger';
 import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { createMockMessenger } from './test-utils';
 
 jest.mock('@metamask/wallet');
 jest.mock('./keyrings', () => ({
@@ -34,7 +34,7 @@ function getRemoteFeatureFlagOptions(
   state: Record<string, Record<string, Json>>,
 ) {
   initializeWallet({
-    messenger: {} as unknown as RootMessenger,
+    messenger: createMockMessenger(),
     state,
     connectivityAdapter: {} as unknown as ConnectivityAdapter,
   });
@@ -111,12 +111,8 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
     jest.clearAllMocks();
   });
 
-  it('wires the enable/disable toggle with the wallet-owned controller and a default-preserving baseline', () => {
-    const controller = { name: 'RemoteFeatureFlagController' };
-    MockWallet.prototype.getInstance = jest
-      .fn()
-      .mockReturnValue(controller) as never;
-    const messenger = {} as unknown as RootMessenger;
+  it('wires the enable/disable toggle over the messenger with a default-preserving baseline', () => {
+    const messenger = createMockMessenger();
 
     initializeWallet({
       messenger,
@@ -126,7 +122,6 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
 
     expect(mockSetupToggle).toHaveBeenCalledWith({
       messenger,
-      remoteFeatureFlagController: controller,
       // `useExternalServices` is absent, so it defaults to on, matching the
       // live `PreferencesController` default.
       preferencesState: { useExternalServices: true },
@@ -135,10 +130,8 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
   });
 
   it('treats an explicit useExternalServices=false as opting out in the baseline', () => {
-    MockWallet.prototype.getInstance = jest.fn().mockReturnValue({}) as never;
-
     initializeWallet({
-      messenger: {} as unknown as RootMessenger,
+      messenger: createMockMessenger(),
       state: { PreferencesController: { useExternalServices: false } },
       connectivityAdapter: {} as unknown as ConnectivityAdapter,
     });
