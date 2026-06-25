@@ -79,10 +79,6 @@ class NotificationsSettingsPage {
     console.log('Notifications Settings page is loaded');
   }
 
-  async isNotificationsSettingsPageDisplayed(): Promise<boolean> {
-    return this.driver.isElementPresent(this.allowNotificationsToggle);
-  }
-
   async disableNotifications(): Promise<void> {
     console.log('Clicking on the disable notifications toggle');
     await this.driver.clickElement(this.allowNotificationsToggle);
