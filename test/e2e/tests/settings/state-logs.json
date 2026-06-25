@@ -1141,6 +1141,7 @@
       }
     },
     "musdConversionEducationSeen": "boolean",
+    "perpsTabBadgeSeen": "boolean",
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}

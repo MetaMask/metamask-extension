@@ -3336,6 +3336,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
         ),
+      setPerpsTabBadgeSeen:
+        appStateController.setPerpsTabBadgeSeen.bind(appStateController),
       setMusdConversionEducationSeen:
         appStateController.setMusdConversionEducationSeen.bind(
           appStateController,

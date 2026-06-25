@@ -91,13 +91,20 @@ export function clearABTestExposureTrackingForTest(): void {
  * @param flagKey - Remote feature flag key, e.g. `swapsSWAPS4135AbtestButtonColor`
  * @param variants - Local mapping of variant IDs to render-time data.
  * @param exposureMetadata - Optional metadata for experiment exposure events.
+ * @param options - Optional hook options.
+ * @param options.trackExposure - When `false`, the `Experiment Viewed` exposure
+ * event is suppressed (the variant is still resolved). Use this to only record
+ * exposure when the experiment surface is actually presented to the user.
+ * Defaults to `true`.
  * @returns The assigned variant payload, variant name, and active state.
  */
 export function useABTest<TVariants extends ABTestVariants>(
   flagKey: string,
   variants: TVariants,
   exposureMetadata?: ABTestExposureMetadata<TVariants>,
+  options?: { trackExposure?: boolean },
 ): UseABTestResult<TVariants> {
+  const trackExposure = options?.trackExposure ?? true;
   const { trackEvent } = useContext(MetaMetricsContext);
   const flags = useSelector(getRemoteFeatureFlags);
   const { variantName, isActive } = resolveABTestAssignment(
@@ -111,7 +118,7 @@ export function useABTest<TVariants extends ABTestVariants>(
     ];
 
   useEffect(() => {
-    if (!isActive) {
+    if (!isActive || !trackExposure) {
       return;
     }
 
@@ -165,6 +172,7 @@ export function useABTest<TVariants extends ABTestVariants>(
     exposureMetadata?.experimentName,
     flagKey,
     isActive,
+    trackExposure,
     trackEvent,
     variantName,
     variationDisplayName,
