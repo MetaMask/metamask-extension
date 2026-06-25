@@ -51,8 +51,8 @@ describe('BridgeStatusControllerInit', () => {
       addTransactionBatchFn: expect.any(Function),
       fetchFn: expect.any(Function),
       traceFn: expect.any(Function),
-      onQuoteStatusUpdateError: expect.any(Function),
-      isQuoteStatusUpdateEnabled: expect.any(Function),
+      onQuoteStatusManagerError: expect.any(Function),
+      isQuoteStatusManagerEnabled: expect.any(Function),
     });
   });
 
@@ -146,27 +146,27 @@ describe('BridgeStatusControllerInit', () => {
     });
   });
 
-  describe('onQuoteStatusUpdateError', () => {
-    function getOnQuoteStatusUpdateError() {
+  describe('onQuoteStatusManagerError', () => {
+    function getOnQuoteStatusManagerError() {
       BridgeStatusControllerInit(getInitRequestMock());
       const controllerMock = jest.mocked(BridgeStatusController);
-      const { onQuoteStatusUpdateError } =
+      const { onQuoteStatusManagerError } =
         controllerMock.mock.calls[controllerMock.mock.calls.length - 1][0];
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return onQuoteStatusUpdateError!;
+      return onQuoteStatusManagerError!;
     }
 
     it('calls captureException with the error', () => {
-      const onQuoteStatusUpdateError = getOnQuoteStatusUpdateError();
+      const onQuoteStatusManagerError = getOnQuoteStatusManagerError();
       const error = new Error('bridge quote status update failed');
-      onQuoteStatusUpdateError(error);
+      onQuoteStatusManagerError(error);
       expect(captureException).toHaveBeenCalledWith(error);
     });
   });
 
-  describe('isQuoteStatusUpdateEnabled', () => {
-    function getIsQuoteStatusUpdateEnabled(
-      bridgeQuoteStatusUpdateEnabled: unknown,
+  describe('isQuoteStatusManagerEnabled', () => {
+    function getIsQuoteStatusManagerEnabled(
+      bridgeQuoteStatusManager: { enabled?: boolean } | undefined,
     ) {
       const requestMock = getInitRequestMock();
       requestMock.getMessengerClient.mockImplementation(((
@@ -175,7 +175,7 @@ describe('BridgeStatusControllerInit', () => {
         if (name === 'RemoteFeatureFlagController') {
           return {
             state: {
-              remoteFeatureFlags: { bridgeQuoteStatusUpdateEnabled },
+              remoteFeatureFlags: { bridgeQuoteStatusManager },
             },
           };
         }
@@ -184,26 +184,30 @@ describe('BridgeStatusControllerInit', () => {
 
       BridgeStatusControllerInit(requestMock);
       const controllerMock = jest.mocked(BridgeStatusController);
-      const { isQuoteStatusUpdateEnabled } =
+      const { isQuoteStatusManagerEnabled } =
         controllerMock.mock.calls[controllerMock.mock.calls.length - 1][0];
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return isQuoteStatusUpdateEnabled!;
+      return isQuoteStatusManagerEnabled!;
     }
 
     it('returns true when the remote feature flag is enabled', () => {
-      const isQuoteStatusUpdateEnabled = getIsQuoteStatusUpdateEnabled(true);
-      expect(isQuoteStatusUpdateEnabled()).toBe(true);
+      const isQuoteStatusManagerEnabled = getIsQuoteStatusManagerEnabled({
+        enabled: true,
+      });
+      expect(isQuoteStatusManagerEnabled()).toBe(true);
     });
 
     it('returns false when the remote feature flag is disabled', () => {
-      const isQuoteStatusUpdateEnabled = getIsQuoteStatusUpdateEnabled(false);
-      expect(isQuoteStatusUpdateEnabled()).toBe(false);
+      const isQuoteStatusManagerEnabled = getIsQuoteStatusManagerEnabled({
+        enabled: false,
+      });
+      expect(isQuoteStatusManagerEnabled()).toBe(false);
     });
 
     it('returns false when the remote feature flag is not set', () => {
-      const isQuoteStatusUpdateEnabled =
-        getIsQuoteStatusUpdateEnabled(undefined);
-      expect(isQuoteStatusUpdateEnabled()).toBe(false);
+      const isQuoteStatusManagerEnabled =
+        getIsQuoteStatusManagerEnabled(undefined);
+      expect(isQuoteStatusManagerEnabled()).toBe(false);
     });
   });
 });

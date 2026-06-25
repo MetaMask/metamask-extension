@@ -1,6 +1,8 @@
 import {
   BridgeStatusController,
   BridgeStatusControllerMessenger,
+  QuoteStatusGetError,
+  QuoteStatusUpdateError,
 } from '@metamask/bridge-status-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
@@ -9,6 +11,17 @@ import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { accountSupports7702 } from '../lib/account-supports-7702';
 import { captureException } from '../../../shared/lib/sentry';
 import { MessengerClientInitFunction } from './types';
+
+/**
+ * Shape of the `bridgeQuoteStatusManager` remote feature flag after it has been resolved by
+ * `RemoteFeatureFlagController`. The controller processes the raw
+ * version-scoped format (`{ versions: { "11.0.0": { enabled: true } } }`)
+ * and stores only the matching version's value, so the UI receives a flat
+ * `{ enabled: boolean }` object.
+ */
+type BridgeQuoteStatusManagerFeatureFlag = {
+  enabled?: boolean;
+};
 
 /**
  * Initialize the bridge status controller.
@@ -67,14 +80,20 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
 
     // @ts-expect-error: `trace` function type does not match the expected type.
     traceFn: (...args) => trace(...args),
-    onQuoteStatusUpdateError: (error: Error) => {
+    onQuoteStatusManagerError: (error: QuoteStatusUpdateError | QuoteStatusGetError) => {
       console.error(error)
-      captureException(error)
+
+      if (error instanceof QuoteStatusUpdateError) {
+        captureException(error)
+      }
     },
-    isQuoteStatusUpdateEnabled: () => {
-      return true
+    isQuoteStatusManagerEnabled: () => {
       const { remoteFeatureFlags } = remoteFeatureFlagController.state;
-      return remoteFeatureFlags.bridgeQuoteStatusUpdateEnabled === true;
+      const bridgeQuoteStatusManager =
+        remoteFeatureFlags.bridgeQuoteStatusManager as
+          | BridgeQuoteStatusManagerFeatureFlag
+          | undefined;
+      return bridgeQuoteStatusManager?.enabled === true;
     },
   });
 
