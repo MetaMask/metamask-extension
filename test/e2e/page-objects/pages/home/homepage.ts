@@ -516,6 +516,7 @@ class HomePage {
   async checkLocalNodeBalanceIsDisplayed(
     localNode?: Anvil,
     address = null,
+    timeout: number = this.driver.timeout,
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
@@ -525,7 +526,10 @@ class HomePage {
     } else {
       expectedBalance = '25';
     }
-    await this.checkExpectedBalanceIsDisplayed(expectedBalance);
+    await this.checkExpectedBalanceIsDisplayed({
+      expectedBalance,
+      timeout,
+    });
   }
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
