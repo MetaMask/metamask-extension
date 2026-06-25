@@ -399,7 +399,7 @@ const AssetListControlBar = ({
               distance={20}
               disabled={isTokenSortPopoverOpen}
             >
-                            <DsButtonIcon
+              <DsButtonIcon
                 ref={sortButtonRef}
                 data-testid="sort-by-popover-toggle"
                 className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
