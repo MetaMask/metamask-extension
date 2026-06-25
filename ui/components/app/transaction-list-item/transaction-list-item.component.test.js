@@ -240,8 +240,8 @@ describe('TransactionListItem', () => {
     });
   });
 
-  describe('when account has insufficient balance to cover gas', () => {
-    it(`should indicate account has insufficient funds to cover gas price for cancellation of pending transaction`, () => {
+  describe('cancel button', () => {
+    it('renders the cancel button enabled even when the account balance cannot cover the cancel gas fee', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '0x3',
@@ -250,10 +250,11 @@ describe('TransactionListItem', () => {
       const { queryByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
-      expect(queryByTestId('not-enough-gas__tooltip')).toBeInTheDocument();
+      expect(queryByTestId('not-enough-gas__tooltip')).not.toBeInTheDocument();
+      expect(queryByTestId('cancel-button')).not.toBeDisabled();
     });
 
-    it('should not disable "cancel" button when user has sufficient funds', () => {
+    it('renders the cancel button enabled when the account has sufficient balance', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
@@ -262,10 +263,10 @@ describe('TransactionListItem', () => {
       const { queryByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
-      expect(queryByTestId('not-enough-gas__tooltip')).not.toBeInTheDocument();
+      expect(queryByTestId('cancel-button')).not.toBeDisabled();
     });
 
-    it(`should open the cancel/speedup modal when cancel is clicked`, async () => {
+    it('opens the cancel/speedup modal when cancel is clicked', async () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',

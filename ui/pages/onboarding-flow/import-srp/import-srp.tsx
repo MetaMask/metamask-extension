@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   IconColor,
   BoxJustifyContent,
@@ -16,10 +16,7 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import {
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -28,10 +25,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import {
-  forceUpdateMetamaskState,
-  resetOnboarding,
-} from '../../../store/actions';
+import { useOnboardingReset } from '../hooks/useOnboardingReset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
@@ -49,10 +43,10 @@ const hasUpperCase = (draftSrp: string) => {
 export default function ImportSRP({
   submitSecretRecoveryPhrase,
 }: ImportSRPProps) {
-  const dispatch = useDispatch();
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [srpError, setSrpError] = useState('');
   const navigate = useNavigate();
+  const resetOnboardingAndReturn = useOnboardingReset();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const t = useI18nContext();
   const currentKeyring = useSelector(getCurrentKeyring);
@@ -67,11 +61,7 @@ export default function ImportSRP({
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // reset onboarding flow
-    await dispatch(resetOnboarding());
-    await forceUpdateMetamaskState(dispatch);
-
-    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    await resetOnboardingAndReturn();
   };
 
   const onContinue = useCallback(() => {
