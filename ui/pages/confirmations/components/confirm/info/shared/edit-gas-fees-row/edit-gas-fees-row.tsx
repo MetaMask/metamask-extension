@@ -123,7 +123,7 @@ export const EditGasFeesRow = ({
         data-testid="edit-gas-fees-row"
         label={t('networkFee')}
         tooltip={tooltip}
-        style={{ alignItems: BoxAlignItems.Center }}
+        style={{ alignItems: 'center' }}
       >
         {isLoadingGasUsed ? (
           <Skeleton height={16} width={128} />

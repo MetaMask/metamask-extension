@@ -68,9 +68,7 @@ export function GasSponsorshipModal({ onClose }: { onClose: () => void }) {
         >
           {t('gasSponsorshipModalTitle')}
         </ModalHeader>
-        <ModalBody
-          className="flex flex-col pl-0 pr-0 pb-0"
-        >
+        <ModalBody className="flex flex-col pl-0 pr-0 pb-0">
           <SponsorshipOption
             isSelected={isSponsoredSelected}
             onClick={handleSelectSponsored}
@@ -149,7 +147,9 @@ function SponsorshipOption({
       >
         {icon}
         <Box flexDirection={BoxFlexDirection.Column}>
-          <Text variant={TextVariant.BodyMd} className="font-medium">{primaryText}</Text>
+          <Text variant={TextVariant.BodyMd} className="font-medium">
+            {primaryText}
+          </Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {secondaryText}
           </Text>
