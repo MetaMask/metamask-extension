@@ -5349,6 +5349,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/design-tokens@npm:8.5.0-preview.55a2d71, @metamask/design-tokens@npm:@metamask-previews/design-tokens@8.5.0-preview.55a2d71":
+  version: 8.5.0-preview.55a2d71
+  resolution: "@metamask-previews/design-tokens@npm:8.5.0-preview.55a2d71"
+  checksum: 10/0c9614ba8fe5ca9d27e862ac7170ddc980a70cbda7b4cf0e5820ca36d0648108037b451978391f7ec4c89abe86bcc608a6e7b0e0e1502518435007b624574dc2
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.7.1":
   version: 0.7.1
   resolution: "@metamask/7715-permission-types@npm:0.7.1"
@@ -6195,20 +6202,6 @@ __metadata:
     "@metamask/design-tokens": ^8.0.0
     tailwindcss: ^3.0.0
   checksum: 10/1c1385cd3750ca496cb545d9fc413c28f32e515cc0c2751649973904125374b70c88814691f1f2167d80a4df85984fc951413390189baa839561d3e5b8788197
-  languageName: node
-  linkType: hard
-
-"@metamask/design-tokens@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/design-tokens@npm:7.1.0"
-  checksum: 10/a4f1379bdf5f6b99c9a228ce4f5bb07ace4ed5abc61384e7f04cf5bdf943b32dd13ec9676a88f6b6c7314cdba6e2967b9fd99707a64a645865f21f8d8a2566d9
-  languageName: node
-  linkType: hard
-
-"@metamask/design-tokens@npm:^8.5.0":
-  version: 8.5.0
-  resolution: "@metamask/design-tokens@npm:8.5.0"
-  checksum: 10/55374e1d9a0866f6062a1f0191b0a7d7bdb2efaa703eb870204bd123dcdb9958058ddd1bfa06cc39f9be06bdc662414a7ca59b0fe2c0099433988e156652535f
   languageName: node
   linkType: hard
 
@@ -33286,6 +33279,7 @@ __metadata:
     "@ledgerhq/hw-transport": "npm:^6.31.0"
     "@ledgerhq/hw-transport-webhid": "npm:^6.31.0"
     "@lydell/node-pty": "npm:^1.1.0"
+    "@metamask-previews/design-tokens": "npm:8.5.0-preview.55a2d71"
     "@metamask/7715-permission-types": "npm:^0.7.1"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.4"
@@ -33323,7 +33317,7 @@ __metadata:
     "@metamask/design-system-react": "npm:^0.25.0"
     "@metamask/design-system-shared": "npm:^0.21.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.9.0"
-    "@metamask/design-tokens": "npm:^8.5.0"
+    "@metamask/design-tokens": "npm:@metamask-previews/design-tokens@8.5.0-preview.55a2d71"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.4"
