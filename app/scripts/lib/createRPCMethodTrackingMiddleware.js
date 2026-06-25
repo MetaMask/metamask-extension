@@ -28,6 +28,7 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 import { getIframeProperties } from './getIframeProperties';
 
@@ -155,6 +156,40 @@ const CUSTOM_PROPERTIES_MAP = {
 
 const rateLimitTimeoutsByMethod = {};
 let globalRateLimitCount = 0;
+
+/**
+ * Track an RPC method event through AnalyticsController.
+ *
+ * @param {object} options - Event options.
+ * @param {string} options.eventName - MetaMetrics event name.
+ * @param {string} options.category - MetaMetrics event category.
+ * @param {string} options.origin - Request origin used as referrer URL.
+ * @param {Record<string, unknown>} options.properties - Event properties.
+ * @param {Record<string, unknown>} [options.sensitiveProperties] - Sensitive properties.
+ */
+function trackRpcMethodEvent({
+  eventName,
+  category,
+  origin,
+  properties,
+  sensitiveProperties,
+}) {
+  let builder = createEventBuilder(eventName)
+    .addCategory(category)
+    .addProperties(properties);
+
+  if (sensitiveProperties) {
+    builder = builder.addSensitiveProperties(sensitiveProperties);
+  }
+
+  trackEvent(
+    builder.build({
+      referrer: {
+        url: origin,
+      },
+    }),
+  );
+}
 
 /**
  * Create signature request event fragment with an assigned unique identifier
@@ -468,12 +503,10 @@ export default function createRPCMethodTrackingMiddleware({
           eventCategory,
         );
       } else {
-        metaMetricsController.trackEvent({
-          event,
+        trackRpcMethodEvent({
+          eventName: event,
           category: eventCategory,
-          referrer: {
-            url: origin,
-          },
+          origin,
           properties: eventProperties,
         });
       }
@@ -581,13 +614,12 @@ export default function createRPCMethodTrackingMiddleware({
           fragmentPayload,
         );
       } else {
-        metaMetricsController.trackEvent({
-          event,
+        trackRpcMethodEvent({
+          eventName: event,
           category: eventCategory,
-          referrer: {
-            url: origin,
-          },
+          origin,
           properties,
+          sensitiveProperties: sensitiveEventProperties,
         });
       }
       return callback();

@@ -193,7 +193,6 @@ export function getKeyringBuilders(
       'SnapController:isMinimumPlatformVersion',
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
-      'MetaMetricsController:trackEvent',
       'LegacyBackgroundApiService:removeAccount',
     ],
   });

@@ -751,10 +751,6 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:getState',
           jest.fn().mockReturnValue({ migrationVersion: 0 }),
         );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:trackEvent',
-          jest.fn(),
-        );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
 
@@ -1976,7 +1972,6 @@ function getMessenger(
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
-      'MetaMetricsController:trackEvent',
       'KeyringController:verifyPassword',
       'KeyringController:changePassword',
       'KeyringController:exportEncryptionKey',

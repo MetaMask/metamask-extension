@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -6,8 +6,8 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { resolveABTestAssignment } from '../../shared/lib/ab-testing/resolve-ab-test-assignment';
-import { MetaMetricsContext } from '../contexts/metametrics';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { useAnalytics } from './useAnalytics';
 
 /**
  * Type constraint for variants object. Every A/B test must define a `control`
@@ -98,7 +98,7 @@ export function useABTest<TVariants extends ABTestVariants>(
   variants: TVariants,
   exposureMetadata?: ABTestExposureMetadata<TVariants>,
 ): UseABTestResult<TVariants> {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const flags = useSelector(getRemoteFeatureFlags);
   const { variantName, isActive } = resolveABTestAssignment(
     flags,
@@ -122,50 +122,44 @@ export function useABTest<TVariants extends ABTestVariants>(
       return;
     }
 
-    let trackingPromise: Promise<void>;
+    inFlightExposureAssignments.set(assignmentKey, Promise.resolve());
 
     try {
-      trackingPromise = trackEvent({
-        event: MetaMetricsEventName.ExperimentViewed,
-        category: MetaMetricsEventCategory.Analytics,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          experiment_id: flagKey,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          variation_id: variationId,
-          ...(exposureMetadata?.experimentName && {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ExperimentViewed)
+          .addCategory(MetaMetricsEventCategory.Analytics)
+          .addProperties({
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            experiment_name: exposureMetadata.experimentName,
-          }),
-          ...(variationDisplayName && {
+            experiment_id: flagKey,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            variation_name: variationDisplayName,
-          }),
-        },
-      });
+            variation_id: variationId,
+            ...(exposureMetadata?.experimentName && {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              experiment_name: exposureMetadata.experimentName,
+            }),
+            ...(variationDisplayName && {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              variation_name: variationDisplayName,
+            }),
+          })
+          .build(),
+      );
+      rememberExposureAssignment(assignmentKey);
     } catch {
-      return;
+      // Allow a later render to retry exposure tracking.
+    } finally {
+      inFlightExposureAssignments.delete(assignmentKey);
     }
-
-    const trackedPromise = trackingPromise
-      .then(() => {
-        rememberExposureAssignment(assignmentKey);
-      })
-      .catch(() => undefined)
-      .finally(() => {
-        inFlightExposureAssignments.delete(assignmentKey);
-      });
-
-    inFlightExposureAssignments.set(assignmentKey, trackedPromise);
   }, [
     exposureMetadata?.experimentName,
     flagKey,
     isActive,
     trackEvent,
+    createEventBuilder,
     variantName,
     variationDisplayName,
   ]);

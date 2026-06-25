@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
@@ -32,7 +33,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   isAccountConnectedToCurrentTab,
   getShouldHideZeroBalanceTokens,
@@ -173,7 +173,7 @@ const AccountListItem = ({
     }
   }, [itemRef, selected, shouldScrollToWhenSelected]);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
@@ -352,14 +352,15 @@ const AccountListItem = ({
             onClick={(e) => {
               e.stopPropagation();
               if (!accountOptionsMenuOpen) {
-                trackEvent({
-                  event: MetaMetricsEventName.AccountDetailMenuOpened,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
+                trackEvent(
+      createEventBuilder(MetaMetricsEventName.AccountDetailMenuOpened)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
                     location: 'Account Options',
                     hd_entropy_index: hdEntropyIndex,
-                  },
-                });
+                  })
+        .build(),
+    );
               }
               setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
             }}

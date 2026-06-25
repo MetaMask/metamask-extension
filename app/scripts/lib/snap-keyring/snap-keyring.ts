@@ -12,7 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES , ENVIRONMENT_TYPE_BACKGROUND } from '../../../../shared/constants/app';
 import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -23,6 +23,7 @@ import {
   isMultichainWalletSnap,
 } from '../../../../shared/lib/accounts/snaps';
 import { isFlask } from '../../../../shared/lib/build-types';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
@@ -198,28 +199,29 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     const snapName = getSnapName(snapId, this.#messenger);
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
-      this.#messenger.call('MetaMetricsController:trackEvent', {
-        event,
-        category: MetaMetricsEventCategory.Accounts,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Snap,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_id: snapId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_name: snapName,
-          ...(event === MetaMetricsEventName.AccountAdded && {
-            // NOTE: We keep this property for backward compatibility with existing
-            // metrics, but we're no longer naming those accounts, only account groups.
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Accounts)
+          .addProperties({
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_suggested_name: false,
-          }),
-        },
-      });
+            account_type: MetaMetricsEventAccountType.Snap,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snapId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_name: snapName,
+            ...(event === MetaMetricsEventName.AccountAdded && {
+              // NOTE: We keep this property for backward compatibility with existing
+              // metrics, but we're no longer naming those accounts, only account groups.
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              is_suggested_name: false,
+            }),
+          })
+          .build({ environmentType: ENVIRONMENT_TYPE_BACKGROUND }),
+      );
     };
 
     const finalizeFn = async () => {
@@ -377,21 +379,22 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/?utm_source=extension';
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
-      this.#messenger.call('MetaMetricsController:trackEvent', {
-        event,
-        category: MetaMetricsEventCategory.Accounts,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Snap,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_id: snapId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_name: snapName,
-        },
-      });
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Accounts)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: MetaMetricsEventAccountType.Snap,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snapId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_name: snapName,
+          })
+          .build({ environmentType: ENVIRONMENT_TYPE_BACKGROUND }),
+      );
     };
 
     // Since we use this in the finally, better to give it a default value if the controller call fails

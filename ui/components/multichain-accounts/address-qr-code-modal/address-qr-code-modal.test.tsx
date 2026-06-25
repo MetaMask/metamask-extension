@@ -7,6 +7,21 @@ import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-men
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 import { AddressQRCodeModal } from './address-qr-code-modal';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 // Import the mocked function
 
 // Mock only the essential dependencies that the component actually uses

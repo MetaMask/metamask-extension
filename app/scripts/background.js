@@ -83,7 +83,7 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import { createEventBuilder, trackEvent } from './controllers/analytics';
+import { createEventBuilder, trackEvent, trackLegacyMetaMetricsEvent } from './controllers/analytics';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -487,7 +487,7 @@ function maybeDetectPhishing(theController) {
       // Helper function to track phishing page metrics
       const trackPhishingMetrics = () => {
         if (!isFirefox) {
-          theController.metaMetricsController.trackEvent(
+          trackLegacyMetaMetricsEvent(
             {
               // should we differentiate between background redirection and content script redirection?
               event: MetaMetricsEventName.PhishingPageDisplayed,
@@ -922,9 +922,7 @@ async function initialize(backup) {
     .on('navigate', async ({ url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
-        await controller.metaMetricsController.trackEvent(
-          createEvent({ signature: parsed.signature, url }),
-        );
+        trackEvent(createEvent({ signature: parsed.signature, url }));
       }
     })
     .on('error', (error) => sentry?.captureException(error))
@@ -1304,7 +1302,7 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
 
   const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
 
-  controller.metaMetricsController.trackEvent(
+  trackLegacyMetaMetricsEvent(
     {
       event: MetaMetricsEventName.DappViewed,
       category: MetaMetricsEventCategory.InpageProvider,
@@ -1753,11 +1751,7 @@ export function setupController(
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
       const handleMessageTooLarge = function ({ chunkSize }) {
-        /**
-         * @type {MetamaskController}
-         */
-        const theController = controller;
-        theController.metaMetricsController.trackEvent({
+        trackLegacyMetaMetricsEvent({
           event: MetaMetricsEventName.PortStreamChunked,
           category: MetaMetricsEventCategory.PortStream,
           properties: { chunkSize },
@@ -2218,7 +2212,7 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     optedIn === true &&
     analyticsId
   ) {
-    controller.metaMetricsController.trackEvent(appInstalledEvent);
+    trackLegacyMetaMetricsEvent(appInstalledEvent);
   } else {
     // Onboarding is incomplete, or the user opted in without an analytics ID yet,
     // so we queue the metrics event for possible submission later.

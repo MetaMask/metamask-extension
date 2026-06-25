@@ -58,7 +58,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SnapAccountService:getLegacySnapKeyring',
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
-      'MetaMetricsController:trackEvent',
       'KeyringController:verifyPassword',
       'KeyringController:changePassword',
       'KeyringController:exportEncryptionKey',

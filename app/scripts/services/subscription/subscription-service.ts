@@ -43,6 +43,7 @@ import {
   getShieldSubscription,
   SHIELD_ERROR,
 } from '../../../../shared/lib/shield';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import {
   SubscriptionServiceOptions,
   SERVICE_NAME,
@@ -707,10 +708,9 @@ export class SubscriptionService {
         );
 
         // Track the Shield eligibility cohort assigned event
-        this.#messenger.call('MetaMetricsController:trackEvent', {
-          event: MetaMetricsEventName.ShieldEligibilityCohortAssigned,
-          category: MetaMetricsEventCategory.Shield,
-          properties: {
+        this.#trackShieldEvent(
+          MetaMetricsEventName.ShieldEligibilityCohortAssigned,
+          {
             ...this.#getAccountTypeAndCategoryForMetrics(),
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -721,7 +721,7 @@ export class SubscriptionService {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             assigned_cohort: COHORT_NAMES.POST_TX,
           },
-        });
+        );
       }
     } catch (error) {
       log.error('Failed to assign post tx cohort', error);
@@ -770,15 +770,11 @@ export class SubscriptionService {
       transactionMeta,
     );
 
-    this.#messenger.call('MetaMetricsController:trackEvent', {
-      event: MetaMetricsEventName.ShieldSubscriptionRequest,
-      category: MetaMetricsEventCategory.Shield,
-      properties: {
-        ...accountTypeAndCategory,
-        ...trackingProps,
-        ...extrasProps,
-        status: requestStatus,
-      },
+    this.#trackShieldEvent(MetaMetricsEventName.ShieldSubscriptionRequest, {
+      ...accountTypeAndCategory,
+      ...trackingProps,
+      ...extrasProps,
+      status: requestStatus,
     });
   }
 
@@ -814,15 +810,11 @@ export class SubscriptionService {
       transactionMeta,
     );
 
-    this.#messenger.call('MetaMetricsController:trackEvent', {
-      event: MetaMetricsEventName.ShieldPaymentMethodChange,
-      category: MetaMetricsEventCategory.Shield,
-      properties: {
-        ...accountTypeAndCategory,
-        ...trackingProps,
-        ...extrasProps,
-        status: changeStatus,
-      },
+    this.#trackShieldEvent(MetaMetricsEventName.ShieldPaymentMethodChange, {
+      ...accountTypeAndCategory,
+      ...trackingProps,
+      ...extrasProps,
+      status: changeStatus,
     });
   }
 
@@ -842,24 +834,32 @@ export class SubscriptionService {
       return;
     }
 
-    this.#messenger.call('MetaMetricsController:trackEvent', {
-      event: MetaMetricsEventName.ShieldOptInRewards,
-      category: MetaMetricsEventCategory.Shield,
-      properties: {
-        ...accountTypeAndCategory,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        multi_chain_balance_category: getUserBalanceCategory(
-          shieldSubscriptionMetricsProps?.userBalanceInUSD ?? 0,
-        ),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        rewards_point: claimedRewardPoints,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        rewards_opt_in_type: rewardsOptInType,
-      },
+    this.#trackShieldEvent(MetaMetricsEventName.ShieldOptInRewards, {
+      ...accountTypeAndCategory,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      multi_chain_balance_category: getUserBalanceCategory(
+        shieldSubscriptionMetricsProps?.userBalanceInUSD ?? 0,
+      ),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      rewards_point: claimedRewardPoints,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      rewards_opt_in_type: rewardsOptInType,
     });
+  }
+
+  #trackShieldEvent(
+    eventName: MetaMetricsEventName,
+    properties: Record<string, Json>,
+  ): void {
+    trackEvent(
+      createEventBuilder(eventName)
+        .addCategory(MetaMetricsEventCategory.Shield)
+        .addProperties(properties)
+        .build(),
+    );
   }
 
   async #getCurrentShieldSubscription(): Promise<Subscription | undefined> {

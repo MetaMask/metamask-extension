@@ -165,6 +165,7 @@ import type {
   AnalyticsEvent,
   AnalyticsEventBuildOptions,
 } from '../../shared/lib/analytics/create-event-builder';
+import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getSmartTransactionsOptInStatusInternal } from '../../shared/lib/selectors';
@@ -6357,6 +6358,7 @@ export async function attemptCloseNotificationPopup() {
 }
 
 /**
+ * @deprecated Use trackAnalyticsEvent with createEventBuilder instead.
  * @param payload - details of the event to track
  * @param options - options for routing/handling of event
  * @returns
@@ -6365,7 +6367,31 @@ export function trackMetaMetricsEvent(
   payload: MetaMetricsEventPayload,
   options?: MetaMetricsEventOptions,
 ) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
+  let builder = createEventBuilder(payload.event);
+
+  if (payload.category) {
+    builder = builder.addCategory(payload.category);
+  }
+  if (payload.properties) {
+    builder = builder.addProperties(payload.properties);
+  }
+  if (payload.sensitiveProperties) {
+    builder = builder.addSensitiveProperties(payload.sensitiveProperties);
+  }
+
+  const built = builder.build({
+    environmentType: payload.environmentType ?? getEnvironmentType(),
+    ...(payload.referrer ? { referrer: payload.referrer } : {}),
+    ...(payload.page ? { page: payload.page } : {}),
+    ...options,
+  });
+
+  return trackAnalyticsEvent(built, {
+    ...options,
+    environmentType: payload.environmentType ?? getEnvironmentType(),
+    ...(payload.page ? { page: payload.page } : {}),
+    ...(payload.referrer ? { referrer: payload.referrer } : {}),
+  });
 }
 
 export function trackAnalyticsEvent(
@@ -6413,11 +6439,16 @@ export function finalizeEventFragment(
   return submitRequestToBackground('finalizeEventFragment', [id, options]);
 }
 
+export function trackAnalyticsPage(payload: MetaMetricsPagePayload) {
+  return submitRequestToBackground('trackAnalyticsPage', [payload]);
+}
+
 /**
+ * @deprecated Use trackAnalyticsPage instead.
  * @param payload - details of the page viewed
  */
 export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
-  return submitRequestToBackground('trackMetaMetricsPage', [payload]);
+  return trackAnalyticsPage(payload);
 }
 
 export function updateMetaMetricsTraits(traits: MetaMetricsUserTraits) {

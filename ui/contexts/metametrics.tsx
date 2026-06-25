@@ -14,7 +14,6 @@ import React, {
   type ComponentType,
 } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import type { Span } from '@sentry/types';
 import { omit } from 'lodash';
 
@@ -28,19 +27,13 @@ import {
 } from '../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
-  MetaMetricsEventName,
   type UnsanitizedMetaMetricsEventPayload,
   type MetaMetricsEventOptions,
-  type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
-import {
-  getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
-  getOptedIn,
-} from '../selectors';
+import { useAnalytics } from '../hooks/useAnalytics';
 import { submitRequestToBackground } from '../store/background-connection';
-import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
+import { trackAnalyticsPage } from '../store/actions';
 import type {
   TraceName,
   TraceRequest,
@@ -142,17 +135,7 @@ type MetaMetricsProviderProps = {
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
-  const isOptedIn = useSelector(getOptedIn);
-  const analyticsId = useSelector(getAnalyticsId);
-  const isMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
-  const canTrackImmediately = isMetricsEnabled && Boolean(analyticsId);
-  // Buffer events until we know whether or not we can submit them.
-  const canMaybeTrackLater =
-    !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
-
+  const { trackEvent: trackBuiltEvent, createEventBuilder } = useAnalytics();
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
   // Sometimes we want to track context properties inside the event's "properties" object.
@@ -177,29 +160,23 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     async (payload, options) => {
       addContextPropsIntoEventProperties(payload, options);
 
-      const fullPayload = {
-        ...payload,
-        environmentType: getEnvironmentType(),
-        ...context,
-      };
-
-      if (
-        canTrackImmediately ||
-        payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
-      ) {
-        // If metrics are enabled, track immediately
-        trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
-      } else if (canMaybeTrackLater) {
-        await submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          fullPayload,
-        ]);
+      let builder = createEventBuilder(payload.event);
+      if (payload.category) {
+        builder = builder.addCategory(payload.category);
       }
+      if (payload.properties) {
+        builder = builder.addProperties(payload.properties);
+      }
+      if (payload.sensitiveProperties) {
+        builder = builder.addSensitiveProperties(payload.sensitiveProperties);
+      }
+
+      trackBuiltEvent(builder.build(options));
     },
     [
       addContextPropsIntoEventProperties,
-      canMaybeTrackLater,
-      canTrackImmediately,
-      context,
+      createEventBuilder,
+      trackBuiltEvent,
     ],
   );
 
@@ -265,7 +242,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       const { pattern, params } = match;
       const { path } = pattern;
       const name = PATH_NAME_MAP.get(path as AppRoutes['path']);
-      trackMetaMetricsPage({
+      trackAnalyticsPage({
         name,
         // We do not want to send addresses or accounts in any events
         // Some routes include these as params.

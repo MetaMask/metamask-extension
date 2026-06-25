@@ -53,7 +53,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   toHardwareWalletError,
   HardwareWalletType,
@@ -118,7 +118,7 @@ const getErrorMessage = (
 
 const ConnectHardwareForm = () => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch: MetaMaskReduxDispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -402,13 +402,14 @@ const ConnectHardwareForm = () => {
 
       const deviceCount = hardwareWalletKeyrings.length;
 
-      trackEvent({
-        event: MetaMetricsEventName.ConnectHardwareWalletClicked,
-        properties: {
+            trackEvent(
+        createEventBuilder(MetaMetricsEventName.ConnectHardwareWalletClicked)
+          .addProperties({
           device_type: upperFirst(nextDevice),
           connected_device_count: deviceCount,
-        },
-      });
+        })
+          .build(),
+      );
 
       getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
     },
@@ -457,12 +458,13 @@ const ConnectHardwareForm = () => {
       try {
         await dispatch(actions.forgetDevice(deviceName as HardwareDeviceNames));
 
-        trackEvent({
-          event: MetaMetricsEventName.HardwareWalletForgotten,
-          properties: {
+                trackEvent(
+          createEventBuilder(MetaMetricsEventName.HardwareWalletForgotten)
+            .addProperties({
             device_type: upperFirst(deviceName),
-          },
-        });
+          })
+            .build(),
+        );
 
         setError(null);
         setSelectedAccounts([]);
@@ -475,14 +477,15 @@ const ConnectHardwareForm = () => {
       } catch (e) {
         const errorMessage = toErrorMessage(e);
 
-        trackEvent({
-          event: MetaMetricsEventName.HardwareWalletConnectionFailed,
-          properties: {
+                trackEvent(
+          createEventBuilder(MetaMetricsEventName.HardwareWalletConnectionFailed)
+            .addProperties({
             hd_path: hdPath,
             device_type: upperFirst(deviceName),
             error: errorMessage,
-          },
-        });
+          })
+            .build(),
+        );
 
         setError(errorMessage);
       }
@@ -524,15 +527,16 @@ const ConnectHardwareForm = () => {
         );
 
         // Legacy event
-        trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.AccountAdded,
-          properties: {
+                trackEvent(
+          createEventBuilder(MetaMetricsEventName.AccountAdded)
+            .addCategory(MetaMetricsEventCategory.Accounts)
+            .addProperties({
             account_type: MetaMetricsEventAccountType.Hardware,
             account_hardware_type: deviceName,
             is_suggested_name: true,
-          },
-        });
+          })
+            .build(),
+        );
 
         const connectedDevices = hardwareWalletKeyrings;
         const deviceCount = connectedDevices.length;
@@ -542,41 +546,44 @@ const ConnectHardwareForm = () => {
             DEVICE_KEYRING_MAP[deviceName as keyof typeof DEVICE_KEYRING_MAP],
         );
 
-        trackEvent({
-          event: MetaMetricsEventName.HardwareWalletAccountConnected,
-          properties: {
+                trackEvent(
+          createEventBuilder(MetaMetricsEventName.HardwareWalletAccountConnected)
+            .addProperties({
             device_type: upperFirst(deviceName),
             hd_path: path,
             connected_device_count: isAlreadyConnected
               ? deviceCount
               : deviceCount + 1,
-          },
-        });
+          })
+            .build(),
+        );
 
         navigate(DEFAULT_ROUTE);
       } catch (e) {
         const errorMessage = toErrorMessage(e);
 
         // Legacy event
-        trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.AccountAddFailed,
-          properties: {
+                trackEvent(
+          createEventBuilder(MetaMetricsEventName.AccountAddFailed)
+            .addCategory(MetaMetricsEventCategory.Accounts)
+            .addProperties({
             account_type: MetaMetricsEventAccountType.Hardware,
             account_hardware_type: deviceName,
             error: errorMessage,
             hd_entropy_index: hdEntropyIndex,
-          },
-        });
+          })
+            .build(),
+        );
 
-        trackEvent({
-          event: MetaMetricsEventName.HardwareWalletConnectionFailed,
-          properties: {
+                trackEvent(
+          createEventBuilder(MetaMetricsEventName.HardwareWalletConnectionFailed)
+            .addProperties({
             hd_path: path,
             device_type: upperFirst(deviceName),
             error: errorMessage,
-          },
-        });
+          })
+            .build(),
+        );
         setError(errorMessage);
       }
     },

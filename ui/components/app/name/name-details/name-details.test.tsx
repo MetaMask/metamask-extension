@@ -11,7 +11,6 @@ import {
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getDomainResolutions } from '../../../../ducks/domains';
 import { getNames, getNameSources } from '../../../../selectors';
 import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
@@ -20,6 +19,21 @@ import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import NameDetails from './name-details';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../../store/actions', () => ({
   setName: jest.fn(),
@@ -583,7 +597,7 @@ describe('NameDetails', () => {
 
   describe('metrics', () => {
     it('sends open modal event', async () => {
-      const trackEventMock = jest.fn();
+      mockTrackEvent.mockClear();
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
@@ -605,42 +619,35 @@ describe('NameDetails', () => {
         isAccount: false,
       });
 
-      const mockMetaMetricsContext = {
-        trackEvent: trackEventMock,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
       await act(async () => {
         renderWithProvider(
-          <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-            <NameDetails
+          <NameDetails
               type={NameType.ETHEREUM_ADDRESS}
               value={ADDRESS_SAVED_NAME_MOCK}
               variation={VARIATION_MOCK}
               onClose={() => undefined}
-            />
-          </MetaMetricsContext.Provider>,
+            />,
           store,
         );
       });
 
-      expect(trackEventMock).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.PetnameModalOpened,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          has_petname: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_category: NameType.ETHEREUM_ADDRESS,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PetnameModalOpened,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Petnames,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            has_petname: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          }),
+        }),
+      );
     });
 
     it('sends created event', async () => {
@@ -695,43 +702,37 @@ describe('NameDetails', () => {
         isAccount: false,
       });
 
-      const trackEventMock = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: trackEventMock,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
+      mockTrackEvent.mockClear();
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <NameDetails
+        <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_NO_NAME_MOCK}
             variation={VARIATION_MOCK}
             onClose={() => undefined}
-          />
-        </MetaMetricsContext.Provider>,
+          />,
         store,
       );
 
       await saveNameUsingDropdown(component, PROPOSED_NAME_MOCK);
 
-      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
-        event: MetaMetricsEventName.PetnameCreated,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_category: NameType.ETHEREUM_ADDRESS,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_source: SOURCE_ID_MOCK,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.PetnameCreated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Petnames,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_source: SOURCE_ID_MOCK,
+          }),
+        }),
+      );
     });
 
     it('sends updated event', async () => {
@@ -805,23 +806,14 @@ describe('NameDetails', () => {
         isAccount: false,
       });
 
-      const trackEventMock = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: trackEventMock,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
+      mockTrackEvent.mockClear();
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <NameDetails
+        <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
             variation={VARIATION_MOCK}
             onClose={() => undefined}
-          />
-        </MetaMetricsContext.Provider>,
+          />,
         store,
       );
 
@@ -831,24 +823,27 @@ describe('NameDetails', () => {
         'Choose a nickname...',
       );
 
-      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
-        event: MetaMetricsEventName.PetnameUpdated,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_category: NameType.ETHEREUM_ADDRESS,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_source: SOURCE_ID_2_MOCK,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_previous_source: SOURCE_ID_MOCK,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.PetnameUpdated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Petnames,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_source: SOURCE_ID_2_MOCK,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_previous_source: SOURCE_ID_MOCK,
+          }),
+        }),
+      );
     });
 
     it('sends deleted event', async () => {
@@ -922,43 +917,37 @@ describe('NameDetails', () => {
         isAccount: false,
       });
 
-      const trackEventMock = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: trackEventMock,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
+      mockTrackEvent.mockClear();
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <NameDetails
+        <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
             variation={VARIATION_MOCK}
             onClose={() => undefined}
-          />
-        </MetaMetricsContext.Provider>,
+          />,
         store,
       );
 
       await saveNameUsingTextField(component, '', 'Choose a nickname...');
 
-      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
-        event: MetaMetricsEventName.PetnameDeleted,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_category: NameType.ETHEREUM_ADDRESS,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_previous_source: SOURCE_ID_MOCK,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.PetnameDeleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Petnames,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_previous_source: SOURCE_ID_MOCK,
+          }),
+        }),
+      );
     });
   });
 

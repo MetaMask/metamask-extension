@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -11,7 +11,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -35,7 +35,7 @@ export function NotificationsSettingsTypes({
   // Context
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   // Selectors
   const isFeatureAnnouncementsEnabled = useSelector(
@@ -56,21 +56,22 @@ export function NotificationsSettingsTypes({
     setFeatureAnnouncementsEnabled(!featureAnnouncementsEnabled);
     try {
       onChangeFeatureAnnouncements(!featureAnnouncementsEnabled);
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationSettings,
-        event: MetaMetricsEventName.NotificationsSettingsUpdated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'product_announcements',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: featureAnnouncementsEnabled,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: !featureAnnouncementsEnabled,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.NotificationSettings)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_type: 'product_announcements',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_value: featureAnnouncementsEnabled,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_value: !featureAnnouncementsEnabled,
+          })
+          .build(),
+      );
       listNotifications();
     } catch (error) {
       setFeatureAnnouncementsEnabled(featureAnnouncementsEnabled);

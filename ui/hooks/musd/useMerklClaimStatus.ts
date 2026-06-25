@@ -4,7 +4,6 @@ import {
   useRef,
   useState,
   useCallback,
-  useContext,
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -12,7 +11,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { getTransactions } from '../../selectors/transactions';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -44,7 +43,7 @@ export const useMerklClaimStatus = (): {
   dismissToast: () => void;
 } => {
   const transactions = useSelector(getTransactions) as TransactionMeta[];
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -98,13 +97,14 @@ export const useMerklClaimStatus = (): {
       };
       /* eslint-enable @typescript-eslint/naming-convention */
 
-      trackEvent({
-        event: MetaMetricsEventName.MusdClaimBonusStatusUpdated,
-        category: MetaMetricsEventCategory.MusdConversion,
-        properties,
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.MusdClaimBonusStatusUpdated)
+          .addCategory(MetaMetricsEventCategory.MusdConversion)
+          .addProperties(properties)
+          .build(),
+      );
     },
-    [trackEvent, networkConfigurationsByChainId],
+    [createEventBuilder, trackEvent, networkConfigurationsByChainId],
   );
 
   const merklClaims = useMemo(

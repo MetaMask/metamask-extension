@@ -11,6 +11,7 @@ export {
   canSubmitAnalytics,
   identify,
   trackEvent,
+  trackLegacyMetaMetricsEvent,
   trackPage,
   validateIdentifyPayload,
 } from './analytics';

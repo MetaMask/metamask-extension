@@ -6,7 +6,8 @@ import {
 } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { I18nContext } from '../../contexts/i18n';
 import {
   MetaMetricsContextProp,
@@ -72,7 +73,7 @@ import RewardsModal from '../../components/app/rewards/onboarding/RewardsModal';
 import { Pna25Modal } from '../../components/app/modals/pna25-modal';
 import { DeeplinkQRCode } from '../../components/app/deeplink-qr-code';
 import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
-import { type UITrackEventMethod } from '../../contexts/metametrics';
+import { type AnalyticsEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
 import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
@@ -110,7 +111,11 @@ type DeepLinkQrCodeData = {
 
 export type HomeProps = {
   t: (key: string, ...args: unknown[]) => string;
-  trackEvent: UITrackEventMethod;
+  trackEvent: (built: ReturnType<AnalyticsEventBuilder['build']>) => void;
+  createEventBuilder: (
+    eventName: string,
+  ) => AnalyticsEventBuilder;
+  pageTitle?: string;
   navigate?: NavigateFunction;
   forgottenPassword?: boolean;
   isNotification?: boolean;
@@ -444,28 +449,28 @@ class HomeBase extends PureComponent<HomeProps, HomeState> {
   onAcceptTermsOfUse = () => {
     const { setTermsOfUseLastAgreed } = this.props;
     setTermsOfUseLastAgreed(new Date().getTime());
-    this.props.trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.TermsOfUseAccepted,
-      properties: {
-        location: 'Terms Of Use Popover',
-      },
-    });
+    this.props.trackEvent(
+      this.props
+        .createEventBuilder(MetaMetricsEventName.TermsOfUseAccepted)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          location: 'Terms Of Use Popover',
+        })
+        .build(),
+    );
   };
 
   onSupportLinkClick = () => {
     if (isMain()) {
       this.props.trackEvent(
-        {
-          category: MetaMetricsEventCategory.Home,
-          event: MetaMetricsEventName.SupportLinkClicked,
-          properties: {
+        this.props
+          .createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+          .addCategory(MetaMetricsEventCategory.Home)
+          .addProperties({
             url: SUPPORT_LINK,
-          },
-        },
-        {
-          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-        },
+            [MetaMetricsContextProp.PageTitle]: this.props.pageTitle,
+          })
+          .build(),
       );
     }
   };
@@ -719,30 +724,33 @@ class HomeBase extends PureComponent<HomeProps, HomeState> {
   }
 
   renderOnboardingPopover = () => {
-    const { t, trackEvent, setDataCollectionForMarketing } = this.props;
+    const { t, trackEvent, createEventBuilder, setDataCollectionForMarketing } =
+      this.props;
 
     const handleClose = () => {
       setDataCollectionForMarketing(false);
-      trackEvent({
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-        properties: {
-          [MetaMetricsUserTrait.HasMarketingConsent]: false,
-          location: 'marketing_consent_modal',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+          .addCategory(MetaMetricsEventCategory.Home)
+          .addProperties({
+            [MetaMetricsUserTrait.HasMarketingConsent]: false,
+            location: 'marketing_consent_modal',
+          })
+          .build(),
+      );
     };
 
     const handleConsent = (consent: boolean) => {
       setDataCollectionForMarketing(consent);
-      trackEvent({
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-        properties: {
-          [MetaMetricsUserTrait.HasMarketingConsent]: consent,
-          location: 'marketing_consent_modal',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+          .addCategory(MetaMetricsEventCategory.Home)
+          .addProperties({
+            [MetaMetricsUserTrait.HasMarketingConsent]: consent,
+            location: 'marketing_consent_modal',
+          })
+          .build(),
+      );
     };
 
     return (
@@ -1051,10 +1059,19 @@ class HomeBase extends PureComponent<HomeProps, HomeState> {
   }
 }
 
-function Home(props: Omit<HomeProps, 't' | 'trackEvent'>) {
+function Home(props: Omit<HomeProps, 't' | 'trackEvent' | 'createEventBuilder' | 'pageTitle'>) {
   const t = useContext(I18nContext);
-  const { trackEvent } = useContext(MetaMetricsContext);
-  return <HomeBase {...props} t={t} trackEvent={trackEvent} />;
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
+  return (
+    <HomeBase
+      {...props}
+      t={t}
+      trackEvent={trackEvent}
+      createEventBuilder={createEventBuilder}
+      pageTitle={segmentContext.page?.title}
+    />
+  );
 }
 
 export default Home;

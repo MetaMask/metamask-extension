@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,6 +11,8 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import {
   useReadNotificationsCounter,
   useUnreadNotificationsCounter,
@@ -51,7 +53,6 @@ import {
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -93,7 +94,8 @@ export function useGlobalMenuSections(
 ): GlobalMenuSection[] {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
   const location = useLocation();
@@ -155,35 +157,37 @@ export function useGlobalMenuSections(
       !hasThirdPartyNotifySnaps && !isMetamaskNotificationsEnabled;
 
     if (shouldShowEnableModal) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationsActivationFlow,
-        event: MetaMetricsEventName.NotificationsActivated,
-        properties: {
+      trackEvent(
+      createEventBuilder(MetaMetricsEventName.NotificationsActivated)
+        .addCategory(MetaMetricsEventCategory.NotificationsActivationFlow)
+        .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           action_type: 'started',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_profile_syncing_enabled: isBackupAndSyncEnabled,
-        },
-      });
+        })
+        .build(),
+    );
       dispatch(showConfirmTurnOnMetamaskNotifications());
       onClose();
       return;
     }
 
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationsMenuOpened,
-      properties: {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NotificationsMenuOpened)
+        .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+        .addProperties({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         unread_count: notificationsUnreadCount,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         read_count: notificationsReadCount,
-      },
-    });
+      })
+        .build(),
+    );
     navigate(
       `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
       { state: { globalMenuTransition: 'forward' } },
@@ -204,17 +208,14 @@ export function useGlobalMenuSections(
   const handleSupportMenuClick = useCallback(() => {
     dispatch(setShowSupportDataConsentModal(true));
     trackEvent(
-      {
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
+      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Home)
+        .addProperties({
           url: supportLink,
           location: METRICS_LOCATION,
-        },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
+          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
+        })
+        .build(),
     );
     if (showPriorityTag) {
       const shieldSubscription = getShieldSubscription(subscriptions);
@@ -290,11 +291,12 @@ export function useGlobalMenuSections(
           isMarketingEnabled === true,
         );
         global.platform.openTab({ url });
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.PortfolioLinkClicked,
-          properties: { location: METRICS_LOCATION, text: 'Portfolio' },
-        });
+        trackEvent(
+      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({ location: METRICS_LOCATION, text: 'Portfolio' })
+        .build(),
+    );
         onClose();
       },
     });
@@ -306,11 +308,12 @@ export function useGlobalMenuSections(
         label: t('openFullScreen'),
         onClick: () => {
           global?.platform?.openExtensionInBrowser?.();
-          trackEvent({
-            event: MetaMetricsEventName.AppWindowExpanded,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: { location: METRICS_LOCATION },
-          });
+          trackEvent(
+      createEventBuilder(MetaMetricsEventName.AppWindowExpanded)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({ location: METRICS_LOCATION })
+        .build(),
+    );
           onClose();
         },
       });
@@ -339,16 +342,17 @@ export function useGlobalMenuSections(
           label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
           onClick: async () => {
             await dispatch(toggleDefaultView());
-            trackEvent({
-              event: MetaMetricsEventName.ViewportSwitched,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
+            trackEvent(
+      createEventBuilder(MetaMetricsEventName.ViewportSwitched)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
                 location: METRICS_LOCATION,
                 to: isSidepanel
                   ? ENVIRONMENT_TYPE_POPUP
                   : ENVIRONMENT_TYPE_SIDEPANEL,
-              },
-            });
+              })
+        .build(),
+    );
             onClose();
           },
         });
@@ -373,11 +377,12 @@ export function useGlobalMenuSections(
             ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
             : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`,
           onClick: () => {
-            trackEvent({
-              event: MetaMetricsEventName.NavPermissionsOpened,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: { location: METRICS_LOCATION },
-            });
+            trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavPermissionsOpened)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({ location: METRICS_LOCATION })
+        .build(),
+    );
           },
           disabled: hasUnapprovedTransactions,
         },
@@ -407,11 +412,12 @@ export function useGlobalMenuSections(
           label: t('settings'),
           to: `${SETTINGS_ROUTE}?drawerOpen=true`,
           onClick: () => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.NavSettingsOpened,
-              properties: { location: METRICS_LOCATION },
-            });
+            trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavSettingsOpened)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({ location: METRICS_LOCATION })
+        .build(),
+    );
           },
           disabled: hasUnapprovedTransactions,
         },
@@ -456,11 +462,12 @@ export function useGlobalMenuSections(
           textColor: TextColor.ErrorDefault,
           label: t('lock'),
           onClick: async () => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.AppLocked,
-              properties: { location: METRICS_LOCATION },
-            });
+            trackEvent(
+      createEventBuilder(MetaMetricsEventName.AppLocked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({ location: METRICS_LOCATION })
+        .build(),
+    );
             onClose();
 
             await dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));

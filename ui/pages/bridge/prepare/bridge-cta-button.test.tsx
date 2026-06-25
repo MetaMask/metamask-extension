@@ -30,6 +30,20 @@ import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/u
 import * as useSubmitBridgeTransactionModule from '../hooks/useSubmitBridgeTransaction';
 import { BridgeCTAButton } from './bridge-cta-button';
 
+const mockTrackAnalyticsEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackAnalyticsEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
   trackHardwareWalletRecoveryConnectCtaClicked,
 );
@@ -68,6 +82,7 @@ setBackgroundConnection({
 describe('BridgeCTAButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackAnalyticsEvent.mockReset();
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
@@ -417,7 +432,6 @@ describe('BridgeCTAButton', () => {
           isSubmitting: false,
         }));
 
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const connectionState = {
         status: ConnectionStatus.Disconnected as const,
       };
@@ -454,7 +468,7 @@ describe('BridgeCTAButton', () => {
         },
       });
       const store = configureStore(mockStore);
-      const Wrapper = createProviderWrapper(store, '/', () => mockTrackEvent);
+      const Wrapper = createProviderWrapper(store, '/');
 
       const { getByRole } = render(
         <HardwareWalletProvider>
@@ -478,7 +492,7 @@ describe('BridgeCTAButton', () => {
 
       expect(
         mockTrackHardwareWalletRecoveryConnectCtaClicked,
-      ).toHaveBeenCalledWith(mockTrackEvent, {
+      ).toHaveBeenCalledWith(expect.any(Function), {
         location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
         walletType: HardwareWalletType.Ledger,
         connectionState,

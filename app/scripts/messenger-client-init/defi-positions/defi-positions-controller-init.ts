@@ -8,6 +8,7 @@ import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
 } from '../../../../shared/lib/feature-flags';
+import { trackLegacyMetaMetricsEvent } from '../../controllers/analytics';
 
 export const DeFiPositionsControllerInit: MessengerClientInitFunction<
   DeFiPositionsController,
@@ -41,10 +42,7 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
         completedOnboarding && useExternalServices && assetsDefiPositionsEnabled
       );
     },
-    trackEvent: initMessenger.call.bind(
-      initMessenger,
-      'MetaMetricsController:trackEvent',
-    ),
+    trackEvent: trackLegacyMetaMetricsEvent,
   });
 
   return {

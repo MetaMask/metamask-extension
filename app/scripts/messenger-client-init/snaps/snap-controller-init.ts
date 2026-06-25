@@ -2,7 +2,7 @@ import {
   SnapController,
   SnapControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { createDeferredPromise, Json } from '@metamask/utils';
+import { createDeferredPromise } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -15,15 +15,7 @@ import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
-
-// Copied from `@metamask/snaps-controllers`, since it is not exported.
-type TrackingEventPayload = {
-  event: string;
-  category: string;
-  properties: Record<string, Json | undefined>;
-};
-
-type TrackEventHook = (event: TrackingEventPayload) => void;
+import { trackLegacyMetaMetricsEvent } from '../../controllers/analytics';
 
 /**
  * Initialize the Snap controller.
@@ -132,13 +124,7 @@ export const SnapControllerInit: MessengerClientInitFunction<
 
     ensureOnboardingComplete,
 
-    // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
-    // properties, but `MetaMetricsEventPayload` uses `Json`, even though
-    // `undefined` is supported.
-    trackEvent: initMessenger.call.bind(
-      initMessenger,
-      'MetaMetricsController:trackEvent',
-    ) as unknown as TrackEventHook,
+    trackEvent: trackLegacyMetaMetricsEvent,
   });
 
   initMessenger.subscribe('KeyringController:lock', () => {

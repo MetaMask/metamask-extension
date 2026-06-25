@@ -24,6 +24,7 @@ import {
   getActiveTabDomainAllowlist,
   getActiveTabDomainForMetrics,
 } from '../../../shared/lib/active-tab-domain-metrics';
+import { trackLegacyMetaMetricsEvent } from '../controllers/analytics';
 import { MessengerClientInitFunction } from './types';
 import { BridgeControllerInitMessenger } from './messengers';
 
@@ -32,7 +33,6 @@ import { BridgeControllerInitMessenger } from './messengers';
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.initMessenger - The messenger to use for initialization.
  * @param request.getMessengerClient
  * @returns The initialized controller.
  */
@@ -40,7 +40,7 @@ export const BridgeControllerInit: MessengerClientInitFunction<
   BridgeController,
   BridgeControllerMessenger,
   BridgeControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, getMessengerClient }) => {
+> = ({ controllerMessenger, getMessengerClient }) => {
   const transactionController = getMessengerClient(
     'TransactionController',
   ) as TransactionController;
@@ -131,7 +131,7 @@ export const BridgeControllerInit: MessengerClientInitFunction<
         environment_type?: string;
       };
 
-      initMessenger.call('MetaMetricsController:trackEvent', {
+      trackLegacyMetaMetricsEvent({
         category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
         event,
         // UI events (e.g. ButtonClicked) pass environment_type explicitly;

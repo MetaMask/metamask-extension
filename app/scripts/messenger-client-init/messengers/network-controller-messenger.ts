@@ -14,7 +14,6 @@ import {
   RemoteFeatureFlagControllerState,
 } from '@metamask/remote-feature-flag-controller';
 import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 /**
@@ -46,7 +45,6 @@ export function getNetworkControllerMessenger(
 
 type AllowedInitializationActions =
   | AnalyticsControllerGetStateAction
-  | MetaMetricsControllerTrackEventAction
   | RemoteFeatureFlagControllerGetStateAction;
 
 type AllowedInitializationEvents =
@@ -85,10 +83,7 @@ export function getNetworkControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: [
-      'AnalyticsController:getState',
-      'MetaMetricsController:trackEvent',
-    ],
+    actions: ['AnalyticsController:getState'],
     events: [
       'NetworkController:rpcEndpointUnavailable',
       'NetworkController:rpcEndpointDegraded',

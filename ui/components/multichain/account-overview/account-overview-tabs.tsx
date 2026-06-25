@@ -1,8 +1,9 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import ErrorBoundary from '../../app/error-boundary/error-boundary';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -11,7 +12,6 @@ import {
 } from '../../../../shared/constants/app-state';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
@@ -79,7 +79,7 @@ export const AccountOverviewTabs = ({
 
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const isActivityListRedesignEnabled = useSelector(
@@ -123,17 +123,19 @@ export const AccountOverviewTabs = ({
         (tabName !== AccountOverviewTabKey.Activity ||
           !isActivityListRedesignEnabled)
       ) {
-        trackEvent({
-          category: MetaMetricsEventCategory.Home,
-          event:
+        trackEvent(
+          createEventBuilder(
             ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[
               tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP
             ],
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            network_filter: networkFilterForMetrics,
-          },
-        });
+          )
+            .addCategory(MetaMetricsEventCategory.Home)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              network_filter: networkFilterForMetrics,
+            })
+            .build(),
+        );
       }
       if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
         trace({

@@ -7,9 +7,10 @@ import type {
 import type { NetworkClientId } from '@metamask/network-controller';
 import type { Hex, Json } from '@metamask/utils';
 import { omit, omitBy } from 'lodash';
-import type {
-  AnalyticsEvent,
-  AnalyticsEventBuildOptions,
+import {
+  createEventBuilder,
+  type AnalyticsEvent,
+  type AnalyticsEventBuildOptions,
 } from '../../../../shared/lib/analytics/create-event-builder';
 import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
 import {
@@ -20,6 +21,7 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsEventName,
   type MetaMetricsContext,
+  type MetaMetricsEventPayload,
   type MetaMetricsPagePayload,
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
@@ -383,6 +385,58 @@ function trackMetricsOptOutEvent(eventPayload: SegmentTrackPayload): void {
     properties: eventPayload.properties as Record<string, Json> | undefined,
     context: eventPayload.context as AnalyticsContext | undefined,
   });
+}
+
+/**
+ * Track a legacy MetaMetrics event payload from background code.
+ *
+ * @param payload - Legacy MetaMetrics event payload.
+ * @param options - Additional analytics build options.
+ */
+export function trackLegacyMetaMetricsEvent(
+  payload: Pick<
+    MetaMetricsEventPayload,
+    | 'event'
+    | 'category'
+    | 'properties'
+    | 'sensitiveProperties'
+    | 'referrer'
+    | 'page'
+    | 'environmentType'
+  >,
+  options?: AnalyticsEventBuildOptions,
+): void {
+  const {
+    event,
+    category,
+    properties,
+    sensitiveProperties,
+    referrer,
+    page,
+    environmentType,
+  } = payload;
+
+  let builder = createEventBuilder(event);
+
+  if (category) {
+    builder = builder.addCategory(category);
+  }
+  if (properties) {
+    builder = builder.addProperties(properties);
+  }
+  if (sensitiveProperties) {
+    builder = builder.addSensitiveProperties(sensitiveProperties);
+  }
+
+  trackEvent(
+    builder.build({
+      environmentType: environmentType ?? ENVIRONMENT_TYPE_BACKGROUND,
+      ...(referrer ? { referrer } : {}),
+      ...(page ? { page } : {}),
+      ...options,
+    }),
+    options,
+  );
 }
 
 export function trackEvent(

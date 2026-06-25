@@ -25,6 +25,7 @@ import {
   AvatarNetwork,
   FontWeight,
 } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   BackgroundColor,
   TextColor as DesignSystemTextColor,
@@ -40,7 +41,6 @@ import type { ModalProps } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 
 // Constants for QR code generation
@@ -79,7 +79,7 @@ export const AddressQRCodeModal = ({
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [addressCopied, setAddressCopied] = useState(false);
   const timeoutRef = useRef<number | null>(null);

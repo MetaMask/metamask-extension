@@ -10,6 +10,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { trackLegacyMetaMetricsEvent } from '../../controllers/analytics';
 
 /**
  * Initialize the account wallet controller.
@@ -33,7 +34,7 @@ export const AccountTreeControllerInit: MessengerClientInitFunction<
       trace,
       backupAndSync: {
         onBackupAndSyncEvent: (event) => {
-          initMessenger.call('MetaMetricsController:trackEvent', {
+          trackLegacyMetaMetricsEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
             // @ts-expect-error events coming from the controller are typed and this conflicts with the expected Record<string, Json> type

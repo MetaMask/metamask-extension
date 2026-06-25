@@ -13,12 +13,12 @@ import log from 'loglevel';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { AssetsControllerGetStateAction } from '@metamask/assets-controller';
 import type { AppStateControllerSetCanTrackWalletFundsObtainedAction } from '../controllers/app-state-controller-method-action-types';
-import type { MetaMetricsControllerTrackEventAction } from '../controllers/metametrics-controller-method-action-types';
 import type { OnboardingControllerGetStateAction } from '../controllers/onboarding';
+import { trackEvent } from '../controllers/analytics';
 import {
   hasNonZeroTokenBalance,
   hasNonZeroMultichainBalance,
-  getWalletFundsObtainedEventProperties,
+  getWalletFundsObtainedEvent,
 } from '../../../shared/lib/wallet-funds-obtained-metric';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
@@ -30,7 +30,6 @@ import {
 type WalletFundsObtainedMonitorAllowedEvents = NotificationListUpdatedEvent;
 
 type WalletFundsObtainedMonitorAllowedActions =
-  | MetaMetricsControllerTrackEventAction
   | TokenBalancesControllerGetStateAction
   | MultichainBalancesControllerGetStateAction
   | OnboardingControllerGetStateAction
@@ -152,9 +151,8 @@ export class WalletFundsObtainedMonitor {
           : lastNotification.payload.data.amount.usd;
 
       if (chainId && amountUsd) {
-        this.#messenger.call(
-          'MetaMetricsController:trackEvent',
-          getWalletFundsObtainedEventProperties({
+        trackEvent(
+          getWalletFundsObtainedEvent({
             chainId,
             amountUsd,
           }),

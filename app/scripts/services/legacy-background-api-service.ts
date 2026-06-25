@@ -104,7 +104,6 @@ import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/
 import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
-  MetaMetricsControllerTrackEventAction,
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
 } from '../controllers/metametrics-controller-method-action-types';
@@ -174,7 +173,6 @@ type AllowedActions =
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
   | KeyringControllerWithKeyringV2Action
-  | MetaMetricsControllerTrackEventAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSubmitEncryptionKeyAction
   | KeyringControllerSubmitPasswordAction

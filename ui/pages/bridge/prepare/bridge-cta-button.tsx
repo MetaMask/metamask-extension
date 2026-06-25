@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
@@ -26,7 +26,8 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import type { UITrackEventMethod } from '../../../contexts/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -73,7 +74,21 @@ export const BridgeCTAButton = ({
 
   const isTxSubmittable = useIsTxSubmittable();
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+
+  const trackMetricsEvent = useCallback<UITrackEventMethod>(
+    (payload) => {
+      trackEvent(
+        createEventBuilder(payload.event)
+          .addCategory(payload.category)
+          .addProperties(payload.properties ?? {})
+          .addSensitiveProperties(payload.sensitiveProperties ?? {})
+          .build(),
+      );
+      return Promise.resolve();
+    },
+    [createEventBuilder, trackEvent],
+  );
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
@@ -160,7 +175,7 @@ export const BridgeCTAButton = ({
       return {
         disabled: false,
         onClick: async () => {
-          trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
+          trackHardwareWalletRecoveryConnectCtaClicked(trackMetricsEvent, {
             location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
             walletType,
             connectionState,
@@ -201,7 +216,7 @@ export const BridgeCTAButton = ({
     onOpenAlertModals,
     submitBridgeTransaction,
     t,
-    trackEvent,
+    trackMetricsEvent,
     walletType,
     wasTxDeclined,
   ]);

@@ -3,7 +3,6 @@ import React, {
   useState,
   useMemo,
   useCallback,
-  useContext,
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -17,7 +16,7 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -52,7 +51,7 @@ export function NotificationsSettingsAllowNotifications({
   dataTestId: string;
 }) {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { listNotifications } = useMetamaskNotificationsContext();
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
@@ -90,49 +89,52 @@ export function NotificationsSettingsAllowNotifications({
   const toggleNotifications = useCallback(async () => {
     setLoading(true);
     if (isMetamaskNotificationsEnabled) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationSettings,
-        event: MetaMetricsEventName.NotificationsSettingsUpdated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'notifications',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          was_profile_syncing_on: isBackupAndSyncEnabled,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: false,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.NotificationSettings)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_type: 'notifications',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            was_profile_syncing_on: isBackupAndSyncEnabled,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_value: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_value: false,
+          })
+          .build(),
+      );
       await disableNotifications();
     } else {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationSettings,
-        event: MetaMetricsEventName.NotificationsSettingsUpdated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'notifications',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          was_profile_syncing_on: isBackupAndSyncEnabled,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: false,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: true,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.NotificationSettings)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_type: 'notifications',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            was_profile_syncing_on: isBackupAndSyncEnabled,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_value: false,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_value: true,
+          })
+          .build(),
+      );
       await enableNotifications();
     }
     setLoading(false);
     setToggleValue(!toggleValue);
   }, [
+    createEventBuilder,
     setLoading,
     isMetamaskNotificationsEnabled,
     disableNotifications,

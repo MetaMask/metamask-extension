@@ -265,7 +265,7 @@ import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
-import { trackEvent } from './controllers/analytics';
+import { trackEvent, trackLegacyMetaMetricsEvent, trackPage } from './controllers/analytics';
 import Backup from './lib/backup';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -868,10 +868,6 @@ export default class MetamaskController extends EventEmitter {
       addressBookController: this.addressBookController,
       accountsController: this.accountsController,
       networkController: this.networkController,
-      trackMetaMetricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
     });
     this.geolocationController = messengerClientsByName.GeolocationController;
 
@@ -953,7 +949,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: walletFundsObtainedMonitorMessenger,
       events: ['NotificationServicesController:notificationsListUpdated'],
       actions: [
-        'MetaMetricsController:trackEvent',
         'AppStateController:setCanTrackWalletFundsObtained',
         'OnboardingController:getState',
         'NotificationServicesController:getState',
@@ -1816,7 +1811,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   trackInsightSnapView(snapId) {
-    this.metaMetricsController.trackEvent({
+    trackLegacyMetaMetricsEvent({
       event: MetaMetricsEventName.InsightSnapViewed,
       category: MetaMetricsEventCategory.Snaps,
       properties: {
@@ -2222,7 +2217,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapInstallStarted`,
       (snapId, origin, isUpdate) => {
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
+        trackLegacyMetaMetricsEvent({
           event: isUpdate
             ? MetaMetricsEventName.SnapUpdateStarted
             : MetaMetricsEventName.SnapInstallStarted,
@@ -2248,7 +2243,7 @@ export default class MetamaskController extends EventEmitter {
           : MetaMetricsEventName.SnapInstallRejected;
 
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
+        trackLegacyMetaMetricsEvent({
           event: isRejected ? rejectedEvent : failedEvent,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
@@ -2269,7 +2264,7 @@ export default class MetamaskController extends EventEmitter {
 
         const snapId = truncatedSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
+        trackLegacyMetaMetricsEvent({
           event: MetaMetricsEventName.SnapInstalled,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
@@ -2291,7 +2286,7 @@ export default class MetamaskController extends EventEmitter {
 
         const snapId = newSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
+        trackLegacyMetaMetricsEvent({
           event: MetaMetricsEventName.SnapUpdated,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
@@ -2340,7 +2335,7 @@ export default class MetamaskController extends EventEmitter {
 
         const snapId = truncatedSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
+        trackLegacyMetaMetricsEvent({
           event: MetaMetricsEventName.SnapUninstalled,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
@@ -3646,13 +3641,10 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
-        metaMetricsController,
-      ),
+      trackMetaMetricsEvent: trackLegacyMetaMetricsEvent,
       trackAnalyticsEvent: trackEvent,
-      trackMetaMetricsPage: metaMetricsController.trackPage.bind(
-        metaMetricsController,
-      ),
+      trackAnalyticsPage: trackPage,
+      trackMetaMetricsPage: trackPage,
       createEventFragment: metaMetricsController.createEventFragment.bind(
         metaMetricsController,
       ),
@@ -5020,7 +5012,7 @@ export default class MetamaskController extends EventEmitter {
 
         const newHdEntropyIndex = this.getHDEntropyIndex();
 
-        this.metaMetricsController.trackEvent({
+        trackLegacyMetaMetricsEvent({
           event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
           properties: {
             status: 'completed',
@@ -5930,7 +5922,7 @@ export default class MetamaskController extends EventEmitter {
     if (shouldShowApproval) {
       try {
         // Track referral viewed event
-        this.metaMetricsController.trackEvent({
+        trackLegacyMetaMetricsEvent({
           event: MetaMetricsEventName.ReferralViewed,
           category: MetaMetricsEventCategory.Referrals,
           properties: {
@@ -5971,7 +5963,7 @@ export default class MetamaskController extends EventEmitter {
         }
 
         // Track referral confirm button clicked event
-        this.metaMetricsController.trackEvent({
+        trackLegacyMetaMetricsEvent({
           event: MetaMetricsEventName.ReferralConfirmButtonClicked,
           category: MetaMetricsEventCategory.Referrals,
           properties: {
@@ -6591,7 +6583,7 @@ export default class MetamaskController extends EventEmitter {
           const phishingTestResponse = this.phishingController.test(sender.url);
           if (phishingTestResponse?.result) {
             this.sendPhishingWarning(connectionStream, hostname);
-            this.metaMetricsController.trackEvent({
+            trackLegacyMetaMetricsEvent({
               event: MetaMetricsEventName.PhishingPageDisplayed,
               category: MetaMetricsEventCategory.Phishing,
               properties: {
@@ -7466,9 +7458,7 @@ export default class MetamaskController extends EventEmitter {
 
         // Miscellaneous
         metamaskState: this.getState(),
-        sendMetrics: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
+        sendMetrics: trackLegacyMetaMetricsEvent,
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
@@ -7534,9 +7524,7 @@ export default class MetamaskController extends EventEmitter {
             // tests and production.
             return global.sentry?.captureException?.(error);
           },
-          trackEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
+          trackEvent: trackLegacyMetaMetricsEvent,
           startTrace: (options) => {
             // We intentionally strip out `_isStandaloneSpan` since it can be undefined
             // eslint-disable-next-line no-unused-vars
@@ -7714,7 +7702,7 @@ export default class MetamaskController extends EventEmitter {
           'MultichainRoutingService:getSupportedAccounts',
         ),
         trackSessionCreatedEvent: (approvedCaip25CaveatValue) =>
-          this.metaMetricsController.trackEvent({
+          trackLegacyMetaMetricsEvent({
             event: MetaMetricsEventName.PermissionsRequested,
             properties: {
               api_source: MetaMetricsRequestedThrough.MultichainApi,
@@ -8184,10 +8172,7 @@ export default class MetamaskController extends EventEmitter {
         const { optedIn } = this.analyticsController.state;
         return completedMetaMetricsOnboarding === true && optedIn === true;
       },
-      trackEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
+      trackEvent: trackLegacyMetaMetricsEvent,
       // Other dependencies
       getAccountBalance: (account, chainId) =>
         getAccountTrackerControllerAccountsByChainId(this._getMetaMaskState())[
@@ -8462,7 +8447,7 @@ export default class MetamaskController extends EventEmitter {
   safelistPhishingDomain(origin) {
     const isFirefox = getPlatform() === PLATFORM_FIREFOX;
     if (!isFirefox) {
-      this.metaMetricsController.trackEvent(
+      trackLegacyMetaMetricsEvent(
         {
           category: MetaMetricsEventCategory.Phishing,
           event: MetaMetricsEventName.ProceedAnywayClicked,
@@ -8471,6 +8456,9 @@ export default class MetamaskController extends EventEmitter {
             referrer: {
               url: origin,
             },
+          },
+          referrer: {
+            url: origin,
           },
         },
         {
@@ -8486,7 +8474,7 @@ export default class MetamaskController extends EventEmitter {
     const portfolioBaseURL = process.env.PORTFOLIO_URL;
     const portfolioURL = `${portfolioBaseURL}/?metamaskEntry=phishing_page_portfolio_button`;
 
-    this.metaMetricsController.trackEvent({
+    trackLegacyMetaMetricsEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.PortfolioLinkClicked,
       properties: {
@@ -9103,7 +9091,7 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    this.metaMetricsController.trackEvent(
+    trackLegacyMetaMetricsEvent(
       {
         event: 'Tx Status Update: On-Chain Failure',
         category: MetaMetricsEventCategory.Background,

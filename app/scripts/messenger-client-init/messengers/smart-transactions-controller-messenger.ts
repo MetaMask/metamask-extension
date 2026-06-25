@@ -4,7 +4,6 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { SmartTransactionsControllerMessenger } from '@metamask/smart-transactions-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 /**
@@ -44,8 +43,8 @@ export function getSmartTransactionsControllerMessenger(
   return controllerMessenger;
 }
 
-export type AllowedInitializationActions =
-  MetaMetricsControllerTrackEventAction;
+type InitActions = never;
+type InitEvents = never;
 
 export type SmartTransactionsControllerInitMessenger = ReturnType<
   typeof getSmartTransactionsControllerInitMessenger
@@ -60,12 +59,12 @@ export type SmartTransactionsControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getSmartTransactionsControllerInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<InitActions, InitEvents>,
 ) {
   const controllerInitMessenger = new Messenger<
     'SmartTransactionsControllerInit',
-    AllowedInitializationActions,
-    never,
+    InitActions,
+    InitEvents,
     typeof messenger
   >({
     namespace: 'SmartTransactionsControllerInit',
@@ -73,7 +72,7 @@ export function getSmartTransactionsControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['MetaMetricsController:trackEvent'],
+    actions: [],
   });
   return controllerInitMessenger;
 }
