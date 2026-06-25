@@ -3,9 +3,6 @@ import type WebpackDevServer from 'webpack-dev-server';
 import { UI_RELOAD_CLIENT_ENTRY_NAME } from './reload-protocol';
 import { getClientEntry } from './websocket';
 
-const REACT_REFRESH_RUNTIME_CLIENT_ENTRY =
-  require.resolve('./react-refresh-runtime-client');
-
 /**
  * Registers the React Refresh runtime client and UI reload client entry on
  * each compiler. `HtmlBundlerPlugin.beforeEmit` injects the reload client into
@@ -23,7 +20,7 @@ export function setupUiReload(
   for (const compiler of compilers) {
     new compiler.webpack.EntryPlugin(
       compiler.context,
-      REACT_REFRESH_RUNTIME_CLIENT_ENTRY,
+      require.resolve('./react-refresh-runtime-client'),
       {},
     ).apply(compiler);
     new compiler.webpack.EntryPlugin(
