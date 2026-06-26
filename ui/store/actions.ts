@@ -6381,6 +6381,13 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
+/**
+ * @param payload - details of the page viewed
+ */
+export function trackAnalyticsPage(payload: MetaMetricsPagePayload) {
+  return submitRequestToBackground('trackAnalyticsPage', [payload]);
+}
+
 export function createEventFragment(
   options: MetaMetricsEventFragment,
 ): Promise<string> {

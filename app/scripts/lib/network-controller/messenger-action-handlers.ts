@@ -8,9 +8,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../../shared/constants/app';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import { isPublicEndpointUrl } from '../util';
-import { MetaMetricsController } from '../../controllers/metametrics-controller';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import { shouldCreateRpcServiceEvents } from './utils';
 
 /**
@@ -30,7 +31,6 @@ import { shouldCreateRpcServiceEvents } from './utils';
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
  * @param args.analyticsId - The analytics ID of the user.
- * @param args.trackEvent - The function that will create the Segment event.
  */
 export function onRpcEndpointUnavailable({
   chainId,
@@ -38,14 +38,12 @@ export function onRpcEndpointUnavailable({
   error,
   infuraProjectId,
   analyticsId,
-  trackEvent,
 }: {
   chainId: Hex;
   endpointUrl: string;
   error: unknown;
   infuraProjectId: string;
   analyticsId: string | null | undefined;
-  trackEvent: MetaMetricsController['trackEvent'];
 }): void {
   trackRpcEndpointEvent(MetaMetricsEventName.RpcServiceUnavailable, {
     chainId,
@@ -53,7 +51,6 @@ export function onRpcEndpointUnavailable({
     error,
     infuraProjectId,
     analyticsId,
-    trackEvent,
   });
 }
 
@@ -80,7 +77,6 @@ export function onRpcEndpointUnavailable({
  * @param args.rpcMethodName - The JSON-RPC method that was being executed.
  * @param args.traceId - The value of the `X-Trace-Id` response header from the
  * last request attempt, or `undefined` if the header was not present.
- * @param args.trackEvent - The function that will create the Segment event.
  * @param args.type - Why the endpoint became degraded (`'slow_success'` or
  * `'retries_exhausted'`).
  */
@@ -94,7 +90,6 @@ export function onRpcEndpointDegraded({
   retryReason,
   rpcMethodName,
   traceId,
-  trackEvent,
   type,
 }: {
   chainId: Hex;
@@ -106,7 +101,6 @@ export function onRpcEndpointDegraded({
   retryReason?: RetryReason;
   rpcMethodName: string;
   traceId?: string;
-  trackEvent: MetaMetricsController['trackEvent'];
   type: DegradedEventType;
 }): void {
   trackRpcEndpointEvent(MetaMetricsEventName.RpcServiceDegraded, {
@@ -119,7 +113,6 @@ export function onRpcEndpointDegraded({
     retryReason,
     rpcMethodName,
     traceId,
-    trackEvent,
     type,
   });
 }
@@ -145,7 +138,6 @@ export function onRpcEndpointDegraded({
  * (only present for degraded events).
  * @param args.traceId - The value of the `X-Trace-Id` response header from the
  * last request attempt (only present for degraded events).
- * @param args.trackEvent - The function that will create the Segment event.
  * @param args.type - Why the endpoint became degraded (only present for
  * degraded events).
  */
@@ -160,7 +152,6 @@ export function trackRpcEndpointEvent(
     retryReason,
     rpcMethodName,
     traceId,
-    trackEvent,
     type,
     analyticsId,
   }: {
@@ -172,7 +163,6 @@ export function trackRpcEndpointEvent(
     retryReason?: RetryReason;
     rpcMethodName?: string;
     traceId?: string;
-    trackEvent: MetaMetricsController['trackEvent'];
     type?: DegradedEventType;
     analyticsId: string | null | undefined;
   },
@@ -212,9 +202,10 @@ export function trackRpcEndpointEvent(
   log.debug(
     `Creating Segment event "${event}" with ${JSON.stringify(properties)}`,
   );
-  trackEvent({
-    category: MetaMetricsEventCategory.Network,
-    event,
-    properties,
-  });
+  trackEvent(
+    createEventBuilder(event)
+      .addCategory(MetaMetricsEventCategory.Network)
+      .addProperties(properties)
+      .build({ environmentType: ENVIRONMENT_TYPE_BACKGROUND }),
+  );
 }

@@ -40,19 +40,22 @@ const trackNotificationsActivatedMetaMetricsEvent = async (
   profileSyncEnabled: boolean,
 ) => {
   const expectedCall = [
-    'trackMetaMetricsEvent',
+    'trackAnalyticsEvent',
     [
       expect.objectContaining({
-        event: MetaMetricsEventName.NotificationsActivated,
-        category: MetaMetricsEventCategory.NotificationsActivationFlow,
-        properties: {
+        name: MetaMetricsEventName.NotificationsActivated,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.NotificationsActivationFlow,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           action_type: actionType,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_profile_syncing_enabled: profileSyncEnabled,
-        },
+        }),
+      }),
+      expect.objectContaining({
+        environmentType: expect.any(String),
       }),
     ],
   ];

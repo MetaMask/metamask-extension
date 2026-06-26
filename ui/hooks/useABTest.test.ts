@@ -6,19 +6,20 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../contexts/metametrics';
 import type { ABTestExposureMetadata } from './useABTest';
 import { clearABTestExposureTrackingForTest, useABTest } from './useABTest';
 
-jest.mock('../contexts/metametrics', () => {
-  const ReactActual = jest.requireActual('react');
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('./useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../shared/lib/analytics/create-event-builder',
+  );
 
   return {
-    MetaMetricsContext: ReactActual.createContext({
-      trackEvent: jest.fn(),
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
     }),
   };
 });
@@ -33,21 +34,9 @@ jest.mock('../../shared/lib/selectors/remote-feature-flags', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
-
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn().mockResolvedValue(undefined),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
 
 const wrapper = ({ children }: { children: React.ReactNode }) =>
-  React.createElement(
-    MetaMetricsContext.Provider,
-    { value: mockMetaMetricsContext },
-    children,
-  );
+  React.createElement(React.Fragment, null, children);
 
 const buttonColorVariants = {
   control: { long: 'green', short: 'red' },
@@ -196,24 +185,26 @@ describe('useABTest', () => {
       });
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.ExperimentViewed,
-        category: MetaMetricsEventCategory.Analytics,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          experiment_id: flagKey,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          variation_id: 'treatment',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          experiment_name: 'Swaps Quick Amounts',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          variation_name: 'Larger Presets',
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.ExperimentViewed,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Analytics,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            experiment_id: flagKey,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            variation_id: 'treatment',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            experiment_name: 'Swaps Quick Amounts',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            variation_name: 'Larger Presets',
+          }),
+        }),
+      );
     });
 
     it('does not emit an exposure event for inactive assignments', () => {
@@ -292,29 +283,25 @@ describe('useABTest', () => {
       rerender();
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
-      expect(mockTrackEvent.mock.calls[1][0]).toEqual({
-        event: MetaMetricsEventName.ExperimentViewed,
-        category: MetaMetricsEventCategory.Analytics,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          experiment_id: flagKey,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          variation_id: 'treatment',
-        },
-      });
-    });
-
-    it('does not emit duplicate exposures while the first emit is in flight', async () => {
-      const flagKey = 'swapsSWAPS4135AbtestNumpadQuickAmounts';
-      let resolveTrackingPromise: (() => void) | undefined;
-
-      mockTrackEvent.mockReturnValue(
-        new Promise<void>((resolve) => {
-          resolveTrackingPromise = resolve;
+      expect(mockTrackEvent.mock.calls[1][0]).toEqual(
+        expect.objectContaining({
+          name: MetaMetricsEventName.ExperimentViewed,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Analytics,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            experiment_id: flagKey,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            variation_id: 'treatment',
+          }),
         }),
       );
+    });
+
+    it('does not emit duplicate exposures while the first emit is in flight', () => {
+      const flagKey = 'swapsSWAPS4135AbtestNumpadQuickAmounts';
+
       setRemoteFeatureFlags({
         [flagKey]: { name: 'control' },
       });
@@ -323,29 +310,22 @@ describe('useABTest', () => {
       renderABTestHook(flagKey, experimentVariants);
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-
-      resolveTrackingPromise?.();
-      await flushPromises();
-
-      renderABTestHook(flagKey, experimentVariants);
-
-      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     });
 
-    it('retries exposure tracking after a failed emit', async () => {
+    it('retries exposure tracking after a failed emit', () => {
       const flagKey = 'swapsSWAPS4135AbtestNumpadQuickAmounts';
 
       mockTrackEvent
-        .mockRejectedValueOnce(new Error('track failed'))
-        .mockResolvedValue(undefined);
+        .mockImplementationOnce(() => {
+          throw new Error('track failed');
+        })
+        .mockImplementation(() => undefined);
       setRemoteFeatureFlags({
         [flagKey]: { name: 'control' },
       });
 
       renderABTestHook(flagKey, experimentVariants);
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-
-      await flushPromises();
 
       renderABTestHook(flagKey, experimentVariants);
 

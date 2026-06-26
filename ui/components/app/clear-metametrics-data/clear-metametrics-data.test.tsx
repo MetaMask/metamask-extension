@@ -14,6 +14,7 @@ const mockCloseDeleteMetaMetricsDataModal = jest.fn().mockImplementation(() => {
 });
 
 jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
   createMetaMetricsDataDeletionTask: jest.fn(),
 }));
 

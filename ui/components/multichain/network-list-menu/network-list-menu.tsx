@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-} from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import {
   DragDropContext,
   Droppable,
@@ -26,6 +20,7 @@ import {
 } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
 import { NetworkListItem } from '../network-list-item';
@@ -94,7 +89,6 @@ import {
   ModalHeader,
   AvatarNetworkSize,
 } from '../../component-library';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -170,7 +164,7 @@ const isCustomNetworkConfiguration = (
 export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
@@ -452,25 +446,26 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       ? convertCaipToHexChainId(currentChainId)
       : currentChainId;
 
-    trackEvent({
-      event: MetaMetricsEventName.NavNetworkSwitched,
-      category: MetaMetricsEventCategory.Network,
-      properties: {
-        location: 'Network Menu',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: currentChainIdToTrack,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        from_network: currentChainIdToTrack,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        to_network: chainIdToTrack,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        custom_network: isCustomNetworkConfiguration(chain),
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .addProperties({
+          location: 'Network Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: currentChainIdToTrack,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          from_network: currentChainIdToTrack,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          to_network: chainIdToTrack,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          custom_network: isCustomNetworkConfiguration(chain),
+        })
+        .build(),
+    );
   };
 
   const isDiscoverBtnEnabled = useCallback(
@@ -758,13 +753,16 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                     onToggle={(value: boolean) => {
                       const newVal = !value;
                       dispatch(setShowTestNetworks(newVal));
-                      trackEvent({
-                        event: MetaMetricsEventName.TestNetworksDisplayed,
-                        category: MetaMetricsEventCategory.Network,
-                        properties: {
-                          value: newVal,
-                        },
-                      });
+                      trackEvent(
+                        createEventBuilder(
+                          MetaMetricsEventName.TestNetworksDisplayed,
+                        )
+                          .addCategory(MetaMetricsEventCategory.Network)
+                          .addProperties({
+                            value: newVal,
+                          })
+                          .build(),
+                      );
                     }}
                   />
                 </Box>
@@ -792,10 +790,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               startIconProps={{ marginRight: 2 }}
               block
               onClick={() => {
-                trackEvent({
-                  event: MetaMetricsEventName.AddNetworkButtonClick,
-                  category: MetaMetricsEventCategory.Network,
-                });
+                trackEvent(
+                  createEventBuilder(MetaMetricsEventName.AddNetworkButtonClick)
+                    .addCategory(MetaMetricsEventCategory.Network)
+                    .build(),
+                );
                 setActionMode(ACTION_MODE.ADD_EDIT);
               }}
             >

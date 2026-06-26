@@ -44,6 +44,21 @@ import { useAddEthereumChain } from '../../../hooks/useAddEthereumChain';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import Footer from './footer';
 
+const mockAnalyticsTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockAnalyticsTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
 jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
@@ -753,7 +768,7 @@ describe('ConfirmFooter', () => {
     });
 
     it('tracks hardware wallet recovery CTA when reconnect is clicked', async () => {
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+      mockAnalyticsTrackEvent.mockClear();
       const connectionState = {
         status: ConnectionStatus.Disconnected as const,
       };
@@ -771,16 +786,14 @@ describe('ConfirmFooter', () => {
         isDeviceConnected: false,
       });
 
-      const { getByTestId } = render(undefined, {
-        getMockTrackEvent: () => mockTrackEvent,
-      });
+      const { getByTestId } = render();
 
       fireEvent.click(getByTestId('reconnect-hardware-wallet-button'));
 
       await waitFor(() => {
         expect(
           mockTrackHardwareWalletRecoveryConnectCtaClicked,
-        ).toHaveBeenCalledWith(mockTrackEvent, {
+        ).toHaveBeenCalledWith(mockAnalyticsTrackEvent, {
           location: MetaMetricsHardwareWalletRecoveryLocation.Send,
           walletType: HardwareWalletType.Ledger,
           connectionState,

@@ -23,13 +23,16 @@ describe('OAuthServiceInit', () => {
     const requestMock = buildInitRequestMock();
 
     // @ts-expect-error: Partial mock for testing.
-    requestMock.getMessengerClient.mockImplementation(() => {
+    requestMock.getMessengerClient.mockImplementation((controllerName) => {
+      if (controllerName === 'AnalyticsController') {
+        return { state: { optedIn: false } };
+      }
+
       return {
         bufferedTrace: jest.fn(),
         bufferedEndTrace: jest.fn(),
-        trackEvent: jest.fn(),
         addEventBeforeMetricsOptIn: jest.fn(),
-        state: { completedMetaMetricsOnboarding: true, optedIn: false },
+        state: { completedMetaMetricsOnboarding: true },
       };
     });
 

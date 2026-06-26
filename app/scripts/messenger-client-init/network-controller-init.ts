@@ -62,10 +62,6 @@ export const NetworkControllerInit: MessengerClientInitFunction<
         endpointUrl,
         error,
         infuraProjectId,
-        trackEvent: initMessenger.call.bind(
-          initMessenger,
-          'MetaMetricsController:trackEvent',
-        ),
         analyticsId: initMessenger.call('AnalyticsController:getState')
           .analyticsId,
       });
@@ -93,10 +89,6 @@ export const NetworkControllerInit: MessengerClientInitFunction<
         retryReason,
         rpcMethodName,
         traceId,
-        trackEvent: initMessenger.call.bind(
-          initMessenger,
-          'MetaMetricsController:trackEvent',
-        ),
         analyticsId: initMessenger.call('AnalyticsController:getState')
           .analyticsId,
         type,
@@ -104,7 +96,9 @@ export const NetworkControllerInit: MessengerClientInitFunction<
     },
   );
 
-  messengerClient.init();
+  if (typeof messengerClient.init === 'function') {
+    messengerClient.init();
+  }
 
   return {
     messengerClient,

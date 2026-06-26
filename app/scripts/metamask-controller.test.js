@@ -91,6 +91,7 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
+import { trackEvent } from './controllers/analytics';
 import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -107,6 +108,11 @@ jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
       Boolean(featureFlag?.enabled) &&
       featureFlag?.featureVersion === featureVersion,
   ),
+}));
+
+jest.mock('./controllers/analytics', () => ({
+  ...jest.requireActual('./controllers/analytics'),
+  trackEvent: jest.fn(),
 }));
 
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
@@ -5094,7 +5100,7 @@ describe('MetaMaskController', () => {
       beforeEach(async () => {
         jest.spyOn(metamaskController, '_handleDefiReferralApprovedAccount');
         jest.spyOn(metamaskController, '_handleDefiReferralRedirect');
-        jest.spyOn(metamaskController.metaMetricsController, 'trackEvent');
+        trackEvent.mockClear();
         jest
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
@@ -5428,9 +5434,7 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockNewConnectionTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).not.toHaveBeenCalled();
+        expect(trackEvent).not.toHaveBeenCalled();
       });
 
       it('emits a "Referral Viewed" event when user is shown the approval screen on new connection', async () => {
@@ -5446,16 +5450,16 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockNewConnectionTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).toHaveBeenCalledWith({
-          event: 'Referral Viewed',
-          category: 'Referrals',
-          properties: {
-            url: HYPERLIQUID_ORIGIN,
-            trigger_type: mockNewConnectionTriggerType,
-          },
-        });
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Referral Viewed',
+            properties: expect.objectContaining({
+              category: 'Referrals',
+              url: HYPERLIQUID_ORIGIN,
+              trigger_type: mockNewConnectionTriggerType,
+            }),
+          }),
+        );
       });
 
       it('emits a "Referral Viewed" event when user is shown the approval screen on navigate to connected tab', async () => {
@@ -5471,16 +5475,16 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockOnNavigateTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).toHaveBeenCalledWith({
-          event: 'Referral Viewed',
-          category: 'Referrals',
-          properties: {
-            url: HYPERLIQUID_ORIGIN,
-            trigger_type: mockOnNavigateTriggerType,
-          },
-        });
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Referral Viewed',
+            properties: expect.objectContaining({
+              category: 'Referrals',
+              url: HYPERLIQUID_ORIGIN,
+              trigger_type: mockOnNavigateTriggerType,
+            }),
+          }),
+        );
       });
 
       it('emits a "Referral Confirm Button Clicked" event when user confirms the approval', async () => {
@@ -5496,16 +5500,16 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockNewConnectionTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).toHaveBeenCalledWith({
-          event: 'Referral Confirm Button Clicked',
-          category: 'Referrals',
-          properties: {
-            opt_in: true,
-            url: HYPERLIQUID_ORIGIN,
-          },
-        });
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Referral Confirm Button Clicked',
+            properties: expect.objectContaining({
+              category: 'Referrals',
+              opt_in: true,
+              url: HYPERLIQUID_ORIGIN,
+            }),
+          }),
+        );
       });
 
       it('emits a "Referral Confirm Button Clicked" event when user declines the approval', async () => {
@@ -5521,16 +5525,16 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockNewConnectionTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).toHaveBeenCalledWith({
-          event: 'Referral Confirm Button Clicked',
-          category: 'Referrals',
-          properties: {
-            opt_in: false,
-            url: HYPERLIQUID_ORIGIN,
-          },
-        });
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Referral Confirm Button Clicked',
+            properties: expect.objectContaining({
+              category: 'Referrals',
+              opt_in: false,
+              url: HYPERLIQUID_ORIGIN,
+            }),
+          }),
+        );
       });
 
       it('redirects if account is approved only', async () => {

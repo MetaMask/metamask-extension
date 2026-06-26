@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -37,7 +37,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getUseExternalServices } from '../../../selectors';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
@@ -51,7 +51,7 @@ import { useBoolean } from '../../../hooks/useBoolean';
 export function BasicConfigurationModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
@@ -71,36 +71,37 @@ export function BasicConfigurationModal() {
   };
 
   const handleToggle = () => {
-    const event = onboardingFlow
+    const eventProperties = onboardingFlow
       ? {
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.SettingsUpdated,
-          properties: {
-            /* eslint-disable @typescript-eslint/naming-convention */
-            settings_group: 'onboarding_advanced_configuration',
-            settings_type: 'basic_functionality',
-            old_value: true,
-            new_value: false,
-            was_profile_syncing_on: isBackupAndSyncEnabled,
-            /* eslint-enable @typescript-eslint/naming-convention */
-          },
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_group: 'onboarding_advanced_configuration',
+          settings_type: 'basic_functionality',
+          old_value: true,
+          new_value: false,
+          was_profile_syncing_on: isBackupAndSyncEnabled,
+          /* eslint-enable @typescript-eslint/naming-convention */
         }
       : {
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.SettingsUpdated,
-          properties: {
-            /* eslint-disable @typescript-eslint/naming-convention */
-            settings_group: 'security_privacy',
-            settings_type: 'basic_functionality',
-            old_value: isExternalServicesEnabled,
-            new_value: !isExternalServicesEnabled,
-            was_notifications_on: isMetamaskNotificationsEnabled,
-            was_profile_syncing_on: isBackupAndSyncEnabled,
-            /* eslint-enable @typescript-eslint/naming-convention */
-          },
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_group: 'security_privacy',
+          settings_type: 'basic_functionality',
+          old_value: isExternalServicesEnabled,
+          new_value: !isExternalServicesEnabled,
+          was_notifications_on: isMetamaskNotificationsEnabled,
+          was_profile_syncing_on: isBackupAndSyncEnabled,
+          /* eslint-enable @typescript-eslint/naming-convention */
         };
 
-    trackEvent(event);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+        .addCategory(
+          onboardingFlow
+            ? MetaMetricsEventCategory.Onboarding
+            : MetaMetricsEventCategory.Settings,
+        )
+        .addProperties(eventProperties)
+        .build(),
+    );
 
     if (isExternalServicesEnabled || onboardingFlow) {
       dispatch(setParticipateInMetaMetrics(false));

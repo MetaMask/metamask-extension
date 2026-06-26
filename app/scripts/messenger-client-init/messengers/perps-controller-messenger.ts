@@ -24,7 +24,6 @@ import {
   StorageServiceSetItemAction,
 } from '@metamask/storage-service';
 import { TransactionControllerAddTransactionAction } from '@metamask/transaction-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RewardsControllerGetPerpsDiscountForAccountAction } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -64,7 +63,6 @@ type AllowedActions =
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
   | GeolocationControllerGetGeolocationAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
-  | MetaMetricsControllerTrackEventAction
   | StorageServiceGetItemAction
   | StorageServiceSetItemAction
   | StorageServiceRemoveItemAction
@@ -139,7 +137,6 @@ export function getPerpsControllerMessenger(
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       'GeolocationController:getGeolocation',
       'AuthenticationController:getBearerToken',
-      'MetaMetricsController:trackEvent',
       'StorageService:getItem',
       'StorageService:setItem',
       'StorageService:removeItem',

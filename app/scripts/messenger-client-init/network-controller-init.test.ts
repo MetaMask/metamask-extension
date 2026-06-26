@@ -23,6 +23,7 @@ jest.mock('@metamask/network-controller', () => {
   const NetworkControllerMock = jest.fn().mockImplementation(() => {
     return {
       init: jest.fn(),
+      initializeProvider: jest.fn(),
       enableRpcFailover: jest.fn(),
       disableRpcFailover: jest.fn(),
     };
@@ -62,6 +63,7 @@ describe('NetworkControllerInit', () => {
     const { messengerClient } = NetworkControllerInit(getInitRequestMock());
     expect(messengerClient).toStrictEqual({
       init: expect.any(Function),
+      initializeProvider: expect.any(Function),
       enableRpcFailover: expect.any(Function),
       disableRpcFailover: expect.any(Function),
     });

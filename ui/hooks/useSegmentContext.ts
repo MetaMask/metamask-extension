@@ -29,6 +29,9 @@ export type SegmentContext = {
 function findMatchingPath(pathname: string): AppRoutes['path'] | undefined {
   const paths = getPaths();
   for (const path of paths) {
+    if (!path) {
+      continue;
+    }
     const match = matchPath(
       { path, end: true, caseSensitive: false },
       pathname,
@@ -54,8 +57,8 @@ export function useSegmentContext(): SegmentContext {
   const matchedPath = findMatchingPath(location.pathname);
   const matchedTitle = matchedPath ? PATH_NAME_MAP.get(matchedPath) : undefined;
 
-  const txData = useSelector(txDataSelector) ?? {};
-  const confirmTransactionOrigin = txData.origin as string | undefined;
+  const txData = useSelector(txDataSelector);
+  const confirmTransactionOrigin = txData?.origin as string | undefined;
 
   const referrer = useMemo<MetaMetricsReferrerObject | undefined>(
     () =>

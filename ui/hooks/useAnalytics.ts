@@ -70,11 +70,15 @@ export function useAnalytics(): UseAnalyticsResult {
         canTrackImmediately ||
         built.name === MetaMetricsEventName.MetricsOptOut
       ) {
-        trackAnalyticsEvent(built, options).catch(() => undefined);
+        Promise.resolve(trackAnalyticsEvent(built, options)).catch(
+          () => undefined,
+        );
       } else if (canMaybeTrackLater) {
-        submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          toMetaMetricsEventPayload(built, options),
-        ]).catch(() => undefined);
+        Promise.resolve(
+          submitRequestToBackground('addEventBeforeMetricsOptIn', [
+            toMetaMetricsEventPayload(built, options),
+          ]),
+        ).catch(() => undefined);
       }
     },
     [canMaybeTrackLater, canTrackImmediately, context],

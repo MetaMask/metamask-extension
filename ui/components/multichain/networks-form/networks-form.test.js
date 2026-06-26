@@ -18,9 +18,23 @@ import {
   setTokenNetworkFilter,
   updateNetwork,
 } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { NetworksForm } from './networks-form';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -102,6 +116,7 @@ describe('NetworkForm Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
 
     nock('https://chainid.network:443', { encodedQueryParams: true })
       .get('/chains.json')
@@ -476,13 +491,6 @@ describe('NetworkForm Component', () => {
   });
 
   it('should track RPC update event when trackRpcUpdateFromBanner is true', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -499,35 +507,33 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://monad-mainnet.infura.io/v3/',
-                  type: 'custom',
-                },
-              ],
-            },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
+      <NetworksForm
+        {...propNetworkDisplay}
+        networkFormState={{
+          ...propNetworkDisplay.networkFormState,
+          rpcUrls: {
+            defaultRpcEndpointIndex: 0,
             rpcEndpoints: [
               {
-                url: 'https://mainnet.infura.io/v3/',
+                url: 'https://monad-mainnet.infura.io/v3/',
+                type: 'custom',
               },
             ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          trackRpcUpdateFromBanner
-        />
-      </MetaMetricsContext.Provider>,
+          },
+        }}
+        existingNetwork={{
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+        }}
+        trackRpcUpdateFromBanner
+      />,
       store,
     );
 
@@ -536,26 +542,21 @@ describe('NetworkForm Component', () => {
 
     await waitFor(() => {
       expect(updateNetwork).toHaveBeenCalled();
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: 'Network',
-        event: 'Network Connection Banner RPC Updated',
-        properties: {
-          chain_id_caip: 'eip155:100',
-          from_rpc_domain: 'mainnet.infura.io',
-          to_rpc_domain: 'monad-mainnet.infura.io',
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+          properties: expect.objectContaining({
+            category: 'Network',
+            chain_id_caip: 'eip155:100',
+            from_rpc_domain: 'mainnet.infura.io',
+            to_rpc_domain: 'monad-mainnet.infura.io',
+          }),
+        }),
+      );
     });
   });
 
   it('should not track RPC update event when trackRpcUpdateFromBanner is not set', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -572,23 +573,21 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            rpcEndpoints: [
-              {
-                url: 'https://mainnet.infura.io/v3/',
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          // trackRpcUpdateFromBanner not set
-        />
-      </MetaMetricsContext.Provider>,
+      <NetworksForm
+        {...propNetworkDisplay}
+        existingNetwork={{
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+        }}
+        // trackRpcUpdateFromBanner not set
+      />,
       store,
     );
 
@@ -600,20 +599,13 @@ describe('NetworkForm Component', () => {
       // Should not have called the banner tracking event
       expect(mockTrackEvent).not.toHaveBeenCalledWith(
         expect.objectContaining({
-          event: 'Network Connection Banner RPC Updated',
+          name: 'Network Connection Banner RPC Updated',
         }),
       );
     });
   });
 
   it('should track custom RPC URL when endpoint is not public', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -630,35 +622,33 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://custom-rpc.example.com',
-                  type: 'custom',
-                },
-              ],
-            },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
+      <NetworksForm
+        {...propNetworkDisplay}
+        networkFormState={{
+          ...propNetworkDisplay.networkFormState,
+          rpcUrls: {
+            defaultRpcEndpointIndex: 0,
             rpcEndpoints: [
               {
                 url: 'https://custom-rpc.example.com',
+                type: 'custom',
               },
             ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          trackRpcUpdateFromBanner
-        />
-      </MetaMetricsContext.Provider>,
+          },
+        }}
+        existingNetwork={{
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://custom-rpc.example.com',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+        }}
+        trackRpcUpdateFromBanner
+      />,
       store,
     );
 
@@ -667,26 +657,21 @@ describe('NetworkForm Component', () => {
 
     await waitFor(() => {
       expect(updateNetwork).toHaveBeenCalled();
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: 'Network',
-        event: 'Network Connection Banner RPC Updated',
-        properties: {
-          chain_id_caip: 'eip155:100',
-          from_rpc_domain: 'custom',
-          to_rpc_domain: 'custom',
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+          properties: expect.objectContaining({
+            category: 'Network',
+            chain_id_caip: 'eip155:100',
+            from_rpc_domain: 'custom',
+            to_rpc_domain: 'custom',
+          }),
+        }),
+      );
     });
   });
 
   it('should handle corrupted state with missing rpcEndpoints gracefully', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -703,30 +688,28 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://monad-mainnet.infura.io/v3/',
-                  type: 'custom',
-                },
-              ],
-            },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            // rpcEndpoints is undefined (corrupted state)
-          }}
-          trackRpcUpdateFromBanner
-        />
-      </MetaMetricsContext.Provider>,
+      <NetworksForm
+        {...propNetworkDisplay}
+        networkFormState={{
+          ...propNetworkDisplay.networkFormState,
+          rpcUrls: {
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                url: 'https://monad-mainnet.infura.io/v3/',
+                type: 'custom',
+              },
+            ],
+          },
+        }}
+        existingNetwork={{
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          // rpcEndpoints is undefined (corrupted state)
+        }}
+        trackRpcUpdateFromBanner
+      />,
       store,
     );
 
@@ -735,15 +718,17 @@ describe('NetworkForm Component', () => {
 
     await waitFor(() => {
       expect(updateNetwork).toHaveBeenCalled();
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: 'Network',
-        event: 'Network Connection Banner RPC Updated',
-        properties: {
-          chain_id_caip: 'eip155:100',
-          from_rpc_domain: 'unknown', // Corrupted state handled gracefully
-          to_rpc_domain: 'monad-mainnet.infura.io',
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+          properties: expect.objectContaining({
+            category: 'Network',
+            chain_id_caip: 'eip155:100',
+            from_rpc_domain: 'unknown',
+            to_rpc_domain: 'monad-mainnet.infura.io',
+          }),
+        }),
+      );
     });
   });
 });

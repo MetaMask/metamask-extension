@@ -177,5 +177,28 @@ describe('useAnalytics', () => {
         expect(mockedTrackAnalyticsEvent).toHaveBeenCalled();
       });
     });
+
+    it('does not throw when trackAnalyticsEvent returns a non-promise value', async () => {
+      mockedTrackAnalyticsEvent.mockImplementationOnce(
+        () => undefined as unknown as ReturnType<typeof trackAnalyticsEvent>,
+      );
+
+      expect(() =>
+        renderHookConsumer({
+          eventName: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          state: {
+            metamask: {
+              analyticsId: '0x123',
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
+            },
+          },
+        }),
+      ).not.toThrow();
+
+      await waitFor(() => {
+        expect(mockedTrackAnalyticsEvent).toHaveBeenCalled();
+      });
+    });
   });
 });
