@@ -302,7 +302,11 @@ jest.mock('./lib/rpc-method-middleware', () => ({
 
 jest.mock('../../shared/lib/trace', () => ({
   ...jest.requireActual('../../shared/lib/trace'),
-  trace: jest.fn(),
+  // Pass-through so the wrapped callback still runs: createMetaRPCHandler now
+  // routes the no-trace-context path through trace({ op: 'rpc.handler' }, fn),
+  // so a no-op mock would swallow the handler call (e.g. safelistPhishingDomain,
+  // getCookieFromMarketingPage) and report 0 invocations.
+  trace: jest.fn((_request, fn) => fn?.()),
   endTrace: jest.fn(),
 }));
 
