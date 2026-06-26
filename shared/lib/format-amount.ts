@@ -1,7 +1,5 @@
 import { BigNumber } from 'bignumber.js';
 
-// Inlined from ui/hooks/useCurrencyDisplay.js to keep this shared util
-// self-contained (no cross-layer dependency on ui/).
 const MIN_AMOUNT = 0.000001;
 const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
 
