@@ -48,6 +48,7 @@ import { QuoteValidationErrors, type BridgeToken } from '../bridge/types';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import {
+  BATCH_SELL_DEST_STABLECOIN_METADATA,
   BATCH_SELL_SUPPORTED_CHAIN_IDS,
   ONDO_TOKENIZED_TOKEN_NAME,
 } from '../../../shared/constants/batch-sell';
@@ -332,6 +333,22 @@ export const getAvailableBatchSellReceiveAssetsForNetwork = createSelector(
         // Stablecoin not held by user, build a minimal BridgeToken from token list cache
         const { chainId, assetReference: address } =
           parseCaipAssetType(assetId);
+
+        const staticMetadata =
+          BATCH_SELL_DEST_STABLECOIN_METADATA[lowercasedAssetId];
+        if (staticMetadata) {
+          return {
+            assetId: lowercasedAssetId,
+            chainId,
+            symbol: staticMetadata.symbol,
+            name: staticMetadata.name,
+            decimals: staticMetadata.decimals,
+            balance: '0',
+            iconUrl: staticMetadata.iconUrl,
+          };
+        }
+
+        // Last resort: build a minimal BridgeToken from the token list cache.
         const hexChainId = formatChainIdToHex(chainId);
         const tokenData =
           tokensChainsCache[hexChainId]?.data?.[address.toLowerCase()] ??

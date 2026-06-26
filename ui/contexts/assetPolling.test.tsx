@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import * as redux from 'react-redux';
@@ -16,6 +16,10 @@ import {
   AssetPollingProvider,
 } from './assetPolling';
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
 jest.mock('../hooks/useCurrencyRatePolling');
 jest.mock('../hooks/useTokenRatesPolling');
 jest.mock('../hooks/useTokenDetectionPolling');
@@ -24,6 +28,8 @@ jest.mock('../hooks/useStaticTokensPolling');
 jest.mock('../hooks/defi/useDeFiPolling');
 jest.mock('../hooks/useMultichainAssetsRatesPolling');
 jest.mock('../hooks/useArcDefaultTokens');
+
+const mockUseSelector = jest.mocked(redux.useSelector);
 
 const mockUseCurrencyRatePolling = jest.mocked(useCurrencyRatePolling);
 const mockUseTokenRatesPolling = jest.mocked(useTokenRatesPolling);
@@ -37,7 +43,7 @@ const mockUseMultichainAssetsRatesPolling = jest.mocked(
 const mockUseArcDefaultTokens = jest.mocked(useArcDefaultTokens);
 
 const renderProvider = (isAssetsUnifyStateEnabled: boolean) => {
-  jest.spyOn(redux, 'useSelector').mockReturnValue(isAssetsUnifyStateEnabled);
+  mockUseSelector.mockReturnValue(isAssetsUnifyStateEnabled);
 
   return render(
     <AssetPollingProvider>
@@ -105,6 +111,37 @@ describe('AssetPollingProvider', () => {
       expect(mockUseTokenRatesPolling).not.toHaveBeenCalled();
       expect(mockUseTokenDetectionPolling).not.toHaveBeenCalled();
       expect(mockUseMultichainAssetsRatesPolling).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('context value memoization', () => {
+    it('provides a stable context value object across re-renders', () => {
+      jest.spyOn(redux, 'useSelector').mockReturnValue(false);
+
+      const capturedValues: AssetPollingContextValue[] = [];
+
+      const TestConsumer = () => {
+        const ctx = useContext(AssetPollingContext);
+        useEffect(() => {
+          capturedValues.push(ctx);
+        });
+        return null;
+      };
+
+      const { rerender } = render(
+        <AssetPollingProvider>
+          <TestConsumer />
+        </AssetPollingProvider>,
+      );
+
+      rerender(
+        <AssetPollingProvider>
+          <TestConsumer />
+        </AssetPollingProvider>,
+      );
+
+      expect(capturedValues.length).toBeGreaterThanOrEqual(2);
+      expect(capturedValues[0]).toBe(capturedValues[1]);
     });
   });
 });
