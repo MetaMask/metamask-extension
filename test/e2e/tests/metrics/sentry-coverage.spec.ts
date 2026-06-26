@@ -54,6 +54,13 @@ const MAX_WAIT_FOR_ENVELOPES_MS = 30_000;
 // required set has arrived before snapshotting.
 const SETTLE_MS = 5_000;
 
+// Outrank mock-e2e.js's global Sentry DSN handlers — they are registered after
+// `testSpecificMock` and so otherwise win the match, leaving this endpoint with
+// only a fraction of the envelopes. With a higher priority our one endpoint
+// intercepts EVERY Sentry envelope (both DSNs), independent of the per-branch
+// mock-e2e setup, so the capture is the full per-flow set.
+const SENTRY_CAPTURE_PRIORITY = 100;
+
 // A manual cross-build harness, not a standard always-on e2e check: generate
 // the baseline on v8 (`UPDATE_SENTRY_COVERAGE_BASELINE=true`), then compare on
 // v10. The baseline is intentionally not committed, so skip by default in normal
@@ -80,11 +87,12 @@ describe('Sentry coverage equivalence (#43819)', function () {
             .build(),
           title: this.test?.fullTitle(),
           // Capture EVERY Sentry POST (no `withBodyIncluding` filter), returning a
-          // 200 so the SDK doesn't retry. One endpoint accumulates all envelopes
-          // (error DSN and performance DSN both match `sentryRegEx`).
+          // 200 so the SDK doesn't retry. One high-priority endpoint accumulates
+          // all envelopes — error DSN and performance DSN both match `sentryRegEx`.
           testSpecificMock: async (mockServer: MockttpServer) =>
             mockServer
               .forPost(sentryRegEx)
+              .asPriority(SENTRY_CAPTURE_PRIORITY)
               .thenCallback(() => ({ statusCode: 200, json: {} })),
           // optedIn already enables Sentry; force 100% trace sampling so the
           // pageload transactions are emitted deterministically.
