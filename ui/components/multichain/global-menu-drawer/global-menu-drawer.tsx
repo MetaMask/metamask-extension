@@ -19,7 +19,49 @@ import type { GlobalMenuDrawerProps } from './global-menu-drawer.types';
 
 const DRAWER_TRANSITION_MS = 300;
 
-type DrawerPhase = 'entering' | 'open' | 'exiting';
+type DrawerPhase = 'open' | 'exiting';
+
+type GlobalMenuDrawerCloseHeaderProps = {
+  title?: string;
+  titleId: string;
+  onClose: () => void;
+};
+
+/**
+ * Memoized so menu list re-renders (e.g. notification count updates) do not
+ * replace the close button DOM node while E2E/automation holds a reference.
+ */
+const GlobalMenuDrawerCloseHeader = React.memo(
+  ({ title, titleId, onClose }: GlobalMenuDrawerCloseHeaderProps) => {
+    const t = useI18nContext();
+
+    return (
+      <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          size={ButtonIconSize.Md}
+          ariaLabel={title || t('close')}
+          onClick={onClose}
+          data-testid="drawer-close-button"
+          className="text-icon-alternative"
+          iconProps={{ color: IconColor.IconAlternative }}
+        />
+        {title && (
+          <span className="sr-only" id={titleId}>
+            {title}
+          </span>
+        )}
+      </Box>
+    );
+  },
+);
+
+function getPortalContainerElement(): HTMLElement | null {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+  return document.querySelector('.app') as HTMLElement | null;
+}
 
 /**
  *
@@ -45,7 +87,6 @@ export const GlobalMenuDrawer = ({
   'data-testid': dataTestId,
   anchorElement,
 }: GlobalMenuDrawerProps) => {
-  const t = useI18nContext();
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
@@ -53,19 +94,23 @@ export const GlobalMenuDrawer = ({
   const [drawerStyle, setDrawerStyle] = useState<React.CSSProperties>({});
   const [backdropStyle, setBackdropStyle] = useState<React.CSSProperties>({});
   const [containerElement, setContainerElement] = useState<HTMLElement | null>(
-    null,
+    () => (usePortal ? getPortalContainerElement() : null),
   );
   const [contentTopOffset, setContentTopOffset] = useState(0);
   const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(() =>
     isOpen && !usePortal ? 'open' : null,
   );
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const enterFrameRef = useRef<number | null>(null);
+  const enterAnimationFrameRef = useRef<number | null>(null);
+  const drawerPanelRef = useRef<HTMLDivElement | null>(null);
+  const shouldPlayEnterAnimationRef = useRef(false);
   const wasOpenRef = useRef(false);
   /** Tracks previous isOpen so we can run enter transition only when opening from closed (hamburger), not when mounting/restoring with open (back from page). */
   const prevIsOpenRef = useRef<boolean | undefined>(undefined);
   const rootLayoutRef = useRef<HTMLElement | null>(null);
-  const appContainerRef = useRef<HTMLElement | null>(null);
+  const appContainerRef = useRef<HTMLElement | null>(
+    usePortal ? getPortalContainerElement() : null,
+  );
   const resizeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const hasPosition = Object.keys(drawerStyle).length > 0;
@@ -81,24 +126,18 @@ export const GlobalMenuDrawer = ({
       }
       const wasClosed = prevIsOpenRef.current === false;
       if (wasClosed) {
-        setDrawerPhase('entering');
-        enterFrameRef.current = requestAnimationFrame(() => {
-          enterFrameRef.current = requestAnimationFrame(() => {
-            enterFrameRef.current = null;
-            setDrawerPhase('open');
-          });
-        });
-      } else {
-        setDrawerPhase('open');
+        shouldPlayEnterAnimationRef.current = true;
       }
+      setDrawerPhase('open');
       prevIsOpenRef.current = true;
     }
     if (wasOpenRef.current && !isOpen) {
       wasOpenRef.current = false;
       prevIsOpenRef.current = false;
-      if (enterFrameRef.current !== null) {
-        cancelAnimationFrame(enterFrameRef.current);
-        enterFrameRef.current = null;
+      shouldPlayEnterAnimationRef.current = false;
+      if (enterAnimationFrameRef.current !== null) {
+        cancelAnimationFrame(enterAnimationFrameRef.current);
+        enterAnimationFrameRef.current = null;
       }
       setDrawerPhase('exiting');
       exitTimeoutRef.current = setTimeout(() => {
@@ -116,15 +155,45 @@ export const GlobalMenuDrawer = ({
       prevIsOpenRef.current = false;
     }
     return () => {
-      if (enterFrameRef.current !== null) {
-        cancelAnimationFrame(enterFrameRef.current);
-        enterFrameRef.current = null;
+      if (enterAnimationFrameRef.current !== null) {
+        cancelAnimationFrame(enterAnimationFrameRef.current);
+        enterAnimationFrameRef.current = null;
       }
     };
   }, [isOpen, readyToShow]);
 
+  // Slide-in animation without an entering→open React state transition (React 18
+  // re-renders during that transition can replace the close button DOM node).
+  useLayoutEffect(() => {
+    if (
+      drawerPhase !== 'open' ||
+      !shouldPlayEnterAnimationRef.current ||
+      !drawerPanelRef.current
+    ) {
+      return;
+    }
+
+    const panel = drawerPanelRef.current;
+    shouldPlayEnterAnimationRef.current = false;
+    panel.style.transform = 'translateX(100%)';
+    panel.style.transitionDuration = '0ms';
+    panel.getBoundingClientRect();
+    panel.style.transitionDuration = `${DRAWER_TRANSITION_MS}ms`;
+
+    enterAnimationFrameRef.current = requestAnimationFrame(() => {
+      enterAnimationFrameRef.current = null;
+      panel.style.transform = 'translateX(0)';
+    });
+
+    return () => {
+      if (enterAnimationFrameRef.current !== null) {
+        cancelAnimationFrame(enterAnimationFrameRef.current);
+        enterAnimationFrameRef.current = null;
+      }
+    };
+  }, [drawerPhase]);
+
   const isDrawerMounted = drawerPhase !== null;
-  const isEntering = drawerPhase === 'entering';
   const isExiting = drawerPhase === 'exiting';
   const isDrawerOpen = drawerPhase === 'open';
 
@@ -300,8 +369,7 @@ export const GlobalMenuDrawer = ({
   }
 
   const backdropOpacity = isDrawerOpen ? 1 : 0;
-  const panelTransform =
-    isExiting || isEntering ? 'translateX(100%)' : 'translateX(0)';
+  const panelTransform = isExiting ? 'translateX(100%)' : 'translateX(0)';
 
   const drawerPanelBaseClass =
     'overflow-hidden pointer-events-none flex transition-[transform] ease-in-out motion-reduce:transition-none';
@@ -338,6 +406,7 @@ export const GlobalMenuDrawer = ({
 
       {/* Drawer panel */}
       <div
+        ref={drawerPanelRef}
         className={drawerPanelClass}
         style={{
           zIndex: 1,
@@ -361,22 +430,11 @@ export const GlobalMenuDrawer = ({
             backgroundColor={BoxBackgroundColor.BackgroundDefault}
           >
             {showCloseButton && (
-              <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
-                <ButtonIcon
-                  iconName={IconName.ArrowLeft}
-                  size={ButtonIconSize.Md}
-                  ariaLabel={title || t('close')}
-                  onClick={onClose}
-                  data-testid="drawer-close-button"
-                  className="text-icon-alternative"
-                  iconProps={{ color: IconColor.IconAlternative }}
-                />
-                {title && (
-                  <span className="sr-only" id={titleId}>
-                    {title}
-                  </span>
-                )}
-              </Box>
+              <GlobalMenuDrawerCloseHeader
+                title={title}
+                titleId={titleId}
+                onClose={onClose}
+              />
             )}
 
             <Box
