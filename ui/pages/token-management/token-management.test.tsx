@@ -283,16 +283,18 @@ describe('TokenManagementPage', () => {
       '0x1': [mainnetToken, nativeToken],
       '0x5': [goerliToken],
     },
+    selectedMultichainNetworkChainId = 'eip155:1',
   }: {
     enabledNetworks?: Record<string, boolean>;
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
     networkManagementEnabled?: boolean;
     accountGroupAssets?: Record<string, unknown[]>;
+    selectedMultichainNetworkChainId?: string;
   } = {}) => ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      selectedMultichainNetworkChainId: 'eip155:1',
+      selectedMultichainNetworkChainId,
       useExternalServices: true,
       preferences: {
         ...mockState.metamask.preferences,
@@ -493,11 +495,7 @@ describe('TokenManagementPage', () => {
       await screen.findByTestId('home-network-filter-manage-networks'),
     );
 
-    await waitFor(() =>
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${NETWORKS_ROUTE}?drawerOpen=true`,
-      ),
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
   });
 
   it('shows tokens from all enabled networks when the home page filter is all networks', () => {
@@ -518,6 +516,31 @@ describe('TokenManagementPage', () => {
     expect(
       screen.getByText(messages.allDefaultNetworks.message),
     ).toBeInTheDocument();
+  });
+
+  it('shows all default networks in the filter label when Solana is active but multiple namespaces are enabled', () => {
+    renderPage(
+      createState({
+        selectedMultichainNetworkChainId: solanaChainId,
+        enabledNetworkMap: {
+          eip155: { '0x1': true, '0x5': true },
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          '0x1': [mainnetToken],
+          '0x5': [goerliToken],
+          [solanaChainId]: [solanaToken],
+        },
+      }),
+    );
+
+    expect(
+      screen.getByText(messages.allDefaultNetworks.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(messages.networkNameSolana.message)).toBeNull();
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(screen.getByText('Beta Token')).toBeInTheDocument();
+    expect(screen.getByText('Solana Token')).toBeInTheDocument();
   });
 
   it('hides the Arc USDC ERC20 from the token list while keeping the native token', () => {

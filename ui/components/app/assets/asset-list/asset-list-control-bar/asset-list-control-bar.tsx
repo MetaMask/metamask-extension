@@ -8,15 +8,16 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { isStrictHexString } from '@metamask/utils';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import {
+  ButtonIcon as DsButtonIcon,
+  ButtonIconSize as DsButtonIconSize,
+  IconName as DsIconName,
+} from '@metamask/design-system-react';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
-  getShowTestNetworks,
   getTokenNetworkFilter,
-  getUseExternalServices,
   getUseNftDetection,
 } from '../../../../../selectors';
 import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
@@ -26,10 +27,7 @@ import {
   getEnabledNetworksByNamespace,
   selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
-import {
-  getAllNetworkConfigurationsByCaipChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/lib/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -96,7 +94,7 @@ import {
   getIsNetworkManagementEnabled,
   getIsTokenManagementFilterEnabled,
 } from '../../../../../selectors/multichain/feature-flags';
-import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
+import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
@@ -121,9 +119,6 @@ const AssetListControlBar = ({
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
-  const showTestnets = useSelector(getShowTestNetworks);
-  const useExternalServices = useSelector(getUseExternalServices);
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -152,21 +147,6 @@ const AssetListControlBar = ({
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
-  const { nonTestNetworks: customNetworkMap, testNetworks: testNetworkMap } =
-    useNetworkManagerState();
-
-  const hasOnlyDefaultNetworks = useMemo(() => {
-    const hasVisibleCustomNetworks = Object.values(customNetworkMap).some(
-      (network) => useExternalServices || network.isEvm,
-    );
-    const hasVisibleTestNetworks =
-      showTestnets &&
-      Object.values(testNetworkMap).some(
-        (network) => useExternalServices || network.isEvm,
-      );
-
-    return !hasVisibleCustomNetworks && !hasVisibleTestNetworks;
-  }, [customNetworkMap, showTestnets, testNetworkMap, useExternalServices]);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -183,6 +163,7 @@ const AssetListControlBar = ({
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
+  const networkButtonText = useNetworkFilterButtonLabel();
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -358,36 +339,6 @@ const AssetListControlBar = ({
     });
   };
 
-  const networkButtonText = useMemo(() => {
-    if (totalEnabledNetworkCount === 1) {
-      const chainId = allEnabledNetworksForAllNamespaces[0];
-      const caipChainId = isStrictHexString(chainId)
-        ? toEvmCaipChainId(chainId)
-        : chainId;
-      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
-    }
-
-    // > 1 network selected, show whether that means every visible network or
-    // only the default-network set.
-    if (totalEnabledNetworkCount > 1) {
-      return hasOnlyDefaultNetworks
-        ? t('allNetworks')
-        : t('allDefaultNetworks');
-    }
-
-    if (totalEnabledNetworkCount === 0) {
-      return t('noNetworksSelected');
-    }
-
-    return t('popularNetworks');
-  }, [
-    allEnabledNetworksForAllNamespaces,
-    hasOnlyDefaultNetworks,
-    totalEnabledNetworkCount,
-    t,
-    allCaipNetworks,
-  ]);
-
   const singleNetworkIconUrl = useMemo(() => {
     const chainIds = allEnabledNetworksForAllNamespaces;
 
@@ -408,7 +359,8 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
-          endIconName={IconName.ArrowDown}
+          startIconName={IconName.Filter}
+          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           backgroundColor={
             isNetworkFilterModalOpen
               ? BackgroundColor.backgroundPressed
@@ -438,6 +390,7 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__buttons"
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
+          alignItems={AlignItems.center}
         >
           {showSortControl && (
             <Tooltip
@@ -446,21 +399,16 @@ const AssetListControlBar = ({
               distance={20}
               disabled={isTokenSortPopoverOpen}
             >
-              <ButtonBase
+              <DsButtonIcon
                 ref={sortButtonRef}
                 data-testid="sort-by-popover-toggle"
-                className="asset-list-control-bar__button"
+                className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
+                  isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
+                } hover:bg-hover active:bg-pressed`}
                 onClick={toggleTokenSortPopover}
-                size={ButtonBaseSize.Sm}
-                startIconName={IconName.Filter}
-                startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                backgroundColor={
-                  isTokenSortPopoverOpen
-                    ? BackgroundColor.backgroundPressed
-                    : BackgroundColor.backgroundDefault
-                }
-                color={TextColor.textDefault}
-                marginRight={isFullScreen ? 2 : null}
+                size={DsButtonIconSize.Sm}
+                iconName={DsIconName.ListArrow}
+                ariaLabel={t('sortBy')}
               />
             </Tooltip>
           )}
@@ -486,29 +434,26 @@ const AssetListControlBar = ({
                 position="bottom"
                 distance={20}
               >
-                <ButtonBase
+                <DsButtonIcon
                   ref={importButtonRef}
                   data-testid="importTokens-button"
-                  className="asset-list-control-bar__button"
+                  className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
                   onClick={
                     isTokenManagementFilterEnabled
                       ? handleOpenTokenManagement
                       : handleTokenImportModal
                   }
-                  size={ButtonBaseSize.Sm}
-                  startIconName={
+                  size={DsButtonIconSize.Sm}
+                  iconName={
                     isTokenManagementFilterEnabled
-                      ? IconName.MoreVertical
-                      : IconName.Add
+                      ? DsIconName.MoreVertical
+                      : DsIconName.Add
                   }
-                  startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                  backgroundColor={
-                    isTokenSortPopoverOpen
-                      ? BackgroundColor.backgroundPressed
-                      : BackgroundColor.backgroundDefault
+                  ariaLabel={
+                    isTokenManagementFilterEnabled
+                      ? t('manageTokens')
+                      : t('importTokensCamelCase')
                   }
-                  color={TextColor.textDefault}
-                  marginRight={isFullScreen ? 2 : null}
                 />
               </Tooltip>
             ))}
