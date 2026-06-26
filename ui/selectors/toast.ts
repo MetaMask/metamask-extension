@@ -355,9 +355,6 @@ export const selectToastImplementation = createSelector(
     if (isEventBased) {
       return 'messenger';
     }
-    // TODO: Deprecated. The `'redux'` implementation (SmartTransactionToastListener
-    // / useSmartTransactionToasts) is slated for removal. Remove this branch and
-    // its consumers once the messenger-based path is the default.
     if (isSmartTxEnabled) {
       return 'redux';
     }

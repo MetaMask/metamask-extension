@@ -8,13 +8,7 @@ import { useSmartTransactionToasts } from './useSmartTransactionToasts';
 import { usePerpsWithdrawTransactionToasts } from './usePerpsWithdrawTransactionToasts';
 import { TransactionEventToastListener } from './transaction-event-toast-listener';
 
-/**
- * @deprecated Redux-based smart transaction toasts. Rendered only via the
- * `'redux'` branch of `selectToastImplementation`, which is slated for removal.
- * Once that branch is gone, this component and `useSmartTransactionToasts`
- * should be deleted in favor of the messenger-based
- * `TransactionEventToastListener`.
- */
+/** @deprecated Will be replaced by TransactionEventToastListener */
 const SmartTransactionToastListener = () => {
   useSmartTransactionToasts();
 

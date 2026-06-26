@@ -16,11 +16,6 @@ function generateToastId(txId: string) {
   return `stx-${txId}`;
 }
 
-// NOTE: The status sets and `mapSmartTransactionToastStatus` below are shared
-// with the messenger-based path (`useResolveSmartTransactionApprovals`). When
-// the `'redux'` branch of `selectToastImplementation` and the
-// `useSmartTransactionToasts` hook are removed, these helpers must be RELOCATED
-// (e.g. to a shared module), not deleted.
 export const smartTransactionEvmFailureStatuses = new Set<string>([
   EvmTransactionStatus.failed,
   EvmTransactionStatus.dropped,
@@ -64,12 +59,6 @@ export function mapSmartTransactionToastStatus(
 }
 
 // Relies on pendingApprovals being managed via the SmartTransactionHook
-/**
- * @deprecated Redux-based smart transaction toasts. Used only by the
- * `'redux'` branch of `selectToastImplementation`, which is slated for removal.
- * Delete this hook (and the `SmartTransactionToastListener`) once that branch is
- * gone; relocate the shared helpers above first.
- */
 export function useSmartTransactionToasts() {
   const dispatch = useDispatch();
   const transactions = useSelector(selectSmartTransactions);
