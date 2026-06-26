@@ -273,10 +273,10 @@ export function rootTrace<ResultType>(
 
 export function rootTrace(request: TraceRequest): TraceContext;
 
-export function rootTrace<T>(
+export function rootTrace<ResultType>(
   request: TraceRequest,
-  fn?: TraceCallback<T>,
-): T | TraceContext {
+  fn?: TraceCallback<ResultType>,
+): ResultType | TraceContext {
   const rootRequest = { ...request, isRoot: true };
 
   if (!fn) {

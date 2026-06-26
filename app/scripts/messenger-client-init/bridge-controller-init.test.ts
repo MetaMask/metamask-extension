@@ -78,11 +78,10 @@ describe('BridgeControllerInit', () => {
 
   it('roots bridge quote polling cycles in their own traces', async () => {
     const executePoll = jest.fn().mockResolvedValue(undefined);
-    jest
-      .mocked(BridgeController)
-      .mockImplementationOnce(
-        () => ({ _executePoll: executePoll }) as unknown as BridgeController,
-      );
+    jest.mocked(BridgeController).mockImplementationOnce(
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- _executePoll is BridgeController's private polling method
+      () => ({ _executePoll: executePoll }) as unknown as BridgeController,
+    );
 
     const { messengerClient } = BridgeControllerInit(getInitRequestMock());
 
