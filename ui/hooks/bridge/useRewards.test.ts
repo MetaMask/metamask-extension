@@ -1,5 +1,4 @@
-import { waitFor } from '@testing-library/react';
-import { act } from '@testing-library/react-hooks';
+import { act, waitFor } from '@testing-library/react';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { selectBridgeQuotes } from '@metamask/bridge-controller';

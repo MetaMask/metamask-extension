@@ -1,5 +1,4 @@
-import { waitFor } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { handleFetch } from '@metamask/controller-utils';
 import {
   useTokensData,

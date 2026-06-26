@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import type { OrderFill } from '@metamask/perps-controller';
 import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsLiveFills } from './usePerpsLiveFills';

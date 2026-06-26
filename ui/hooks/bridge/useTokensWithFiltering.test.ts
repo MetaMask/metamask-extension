@@ -76,14 +76,13 @@ describe('useTokensWithFiltering', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+    const { result } = renderHookWithProvider(() => {
       const { filteredTokenListGenerator } = useTokensWithFiltering(
         CHAIN_IDS.MAINNET,
       );
       return filteredTokenListGenerator;
     }, mockStore);
 
-    await waitForNextUpdate();
     await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
@@ -114,14 +113,13 @@ describe('useTokensWithFiltering', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+    const { result } = renderHookWithProvider(() => {
       const { filteredTokenListGenerator } = useTokensWithFiltering(
         CHAIN_IDS.MAINNET,
       );
       return filteredTokenListGenerator;
     }, mockStore);
 
-    await waitForNextUpdate();
     await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
@@ -160,14 +158,13 @@ describe('useTokensWithFiltering', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+    const { result } = renderHookWithProvider(() => {
       const { filteredTokenListGenerator } = useTokensWithFiltering(
         MultichainNetwork.Solana,
       );
       return filteredTokenListGenerator;
     }, mockStore);
 
-    await waitForNextUpdate();
     await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
@@ -195,13 +192,12 @@ describe('useTokensWithFiltering', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+    const { result } = renderHookWithProvider(() => {
       const { filteredTokenListGenerator } = useTokensWithFiltering(
         CHAIN_IDS.POLYGON,
       );
       return filteredTokenListGenerator;
     }, mockStore);
-    await waitForNextUpdate();
     await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);

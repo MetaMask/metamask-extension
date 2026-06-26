@@ -1,5 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { act, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useIsSendBundleSupported } from './useIsSendBundleSupported';
 
 jest.mock('../../../store/actions', () => ({
@@ -46,14 +45,14 @@ describe('useIsSendBundleSupported', () => {
   it('returns true when send bundle is supported', async () => {
     mockIsSendBundleSupported.mockResolvedValue(true);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useIsSendBundleSupported({ chainId: '0x1' }),
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current).toBe(true);
     expect(mockIsSendBundleSupported).toHaveBeenCalledWith('0x1');
+    });
   });
 
   it('returns false when send bundle is not supported', async () => {
@@ -104,24 +103,26 @@ describe('useIsSendBundleSupported', () => {
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(false);
 
-    const { result, rerender, waitForNextUpdate } = renderHook(
+    const { result, rerender } = renderHook(
       ({ chainId }) => useIsSendBundleSupported({ chainId }),
       {
         initialProps: { chainId: '0x1' },
       },
     );
 
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current).toBe(true);
+    });
 
     // Change chainId
     rerender({ chainId: '0x2' });
 
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current).toBe(false);
     expect(mockIsSendBundleSupported).toHaveBeenCalledTimes(2);
     expect(mockIsSendBundleSupported).toHaveBeenNthCalledWith(1, '0x1');
     expect(mockIsSendBundleSupported).toHaveBeenNthCalledWith(2, '0x2');
+    });
   });
 
   describe('Race condition handling', () => {

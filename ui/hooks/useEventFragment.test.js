@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import {
   finalizeEventFragment,
@@ -38,14 +38,14 @@ describe('useEventFragment', () => {
           id: 'testid',
         }),
       );
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         useEventFragment(undefined, {
           successEvent: 'success',
           failureEvent: 'failure',
           persist: true,
         }),
       );
-      await waitForNextUpdate();
+      await waitFor(() => expect(createEventFragment).toHaveBeenCalled());
       value = result.current;
     });
 
@@ -92,14 +92,15 @@ describe('useEventFragment', () => {
           id: 'testid',
         }),
       );
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         useEventFragment(undefined, {
           successEvent: 'success',
           failureEvent: 'failure',
         }),
       );
-      await waitForNextUpdate();
+      await waitFor(() => {
       expect(createEventFragment).toHaveBeenCalledTimes(1);
+      });
       const returnValue = result.current;
       expect(returnValue.fragment).toMatchObject({
         id: 'testid',
@@ -176,14 +177,14 @@ describe('useEventFragment', () => {
           id: 'testid',
         }),
       );
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         useEventFragment(undefined, {
           successEvent: 'success',
           failureEvent: 'failure',
           persist: true,
         }),
       );
-      await waitForNextUpdate();
+      await waitFor(() => expect(createEventFragment).toHaveBeenCalled());
       value = result.current;
     });
 

@@ -1,6 +1,5 @@
-import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import {
   fetchTokens,
   fetchTopAssets,

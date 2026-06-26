@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import {
   act,
   renderHook as renderHookBase,
-} from '@testing-library/react-hooks';
+} from '@testing-library/react';
 import thunk from 'redux-thunk';
 import {
   TransactionStatus,

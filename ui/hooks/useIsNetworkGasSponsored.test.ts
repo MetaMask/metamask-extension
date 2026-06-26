@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { getGasFeesSponsoredNetworkEnabled } from '../selectors';
 import { isHardwareWallet } from '../../shared/lib/selectors/keyring';

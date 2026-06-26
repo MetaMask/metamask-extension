@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  * See documentation for Icon here https://metamask.github.io/metamask-design-system/?path=/docs/react-components-icon--docs
  */
 
-const Swap = ({ className, size, color }) => (
+const Swap = ({ className = undefined, size, color }) => (
   <svg
     width={size}
     height={size}
@@ -27,10 +27,6 @@ const Swap = ({ className, size, color }) => (
     />
   </svg>
 );
-
-Swap.defaultProps = {
-  className: undefined,
-};
 
 Swap.propTypes = {
   /**

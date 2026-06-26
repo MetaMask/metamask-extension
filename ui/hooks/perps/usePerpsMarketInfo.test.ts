@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import type { MarketInfo } from '@metamask/perps-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -62,44 +61,44 @@ describe('usePerpsMarketInfo', () => {
     ];
     mockSubmitRequestToBackground.mockResolvedValue(markets);
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => usePerpsMarketInfo('BTC'),
       { metamask: defaultPerpsMetamask },
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current).toBeDefined();
     expect(result.current?.name).toBe('BTC');
     expect(result.current?.szDecimals).toBe(5);
+    });
   });
 
   it('matches symbol case-insensitively', async () => {
     const markets = [makeMarketInfo({ name: 'HYPE' })];
     mockSubmitRequestToBackground.mockResolvedValue(markets);
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => usePerpsMarketInfo('hype'),
       { metamask: defaultPerpsMetamask },
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current?.name).toBe('HYPE');
+    });
   });
 
   it('returns undefined when the symbol is not in the market list', async () => {
     const markets = [makeMarketInfo({ name: 'BTC' })];
     mockSubmitRequestToBackground.mockResolvedValue(markets);
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => usePerpsMarketInfo('SOL'),
       { metamask: defaultPerpsMetamask },
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current).toBeUndefined();
+    });
   });
 
   it('returns undefined and does not throw when the fetch rejects', async () => {
@@ -247,23 +246,25 @@ describe('usePerpsMarketInfo', () => {
     const markets = [makeMarketInfo({ name: 'BTC' })];
     mockSubmitRequestToBackground.mockResolvedValue(markets);
 
-    const { unmount, waitForNextUpdate } = renderHookWithProvider(
+    const { unmount } = renderHookWithProvider(
       () => usePerpsMarketInfo('BTC'),
       { metamask: defaultPerpsMetamask },
     );
 
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+    });
 
     clearPerpsMarketInfoModuleCache();
     unmount();
 
-    const { waitForNextUpdate: wait2 } = renderHookWithProvider(
+    renderHookWithProvider(
       () => usePerpsMarketInfo('BTC'),
       { metamask: defaultPerpsMetamask },
     );
 
-    await wait2();
+    await waitFor(() => {
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+    });
   });
 });

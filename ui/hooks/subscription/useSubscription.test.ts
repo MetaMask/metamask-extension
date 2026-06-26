@@ -309,15 +309,15 @@ describe('useShieldRewards', () => {
       );
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useShieldRewards(),
       shieldState,
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current.isRewardsSeason).toBe(false);
     expect(result.current.pending).toBe(false);
+    });
   });
 
   // useShieldRewards now hard-returns disabled state without invoking
@@ -333,19 +333,19 @@ describe('useShieldRewards', () => {
       throw new Error('Network error');
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useShieldRewards(),
       shieldState,
     );
 
-    await waitForNextUpdate();
-
-    // seasonError triggers the error fallback, returning default values
-    expect(result.current.isRewardsSeason).toBe(false);
-    expect(result.current.pointsMonthly).toBeNull();
-    expect(result.current.pointsYearly).toBeNull();
-    expect(result.current.hasAccountOptedIn).toBe(false);
-    expect(result.current.pending).toBe(false);
+    await waitFor(() => {
+      // seasonError triggers the error fallback, returning default values
+      expect(result.current.isRewardsSeason).toBe(false);
+      expect(result.current.pointsMonthly).toBeNull();
+      expect(result.current.pointsYearly).toBeNull();
+      expect(result.current.hasAccountOptedIn).toBe(false);
+      expect(result.current.pending).toBe(false);
+    });
 
     // Verify the error was logged
     expect(consoleSpy).toHaveBeenCalledWith(
@@ -365,16 +365,16 @@ describe('useShieldRewards', () => {
       throw new Error('Points estimation failed: 500');
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useShieldRewards(),
       stateWithKeyrings,
     );
 
-    await waitForNextUpdate();
-
-    // Points estimation error is caught gracefully, returning null values
-    expect(result.current.pointsMonthly).toBeNull();
-    expect(result.current.pointsYearly).toBeNull();
-    expect(result.current.pending).toBe(false);
+    await waitFor(() => {
+      // Points estimation error is caught gracefully, returning null values
+      expect(result.current.pointsMonthly).toBeNull();
+      expect(result.current.pointsYearly).toBeNull();
+      expect(result.current.pending).toBe(false);
+    });
   });
 });

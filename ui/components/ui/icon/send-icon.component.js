@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  * See documentation for Icon here https://metamask.github.io/metamask-design-system/?path=/docs/react-components-icon--docs
  */
 
-const Send = ({ className, size, color }) => (
+const Send = ({ className = undefined, size, color }) => (
   <svg
     className={className}
     width={size}
@@ -22,10 +22,6 @@ const Send = ({ className, size, color }) => (
     />
   </svg>
 );
-
-Send.defaultProps = {
-  className: undefined,
-};
 
 Send.propTypes = {
   /**

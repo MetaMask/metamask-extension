@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  * See documentation for Icon here https://metamask.github.io/metamask-design-system/?path=/docs/react-components-icon--docs
  */
 
-const Interaction = ({ className, size, color }) => (
+const Interaction = ({ className = undefined, size, color }) => (
   <svg
     className={className}
     width={size}
@@ -27,10 +27,6 @@ const Interaction = ({ className, size, color }) => (
     />
   </svg>
 );
-
-Interaction.defaultProps = {
-  className: undefined,
-};
 
 Interaction.propTypes = {
   /**

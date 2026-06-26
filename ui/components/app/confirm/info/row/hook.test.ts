@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';

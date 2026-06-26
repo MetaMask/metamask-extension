@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { permitNFTSignatureMsg } from '../../../../test/data/confirmations/typed_sign';

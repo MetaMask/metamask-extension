@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as confirmContext from '../../context/confirm';
 import * as safeChains from '../../../../components/multichain/networks-form/use-safe-chains';
@@ -25,7 +25,9 @@ const mockJsonRpcRequest = jest.fn();
 
 const renderHookWithWait = async () => {
   const hookResult = renderHook(() => useAddEthereumChainAlerts());
-  await hookResult.waitForNextUpdate();
+  await waitFor(() => {
+    expect(hookResult.result.current.length).toBeGreaterThan(0);
+  });
   return hookResult;
 };
 

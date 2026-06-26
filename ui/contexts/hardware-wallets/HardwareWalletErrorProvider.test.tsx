@@ -1,6 +1,5 @@
 import React from 'react';
-import { render, act } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, render, renderHook } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';

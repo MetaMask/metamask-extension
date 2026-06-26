@@ -1,8 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderHook } from '@testing-library/react-hooks';
-import { act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { createMemoryRouterWrapper } from '../../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -465,6 +464,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
       expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
               [
+                [
+                  "Warning: ReactDOM.render is no longer supported in React 18. Use createRoot instead. Until you switch to the new API, your app will behave as if it's running React 17. Learn more: https://reactjs.org/link/switch-to-createroot",
+                ],
                 [
                   [Error: submit failed],
                 ],

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import * as reactRedux from 'react-redux';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex, CaipChainId } from '@metamask/utils';

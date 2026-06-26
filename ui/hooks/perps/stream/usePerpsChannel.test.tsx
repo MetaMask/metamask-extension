@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import type { OrderBookData } from '@metamask/perps-controller';
 import { PerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { usePerpsChannel } from './usePerpsChannel';

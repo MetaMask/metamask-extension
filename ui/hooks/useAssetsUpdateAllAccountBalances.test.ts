@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateBalancesFoAccounts } from '../store/actions';
 import { getEnabledChainIds } from '../selectors';

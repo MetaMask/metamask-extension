@@ -25,7 +25,7 @@ import {
 import { getSnapName } from '../../../helpers/utils/util';
 import { getSnapsMetadata } from '../../../selectors';
 
-const ConnectedAccountsPermissions = ({ permissions }) => {
+const ConnectedAccountsPermissions = ({ permissions = [] }) => {
   const t = useI18nContext();
   const [expanded, setExpanded] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
@@ -78,6 +78,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
             'connected-accounts-permissions__list-container-expanded',
           )}
           marginTop={4}
+          data-testid="connected-accounts-permissions-list"
         >
           <Text as="h6" variant={TextVariant.bodySm}>
             {t('authorizedPermissions')}:
@@ -109,10 +110,6 @@ ConnectedAccountsPermissions.propTypes = {
       key: PropTypes.string.isRequired,
     }),
   ),
-};
-
-ConnectedAccountsPermissions.defaultProps = {
-  permissions: [],
 };
 
 ConnectedAccountsPermissions.displayName = 'ConnectedAccountsPermissions';

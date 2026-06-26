@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, cleanup } from '@testing-library/react-hooks';
+import { renderHook, cleanup } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as merklClient from '../merkl-client';
 import {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
 
 import { MetaMetricsContext } from '../../contexts/metametrics';
