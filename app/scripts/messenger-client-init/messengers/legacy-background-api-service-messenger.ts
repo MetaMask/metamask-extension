@@ -48,6 +48,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'AccountsController:getAccountByAddress',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
+      'SeedlessOnboardingController:changePassword',
       'SeedlessOnboardingController:updateBackupMetadataState',
       'PermissionController:updatePermissionsByCaveat',
       'KeyringController:getKeyringsByType',
