@@ -5530,6 +5530,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/analytics-controller@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/analytics-controller@npm:1.2.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/utils": "npm:^11.11.0"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  checksum: 10/b3f2f660aa8d9ecbb8f1c0491c8f409249adb17499503c3786536f975fa8f29608e58e82eca33a642d60e38cf68bb462810286a33f5bca74fbc6f06d55a1bc7b
+  languageName: node
+  linkType: hard
+
 "@metamask/announcement-controller@npm:^8.0.0":
   version: 8.0.0
   resolution: "@metamask/announcement-controller@npm:8.0.0"
@@ -7461,10 +7474,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:33.0.0":
-  version: 33.0.0
-  resolution: "@metamask/network-controller@npm:33.0.0"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@33.0.0-preview-14cbc2873":
+  version: 33.0.0-preview-14cbc2873
+  resolution: "@metamask-previews/network-controller@npm:33.0.0-preview-14cbc2873"
   dependencies:
+    "@metamask/analytics-controller": "npm:^1.2.0"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/controller-utils": "npm:^12.3.0"
@@ -7485,7 +7499,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/656cc33da4afc17b76623ed286ceac72035810eae467f4389f97aaf37376adc4e6d1e31facf4d26aca469f8ee5ab6217b982f10ae8777616019ff6d9ed7c1a67
+  checksum: 10/28c0ff5afad6b53d5798a1bf6581f40d8b52152992c574e2d684d72aa782c32cdfa38e59345f5eb06e5f64250a80c9d08135449345acbef6b2e649b3fc5f859d
   languageName: node
   linkType: hard
 

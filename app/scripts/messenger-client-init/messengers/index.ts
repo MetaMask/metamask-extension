@@ -161,10 +161,7 @@ import {
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
-import {
-  getNetworkControllerInitMessenger,
-  getNetworkControllerMessenger,
-} from './network-controller-messenger';
+import { getNetworkControllerMessenger } from './network-controller-messenger';
 import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -258,11 +255,7 @@ export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
-export type { NetworkControllerInitMessenger } from './network-controller-messenger';
-export {
-  getNetworkControllerMessenger,
-  getNetworkControllerInitMessenger,
-} from './network-controller-messenger';
+export { getNetworkControllerMessenger } from './network-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type { NameControllerInitMessenger } from './name-controller-messenger';
 export {
@@ -529,7 +522,6 @@ export const MESSENGER_FACTORIES = {
   },
   NetworkController: {
     getMessenger: getNetworkControllerMessenger,
-    getInitMessenger: getNetworkControllerInitMessenger,
   },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
