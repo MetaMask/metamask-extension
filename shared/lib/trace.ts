@@ -20,6 +20,7 @@ export enum TraceName {
   AccountOverviewPerpsTab = 'Account Overview Perps Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BackgroundPoll = 'Background Poll',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
   BridgeViewLoaded = 'Bridge View Loaded',
   ConnectPage = 'Connect Page',
@@ -200,6 +201,12 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * When true, do not inherit from the currently active span when no
+   * explicit parent context is provided.
+   */
+  isRoot?: boolean;
 };
 
 /**
@@ -257,6 +264,42 @@ export function trace<T>(
   }
 
   return traceCallback(request, fn);
+}
+
+export function rootTrace<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType;
+
+export function rootTrace(request: TraceRequest): TraceContext;
+
+export function rootTrace<T>(
+  request: TraceRequest,
+  fn?: TraceCallback<T>,
+): T | TraceContext {
+  const rootRequest = { ...request, isRoot: true };
+
+  if (!fn) {
+    return trace(rootRequest);
+  }
+
+  return trace(rootRequest, fn);
+}
+
+export function traceBackgroundPoll<ResultType>(
+  controllerName: string,
+  fn: () => ResultType,
+): ResultType {
+  return rootTrace(
+    {
+      name: TraceName.BackgroundPoll,
+      op: 'background.poll',
+      tags: {
+        controller: controllerName,
+      },
+    },
+    fn,
+  );
 }
 
 /**
@@ -555,7 +598,8 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const { data: attributes, name, parentContext, startTime, op, isRoot } =
+    request;
   let parentSpan = resolveParentSpan(parentContext);
 
   // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
@@ -564,7 +608,7 @@ function startSpan<T>(
   // forceTransaction preserves transaction-level visibility for monitoring while
   // linking to the auto-instrumentation hierarchy.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!parentSpan && !parentContext && !isRoot) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;

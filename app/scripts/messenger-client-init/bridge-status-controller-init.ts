@@ -4,10 +4,14 @@ import {
 } from '@metamask/bridge-status-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
-import { trace } from '../../../shared/lib/trace';
+import { trace, traceBackgroundPoll } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { accountSupports7702 } from '../lib/account-supports-7702';
 import { MessengerClientInitFunction } from './types';
+
+type PollingControllerLike = {
+  _executePoll?: (input: unknown) => Promise<void>;
+};
 
 /**
  * Initialize the bridge status controller.
@@ -62,6 +66,16 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
     // @ts-expect-error: `trace` function type does not match the expected type.
     traceFn: (...args) => trace(...args),
   });
+
+  const pollingController = messengerClient as unknown as PollingControllerLike;
+  const executePoll = pollingController._executePoll?.bind(messengerClient);
+
+  if (executePoll) {
+    pollingController._executePoll = (pollingInput: unknown) =>
+      traceBackgroundPoll('BridgeStatusController', () =>
+        executePoll(pollingInput),
+      );
+  }
 
   return {
     messengerClient,

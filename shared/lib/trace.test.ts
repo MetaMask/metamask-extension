@@ -1,7 +1,9 @@
 import type * as Sentry from '@sentry/browser';
 import {
   endTrace,
+  rootTrace,
   trace,
+  traceBackgroundPoll,
   TraceName,
   getSerializedTraceContext,
   serializeTraceContext,
@@ -431,6 +433,54 @@ describe('Trace', () => {
           parentSpan: null,
         }),
         expect.any(Function),
+      );
+    });
+
+    it('does not inherit from active span when rootTrace is used', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      rootTrace({ name: NAME_MOCK }, () => true);
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          forceTransaction: undefined,
+          parentSpan: null,
+        }),
+        expect.any(Function),
+      );
+    });
+
+    it('roots background poll traces with poll metadata', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      traceBackgroundPoll('StaticAssetsController', () => true);
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          forceTransaction: undefined,
+          name: TraceName.BackgroundPoll,
+          op: 'background.poll',
+          parentSpan: null,
+        }),
+        expect.any(Function),
+      );
+      expect(setTagMock).toHaveBeenCalledWith(
+        'controller',
+        'StaticAssetsController',
       );
     });
   });
