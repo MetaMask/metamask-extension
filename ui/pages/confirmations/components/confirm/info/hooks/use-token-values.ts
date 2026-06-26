@@ -7,7 +7,7 @@ import useTokenExchangeRate from '../../../../../../components/app/currency-inpu
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { formatAmount } from '../../../simulation-details/formatAmount';
+import { formatAmount } from '../../../../../../../shared/lib/format-amount';
 import { useTokenTransactionData } from './useTokenTransactionData';
 
 export const useTokenValues = (transactionMeta: TransactionMeta) => {

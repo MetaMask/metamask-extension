@@ -1401,6 +1401,230 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('changePassword', () => {
+    it('changes the keyring password and releases the lock for a non-social login flow', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        const changePasswordHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          changePasswordHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(changePasswordHandler).toHaveBeenCalledTimes(1);
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:changePassword',
+          'new-password',
+        );
+        // No seedless onboarding controller calls for a non-social login flow.
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'SeedlessOnboardingController:changePassword',
+          expect.anything(),
+          expect.anything(),
+        );
+      });
+    });
+
+    it('releases the seedless operation mutex after a successful change', async () => {
+      const releaseLock = jest.fn();
+      const seedlessOperationMutex = new Mutex();
+      jest
+        .spyOn(seedlessOperationMutex, 'acquire')
+        .mockResolvedValue(releaseLock);
+
+      await withService(
+        { options: { seedlessOperationMutex } },
+        async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getIsSocialLoginFlow',
+            jest.fn().mockReturnValue(false),
+          );
+          rootMessenger.registerActionHandler(
+            'KeyringController:changePassword',
+            jest.fn().mockResolvedValue(undefined),
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          );
+
+          expect(seedlessOperationMutex.acquire).toHaveBeenCalledTimes(1);
+          expect(releaseLock).toHaveBeenCalledTimes(1);
+        },
+      );
+    });
+
+    it('also changes the seedless onboarding password and stores the new keyring encryption key for a social login flow', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:changePassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportEncryptionKey',
+          jest.fn().mockResolvedValue('new-encryption-key'),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:changePassword',
+          'new-password',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:changePassword',
+          'new-password',
+          'old-password',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:exportEncryptionKey',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          'new-encryption-key',
+        );
+      });
+    });
+
+    it('reverts the keyring password change and captures the error when the seedless onboarding password change fails', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const error = new Error('seedless change failed');
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        const changePasswordHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          changePasswordHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:changePassword',
+          jest.fn().mockRejectedValue(error),
+        );
+        const exportEncryptionKeyHandler = jest
+          .fn()
+          .mockResolvedValue('reverted-encryption-key');
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportEncryptionKey',
+          exportEncryptionKeyHandler,
+        );
+        const storeKeyringEncryptionKeyHandler = jest
+          .fn()
+          .mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          storeKeyringEncryptionKeyHandler,
+        );
+
+        const captureExceptionSpy = jest.spyOn(
+          serviceMessenger,
+          'captureException',
+        );
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).rejects.toThrow(error);
+
+        // The keyring password is first changed to the new password, then
+        // reverted to the old password.
+        expect(changePasswordHandler).toHaveBeenNthCalledWith(
+          1,
+          'new-password',
+        );
+        expect(changePasswordHandler).toHaveBeenNthCalledWith(
+          2,
+          'old-password',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          'reverted-encryption-key',
+        );
+        expect(captureExceptionSpy).toHaveBeenCalledWith(
+          createSentryError(
+            'error while changing password for social login flow',
+            error,
+          ),
+        );
+      });
+    });
+
+    it('releases the lock and rethrows when the keyring password change fails', async () => {
+      const releaseLock = jest.fn();
+      const seedlessOperationMutex = new Mutex();
+      jest
+        .spyOn(seedlessOperationMutex, 'acquire')
+        .mockResolvedValue(releaseLock);
+
+      await withService(
+        { options: { seedlessOperationMutex } },
+        async ({ rootMessenger }) => {
+          const error = new Error('keyring change failed');
+
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getIsSocialLoginFlow',
+            jest.fn().mockReturnValue(false),
+          );
+          rootMessenger.registerActionHandler(
+            'KeyringController:changePassword',
+            jest.fn().mockRejectedValue(error),
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:changePassword',
+              'new-password',
+              'old-password',
+            ),
+          ).rejects.toThrow(error);
+
+          expect(releaseLock).toHaveBeenCalledTimes(1);
+        },
+      );
+    });
+  });
+
   describe('setLocked', () => {
     beforeEach(() => {
       jest.useFakeTimers();
@@ -2061,6 +2285,7 @@ function getMessenger(
       'KeyringController:setLocked',
       'KeyringController:submitEncryptionKey',
       'KeyringController:submitPassword',
+      'SeedlessOnboardingController:changePassword',
       'SeedlessOnboardingController:loadKeyringEncryptionKey',
       'SeedlessOnboardingController:revokePendingRefreshTokens',
       'SeedlessOnboardingController:setLocked',
