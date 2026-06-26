@@ -414,7 +414,13 @@ async function withFixtures(options, testSuite) {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
       await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
 
-      if (title?.startsWith('benchmark-')) {
+      // Only arm the CDP `Fetch.enable` allowlist guard when the benchmark is
+      // actually mocking — i.e. PR / base-comparison runs, where
+      // `useMockingPassThrough` is false. On `main`/`release/*` the suite runs
+      // in pass-through mode against real endpoints (MAIN_OR_RELEASE === true in
+      // run-benchmarks.yml) and feeds Sentry as the canonical release-performance
+      // figures, so the allowlist must not block live traffic. See #7201.
+      if (title?.startsWith('benchmark-') && !useMockingPassThrough) {
         await driver.enableBenchmarkCdpNetworkGuard(
           driverOptions?.benchmarkCdpAllowedUrlPatterns,
         );
