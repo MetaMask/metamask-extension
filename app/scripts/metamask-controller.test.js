@@ -1043,69 +1043,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('submitPassword', () => {
-      it('removes any identities that do not correspond to known accounts.', async () => {
-        const localMetaMaskController = new MetaMaskController({
-          showUserConfirmation: noop,
-          encryptor: mockEncryptor,
-          initState: {
-            ...cloneDeep(firstTimeState),
-            KeyringController: {
-              keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
-              isUnlocked: true,
-            },
-          },
-          initLangCode: 'en_US',
-          platform: {
-            showTransactionNotification: () => undefined,
-            getVersion: () => 'foo',
-          },
-          browser: browserPolyfillMock,
-          getRequestAccountTabIds: () => ({}),
-          getOpenMetamaskTabsIds: () => ({}),
-          notificationManager: {
-            markAsAutomaticallyClosed: jest.fn(),
-          },
-          infuraProjectId: 'foo',
-          isFirstMetaMaskControllerSetup: true,
-          cronjobControllerStorageManager:
-            createMockCronjobControllerStorageManager(),
-          controllerMessenger: new Messenger({
-            namespace: MOCK_ANY_NAMESPACE,
-          }),
-        });
-
-        const accountsControllerSpy = jest.spyOn(
-          localMetaMaskController.accountsController,
-          'updateAccounts',
-        );
-
-        const password = 'password';
-        await localMetaMaskController.createNewVaultAndKeychain(password);
-
-        await localMetaMaskController.submitPassword(password);
-
-        const addresses =
-          await localMetaMaskController.keyringController.getAccounts();
-
-        const internalAccounts =
-          localMetaMaskController.accountsController.listAccounts();
-
-        internalAccounts.forEach((account) => {
-          expect(addresses).toContain(account.address);
-        });
-
-        addresses.forEach((address) => {
-          expect(
-            internalAccounts.find((account) => account.address === address),
-          ).toBeDefined();
-        });
-
-        // + 1 in `createNewVaultAndKeychain` (onboarding)
-        expect(accountsControllerSpy).toHaveBeenCalledTimes(1);
-      });
-    });
-
     describe('_onLock', () => {
       it('disconnects an active perps websocket', async () => {
         jest
@@ -4310,7 +4247,9 @@ describe('MetaMaskController', () => {
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
-        await metamaskController.submitPassword(password); // Force-unlock to trigger Snap keyring creation.
+        await metamaskController.legacyBackgroundApiService.submitPasswordOrEncryptionKey(
+          { password },
+        ); // Force-unlock to trigger Snap keyring creation.
 
         const previousKeyrings = cloneDeep(
           metamaskController.keyringController.state.keyrings,

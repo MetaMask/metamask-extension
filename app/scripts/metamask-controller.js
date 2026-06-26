@@ -265,6 +265,7 @@ import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
+import { trackEvent } from './controllers/analytics';
 import Backup from './lib/backup';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -2997,8 +2998,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.cancelQrCodeScan.bind(appStateController),
 
       // vault management
-      submitPassword: this.submitPassword.bind(this),
-      verifyPassword: this.verifyPassword.bind(this),
+      submitPasswordOrEncryptionKey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
+      ),
+      verifyPassword: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'KeyringController:verifyPassword',
+      ),
 
       // passkey management
       generatePasskeyRegistrationOptions:
@@ -3326,6 +3333,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
         ),
+      setPerpsTabBadgeSeen:
+        appStateController.setPerpsTabBadgeSeen.bind(appStateController),
       setMusdConversionEducationSeen:
         appStateController.setMusdConversionEducationSeen.bind(
           appStateController,
@@ -3404,7 +3413,10 @@ export default class MetamaskController extends EventEmitter {
       restoreSocialBackupAndGetSeedPhrase:
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
-      changePassword: this.changePassword.bind(this),
+      changePassword: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:changePassword',
+      ),
       getIsSeedlessOnboardingUserAuthenticated:
         this.seedlessOnboardingController.getIsUserAuthenticated.bind(
           this.seedlessOnboardingController,
@@ -3433,7 +3445,10 @@ export default class MetamaskController extends EventEmitter {
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
-      exportAccount: this.exportAccount.bind(this),
+      exportAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:exportAccount',
+      ),
       exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
       exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
 
@@ -3445,7 +3460,10 @@ export default class MetamaskController extends EventEmitter {
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       estimateGasFee: txController.estimateGasFee.bind(txController),
-      getNextNonce: this.getNextNonce.bind(this),
+      getNextNonce: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getNextNonce',
+      ),
       addTransaction: (transactionParams, transactionOptions) =>
         addTransaction(
           this.getAddTransactionRequest({
@@ -3639,6 +3657,7 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
         metaMetricsController,
       ),
+      trackAnalyticsEvent: trackEvent,
       trackMetaMetricsPage: metaMetricsController.trackPage.bind(
         metaMetricsController,
       ),
@@ -4007,11 +4026,6 @@ export default class MetamaskController extends EventEmitter {
       this.onboardingController.resetOnboarding();
       this.appStateController.setIsWalletResetInProgress(true);
     }
-  }
-
-  async exportAccount(address, password) {
-    await this.verifyPassword(password);
-    return this.keyringController.exportAccount({ password }, address);
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
@@ -4387,7 +4401,7 @@ export default class MetamaskController extends EventEmitter {
         throw new Error('Password required to register passkey');
       }
       // verify password
-      await this.verifyPassword(password);
+      await this.keyringController.verifyPassword(password);
     }
 
     const vaultKey = await this.keyringController.exportEncryptionKey();
@@ -4462,7 +4476,7 @@ export default class MetamaskController extends EventEmitter {
         },
       );
     }
-    await this.verifyPassword(password);
+    await this.keyringController.verifyPassword(password);
     this.passkeyController.removePasskey();
   }
 
@@ -4737,61 +4751,6 @@ export default class MetamaskController extends EventEmitter {
         data: seedPhraseAsUint8Array,
         type: SecretType.Mnemonic,
       });
-    }
-  }
-
-  /**
-   * Changes the password for the wallet.
-   *
-   * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
-   *
-   * @param {string} newPassword - The new password.
-   * @param {string} oldPassword - The old password.
-   */
-  async changePassword(newPassword, oldPassword) {
-    const releaseLock = await this.seedlessOperationMutex.acquire();
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    try {
-      await this.keyringController.changePassword(newPassword);
-
-      if (isSocialLoginFlow) {
-        try {
-          await this.seedlessOnboardingController.changePassword(
-            newPassword,
-            oldPassword,
-          );
-          // store the new keyring encryption key in the seedless onboarding controller
-          const keyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            keyringEncKey,
-          );
-        } catch (err) {
-          log.error('error while changing seedless-onboarding password', err);
-          log.error('reverting keyring password change');
-          // revert the keyring password change by changing the password back to the old password
-          await this.keyringController.changePassword(oldPassword);
-          // store the old keyring encryption key in the seedless onboarding controller
-          const revertedKeyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            revertedKeyringEncKey,
-          );
-
-          this.controllerMessenger?.captureException?.(
-            createSentryError(
-              'error while changing password for social login flow',
-              err,
-            ),
-          );
-          throw err;
-        }
-      }
-    } catch (error) {
-      log.error('error while changing password', error);
-      throw error;
-    } finally {
-      releaseLock();
     }
   }
 
@@ -5285,20 +5244,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Submits the user's password and attempts to unlock the vault.
-   * Also synchronizes the preferencesController, to ensure its schema
-   * is up to date with known accounts once the vault is decrypted.
-   *
-   * @param {string} password - The user's password
-   */
-  async submitPassword(password) {
-    await this.controllerMessenger.call(
-      'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-      { password },
-    );
-  }
-
-  /**
    * Submits the user's encryption key and attempts to unlock the vault.
    * Also synchronizes the preferencesController, to ensure its schema
    * is up to date with known accounts once the vault is decrypted.
@@ -5315,7 +5260,9 @@ export default class MetamaskController extends EventEmitter {
   async _loginUser(password) {
     try {
       // Automatic login via config password
-      await this.submitPassword(password);
+      await this.legacyBackgroundApiService.submitPasswordOrEncryptionKey({
+        password,
+      });
     } finally {
       this._startUISync();
     }
@@ -5362,15 +5309,6 @@ export default class MetamaskController extends EventEmitter {
 
   async clearLoginArtifacts() {
     await this.extension.storage.session.remove(['loginToken', 'loginSalt']);
-  }
-
-  /**
-   * Submits a user's password to check its validity.
-   *
-   * @param {string} password - The user's password
-   */
-  async verifyPassword(password) {
-    await this.keyringController.verifyPassword(password);
   }
 
   //
@@ -8084,22 +8022,6 @@ export default class MetamaskController extends EventEmitter {
 
     releaseLock();
     return pendingNonce;
-  }
-
-  /**
-   * Returns the next nonce according to the nonce-tracker
-   *
-   * @param {string} address - The hex string address for the transaction
-   * @param networkClientId - The networkClientId to get the nonce lock with
-   * @returns {Promise<number>}
-   */
-  async getNextNonce(address, networkClientId) {
-    const nonceLock = await this.txController.getNonceLock(
-      address,
-      networkClientId,
-    );
-    nonceLock.releaseLock();
-    return nonceLock.nextNonce;
   }
 
   /**
