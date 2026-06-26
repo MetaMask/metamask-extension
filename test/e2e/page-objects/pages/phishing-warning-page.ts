@@ -52,13 +52,17 @@ class PhishingWarningPage {
     );
     for (let i = 0; i < 3; i++) {
       try {
+        console.log(`Finding iframe with retry ${i}`);
         const iframe = (await this.driver.findElement(
           this.iframeSelector,
         )) as WebElement;
+        console.log('Switching to iframe');
         await this.driver.switchToFrame(iframe as unknown as string);
         await this.checkPageIsLoaded();
+        console.log('Clicking open warning in new tab link');
         await this.driver.clickElement(this.openWarningInNewTabLink);
         try {
+          console.log('Switching to default content');
           // Switch back to default content before retrying, in case we're stuck in the iframe context that was replaced on load
           await this.driver.switchToDefaultContent();
         } catch (error) {
@@ -66,6 +70,10 @@ class PhishingWarningPage {
         }
         return;
       } catch (error) {
+        console.log(
+          'Error clicking open warning in new tab link on phishing warning page',
+          error,
+        );
         if (error instanceof Error && error.name === 'NoSuchWindowError') {
           console.log(
             `Context may already be discarded, retrying ${i + 1}/3...`,
