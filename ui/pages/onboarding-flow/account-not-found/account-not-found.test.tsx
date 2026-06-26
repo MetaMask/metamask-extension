@@ -27,10 +27,6 @@ describe('Account Not Found Seedless Onboarding View', () => {
     jest.resetAllMocks();
   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   const mockState = {
     ...initializedMockState,
     metamask: {
@@ -78,7 +74,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.socialImport,
+        firstTimeFlowType: FirstTimeFlowType.import,
       },
     });
 

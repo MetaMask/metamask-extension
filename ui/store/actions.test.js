@@ -137,7 +137,6 @@ describe('Actions', () => {
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
-    background.changePassword = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
     background.generatePasskeyRegistrationOptions = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
@@ -302,13 +301,18 @@ describe('Actions', () => {
       const oldPassword = 'old-password';
       const newPassword = 'new-password';
 
-      background.changePassword.resolves();
-      setBackgroundConnection(background);
+      const changePasswordStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        changePassword: changePasswordStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.changePassword(newPassword, oldPassword));
 
       expect(
-        background.changePassword.calledOnceWith(newPassword, oldPassword),
+        changePasswordStub.calledOnceWith(newPassword, oldPassword),
       ).toStrictEqual(true);
     });
   });

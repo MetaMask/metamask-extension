@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { formatAmount } from './formatAmount';
+import { formatAmount } from './format-amount';
 
 describe('formatAmount', () => {
   describe('#formatAmount', () => {
