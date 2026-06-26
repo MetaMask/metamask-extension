@@ -35,7 +35,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -43,7 +42,7 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
@@ -57,8 +56,6 @@ type MetametricsCheckboxOptionProps = Readonly<{
   containerClassName: string;
   isInteractive?: boolean;
 }>;
-
-const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 const stopClickPropagation = (e: React.MouseEvent) => {
   e.stopPropagation();
@@ -123,6 +120,7 @@ export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isFirefox = useIsFirefox();
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
