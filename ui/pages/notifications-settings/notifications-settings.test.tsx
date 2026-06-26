@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { createMockNotificationPreferences } from '../../hooks/metamask-notifications/mocks';
 import {
   useNotificationPreferences,
@@ -497,6 +498,10 @@ describe('NotificationsSettingsContent', () => {
 
     const cases: { section: string; preferences: NotificationPreferences }[] = [
       {
+        section: 'walletActivity',
+        preferences: createMockNotificationPreferences(),
+      },
+      {
         section: 'marketing',
         preferences: createMockNotificationPreferences(),
       },
@@ -510,6 +515,16 @@ describe('NotificationsSettingsContent', () => {
           },
         },
       },
+      // The perps section only renders when included in the build, matching its
+      // own render gate.
+      ...(getIsPerpsIncludedInBuild()
+        ? [
+            {
+              section: 'perps',
+              preferences: createMockNotificationPreferences(),
+            },
+          ]
+        : []),
     ];
 
     // @ts-expect-error This function is missing from the Mocha type definitions
