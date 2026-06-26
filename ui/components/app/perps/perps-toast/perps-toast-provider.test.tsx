@@ -236,7 +236,7 @@ const expectErrorAvatarToastIcon = () => {
     'inline-flex',
     'h-8',
     'w-8',
-    'bg-error-muted',
+    'bg-muted',
   );
   expect(warningIcon.querySelector('svg')).toBeInTheDocument();
 };
