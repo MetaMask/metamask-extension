@@ -17,6 +17,7 @@ import {
   isUserRejectedHardwareWalletError,
   useHardwareWalletError,
 } from '../../../../contexts/hardware-wallets';
+import { useSendBundleHwNavigation } from '../../../../hooks/hardware-wallets/useSendBundleHwNavigation';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 
@@ -33,6 +34,8 @@ export function useTransactionConfirm() {
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
   const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
     useDappSwapActions();
+  const { shouldRedirectToHwSigningPage, redirectToHwSigningPage } =
+    useSendBundleHwNavigation({ transactionMeta });
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -71,18 +74,14 @@ export function useTransactionConfirm() {
     isGaslessSupported,
     newTransactionMeta,
     selectedGasFeeToken,
-    transactionMeta?.isGasFeeSponsored,
+    transactionMeta,
   ]);
 
   const handleGasless7702 = useCallback(() => {
     newTransactionMeta.isExternalSign = true;
     newTransactionMeta.isGasFeeSponsored =
       isGaslessSupported && transactionMeta.isGasFeeSponsored;
-  }, [
-    isGaslessSupported,
-    newTransactionMeta,
-    transactionMeta?.isGasFeeSponsored,
-  ]);
+  }, [isGaslessSupported, newTransactionMeta, transactionMeta]);
 
   const {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
@@ -98,6 +97,11 @@ export function useTransactionConfirm() {
       handleSmartTransaction();
     } else if (selectedGasFeeToken) {
       handleGasless7702();
+    }
+
+    if (shouldRedirectToHwSigningPage) {
+      redirectToHwSigningPage(newTransactionMeta);
+      return false;
     }
 
     // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
@@ -132,6 +136,9 @@ export function useTransactionConfirm() {
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
+    transactionMeta,
+    shouldRedirectToHwSigningPage,
+    redirectToHwSigningPage,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     onDappSwapCompleted,

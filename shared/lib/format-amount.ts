@@ -1,8 +1,9 @@
 import { BigNumber } from 'bignumber.js';
-import {
-  MIN_AMOUNT,
-  DEFAULT_PRECISION,
-} from '../../../../hooks/useCurrencyDisplay';
+
+// Inlined from ui/hooks/useCurrencyDisplay.js to keep this shared util
+// self-contained (no cross-layer dependency on ui/).
+const MIN_AMOUNT = 0.000001;
+const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
 
 // The number of significant decimals places to show for amounts less than 1.
 const MAX_SIGNIFICANT_DECIMAL_PLACES = 3;

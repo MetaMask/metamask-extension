@@ -45,6 +45,39 @@ module.exports = {
     config.resolve.alias['../../../store/actions$'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
+
+    const hwSwapHooksMock = path.resolve(
+      __dirname,
+      '..',
+      'ui',
+      '__mocks__',
+      'hardware-wallet-swap',
+      'hooks',
+    );
+    config.resolve.alias[
+      '../../../hooks/hardware-wallets/useHwSwapQuoteData$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../hooks/hardware-wallets/useHwSwapSubmission$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../hooks/hardware-wallets/useHwSwapConnectionMonitoring$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../hooks/hardware-wallets/useHwSwapConfirmationMonitoring$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias['../../../hooks/hardware-wallets/useHwSwapQrState$'] =
+      hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../hooks/hardware-wallets/useHwSwapNavigation$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias['../../../hooks/hardware-wallets/useHwSignTracker$'] =
+      hwSwapHooksMock;
+    config.resolve.alias['../../../hooks/bridge/useSubmitBridgeTransaction$'] =
+      hwSwapHooksMock;
+    config.resolve.alias['../../../hooks/bridge/useBridgeNavigation$'] =
+      hwSwapHooksMock;
+
     config.resolve.fallback = {
       child_process: false,
       constants: false,
