@@ -50,17 +50,29 @@ class PhishingWarningPage {
     console.log(
       'Clicking open warning in new tab link on phishing warning page',
     );
-    const iframe = (await this.driver.findElement(
-      this.iframeSelector,
-    )) as WebElement;
-    await this.driver.switchToFrame(iframe as unknown as string);
-    await this.checkPageIsLoaded();
-    await this.driver.clickElement(this.openWarningInNewTabLink);
-    try {
-      // Switch back to default content before retrying, in case we're stuck in the iframe context that was replaced on load
-      await this.driver.switchToDefaultContent();
-    } catch {
-      // context may already be discarded
+    for (let i = 0; i < 3; i++) {
+      try {
+        const iframe = (await this.driver.findElement(
+          this.iframeSelector,
+        )) as WebElement;
+        await this.driver.switchToFrame(iframe as unknown as string);
+        await this.checkPageIsLoaded();
+        await this.driver.clickElement(this.openWarningInNewTabLink);
+        try {
+          // Switch back to default content before retrying, in case we're stuck in the iframe context that was replaced on load
+          await this.driver.switchToDefaultContent();
+        } catch (error) {
+          // context may already be discarded
+        }
+        return;
+      } catch (error) {
+        if (error instanceof Error && error.name === 'NoSuchWindowError') {
+          console.log(
+            `Context may already be discarded, retrying ${i + 1}/3...`,
+          );
+        }
+        await this.driver.delay(1000);
+      }
     }
   }
 
