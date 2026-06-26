@@ -5581,9 +5581,6 @@
   "newPrivacyPolicyTitle": {
     "message": "プライバシーポリシーが更新されました"
   },
-  "newRpcUrl": {
-    "message": "新しいRPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "$1をインポートしました。",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5720,9 +5717,6 @@
   },
   "notCurrentAccount": {
     "message": "これは正しいアカウントですか？ウォレットで現在選択されているアカウントと異なっています"
-  },
-  "notEnoughGas": {
-    "message": "ガスが不足しています"
   },
   "notificationDetail": {
     "message": "詳細"

@@ -5581,9 +5581,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Gizlilik politikamızı güncelledik"
   },
-  "newRpcUrl": {
-    "message": "Yeni RPC URL adresi"
-  },
   "newTokensImportedMessage": {
     "message": "$1 tokeni başarılı bir şekilde içe aktardın.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5720,9 +5717,6 @@
   },
   "notCurrentAccount": {
     "message": "Bu hesap doğru mu? Cüzdanınızdaki mevcut seçili hesaptan farklı"
-  },
-  "notEnoughGas": {
-    "message": "Yeterli gaz yok"
   },
   "notificationDetail": {
     "message": "Ayrıntılar"
