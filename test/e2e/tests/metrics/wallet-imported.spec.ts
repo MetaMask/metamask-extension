@@ -16,8 +16,6 @@ describe('Wallet Created Events - Imported Account', function () {
     // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
     const expectedEvents = [
       MetaMetricsEventName.AppInstalled,
-      MetaMetricsEventName.AppInstalled,
-      MetaMetricsEventName.AppInstalled,
       MetaMetricsEventName.AnalyticsPreferenceSelected,
       MetaMetricsEventName.WalletImportStarted,
       MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
@@ -61,53 +59,23 @@ describe('Wallet Created Events - Imported Account', function () {
 
         assert.equal(trackEvents.length, expectedEvents.length);
 
-        const appInstallBackground = [
+        const appInstalledAssertion = [
           [
             (req: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
+              event: string;
               properties: {
-                category: string;
                 locale: string;
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 chain_id: string;
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                environment_type: string;
               };
             }) =>
-              req.properties.category === 'App' &&
+              req.event === MetaMetricsEventName.AppInstalled &&
               req.properties.locale === 'en' &&
-              req.properties.chain_id === '0x1' &&
-              req.properties.environment_type === 'background',
+              req.properties.chain_id === '0x1',
           ],
         ];
-        assertInAnyOrder(trackEvents, appInstallBackground);
-
-        const appInstallFullscreen = [
-          [
-            (req: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              properties: {
-                category: string;
-                locale: string;
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id: string;
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                environment_type: string;
-              };
-            }) =>
-              req.properties.category === 'App' &&
-              req.properties.locale === 'en' &&
-              req.properties.chain_id === '0x1' &&
-              req.properties.environment_type === 'fullscreen',
-          ],
-        ];
-        assertInAnyOrder(trackEvents, appInstallFullscreen);
+        assertInAnyOrder(trackEvents, appInstalledAssertion);
 
         // Assert SRP Backup Confirmed or App Installed event (depending on browser)
         const fourthEventAssertion = [

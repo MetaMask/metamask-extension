@@ -1483,6 +1483,7 @@ describe('Sentry errors', function () {
       storageWriteErrorType: true,
       // AnalyticsController keeps the queue out of UI state.
       eventQueue: false,
+      preConsentEventQueue: false,
       // Optional property on AppStateController; only set after a user
       // interacts with a Snap install dialog, so absent from initial state.
       snapsInstallPrivacyWarningShown: true,
