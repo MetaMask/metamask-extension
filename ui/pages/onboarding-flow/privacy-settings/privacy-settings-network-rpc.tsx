@@ -113,7 +113,7 @@ const PrivacySettingsNetworkRpc = () => {
         </Text>
       </Box>
 
-      <Box flexDirection={BoxFlexDirection.Column} className="w-full px-2">
+      <Box flexDirection={BoxFlexDirection.Column} className="w-full" paddingHorizontal={2}>
         {networkListItems}
       </Box>
       <Box padding={4}>
