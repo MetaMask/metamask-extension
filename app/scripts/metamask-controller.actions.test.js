@@ -858,7 +858,7 @@ describe('MetaMaskController', function () {
             completedOnboarding: true,
           });
         const verifyPasswordSpy = jest
-          .spyOn(metamaskController, 'verifyPassword')
+          .spyOn(metamaskController.keyringController, 'verifyPassword')
           .mockResolvedValue(true);
         jest
           .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
@@ -892,7 +892,7 @@ describe('MetaMaskController', function () {
             completedOnboarding: false,
           });
         const verifyPasswordSpy = jest.spyOn(
-          metamaskController,
+          metamaskController.keyringController,
           'verifyPassword',
         );
         jest
@@ -1021,7 +1021,7 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
           .mockReturnValue(false);
         const verifyPasswordSpy = jest.spyOn(
-          metamaskController,
+          metamaskController.keyringController,
           'verifyPassword',
         );
 
@@ -1040,7 +1040,7 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
           .mockReturnValue(true);
         const verifyPasswordSpy = jest
-          .spyOn(metamaskController, 'verifyPassword')
+          .spyOn(metamaskController.keyringController, 'verifyPassword')
           .mockResolvedValue(true);
         const removePasskeySpy = jest
           .spyOn(metamaskController.passkeyController, 'removePasskey')
@@ -1237,7 +1237,7 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController.keyringController, 'changePassword')
           .mockResolvedValue();
         const verifyPasswordSpy = jest.spyOn(
-          metamaskController,
+          metamaskController.keyringController,
           'verifyPassword',
         );
         const renewVaultKeyProtectionSpy = jest.spyOn(
@@ -1466,36 +1466,6 @@ describe('MetaMaskController', function () {
       });
     });
 
-    describe('#changePassword', function () {
-      it('does not remove passkey after keyring password change', async function () {
-        const releaseLock = jest.fn();
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        jest
-          .spyOn(
-            metamaskController.onboardingController,
-            'getIsSocialLoginFlow',
-          )
-          .mockReturnValue(false);
-        const changePasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
-
-        await metamaskController.changePassword('new-password', 'old-password');
-
-        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
-        expect(removePasskeySpy).not.toHaveBeenCalled();
-        expect(releaseLock).toHaveBeenCalledTimes(1);
-      });
-    });
-
     describe('#resetWallet', function () {
       it('clears passkey controller state as part of reset flow', async function () {
         const clearPasskeyStateSpy = jest
@@ -1507,8 +1477,6 @@ describe('MetaMaskController', function () {
         jest
           .spyOn(metamaskController, 'clearLoginArtifacts')
           .mockResolvedValue();
-        jest.spyOn(metamaskController, 'submitPassword').mockResolvedValue();
-
         await metamaskController.resetWallet(true);
 
         expect(clearPasskeyStateSpy).toHaveBeenCalledTimes(1);

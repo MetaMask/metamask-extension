@@ -1141,6 +1141,7 @@
       }
     },
     "musdConversionEducationSeen": "boolean",
+    "perpsTabBadgeSeen": "boolean",
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -1237,6 +1238,7 @@
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
+    "proofBackfillEnqueued": "boolean",
     "quoteFetchError": "null",
     "quoteRequest": [
       {

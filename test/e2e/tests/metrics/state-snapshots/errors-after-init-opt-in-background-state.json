@@ -69,6 +69,7 @@
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
     "pendingShieldCohortTxType": null,
+    "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",

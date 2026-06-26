@@ -243,7 +243,6 @@ function TransactionListItemInner({
           showCancel={showCancelButton}
           onCancel={cancelTransaction}
           speedUp={speedUp}
-          primaryTransaction={transactionGroup.primaryTransaction}
         />
       </ActivityListItem>
       {showDetails &&

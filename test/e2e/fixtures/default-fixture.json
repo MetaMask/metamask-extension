@@ -194,6 +194,7 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
+      "perpsTabBadgeSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
@@ -1092,7 +1093,8 @@
     },
     "ProfileMetricsController": {
       "initialDelayEndTimestamp": 1770282498299,
-      "initialEnqueueCompleted": true,
+      "initialEnqueueCompleted": false,
+      "proofBackfillEnqueued": false,
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
