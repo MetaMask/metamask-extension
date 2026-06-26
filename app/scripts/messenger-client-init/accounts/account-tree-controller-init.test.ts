@@ -14,12 +14,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { trackLegacyMetaMetricsEvent } from '../../controllers/analytics';
+import { trackEvent } from '../../controllers/analytics';
 import { AccountTreeControllerInit } from './account-tree-controller-init';
 
 jest.mock('@metamask/account-tree-controller');
 jest.mock('../../controllers/analytics', () => ({
-  trackLegacyMetaMetricsEvent: jest.fn(),
+  ...jest.requireActual('../../controllers/analytics'),
+  trackEvent: jest.fn(),
 }));
 
 function buildInitRequestMock(): jest.Mocked<
@@ -43,9 +44,7 @@ function buildInitRequestMock(): jest.Mocked<
 
 describe('AccountTreeControllerInit', () => {
   const accountTreeControllerClassMock = jest.mocked(AccountTreeController);
-  const trackLegacyMetaMetricsEventMock = jest.mocked(
-    trackLegacyMetaMetricsEvent,
-  );
+  const trackEventMock = jest.mocked(trackEvent);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -87,13 +86,15 @@ describe('AccountTreeControllerInit', () => {
       profile_id: 'profile-1',
     });
 
-    expect(trackLegacyMetaMetricsEventMock).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.BackupAndSync,
-      event: MetaMetricsEventName.ProfileActivityUpdated,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        profile_id: 'profile-1',
-      },
-    });
+    expect(trackEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ProfileActivityUpdated,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.BackupAndSync,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          profile_id: 'profile-1',
+        }),
+      }),
+    );
   });
 });

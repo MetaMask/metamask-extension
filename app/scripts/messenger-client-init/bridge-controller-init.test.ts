@@ -6,7 +6,7 @@ import {
 } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getRootMessenger } from '../lib/messenger';
-import { trackLegacyMetaMetricsEvent } from '../controllers/analytics';
+import { trackEvent } from '../controllers/analytics';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -23,7 +23,8 @@ jest.mock('@metamask/bridge-controller', () => {
   };
 });
 jest.mock('../controllers/analytics', () => ({
-  trackLegacyMetaMetricsEvent: jest.fn(),
+  ...jest.requireActual('../controllers/analytics'),
+  trackEvent: jest.fn(),
 }));
 
 function getInitRequestMock(): jest.Mocked<
@@ -44,9 +45,7 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('BridgeControllerInit', () => {
-  const trackLegacyMetaMetricsEventMock = jest.mocked(
-    trackLegacyMetaMetricsEvent,
-  );
+  const trackEventMock = jest.mocked(trackEvent);
 
   beforeEach(() => {
     process.env.METAMASK_VERSION = 'MOCK_VERSION';
@@ -88,11 +87,11 @@ describe('BridgeControllerInit', () => {
       source: 'bridge',
     });
 
-    expect(trackLegacyMetaMetricsEventMock).toHaveBeenCalledWith(
+    expect(trackEventMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
-        event: UnifiedSwapBridgeEventName.Submitted,
+        name: UnifiedSwapBridgeEventName.Submitted,
         properties: expect.objectContaining({
+          category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
           source: 'bridge',
           actionId: expect.any(String),
         }),

@@ -11,12 +11,13 @@ import {
 } from '../messengers/defi-positions/defi-positions-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { trackLegacyMetaMetricsEvent } from '../../controllers/analytics';
+import { trackEvent } from '../../controllers/analytics';
 import { DeFiPositionsControllerInit } from './defi-positions-controller-init';
 
 jest.mock('@metamask/assets-controllers');
 jest.mock('../../controllers/analytics', () => ({
-  trackLegacyMetaMetricsEvent: jest.fn(),
+  ...jest.requireActual('../../controllers/analytics'),
+  trackEvent: jest.fn(),
 }));
 
 function buildInitRequestMock(): jest.Mocked<
@@ -40,9 +41,7 @@ function buildInitRequestMock(): jest.Mocked<
 
 describe('DefiPositionsControllerInit', () => {
   const defiPositionsControllerClassMock = jest.mocked(DeFiPositionsController);
-  const trackLegacyMetaMetricsEventMock = jest.mocked(
-    trackLegacyMetaMetricsEvent,
-  );
+  const trackEventMock = jest.mocked(trackEvent);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -73,10 +72,12 @@ describe('DefiPositionsControllerInit', () => {
       properties: { protocol: 'aave' },
     });
 
-    expect(trackLegacyMetaMetricsEventMock).toHaveBeenCalledWith({
-      event: 'DeFi Position Viewed',
-      category: MetaMetricsEventCategory.Wallet,
-      properties: { protocol: 'aave' },
+    expect(trackEventMock.mock.calls[0]?.[0]).toMatchObject({
+      name: 'DeFi Position Viewed',
+      properties: expect.objectContaining({
+        category: MetaMetricsEventCategory.Wallet,
+        protocol: 'aave',
+      }),
     });
   });
 });

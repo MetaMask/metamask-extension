@@ -19,12 +19,13 @@ import {
   SnapControllerInitMessenger,
 } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
-import { trackLegacyMetaMetricsEvent } from '../../controllers/analytics';
+import { trackEvent } from '../../controllers/analytics';
 import { SnapControllerInit } from './snap-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
 jest.mock('../../controllers/analytics', () => ({
-  trackLegacyMetaMetricsEvent: jest.fn(),
+  ...jest.requireActual('../../controllers/analytics'),
+  trackEvent: jest.fn(),
 }));
 
 function getInitRequestMock(
@@ -46,9 +47,7 @@ function getInitRequestMock(
 }
 
 describe('SnapControllerInit', () => {
-  const trackLegacyMetaMetricsEventMock = jest.mocked(
-    trackLegacyMetaMetricsEvent,
-  );
+  const trackEventMock = jest.mocked(trackEvent);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -99,13 +98,13 @@ describe('SnapControllerInit', () => {
       },
     });
 
-    expect(trackLegacyMetaMetricsEventMock).toHaveBeenCalledWith({
-      event: 'Snap Installed',
-      category: 'Snaps',
-      properties: {
+    expect(trackEventMock.mock.calls[0]?.[0]).toMatchObject({
+      name: 'Snap Installed',
+      properties: expect.objectContaining({
+        category: 'Snaps',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: 'npm:example',
-      },
+      }),
     });
   });
 

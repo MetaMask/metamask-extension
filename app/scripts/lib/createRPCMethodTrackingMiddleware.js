@@ -158,40 +158,6 @@ const rateLimitTimeoutsByMethod = {};
 let globalRateLimitCount = 0;
 
 /**
- * Track an RPC method event through AnalyticsController.
- *
- * @param {object} options - Event options.
- * @param {string} options.eventName - MetaMetrics event name.
- * @param {string} options.category - MetaMetrics event category.
- * @param {string} options.origin - Request origin used as referrer URL.
- * @param {Record<string, unknown>} options.properties - Event properties.
- * @param {Record<string, unknown>} [options.sensitiveProperties] - Sensitive properties.
- */
-function trackRpcMethodEvent({
-  eventName,
-  category,
-  origin,
-  properties,
-  sensitiveProperties,
-}) {
-  let builder = createEventBuilder(eventName)
-    .addCategory(category)
-    .addProperties(properties);
-
-  if (sensitiveProperties) {
-    builder = builder.addSensitiveProperties(sensitiveProperties);
-  }
-
-  trackEvent(
-    builder.build({
-      referrer: {
-        url: origin,
-      },
-    }),
-  );
-}
-
-/**
  * Create signature request event fragment with an assigned unique identifier
  *
  * @param {MetaMetricsController} metaMetricsController
@@ -503,12 +469,16 @@ export default function createRPCMethodTrackingMiddleware({
           eventCategory,
         );
       } else {
-        trackRpcMethodEvent({
-          eventName: event,
-          category: eventCategory,
-          origin,
-          properties: eventProperties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(eventProperties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
@@ -614,13 +584,17 @@ export default function createRPCMethodTrackingMiddleware({
           fragmentPayload,
         );
       } else {
-        trackRpcMethodEvent({
-          eventName: event,
-          category: eventCategory,
-          origin,
-          properties,
-          sensitiveProperties: sensitiveEventProperties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(properties)
+            .addSensitiveProperties(sensitiveEventProperties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
       return callback();
     });

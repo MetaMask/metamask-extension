@@ -24,7 +24,7 @@ import {
   getActiveTabDomainAllowlist,
   getActiveTabDomainForMetrics,
 } from '../../../shared/lib/active-tab-domain-metrics';
-import { trackLegacyMetaMetricsEvent } from '../controllers/analytics';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { MessengerClientInitFunction } from './types';
 import { BridgeControllerInitMessenger } from './messengers';
 
@@ -131,19 +131,22 @@ export const BridgeControllerInit: MessengerClientInitFunction<
         environment_type?: string;
       };
 
-      trackLegacyMetaMetricsEvent({
-        category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
-        event,
-        // UI events (e.g. ButtonClicked) pass environment_type explicitly;
-        // background events fall back to getEnvironmentType() → 'background'.
-        environmentType: propertiesObj.environment_type ?? getEnvironmentType(),
-        properties: {
-          ...propertiesObj,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
-          actionId,
-        },
-      });
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY)
+          .addProperties({
+            ...propertiesObj,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
+            actionId,
+          })
+          .build({
+            // UI events (e.g. ButtonClicked) pass environment_type explicitly;
+            // background events fall back to getEnvironmentType() → 'background'.
+            environmentType:
+              propertiesObj.environment_type ?? getEnvironmentType(),
+          }),
+      );
     },
 
     // @ts-expect-error: `trace` function type does not match the expected type.

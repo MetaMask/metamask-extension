@@ -265,7 +265,7 @@ import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
-import { trackEvent, trackLegacyMetaMetricsEvent, trackPage } from './controllers/analytics';
+import { createEventBuilder, trackEvent, trackPage } from './controllers/analytics';
 import Backup from './lib/backup';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -1811,13 +1811,14 @@ export default class MetamaskController extends EventEmitter {
   }
 
   trackInsightSnapView(snapId) {
-    trackLegacyMetaMetricsEvent({
-      event: MetaMetricsEventName.InsightSnapViewed,
-      category: MetaMetricsEventCategory.Snaps,
-      properties: {
-        snap_id: snapId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.InsightSnapViewed)
+        .addCategory(MetaMetricsEventCategory.Snaps)
+        .addProperties({
+          snap_id: snapId,
+        })
+        .build(),
+    );
   }
 
   /**
@@ -2217,17 +2218,20 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapInstallStarted`,
       (snapId, origin, isUpdate) => {
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackLegacyMetaMetricsEvent({
-          event: isUpdate
-            ? MetaMetricsEventName.SnapUpdateStarted
-            : MetaMetricsEventName.SnapInstallStarted,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
+        trackEvent(
+          createEventBuilder(
+            isUpdate
+              ? MetaMetricsEventName.SnapUpdateStarted
+              : MetaMetricsEventName.SnapInstallStarted,
+          )
+            .addCategory(MetaMetricsEventCategory.Snaps)
+            .addProperties({
+              snap_id: snapId,
+              origin,
+              snap_category: snapCategory,
+            })
+            .build(),
+        );
       },
     );
 
@@ -2243,15 +2247,16 @@ export default class MetamaskController extends EventEmitter {
           : MetaMetricsEventName.SnapInstallRejected;
 
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackLegacyMetaMetricsEvent({
-          event: isRejected ? rejectedEvent : failedEvent,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
+        trackEvent(
+          createEventBuilder(isRejected ? rejectedEvent : failedEvent)
+            .addCategory(MetaMetricsEventCategory.Snaps)
+            .addProperties({
+              snap_id: snapId,
+              origin,
+              snap_category: snapCategory,
+            })
+            .build(),
+        );
       },
     );
 
@@ -2264,16 +2269,17 @@ export default class MetamaskController extends EventEmitter {
 
         const snapId = truncatedSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackLegacyMetaMetricsEvent({
-          event: MetaMetricsEventName.SnapInstalled,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            version: truncatedSnap.version,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.SnapInstalled)
+            .addCategory(MetaMetricsEventCategory.Snaps)
+            .addProperties({
+              snap_id: snapId,
+              version: truncatedSnap.version,
+              origin,
+              snap_category: snapCategory,
+            })
+            .build(),
+        );
       },
     );
 
@@ -2286,17 +2292,18 @@ export default class MetamaskController extends EventEmitter {
 
         const snapId = newSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackLegacyMetaMetricsEvent({
-          event: MetaMetricsEventName.SnapUpdated,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            old_version: oldVersion,
-            new_version: newSnap.version,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.SnapUpdated)
+            .addCategory(MetaMetricsEventCategory.Snaps)
+            .addProperties({
+              snap_id: snapId,
+              old_version: oldVersion,
+              new_version: newSnap.version,
+              origin,
+              snap_category: snapCategory,
+            })
+            .build(),
+        );
       },
     );
 
@@ -2335,15 +2342,16 @@ export default class MetamaskController extends EventEmitter {
 
         const snapId = truncatedSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackLegacyMetaMetricsEvent({
-          event: MetaMetricsEventName.SnapUninstalled,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            version: truncatedSnap.version,
-            snap_category: snapCategory,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.SnapUninstalled)
+            .addCategory(MetaMetricsEventCategory.Snaps)
+            .addProperties({
+              snap_id: snapId,
+              version: truncatedSnap.version,
+              snap_category: snapCategory,
+            })
+            .build(),
+        );
       },
     );
   }
@@ -3641,7 +3649,33 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: trackLegacyMetaMetricsEvent,
+      trackMetaMetricsEvent: (payload, options) => {
+        trackEvent(
+          createEventBuilder(payload.event)
+            .addProperties({
+              ...payload.properties,
+              ...(payload.category === undefined
+                ? {}
+                : { category: payload.category }),
+              ...(payload.revenue === undefined
+                ? {}
+                : { revenue: payload.revenue }),
+              ...(payload.value === undefined ? {} : { value: payload.value }),
+              ...(payload.currency === undefined
+                ? {}
+                : { currency: payload.currency }),
+            })
+            .addSensitiveProperties(payload.sensitiveProperties)
+            .build({
+              environmentType: payload.environmentType,
+              page: payload.page,
+              referrer: payload.referrer,
+              excludeMetaMetricsId: options?.excludeMetaMetricsId,
+              matomoEvent: options?.matomoEvent,
+            }),
+          options,
+        );
+      },
       trackAnalyticsEvent: trackEvent,
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
@@ -5012,18 +5046,19 @@ export default class MetamaskController extends EventEmitter {
 
         const newHdEntropyIndex = this.getHDEntropyIndex();
 
-        trackLegacyMetaMetricsEvent({
-          event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-          properties: {
-            status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: newHdEntropyIndex,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
+            .addProperties({
+              status: 'completed',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: newHdEntropyIndex,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
+            })
+            .build(),
+        );
       };
 
       const { completedOnboarding } = this.onboardingController.state;
@@ -5922,14 +5957,15 @@ export default class MetamaskController extends EventEmitter {
     if (shouldShowApproval) {
       try {
         // Track referral viewed event
-        trackLegacyMetaMetricsEvent({
-          event: MetaMetricsEventName.ReferralViewed,
-          category: MetaMetricsEventCategory.Referrals,
-          properties: {
-            url: partner.origin,
-            trigger_type: triggerType,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ReferralViewed)
+            .addCategory(MetaMetricsEventCategory.Referrals)
+            .addProperties({
+              url: partner.origin,
+              trigger_type: triggerType,
+            })
+            .build(),
+        );
 
         const approvalResponse = await this.approvalController.add({
           origin: partner.origin,
@@ -5963,14 +5999,15 @@ export default class MetamaskController extends EventEmitter {
         }
 
         // Track referral confirm button clicked event
-        trackLegacyMetaMetricsEvent({
-          event: MetaMetricsEventName.ReferralConfirmButtonClicked,
-          category: MetaMetricsEventCategory.Referrals,
-          properties: {
-            opt_in: Boolean(approvalResponse?.approved),
-            url: partner.origin,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ReferralConfirmButtonClicked)
+            .addCategory(MetaMetricsEventCategory.Referrals)
+            .addProperties({
+              opt_in: Boolean(approvalResponse?.approved),
+              url: partner.origin,
+            })
+            .build(),
+        );
       } catch (error) {
         // Do nothing if the user rejects the request
         if (error.code === errorCodes.provider.userRejectedRequest) {
@@ -6583,13 +6620,14 @@ export default class MetamaskController extends EventEmitter {
           const phishingTestResponse = this.phishingController.test(sender.url);
           if (phishingTestResponse?.result) {
             this.sendPhishingWarning(connectionStream, hostname);
-            trackLegacyMetaMetricsEvent({
-              event: MetaMetricsEventName.PhishingPageDisplayed,
-              category: MetaMetricsEventCategory.Phishing,
-              properties: {
-                url: hostname,
-              },
-            });
+            trackEvent(
+              createEventBuilder(MetaMetricsEventName.PhishingPageDisplayed)
+                .addCategory(MetaMetricsEventCategory.Phishing)
+                .addProperties({
+                  url: hostname,
+                })
+                .build(),
+            );
             return;
           }
         }
@@ -7458,7 +7496,33 @@ export default class MetamaskController extends EventEmitter {
 
         // Miscellaneous
         metamaskState: this.getState(),
-        sendMetrics: trackLegacyMetaMetricsEvent,
+        sendMetrics: (payload, options) => {
+          trackEvent(
+            createEventBuilder(payload.event)
+              .addProperties({
+                ...payload.properties,
+                ...(payload.category === undefined
+                  ? {}
+                  : { category: payload.category }),
+                ...(payload.revenue === undefined
+                  ? {}
+                  : { revenue: payload.revenue }),
+                ...(payload.value === undefined ? {} : { value: payload.value }),
+                ...(payload.currency === undefined
+                  ? {}
+                  : { currency: payload.currency }),
+              })
+              .addSensitiveProperties(payload.sensitiveProperties)
+              .build({
+                environmentType: payload.environmentType,
+                page: payload.page,
+                referrer: payload.referrer,
+                excludeMetaMetricsId: options?.excludeMetaMetricsId,
+                matomoEvent: options?.matomoEvent,
+              }),
+            options,
+          );
+        },
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
@@ -7524,7 +7588,33 @@ export default class MetamaskController extends EventEmitter {
             // tests and production.
             return global.sentry?.captureException?.(error);
           },
-          trackEvent: trackLegacyMetaMetricsEvent,
+          trackEvent: (payload, options) => {
+            trackEvent(
+              createEventBuilder(payload.event)
+                .addProperties({
+                  ...payload.properties,
+                  ...(payload.category === undefined
+                    ? {}
+                    : { category: payload.category }),
+                  ...(payload.revenue === undefined
+                    ? {}
+                    : { revenue: payload.revenue }),
+                  ...(payload.value === undefined ? {} : { value: payload.value }),
+                  ...(payload.currency === undefined
+                    ? {}
+                    : { currency: payload.currency }),
+                })
+                .addSensitiveProperties(payload.sensitiveProperties)
+                .build({
+                  environmentType: payload.environmentType,
+                  page: payload.page,
+                  referrer: payload.referrer,
+                  excludeMetaMetricsId: options?.excludeMetaMetricsId,
+                  matomoEvent: options?.matomoEvent,
+                }),
+              options,
+            );
+          },
           startTrace: (options) => {
             // We intentionally strip out `_isStandaloneSpan` since it can be undefined
             // eslint-disable-next-line no-unused-vars
@@ -7702,16 +7792,17 @@ export default class MetamaskController extends EventEmitter {
           'MultichainRoutingService:getSupportedAccounts',
         ),
         trackSessionCreatedEvent: (approvedCaip25CaveatValue) =>
-          trackLegacyMetaMetricsEvent({
-            event: MetaMetricsEventName.PermissionsRequested,
-            properties: {
-              api_source: MetaMetricsRequestedThrough.MultichainApi,
-              method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
-              chain_id_list: getAllScopesFromCaip25CaveatValue(
-                approvedCaip25CaveatValue,
-              ),
-            },
-          }),
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PermissionsRequested)
+              .addProperties({
+                api_source: MetaMetricsRequestedThrough.MultichainApi,
+                method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+                chain_id_list: getAllScopesFromCaip25CaveatValue(
+                  approvedCaip25CaveatValue,
+                ),
+              })
+              .build(),
+          ),
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
       }),
@@ -8172,7 +8263,33 @@ export default class MetamaskController extends EventEmitter {
         const { optedIn } = this.analyticsController.state;
         return completedMetaMetricsOnboarding === true && optedIn === true;
       },
-      trackEvent: trackLegacyMetaMetricsEvent,
+      trackEvent: (payload, options) => {
+        trackEvent(
+          createEventBuilder(payload.event)
+            .addProperties({
+              ...payload.properties,
+              ...(payload.category === undefined
+                ? {}
+                : { category: payload.category }),
+              ...(payload.revenue === undefined
+                ? {}
+                : { revenue: payload.revenue }),
+              ...(payload.value === undefined ? {} : { value: payload.value }),
+              ...(payload.currency === undefined
+                ? {}
+                : { currency: payload.currency }),
+            })
+            .addSensitiveProperties(payload.sensitiveProperties)
+            .build({
+              environmentType: payload.environmentType,
+              page: payload.page,
+              referrer: payload.referrer,
+              excludeMetaMetricsId: options?.excludeMetaMetricsId,
+              matomoEvent: options?.matomoEvent,
+            }),
+          options,
+        );
+      },
       // Other dependencies
       getAccountBalance: (account, chainId) =>
         getAccountTrackerControllerAccountsByChainId(this._getMetaMaskState())[
@@ -8447,20 +8564,21 @@ export default class MetamaskController extends EventEmitter {
   safelistPhishingDomain(origin) {
     const isFirefox = getPlatform() === PLATFORM_FIREFOX;
     if (!isFirefox) {
-      trackLegacyMetaMetricsEvent(
-        {
-          category: MetaMetricsEventCategory.Phishing,
-          event: MetaMetricsEventName.ProceedAnywayClicked,
-          properties: {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ProceedAnywayClicked)
+          .addCategory(MetaMetricsEventCategory.Phishing)
+          .addProperties({
             url: origin,
             referrer: {
               url: origin,
             },
-          },
-          referrer: {
-            url: origin,
-          },
-        },
+          })
+          .build({
+            referrer: {
+              url: origin,
+            },
+            excludeMetaMetricsId: true,
+          }),
         {
           excludeMetaMetricsId: true,
         },
@@ -8474,14 +8592,15 @@ export default class MetamaskController extends EventEmitter {
     const portfolioBaseURL = process.env.PORTFOLIO_URL;
     const portfolioURL = `${portfolioBaseURL}/?metamaskEntry=phishing_page_portfolio_button`;
 
-    trackLegacyMetaMetricsEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
-      properties: {
-        location: 'phishing_page',
-        text: 'Back to safety',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'phishing_page',
+          text: 'Back to safety',
+        })
+        .build(),
+    );
 
     await this.platform.switchToAnotherURL(undefined, portfolioURL);
   }
@@ -9091,18 +9210,19 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    trackLegacyMetaMetricsEvent(
-      {
-        event: 'Tx Status Update: On-Chain Failure',
-        category: MetaMetricsEventCategory.Background,
-        properties: {
+    trackEvent(
+      createEventBuilder('Tx Status Update: On-Chain Failure')
+        .addCategory(MetaMetricsEventCategory.Background)
+        .addProperties({
           action: 'Transactions',
           errorMessage: transactionMeta.simulationFails?.reason,
           numberOfTokens: tokens.length,
           // TODO: remove this once we have migrated to the new account balances state
           numberOfAccounts: Object.keys(metamaskState.accounts).length,
-        },
-      },
+        })
+        .build({
+          matomoEvent: true,
+        }),
       {
         matomoEvent: true,
       },

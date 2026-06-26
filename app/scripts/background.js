@@ -83,7 +83,7 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import { createEventBuilder, trackEvent, trackLegacyMetaMetricsEvent } from './controllers/analytics';
+import { createEventBuilder, trackEvent } from './controllers/analytics';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -487,12 +487,10 @@ function maybeDetectPhishing(theController) {
       // Helper function to track phishing page metrics
       const trackPhishingMetrics = () => {
         if (!isFirefox) {
-          trackLegacyMetaMetricsEvent(
-            {
-              // should we differentiate between background redirection and content script redirection?
-              event: MetaMetricsEventName.PhishingPageDisplayed,
-              category: MetaMetricsEventCategory.Phishing,
-              properties: {
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PhishingPageDisplayed)
+              .addCategory(MetaMetricsEventCategory.Phishing)
+              .addProperties({
                 url: blockedUrl,
                 referrer: {
                   url: blockedUrl,
@@ -501,8 +499,10 @@ function maybeDetectPhishing(theController) {
                 requestDomain: blockedRequestResponse.result
                   ? hostname
                   : undefined,
-              },
-            },
+              })
+              .build({
+                excludeMetaMetricsId: true,
+              }),
             {
               excludeMetaMetricsId: true,
             },
@@ -1302,20 +1302,21 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
 
   const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
 
-  trackLegacyMetaMetricsEvent(
-    {
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.DappViewed)
+      .addCategory(MetaMetricsEventCategory.InpageProvider)
+      .addProperties({
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
         ...iframeProps,
-      },
-    },
+      })
+      .build({
+        referrer: {
+          url: origin,
+        },
+        excludeMetaMetricsId: true,
+      }),
     {
       excludeMetaMetricsId: true,
     },
@@ -1751,11 +1752,12 @@ export function setupController(
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
       const handleMessageTooLarge = function ({ chunkSize }) {
-        trackLegacyMetaMetricsEvent({
-          event: MetaMetricsEventName.PortStreamChunked,
-          category: MetaMetricsEventCategory.PortStream,
-          properties: { chunkSize },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PortStreamChunked)
+            .addCategory(MetaMetricsEventCategory.PortStream)
+            .addProperties({ chunkSize })
+            .build(),
+        );
       };
       remotePort.onDisconnect.addListener(() =>
         portStream.off('message-too-large', handleMessageTooLarge),
@@ -2212,7 +2214,12 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     optedIn === true &&
     analyticsId
   ) {
-    trackLegacyMetaMetricsEvent(appInstalledEvent);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AppInstalled)
+        .addCategory(MetaMetricsEventCategory.App)
+        .addProperties(eventProperties)
+        .build(),
+    );
   } else {
     // Onboarding is incomplete, or the user opted in without an analytics ID yet,
     // so we queue the metrics event for possible submission later.

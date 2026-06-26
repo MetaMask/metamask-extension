@@ -15,7 +15,11 @@ import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
-import { trackLegacyMetaMetricsEvent } from '../../controllers/analytics';
+import {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
+} from '../../../../shared/constants/metametrics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 
 /**
  * Initialize the Snap controller.
@@ -124,7 +128,36 @@ export const SnapControllerInit: MessengerClientInitFunction<
 
     ensureOnboardingComplete,
 
-    trackEvent: trackLegacyMetaMetricsEvent,
+    trackEvent: (
+      payload: MetaMetricsEventPayload,
+      options?: MetaMetricsEventOptions,
+    ) => {
+      trackEvent(
+        createEventBuilder(payload.event)
+          .addProperties({
+            ...payload.properties,
+            ...(payload.category === undefined
+              ? {}
+              : { category: payload.category }),
+            ...(payload.revenue === undefined
+              ? {}
+              : { revenue: payload.revenue }),
+            ...(payload.value === undefined ? {} : { value: payload.value }),
+            ...(payload.currency === undefined
+              ? {}
+              : { currency: payload.currency }),
+          })
+          .addSensitiveProperties(payload.sensitiveProperties)
+          .build({
+            environmentType: payload.environmentType,
+            page: payload.page,
+            referrer: payload.referrer,
+            excludeMetaMetricsId: options?.excludeMetaMetricsId,
+            matomoEvent: options?.matomoEvent,
+          }),
+        options,
+      );
+    },
   });
 
   initMessenger.subscribe('KeyringController:lock', () => {
