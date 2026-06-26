@@ -1,0 +1,28 @@
+{
+  "id": "0x1177970263a9a7e38933402f2d29d1e7aae46f1535808e9991bf769b1e18ff876912cfece0050ba024eb6398af04ee88d36bfe646efcac667ff1b0f13b3420cafa",
+  "status": "submitted",
+  "createdAt": 1778782716000,
+  "updatedAt": 1778782716000,
+  "metadata": {
+    "chainId": 1,
+    "networkPath": "ethereum",
+    "orderBody": {
+      "kind": "sell",
+      "sellToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "buyToken": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "receiver": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "sellAmount": "25000000",
+      "buyAmount": "56007217637733886",
+      "feeAmount": "0",
+      "validTo": 1778782716,
+      "appData": "{\"appCode\":\"metamask\",\"metadata\":{\"orderClass\":{\"orderClass\":\"market\"},\"partnerFee\":[{\"recipient\":\"0x28c716bC23ed77CAEc27f476A366318ad5F12d58\",\"volumeBps\":100},{\"maxVolumeBps\":100,\"priceImprovementBps\":9900,\"recipient\":\"0x28c716bC23ed77CAEc27f476A366318ad5F12d58\"}],\"quote\":{\"slippageBips\":200}},\"version\":\"1.14.0\"}",
+      "partiallyFillable": false,
+      "sellTokenBalance": "erc20",
+      "buyTokenBalance": "erc20",
+      "signingScheme": "eip712",
+      "quoteId": 1177970263,
+      "signature": "0xa9a7e38933402f2d29d1e7aae46f1535808e9991bf769b1e18ff876912cfece0050ba024eb6398af04ee88d36bfe646efcac667ff1b0f13b3420cafa1b33cffd1b"
+    }
+  }
+}

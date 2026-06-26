@@ -365,6 +365,18 @@ class BridgeQuotePage {
     console.log('The message "no trade route is available" is displayed');
   }
 
+  /**
+   * Waits for the RWA geo-restricted banner when the quote stream completes with
+   * an RWA_GEO_RESTRICTED reason.
+   */
+  async checkRwaGeoRestrictedMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: 'bridge-no-quotes',
+      text: "This swap isn't available in your region.",
+    });
+    console.log('The RWA geo-restricted swap message is displayed');
+  }
+
   async checkInsufficientFundsButtonIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.insufficientFundsButton);
