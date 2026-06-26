@@ -72,5 +72,11 @@ export function usePayHardwareAccountAlert(): Alert[] {
         isBlocking: true,
       },
     ];
-  }, [isHardwareWallet, isAlwaysBlockedType, isFlagGatedType, isPayHardwareEnabled, t]);
+  }, [
+    isHardwareWallet,
+    isAlwaysBlockedType,
+    isFlagGatedType,
+    isPayHardwareEnabled,
+    t,
+  ]);
 }
