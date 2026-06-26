@@ -344,6 +344,71 @@ describe('Setup Sentry', () => {
       rewriteTransactionReport(testReport);
       expect(testReport.breadcrumbs[0].data.url).toStrictEqual('');
     });
+
+    it('drops the sentry-tracing-init mark span while keeping the transaction and meaningful spans', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [
+          { op: 'mark', description: 'sentry-tracing-init' },
+          { op: 'mark', description: 'mm-hero-painted' },
+          { op: 'http.client', description: 'GET /foo' },
+        ],
+      };
+      rewriteTransactionReport(testReport);
+      expect(testReport.transaction).toBe('ui.popup');
+      expect(testReport.spans).toStrictEqual([
+        { op: 'mark', description: 'mm-hero-painted' },
+        { op: 'http.client', description: 'GET /foo' },
+      ]);
+    });
+
+    it('leaves a transaction without the low-value mark unchanged', () => {
+      const spans = [
+        { op: 'mark', description: 'mm-hero-painted' },
+        { op: 'http.client', description: 'GET /foo' },
+      ];
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans,
+      };
+      rewriteTransactionReport(testReport);
+      expect(testReport.spans).toStrictEqual(spans);
+    });
+
+    it('keeps a non-mark span even if its description matches a low-value mark name', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [{ op: 'http.client', description: 'sentry-tracing-init' }],
+      };
+      rewriteTransactionReport(testReport);
+      expect(testReport.spans).toStrictEqual([
+        { op: 'http.client', description: 'sentry-tracing-init' },
+      ]);
+    });
+
+    it('does not throw when the transaction has no spans array', () => {
+      const testReport = { type: 'transaction', transaction: 'ui.popup' };
+      expect(() => rewriteTransactionReport(testReport)).not.toThrow();
+      expect(testReport.spans).toBeUndefined();
+    });
+
+    it('drops the mark when the name is on the `name` field (SDK v10 forward-compat)', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [
+          { op: 'mark', name: 'sentry-tracing-init' },
+          { op: 'mark', name: 'mm-hero-painted' },
+        ],
+      };
+      rewriteTransactionReport(testReport);
+      expect(testReport.spans).toStrictEqual([
+        { op: 'mark', name: 'mm-hero-painted' },
+      ]);
+    });
   });
 
   describe('shouldCreateSpanForRequest', () => {

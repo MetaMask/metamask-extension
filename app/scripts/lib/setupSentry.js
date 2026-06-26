@@ -403,15 +403,55 @@ export function sanitizeBreadcrumbsInReport(report) {
 }
 
 /**
- * Scrubs breadcrumb payloads on performance transaction events before send.
- * {@link rewriteReport} handles errors via `beforeSend`; transactions use
- * `beforeSendTransaction` instead.
+ * Browser `performance.mark()` entries that `browserTracingIntegration` captures
+ * as `op: 'mark'` child spans but that carry no diagnostic value — the parent
+ * transaction's own existence already evidences them, so they are pure span
+ * volume. Listed here so {@link dropLowValueMarkSpans} can trim them.
+ *
+ * - `sentry-tracing-init`: emitted once per root transaction by the Sentry
+ *   browser SDK when tracing initializes (`@sentry-internal/browser-utils`).
+ *   ~30M/7d (~25M on `/service-worker.js` cold-starts); zero diagnostic value,
+ *   since a transaction existing already proves tracing initialized.
+ *
+ * Extend as further zero-value marks are identified. App marks that carry real
+ * signal (e.g. `mm-hero-painted`) are intentionally absent.
+ */
+const LOW_VALUE_TRACE_MARKS = new Set(['sentry-tracing-init']);
+
+/**
+ * Removes zero / low-diagnostic-value `op: 'mark'` child spans from a
+ * transaction event in place. Child-span trimming only: the root transaction
+ * and every non-mark span — and every meaningful mark — are retained. No
+ * transaction-level sampling.
+ *
+ * The mark name is read from both `description` (Sentry v8 `spanToJSON`
+ * serializes a span's `name` to `description`) and `name`, so the filter keeps
+ * working across the in-flight v8 -> v10 SDK upgrade (#42867) whichever field
+ * the transaction payload ends up using.
+ *
+ * @param {object} report - A Sentry transaction event object.
+ */
+function dropLowValueMarkSpans(report) {
+  if (!Array.isArray(report.spans)) {
+    return;
+  }
+  report.spans = report.spans.filter((span) => {
+    const markName = span?.description ?? span?.name;
+    return !(span?.op === 'mark' && LOW_VALUE_TRACE_MARKS.has(markName));
+  });
+}
+
+/**
+ * Scrubs breadcrumb payloads and drops low-diagnostic-value `op: 'mark'` spans
+ * on performance transaction events before send. {@link rewriteReport} handles
+ * errors via `beforeSend`; transactions use `beforeSendTransaction` instead.
  *
  * @param {object} report - A Sentry transaction event object.
  * @returns {object} The modified report (same reference).
  */
 export function rewriteTransactionReport(report) {
   sanitizeBreadcrumbsInReport(report);
+  dropLowValueMarkSpans(report);
   return report;
 }
 
