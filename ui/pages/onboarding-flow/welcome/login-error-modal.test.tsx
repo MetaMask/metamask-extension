@@ -46,6 +46,7 @@ const mockIsPopupOrSidePanelEnvironment = jest.mocked(
   isPopupOrSidePanelEnvironment,
 );
 const mockGetSocialLoginType = jest.mocked(getSocialLoginType);
+const TELEGRAM_DESKTOP_UPDATE_URL = 'https://desktop.telegram.org/';
 
 const buildStore = () => configureMockStore([thunk])({ metamask: {} });
 
@@ -99,6 +100,7 @@ describe('LoginErrorModal', () => {
     // @ts-expect-error test platform
     globalThis.platform = {
       openExtensionInBrowser: jest.fn(),
+      openTab: jest.fn(),
     };
   });
 
@@ -154,6 +156,15 @@ describe('LoginErrorModal', () => {
           name: messages.loginErrorGenericSupport.message,
         }),
       ).toHaveAttribute('href', SUPPORT_LINK);
+    });
+
+    it('renders the Telegram outdated content', () => {
+      expectErrorContent({
+        loginError: LOGIN_ERROR.TELEGRAM_OUTDATED,
+        title: messages.loginErrorTelegramOutdatedTitle.message,
+        description: messages.loginErrorTelegramOutdatedDescription.message,
+        buttonText: messages.loginErrorTelegramOutdatedButton.message,
+      });
     });
   });
 
@@ -255,6 +266,39 @@ describe('LoginErrorModal', () => {
       });
 
       expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('tracks the Telegram update CTA, opens the Telegram site, and closes the modal', () => {
+      const onClose = jest.fn();
+      const mockTrackEvent = jest.fn();
+
+      renderModal(
+        {
+          onClose,
+          loginError: LOGIN_ERROR.TELEGRAM_OUTDATED,
+        },
+        mockTrackEvent,
+      );
+
+      fireEvent.click(
+        screen.getByTestId('login-error-modal-update-telegram-button'),
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: TELEGRAM_DESKTOP_UPDATE_URL,
+          location: 'Telegram outdated modal',
+        },
+      });
+      expect(globalThis.platform.openTab).toHaveBeenCalledWith({
+        url: TELEGRAM_DESKTOP_UPDATE_URL,
+      });
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(mockResetWallet).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
     });
   });
 });

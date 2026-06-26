@@ -15,6 +15,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
+const accountLabel1 = 'Account 1';
 const accountLabel2 = 'Account 2';
 const accountLabel3 = 'Account 3';
 describe('Edit Accounts Permissions', function () {
@@ -44,18 +45,28 @@ describe('Edit Accounts Permissions', function () {
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(accountLabel2);
-        await accountListPage.closeMultichainAccountsPage();
+        await accountListPage.selectAccount(accountLabel2);
 
+        // ensure non EVM accounts are loaded for Account 2
         const homepage = new Homepage(driver);
         await homepage.checkExpectedBalanceIsDisplayed();
+        await homepage.waitForNonEvmAccountsLoaded();
 
         // create third account with custom label
         await homepage.headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(accountLabel3);
-        await accountListPage.closeMultichainAccountsPage();
+        await accountListPage.selectAccount(accountLabel3);
+
+        // ensure non EVM accounts are loaded for Account 3
         await homepage.checkExpectedBalanceIsDisplayed();
+        await homepage.waitForNonEvmAccountsLoaded();
+
+        // select back Account 1
+        await homepage.headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.selectAccount(accountLabel1);
 
         // go to connections permissions page
         await openPermissionsPageFlow(driver);

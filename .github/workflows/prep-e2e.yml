@@ -39,9 +39,6 @@ jobs:
           name: changed-files
           path: ./changed-files/
 
-      - name: Run E2E Page Object Usage Validation
-        run: yarn tsx .github/scripts/validate-e2e-page-object-usage.mts
-
       - name: Get last completed main workflow
         id: get-last-completed-main-workflow
         run: |

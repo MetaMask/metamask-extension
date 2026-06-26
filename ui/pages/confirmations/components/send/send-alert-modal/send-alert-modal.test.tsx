@@ -85,4 +85,20 @@ describe('SendAlertModal', () => {
     const icon = document.querySelector('.mm-icon');
     expect(icon).toBeInTheDocument();
   });
+
+  it('uses the default acknowledge label when acknowledgeLabel is not provided', () => {
+    const { getByTestId } = renderComponent();
+
+    expect(
+      getByTestId('send-alert-modal-acknowledge-button'),
+    ).toHaveTextContent('IUNDERSTAND');
+  });
+
+  it('uses the supplied acknowledgeLabel when provided', () => {
+    const { getByTestId } = renderComponent({ acknowledgeLabel: 'Update' });
+
+    expect(
+      getByTestId('send-alert-modal-acknowledge-button'),
+    ).toHaveTextContent('Update');
+  });
 });

@@ -2,6 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
+import { getIsVipProgramEnabled } from '../../selectors/perps/feature-flags';
 import {
   clearPerpsFeeDiscountCacheForTests,
   usePerpsMetamaskFeeDiscountBips,
@@ -26,16 +27,24 @@ const TEST_CAIP_ACCOUNT_ID = `eip155:42161:${toChecksumHexAddress(
 const ORIGINAL_METAMASK_FEE_BIPS = 10;
 
 function setSelectors(
-  overrides: { address?: string | null; chainId?: string } = {},
+  overrides: {
+    address?: string | null;
+    chainId?: string;
+    vipProgramEnabled?: boolean;
+  } = {},
 ) {
   const address = 'address' in overrides ? overrides.address : TEST_ADDRESS;
   const chainId = overrides.chainId ?? TEST_CHAIN_ID;
+  const vipProgramEnabled = overrides.vipProgramEnabled ?? true;
   mockUseSelector.mockImplementation((selector) => {
     if (selector === getSelectedInternalAccount) {
       return address ? { address } : undefined;
     }
     if (selector === getCurrentChainId) {
       return chainId;
+    }
+    if (selector === getIsVipProgramEnabled) {
+      return vipProgramEnabled;
     }
     return undefined;
   });
@@ -129,6 +138,21 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     });
 
     expect(result.current).toBeUndefined();
+  });
+
+  it('returns undefined and skips the lookup when vipProgramEnabled is false', async () => {
+    setSelectors({ vipProgramEnabled: false });
+    setDiscountResponse(5000);
+
+    const { result } = renderHook(() =>
+      usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS),
+    );
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(result.current).toBeUndefined();
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('returns undefined and skips the lookup entirely when no account is selected', async () => {

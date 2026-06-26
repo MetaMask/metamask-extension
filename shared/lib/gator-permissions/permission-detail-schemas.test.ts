@@ -5,11 +5,12 @@ import type {
   PermissionRenderContext,
   SchemaElement,
 } from './permission-detail-schema.types';
-import {
-  PERMISSION_SCHEMAS,
-  assertPermissionSchemaEntry,
-} from './permission-detail-schemas';
+import { getPermissionSchemaEntry } from './permission-detail-schemas';
 import { MAX_UINT256 } from './permission-constants';
+import {
+  ALL_METAMASK_FACILITATOR_ADDRESSES,
+  isMetaMaskFacilitatorAddress,
+} from './facilitator-addresses';
 
 type ElementOfType<TType extends SchemaElement['type']> = Extract<
   SchemaElement,
@@ -40,10 +41,10 @@ function buildMinimalContext(
 }
 
 function findElementByTestId(
-  permissionType: keyof typeof PERMISSION_SCHEMAS,
+  permissionType: string,
   testId: string,
 ): SchemaElement {
-  for (const section of PERMISSION_SCHEMAS[permissionType].sections) {
+  for (const section of getPermissionSchemaEntry(permissionType).sections) {
     for (const element of section.elements) {
       if ('testId' in element && element.testId === testId) {
         return element;
@@ -54,7 +55,7 @@ function findElementByTestId(
 }
 
 function findElementOfType<TType extends SchemaElement['type']>(
-  permissionType: keyof typeof PERMISSION_SCHEMAS,
+  permissionType: string,
   testId: string,
   type: TType,
 ): ElementOfType<TType> {
@@ -103,23 +104,29 @@ describe('justification field getValue', () => {
   });
 });
 
-describe('assertPermissionSchemaEntry', () => {
-  it('throws with the permission type in the message when the registry has no entry', () => {
-    expect(() =>
-      assertPermissionSchemaEntry(
-        'unregistered-type',
-        PERMISSION_SCHEMAS['unregistered-type'],
-      ),
-    ).toThrow('Invalid permission type: unregistered-type');
+describe('getPermissionSchemaEntry', () => {
+  it('returns the schema for a known permission type', () => {
+    const schema = getPermissionSchemaEntry('native-token-stream');
+    expect(schema.tokenVariant).toBe('native');
   });
 
-  it('does not throw for a registered type', () => {
-    expect(() =>
-      assertPermissionSchemaEntry(
-        'native-token-stream',
-        PERMISSION_SCHEMAS['native-token-stream'],
-      ),
-    ).not.toThrow();
+  it('falls back to unknown schema when no matching type exists', () => {
+    const unknownSchema = getPermissionSchemaEntry('unregistered-type');
+    const unknownTypeElement = unknownSchema.sections
+      .flatMap((section) => section.elements)
+      .find(
+        (element) =>
+          'testId' in element &&
+          element.testId === 'review-gator-permission-unknown-type',
+      );
+
+    expect(unknownTypeElement?.type).toBe('raw-text');
+  });
+
+  it('throws for unknown permission type when throwIfUnknown is true', () => {
+    expect(() => getPermissionSchemaEntry('unregistered-type', true)).toThrow(
+      'Unknown permission type: unregistered-type',
+    );
   });
 });
 
@@ -161,6 +168,73 @@ describe('permissionInfoSection field accessors', () => {
       expect(element.getValue(context)).toStrictEqual(addresses);
       expect(element.isVisible(context)).toBe(true);
     }
+  });
+
+  it('shows a MetaMask facilitator redeemer row when all redeemers are facilitator addresses', () => {
+    const namedRedeemerElement = findElementOfType(
+      'native-token-stream',
+      'confirmation-redeemer-metamask-facilitator',
+      'text',
+    );
+    const redeemerAddressElement = findElementOfType(
+      'native-token-stream',
+      'confirmation-redeemer',
+      'rule-address',
+    );
+    const exactFacilitatorContext = {
+      ...base,
+      redeemerAddresses: [...ALL_METAMASK_FACILITATOR_ADDRESSES].reverse(),
+    };
+    const facilitatorSubsetContext = {
+      ...base,
+      redeemerAddresses: [ALL_METAMASK_FACILITATOR_ADDRESSES[0]],
+    };
+    const duplicateFacilitatorContext = {
+      ...base,
+      redeemerAddresses: [
+        ...ALL_METAMASK_FACILITATOR_ADDRESSES,
+        ALL_METAMASK_FACILITATOR_ADDRESSES[0],
+      ],
+    };
+
+    expect(namedRedeemerElement.isVisible(exactFacilitatorContext)).toBe(true);
+    expect(
+      namedRedeemerElement.getValue(exactFacilitatorContext),
+    ).toStrictEqual({ key: 'gatorPermissionsMetaMaskFacilitator' });
+    expect(redeemerAddressElement.isVisible(exactFacilitatorContext)).toBe(
+      false,
+    );
+    expect(namedRedeemerElement.isVisible(facilitatorSubsetContext)).toBe(true);
+    expect(redeemerAddressElement.isVisible(facilitatorSubsetContext)).toBe(
+      false,
+    );
+    expect(namedRedeemerElement.isVisible(duplicateFacilitatorContext)).toBe(
+      true,
+    );
+    expect(redeemerAddressElement.isVisible(duplicateFacilitatorContext)).toBe(
+      false,
+    );
+    expect(
+      namedRedeemerElement.isVisible({ ...base, redeemerAddresses: [] }),
+    ).toBe(false);
+  });
+});
+
+describe('isMetaMaskFacilitatorAddress', () => {
+  it('matches facilitator addresses case-insensitively', () => {
+    expect(
+      isMetaMaskFacilitatorAddress(
+        ALL_METAMASK_FACILITATOR_ADDRESSES[0].toLowerCase(),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for unknown addresses', () => {
+    expect(
+      isMetaMaskFacilitatorAddress(
+        '0x0000000000000000000000000000000000000001',
+      ),
+    ).toBe(false);
   });
 });
 
@@ -292,7 +366,7 @@ describe('other schema fields', () => {
       'text',
     );
     const revokeAll = findElementOfType(
-      'erc20-token-revocation',
+      'token-approval-revocation',
       'review-gator-permission-amount-label',
       'text',
     );
@@ -317,9 +391,9 @@ describe('other schema fields', () => {
       'review-gator-permission-account-name',
       'account',
     );
-    const hasNetwork = PERMISSION_SCHEMAS[
-      'erc20-token-revocation'
-    ].sections.some((section) =>
+    const hasNetwork = getPermissionSchemaEntry(
+      'token-approval-revocation',
+    ).sections.some((section) =>
       section.elements.some((element) => element.type === 'network'),
     );
 
@@ -332,12 +406,12 @@ describe('other schema fields', () => {
 describe('requireStartTime validation', () => {
   it('validates required startTime for periodic schemas', () => {
     expect(() =>
-      PERMISSION_SCHEMAS['native-token-periodic'].validate?.({
+      getPermissionSchemaEntry('native-token-periodic').validate?.({
         data: { periodAmount: '0x1', periodDuration: 1 },
       }),
     ).toThrow('Start time is required');
     expect(() =>
-      PERMISSION_SCHEMAS['erc20-token-periodic'].validate?.({
+      getPermissionSchemaEntry('erc20-token-periodic').validate?.({
         data: {
           tokenAddress: '0x0000000000000000000000000000000000000001',
           periodAmount: '0x1',
@@ -346,5 +420,25 @@ describe('requireStartTime validation', () => {
         },
       }),
     ).not.toThrow();
+  });
+});
+
+describe('unknown permission type schema', () => {
+  it('renders unknown permission type as raw text', () => {
+    const unknownTypeElement = findElementOfType(
+      'some-new-permission',
+      'review-gator-permission-unknown-type',
+      'raw-text',
+    );
+
+    expect(
+      unknownTypeElement.getValue(
+        ctx(
+          'some-new-permission',
+          {},
+          { permission: { type: 'abc.xyz', data: {} } },
+        ),
+      ),
+    ).toBe('abc.xyz');
   });
 });

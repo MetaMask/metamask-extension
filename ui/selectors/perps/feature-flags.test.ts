@@ -1,7 +1,10 @@
 import semver from 'semver';
 import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
-import { getIsPerpsExperienceAvailable } from './feature-flags';
+import {
+  getIsPerpsExperienceAvailable,
+  getIsVipProgramEnabled,
+} from './feature-flags';
 
 jest.mock('semver');
 jest.mock('../../../package.json', () => ({
@@ -168,6 +171,62 @@ describe('Perps Feature Flags', () => {
         expect(getIsPerpsExperienceAvailable(state)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0-beta.1');
       });
+    });
+  });
+
+  describe('getIsVipProgramEnabled', () => {
+    it('returns true when vipProgramEnabled is boolean true', () => {
+      const state = {
+        metamask: { remoteFeatureFlags: { vipProgramEnabled: true } },
+      };
+      expect(getIsVipProgramEnabled(state)).toBe(true);
+    });
+
+    it('returns false when vipProgramEnabled is boolean false', () => {
+      const state = {
+        metamask: { remoteFeatureFlags: { vipProgramEnabled: false } },
+      };
+      expect(getIsVipProgramEnabled(state)).toBe(false);
+    });
+
+    it('returns false when vipProgramEnabled is absent', () => {
+      const state = { metamask: { remoteFeatureFlags: {} } };
+      expect(getIsVipProgramEnabled(state)).toBe(false);
+    });
+
+    it('returns true when version-gated flag is enabled and version satisfies', () => {
+      semverGteMock.mockReturnValue(true);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            vipProgramEnabled: { enabled: true, minimumVersion: '0.0.0' },
+          },
+        },
+      };
+      expect(getIsVipProgramEnabled(state)).toBe(true);
+    });
+
+    it('returns false when version-gated flag is enabled but version does not satisfy', () => {
+      semverGteMock.mockReturnValue(false);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            vipProgramEnabled: { enabled: true, minimumVersion: '99.0.0' },
+          },
+        },
+      };
+      expect(getIsVipProgramEnabled(state)).toBe(false);
+    });
+
+    it('returns false when version-gated flag has enabled false', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            vipProgramEnabled: { enabled: false, minimumVersion: '0.0.0' },
+          },
+        },
+      };
+      expect(getIsVipProgramEnabled(state)).toBe(false);
     });
   });
 });

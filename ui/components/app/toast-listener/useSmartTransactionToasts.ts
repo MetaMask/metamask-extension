@@ -16,14 +16,21 @@ function generateToastId(txId: string) {
   return `stx-${txId}`;
 }
 
-const failureStatuses = new Set<string>([
+export const smartTransactionEvmFailureStatuses = new Set<string>([
   EvmTransactionStatus.failed,
   EvmTransactionStatus.dropped,
   EvmTransactionStatus.rejected,
   EvmTransactionStatus.cancelled,
 ]);
 
-function mapToastStatus(
+export const smartTransactionFailureStatuses = new Set<string>([
+  SmartTransactionStatuses.CANCELLED,
+  SmartTransactionStatuses.CANCELLED_USER_CANCELLED,
+  SmartTransactionStatuses.REVERTED,
+  SmartTransactionStatuses.UNKNOWN,
+]);
+
+export function mapSmartTransactionToastStatus(
   status?: string,
   evmStatus?: string,
 ): TransactionStatus | undefined {
@@ -31,17 +38,12 @@ function mapToastStatus(
     return 'success';
   }
 
-  if (
-    status === SmartTransactionStatuses.CANCELLED ||
-    status === SmartTransactionStatuses.CANCELLED_USER_CANCELLED ||
-    status === SmartTransactionStatuses.REVERTED ||
-    status === SmartTransactionStatuses.UNKNOWN
-  ) {
+  if (status && smartTransactionFailureStatuses.has(status)) {
     return 'failed';
   }
 
   // STX is pending/undefined — check the underlying EVM status to handle Cancel and Speed Up
-  if (evmStatus && failureStatuses.has(evmStatus)) {
+  if (evmStatus && smartTransactionEvmFailureStatuses.has(evmStatus)) {
     return 'failed';
   }
 
@@ -69,7 +71,7 @@ export function useSmartTransactionToasts() {
 
     for (const tx of transactions) {
       const toastId = generateToastId(tx.txId);
-      const currentStatus = mapToastStatus(
+      const currentStatus = mapSmartTransactionToastStatus(
         tx.smartTransactionStatus,
         tx.evmStatus,
       );

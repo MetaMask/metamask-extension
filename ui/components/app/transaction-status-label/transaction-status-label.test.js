@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
-import TransactionStatusLabel from '.';
+import TransactionStatusLabel, { getStatusKey } from '.';
 
 // Mock the useI18nContext hook
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -19,16 +19,26 @@ jest.mock('../../ui/tooltip', () => ({
   ),
 }));
 
-describe('TransactionStatusLabel Component', () => {
-  it('should render CONFIRMED status and date', () => {
-    const props = {
-      status: 'confirmed',
-      date: 'June 1',
-      statusOnly: false,
-    };
+describe('getStatusKey', () => {
+  it('returns signing for approved status', () => {
+    expect(getStatusKey(TransactionStatus.approved, true)).toBe('signing');
+  });
 
-    render(<TransactionStatusLabel {...props} />);
-    expect(screen.getByText('June 1')).toBeInTheDocument();
+  it('returns queued for submitted when not earliest nonce', () => {
+    expect(getStatusKey(TransactionStatus.submitted, false)).toBe('queued');
+  });
+
+  it('returns pending for submitted when earliest nonce', () => {
+    expect(getStatusKey(TransactionStatus.submitted, true)).toBe(
+      TransactionGroupStatus.pending,
+    );
+  });
+});
+
+describe('TransactionStatusLabel Component', () => {
+  it('renders translated status text for confirmed transactions', () => {
+    render(<TransactionStatusLabel status={TransactionStatus.confirmed} />);
+    expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
   });
 
   it('should render PENDING status when submitted and isEarliestNonce is true', () => {
@@ -134,28 +144,6 @@ describe('TransactionStatusLabel Component', () => {
 
     render(<TransactionStatusLabel {...props} />);
     expect(screen.getByText('queued')).toBeInTheDocument();
-  });
-
-  it('should display date for confirmed transactions when not statusOnly', () => {
-    const props = {
-      status: TransactionStatus.confirmed,
-      date: 'June 1',
-      statusOnly: false,
-    };
-
-    render(<TransactionStatusLabel {...props} />);
-    expect(screen.getByText('June 1')).toBeInTheDocument();
-  });
-
-  it('should display status text for confirmed transactions when statusOnly is true', () => {
-    const props = {
-      status: TransactionStatus.confirmed,
-      date: 'June 1',
-      statusOnly: true,
-    };
-
-    render(<TransactionStatusLabel {...props} />);
-    expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
   });
 
   it('label overrides the displayed text', () => {

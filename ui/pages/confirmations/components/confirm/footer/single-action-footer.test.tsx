@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { DefaultRootState } from 'react-redux';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -62,9 +61,7 @@ function render({
     isBlocking?: boolean;
   }[];
 } = {}) {
-  const baseState = getMockConfirmStateForTransaction(
-    confirmation,
-  ) as DefaultRootState;
+  const baseState = getMockConfirmStateForTransaction(confirmation);
 
   const state = {
     ...baseState,
@@ -165,6 +162,25 @@ describe('<SingleActionFooter />', () => {
           severity: Severity.Danger,
           reason: 'Insufficient funds',
           message: 'Some longer description',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
+  });
+
+  it('shows insufficient funds on perpsWithdraw button when amount exceeds balance', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsWithdraw(),
+      alerts: [
+        {
+          key: 'insufficient-pay-token-balance',
+          severity: Severity.Danger,
+          reason: 'Insufficient funds',
+          message: 'Amount exceeds your available Perps balance.',
           isBlocking: true,
         },
       ],

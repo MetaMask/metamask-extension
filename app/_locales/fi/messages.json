@@ -199,9 +199,6 @@
   "done": {
     "message": "Valmis"
   },
-  "downloadGoogleChrome": {
-    "message": "Lataa Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Lataa tilalokit"
   },
@@ -259,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Yhdistä kiinteän laitteiston lompakko"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Valitse laitteistokukkaro, jota haluaisit käyttää MetaMaskilla"
   },
   "here": {
     "message": "tässä",
@@ -388,9 +382,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Verkkokameraa ei löytynyt"
-  },
-  "notEnoughGas": {
-    "message": "Liian vähän gasia"
   },
   "ofTextNofM": {
     "message": "/"

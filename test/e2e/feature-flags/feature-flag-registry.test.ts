@@ -54,7 +54,7 @@ describe('Feature Flag Registry', () => {
       const originalGatorEnabledPermissionTypes =
         process.env.GATOR_ENABLED_PERMISSION_TYPES;
       process.env.GATOR_ENABLED_PERMISSION_TYPES =
-        'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,erc20-token-revocation';
+        'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,token-approval-revocation';
 
       const entry =
         FEATURE_FLAG_REGISTRY[ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG];
@@ -75,7 +75,7 @@ describe('Feature Flag Registry', () => {
               'native-token-periodic',
               'erc20-token-stream',
               'erc20-token-periodic',
-              'erc20-token-revocation',
+              'token-approval-revocation',
               'native-token-allowance',
               'erc20-token-allowance',
             ],
@@ -95,7 +95,7 @@ describe('Feature Flag Registry', () => {
           'native-token-periodic',
           'erc20-token-stream',
           'erc20-token-periodic',
-          'erc20-token-revocation',
+          'token-approval-revocation',
         ]);
       } finally {
         if (originalGatorEnabledPermissionTypes === undefined) {

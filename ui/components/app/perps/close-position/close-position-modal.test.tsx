@@ -8,6 +8,26 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { ClosePositionModal } from './close-position-modal';
 
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
+
 jest.mock('../../../../../shared/lib/perps-formatters', () => ({
   PRICE_RANGES_UNIVERSAL: [],
   formatPerpsFiat: (value: number | string) => {
@@ -36,6 +56,7 @@ jest.mock('../../../../../shared/lib/perps-formatters', () => ({
 }));
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -109,6 +130,10 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('../../rewards/RewardsVipBadge', () => ({
+  RewardsVipBadge: () => null,
+}));
+
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
@@ -116,12 +141,14 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
 
 type MockedUsePerpsOrderFeesReturn = {
   feeRate: number | undefined;
+  undiscountedFeeRate: number | undefined;
   isLoading: boolean;
   metamaskFeeRateDiscountPercentage: number | undefined;
 };
 const mockUsePerpsOrderFees = jest.fn<MockedUsePerpsOrderFeesReturn, []>(
   () => ({
     feeRate: 0.00145,
+    undiscountedFeeRate: 0.00145,
     isLoading: false,
     metamaskFeeRateDiscountPercentage: undefined,
   }),
@@ -158,10 +185,41 @@ describe('ClosePositionModal', () => {
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.00145,
+      undiscountedFeeRate: 0.00145,
       isLoading: false,
       metamaskFeeRateDiscountPercentage: undefined,
     });
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+  });
+
+  describe('perpsClosePosition call', () => {
+    it('includes trackingData with totalFee and marketPrice', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+              }),
+            }),
+          ],
+        );
+      });
+    });
   });
 
   describe('auto-focus', () => {
@@ -320,8 +378,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -390,8 +447,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -418,8 +474,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -452,8 +507,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -512,8 +566,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -570,8 +623,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -586,7 +638,6 @@ describe('ClosePositionModal', () => {
 
   describe('partial close below minimum USD notional', () => {
     it('disables submit when partial notional is just under $10 even if rounded to cents it would be $10', async () => {
-      const user = userEvent.setup();
       const positionOneUnit = {
         ...basePosition,
         size: '1',
@@ -605,10 +656,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      await user.keyboard(
-        Array.from({ length: 50 }, () => '{ArrowLeft}').join(''),
-      );
+      fireEvent.change(slider, { target: { value: '50' } });
 
       await waitFor(() => {
         const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);
@@ -621,7 +669,6 @@ describe('ClosePositionModal', () => {
     });
 
     it('disables submit and shows warning when partial notional is under $10', async () => {
-      const user = userEvent.setup();
       const smallPosition = {
         ...basePosition,
         size: '0.01',
@@ -644,8 +691,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      await user.keyboard('{ArrowLeft}');
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await waitFor(() => {
         const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);
@@ -723,10 +769,11 @@ describe('ClosePositionModal', () => {
     });
   });
 
-  describe('MetaMask fee discount badge', () => {
-    it('does not render the discount badge when no discount is active', () => {
+  describe('MetaMask fee discount', () => {
+    it('does not show discounted fee when no discount is active', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.00145,
+        undiscountedFeeRate: 0.00145,
         isLoading: false,
         metamaskFeeRateDiscountPercentage: undefined,
       });
@@ -742,13 +789,14 @@ describe('ClosePositionModal', () => {
       );
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-close-summary-fees-value-original'),
       ).not.toBeInTheDocument();
     });
 
-    it('renders the inline discount badge next to the fees value when a discount is active', () => {
+    it('shows strikethrough original and discounted fee when a discount is active', () => {
       mockUsePerpsOrderFees.mockReturnValue({
-        feeRate: 0.00045 + 0.0005, // protocol + half-off builder
+        feeRate: 0.00045 + 0.0005, // protocol + half-off builder (discounted)
+        undiscountedFeeRate: 0.00145, // protocol + full builder
         isLoading: false,
         metamaskFeeRateDiscountPercentage: 50,
       });
@@ -764,18 +812,17 @@ describe('ClosePositionModal', () => {
       );
 
       expect(
-        screen.getByTestId('perps-fees-display-discount'),
+        screen.getByTestId('perps-close-summary-fees-value-original'),
       ).toBeInTheDocument();
-      expect(screen.getByText('-50%')).toBeInTheDocument();
-      // Fee value text still present
       expect(
         screen.getByTestId('perps-close-summary-fees-value'),
       ).toBeInTheDocument();
     });
 
-    it('does not render the discount badge while feeRate is unavailable', () => {
+    it('does not show discounted fee while feeRate is unavailable', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: undefined,
         isLoading: true,
         metamaskFeeRateDiscountPercentage: 50,
       });
@@ -791,7 +838,7 @@ describe('ClosePositionModal', () => {
       );
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-close-summary-fees-value-original'),
       ).not.toBeInTheDocument();
     });
   });

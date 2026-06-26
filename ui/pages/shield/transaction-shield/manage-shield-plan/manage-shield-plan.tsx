@@ -25,6 +25,7 @@ import CancelMembershipModal from '../components/cancel-membership-modal';
 import ApiErrorHandler from '../../../../components/app/api-error-handler';
 import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../../shared/constants/subscriptions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getShortDateFormatterV2 } from '../../../asset/util';
 import { PaymentMethodRow } from '../payment-method-row';
 import { useSubscriptionPricing } from '../../../../hooks/subscription/useSubscriptionPricing';

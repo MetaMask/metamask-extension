@@ -11,6 +11,7 @@ import {
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoError,
   selectOptinAllowedForGeoLoading,
+  selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
 import OnboardingMainStep from './OnboardingMainStep';
 import {
@@ -80,6 +81,7 @@ jest.mock('../../../../hooks/rewards/useOptIn', () => ({
 }));
 
 jest.mock('../../../../hooks/rewards/useValidateReferralCode', () => ({
+  REFERRAL_CODE_MIN_LENGTH: 3,
   useValidateReferralCode: jest.fn(),
 }));
 
@@ -126,11 +128,13 @@ type SelectorState = {
   optinAllowedForGeoError?: boolean;
   optinAllowedForGeoLoading?: boolean;
   rewardsActiveAccountSubscriptionId?: string | null;
+  vipProgramEnabled?: boolean;
 };
 
 function setup({
   referralCode = '',
   isValid = false,
+  isVipCode = false,
   isValidating = false,
   isUnknownError = false,
   optinLoading = false,
@@ -146,6 +150,7 @@ function setup({
     setReferralCode,
     isValidating,
     isValid,
+    isVipCode,
     isUnknownError,
   });
 
@@ -164,12 +169,16 @@ function setup({
     optinAllowedForGeoError: false,
     optinAllowedForGeoLoading: false,
     rewardsActiveAccountSubscriptionId: null,
+    vipProgramEnabled: false,
     ...state,
   };
 
   mockedUseSelector.mockImplementation((selector: unknown) => {
     if (selector === selectCandidateSubscriptionId) {
       return fullState.candidateSubscriptionId;
+    }
+    if (selector === selectVipProgramEnabled) {
+      return fullState.vipProgramEnabled;
     }
     if (selector === selectOnboardingReferralCode) {
       return fullState.onboardingReferralCode;
@@ -317,6 +326,32 @@ describe('OnboardingMainStep', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows the VIP referral tag for a valid VIP code when the VIP program is enabled', () => {
+    setup({
+      state: { onboardingReferralCode: 'vipcode', vipProgramEnabled: true },
+      referralCode: 'VIPCODE',
+      isValid: true,
+      isVipCode: true,
+    });
+    render(<OnboardingMainStep />);
+
+    expect(screen.getByTestId('rewards-vip-referral-tag')).toBeInTheDocument();
+  });
+
+  it('does not show the VIP referral tag when the VIP program flag is off', () => {
+    setup({
+      state: { onboardingReferralCode: 'vipcode', vipProgramEnabled: false },
+      referralCode: 'VIPCODE',
+      isValid: true,
+      isVipCode: true,
+    });
+    render(<OnboardingMainStep />);
+
+    expect(
+      screen.queryByTestId('rewards-vip-referral-tag'),
+    ).not.toBeInTheDocument();
+  });
+
   it('seeds validation with the trimmed + uppercased referral from the store', () => {
     setup({ state: { onboardingReferralCode: ' abcd ' } });
     const impl = jest.fn((initialValue?: string) => ({
@@ -333,10 +368,11 @@ describe('OnboardingMainStep', () => {
     expect(impl).toHaveBeenCalledWith('ABCD');
   });
 
-  it('shows referral error message when invalid with length >= 6', () => {
+  it('shows referral error message after validation completes and code is invalid', () => {
     setup({
       referralCode: 'ABCDEF',
       isValid: false,
+      isValidating: false,
       state: { onboardingReferralCode: 'ABCDEF' },
     });
     render(<OnboardingMainStep />);
@@ -344,6 +380,34 @@ describe('OnboardingMainStep', () => {
     expect(
       screen.getByText('rewardsOnboardingReferralCodeError'),
     ).toBeInTheDocument();
+  });
+
+  it('shows referral error message for vanity codes once validation reports invalid', () => {
+    setup({
+      referralCode: 'BANKLESS',
+      isValid: false,
+      isValidating: false,
+      state: { onboardingReferralCode: 'BANKLESS' },
+    });
+    render(<OnboardingMainStep />);
+
+    expect(
+      screen.getByText('rewardsOnboardingReferralCodeError'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not show error while validation is still in flight', () => {
+    setup({
+      referralCode: 'ABC',
+      isValid: false,
+      isValidating: true,
+      state: { onboardingReferralCode: 'ABC' },
+    });
+    render(<OnboardingMainStep />);
+
+    expect(
+      screen.queryByText('rewardsOnboardingReferralCodeError'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders the unknown referral error banner when validation throws', () => {

@@ -196,9 +196,6 @@
   "done": {
     "message": "Gotovo"
   },
-  "downloadGoogleChrome": {
-    "message": "Preuzmi Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Preuzmite dnevnike stanja"
   },
@@ -256,9 +253,6 @@
   },
   "hardwareWallets": {
     "message": "Povežite hardverski novčanik"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Izaberite hardverski novčanik koji biste voleli da koristite sa MetaMask-om"
   },
   "here": {
     "message": "ovde",
@@ -379,9 +373,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Nije nađena veb kamera"
-  },
-  "notEnoughGas": {
-    "message": "Nema dovoljno gasa"
   },
   "ofTextNofM": {
     "message": "od"

@@ -10,6 +10,7 @@ import {
 } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
+import { ALL_METAMASK_FACILITATOR_ADDRESSES } from '../../../../../../../../shared/lib/gator-permissions';
 import { PermissionDetailRenderer } from './permission-detail-renderer';
 
 jest.mock(
@@ -344,11 +345,18 @@ describe('PermissionDetailRenderer', () => {
     });
   });
 
-  describe('erc20-token-revocation', () => {
+  describe('token-approval-revocation', () => {
     it('renders the revocation details section', () => {
       const permission = {
-        type: 'erc20-token-revocation',
-        data: {},
+        type: 'token-approval-revocation',
+        data: {
+          erc20Approve: true,
+          erc721Approve: true,
+          erc721SetApprovalForAll: true,
+          permit2Approve: true,
+          permit2Lockdown: true,
+          permit2InvalidateNonces: true,
+        },
       };
       const { getByTestId } = renderWithConfirmContextProvider(
         <PermissionDetailRenderer
@@ -361,13 +369,77 @@ describe('PermissionDetailRenderer', () => {
         getMockStore(),
       );
       expect(
-        getByTestId('erc20-token-revocation-details-section'),
+        getByTestId('token-approval-revocation-details-section'),
       ).toBeInTheDocument();
+    });
+
+    it('renders the all-primitives text when all revocation primitives are enabled', () => {
+      const permission = {
+        type: 'token-approval-revocation',
+        data: {
+          erc20Approve: true,
+          erc721Approve: true,
+          erc721SetApprovalForAll: true,
+          permit2Approve: true,
+          permit2Lockdown: true,
+          permit2InvalidateNonces: true,
+        },
+      };
+      const { getByText, queryByText } = renderWithConfirmContextProvider(
+        <PermissionDetailRenderer
+          permission={permission}
+          expiry={null}
+          chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
+        />,
+        getMockStore(),
+      );
+
+      expect(
+        getByText(
+          messages.gatorPermissionsAllTokenApprovalRevocationPrimitives.message,
+        ),
+      ).toBeInTheDocument();
+      expect(
+        queryByText(messages.gatorPermissionsErc20ApproveRevocation.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders the revocation method list when non-primitive methods are enabled', () => {
+      const permission = {
+        type: 'token-approval-revocation',
+        data: {
+          erc20Approve: true,
+          erc721Approve: true,
+          erc721SetApprovalForAll: true,
+          permit2Approve: true,
+        },
+      };
+      const { getByText, queryByText } = renderWithConfirmContextProvider(
+        <PermissionDetailRenderer
+          permission={permission}
+          expiry={null}
+          chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
+        />,
+        getMockStore(),
+      );
+
+      expect(
+        getByText(messages.gatorPermissionsPermit2ApproveRevocation.message),
+      ).toBeInTheDocument();
+      expect(
+        queryByText(
+          messages.gatorPermissionsAllTokenApprovalRevocationPrimitives.message,
+        ),
+      ).not.toBeInTheDocument();
     });
   });
 
   describe('error handling', () => {
-    it('throws on invalid permission type', () => {
+    it('throws if throwIfUnknown is true on unknown permission type', () => {
       expect(() =>
         renderWithConfirmContext(
           <PermissionDetailRenderer
@@ -379,7 +451,7 @@ describe('PermissionDetailRenderer', () => {
           />,
           getMockStore(),
         ),
-      ).toThrow('Invalid permission type: invalid');
+      ).toThrow('Unknown permission type: invalid');
     });
 
     it('throws when startTime is missing for periodic types', () => {
@@ -447,6 +519,32 @@ describe('PermissionDetailRenderer', () => {
         });
       });
     }
+
+    it('shows MetaMask facilitator instead of addresses when all redeemers are facilitator addresses', async () => {
+      renderPermissionDetail({
+        permission: ERC20_STREAM_PERMISSION,
+        rules: [
+          {
+            type: 'redeemer',
+            data: { addresses: [ALL_METAMASK_FACILITATOR_ADDRESSES[0]] },
+          },
+        ],
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(messages.redeemers.message),
+        ).toBeInTheDocument();
+      });
+      expect(
+        screen.getByText(messages.gatorPermissionsMetaMaskFacilitator.message),
+      ).toBeInTheDocument();
+      expect(
+        document.querySelector(
+          '[data-original-title="May only be redeemed by the MetaMask x402 facilitator"]',
+        ),
+      ).not.toBeInTheDocument();
+    });
 
     it('uses the Snap-specific request-from tooltip when origin is a Snap id', async () => {
       renderPermissionDetail({

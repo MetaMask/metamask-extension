@@ -24,9 +24,7 @@ export type PerpsExploreMarketsProps = {
   markets: PerpsMarketData[];
 };
 
-export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
-  markets,
-}) => {
+export const PerpsExploreMarkets = ({ markets }: PerpsExploreMarketsProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
@@ -66,10 +64,10 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
             <PerpsMarketCard
               key={market.symbol}
               symbol={market.symbol}
-              name={market.name}
               price={market.price}
               change24hPercent={market.change24hPercent}
               volume={market.volume}
+              maxLeverage={market.maxLeverage}
               onClick={handleMarketClick}
               data-testid={`explore-markets-${market.symbol.replaceAll(':', '-')}`}
             />

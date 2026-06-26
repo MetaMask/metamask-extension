@@ -203,9 +203,6 @@
   "done": {
     "message": "تم"
   },
-  "downloadGoogleChrome": {
-    "message": "تنزيل جوجل كروم"
-  },
   "downloadStateLogs": {
     "message": "تنزيل سجلات الحالة"
   },
@@ -263,9 +260,6 @@
   },
   "hardwareWallets": {
     "message": "الاتصال بمحفظة hardware wallet"
-  },
-  "hardwareWalletsMsg": {
-    "message": "حدد محفظة أجهزة ترغب في استخدامها مع MetaMask"
   },
   "here": {
     "message": "هنا",
@@ -389,9 +383,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "لم يتم العثور على كاميرا متصلة بالإنترنت"
-  },
-  "notEnoughGas": {
-    "message": "لا توجد عملات جاس كافية"
   },
   "ofTextNofM": {
     "message": "من"

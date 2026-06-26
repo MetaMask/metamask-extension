@@ -4,11 +4,12 @@ import type {
   OrderType,
 } from '@metamask/perps-controller';
 
+import { PERPS_FALLBACK_FEE_RATES } from '../../../shared/constants/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMetamaskFeeDiscountBips } from './usePerpsMetamaskFeeDiscountBips';
 
 /** Basis-point denominator: 10000 bips = 100%. */
-const BASIS_POINTS_DIVISOR = 10000;
+export const BASIS_POINTS_DIVISOR = 10000;
 
 type UsePerpsOrderFeesOptions = {
   /** Asset symbol (e.g. 'BTC', 'ETH', 'xyz:TSLA') */
@@ -23,12 +24,18 @@ type UsePerpsOrderFeesOptions = {
 
 type UsePerpsOrderFeesReturn = {
   /**
-   * Combined fee rate (protocol + MetaMask).
+   * Combined fee rate (protocol + MetaMask) **after** any VIP discount.
    * `undefined` while loading or when the call failed entirely (error state).
    * When the call succeeds, the provider's own internal fallback to base rates
    * guarantees a numeric value even if the fee-tier API is down.
    */
   feeRate: number | undefined;
+  /**
+   * Combined fee rate **before** the MetaMask VIP discount is applied.
+   * Equals `feeRate` when no discount is in effect. Consumers use this to
+   * display a struck-through "original" fee alongside the discounted one.
+   */
+  undiscountedFeeRate: number | undefined;
   /** Protocol (exchange) fee rate, if available */
   protocolFeeRate?: number;
   /** MetaMask builder fee rate, if available */
@@ -47,27 +54,22 @@ type UsePerpsOrderFeesReturn = {
   hasError: boolean;
 };
 
-const FALLBACK_FEE_RATES = {
-  feeRate: 0.00145,
-  protocolFeeRate: 0.00045,
-  metamaskFeeRate: 0.001,
-} as const;
-
 /**
  * Un-discounted MetaMask builder fee expressed in basis points. Derived from
- * the decimal fallback rate so the two stay in sync (0.001 decimal = 10 bps).
+ * the shared fallback rate so the two stay in sync (0.001 decimal = 10 bps).
  */
-const ORIGINAL_METAMASK_FEE_BIPS = FALLBACK_FEE_RATES.metamaskFeeRate * 10000;
+export const ORIGINAL_METAMASK_FEE_BIPS =
+  PERPS_FALLBACK_FEE_RATES.metamaskFeeRate * BASIS_POINTS_DIVISOR;
 
 function createFallbackFeeResult(amount?: string): FeeCalculationResult {
   const parsedAmount = Number.parseFloat(amount ?? '');
   const notional = Number.isFinite(parsedAmount) ? parsedAmount : 0;
 
   return {
-    ...FALLBACK_FEE_RATES,
-    feeAmount: notional * FALLBACK_FEE_RATES.feeRate,
-    protocolFeeAmount: notional * FALLBACK_FEE_RATES.protocolFeeRate,
-    metamaskFeeAmount: notional * FALLBACK_FEE_RATES.metamaskFeeRate,
+    ...PERPS_FALLBACK_FEE_RATES,
+    feeAmount: notional * PERPS_FALLBACK_FEE_RATES.feeRate,
+    protocolFeeAmount: notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
+    metamaskFeeAmount: notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
   };
 }
 
@@ -201,6 +203,7 @@ export function usePerpsOrderFees({
 
   return {
     feeRate: discountedFeeResult?.feeRate,
+    undiscountedFeeRate: feeResult?.feeRate,
     protocolFeeRate: discountedFeeResult?.protocolFeeRate,
     metamaskFeeRate: discountedFeeResult?.metamaskFeeRate,
     metamaskFeeRateDiscountPercentage,

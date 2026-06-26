@@ -1,4 +1,7 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import {
+  Env as ProfileSyncEnv,
+  getEnvUrls,
+} from '@metamask/profile-sync-controller/sdk';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
@@ -8,7 +11,9 @@ import {
 } from '@metamask/messenger';
 import browser from 'webextension-polyfill';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
+import ExtensionPlatform from '../../platforms/extension';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';
 import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
@@ -28,10 +33,10 @@ const mockBrowserRuntime = browser.runtime as typeof browser.runtime & {
   lastError?: { message: string; stack?: string[] };
 };
 
-const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
-const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
 const MOCK_USER_ID = 'user-id';
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
+const MOCK_PROFILE_SYNC_ENV = ProfileSyncEnv.DEV;
+const MOCK_TELEGRAM_AUTH_API_URL = getEnvUrls(MOCK_PROFILE_SYNC_ENV).authApiUrl;
 const MOCK_JWT_TOKEN =
   'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN3bmFtOTA5QGdtYWlsLmNvbSIsInN1YiI6InN3bmFtOTA5QGdtYWlsLmNvbSIsImlzcyI6Im1ldGFtYXNrIiwiYXVkIjoibWV0YW1hc2siLCJpYXQiOjE3NDUyMDc1NjYsImVhdCI6MTc0NTIwNzg2NiwiZXhwIjoxNzQ1MjA3ODY2fQ.nXRRLB7fglRll7tMzFFCU0u7Pu6EddqEYf_DMyRgOENQ6tJ8OLtVknNf83_5a67kl_YKHFO-0PEjvJviPID6xg';
 const MOCK_NONCE = 'mocked-nonce';
@@ -42,30 +47,49 @@ const MOCK_STATE = JSON.stringify({
   nonce: MOCK_NONCE,
 });
 
-function getOAuthLoginEnvs(): {
-  googleClientId: string;
-  appleClientId: string;
-} {
-  return {
-    googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
-    appleClientId: DEFAULT_APPLE_CLIENT_ID,
-  };
-}
+jest.mock('../../platforms/extension');
 
-function getMessenger({
-  captureException,
-}: {
-  captureException?: jest.Mock;
-} = {}): OAuthServiceTestMessenger {
+const mockCaptureException = jest.fn();
+const mockGetGeolocation = jest.fn().mockResolvedValue(undefined);
+const mockGetOnboardingControllerState = jest.fn().mockReturnValue({
+  firstTimeFlowType: undefined,
+  completedOnboarding: false,
+});
+const mockGetAccessToken = jest.fn().mockResolvedValue('mock-access-token');
+
+function getMessenger(): OAuthServiceTestMessenger {
   const rootMessenger: RootMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
   });
+
+  rootMessenger.registerActionHandler(
+    'GeolocationController:getGeolocation',
+    mockGetGeolocation,
+  );
+  rootMessenger.registerActionHandler(
+    'OnboardingController:getState',
+    mockGetOnboardingControllerState,
+  );
+  rootMessenger.registerActionHandler(
+    'SeedlessOnboardingController:getAccessToken',
+    mockGetAccessToken,
+  );
+
   const messenger = new Messenger({
     namespace: 'OAuthService',
     parent: rootMessenger,
   }) as OAuthServiceTestMessenger;
 
-  messenger.captureException = captureException;
+  rootMessenger.delegate({
+    messenger,
+    actions: [
+      'GeolocationController:getGeolocation',
+      'OnboardingController:getState',
+      'SeedlessOnboardingController:getAccessToken',
+    ],
+  });
+
+  messenger.captureException = mockCaptureException;
 
   return messenger;
 }
@@ -91,7 +115,14 @@ const mockBufferedTrace = jest.fn();
 const mockBufferedEndTrace = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockAddEventBeforeMetricsOptIn = jest.fn();
-const mockGetParticipateInMetaMetrics = jest.fn().mockReturnValue(true);
+const mockGetCompletedMetaMetricsOnboarding = jest.fn().mockReturnValue(true);
+const mockGetOptedIn = jest.fn().mockReturnValue(true);
+const mockPlatform = new ExtensionPlatform();
+let messenger: OAuthServiceTestMessenger;
+
+beforeEach(() => {
+  messenger = getMessenger();
+});
 
 describe('OAuthService - startOAuthLogin', () => {
   beforeAll(() => {
@@ -126,28 +157,23 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should start the OAuth login process with `Google`', async () => {
-    const messenger = getMessenger();
-    const oauthEnv = getOAuthLoginEnvs();
-
     const oauthService = new OAuthService({
       messenger,
-      env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Google);
 
     const googleLoginHandler = createLoginHandler(
       AuthConnection.Google,
-      {
-        ...oauthEnv,
-        ...loadOAuthConfig(),
-      },
+      loadOAuthConfig(),
       mockWebAuthenticator,
     );
 
@@ -158,32 +184,27 @@ describe('OAuthService - startOAuthLogin', () => {
       },
       expect.any(Function),
     );
+    expect(mockGetGeolocation).toHaveBeenCalled();
   });
 
   it('should start the OAuth login process with `Apple`', async () => {
-    const messenger = getMessenger();
-
-    const oauthEnv = getOAuthLoginEnvs();
-
     const oauthService = new OAuthService({
       messenger,
-      env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Apple);
 
     const appleLoginHandler = createLoginHandler(
       AuthConnection.Apple,
-      {
-        ...oauthEnv,
-        ...loadOAuthConfig(),
-      },
+      loadOAuthConfig(),
       mockWebAuthenticator,
     );
 
@@ -196,24 +217,232 @@ describe('OAuthService - startOAuthLogin', () => {
     );
   });
 
-  it('should throw an error if the state validation fails - google', async () => {
-    const captureException = jest.fn();
-    const messenger = getMessenger({ captureException });
+  it('should start the OAuth login process with `Telegram` using extension platform tabs', async () => {
+    const redirectUrl = `${MOCK_REDIRECT_URI}?code=mocked-code&state=${MOCK_NONCE}`;
 
-    const oauthEnv = getOAuthLoginEnvs();
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn((input) => {
+        const url = String(input);
+
+        if (url.includes('/api/v2/telegram/login/verify')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              token: MOCK_JWT_TOKEN,
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        if (url.includes('/oauth2/token')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              access_token: 'mocked-oidc-access-token',
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        if (url.includes('/api/v1/oauth/mint')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              id_token: MOCK_JWT_TOKEN,
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        throw new Error(`Unexpected fetch URL: ${url}`);
+      }) as jest.Mock,
+    );
+
+    // @ts-expect-error - mock platform
+    jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({ id: 1 });
+    jest.spyOn(mockPlatform, 'closeTab').mockResolvedValue(undefined);
+    jest
+      .spyOn(mockPlatform, 'addTabUpdatedListener')
+      .mockImplementation(async (fn) => {
+        await Promise.resolve();
+        await fn(1, { url: redirectUrl }, { url: redirectUrl });
+      });
+    jest
+      .spyOn(mockPlatform, 'addTabRemovedListener')
+      .mockImplementation(jest.fn());
 
     const oauthService = new OAuthService({
       messenger,
-      env: oauthEnv,
-      webAuthenticator: {
-        ...mockWebAuthenticator,
-        generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
-      },
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
+    });
+
+    const result = await oauthService.startOAuthLogin(AuthConnection.Telegram);
+
+    expect(result).toMatchObject({
+      authConnection: AuthConnection.Telegram,
+      idTokens: [MOCK_JWT_TOKEN],
+      socialLoginEmail: 'swnam909@gmail.com',
+      profilePairingToken: 'mocked-oidc-access-token',
+    });
+    expect(mockPlatform.openTab).toHaveBeenCalledWith({
+      active: true,
+      url: expect.stringContaining(
+        `${MOCK_TELEGRAM_AUTH_API_URL}/api/v2/telegram/login/initiate`,
+      ),
+    });
+    expect(mockPlatform.closeTab).toHaveBeenCalledWith(1);
+  });
+
+  it('uses an empty auth code when the Telegram redirect URL has no code parameter', async () => {
+    const redirectUrl = `${MOCK_REDIRECT_URI}?state=${MOCK_NONCE}`;
+    const verifyRequestBodies: Record<string, string | null>[] = [];
+
+    (global.fetch as jest.Mock).mockImplementation(
+      jest.fn((input, init?: RequestInit) => {
+        const url = String(input);
+
+        if (url.includes('/api/v2/telegram/login/verify')) {
+          if (typeof init?.body !== 'string') {
+            throw new Error(
+              'Expected Telegram verify request body to be a string',
+            );
+          }
+
+          verifyRequestBodies.push(
+            JSON.parse(init.body) as Record<string, string | null>,
+          );
+
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              token: MOCK_JWT_TOKEN,
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        if (url.includes('/oauth2/token')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              access_token: 'mocked-oidc-access-token',
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        if (url.includes('/api/v1/oauth/mint')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              id_token: MOCK_JWT_TOKEN,
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        throw new Error(`Unexpected fetch URL: ${url}`);
+      }) as jest.Mock,
+    );
+
+    // @ts-expect-error - mock platform
+    jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({ id: 1 });
+    jest.spyOn(mockPlatform, 'closeTab').mockResolvedValue(undefined);
+    jest
+      .spyOn(mockPlatform, 'addTabUpdatedListener')
+      .mockImplementation(async (fn) => {
+        await Promise.resolve();
+        await fn(1, { url: redirectUrl }, { url: redirectUrl });
+      });
+    jest
+      .spyOn(mockPlatform, 'addTabRemovedListener')
+      .mockImplementation(jest.fn());
+
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
+    });
+
+    await oauthService.startOAuthLogin(AuthConnection.Telegram);
+
+    expect(verifyRequestBodies).toHaveLength(1);
+    expect(verifyRequestBodies[0].code).toBe('');
+    expect(verifyRequestBodies[0].code).not.toBeNull();
+    expect(verifyRequestBodies[0].code_verifier).toBe('mocked-code-verifier');
+  });
+
+  it('treats a closed Telegram login tab as a user-cancelled login', async () => {
+    const captureException = jest.fn();
+    messenger.captureException = captureException;
+
+    // @ts-expect-error - mock platform
+    jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({ id: 1 });
+    jest.spyOn(mockPlatform, 'closeTab').mockResolvedValue(undefined);
+    jest
+      .spyOn(mockPlatform, 'addTabUpdatedListener')
+      .mockImplementation(jest.fn());
+    jest
+      .spyOn(mockPlatform, 'addTabRemovedListener')
+      .mockImplementation(async (fn) => {
+        await Promise.resolve();
+        await fn(1);
+      });
+
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Telegram),
+    ).rejects.toThrow(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR);
+
+    expect(captureException).not.toHaveBeenCalled();
+    expect(mockPlatform.closeTab).not.toHaveBeenCalled();
+  });
+
+  it('should throw an error if the state validation fails - google', async () => {
+    const captureException = jest.fn();
+    messenger.captureException = captureException;
+
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
+      },
+      platform: mockPlatform,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
     });
 
     await expect(
@@ -238,7 +467,7 @@ describe('OAuthService - startOAuthLogin', () => {
     >('../../../../shared/lib/error');
     const createSentryErrorSpy = jest.spyOn(ErrorUtils, 'createSentryError');
     const captureException = jest.fn();
-    const messenger = getMessenger({ captureException });
+    messenger.captureException = captureException;
     const browserAuthFlowErrorMessage =
       'Authorization page could not be loaded';
     mockBrowserRuntime.lastError = {
@@ -247,7 +476,6 @@ describe('OAuthService - startOAuthLogin', () => {
 
     const oauthService = new OAuthService({
       messenger,
-      env: getOAuthLoginEnvs(),
       webAuthenticator: {
         ...mockWebAuthenticator,
         launchWebAuthFlow: jest.fn().mockImplementation((_options, cb) => {
@@ -258,7 +486,9 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
+      platform: mockPlatform,
     });
 
     await expect(
@@ -284,11 +514,10 @@ describe('OAuthService - startOAuthLogin', () => {
 
   it('falls back to the generic no redirect error when the browser reports no lastError', async () => {
     const captureException = jest.fn();
-    const messenger = getMessenger({ captureException });
+    messenger.captureException = captureException;
 
     const oauthService = new OAuthService({
       messenger,
-      env: getOAuthLoginEnvs(),
       webAuthenticator: {
         ...mockWebAuthenticator,
         launchWebAuthFlow: jest.fn().mockImplementation((_options, cb) => {
@@ -299,7 +528,9 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
+      platform: mockPlatform,
     });
 
     await expect(
@@ -318,22 +549,60 @@ describe('OAuthService - startOAuthLogin', () => {
     expect(sentryError.message).not.toContain(MOCK_REDIRECT_URI);
   });
 
+  it('falls back to the generic no redirect error when the browser reports an empty lastError message', async () => {
+    const captureException = jest.fn();
+    messenger.captureException = captureException;
+    mockBrowserRuntime.lastError = {
+      message: '',
+    };
+
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        launchWebAuthFlow: jest.fn().mockImplementation((_options, cb) => {
+          cb(undefined);
+        }),
+      },
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
+      platform: mockPlatform,
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Google),
+    ).rejects.toThrow(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR);
+
+    const sentryError = captureException.mock.calls[0][0] as Error & {
+      cause?: Error & { cause?: Error };
+    };
+
+    expect(sentryError.cause?.message).toBe(
+      OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR,
+    );
+    expect(sentryError.cause?.cause?.message).toBe('');
+    expect(sentryError.message).toContain(AuthConnection.Google);
+    expect(sentryError.message).not.toContain(MOCK_REDIRECT_URI);
+  });
+
   describe('OAuthService:startOAuthLogin action', () => {
     it('starts the OAuth login process with `Google`', async () => {
-      const messenger = getMessenger();
-
-      const oauthEnv = getOAuthLoginEnvs();
-
       // eslint-disable-next-line no-new
       new OAuthService({
         messenger,
-        env: oauthEnv,
         webAuthenticator: mockWebAuthenticator,
+        platform: mockPlatform,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
         addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-        getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+        getCompletedMetaMetricsOnboarding:
+          mockGetCompletedMetaMetricsOnboarding,
+        getOptedIn: mockGetOptedIn,
       });
 
       await messenger.call(
@@ -343,10 +612,7 @@ describe('OAuthService - startOAuthLogin', () => {
 
       const googleLoginHandler = createLoginHandler(
         AuthConnection.Google,
-        {
-          ...oauthEnv,
-          ...loadOAuthConfig(),
-        },
+        loadOAuthConfig(),
         mockWebAuthenticator,
       );
 
@@ -383,19 +649,18 @@ describe('OAuthService - getNewRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = getMessenger();
-
     const oauthConfig = loadOAuthConfig();
 
     const oauthService = new OAuthService({
       messenger,
-      env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
     });
 
     const result = await oauthService.getNewRefreshToken({
@@ -417,7 +682,7 @@ describe('OAuthService - getNewRefreshToken', () => {
         body: JSON.stringify({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: DEFAULT_GOOGLE_CLIENT_ID,
+          client_id: oauthConfig.googleClientId,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           login_provider: AuthConnection.Google,
@@ -449,17 +714,16 @@ describe('OAuthService - getNewRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = getMessenger();
-
     const oauthService = new OAuthService({
       messenger,
-      env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
     });
 
     await expect(
@@ -490,20 +754,18 @@ describe('OAuthService - getNewRefreshToken', () => {
         }) as jest.Mock,
       );
 
-      const messenger = getMessenger();
-
-      const oauthEnv = getOAuthLoginEnvs();
-
       // eslint-disable-next-line no-new
       new OAuthService({
         messenger,
-        env: oauthEnv,
         webAuthenticator: mockWebAuthenticator,
+        platform: mockPlatform,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
         addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-        getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+        getCompletedMetaMetricsOnboarding:
+          mockGetCompletedMetaMetricsOnboarding,
+        getOptedIn: mockGetOptedIn,
       });
 
       const result = await messenger.call('OAuthService:getNewRefreshToken', {
@@ -540,17 +802,16 @@ describe('OAuthService - renewRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = getMessenger();
-
     const oauthService = new OAuthService({
       messenger,
-      env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
     });
     const oauthConfig = loadOAuthConfig();
 
@@ -596,17 +857,16 @@ describe('OAuthService - renewRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = getMessenger();
-
     const oauthService = new OAuthService({
       messenger,
-      env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
     });
 
     await expect(
@@ -634,17 +894,16 @@ describe('OAuthService - revokeRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = getMessenger();
-
     const oauthService = new OAuthService({
       messenger,
-      env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
     });
     const oauthConfig = loadOAuthConfig();
 
@@ -685,17 +944,16 @@ describe('OAuthService - revokeRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = getMessenger();
-
     const oauthService = new OAuthService({
       messenger,
-      env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
+      getOptedIn: mockGetOptedIn,
     });
 
     await expect(
@@ -726,18 +984,18 @@ describe('OAuthService - revokeRefreshToken', () => {
         }) as jest.Mock,
       );
 
-      const messenger = getMessenger();
-
       // eslint-disable-next-line no-new
       new OAuthService({
         messenger,
-        env: getOAuthLoginEnvs(),
         webAuthenticator: mockWebAuthenticator,
+        platform: mockPlatform,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
         addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-        getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+        getCompletedMetaMetricsOnboarding:
+          mockGetCompletedMetaMetricsOnboarding,
+        getOptedIn: mockGetOptedIn,
       });
 
       const result = await messenger.call('OAuthService:renewRefreshToken', {

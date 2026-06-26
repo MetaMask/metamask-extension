@@ -23,8 +23,9 @@ import useRamps, {
 } from '../../../hooks/ramps/useRamps/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getDataCollectionForMarketing,
   getSelectedAccount,
 } from '../../../selectors';
@@ -44,21 +45,25 @@ type FundingMethodModalProps = Omit<ModalProps, 'children'> & {
   onClickReceive: () => void;
 };
 
-export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
+export const FundingMethodModal = ({
   isOpen,
   onClose,
   title,
   onClickReceive,
   ...props
-}) => {
+}: FundingMethodModalProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { openBuyCryptoInPdapp } = useRamps();
   const { address: accountAddress } = useSelector(getSelectedAccount);
   const { chainId } = useSelector(getMultichainCurrentNetwork);
   const { symbol } = useSelector(getMultichainDefaultToken);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const handleTransferCryptoClick = useCallback(() => {
@@ -80,15 +85,15 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
     const url = getPortfolioUrl(
       'transfer',
       'ext_funding_method_modal',
-      metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
+      analyticsId,
+      isMetaMetricsEnabled === true,
+      isMarketingEnabled === true,
       accountAddress,
       'transfer',
     );
     global.platform.openTab({ url });
   }, [
-    metaMetricsId,
+    analyticsId,
     isMetaMetricsEnabled,
     isMarketingEnabled,
     chainId,

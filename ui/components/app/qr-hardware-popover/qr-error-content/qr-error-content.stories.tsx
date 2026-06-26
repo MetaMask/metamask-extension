@@ -16,13 +16,14 @@ const meta = {
 Presentational component for QR scan error states during hardware wallet pairing and signing.
 
 **Error types**
-- **NonUrQrCode** (State 3) — scanned data is not a UR code. Copy differs between pairing and signing.
-- **WrongUrType** (State 4) — valid UR, but the type is wrong for this flow. Copy differs between pairing and signing.
-- **UrDecodeError** (State 5) — the UR decoder encountered an error. Copy is universal (same for pairing and signing).
+- **NonUrQrCode** (State 3) - scanned data is not a UR code. Copy differs between pairing and signing.
+- **WrongUrType** (State 4) - valid UR, but the type is wrong for this flow. Copy differs between pairing and signing.
+- **UrDecodeError** (State 5) - the UR decoder encountered an error. Copy is universal (same for pairing and signing).
+- **MismatchedTransaction** (State 6) - signature QR belongs to a different transaction. Copy is universal (signing flow only).
 
 **Buttons**
-- **Learn more** (secondary) — opens the MetaMask support article.
-- **Continue** (primary) — calls \`onTryAgain\`.
+- **Learn more** (secondary) - opens the MetaMask support article.
+- **Continue** (primary) - calls \`onTryAgain\`.
 `.trim(),
       },
     },
@@ -45,6 +46,7 @@ Presentational component for QR scan error states during hardware wallet pairing
         QrErrorType.NonUrQrCode,
         QrErrorType.WrongUrType,
         QrErrorType.UrDecodeError,
+        QrErrorType.MismatchedTransaction,
       ],
       description: 'Which QR scan error state to display.',
     },
@@ -65,9 +67,9 @@ export default meta;
 
 type Story = StoryObj<typeof QrErrorContent>;
 
-/** State 3 — Non-UR QR code scanned during pairing. */
+/** State 3 - Non-UR QR code scanned during pairing. */
 export const NonUrQrCodePairing: Story = {
-  name: 'State 3: Non-UR QR — Pairing',
+  name: 'State 3: Non-UR QR - Pairing',
   args: {
     errorType: QrErrorType.NonUrQrCode,
     flowContext: QrErrorFlowContext.Pairing,
@@ -75,9 +77,9 @@ export const NonUrQrCodePairing: Story = {
   },
 };
 
-/** State 3 — Non-UR QR code scanned during signing. */
+/** State 3 - Non-UR QR code scanned during signing. */
 export const NonUrQrCodeSigning: Story = {
-  name: 'State 3: Non-UR QR — Signing',
+  name: 'State 3: Non-UR QR - Signing',
   args: {
     errorType: QrErrorType.NonUrQrCode,
     flowContext: QrErrorFlowContext.Signing,
@@ -85,9 +87,9 @@ export const NonUrQrCodeSigning: Story = {
   },
 };
 
-/** State 4 — Valid UR with wrong type during pairing. */
+/** State 4 - Valid UR with wrong type during pairing. */
 export const WrongUrTypePairing: Story = {
-  name: 'State 4: Wrong UR Type — Pairing',
+  name: 'State 4: Wrong UR Type - Pairing',
   args: {
     errorType: QrErrorType.WrongUrType,
     flowContext: QrErrorFlowContext.Pairing,
@@ -95,9 +97,9 @@ export const WrongUrTypePairing: Story = {
   },
 };
 
-/** State 4 — Valid UR with wrong type during signing. */
+/** State 4 - Valid UR with wrong type during signing. */
 export const WrongUrTypeSigning: Story = {
-  name: 'State 4: Wrong UR Type — Signing',
+  name: 'State 4: Wrong UR Type - Signing',
   args: {
     errorType: QrErrorType.WrongUrType,
     flowContext: QrErrorFlowContext.Signing,
@@ -105,12 +107,22 @@ export const WrongUrTypeSigning: Story = {
   },
 };
 
-/** State 5 — UR decode error (universal, same for pairing and signing). */
+/** State 5 - UR decode error (universal, same for pairing and signing). */
 export const UrDecodeError: Story = {
   name: 'State 5: UR Decode Error',
   args: {
     errorType: QrErrorType.UrDecodeError,
     flowContext: QrErrorFlowContext.Pairing,
+    onTryAgain: () => undefined,
+  },
+};
+
+/** State 6 - Signature QR belongs to a different transaction. */
+export const MismatchedTransaction: Story = {
+  name: 'State 6: Mismatched Transaction',
+  args: {
+    errorType: QrErrorType.MismatchedTransaction,
+    flowContext: QrErrorFlowContext.Signing,
     onTryAgain: () => undefined,
   },
 };

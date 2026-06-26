@@ -199,9 +199,6 @@
   "done": {
     "message": "Končano"
   },
-  "downloadGoogleChrome": {
-    "message": "Prenesi Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Prenesi dnevnike state"
   },
@@ -256,9 +253,6 @@
   },
   "hardwareWallets": {
     "message": "Poveži strojno denarnico"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Izberite vrsto strojne denarnice"
   },
   "here": {
     "message": "tukaj",
@@ -376,9 +370,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Spletna kamera ni najdena"
-  },
-  "notEnoughGas": {
-    "message": "Ni dovolj plina"
   },
   "ofTextNofM": {
     "message": "od"

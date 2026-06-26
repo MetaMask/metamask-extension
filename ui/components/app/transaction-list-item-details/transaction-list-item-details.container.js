@@ -1,6 +1,7 @@
+import React, { useContext } from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
-import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
+import { useNavigate } from 'react-router-dom';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isProtectedByEnforcedSimulations } from '../../../pages/confirmations/utils/confirm';
 import {
@@ -55,7 +56,19 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(
-  withRouterHooks,
-  connect(mapStateToProps, mapDispatchToProps),
+const ConnectedTransactionListItemDetails = connect(
+  mapStateToProps,
+  mapDispatchToProps,
 )(TransactionListItemDetails);
+
+export default function TransactionListItemDetailsContainer(props) {
+  const navigate = useNavigate();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  return (
+    <ConnectedTransactionListItemDetails
+      {...props}
+      navigate={navigate}
+      trackEvent={trackEvent}
+    />
+  );
+}

@@ -36,6 +36,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { getSuggestedTokens } from '../../selectors';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
 
@@ -172,15 +173,12 @@ const ConfirmAddSuggestedToken = () => {
     navigate(mostRecentOverviewPage);
   }, [dispatch, navigate, mostRecentOverviewPage, suggestedTokens]);
 
-  const goBackIfNoSuggestedTokensOnFirstRender = () => {
+  // Go back if there are no suggested tokens to render
+  useEffect(() => {
     if (!suggestedTokens.length) {
       navigate(mostRecentOverviewPage);
     }
-  };
-
-  useEffect(() => {
-    goBackIfNoSuggestedTokensOnFirstRender();
-  }, []);
+  }, [suggestedTokens.length, navigate, mostRecentOverviewPage]);
 
   return (
     <div className={classNames}>

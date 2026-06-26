@@ -110,7 +110,7 @@ describe('getEnabledAdvancedPermissions', () => {
               'native-token-periodic',
               'erc20-token-periodic',
               'erc20-token-stream',
-              'erc20-token-revocation',
+              'token-approval-revocation',
             ],
           },
         },

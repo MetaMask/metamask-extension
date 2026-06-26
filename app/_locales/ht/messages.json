@@ -123,9 +123,6 @@
   "done": {
     "message": "Fini"
   },
-  "downloadGoogleChrome": {
-    "message": "Telechaje Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Telechaje State Logs"
   },
@@ -171,9 +168,6 @@
   },
   "hardwareWallets": {
     "message": "Materyèl Wallet konekte"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Chwazi yon Materyèl Wallet ou ta renmen itilize ak MetaMask"
   },
   "here": {
     "message": "isit la",

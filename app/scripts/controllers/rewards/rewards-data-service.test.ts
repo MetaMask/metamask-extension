@@ -5,7 +5,7 @@ import {
   MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import {
   EstimatePointsDto,
@@ -1019,6 +1019,19 @@ describe('RewardsDataService', () => {
       const result = await service.validateReferralCode(mockCode);
 
       expect(result).toEqual({ valid: false });
+    });
+
+    it('surfaces the backend isVipCode flag', async () => {
+      const mockResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue({ valid: true, isVipCode: true }),
+      } as unknown as Response;
+
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const result = await service.validateReferralCode(mockCode);
+
+      expect(result).toEqual({ valid: true, isVipCode: true });
     });
 
     it('throws error for failed validation', async () => {

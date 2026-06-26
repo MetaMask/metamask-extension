@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -247,6 +248,18 @@ describe('PerpsRecentActivity', () => {
 
     const seeAllButton = screen.getByTestId('perps-recent-activity-see-all');
     fireEvent.click(seeAllButton);
+
+    expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+  });
+
+  it('navigates to activity route when the Recent Activity header text is clicked', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} />,
+      mockStore,
+    );
+
+    await user.click(screen.getByText(messages.perpsRecentActivity.message));
 
     expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
   });

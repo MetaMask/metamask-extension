@@ -35,7 +35,7 @@ import { ReviewPermissionRenderer } from './review-permission-renderer';
  * Permission `data` for the shared schema renderer.
  * Schema validation runs in `ReviewPermissionRenderer`.
  *
- * @param permission - Gator permission whose `data` is passed into `PERMISSION_SCHEMAS`.
+ * @param permission - Gator permission whose `data` is passed into `PermissionSchemaEntry`.
  * @param permission.data - Raw permission payload; coerced to a plain object for the schema.
  */
 function permissionDataForReview(permission: {

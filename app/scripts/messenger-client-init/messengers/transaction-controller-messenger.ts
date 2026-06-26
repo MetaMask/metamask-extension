@@ -12,9 +12,12 @@ import {
   BridgeStatusControllerStateChangeEvent,
 } from '@metamask/bridge-status-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { GasFeeControllerFetchGasFeeEstimatesAction } from '@metamask/gas-fee-controller';
 import {
+  KeyringControllerGetKeyringForAccountAction,
   KeyringControllerGetStateAction,
   KeyringControllerSignEip7702AuthorizationAction,
+  KeyringControllerSignTransactionAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import {
@@ -26,11 +29,17 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetNetworkClientRegistryAction,
+  NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
+import {
+  SmartTransactionsControllerGetFeesAction,
+  SmartTransactionsControllerSmartTransactionEvent,
+  SmartTransactionsControllerSubmitSignedTransactionsAction,
+} from '@metamask/smart-transactions-controller';
 import { SubscriptionControllerActions } from '@metamask/subscription-controller';
 import {
   TransactionControllerAddTransactionAction,
@@ -66,24 +75,15 @@ import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
-
-type AllowedActions = MessengerActions<TransactionControllerMessenger>;
-
-type AllowedEvents = MessengerEvents<TransactionControllerMessenger>;
-
-export type TransactionControllerInitMessenger = ReturnType<
-  typeof getTransactionControllerInitMessenger
->;
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export function getTransactionControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-): TransactionControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'TransactionController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<TransactionControllerMessenger>,
+    MessengerEvents<TransactionControllerMessenger>
+  >,
+) {
+  const controllerMessenger: TransactionControllerMessenger = new Messenger({
     namespace: 'TransactionController',
     parent: messenger,
   });
@@ -93,22 +93,28 @@ export function getTransactionControllerMessenger(
       'AccountsController:getSelectedAccount',
       'AccountsController:getState',
       `ApprovalController:addRequest`,
+      'GasFeeController:fetchGasFeeEstimates',
       'KeyringController:getState',
       'KeyringController:signEip7702Authorization',
+      'KeyringController:signTransaction',
       'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getEIP1559Compatibility',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkClientRegistry',
+      'NetworkController:getState',
       'RemoteFeatureFlagController:getState',
     ],
     events: [
       'AccountActivityService:transactionUpdated',
-      'AccountActivityService:statusChanged',
-      'AccountsController:selectedAccountChange',
-      'BackendWebSocketService:connectionStateChanged',
       'NetworkController:stateChange',
     ],
   });
   return controllerMessenger;
 }
+
+export type TransactionControllerInitMessenger = ReturnType<
+  typeof getTransactionControllerInitMessenger
+>;
 
 type InitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
@@ -121,15 +127,23 @@ type InitMessengerActions =
   | BridgeStatusControllerActions
   | CurrencyRateControllerActions
   | DelegationControllerSignDelegationAction
+  | GasFeeControllerFetchGasFeeEstimatesAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
+  | KeyringControllerGetKeyringForAccountAction
   | KeyringControllerGetStateAction
   | KeyringControllerSignEip7702AuthorizationAction
+  | KeyringControllerSignTransactionAction
   | KeyringControllerSignTypedMessageAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkClientRegistryAction
+  | NetworkControllerGetStateAction
+  | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
+  | SmartTransactionsControllerGetFeesAction
+  | SmartTransactionsControllerSubmitSignedTransactionsAction
   | SubscriptionControllerActions
   | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | TransactionControllerAddTransactionAction
@@ -204,13 +218,18 @@ export function getTransactionControllerInitMessenger(
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
+      'KeyringController:getKeyringForAccount',
       'KeyringController:getState',
       'KeyringController:signEip7702Authorization',
       'KeyringController:signTypedMessage',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getEIP1559Compatibility',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkClientRegistry',
+      'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
+      'SmartTransactionsController:getFees',
+      'SmartTransactionsController:submitSignedTransactions',
       'SubscriptionController:getSubscriptionByProduct',
       'SubscriptionService:submitSubscriptionSponsorshipIntent',
       'TransactionController:addTransaction',

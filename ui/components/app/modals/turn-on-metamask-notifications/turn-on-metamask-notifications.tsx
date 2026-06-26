@@ -1,6 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ButtonsAlignment,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import { useMetamaskNotificationsContext } from '../../../../contexts/metamask-notifications/metamask-notifications';
@@ -21,21 +31,8 @@ import {
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
+import { Text } from '../../../component-library';
 import {
-  Box,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  Text,
-  ModalFooter,
-} from '../../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  BorderRadius,
-  FlexDirection,
   FontWeight,
   TextColor,
 } from '../../../../helpers/constants/design-system';
@@ -129,17 +126,16 @@ export default function TurnOnMetamaskNotifications() {
     <Modal isOpen onClose={() => handleHideModal()}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={() => handleHideModal()}>
+        <ModalHeader
+          onClose={() => handleHideModal()}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           {t('turnOnMetamaskNotifications')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            as="img"
-            src="./images/turn-on-metamask-notifications.png"
-            width={BlockSize.Full}
-            borderRadius={BorderRadius.MD}
-            marginBottom={4}
-          />
+          <Box asChild className="w-full rounded-md" marginBottom={4}>
+            <img src="./images/turn-on-metamask-notifications.png" />
+          </Box>
           <Text as="p">{t('turnOnMetamaskNotificationsMessageFirst')}</Text>
           <Text as="p" paddingTop={4}>
             {
@@ -157,19 +153,16 @@ export default function TurnOnMetamaskNotifications() {
           </Text>
         </ModalBody>
         <ModalFooter
-          paddingTop={4}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={() => handleTurnOnNotifications()}
-          containerProps={{
-            flexDirection: FlexDirection.Column,
-            alignItems: AlignItems.stretch,
-          }}
-          submitButtonProps={{
+          className="pt-4"
+          buttonsAlignment={ButtonsAlignment.Vertical}
+          primaryButtonProps={{
             children: t('turnOnMetamaskNotificationsButton'),
-            loading: isLoading,
-            disabled: isLoading,
+            isLoading,
+            isDisabled: isLoading,
             'data-testid': 'turn-on-notifications-button',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick: () => handleTurnOnNotifications(),
           }}
         />
         {error && (

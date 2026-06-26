@@ -39,7 +39,7 @@ async function main() {
           .option('leave-running', {
             default: false,
             description:
-              'Leaves the browser running after a test fails, along with anything else that the test used (ganache, the test dapp, etc.)',
+              'Leaves the browser running after a test fails, along with anything else that the test used (the local node, the test dapp, etc.)',
             type: 'boolean',
           })
           .option('update-snapshot', {

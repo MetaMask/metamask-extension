@@ -4,6 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetails } from './transaction-details';
@@ -14,6 +15,8 @@ jest.mock('../../../hooks/send/useSendTokens', () => ({
 
 const CHAIN_ID = '0x1';
 const TOKEN_ADDRESS = '0xtoken123';
+const FROM_ADDRESS = '0x123';
+const ACCOUNT_NAME = 'Account 1';
 
 const mockStore = configureMockStore([]);
 
@@ -22,8 +25,19 @@ function createMockState(includeToken = false) {
     metamask: {
       transactions: [],
       internalAccounts: {
-        accounts: {},
-        selectedAccount: '',
+        accounts: {
+          'account-1': {
+            id: 'account-1',
+            address: FROM_ADDRESS,
+            // Required so that getSelectedEvmInternalAccount can find this
+            // account (it filters by isEvmAccountType).
+            type: EthAccountType.Eoa,
+            metadata: { name: ACCOUNT_NAME, keyring: { type: 'HD Key Tree' } },
+            options: {},
+            methods: [],
+          },
+        },
+        selectedAccount: 'account-1',
       },
       allTokens: includeToken
         ? {
@@ -37,7 +51,12 @@ function createMockState(includeToken = false) {
               ],
             },
           }
-        : {},
+        : {
+            // Provide an empty token list for the chain so that selectors
+            // which look up tokens by chainId (e.g. findAssetByAddress) don't
+            // emit "No tokens found for chainId" warnings in tests.
+            [CHAIN_ID]: {},
+          },
       tokenBalances: {},
       tokensChainsCache: {},
       networkConfigurationsByChainId: {
@@ -72,7 +91,7 @@ function createMockTransactionMeta(
     time: Date.now(),
     type,
     txParams: {
-      from: '0x123',
+      from: FROM_ADDRESS,
       to: '0x456',
     },
     ...(includeMetamaskPay && {
