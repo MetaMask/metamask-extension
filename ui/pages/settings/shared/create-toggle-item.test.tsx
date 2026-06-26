@@ -269,5 +269,26 @@ describe('createToggleItem', () => {
         properties: { test_setting_enabled: false },
       });
     });
+
+    it('tracks Onboarding category when isOnboarding is true', () => {
+      const mockStore = createMockStore({ testToggleValue: false });
+      renderWithProvider(
+        <MetaMetricsContext.Provider
+          value={{ trackEvent: mockTrackEvent } as never}
+        >
+          <TestToggleWithPropertyTracking isOnboarding />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('test-toggle-with-property-tracking'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.SettingsUpdated,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { test_setting_enabled: true },
+      });
+    });
   });
 });

@@ -120,7 +120,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
           >
             Display NFT media
           </p>
-          <div>
+          <div
+            data-testid="display-nft-media-toggle-container"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"

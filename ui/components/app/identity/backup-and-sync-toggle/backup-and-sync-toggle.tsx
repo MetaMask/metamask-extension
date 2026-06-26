@@ -96,7 +96,9 @@ export const BackupAndSyncToggle = ({
   const trackBackupAndSyncToggleEvent = useCallback(
     (newValue: boolean) => {
       trackEvent({
-        category: MetaMetricsEventCategory.Settings,
+        category: isOnboarding
+          ? MetaMetricsEventCategory.Onboarding
+          : MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -117,19 +119,20 @@ export const BackupAndSyncToggle = ({
         },
       });
     },
-    [trackEvent, displayedBackupAndSyncEnabled, isMetamaskNotificationsEnabled],
+    [
+      trackEvent,
+      displayedBackupAndSyncEnabled,
+      isMetamaskNotificationsEnabled,
+      isOnboarding,
+    ],
   );
 
   // Cascading side effects: keep backup & sync in sync with basic functionality.
-  // Disabling does not call `signIn()` so it's safe in either context.
+  // During onboarding, this cascade runs in `privacy-settings.tsx` so it fires
+  // even when this toggle is unmounted (e.g. user disables basic functionality
+  // on the Privacy sub-page).
   useEffect(() => {
     if (isOnboarding) {
-      if (
-        isOnboardingBasicFunctionalityEnabled === false &&
-        isOnboardingBackupAndSyncEnabled === true
-      ) {
-        dispatch(onboardingToggleBackupAndSyncOff());
-      }
       return;
     }
 
@@ -156,11 +159,8 @@ export const BackupAndSyncToggle = ({
   }, [
     isOnboarding,
     isBasicFunctionalityEnabled,
-    isOnboardingBasicFunctionalityEnabled,
     isBackupAndSyncEnabled,
-    isOnboardingBackupAndSyncEnabled,
     setIsBackupAndSyncFeatureEnabled,
-    dispatch,
   ]);
 
   const handleBackupAndSyncToggleSetValue = async () => {

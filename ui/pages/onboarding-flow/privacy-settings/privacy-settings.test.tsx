@@ -1,14 +1,25 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
+import { Route, Routes } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import * as Environment from '../../../../shared/lib/environment';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+} from '../../../helpers/constants/routes';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import PrivacySettings from './privacy-settings';
 
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
@@ -22,11 +33,37 @@ jest.mock('../../../ducks/app/app.ts', () => {
     openBasicFunctionalityModal: () => {
       return mockOpenBasicFunctionalityModal();
     },
+    onboardingToggleBasicFunctionalityOn: jest.fn(() => ({
+      type: 'ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON',
+    })),
   };
 });
 
-describe('Privacy Settings Onboarding View', () => {
-  const mockStore = {
+// Avoid unit test warning from react-toggle-button (deprecated componentWillReceiveProps via react-motion).
+jest.mock('react-toggle-button', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  function mockToggle({
+    value,
+    onToggle,
+    passThroughInputProps,
+  }: {
+    value: boolean;
+    onToggle: (v: boolean) => void;
+    passThroughInputProps?: { 'data-testid'?: string };
+  }) {
+    return ReactActual.createElement('input', {
+      type: 'checkbox',
+      checked: value,
+      'data-testid': passThroughInputProps?.['data-testid'],
+      onChange: () => onToggle(value),
+      readOnly: true,
+    });
+  }
+  return mockToggle;
+});
+
+const renderPrivacySettings = (
+  store = configureMockStore([thunk])({
     metamask: {
       ...mockNetworkState(
         { chainId: CHAIN_IDS.MAINNET },
@@ -42,216 +79,357 @@ describe('Privacy Settings Onboarding View', () => {
       useAddressBarEnsResolution: true,
       useTransactionSimulations: true,
       useExternalServices: true,
+      useSafeChainsListValidation: true,
+      useExternalNameSources: true,
+      openSeaEnabled: true,
+      useNftDetection: false,
+      isIpfsGatewayEnabled: true,
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
     appState: {
       externalServicesOnboardingToggleState: true,
+      backupAndSyncOnboardingToggleState: false,
     },
-  };
+  }),
+  trackEvent = jest.fn(),
+) =>
+  renderWithProvider(
+    <MetaMetricsContext.Provider
+      value={
+        {
+          trackEvent,
+          bufferedTrace: jest.fn(),
+          bufferedEndTrace: jest.fn(),
+          onboardingParentContext: { current: null },
+        } as never
+      }
+    >
+      <Routes>
+        <Route
+          path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
+          element={<PrivacySettings />}
+        />
+        <Route
+          path={ONBOARDING_COMPLETION_ROUTE}
+          element={<div data-testid="onboarding-completion-page" />}
+        />
+      </Routes>
+    </MetaMetricsContext.Provider>,
+    store,
+    ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  );
 
-  const store = configureMockStore([thunk])(mockStore);
-  const setFeatureFlagStub = jest.fn();
-  const setUse4ByteResolutionStub = jest.fn();
-  const setUseTokenDetectionStub = jest.fn().mockResolvedValue(true);
-  const setUseCurrencyRateCheckStub = jest.fn().mockResolvedValue(true);
-  const setIpfsGatewayStub = jest.fn().mockResolvedValue('test.link');
-  const completeOnboardingStub = jest.fn().mockResolvedValue(true);
+describe('Privacy Settings Onboarding View', () => {
   const setUseMultiAccountBalanceCheckerStub = jest
     .fn()
     .mockResolvedValue(true);
-  const setUseAddressBarEnsResolutionStub = jest.fn().mockResolvedValue(true);
-  const onboardingToggleBasicFunctionalityOnStub = jest.fn();
-  const toggleExternalServicesStub = jest.fn();
-  const setUseTransactionSimulationsStub = jest.fn();
-  const setPreferenceStub = jest.fn();
 
   setBackgroundConnection({
-    setFeatureFlag: setFeatureFlagStub,
-    setUse4ByteResolution: setUse4ByteResolutionStub,
-    setUseTokenDetection: setUseTokenDetectionStub,
-    setUseCurrencyRateCheck: setUseCurrencyRateCheckStub,
-    setIpfsGateway: setIpfsGatewayStub,
-    completeOnboarding: completeOnboardingStub,
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
-    setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
-    toggleExternalServices: toggleExternalServicesStub,
-    onboardingToggleBasicFunctionalityOn:
-      onboardingToggleBasicFunctionalityOnStub,
-    setUseTransactionSimulations: setUseTransactionSimulationsStub,
-    setPreference: setPreferenceStub,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any);
 
-  it('should update the default settings from each category', () => {
-    const { container, queryByTestId } = renderWithProvider(
-      <PrivacySettings />,
-      store,
-    );
-    // All settings are initialized toggled to be same as default
-    expect(toggleExternalServicesStub).toHaveBeenCalledTimes(0);
-    expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(0);
-    expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(0);
-    expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(0);
-    expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(0);
-    expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(0);
-    expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(0);
-    expect(setPreferenceStub).toHaveBeenCalledTimes(0);
-
-    // Default Settings - General category
-    const itemCategoryGeneral = queryByTestId('category-item-General');
-    expect(itemCategoryGeneral).toBeInTheDocument();
-    fireEvent.click(itemCategoryGeneral as HTMLElement);
-
-    let toggles = container.querySelectorAll('input[type=checkbox]');
-    const backButton = queryByTestId('privacy-settings-back-button');
-
-    fireEvent.click(toggles[0]); // toggleExternalServicesStub
-
-    // Default Settings - Assets category
-    const itemCategoryAssets = queryByTestId('category-item-Assets');
-    fireEvent.click(itemCategoryAssets as HTMLElement);
-
-    toggles = container.querySelectorAll('input[type=checkbox]');
-
-    fireEvent.click(toggles[0]); // setUseTokenDetectionStub
-    fireEvent.click(toggles[1]); // setUseTransactionSimulationsStub
-
-    fireEvent.click(toggles[2]); // setUseCurrencyRateCheckStub
-    fireEvent.click(toggles[3]); // setUseAddressBarEnsResolutionStub
-    fireEvent.click(toggles[4]); // setUseMultiAccountBalanceCheckerStub
-
-    // Default Settings - Security category
-    const itemCategorySecurity = queryByTestId('category-item-Security');
-    fireEvent.click(itemCategorySecurity as HTMLElement);
-
-    toggles = container.querySelectorAll('input[type=checkbox]');
-
-    fireEvent.click(toggles[0]); // setUse4ByteResolutionStub
-    fireEvent.click(toggles[1]); // setPreferenceStub
-
-    fireEvent.click(backButton as HTMLElement);
-
-    expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
-    expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(true);
-    expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(1);
-    expect(setUseTransactionSimulationsStub.mock.calls[0][0]).toStrictEqual(
-      false,
-    );
-
-    expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(1);
-    expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(false);
-    expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(1);
-    expect(setUseAddressBarEnsResolutionStub.mock.calls[0][0]).toStrictEqual(
-      false,
-    );
-    expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(1);
-    expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
-      false,
-    );
-
-    expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
-    expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  describe('Social Login Flow', () => {
-    it('should update the default settings for social login', async () => {
-      const updatedMockStore = configureMockStore([thunk])({
-        ...mockStore,
+  it('renders the landing page with navigation items', () => {
+    renderPrivacySettings();
+
+    expect(screen.getByTestId('privacy-settings-landing')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('onboarding-privacy-settings-item-privacy'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('onboarding-privacy-settings-item-backup-and-sync'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('onboarding-privacy-settings-item-network-rpc'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.defaultSettingsTitle.message),
+    ).toBeInTheDocument();
+  });
+
+  it('navigates to onboarding completion from the landing back button', () => {
+    renderPrivacySettings();
+
+    fireEvent.click(screen.getByTestId('privacy-settings-back-button'));
+
+    expect(
+      screen.getByTestId('onboarding-completion-page'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders privacy settings and dispatches immediately on toggle', () => {
+    renderPrivacySettings();
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-privacy-settings-item-privacy'),
+    );
+
+    expect(screen.getByTestId('privacy-settings-settings')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('basic-functionality-toggle'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('batch-account-balance-requests-toggle'),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByTestId('batch-account-balance-requests-toggle'),
+    );
+
+    expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(1);
+    expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toBe(false);
+  });
+
+  it('returns to the landing page from a sub-page header back button', () => {
+    renderPrivacySettings();
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-privacy-settings-item-privacy'),
+    );
+    fireEvent.click(
+      screen.getByTestId('privacy-settings-sub-page-back-button'),
+    );
+
+    expect(screen.getByTestId('privacy-settings-landing')).toBeInTheDocument();
+  });
+
+  it('tracks onboarding analytics when toggling reused privacy settings', () => {
+    const mockTrackEvent = jest.fn();
+
+    renderPrivacySettings(undefined, mockTrackEvent);
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-privacy-settings-item-privacy'),
+    );
+    fireEvent.click(
+      screen.getByTestId('batch-account-balance-requests-toggle'),
+    );
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        use_multi_account_balance_checker: false,
+      },
+    });
+  });
+
+  it('opens the network edit menu when clicking the RPC URL on the network RPC page', () => {
+    const store = configureMockStore([thunk])({
+      metamask: {
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.MAINNET },
+          { chainId: CHAIN_IDS.LINEA_MAINNET },
+          { chainId: CHAIN_IDS.SEPOLIA },
+          { chainId: CHAIN_IDS.LINEA_SEPOLIA },
+        ),
+        use4ByteResolution: true,
+        useTokenDetection: false,
+        useCurrencyRateCheck: true,
+        useMultiAccountBalanceChecker: true,
+        ipfsGateway: 'test.link',
+        useAddressBarEnsResolution: true,
+        useTransactionSimulations: true,
+        useExternalServices: true,
+        useSafeChainsListValidation: true,
+        useExternalNameSources: true,
+        openSeaEnabled: true,
+        useNftDetection: false,
+        isIpfsGatewayEnabled: true,
+        internalAccounts: {
+          accounts: {},
+          selectedAccount: '',
+        },
+      },
+      appState: {
+        externalServicesOnboardingToggleState: true,
+        backupAndSyncOnboardingToggleState: false,
+      },
+    });
+
+    renderPrivacySettings(store);
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-privacy-settings-item-network-rpc'),
+    );
+
+    fireEvent.click(
+      screen.getByTestId(`network-rpc-name-button-${CHAIN_IDS.MAINNET}`),
+    );
+
+    const actions = store.getActions();
+    expect(actions).toContainEqual({
+      type: 'SET_EDIT_NETWORK',
+      payload: { chainId: CHAIN_IDS.MAINNET },
+    });
+    expect(actions).toContainEqual({
+      type: 'TOGGLE_NETWORK_MENU',
+      payload: undefined,
+    });
+  });
+
+  it('opens add custom network from the network RPC page', () => {
+    const store = configureMockStore([thunk])({
+      metamask: {
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.MAINNET },
+          { chainId: CHAIN_IDS.LINEA_MAINNET },
+          { chainId: CHAIN_IDS.SEPOLIA },
+          { chainId: CHAIN_IDS.LINEA_SEPOLIA },
+        ),
+        use4ByteResolution: true,
+        useTokenDetection: false,
+        useCurrencyRateCheck: true,
+        useMultiAccountBalanceChecker: true,
+        ipfsGateway: 'test.link',
+        useAddressBarEnsResolution: true,
+        useTransactionSimulations: true,
+        useExternalServices: true,
+        useSafeChainsListValidation: true,
+        useExternalNameSources: true,
+        openSeaEnabled: true,
+        useNftDetection: false,
+        isIpfsGatewayEnabled: true,
+        internalAccounts: {
+          accounts: {},
+          selectedAccount: '',
+        },
+      },
+      appState: {
+        externalServicesOnboardingToggleState: true,
+        backupAndSyncOnboardingToggleState: false,
+      },
+    });
+
+    renderPrivacySettings(store);
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-privacy-settings-item-network-rpc'),
+    );
+
+    fireEvent.click(
+      screen.getByTestId('onboarding-network-rpc-add-custom-network-button'),
+    );
+
+    expect(store.getActions()).toContainEqual({
+      type: 'TOGGLE_NETWORK_MENU',
+      payload: {
+        isAddingNewNetwork: true,
+        isMultiRpcOnboarding: true,
+      },
+    });
+  });
+
+  describe('Social login flow', () => {
+    const createSocialLoginStore = () =>
+      configureMockStore([thunk])({
         metamask: {
-          ...mockStore.metamask,
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+          ),
           firstTimeFlowType: FirstTimeFlowType.socialCreate,
+          use4ByteResolution: true,
+          useTokenDetection: false,
+          useCurrencyRateCheck: true,
+          useMultiAccountBalanceChecker: true,
+          ipfsGateway: 'test.link',
+          useAddressBarEnsResolution: true,
+          useTransactionSimulations: true,
+          useExternalServices: true,
+          useSafeChainsListValidation: true,
+          useExternalNameSources: true,
+          openSeaEnabled: true,
+          useNftDetection: false,
+          isIpfsGatewayEnabled: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+          analyticsId: 'test-metrics-id',
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
+        },
+        appState: {
+          externalServicesOnboardingToggleState: true,
+          backupAndSyncOnboardingToggleState: false,
         },
       });
-      const { getByText } = renderWithProvider(
-        <PrivacySettings />,
-        updatedMockStore,
-      );
 
-      // Default Settings - Security & privacy category (social login copy)
-      const itemCategorySecurityPrivacy = getByText(
-        messages.securityDefaultSettingsSocialLogin.message,
-      );
-      expect(itemCategorySecurityPrivacy).toBeInTheDocument();
-    });
-  });
-
-  describe('IPFS', () => {
-    it('should handle proper IPFS input', () => {
-      const { queryByTestId, queryByText } = renderWithProvider(
-        <PrivacySettings />,
-        store,
-      );
-
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
-
-      const ipfsInput = queryByTestId('ipfs-input');
-      const ipfsEvent = {
-        target: {
-          value: 'ipfs.io',
-        },
-      };
-
-      fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
-
-      const validIpfsUrl = queryByText(
-        messages.onboardingAdvancedPrivacyIPFSValid.message,
-      );
-      expect(validIpfsUrl).toBeInTheDocument();
-
-      const backButton = queryByTestId('privacy-settings-back-button');
-      fireEvent.click(backButton as HTMLElement);
-
-      expect(setIpfsGatewayStub).toHaveBeenCalled();
+    beforeEach(() => {
+      jest
+        .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+        .mockReturnValue(true);
     });
 
-    it('should error with gateway.ipfs.io IPFS input', () => {
-      const { queryByTestId, queryByText } = renderWithProvider(
-        <PrivacySettings />,
-        store,
-      );
-
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
-
-      const ipfsInput = queryByTestId('ipfs-input');
-      const ipfsEvent = {
-        target: {
-          value: 'gateway.ipfs.io',
-        },
-      };
-
-      fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
-
-      const invalidErrorMsg = queryByText(
-        messages.onboardingAdvancedPrivacyIPFSInvalid.message,
-      );
-
-      expect(invalidErrorMsg).toBeInTheDocument();
+    afterEach(() => {
+      jest.restoreAllMocks();
     });
 
-    it('should error with improper IPFS input', () => {
-      const { queryByTestId, queryByText } = renderWithProvider(
-        <PrivacySettings />,
-        store,
+    it('renders MetaMetrics and delete data controls on the privacy sub-page', () => {
+      renderPrivacySettings(createSocialLoginStore());
+
+      fireEvent.click(
+        screen.getByTestId('onboarding-privacy-settings-item-privacy'),
       );
 
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
+      expect(
+        screen.getByTestId('participate-in-meta-metrics-toggle'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('delete-metametrics-data-button'),
+      ).toBeInTheDocument();
+    });
 
-      const ipfsInput = queryByTestId('ipfs-input');
-      const ipfsEvent = {
-        target: {
-          value: ' ',
+    it('does not render MetaMetrics controls outside social login flow', () => {
+      const store = configureMockStore([thunk])({
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          firstTimeFlowType: FirstTimeFlowType.create,
+          use4ByteResolution: true,
+          useTokenDetection: false,
+          useCurrencyRateCheck: true,
+          useMultiAccountBalanceChecker: true,
+          ipfsGateway: 'test.link',
+          useAddressBarEnsResolution: true,
+          useTransactionSimulations: true,
+          useExternalServices: true,
+          useSafeChainsListValidation: true,
+          useExternalNameSources: true,
+          openSeaEnabled: true,
+          useNftDetection: false,
+          isIpfsGatewayEnabled: true,
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
         },
-      };
+        appState: {
+          externalServicesOnboardingToggleState: true,
+          backupAndSyncOnboardingToggleState: false,
+        },
+      });
 
-      fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
+      renderPrivacySettings(store);
 
-      const invalidErrorMsg = queryByText(
-        messages.onboardingAdvancedPrivacyIPFSInvalid.message,
+      fireEvent.click(
+        screen.getByTestId('onboarding-privacy-settings-item-privacy'),
       );
 
-      expect(invalidErrorMsg).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('participate-in-meta-metrics-toggle'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('delete-metametrics-data-button'),
+      ).not.toBeInTheDocument();
     });
   });
 });

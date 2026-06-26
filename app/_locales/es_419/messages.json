@@ -992,9 +992,6 @@
   "addACustomNetwork": {
     "message": "Agregar una red personalizada"
   },
-  "addANetwork": {
-    "message": "Agregar una red"
-  },
   "addANickname": {
     "message": "Añadir un apodo"
   },
@@ -1507,9 +1504,6 @@
   "assets": {
     "message": "Activos"
   },
-  "assetsDescription": {
-    "message": "Detectar automáticamente tókenes en su billetera, mostrar NFT y recibir actualizaciones de saldo de cuenta por lotes"
-  },
   "asterdexReferralSubtitle": {
     "message": "Obtén un 4 % de reembolso en operaciones con un código de recomendación de MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1636,10 +1630,6 @@
   },
   "basic": {
     "message": "Básico"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask ofrece funciones básicas como los detalles del token y la configuración de gas mediante servicios de Internet. Al utilizar los servicios de Internet, su dirección IP es compartida, en este caso con MetaMask. Es lo mismo que cuando visita cualquier página web. MetaMask utiliza estos datos temporalmente y nunca los vende. Puede utilizar una VPN o desactivar estos servicios, pero esto podría afectar su experiencia con MetaMask. Para saber más, consulte nuestra $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Incluye funciones básicas como detalles de tokens y configuración de gas. Mantén activada esta función para disfrutar de la mejor experiencia. Lee nuestra $1 para obtener más información.",
@@ -2385,9 +2375,6 @@
   "closeWindowAnytime": {
     "message": "Puede cerrar esta ventana en cualquier momento."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Nombre de la colección"
   },
@@ -2872,16 +2859,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "¿Sigues teniendo problemas?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Mostrar saldo y verificador de precios de tokens"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Utilizamos API de $1 y $2 para mostrar su saldo y el precio del token. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Símbolo de moneda"
@@ -3703,9 +3680,6 @@
   "externalNameSourcesSetting": {
     "message": "Apodos propuestos"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Obtendremos apodos propuestos para las direcciones con las que interactúa de fuentes de terceros como Etherscan, Infura y Lens Protocol. Estas fuentes podrán ver esas direcciones y su dirección IP. La dirección de su cuenta no estará expuesta a terceros."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Obtiene los apodos propuestos para las direcciones con las que interactúas de fuentes de terceros como Etherscan, Infura y el protocolo Lens."
   },
@@ -4005,9 +3979,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Algo salió mal..."
-  },
-  "generalDescription": {
-    "message": "Sincronizar configuraciones entre dispositivos, seleccionar preferencias de red y dar seguimiento a los datos de tokens"
   },
   "genericExplorerView": {
     "message": "Ver cuenta en $1"
@@ -5843,18 +5814,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Ayúdenos a mejorar su experiencia"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "La puerta de enlace de IPFS permite acceder y visualizar datos alojados por terceros. Puede agregar una puerta de enlace de IPFS personalizada o continuar usando la predeterminada."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Ingrese una URL válida"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Agregar puerta de enlace de IPFS personalizada"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "La URL de la puerta de enlace de IPFS es válida"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Cuando usa nuestra configuración y ajustes por defecto, usamos Infura como nuestro proveedor de llamada a procedimiento remoto (RPC) por defecto para ofrecer el acceso más confiable y privado posible a los datos de Ethereum. En casos limitados, es posible que usemos otros proveedores de RPC para ofrecer la mejor experiencia a nuestros usuarios. Puede elegir su propio proveedor de RPC, pero recuerde que cualquier proveedor de RPC recibirá su dirección IP y su monedero de Ethereum para realizar transacciones. Para obtener más información sobre cómo Infura maneja los datos de las cuentas EVM, lea nuestra $1; para las cuentas de Solana, $2."
@@ -8171,21 +8130,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Nueva contraseña guardada"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Seguridad y privacidad"
-  },
-  "securityDescription": {
-    "message": "Reduzca sus posibilidades de unirse a redes inseguras y proteja sus cuentas"
-  },
   "securityMessageLinkForNetworks": {
     "message": "estafas en la red y riesgos de seguridad"
   },
   "securityProviderPoweredBy": {
     "message": "Impulsado por $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Reduce tus posibilidades de unirte a redes inseguras y protege tus cuentas y datos"
   },
   "securitySocialLoginEnabled": {
     "message": "Activado"
@@ -9101,9 +9051,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
-  },
-  "simulationsSettingDescription": {
-    "message": "Active esta opción para calcular los cambios de saldo de las transacciones y firmas antes de confirmarlas. Esto no garantiza su resultado final. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Calcula los cambios de saldo de las transacciones antes de que las confirmes. Esto no garantiza el resultado final de tus transacciones. $1"
@@ -10149,9 +10096,6 @@
   "to": {
     "message": "Hacia"
   },
-  "toggleDecodeDescription": {
-    "message": "Utilizamos los servicios de 4byte.directory y Sourcify para decodificar y mostrar datos de transacciones de forma más legible. Esto le ayuda a comprender el resultado de las transacciones pendientes y pasadas, pero puede dar lugar a que se comparta su dirección IP."
-  },
   "token": {
     "message": "Token"
   },
@@ -10449,9 +10393,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Puede desactivar las notificaciones en cualquier momento en $1"
   },
-  "turnOnTokenDetection": {
-    "message": "Activar la detección mejorada de tokens"
-  },
   "tutorial": {
     "message": "Tutorial"
   },
@@ -10610,9 +10551,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Solicitudes de saldo de cuenta por lotes"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Obtenga actualizaciones de saldo más rápidas mediante el procesamiento por lotes de solicitudes de saldo de cuenta. Esto nos permite obtener los saldos de su cuenta juntos, para que obtenga actualizaciones más rápidas para una experiencia mejorada. Cuando esta función está desactivada, es menos probable que terceros logran asociar a sus cuentas entre sí."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Envía actualizaciones de saldo de todas tus cuentas a la vez. Permite una experiencia más rápida y una mejor gestión de varias cuentas."
   },
@@ -10640,9 +10578,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "La visualización automática de tokens enviados a su cuenta implica la comunicación con servidores de terceros para obtener imágenes de tokens. Esos servicios tendrán acceso a su dirección IP."
   },
   "usedByClients": {
     "message": "Usado por una variedad de clientes distintos"

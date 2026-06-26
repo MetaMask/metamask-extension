@@ -153,7 +153,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           >
             Make smart contracts easier to read
           </p>
-          <div>
+          <div
+            data-testid="make-smart-contracts-easier-toggle-container"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"
@@ -290,7 +292,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           >
             Display NFT media
           </p>
-          <div>
+          <div
+            data-testid="display-nft-media-toggle-container"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"
@@ -403,7 +407,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           >
             Proposed nicknames
           </p>
-          <div>
+          <div
+            data-testid="proposed-nicknames-toggle-container"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"

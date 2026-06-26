@@ -172,8 +172,8 @@ describe('MetaMask onboarding', function () {
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
           driver,
         );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAssetsSettings();
+        await onboardingPrivacySettingsPage.toggleBasicFunctionality();
+        await onboardingPrivacySettingsPage.toggleAdvancedPrivacySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();

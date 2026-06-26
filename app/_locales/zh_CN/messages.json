@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "添加自定义网络"
   },
-  "addANetwork": {
-    "message": "添加网络"
-  },
   "addANickname": {
     "message": "添加昵称"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "资产"
   },
-  "assetsDescription": {
-    "message": "自动检测钱包中的代币，显示 NFT，并获取批量账户余额更新"
-  },
   "asterdexReferralSubtitle": {
     "message": "使用 MetaMask 推荐码，交易可获得 4% 的返现。",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "基本"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask 通过互联网服务提供代币详情、Gas 设置等基本功能。当您使用这些服务时，您的 IP 地址会被共享，在此插件中是共享给 MetaMask，这与您访问任何网站时的情况类似。MetaMask 仅会临时使用这些数据，且绝不会出售您的数据。您可以选择使用 VPN 或关闭这些服务，但这可能会影响您的 MetaMask 使用体验。更多信息，请参阅我们的$1。",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "包含代币详情和燃料设置等基本功能。为获得最佳体验，请保持此功能开启。请参阅我们的 $1，了解更多信息。",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "您可以随时关闭此窗口。"
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "收藏品名称"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "仍有问题吗？"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "显示余额和代币价格检查器"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "我们使用 $1 和 $2 的API来显示您的余额和代币价格。$3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "货币符号"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "建议的昵称"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "我们将从 Etherscan、Infura 和 Lens 协议等第三方来源为您与之交互的地址获取建议的昵称。这些来源将能够看到这些地址和您的 IP 地址。您的账户地址不会暴露给第三方。"
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "从 Etherscan、Infura 和 Lens 协议等第三方来源获取您所交互地址的建议昵称。"
   },
@@ -4056,9 +4030,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "出错了...."
-  },
-  "generalDescription": {
-    "message": "跨设备同步设置、选择网络首选项和跟踪代币数据"
   },
   "genericExplorerView": {
     "message": "在$1查看账户"
@@ -5930,18 +5901,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "帮助我们改善您的体验"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "IPFS 网关可让您访问并查看由第三方托管的数据。您可以添加自定义 IPFS 网关或继续使用默认网关。"
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "请输入有效的 URL"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "添加自定义 IPFS 网关"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFS 网关 URL 有效"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "当您使用默认设置和配置时，MetaMask 会将 Infura 设为默认的远程过程调用 (RPC) 提供商，尽可能提供可靠且注重隐私的以太坊数据访问。在少数情况下，我们可能会使用其他 RPC 提供商，旨在为用户提供更佳体验。您也可以自行选择 RPC，但请注意：任何 RPC 提供商都会接收到您的 IP 地址和以太坊钱包信息，用于处理交易。要详细了解 Infura 如何处理 EVM 账户数据，请参阅我们的$1；关于 Solana 账户的相关信息，$2。"
@@ -8282,21 +8241,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "新密码已保存"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "安全与隐私"
-  },
-  "securityDescription": {
-    "message": "降低连接到不安全网络的风险，保护您的账户安全"
-  },
   "securityMessageLinkForNetworks": {
     "message": "网络欺诈和安全风险"
   },
   "securityProviderPoweredBy": {
     "message": "由 $1 提供支持",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "降低连接到不安全网络的风险，保护您的账户和数据安全"
   },
   "securitySocialLoginEnabled": {
     "message": "已启用"
@@ -9212,9 +9162,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
-  },
-  "simulationsSettingDescription": {
-    "message": "开启后，可在您确认交易或签名前预估余额变化，但不保证最终结果。$1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "在您确认交易前估算交易的余额变化。这并不能保证您交易的最终结果。$1"
@@ -10263,9 +10210,6 @@
   "to": {
     "message": "至"
   },
-  "toggleDecodeDescription": {
-    "message": "我们使用 4byte.directory 和 Sourcify 服务来解码和显示更易读的交易数据。这可以帮助您了解待定交易和过去交易的结果，但可能会导致您的 IP 地址共享。"
-  },
   "token": {
     "message": "代币"
   },
@@ -10563,9 +10507,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "您可以随时在 $1 中关闭通知"
   },
-  "turnOnTokenDetection": {
-    "message": "开启增强型代币检测"
-  },
   "tutorial": {
     "message": "教程"
   },
@@ -10724,9 +10665,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "批量账户余额请求"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "通过批处理账户余额请求，可更快获得余额更新。此操作让我们可以全面获取您的账户余额信息，以便您更快地获得更新，从而获得更佳体验。关闭此功能后，第三方将您的账户相互关联的概率会较低。"
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "一次性发送您所有账户的余额更新。这能带来更快捷、更流畅的多账户管理体验。"
   },
@@ -10754,9 +10692,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将会获取您的 IP 地址。"
   },
   "usedByClients": {
     "message": "可用于各种不同的客户端"

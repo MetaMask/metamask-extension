@@ -285,8 +285,22 @@ describe('BackupAndSyncToggle', () => {
       const store = initialStore();
       store.appState.backupAndSyncOnboardingToggleState = true;
       const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+      const mockTrackEvent = jest.fn();
 
-      const { getByTestId } = renderInOnboarding(store);
+      const { getByTestId } = render(
+        <Redux.Provider store={mockStore(store)}>
+          <MetaMetricsContext.Provider
+            value={{
+              trackEvent: mockTrackEvent,
+              bufferedTrace: jest.fn(),
+              bufferedEndTrace: jest.fn(),
+              onboardingParentContext: { current: null },
+            }}
+          >
+            <BackupAndSyncToggle isOnboarding />
+          </MetaMetricsContext.Provider>
+        </Redux.Provider>,
+      );
 
       fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggleButton));
 
@@ -294,6 +308,12 @@ describe('BackupAndSyncToggle', () => {
       expect(setIsBackupAndSyncFeatureEnabledMock).not.toHaveBeenCalled();
       expect(mockDispatch).toHaveBeenCalledWith(
         onboardingToggleBackupAndSyncOff(),
+      );
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: 'Onboarding',
+          event: 'Settings Updated',
+        }),
       );
     });
 
@@ -341,27 +361,6 @@ describe('BackupAndSyncToggle', () => {
       expect(mockDispatch).toHaveBeenCalledWith(
         onboardingToggleBackupAndSyncOn(),
       );
-      expect(setIsBackupAndSyncFeatureEnabledMock).not.toHaveBeenCalled();
-    });
-
-    it('cascades onboarding basic-functionality off into onboarding backup-and-sync off without calling the controller', async () => {
-      const store = initialStore();
-      store.appState.backupAndSyncOnboardingToggleState = true;
-      store.appState.externalServicesOnboardingToggleState = false;
-      const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
-
-      render(
-        <Redux.Provider store={mockStore(store)}>
-          <BackupAndSyncToggle isOnboarding />
-        </Redux.Provider>,
-      );
-
-      await waitFor(() => {
-        expect(mockDispatch).toHaveBeenCalledWith(
-          onboardingToggleBackupAndSyncOff(),
-        );
-      });
-
       expect(setIsBackupAndSyncFeatureEnabledMock).not.toHaveBeenCalled();
     });
 

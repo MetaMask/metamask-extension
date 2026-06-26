@@ -14,6 +14,7 @@ import {
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as Actions from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import AccountExist from './account-exist';
 
 const mockUseNavigate = jest.fn();
@@ -25,7 +26,18 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
+
 describe('Account Exist Seedless Onboarding View', () => {
+  beforeEach(() => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
   });

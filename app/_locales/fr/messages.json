@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
   },
-  "addANetwork": {
-    "message": "Ajouter un réseau"
-  },
   "addANickname": {
     "message": "Ajouter un pseudo"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "Actifs"
   },
-  "assetsDescription": {
-    "message": "Détection automatique des jetons dans votre portefeuille, affichage des NFT et mise à jour du solde de plusieurs comptes"
-  },
   "asterdexReferralSubtitle": {
     "message": "Obtenez 4 % de remise sur vos transactions avec un code de parrainage MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "Basique"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask offre des fonctionnalités de base telles que l’affichage des détails des jetons et des paramètres de gaz par le biais de services Internet. Lorsque vous utilisez des services Internet, votre adresse IP est partagée avec le fournisseur de ces services, dans ce cas MetaMask. C’est la même chose que lorsque vous visitez un site web. MetaMask conserve ces données temporairement et ne les vend jamais. Vous pouvez utiliser un VPN ou désactiver ces services, mais cela peut affecter votre expérience avec MetaMask. Pour en savoir plus, lisez notre $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Comprend des fonctionnalités de base telles que les informations détaillées sur les jetons et les paramètres de gaz. Activez cette fonctionnalité pour profiter d’une expérience utilisateur optimale. Lisez notre $1 pour en savoir plus.",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "Vous pouvez fermer cette fenêtre à tout moment."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Nom de la collection"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "Vous rencontrez toujours des problèmes ?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Afficher le solde et le prix actuel du jeton"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Nous utilisons les API $1 et $2 pour afficher le solde de votre compte et le prix du jeton. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Symbole de la devise"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "Pseudonymes proposés"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Nous récupérons les pseudonymes proposés pour les adresses avec lesquelles vous interagissez auprès de sources tierces telles que Etherscan, Infura et Lens Protocol. Ces sources pourront voir ces adresses et votre adresse IP. L’adresse de votre compte ne sera pas divulguée à des tiers."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Récupère les pseudonymes proposés pour les adresses avec lesquelles vous interagissez à partir de sources tierces telles que Etherscan, Infura et le protocole Lens."
   },
@@ -4056,9 +4030,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Une erreur s’est produite...."
-  },
-  "generalDescription": {
-    "message": "Synchronisez les paramètres entre différents appareils, sélectionnez les préférences réseau et suivez les données relatives aux jetons"
   },
   "genericExplorerView": {
     "message": "Voir le compte sur $1"
@@ -5930,18 +5901,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Aidez-nous à améliorer votre expérience"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "La passerelle IPFS vous permet d’accéder aux données hébergées par des tiers et de les visualiser. Vous pouvez ajouter une passerelle IPFS personnalisée ou continuer à utiliser la passerelle par défaut."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Veuillez saisir une URL valide"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Ajouter une passerelle IPFS personnalisée"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "L’URL de la passerelle IPFS est valide"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Lorsque vous utilisez nos paramètres et configurations par défaut, nous utilisons Infura comme fournisseur de RPC (appel de procédure à distance) par défaut, afin d’offrir l’accès le plus fiable et le plus privé possible aux données Ethereum.\nDans certains cas limités, nous pouvons utiliser d’autres fournisseurs de RPC afin de garantir la meilleure expérience utilisateur possible. Vous pouvez choisir votre propre RPC, mais n’oubliez pas que tout RPC a besoin d’accéder à votre adresse IP et à l’adresse de votre portefeuille Ethereum pour valider les transactions. Pour en savoir plus sur la façon dont Infura gère les données pour les comptes EVM, lisez notre $1, et pour les comptes Solana, $2."
@@ -8282,21 +8241,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Nouveau mot de passe enregistré"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Sécurité et confidentialité"
-  },
-  "securityDescription": {
-    "message": "Réduisez le risque de rejoindre des réseaux dangereux et protégez vos comptes"
-  },
   "securityMessageLinkForNetworks": {
     "message": "arnaques et risques de piratage informatique"
   },
   "securityProviderPoweredBy": {
     "message": "Service fourni par $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Réduisez le risque de rejoindre des réseaux non sécurisés et protégez vos comptes et vos données"
   },
   "securitySocialLoginEnabled": {
     "message": "Activé"
@@ -9212,9 +9162,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Nous n’avons pas pu estimer le prix de carburant. Par conséquent, il se peut qu’il y ait une erreur dans le contrat et que cette transaction échoue."
-  },
-  "simulationsSettingDescription": {
-    "message": "Activez cette option pour estimer les changements de solde des transactions et des signatures avant de les confirmer. Ces estimations sont fournies à titre indicatif et n’engagent en rien les parties à la transaction. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Estime les variations de solde des transactions avant que vous ne les confirmiez. Cela ne garantit pas le résultat final de vos transactions. $1"
@@ -10263,9 +10210,6 @@
   "to": {
     "message": "Vers"
   },
-  "toggleDecodeDescription": {
-    "message": "Nous utilisons les services de 4byte.directory et de Sourcify pour décoder et afficher des données de transaction plus compréhensibles. Cela vous aide à comprendre le résultat des transactions en cours et passées, mais peut entraîner le partage de votre adresse IP."
-  },
   "token": {
     "message": "Jeton"
   },
@@ -10563,9 +10507,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Vous pouvez désactiver les notifications à tout moment dans les $1"
   },
-  "turnOnTokenDetection": {
-    "message": "Activer la détection améliorée des jetons"
-  },
   "tutorial": {
     "message": "Tutoriel"
   },
@@ -10724,9 +10665,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Demandes d’informations concernant le solde de plusieurs comptes"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Bénéficiez d’une mise à jour plus rapide des soldes en regroupant les demandes d’informations concernant le solde des comptes. Cela nous permet de récupérer plus rapidement les informations dont nous avons besoin pour mettre à jour le solde de vos comptes. En désactivant cette fonctionnalité, vous limitez la capacité des tiers à établir un lien entre vos différents comptes."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Facilite la gestion des comptes en permettant d’actualiser simultanément le solde de tous vos comptes."
   },
@@ -10754,9 +10692,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "L’affichage automatique des jetons envoyés à votre compte implique de communiquer avec des serveurs tiers pour la récupération des images de jeton. Ces serveurs auront accès à votre adresse IP."
   },
   "usedByClients": {
     "message": "Utilisé par plusieurs clients différents"

@@ -3,23 +3,38 @@ import { useSelector } from 'react-redux';
 import { BackupAndSyncFeaturesToggles } from '../../../components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import { SettingItemConfig } from '../types';
+import { getBackupAndSyncOnboardingToggleState } from '../../../selectors';
+import { SettingItemConfig, SettingItemProps } from '../types';
 import { SettingsTab } from '../shared';
 
-const BackupAndSyncToggleSettingItem = () => <BackupAndSyncToggle />;
+type BackupAndSyncTabProps = React.PropsWithChildren<SettingItemProps>;
 
-const BackupAndSyncTab = () => {
+const BackupAndSyncToggleSettingItem = ({
+  isOnboarding = false,
+}: {
+  isOnboarding?: boolean;
+}) => <BackupAndSyncToggle isOnboarding={isOnboarding} />;
+
+const BackupAndSyncTab = ({ isOnboarding = false }: BackupAndSyncTabProps) => {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+  const isOnboardingBackupAndSyncEnabled = useSelector(
+    getBackupAndSyncOnboardingToggleState,
+  );
+  const isFeaturesSectionEnabled = isOnboarding
+    ? isOnboardingBackupAndSyncEnabled
+    : isBackupAndSyncEnabled;
 
   const items = useMemo<SettingItemConfig[]>(() => {
     const result: SettingItemConfig[] = [
       {
         id: 'backup-toggle',
-        component: BackupAndSyncToggleSettingItem,
+        component: () => (
+          <BackupAndSyncToggleSettingItem isOnboarding={isOnboarding} />
+        ),
       },
     ];
 
-    if (isBackupAndSyncEnabled) {
+    if (isFeaturesSectionEnabled) {
       result.push({
         id: 'features-toggles',
         component: BackupAndSyncFeaturesToggles,
@@ -28,7 +43,7 @@ const BackupAndSyncTab = () => {
     }
 
     return result;
-  }, [isBackupAndSyncEnabled]);
+  }, [isFeaturesSectionEnabled, isOnboarding]);
 
   return <SettingsTab items={items} />;
 };

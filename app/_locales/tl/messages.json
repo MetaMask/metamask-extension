@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "Magdagdag ng custom na network"
   },
-  "addANetwork": {
-    "message": "Magdagdag ng network"
-  },
   "addANickname": {
     "message": "Magdagdag ng palayaw"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "Mga Asset"
   },
-  "assetsDescription": {
-    "message": "I-autodetect ang mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
-  },
   "asterdexReferralSubtitle": {
     "message": "Makakuha ng 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "Basic"
-  },
-  "basicConfigurationDescription": {
-    "message": "Nag-aalok ang MetaMask ng mga batayang tampok tulad ng mga detalye ng token at mga setting ng gas sa pamamagitan ng serbisyo sa internet. Kapag gumamit ka ng serbisyo sa internet, ibabahagi ang iyong IP address, sa kasong ito sa MetaMask. Tulad ito ng pagbisita mo sa anumang website. Ang MetaMask ay pansamantalang ginagamit ang datos na ito at hindi ibebenta ang iyong datos. Maaari kang gumamit ng VPN o i-off ang mga serbisyon ito, ngunit maaari itong makaapekto sa iyong karanasan sa MetaMask. Upang matuto pa basahin ang aming $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Kabilang ang mga basic na feature gaya ng mga detalye ng token at setting ng gas. Panatilihin ang feature na ito para sa pinakamagandang karanasan. Basahin ang aming $1 para matuto pa.",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "Maaari mong isara ang window na ito anumang oras."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Pangalan ng koleksyon"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "Nakakaranas ka pa rin ng mga isyu?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Ipakita ang balanse at ang tagasuri ng presyo ng token"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Gumagamit kami ng $1 at $2 na API upang ipakita ang iyong balanse at presyo ng token. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Simbolo ng currency"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "Mga mungkahing palayaw"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Kami ay kukuha ng ilang mungkahing palayaw para sa mga address na nakikipag-ugnayan ka mula sa mga third-party source tulad ng Etherscan, Infura, at Lens Protocol. Ang mga source na ito ay maaaring makita ang mga address na ito at ang iyong iyong IP address. Ang iyong address ay hindi ilalantad sa mga third party."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Kinukuha ang mga iminumungkahing palayaw para sa mga address kung saan ka nakikipag-ugnayan mula sa mga third-party na pinagmulan gaya ng Etherscan, Infura, at Lens protocol."
   },
@@ -4056,9 +4030,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Mayroong nang mali...."
-  },
-  "generalDescription": {
-    "message": "I-sync ang mga setting sa lahat ng device, pumili ng mga preference sa network, at i-track ang data ng token"
   },
   "genericExplorerView": {
     "message": "Tingnan ang account sa $1"
@@ -5930,18 +5901,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Tulungan kami na paghusayin ang iyong karanasan"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Maglagay ng wastong URL"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Magdagdag ng custom na IPFS Gateway"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Ang URL ng IPFS gateway ay wasto"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Kapag ginamit mo ang mga default na setting at configuration namin, ginagamit namin ang Infura bilang default na remote procedure call (RPC) provider namin para mag-alok ng pinakamaaasahan at pribadong access sa data ng Etheeum hangga’t kaya namin. Sa mga limitadong kaso, posibleng gumamit kami ng ibang RPC provider para maibigay ang pinakamagandang experience sa mga user namin. Puwede kang pumili ng sarili mong RPC, pero tandaan na matatanggap ng sinumang RPC ang IP address at Ethereum wallet mo para para makagawa ng mga transaksyon. Para matuto pa kung paano nangangasiwa ang Infura ng data para sa mga EVM account, basahin ang $1; para sa mga Solana account, $2."
@@ -8282,21 +8241,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Nai-save ang bagong password"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Seguridad at pagkapribado"
-  },
-  "securityDescription": {
-    "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account"
-  },
   "securityMessageLinkForNetworks": {
     "message": "mga panloloko sa network at panganib sa seguridad"
   },
   "securityProviderPoweredBy": {
     "message": "Pinapagana ng $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account at data"
   },
   "securitySocialLoginEnabled": {
     "message": "Pinagana"
@@ -9212,9 +9162,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Hindi namin nagawang tantyahin ang gas. Maaaring may error sa kontrata at maaaring mabigo ang transaksyong ito."
-  },
-  "simulationsSettingDescription": {
-    "message": "I-on ito para tantyahin ang mga pagbabago sa balanse ng mga transaksyon at mga pirma bago mo kumpirmahin ang mga ito. Hindi nito ginagarantiyahan ang panghuling resulta ng mga ito. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Mga tinatayang pagbabago sa balanse ng mga transaksyon bago mo kumpirmahin ang mga iyon. Hindi nito iginagarantiya ang panghuling resulta ng iyong mga transaksyon. $1"
@@ -10263,9 +10210,6 @@
   "to": {
     "message": "Sa/Kay"
   },
-  "toggleDecodeDescription": {
-    "message": "Ginagamit namin ang mga serbisyo ng 4byte.directory at Sourcify para i-decode at ipakita ang mas nababasang data ng transaksyon. Tinutulungan ka nito na maunawaan ang kinalabasan ng mga nakabinbin at nakalipas na transaksyon, ngunit maaaring humantong sa pagbabahagi ng iyong IP address."
-  },
   "token": {
     "message": "Token"
   },
@@ -10563,9 +10507,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Puwede mong i-off ang mga notipikasyon anumang oras sa $1"
   },
-  "turnOnTokenDetection": {
-    "message": "I-on ang pinahusay na pag-detect ng token"
-  },
   "tutorial": {
     "message": "Pagtuturo"
   },
@@ -10724,9 +10665,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Maramihang kahilingan sa balanse ng account"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Makakuha ng mas mabibilis na update sa balanse sa pamamagitan ng maramihang paghiling sa balanse ng account. Nagpapahintulot ito sa amin na makuha nang sama-sama ang iyong mga balanse ng account, para makakuha ka ng mas mabibilis na update para sa inaprubahang kasanayan. Kapag naka-off ang feature na ito, posibleng hindi maiugnay ng mga third party ang iyong mga account sa isa't isa."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Ipinapadala nang sabay-sabay ang mga update sa balanse sa lahat ng account mo. Nagbibigay-daan ito sa mas mabilis at mas magandang karanasan, sa pangkalahatan, sa pangangasiwa ng maraming account."
   },
@@ -10754,9 +10692,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
   },
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang kliyente"

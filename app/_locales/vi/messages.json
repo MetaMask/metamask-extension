@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
   },
-  "addANetwork": {
-    "message": "Thêm mạng"
-  },
   "addANickname": {
     "message": "Thêm biệt danh"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "Tài sản"
   },
-  "assetsDescription": {
-    "message": "Tự động phát hiện token trong ví của bạn, hiển thị NFT và nhận hàng loạt thông tin cập nhật về số dư tài khoản"
-  },
   "asterdexReferralSubtitle": {
     "message": "Được hoàn 4% khi giao dịch với mã giới thiệu MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "Cơ bản"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask cung cấp các tính năng cơ bản như chi tiết token và cài đặt gas thông qua các dịch vụ Internet. Khi bạn sử dụng các dịch vụ Internet, địa chỉ IP của bạn sẽ được chia sẻ, trong trường hợp này là với MetaMask. Điều này giống như khi bạn truy cập bất kỳ trang web nào. MetaMask sử dụng dữ liệu này tạm thời và không bao giờ bán dữ liệu của bạn. Bạn có thể sử dụng VPN hoặc tắt các dịch vụ này, nhưng nó có thể ảnh hưởng đến trải nghiệm sử dụng MetaMask của bạn. Để tìm hiểu thêm, vui lòng đọc $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Bao gồm các tính năng cơ bản như thông tin token và cài đặt phí gas. Hãy bật tính năng này để có trải nghiệm tốt nhất. Đọc $1 của chúng tôi để tìm hiểu thêm.",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "Bạn có thể đóng cửa sổ này bất kỳ lúc nào."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "Tên bộ sưu tập"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "Vẫn gặp sự cố?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "Hiển thị trình kiểm tra giá token và số dư"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "Chúng tôi sử dụng API của $1 và $2 để hiện thị giá token và số dư của bạn. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Biểu tượng tiền tệ"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "Biệt danh được đề xuất"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Chúng tôi sẽ tìm nạp những biệt danh được đề xuất cho các địa chỉ mà bạn tương tác từ các nguồn bên thứ ba như Etherscan, Infura và Lens Protocol. Các nguồn này sẽ có thể nhìn thấy các địa chỉ đó và địa chỉ IP của bạn. Địa chỉ tài khoản của bạn sẽ không bị lộ với các bên thứ ba."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Tìm nạp biệt danh được đề xuất cho các địa chỉ bạn tương tác từ các nguồn bên thứ ba như Etherscan, Infura và giao thức Lens."
   },
@@ -4060,9 +4034,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Đã xảy ra sự cố..."
-  },
-  "generalDescription": {
-    "message": "Đồng bộ chế độ cài đặt trên các thiết bị, chọn mạng ưa thích và theo dõi dữ liệu token"
   },
   "genericExplorerView": {
     "message": "Xem tài khoản trên $1"
@@ -5934,18 +5905,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Hãy giúp chúng tôi nâng cao trải nghiệm của bạn"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Cổng IPFS cho phép truy cập và xem dữ liệu do bên thứ ba lưu trữ. Bạn có thể thêm cổng IPFS tùy chỉnh hoặc tiếp tục sử dụng cổng mặc định."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Vui lòng nhập URL hợp lệ"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Thêm Cổng IPFS tùy chỉnh"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL cổng IPFS hợp lệ"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Khi bạn sử dụng các chế độ cài đặt và cấu hình mặc định của chúng tôi, chúng tôi sử dụng Infura làm nhà cung cấp gọi hàm từ xa (RPC) mặc định để cung cấp quyền truy cập dữ liệu Ethereum đáng tin cậy và riêng tư nhất có thể. Trong một số trường hợp giới hạn, chúng tôi có thể sử dụng các nhà cung cấp RPC khác nhằm mang đến trải nghiệm tốt nhất cho người dùng. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ nhận được địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Để tìm hiểu thêm về cách Infura xử lý dữ liệu đối với các tài khoản EVM, hãy đọc $1, và đối với các tài khoản Solana, hãy đọc $2."
@@ -8290,21 +8249,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Mật khẩu mới đã được lưu"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Bảo mật & Quyền riêng tư"
-  },
-  "securityDescription": {
-    "message": "Giảm khả năng tham gia các mạng không an toàn và bảo vệ tài khoản của bạn"
-  },
   "securityMessageLinkForNetworks": {
     "message": "lừa đảo mạng và rủi ro bảo mật"
   },
   "securityProviderPoweredBy": {
     "message": "Được cung cấp bởi $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Giảm khả năng tham gia các mạng không an toàn và bảo vệ tài khoản cũng như dữ liệu của bạn"
   },
   "securitySocialLoginEnabled": {
     "message": "Đã bật"
@@ -9220,9 +9170,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Chúng tôi không thể ước tính gas. Có thể đã xảy ra lỗi trong hợp đồng và giao dịch này có thể thất bại."
-  },
-  "simulationsSettingDescription": {
-    "message": "Bật tính năng này để ước tính thay đổi số dư của các giao dịch và chữ ký trước khi bạn xác nhận. Điều này không đảm bảo cho kết quả cuối cùng. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Ước tính thay đổi số dư của các giao dịch trước khi bạn xác nhận chúng. Điều này không đảm bảo kết quả cuối cùng của giao dịch. $1"
@@ -10271,9 +10218,6 @@
   "to": {
     "message": "Đến"
   },
-  "toggleDecodeDescription": {
-    "message": "Chúng tôi sử dụng các dịch vụ 4byte.directory và Sourcify để giải mã và hiển thị dữ liệu giao dịch dễ đọc hơn. Điều này giúp bạn hiểu rõ kết quả của các giao dịch đang chờ xử lý và đã thực hiện, nhưng có thể dẫn đến việc địa chỉ IP của bạn được chia sẻ."
-  },
   "token": {
     "message": "Token"
   },
@@ -10571,9 +10515,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Bạn có thể tắt thông báo bất kỳ lúc nào trong $1"
   },
-  "turnOnTokenDetection": {
-    "message": "Bật phát hiện token nâng cao"
-  },
   "tutorial": {
     "message": "Hướng dẫn"
   },
@@ -10732,9 +10673,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Xử lý hàng loạt yêu cầu số dư tài khoản"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Nhận thông tin cập nhật số dư nhanh hơn bằng cách gộp các yêu cầu số dư tài khoản. Điều này cho phép chúng tôi tìm nạp các số dư tài khoản của bạn cùng với nhau, qua đó bạn sẽ nhận được thông tin cập nhật nhanh hơn nhằm cải thiện trải nghiệm. Khi tắt tính năng này, các bên thứ ba có ít khả năng sẽ liên kết các tài khoản của bạn với nhau hơn."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "Gửi cập nhật số dư cho tất cả các tài khoản của bạn cùng một lúc. Mang lại trải nghiệm quản lý nhiều tài khoản nhanh hơn và tốt hơn."
   },
@@ -10762,9 +10700,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "Tự động hiển thị các token được gửi vào tài khoản của bạn có liên quan đến hoạt động trao đổi thông tin với các máy chủ bên thứ ba để tìm nạp hình ảnh của token. Các máy chủ đó sẽ có quyền truy cập vào địa chỉ IP của bạn."
   },
   "usedByClients": {
     "message": "Được nhiều ví khác nhau sử dụng"

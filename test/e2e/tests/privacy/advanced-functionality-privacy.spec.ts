@@ -92,7 +92,7 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   ];
 }
 describe('MetaMask onboarding ', function () {
-  it('should prevent network requests to advanced functionality endpoints when the advanced assets functionality toggle is off', async function () {
+  it('should prevent network requests to advanced functionality endpoints when advanced privacy settings are off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
@@ -119,8 +119,8 @@ describe('MetaMask onboarding ', function () {
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
           driver,
         );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAssetsSettings();
+        await onboardingPrivacySettingsPage.toggleBasicFunctionality();
+        await onboardingPrivacySettingsPage.toggleAdvancedPrivacySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
@@ -158,7 +158,7 @@ describe('MetaMask onboarding ', function () {
     );
   });
 
-  it('should not prevent network requests to advanced functionality endpoints when the advanced assets functionality toggle is on', async function () {
+  it('should not prevent network requests to advanced functionality endpoints when advanced privacy settings are on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })

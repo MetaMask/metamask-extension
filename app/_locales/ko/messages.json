@@ -1011,9 +1011,6 @@
   "addACustomNetwork": {
     "message": "사용자 지정 네트워크 추가"
   },
-  "addANetwork": {
-    "message": "네트워크 추가"
-  },
   "addANickname": {
     "message": "닉네임 추가"
   },
@@ -1526,9 +1523,6 @@
   "assets": {
     "message": "자산"
   },
-  "assetsDescription": {
-    "message": "지갑에서 토큰을 자동으로 감지하고, NFT를 표시하며, 계정 잔액을 일괄 업데이트하세요."
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask 추천인 코드를 사용하여 거래하면 4%를 돌려받을 수 있습니다.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1655,10 +1649,6 @@
   },
   "basic": {
     "message": "기본"
-  },
-  "basicConfigurationDescription": {
-    "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 MetaMask와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. MetaMask는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 MetaMask 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "토큰 세부 정보와 가스 설정 같은 기본 기능이 포함됩니다. 최고의 사용 경험을 원한다면 이 기능을 켜 두세요. 자세한 내용은 $1을(를) 참고하세요.",
@@ -2425,9 +2415,6 @@
   "closeWindowAnytime": {
     "message": "언제든 이 창을 닫을 수 있습니다."
   },
-  "coingecko": {
-    "message": "CoinGecko"
-  },
   "collectionName": {
     "message": "컬렉션 이름"
   },
@@ -2912,16 +2899,6 @@
   },
   "criticalErrorStillHavingIssues": {
     "message": "여전히 문제가 발생하나요?"
-  },
-  "cryptoCompare": {
-    "message": "CryptoCompare"
-  },
-  "currencyRateCheckToggle": {
-    "message": "잔액 및 토큰 가격을 비교할 수 있습니다"
-  },
-  "currencyRateCheckToggleDescription": {
-    "message": "잔액과 토큰 가격 디스플레이를 위해 $1 및 $2 API를 이용합니다. $3",
-    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "통화 기호"
@@ -3758,9 +3735,6 @@
   "externalNameSourcesSetting": {
     "message": "추천 닉네임"
   },
-  "externalNameSourcesSettingDescription": {
-    "message": "Etherscan, Infura, Lens Protocol과 같은 제삼자에게서 회원님이 상호작용하는 주소에 대한 추천 닉네임을 가져올 것입니다. 이러한 제삼자는 해당 주소와 회원님의 IP 주소를 볼 수 있습니다. 회원님의 계정 주소는 제삼자에게 노출되지 않습니다."
-  },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Etherscan, Infura, Lens Protocol과 같은 제삼자 소스에서 회원님이 상호작용하는 주소의 추천 닉네임을 가져옵니다."
   },
@@ -4060,9 +4034,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "문제가 발생했습니다...."
-  },
-  "generalDescription": {
-    "message": "여러 기기의 설정을 동기화하고, 네트워크 환경을 선택하며, 토큰 데이터를 추적하세요"
   },
   "genericExplorerView": {
     "message": "$1에서 계정 보기"
@@ -5934,18 +5905,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "사용자 경험을 개선할 수 있도록 도와주세요"
-  },
-  "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "IPFS 게이트웨이를 사용하면 타사 호스팅 데이터에 액세스하여 이를 볼 수 있습니다. 사용자 지정 IPFS 게이트웨이를 추가하셔도 좋고 기본 설정을 계속 사용하셔도 됩니다."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "유효한 URL을 입력하세요"
-  },
-  "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "사용자 지정 IPFS 게이트웨이 추가"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "PFS 게이트웨이 URL이 유효합니다"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "기본 설정과 구성을 사용할 경우, MetaMask는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1의 내용을, Solana 계정에 대한 정보는 $2의 내용을 참고하세요."
@@ -8290,21 +8249,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "새 비밀번호 저장 완료"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "보안 & 개인정보 보호"
-  },
-  "securityDescription": {
-    "message": "안전하지 않은 네트워크에 가입할 가능성을 줄이고 계정을 보호하세요"
-  },
   "securityMessageLinkForNetworks": {
     "message": "네트워크 사기 및 보안 위험"
   },
   "securityProviderPoweredBy": {
     "message": "$1 제공",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "안전하지 않은 네트워크에 참여할 가능성을 낮춰 계정과 데이터를 보호합니다"
   },
   "securitySocialLoginEnabled": {
     "message": "활성화됨"
@@ -9220,9 +9170,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "가스를 추정할 수 없었습니다. 계약에 오류가 있을 수 있으며 이 트랜잭션이 실패할 수 있습니다."
-  },
-  "simulationsSettingDescription": {
-    "message": "이 기능을 사용하면 트랜잭션 및 서명으로 인한 잔액 변동을 컨펌 전에 예상할 수 있습니다. 다만, 이러한 예상치가 최종 결과와 일치한다는 보장은 없습니다. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "트랜잭션을 확정하기 전에 트랜잭션의 잔액 변동을 추정합니다. 이 추정이 트랜잭션의 최종 결과를 보장하지는 않습니다. $1"
@@ -10271,9 +10218,6 @@
   "to": {
     "message": "수신:"
   },
-  "toggleDecodeDescription": {
-    "message": "트랜잭션 데이터는 4byte.directory와 Sourcify 서비스를 사용하여 디코딩하고 읽기 쉬운 형식으로 표시합니다. 이는 대기 중이거나 과거 트랜잭션의 결과를 이해하는 데 도움이 되지만, IP 주소를 공유하는 결과가 초래될 수 있습니다."
-  },
   "token": {
     "message": "토큰"
   },
@@ -10571,9 +10515,6 @@
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "$1에서 언제든지 알림을 끌 수 있습니다"
   },
-  "turnOnTokenDetection": {
-    "message": "향상된 토큰 감지 켜기"
-  },
   "tutorial": {
     "message": "튜토리얼"
   },
@@ -10732,9 +10673,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "일괄 계정 잔액 요청"
   },
-  "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "계좌 잔액 요청을 일괄 처리하여 잔액을 더 빠르게 업데이트하세요. 이렇게 하면 계좌 잔액을 일괄적으로 가져올 수 있으므로 업데이트가 빨라져 더 나은 경험을 할 수 있습니다. 이 기능을 비활성화하면 제삼자가 회원님의 계정을 서로 연결할 가능성이 낮아질 수 있습니다."
-  },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "모든 계정의 잔액 정보를 한 번에 전송합니다. 여러 계정 관리 시 더 빠르고 전반적으로 더 나은 사용 경험을 제공합니다."
   },
@@ -10762,9 +10700,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useTokenDetectionPrivacyDesc": {
-    "message": "계정으로 전송된 토큰이 자동으로 표시되도록 하려면 타사 서버와의 통신을 통해 토큰 이미지를 불러와야 합니다. 이를 위해 타사 서버는 사용자의 IP 주소에 액세스하게 됩니다."
   },
   "usedByClients": {
     "message": "다양한 클라이언트에서 사용합니다."

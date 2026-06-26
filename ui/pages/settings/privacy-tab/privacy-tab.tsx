@@ -16,7 +16,7 @@ import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
 import { ExportYourDataItem } from './export-your-data-item';
 
-const BatchAccountBalanceRequestsToggleItem = createToggleItem({
+export const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
   titleKey: PRIVACY_ITEMS['batch-account-balance-requests'],
   descriptionKey: 'useMultiAccountBalanceCheckerSettingDescriptionV2',
@@ -24,6 +24,7 @@ const BatchAccountBalanceRequestsToggleItem = createToggleItem({
     state.metamask.useMultiAccountBalanceChecker,
   action: setUseMultiAccountBalanceChecker,
   dataTestId: 'batch-account-balance-requests-toggle',
+  containerDataTestId: 'batch-account-balance-requests-toggle-container',
   trackEventProperty: 'use_multi_account_balance_checker',
 });
 

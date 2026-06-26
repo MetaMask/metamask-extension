@@ -64,9 +64,6 @@
   "add": {
     "message": "Adicionar"
   },
-  "addANetwork": {
-    "message": "Adicionar uma rede"
-  },
   "addANickname": {
     "message": "Adicionar um apelido"
   },
@@ -1578,9 +1575,6 @@
   },
   "tryAgain": {
     "message": "Tente novamente"
-  },
-  "turnOnTokenDetection": {
-    "message": "Ativar detecção avançada de token"
   },
   "u2f": {
     "message": "U2F",
