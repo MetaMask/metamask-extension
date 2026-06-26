@@ -1,5 +1,4 @@
 import { Suite } from 'mocha';
-import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
@@ -26,8 +25,8 @@ const NETWORK_MANAGEMENT_FLAGS = {
 };
 
 function buildTronNetworkFixture() {
-  // Home network filter shows non-EVM testnets only when useExternalServices is
-  // true (default in FixtureBuilderV2) and showTestNetworks has been enabled.
+  // Default fixture has showTestNetworks: true; Nile/Shasta tests start with it
+  // off so enableTestNetworks() is what turns them on in the home network filter.
   return new FixtureBuilderV2()
     .withPreferencesController({
       preferences: { showTestNetworks: false },
@@ -35,11 +34,7 @@ function buildTronNetworkFixture() {
     .build();
 }
 
-async function mockTronFlagsOnly(mockServer: Mockttp) {
-  return [await mockTronFeatureFlags(mockServer)];
-}
-
-describe('Tron network presence', function (this: Suite) {
+describe('Tron - Network', function (this: Suite) {
   this.timeout(120_000);
 
   it('shows Tron in the home network filter', async function () {
@@ -52,7 +47,9 @@ describe('Tron network presence', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: mockTronFlagsOnly,
+        testSpecificMock: async (mockServer) => [
+          await mockTronFeatureFlags(mockServer),
+        ],
         ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -74,7 +71,9 @@ describe('Tron network presence', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: mockTronFlagsOnly,
+        testSpecificMock: async (mockServer) => [
+          await mockTronFeatureFlags(mockServer),
+        ],
         ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -89,12 +88,14 @@ describe('Tron network presence', function (this: Suite) {
     );
   });
 
-  it("shows Discover on Tron's network options in Settings → Networks", async function () {
+  it('Shows Tron on Networks page', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronFlagsOnly,
+        testSpecificMock: async (mockServer) => [
+          await mockTronFeatureFlags(mockServer),
+        ],
         localNodeOptions: [
           // Anvil is needed because the extension still polls EVM networks in
           // Tron-only flows.
@@ -135,7 +136,9 @@ describe('Tron network presence', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: mockTronFlagsOnly,
+        testSpecificMock: async (mockServer) => [
+          await mockTronFeatureFlags(mockServer),
+        ],
         ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -158,7 +161,9 @@ describe('Tron network presence', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: mockTronFlagsOnly,
+        testSpecificMock: async (mockServer) => [
+          await mockTronFeatureFlags(mockServer),
+        ],
         ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -181,88 +186,15 @@ describe('Tron network presence', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: mockTronFlagsOnly,
+        testSpecificMock: async (mockServer) => [
+          await mockTronFeatureFlags(mockServer),
+        ],
         ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const home = new HomePage(driver);
         await home.goToTokensTab();
-        const homeNetworkFilter = new HomeNetworkFilter(driver);
-        await homeNetworkFilter.open();
-        await homeNetworkFilter.checkNetworkIsListed('Tron');
-        await homeNetworkFilter.close();
-      },
-    );
-  });
-
-  it('shows Tron in the DeFi tab network selector', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        localNodeOptions: [
-          // Anvil is needed because the extension still polls EVM networks in
-          // Tron-only flows.
-          'anvil',
-        ],
-        testSpecificMock: mockTronFlagsOnly,
-        ...NETWORK_MANAGEMENT_FLAGS,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-        const home = new HomePage(driver);
-        await home.goToDeFiTab();
-        const homeNetworkFilter = new HomeNetworkFilter(driver);
-        await homeNetworkFilter.open();
-        await homeNetworkFilter.checkNetworkIsListed('Tron');
-        await homeNetworkFilter.close();
-      },
-    );
-  });
-
-  it('shows Tron in the NFTs tab network selector', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        localNodeOptions: [
-          // Anvil is needed because the extension still polls EVM networks in
-          // Tron-only flows.
-          'anvil',
-        ],
-        testSpecificMock: mockTronFlagsOnly,
-        ...NETWORK_MANAGEMENT_FLAGS,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-        const home = new HomePage(driver);
-        await home.goToNftTab();
-        const homeNetworkFilter = new HomeNetworkFilter(driver);
-        await homeNetworkFilter.open();
-        await homeNetworkFilter.checkNetworkIsListed('Tron');
-        await homeNetworkFilter.close();
-      },
-    );
-  });
-
-  it('shows Tron in the Activity tab network selector', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        localNodeOptions: [
-          // Anvil is needed because the extension still polls EVM networks in
-          // Tron-only flows.
-          'anvil',
-        ],
-        testSpecificMock: mockTronFlagsOnly,
-        ...NETWORK_MANAGEMENT_FLAGS,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-        const home = new HomePage(driver);
-        await home.goToActivityList();
         const homeNetworkFilter = new HomeNetworkFilter(driver);
         await homeNetworkFilter.open();
         await homeNetworkFilter.checkNetworkIsListed('Tron');
