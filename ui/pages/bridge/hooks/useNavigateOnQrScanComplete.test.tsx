@@ -1,14 +1,12 @@
 import { act, waitFor } from '@testing-library/react';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
 import { useNavigateOnQrScanComplete } from './useNavigateOnQrScanComplete';
 
 const mockUseNavigate = jest.fn();
+const mockNavigateToActivityPage = jest.fn();
+const mockNavigateToDefaultRoute = jest.fn().mockResolvedValue(undefined);
 /** Per-selector overrides: selector name -> value. Undefined means use real selector. */
 let mockUseSelectorOverrides: Record<string, unknown> = {};
 
@@ -18,6 +16,13 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
+
+jest.mock('../../../hooks/bridge/useBridgeNavigation', () => ({
+  useBridgeNavigation: () => ({
+    navigateToActivityPage: mockNavigateToActivityPage,
+    navigateToDefaultRoute: mockNavigateToDefaultRoute,
+  }),
+}));
 
 jest.mock('react-redux', () => {
   const original = jest.requireActual('react-redux');
@@ -44,13 +49,14 @@ jest.mock('react-redux', () => {
 describe('useNavigateOnQrScanComplete', () => {
   const mockQrScanRequest = {
     requestId: 'test-request-id',
-    type: 'sign' as const,
+    type: QrScanRequestType.SIGN,
     payload: { cbor: 'test-cbor', type: 'test-type' },
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseSelectorOverrides = {};
+    mockNavigateToDefaultRoute.mockResolvedValue(undefined);
   });
 
   it('navigates to activity tab when QR scan completes successfully (active → null, lastQrScanCompletedSuccessfully true)', async () => {
@@ -87,16 +93,11 @@ describe('useNavigateOnQrScanComplete', () => {
 
     await waitFor(
       () => {
-        expect(mockUseNavigate).toHaveBeenCalledWith(
-          `${DEFAULT_ROUTE}?tab=activity`,
-          {
-            replace: true,
-            state: { stayOnHomePage: true },
-          },
-        );
+        expect(mockNavigateToActivityPage).toHaveBeenCalledTimes(1);
       },
       { timeout: 3000 },
     );
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('navigates to default route when QR scan completes successfully and transaction status page is skipped', async () => {
@@ -133,16 +134,14 @@ describe('useNavigateOnQrScanComplete', () => {
 
     await waitFor(
       () => {
-        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-          replace: true,
-          state: { stayOnHomePage: true },
-        });
+        expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
       },
       { timeout: 3000 },
     );
+    expect(mockNavigateToActivityPage).not.toHaveBeenCalled();
   });
 
-  it('navigates back to prepare when QR scan is rejected/cancelled (lastQrScanCompletedSuccessfully false)', async () => {
+  it('does not navigate when QR scan is rejected or cancelled', async () => {
     const store = createBridgeMockStore();
 
     mockUseSelectorOverrides = {
@@ -158,7 +157,6 @@ describe('useNavigateOnQrScanComplete', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
     });
 
-    // Transition to null but with rejection (useSubmitBridgeTransaction will navigate to prepare)
     mockUseSelectorOverrides = {
       getActiveQrCodeScanRequest: null,
       getLastQrScanCompletedSuccessfully: false,
@@ -168,12 +166,42 @@ describe('useNavigateOnQrScanComplete', () => {
       await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
-      {
-        replace: true,
-      },
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(mockNavigateToActivityPage).not.toHaveBeenCalled();
+    expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
+  });
+
+  it('does not navigate to activity when a PAIR request completes successfully', async () => {
+    const mockPairRequest = {
+      requestId: 'pair-request-id',
+      type: QrScanRequestType.PAIR,
+    };
+    const store = createBridgeMockStore();
+
+    mockUseSelectorOverrides = {
+      getActiveQrCodeScanRequest: mockPairRequest,
+      getLastQrScanCompletedSuccessfully: null,
+    };
+    const { rerender } = renderHookWithProvider(
+      () => useNavigateOnQrScanComplete(),
+      store,
     );
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+
+    mockUseSelectorOverrides = {
+      getActiveQrCodeScanRequest: null,
+      getLastQrScanCompletedSuccessfully: true,
+    };
+    await act(async () => {
+      rerender();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
+
+    expect(mockNavigateToActivityPage).not.toHaveBeenCalled();
+    expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
   });
 
   it('does not navigate when QR scan request is always null', () => {
@@ -185,6 +213,7 @@ describe('useNavigateOnQrScanComplete', () => {
     renderHookWithProvider(() => useNavigateOnQrScanComplete(), store);
 
     expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(mockNavigateToActivityPage).not.toHaveBeenCalled();
   });
 
   it('does not navigate when QR scan request is always undefined', () => {

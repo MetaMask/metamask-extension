@@ -16,8 +16,10 @@ import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as keyringSelectors from '../../../../shared/lib/selectors/keyring';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../../ducks/bridge/actions';
@@ -188,6 +190,8 @@ const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
 const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
+const getHardwareWalletTypeSpy =
+  keyringSelectors.getHardwareWalletType as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
 const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');
@@ -197,6 +201,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       isHardwareWalletSpy.mockImplementation(() => false);
+      getHardwareWalletTypeSpy.mockImplementation(() => undefined);
       mockEnsureDeviceReady.mockResolvedValue(true);
       captureExceptionSpy.mockReturnValue(undefined);
       setBackgroundConnection({
@@ -475,6 +480,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
     it('routes hardware-wallet intent quotes to default route after submit', async () => {
       const store = makeMockStore();
       isHardwareWalletSpy.mockImplementation(() => true);
+      getHardwareWalletTypeSpy.mockImplementation(
+        () => HardwareKeyringType.ledger,
+      );
       submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -515,6 +523,74 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
+    });
+
+    it('does not navigate to activity after QR hardware wallet submit', async () => {
+      const store = makeMockStore();
+      isHardwareWalletSpy.mockImplementation(() => true);
+      getHardwareWalletTypeSpy.mockImplementation(
+        () => HardwareKeyringType.qr,
+      );
+      submitTxSpy.mockReturnValueOnce((async () => undefined) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        { state: {} },
+      );
+    });
+
+    it('navigates back to the bridge page when QR hardware wallet submit fails with a non-rejection error', async () => {
+      const store = makeMockStore();
+      isHardwareWalletSpy.mockImplementation(() => true);
+      getHardwareWalletTypeSpy.mockImplementation(
+        () => HardwareKeyringType.qr,
+      );
+      submitTxSpy.mockImplementationOnce((async () => {
+        throw new Error('network error');
+      }) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(2);
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        1,
+        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        { state: {} },
+      );
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+        }),
+        expect.objectContaining({
+          replace: true,
+        }),
+      );
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        expect.anything(),
+      );
     });
   });
 });

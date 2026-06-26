@@ -1,29 +1,29 @@
 import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
 import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import {
   getActiveQrCodeScanRequest,
   getLastQrScanCompletedSuccessfully,
 } from '../../../selectors/selectors';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 
 /**
- * Navigates away from awaiting signatures page when QR scan completes successfully.
- * Only navigates when activeQrCodeScanRequest goes from truthy to null AND the scan
- * completed successfully (not cancelled/rejected). Rejection is handled by
+ * Navigates to the activity tab when a QR hardware wallet SIGN request completes
+ * successfully. Mounted globally so navigation works in sidebar, popup, and
+ * fullscreen contexts (e.g. when the camera step opens a fullscreen tab).
+ *
+ * Only navigates when activeQrCodeScanRequest goes from a SIGN request to null
+ * AND the scan completed successfully (not cancelled/rejected). PAIR requests
+ * (wallet import) are ignored. Rejection is handled by
  * useSubmitBridgeTransaction, which navigates back to the prepare page.
- * For USB wallets (Ledger): navigation is handled by useSubmitBridgeTransaction after transaction submission.
+ * For USB wallets (Ledger): navigation is handled by useSubmitBridgeTransaction
+ * after transaction submission.
  */
 export function useNavigateOnQrScanComplete(): void {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { navigateToActivityPage, navigateToDefaultRoute } =
+    useBridgeNavigation();
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const lastQrScanCompletedSuccessfully = useSelector(
     getLastQrScanCompletedSuccessfully,
@@ -33,7 +33,9 @@ export function useNavigateOnQrScanComplete(): void {
 
   useEffect(() => {
     // Track previous value to detect when QR scan completes (active → cleared)
-    const wasQrScanActive = Boolean(prevQrScanRequestRef.current);
+    const previousQrScanRequest = prevQrScanRequestRef.current;
+    const wasSignRequestActive =
+      previousQrScanRequest?.type === QrScanRequestType.SIGN;
     const isQrScanCleared = !activeQrCodeScanRequest;
 
     // Always update ref before any early branching so the next effect run
@@ -41,35 +43,24 @@ export function useNavigateOnQrScanComplete(): void {
     // re-runs after a successful navigate but before unmount).
     prevQrScanRequestRef.current = activeQrCodeScanRequest;
 
-    // Navigate only when QR scan completed successfully (not on cancel/reject)
+    // Navigate only when a transaction SIGN request completed successfully
+    // (not on cancel/reject, and not for PAIR / wallet-import flows).
     if (
-      wasQrScanActive &&
+      wasSignRequestActive &&
       isQrScanCleared &&
       lastQrScanCompletedSuccessfully === true
     ) {
-      const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
-      navigate(to, {
-        replace: true,
-        state: { stayOnHomePage: true },
-      });
-      return;
-    }
-
-    if (
-      wasQrScanActive &&
-      isQrScanCleared &&
-      lastQrScanCompletedSuccessfully === false
-    ) {
-      dispatch(setWasTxDeclined(true));
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
-        replace: true,
-      });
+      if (toastEnabled) {
+        navigateToDefaultRoute().catch(() => undefined);
+      } else {
+        navigateToActivityPage();
+      }
     }
   }, [
     activeQrCodeScanRequest,
-    dispatch,
     lastQrScanCompletedSuccessfully,
-    navigate,
+    navigateToActivityPage,
+    navigateToDefaultRoute,
     toastEnabled,
   ]);
 }
