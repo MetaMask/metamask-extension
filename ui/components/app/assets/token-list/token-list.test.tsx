@@ -117,6 +117,10 @@ jest.mock('../../../../selectors/assets', () => ({
   selectAccountGroupBalanceForEmptyState: jest.fn(),
 }));
 
+jest.mock('../hooks', () => ({
+  useStellarAssetDisplayOverrides: jest.fn(),
+}));
+
 const CHAIN_ID = '0x1' as Hex;
 const LINEA_CHAIN_ID = '0xe708' as Hex;
 const ACCOUNT_ID = 'account-1';
@@ -219,6 +223,12 @@ describe('TokenList', () => {
         typeof getSelectedMultichainNetworkConfiguration
       >);
     jest.mocked(selectAccountGroupBalanceForEmptyState).mockReturnValue(true);
+    // Mock useStellarAssetDisplayOverrides to return undefined (no overrides)
+    jest
+      .mocked(
+        jest.requireMock('../hooks').useStellarAssetDisplayOverrides as jest.Mock,
+      )
+      .mockReturnValue(undefined);
   });
 
   it('collapses non-native tokens with fiat balance below one dollar', () => {

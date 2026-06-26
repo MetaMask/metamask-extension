@@ -194,7 +194,6 @@ export default function TokenCell({
         headerRightDisplay={
           <TokenCellSecondaryDisplay
             token={displayToken}
-            displayOverrides={displayOverrides}
             handleScamWarningModal={handleScamWarningModal}
             privacyMode={privacyMode}
           />
@@ -203,7 +202,6 @@ export default function TokenCell({
         footerRightDisplay={
           <TokenCellPrimaryDisplay
             token={displayToken}
-            displayOverrides={displayOverrides}
             privacyMode={privacyMode}
           />
         }
