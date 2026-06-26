@@ -11,6 +11,7 @@ import {
   AccountImportStrategy,
   KeyringControllerAddNewKeyringAction,
   KeyringControllerChangePasswordAction,
+  KeyringControllerExportAccountAction,
   KeyringControllerExportEncryptionKeyAction,
   KeyringControllerExportSeedPhraseAction,
   KeyringControllerGetKeyringsByTypeAction,
@@ -30,6 +31,7 @@ import {
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import {
+  TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
@@ -122,9 +124,11 @@ const serviceName = 'LegacyBackgroundApiService';
  */
 const MESSENGER_EXPOSED_METHODS = [
   'checkIsSeedlessPasswordOutdated',
+  'exportAccount',
   'getAccountsBySnapId',
   'getCode',
   'getGlobalChainId',
+  'getNextNonce',
   'getOpenMetamaskTabsIds',
   'getRequestAccountTabIds',
   'getSeedPhrase',
@@ -166,6 +170,7 @@ type AllowedActions =
   | CurrencyRateControllerSetCurrentCurrencyAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerChangePasswordAction
+  | KeyringControllerExportAccountAction
   | KeyringControllerExportEncryptionKeyAction
   | KeyringControllerExportSeedPhraseAction
   | KeyringControllerGetKeyringsByTypeAction
@@ -205,6 +210,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SubscriptionControllerStopAllPollingAction
+  | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerWipeTransactionsAction
   | SnapAccountServiceGetLegacySnapKeyringAction;
@@ -694,6 +700,26 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Returns the next nonce according to the nonce-tracker
+   *
+   * @param address - The hex string address for the transaction
+   * @param networkClientId - The networkClientId to get the nonce lock with
+   * @returns The next nonce.
+   */
+  async getNextNonce(
+    address: string,
+    networkClientId: string,
+  ): Promise<number> {
+    const nonceLock = await this.#messenger.call(
+      'TransactionController:getNonceLock',
+      address,
+      networkClientId,
+    );
+    nonceLock.releaseLock();
+    return nonceLock.nextNonce;
+  }
+
+  /**
    * Checks if the seedless password is outdated.
    *
    * @param args - The arguments for the checkIsSeedlessPasswordOutdated method.
@@ -1024,6 +1050,22 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call(
       'SeedlessOnboardingController:storeKeyringEncryptionKey',
       keyringEncryptionKey,
+    );
+  }
+
+  /**
+   * Verifies the password and exports the private key for the given account.
+   *
+   * @param address - The address of the account to export.
+   * @param password - The password of the vault.
+   * @returns The private key of the account.
+   */
+  async exportAccount(address: string, password: string): Promise<string> {
+    await this.#messenger.call('KeyringController:verifyPassword', password);
+    return this.#messenger.call(
+      'KeyringController:exportAccount',
+      { password },
+      address,
     );
   }
 }

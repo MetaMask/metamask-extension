@@ -5,21 +5,8 @@ export default {
   title: 'Components/App/CancelButton',
   component: CancelButton,
   argTypes: {
-    transaction: {
-      control: 'object',
-    },
     cancelTransaction: {
       control: 'cancelTransaction',
-    },
-    detailsModal: {
-      control: 'boolean',
-    },
-  },
-  args: {
-    detailsModal: true,
-    transaction: {
-      id: '12345',
-      status: 'pending',
     },
   },
 };
