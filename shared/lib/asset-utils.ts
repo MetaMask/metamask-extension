@@ -115,7 +115,7 @@ export const getAssetImageUrl = (
  * @param assetId - The CAIP-formatted asset id
  * @returns The image url for the asset
  */
-export const getCaipAssetImageUrl = (assetId: CaipAssetType) => {
+export const getCaipAssetImageUrl = (assetId?: CaipAssetType) => {
   if (!assetId) {
     return undefined;
   }

@@ -5,13 +5,13 @@ import { getCaipAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import { ChainBadge } from '../chain-badge/chain-badge';
 
 type Props = {
-  assetId: CaipAssetType;
+  assetId?: CaipAssetType;
   symbol?: string;
 };
 
 export function TokenLabel({ assetId, symbol }: Props) {
   const src = getCaipAssetImageUrl(assetId);
-  const chainId = assetId.split('/')[0] as CaipChainId;
+  const chainId = assetId?.split('/')[0] as CaipChainId;
 
   return (
     <span className="inline-flex items-center gap-2">
