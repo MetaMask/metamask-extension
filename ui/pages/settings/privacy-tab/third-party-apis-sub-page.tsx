@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
@@ -11,6 +12,7 @@ import {
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { THIRD_PARTY_API_ITEMS } from '../search-config';
 import { IpfsGatewayItem } from './ipfs-gateway-item';
 
@@ -94,12 +96,23 @@ const THIRD_PARTY_APIS_ITEMS: SettingItemConfig[] = [
   },
 ];
 
+const CONSOLIDATED_BASIC_FUNCTIONALITY_THIRD_PARTY_APIS_ITEMS: SettingItemConfig[] =
+  [{ id: 'ipfs-gateway', component: IpfsGatewayItem }];
+
 const ThirdPartyApisSubPage = () => {
   const t = useI18nContext();
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
+
   return (
     <SettingsTab
       subHeader={t('thirdPartyApisDescription')}
-      items={THIRD_PARTY_APIS_ITEMS}
+      items={
+        isBasicFunctionalityConsolidationEnabled
+          ? CONSOLIDATED_BASIC_FUNCTIONALITY_THIRD_PARTY_APIS_ITEMS
+          : THIRD_PARTY_APIS_ITEMS
+      }
     />
   );
 };
