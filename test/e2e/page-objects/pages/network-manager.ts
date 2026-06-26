@@ -194,7 +194,7 @@ class NetworkManager {
     if (networkCategory === 'Custom') {
       await this.driver.waitForSelector(this.addCustomNetworkButton);
     } else if (networkCategory === 'Popular') {
-      await this.driver.waitForSelector(this.allPopularNetworksLabel);
+      await this.driver.waitForSelector(this.networkManagerSelectAllButton);
     }
   }
 

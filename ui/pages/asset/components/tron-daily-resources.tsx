@@ -113,6 +113,8 @@ type ResourceRowProps = {
   description: string;
   currentValue: string;
   maxValue: string;
+  testId: string;
+  descriptionTestId: string;
 };
 
 const ResourceRow = ({
@@ -122,6 +124,8 @@ const ResourceRow = ({
   description,
   currentValue,
   maxValue,
+  testId,
+  descriptionTestId,
 }: ResourceRowProps) => {
   return (
     <Box
@@ -130,6 +134,7 @@ const ResourceRow = ({
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
       marginTop={3}
+      data-testid={testId}
     >
       <Box
         className="flex"
@@ -145,7 +150,11 @@ const ResourceRow = ({
           >
             {label}
           </Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            data-testid={descriptionTestId}
+          >
             {description}
           </Text>
         </Box>
@@ -203,6 +212,7 @@ export const TronDailyResources = ({
       paddingRight={4}
       paddingTop={1}
       paddingBottom={3}
+      data-testid="tron-daily-resources"
     >
       <Box
         className="flex"
@@ -210,10 +220,18 @@ export const TronDailyResources = ({
         gap={2}
         marginBottom={3}
       >
-        <Text variant={TextVariant.headingSm} color={TextColor.textDefault}>
+        <Text
+          variant={TextVariant.headingSm}
+          color={TextColor.textDefault}
+          data-testid="tron-daily-resources-title"
+        >
           {t('tronDailyResources')}
         </Text>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          data-testid="tron-daily-resources-description"
+        >
           {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}
         </Text>
       </Box>
@@ -231,6 +249,8 @@ export const TronDailyResources = ({
         }
         currentValue={formatValue(energy.current)}
         maxValue={formatValue(energy.max)}
+        testId="tron-daily-resources-energy"
+        descriptionTestId="tron-daily-resources-energy-description"
       />
 
       <ResourceRow
@@ -246,6 +266,8 @@ export const TronDailyResources = ({
         }
         currentValue={formatValue(bandwidth.current)}
         maxValue={formatValue(bandwidth.max)}
+        testId="tron-daily-resources-bandwidth"
+        descriptionTestId="tron-daily-resources-bandwidth-description"
       />
     </Box>
   );

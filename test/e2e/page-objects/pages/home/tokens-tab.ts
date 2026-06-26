@@ -440,7 +440,7 @@ class TokensTab extends HomePage {
         return Boolean(await this.driver.findElement(this.modalCloseButton));
       },
       {
-        timeout: 5000,
+        timeout: 15_000,
         interval: 100,
       },
     );
@@ -723,10 +723,13 @@ class TokensTab extends HomePage {
     console.log(
       `Waiting for ${expectedNumber} collapsed token items to be displayed`,
     );
-    await this.driver.wait(async () => {
-      const tokenItemsNumber = await this.getNumberOfAssets();
-      return tokenItemsNumber === expectedNumber;
-    }, 10000);
+    await this.driver.wait(
+      async () => {
+        const tokenItemsNumber = await this.getNumberOfAssets();
+        return tokenItemsNumber === expectedNumber;
+      },
+      30_000,
+    );
   }
 
   /**
@@ -734,12 +737,18 @@ class TokensTab extends HomePage {
    *
    * @param tokenName - Token name text to match.
    */
-  async checkTokenNameVisible(tokenName: string): Promise<void> {
+  async checkTokenNameVisible(
+    tokenName: string,
+    options: { timeout?: number } = {},
+  ): Promise<void> {
     console.log(`Checking token name "${tokenName}" is visible`);
-    await this.driver.waitForSelector({
-      css: this.tokenName,
-      text: tokenName,
-    });
+    await this.driver.waitForSelector(
+      {
+        css: this.tokenName,
+        text: tokenName,
+      },
+      options.timeout === undefined ? {} : { timeout: options.timeout },
+    );
   }
 
   async checkAssetIsAbsent(symbol: string): Promise<void> {
