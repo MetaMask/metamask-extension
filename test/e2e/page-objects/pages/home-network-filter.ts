@@ -3,20 +3,15 @@ import { Driver } from '../../webdriver/driver';
 type HomeNetworkFilterSection = 'network' | 'custom' | 'test';
 
 class HomeNetworkFilter {
-  protected readonly driver: Driver;
-
   private readonly allDefaultNetworksItem =
     '[data-testid="home-network-filter-all-default"]';
 
   private readonly modalCloseButton =
     '.mm-modal-header button[aria-label="Close"]';
 
-  private readonly multichainNetworkListItemByName = (networkName: string) => ({
-    css: '.multichain-network-list-item',
-    text: networkName,
-  });
-
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
+
+  protected readonly driver: Driver;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -26,9 +21,10 @@ class HomeNetworkFilter {
     console.log(
       `Verify network "${networkName}" appears in the home network filter`,
     );
-    await this.driver.waitForSelector(
-      this.multichainNetworkListItemByName(networkName),
-    );
+    await this.driver.waitForSelector({
+      css: '.multichain-network-list-item',
+      text: networkName,
+    });
   }
 
   async close(): Promise<void> {
