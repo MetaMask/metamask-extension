@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { type CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { XlmScope } from '@metamask/keyring-api';
-import { AssetType } from '../../../../../shared/constants/transaction';
-import { getBaseReserveFromExtra } from '../../../../helpers/stellar/base-reserve-from-extra';
-import { isStellarClassicTrustlineInactiveForDisplay } from '../../../../helpers/stellar/trustline-from-extra';
+import { isStellarClassicTrustlineInactiveForDisplay } from '../../../helpers/stellar/trustline-from-extra';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { getBaseReserveFromExtra } from '../../../helpers/stellar/base-reserve-from-extra';
 
 type AccountAssetInfo = Record<string, unknown> | undefined;
 
@@ -38,24 +38,19 @@ export type StellarAssetPageState = {
  * @param options.chainId
  * @param options.assetId
  * @param options.type
- * @param options.assetWithBalance
+ * @param options.accountAssetInfo
  * @returns Object containing all computed Stellar state for the asset page
  */
 export function useStellarAssetPageState({
   chainId,
   assetId,
   type,
-  assetWithBalance,
+  accountAssetInfo,
 }: {
   chainId: string;
   assetId: string;
   type: AssetType;
-  assetWithBalance?:
-    | {
-        accountAssetInfo?: AccountAssetInfo;
-        [key: string]: unknown;
-      }
-    | undefined;
+  accountAssetInfo?: AccountAssetInfo;
 }): StellarAssetPageState {
   return useMemo(() => {
     // Detect Stellar chain
@@ -86,7 +81,7 @@ export function useStellarAssetPageState({
         chainId,
         assetId,
         isNative: type === AssetType.native,
-        accountAssetInfo: assetWithBalance?.accountAssetInfo,
+        accountAssetInfo,
       });
 
     // Determine if we should show the activation card
@@ -95,18 +90,18 @@ export function useStellarAssetPageState({
 
     // Check if trustline can be removed (exists and is active)
     const hasStellarClassicTrustlineToRemove =
-      assetWithBalance !== undefined &&
+      accountAssetInfo !== undefined &&
       !isStellarClassicTrustlineInactiveForDisplay({
         chainId,
         assetId,
         isNative: type === AssetType.native,
-        accountAssetInfo: assetWithBalance.accountAssetInfo,
+        accountAssetInfo,
       });
 
     // Get base reserve for Stellar native assets
     const stellarNativeBaseReserve =
       isStellarChainId && type === AssetType.native
-        ? getBaseReserveFromExtra(assetWithBalance?.accountAssetInfo) ?? '0'
+        ? getBaseReserveFromExtra(accountAssetInfo) ?? '0'
         : undefined;
 
     // Show the special Stellar native balance section
@@ -123,5 +118,5 @@ export function useStellarAssetPageState({
       stellarNativeBaseReserve,
       showStellarNativeBalanceSection,
     };
-  }, [chainId, assetId, type, assetWithBalance?.accountAssetInfo]);
+  }, [chainId, assetId, type, accountAssetInfo]);
 }

@@ -35,7 +35,7 @@ import {
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useStellarAssetDisplayOverrides, useStellarAssetPageState } from '../../../components/app/assets/hooks';
+import { useStellarAssetDisplayOverrides } from '../../../components/app/assets/hooks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -109,6 +109,7 @@ import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
+import { useStellarAssetPageState } from '../hooks/useStellarAssetPageState';
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -295,7 +296,7 @@ const AssetPage = ({
     chainId,
     assetId,
     type,
-    assetWithBalance,
+    accountAssetInfo: assetWithBalance?.accountAssetInfo,
   });
 
   const { safeChains } = useSafeChains();
