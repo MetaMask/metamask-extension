@@ -8,6 +8,8 @@ import { RootMessenger } from '../lib/messenger';
 import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { getKeyringBuilders, getKeyringV2Builders } from './keyrings';
+import { rampsController, rampsService } from './ramps';
+import { getRampsEnvironment } from './instance-options/ramps-environment';
 
 // TODO: Remove this workaround once @metamask/wallet types are updated to include approvalController.
 // The runtime (index.cjs) supports approvalController in instanceOptions, but the TypeScript
@@ -17,6 +19,12 @@ type WalletInstanceOptions = WalletOptions['instanceOptions'] & {
     showApprovalRequest?: ShowApprovalRequest;
     typesExcludedFromRateLimiting?: string[];
   };
+  rampsService?: {
+    environment?: ReturnType<typeof getRampsEnvironment>;
+    context: string;
+    fetch: typeof fetch;
+  };
+  rampsController?: Record<string, never>;
 };
 
 export function initializeWallet({
@@ -33,6 +41,7 @@ export function initializeWallet({
   return new Wallet({
     messenger,
     state,
+    initializationConfigurations: [rampsService, rampsController],
     instanceOptions: {
       approvalController: {
         showApprovalRequest,
@@ -60,6 +69,12 @@ export function initializeWallet({
       storageService: {
         storage: new BrowserStorageAdapter(),
       },
+      rampsService: {
+        environment: getRampsEnvironment(),
+        context: 'extension',
+        fetch: global.fetch.bind(global),
+      },
+      rampsController: {},
     } as WalletInstanceOptions,
   });
 }
