@@ -26,13 +26,12 @@ import {
   BENCHMARK_TYPE,
   type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
-import { WITH_STATE_POWER_USER } from '../../utils/constants';
-import { collectWebVitals } from '../../utils';
 import {
   BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT,
   BENCHMARK_ACCOUNT_LIST_STABLE_FOR,
-  waitForAccountListRenderComplete,
-} from '../../utils/render-complete';
+  WITH_STATE_POWER_USER,
+} from '../../utils/constants';
+import { collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 const SECOND_SRP = process.env.TEST_SRP_2;
@@ -87,13 +86,13 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
         // Measure: Open account menu
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
         steps.push(
           await measureStepWithLongTasks(
             driver,
             'openAccountMenuAfterLogin',
             async () => {
-              await waitForAccountListRenderComplete({
-                driver,
+              await accountListPage.checkAccountListRenderComplete({
                 expectedCount: WITH_STATE_POWER_USER.withAccounts,
                 timeout: BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT,
                 stableFor: BENCHMARK_ACCOUNT_LIST_STABLE_FOR,
@@ -103,7 +102,6 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
         );
 
         // Measure: Import SRP and return to home
-        const accountListPage = new AccountListPage(driver);
         await accountListPage.startImportSecretPhrase(SECOND_SRP);
         steps.push(
           await measureStepWithLongTasks(

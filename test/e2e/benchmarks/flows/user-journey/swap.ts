@@ -27,12 +27,11 @@ import {
   BENCHMARK_TYPE,
   type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
-import { WITH_STATE_POWER_USER } from '../../utils/constants';
-import { collectWebVitals } from '../../utils';
 import {
   BENCHMARK_SWAP_PAGE_RENDER_TIMEOUT,
-  waitForSwapPageRenderComplete,
-} from '../../utils/render-complete';
+  WITH_STATE_POWER_USER,
+} from '../../utils/constants';
+import { collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
@@ -94,13 +93,13 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
 
         // Measure: Open swap page
         await homePage.startSwapFlow();
+        const swapPage = new SwapPage(driver);
         steps.push(
           await measureStepWithLongTasks(
             driver,
             'openSwapPageFromHome',
             async () => {
-              await waitForSwapPageRenderComplete({
-                driver,
+              await swapPage.checkRenderComplete({
                 timeout: BENCHMARK_SWAP_PAGE_RENDER_TIMEOUT,
               });
             },
@@ -108,7 +107,6 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         );
 
         // Measure: Fetch quotes
-        const swapPage = new SwapPage(driver);
         await swapPage.createSwap({
           amount: 0.01,
           swapTo: 'USDC',

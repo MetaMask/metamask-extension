@@ -493,51 +493,34 @@ class Driver {
   }
 
   /**
-   * Waits until a page function evaluates to a truthy value.
+   * Waits until at least `n` elements matching the locator are present in the DOM.
    *
-   * @param {Function} pageFunction - Function executed in the page context.
+   * Unlike {@link elementCountBecomesN}, this resolves as soon as the count
+   * reaches the threshold (useful while a list is still rendering) and can
+   * require the count to stay at or above the threshold for a stability window
+   * before resolving, which avoids resolving on a transient mid-render count.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @param {number} n - The minimum number of matching elements to wait for.
    * @param {object} [options] - Optional configuration.
-   * @param {Array<unknown>} [options.args] - Arguments passed to the page function.
+   * @param {number} [options.timeout] - Maximum time to wait in milliseconds.
    * @param {number} [options.interval] - Polling interval in milliseconds.
    * @param {number} [options.stableFor] - Optional stability window in milliseconds.
-   * When set, the page function must stay truthy for that duration before the wait resolves.
-   * @param {number} [options.timeout] - Maximum time to wait in milliseconds.
-   * @returns {Promise<unknown>} The last truthy result returned by the page function.
+   * @returns {Promise<void>} promise resolving once the count threshold is met.
    */
-  async waitForFunction(
-    pageFunction,
-    { args = [], interval = 100, stableFor = 0, timeout = this.timeout } = {},
+  async waitForElementCountToBeAtLeast(
+    rawLocator,
+    n,
+    { timeout = this.timeout, interval = 100, stableFor = 0 } = {},
   ) {
-    if (typeof pageFunction !== 'function') {
-      throw new TypeError(
-        `waitForFunction expects a function, received ${typeof pageFunction}`,
-      );
-    }
-
-    let result;
-    let lastError;
-
-    try {
-      await this.waitUntil(
-        async () => {
-          try {
-            result = await this.driver.executeScript(pageFunction, ...args);
-            return Boolean(result);
-          } catch (error) {
-            lastError = error;
-            return false;
-          }
-        },
-        { interval, stableFor, timeout },
-      );
-    } catch (error) {
-      if (lastError) {
-        throw lastError;
-      }
-      throw error;
-    }
-
-    return result;
+    const locator = this.buildLocator(rawLocator);
+    await this.waitUntil(
+      async () => {
+        const elements = await this.driver.findElements(locator);
+        return elements.length >= n;
+      },
+      { interval, timeout, stableFor },
+    );
   }
 
   /**

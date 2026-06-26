@@ -144,6 +144,29 @@ class SwapPage {
     console.log('Swap page is loaded');
   }
 
+  /**
+   * Waits until the swap page has finished rendering its initial quote-ready
+   * state: the source token button is present, the amount input is editable,
+   * and the quote details have rendered.
+   *
+   * Benchmarks use this instead of {@link checkPageIsLoaded} because the latter
+   * resolves on container visibility, before transitions and quote details have
+   * settled — which adds noise to the measured render duration.
+   *
+   * @param options - Wait options.
+   * @param options.timeout - Optional timeout override in milliseconds.
+   */
+  async checkRenderComplete({
+    timeout,
+  }: { timeout?: number } = {}): Promise<void> {
+    await this.driver.waitForSelector(this.bridgeSourceButton, { timeout });
+    await this.driver.waitForSelector(this.reviewFromAmount, {
+      state: 'enabled',
+      timeout,
+    });
+    await this.checkQuoteIsDisplayed({ timeout });
+  }
+
   async clickOnMoreQuotes(): Promise<void> {
     await this.driver.clickElement(this.moreQuotesButton);
   }
