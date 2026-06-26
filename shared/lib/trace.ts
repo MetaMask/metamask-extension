@@ -598,8 +598,14 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op, isRoot } =
-    request;
+  const {
+    data: attributes,
+    name,
+    parentContext,
+    startTime,
+    op,
+    isRoot,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
   // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)

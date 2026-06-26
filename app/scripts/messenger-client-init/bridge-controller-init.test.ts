@@ -87,7 +87,9 @@ describe('BridgeControllerInit', () => {
     const { messengerClient } = BridgeControllerInit(getInitRequestMock());
 
     await (
-      messengerClient as unknown as { _executePoll: (input: unknown) => Promise<void> }
+      messengerClient as unknown as {
+        _executePoll: (input: unknown) => Promise<void>;
+      }
     )._executePoll({ quoteRequests: [] });
 
     expect(traceBackgroundPoll).toHaveBeenCalledWith(

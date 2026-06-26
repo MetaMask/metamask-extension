@@ -181,14 +181,13 @@ export const BridgeControllerInit: MessengerClientInitFunction<
 
   // Root each scheduled poll cycle in its own trace before the controller's
   // internal `_executePoll` callback performs network work.
-  const pollingController = messengerClient as unknown as ControllerWithExecutePoll;
+  const pollingController =
+    messengerClient as unknown as ControllerWithExecutePoll;
   const executePoll = pollingController._executePoll?.bind(messengerClient);
 
   if (executePoll) {
     pollingController._executePoll = (pollingInput: unknown) =>
-      traceBackgroundPoll('BridgeController', () =>
-        executePoll(pollingInput),
-      );
+      traceBackgroundPoll('BridgeController', () => executePoll(pollingInput));
   }
 
   return {

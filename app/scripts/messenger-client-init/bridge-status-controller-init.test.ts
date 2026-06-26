@@ -71,10 +71,13 @@ describe('BridgeStatusControllerInit', () => {
           ({ _executePoll: executePoll }) as unknown as BridgeStatusController,
       );
 
-    const { messengerClient } = BridgeStatusControllerInit(getInitRequestMock());
+    const { messengerClient } =
+      BridgeStatusControllerInit(getInitRequestMock());
 
     await (
-      messengerClient as unknown as { _executePoll: (input: unknown) => Promise<void> }
+      messengerClient as unknown as {
+        _executePoll: (input: unknown) => Promise<void>;
+      }
     )._executePoll({ bridgeTxMetaId: '0x1' });
 
     expect(traceBackgroundPoll).toHaveBeenCalledWith(
