@@ -2262,7 +2262,7 @@
     },
     "eslint>@eslint/eslintrc>import-fresh>parent-module": {
       "packages": {
-        "@metamask/test-bundler>ow>callsites": true
+        "jest>@jest/core>jest-runtime>@jest/source-map>callsites": true
       }
     },
     "depcheck>cosmiconfig>parse-json": {
