@@ -17,6 +17,15 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
+// Stopgap. Even with #43818's globalized Bitcoin/Solana snap-discovery mocks
+// (confirmed present in this branch's `mock-e2e.js`), on constrained 2-core CI
+// the non-EVM discovery + icon render still lands between the default 10s wait
+// and ~20s on the v10 SDK branch, so the default times out. The mock fix was
+// necessary but not sufficient here; keep the widened wait until the residual
+// post-#43818 latency is root-caused (v10 snap-account discovery vs. a remaining
+// unmocked call). Tracked by #43817's follow-up.
+const NON_EVM_ICON_TIMEOUT = 20_000;
+
 class HomePage {
   protected driver: Driver;
 
@@ -219,8 +228,15 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
-    await this.driver.waitForSelector(this.solanaAccountIcon);
-    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+    // See `NON_EVM_ICON_TIMEOUT` — on the v10 branch the non-EVM icons still
+    // exceed the default 10s wait even after #43818's mocks. Still polled:
+    // returns as soon as the icons render.
+    await this.driver.waitForSelector(this.solanaAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
+    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
