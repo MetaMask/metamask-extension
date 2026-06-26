@@ -10,7 +10,7 @@ import {
   SensitiveText,
   SensitiveTextLength,
 } from '../../../../component-library';
-import { TokenFiatDisplayInfo } from '../../types';
+import { TokenFiatDisplayInfo, TokenDisplayOverrides } from '../../types';
 import { selectAnyEnabledNetworksAreAvailable } from '../../../../../selectors';
 import { isZeroAmount } from '../../../../../helpers/utils/number-utils';
 import { useFormatters } from '../../../../../hooks/useFormatters';
@@ -18,14 +18,23 @@ import { useFormatters } from '../../../../../hooks/useFormatters';
 type TokenCellPrimaryDisplayProps = {
   token: TokenFiatDisplayInfo;
   privacyMode: boolean;
+  displayOverrides?: TokenDisplayOverrides;
 };
 
 export const TokenCellPrimaryDisplay = React.memo(
-  ({ token, privacyMode }: TokenCellPrimaryDisplayProps) => {
+  ({
+    token,
+    privacyMode,
+    displayOverrides,
+  }: TokenCellPrimaryDisplayProps) => {
     const { formatTokenQuantity } = useFormatters();
     const anyEnabledNetworksAreAvailable = useSelector(
       selectAnyEnabledNetworksAreAvailable,
     );
+
+    if (displayOverrides?.hidePrimaryDisplay) {
+      return null;
+    }
 
     return (
       <Skeleton
@@ -50,5 +59,7 @@ export const TokenCellPrimaryDisplay = React.memo(
     prevProps.token.balance === nextProps.token.balance &&
     prevProps.token.isStellarTrustlineInactive ===
       nextProps.token.isStellarTrustlineInactive &&
+    prevProps.displayOverrides?.hidePrimaryDisplay ===
+      nextProps.displayOverrides?.hidePrimaryDisplay &&
     prevProps.privacyMode === nextProps.privacyMode,
 );

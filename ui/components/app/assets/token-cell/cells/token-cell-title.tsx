@@ -1,6 +1,6 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React from 'react';
-import { TokenFiatDisplayInfo } from '../../types';
+import { TokenFiatDisplayInfo, TokenDisplayOverrides } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { Tag } from '../../../../component-library';
@@ -11,10 +11,11 @@ import { StellarTrustlineInactiveBadge } from '../../stellar-trustline-inactive-
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
+  displayOverrides?: TokenDisplayOverrides;
 };
 
 export const TokenCellTitle = React.memo(
-  ({ token }: TokenCellTitleProps) => {
+  ({ token, displayOverrides }: TokenCellTitleProps) => {
     const label = token.accountType
       ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
@@ -25,7 +26,9 @@ export const TokenCellTitle = React.memo(
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
         {label && <Tag label={label} />}
-        {token.isStellarTrustlineInactive && <StellarTrustlineInactiveBadge />}
+        {displayOverrides?.titleBadge
+          ? displayOverrides.titleBadge
+          : token.isStellarTrustlineInactive && <StellarTrustlineInactiveBadge />}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
         )}
@@ -51,5 +54,7 @@ export const TokenCellTitle = React.memo(
     prevProps.token.chainId === nextProps.token.chainId &&
     prevProps.token.symbol === nextProps.token.symbol &&
     prevProps.token.isStellarTrustlineInactive ===
-      nextProps.token.isStellarTrustlineInactive,
+      nextProps.token.isStellarTrustlineInactive &&
+    prevProps.displayOverrides?.titleBadge ===
+      nextProps.displayOverrides?.titleBadge,
 );

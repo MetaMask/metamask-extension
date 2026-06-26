@@ -19,7 +19,7 @@ import {
   getUseCurrencyRateCheck,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../../selectors';
-import { TokenFiatDisplayInfo } from '../../types';
+import { TokenFiatDisplayInfo, TokenDisplayOverrides } from '../../types';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../../../../shared/lib/selectors/networks';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
@@ -29,6 +29,7 @@ type TokenCellSecondaryDisplayProps = {
   token: TokenFiatDisplayInfo;
   handleScamWarningModal: (arg: boolean) => void;
   privacyMode: boolean;
+  displayOverrides?: TokenDisplayOverrides;
 };
 
 const secondaryDisplayStyle: CSSProperties = {
@@ -41,6 +42,7 @@ export const TokenCellSecondaryDisplay = React.memo(
     token,
     handleScamWarningModal,
     privacyMode,
+    displayOverrides,
   }: TokenCellSecondaryDisplayProps) => {
     const isEvm = isEvmChainId(token.chainId);
     const { type, rpcUrl } = useSelector(getProviderConfig);
@@ -63,6 +65,10 @@ export const TokenCellSecondaryDisplay = React.memo(
     const secondaryDisplayText = useCurrencyRateCheck
       ? token.secondary || '—'
       : '';
+
+    if (displayOverrides?.hideSecondaryDisplay) {
+      return null;
+    }
 
     // show scam warning
     if (showScamWarning) {
@@ -115,5 +121,7 @@ export const TokenCellSecondaryDisplay = React.memo(
     prevProps.token.secondary === nextProps.token.secondary &&
     prevProps.token.isStellarTrustlineInactive ===
       nextProps.token.isStellarTrustlineInactive &&
+    prevProps.displayOverrides?.hideSecondaryDisplay ===
+      nextProps.displayOverrides?.hideSecondaryDisplay &&
     prevProps.privacyMode === nextProps.privacyMode,
 );

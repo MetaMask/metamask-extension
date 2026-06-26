@@ -38,6 +38,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getBaseReserveFromExtra } from '../../../helpers/stellar/base-reserve-from-extra';
 import { isStellarClassicTrustlineInactiveForDisplay } from '../../../helpers/stellar/trustline-from-extra';
+import { useStellarAssetDisplayOverrides } from '../../../components/app/assets/hooks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -278,6 +279,15 @@ const AssetPage = ({
     extra: assetWithBalance?.extra,
   };
 
+  // Get Stellar-specific display overrides (badge, hidden displays, etc.)
+  const stellarDisplayOverrides = useStellarAssetDisplayOverrides({
+    chainId,
+    assetId: bip44Asset?.assetId ?? assetId,
+    isNative: type === AssetType.native,
+    extra: assetWithBalance?.extra,
+    balance,
+  });
+
   const isStellarChainId = (chainId as string) === XlmScope.Pubnet;
   let isSep41StellarAsset = false;
   if (assetId && isStellarChainId) {
@@ -365,7 +375,7 @@ const AssetPage = ({
   };
 
   const renderAssetTitleSection = () => {
-    if (showStellarInactiveAssetHeader) {
+    if (stellarDisplayOverrides?.titleBadge) {
       return (
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -374,7 +384,7 @@ const AssetPage = ({
           data-testid="stellar-inactive-asset-header"
         >
           {assetNameElement}
-          <StellarTrustlineInactiveBadge />
+          {stellarDisplayOverrides.titleBadge}
         </Box>
       );
     }
@@ -458,6 +468,7 @@ const AssetPage = ({
             token={tokenWithFiatAmount as TokenWithFiatAmount}
             safeChains={safeChains}
             musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
+            displayOverrides={stellarDisplayOverrides}
           />
         )}
       </>

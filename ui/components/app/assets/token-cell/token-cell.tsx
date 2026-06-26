@@ -30,7 +30,7 @@ import type {
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { useTokenDisplayInfo } from '../hooks';
-import { type TokenWithFiatAmount } from '../types';
+import { type TokenWithFiatAmount, type TokenDisplayOverrides } from '../types';
 import {
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
@@ -53,6 +53,8 @@ export type TokenCellProps = {
   safeChains?: SafeChain[];
   /** Merkl claim bonus and/or mUSD convert surfaces; parent must pass explicit analytics locations. */
   musd?: TokenCellMusdOptions;
+  /** Optional display overrides for chain-specific UI (e.g., Stellar trustline-inactive). */
+  displayOverrides?: TokenDisplayOverrides;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -64,6 +66,7 @@ export default function TokenCell({
   fixCurrencyToUSD = false,
   safeChains,
   musd,
+  displayOverrides,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -182,10 +185,16 @@ export default function TokenCell({
             assetId={token.assetId}
           />
         }
-        headerLeftDisplay={<TokenCellTitle token={displayToken} />}
+        headerLeftDisplay={
+          <TokenCellTitle
+            token={displayToken}
+            displayOverrides={displayOverrides}
+          />
+        }
         headerRightDisplay={
           <TokenCellSecondaryDisplay
             token={displayToken}
+            displayOverrides={displayOverrides}
             handleScamWarningModal={handleScamWarningModal}
             privacyMode={privacyMode}
           />
@@ -194,6 +203,7 @@ export default function TokenCell({
         footerRightDisplay={
           <TokenCellPrimaryDisplay
             token={displayToken}
+            displayOverrides={displayOverrides}
             privacyMode={privacyMode}
           />
         }
