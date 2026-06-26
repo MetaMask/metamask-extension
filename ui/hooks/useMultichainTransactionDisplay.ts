@@ -137,6 +137,9 @@ function getEnrichedTitle(
       : `${t('swap')} ${fromSymbol} ${t('to').toLowerCase()} ${toSymbol}`,
     [TransactionType.StakeDeposit]: t('stakingDeposit'),
     [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
+    [TransactionType.TokenApprove]: fromSymbol
+      ? t('approveSpendingCap', [fromSymbol])
+      : t('approve'),
     [TransactionType.Unknown]: t('interaction'),
   };
 

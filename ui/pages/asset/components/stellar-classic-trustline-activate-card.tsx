@@ -74,7 +74,6 @@ export const StellarClassicTrustlineActivateCard = ({
         // Snap showed the account funding prompt; no trustline tx was submitted.
         return;
       }
-      setErrorMessage(t('stellarClassicTrustlineAddError') as string);
       await forceUpdateMetamaskState(dispatch);
     } catch (error: unknown) {
       const errorCode = (error as { code?: number })?.code;

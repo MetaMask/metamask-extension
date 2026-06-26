@@ -52,7 +52,7 @@ describe('TokenButtons', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders disabled remove trustline when hasTrustline is false', () => {
+  it('does not render remove trustline when hasTrustline is false', () => {
     renderWithProvider(
       <TokenButtons
         token={STELLAR_TOKEN}
@@ -68,8 +68,8 @@ describe('TokenButtons', () => {
     );
 
     expect(
-      screen.getByTestId('token-overview-stellar-remove-trustline'),
-    ).toBeDisabled();
+      screen.queryByTestId('token-overview-stellar-remove-trustline'),
+    ).not.toBeInTheDocument();
   });
 
   it('submits remove trustline when enabled and tapped', async () => {

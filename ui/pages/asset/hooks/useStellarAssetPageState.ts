@@ -123,5 +123,5 @@ export function useStellarAssetPageState({
       stellarNativeBaseReserve,
       showStellarNativeBalanceSection,
     };
-  }, [chainId, assetId, type, assetWithBalance]);
+  }, [chainId, assetId, type, assetWithBalance?.accountAssetInfo]);
 }
