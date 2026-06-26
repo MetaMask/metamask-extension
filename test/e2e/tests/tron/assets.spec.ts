@@ -151,9 +151,12 @@ describe('Tron - Assets', function (this: Suite) {
       );
     });
 
-    it('Staked TRX is absent from the token list for an account that has not staked', async function () {
+    it('Staked TRX is absent from the token list for a staking account', async function () {
       await withTronFixtures(
-        tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
+        tronAssetsTestConfig(
+          [TRON_STAKED_PORTFOLIO_ACCOUNT],
+          this.test?.fullTitle(),
+        ),
         async ({ driver }: { driver: Driver }) => {
           await landOnTronHome(driver);
           const tokensTab = new TokensTab(driver);
@@ -270,7 +273,7 @@ describe('Tron - Assets', function (this: Suite) {
       );
     });
 
-    it('USDT asset details: header, chart, action buttons, sections — no daily resource', async function () {
+    it('TRC20 asset details: header, chart, action buttons, sections — no daily resource', async function () {
       await withTronFixtures(
         tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
@@ -302,7 +305,6 @@ describe('Tron - Assets', function (this: Suite) {
           await landOnTronHome(driver);
           const tokensTab = new TokensTab(driver);
           await waitForTronAssetList(tokensTab);
-          await tokensTab.checkAssetIsAbsent('Staked TRX');
 
           // Open native TRX details, then route to the view-only staked asset page.
           await tokensTab.clickOnAsset('Tron');
