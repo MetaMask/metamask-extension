@@ -49,12 +49,16 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
         // No upstream trace context from the UI.  Root this operation in a new
         // per-operation trace so that any auto-instrumented spans (e.g.
         // http.client) emitted during the call have a parent, now that the MV3
-        // service-worker pageload root is disabled.  Sentry's tracesSampleRate
-        // still gates whether the trace is actually recorded.
+        // service-worker pageload root is disabled.  `root: true` forces a fresh
+        // root even when another background RPC handler is concurrently in
+        // flight, so overlapping operations get independent trace ids instead of
+        // nesting under each other.  Sentry's tracesSampleRate still gates
+        // whether the trace is actually recorded.
         result = await trace(
           {
             name: spanName,
             op: 'rpc.handler',
+            root: true,
             data: { method: data.method, ...(controller && { controller }) },
           },
           () => {

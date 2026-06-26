@@ -200,6 +200,14 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * Force this trace to start a new root, ignoring any currently active span.
+   * Use for independent background operations (e.g. per-operation background
+   * RPC roots) that must not nest under a concurrently in-flight operation's
+   * span. Has no effect when an explicit `parentContext` is provided.
+   */
+  root?: boolean;
 };
 
 /**
@@ -555,7 +563,14 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const {
+    data: attributes,
+    name,
+    parentContext,
+    startTime,
+    op,
+    root,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
   // In the UI document context, inherit from the active span (the
@@ -567,11 +582,14 @@ function startSpan<T>(
   //
   // NOTE: The MV3 service-worker context has browserTracingIntegration's
   // instrumentPageLoad/instrumentNavigation disabled (see setupSentry.js), so
-  // sentryGetActiveSpan() returns null there and this block is skipped.
-  // Background traces in the SW therefore always create their own root span
-  // (parentSpan = null below), matching Sentry's per-task trace guidance.
+  // there is no ambient pageload root. But an in-flight operation's own span is
+  // still active for the duration of its (async) callback, so a second
+  // background operation that starts concurrently would otherwise nest under
+  // it and share its trace id. Callers that must root independently
+  // (e.g. per-operation background RPC) pass `root: true` to skip this block and
+  // always create their own root span, matching Sentry's per-task trace guidance.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!root && !parentSpan && !parentContext) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;

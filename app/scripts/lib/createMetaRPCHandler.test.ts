@@ -256,6 +256,7 @@ describe('createMetaRPCHandler', () => {
         expect.objectContaining({
           name: 'Background RPC: foo',
           op: 'rpc.handler',
+          root: true,
           data: { method: 'foo' },
         }),
         expect.any(Function),
@@ -280,6 +281,7 @@ describe('createMetaRPCHandler', () => {
         expect.objectContaining({
           name: 'Background RPC: foo',
           op: 'rpc.handler',
+          root: true,
         }),
         expect.any(Function),
       );
@@ -303,6 +305,7 @@ describe('createMetaRPCHandler', () => {
         expect.objectContaining({
           name: 'Background RPC: foo',
           op: 'rpc.handler',
+          root: true,
         }),
         expect.any(Function),
       );
@@ -327,6 +330,7 @@ describe('createMetaRPCHandler', () => {
         expect.objectContaining({
           name: 'Background RPC: foo',
           op: 'rpc.handler',
+          root: true,
         }),
         expect.any(Function),
       );
