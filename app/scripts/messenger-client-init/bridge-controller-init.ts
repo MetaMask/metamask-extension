@@ -27,7 +27,7 @@ import {
 import { MessengerClientInitFunction } from './types';
 import { BridgeControllerInitMessenger } from './messengers';
 
-type PollingControllerLike = {
+type ControllerWithExecutePoll = {
   _executePoll?: (input: unknown) => Promise<void>;
 };
 
@@ -179,7 +179,9 @@ export const BridgeControllerInit: MessengerClientInitFunction<
     },
   });
 
-  const pollingController = messengerClient as unknown as PollingControllerLike;
+  // Root each scheduled poll cycle in its own trace before the controller's
+  // internal `_executePoll` callback performs network work.
+  const pollingController = messengerClient as unknown as ControllerWithExecutePoll;
   const executePoll = pollingController._executePoll?.bind(messengerClient);
 
   if (executePoll) {

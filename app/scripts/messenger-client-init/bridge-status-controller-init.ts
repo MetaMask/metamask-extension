@@ -9,7 +9,7 @@ import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { accountSupports7702 } from '../lib/account-supports-7702';
 import { MessengerClientInitFunction } from './types';
 
-type PollingControllerLike = {
+type ControllerWithExecutePoll = {
   _executePoll?: (input: unknown) => Promise<void>;
 };
 
@@ -67,7 +67,10 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
     traceFn: (...args) => trace(...args),
   });
 
-  const pollingController = messengerClient as unknown as PollingControllerLike;
+  // Root each scheduled poll cycle in its own trace before the controller's
+  // internal `_executePoll` callback performs network work.
+  const pollingController =
+    messengerClient as unknown as ControllerWithExecutePoll;
   const executePoll = pollingController._executePoll?.bind(messengerClient);
 
   if (executePoll) {
