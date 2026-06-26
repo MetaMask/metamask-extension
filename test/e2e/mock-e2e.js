@@ -187,6 +187,22 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
       body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
     }));
 
+  // Esplora `GET /block-height/:height` returns the block hash at that height as
+  // plain text. The Bitcoin snap requests this during discovery; leaving it
+  // unmocked drops it to the empty-200 catch-all, whose malformed body throws in
+  // the snap and restarts the whole discovery cycle — a retry storm that delays
+  // the non-EVM account icons past the default wait (worse under the v10 SDK's
+  // heavier startup). Returning a valid hash lets discovery complete in one pass.
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/\d+$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
+    }));
+
   await server
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/txs$/u,
