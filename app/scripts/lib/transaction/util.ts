@@ -235,7 +235,9 @@ async function addTransactionOrUserOperation(
   return addTransactionWithController(request);
 }
 
-async function addTransactionWithController(request: FinalAddTransactionRequest) {
+async function addTransactionWithController(
+  request: FinalAddTransactionRequest,
+) {
   const {
     transactionController,
     transactionOptions,
