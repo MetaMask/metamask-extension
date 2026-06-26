@@ -66,10 +66,10 @@ const traceQuoteFetchOperation = <ResultType>(
   fn?: TraceCallback<ResultType>,
 ): ResultType | TraceContext => {
   if (isQuoteFetchTraceName(request.name)) {
-    return startNewTrace(request, fn);
+    return fn ? startNewTrace(request, fn) : startNewTrace(request);
   }
 
-  return trace(request, fn);
+  return fn ? trace(request, fn) : trace(request);
 };
 
 /**
