@@ -1643,9 +1643,6 @@
   "back": {
     "message": "Back"
   },
-  "backToHome": {
-    "message": "Back to home"
-  },
   "backUpIncomplete": {
     "message": "Back up incomplete"
   },
@@ -2480,9 +2477,6 @@
   "closeSlide": {
     "message": "Close $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "You may close this window anytime."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9422,24 +9416,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
   },
-  "smartTransactionCancelled": {
-    "message": "Your transaction was canceled"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Your transaction couldn't be completed, so it was canceled to save you from paying unnecessary gas fees."
-  },
-  "smartTransactionError": {
-    "message": "Your transaction failed"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
-  },
-  "smartTransactionPending": {
-    "message": "Your transaction was submitted"
-  },
-  "smartTransactionSuccess": {
-    "message": "Your transaction is complete"
-  },
   "smartTransactions": {
     "message": "Smart Transactions"
   },
@@ -10902,9 +10878,6 @@
   "view": {
     "message": "View"
   },
-  "viewActivity": {
-    "message": "View activity"
-  },
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
@@ -10931,9 +10904,6 @@
   },
   "viewTokenDetails": {
     "message": "View token details"
-  },
-  "viewTransaction": {
-    "message": "View transaction"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",

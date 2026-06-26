@@ -1584,9 +1584,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backToHome": {
-    "message": "Kembali ke beranda"
-  },
   "backUpIncomplete": {
     "message": "Pencadangan tidak selesai"
   },
@@ -2421,9 +2418,6 @@
   "closeSlide": {
     "message": "Tutup $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "Anda dapat menutup jendela ini setiap saat."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9305,24 +9299,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swap tidak tersedia untuk sementara waktu."
   },
-  "smartTransactionCancelled": {
-    "message": "Transaksi Anda dibatalkan"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Transaksi Anda tidak dapat diselesaikan, sehingga dibatalkan agar Anda tidak perlu membayar biaya gas yang tidak seharusnya."
-  },
-  "smartTransactionError": {
-    "message": "Transaksi Anda gagal"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Perubahan pasar yang mendadak dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi dukungan pelanggan MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Transaksi Anda telah dikirim"
-  },
-  "smartTransactionSuccess": {
-    "message": "Transaksi Anda selesai"
-  },
   "smartTransactions": {
     "message": "Transaksi Pintar"
   },
@@ -10781,9 +10757,6 @@
   "view": {
     "message": "Lihat"
   },
-  "viewActivity": {
-    "message": "Lihat aktivitas"
-  },
   "viewAddressOnExplorer": {
     "message": "Lihat di $1",
     "description": "$1 is the block explorer name"
@@ -10810,9 +10783,6 @@
   },
   "viewTokenDetails": {
     "message": "Lihat detail token"
-  },
-  "viewTransaction": {
-    "message": "Lihat transaksi"
   },
   "viewinExplorer": {
     "message": "Lihat $1 di explorer",

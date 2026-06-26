@@ -1018,9 +1018,6 @@
     "message": "Dún $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Is féidir leat an fhuinneog seo a dhúnadh am ar bith."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -5111,24 +5108,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Níl Smart Swaps ar fáil go sealadach."
   },
-  "smartTransactionCancelled": {
-    "message": "Cuireadh do idirbheart ar ceal"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Níorbh fhéidir d’idirbheart a chríochnú, mar sin cuireadh ar ceal é chun tú a shábháil ó tháillí gáis neamhriachtanacha a íoc."
-  },
-  "smartTransactionError": {
-    "message": "Theip ar do idirbheart"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Is féidir le hathruithe tobann sa mhargadh teipeanna a chur faoi deara. Má leanann an fhadhb, déan teagmháil le tacaíocht do chustaiméirí MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Cuireadh isteach d’idirbheart"
-  },
-  "smartTransactionSuccess": {
-    "message": "Tá d’idirbheart críochnaithe"
-  },
   "smartTransactions": {
     "message": "Idirbhearta Cliste"
   },
@@ -6358,9 +6337,6 @@
   "view": {
     "message": "Amharc"
   },
-  "viewActivity": {
-    "message": "Féach ar ghníomhaíocht"
-  },
   "viewAddressOnExplorer": {
     "message": "Féach ar $1",
     "description": "$1 is the block explorer name"
@@ -6384,9 +6360,6 @@
   },
   "viewOnOpensea": {
     "message": "Féach ar Opensea"
-  },
-  "viewTransaction": {
-    "message": "Féach ar an idirbheart"
   },
   "viewinExplorer": {
     "message": "Féach ar $1 in iniúchóir",

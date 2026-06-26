@@ -1584,9 +1584,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToHome": {
-    "message": "Назад на главную"
-  },
   "backUpIncomplete": {
     "message": "Резервное копирование не завершено"
   },
@@ -2421,9 +2418,6 @@
   "closeSlide": {
     "message": "Закрыть $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "Вы можете закрыть это окно в любое время."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9297,24 +9291,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Смарт-свопы временно недоступны."
   },
-  "smartTransactionCancelled": {
-    "message": "Ваша транзакция отменена"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Не удалось завершить вашу транзакцию, поэтому она была отменена, чтобы избавить вас от ненужной платы за газ."
-  },
-  "smartTransactionError": {
-    "message": "Ваша транзакция не удалась"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Внезапные изменения на рынке могут привести к неудачам. Если проблема не исчезнет, ​​обратитесь в поддержку MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Ваша транзакция отправляется"
-  },
-  "smartTransactionSuccess": {
-    "message": "Ваша транзакция завершена"
-  },
   "smartTransactions": {
     "message": "Умные транзакции"
   },
@@ -10773,9 +10749,6 @@
   "view": {
     "message": "Просмотр"
   },
-  "viewActivity": {
-    "message": "Смотреть активность"
-  },
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
@@ -10802,9 +10775,6 @@
   },
   "viewTokenDetails": {
     "message": "Смотреть сведения о токене"
-  },
-  "viewTransaction": {
-    "message": "Смотреть транзакцию"
   },
   "viewinExplorer": {
     "message": "Смотреть $1 в обозревателе",
