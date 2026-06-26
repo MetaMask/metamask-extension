@@ -3,7 +3,6 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { enableTestNetworks } from '../../page-objects/flows/settings.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomeNetworkFilter from '../../page-objects/pages/home-network-filter';
@@ -19,17 +18,19 @@ const NETWORK_MANAGEMENT_FLAGS = {
     remoteFeatureFlags: {
       extensionUxNetworkManagement: {
         enabled: true,
+        minimumVersion: '13.36.0',
       },
+      tronTestnetsEnabled: true,
     },
   },
 };
 
 function buildTronNetworkFixture() {
-  // Default fixture has showTestNetworks: true; Nile/Shasta tests start with it
-  // off so enableTestNetworks() is what turns them on in the home network filter.
+  // Nile/Shasta appear in the home network filter testnets section when
+  // showTestNetworks is enabled and tronTestnetsEnabled is on.
   return new FixtureBuilderV2()
     .withPreferencesController({
-      preferences: { showTestNetworks: false },
+      preferences: { showTestNetworks: true },
     })
     .build();
 }
@@ -105,6 +106,7 @@ describe('Tron - Network', function (this: Suite) {
           remoteFeatureFlags: {
             extensionUxNetworkManagement: {
               enabled: true,
+              minimumVersion: '13.36.0',
             },
             neNetworkDiscoverButton: {
               [TRON_CHAIN_ID]: true,
@@ -143,7 +145,6 @@ describe('Tron - Network', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        await enableTestNetworks(driver);
         const homeNetworkFilter = new HomeNetworkFilter(driver);
         await homeNetworkFilter.open();
         await homeNetworkFilter.checkNetworkIsListed(TRON_NILE_NAME);
@@ -168,7 +169,6 @@ describe('Tron - Network', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        await enableTestNetworks(driver);
         const homeNetworkFilter = new HomeNetworkFilter(driver);
         await homeNetworkFilter.open();
         await homeNetworkFilter.checkNetworkIsListed(TRON_SHASTA_NAME);
