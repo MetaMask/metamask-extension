@@ -29,7 +29,7 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
-import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { useBridgeNavigation } from './useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';

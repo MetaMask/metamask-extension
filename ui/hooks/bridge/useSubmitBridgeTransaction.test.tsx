@@ -3,15 +3,15 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
-import { createMemoryRouterWrapper } from '../../../../test/lib/render-helpers-navigate';
+import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
   MOCK_LEDGER_ACCOUNT,
-} from '../../../../test/data/bridge/mock-bridge-store';
+} from '../../../test/data/bridge/mock-bridge-store';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
-} from '../../../../test/data/bridge/dummy-quotes';
+} from '../../../test/data/bridge/dummy-quotes';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
