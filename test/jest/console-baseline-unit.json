@@ -237,6 +237,7 @@
       "React: DOM nesting violations": 1
     },
     "ui/components/app/basic-configuration-modal/basic-configuration-modal.test.tsx": {
+      "MetaMask: Background connection not initialized": 3,
       "Reselect: Input stability warnings": 1
     },
     "ui/components/app/change-password/change-password.test.tsx": {
@@ -1139,6 +1140,7 @@
       "error: Warning: React does not recognize": 1
     },
     "ui/pages/swaps/awaiting-signatures/awaiting-signatures.test.js": {
+      "MetaMask: Background connection not initialized": 1,
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/swaps/awaiting-swap/awaiting-swap.test.js": {
@@ -1171,7 +1173,7 @@
       "MetaMask: Background connection not initialized": 10
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
+      "MetaMask: Background connection not initialized": 8
     },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2

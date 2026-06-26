@@ -84,8 +84,8 @@ describe('AccountTreeControllerInit', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       profile_id: 'profile-1',
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      feature_name: 'backup',
-      action: 'updated',
+      feature_name: 'Multichain Account Syncing',
+      action: 'wallet_renamed',
     });
 
     expect(trackEventMock).toHaveBeenCalledWith(
