@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import {
   PREPARE_SWAP_ROUTE,
   PREPARE_SWAP_ASSETS_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
@@ -34,10 +35,11 @@ import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBrid
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
+import HardwareWalletSignatures from '../hardware-wallets/swap/hardware-wallet-signatures';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import BridgeAssetPickerPage from './prepare/bridge-asset-picker-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
-import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
+import AwaitingSignatures from './awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 import { clearAllBridgeCacheItems } from './utils/cache';
@@ -76,6 +78,10 @@ const CrossChainSwap = () => {
   useTxAlerts();
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const location = useLocation();
+  const isHardwareWalletSignaturesPage = location.pathname.includes(
+    HARDWARE_WALLET_SIGNATURES_ROUTE,
+  );
 
   // Pre-fetch the popular tokens list
   const { fetchTokens } = useInitialBridgeTokens();
@@ -115,7 +121,7 @@ const CrossChainSwap = () => {
         />
       }
     >
-      {t('swap')}
+      {isHardwareWalletSignaturesPage ? null : t('swap')}
     </Header>
   );
 
@@ -161,6 +167,18 @@ const CrossChainSwap = () => {
               <Footer>
                 <AwaitingSignaturesCancelButton />
               </Footer>
+            </Content>
+          </Page>
+        }
+      />
+      <Route
+        path={toRelativeRoutePath(HARDWARE_WALLET_SIGNATURES_ROUTE)}
+        element={
+          <Page className="bridge__container">
+            <Content padding={0}>
+              <Content>
+                <HardwareWalletSignatures />
+              </Content>
             </Content>
           </Page>
         }
