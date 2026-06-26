@@ -24,15 +24,15 @@ import {
   getWarningLabels,
   type BridgeAppState,
 } from '../../ducks/bridge/selectors';
-import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
-import { useBridgeNavigation } from './useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
+import { useBridgeNavigation } from './useBridgeNavigation';
+import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
