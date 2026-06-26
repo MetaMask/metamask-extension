@@ -3,9 +3,7 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import {
-  getRwaSwapGeoBlockFixtures,
-} from '../bridge/bridge-test-utils';
+import { getRwaSwapGeoBlockFixtures } from '../bridge/bridge-test-utils';
 
 const USDC_TO_GOOGLON_QUOTE = {
   amount: '25',

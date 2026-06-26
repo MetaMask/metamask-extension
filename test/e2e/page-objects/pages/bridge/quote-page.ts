@@ -371,7 +371,7 @@ class BridgeQuotePage {
   }
 
   async checkRwaGeoRestrictedMessageIsDisplayed(): Promise<void> {
-    try{
+    try {
       await this.driver.waitForSelector(this.rwaGeoRestrictedMessage);
     } catch (e) {
       console.log(
