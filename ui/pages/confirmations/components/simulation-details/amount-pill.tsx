@@ -16,7 +16,10 @@ import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { formatAmount, formatAmountMaxPrecision } from '../../../../../shared/lib/format-amount';
+import {
+  formatAmount,
+  formatAmountMaxPrecision,
+} from '../../../../../shared/lib/format-amount';
 import { AssetIdentifier } from './types';
 
 /**
