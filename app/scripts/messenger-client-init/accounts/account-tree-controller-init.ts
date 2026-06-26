@@ -37,7 +37,6 @@ export const AccountTreeControllerInit: MessengerClientInitFunction<
           trackEvent(
             createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
               .addCategory(MetaMetricsEventCategory.BackupAndSync)
-              // @ts-expect-error events coming from the controller are typed and this conflicts with the expected Record<string, Json> type
               .addProperties({
                 ...event,
               })

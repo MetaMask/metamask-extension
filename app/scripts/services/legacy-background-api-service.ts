@@ -11,6 +11,7 @@ import {
   AccountImportStrategy,
   KeyringControllerAddNewKeyringAction,
   KeyringControllerChangePasswordAction,
+  KeyringControllerExportAccountAction,
   KeyringControllerExportEncryptionKeyAction,
   KeyringControllerExportSeedPhraseAction,
   KeyringControllerGetKeyringsByTypeAction,
@@ -122,6 +123,7 @@ const serviceName = 'LegacyBackgroundApiService';
  */
 const MESSENGER_EXPOSED_METHODS = [
   'checkIsSeedlessPasswordOutdated',
+  'exportAccount',
   'getAccountsBySnapId',
   'getCode',
   'getGlobalChainId',
@@ -167,6 +169,7 @@ type AllowedActions =
   | CurrencyRateControllerSetCurrentCurrencyAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerChangePasswordAction
+  | KeyringControllerExportAccountAction
   | KeyringControllerExportEncryptionKeyAction
   | KeyringControllerExportSeedPhraseAction
   | KeyringControllerGetKeyringsByTypeAction
@@ -1045,6 +1048,22 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call(
       'SeedlessOnboardingController:storeKeyringEncryptionKey',
       keyringEncryptionKey,
+    );
+  }
+
+  /**
+   * Verifies the password and exports the private key for the given account.
+   *
+   * @param address - The address of the account to export.
+   * @param password - The password of the vault.
+   * @returns The private key of the account.
+   */
+  async exportAccount(address: string, password: string): Promise<string> {
+    await this.#messenger.call('KeyringController:verifyPassword', password);
+    return this.#messenger.call(
+      'KeyringController:exportAccount',
+      { password },
+      address,
     );
   }
 }

@@ -1385,10 +1385,14 @@
     },
     "@metamask/design-system-react": {
       "globals": {
+        "cancelAnimationFrame": true,
+        "clearTimeout": true,
         "console.warn": true,
         "document.addEventListener": true,
         "document.body": true,
-        "document.removeEventListener": true
+        "document.removeEventListener": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
       },
       "packages": {
         "@metamask/design-system-react>@floating-ui/react-dom": true,

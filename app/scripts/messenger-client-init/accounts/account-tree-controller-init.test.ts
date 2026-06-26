@@ -81,9 +81,11 @@ describe('AccountTreeControllerInit', () => {
 
     const { config } = accountTreeControllerClassMock.mock.calls[0][0];
     config?.backupAndSync?.onBackupAndSyncEvent?.({
-      // @ts-expect-error test payload
       // eslint-disable-next-line @typescript-eslint/naming-convention
       profile_id: 'profile-1',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      feature_name: 'backup',
+      action: 'updated',
     });
 
     expect(trackEventMock).toHaveBeenCalledWith(
