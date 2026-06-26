@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { omitBy } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import {
@@ -73,7 +74,12 @@ export const useSubscriptionMetrics = () => {
       trackEvent(
         createEventBuilder(eventName)
           .addCategory(MetaMetricsEventCategory.Shield)
-          .addProperties({ ...commonTrackingProps, ...extraProperties })
+          .addProperties(
+            omitBy(
+              { ...commonTrackingProps, ...extraProperties },
+              (value) => value === undefined,
+            ) as Record<string, Json>,
+          )
           .build(),
       );
     },

@@ -177,7 +177,7 @@ export const BridgeCTAButton = ({
       return {
         disabled: false,
         onClick: async () => {
-          trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
+          trackHardwareWalletRecoveryConnectCtaClicked(trackMetricsEvent, {
             location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
             walletType,
             connectionState,
@@ -218,7 +218,7 @@ export const BridgeCTAButton = ({
     onOpenAlertModals,
     submitBridgeTransaction,
     t,
-    trackEvent,
+    trackMetricsEvent,
     walletType,
     wasTxDeclined,
   ]);

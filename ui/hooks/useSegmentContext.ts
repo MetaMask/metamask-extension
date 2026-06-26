@@ -54,8 +54,8 @@ export function useSegmentContext(): SegmentContext {
   const matchedPath = findMatchingPath(location.pathname);
   const matchedTitle = matchedPath ? PATH_NAME_MAP.get(matchedPath) : undefined;
 
-  const txData = useSelector(txDataSelector) ?? {};
-  const confirmTransactionOrigin = txData.origin as string | undefined;
+  const txData = useSelector(txDataSelector);
+  const confirmTransactionOrigin = txData?.origin as string | undefined;
 
   const referrer = useMemo<MetaMetricsReferrerObject | undefined>(
     () =>

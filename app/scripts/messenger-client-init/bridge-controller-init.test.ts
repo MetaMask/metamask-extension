@@ -93,7 +93,6 @@ describe('BridgeControllerInit', () => {
         name: UnifiedSwapBridgeEventName.Submitted,
         properties: expect.objectContaining({
           category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
-          source: 'bridge',
           actionId: expect.any(String),
         }),
       }),

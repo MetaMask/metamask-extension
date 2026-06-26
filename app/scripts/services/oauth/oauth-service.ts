@@ -114,9 +114,11 @@ export class OAuthService {
     const bufferedPayload: MetaMetricsEventPayload = {
       event: built.name,
       category: category as MetaMetricsEventCategory,
-      properties,
+      properties: {
+        ...properties,
+        actionId: `${Date.now() + Math.random()}`,
+      },
       sensitiveProperties: built.sensitiveProperties,
-      actionId: `${Date.now() + Math.random()}`,
     };
     this.#addEventBeforeMetricsOptIn(bufferedPayload);
   }
