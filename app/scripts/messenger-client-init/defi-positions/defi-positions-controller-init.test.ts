@@ -65,8 +65,9 @@ describe('DefiPositionsControllerInit', () => {
     const requestMock = buildInitRequestMock();
     DeFiPositionsControllerInit(requestMock);
 
-    const { trackEvent } = defiPositionsControllerClassMock.mock.calls[0][0];
-    trackEvent?.({
+    const { trackEvent: controllerTrackEvent } =
+      defiPositionsControllerClassMock.mock.calls[0][0];
+    controllerTrackEvent?.({
       event: 'DeFi Position Viewed',
       category: MetaMetricsEventCategory.Wallet,
       properties: { protocol: 'aave' },
