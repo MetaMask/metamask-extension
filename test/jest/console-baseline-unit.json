@@ -243,6 +243,12 @@
       "React: Act warnings (component updates not wrapped)": 10,
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/components/app/clear-metametrics-data/clear-metametrics-data.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
+    "ui/components/app/delete-metametrics-data-button/delete-metametrics-data-button.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 4
@@ -370,6 +376,9 @@
     "ui/components/multichain-accounts/multichain-private-key-list/multichain-private-key-list.test.tsx": {
       "React: Missing key props in lists": 1
     },
+    "ui/components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page.test.tsx": {
+      "MetaMask: Background connection not initialized": 3
+    },
     "ui/components/multichain-accounts/smart-contract-account-toggle-section/smart-contract-account-toggle-section.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
       "React: componentWill* lifecycle deprecations": 1
@@ -473,6 +482,9 @@
     },
     "ui/components/multichain/receive-modal/receive-modal.test.js": {
       "React: DOM nesting violations": 1
+    },
+    "ui/components/multichain/token-list-item/token-list-item.test.tsx": {
+      "MetaMask: Background connection not initialized": 2
     },
     "ui/components/multichain/token-management-cell/token-management-cell.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -669,6 +681,9 @@
     "ui/pages/bridge/quotes/multichain-bridge-quote-card.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
+    "ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.test.js": {
+      "MetaMask: Background connection not initialized": 2
+    },
     "ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 16
     },
@@ -862,6 +877,12 @@
       "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/confirmation/templates/create-snap-account.test.js": {
+      "MetaMask: Background connection not initialized": 1
+    },
+    "ui/pages/confirmations/confirmation/templates/snap-account-redirect.test.js": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/pages/confirmations/context/gas-fee-modal/index.test.tsx": {
       "Test errors: Uncaught Errors": 1
     },
@@ -1000,6 +1021,9 @@
       "Reselect: Input stability warnings": 1,
       "error: Warning: Encountered two children with": 1
     },
+    "ui/pages/onboarding-flow/setup-passkey/setup-passkey.test.tsx": {
+      "MetaMask: Background connection not initialized": 36
+    },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5
     },
@@ -1136,6 +1160,15 @@
     },
     "ui/pages/token-management/token-management.test.tsx": {
       "MetaMask: Background connection not initialized": 4
+    },
+    "ui/pages/unlock-page/passkey/unlock-passkey-icon-button.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
+    "ui/pages/unlock-page/passkey/unlock-passkey-section.test.tsx": {
+      "MetaMask: Background connection not initialized": 11
+    },
+    "ui/pages/unlock-page/unlock-page.component.test.tsx": {
+      "MetaMask: Background connection not initialized": 10
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1
