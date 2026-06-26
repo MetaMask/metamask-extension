@@ -9001,8 +9001,8 @@ __metadata:
   linkType: hard
 
 "@mui/utils@npm:^5.16.6 || ^6.0.0 || ^7.0.0":
-  version: 7.3.11
-  resolution: "@mui/utils@npm:7.3.11"
+  version: 7.3.10
+  resolution: "@mui/utils@npm:7.3.10"
   dependencies:
     "@babel/runtime": "npm:^7.28.6"
     "@mui/types": "npm:^7.4.12"
@@ -9016,7 +9016,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/d2a595f1767483434345b3f9f5ded22cf260b3ff9f32762c560d559b203218bf003b32065d5727dcc16c25b5dba171eac869b3d738e222dcd4979aa85e22b84b
+  checksum: 10/5f75981a6a9f37f9dac49830b6aa35578c107f2d7e3a9e1f8cf46ecc5746c7df50ea0ef2c29ce0419128ee2fa32f6812646b39538efc5a0ae361fea919b3f592
   languageName: node
   linkType: hard
 
@@ -17867,11 +17867,11 @@ __metadata:
   linkType: hard
 
 "@wallet-standard/app@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "@wallet-standard/app@npm:1.1.1"
+  version: 1.1.0
+  resolution: "@wallet-standard/app@npm:1.1.0"
   dependencies:
-    "@wallet-standard/base": "npm:^1.1.1"
-  checksum: 10/34c7c1656e195edab1aff0faab9593d91ab168e7f594b007bc2179f9319c27cfaec5a4e4e83f9c5afcb401986dff51eaec90ac5f63122fed2befa91b9b8a0edf
+    "@wallet-standard/base": "npm:^1.1.0"
+  checksum: 10/d233cc79fbd857689c8c14a60875df9d8ad120fa1c9d59aeeef7303489cdecd60a12bbc2f3794720aadf6ef369cf09d1409c26c0801273561bcdb12a07b08e19
   languageName: node
   linkType: hard
 
@@ -38040,9 +38040,9 @@ __metadata:
   linkType: hard
 
 "react-is@npm:^19.0.0, react-is@npm:^19.2.3":
-  version: 19.2.7
-  resolution: "react-is@npm:19.2.7"
-  checksum: 10/ae0d3ae7638aa2fa2a82a78a817daf2806e57fa0aef357d07e1e8d1e9a301902e5967168e9334b5816db0df8fa980a725cd57569ba5a9e6e76a71e117b18be04
+  version: 19.2.5
+  resolution: "react-is@npm:19.2.5"
+  checksum: 10/b2e18d4efd39496474956684a3757c43b9102af56add174abf2a46a6c1441dbdfe5fa7d9e7d7ebb42f543ffc9c7941fc74eb1e2bfdbf08979ea9e2ccc36da600
   languageName: node
   linkType: hard
 
