@@ -80,7 +80,7 @@ describe('DeleteMetametricsDataItem', () => {
     expect(screen.getByTestId('delete-metametrics-data-button')).toBeDisabled();
   });
 
-  it('button is disabled when metaMetricsId is null', () => {
+  it('button is disabled when analyticsId is null', () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getCompletedMetaMetricsOnboarding) {
         return true;

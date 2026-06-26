@@ -11,7 +11,7 @@ import {
 } from '@metamask/assets-controllers';
 import {
   AssetsControllerState,
-  getAggregatedBalanceForAccount,
+  getDefaultAssetsControllerState,
 } from '@metamask/assets-controller';
 import { CaipAssetId, isEvmAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
@@ -29,7 +29,10 @@ import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createSelector } from 'reselect';
-import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
+import {
+  getDefaultAccountTreeControllerState,
+  type AccountTreeControllerState,
+} from '@metamask/account-tree-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type {
   TokenBalancesControllerState,
@@ -42,12 +45,16 @@ import type {
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
   ARC_USDC_TOKEN_ADDRESS,
   CHAIN_IDS,
   TEST_CHAINS,
 } from '../../shared/constants/network';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
+import {
+  createDeepEqualSelector,
+  createParameterizedSelector,
+} from '../../shared/lib/selectors/selector-creators';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
@@ -68,6 +75,7 @@ import {
   getAccountTrackerControllerAccountsByChainId,
   getCurrencyRateControllerCurrencyRates,
   getCurrencyRateControllerCurrentCurrency,
+  getIsAssetsUnifyStateEnabled,
   getMultiChainAssetsControllerAccountsAssets,
   getMultiChainAssetsControllerAllIgnoredAssets,
   getMultiChainAssetsControllerAssetsMetadata,
@@ -81,7 +89,11 @@ import {
 import { traceAsControllerCallback } from '../../shared/lib/trace';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
-import { getAccountIdByAddress } from './accounts';
+import {
+  calculateBalanceForAllWallets as calculateBalanceForAllWalletsFromUnified,
+  calculateBalanceChangeForAccountGroup as calculateBalanceChangeForAccountGroupFromUnified,
+} from './assets.balance-utils';
+import { getAccountIdByAddress, getInternalAccountsObject } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
@@ -100,10 +112,7 @@ import {
   getSelectedMultichainNetworkConfiguration,
   MultichainNetworkControllerState,
 } from './multichain/networks';
-import {
-  getInternalAccountBySelectedAccountGroupAndCaip,
-  getSelectedAccountGroup,
-} from './multichain-accounts/account-tree';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -130,6 +139,8 @@ export type BalanceCalculationState = {
     MultichainAssetsControllerState &
     AccountTrackerControllerState &
     NetworkEnablementControllerState &
+    RemoteFeatureFlagControllerState &
+    AssetsControllerState &
     MultichainNetworkControllerState['metamask'] &
     RatesState['metamask'] & {
       networkConfigurationsByChainId: NetworkState['metamask']['networkConfigurationsByChainId'];
@@ -141,6 +152,8 @@ export { getMultiChainAssetsControllerAccountsAssets as getAccountAssets };
 
 export { getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata };
 
+const defaultState = getDefaultAssetsControllerState();
+
 /**
  * Returns the assets info (AssetsController state).
  *
@@ -149,7 +162,7 @@ export { getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata };
  * @returns Assets info map or empty object.
  */
 export function getAssetsInfo(state: { metamask?: AssetsControllerState }) {
-  return state.metamask?.assetsInfo ?? EMPTY_OBJECT;
+  return state.metamask?.assetsInfo ?? defaultState.assetsInfo;
 }
 
 /**
@@ -160,7 +173,7 @@ export function getAssetsInfo(state: { metamask?: AssetsControllerState }) {
  * @returns Assets balance map or empty object.
  */
 export function getAssetsBalance(state: { metamask?: AssetsControllerState }) {
-  return state.metamask?.assetsBalance ?? EMPTY_OBJECT;
+  return state.metamask?.assetsBalance ?? defaultState.assetsBalance;
 }
 
 /**
@@ -171,7 +184,7 @@ export function getAssetsBalance(state: { metamask?: AssetsControllerState }) {
  * @returns Assets price map or empty object.
  */
 export function getAssetsPrice(state: { metamask?: AssetsControllerState }) {
-  return state.metamask?.assetsPrice ?? EMPTY_OBJECT;
+  return state.metamask?.assetsPrice ?? defaultState.assetsPrice;
 }
 
 /**
@@ -184,7 +197,7 @@ export function getAssetsPrice(state: { metamask?: AssetsControllerState }) {
 export function getAssetPreferences(state: {
   metamask?: AssetsControllerState;
 }) {
-  return state.metamask?.assetPreferences ?? EMPTY_OBJECT;
+  return state.metamask?.assetPreferences ?? defaultState.assetPreferences;
 }
 
 /**
@@ -195,112 +208,14 @@ export function getAssetPreferences(state: {
  * @returns Custom assets map or empty object.
  */
 export function getCustomAssets(state: { metamask?: AssetsControllerState }) {
-  return state.metamask?.customAssets ?? EMPTY_OBJECT;
+  return state.metamask?.customAssets ?? defaultState.customAssets;
 }
 
-/** State shape used for aggregated balance selector */
-type AggregatedBalanceState = {
-  metamask?: Record<string, unknown>;
-};
-
-/**
- * Returns the aggregated balance for the selected account (AssetsController aggregation).
- *
- * @param state - Redux state object.
- * @returns Aggregated balance or null when no selected account.
- */
-export const selectAggregatedBalanceForSelectedAccount = createSelector(
-  [
-    getAssetsInfo,
-    getAssetsBalance,
-    getAssetsPrice,
-    getAssetPreferences,
-    getCustomAssets,
-    getCurrentCurrency,
-    getSelectedInternalAccount,
-    getSelectedAccountGroup,
-    getEnabledNetworks,
-    (state: AggregatedBalanceState) => state.metamask?.accountTree,
-    (state: AggregatedBalanceState) =>
-      state.metamask?.isAccountTreeSyncingInProgress as boolean | undefined,
-    (state: AggregatedBalanceState) =>
-      state.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce as
-        | boolean
-        | undefined,
-    (state: AggregatedBalanceState) =>
-      state.metamask?.accountGroupsMetadata as
-        | Record<string, unknown>
-        | undefined,
-    (state: AggregatedBalanceState) =>
-      state.metamask?.accountWalletsMetadata as
-        | Record<string, unknown>
-        | undefined,
-    (state: AggregatedBalanceState) =>
-      (
-        state.metamask?.internalAccounts as {
-          accounts?: Record<string, unknown>;
-        }
-      )?.accounts,
-  ],
-  (
-    assetsInfo,
-    assetsBalance,
-    assetsPrice,
-    assetPreferences,
-    customAssets,
-    selectedCurrency,
-    selectedInternalAccount,
-    selectedAccountGroup,
-    enabledNetworkMap,
-    accountTree,
-    isAccountTreeSyncingInProgress,
-    hasAccountTreeSyncingSyncedAtLeastOnce,
-    accountGroupsMetadata,
-    accountWalletsMetadata,
-    accountsById,
-  ) => {
-    if (!selectedInternalAccount) {
-      return null;
-    }
-    const assetsControllerState = {
-      assetsInfo,
-      assetsBalance,
-      assetsPrice,
-      assetPreferences,
-      customAssets,
-      selectedCurrency: (selectedCurrency ??
-        'usd') as AssetsControllerState['selectedCurrency'],
-    };
-    const accountTreeState: AccountTreeControllerState | undefined = accountTree
-      ? {
-          selectedAccountGroup,
-          accountTree,
-          isAccountTreeSyncingInProgress:
-            isAccountTreeSyncingInProgress ?? false,
-          hasAccountTreeSyncingSyncedAtLeastOnce:
-            hasAccountTreeSyncingSyncedAtLeastOnce ?? false,
-          accountGroupsMetadata: (accountGroupsMetadata ??
-            {}) as AccountTreeControllerState['accountGroupsMetadata'],
-          accountWalletsMetadata: (accountWalletsMetadata ??
-            {}) as AccountTreeControllerState['accountWalletsMetadata'],
-        }
-      : undefined;
-
-    return getAggregatedBalanceForAccount(
-      assetsControllerState,
-      selectedInternalAccount,
-      enabledNetworkMap,
-      accountTreeState,
-      undefined,
-      (accountsById ?? {}) as Parameters<
-        typeof getAggregatedBalanceForAccount
-      >[5],
-      traceAsControllerCallback,
-    );
-  },
-);
-
-export { getMultiChainAssetsControllerAllIgnoredAssets as getAllIgnoredAssets };
+export function getSelectedCurrency(state: {
+  metamask?: AssetsControllerState;
+}) {
+  return state.metamask?.selectedCurrency ?? defaultState.selectedCurrency;
+}
 
 /**
  * Gets non-EVM accounts assets rates.
@@ -325,7 +240,7 @@ export function getDefiPositions(
 /**
  * @deprecated use selectBalanceByAccountGroup instead
  */
-export const getTokenBalancesEvm = createDeepEqualSelector(
+export const getTokenBalancesEvm = createSelector(
   getTokensAcrossChainsByAccountAddressSelector,
   getNativeTokenCachedBalanceByChainIdSelector,
   getTokenBalances,
@@ -433,7 +348,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
 /**
  * @deprecated use getAllAssets instead
  */
-export const getMultiChainAssets = createDeepEqualSelector(
+export const getMultiChainAssets = createSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getMultiChainAssetsControllerAccountsAssets,
@@ -504,66 +419,67 @@ export const getMultiChainAssets = createDeepEqualSelector(
  * @param internalAccount - The account holding the token to search for
  * @returns Token object
  */
-export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
-  (state) => state,
-  (_state, account: InternalAccount | undefined) => account,
-  (
-    _state,
-    _account: InternalAccount | undefined,
-    tokenAddress: Hex | CaipAssetType | string | undefined,
-  ) => tokenAddress,
-  (
-    _state,
-    _account: InternalAccount | undefined,
-    _tokenAddress: Hex | CaipAssetType | string | undefined,
-    _chainId: Hex | CaipChainId,
-  ) => _chainId,
-  (
-    state,
-    account: InternalAccount | undefined,
-    tokenAddress: Hex | CaipAssetType | string | undefined,
-    chainId: Hex | CaipChainId,
-  ) => {
-    const isEvm = isEvmChainId(chainId);
-    if (!tokenAddress && !isEvm) {
-      return null;
-    }
+export const getTokenByAccountAndAddressAndChainId =
+  createParameterizedSelector(100)(
+    (state) => state,
+    (_state, account: InternalAccount | undefined) => account,
+    (
+      _state,
+      _account: InternalAccount | undefined,
+      tokenAddress: Hex | CaipAssetType | string | undefined,
+    ) => tokenAddress,
+    (
+      _state,
+      _account: InternalAccount | undefined,
+      _tokenAddress: Hex | CaipAssetType | string | undefined,
+      _chainId: Hex | CaipChainId,
+    ) => _chainId,
+    (
+      state,
+      account: InternalAccount | undefined,
+      tokenAddress: Hex | CaipAssetType | string | undefined,
+      chainId: Hex | CaipChainId,
+    ) => {
+      const isEvm = isEvmChainId(chainId);
+      if (!tokenAddress && !isEvm) {
+        return null;
+      }
 
-    const accountToUse =
-      account ??
-      (isEvm
-        ? getSelectedInternalAccount(state)
-        : getInternalAccountBySelectedAccountGroupAndCaip(
-            state,
-            chainId as CaipChainId,
-          ));
+      const accountToUse =
+        account ??
+        (isEvm
+          ? getSelectedInternalAccount(state)
+          : getInternalAccountBySelectedAccountGroupAndCaip(
+              state,
+              chainId as CaipChainId,
+            ));
 
-    if (!accountToUse) {
-      return null;
-    }
+      if (!accountToUse) {
+        return null;
+      }
 
-    const assetsToSearch = isEvm
-      ? (getSelectedAccountTokensAcrossChains(state) as Record<
-          Hex,
-          TokenWithFiatAmount[]
-        >)
-      : (groupBy(getMultiChainAssets(state, accountToUse), 'chainId') as Record<
-          CaipChainId,
-          TokenWithFiatAmount[]
-        >);
+      const assetsToSearch = isEvm
+        ? (getSelectedAccountTokensAcrossChains(state) as Record<
+            Hex,
+            TokenWithFiatAmount[]
+          >)
+        : (groupBy(
+            getMultiChainAssets(state, accountToUse),
+            'chainId',
+          ) as Record<CaipChainId, TokenWithFiatAmount[]>);
 
-    const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
+      const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
 
-    return result;
-  },
-);
+      return result;
+    },
+  );
 
 const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
 /**
  * @deprecated use selectBalanceByAccountGroup instead
  */
-export const getMultichainAggregatedBalance = createDeepEqualSelector(
+export const getMultichainAggregatedBalance = createSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getMultiChainAssetsControllerAccountsAssets,
@@ -637,7 +553,7 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
     // Initialize historical balances object with zeros
-    const historicalBalances: HistoricalBalances = {
+    const historicalBalances = {
       PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
       P1D: { balance: 0, percentChange: 0, amountChange: 0 },
       P7D: { balance: 0, percentChange: 0, amountChange: 0 },
@@ -714,7 +630,7 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
  * @param selectedAccount - Selected account
  * @returns CAIP asset type of the native token, or undefined if no native token is found
  */
-export const getMultichainNativeAssetType = createDeepEqualSelector(
+export const getMultichainNativeAssetType = createSelector(
   getSelectedInternalAccount,
   getMultiChainAssetsControllerAccountsAssets,
   getSelectedMultichainNetworkConfiguration,
@@ -737,7 +653,7 @@ export const getMultichainNativeAssetType = createDeepEqualSelector(
  * @param selectedAccount - Selected account
  * @returns Balance of the native token, or fallbacks to { amount: 0, unit: '' } if no native token is found
  */
-export const getMultichainNativeTokenBalance = createDeepEqualSelector(
+export const getMultichainNativeTokenBalance = createSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getMultichainNativeAssetType,
@@ -766,9 +682,7 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
 const getMetamaskState = (state: BalanceCalculationState) =>
   state.metamask ?? EMPTY_OBJECT;
 
-const EMPTY_ACCOUNT_TREE = Object.freeze({
-  wallets: {},
-});
+const defaultAccountTreeState = getDefaultAccountTreeControllerState();
 
 // Renamed for clarity
 /**
@@ -785,6 +699,12 @@ const selectAccountTreeStateForBalances = createSelector(
       getMetamaskState(state).selectedAccountGroup,
 
     (state: BalanceCalculationState) =>
+      getMetamaskState(state).isAccountTreeSyncingInProgress,
+
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).hasAccountTreeSyncingSyncedAtLeastOnce,
+
+    (state: BalanceCalculationState) =>
       getMetamaskState(state).accountGroupsMetadata,
 
     (state: BalanceCalculationState) =>
@@ -793,13 +713,24 @@ const selectAccountTreeStateForBalances = createSelector(
   (
     accountTree,
     selectedAccountGroup,
+    isAccountTreeSyncingInProgress,
+    hasAccountTreeSyncingSyncedAtLeastOnce,
     accountGroupsMetadata,
     accountWalletsMetadata,
-  ) => ({
-    selectedAccountGroup: selectedAccountGroup ?? '',
-    accountTree: accountTree ?? EMPTY_ACCOUNT_TREE,
-    accountGroupsMetadata: accountGroupsMetadata ?? EMPTY_OBJECT,
-    accountWalletsMetadata: accountWalletsMetadata ?? EMPTY_OBJECT,
+  ): AccountTreeControllerState => ({
+    accountTree: accountTree ?? defaultAccountTreeState.accountTree,
+    selectedAccountGroup:
+      selectedAccountGroup ?? defaultAccountTreeState.selectedAccountGroup,
+    isAccountTreeSyncingInProgress:
+      isAccountTreeSyncingInProgress ??
+      defaultAccountTreeState.isAccountTreeSyncingInProgress,
+    hasAccountTreeSyncingSyncedAtLeastOnce:
+      hasAccountTreeSyncingSyncedAtLeastOnce ??
+      defaultAccountTreeState.hasAccountTreeSyncingSyncedAtLeastOnce,
+    accountGroupsMetadata:
+      accountGroupsMetadata ?? defaultAccountTreeState.accountGroupsMetadata,
+    accountWalletsMetadata:
+      accountWalletsMetadata ?? defaultAccountTreeState.accountWalletsMetadata,
   }),
 );
 
@@ -924,14 +855,50 @@ const selectCurrencyRateStateForBalances = createSelector(
 );
 
 /**
- * Aggregates balances for all wallets and groups using core pure function.
- * Only the minimal controller state is composed to keep this selector lean.
+ * Reconstruct AssetsController from flattened state
+ */
+const selectAssetsControllerStateForBalances = createSelector(
+  [
+    getAssetsInfo,
+    getAssetsBalance,
+    getAssetsPrice,
+    getAssetPreferences,
+    getCustomAssets,
+    getSelectedCurrency,
+  ],
+  (
+    assetsInfo,
+    assetsBalance,
+    assetsPrice,
+    assetPreferences,
+    customAssets,
+    selectedCurrency,
+  ): AssetsControllerState => ({
+    assetsInfo,
+    assetsBalance,
+    assetsPrice,
+    assetPreferences,
+    customAssets,
+    selectedCurrency,
+  }),
+);
+
+/**
+ * Aggregates balances for all wallets and groups.
+ *
+ * When the assets-unify-state feature is enabled the totals are sourced from
+ * the new `getAggregatedBalanceForAccount` selector (the all-wallets scenario
+ * is polyfilled by aggregating each group individually). Otherwise the legacy
+ * `calculateBalanceForAllWallets` core helper is used.
  *
  * @param state - Redux state from which the required slices are derived.
  * @returns Aggregated balances structure for all wallets and groups.
  */
 export const selectBalanceForAllWallets = createSelector(
   [
+    getIsAssetsUnifyStateEnabled,
+    selectAssetsControllerStateForBalances,
+    getInternalAccountsObject,
     selectAccountTreeStateForBalances,
     selectAccountsStateForBalances,
     selectTokenBalancesStateForBalances,
@@ -945,6 +912,9 @@ export const selectBalanceForAllWallets = createSelector(
     getNetworkConfigurationsByChainId,
   ],
   (
+    isAssetsUnifyStateEnabled,
+    assetsControllerState,
+    accountsById,
     accountTreeState,
     accountsState,
     tokenBalancesState,
@@ -956,10 +926,18 @@ export const selectBalanceForAllWallets = createSelector(
     currencyRateState,
     enabledNetworkMap,
     networkConfigurationsByChainId,
-  ) =>
-    calculateBalanceForAllWallets(
-      // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-      accountTreeState as AccountTreeControllerState,
+  ) => {
+    if (isAssetsUnifyStateEnabled) {
+      return calculateBalanceForAllWalletsFromUnified(
+        assetsControllerState,
+        accountTreeState,
+        accountsById,
+        enabledNetworkMap,
+        traceAsControllerCallback,
+      );
+    }
+    return calculateBalanceForAllWallets(
+      accountTreeState,
       accountsState,
       tokenBalancesState,
       tokenRatesState,
@@ -970,127 +948,9 @@ export const selectBalanceForAllWallets = createSelector(
       currencyRateState,
       enabledNetworkMap,
       networkConfigurationsByChainId ?? {},
-    ),
+    );
+  },
 );
-
-// Balance change selectors (period: '1d' | '7d' | '30d')
-/**
- * Factory returning a selector that computes balance change across all wallets
- * for the provided period.
- *
- * @param period - Balance change period.
- */
-export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
-  createSelector(
-    [
-      selectAccountTreeStateForBalances,
-      selectAccountsStateForBalances,
-      selectTokenBalancesStateForBalances,
-      selectTokenRatesStateForBalances,
-      selectMultichainRatesStateForBalances,
-      selectMultichainBalancesStateForBalances,
-      selectMultichainAssetsStateForBalances,
-      selectTokensStateForBalances,
-      selectCurrencyRateStateForBalances,
-      getEnabledNetworks,
-    ],
-    (
-      accountTreeState,
-      accountsState,
-      tokenBalancesState,
-      tokenRatesState,
-      multichainRatesState,
-      multichainBalancesState,
-      multichainAssetsState,
-      tokensState,
-      currencyRateState,
-      enabledNetworkMap,
-    ): BalanceChangeResult =>
-      calculateBalanceChangeForAllWallets(
-        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-        accountTreeState as AccountTreeControllerState,
-        accountsState,
-        tokenBalancesState,
-        tokenRatesState,
-        multichainRatesState,
-        multichainBalancesState,
-        multichainAssetsState,
-        tokensState,
-        currencyRateState,
-        enabledNetworkMap,
-        period,
-      ),
-  );
-
-/**
- * Convenience factory returning only the percent change for the given period.
- *
- * @param period - Balance change period.
- */
-// Removed percent-only selector for all wallets to match mobile API surface
-
-// Per-account-group balance change selectors using core helper
-/**
- * Factory returning a selector that computes balance change for a specific
- * account group and period.
- *
- * @param groupId - Account group identifier.
- * @param period - Balance change period.
- */
-export const selectBalanceChangeByAccountGroup = (
-  groupId: string,
-  period: BalanceChangePeriod,
-) =>
-  createSelector(
-    [
-      selectAccountTreeStateForBalances,
-      selectAccountsStateForBalances,
-      selectTokenBalancesStateForBalances,
-      selectTokenRatesStateForBalances,
-      selectMultichainRatesStateForBalances,
-      selectMultichainBalancesStateForBalances,
-      selectMultichainAssetsStateForBalances,
-      selectTokensStateForBalances,
-      selectCurrencyRateStateForBalances,
-      getEnabledNetworks,
-    ],
-    (
-      accountTreeState,
-      accountsState,
-      tokenBalancesState,
-      tokenRatesState,
-      multichainRatesState,
-      multichainBalancesState,
-      multichainAssetsState,
-      tokensState,
-      currencyRateState,
-      enabledNetworkMap,
-    ): BalanceChangeResult =>
-      calculateBalanceChangeForAccountGroup(
-        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-        accountTreeState as AccountTreeControllerState,
-        accountsState,
-        tokenBalancesState,
-        tokenRatesState,
-        multichainRatesState,
-        multichainBalancesState,
-        multichainAssetsState,
-        tokensState,
-        currencyRateState,
-        enabledNetworkMap,
-        groupId,
-        period,
-      ),
-  );
-
-export const selectBalancePercentChangeByAccountGroup = (
-  groupId: string,
-  period: BalanceChangePeriod,
-) =>
-  createSelector(
-    [selectBalanceChangeByAccountGroup(groupId, period)],
-    (change) => change.percentChange,
-  );
 
 /**
  * Computes balance change for the currently selected account group.
@@ -1103,6 +963,9 @@ export const selectBalanceChangeBySelectedAccountGroup = (
 ) =>
   createSelector(
     [
+      getIsAssetsUnifyStateEnabled,
+      selectAssetsControllerStateForBalances,
+      getInternalAccountsObject,
       selectAccountTreeStateForBalances,
       selectAccountsStateForBalances,
       selectTokenBalancesStateForBalances,
@@ -1115,6 +978,9 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       getEnabledNetworks,
     ],
     (
+      isAssetsUnifyStateEnabled,
+      assetsControllerState,
+      accountsById,
       accountTreeState,
       accountsState,
       tokenBalancesState,
@@ -1130,9 +996,19 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       if (!groupId) {
         return null;
       }
+      if (isAssetsUnifyStateEnabled) {
+        return calculateBalanceChangeForAccountGroupFromUnified(
+          assetsControllerState,
+          accountTreeState,
+          accountsById,
+          enabledNetworkMap,
+          groupId,
+          period,
+          traceAsControllerCallback,
+        );
+      }
       return calculateBalanceChangeForAccountGroup(
-        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-        accountTreeState as AccountTreeControllerState,
+        accountTreeState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,
@@ -1443,41 +1319,45 @@ export const selectBalanceByWallet = (walletId: string) =>
     };
   });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
-const getStateForAssetSelector = ({ metamask }: any) => {
-  const initialState = {
-    selectedAccountGroup: metamask.selectedAccountGroup,
-    accountTree: metamask.accountTree,
-    internalAccounts: metamask.internalAccounts,
-    allTokens: getTokensControllerAllTokens({ metamask }),
-    allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
-    tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
-    marketData: getTokenRatesControllerMarketData({ metamask }),
-    currencyRates: getCurrencyRateControllerCurrencyRates({ metamask }),
-    currentCurrency: getCurrencyRateControllerCurrentCurrency({ metamask }),
-    networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
-    accountsByChainId: getAccountTrackerControllerAccountsByChainId({
-      metamask,
-    }),
-  };
+const getStateForAssetSelector = createSelector(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
+  (state: any) => state.metamask,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
+  (metamask: any) => {
+    const initialState = {
+      selectedAccountGroup: metamask.selectedAccountGroup,
+      accountTree: metamask.accountTree,
+      internalAccounts: metamask.internalAccounts,
+      allTokens: getTokensControllerAllTokens({ metamask }),
+      allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
+      tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
+      marketData: getTokenRatesControllerMarketData({ metamask }),
+      currencyRates: getCurrencyRateControllerCurrencyRates({ metamask }),
+      currentCurrency: getCurrencyRateControllerCurrentCurrency({ metamask }),
+      networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
+      accountsByChainId: getAccountTrackerControllerAccountsByChainId({
+        metamask,
+      }),
+    };
 
-  const multichainState = {
-    accountsAssets: getMultiChainAssetsControllerAccountsAssets({ metamask }),
-    assetsMetadata: getMultiChainAssetsControllerAssetsMetadata({ metamask }),
-    allIgnoredAssets: getMultiChainAssetsControllerAllIgnoredAssets({
-      metamask,
-    }),
-    balances: getMultiChainBalancesControllerBalances({ metamask }),
-    conversionRates: getMultichainAssetsRatesControllerConversionRates({
-      metamask,
-    }),
-  };
+    const multichainState = {
+      accountsAssets: getMultiChainAssetsControllerAccountsAssets({ metamask }),
+      assetsMetadata: getMultiChainAssetsControllerAssetsMetadata({ metamask }),
+      allIgnoredAssets: getMultiChainAssetsControllerAllIgnoredAssets({
+        metamask,
+      }),
+      balances: getMultiChainBalancesControllerBalances({ metamask }),
+      conversionRates: getMultichainAssetsRatesControllerConversionRates({
+        metamask,
+      }),
+    };
 
-  return {
-    ...initialState,
-    ...multichainState,
-  } as AssetListState;
-};
+    return {
+      ...initialState,
+      ...multichainState,
+    } as AssetListState;
+  },
+);
 
 /**
  * Removes the Arc USDC ERC20 (0x3600…) from the per-chain asset map so it never
@@ -1504,7 +1384,7 @@ function filterArcUsdcErc20Token(
   };
 }
 
-export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
+export const getAssetsBySelectedAccountGroup = createSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
     filterArcUsdcErc20Token(selectAssetsBySelectedAccountGroup(assetListState)),
@@ -1544,12 +1424,10 @@ export const selectAccountSupportsEnabledNetworks = createSelector(
 );
 
 export const getAssetsBySelectedAccountGroupWithTronSpecialAssets =
-  createDeepEqualSelector(
-    getStateForAssetSelector,
-    (assetListState: AssetListState) =>
-      selectAssetsBySelectedAccountGroup(assetListState, {
-        filterTronStakedTokens: false,
-      }),
+  createSelector(getStateForAssetSelector, (assetListState: AssetListState) =>
+    selectAssetsBySelectedAccountGroup(assetListState, {
+      filterTronStakedTokens: false,
+    }),
   );
 
 export const getAsset = createSelector(

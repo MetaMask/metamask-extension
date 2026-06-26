@@ -759,9 +759,6 @@
   "notCurrentAccount": {
     "message": "È questo l'account corretto? È diverso dall'account selezionato nel tuo portafoglio"
   },
-  "notEnoughGas": {
-    "message": "Gas Non Sufficiente"
-  },
   "ofTextNofM": {
     "message": "di"
   },

@@ -51,8 +51,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
   isUserCancelledLoginError,
   OAuthErrorMessages,
@@ -129,7 +128,7 @@ export default function OnboardingWelcome() {
   const [isAnimationComplete, setIsAnimationComplete] =
     useState(shouldSkipAnimation);
 
-  const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
+  const isFireFox = useIsFirefox();
 
   const getIsUserAuthenticatedWithSocialLogin = useCallback(async () => {
     if (!isSocialLoginFLow) {

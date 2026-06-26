@@ -635,13 +635,6 @@ describe('mapLocalTransaction', () => {
       hash: '0x093844dd6200984f0e27d3c3a76b7a63b360bfb2136213237d693afd2cd69740',
       data: {
         from,
-        sourceToken: {
-          amount: '100000',
-          assetId: toAssetId(baseUsdc, 'eip155:8453'),
-          decimals: 6,
-          direction: 'out',
-          symbol: 'USDC',
-        },
       },
     });
   });
