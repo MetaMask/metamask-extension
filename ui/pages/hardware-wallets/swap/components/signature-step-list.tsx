@@ -3,6 +3,7 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   FontWeight,
   Text,
   TextColor,
@@ -78,8 +79,9 @@ export default function SignatureStepList({
         <li>
           <SignatureStatusIcon status={firstStepStatus} stepNumber={1} />
           <Box
-            className="min-w-0 flex-1"
+            className="min-w-0 flex-1 min-h-8"
             flexDirection={BoxFlexDirection.Column}
+            justifyContent={BoxJustifyContent.Center}
           >
             <Text
               color={getStepLabelColor(firstStepStatus)}
@@ -119,8 +121,9 @@ export default function SignatureStepList({
           stepNumber={needsTwoConfirmations ? 2 : 1}
         />
         <Box
-          className="min-w-0 flex-1"
+          className="min-w-0 flex-1 min-h-8"
           flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
         >
           <Text
             color={getStepLabelColor(finalStepStatus)}

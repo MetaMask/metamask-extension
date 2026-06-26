@@ -304,10 +304,19 @@ export function useHwSignTracker(
         eventSource: 'statusUpdated' | 'rejected' | 'finished',
         processor: (txMeta: TransactionMeta) => EventResult,
       ) =>
-      ([{ transactionMeta }]: [{ transactionMeta: TransactionMeta }]) => {
+      // `transactionStatusUpdated` and `transactionRejected` are published with
+      // the meta wrapped (`{ transactionMeta }`), but `transactionFinished` is
+      // published with the meta directly. The background forwards publish args
+      // as an array, so the first element is either `{ transactionMeta }` or
+      // the bare meta. Unwrap both shapes so `transactionFinished` is parsed
+      // correctly (destructuring `status` from a bare meta previously crashed).
+      ([firstArg]: [{ transactionMeta: TransactionMeta } | TransactionMeta]) => {
         if (cancelled) {
           return;
         }
+
+        const transactionMeta =
+          'transactionMeta' in firstArg ? firstArg.transactionMeta : firstArg;
 
         strategy.checkRetryGeneration(
           retryGenerationRef,

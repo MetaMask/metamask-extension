@@ -1,37 +1,21 @@
-import { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
-import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
-import { useTokenValues } from '../../components/confirm/info/hooks/use-token-values';
-import { useTokenDetails } from '../../components/confirm/info/hooks/useTokenDetails';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { renderHookWithConfirmContextProvider } from '../../../test/lib/confirmations/render-helpers';
+import { getMockConfirmStateForTransaction } from '../../../test/data/confirmations/helper';
 import { useSendBundleAmountSymbol } from './useSendBundleAmountSymbol';
 
-// Mock the ERC20 derivation hooks so the test stays focused on this hook's
-// own logic (native math + delegation) and does not require confirm context.
-jest.mock('../../components/confirm/info/hooks/use-token-values', () => ({
-  useTokenValues: jest.fn(),
-}));
-jest.mock('../../components/confirm/info/hooks/useTokenDetails', () => ({
-  useTokenDetails: jest.fn(),
-}));
+const FROM = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const TOKEN_ADDRESS = '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6';
 
 describe('useSendBundleAmountSymbol', () => {
-  const useTokenValuesMock = jest.mocked(useTokenValues);
-  const useTokenDetailsMock = jest.mocked(useTokenDetails);
-
-  beforeEach(() => {
-    jest.resetAllMocks();
-    // Default safe returns so the unconditionally-called ERC20 derivation
-    // hooks can be destructured without throwing; individual tests override.
-    (useTokenValuesMock as unknown as jest.Mock).mockReturnValue({});
-    (useTokenDetailsMock as unknown as jest.Mock).mockReturnValue({});
-  });
-
   it('returns an empty object when there is no transaction', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useSendBundleAmountSymbol(undefined),
-      getMockConfirmStateForTransaction(
-        { id: 'none' } as unknown as TransactionMeta,
-      ),
+      getMockConfirmStateForTransaction({
+        id: 'none',
+      } as unknown as TransactionMeta),
     );
 
     expect(result.current).toEqual({});
@@ -43,8 +27,8 @@ describe('useSendBundleAmountSymbol', () => {
       type: TransactionType.simpleSend,
       chainId: '0x5',
       txParams: {
-        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+        from: FROM,
+        to: TOKEN_ADDRESS,
         // 1 ETH in wei.
         value: '0xde0b6b3a7640000',
       },
@@ -74,14 +58,14 @@ describe('useSendBundleAmountSymbol', () => {
       type: TransactionType.simpleSend,
       chainId: '0x5',
       txParams: {
-        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+        from: FROM,
+        to: TOKEN_ADDRESS,
         // Enforced simulation zeroed the value.
         value: '0x0',
       },
       txParamsOriginal: {
-        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+        from: FROM,
+        to: TOKEN_ADDRESS,
         // Original intended send of 1 ETH.
         value: '0xde0b6b3a7640000',
       },
@@ -111,8 +95,8 @@ describe('useSendBundleAmountSymbol', () => {
       type: TransactionType.simpleSend,
       chainId: '0x5',
       txParams: {
-        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+        from: FROM,
+        to: TOKEN_ADDRESS,
       },
     } as unknown as TransactionMeta;
 
@@ -134,20 +118,20 @@ describe('useSendBundleAmountSymbol', () => {
     });
   });
 
-  it('delegates to the ERC20 derivation for token sends', () => {
-    (useTokenValuesMock as jest.Mock).mockReturnValue({
-      displayTransferValue: '7',
-    });
-    (useTokenDetailsMock as jest.Mock).mockReturnValue({ tokenSymbol: 'TST' });
+  it('decodes the ERC20 transfer amount and symbol from the token list', () => {
+    // transfer(recipient=FROM, amount=7_000_000) for a 6-decimal token → 7 TST.
+    const recipientArg = FROM.slice(2).toLowerCase().padStart(64, '0');
+    const amountArg = (7_000_000).toString(16).padStart(64, '0');
+    const erc20TransferData = `0xa9059cbb${recipientArg}${amountArg}`;
 
     const transactionMeta = {
       id: 'token-send',
       type: TransactionType.tokenMethodTransfer,
       chainId: '0x5',
       txParams: {
-        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
-        data: '0xa9059cbb',
+        from: FROM,
+        to: TOKEN_ADDRESS,
+        data: erc20TransferData,
       },
     } as unknown as TransactionMeta;
 
@@ -155,6 +139,11 @@ describe('useSendBundleAmountSymbol', () => {
       () => useSendBundleAmountSymbol(transactionMeta),
       getMockConfirmStateForTransaction(transactionMeta, {
         metamask: {
+          allTokens: {
+            '0x5': {
+              [FROM]: [{ address: TOKEN_ADDRESS, symbol: 'TST', decimals: 6 }],
+            },
+          },
           networkConfigurationsByChainId: {
             '0x5': { nativeCurrency: 'ETH' },
           },
@@ -162,13 +151,58 @@ describe('useSendBundleAmountSymbol', () => {
       }),
     );
 
-    expect(useTokenValuesMock).toHaveBeenCalledWith(transactionMeta);
-    expect(useTokenDetailsMock).toHaveBeenCalledWith(transactionMeta);
-    // The sent token is TST, but gas is paid in the native currency (ETH).
+    // No gas fee token selected → gas is paid in the native currency.
     expect(result.current).toEqual({
       sendAmount: '7',
       sendSymbol: 'TST',
       gasSymbol: 'ETH',
+    });
+  });
+
+  it('derives gasSymbol from the selected (non-native) gas fee token', () => {
+    // transfer(recipient=FROM, amount=7_000_000) for a 6-decimal token → 7 TST.
+    const recipientArg = FROM.slice(2).toLowerCase().padStart(64, '0');
+    const amountArg = (7_000_000).toString(16).padStart(64, '0');
+    const erc20TransferData = `0xa9059cbb${recipientArg}${amountArg}`;
+    const FEE_TOKEN_ADDRESS = '0xfee0000000000000000000000000000000000fee';
+
+    const transactionMeta = {
+      id: 'token-send-fee-token',
+      type: TransactionType.tokenMethodTransfer,
+      chainId: '0x5',
+      // User chose to pay the network fee in a non-native token.
+      selectedGasFeeToken: FEE_TOKEN_ADDRESS,
+      gasFeeTokens: [
+        { tokenAddress: FEE_TOKEN_ADDRESS, symbol: 'USDC', decimals: 6 },
+      ],
+      txParams: {
+        from: FROM,
+        to: TOKEN_ADDRESS,
+        data: erc20TransferData,
+      },
+    } as unknown as TransactionMeta;
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSendBundleAmountSymbol(transactionMeta),
+      getMockConfirmStateForTransaction(transactionMeta, {
+        metamask: {
+          allTokens: {
+            '0x5': {
+              [FROM]: [{ address: TOKEN_ADDRESS, symbol: 'TST', decimals: 6 }],
+            },
+          },
+          networkConfigurationsByChainId: {
+            '0x5': { nativeCurrency: 'ETH' },
+          },
+        },
+      }),
+    );
+
+    // gasSymbol reflects the selected fee token (USDC), NOT the native ETH.
+    expect(result.current).toEqual({
+      sendAmount: '7',
+      sendSymbol: 'TST',
+      gasSymbol: 'USDC',
     });
   });
 });

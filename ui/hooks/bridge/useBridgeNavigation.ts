@@ -271,6 +271,11 @@ export const useBridgeNavigation = () => {
         'sendBundle',
       );
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
+        // For the sendBundle (send) flow, the signing page replaces the
+        // /confirm-transaction entry so that cancelling returns the user
+        // cleanly to the send flow (and back-button -> home) instead of
+        // leaving a stale confirmation entry in the history stack.
+        ...(hasSendBundleState ? { replace: true } : {}),
         state: {
           ...state,
           ...nextState,

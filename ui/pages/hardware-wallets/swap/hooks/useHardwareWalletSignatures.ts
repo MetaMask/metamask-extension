@@ -816,18 +816,40 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   /**
    * Cancels the hardware wallet signing flow. Aborts the current batch, stops
-   * any active QR scan, and navigates back to the bridge page.
+   * any active QR scan, and navigates away.
+   *
+   * For the sendBundle (send) flow, the pending approval is also rejected so
+   * the confirmation does not linger, then the user returns to the start of
+   * the send flow. For the bridge/swap flow, navigates back to the bridge page.
    */
   const handleCancel = useCallback(async () => {
     await cancelCurrentBatch();
     handleQrSignatureCancel();
     if (isSendBundleFlow) {
-      navigate(sendBundleState?.returnRoute ?? DEFAULT_ROUTE);
+      // Reject the pending approval so the confirmation is cleaned up and
+      // does not linger after navigating back to the send flow.
+      if (currentApprovalRequestId) {
+        try {
+          await dispatch(
+            rejectPendingApproval(
+              currentApprovalRequestId,
+              providerErrors.userRejectedRequest().serialize(),
+            ),
+          );
+        } catch {
+          // Approval may already be resolved/rejected — safe to ignore.
+        }
+      }
+      navigate(sendBundleState?.returnRoute ?? DEFAULT_ROUTE, {
+        replace: true,
+      });
       return;
     }
     navigateToBridgePage();
   }, [
     cancelCurrentBatch,
+    currentApprovalRequestId,
+    dispatch,
     handleQrSignatureCancel,
     isSendBundleFlow,
     navigate,

@@ -77,6 +77,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
   ): EventResult {
     const { status, type } = transactionMeta;
     const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
+    const wasTracked = this.#trackedTxIds.has(transactionMeta.id);
 
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
@@ -86,7 +87,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     }
 
     if (status === TransactionStatus.failed) {
-      return this.#handleFailed(transactionMeta);
+      return this.#handleFailed(transactionMeta, wasTracked);
     }
 
     return { action: null };
@@ -103,6 +104,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
    */
   processRejected(transactionMeta: TransactionMeta): EventResult {
     const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
+    const wasTracked = this.#trackedTxIds.has(transactionMeta.id);
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
 
@@ -111,6 +113,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
         transactionMeta,
         this.#currentBatchId,
         this.#staleBatchIds,
+        wasTracked,
       )
     ) {
       return { action: null };
@@ -133,6 +136,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
   processFinished(transactionMeta: TransactionMeta): EventResult {
     const { status } = transactionMeta;
     const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
+    const wasTracked = this.#trackedTxIds.has(transactionMeta.id);
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
 
@@ -141,6 +145,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
         transactionMeta,
         this.#currentBatchId,
         this.#staleBatchIds,
+        wasTracked,
       )
     ) {
       return { action: null };
@@ -213,12 +218,16 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     return action ? { action } : { action: null };
   }
 
-  #handleFailed(transactionMeta: TransactionMeta): EventResult {
+  #handleFailed(
+    transactionMeta: TransactionMeta,
+    wasTracked: boolean,
+  ): EventResult {
     if (
       shouldIgnoreBatchEvent(
         transactionMeta,
         this.#currentBatchId,
         this.#staleBatchIds,
+        wasTracked,
       )
     ) {
       return { action: null };

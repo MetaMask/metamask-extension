@@ -17,9 +17,9 @@ import {
   isUserRejectedHardwareWalletError,
   useHardwareWalletError,
 } from '../../../../contexts/hardware-wallets';
+import { useSendBundleHwNavigation } from '../../../../hooks/hardware-wallets/useSendBundleHwNavigation';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
-import { useSendBundleHwNavigation } from './useSendBundleHwNavigation';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ export function useTransactionConfirm() {
   const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
     useDappSwapActions();
   const { shouldRedirectToHwSigningPage, redirectToHwSigningPage } =
-    useSendBundleHwNavigation();
+    useSendBundleHwNavigation({ transactionMeta });
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),

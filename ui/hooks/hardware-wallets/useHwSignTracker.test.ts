@@ -123,8 +123,14 @@ async function setupTracker(options: {
 
   const fire = async (event: string, overrides: TxMetaOverrides = {}) => {
     const cb = callbacks.get(event);
+    // transactionFinished is published with the meta directly, whereas
+    // transactionStatusUpdated/transactionRejected wrap it in
+    // { transactionMeta }. Mirror the real payload shapes so the handler's
+    // shape-normalization is exercised (a bare-meta transactionFinished used to
+    // crash the handler before destructuring `status`).
+    const meta = createTxMeta(overrides);
     await act(async () => {
-      cb?.([{ transactionMeta: createTxMeta(overrides) }]);
+      cb?.(event === FINISHED ? [meta] : [{ transactionMeta: meta }]);
     });
   };
 
@@ -774,12 +780,19 @@ describe('useHwSignTracker (batch mode specific)', () => {
   });
 
   describe('batch identification', () => {
-    it('blocks TransactionFailed on status failed before batch is identified', async () => {
+    it('dispatches TransactionFailed on status failed before batch is identified when the tx was tracked', async () => {
       const { dispatchEvent, fire } = await setupTracker({
         useBatchTracking: true,
       });
+      // The tx is observed first (unapproved on creation), so a subsequent
+      // failure is the current flow failing and must surface instead of
+      // leaving the UI stuck awaiting.
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
       await fire(STATUS_UPDATED, { status: 'failed' });
-      expect(dispatchEvent).not.toHaveBeenCalled();
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
     });
 
     it('dispatches TransactionFailed on status failed after batch is identified', async () => {
@@ -794,12 +807,16 @@ describe('useHwSignTracker (batch mode specific)', () => {
       });
     });
 
-    it('blocks TransactionRejected on transactionRejected before batch is identified', async () => {
+    it('dispatches TransactionRejected on transactionRejected before batch is identified when the tx was tracked', async () => {
       const { dispatchEvent, fire } = await setupTracker({
         useBatchTracking: true,
       });
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
       await fire(REJECTED);
-      expect(dispatchEvent).not.toHaveBeenCalled();
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
     });
 
     it('dispatches TransactionRejected on transactionRejected after batch identified', async () => {
@@ -814,12 +831,16 @@ describe('useHwSignTracker (batch mode specific)', () => {
       });
     });
 
-    it('blocks TransactionRejected when transactionFinished with rejected before batch identified', async () => {
+    it('dispatches TransactionRejected when transactionFinished with rejected before batch identified (tracked tx)', async () => {
       const { dispatchEvent, fire } = await setupTracker({
         useBatchTracking: true,
       });
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
       await fire(FINISHED, { status: 'rejected' });
-      expect(dispatchEvent).not.toHaveBeenCalled();
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
     });
 
     it('dispatches TransactionRejected when transactionFinished with rejected after batch identified', async () => {
@@ -834,12 +855,16 @@ describe('useHwSignTracker (batch mode specific)', () => {
       });
     });
 
-    it('blocks TransactionFailed when transactionFinished with failed before batch identified', async () => {
+    it('dispatches TransactionFailed when transactionFinished with failed before batch identified (tracked tx)', async () => {
       const { dispatchEvent, fire } = await setupTracker({
         useBatchTracking: true,
       });
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
       await fire(FINISHED, { status: 'failed' });
-      expect(dispatchEvent).not.toHaveBeenCalled();
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
     });
 
     it('dispatches TransactionFailed when transactionFinished with failed after batch identified', async () => {
@@ -849,6 +874,28 @@ describe('useHwSignTracker (batch mode specific)', () => {
       await fire(STATUS_UPDATED, { batchId: 'batch-1' });
       dispatchEvent.mockClear();
       await fire(FINISHED, { status: 'failed', batchId: 'batch-1' });
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
+    });
+
+    // Regression: transactionFinished is published with the transaction meta
+    // directly (not wrapped in { transactionMeta }). The handler must unwrap
+    // both payload shapes; otherwise destructuring `status` from the bare meta
+    // throws and transactionFinished-based failure/rejection detection becomes
+    // a no-op (the error is swallowed per-callback, leaving the UI stuck).
+    it('does not throw and dispatches on a bare-meta transactionFinished payload', async () => {
+      const { dispatchEvent, fire, callbacks } = await setupTracker({
+        useBatchTracking: true,
+      });
+      // Track the tx first so the finished event is treated as the current
+      // flow's (an untracked tx's finished event is correctly ignored).
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
+      const finishedCb = callbacks.get(FINISHED);
+      await act(async () => {
+        finishedCb?.([createTxMeta({ status: 'failed', batchId: 'batch-1' })]);
+      });
       expect(dispatchEvent).toHaveBeenCalledWith({
         type: HardwareWalletSignatureEvent.TransactionFailed,
       });

@@ -22,7 +22,7 @@ import {
   attemptCloseNotificationPopup,
   updateAndApproveTx,
 } from '../../../../store/actions';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { useHardwareWalletError } from '../../../../contexts/hardware-wallets';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import * as DappSwapContext from '../../context/dapp-swap';
@@ -92,7 +92,7 @@ jest.mock('../../../../hooks/bridge/useBridgeNavigation', () => ({
 // (useTokenValues/useAssetDetails) and so the sendBundle navigation payload
 // is deterministic.
 const mockUseSendBundleAmountSymbol = jest.fn();
-jest.mock('./useSendBundleAmountSymbol', () => ({
+jest.mock('../../../../hooks/hardware-wallets/useSendBundleAmountSymbol', () => ({
   useSendBundleAmountSymbol: (...args: unknown[]) =>
     mockUseSendBundleAmountSymbol(...args),
 }));
@@ -296,7 +296,7 @@ describe('useTransactionConfirm', () => {
         token: null,
         sendBundle: expect.objectContaining({
           needsTwoConfirmations: true,
-          returnRoute: `${CONFIRM_TRANSACTION_ROUTE}/${navigateState.sendBundle.txMeta.id}`,
+          returnRoute: DEFAULT_ROUTE,
           approvalRequestId: String(navigateState.sendBundle.txMeta.id),
           sendAmount: '1.5',
           sendSymbol: 'ETH',
@@ -332,7 +332,7 @@ describe('useTransactionConfirm', () => {
         token: null,
         sendBundle: expect.objectContaining({
           needsTwoConfirmations: false,
-          returnRoute: `${CONFIRM_TRANSACTION_ROUTE}/${navigateState.sendBundle.txMeta.id}`,
+          returnRoute: DEFAULT_ROUTE,
           approvalRequestId: String(navigateState.sendBundle.txMeta.id),
           sendAmount: '1.5',
           sendSymbol: 'ETH',
