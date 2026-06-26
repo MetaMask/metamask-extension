@@ -1,36 +1,23 @@
-import { AccountGroupId } from '@metamask/account-api';
 import type { Transaction } from '@metamask/keyring-api';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import type { MetaMaskReduxState as _MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/store';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
-import type { AccountTreeState } from './multichain-accounts/account-tree.types';
-import { selectNonEvmTransactionsForActivity } from './activity';
+import mockState from '../../test/data/mock-state.json';
+import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../test/data/mock-accounts';
+import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
+import {
+  selectNonEvmTransactionsForActivity,
+  selectEvmAddress,
+} from './activity';
 
-const groups = [
-  { id: 'group-1', accounts: [{ id: 'acc-1' }, { id: 'acc-2' }] },
-  { id: 'group-2', accounts: [{ id: 'acc-x' }] },
-];
-
-jest.mock('./multichain-accounts/account-tree', () => {
-  return {
-    getSelectedAccountGroup: jest.fn(() => 'group-1'),
-    getAccountGroupWithInternalAccounts: jest.fn(() => groups),
-  };
-});
+const typedMockState = mockState as unknown as MultichainAccountsState;
 
 type NonEvmTransactionsMap =
   MultichainTransactionsControllerState['nonEvmTransactions'];
 
-type MetaMaskReduxState = _MetaMaskReduxState & {
-  metamask: {
-    selectedAccountGroup: AccountGroupId;
-    accountTree: AccountTreeState;
-  };
-};
-
 function buildState(
-  nonEvmTransactions: unknown,
+  nonEvmTransactions: NonEvmTransactionsMap,
   tokenScanCache?: Record<
     string,
     {
@@ -41,9 +28,13 @@ function buildState(
     }
   >,
 ): MetaMaskReduxState {
+  const baseState = structuredClone(mockState);
+
   return {
+    ...baseState,
     metamask: {
-      nonEvmTransactions: nonEvmTransactions as NonEvmTransactionsMap,
+      ...baseState.metamask,
+      nonEvmTransactions,
       enabledNetworkMap: {
         solana: { [MultichainNetworks.SOLANA]: true },
       },
@@ -83,7 +74,7 @@ describe('selectNonEvmTransactionsForActivity', () => {
 
     const state = buildState(
       {
-        'acc-1': {
+        [mockState.metamask.internalAccounts.selectedAccount]: {
           [MultichainNetworks.SOLANA]: {
             transactions: [maliciousTx, benignTx],
             next: null,
@@ -99,8 +90,55 @@ describe('selectNonEvmTransactionsForActivity', () => {
           },
         },
       },
-    );
+    ) as unknown as MetaMaskReduxState & MultichainAccountsState;
 
     expect(selectNonEvmTransactionsForActivity(state)).toEqual([benignTx]);
+  });
+});
+
+describe('selectEvmAddress', () => {
+  const { internalAccounts } = typedMockState.metamask;
+  const evmAddressInGroup =
+    internalAccounts.accounts[internalAccounts.selectedAccount].address;
+
+  it('returns the EVM address from the selected account group when an EVM account is globally selected', () => {
+    expect(selectEvmAddress(typedMockState)).toBe(evmAddressInGroup);
+  });
+
+  it('returns the EVM address from the selected account group when a non-EVM account is globally selected', () => {
+    const state = structuredClone(typedMockState);
+
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+    };
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts.push(
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    );
+
+    expect(selectEvmAddress(state)).toBe(evmAddressInGroup);
+  });
+
+  it('returns undefined when the selected account group has no EVM account', () => {
+    const state = structuredClone(typedMockState);
+
+    state.metamask.selectedAccountGroup =
+      'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0';
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+    } as typeof state.metamask.internalAccounts.accounts;
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3PJ247KAM6C03G5Q0NP8'
+    ].groups['entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0'].accounts = [
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    ];
+
+    expect(selectEvmAddress(state)).toBeUndefined();
   });
 });

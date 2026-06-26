@@ -444,11 +444,6 @@ export function mapLocalTransaction(
         hash,
         data: {
           from,
-          sourceToken: getContractToken({
-            transaction: initialTransaction,
-            direction: 'out',
-            contractAddress: initialTransaction.txParams.to,
-          }),
         },
       };
 
@@ -534,12 +529,6 @@ export function mapLocalTransaction(
           hash,
           data: {
             from,
-            sourceToken: getContractToken({
-              amount: BigInt(suppliedTokenBalanceChange.difference).toString(),
-              transaction: initialTransaction,
-              direction: 'out',
-              contractAddress: suppliedTokenBalanceChange.address,
-            }),
           },
         };
       }

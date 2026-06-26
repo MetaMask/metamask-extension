@@ -204,9 +204,7 @@ export default class TransactionListItemDetails extends PureComponent {
               {showCancel && (
                 <CancelButton
                   size={ButtonSize.Sm}
-                  transaction={transaction}
                   cancelTransaction={this.handleCancel}
-                  detailsModal
                 />
               )}
               {/* {showRetry && (
