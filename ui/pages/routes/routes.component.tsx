@@ -139,6 +139,7 @@ import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
+import { GlobalMenuRouteTransition } from './global-menu-route-transition';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
@@ -316,7 +317,11 @@ export const routeConfig = [
       },
       {
         path: NETWORKS_ROUTE,
-        element: <NetworksPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <NetworksPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: TOKEN_MANAGEMENT_ROUTE,
@@ -328,7 +333,11 @@ export const routeConfig = [
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
-        element: <Settings />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Settings />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
@@ -380,11 +389,19 @@ export const routeConfig = [
       },
       {
         path: PERMISSIONS,
-        element: <PermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <PermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: GATOR_PERMISSIONS,
-        element: <GatorPermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <GatorPermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
@@ -432,6 +449,11 @@ export const routeConfig = [
       },
       {
         path: CONTACTS_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Outlet />
+          </GlobalMenuRouteTransition>
+        ),
         children: contactsRoutes,
       },
       {
@@ -455,11 +477,19 @@ export const routeConfig = [
           },
           {
             path: NOTIFICATIONS_ROUTE,
-            element: <Notifications />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <Notifications />
+              </GlobalMenuRouteTransition>
+            ),
           },
           {
             path: SNAPS_ROUTE,
-            element: <SnapList />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <SnapList />
+              </GlobalMenuRouteTransition>
+            ),
           },
           createRouteWithMessenger({
             path: SNAPS_VIEW_ROUTE,

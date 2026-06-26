@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
+  FeatureId,
   formatChainIdToCaip,
   isValidQuoteRequest,
   isNativeAddress,
@@ -285,6 +286,8 @@ const PrepareBridgePage = ({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
     };
     debouncedUpdateQuoteRequestInController.current(
       quoteParams,
@@ -473,6 +476,8 @@ const PrepareBridgePage = ({
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                       // eslint-disable-next-line @typescript-eslint/naming-convention
                       security_warnings: securityWarnings,
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
                     },
                   ),
                 );
@@ -616,6 +621,8 @@ const PrepareBridgePage = ({
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
                 });
               }}
               needsDestinationAddress={

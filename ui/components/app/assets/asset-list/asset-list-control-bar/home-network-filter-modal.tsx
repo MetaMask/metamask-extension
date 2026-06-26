@@ -6,6 +6,9 @@ import { type AddNetworkFields } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -14,6 +17,8 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  IconColor as DsIconColor,
+  IconName as DsIconName,
   Text,
   TextColor,
   TextVariant,
@@ -40,7 +45,7 @@ import {
   ModalOverlay,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { transitionSlideForward } from '../../../../ui/transition';
+import { transitionForward } from '../../../../ui/transition';
 import { NETWORKS_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   addNetwork,
@@ -166,6 +171,34 @@ const HomeNetworkFilterRow = ({
   );
 };
 
+const getDsIconName = (iconName: IconName): DsIconName =>
+  Object.keys(IconName).find(
+    (key) => IconName[key as keyof typeof IconName] === iconName,
+  ) as DsIconName;
+
+const NetworkSelectionItemIcon = ({
+  name,
+  iconSrc,
+}: {
+  name: string;
+  iconSrc?: string;
+}) => {
+  if (isIconName(iconSrc)) {
+    return (
+      <AvatarIcon
+        iconName={getDsIconName(iconSrc)}
+        size={AvatarIconSize.Md}
+        severity={AvatarIconSeverity.Neutral}
+        iconProps={{ color: DsIconColor.IconDefault }}
+      />
+    );
+  }
+
+  return (
+    <AvatarNetwork name={name} src={iconSrc} size={AvatarNetworkSize.Md} />
+  );
+};
+
 export const NetworkSelectionModal = ({
   isOpen,
   onClose,
@@ -189,12 +222,12 @@ export const NetworkSelectionModal = ({
           size={ModalContentSize.Sm}
           modalDialogProps={{
             padding: 0,
-            className: 'overflow-hidden',
+            className: 'flex h-full flex-col overflow-hidden',
           }}
         >
           <ModalHeader onClose={onClose}>{title}</ModalHeader>
           <Box
-            className="max-h-[calc(100vh-168px)] overflow-y-auto"
+            className="min-h-0 flex-1 overflow-y-auto"
             flexDirection={BoxFlexDirection.Column}
           >
             {topItem ? (
@@ -207,15 +240,10 @@ export const NetworkSelectionModal = ({
                 onClick={topItem.onClick}
               >
                 <Box className="flex min-w-0 items-center gap-3">
-                  {isIconName(topItem.iconSrc) ? (
-                    <Icon name={topItem.iconSrc} size={IconSize.Sm} />
-                  ) : (
-                    <AvatarNetwork
-                      name={topItem.name}
-                      src={topItem.iconSrc}
-                      size={AvatarNetworkSize.Md}
-                    />
-                  )}
+                  <NetworkSelectionItemIcon
+                    name={topItem.name}
+                    iconSrc={topItem.iconSrc}
+                  />
                   <Text
                     variant={TextVariant.BodyMd}
                     color={TextColor.TextDefault}
@@ -357,11 +385,9 @@ const HomeNetworkFilterModalContent = ({
   }, [orderedNetworksList, testNetworkMap, useExternalServices]);
 
   // When there are no custom networks and no visible test networks, the default
-  // (popular) list is the *only* list: the redundant "Default networks" header
-  // is hidden and the top "select all" row reads "All default networks". Once a
-  // custom network exists or test networks are shown, multiple sections appear,
-  // so the top row becomes "All networks" and the default section shows its
-  // "Default networks" header.
+  // list is the only list, so selecting default networks is equivalent to
+  // selecting all networks. Once custom or test networks are visible, the top row
+  // specifically selects "All default networks".
   const hasOnlyDefaultNetworks =
     customNetworks.length === 0 && !(showTestnets && testNetworks.length > 0);
 
@@ -402,10 +428,9 @@ const HomeNetworkFilterModalContent = ({
 
   const handleManageNetworks = useCallback(() => {
     // Don't close the modal first — letting the whole current view (modal
-    // included) slide out as one view-transition snapshot keeps the motion
-    // smooth. The modal's open state resets when the home route unmounts on
-    // navigation. Slide in from the right, mirroring the global menu.
-    transitionSlideForward(() => navigate(`${NETWORKS_ROUTE}?drawerOpen=true`));
+    // included) transition as one view-transition snapshot keeps the motion
+    // smooth. The modal's open state resets when the home route unmounts.
+    transitionForward(() => navigate(NETWORKS_ROUTE));
   }, [navigate]);
 
   const sections = useMemo<NetworkSelectionSection[]>(() => {
@@ -498,8 +523,8 @@ const HomeNetworkFilterModalContent = ({
       topItem={{
         key: 'all-default-networks',
         name: hasOnlyDefaultNetworks
-          ? t('allDefaultNetworks')
-          : t('allNetworks'),
+          ? t('allNetworks')
+          : t('allDefaultNetworks'),
         iconSrc: IconName.Global,
         selected: isAllDefaultSelected,
         onClick: handleSelectAllDefaultNetworks,

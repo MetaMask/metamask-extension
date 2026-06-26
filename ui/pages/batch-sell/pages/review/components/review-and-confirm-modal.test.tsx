@@ -124,9 +124,10 @@ const defaultProps = {
   totalNetworkFee: '0.01',
   totalNetworkFeeFiat: '20',
   totalNetworkFeeAssetSymbol: 'ETH',
-  isInsufficientGasForFee: false,
   isBatchSellTradeAvailable: true,
-  totalNetworkfeeAreLoading: false,
+  totalNetworkFeeAreLoading: false,
+  totalNetworkFeeHasError: false,
+  quotesAreLoading: false,
 };
 
 describe('ReviewAndConfirmModal', () => {
@@ -195,23 +196,7 @@ describe('ReviewAndConfirmModal', () => {
     expect(screen.getByText('sellAll')).toBeInTheDocument();
   });
 
-  it('renders the insufficient balance label when funds are insufficient', () => {
-    render(<ReviewAndConfirmModal {...defaultProps} isInsufficientGasForFee />);
-
-    expect(
-      screen.getByText('alertReasonInsufficientBalance'),
-    ).toBeInTheDocument();
-  });
-
-  it('disables the Sell all button when funds are insufficient', () => {
-    render(<ReviewAndConfirmModal {...defaultProps} isInsufficientGasForFee />);
-
-    expect(
-      screen.getByRole('button', { name: 'alertReasonInsufficientBalance' }),
-    ).toBeDisabled();
-  });
-
-  it('disables the Sell all button when the trade is unavailable', () => {
+  it('renders the insufficient balance label when trade is unavailable', () => {
     render(
       <ReviewAndConfirmModal
         {...defaultProps}
@@ -219,7 +204,35 @@ describe('ReviewAndConfirmModal', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: 'sellAll' })).toBeDisabled();
+    expect(
+      screen.getByText('alertReasonInsufficientBalance'),
+    ).toBeInTheDocument();
+  });
+
+  it('disables the submit button when trade is unavailable', () => {
+    render(
+      <ReviewAndConfirmModal
+        {...defaultProps}
+        isBatchSellTradeAvailable={false}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'alertReasonInsufficientBalance' }),
+    ).toBeDisabled();
+  });
+
+  it('disables the button and shows the fallback label when the trade is unavailable', () => {
+    render(
+      <ReviewAndConfirmModal
+        {...defaultProps}
+        isBatchSellTradeAvailable={false}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'alertReasonInsufficientBalance' }),
+    ).toBeDisabled();
   });
 
   it('enables the Sell all button when funds are sufficient and trade is available', () => {
@@ -461,37 +474,35 @@ describe('ReviewAndConfirmModal', () => {
     });
   });
 
-  describe('NetworkFeeRow skeleton', () => {
-    it('shows the skeleton when totalNetworkfeeAreLoading is true', () => {
+  describe('NetworkFeeRow', () => {
+    it('shows a skeleton while fees are loading', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={true}
+          totalNetworkFeeAreLoading={true}
         />,
       );
 
       expect(screen.getByTestId('skeleton-loading')).toBeInTheDocument();
     });
 
-    it('does not show the skeleton when totalNetworkfeeAreLoading is false and fee is provided', () => {
+    it('does not show a skeleton once fees have finished loading', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={false}
+          totalNetworkFeeAreLoading={false}
           totalNetworkFee="0.01"
         />,
       );
 
       expect(screen.queryByTestId('skeleton-loading')).not.toBeInTheDocument();
     });
-  });
 
-  describe('NetworkFeeRow error state', () => {
     it('shows a dash when fees failed to load (not loading, fee is null)', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={false}
+          totalNetworkFeeAreLoading={false}
           totalNetworkFee={null}
           totalNetworkFeeFiat={null}
         />,
@@ -504,7 +515,7 @@ describe('ReviewAndConfirmModal', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={false}
+          totalNetworkFeeAreLoading={false}
           totalNetworkFee={undefined}
           totalNetworkFeeFiat={undefined}
         />,
@@ -517,7 +528,7 @@ describe('ReviewAndConfirmModal', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={true}
+          totalNetworkFeeAreLoading={true}
           totalNetworkFee={undefined}
           totalNetworkFeeFiat={undefined}
         />,
@@ -527,23 +538,54 @@ describe('ReviewAndConfirmModal', () => {
     });
   });
 
-  describe('totalNetworkfeeAreLoading', () => {
-    it('disables the Sell all button while fees are loading', () => {
+  describe('quotesAreLoading', () => {
+    it('shows the sellAll label while quotes are loading even when the trade is unavailable', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={true}
+          isBatchSellTradeAvailable={false}
+          quotesAreLoading={true}
+        />,
+      );
+
+      expect(screen.getByText('sellAll')).toBeInTheDocument();
+      expect(
+        screen.queryByText('alertReasonInsufficientBalance'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the insufficient balance label once quotes finish loading and trade is still unavailable', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          isBatchSellTradeAvailable={false}
+          quotesAreLoading={false}
+        />,
+      );
+
+      expect(
+        screen.getByText('alertReasonInsufficientBalance'),
+      ).toBeInTheDocument();
+    });
+
+    it('keeps the button disabled while quotes are loading and trade is unavailable', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          isBatchSellTradeAvailable={false}
+          quotesAreLoading={true}
         />,
       );
 
       expect(screen.getByRole('button', { name: 'sellAll' })).toBeDisabled();
     });
 
-    it('enables the Sell all button when fees have finished loading', () => {
+    it('does not affect the label or button state when trade is available', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={false}
+          isBatchSellTradeAvailable={true}
+          quotesAreLoading={true}
         />,
       );
 

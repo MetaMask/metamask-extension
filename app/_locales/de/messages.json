@@ -5550,9 +5550,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Wir haben unsere Datenschutzrichtlinie aktualisiert"
   },
-  "newRpcUrl": {
-    "message": "Neue RPC-URL"
-  },
   "newTokensImportedMessage": {
     "message": "Sie haben $1 erfolgreich importiert.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5689,9 +5686,6 @@
   },
   "notCurrentAccount": {
     "message": "Ist dies das richtige Konto? Es unterscheidet sich von dem aktuell ausgewählten Konto in Ihrem Wallet"
-  },
-  "notEnoughGas": {
-    "message": "Nicht genügend Gas"
   },
   "notificationDetail": {
     "message": "Details"

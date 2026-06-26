@@ -679,9 +679,6 @@
   "notCurrentAccount": {
     "message": "這是正確的帳戶嗎？它與您的錢包目前所選擇的帳戶不同"
   },
-  "notEnoughGas": {
-    "message": "Gas 不夠"
-  },
   "ofTextNofM": {
     "message": "之"
   },

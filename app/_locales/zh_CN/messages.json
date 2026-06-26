@@ -5550,9 +5550,6 @@
   "newPrivacyPolicyTitle": {
     "message": "我们已经更新了隐私政策"
   },
-  "newRpcUrl": {
-    "message": "新的 RPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "您已成功导入$1。",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5689,9 +5686,6 @@
   },
   "notCurrentAccount": {
     "message": "这是正确的账户吗？这与您钱包中当前选择的账户不同"
-  },
-  "notEnoughGas": {
-    "message": "燃料不足"
   },
   "notificationDetail": {
     "message": "详情"

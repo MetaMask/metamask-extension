@@ -5554,9 +5554,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Chúng tôi đã cập nhật chính sách quyền riêng tư"
   },
-  "newRpcUrl": {
-    "message": "URL RPC mới"
-  },
   "newTokensImportedMessage": {
     "message": "Bạn đã nhập thành công $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5693,9 +5690,6 @@
   },
   "notCurrentAccount": {
     "message": "Tài khoản này có chính xác không? Tài khoản này khác với tài khoản bạn đang chọn trong ví của mình"
-  },
-  "notEnoughGas": {
-    "message": "Không đủ phí gas"
   },
   "notificationDetail": {
     "message": "Chi tiết"
