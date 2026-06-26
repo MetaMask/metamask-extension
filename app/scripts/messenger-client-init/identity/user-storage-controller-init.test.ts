@@ -1,6 +1,6 @@
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import { Env } from '@metamask/profile-sync-controller/sdk';
-import { trace } from '../../../../shared/lib/trace';
+import { TraceName, trace } from '../../../../shared/lib/trace';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
@@ -85,13 +85,13 @@ describe('UserStorageControllerInit', () => {
       UserStorageControllerClassMock.mock.calls[0][0].trace;
     const callback = jest.fn();
 
-    traceFn({ name: 'Contact Sync Full' } as never, callback);
-    traceFn({ name: 'Contact Sync Save Batch' } as never, callback);
+    traceFn({ name: TraceName.ContactSyncFull } as never, callback);
+    traceFn({ name: TraceName.ContactSyncSaveBatch } as never, callback);
 
     expect(traceMock).toHaveBeenNthCalledWith(
       1,
       {
-        name: 'Contact Sync Full',
+        name: TraceName.ContactSyncFull,
         root: true,
       },
       callback,
@@ -99,7 +99,7 @@ describe('UserStorageControllerInit', () => {
     expect(traceMock).toHaveBeenNthCalledWith(
       2,
       {
-        name: 'Contact Sync Save Batch',
+        name: TraceName.ContactSyncSaveBatch,
       },
       callback,
     );

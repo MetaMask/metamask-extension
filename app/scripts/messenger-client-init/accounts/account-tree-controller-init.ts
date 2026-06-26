@@ -13,7 +13,6 @@ import {
 
 const ACCOUNT_SYNC_ROOT_TRACE_NAMES = new Set<string>([
   TraceName.AccountSyncFull,
-  'Multichain Account Syncing - Full',
 ]);
 
 const traceWithAccountSyncRootBoundary: typeof trace = (request, fn) =>

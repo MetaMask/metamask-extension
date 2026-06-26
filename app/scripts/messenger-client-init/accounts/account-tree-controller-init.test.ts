@@ -2,7 +2,7 @@ import {
   AccountTreeController,
   AccountTreeControllerMessenger,
 } from '@metamask/account-tree-controller';
-import { trace } from '../../../../shared/lib/trace';
+import { TraceName, trace } from '../../../../shared/lib/trace';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
@@ -79,11 +79,11 @@ describe('AccountTreeControllerInit', () => {
       accountTreeControllerClassMock.mock.calls[0][0].config?.trace;
     const callback = jest.fn();
 
-    traceFn?.({ name: 'Multichain Account Syncing - Full' } as never, callback);
+    traceFn?.({ name: TraceName.AccountSyncFull } as never, callback);
 
     expect(traceMock).toHaveBeenCalledWith(
       {
-        name: 'Multichain Account Syncing - Full',
+        name: TraceName.AccountSyncFull,
         root: true,
       },
       callback,

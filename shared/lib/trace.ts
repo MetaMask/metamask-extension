@@ -52,7 +52,7 @@ export enum TraceName {
   LoadCollectibles = 'Load Collectibles',
   GetAssetHistoricalPrices = 'Get Asset Historical Prices',
   OnFinishedTransaction = 'On Finished Transaction',
-  AccountSyncFull = 'Account Sync Full',
+  AccountSyncFull = 'Multichain Account Syncing - Full',
   AccountSyncSaveIndividual = 'Account Sync Save Individual',
   ContactSyncFull = 'Contact Sync Full',
   ContactSyncDeleteRemote = 'Contact Sync Delete Remote',
