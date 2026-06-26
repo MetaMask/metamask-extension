@@ -4,12 +4,25 @@ import {
 } from '@metamask/account-tree-controller';
 import { AccountId } from '@metamask/keyring-utils';
 import { MessengerClientInitFunction } from '../types';
-import { trace } from '../../../../shared/lib/trace';
+import { TraceName, trace } from '../../../../shared/lib/trace';
 import { AccountTreeControllerInitMessenger } from '../messengers/accounts/account-tree-controller-messenger';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+
+const ACCOUNT_SYNC_ROOT_TRACE_NAMES = new Set<string>([
+  TraceName.AccountSyncFull,
+  'Multichain Account Syncing - Full',
+]);
+
+const traceWithAccountSyncRootBoundary: typeof trace = (request, fn) =>
+  trace(
+    ACCOUNT_SYNC_ROOT_TRACE_NAMES.has(request.name)
+      ? { ...request, root: true }
+      : request,
+    fn,
+  );
 
 /**
  * Initialize the account wallet controller.
@@ -30,7 +43,7 @@ export const AccountTreeControllerInit: MessengerClientInitFunction<
     state: persistedState.AccountTreeController,
     config: {
       // @ts-expect-error Controller uses string for names rather than enum
-      trace,
+      trace: traceWithAccountSyncRootBoundary,
       backupAndSync: {
         onBackupAndSyncEvent: (event) => {
           initMessenger.call('MetaMetricsController:trackEvent', {

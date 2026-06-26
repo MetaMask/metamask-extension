@@ -8,10 +8,22 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { trace } from '../../../../shared/lib/trace';
+import { TraceName, trace } from '../../../../shared/lib/trace';
 import { captureException } from '../../../../shared/lib/sentry';
 import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
 import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
+
+const CONTACT_SYNC_ROOT_TRACE_NAMES = new Set<string>([
+  TraceName.ContactSyncFull,
+]);
+
+const traceWithContactSyncRootBoundary: typeof trace = (request, fn) =>
+  trace(
+    CONTACT_SYNC_ROOT_TRACE_NAMES.has(request.name)
+      ? { ...request, root: true }
+      : request,
+    fn,
+  );
 
 /**
  * Initialize the UserStorage controller.
@@ -33,7 +45,7 @@ export const UserStorageControllerInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     state: persistedState.UserStorageController as UserStorageControllerState,
     // @ts-expect-error Controller uses string for names rather than enum
-    trace,
+    trace: traceWithContactSyncRootBoundary,
     config: {
       env,
       contactSyncing: {
