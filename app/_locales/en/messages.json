@@ -10692,10 +10692,10 @@
     "message": "Connect Anyway"
   },
   "trustlineApprove": {
-    "message": "Activate trustline"
+    "message": "Activate $1 trustline"
   },
   "trustlineDisapprove": {
-    "message": "Deactivate trustline"
+    "message": "Deactivate $1 trustline"
   },
   "tryAgain": {
     "message": "Try again"

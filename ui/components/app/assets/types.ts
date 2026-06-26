@@ -73,7 +73,7 @@ export type TokenWithFiatAmount = Token &
     rwaData?: TokenListToken['rwaData'];
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
     accountType?: KeyringAccountType;
-    extra?: Asset['extra'];
+    accountAssetInfo?: Asset['extra'];
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;

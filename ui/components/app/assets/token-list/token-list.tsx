@@ -155,13 +155,7 @@ const TokenCellWithDisplayOverrides = ({
   onClick?: () => void;
   safeChains?: SafeChain[];
 }) => {
-  const displayOverrides = useStellarAssetDisplayOverrides({
-    chainId: token.chainId,
-    assetId: token.assetId,
-    isNative: token.isNative,
-    extra: token.extra,
-    balance: token.balance,
-  });
+  const displayOverrides = useStellarAssetDisplayOverrides(token);
 
   return (
     <TokenCell

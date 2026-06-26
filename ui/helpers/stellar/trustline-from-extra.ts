@@ -7,13 +7,13 @@ type StellarTrustlineExtra = {
 };
 
 function isStellarTrustlineInactiveFromExtra(
-  extra: StellarTrustlineExtra | undefined,
+  accountAssetInfo: StellarTrustlineExtra | undefined,
 ): boolean {
-  if (extra?.limit === undefined) {
+  if (accountAssetInfo?.limit === undefined) {
     return true;
   }
 
-  const { limit } = extra;
+  const { limit } = accountAssetInfo;
   if (typeof limit !== 'string') {
     return true;
   }
@@ -51,18 +51,18 @@ function isStellarClassicAssetCaip19(assetId: CaipAssetType): boolean {
  * @param options.chainId - CAIP-2 chain id for the token row.
  * @param options.assetId - CAIP-19 asset id.
  * @param options.isNative - Whether the row is a native asset.
- * @param options.extra - Balance enrichment from MultichainBalancesController.
- * @param options.balance - Display balance string.
+ * @param options.accountAssetInfo - Balance enrichment from MultichainBalancesController.
+ * @param options.balance
  * @returns True when inactive trustline UX should be shown.
  */
 export function isStellarClassicTrustlineInactiveForDisplay(options: {
   chainId: CaipChainId | string;
   assetId?: CaipAssetType | string;
   isNative?: boolean;
-  extra?: StellarTrustlineExtra;
+  accountAssetInfo?: StellarTrustlineExtra;
   balance?: string;
 }): boolean {
-  const { chainId, assetId, isNative, extra, balance } = options;
+  const { chainId, assetId, isNative, accountAssetInfo, balance } = options;
 
   if (isNative || !assetId || !isStellarChainId(chainId)) {
     return false;
@@ -72,8 +72,8 @@ export function isStellarClassicTrustlineInactiveForDisplay(options: {
     return false;
   }
 
-  if (extra !== undefined) {
-    return isStellarTrustlineInactiveFromExtra(extra);
+  if (accountAssetInfo !== undefined) {
+    return isStellarTrustlineInactiveFromExtra(accountAssetInfo);
   }
 
   if (balance !== undefined) {
