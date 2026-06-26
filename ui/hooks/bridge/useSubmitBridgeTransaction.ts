@@ -24,7 +24,6 @@ import {
   getWarningLabels,
   type BridgeAppState,
 } from '../../ducks/bridge/selectors';
-import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import {
   ConnectionStatus,
   useHardwareWalletActions,
@@ -34,27 +33,15 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
+import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useBridgeNavigation } from './useBridgeNavigation';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
-
-const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
-const APPROVAL_TX_ERROR = 'Approve transaction failed';
 
 type UseSubmitBridgeTransactionOptions = {
   submitOnHardwareWalletSigningPage?: boolean;
   onHardwareWalletSubmitted?: () => void;
   onHardwareWalletRejected?: () => void;
   onHardwareWalletFailed?: () => void;
-};
-
-export const isAllowanceResetError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(ALLOWANCE_RESET_ERROR);
-};
-
-export const isApprovalTxError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(APPROVAL_TX_ERROR);
 };
 
 export default function useSubmitBridgeTransaction({
@@ -90,12 +77,6 @@ export default function useSubmitBridgeTransaction({
     quoteResponse: QuoteResponse & QuoteMetadata,
     options?: { rpcTimeoutMs?: number },
   ) => {
-    console.log('[HW-Batch] submitBridgeTransaction called', {
-      rpcTimeoutMs: options?.rpcTimeoutMs,
-      isHardwareWalletAccount,
-      connectionStatus: connectionState.status,
-      hasFromAccount: Boolean(fromAccount),
-    });
     setIsSubmitting(true);
 
     try {
@@ -126,18 +107,13 @@ export default function useSubmitBridgeTransaction({
         );
       }
     } catch (e) {
-      console.log('[HW-Batch] submitBridgeTransaction pre-flight catch', e);
       setIsSubmitting(false);
       return;
     }
 
-    console.log('[HW-Batch] submitBridgeTransaction pre-flight passed');
     const intentData = quoteResponse.quote.intent;
 
     if (hardwareWalletUsed && intentData) {
-      console.log(
-        '[HW-Batch] submitBridgeTransaction: HW + intentData → onHardwareWalletFailed (intent quotes not supported)',
-      );
       captureException(
         new Error('Hardware wallets cannot submit bridge intent quotes'),
       );
@@ -166,9 +142,6 @@ export default function useSubmitBridgeTransaction({
           }),
         );
       } else {
-        console.log(
-          '[HW-Batch] submitBridgeTransaction: dispatching submitBridgeTx RPC...',
-        );
         const rpcPromise = dispatch(
           submitBridgeTx(
             fromAccount.address,
@@ -198,16 +171,7 @@ export default function useSubmitBridgeTransaction({
         }
       }
       submissionSucceeded = true;
-      console.log('[HW-Batch] submitBridgeTransaction RPC succeeded');
     } catch (e) {
-      console.log(
-        '[HW-Batch] submitBridgeTransaction caught error',
-        e,
-        'isHW:',
-        hardwareWalletUsed,
-        'isRejection:',
-        isHardwareWalletUserRejection(e),
-      );
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));

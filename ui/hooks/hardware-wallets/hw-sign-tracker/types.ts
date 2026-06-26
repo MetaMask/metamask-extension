@@ -12,6 +12,8 @@ export type HwSignTrackerAction =
 /** Result of processing a transaction event through a tracking strategy. */
 export type EventResult = { action: HwSignTrackerAction | null };
 
+export const NO_ACTION: EventResult = { action: null };
+
 export type SignedEventClassifier = (
   transactionMeta: TransactionMeta,
 ) => HwSignTrackerAction | null;

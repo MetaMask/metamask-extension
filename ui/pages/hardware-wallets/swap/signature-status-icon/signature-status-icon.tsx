@@ -13,6 +13,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 
+import { isErrorStepStatus } from '../hardware-wallet-signatures.utils';
 import { SignatureStepStatus } from '../types';
 
 const STEP_ICON_CLASSNAME =
@@ -49,11 +50,7 @@ const SignatureStatusIcon = ({
     );
   }
 
-  if (
-    status === SignatureStepStatus.Rejected ||
-    status === SignatureStepStatus.Failed ||
-    status === SignatureStepStatus.Disconnected
-  ) {
+  if (isErrorStepStatus(status)) {
     return (
       <Box
         className={STEP_ICON_CLASSNAME}

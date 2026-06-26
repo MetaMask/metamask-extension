@@ -10,26 +10,30 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import { isErrorStepStatus, getStepLabelColor } from '../hardware-wallet-signatures.utils';
 import { SignatureStepStatus, type QrHardwareSignRequest } from '../types';
 import SignatureStatusIcon from '../signature-status-icon';
 import QrSignatureCode from '../qr-signature-code';
 import type { SignatureStepListProps } from './signature-step-list.types';
 
-/**
- * Returns the text color for a step label based on its display status.
- * Rejected/Failed/Disconnected steps render in the error color; everything
- * else uses the default text color.
- *
- * @param stepStatus - The display status of the step.
- * @returns The design-system text color to apply.
- */
-function getStepLabelColor(stepStatus: SignatureStepStatus): TextColor {
-  return stepStatus === SignatureStepStatus.Rejected ||
-    stepStatus === SignatureStepStatus.Failed ||
-    stepStatus === SignatureStepStatus.Disconnected
-    ? TextColor.ErrorDefault
-    : TextColor.TextDefault;
-}
+const InlineQrSignatureCode = ({
+  qrSignRequest,
+}: {
+  qrSignRequest: QrHardwareSignRequest;
+}) => (
+  <Box
+    className="hardware-wallet-signatures__qr-code"
+    flexDirection={BoxFlexDirection.Column}
+    alignItems={BoxAlignItems.Center}
+    gap={4}
+    marginTop={4}
+  >
+    <QrSignatureCode
+      key={qrSignRequest.request.requestId}
+      payload={qrSignRequest.request.payload}
+    />
+  </Box>
+);
 
 /**
  * Pure presentational component that renders the ordered list of hardware
@@ -99,18 +103,7 @@ export default function SignatureStepList({
               activeQrStep ===
                 HardwareWalletSignatureStatus.AwaitingFirstSignature &&
               qrSignRequest && (
-                <Box
-                  className="hardware-wallet-signatures__qr-code"
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.Center}
-                  gap={4}
-                  marginTop={4}
-                >
-                  <QrSignatureCode
-                    key={qrSignRequest.request.requestId}
-                    payload={qrSignRequest.request.payload}
-                  />
-                </Box>
+                <InlineQrSignatureCode qrSignRequest={qrSignRequest} />
               )}
           </Box>
         </li>
@@ -141,18 +134,7 @@ export default function SignatureStepList({
             activeQrStep ===
               HardwareWalletSignatureStatus.AwaitingFinalSignature &&
             qrSignRequest && (
-              <Box
-                className="hardware-wallet-signatures__qr-code"
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Center}
-                gap={4}
-                marginTop={4}
-              >
-                <QrSignatureCode
-                  key={qrSignRequest.request.requestId}
-                  payload={qrSignRequest.request.payload}
-                />
-              </Box>
+              <InlineQrSignatureCode qrSignRequest={qrSignRequest} />
             )}
         </Box>
       </li>

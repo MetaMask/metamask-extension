@@ -3,7 +3,7 @@ import type {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { HwSignTrackerAction } from './types';
+import type { HwSignTrackerAction, SignedEventClassifier } from './types';
 import { APPROVAL_TYPES, BRIDGE_TRANSACTION_TYPES, TRADE_TYPES } from './constants';
 
 /**
@@ -50,3 +50,13 @@ export function classifySignedEvent(
   }
   return null;
 }
+
+/**
+ * Default classifier that maps a transaction's type to the corresponding
+ * hardware-wallet signature event. Returns null for unrecognized types.
+ *
+ * @param txMeta - The transaction metadata to classify.
+ * @returns The classified signature event, or null if unclassifiable.
+ */
+export const defaultEventClassifier: SignedEventClassifier = (txMeta) =>
+  txMeta.type ? classifySignedEvent(txMeta.type) : null;

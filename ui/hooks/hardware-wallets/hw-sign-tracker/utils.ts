@@ -1,5 +1,8 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { UNKNOWN_BATCH_ID } from './constants';
+import type { HwSignTrackerAction } from './types';
 
 /**
  * Checks whether a transaction belongs to the currently tracked batch (or is
@@ -113,4 +116,21 @@ export function applyRetryGenerationBump(
   }
   seenSet.clear();
   return true;
+}
+
+/**
+ * Maps a rejected or failed {@link TransactionStatus} to the corresponding
+ * {@link HwSignTrackerAction}. Shared by both tracking strategies so the
+ * status→action mapping stays consistent.
+ *
+ * @param status - The terminal transaction status.
+ * @returns The corresponding action.
+ */
+export function getStatusAction(
+  status: TransactionStatus.rejected | TransactionStatus.failed,
+): HwSignTrackerAction {
+  if (status === TransactionStatus.rejected) {
+    return { type: HardwareWalletSignatureEvent.TransactionRejected };
+  }
+  return { type: HardwareWalletSignatureEvent.TransactionFailed };
 }

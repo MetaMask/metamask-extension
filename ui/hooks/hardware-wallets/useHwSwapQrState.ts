@@ -1,7 +1,6 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
 
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 import { getHardwareWalletType } from '../../../shared/lib/selectors/keyring';
@@ -10,12 +9,14 @@ import {
   cancelQrCodeScan,
   cancelTx,
   completeQrCodeScan,
-  rejectPendingApproval,
 } from '../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import { isQrHardwareSignRequest } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
+import {
+  isQrHardwareSignRequest,
+  cleanupPendingApproval,
+} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletQrStateOptions = {
   signatureState: HardwareWalletSignaturesState;
@@ -128,12 +129,7 @@ export function useHwSwapQrState({
     const currentConfirmationTxData = confirmationTxDataRef.current;
 
     if (currentConfirmationTxData?.id) {
-      dispatch(
-        rejectPendingApproval(
-          currentConfirmationTxData.id,
-          serializeError(providerErrors.userRejectedRequest()),
-        ),
-      );
+      cleanupPendingApproval(dispatch, currentConfirmationTxData.id);
       dispatch(
         cancelTx(currentConfirmationTxData as Parameters<typeof cancelTx>[0]),
       );

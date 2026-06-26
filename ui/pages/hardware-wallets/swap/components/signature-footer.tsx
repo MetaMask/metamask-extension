@@ -8,6 +8,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import { getQrScanButtonLabelKey } from '../hardware-wallet-signatures.utils';
 import type { SignatureFooterProps } from './signature-footer.types';
 
 /**
@@ -82,9 +83,7 @@ export default function SignatureFooter({
           onClick={handleOpenQrSigningPage}
           data-testid="hardware-wallet-signatures__scan-button"
         >
-          {isFinalSignature
-            ? t('bridgeQrHardwareScanSignatureFinal')
-            : t('bridgeQrHardwareScanSignatureNext')}
+          {t(getQrScanButtonLabelKey(isFinalSignature))}
         </Button>
       )}
       <Button

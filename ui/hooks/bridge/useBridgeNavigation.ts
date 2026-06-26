@@ -104,6 +104,26 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
 };
 
 /**
+ * Builds a "cleared" bridge navigation state: preserves any extra props from
+ * `baseState` while resetting `bridgeState`, `token`, and `sendBundle` to null
+ * and setting `stayOnHomePage` to the given value.
+ *
+ * @param baseState - The base navigation state to spread (extra props pass through).
+ * @param stayOnHomePage - Whether the user should be kept on the home page.
+ * @returns The cleared navigation state.
+ */
+const clearedBridgeState = (
+  baseState: BridgeNavigationOptions['state'],
+  stayOnHomePage: boolean,
+): BridgeNavigationOptions['state'] => ({
+  ...baseState,
+  bridgeState: null,
+  token: null,
+  sendBundle: null,
+  stayOnHomePage,
+});
+
+/**
  * Handles navigation between bridge-related pages, and enforces a single source of truth
  * for the bridge navigation state. The navigation state is used for persisting and restoring data
  * when the user navigates (see usePrefilledQuoteParams hook).
@@ -128,13 +148,7 @@ export const useBridgeNavigation = () => {
   const resetLocationState = useCallback(
     (to: To = { pathname }, stayOnHomePage = false) => {
       navigate(to, {
-        state: {
-          ...state,
-          bridgeState: null,
-          token: null,
-          sendBundle: null,
-          stayOnHomePage,
-        },
+        state: clearedBridgeState(state, stayOnHomePage),
       });
     },
     [navigate, state, pathname],
@@ -188,13 +202,13 @@ export const useBridgeNavigation = () => {
       // Publish PageViewed event on initial page view
       isEntrypoint &&
         dispatch(
+          /* eslint-disable @typescript-eslint/naming-convention */
           trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
             // @ts-expect-error once @metamask/bridge-controller is updated
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: getEnvironmentType(),
           }),
+          /* eslint-enable @typescript-eslint/naming-convention */
         );
       navigate(
         {
@@ -291,13 +305,7 @@ export const useBridgeNavigation = () => {
    */
   const navigateToActivityPage = useCallback(() => {
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      state: {
-        ...state,
-        bridgeState: null,
-        token: null,
-        sendBundle: null,
-        stayOnHomePage: true,
-      },
+      state: clearedBridgeState(state, true),
       replace: true,
     });
   }, [navigate, state]);

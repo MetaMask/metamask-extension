@@ -12,7 +12,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
-import { providerErrors } from '@metamask/rpc-errors';
 import { getIsStxEnabled } from '../../../../ducks/bridge/selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
@@ -38,7 +37,6 @@ import { useHwSignTracker } from '../../../../hooks/hardware-wallets/useHwSignTr
 import {
   addTransaction,
   findNetworkClientIdByChainId,
-  rejectPendingApproval,
   updateAndApproveTx,
 } from '../../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
@@ -53,9 +51,10 @@ import {
   getStepDescriptions,
   getStepLabels,
   getQrHardwareSigningPageTitle,
-  getStepStatus,
   getTitle,
   getTransactionField,
+  cleanupPendingApproval,
+  getAllStepStatuses,
 } from '../hardware-wallet-signatures.utils';
 import {
   HardwareWalletSignatureEvent,
@@ -110,6 +109,28 @@ function isAwaitingSignature(status: HardwareWalletSignatureStatus): boolean {
     status === HardwareWalletSignatureStatus.AwaitingFinalSignature
   );
 }
+
+/**
+ * Terminal signature state machine statuses — the flow has finished (either
+ * successfully or due to an error) and no further signing is expected.
+ */
+const TERMINAL_STATUSES: readonly HardwareWalletSignatureStatus[] = [
+  HardwareWalletSignatureStatus.Submitted,
+  HardwareWalletSignatureStatus.Failed,
+  HardwareWalletSignatureStatus.Rejected,
+  HardwareWalletSignatureStatus.Disconnected,
+];
+
+/**
+ * Hardware wallet connection statuses that permit a retry. The device must be
+ * connected (or in a recoverable error/awaiting state) before resubmitting.
+ */
+const RETRYABLE_CONNECTION_STATUSES = new Set<ConnectionStatus>([
+  ConnectionStatus.Connected,
+  ConnectionStatus.Ready,
+  ConnectionStatus.AwaitingConfirmation,
+  ConnectionStatus.ErrorState,
+]);
 
 /**
  * Orchestrator hook for the hardware-wallet signing-progress screen.
@@ -360,16 +381,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
     // 1. Reject the old approval (cleanup) — may already be resolved.
     if (currentApprovalRequestId) {
-      try {
-        await dispatch(
-          rejectPendingApproval(
-            currentApprovalRequestId,
-            providerErrors.userRejectedRequest().serialize(),
-          ),
-        );
-      } catch {
-        // Approval may already be resolved/rejected — safe to ignore.
-      }
+      await cleanupPendingApproval(dispatch, currentApprovalRequestId);
     }
 
     // 2. Find the network client for this chain.
@@ -430,9 +442,10 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     sendBundleTxMeta,
   ]);
 
-  const fromAddress =
-    sendBundleTxMeta?.txParams.from ??
-    getTransactionField(lockedQuote?.trade, 'from');
+  const getTxField = (field: 'from' | 'to'): string | undefined =>
+    sendBundleTxMeta?.txParams[field] ??
+    getTransactionField(lockedQuote?.trade, field);
+  const fromAddress = getTxField('from');
 
   const { retrySubmission, hasStartedSubmission } = useHwSwapSubmission({
     lockedQuote,
@@ -527,11 +540,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   useEffect(() => {
     const isAwaiting = isAwaitingSignature(signatureState.status);
-    const isTerminal =
-      signatureState.status === HardwareWalletSignatureStatus.Submitted ||
-      signatureState.status === HardwareWalletSignatureStatus.Failed ||
-      signatureState.status === HardwareWalletSignatureStatus.Rejected ||
-      signatureState.status === HardwareWalletSignatureStatus.Disconnected;
+    const isTerminal = TERMINAL_STATUSES.includes(signatureState.status);
 
     if (hasStartedHardwareWalletSubmission.current && isAwaiting) {
       setSigningInProgress(true);
@@ -592,31 +601,19 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     trackEvent({
       event: 'Awaiting Signature(s) on a HW wallet',
       category: MetaMetricsEventCategory.Swaps,
+      /* eslint-disable @typescript-eslint/naming-convention */
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         needs_two_confirmations: needsTwoConfirmations,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_from: fromToken?.symbol ?? '',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_to: toToken?.symbol ?? '',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         is_hardware_wallet: hardwareWalletUsed,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         hardware_wallet_type: hardwareWalletType ?? '',
       },
       sensitiveProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_from_amount: lockedQuote?.quote?.srcTokenAmount ?? '',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_to_amount: lockedQuote?.quote?.destTokenAmount ?? '',
       },
+      /* eslint-enable @typescript-eslint/naming-convention */
     });
   }, [
     fromToken?.symbol,
@@ -628,18 +625,10 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     trackEvent,
   ]);
 
-  const toAddress =
-    sendBundleTxMeta?.txParams.to ??
-    getTransactionField(lockedQuote?.trade, 'to');
+  const toAddress = getTxField('to');
   const spenderAddress = getTransactionField(lockedQuote?.approval, 'to');
-  const firstStepStatus = getStepStatus(
-    HardwareWalletSignatureStatus.AwaitingFirstSignature,
-    signatureState,
-  );
-  const finalStepStatus = getStepStatus(
-    HardwareWalletSignatureStatus.AwaitingFinalSignature,
-    signatureState,
-  );
+  const { first: firstStepStatus, final: finalStepStatus } =
+    getAllStepStatuses(signatureState);
   const { firstStepLabel, finalStepLabel } = getStepLabels({
     isSendBundleFlow,
     needsTwoConfirmations,
@@ -744,11 +733,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
       await cancelCurrentBatch();
 
-      const canRetry =
-        connectionState.status === ConnectionStatus.Connected ||
-        connectionState.status === ConnectionStatus.Ready ||
-        connectionState.status === ConnectionStatus.AwaitingConfirmation ||
-        connectionState.status === ConnectionStatus.ErrorState;
+      const canRetry = RETRYABLE_CONNECTION_STATUSES.has(
+        connectionState.status,
+      );
 
       if (!canRetry) {
         log.debug('[HW-Batch] handleRetry: cannot retry, device not connected');
@@ -829,16 +816,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       // Reject the pending approval so the confirmation is cleaned up and
       // does not linger after navigating back to the send flow.
       if (currentApprovalRequestId) {
-        try {
-          await dispatch(
-            rejectPendingApproval(
-              currentApprovalRequestId,
-              providerErrors.userRejectedRequest().serialize(),
-            ),
-          );
-        } catch {
-          // Approval may already be resolved/rejected — safe to ignore.
-        }
+        await cleanupPendingApproval(dispatch, currentApprovalRequestId);
       }
       navigate(sendBundleState?.returnRoute ?? DEFAULT_ROUTE, {
         replace: true,

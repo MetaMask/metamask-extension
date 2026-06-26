@@ -1,6 +1,10 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { providerErrors } from '@metamask/rpc-errors';
+import { TextColor } from '@metamask/design-system-react';
 import { shortenAddress } from '../../../helpers/utils/util';
 import type { useI18nContext } from '../../../hooks/useI18nContext';
+import { rejectPendingApproval } from '../../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../../store/store';
 import {
   HardwareWalletSignatureStatus,
   type HardwareWalletSignaturesState,
@@ -16,6 +20,63 @@ export {
   type BridgeTxHistory,
   type QrHardwareSignRequest,
 };
+
+/**
+ * Rejects a pending approval, swallowing any error. Used for cleanup when the
+ * user cancels/retries so a stale approval can't block the next flow.
+ *
+ * @param dispatch - The Redux dispatch function.
+ * @param approvalId - The pending approval id to reject.
+ * @param error - The error to throw when rejecting the approval. Defaults to a
+ * serialized "user rejected request" provider error.
+ */
+export async function cleanupPendingApproval(
+  dispatch: MetaMaskReduxDispatch,
+  approvalId: string,
+  error: unknown = providerErrors.userRejectedRequest().serialize(),
+): Promise<void> {
+  try {
+    await dispatch(rejectPendingApproval(approvalId, error));
+  } catch {
+    // Swallowed intentionally — best-effort cleanup.
+  }
+}
+
+/**
+ * Checks whether a signature step display status represents an error
+ * (rejected, failed, or disconnected).
+ *
+ * @param status - The signature step display status to check.
+ * @returns True when the status is Rejected, Failed, or Disconnected.
+ */
+export const isErrorStepStatus = (status: SignatureStepStatus): boolean =>
+  status === SignatureStepStatus.Rejected ||
+  status === SignatureStepStatus.Failed ||
+  status === SignatureStepStatus.Disconnected;
+
+/**
+ * Returns a design-system text color suitable for a signature-step label
+ * based on whether the step is in an error state.
+ *
+ * @param stepStatus - The display status of the step.
+ * @returns TextColor.ErrorDefault for error states, TextColor.TextDefault otherwise.
+ */
+export function getStepLabelColor(stepStatus: SignatureStepStatus): TextColor {
+  return isErrorStepStatus(stepStatus)
+    ? TextColor.ErrorDefault
+    : TextColor.TextDefault;
+}
+
+/**
+ * Returns the localization key for the QR scan button label.
+ *
+ * @param isFinalSignature - Whether this is the final signing step.
+ * @returns The i18n key for the scan button label.
+ */
+export const getQrScanButtonLabelKey = (isFinalSignature: boolean): string =>
+  isFinalSignature
+    ? 'bridgeQrHardwareScanSignatureFinal'
+    : 'bridgeQrHardwareScanSignatureNext';
 
 /**
  * Type guard that checks whether an unknown value is a valid QR hardware
@@ -589,3 +650,25 @@ export const getStepStatus = (
       return SignatureStepStatus.Pending;
   }
 };
+
+/**
+ * Derives first- and final-step display statuses from the signature state
+ * machine in a single call instead of two separate calls.
+ *
+ * @param signatureState - The current state of the hardware-wallet signature state machine.
+ * @returns An object containing the `first` and `final` step statuses.
+ */
+export function getAllStepStatuses(
+  signatureState: HardwareWalletSignaturesState,
+): { first: SignatureStepStatus; final: SignatureStepStatus } {
+  return {
+    first: getStepStatus(
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      signatureState,
+    ),
+    final: getStepStatus(
+      HardwareWalletSignatureStatus.AwaitingFinalSignature,
+      signatureState,
+    ),
+  };
+}

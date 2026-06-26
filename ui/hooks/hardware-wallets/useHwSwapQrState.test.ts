@@ -31,6 +31,7 @@ jest.mock(
   '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
   () => ({
     isQrHardwareSignRequest: jest.fn(),
+    cleanupPendingApproval: jest.fn(),
   }),
 );
 
@@ -47,6 +48,10 @@ const mockGetActiveQrCodeScanRequest =
 const mockIsQrHardwareSignRequest = jest.requireMock(
   '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
 ).isQrHardwareSignRequest;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const mockCleanupPendingApproval = jest.requireMock(
+  '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+).cleanupPendingApproval;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockCancelQrCodeScan = jest.requireMock(
   '../../store/actions',
@@ -466,7 +471,11 @@ describe('useHwSwapQrState', () => {
 
       result.current.handleQrSignatureCancel();
 
-      expect(mockDispatch).toHaveBeenCalledTimes(2);
+      expect(mockCleanupPendingApproval).toHaveBeenCalledWith(
+        mockDispatch,
+        'tx-123',
+      );
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
     });
 
     it('cancels QR code scan when qrSignRequest exists', () => {
