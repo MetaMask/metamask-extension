@@ -46,12 +46,8 @@ describe('Test Snap Cronjob Duration', function () {
         );
         await headerNavbar.checkNotificationCountInMenuOption(1);
 
-        // This click will close the menu.
-        await headerNavbar.clickDrawerBackButton();
-
-        // Click the notification options and validate the message in the
-        // notification list.
-        await headerNavbar.clickNotificationsOptions();
+        // Drawer is already open — navigate to notifications without closing/reopening.
+        await headerNavbar.goToNotifications();
         await notificationsListPage.checkPageIsLoaded();
         await notificationsListPage.checkSnapsNotificationMessage(
           'This notification was triggered by a cronjob using an ISO 8601 duration.',

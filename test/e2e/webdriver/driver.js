@@ -778,16 +778,34 @@ class Driver {
    * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
    */
   async isElementMoving(rawLocator) {
-    const element = await this.findElement(rawLocator);
-    const initialPosition = await element.getRect();
+    let initialPosition;
+    try {
+      const element = await this.findElement(rawLocator);
+      initialPosition = await element.getRect();
+    } catch (error) {
+      if (error.name === 'StaleElementReferenceError') {
+        // React replaced the DOM node immediately after findElement — treat as still moving.
+        return true;
+      }
+      throw error;
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
 
-    const newPosition = await element.getRect();
+    try {
+      const freshElement = await this.findElement(rawLocator);
+      const newPosition = await freshElement.getRect();
 
-    return (
-      initialPosition.x !== newPosition.x || initialPosition.y !== newPosition.y
-    );
+      return (
+        initialPosition.x !== newPosition.x || initialPosition.y !== newPosition.y
+      );
+    } catch (error) {
+      if (error.name === 'StaleElementReferenceError') {
+        // React re-rendered during the animation window — treat as still moving.
+        return true;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -842,9 +860,8 @@ class Driver {
    * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
    */
   async clickElementAndWaitToDisappear(rawLocator, timeout = 3000) {
-    const element = await this.findClickableElement(rawLocator);
-    await element.click();
-    await element.waitForElementState('hidden', timeout);
+    await this.clickElement(rawLocator);
+    await this.waitForSelector(rawLocator, { state: 'detached', timeout });
   }
 
   /**
