@@ -3,6 +3,7 @@ import {
   isBitcoinAccountForSend,
   isEVMAccountForSend,
   isSolanaAccountForSend,
+  isTronAccountForSend,
 } from './account';
 
 describe('Account Send Utils', () => {
@@ -235,5 +236,103 @@ describe('Account Send Utils', () => {
       } as unknown as InternalAccount;
       expect(isBitcoinAccountForSend(account)).toBe(false);
     });
+  });
+
+  describe('isTronAccountForSend', () => {
+    it('returns false when account is null', () => {
+      expect(isTronAccountForSend(null as unknown as InternalAccount)).toBe(
+        false,
+      );
+    });
+
+    it('returns false when account is undefined', () => {
+      expect(
+        isTronAccountForSend(undefined as unknown as InternalAccount),
+      ).toBe(false);
+    });
+
+    it('returns true when account type starts with tron:', () => {
+      const account = {
+        id: 'test-id',
+        type: 'tron:mainnet',
+        address: 'tron-address',
+        metadata: {},
+        methods: [],
+        options: {},
+      } as unknown as InternalAccount;
+      expect(isTronAccountForSend(account)).toBe(true);
+    });
+
+    it('returns true when account has tron scope', () => {
+      const account = {
+        id: 'test-id',
+        type: 'other:type',
+        address: 'tron-address',
+        metadata: {},
+        methods: [],
+        options: {},
+        scopes: ['tron:mainnet', 'other:scope'],
+      } as unknown as InternalAccount;
+      expect(isTronAccountForSend(account)).toBe(true);
+    });
+
+    it('returns false when account type does not start with tron and has no tron scopes', () => {
+      const account = {
+        id: 'test-id',
+        type: 'eip155:ethereum',
+        address: '0x123',
+        metadata: {},
+        methods: [],
+        options: {},
+        scopes: ['eip155:1'],
+      } as unknown as InternalAccount;
+      expect(isTronAccountForSend(account)).toBe(false);
+    });
+  });
+
+  describe('malformed account compatibility checks', () => {
+    const testCases: [
+      string,
+      (account: InternalAccount) => boolean,
+      string,
+      string,
+    ][] = [
+      ['EVM', isEVMAccountForSend, 'eip155:1', 'solana:mainnet'],
+      ['Solana', isSolanaAccountForSend, 'solana:mainnet', 'bip122:bitcoin'],
+      ['Bitcoin', isBitcoinAccountForSend, 'bip122:bitcoin', 'eip155:1'],
+      ['Tron', isTronAccountForSend, 'tron:mainnet', 'eip155:1'],
+    ];
+
+    it.each(testCases)(
+      'returns true for %s when account type is undefined but matching scope exists',
+      (_name, fn, matchingScope) => {
+        const account = {
+          id: 'test-id',
+          address: 'test-address',
+          metadata: {},
+          methods: [],
+          options: {},
+          scopes: [matchingScope],
+        } as unknown as InternalAccount;
+
+        expect(fn(account)).toBe(true);
+      },
+    );
+
+    it.each(testCases)(
+      'returns false for %s when account type is undefined and scopes do not match',
+      (_name, fn, _matchingScope, nonMatchingScope) => {
+        const account = {
+          id: 'test-id',
+          address: 'test-address',
+          metadata: {},
+          methods: [],
+          options: {},
+          scopes: [undefined, nonMatchingScope],
+        } as unknown as InternalAccount;
+
+        expect(fn(account)).toBe(false);
+      },
+    );
   });
 });
