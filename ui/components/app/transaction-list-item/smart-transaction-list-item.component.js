@@ -101,7 +101,6 @@ export default function SmartTransactionListItem({
             <Box paddingTop={2}>
               <CancelButton
                 size={ButtonSize.Sm}
-                transaction={smartTransaction.uuid}
                 cancelTransaction={(e) => {
                   e?.preventDefault();
                   dispatch(cancelSwapsSmartTransaction(smartTransaction.uuid));

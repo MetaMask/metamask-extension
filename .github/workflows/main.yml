@@ -83,14 +83,6 @@ jobs:
           cache-node-modules: true
           skip-allow-scripts: true
 
-      # Need to cache `.metamask` folder for the anvil binary
-      - name: Cache .metamask folder
-        if: ${{ steps.checkout-and-setup.outputs.node-modules-cache-hit != 'true' }}
-        uses: actions/cache/save@v5
-        with:
-          path: .metamask
-          key: .metamask-${{ hashFiles('yarn.lock') }}
-
   lint-workflows:
     name: Lint workflows
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
