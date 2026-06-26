@@ -1,28 +1,18 @@
 import React from 'react';
-import README from './README.mdx';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
-import {
-  TextVariant,
-  TextAlign,
-  DISPLAY,
-  FLEX_DIRECTION,
-  AlignItems,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-
-import { Text } from '../text';
+import { StoryFn, Meta } from '@storybook/react';
 
 import { PopoverHeader } from './popover-header';
-import { AvatarAccount } from '@metamask/design-system-react';
-import { Button, ButtonSize } from '../button';
 
 export default {
-  title: 'Components/ComponentLibrary/PopoverHeader',
+  title: 'Components/ComponentLibrary/PopoverHeader (deprecated)',
   component: PopoverHeader,
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [PopoverHeader from @metamask/design-system-react] instead.',
+      },
     },
   },
   argTypes: {
@@ -34,55 +24,11 @@ export default {
   args: {
     children: 'PopoverHeader',
   },
-} as ComponentMeta<typeof PopoverHeader>;
+} as Meta<typeof PopoverHeader>;
 
-const Template: ComponentStory<typeof PopoverHeader> = (args) => {
+const Template: StoryFn<typeof PopoverHeader> = (args) => {
   return <PopoverHeader {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const Children: ComponentStory<typeof PopoverHeader> = (args) => (
-  <>
-    <PopoverHeader {...args} marginBottom={4}>
-      Children as string
-    </PopoverHeader>
-    <PopoverHeader
-      {...args}
-      childrenWrapperProps={{
-        display: DISPLAY.FLEX,
-        flexDirection: FLEX_DIRECTION.COLUMN,
-        alignItems: AlignItems.center,
-        justifyContent: JustifyContent.center,
-      }}
-    >
-      <AvatarAccount address="0x1234" />
-      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-        Custom header using multiple components
-      </Text>
-    </PopoverHeader>
-  </>
-);
-
-export const OnBack = Template.bind({});
-OnBack.args = {
-  children: 'OnBack demo',
-};
-
-export const OnClose = Template.bind({});
-OnClose.args = {
-  children: 'OnClose demo',
-};
-
-export const StartAccessory = Template.bind({});
-StartAccessory.args = {
-  children: 'StartAccessory demo',
-  startAccessory: <Button size={ButtonSize.Sm}>Demo</Button>,
-};
-
-export const EndAccessory = Template.bind({});
-EndAccessory.args = {
-  children: 'EndAccessory demo',
-  endAccessory: <Button size={ButtonSize.Sm}>Demo</Button>,
-};

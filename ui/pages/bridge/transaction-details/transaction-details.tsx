@@ -258,7 +258,7 @@ const CrossChainSwapTxDetails = () => {
         startAccessory={
           <ButtonIcon
             iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             onClick={() => navigate?.(PREVIOUS_ROUTE)}
           />

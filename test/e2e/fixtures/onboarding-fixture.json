@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 211,
+      "currentMigrationVersion": 215,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -59,6 +59,7 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
+      "perpsTabBadgeSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
@@ -172,6 +173,10 @@
     "LoggingController": {
       "logs": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false
+    },
     "MetaMetricsController": {
       "dataCollectionForMarketing": null,
       "eventsBeforeMetricsOptIn": [
@@ -182,11 +187,8 @@
         }
       ],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
-      "metaMetricsId": null,
-      "participateInMetaMetrics": null,
-      "segmentApiCalls": {},
+      "completedMetaMetricsOnboarding": false,
       "tracesBeforeMetricsOptIn": [
         {
           "request": {
@@ -596,6 +598,10 @@
     "NotificationServicesPushController": {
       "fcmToken": "",
       "isPushEnabled": true
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
     },
     "OnboardingController": {
       "completedOnboarding": false,
@@ -2073,6 +2079,7 @@
     },
     "ProfileMetricsController": {
       "initialEnqueueCompleted": false,
+      "proofBackfillEnqueued": false,
       "syncQueue": {}
     },
     "RemoteFeatureFlagController": {
@@ -2093,6 +2100,7 @@
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
+      "migrationVersion": 0,
       "socialBackupsMetadata": []
     },
     "SelectedNetworkController": {
@@ -2267,6 +2275,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 211
+    "version": 215
   }
 }

@@ -7,12 +7,6 @@
     "message": "Tá an luchtú ag glacadh níos faide ná mar is gnách.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Earráid"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Sonraí idirbhirt neamhréireach. Seiceáil sonraí an idirbhirt le do thoil."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Níl aon chuntais eile ann. Más mian leat rochtain a fháil ar chuntas eile nach bhfuil liostaithe thíos, athcheangail do sparán crua-earraí agus roghnaigh é."
   },
@@ -1910,9 +1904,6 @@
   "enabled": {
     "message": "Cumasaithe"
   },
-  "enabledNetworks": {
-    "message": "Líonraí cumasaithe"
-  },
   "encryptionPublicKeyNotice": {
     "message": "Ba mhaith le $1 d’eochair chriptithe phoiblí. Trí thoiliú a thabhairt, beidh an suíomh seo in ann teachtaireachtaí criptithe a scríobh chugat.",
     "description": "$1 is the web3 site name"
@@ -3309,9 +3300,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Tá ár mbeartas príobháideachais nuashonraithe againn"
   },
-  "newRpcUrl": {
-    "message": "URL RPC nua"
-  },
   "newTokensImportedMessage": {
     "message": "D'éirigh leat $1 a allmhairiú.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -3417,9 +3405,6 @@
   },
   "notCurrentAccount": {
     "message": "An é seo an cuntas ceart? Tá sé difriúil ón gcuntas atá roghnaithe i do sparán faoi láthair."
-  },
-  "notEnoughGas": {
-    "message": "Gan dóthain gáis"
   },
   "notificationDetail": {
     "message": "Sonraí"
@@ -5985,9 +5970,6 @@
   },
   "termsOfUseTitle": {
     "message": "Athbhreithnigh ár dTéarmaí Úsáide"
-  },
-  "testNetworks": {
-    "message": "Líonraí tástála"
   },
   "testnets": {
     "message": "Líonta tástála"

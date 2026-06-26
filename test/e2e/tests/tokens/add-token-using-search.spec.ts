@@ -6,7 +6,7 @@ import {
   BSC_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 
 const BSC_BAT_ADDRESS = '0x0d8775f648430679a709e98d2b0cb6250d2887ef';
@@ -153,12 +153,45 @@ describe('Add existing token using search', function () {
     ];
   }
 
+  async function mockTokenSearch(mockServer: Mockttp): Promise<MockedEndpoint> {
+    return mockServer
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const query = (url.searchParams.get('query') ?? '')
+          .trim()
+          .toLowerCase();
+        const data =
+          query === 'bat'
+            ? [
+                {
+                  assetId: `eip155:56/erc20:${BSC_BAT_ADDRESS}`,
+                  symbol: 'BAT',
+                  name: 'Basic Attention Token',
+                  decimals: 18,
+                },
+              ]
+            : [];
+        return {
+          statusCode: 200,
+          json: {
+            data,
+            count: data.length,
+            totalCount: data.length,
+            pageInfo: { hasNextPage: false, endCursor: '' },
+          },
+        };
+      });
+  }
+
   async function mockBscApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
     return [
       ...(await mockPriceFetch(mockServer)),
       ...(await mockBscBridgeApi(mockServer)),
       ...(await mockSupportedNetworks(mockServer)),
       ...(await mockTokensAssets(mockServer)),
+      await mockTokenSearch(mockServer),
     ];
   }
   it('renders the balance for the chosen token', async function () {
@@ -184,19 +217,24 @@ describe('Add existing token using search', function () {
         localNodeOptions: {
           chainId: parseInt(CHAIN_IDS.BSC, 16),
         },
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
         title: this.test?.fullTitle(),
         testSpecificMock: mockBscApis,
       },
       async ({ driver }) => {
         await login(driver);
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenAmountIsDisplayed('25 BNB');
-        await assetListPage.importTokenBySearch({
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenAmountIsDisplayed('25 BNB');
+        await tokensTab.importTokenBySearch({
           tokenName: 'BAT',
           networkName: BSC_DISPLAY_NAME,
         });
-        await assetListPage.checkTokenAmountInTokenDetailsModal(
+        await tokensTab.checkTokenAmountInTokenDetailsModal(
           'Basic Attention Token',
           '0 BAT',
         );

@@ -135,15 +135,13 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
 
           // Update user traits
           try {
-            await dispatch(
-              updateMetaMetricsTraits({
-                [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
-                ...(referralCode && {
-                  [MetaMetricsUserTrait.RewardsReferred]: true,
-                  [MetaMetricsUserTrait.RewardsReferralCodeUsed]: referralCode,
-                }),
+            await updateMetaMetricsTraits({
+              [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
+              ...(referralCode && {
+                [MetaMetricsUserTrait.RewardsReferred]: true,
+                [MetaMetricsUserTrait.RewardsReferralCodeUsed]: referralCode,
               }),
-            );
+            });
           } catch {
             // Silently fail - traits update should not block opt-in
           }

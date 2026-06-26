@@ -30,7 +30,7 @@ const DEPRECATED_COMPONENT_PATHS = [
   'ui/check-box',
   'ui/chip',
   'ui/form-field',
-  'ui/icon',
+  // 'ui/icon',
   'ui/icon-border',
   'ui/icon-with-fallback',
   'ui/identicon',
