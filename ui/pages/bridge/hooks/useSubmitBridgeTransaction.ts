@@ -8,7 +8,11 @@ import {
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
 import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
-import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../../shared/lib/selectors/keyring';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
@@ -54,6 +58,9 @@ export default function useSubmitBridgeTransaction() {
     useBridgeNavigation();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
+  const isQrHardwareWallet =
+    hardwareWalletType === HardwareKeyringType.qr;
   const toastEnabled = useSelector(getExtensionSkipTransactionStatusPage);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
@@ -143,6 +150,14 @@ export default function useSubmitBridgeTransaction() {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
+        // QR rejections also update lastQrScanCompletedSuccessfully; the global
+        // useNavigateOnQrScanComplete hook navigates back to the prepare page.
+        if (!isQrHardwareWallet) {
+          navigateToBridgePage();
+        }
+        return;
+      }
+      if (isQrHardwareWallet) {
         navigateToBridgePage();
         return;
       }
@@ -151,10 +166,12 @@ export default function useSubmitBridgeTransaction() {
     }
 
     const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
-    navigate(to, {
-      state: { stayOnHomePage: true },
-      replace: true,
-    });
+    if (!isQrHardwareWallet) {
+      navigate(to, {
+        state: { stayOnHomePage: true },
+        replace: true,
+      });
+    }
   };
 
   return {

@@ -110,6 +110,7 @@ import {
 } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
+import { QrScanCompleteNavigation } from '../bridge/hooks/qr-scan-complete-navigation';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
@@ -751,6 +752,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
+      <QrScanCompleteNavigation />
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}
