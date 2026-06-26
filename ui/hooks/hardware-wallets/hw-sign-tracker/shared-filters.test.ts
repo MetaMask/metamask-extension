@@ -4,6 +4,12 @@ import {
   createTxMeta,
   TARGET_FROM,
 } from '../../../../test/helpers/hw-sign-tracker';
+import {
+  BRIDGE_TRANSACTION_TYPES,
+  BUNDLE_FEE_TRANSACTION_TYPES,
+  BUNDLE_SEND_TRANSACTION_TYPES,
+  BUNDLE_TRANSACTION_TYPES,
+} from './constants';
 import { matchesTx, classifySignedEvent } from './shared-filters';
 
 describe('matchesTx', () => {
@@ -20,10 +26,10 @@ describe('matchesTx', () => {
     ).toBe(false);
   });
 
-  it('returns false when transaction type is not a batch type', () => {
+  it('returns false when transaction type is not a tracked type', () => {
     expect(
       matchesTx(
-        createTxMeta({ type: TransactionType.simpleSend }),
+        createTxMeta({ type: TransactionType.contractInteraction }),
         TARGET_FROM,
       ),
     ).toBe(false);
@@ -37,6 +43,26 @@ describe('matchesTx', () => {
     expect(
       matchesTx(createTxMeta({ type: TransactionType.swap }), TARGET_FROM),
     ).toBe(true);
+  });
+
+  it('returns true for matching address when type filtering is disabled', () => {
+    expect(
+      matchesTx(
+        createTxMeta({ type: TransactionType.simpleSend }),
+        TARGET_FROM,
+        null,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for send type when restricted to bridge transaction types', () => {
+    expect(
+      matchesTx(
+        createTxMeta({ type: TransactionType.simpleSend }),
+        TARGET_FROM,
+        BRIDGE_TRANSACTION_TYPES,
+      ),
+    ).toBe(false);
   });
 
   it('performs case-insensitive address comparison', () => {
@@ -72,7 +98,28 @@ describe('classifySignedEvent', () => {
     });
   });
 
-  it('returns null for non-batch type', () => {
+  it('returns null for untracked type', () => {
+    expect(classifySignedEvent(TransactionType.contractInteraction)).toBeNull();
+  });
+
+  it('does not classify bundle transaction types by default', () => {
+    expect(classifySignedEvent(TransactionType.gasPayment)).toBeNull();
     expect(classifySignedEvent(TransactionType.simpleSend)).toBeNull();
+  });
+});
+
+describe('bundle transaction type constants', () => {
+  it('includes known fee and send transaction types', () => {
+    expect(BUNDLE_FEE_TRANSACTION_TYPES.has(TransactionType.gasPayment)).toBe(
+      true,
+    );
+    expect(BUNDLE_SEND_TRANSACTION_TYPES.has(TransactionType.simpleSend)).toBe(
+      true,
+    );
+    expect(
+      BUNDLE_SEND_TRANSACTION_TYPES.has(TransactionType.tokenMethodTransfer),
+    ).toBe(true);
+    expect(BUNDLE_TRANSACTION_TYPES.has(TransactionType.gasPayment)).toBe(true);
+    expect(BUNDLE_TRANSACTION_TYPES.has(TransactionType.simpleSend)).toBe(true);
   });
 });
