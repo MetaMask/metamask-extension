@@ -44,11 +44,6 @@ export function getSnapControllerMessenger(
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
-      // 'SnapController:snapInstallStarted',
-      // 'SnapController:snapInstallFailed',
-      // 'SnapController:snapInstalled',
-      // 'SnapController:snapUpdated',
-      // 'SnapController:snapUninstalled',
       'SnapRegistryController:registryUpdated',
     ],
     actions: [
