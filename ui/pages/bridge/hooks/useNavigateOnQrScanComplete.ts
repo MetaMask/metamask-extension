@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
 import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
@@ -7,6 +7,7 @@ import {
   getActiveQrCodeScanRequest,
   getLastQrScanCompletedSuccessfully,
 } from '../../../selectors/selectors';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 
 /**
@@ -16,14 +17,22 @@ import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
  *
  * Only navigates when activeQrCodeScanRequest goes from a SIGN request to null
  * AND the scan completed successfully (not cancelled/rejected). PAIR requests
- * (wallet import) are ignored. Rejection is handled by
- * useSubmitBridgeTransaction, which navigates back to the prepare page.
+ * (wallet import) are ignored.
+ *
+ * On SIGN rejection/cancel, sets `wasTxDeclined` and returns to the bridge
+ * prepare page. This state-driven path covers QR cancellations that do not
+ * propagate through `useSubmitBridgeTransaction` (e.g. before submit resolves).
+ *
  * For USB wallets (Ledger): navigation is handled by useSubmitBridgeTransaction
  * after transaction submission.
  */
 export function useNavigateOnQrScanComplete(): void {
-  const { navigateToActivityPage, navigateToDefaultRoute } =
-    useBridgeNavigation();
+  const dispatch = useDispatch();
+  const {
+    navigateToActivityPage,
+    navigateToBridgePage,
+    navigateToDefaultRoute,
+  } = useBridgeNavigation();
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const lastQrScanCompletedSuccessfully = useSelector(
     getLastQrScanCompletedSuccessfully,
@@ -55,11 +64,23 @@ export function useNavigateOnQrScanComplete(): void {
       } else {
         navigateToActivityPage();
       }
+      return;
+    }
+
+    if (
+      wasSignRequestActive &&
+      isQrScanCleared &&
+      lastQrScanCompletedSuccessfully === false
+    ) {
+      dispatch(setWasTxDeclined(true));
+      navigateToBridgePage();
     }
   }, [
     activeQrCodeScanRequest,
+    dispatch,
     lastQrScanCompletedSuccessfully,
     navigateToActivityPage,
+    navigateToBridgePage,
     navigateToDefaultRoute,
     toastEnabled,
   ]);

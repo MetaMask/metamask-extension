@@ -150,7 +150,11 @@ export default function useSubmitBridgeTransaction() {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigateToBridgePage();
+        // QR rejections also update lastQrScanCompletedSuccessfully; the global
+        // useNavigateOnQrScanComplete hook navigates back to the prepare page.
+        if (!isQrHardwareWallet) {
+          navigateToBridgePage();
+        }
         return;
       }
       if (isQrHardwareWallet) {

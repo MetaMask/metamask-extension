@@ -2,10 +2,12 @@ import { act, waitFor } from '@testing-library/react';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import * as bridgeActions from '../../../ducks/bridge/actions';
 import { useNavigateOnQrScanComplete } from './useNavigateOnQrScanComplete';
 
 const mockUseNavigate = jest.fn();
 const mockNavigateToActivityPage = jest.fn();
+const mockNavigateToBridgePage = jest.fn();
 const mockNavigateToDefaultRoute = jest.fn().mockResolvedValue(undefined);
 /** Per-selector overrides: selector name -> value. Undefined means use real selector. */
 let mockUseSelectorOverrides: Record<string, unknown> = {};
@@ -20,6 +22,7 @@ jest.mock('react-router-dom', () => {
 jest.mock('../../../hooks/bridge/useBridgeNavigation', () => ({
   useBridgeNavigation: () => ({
     navigateToActivityPage: mockNavigateToActivityPage,
+    navigateToBridgePage: mockNavigateToBridgePage,
     navigateToDefaultRoute: mockNavigateToDefaultRoute,
   }),
 }));
@@ -141,17 +144,17 @@ describe('useNavigateOnQrScanComplete', () => {
     expect(mockNavigateToActivityPage).not.toHaveBeenCalled();
   });
 
-  it('does not navigate when QR scan is rejected or cancelled', async () => {
-    const store = createBridgeMockStore();
-
+  it('sets wasTxDeclined and navigates to the bridge page when a SIGN request is rejected or cancelled', async () => {
     mockUseSelectorOverrides = {
       getActiveQrCodeScanRequest: mockQrScanRequest,
       getLastQrScanCompletedSuccessfully: null,
     };
     const { rerender } = renderHookWithProvider(
       () => useNavigateOnQrScanComplete(),
-      store,
+      createBridgeMockStore(),
     );
+
+    const setWasTxDeclinedSpy = jest.spyOn(bridgeActions, 'setWasTxDeclined');
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -166,6 +169,8 @@ describe('useNavigateOnQrScanComplete', () => {
       await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
+    expect(setWasTxDeclinedSpy).toHaveBeenCalledWith(true);
+    expect(mockNavigateToBridgePage).toHaveBeenCalledTimes(1);
     expect(mockUseNavigate).not.toHaveBeenCalled();
     expect(mockNavigateToActivityPage).not.toHaveBeenCalled();
     expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
