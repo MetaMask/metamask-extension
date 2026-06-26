@@ -4,8 +4,8 @@ import { strict as assert } from 'assert';
 import { CompletedRequest, MockttpServer } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
-import { PAGES } from '../../webdriver/driver';
 import { MOCK_ANALYTICS_ID } from '../../constants';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   parseSentryEnvelopes,
   summarizeCoverage,
@@ -22,6 +22,12 @@ import {
  * PR #42867) produces equivalent telemetry — the same errors, transactions,
  * tags, and volume — rather than trusting a green suite.
  *
+ * The fixed flow is the #43819 scenario: unlock (eager `session` envelope +
+ * `UI Startup` / `/home.html` pageload transactions) → trigger a known
+ * developer-options error (`event`). We wait until all three envelope
+ * categories have been POSTed before snapshotting, so we capture the full set
+ * rather than just the eager session envelope.
+ *
  * Workflow (run the same flow on each side). First, on `main` (v8), run with
  * `UPDATE_SENTRY_COVERAGE_BASELINE=true` to write
  * `state-snapshots/sentry-coverage-baseline.json`. Then, on the v10 branch, run
@@ -37,9 +43,16 @@ const BASELINE_PATH = resolve(
   './state-snapshots/sentry-coverage-baseline.json',
 );
 const UPDATE_BASELINE = process.env.UPDATE_SENTRY_COVERAGE_BASELINE === 'true';
-const WAIT_FOR_FIRST_SENTRY_MS = 15_000;
-// Let the envelope batch accumulate after the first arrives before snapshotting.
-const SETTLE_MS = 3_000;
+
+// The fixed flow emits three envelope categories; wait until all have arrived
+// (or the cap elapses) before snapshotting, so we never capture a half-flushed
+// batch: `session` is eager, the pageload `transaction`s follow UI Startup, and
+// the developer-options error `event` is the last to flush.
+const REQUIRED_TYPES = ['session', 'event', 'transaction'];
+const MAX_WAIT_FOR_ENVELOPES_MS = 30_000;
+// Let stragglers (e.g. a second pageload transaction) accumulate after the
+// required set has arrived before snapshotting.
+const SETTLE_MS = 5_000;
 
 // A manual cross-build harness, not a standard always-on e2e check: generate
 // the baseline on v8 (`UPDATE_SENTRY_COVERAGE_BASELINE=true`), then compare on
@@ -58,36 +71,58 @@ describe('Sentry coverage equivalence (#43819)', function () {
     async function () {
       await withFixtures(
         {
-          fixtures: {
-            ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                analyticsId: MOCK_ANALYTICS_ID,
-                completedMetaMetricsOnboarding: true,
-                optedIn: true,
-              })
-              .build(),
-            // Corrupt state to provoke a deterministic init/migration error event,
-            // so every run emits a comparable error envelope alongside the
-            // pageload transactions.
-            meta: undefined,
-          },
+          fixtures: new FixtureBuilderV2()
+            .withMetaMetricsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
+            })
+            .build(),
           title: this.test?.fullTitle(),
           // Capture EVERY Sentry POST (no `withBodyIncluding` filter), returning a
-          // 200 so the SDK doesn't retry. One endpoint accumulates all envelopes.
+          // 200 so the SDK doesn't retry. One endpoint accumulates all envelopes
+          // (error DSN and performance DSN both match `sentryRegEx`).
           testSpecificMock: async (mockServer: MockttpServer) =>
             mockServer
               .forPost(sentryRegEx)
               .thenCallback(() => ({ statusCode: 200, json: {} })),
-          manifestFlags: { sentry: { forceEnable: true } },
+          // optedIn already enables Sentry; force 100% trace sampling so the
+          // pageload transactions are emitted deterministically.
+          manifestFlags: {
+            sentry: { forceEnable: false, tracesSampleRate: 1 },
+          },
+          // The developer-options test error logs to the console by design.
+          ignoredConsoleErrors: ['TestError'],
         },
         async ({ driver, mockedEndpoint }) => {
-          // Pageload (transactions) + the migration error (event).
-          await driver.navigate(PAGES.HOME, { waitForControllers: false });
+          // Unlock → session envelope + UI Startup / /home.html pageload
+          // transactions. Skip the non-EVM/snap-discovery wait (#43817) and
+          // balance validation — irrelevant to telemetry and a flake source.
+          await login(driver, {
+            validateBalance: false,
+            waitForNonEvmAccounts: false,
+          });
+
+          // Trigger a deterministic error captured by Sentry via the
+          // developer-options hook, so every run emits a comparable error event.
+          await driver.executeScript(
+            'window.stateHooks.throwTestError("Sentry coverage equivalence error")',
+          );
+
+          // Wait until all three envelope categories have been POSTed (or the cap
+          // elapses), then settle for stragglers — so we snapshot the full set,
+          // not just the eager session envelope.
           await driver
-            .wait(
-              async () => !(await mockedEndpoint.isPending()),
-              WAIT_FOR_FIRST_SENTRY_MS,
-            )
+            .wait(async () => {
+              const seen = await mockedEndpoint.getSeenRequests();
+              const bodies = await Promise.all(
+                seen.map((request: CompletedRequest) => request.body.getText()),
+              );
+              const types = new Set(
+                parseSentryEnvelopes(bodies).map((item) => item.type),
+              );
+              return REQUIRED_TYPES.every((type) => types.has(type));
+            }, MAX_WAIT_FOR_ENVELOPES_MS)
             .catch(() => undefined);
           await driver.delay(SETTLE_MS);
 
