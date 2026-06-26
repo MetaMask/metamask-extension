@@ -26,8 +26,6 @@ export type TokenDisplayOverrides = {
   hidePrimaryDisplay?: boolean;
   /** Whether to hide the secondary display (fiat value) */
   hideSecondaryDisplay?: boolean;
-  /** React node to render as a trailing label (e.g., activation status) */
-  trailingLabel?: React.ReactNode;
 };
 
 // Base token type with common fields
@@ -64,7 +62,6 @@ export type TokenDisplayInfo = TokenDisplayValues & {
   tokenImage: string;
   isStakeable?: boolean;
   tokenChainImage: string;
-  isStellarTrustlineInactive?: boolean;
 };
 
 // Token type that includes fiat amount, balance, and display values

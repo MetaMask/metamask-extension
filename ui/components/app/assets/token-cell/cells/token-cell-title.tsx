@@ -7,7 +7,6 @@ import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
 import { StockBadge } from '../../stock-badge/stock-badge';
-import { StellarTrustlineInactiveBadge } from '../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
@@ -26,9 +25,7 @@ export const TokenCellTitle = React.memo(
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
         {label && <Tag label={label} />}
-        {displayOverrides?.titleBadge
-          ? displayOverrides.titleBadge
-          : token.isStellarTrustlineInactive && <StellarTrustlineInactiveBadge />}
+        {displayOverrides?.titleBadge}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
         )}
@@ -53,8 +50,6 @@ export const TokenCellTitle = React.memo(
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.chainId === nextProps.token.chainId &&
     prevProps.token.symbol === nextProps.token.symbol &&
-    prevProps.token.isStellarTrustlineInactive ===
-      nextProps.token.isStellarTrustlineInactive &&
     prevProps.displayOverrides?.titleBadge ===
       nextProps.displayOverrides?.titleBadge,
 );

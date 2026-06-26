@@ -109,13 +109,19 @@ describe('TokenCellTitle', () => {
     expect(queryByTestId('tag')).not.toBeInTheDocument();
   });
 
-  it('renders stellar trustline inactive badge when extra has zero limit', () => {
+  it('renders stellar trustline inactive badge when displayOverrides provide titleBadge', () => {
     const token = createMockToken({
       accountType: undefined,
-      isStellarTrustlineInactive: true,
       extra: { limit: '0' },
     });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
+    const { getByTestId } = render(
+      <TokenCellTitle
+        token={token}
+        displayOverrides={{
+          titleBadge: <span data-testid="stellar-trustline-inactive-badge" />,
+        }}
+      />,
+    );
 
     expect(getByTestId('stellar-trustline-inactive-badge')).toBeInTheDocument();
   });

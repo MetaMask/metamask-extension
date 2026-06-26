@@ -119,8 +119,6 @@ export const TokenCellSecondaryDisplay = React.memo(
   },
   (prevProps, nextProps) =>
     prevProps.token.secondary === nextProps.token.secondary &&
-    prevProps.token.isStellarTrustlineInactive ===
-      nextProps.token.isStellarTrustlineInactive &&
     prevProps.displayOverrides?.hideSecondaryDisplay ===
       nextProps.displayOverrides?.hideSecondaryDisplay &&
     prevProps.privacyMode === nextProps.privacyMode,
