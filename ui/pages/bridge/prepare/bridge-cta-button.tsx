@@ -78,9 +78,11 @@ export const BridgeCTAButton = ({
 
   const trackMetricsEvent = useCallback<UITrackEventMethod>(
     (payload) => {
+      const builder = payload.category
+        ? createEventBuilder(payload.event).addCategory(payload.category)
+        : createEventBuilder(payload.event);
       trackEvent(
-        createEventBuilder(payload.event)
-          .addCategory(payload.category)
+        builder
           .addProperties(payload.properties ?? {})
           .addSensitiveProperties(payload.sensitiveProperties ?? {})
           .build(),
@@ -175,7 +177,7 @@ export const BridgeCTAButton = ({
       return {
         disabled: false,
         onClick: async () => {
-          trackHardwareWalletRecoveryConnectCtaClicked(trackMetricsEvent, {
+          trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
             location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
             walletType,
             connectionState,
@@ -216,7 +218,7 @@ export const BridgeCTAButton = ({
     onOpenAlertModals,
     submitBridgeTransaction,
     t,
-    trackMetricsEvent,
+    trackEvent,
     walletType,
     wasTxDeclined,
   ]);

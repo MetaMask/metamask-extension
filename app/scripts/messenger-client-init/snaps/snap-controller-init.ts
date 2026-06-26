@@ -2,7 +2,7 @@ import {
   SnapController,
   SnapControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { createDeferredPromise } from '@metamask/utils';
+import { createDeferredPromise, type Json } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -15,11 +15,16 @@ import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
-import {
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
-} from '../../../../shared/constants/metametrics';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder, trackEvent as trackAnalyticsEvent } from '../../controllers/analytics';
+
+// Copied from `@metamask/snaps-controllers`, since it is not exported.
+type TrackingEventPayload = {
+  event: string;
+  category: string;
+  properties: Record<string, Json | undefined>;
+};
+
+type TrackEventHook = (event: TrackingEventPayload) => void;
 
 /**
  * Initialize the Snap controller.
@@ -128,36 +133,16 @@ export const SnapControllerInit: MessengerClientInitFunction<
 
     ensureOnboardingComplete,
 
-    trackEvent: (
-      payload: MetaMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ) => {
-      trackEvent(
+    trackEvent: ((payload: TrackingEventPayload) => {
+      trackAnalyticsEvent(
         createEventBuilder(payload.event)
           .addProperties({
             ...payload.properties,
-            ...(payload.category === undefined
-              ? {}
-              : { category: payload.category }),
-            ...(payload.revenue === undefined
-              ? {}
-              : { revenue: payload.revenue }),
-            ...(payload.value === undefined ? {} : { value: payload.value }),
-            ...(payload.currency === undefined
-              ? {}
-              : { currency: payload.currency }),
+            category: payload.category,
           })
-          .addSensitiveProperties(payload.sensitiveProperties)
-          .build({
-            environmentType: payload.environmentType,
-            page: payload.page,
-            referrer: payload.referrer,
-            excludeMetaMetricsId: options?.excludeMetaMetricsId,
-            matomoEvent: options?.matomoEvent,
-          }),
-        options,
+          .build(),
       );
-    },
+    }) as TrackEventHook,
   });
 
   initMessenger.subscribe('KeyringController:lock', () => {

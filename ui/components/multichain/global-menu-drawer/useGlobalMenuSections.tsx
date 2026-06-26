@@ -54,7 +54,6 @@ import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -196,6 +195,7 @@ export function useGlobalMenuSections(
     hasThirdPartyNotifySnaps,
     isMetamaskNotificationsEnabled,
     trackEvent,
+    createEventBuilder,
     isBackupAndSyncEnabled,
     dispatch,
     onClose,
@@ -213,9 +213,8 @@ export function useGlobalMenuSections(
         .addProperties({
           url: supportLink,
           location: METRICS_LOCATION,
-          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
         })
-        .build(),
+        .build({ page: segmentContext.page }),
     );
     if (showPriorityTag) {
       const shieldSubscription = getShieldSubscription(subscriptions);
@@ -238,6 +237,8 @@ export function useGlobalMenuSections(
   }, [
     dispatch,
     trackEvent,
+    createEventBuilder,
+    segmentContext.page,
     supportLink,
     showPriorityTag,
     subscriptions,
@@ -502,6 +503,7 @@ export function useGlobalMenuSections(
     onClose,
     dispatch,
     trackEvent,
+    createEventBuilder,
     analyticsId,
     isMetaMetricsEnabled,
     isMarketingEnabled,

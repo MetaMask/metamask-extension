@@ -83,9 +83,10 @@ describe('BridgeControllerInit', () => {
     const controllerMock = jest.mocked(BridgeController);
     const { trackMetaMetricsFn } = controllerMock.mock.calls[0][0];
 
-    trackMetaMetricsFn?.(UnifiedSwapBridgeEventName.Submitted, {
-      source: 'bridge',
-    });
+    trackMetaMetricsFn?.(
+      UnifiedSwapBridgeEventName.Submitted,
+      {} as Parameters<NonNullable<typeof trackMetaMetricsFn>>[1],
+    );
 
     expect(trackEventMock).toHaveBeenCalledWith(
       expect.objectContaining({

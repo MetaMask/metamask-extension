@@ -25,7 +25,6 @@ import {
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -109,9 +108,8 @@ export default function LoginErrorModal({
               .addProperties({
                 url: SUPPORT_LINK,
                 location: 'Welcome page',
-                [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
               })
-              .build(),
+              .build({ page: segmentContext.page }),
           );
         }}
         asChild

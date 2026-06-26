@@ -309,7 +309,11 @@ describe('SmartTransactionsController Init', () => {
       properties: { test: true },
     };
 
-    constructorCall.trackMetaMetricsEvent?.(testPayload);
+    constructorCall.trackMetaMetricsEvent?.(
+      testPayload as Parameters<
+        NonNullable<typeof constructorCall.trackMetaMetricsEvent>
+      >[0],
+    );
 
     expect(trackEventMock).toHaveBeenCalledWith(
       expect.objectContaining({

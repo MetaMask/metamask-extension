@@ -1,19 +1,6 @@
 import React from 'react';
 import SelectHardware from './select-hardware';
 
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: () => undefined,
-      createEventBuilder,
-    }),
-  };
-});
-
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/SelectHardware',
   decorators: [

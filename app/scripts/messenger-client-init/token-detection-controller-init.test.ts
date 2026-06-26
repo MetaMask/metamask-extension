@@ -3,7 +3,7 @@ import {
   TokenDetectionControllerMessenger,
 } from '@metamask/assets-controllers';
 import { getRootMessenger } from '../lib/messenger';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { trackEvent } from '../controllers/analytics';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -74,16 +74,26 @@ describe('TokenDetectionControllerInit', () => {
     const { trackMetaMetricsEvent } = controllerMock.mock.calls[0][0];
 
     trackMetaMetricsEvent?.({
-      event: 'Token Detected',
+      event: MetaMetricsEventName.TokenDetected,
       category: MetaMetricsEventCategory.Wallet,
-      properties: { source: 'detected' },
+      properties: {
+        tokens: ['0xabc'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_standard: 'ERC20',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        asset_type: 'token',
+      },
     });
 
     expect(trackEventMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: 'Token Detected',
+        name: MetaMetricsEventName.TokenDetected,
         properties: {
-          source: 'detected',
+          tokens: ['0xabc'],
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_standard: 'ERC20',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_type: 'token',
           category: MetaMetricsEventCategory.Wallet,
         },
       }),

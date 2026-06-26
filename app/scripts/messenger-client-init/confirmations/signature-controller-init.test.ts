@@ -75,7 +75,7 @@ describe('SignatureControllerInit', () => {
     const controllerMock = jest.mocked(SignatureController);
     const { on } = controllerMock.mock.results[0].value.hub;
     const cancelHandler = on.mock.calls.find(
-      ([eventName]) => eventName === 'cancelWithReason',
+      ([eventName]: [string, unknown]) => eventName === 'cancelWithReason',
     )?.[1];
 
     cancelHandler?.({

@@ -8,7 +8,6 @@ import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -195,7 +194,9 @@ describe('LoginErrorModal', () => {
             category: MetaMetricsEventCategory.Onboarding,
             url: SUPPORT_LINK,
             location: 'Welcome page',
-            [MetaMetricsContextProp.PageTitle]: 'Welcome',
+          }),
+          options: expect.objectContaining({
+            page: { title: 'Welcome' },
           }),
         }),
       );

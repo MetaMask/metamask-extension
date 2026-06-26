@@ -4,19 +4,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import type { Meta, StoryObj } from '@storybook/react';
 import ImportSRP from './import-srp';
 
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: () => undefined,
-      createEventBuilder,
-    }),
-  };
-});
-
 const mockStore = configureStore({
   reducer: {
     metamask: (

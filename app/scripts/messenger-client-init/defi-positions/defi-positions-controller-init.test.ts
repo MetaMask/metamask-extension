@@ -70,14 +70,15 @@ describe('DefiPositionsControllerInit', () => {
     controllerTrackEvent?.({
       event: 'DeFi Position Viewed',
       category: MetaMetricsEventCategory.Wallet,
-      properties: { protocol: 'aave' },
+      properties: { totalPositions: 1, totalMarketValueUSD: 100 },
     });
 
     expect(trackEventMock.mock.calls[0]?.[0]).toMatchObject({
       name: 'DeFi Position Viewed',
       properties: expect.objectContaining({
         category: MetaMetricsEventCategory.Wallet,
-        protocol: 'aave',
+        totalPositions: 1,
+        totalMarketValueUSD: 100,
       }),
     });
   });

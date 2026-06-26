@@ -151,6 +151,7 @@ export const AccountOverviewTabs = ({
       dispatch,
       selectedChainIds,
       trackEvent,
+      createEventBuilder,
     ],
   );
 

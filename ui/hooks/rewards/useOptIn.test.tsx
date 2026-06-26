@@ -284,7 +284,7 @@ describe('useOptIn', () => {
 
       const calls = mockTrackEvent.mock.calls.map((args) => args[0]);
       const started = calls.find(
-        (c: { event: MetaMetricsEventName }) =>
+        (c: { name: MetaMetricsEventName }) =>
           c.name === MetaMetricsEventName.RewardsOptInStarted,
       );
       expect(started?.properties?.referred).toBe(true);

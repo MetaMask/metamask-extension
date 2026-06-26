@@ -80,7 +80,9 @@ export const SmartTransactionsControllerInit: MessengerClientInitFunction<
   const smartTransactionsController = new SmartTransactionsController({
     supportedChainIds: getAllowedSmartTransactionsChainIds() as Hex[],
     clientId: ClientId.Extension,
-    trackMetaMetricsEvent,
+    trackMetaMetricsEvent: trackMetaMetricsEvent as ConstructorParameters<
+      typeof SmartTransactionsController
+    >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,
     messenger: controllerMessenger,
     getMetaMetricsProps: async () => {
