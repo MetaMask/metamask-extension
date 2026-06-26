@@ -253,13 +253,6 @@ export function trace<ResultType>(
 
 export function trace(request: TraceRequest): TraceContext;
 
-export function startNewTrace<ResultType>(
-  request: TraceRequest,
-  fn: TraceCallback<ResultType>,
-): ResultType;
-
-export function startNewTrace(request: TraceRequest): TraceContext;
-
 /**
  * Create a Sentry transaction to analyse the duration of a code flow.
  * If a callback is provided, the transaction will be automatically ended when the callback completes.
@@ -283,6 +276,13 @@ export function trace<T>(
   return traceCallback(request, fn);
 }
 
+export function startNewTrace<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType;
+
+export function startNewTrace(request: TraceRequest): TraceContext;
+
 /**
  * Create a trace that does not inherit from the currently active span.
  *
@@ -294,15 +294,15 @@ export function startNewTrace<ResultType>(
   request: TraceRequest,
   fn?: TraceCallback<ResultType>,
 ): ResultType | TraceContext {
-  return trace(
-    {
-      ...request,
-      // Use a dedicated sentinel so `trace()` skips inheriting the active span
-      // and starts a new root trace for this operation.
-      parentContext: NEW_ROOT_TRACE_SYMBOL,
-    },
-    fn,
-  );
+  // Use a dedicated sentinel so `trace()` skips inheriting the active span
+  // and starts a new root trace for this operation.
+  const newRootRequest = {
+    ...request,
+    parentContext: NEW_ROOT_TRACE_SYMBOL,
+  };
+  // Dispatch to the matching `trace` overload: with a callback it returns the
+  // callback result; without one it returns a TraceContext.
+  return fn ? trace(newRootRequest, fn) : trace(newRootRequest);
 }
 
 /**
