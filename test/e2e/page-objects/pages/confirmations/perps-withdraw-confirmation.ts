@@ -110,7 +110,10 @@ export class PerpsWithdrawConfirmation {
       [this.bridgeTimeRow, this.receiveRow],
       { timeout: QUOTE_READY_TIMEOUT },
     );
-    await this.checkConfirmButtonText(tEn('perpsWithdraw'), QUOTE_READY_TIMEOUT);
+    await this.checkConfirmButtonText(
+      tEn('perpsWithdraw'),
+      QUOTE_READY_TIMEOUT,
+    );
     await this.driver.waitForSelector(this.confirmButton, {
       state: 'enabled',
       timeout: QUOTE_READY_TIMEOUT,
