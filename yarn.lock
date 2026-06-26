@@ -163,7 +163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.27.1, @babel/code-frame@npm:^7.29.0, @babel/code-frame@npm:^7.29.7":
+"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.29.0, @babel/code-frame@npm:^7.29.7":
   version: 7.29.7
   resolution: "@babel/code-frame@npm:7.29.7"
   dependencies:
@@ -230,7 +230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.22.5, @babel/generator@npm:^7.23.0, @babel/generator@npm:^7.27.3, @babel/generator@npm:^7.29.0, @babel/generator@npm:^7.29.7, @babel/generator@npm:^7.7.2":
+"@babel/generator@npm:^7.22.5, @babel/generator@npm:^7.23.0, @babel/generator@npm:^7.29.0, @babel/generator@npm:^7.29.7, @babel/generator@npm:^7.7.2":
   version: 7.29.7
   resolution: "@babel/generator@npm:7.29.7"
   dependencies:
@@ -476,17 +476,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:7.27.3":
-  version: 7.27.3
-  resolution: "@babel/parser@npm:7.27.3"
-  dependencies:
-    "@babel/types": "npm:^7.27.3"
-  bin:
-    parser: ./bin/babel-parser.js
-  checksum: 10/ea5a0cd55e18f905d4c732b009ca0f66b0e5580f0d2af82643c26ef0909a16704778f59b7a2959096e9cf881b6291da747bfd29e400422e04d9074eb1f80983e
-  languageName: node
-  linkType: hard
-
 "@babel/parser@npm:7.29.3":
   version: 7.29.3
   resolution: "@babel/parser@npm:7.29.3"
@@ -498,7 +487,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.24.4, @babel/parser@npm:^7.26.7, @babel/parser@npm:^7.27.3, @babel/parser@npm:^7.29.0, @babel/parser@npm:^7.29.2, @babel/parser@npm:^7.29.7":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.24.4, @babel/parser@npm:^7.26.7, @babel/parser@npm:^7.29.0, @babel/parser@npm:^7.29.2, @babel/parser@npm:^7.29.7":
   version: 7.29.7
   resolution: "@babel/parser@npm:7.29.7"
   dependencies:
@@ -1605,7 +1594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/template@npm:^7.22.5, @babel/template@npm:^7.25.9, @babel/template@npm:^7.27.2, @babel/template@npm:^7.28.6, @babel/template@npm:^7.29.7, @babel/template@npm:^7.3.3":
+"@babel/template@npm:^7.22.5, @babel/template@npm:^7.25.9, @babel/template@npm:^7.28.6, @babel/template@npm:^7.29.7, @babel/template@npm:^7.3.3":
   version: 7.29.7
   resolution: "@babel/template@npm:7.29.7"
   dependencies:
@@ -1613,21 +1602,6 @@ __metadata:
     "@babel/parser": "npm:^7.29.7"
     "@babel/types": "npm:^7.29.7"
   checksum: 10/da92f7a5b61e05d2fb3934a44f18cec6006ee3c595116c17a3b44cb9756ecd43205c7360dbfa326fa8f4d00aaeb9e777342a881070d11c2305e9c694bc3ca6ff
-  languageName: node
-  linkType: hard
-
-"@babel/traverse@npm:7.27.3":
-  version: 7.27.3
-  resolution: "@babel/traverse@npm:7.27.3"
-  dependencies:
-    "@babel/code-frame": "npm:^7.27.1"
-    "@babel/generator": "npm:^7.27.3"
-    "@babel/parser": "npm:^7.27.3"
-    "@babel/template": "npm:^7.27.2"
-    "@babel/types": "npm:^7.27.3"
-    debug: "npm:^4.3.1"
-    globals: "npm:^11.1.0"
-  checksum: 10/caccdb8335705847d34123ee76d70c3fb575f8c8b3de83ff1560c5d3229269fd4721510b7b63564a122995eb844f651313cad57b85d45023a0f50f848bf23c55
   languageName: node
   linkType: hard
 
@@ -32242,23 +32216,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^8.1.0, lavamoat-tofu@npm:^8.1.1":
-  version: 8.1.1
-  resolution: "lavamoat-tofu@npm:8.1.1"
-  dependencies:
-    "@babel/parser": "npm:7.27.3"
-    "@babel/traverse": "npm:7.27.3"
-    "@babel/types": "npm:7.27.3"
-    "@lavamoat/types": "npm:^0.1.0"
-    "@types/babel__traverse": "npm:7.28.0"
-    type-fest: "npm:4.41.0"
-  peerDependencies:
-    lavamoat-core: ">15.4.0"
-  checksum: 10/3bd26e7cea8a29769e29481f05021fe13365d986ec98a0eead0cd4067e08f3df3b40c9e5633606e46e917355744887647b918a52a49e700078dd2cda5bb564c2
-  languageName: node
-  linkType: hard
-
-"lavamoat-tofu@npm:^9.0.2":
+"lavamoat-tofu@npm:9.0.2":
   version: 9.0.2
   resolution: "lavamoat-tofu@npm:9.0.2"
   dependencies:
@@ -32271,6 +32229,22 @@ __metadata:
   peerDependencies:
     lavamoat-core: ">15.4.0"
   checksum: 10/b80fc9961c91922e2f0cef8cdf6235258770af37ad0972029d91bfdef424534408b13b7987058902fe416e64a5e7cbbb4e84ab3756709c2753383d7eeeb88071
+  languageName: node
+  linkType: hard
+
+"lavamoat-tofu@patch:lavamoat-tofu@npm%3A9.0.2#~/.yarn/patches/lavamoat-tofu-npm-9.0.2-ec3a308216.patch":
+  version: 9.0.2
+  resolution: "lavamoat-tofu@patch:lavamoat-tofu@npm%3A9.0.2#~/.yarn/patches/lavamoat-tofu-npm-9.0.2-ec3a308216.patch::version=9.0.2&hash=107664"
+  dependencies:
+    "@babel/parser": "npm:7.29.3"
+    "@babel/traverse": "npm:7.29.0"
+    "@babel/types": "npm:7.29.0"
+    "@lavamoat/types": "npm:^1.0.1"
+    "@types/babel__traverse": "npm:7.28.0"
+    type-fest: "npm:4.41.0"
+  peerDependencies:
+    lavamoat-core: ">15.4.0"
+  checksum: 10/ed4a33c2cb97a4ea5f3584d6a21b1d2ac7bec68408e84a01b592cf86570615bfff47b4b5de9caca6aedd25437b7b8c69eff293cbbc2e0bb4cc1451a93391ed26
   languageName: node
   linkType: hard
 
