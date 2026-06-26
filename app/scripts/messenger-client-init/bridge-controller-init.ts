@@ -37,7 +37,7 @@ const QUOTE_FETCH_TRACE_NAMES = [
   'Batch Sell Quotes Fetched',
   'Bridge Quotes Fetched',
   'Swap Quotes Fetched',
- ] as const;
+] as const;
 
 type QuoteFetchTraceName = (typeof QUOTE_FETCH_TRACE_NAMES)[number];
 

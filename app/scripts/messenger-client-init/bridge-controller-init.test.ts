@@ -78,21 +78,18 @@ describe('BridgeControllerInit', () => {
     'Batch Sell Quotes Fetched',
     'Bridge Quotes Fetched',
     'Swap Quotes Fetched',
-  ])(
-    'starts a new trace for %s',
-    async (name) => {
-      BridgeControllerInit(getInitRequestMock());
+  ])('starts a new trace for %s', async (name) => {
+    BridgeControllerInit(getInitRequestMock());
 
-      const controllerMock = jest.mocked(BridgeController);
-      const [[{ traceFn }]] = controllerMock.mock.calls;
-      const callback = jest.fn();
+    const controllerMock = jest.mocked(BridgeController);
+    const [[{ traceFn }]] = controllerMock.mock.calls;
+    const callback = jest.fn();
 
-      traceFn({ name }, callback);
+    traceFn({ name }, callback);
 
-      expect(startNewTrace).toHaveBeenCalledWith({ name }, callback);
-      expect(trace).not.toHaveBeenCalled();
-    },
-  );
+    expect(startNewTrace).toHaveBeenCalledWith({ name }, callback);
+    expect(trace).not.toHaveBeenCalled();
+  });
 
   it('reuses the current trace for non-quote operations', async () => {
     BridgeControllerInit(getInitRequestMock());
@@ -103,7 +100,10 @@ describe('BridgeControllerInit', () => {
 
     traceFn({ name: 'Bridge View Loaded' }, callback);
 
-    expect(trace).toHaveBeenCalledWith({ name: 'Bridge View Loaded' }, callback);
+    expect(trace).toHaveBeenCalledWith(
+      { name: 'Bridge View Loaded' },
+      callback,
+    );
     expect(startNewTrace).not.toHaveBeenCalled();
   });
 });

@@ -240,7 +240,9 @@ export type EndTraceRequest = {
  * @param value - The value to inspect.
  * @returns Whether the value is the new-root sentinel.
  */
-function isNewRootTraceSentinel(value: unknown): value is typeof NEW_ROOT_TRACE_SYMBOL {
+function isNewRootTraceSentinel(
+  value: unknown,
+): value is typeof NEW_ROOT_TRACE_SYMBOL {
   return value === NEW_ROOT_TRACE_SYMBOL;
 }
 
