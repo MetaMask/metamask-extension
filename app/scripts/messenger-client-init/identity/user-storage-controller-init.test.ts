@@ -81,8 +81,7 @@ describe('UserStorageControllerInit', () => {
     const requestMock = buildInitRequestMock();
     UserStorageControllerInit(requestMock);
 
-    const traceFn =
-      UserStorageControllerClassMock.mock.calls[0][0].trace;
+    const traceFn = UserStorageControllerClassMock.mock.calls[0][0].trace;
     const callback = jest.fn();
 
     traceFn({ name: TraceName.ContactSyncFull } as never, callback);
