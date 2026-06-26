@@ -1,10 +1,14 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
+import {
+  parseCaipChainId,
+  toCaipAccountId,
+  type CaipAccountId,
+} from '@metamask/utils';
+import log from 'loglevel';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
-import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
-import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
 import { selectVipProgramEnabled } from '../../ducks/rewards/selectors';
 
 /**
@@ -30,14 +34,19 @@ export function useVipTier(): number | null {
 
 function useVipTierAccountId() {
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const chainId = useSelector(getCurrentChainId);
-  return useMemo(
-    () =>
-      selectedAccount?.address
-        ? formatAccountToCaipAccountId(selectedAccount.address, chainId)
-        : null,
-    [selectedAccount?.address, chainId],
-  );
+  return useMemo<CaipAccountId | null>(() => {
+    const [scope] = selectedAccount?.scopes ?? [];
+    if (!selectedAccount?.address || !scope) {
+      return null;
+    }
+    try {
+      const { namespace, reference } = parseCaipChainId(scope);
+      return toCaipAccountId(namespace, reference, selectedAccount.address);
+    } catch (error) {
+      log.error('[useVipTier] Error formatting account to CAIP-10:', error);
+      return null;
+    }
+  }, [selectedAccount?.address, selectedAccount?.scopes]);
 }
 
 function useRewardsVipTierQuery(accountId: string | null) {

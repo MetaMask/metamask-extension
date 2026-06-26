@@ -206,9 +206,12 @@ describe('Amount', () => {
       balance: '10.023',
       rawBalanceNumeric: new Numeric('10.023', 10),
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
-    const { getByText } = render();
+    const { getByTestId, getByText } = render();
 
-    expect(getByText('10.023 NEU available')).toBeInTheDocument();
+    expect(getByTestId('send-amount-balance')).toHaveTextContent(
+      '10.023 NEU available',
+    );
+    expect(getByTestId('send-amount-fiat-value')).toBeInTheDocument();
   });
 
   it('update value with maxValue when max button is clicked', () => {

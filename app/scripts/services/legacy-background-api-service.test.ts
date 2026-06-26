@@ -389,6 +389,30 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('getNextNonce', () => {
+    it('returns the next nonce and releases the nonce lock', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const releaseLock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:getNonceLock',
+          jest.fn().mockResolvedValue({
+            nextNonce: 5,
+            releaseLock,
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getNextNonce',
+          '0x123',
+          'networkClientId',
+        );
+
+        expect(result).toStrictEqual(5);
+        expect(releaseLock).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('getSeedPhrase', () => {
     it('returns the seed phrase', async () => {
       const mnemonic =
@@ -1020,6 +1044,83 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(['0x123']);
+      });
+    });
+  });
+
+  describe('exportAccount', () => {
+    it('verifies the password and returns the private key', async () => {
+      const address = '0xAddress';
+      const password = 'a-test-password';
+      const privateKey = 'a-test-private-key';
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const verifyPasswordHandler = jest.fn().mockResolvedValue(undefined);
+        const exportAccountHandler = jest.fn().mockResolvedValue(privateKey);
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:verifyPassword',
+          verifyPasswordHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportAccount',
+          exportAccountHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:exportAccount',
+          address,
+          password,
+        );
+
+        expect(result).toStrictEqual(privateKey);
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:verifyPassword',
+          password,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:exportAccount',
+          { password },
+          address,
+        );
+      });
+    });
+
+    it('rejects and does not export the account when the password is invalid', async () => {
+      const address = '0xAddress';
+      const password = 'wrong-password';
+      const error = new Error('Incorrect password.');
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const verifyPasswordHandler = jest.fn().mockRejectedValue(error);
+        const exportAccountHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:verifyPassword',
+          verifyPasswordHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportAccount',
+          exportAccountHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:exportAccount',
+            address,
+            password,
+          ),
+        ).rejects.toThrow(error);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:verifyPassword',
+          password,
+        );
+        expect(exportAccountHandler).not.toHaveBeenCalled();
       });
     });
   });
@@ -1930,6 +2031,7 @@ function getMessenger(
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',
       'ApprovalController:getState',
+      'TransactionController:getNonceLock',
       'TransactionController:getState',
       'ApprovalController:rejectRequest',
       'TransactionController:wipeTransactions',
@@ -1953,6 +2055,7 @@ function getMessenger(
       'SeedlessOnboardingController:runMigrations',
       'MetaMetricsController:trackEvent',
       'KeyringController:verifyPassword',
+      'KeyringController:exportAccount',
       'KeyringController:changePassword',
       'KeyringController:exportEncryptionKey',
       'KeyringController:setLocked',

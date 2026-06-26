@@ -4153,6 +4153,9 @@
     "message": "Max allowance",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsMetaMaskFacilitator": {
+    "message": "MetaMask x402 facilitator"
+  },
   "gatorPermissionsPermit2ApproveRevocation": {
     "message": "Permit2 approve(token, spender, 0, 0)",
     "description": "Token approval revocation method for Permit2 approve reset"
@@ -5746,9 +5749,6 @@
   "newPrivacyPolicyTitle": {
     "message": "We’ve updated our privacy policy"
   },
-  "newRpcUrl": {
-    "message": "New RPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "You’ve successfully imported $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5885,9 +5885,6 @@
   },
   "notCurrentAccount": {
     "message": "Is this the correct account? It's different from the currently selected account in your wallet"
-  },
-  "notEnoughGas": {
-    "message": "Not enough gas"
   },
   "notificationDetail": {
     "message": "Details"
@@ -8047,6 +8044,9 @@
   },
   "redeemer": {
     "message": "Redeemer"
+  },
+  "redeemers": {
+    "message": "Redeemers"
   },
   "redeposit": {
     "message": "Redeposit"
@@ -10581,7 +10581,7 @@
     "message": "Total volume"
   },
   "transaction": {
-    "message": "transaction"
+    "message": "Transaction"
   },
   "transactionConfirmed": {
     "message": "Transaction confirmed"
