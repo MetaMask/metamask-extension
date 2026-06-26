@@ -72,6 +72,7 @@ export function getAssetsControllerMessenger(
       'NetworkController:networkRemoved',
       'NetworkController:networkAdded',
       'BackendWebSocketService:connectionStateChanged',
+      'AccountActivityService:balanceUpdated',
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'SnapController:snapInstalled',

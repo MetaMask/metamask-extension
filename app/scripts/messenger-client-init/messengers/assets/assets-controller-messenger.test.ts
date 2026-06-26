@@ -32,6 +32,7 @@ const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'NetworkController:networkRemoved',
   'NetworkController:networkAdded',
   'BackendWebSocketService:connectionStateChanged',
+  'AccountActivityService:balanceUpdated',
   'AccountsController:accountBalancesUpdated',
   'PermissionController:stateChange',
   'SnapController:snapInstalled',
@@ -65,6 +66,21 @@ describe('getAssetsControllerMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: expect.arrayContaining([...ASSETS_CONTROLLER_DELEGATED_ACTIONS]),
+      }),
+    );
+  });
+
+  it('delegates AccountActivityService balanceUpdated event', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: expect.arrayContaining([
+          'AccountActivityService:balanceUpdated',
+        ]),
       }),
     );
   });
