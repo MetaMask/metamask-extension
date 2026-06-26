@@ -42,28 +42,6 @@ async function mockTronFlagsOnly(mockServer: Mockttp) {
 describe('Tron network presence', function (this: Suite) {
   this.timeout(120_000);
 
-  async function checkTronInTabFilter(
-    driver: Driver,
-    navigateToTab: (home: HomePage) => Promise<void>,
-  ): Promise<void> {
-    const home = new HomePage(driver);
-    await navigateToTab(home);
-    const homeNetworkFilter = new HomeNetworkFilter(driver);
-    await homeNetworkFilter.open();
-    await homeNetworkFilter.checkNetworkIsListed('Tron');
-    await homeNetworkFilter.close();
-  }
-
-  const TAB_CASES: {
-    name: string;
-    navigate: (home: HomePage) => Promise<void>;
-  }[] = [
-    { name: 'Tokens', navigate: (home) => home.goToTokensTab() },
-    { name: 'DeFi', navigate: (home) => home.goToDeFiTab() },
-    { name: 'NFTs', navigate: (home) => home.goToNftTab() },
-    { name: 'Activity', navigate: (home) => home.goToActivityList() },
-  ];
-
   it('shows Tron in the home network filter', async function () {
     await withFixtures(
       {
@@ -193,25 +171,103 @@ describe('Tron network presence', function (this: Suite) {
     );
   });
 
-  for (const { name, navigate } of TAB_CASES) {
-    it(`shows Tron in the ${name} tab network selector`, async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2().build(),
-          title: this.test?.fullTitle(),
-          localNodeOptions: [
-            // Anvil is needed because the extension still polls EVM networks in
-            // Tron-only flows.
-            'anvil',
-          ],
-          testSpecificMock: mockTronFlagsOnly,
-          ...NETWORK_MANAGEMENT_FLAGS,
-        },
-        async ({ driver }: { driver: Driver }) => {
-          await login(driver);
-          await checkTronInTabFilter(driver, navigate);
-        },
-      );
-    });
-  }
+  it('shows Tron in the Tokens tab network selector', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: [
+          // Anvil is needed because the extension still polls EVM networks in
+          // Tron-only flows.
+          'anvil',
+        ],
+        testSpecificMock: mockTronFlagsOnly,
+        ...NETWORK_MANAGEMENT_FLAGS,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+        const home = new HomePage(driver);
+        await home.goToTokensTab();
+        const homeNetworkFilter = new HomeNetworkFilter(driver);
+        await homeNetworkFilter.open();
+        await homeNetworkFilter.checkNetworkIsListed('Tron');
+        await homeNetworkFilter.close();
+      },
+    );
+  });
+
+  it('shows Tron in the DeFi tab network selector', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: [
+          // Anvil is needed because the extension still polls EVM networks in
+          // Tron-only flows.
+          'anvil',
+        ],
+        testSpecificMock: mockTronFlagsOnly,
+        ...NETWORK_MANAGEMENT_FLAGS,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+        const home = new HomePage(driver);
+        await home.goToDeFiTab();
+        const homeNetworkFilter = new HomeNetworkFilter(driver);
+        await homeNetworkFilter.open();
+        await homeNetworkFilter.checkNetworkIsListed('Tron');
+        await homeNetworkFilter.close();
+      },
+    );
+  });
+
+  it('shows Tron in the NFTs tab network selector', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: [
+          // Anvil is needed because the extension still polls EVM networks in
+          // Tron-only flows.
+          'anvil',
+        ],
+        testSpecificMock: mockTronFlagsOnly,
+        ...NETWORK_MANAGEMENT_FLAGS,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+        const home = new HomePage(driver);
+        await home.goToNftTab();
+        const homeNetworkFilter = new HomeNetworkFilter(driver);
+        await homeNetworkFilter.open();
+        await homeNetworkFilter.checkNetworkIsListed('Tron');
+        await homeNetworkFilter.close();
+      },
+    );
+  });
+
+  it('shows Tron in the Activity tab network selector', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: [
+          // Anvil is needed because the extension still polls EVM networks in
+          // Tron-only flows.
+          'anvil',
+        ],
+        testSpecificMock: mockTronFlagsOnly,
+        ...NETWORK_MANAGEMENT_FLAGS,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+        const home = new HomePage(driver);
+        await home.goToActivityList();
+        const homeNetworkFilter = new HomeNetworkFilter(driver);
+        await homeNetworkFilter.open();
+        await homeNetworkFilter.checkNetworkIsListed('Tron');
+        await homeNetworkFilter.close();
+      },
+    );
+  });
 });
