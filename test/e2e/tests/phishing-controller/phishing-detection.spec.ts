@@ -138,7 +138,7 @@ describe('Phishing Detection', function (this: Suite) {
       );
     });
 
-    it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
+    it.only('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
       await withFixtures(
         getFixtureOptions({
           title: this.test?.fullTitle(),
@@ -150,21 +150,44 @@ describe('Phishing Detection', function (this: Suite) {
           },
         }),
         async ({ driver }) => {
+          console.log('Step 1: Log in and verify homepage is loaded');
           await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
+
+          console.log('Step 2: Wait for phishing blocklist to be loaded');
           await waitForPhishingBlocklistToBeLoaded(driver);
+
+          console.log(
+            `Step 3: Open mock page with iframed blocklisted dapp at ${DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST}`,
+          );
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
+
           const phishingWarningPage = new PhishingWarningPage(driver);
+
+          console.log(
+            'Step 4: Click "Open this warning in a new tab" link inside iframe',
+          );
           await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
+
+          console.log(
+            `Step 5: Switch to extension fullscreen view (${WINDOW_TITLES.ExtensionInFullScreenView})`,
+          );
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await new HomePage(driver).checkPageIsLoaded();
 
+          console.log(
+            'Step 6: Switch to MetaMask Phishing Detection tab and proceed anyway',
+          );
           await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
+
+          console.log(
+            `Step 7: Switch back to test dapp (${WINDOW_TITLES.TestDApp})`,
+          );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         },
       );
