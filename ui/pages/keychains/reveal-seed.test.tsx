@@ -720,10 +720,7 @@ describe('Reveal Seed Page', () => {
         hostname: 'evil.com',
       });
 
-      renderWithProvider(
-        <RevealSeedPage />,
-        mockStore,
-      );
+      renderWithProvider(<RevealSeedPage />, mockStore);
 
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith({
@@ -746,10 +743,7 @@ describe('Reveal Seed Page', () => {
         hostname: 'safe-site.com',
       });
 
-      renderWithProvider(
-        <RevealSeedPage />,
-        mockStore,
-      );
+      renderWithProvider(<RevealSeedPage />, mockStore);
 
       await waitFor(() => {
         expect(mockScanUrlForPhishing).toHaveBeenCalled();

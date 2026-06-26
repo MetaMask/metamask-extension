@@ -4,6 +4,19 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { DefaultAddress } from './default-address';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: () => undefined,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockStore = configureStore([]);
 
 const createMockState = (overrides = {}) => ({

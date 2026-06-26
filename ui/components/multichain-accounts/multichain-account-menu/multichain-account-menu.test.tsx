@@ -106,10 +106,7 @@ describe('MultichainAccountMenu', () => {
     state = mockState,
   ) => {
     const store = configureStore(state);
-    return renderWithProvider(
-      <MultichainAccountMenu {...props} />,
-      store,
-    );
+    return renderWithProvider(<MultichainAccountMenu {...props} />, store);
   };
 
   beforeEach(() => {
