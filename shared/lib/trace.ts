@@ -117,7 +117,11 @@ const log = createModuleLogger(sentryLogger, 'trace');
 
 const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
-const NEW_ROOT_TRACE_CONTEXT = Symbol('newRootTraceContext');
+/**
+ * Sentinel parent context used to force `trace()` to start a new root trace
+ * instead of inheriting from the currently active span.
+ */
+const NEW_ROOT_TRACE_SYMBOL = Symbol('newRootTrace');
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
@@ -230,6 +234,16 @@ export type EndTraceRequest = {
   data?: Record<string, number | string | boolean>;
 };
 
+/**
+ * Checks whether a value is the sentinel used to force a new root trace.
+ *
+ * @param value - The value to inspect.
+ * @returns Whether the value is the new-root sentinel.
+ */
+function isNewRootTraceSentinel(value: unknown): value is typeof NEW_ROOT_TRACE_SYMBOL {
+  return value === NEW_ROOT_TRACE_SYMBOL;
+}
+
 export function trace<ResultType>(
   request: TraceRequest,
   fn: TraceCallback<ResultType>,
@@ -281,7 +295,9 @@ export function startNewTrace<ResultType>(
   return trace(
     {
       ...request,
-      parentContext: NEW_ROOT_TRACE_CONTEXT,
+      // Use a dedicated sentinel so `trace()` skips inheriting the active span
+      // and starts a new root trace for this operation.
+      parentContext: NEW_ROOT_TRACE_SYMBOL,
     },
     fn,
   );
@@ -585,6 +601,7 @@ function startSpan<T>(
 ) {
   const { data: attributes, name, parentContext, startTime, op } = request;
   let parentSpan = resolveParentSpan(parentContext);
+  const shouldStartNewRootTrace = isNewRootTraceSentinel(parentContext);
 
   // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
   // when no explicit parent is provided. Must capture before withIsolationScope
@@ -592,7 +609,7 @@ function startSpan<T>(
   // forceTransaction preserves transaction-level visibility for monitoring while
   // linking to the auto-instrumentation hierarchy.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!parentSpan && !parentContext && !shouldStartNewRootTrace) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;

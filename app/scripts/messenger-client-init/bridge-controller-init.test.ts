@@ -22,8 +22,8 @@ jest.mock('@metamask/bridge-controller', () => {
 });
 
 jest.mock('../../../shared/lib/trace', () => ({
-  startNewTrace: jest.fn((_request, fn) => fn?.()),
-  trace: jest.fn((_request, fn) => fn?.()),
+  startNewTrace: jest.fn((_request, fn) => (fn ? fn() : undefined)),
+  trace: jest.fn((_request, fn) => (fn ? fn() : undefined)),
 }));
 
 function getInitRequestMock(): jest.Mocked<
@@ -87,7 +87,7 @@ describe('BridgeControllerInit', () => {
       const [[{ traceFn }]] = controllerMock.mock.calls;
       const callback = jest.fn();
 
-      await traceFn({ name }, callback);
+      traceFn({ name }, callback);
 
       expect(startNewTrace).toHaveBeenCalledWith({ name }, callback);
       expect(trace).not.toHaveBeenCalled();
@@ -101,7 +101,7 @@ describe('BridgeControllerInit', () => {
     const [[{ traceFn }]] = controllerMock.mock.calls;
     const callback = jest.fn();
 
-    await traceFn({ name: 'Bridge View Loaded' }, callback);
+    traceFn({ name: 'Bridge View Loaded' }, callback);
 
     expect(trace).toHaveBeenCalledWith({ name: 'Bridge View Loaded' }, callback);
     expect(startNewTrace).not.toHaveBeenCalled();
