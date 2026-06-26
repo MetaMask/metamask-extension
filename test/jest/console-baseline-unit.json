@@ -64,15 +64,12 @@
       "MetaMask: MetaMetrics invalid trait types": 1,
       "MetaMask: Sentry initialization warnings": 1,
       "ObjectMultiplex: Malformed chunk warnings": 1,
-      "Third-party: Bindings failed, using pure JS": 1,
       "error: AssertionError: The Snaps platform requires": 1,
       "error: Error: NetworkController state is invalid:": 1,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "error: {": 1,
-      "warn: Error during SnapController initialization. AssertionError:": 2,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "warn: Error during SnapController initialization. AssertionError:": 2
     },
     "app/scripts/migrations/092.2.test.ts": {
       "error: Migration 92.2: Invalid NetworkController state:": 2
@@ -259,10 +256,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 3
     },
-    "ui/components/app/modals/confirm-delete-network/confirm-delete-network.test.js": {
-      "React: PropTypes validation failures": 1,
-      "error: Error: Insufficient number of substitutions": 1
-    },
     "ui/components/app/modals/customize-nonce/customize-nonce.test.js": {
       "React: PropTypes validation failures": 1
     },
@@ -404,7 +397,8 @@
       "React: PropTypes validation failures": 2
     },
     "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1
     },
     "ui/components/multichain/account-overview/account-overview-non-evm.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -458,7 +452,8 @@
     },
     "ui/components/multichain/networks-form/networks-form.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
-      "React: State updates on unmounted components": 1
+      "React: State updates on unmounted components": 1,
+      "Reselect: Input stability warnings": 1
     },
     "ui/components/multichain/notifications-settings-box/notifications-settings-box.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -680,9 +675,6 @@
     "ui/pages/confirmations/components/UI/send-hero/send-hero.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 7,
       "error: Warning: React does not recognize": 5
-    },
-    "ui/pages/confirmations/components/activity/transaction-details/transaction-details.test.tsx": {
-      "warn: No tokens found for chainId:": 1
     },
     "ui/pages/confirmations/components/confirm/header/simple-confirmation-header.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
@@ -935,7 +927,8 @@
       "error: Warning: React does not recognize": 3
     },
     "ui/pages/defi/components/defi-details-page.test.tsx": {
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1
     },
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
@@ -1006,10 +999,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1,
       "error: Warning: Encountered two children with": 1
-    },
-    "ui/pages/onboarding-flow/welcome/welcome.test.tsx": {
-      "MetaMask: Background connection not initialized": 16,
-      "React: State updates on unmounted components": 1
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { FeatureId } from '@metamask/bridge-controller';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { safeAmountForCalc } from '../../../../bridge/utils/quote';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
@@ -56,4 +57,6 @@ export const buildQuoteRequestContext = ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   token_security_type_destination: receivedAsset.securityData?.type ?? null,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  feature_id: FeatureId.BATCH_SELL,
 });
