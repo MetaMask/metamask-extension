@@ -46,11 +46,24 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let error: unknown;
     try {
       if (!traceContext) {
-        if (Array.isArray(cleanParams)) {
-          result = await handler.call(api, ...cleanParams);
-        } else {
-          result = await handler.call(api, cleanParams);
-        }
+        // No upstream trace context from the UI.  Root this operation in a new
+        // per-operation trace so that any auto-instrumented spans (e.g.
+        // http.client) emitted during the call have a parent, now that the MV3
+        // service-worker pageload root is disabled.  Sentry's tracesSampleRate
+        // still gates whether the trace is actually recorded.
+        result = await trace(
+          {
+            name: spanName,
+            op: 'rpc.handler',
+            data: { method: data.method, ...(controller && { controller }) },
+          },
+          () => {
+            if (Array.isArray(cleanParams)) {
+              return handler.call(api, ...cleanParams);
+            }
+            return handler.call(api, cleanParams);
+          },
+        );
       } else if (shouldSampleWrappers(traceContext._traceId)) {
         // Wrapper sub-sample passes: emit the `rpc.handler` span and
         // propagate trace context for nested spans.

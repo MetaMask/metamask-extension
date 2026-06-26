@@ -90,6 +90,30 @@ function safeCloneReport(report) {
   }
 }
 
+/**
+ * Returns whether the current JS context is a service-worker global scope.
+ * In MV3, the extension background script runs inside a ServiceWorkerGlobalScope;
+ * UI scripts (popup, notification page, offscreen document, etc.) run in a
+ * regular document context.  Used to selectively disable the pageload/navigation
+ * transactions that are meaningless in the SW environment.
+ *
+ * The `typeof` guard is required because `ServiceWorkerGlobalScope` is not
+ * defined at all in non-SW contexts (window, offscreen document), and accessing
+ * an undeclared global would throw a ReferenceError at runtime.  The `instanceof`
+ * check then confirms we are actually inside a service-worker global — not merely
+ * in an environment that happens to expose the constructor (e.g. a window that
+ * polyfills it).
+ *
+ * @returns {boolean} True if the current context is a service worker.
+ */
+function isServiceWorkerContext() {
+  return (
+    typeof ServiceWorkerGlobalScope !== 'undefined' &&
+    // eslint-disable-next-line no-undef
+    self instanceof ServiceWorkerGlobalScope
+  );
+}
+
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
@@ -115,6 +139,20 @@ function getClientOptions() {
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
         shouldCreateSpanForRequest,
+        // In the MV3 service-worker context `self.location.pathname` resolves
+        // to `/service-worker.js` and the worker never navigates.  The default
+        // `instrumentPageLoad: true` would therefore create a single root
+        // transaction that stays alive for the entire keepalive-held SW
+        // lifetime, accumulating every background span into one mega-trace
+        // (200K–343K spans observed in prod).  Disable both the pageload and
+        // navigation transactions here; background operations root their own
+        // per-op traces via `trace()` / `continueTraceContext()` in
+        // createMetaRPCHandler.ts.  UI (document) contexts continue to emit
+        // pageload / navigation transactions as before.
+        ...(isServiceWorkerContext() && {
+          instrumentPageLoad: false,
+          instrumentNavigation: false,
+        }),
       }),
       metaMetricsIntegration({
         getAnalyticsState,
