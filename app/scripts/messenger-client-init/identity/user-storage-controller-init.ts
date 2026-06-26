@@ -8,7 +8,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { TraceName, trace } from '../../../../shared/lib/trace';
+import {
+  TraceName,
+  trace,
+  type TraceCallback,
+  type TraceContext,
+  type TraceRequest,
+} from '../../../../shared/lib/trace';
 import { captureException } from '../../../../shared/lib/sentry';
 import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
 import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
@@ -17,13 +23,20 @@ const CONTACT_SYNC_ROOT_TRACE_NAMES = new Set<string>([
   TraceName.ContactSyncFull,
 ]);
 
-const traceWithContactSyncRootBoundary: typeof trace = (request, fn) =>
-  trace(
-    CONTACT_SYNC_ROOT_TRACE_NAMES.has(request.name)
-      ? { ...request, root: true }
-      : request,
-    fn,
-  );
+function traceWithContactSyncRootBoundary<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType;
+function traceWithContactSyncRootBoundary(request: TraceRequest): TraceContext;
+function traceWithContactSyncRootBoundary<ResultType>(
+  request: TraceRequest,
+  fn?: TraceCallback<ResultType>,
+): ResultType | TraceContext {
+  const boundedRequest = CONTACT_SYNC_ROOT_TRACE_NAMES.has(request.name)
+    ? { ...request, root: true }
+    : request;
+  return fn ? trace(boundedRequest, fn) : trace(boundedRequest);
+}
 
 /**
  * Initialize the UserStorage controller.

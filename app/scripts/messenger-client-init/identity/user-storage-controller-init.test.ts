@@ -84,8 +84,8 @@ describe('UserStorageControllerInit', () => {
     const traceFn = UserStorageControllerClassMock.mock.calls[0][0].trace;
     const callback = jest.fn();
 
-    traceFn({ name: TraceName.ContactSyncFull } as never, callback);
-    traceFn({ name: TraceName.ContactSyncSaveBatch } as never, callback);
+    traceFn?.({ name: TraceName.ContactSyncFull } as never, callback);
+    traceFn?.({ name: TraceName.ContactSyncSaveBatch } as never, callback);
 
     expect(traceMock).toHaveBeenNthCalledWith(
       1,
