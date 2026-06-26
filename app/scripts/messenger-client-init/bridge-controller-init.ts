@@ -16,7 +16,7 @@ import {
   isAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
-import { trace } from '../../../shared/lib/trace';
+import { startNewTrace, trace, TraceCallback, TraceRequest } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
@@ -26,6 +26,23 @@ import {
 } from '../../../shared/lib/active-tab-domain-metrics';
 import { MessengerClientInitFunction } from './types';
 import { BridgeControllerInitMessenger } from './messengers';
+
+const QUOTE_FETCH_TRACE_NAMES = new Set([
+  'Batch Sell Quotes Fetched',
+  'Bridge Quotes Fetched',
+  'Swap Quotes Fetched',
+]);
+
+const traceBridgeOperation = <ResultType>(
+  request: TraceRequest,
+  fn?: TraceCallback<ResultType>,
+) => {
+  if (QUOTE_FETCH_TRACE_NAMES.has(request.name)) {
+    return startNewTrace(request, fn);
+  }
+
+  return trace(request, fn);
+};
 
 /**
  * Initialize the bridge controller.
@@ -147,7 +164,7 @@ export const BridgeControllerInit: MessengerClientInitFunction<
     },
 
     // @ts-expect-error: `trace` function type does not match the expected type.
-    traceFn: (...args) => trace(...args),
+    traceFn: traceBridgeOperation,
 
     config: {
       customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,

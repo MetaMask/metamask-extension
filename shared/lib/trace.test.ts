@@ -1,6 +1,7 @@
 import type * as Sentry from '@sentry/browser';
 import {
   endTrace,
+  startNewTrace,
   trace,
   TraceName,
   getSerializedTraceContext,
@@ -391,6 +392,28 @@ describe('Trace', () => {
   });
 
   describe('getActiveSpan fallback', () => {
+    it('does not inherit from the active span when starting a new trace', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      startNewTrace({ name: NAME_MOCK }, () => true);
+
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: null,
+          forceTransaction: undefined,
+        }),
+        expect.any(Function),
+      );
+    });
+
     it('inherits from active span when no parentContext provided', () => {
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({

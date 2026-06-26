@@ -117,6 +117,7 @@ const log = createModuleLogger(sentryLogger, 'trace');
 
 const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
+const NEW_ROOT_TRACE_CONTEXT = Symbol('newRootTraceContext');
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
@@ -236,6 +237,13 @@ export function trace<ResultType>(
 
 export function trace(request: TraceRequest): TraceContext;
 
+export function startNewTrace<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType;
+
+export function startNewTrace(request: TraceRequest): TraceContext;
+
 /**
  * Create a Sentry transaction to analyse the duration of a code flow.
  * If a callback is provided, the transaction will be automatically ended when the callback completes.
@@ -257,6 +265,26 @@ export function trace<T>(
   }
 
   return traceCallback(request, fn);
+}
+
+/**
+ * Create a trace that does not inherit from the currently active span.
+ *
+ * @param request - The data associated with the trace, such as the name and tags.
+ * @param fn - The optional callback to record the duration of.
+ * @returns The context of the trace, or the result of the callback if provided.
+ */
+export function startNewTrace<ResultType>(
+  request: TraceRequest,
+  fn?: TraceCallback<ResultType>,
+): ResultType | TraceContext {
+  return trace(
+    {
+      ...request,
+      parentContext: NEW_ROOT_TRACE_CONTEXT,
+    },
+    fn,
+  );
 }
 
 /**
