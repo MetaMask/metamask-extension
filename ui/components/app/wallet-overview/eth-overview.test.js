@@ -520,10 +520,7 @@ describe('EthOverview', () => {
     mockTrackEvent.mockClear();
 
     const mockedStore = configureMockStore([thunk])(mockStore);
-    const { queryByTestId } = renderWithProvider(
-      <EthOverview />,
-      mockedStore,
-    );
+    const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
 
     const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
     expect(buyButton).toBeInTheDocument();
@@ -550,10 +547,7 @@ describe('EthOverview', () => {
     mockTrackEvent.mockClear();
 
     const mockedStore = configureMockStore([thunk])(mockStore);
-    const { queryByTestId } = renderWithProvider(
-      <EthOverview />,
-      mockedStore,
-    );
+    const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
 
     fireEvent.click(queryByTestId('eth-overview-more'));
     fireEvent.click(queryByTestId('eth-overview-batchSell'));
@@ -638,10 +632,7 @@ describe('EthOverview', () => {
     const mockedStore = configureMockStore([thunk])(
       mockedStoreWithSpecificChainId,
     );
-    const { queryByTestId } = renderWithProvider(
-      <EthOverview />,
-      mockedStore,
-    );
+    const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
 
     const sendButton = queryByTestId(ETH_OVERVIEW_SEND);
     expect(sendButton).toBeInTheDocument();

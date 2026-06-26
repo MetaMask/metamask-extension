@@ -232,12 +232,7 @@ const expectLoadingToastIcon = () => {
 
 const expectErrorAvatarToastIcon = () => {
   const warningIcon = screen.getByTestId('perps-toast-icon-warning');
-  expect(warningIcon).toHaveClass(
-    'inline-flex',
-    'h-8',
-    'w-8',
-    'bg-muted',
-  );
+  expect(warningIcon).toHaveClass('inline-flex', 'h-8', 'w-8', 'bg-muted');
   expect(warningIcon.querySelector('svg')).toBeInTheDocument();
 };
 

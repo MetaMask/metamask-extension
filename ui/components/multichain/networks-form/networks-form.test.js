@@ -507,33 +507,33 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://monad-mainnet.infura.io/v3/',
-                  type: 'custom',
-                },
-              ],
-            },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
+      <NetworksForm
+        {...propNetworkDisplay}
+        networkFormState={{
+          ...propNetworkDisplay.networkFormState,
+          rpcUrls: {
+            defaultRpcEndpointIndex: 0,
             rpcEndpoints: [
               {
-                url: 'https://mainnet.infura.io/v3/',
+                url: 'https://monad-mainnet.infura.io/v3/',
+                type: 'custom',
               },
             ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          trackRpcUpdateFromBanner
-        />,
+          },
+        }}
+        existingNetwork={{
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+        }}
+        trackRpcUpdateFromBanner
+      />,
       store,
     );
 
@@ -573,21 +573,21 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-        <NetworksForm
-          {...propNetworkDisplay}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            rpcEndpoints: [
-              {
-                url: 'https://mainnet.infura.io/v3/',
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          // trackRpcUpdateFromBanner not set
-        />,
+      <NetworksForm
+        {...propNetworkDisplay}
+        existingNetwork={{
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+        }}
+        // trackRpcUpdateFromBanner not set
+      />,
       store,
     );
 
@@ -622,33 +622,33 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://custom-rpc.example.com',
-                  type: 'custom',
-                },
-              ],
-            },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
+      <NetworksForm
+        {...propNetworkDisplay}
+        networkFormState={{
+          ...propNetworkDisplay.networkFormState,
+          rpcUrls: {
+            defaultRpcEndpointIndex: 0,
             rpcEndpoints: [
               {
                 url: 'https://custom-rpc.example.com',
+                type: 'custom',
               },
             ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          trackRpcUpdateFromBanner
-        />,
+          },
+        }}
+        existingNetwork={{
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://custom-rpc.example.com',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+        }}
+        trackRpcUpdateFromBanner
+      />,
       store,
     );
 
@@ -688,28 +688,28 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://monad-mainnet.infura.io/v3/',
-                  type: 'custom',
-                },
-              ],
-            },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            // rpcEndpoints is undefined (corrupted state)
-          }}
-          trackRpcUpdateFromBanner
-        />,
+      <NetworksForm
+        {...propNetworkDisplay}
+        networkFormState={{
+          ...propNetworkDisplay.networkFormState,
+          rpcUrls: {
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                url: 'https://monad-mainnet.infura.io/v3/',
+                type: 'custom',
+              },
+            ],
+          },
+        }}
+        existingNetwork={{
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          // rpcEndpoints is undefined (corrupted state)
+        }}
+        trackRpcUpdateFromBanner
+      />,
       store,
     );
 

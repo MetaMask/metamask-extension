@@ -225,31 +225,31 @@ describe('useNetworkConnectionBanner', () => {
           );
           mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 
-      renderHookWithProviderTyped(
-        () => useNetworkConnectionBanner(),
-        mockState,
-      );
-      await act(async () => {
-        jest.advanceTimersByTime(5000);
-        // Flush microtask queue to allow async trackNetworkBannerEvent to complete
-        await Promise.resolve();
-      });
+          renderHookWithProviderTyped(
+            () => useNetworkConnectionBanner(),
+            mockState,
+          );
+          await act(async () => {
+            jest.advanceTimersByTime(5000);
+            // Flush microtask queue to allow async trackNetworkBannerEvent to complete
+            await Promise.resolve();
+          });
 
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: MetaMetricsEventName.NetworkConnectionBannerShown,
-          properties: expect.objectContaining({
-            category: 'Network',
-            // The names of Segment properties have a particular case.
-            /* eslint-disable @typescript-eslint/naming-convention */
-            banner_type: 'degraded',
-            chain_id_caip: 'eip155:1',
-            rpc_domain: 'mainnet.infura.io',
-            rpc_endpoint_url: 'mainnet.infura.io',
-            /* eslint-enable @typescript-eslint/naming-convention */
-          }),
-        }),
-      );
+          expect(mockTrackEvent).toHaveBeenCalledWith(
+            expect.objectContaining({
+              name: MetaMetricsEventName.NetworkConnectionBannerShown,
+              properties: expect.objectContaining({
+                category: 'Network',
+                // The names of Segment properties have a particular case.
+                /* eslint-disable @typescript-eslint/naming-convention */
+                banner_type: 'degraded',
+                chain_id_caip: 'eip155:1',
+                rpc_domain: 'mainnet.infura.io',
+                rpc_endpoint_url: 'mainnet.infura.io',
+                /* eslint-enable @typescript-eslint/naming-convention */
+              }),
+            }),
+          );
         });
       });
     });
