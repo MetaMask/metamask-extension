@@ -8,6 +8,9 @@ import {
   getFinalStepLabel,
   getFirstStepDescription,
   getFinalStepDescription,
+  getQrHardwareSigningPageTitle,
+  getStepLabels,
+  getStepDescriptions,
   isQrHardwareSignRequest,
   getTransactionField,
 } from './hardware-wallet-signatures.utils';
@@ -380,6 +383,184 @@ describe('hardware-wallet-signatures utils', () => {
           t,
         }),
       ).toBeUndefined();
+    });
+  });
+
+  describe('getStepLabels', () => {
+    it('returns the send label on the first step and gas label on the final step for a two-step sendBundle', () => {
+      const { firstStepLabel, finalStepLabel } = getStepLabels({
+        isSendBundleFlow: true,
+        needsTwoConfirmations: true,
+        status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        firstStepStatus: SignatureStepStatus.Active,
+        finalStepStatus: SignatureStepStatus.Pending,
+        sendAmount: '1.5',
+        sendSymbol: 'ETH',
+        gasSymbol: 'ETH',
+        t,
+      });
+
+      expect(firstStepLabel).toBe('bridgeHwSendingAmount[1.5,ETH]');
+      expect(finalStepLabel).toBe('sendBundleHwGasPayment[ETH]');
+    });
+
+    it('returns the send label on the final step for a single-step sendBundle', () => {
+      const { firstStepLabel, finalStepLabel } = getStepLabels({
+        isSendBundleFlow: true,
+        needsTwoConfirmations: false,
+        status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        firstStepStatus: SignatureStepStatus.Pending,
+        finalStepStatus: SignatureStepStatus.Active,
+        sendAmount: '1.5',
+        sendSymbol: 'ETH',
+        t,
+      });
+
+      // Only the final step is rendered for a single-step sendBundle; it is
+      // the SEND tx so it uses the send label.
+      expect(finalStepLabel).toBe('bridgeHwSendingAmount[1.5,ETH]');
+      // firstStepLabel is not rendered but stays valid.
+      expect(firstStepLabel).toBe('bridgeHwSendingAmount[1.5,ETH]');
+    });
+
+    it('returns the send label with undefined amount/symbol when not provided for sendBundle', () => {
+      const { finalStepLabel } = getStepLabels({
+        isSendBundleFlow: true,
+        needsTwoConfirmations: false,
+        status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        firstStepStatus: SignatureStepStatus.Pending,
+        finalStepStatus: SignatureStepStatus.Active,
+        t,
+      });
+
+      expect(finalStepLabel).toBe('bridgeHwSendingAmount[,]');
+    });
+
+    it('returns approve/send labels for the bridge flow', () => {
+      const { firstStepLabel, finalStepLabel } = getStepLabels({
+        isSendBundleFlow: false,
+        needsTwoConfirmations: true,
+        status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        firstStepStatus: SignatureStepStatus.Active,
+        finalStepStatus: SignatureStepStatus.Pending,
+        fromAmount: '1.5',
+        fromTokenSymbol: 'ETH',
+        t,
+      });
+
+      expect(firstStepLabel).toBe('bridgeHwApproveAmount[1.5,ETH]');
+      expect(finalStepLabel).toBe('bridgeHwSendAmount[1.5,ETH]');
+    });
+  });
+
+  describe('getStepDescriptions', () => {
+    it('returns the destination on the first step for a two-step sendBundle', () => {
+      const { firstStepDescription, finalStepDescription } =
+        getStepDescriptions({
+          isSendBundleFlow: true,
+          needsTwoConfirmations: true,
+          firstStepStatus: SignatureStepStatus.Active,
+          toAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          t,
+        });
+
+      expect(firstStepDescription).toBe('bridgeHwToAddress[0x12345...45678]');
+      expect(finalStepDescription).toBeUndefined();
+    });
+
+    it('returns the destination on the final step for a single-step sendBundle', () => {
+      const { firstStepDescription, finalStepDescription } =
+        getStepDescriptions({
+          isSendBundleFlow: true,
+          needsTwoConfirmations: false,
+          firstStepStatus: SignatureStepStatus.Pending,
+          toAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          t,
+        });
+
+      // Only the final step is rendered; the SEND destination shows there.
+      expect(finalStepDescription).toBe('bridgeHwToAddress[0x12345...45678]');
+      expect(firstStepDescription).toBeUndefined();
+    });
+
+    it('returns destination on both steps for the bridge flow', () => {
+      const { firstStepDescription, finalStepDescription } =
+        getStepDescriptions({
+          isSendBundleFlow: false,
+          needsTwoConfirmations: true,
+          firstStepStatus: SignatureStepStatus.Active,
+          spenderAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          toAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          t,
+        });
+
+      expect(firstStepDescription).toBe('bridgeHwSpender[0x12345...45678]');
+      expect(finalStepDescription).toBe('bridgeHwToAddress[0x12345...45678]');
+    });
+  });
+
+  describe('getQrHardwareSigningPageTitle', () => {
+    it('returns the approval scan title when awaiting the first signature (scan phase)', () => {
+      expect(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      ).toBe('bridgeQrHardwareSignStepTitle[2,4]');
+    });
+
+    it('returns the last step title when awaiting the final signature (scan phase)', () => {
+      expect(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      ).toBe('bridgeQrHardwareSignLastStepTitle');
+    });
+
+    it('returns the last step title for a single-confirmation scan', () => {
+      expect(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+          needsTwoConfirmations: false,
+          t,
+        }),
+      ).toBe('bridgeQrHardwareSignLastStepTitle');
+    });
+
+    it('returns the approval display title for the first signature (display phase)', () => {
+      expect(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          isDisplayPhase: true,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      ).toBe('bridgeQrHardwareSignDisplayStepTitle[1,4]');
+    });
+
+    it('returns the trade display title for the final signature (display phase)', () => {
+      expect(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+          isDisplayPhase: true,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      ).toBe('bridgeQrHardwareSignDisplayStepTitle[3,4]');
+    });
+
+    it('returns the single-confirmation display title (display phase)', () => {
+      expect(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+          isDisplayPhase: true,
+          needsTwoConfirmations: false,
+          t,
+        }),
+      ).toBe('bridgeQrHardwareSignDisplayStepTitle[1,2]');
     });
   });
 
