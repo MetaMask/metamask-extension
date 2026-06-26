@@ -34,8 +34,8 @@ export function trackVaultCorruptionEvent(
 
   trackEarlySegmentEvent({
     state: backup,
-    event: builtEvent.name,
-    category: builtEvent.properties.category as string,
+    event: builtEvent.name as MetaMetricsEventName,
+    category: builtEvent.properties.category as MetaMetricsEventCategory,
     properties: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       error_type: corruptionType,

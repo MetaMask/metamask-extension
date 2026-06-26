@@ -15,7 +15,10 @@ import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
-import { createEventBuilder, trackEvent as trackAnalyticsEvent } from '../../controllers/analytics';
+import {
+  createEventBuilder,
+  trackEvent as trackAnalyticsEvent,
+} from '../../controllers/analytics';
 
 // Copied from `@metamask/snaps-controllers`, since it is not exported.
 type TrackingEventPayload = {

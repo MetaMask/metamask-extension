@@ -7732,6 +7732,18 @@ export function setMultichainAccountsIntroModalShown(value: boolean) {
 }
 
 /**
+ * Persist that the user has seen (and dismissed) the Perps tab "New" badge.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setPerpsTabBadgeSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setPerpsTabBadgeSeen', [value]);
+  };
+}
+
+/**
  * Persist that the mUSD conversion education screen has been seen.
  * Stored in AppStateController until uninstall.
  *

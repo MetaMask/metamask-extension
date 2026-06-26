@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
@@ -27,7 +27,6 @@ import {
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import type { UITrackEventMethod } from '../../../contexts/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -74,23 +73,7 @@ export const BridgeCTAButton = ({
 
   const isTxSubmittable = useIsTxSubmittable();
 
-  const { trackEvent, createEventBuilder } = useAnalytics();
-
-  const trackMetricsEvent = useCallback<UITrackEventMethod>(
-    (payload) => {
-      const builder = payload.category
-        ? createEventBuilder(payload.event).addCategory(payload.category)
-        : createEventBuilder(payload.event);
-      trackEvent(
-        builder
-          .addProperties(payload.properties ?? {})
-          .addSensitiveProperties(payload.sensitiveProperties ?? {})
-          .build(),
-      );
-      return Promise.resolve();
-    },
-    [createEventBuilder, trackEvent],
-  );
+  const { trackEvent } = useAnalytics();
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
@@ -177,7 +160,7 @@ export const BridgeCTAButton = ({
       return {
         disabled: false,
         onClick: async () => {
-          trackHardwareWalletRecoveryConnectCtaClicked(trackMetricsEvent, {
+          trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
             location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
             walletType,
             connectionState,
@@ -218,7 +201,7 @@ export const BridgeCTAButton = ({
     onOpenAlertModals,
     submitBridgeTransaction,
     t,
-    trackMetricsEvent,
+    trackEvent,
     walletType,
     wasTxDeclined,
   ]);

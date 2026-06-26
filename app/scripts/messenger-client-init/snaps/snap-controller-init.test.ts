@@ -87,7 +87,8 @@ describe('SnapControllerInit', () => {
     SnapControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(SnapController);
-    const { trackEvent: controllerTrackEvent } = controllerMock.mock.calls[0][0];
+    const { trackEvent: controllerTrackEvent } =
+      controllerMock.mock.calls[0][0];
 
     controllerTrackEvent?.({
       event: 'Snap Installed',

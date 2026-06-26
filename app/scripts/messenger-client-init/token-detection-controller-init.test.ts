@@ -3,7 +3,10 @@ import {
   TokenDetectionControllerMessenger,
 } from '@metamask/assets-controllers';
 import { getRootMessenger } from '../lib/messenger';
-import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { trackEvent } from '../controllers/analytics';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';

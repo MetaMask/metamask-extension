@@ -4,7 +4,10 @@ import {
 } from '@metamask/assets-controllers';
 import { AssetType } from '@metamask/bridge-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { MessengerClientInitFunction, MessengerClientInitRequest } from '../types';
+import {
+  MessengerClientInitFunction,
+  MessengerClientInitRequest,
+} from '../types';
 import {
   getNftControllerInitMessenger,
   getNftControllerMessenger,

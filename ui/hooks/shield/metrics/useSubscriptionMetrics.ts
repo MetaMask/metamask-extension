@@ -63,7 +63,7 @@ export const useSubscriptionMetrics = () => {
   const trackShieldEvent = useCallback(
     (
       eventName: MetaMetricsEventName,
-      extraProperties: Record<string, Json>,
+      extraProperties: Record<string, Json | undefined>,
     ) => {
       const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,

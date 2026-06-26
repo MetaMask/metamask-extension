@@ -29,6 +29,9 @@ export type SegmentContext = {
 function findMatchingPath(pathname: string): AppRoutes['path'] | undefined {
   const paths = getPaths();
   for (const path of paths) {
+    if (!path) {
+      continue;
+    }
     const match = matchPath(
       { path, end: true, caseSensitive: false },
       pathname,
