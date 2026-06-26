@@ -112,9 +112,7 @@ type DeepLinkQrCodeData = {
 export type HomeProps = {
   t: (key: string, ...args: unknown[]) => string;
   trackEvent: (built: ReturnType<AnalyticsEventBuilder['build']>) => void;
-  createEventBuilder: (
-    eventName: string,
-  ) => AnalyticsEventBuilder;
+  createEventBuilder: (eventName: string) => AnalyticsEventBuilder;
   pageTitle?: string;
   navigate?: NavigateFunction;
   forgottenPassword?: boolean;
@@ -1059,7 +1057,12 @@ class HomeBase extends PureComponent<HomeProps, HomeState> {
   }
 }
 
-function Home(props: Omit<HomeProps, 't' | 'trackEvent' | 'createEventBuilder' | 'pageTitle'>) {
+function Home(
+  props: Omit<
+    HomeProps,
+    't' | 'trackEvent' | 'createEventBuilder' | 'pageTitle'
+  >,
+) {
   const t = useContext(I18nContext);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();

@@ -5,10 +5,7 @@ import type {
   SeedlessOnboardingControllerRunMigrationsAction,
 } from '@metamask/seedless-onboarding-controller';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
-import {
-  createEventBuilder,
-  trackEvent,
-} from '../../controllers/analytics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

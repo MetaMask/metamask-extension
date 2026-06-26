@@ -92,9 +92,9 @@ export function ContactsListPage() {
       createEventBuilder(MetaMetricsEventName.ContactsPageViewed)
         .addCategory(MetaMetricsEventCategory.Contacts)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        number_of_contacts: contacts.length,
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_contacts: contacts.length,
+        })
         .build(),
     );
   }, [trackEvent, contacts.length]);
@@ -260,11 +260,11 @@ export function ContactsListPage() {
               <ContactsEmptyState
                 onAddContact={() => {
                   trackEvent(
-      createEventBuilder(MetaMetricsEventName.AddContactClicked)
-        .addCategory(MetaMetricsEventCategory.Contacts)
-        .addProperties({ location: 'contacts_list' })
-        .build(),
-    );
+                    createEventBuilder(MetaMetricsEventName.AddContactClicked)
+                      .addCategory(MetaMetricsEventCategory.Contacts)
+                      .addProperties({ location: 'contacts_list' })
+                      .build(),
+                  );
                   navigate(CONTACTS_ADD_ROUTE);
                 }}
               />
@@ -288,11 +288,11 @@ export function ContactsListPage() {
               isFullWidth
               onClick={() => {
                 trackEvent(
-      createEventBuilder(MetaMetricsEventName.AddContactClicked)
-        .addCategory(MetaMetricsEventCategory.Contacts)
-        .addProperties({ location: 'contacts_list' })
-        .build(),
-    );
+                  createEventBuilder(MetaMetricsEventName.AddContactClicked)
+                    .addCategory(MetaMetricsEventCategory.Contacts)
+                    .addProperties({ location: 'contacts_list' })
+                    .build(),
+                );
                 navigate(CONTACTS_ADD_ROUTE);
               }}
               data-testid="contacts-add-contact-button"

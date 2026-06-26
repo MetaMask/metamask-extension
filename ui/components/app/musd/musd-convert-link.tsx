@@ -5,12 +5,7 @@
  * Shows "Get X% bonus" text and navigates to the mUSD conversion flow.
  */
 
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
@@ -125,7 +120,8 @@ export const MusdConvertLink = ({
               chainId,
               chainName: networkName,
               assetSymbol: tokenSymbol,
-              clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
+              clickTarget:
+                MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
             }),
           )
           .build(),

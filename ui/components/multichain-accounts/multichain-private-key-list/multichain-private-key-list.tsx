@@ -171,17 +171,17 @@ const MultichainPrivateKeyList = ({
   );
 
   const onSubmit = useCallback(async () => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.KeyExportRequested)
         .addCategory(MetaMetricsEventCategory.Keys)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Pkey,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        verification_method: MetaMetricsEventVerificationMethod.Password,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Pkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
         .build(),
     );
 
@@ -200,34 +200,34 @@ const MultichainPrivateKeyList = ({
       setPrivateKeys(buildPrivateKeyMap(pks));
       setReveal(true);
 
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Pkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Password,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        })
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Password,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
           .build(),
       );
     } catch (error) {
       setWrongPassword(true);
       setReveal(false);
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.KeyExportFailed)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Pkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Password,
-          reason: getErrorMessage(error),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        })
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Password,
+            reason: getErrorMessage(error),
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
           .build(),
       );
     }
@@ -242,17 +242,17 @@ const MultichainPrivateKeyList = ({
 
   const handleRevealWithPasskey = useCallback(
     async (authenticationResponse: PasskeyAuthenticationResponse) => {
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.KeyExportRequested)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Pkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Passkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        })
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
           .build(),
       );
 
@@ -271,32 +271,32 @@ const MultichainPrivateKeyList = ({
         setPrivateKeys(buildPrivateKeyMap(pks));
         setReveal(true);
 
-                trackEvent(
+        trackEvent(
           createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
             .addCategory(MetaMetricsEventCategory.Keys)
             .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Pkey,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Passkey,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          })
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Pkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Passkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
             .build(),
         );
       } catch (error) {
-                trackEvent(
+        trackEvent(
           createEventBuilder(MetaMetricsEventName.KeyExportFailed)
             .addCategory(MetaMetricsEventCategory.Keys)
             .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Pkey,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Passkey,
-            reason: getPasskeyErrorCode(error),
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          })
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Pkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Passkey,
+              reason: getPasskeyErrorCode(error),
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
             .build(),
         );
         captureException(
@@ -332,15 +332,15 @@ const MultichainPrivateKeyList = ({
 
   const onCancel = useCallback(() => {
     if (!reveal) {
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.KeyExportCanceled)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Pkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        })
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
           .build(),
       );
     }
@@ -422,17 +422,17 @@ const MultichainPrivateKeyList = ({
 
       const handleCopyClick = () => {
         handleCopy(privateKey);
-                trackEvent(
+        trackEvent(
           createEventBuilder(MetaMetricsEventName.KeyExportCopied)
             .addCategory(MetaMetricsEventCategory.Keys)
             .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Pkey,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            copy_method: 'clipboard',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          })
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Pkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              copy_method: 'clipboard',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
             .build(),
         );
       };

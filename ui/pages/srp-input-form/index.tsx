@@ -55,12 +55,12 @@ const SrpInputForm = ({
   }, [toggleSrpDetailsModal]);
 
   const onShowSrpDetailsModal = useCallback(() => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.SrpDefinitionClicked)
         .addCategory(MetaMetricsEventCategory.Onboarding)
         .addProperties({
-        location: 'import_srp',
-      })
+          location: 'import_srp',
+        })
         .build(),
     );
     setShowSrpDetailsModal(true);

@@ -140,14 +140,14 @@ export const MultichainAccountMenu = ({
       await dispatch(setAccountGroupPinned(accountGroupId, newPinnedState));
 
       // Track the Account Pinned event
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.AccountPinned)
           .addCategory(MetaMetricsEventCategory.Accounts)
           .addProperties({
-          pinned: newPinnedState,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          pinned_count_after: countAccountsByStatus('pinned', newPinnedState),
-        })
+            pinned: newPinnedState,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            pinned_count_after: countAccountsByStatus('pinned', newPinnedState),
+          })
           .build(),
       );
 
@@ -170,14 +170,14 @@ export const MultichainAccountMenu = ({
       await dispatch(setAccountGroupHidden(accountGroupId, newHiddenState));
 
       // Track the Account Hidden event
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.AccountHidden)
           .addCategory(MetaMetricsEventCategory.Accounts)
           .addProperties({
-          hidden: newHiddenState,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hidden_count_after: countAccountsByStatus('hidden', newHiddenState),
-        })
+            hidden: newHiddenState,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hidden_count_after: countAccountsByStatus('hidden', newHiddenState),
+          })
           .build(),
       );
 

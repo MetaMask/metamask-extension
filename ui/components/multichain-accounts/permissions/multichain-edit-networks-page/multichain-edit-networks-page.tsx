@@ -212,14 +212,16 @@ export const MultichainEditNetworksPage = ({
                   (chainId) => !selectedChainIdsSet.has(chainId),
                 );
 
-                                trackEvent(
-                  createEventBuilder(MetaMetricsEventName.UpdatePermissionedNetworks)
+                trackEvent(
+                  createEventBuilder(
+                    MetaMetricsEventName.UpdatePermissionedNetworks,
+                  )
                     .addCategory(MetaMetricsEventCategory.Permissions)
                     .addProperties({
-                    addedNetworks: addedNetworks.length,
-                    removedNetworks: removedNetworks.length,
-                    location: 'Edit Networks Modal',
-                  })
+                      addedNetworks: addedNetworks.length,
+                      removedNetworks: removedNetworks.length,
+                      location: 'Edit Networks Modal',
+                    })
                     .build(),
                 );
                 onClose();

@@ -47,9 +47,9 @@ export const DiscoverMenuItem = ({
       createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location: metricsLocation,
-        text: 'Portfolio',
-      })
+          location: metricsLocation,
+          text: 'Portfolio',
+        })
         .build(),
     );
     closeMenu();

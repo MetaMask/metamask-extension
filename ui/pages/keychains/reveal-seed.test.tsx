@@ -227,7 +227,10 @@ describe('Reveal Seed Page', () => {
   });
 
   it('navigates to password screen after completing quiz', async () => {
-    const { getByText, queryByTestId } = renderWithProvider(<RevealSeedPage />, mockStore);
+    const { getByText, queryByTestId } = renderWithProvider(
+      <RevealSeedPage />,
+      mockStore,
+    );
 
     await navigateQuizToPasswordScreen({
       getByText,
@@ -239,7 +242,10 @@ describe('Reveal Seed Page', () => {
   });
 
   it('form submit', async () => {
-    const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+    const { queryByTestId, getByText } = renderWithProvider(
+      <RevealSeedPage />,
+      mockStore,
+    );
 
     await navigateQuizToPasswordScreen({
       getByText,
@@ -259,7 +265,10 @@ describe('Reveal Seed Page', () => {
   });
 
   it('submits the password form via form submit', async () => {
-    const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+    const { queryByTestId, getByText } = renderWithProvider(
+      <RevealSeedPage />,
+      mockStore,
+    );
 
     await navigateQuizToPasswordScreen({
       getByText,
@@ -288,7 +297,10 @@ describe('Reveal Seed Page', () => {
       ) => Promise<string>,
     );
 
-    const { queryByTestId, getByText, queryByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+    const { queryByTestId, getByText, queryByText } = renderWithProvider(
+      <RevealSeedPage />,
+      mockStore,
+    );
 
     await navigateQuizToPasswordScreen({
       getByText,
@@ -351,8 +363,7 @@ describe('Reveal Seed Page', () => {
       );
 
     const { queryByTestId, getByText, getByRole } = renderWithProvider(
-      <RevealSeedPage />
-      ,
+      <RevealSeedPage />,
       store,
     );
 
@@ -572,8 +583,7 @@ describe('Reveal Seed Page', () => {
 
   it('should emit event when back button is clicked', async () => {
     const { getByLabelText } = renderWithProvider(
-      <RevealSeedPage />
-      ,
+      <RevealSeedPage />,
       mockStore,
     );
 
@@ -609,7 +619,10 @@ describe('Reveal Seed Page', () => {
 
     it('shows the generic warning and no block when site is not malicious', async () => {
       setupDappScanTest();
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizToPasswordScreen({
         getByText,
@@ -634,7 +647,10 @@ describe('Reveal Seed Page', () => {
         hostname: 'evil.com',
       });
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizToPasswordScreen({
         getByText,
@@ -669,8 +685,7 @@ describe('Reveal Seed Page', () => {
       });
 
       const { queryByTestId, getByText } = renderWithProvider(
-        <RevealSeedPage />
-        ,
+        <RevealSeedPage />,
         mockStore,
       );
 
@@ -706,8 +721,7 @@ describe('Reveal Seed Page', () => {
       });
 
       renderWithProvider(
-        <RevealSeedPage />
-        ,
+        <RevealSeedPage />,
         mockStore,
       );
 
@@ -733,8 +747,7 @@ describe('Reveal Seed Page', () => {
       });
 
       renderWithProvider(
-        <RevealSeedPage />
-        ,
+        <RevealSeedPage />,
         mockStore,
       );
 
@@ -743,7 +756,8 @@ describe('Reveal Seed Page', () => {
       });
 
       expect(mockTrackEvent).not.toHaveBeenCalledWith(
-        expect.objectContaining({ name: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+        expect.objectContaining({
+          name: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
         }),
       );
     });
@@ -754,7 +768,10 @@ describe('Reveal Seed Page', () => {
       const keyringId = 'ULID01234567890ABCDEFGHIJKLMN';
       mockUseParams.mockReturnValue({ keyringId });
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizToPasswordScreen({
         getByText,
@@ -779,7 +796,10 @@ describe('Reveal Seed Page', () => {
     it('passes undefined for keyringId if there is no param', async () => {
       mockUseParams.mockReturnValue({});
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizToPasswordScreen({
         getByText,
@@ -854,7 +874,10 @@ describe('Reveal Seed Page', () => {
       mockStartPasskeyAuthentication.mockRejectedValue(new Error('cancelled'));
       mockIsPasskeyCeremonySilentError.mockReturnValue(true);
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizForPasskeyReveal({
         getByText,
@@ -876,7 +899,10 @@ describe('Reveal Seed Page', () => {
         }),
       );
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizForPasskeyReveal({
         getByText,
@@ -928,7 +954,10 @@ describe('Reveal Seed Page', () => {
         Promise.reject(new Error('export failed')),
       );
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizForPasskeyReveal({
         getByText,
@@ -949,7 +978,10 @@ describe('Reveal Seed Page', () => {
         hostname: 'evil.com',
       });
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizForPasskeyReveal({
         getByText,
@@ -983,7 +1015,10 @@ describe('Reveal Seed Page', () => {
       );
       mockStartPasskeyAuthentication.mockResolvedValue(mockPasskeyAuthResponse);
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizForPasskeyReveal({
         getByText,
@@ -1012,7 +1047,10 @@ describe('Reveal Seed Page', () => {
     it('uses the password prompt for social-login wallets even when a passkey is enrolled', async () => {
       mockGetIsSocialLoginFlow.mockReturnValue(true);
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizForPasskeyReveal({
         getByText,
@@ -1033,7 +1071,10 @@ describe('Reveal Seed Page', () => {
       const openExtensionInBrowser = jest.fn();
       globalThis.platform = { openExtensionInBrowser } as never;
 
-      const { queryByTestId, getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
 
       await navigateQuizForPasskeyReveal({
         getByText,

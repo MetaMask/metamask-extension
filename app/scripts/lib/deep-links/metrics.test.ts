@@ -229,7 +229,9 @@ describe('createEvent', () => {
       expect(result).toHaveProperty('sensitiveProperties');
 
       expect(result.name).toBe(MetaMetricsEventName.DeepLinkUsed);
-      expect(result.properties.category).toBe(MetaMetricsEventCategory.DeepLink);
+      expect(result.properties.category).toBe(
+        MetaMetricsEventCategory.DeepLink,
+      );
       expect(typeof result.properties).toBe('object');
       expect(typeof result.sensitiveProperties).toBe('object');
     });

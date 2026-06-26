@@ -171,25 +171,25 @@ export const useNetworkChangeHandlers = () => {
         !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
 
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
-        .addCategory(MetaMetricsEventCategory.Network)
-        .addProperties({
-          location: 'Network Menu',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: currentChainIdToTrack,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          from_network: currentChainIdToTrack,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          to_network: chainIdToTrack,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          custom_network: isCustomNetwork,
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            location: 'Network Menu',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: currentChainIdToTrack,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            from_network: currentChainIdToTrack,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            to_network: chainIdToTrack,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            custom_network: isCustomNetwork,
+          })
+          .build(),
+      );
     },
     [
       getMultichainNetworkConfigurationOrThrow,

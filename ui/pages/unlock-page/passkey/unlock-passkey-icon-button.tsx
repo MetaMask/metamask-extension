@@ -36,10 +36,10 @@ export const UnlockPasskeyIconButton = ({
       createEventBuilder(MetaMetricsEventName.PasskeyUnlockInteracted)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        status: 'passkey_icon_clicked',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        derivation_method: passkeyDerivationMethod,
-      })
+          status: 'passkey_icon_clicked',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
+        })
         .build(),
     );
     onClick();

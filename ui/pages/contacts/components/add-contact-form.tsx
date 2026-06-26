@@ -199,11 +199,11 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
       setEnteredDomainName('');
     } else {
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.ContactAddQrScannerClicked)
-        .addCategory(MetaMetricsEventCategory.Contacts)
-        .addProperties({ location: 'add_contact_form' })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.ContactAddQrScannerClicked)
+          .addCategory(MetaMetricsEventCategory.Contacts)
+          .addProperties({ location: 'add_contact_form' })
+          .build(),
+      );
       dispatch(showQrScanner());
     }
   };

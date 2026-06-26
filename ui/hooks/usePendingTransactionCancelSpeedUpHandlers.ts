@@ -70,7 +70,15 @@ export const usePendingTransactionCancelSpeedUpHandlers = ({
         openModal('cancelSpeedUpTransaction');
       }
     },
-    [trackEvent, createEventBuilder, openModal, setEditGasMode, status, dispatch, id],
+    [
+      trackEvent,
+      createEventBuilder,
+      openModal,
+      setEditGasMode,
+      status,
+      dispatch,
+      id,
+    ],
   );
 
   return { onSpeedUp, onCancel };

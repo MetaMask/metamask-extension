@@ -80,13 +80,13 @@ export const AppHeaderUnlockedContent = ({
     const isMenuOpen = !accountOptionsMenuOpen;
     if (isMenuOpen) {
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.NavMainMenuOpened)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          location: 'Home',
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.NavMainMenuOpened)
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            location: 'Home',
+          })
+          .build(),
+      );
     }
 
     setSearchParams((prev) => {
@@ -121,22 +121,22 @@ export const AppHeaderUnlockedContent = ({
               });
               transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
               trackEvent(
-      createEventBuilder(MetaMetricsEventName.NavAccountMenuOpened)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-                  location: 'Home',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  pinned_count: accountListStats.pinnedCount,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  hidden_count: accountListStats.hiddenCount,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  total_accounts: accountListStats.totalAccounts,
-                })
-        .build(),
-    );
+                createEventBuilder(MetaMetricsEventName.NavAccountMenuOpened)
+                  .addCategory(MetaMetricsEventCategory.Navigation)
+                  .addProperties({
+                    location: 'Home',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    pinned_count: accountListStats.pinnedCount,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    hidden_count: accountListStats.hiddenCount,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    total_accounts: accountListStats.totalAccounts,
+                  })
+                  .build(),
+              );
             }}
             disabled={disableAccountPicker}
             paddingLeft={2}

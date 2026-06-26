@@ -295,13 +295,13 @@ export const NetworksPageList = ({
       const newValue = !value;
       dispatch(setShowTestNetworks(newValue));
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
-        .addCategory(MetaMetricsEventCategory.Network)
-        .addProperties({
-          value: newValue,
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            value: newValue,
+          })
+          .build(),
+      );
     },
     [currentlyOnTestnet, dispatch, trackEvent],
   );

@@ -265,7 +265,11 @@ import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
-import { createEventBuilder, trackEvent, trackPage } from './controllers/analytics';
+import {
+  createEventBuilder,
+  trackEvent,
+  trackPage,
+} from './controllers/analytics';
 import Backup from './lib/backup';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -5055,7 +5059,8 @@ export default class MetamaskController extends EventEmitter {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
+              number_of_bitcoin_accounts_discovered:
+                discoveredAccounts?.Bitcoin,
             })
             .build(),
         );
@@ -7507,7 +7512,9 @@ export default class MetamaskController extends EventEmitter {
                 ...(payload.revenue === undefined
                   ? {}
                   : { revenue: payload.revenue }),
-                ...(payload.value === undefined ? {} : { value: payload.value }),
+                ...(payload.value === undefined
+                  ? {}
+                  : { value: payload.value }),
                 ...(payload.currency === undefined
                   ? {}
                   : { currency: payload.currency }),
@@ -7599,7 +7606,9 @@ export default class MetamaskController extends EventEmitter {
                   ...(payload.revenue === undefined
                     ? {}
                     : { revenue: payload.revenue }),
-                  ...(payload.value === undefined ? {} : { value: payload.value }),
+                  ...(payload.value === undefined
+                    ? {}
+                    : { value: payload.value }),
                   ...(payload.currency === undefined
                     ? {}
                     : { currency: payload.currency }),

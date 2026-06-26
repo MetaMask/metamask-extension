@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-} from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import {
   DragDropContext,
   Droppable,
@@ -455,20 +450,20 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
         .addCategory(MetaMetricsEventCategory.Network)
         .addProperties({
-        location: 'Network Menu',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: currentChainIdToTrack,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        from_network: currentChainIdToTrack,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        to_network: chainIdToTrack,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        custom_network: isCustomNetworkConfiguration(chain),
-      })
+          location: 'Network Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: currentChainIdToTrack,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          from_network: currentChainIdToTrack,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          to_network: chainIdToTrack,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          custom_network: isCustomNetworkConfiguration(chain),
+        })
         .build(),
     );
   };
@@ -759,13 +754,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                       const newVal = !value;
                       dispatch(setShowTestNetworks(newVal));
                       trackEvent(
-      createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
-        .addCategory(MetaMetricsEventCategory.Network)
-        .addProperties({
-                          value: newVal,
-                        })
-        .build(),
-    );
+                        createEventBuilder(
+                          MetaMetricsEventName.TestNetworksDisplayed,
+                        )
+                          .addCategory(MetaMetricsEventCategory.Network)
+                          .addProperties({
+                            value: newVal,
+                          })
+                          .build(),
+                      );
                     }}
                   />
                 </Box>

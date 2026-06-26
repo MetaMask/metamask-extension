@@ -74,7 +74,13 @@ export const NotificationDetailBlockExplorerButton = ({
         })
         .build(),
     );
-  }, [chainId, createEventBuilder, notification.id, notification.type, trackEvent]);
+  }, [
+    chainId,
+    createEventBuilder,
+    notification.id,
+    notification.type,
+    trackEvent,
+  ]);
 
   if (!blockExplorerUrl) {
     return null;

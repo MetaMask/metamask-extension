@@ -85,7 +85,13 @@ const TokenButtons = ({
         })
         .build(),
     );
-  }, [currentChainId, token.symbol, trackEvent, createEventBuilder, openBuyCryptoInPdapp]);
+  }, [
+    currentChainId,
+    token.symbol,
+    trackEvent,
+    createEventBuilder,
+    openBuyCryptoInPdapp,
+  ]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(

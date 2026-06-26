@@ -57,12 +57,12 @@ export const useActivityScreenOpened = ({
       createEventBuilder(MetaMetricsEventName.ActivityScreenOpened)
         .addCategory(MetaMetricsEventCategory.Home)
         .addProperties({
-        /* eslint-disable @typescript-eslint/naming-convention */
-        network_filter: networks,
-        is_empty: empty,
-        pending_transactions: pending,
-        /* eslint-enable @typescript-eslint/naming-convention */
-      })
+          /* eslint-disable @typescript-eslint/naming-convention */
+          network_filter: networks,
+          is_empty: empty,
+          pending_transactions: pending,
+          /* eslint-enable @typescript-eslint/naming-convention */
+        })
         .build(),
     );
   }, [filter, isSettled, trackEvent]);

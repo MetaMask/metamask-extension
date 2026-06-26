@@ -1,9 +1,4 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Box, Text } from '../../component-library';
 import { useAnalytics } from '../../../hooks/useAnalytics';

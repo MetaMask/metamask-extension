@@ -60,7 +60,10 @@ export const useSubscriptionMetrics = () => {
   const pendingShieldCohortTxType = useSelector(getPendingShieldCohortTxType);
 
   const trackShieldEvent = useCallback(
-    (eventName: MetaMetricsEventName, extraProperties: Record<string, Json>) => {
+    (
+      eventName: MetaMetricsEventName,
+      extraProperties: Record<string, Json>,
+    ) => {
       const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,

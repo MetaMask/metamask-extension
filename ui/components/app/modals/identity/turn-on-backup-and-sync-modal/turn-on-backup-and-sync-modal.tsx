@@ -63,28 +63,28 @@ export function TurnOnBackupAndSyncModal() {
   const { setIsBackupAndSyncFeatureEnabled, error } = useBackupAndSync();
 
   const handleDismissModal = () => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
         .addCategory(MetaMetricsEventCategory.BackupAndSync)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        feature_name: 'Backup And Sync Carousel Modal',
-        action: 'Modal Dismissed',
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_name: 'Backup And Sync Carousel Modal',
+          action: 'Modal Dismissed',
+        })
         .build(),
     );
     hideModal();
   };
 
   const handleTurnOnBackupAndSync = async () => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
         .addCategory(MetaMetricsEventCategory.BackupAndSync)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        feature_name: 'Backup And Sync Carousel Modal',
-        action: 'Turned On',
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_name: 'Backup And Sync Carousel Modal',
+          action: 'Turned On',
+        })
         .build(),
     );
 

@@ -1,8 +1,5 @@
 import { prependZero } from '../../../shared/lib/string-utils';
-import {
-  createEventBuilder,
-  trackEvent,
-} from '../controllers/analytics';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 

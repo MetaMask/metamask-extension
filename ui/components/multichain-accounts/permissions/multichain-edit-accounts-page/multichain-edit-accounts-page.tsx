@@ -118,14 +118,14 @@ export const MultichainEditAccountsPage = ({
     );
 
     onSubmit(selectedAccountGroups);
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.UpdatePermissionedAccounts)
         .addCategory(MetaMetricsEventCategory.Permissions)
         .addProperties({
-        addedAccounts: addedAccounts.length,
-        removedAccounts: removedAccounts.length,
-        location: 'Edit Accounts Modal',
-      })
+          addedAccounts: addedAccounts.length,
+          removedAccounts: removedAccounts.length,
+          location: 'Edit Accounts Modal',
+        })
         .build(),
     );
   }, [

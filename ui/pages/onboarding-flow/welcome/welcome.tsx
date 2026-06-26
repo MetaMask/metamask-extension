@@ -202,11 +202,8 @@ export default function OnboardingWelcome() {
   ]);
 
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const {
-    bufferedTrace,
-    bufferedEndTrace,
-    onboardingParentContext,
-  } = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    useContext(MetaMetricsContext);
 
   const trackLegacyEventForAction = useCallback(
     async (

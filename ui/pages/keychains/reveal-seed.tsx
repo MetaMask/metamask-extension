@@ -153,30 +153,30 @@ function RevealSeedPage() {
     }
     copyToClipboard(seedWords);
     setShowSuccessToast(true);
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.KeyExportCopied)
         .addCategory(MetaMetricsEventCategory.Keys)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Srp,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        copy_method: 'clipboard',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          copy_method: 'clipboard',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
         .build(),
     );
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.SrpCopiedToClipboard)
         .addCategory(MetaMetricsEventCategory.Keys)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Srp,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        copy_method: 'clipboard',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          copy_method: 'clipboard',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
         .build(),
     );
   }, [seedWords, phraseRevealed, trackEvent, hdEntropyIndex]);
@@ -200,35 +200,37 @@ function RevealSeedPage() {
         ) as unknown as Promise<string>
       )
         .then((revealedSeedWords) => {
-                    trackEvent(
+          trackEvent(
             createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
               .addCategory(MetaMetricsEventCategory.Keys)
               .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Srp,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              verification_method: MetaMetricsEventVerificationMethod.Password,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hd_entropy_index: hdEntropyIndex,
-            })
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Srp,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                verification_method:
+                  MetaMetricsEventVerificationMethod.Password,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              })
               .build(),
           );
           setSeedWords(revealedSeedWords);
           setScreen(REVEAL_SEED_SCREEN);
         })
         .catch((e: Error) => {
-                    trackEvent(
+          trackEvent(
             createEventBuilder(MetaMetricsEventName.KeyExportFailed)
               .addCategory(MetaMetricsEventCategory.Keys)
               .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Srp,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              verification_method: MetaMetricsEventVerificationMethod.Password,
-              reason: e.message,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hd_entropy_index: hdEntropyIndex,
-            })
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Srp,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                verification_method:
+                  MetaMetricsEventVerificationMethod.Password,
+                reason: e.message,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              })
               .build(),
           );
           setError(getErrorMessage(e));
@@ -250,13 +252,13 @@ function RevealSeedPage() {
   );
 
   const openSupportArticle = useCallback(() => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
         .addCategory(MetaMetricsEventCategory.Keys)
         .addProperties({
-        url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
-        location: 'reveal_srp',
-      })
+          url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
+          location: 'reveal_srp',
+        })
         .build(),
     );
     globalThis.platform.openTab({
@@ -265,16 +267,16 @@ function RevealSeedPage() {
   }, [trackEvent]);
 
   const handleBack = useCallback(() => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.SrpRevealBackButtonClicked)
         .addCategory(MetaMetricsEventCategory.Keys)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Srp,
-        screen,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          screen,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
         .build(),
     );
     navigate(PREVIOUS_ROUTE);
@@ -295,17 +297,17 @@ function RevealSeedPage() {
       }
 
       trace({ name: TraceName.RevealSeed });
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.KeyExportRequested)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Passkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        })
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
           .build(),
       );
 
@@ -314,17 +316,17 @@ function RevealSeedPage() {
           getSeedPhraseWithPasskey(authenticationResponse, keyringId),
         ) as unknown as Promise<string>);
 
-                trackEvent(
+        trackEvent(
           createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
             .addCategory(MetaMetricsEventCategory.Keys)
             .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Passkey,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          })
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Srp,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Passkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
             .build(),
         );
 
@@ -334,18 +336,18 @@ function RevealSeedPage() {
       } catch (e) {
         const revealError = e as Error;
         const errorCode = getPasskeyErrorCode(revealError);
-                trackEvent(
+        trackEvent(
           createEventBuilder(MetaMetricsEventName.KeyExportFailed)
             .addCategory(MetaMetricsEventCategory.Keys)
             .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Passkey,
-            reason: errorCode,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          })
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Srp,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Passkey,
+              reason: errorCode,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
             .build(),
         );
         captureException(
@@ -385,13 +387,13 @@ function RevealSeedPage() {
 
   useEffect(() => {
     if (screen === REVEAL_SEED_SCREEN && !srpViewEventTracked) {
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.SrpViewSrpText)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-        })
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+          })
           .build(),
       );
       setSrpViewEventTracked(true);
@@ -399,13 +401,15 @@ function RevealSeedPage() {
   }, [screen, srpViewEventTracked, trackEvent]);
 
   const handleRevealPhrase = useCallback(() => {
-        trackEvent(
-      createEventBuilder(MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed)
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
+      )
         .addCategory(MetaMetricsEventCategory.Onboarding)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
         .build(),
     );
     setPhraseRevealed(true);
@@ -414,23 +418,23 @@ function RevealSeedPage() {
   const handleTabClick = useCallback(
     (tabKey: 'text-seed' | 'qr-srp') => {
       if (tabKey === 'text-seed') {
-                trackEvent(
+        trackEvent(
           createEventBuilder(MetaMetricsEventName.SrpViewSrpText)
             .addCategory(MetaMetricsEventCategory.Keys)
             .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-          })
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Srp,
+            })
             .build(),
         );
       } else if (tabKey === 'qr-srp') {
-                trackEvent(
+        trackEvent(
           createEventBuilder(MetaMetricsEventName.SrpViewsSrpQR)
             .addCategory(MetaMetricsEventCategory.Keys)
             .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-          })
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Srp,
+            })
             .build(),
         );
       }
@@ -440,26 +444,26 @@ function RevealSeedPage() {
 
   const handlePasswordContinueClick = useCallback(
     (event: React.MouseEvent) => {
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.KeyExportRequested)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Password,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        })
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Password,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
           .build(),
       );
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.SrpRevealNextClicked)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-        })
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+          })
           .build(),
       );
       handleSubmit(event);
@@ -468,15 +472,15 @@ function RevealSeedPage() {
   );
 
   const handleQuizGetStarted = useCallback(() => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.SrpRevealStarted)
         .addCategory(MetaMetricsEventCategory.Keys)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Srp,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
         .build(),
     );
     setScreen(QUIZ_QUESTIONS_SCREEN);

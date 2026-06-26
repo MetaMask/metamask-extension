@@ -63,11 +63,11 @@ export const BalanceEmptyState = ({
       createEventBuilder(MetaMetricsEventName.EmptyBuyBannerDisplayed)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        locale: currentLocale,
-        network: nickname,
-        referrer: ORIGIN_METAMASK,
-        location: 'balance_empty_state',
-      })
+          locale: currentLocale,
+          network: nickname,
+          referrer: ORIGIN_METAMASK,
+          location: 'balance_empty_state',
+        })
         .build(),
     );
   }, [currentLocale, chainId, nickname, trackEvent]);
@@ -79,10 +79,10 @@ export const BalanceEmptyState = ({
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location: 'balance_empty_state',
-        text: 'Add funds',
-        chainId,
-      })
+          location: 'balance_empty_state',
+          text: 'Add funds',
+          chainId,
+        })
         .build(),
     );
 

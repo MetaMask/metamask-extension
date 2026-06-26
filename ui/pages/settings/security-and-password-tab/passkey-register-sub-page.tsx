@@ -153,8 +153,8 @@ export default function PasskeyRegisterSubPage() {
       createEventBuilder(MetaMetricsEventName.PasskeySetup)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-        status: 'started',
-      })
+          status: 'started',
+        })
         .build(),
     );
 
@@ -191,17 +191,17 @@ export default function PasskeyRegisterSubPage() {
         metamask: newMetamaskState,
       });
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeySetup)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          status: 'completed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: derivationMethod,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - enrollmentStartedAt,
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.PasskeySetup)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            derivation_method: derivationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - enrollmentStartedAt,
+          })
+          .build(),
+      );
 
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
@@ -213,34 +213,34 @@ export default function PasskeyRegisterSubPage() {
         },
       );
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          /* eslint-disable @typescript-eslint/naming-convention */
-          settings_group: 'security_privacy',
-          settings_type: 'passkey',
-          old_value: false,
-          new_value: true,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'passkey',
+            old_value: false,
+            new_value: true,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
       goToSettings();
     } catch (error) {
       const durationMs = Date.now() - enrollmentStartedAt;
       if (isPasskeyCeremonySilentError(error)) {
         trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeySetup)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-            status: 'cancelled',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            current_step: currentStep,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: durationMs,
-          })
-        .build(),
-    );
+          createEventBuilder(MetaMetricsEventName.PasskeySetup)
+            .addCategory(MetaMetricsEventCategory.Settings)
+            .addProperties({
+              status: 'cancelled',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              current_step: currentStep,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              duration_ms: durationMs,
+            })
+            .build(),
+        );
         log.debug(
           'Settings passkey enrollment ceremony cancelled or timed out',
           error,
@@ -258,18 +258,18 @@ export default function PasskeyRegisterSubPage() {
         },
       );
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeySetup)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          status: 'failed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_step: currentStep,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: durationMs,
-          reason: errorCode,
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.PasskeySetup)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            status: 'failed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            error_step: currentStep,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+            reason: errorCode,
+          })
+          .build(),
+      );
       setEnrollmentError(
         translatePasskeyError(error, t, passkeyMethodLabel) ??
           (registrationSucceeded

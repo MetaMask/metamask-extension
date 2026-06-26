@@ -83,7 +83,7 @@ function RestoreVaultPage() {
           createNewVaultAndRestore(password, secretRecoveryPhrase),
         );
 
-                trackEvent(
+        trackEvent(
           createEventBuilder(MetaMetricsEventName.WalletRestored)
             .addCategory(MetaMetricsEventCategory.Retention)
             .build(),

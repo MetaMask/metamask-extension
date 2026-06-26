@@ -65,11 +65,8 @@ export function useAccountStatusContext({
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
 
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const {
-    bufferedTrace,
-    bufferedEndTrace,
-    onboardingParentContext,
-  } = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    useContext(MetaMetricsContext);
 
   const descriptionKey = useMemo(() => {
     if (socialLoginType === AuthConnection.Telegram) {

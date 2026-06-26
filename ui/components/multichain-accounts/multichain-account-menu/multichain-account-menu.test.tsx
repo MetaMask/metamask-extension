@@ -107,8 +107,7 @@ describe('MultichainAccountMenu', () => {
   ) => {
     const store = configureStore(state);
     return renderWithProvider(
-      <MultichainAccountMenu {...props} />
-      ,
+      <MultichainAccountMenu {...props} />,
       store,
     );
   };
@@ -532,12 +531,11 @@ describe('MultichainAccountMenu', () => {
       const store = configureStore(mockDefaultState);
       renderWithProvider(
         <MultichainAccountMenu
-            accountGroupId={groupId}
-            isRemovable={false}
-            isOpen
-            onToggle={() => undefined}
-          />
-        ,
+          accountGroupId={groupId}
+          isRemovable={false}
+          isOpen
+          onToggle={() => undefined}
+        />,
         store,
       );
 

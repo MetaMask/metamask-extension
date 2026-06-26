@@ -112,7 +112,13 @@ export default function RecoveryPhrase({
       pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
       search: nextRouteQueryString ? `?${nextRouteQueryString}` : '',
     });
-  }, [createEventBuilder, hdEntropyIndex, navigate, trackEvent, nextRouteQueryString]);
+  }, [
+    createEventBuilder,
+    hdEntropyIndex,
+    navigate,
+    trackEvent,
+    nextRouteQueryString,
+  ]);
 
   const handleOnShowSrpDetailsModal = useCallback(() => {
     trackEvent(

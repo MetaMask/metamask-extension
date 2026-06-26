@@ -77,13 +77,13 @@ export const MultichainSiteCell = ({
 
   const handleOpenAccountsModal = () => {
     hideAllToasts?.();
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.ViewPermissionedAccounts)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location:
-          'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
-      })
+          location:
+            'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
+        })
         .build(),
     );
     showEditAccounts();
@@ -92,13 +92,13 @@ export const MultichainSiteCell = ({
   const handleOpenNetworksModal = () => {
     hideAllToasts?.();
     setShowEditNetworksModal(true);
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.ViewPermissionedNetworks)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location:
-          'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
-      })
+          location:
+            'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
+        })
         .build(),
     );
   };

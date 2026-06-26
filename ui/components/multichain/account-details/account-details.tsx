@@ -198,18 +198,18 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
         isOpen={showHoldToReveal}
         onClose={() => {
           trackEvent(
-      createEventBuilder(MetaMetricsEventName.KeyExportCanceled)
-        .addCategory(MetaMetricsEventCategory.Keys)
-        .addProperties({
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Pkey,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hd_entropy_index: hdEntropyIndex,
-            })
-        .build(),
-    );
+            createEventBuilder(MetaMetricsEventName.KeyExportCanceled)
+              .addCategory(MetaMetricsEventCategory.Keys)
+              .addProperties({
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Pkey,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              })
+              .build(),
+          );
           setPrivateKey('');
           setShowHoldToReveal(false);
         }}

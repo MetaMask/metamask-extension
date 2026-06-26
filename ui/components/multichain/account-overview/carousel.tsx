@@ -1,9 +1,4 @@
-import React, {
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { removeSlide } from '../../../store/actions';
@@ -57,10 +52,10 @@ export const Carousel = () => {
       createEventBuilder(MetaMetricsEventName.BannerSelect)
         .addCategory(MetaMetricsEventCategory.Banner)
         .addProperties({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        banner_name: key,
-      })
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          banner_name: key,
+        })
         .build(),
     );
 
@@ -84,15 +79,15 @@ export const Carousel = () => {
       if (!displayedSlideIds.current.has(slide.id)) {
         displayedSlideIds.current.add(slide.id);
         trackEvent(
-      createEventBuilder(MetaMetricsEventName.BannerDisplay)
-        .addCategory(MetaMetricsEventCategory.Banner)
-        .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            banner_name: slide.id,
-          })
-        .build(),
-    );
+          createEventBuilder(MetaMetricsEventName.BannerDisplay)
+            .addCategory(MetaMetricsEventCategory.Banner)
+            .addProperties({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              banner_name: slide.id,
+            })
+            .build(),
+        );
       }
     },
     [trackEvent],

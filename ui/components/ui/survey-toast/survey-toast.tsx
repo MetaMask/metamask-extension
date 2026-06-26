@@ -131,9 +131,9 @@ export function SurveyToast() {
       createEventBuilder(MetaMetricsEventName.SurveyToast)
         .addCategory(MetaMetricsEventCategory.Feedback)
         .addProperties({
-        response,
-        survey: survey.id,
-      })
+          response,
+          survey: survey.id,
+        })
         .build(),
     );
   }

@@ -245,16 +245,16 @@ const AccountList = ({
             <ButtonIcon
               className="hw-account-list__item__link"
               onClick={() => {
-                                trackEvent(
+                trackEvent(
                   createEventBuilder('Clicked Block Explorer Link')
                     .addCategory(MetaMetricsEventCategory.Accounts)
                     .addProperties({
-                    actions: 'Hardware Connect',
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    link_type: 'Account Tracker',
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    block_explorer_domain: blockExplorerDomain,
-                  })
+                      actions: 'Hardware Connect',
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      link_type: 'Account Tracker',
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      block_explorer_domain: blockExplorerDomain,
+                    })
                     .build(),
                 );
                 global.platform.openTab({

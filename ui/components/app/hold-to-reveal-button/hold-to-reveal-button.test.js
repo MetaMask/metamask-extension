@@ -65,8 +65,7 @@ describe('HoldToRevealButton', () => {
 
   it('should show the locked padlock when a button is long pressed and then should show it after it was lifted off before the animation concludes', async () => {
     const { getByText, queryByLabelText } = renderWithProvider(
-      <HoldToRevealButton {...props} />
-      ,
+      <HoldToRevealButton {...props} />,
       mockStore,
     );
 
@@ -93,8 +92,7 @@ describe('HoldToRevealButton', () => {
 
   it('should show the unlocked padlock when a button is long pressed for the duration of the animation', async () => {
     const { getByText, queryByLabelText, getByLabelText } = renderWithProvider(
-      <HoldToRevealButton {...props} />
-      ,
+      <HoldToRevealButton {...props} />,
       mockStore,
     );
 

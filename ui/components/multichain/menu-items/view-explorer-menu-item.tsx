@@ -5,7 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { createEventBuilder, type AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
+import {
+  createEventBuilder,
+  type AnalyticsEvent,
+} from '../../../../shared/lib/analytics/create-event-builder';
 import {
   getMultichainAccountUrl,
   getMultichainBlockExplorerUrl,

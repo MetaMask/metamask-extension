@@ -71,15 +71,15 @@ export const FundingMethodModal = ({
       createEventBuilder(MetaMetricsEventName.NavSendButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location: RampsMetaMaskEntry?.TokensBanner,
-        text: 'Transfer crypto',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: symbol,
-      })
+          location: RampsMetaMaskEntry?.TokensBanner,
+          text: 'Transfer crypto',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: symbol,
+        })
         .build(),
     );
 
@@ -107,15 +107,15 @@ export const FundingMethodModal = ({
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location: RampsMetaMaskEntry?.TokensBanner,
-        text: 'Buy crypto',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: symbol,
-      })
+          location: RampsMetaMaskEntry?.TokensBanner,
+          text: 'Buy crypto',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: symbol,
+        })
         .build(),
     );
     openBuyCryptoInPdapp(chainId as ChainId | CaipChainId);

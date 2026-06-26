@@ -201,19 +201,19 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
         }
 
         trackEvent(
-      createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
-        .addCategory(MetaMetricsEventCategory.Network)
-        .addProperties({
-            location: 'Dapp Connection Control Bar',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: hexChainId,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            from_network: activeDappChainId,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            to_network: hexChainId,
-          })
-        .build(),
-    );
+          createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
+            .addCategory(MetaMetricsEventCategory.Network)
+            .addProperties({
+              location: 'Dapp Connection Control Bar',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: hexChainId,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              from_network: activeDappChainId,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              to_network: hexChainId,
+            })
+            .build(),
+        );
       } finally {
         onClose();
       }
@@ -242,11 +242,11 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       const newValue = !currentValue;
       dispatch(setShowTestNetworks(newValue));
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
-        .addCategory(MetaMetricsEventCategory.Network)
-        .addProperties({ value: newValue })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({ value: newValue })
+          .build(),
+      );
     },
     [dispatch, trackEvent, currentlyOnTestnet],
   );

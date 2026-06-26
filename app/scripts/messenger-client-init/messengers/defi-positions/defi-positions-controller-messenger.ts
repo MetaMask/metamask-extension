@@ -36,8 +36,7 @@ export function getDeFiPositionsControllerMessenger(
   return controllerMessenger;
 }
 
-type AllowedInitializationActions =
-  RemoteFeatureFlagControllerGetStateAction;
+type AllowedInitializationActions = RemoteFeatureFlagControllerGetStateAction;
 
 export type DeFiPositionsControllerInitMessenger = ReturnType<
   typeof getDeFiPositionsControllerInitMessenger

@@ -394,25 +394,25 @@ export const NetworksForm = ({
           createEventBuilder(MetaMetricsEventName.CustomNetworkAdded)
             .addCategory(MetaMetricsEventCategory.Network)
             .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            block_explorer_url:
-              blockExplorers?.blockExplorerUrls?.[
-                blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
-              ],
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: chainIdHex,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            network_name: name,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            source_connection_method:
-              MetaMetricsNetworkEventSource.CustomNetworkForm,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: ticker,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              block_explorer_url:
+                blockExplorers?.blockExplorerUrls?.[
+                  blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
+                ],
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: chainIdHex,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              network_name: name,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              source_connection_method:
+                MetaMetricsNetworkEventSource.CustomNetworkForm,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol: ticker,
             })
             .addSensitiveProperties({
               rpcUrl: rpcIdentifierUtility(

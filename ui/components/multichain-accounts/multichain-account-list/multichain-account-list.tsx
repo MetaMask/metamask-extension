@@ -234,15 +234,15 @@ export const MultichainAccountList = ({
 
   const defaultHandleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.NavAccountSwitched)
           .addCategory(MetaMetricsEventCategory.Navigation)
           .addProperties({
-          location: 'Main Menu',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        })
+            location: 'Main Menu',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
           .build(),
       );
       endTrace({

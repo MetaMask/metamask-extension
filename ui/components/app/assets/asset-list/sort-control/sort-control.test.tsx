@@ -82,7 +82,10 @@ describe('SortControl', () => {
       },
     });
 
-    return renderWithProvider(<SortControl handleClose={mockHandleClose} />, store);
+    return renderWithProvider(
+      <SortControl handleClose={mockHandleClose} />,
+      store,
+    );
   };
 
   beforeEach(() => {

@@ -23,9 +23,7 @@ import {
   SmartTransactionsControllerInitMessenger,
 } from '../messengers/smart-transactions-controller-messenger';
 import { MessengerClientFlatState } from '../controller-list';
-import type {
-  MetaMetricsEventPayload,
-} from '../../../../shared/constants/metametrics';
+import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { trackEvent } from '../../controllers/analytics';
 import { SmartTransactionsControllerInit } from './smart-transactions-controller-init';

@@ -5,12 +5,7 @@
  * Shown to users who haven't seen the education content before.
  */
 
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -267,7 +262,13 @@ const MusdEducationScreen = () => {
 
     dispatch(setMusdConversionEducationSeen(true));
     navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate, createEventBuilder, trackEvent, secondaryButtonLabel]);
+  }, [
+    dispatch,
+    navigate,
+    createEventBuilder,
+    trackEvent,
+    secondaryButtonLabel,
+  ]);
 
   return (
     <Box

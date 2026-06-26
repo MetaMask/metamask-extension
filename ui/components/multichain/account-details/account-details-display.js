@@ -66,15 +66,15 @@ export const AccountDetailsDisplay = ({
         onSubmit={(label) => {
           dispatch(setAccountLabel(address, label));
           trackEvent(
-      createEventBuilder(MetaMetricsEventName.AccountRenamed)
-        .addCategory(MetaMetricsEventCategory.Accounts)
-        .addProperties({
-              location: 'Account Details Modal',
-              chain_id: chainId,
-              account_hardware_type: deviceName,
-            })
-        .build(),
-    );
+            createEventBuilder(MetaMetricsEventName.AccountRenamed)
+              .addCategory(MetaMetricsEventCategory.Accounts)
+              .addProperties({
+                location: 'Account Details Modal',
+                chain_id: chainId,
+                account_hardware_type: deviceName,
+              })
+              .build(),
+          );
         }}
         accounts={accounts}
       />

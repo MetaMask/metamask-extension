@@ -65,11 +65,14 @@ messenger.registerActionHandler('NetworkController:getState', () => ({
   selectedNetworkClientId: 'selectedNetworkClientId',
 }));
 
-messenger.registerActionHandler('NetworkController:getNetworkClientById', () => ({
-  configuration: {
-    chainId: '0x1338',
-  },
-}));
+messenger.registerActionHandler(
+  'NetworkController:getNetworkClientById',
+  () => ({
+    configuration: {
+      chainId: '0x1338',
+    },
+  }),
+);
 
 const analyticsControllerState = {
   analyticsId: '00000000-0000-4000-8000-000000000001',
@@ -89,7 +92,10 @@ messenger.registerActionHandler('AnalyticsController:optOut', () => {
 });
 
 const trackEventSpy = jest.fn();
-messenger.registerActionHandler('AnalyticsController:trackEvent', trackEventSpy);
+messenger.registerActionHandler(
+  'AnalyticsController:trackEvent',
+  trackEventSpy,
+);
 messenger.registerActionHandler('AnalyticsController:identify', jest.fn());
 messenger.registerActionHandler('AnalyticsController:trackView', jest.fn());
 
@@ -139,13 +145,10 @@ const metaMetricsController = new MetaMetricsController({
   },
 });
 
-messenger.registerActionHandler(
-  'MultichainNetworkController:getState',
-  () => ({
-    isEvmSelected: true,
-    selectedMultichainNetworkChainId: 'eip155:1',
-  }),
-);
+messenger.registerActionHandler('MultichainNetworkController:getState', () => ({
+  isEvmSelected: true,
+  selectedMultichainNetworkChainId: 'eip155:1',
+}));
 
 messenger.registerActionHandler('RemoteFeatureFlagController:getState', () => ({
   remoteFeatureFlags: {},

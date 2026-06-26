@@ -158,18 +158,18 @@ export function useGlobalMenuSections(
 
     if (shouldShowEnableModal) {
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.NotificationsActivated)
-        .addCategory(MetaMetricsEventCategory.NotificationsActivationFlow)
-        .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          action_type: 'started',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_profile_syncing_enabled: isBackupAndSyncEnabled,
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.NotificationsActivated)
+          .addCategory(MetaMetricsEventCategory.NotificationsActivationFlow)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            action_type: 'started',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_profile_syncing_enabled: isBackupAndSyncEnabled,
+          })
+          .build(),
+      );
       dispatch(showConfirmTurnOnMetamaskNotifications());
       onClose();
       return;
@@ -179,13 +179,13 @@ export function useGlobalMenuSections(
       createEventBuilder(MetaMetricsEventName.NotificationsMenuOpened)
         .addCategory(MetaMetricsEventCategory.NotificationInteraction)
         .addProperties({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        unread_count: notificationsUnreadCount,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        read_count: notificationsReadCount,
-      })
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          unread_count: notificationsUnreadCount,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          read_count: notificationsReadCount,
+        })
         .build(),
     );
     navigate(
@@ -292,11 +292,11 @@ export function useGlobalMenuSections(
         );
         global.platform.openTab({ url });
         trackEvent(
-      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({ location: METRICS_LOCATION, text: 'Portfolio' })
-        .build(),
-    );
+          createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
+            .addCategory(MetaMetricsEventCategory.Navigation)
+            .addProperties({ location: METRICS_LOCATION, text: 'Portfolio' })
+            .build(),
+        );
         onClose();
       },
     });
@@ -309,11 +309,11 @@ export function useGlobalMenuSections(
         onClick: () => {
           global?.platform?.openExtensionInBrowser?.();
           trackEvent(
-      createEventBuilder(MetaMetricsEventName.AppWindowExpanded)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({ location: METRICS_LOCATION })
-        .build(),
-    );
+            createEventBuilder(MetaMetricsEventName.AppWindowExpanded)
+              .addCategory(MetaMetricsEventCategory.Navigation)
+              .addProperties({ location: METRICS_LOCATION })
+              .build(),
+          );
           onClose();
         },
       });
@@ -343,16 +343,16 @@ export function useGlobalMenuSections(
           onClick: async () => {
             await dispatch(toggleDefaultView());
             trackEvent(
-      createEventBuilder(MetaMetricsEventName.ViewportSwitched)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-                location: METRICS_LOCATION,
-                to: isSidepanel
-                  ? ENVIRONMENT_TYPE_POPUP
-                  : ENVIRONMENT_TYPE_SIDEPANEL,
-              })
-        .build(),
-    );
+              createEventBuilder(MetaMetricsEventName.ViewportSwitched)
+                .addCategory(MetaMetricsEventCategory.Navigation)
+                .addProperties({
+                  location: METRICS_LOCATION,
+                  to: isSidepanel
+                    ? ENVIRONMENT_TYPE_POPUP
+                    : ENVIRONMENT_TYPE_SIDEPANEL,
+                })
+                .build(),
+            );
             onClose();
           },
         });
@@ -378,11 +378,11 @@ export function useGlobalMenuSections(
             : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`,
           onClick: () => {
             trackEvent(
-      createEventBuilder(MetaMetricsEventName.NavPermissionsOpened)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({ location: METRICS_LOCATION })
-        .build(),
-    );
+              createEventBuilder(MetaMetricsEventName.NavPermissionsOpened)
+                .addCategory(MetaMetricsEventCategory.Navigation)
+                .addProperties({ location: METRICS_LOCATION })
+                .build(),
+            );
           },
           disabled: hasUnapprovedTransactions,
         },
@@ -413,11 +413,11 @@ export function useGlobalMenuSections(
           to: `${SETTINGS_ROUTE}?drawerOpen=true`,
           onClick: () => {
             trackEvent(
-      createEventBuilder(MetaMetricsEventName.NavSettingsOpened)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({ location: METRICS_LOCATION })
-        .build(),
-    );
+              createEventBuilder(MetaMetricsEventName.NavSettingsOpened)
+                .addCategory(MetaMetricsEventCategory.Navigation)
+                .addProperties({ location: METRICS_LOCATION })
+                .build(),
+            );
           },
           disabled: hasUnapprovedTransactions,
         },
@@ -463,11 +463,11 @@ export function useGlobalMenuSections(
           label: t('lock'),
           onClick: async () => {
             trackEvent(
-      createEventBuilder(MetaMetricsEventName.AppLocked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({ location: METRICS_LOCATION })
-        .build(),
-    );
+              createEventBuilder(MetaMetricsEventName.AppLocked)
+                .addCategory(MetaMetricsEventCategory.Navigation)
+                .addProperties({ location: METRICS_LOCATION })
+                .build(),
+            );
             onClose();
 
             await dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));

@@ -45,12 +45,12 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    */
   const onMouseDown = () => {
     isLongPressing.current = true;
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.SrpHoldToRevealClickStarted)
         .addCategory(MetaMetricsEventCategory.Keys)
         .addProperties({
-        key_type: MetaMetricsEventKeyType.Srp,
-      })
+          key_type: MetaMetricsEventKeyType.Srp,
+        })
         .build(),
     );
   };
@@ -76,20 +76,20 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    */
   const triggerOnLongPressed = useCallback(
     (e) => {
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.SrpHoldToRevealCompleted)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          key_type: MetaMetricsEventKeyType.Srp,
-        })
+            key_type: MetaMetricsEventKeyType.Srp,
+          })
           .build(),
       );
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.SrpRevealViewed)
           .addCategory(MetaMetricsEventCategory.Keys)
           .addProperties({
-          key_type: MetaMetricsEventKeyType.Srp,
-        })
+            key_type: MetaMetricsEventKeyType.Srp,
+          })
           .build(),
       );
       onLongPressed();

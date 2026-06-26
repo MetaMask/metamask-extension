@@ -92,13 +92,13 @@ export const ChooseNewWalletTypePage = () => {
   }, [isFreshTab, navigate]);
 
   const handleImportWallet = useCallback(() => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        status: 'started',
-        location: 'Add Wallet Modal',
-      })
+          status: 'started',
+          location: 'Add Wallet Modal',
+        })
         .build(),
     );
     navigate(IMPORT_SRP_ROUTE);
@@ -109,7 +109,7 @@ export const ChooseNewWalletTypePage = () => {
   }, [navigate]);
 
   const handleConnectHardwareWallet = useCallback(() => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.AddHardwareWalletClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .build(),
@@ -136,18 +136,18 @@ export const ChooseNewWalletTypePage = () => {
   }, [navigate]);
 
   const handleAddSnapAccount = useCallback(() => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.AccountAddSelected)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: MetaMetricsEventAccountType.Snap,
-        location: 'Main Menu',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: null,
-      })
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: MetaMetricsEventAccountType.Snap,
+          location: 'Main Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: null,
+        })
         .build(),
     );
     globalThis.platform.openTab({
@@ -156,24 +156,24 @@ export const ChooseNewWalletTypePage = () => {
   }, [trackEvent]);
 
   const handleAddWatchAccount = useCallback(() => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.AccountAddSelected)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: MetaMetricsEventAccountType.Snap,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        snap_id: ACCOUNT_WATCHER_SNAP_ID,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        snap_name: ACCOUNT_WATCHER_NAME,
-        location: 'Main Menu',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: null,
-      })
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: MetaMetricsEventAccountType.Snap,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_id: ACCOUNT_WATCHER_SNAP_ID,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_name: ACCOUNT_WATCHER_NAME,
+          location: 'Main Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: null,
+        })
         .build(),
     );
     navigate(getSnapRoute(ACCOUNT_WATCHER_SNAP_ID));

@@ -24,7 +24,9 @@ const SnapAccountTransactionLoadingScreen = ({
 
   useEffect(() => {
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.SnapAccountTransactionLoadingViewed)
+      createEventBuilder(
+        MetaMetricsEventName.SnapAccountTransactionLoadingViewed,
+      )
         .addCategory(MetaMetricsEventCategory.Transactions)
         .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

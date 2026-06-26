@@ -67,11 +67,8 @@ export default function CreatePassword({
   const resetOnboardingAndReturn = useOnboardingReset();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const {
-    bufferedTrace,
-    bufferedEndTrace,
-    onboardingParentContext,
-  } = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);

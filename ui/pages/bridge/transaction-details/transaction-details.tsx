@@ -280,7 +280,9 @@ const CrossChainSwapTxDetails = () => {
                   href={SUPPORT_LINK}
                   onClick={() => {
                     trackEvent(
-                      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+                      createEventBuilder(
+                        MetaMetricsEventName.SupportLinkClicked,
+                      )
                         .addCategory(MetaMetricsEventCategory.Home)
                         .addProperties({
                           url: SUPPORT_LINK,

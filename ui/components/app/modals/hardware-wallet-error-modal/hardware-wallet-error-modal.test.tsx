@@ -46,7 +46,6 @@ jest.mock('../../../../hooks/useAnalytics', () => {
   };
 });
 
-
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(() => 'fullscreen'),
 }));
@@ -134,10 +133,7 @@ function wrapHardwareWalletModalTree(
     <Provider store={store}>
       <MemoryRouter initialEntries={['/']} future={memoryRouterFuture}>
         <Routes>
-          <Route
-            path="*"
-            element={ui}
-          />
+          <Route path="*" element={ui} />
         </Routes>
       </MemoryRouter>
     </Provider>

@@ -109,8 +109,7 @@ export default function LoginErrorModal({
               .addProperties({
                 url: SUPPORT_LINK,
                 location: 'Welcome page',
-                [MetaMetricsContextProp.PageTitle]:
-                  segmentContext.page?.title,
+                [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
               })
               .build(),
           );

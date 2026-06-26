@@ -60,21 +60,21 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
         );
         global.platform.openTab({ url });
         trackEvent(
-      createEventBuilder(MetaMetricsEventName.StakingEntryPointClicked)
-        .addCategory(MetaMetricsEventCategory.Tokens)
-        .addProperties({
-            location: 'Token List Item',
-            text: 'Stake',
-            // FIXME: This might not be a number for non-EVM accounts
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: chainId,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: symbol,
-          })
-        .build(),
-    );
+          createEventBuilder(MetaMetricsEventName.StakingEntryPointClicked)
+            .addCategory(MetaMetricsEventCategory.Tokens)
+            .addProperties({
+              location: 'Token List Item',
+              text: 'Stake',
+              // FIXME: This might not be a number for non-EVM accounts
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: chainId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol: symbol,
+            })
+            .build(),
+        );
       }}
       className="cursor-pointer border-none p-0 m-0 bg-transparent"
     >

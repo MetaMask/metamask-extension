@@ -622,11 +622,11 @@ describe('NameDetails', () => {
       await act(async () => {
         renderWithProvider(
           <NameDetails
-              type={NameType.ETHEREUM_ADDRESS}
-              value={ADDRESS_SAVED_NAME_MOCK}
-              variation={VARIATION_MOCK}
-              onClose={() => undefined}
-            />,
+            type={NameType.ETHEREUM_ADDRESS}
+            value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
+            onClose={() => undefined}
+          />,
           store,
         );
       });
@@ -705,11 +705,11 @@ describe('NameDetails', () => {
       mockTrackEvent.mockClear();
       const component = renderWithProvider(
         <NameDetails
-            type={NameType.ETHEREUM_ADDRESS}
-            value={ADDRESS_NO_NAME_MOCK}
-            variation={VARIATION_MOCK}
-            onClose={() => undefined}
-          />,
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
         store,
       );
 
@@ -809,11 +809,11 @@ describe('NameDetails', () => {
       mockTrackEvent.mockClear();
       const component = renderWithProvider(
         <NameDetails
-            type={NameType.ETHEREUM_ADDRESS}
-            value={ADDRESS_SAVED_NAME_MOCK}
-            variation={VARIATION_MOCK}
-            onClose={() => undefined}
-          />,
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_SAVED_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
         store,
       );
 
@@ -920,11 +920,11 @@ describe('NameDetails', () => {
       mockTrackEvent.mockClear();
       const component = renderWithProvider(
         <NameDetails
-            type={NameType.ETHEREUM_ADDRESS}
-            value={ADDRESS_SAVED_NAME_MOCK}
-            variation={VARIATION_MOCK}
-            onClose={() => undefined}
-          />,
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_SAVED_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
         store,
       );
 

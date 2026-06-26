@@ -59,9 +59,7 @@ export default function ExportYourDataModal({
       );
 
       trackEvent(
-        createEventBuilder('User Data Exported')
-          .addCategory('Backup')
-          .build(),
+        createEventBuilder('User Data Exported').addCategory('Backup').build(),
       );
     } catch (error) {
       captureException(error);

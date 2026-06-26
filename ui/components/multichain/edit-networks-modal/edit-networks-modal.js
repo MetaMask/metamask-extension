@@ -196,15 +196,17 @@ export const EditNetworksModal = ({
                   );
 
                   trackEvent(
-      createEventBuilder(MetaMetricsEventName.UpdatePermissionedNetworks)
-        .addCategory(MetaMetricsEventCategory.Permissions)
-        .addProperties({
-                      addedNetworks: addedNetworks.length,
-                      removedNetworks: removedNetworks.length,
-                      location: 'Edit Networks Modal',
-                    })
-        .build(),
-    );
+                    createEventBuilder(
+                      MetaMetricsEventName.UpdatePermissionedNetworks,
+                    )
+                      .addCategory(MetaMetricsEventCategory.Permissions)
+                      .addProperties({
+                        addedNetworks: addedNetworks.length,
+                        removedNetworks: removedNetworks.length,
+                        location: 'Edit Networks Modal',
+                      })
+                      .build(),
+                  );
                   onClose();
                 }}
                 size={ButtonPrimarySize.Lg}

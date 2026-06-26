@@ -72,14 +72,14 @@ export const DefaultAddress = () => {
               size={TextButtonSize.BodyXs}
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
-                                trackEvent(
+                trackEvent(
                   createEventBuilder(MetaMetricsEventName.NavSettingsOpened)
                     .addCategory(MetaMetricsEventCategory.Navigation)
                     .addProperties({
-                    location: METRICS_LOCATION,
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    settings_type: 'show_default_address',
-                  })
+                      location: METRICS_LOCATION,
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      settings_type: 'show_default_address',
+                    })
                     .build(),
                 );
                 navigate(
@@ -97,16 +97,16 @@ export const DefaultAddress = () => {
           onToggle={(value: boolean) => {
             const newValue = !value;
             dispatch(setShowDefaultAddress(newValue));
-                        trackEvent(
+            trackEvent(
               createEventBuilder(MetaMetricsEventName.SettingsUpdated)
                 .addCategory(MetaMetricsEventCategory.Settings)
                 .addProperties({
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                default_address_network: defaultAddressScope,
-                location: METRICS_LOCATION,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                show_default_address: newValue,
-              })
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  default_address_network: defaultAddressScope,
+                  location: METRICS_LOCATION,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  show_default_address: newValue,
+                })
                 .build(),
             );
           }}

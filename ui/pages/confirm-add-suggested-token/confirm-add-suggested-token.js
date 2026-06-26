@@ -158,7 +158,14 @@ const ConfirmAddSuggestedToken = () => {
       }),
     );
     navigate(mostRecentOverviewPage);
-  }, [createEventBuilder, dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedTokens]);
+  }, [
+    createEventBuilder,
+    dispatch,
+    navigate,
+    trackEvent,
+    mostRecentOverviewPage,
+    suggestedTokens,
+  ]);
 
   const handleCancelTokenClick = useCallback(async () => {
     await Promise.all(

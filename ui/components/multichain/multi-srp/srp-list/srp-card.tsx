@@ -75,15 +75,17 @@ export const SrpCard = ({
       data-testid={`hd-keyring-${keyringId}`}
       onClick={() => {
         trackEvent(
-      createEventBuilder(MetaMetricsEventName.SecretRecoveryPhrasePickerClicked)
-        .addCategory(MetaMetricsEventCategory.Accounts)
-        .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            button_type: 'srp_select',
-          })
-        .build(),
-    );
+          createEventBuilder(
+            MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+          )
+            .addCategory(MetaMetricsEventCategory.Accounts)
+            .addProperties({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              button_type: 'srp_select',
+            })
+            .build(),
+        );
         if (keyringId) {
           onActionComplete(keyringId, shouldTriggerBackup);
         }
@@ -109,15 +111,17 @@ export const SrpCard = ({
               onClick={(event: React.MouseEvent) => {
                 event.stopPropagation();
                 trackEvent(
-      createEventBuilder(MetaMetricsEventName.SecretRecoveryPhrasePickerClicked)
-        .addCategory(MetaMetricsEventCategory.Accounts)
-        .addProperties({
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    button_type: 'details',
-                  })
-        .build(),
-    );
+                  createEventBuilder(
+                    MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+                  )
+                    .addCategory(MetaMetricsEventCategory.Accounts)
+                    .addProperties({
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      button_type: 'details',
+                    })
+                    .build(),
+                );
                 setShowAccounts((prevState) => !prevState);
               }}
             >

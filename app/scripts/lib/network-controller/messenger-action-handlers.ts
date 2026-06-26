@@ -11,10 +11,7 @@ import {
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../../shared/constants/app';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import { isPublicEndpointUrl } from '../util';
-import {
-  createEventBuilder,
-  trackEvent,
-} from '../../controllers/analytics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import { shouldCreateRpcServiceEvents } from './utils';
 
 /**

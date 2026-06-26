@@ -392,11 +392,14 @@ export default function PrivacySettings() {
                       if (toggledValue) {
                         dispatch(onboardingToggleBasicFunctionalityOn());
                         trackEvent(
-                          createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+                          createEventBuilder(
+                            MetaMetricsEventName.SettingsUpdated,
+                          )
                             .addCategory(MetaMetricsEventCategory.Onboarding)
                             .addProperties({
                               // eslint-disable-next-line @typescript-eslint/naming-convention
-                              settings_group: 'onboarding_advanced_configuration',
+                              settings_group:
+                                'onboarding_advanced_configuration',
                               // eslint-disable-next-line @typescript-eslint/naming-convention
                               settings_type: 'basic_functionality',
                               // eslint-disable-next-line @typescript-eslint/naming-convention

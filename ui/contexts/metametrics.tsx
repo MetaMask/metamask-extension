@@ -173,11 +173,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
 
       trackBuiltEvent(builder.build(options));
     },
-    [
-      addContextPropsIntoEventProperties,
-      createEventBuilder,
-      trackBuiltEvent,
-    ],
+    [addContextPropsIntoEventProperties, createEventBuilder, trackBuiltEvent],
   );
 
   const bufferedTrace: UITraceMethod = useCallback((request, fn) => {

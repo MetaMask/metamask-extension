@@ -353,14 +353,16 @@ const AccountListItem = ({
               e.stopPropagation();
               if (!accountOptionsMenuOpen) {
                 trackEvent(
-      createEventBuilder(MetaMetricsEventName.AccountDetailMenuOpened)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-                    location: 'Account Options',
-                    hd_entropy_index: hdEntropyIndex,
-                  })
-        .build(),
-    );
+                  createEventBuilder(
+                    MetaMetricsEventName.AccountDetailMenuOpened,
+                  )
+                    .addCategory(MetaMetricsEventCategory.Navigation)
+                    .addProperties({
+                      location: 'Account Options',
+                      hd_entropy_index: hdEntropyIndex,
+                    })
+                    .build(),
+                );
               }
               setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
             }}

@@ -158,18 +158,18 @@ function TransactionListItemInner({
       return;
     }
     setShowDetails((prev) => {
-        trackEvent(
-          createEventBuilder(
-            prev
-              ? MetaMetricsEventName.ActivityDetailsClosed
-              : MetaMetricsEventName.ActivityDetailsOpened,
-          )
-            .addCategory(MetaMetricsEventCategory.Navigation)
-            .addProperties({
-              activity_type: category,
-            })
-            .build(),
-        );
+      trackEvent(
+        createEventBuilder(
+          prev
+            ? MetaMetricsEventName.ActivityDetailsClosed
+            : MetaMetricsEventName.ActivityDetailsOpened,
+        )
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            activity_type: category,
+          })
+          .build(),
+      );
       return !prev;
     });
   }, [isUnapproved, navigate, id, trackEvent, createEventBuilder, category]);

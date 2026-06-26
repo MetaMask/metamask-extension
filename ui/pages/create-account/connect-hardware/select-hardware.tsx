@@ -162,14 +162,16 @@ const SelectHardware = ({
         return;
       }
 
-            trackEvent(
-        createEventBuilder(MetaMetricsEventName.HardwareWalletMarketingButtonClicked)
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.HardwareWalletMarketingButtonClicked,
+        )
           .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          button_type: 'select',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          device_type: upperFirst(option.device),
-        })
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            button_type: 'select',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            device_type: upperFirst(option.device),
+          })
           .build(),
       );
 

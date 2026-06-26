@@ -97,9 +97,9 @@ export const AppHeader = ({ location }) => {
       createEventBuilder(MetaMetricsEventName.NavNetworkMenuOpened)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location: 'App header',
-        chain_id: chainId,
-      })
+          location: 'App header',
+          chain_id: chainId,
+        })
         .build(),
     );
   }, [chainId, dispatch, trackEvent]);

@@ -63,7 +63,7 @@ describe('NftControllerInit', () => {
     const requestMock = buildInitRequestMock();
     NftControllerInit(requestMock);
 
-    const {onNftAdded} = nftControllerClassMock.mock.calls[0][0];
+    const { onNftAdded } = nftControllerClassMock.mock.calls[0][0];
     onNftAdded?.({
       address: '0xabc',
       symbol: 'NFT',

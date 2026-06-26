@@ -32,9 +32,9 @@ export const AccountDetailsMenuItem = ({
       createEventBuilder(MetaMetricsEventName.AccountDetailsOpened)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location: metricsLocation,
-        hd_entropy_index: hdEntropyIndex,
-      })
+          location: metricsLocation,
+          hd_entropy_index: hdEntropyIndex,
+        })
         .build(),
     );
 

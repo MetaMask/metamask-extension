@@ -60,12 +60,12 @@ export const ImportSrp = () => {
         }
       }
 
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
           .addProperties({
-          status: 'continue_button_clicked',
-          location: 'Multi SRP Import',
-        })
+            status: 'continue_button_clicked',
+            location: 'Multi SRP Import',
+          })
           .build(),
       );
 

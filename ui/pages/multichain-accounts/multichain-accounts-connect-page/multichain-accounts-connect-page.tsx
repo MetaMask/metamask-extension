@@ -479,13 +479,13 @@ export const MultichainAccountsConnectPage = ({
   ]);
 
   const setModeToEditAccounts = useCallback(() => {
-        trackEvent(
+    trackEvent(
       createEventBuilder(MetaMetricsEventName.ViewPermissionedAccounts)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location:
-          'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
-      })
+          location:
+            'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
+        })
         .build(),
     );
     setPageMode(MultichainAccountsConnectPageMode.EditAccounts);

@@ -12,7 +12,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES , ENVIRONMENT_TYPE_BACKGROUND } from '../../../../shared/constants/app';
+import {
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ENVIRONMENT_TYPE_BACKGROUND,
+} from '../../../../shared/constants/app';
 import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths

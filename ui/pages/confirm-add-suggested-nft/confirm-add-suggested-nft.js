@@ -131,7 +131,14 @@ const ConfirmAddSuggestedNFT = () => {
       }),
     );
     navigate(mostRecentOverviewPage);
-  }, [createEventBuilder, dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedNfts]);
+  }, [
+    createEventBuilder,
+    dispatch,
+    navigate,
+    trackEvent,
+    mostRecentOverviewPage,
+    suggestedNfts,
+  ]);
 
   const handleCancelNftClick = useCallback(async () => {
     await Promise.all(

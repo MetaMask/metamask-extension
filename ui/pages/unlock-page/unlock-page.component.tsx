@@ -884,9 +884,7 @@ function UnlockPage(props: React.PropsWithChildren<Record<string, unknown>>) {
       const contextFields = options?.contextPropsIntoEventProperties;
       let fields: string[] = [];
       if (contextFields) {
-        fields = Array.isArray(contextFields)
-          ? contextFields
-          : [contextFields];
+        fields = Array.isArray(contextFields) ? contextFields : [contextFields];
       }
       const properties = {
         ...(payload.properties ?? {}),

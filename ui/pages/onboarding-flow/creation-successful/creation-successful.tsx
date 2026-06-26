@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useMemo,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
@@ -283,7 +278,8 @@ export default function CreationSuccessful() {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             new_wallet: isNewWallet,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_basic_functionality_enabled: externalServicesOnboardingToggleState,
+            is_basic_functionality_enabled:
+              externalServicesOnboardingToggleState,
           })
           .build(),
       );

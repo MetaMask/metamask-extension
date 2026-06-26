@@ -18,12 +18,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { Hex } from '@metamask/utils';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,

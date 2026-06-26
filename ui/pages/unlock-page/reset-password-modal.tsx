@@ -79,10 +79,10 @@ export default function ResetPasswordModal({
       createEventBuilder(MetaMetricsEventName.ResetWallet)
         .addCategory(MetaMetricsEventCategory.Accounts)
         .addProperties({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: isSocialLoginFlow ? 'social' : 'metamask',
-      })
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: isSocialLoginFlow ? 'social' : 'metamask',
+        })
         .build(),
     );
 

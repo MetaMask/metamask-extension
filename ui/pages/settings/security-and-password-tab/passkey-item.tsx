@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
@@ -109,15 +104,15 @@ const PasskeyItem = () => {
     ) {
       cancelPasskeyCeremony();
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: verificationMethod,
-          status: 'full_screen_opened',
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            status: 'full_screen_opened',
+          })
+          .build(),
+      );
       globalThis.platform?.openExtensionInBrowser?.(
         SECURITY_AND_PASSWORD_ROUTE,
       );
@@ -130,10 +125,10 @@ const PasskeyItem = () => {
       createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        verification_method: verificationMethod,
-        status: 'started',
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: verificationMethod,
+          status: 'started',
+        })
         .build(),
     );
     try {
@@ -144,17 +139,17 @@ const PasskeyItem = () => {
       await forceUpdateMetamaskState(dispatch);
 
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: verificationMethod,
-          status: 'completed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - startedAt,
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+          })
+          .build(),
+      );
 
       toast.success(
         <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
@@ -164,18 +159,18 @@ const PasskeyItem = () => {
       );
 
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          /* eslint-disable @typescript-eslint/naming-convention */
-          settings_group: 'security_privacy',
-          settings_type: 'passkey',
-          old_value: true,
-          new_value: false,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'passkey',
+            old_value: true,
+            new_value: false,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
 
       navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
     } catch (error: unknown) {
@@ -205,18 +200,18 @@ const PasskeyItem = () => {
       }
 
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: verificationMethod,
-          status: errorStatus,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: durationMs,
-          reason: errorCode,
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            status: errorStatus,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+            reason: errorCode,
+          })
+          .build(),
+      );
       navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true });
     } finally {
       setIsPasskeyOperationPending(false);

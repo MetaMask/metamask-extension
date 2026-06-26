@@ -143,14 +143,14 @@ export const MultichainAccountDetailsPage = () => {
     if (firstAccountAddress) {
       // Don't want to blindly call removeAccount without an invalid or empty parameter
       dispatch(removeAccount(firstAccountAddress));
-            trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.AccountRemoved)
           .addCategory(MetaMetricsEventCategory.Accounts)
           .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: wallet?.type,
-        })
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: wallet?.type,
+          })
           .build(),
       );
 

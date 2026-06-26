@@ -1,10 +1,4 @@
-import {
-  useMemo,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
+import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionStatus,
@@ -181,7 +175,12 @@ export const useMusdConversionToastStatus = (): {
           .build(),
       );
     },
-    [createEventBuilder, trackEvent, networkConfigurationsByChainId, extractTransferAmount],
+    [
+      createEventBuilder,
+      trackEvent,
+      networkConfigurationsByChainId,
+      extractTransferAmount,
+    ],
   );
 
   // Detect transitions from pending → confirmed/failed and track analytics

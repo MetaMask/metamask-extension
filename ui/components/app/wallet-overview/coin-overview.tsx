@@ -237,9 +237,9 @@ export const CoinOverview = ({
       createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        location: 'Home',
-        text: 'Portfolio',
-      })
+          location: 'Home',
+          text: 'Portfolio',
+        })
         .build(),
     );
   }, [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, trackEvent]);
@@ -250,12 +250,12 @@ export const CoinOverview = ({
       createEventBuilder(MetaMetricsEventName.NavReceiveButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        text: 'Receive',
-        location: 'balance_empty_state',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-      })
+          text: 'Receive',
+          location: 'balance_empty_state',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+        })
         .build(),
     );
 

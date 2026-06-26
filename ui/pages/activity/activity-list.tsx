@@ -90,9 +90,9 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
       createEventBuilder(MetaMetricsEventName.ActivityDetailsOpened)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        activity_type: item.type,
-      })
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          activity_type: item.type,
+        })
         .build(),
     );
     setSelectedItem(item);
@@ -101,14 +101,14 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const handleClose = () => {
     if (selectedItem) {
       trackEvent(
-      createEventBuilder(MetaMetricsEventName.ActivityDetailsClosed)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          activity_type: selectedItem.type,
-        })
-        .build(),
-    );
+        createEventBuilder(MetaMetricsEventName.ActivityDetailsClosed)
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            activity_type: selectedItem.type,
+          })
+          .build(),
+      );
     }
     setSelectedItem(null);
   };

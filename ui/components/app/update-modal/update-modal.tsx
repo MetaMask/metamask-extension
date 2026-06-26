@@ -40,7 +40,9 @@ function UpdateModal() {
   // Track when modal is viewed
   useEffect(() => {
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed)
+      createEventBuilder(
+        MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
+      )
         .addCategory(MetaMetricsEventCategory.App)
         .build(),
     );
