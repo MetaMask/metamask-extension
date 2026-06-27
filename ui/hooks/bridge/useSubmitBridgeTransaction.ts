@@ -7,13 +7,13 @@ import {
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
-import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
-import { captureException } from '../../../../shared/lib/sentry';
+import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
   submitBridgeTx,
-} from '../../../ducks/bridge-status/actions';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+} from '../../ducks/bridge-status/actions';
+import { setWasTxDeclined } from '../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
   getFromAccount,
@@ -22,16 +22,16 @@ import {
   getToToken,
   getWarningLabels,
   type BridgeAppState,
-} from '../../../ducks/bridge/selectors';
-import { useHasSufficientGasForQuoteForMetrics } from '../../../hooks/bridge/useHasSufficientGasForQuoteForMetrics';
+} from '../../ducks/bridge/selectors';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
-} from '../../../contexts/hardware-wallets/HardwareWalletContext';
-import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { type MetaMaskReduxDispatch } from '../../../store/store';
-import { isHardwareWalletUserRejection } from '../utils/hardware-wallet-errors';
+} from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { type MetaMaskReduxDispatch } from '../../store/store';
+import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
+import { useBridgeNavigation } from './useBridgeNavigation';
+import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';

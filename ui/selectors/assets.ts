@@ -503,36 +503,6 @@ export const getMultichainAggregatedBalance = createSelector(
   },
 );
 
-export type HistoricalBalanceData = {
-  balance: number;
-  percentChange: number;
-  amountChange: number;
-};
-
-export type HistoricalBalances = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  PT1H: HistoricalBalanceData;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  P1D: HistoricalBalanceData;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  P7D: HistoricalBalanceData;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  P14D: HistoricalBalanceData;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  P30D: HistoricalBalanceData;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  P200D: HistoricalBalanceData;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  P1Y: HistoricalBalanceData;
-};
-
 export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount: { id: string }) => selectedAccount,
   getMultichainBalances,
@@ -562,6 +532,7 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
       P200D: { balance: 0, percentChange: 0, amountChange: 0 },
       P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
     };
+    type HistoricalBalances = typeof historicalBalances;
 
     // Track total current balance for calculating overall percent changes
     let totalCurrentBalance = new BigNumber(0);

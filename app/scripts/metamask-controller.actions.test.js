@@ -59,27 +59,6 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         // past `ensureReady`, so no Snap accounts get created during init.
         () => new Promise(() => undefined),
       );
-      controllerMessenger.registerActionHandler(
-        'SnapAccountService:getLegacySnapKeyring',
-        async () => {
-          const result = await controllerMessenger.call(
-            'KeyringController:withController',
-            async (controller) => {
-              const found = controller.keyrings.find(
-                ({ keyring }) => keyring.type === 'Snap Keyring',
-              );
-              let snapKeyring = found?.keyring;
-              if (!snapKeyring) {
-                const { keyring } =
-                  await controller.addNewKeyring('Snap Keyring');
-                snapKeyring = keyring;
-              }
-              return { snapKeyring };
-            },
-          );
-          return result.snapKeyring;
-        },
-      );
       return {
         memStateKey: null,
         persistedStateKey: null,
@@ -276,12 +255,13 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
       const result2 = metamaskController.keyringController.state;
 
-      expect(result1.keyrings).toHaveLength(2);
+      // v2 Snap keyrings are created lazily per-snap, so a fresh restore
+      // produces only the primary HD keyring.
+      expect(result1.keyrings).toHaveLength(1);
       expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]); // 0: Primary HD keyring
-      expect(result1.keyrings[1].metadata.id).toBe(mockULIDs[1]); // 1: Snap keyring
 
       // On restore, a new keyring metadata is generated.
-      const ulidNewIndex = 2;
+      const ulidNewIndex = 1;
       expect(result2).toStrictEqual({
         ...result1,
         keyrings: [
@@ -289,14 +269,7 @@ describe('MetaMaskController', function () {
             ...result1.keyrings[0],
             metadata: {
               ...result1.keyrings[0].metadata,
-              id: mockULIDs[ulidNewIndex + 0], // 0: New primary HD keyring
-            },
-          },
-          {
-            ...result1.keyrings[1],
-            metadata: {
-              ...result1.keyrings[1].metadata,
-              id: mockULIDs[ulidNewIndex + 1], // 1: New Snap keyring
+              id: mockULIDs[ulidNewIndex], // 0: New primary HD keyring
             },
           },
         ],
@@ -1463,36 +1436,6 @@ describe('MetaMaskController', function () {
           'priv-key-0xAddressOne',
           'priv-key-0xAddressTwo',
         ]);
-      });
-    });
-
-    describe('#changePassword', function () {
-      it('does not remove passkey after keyring password change', async function () {
-        const releaseLock = jest.fn();
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        jest
-          .spyOn(
-            metamaskController.onboardingController,
-            'getIsSocialLoginFlow',
-          )
-          .mockReturnValue(false);
-        const changePasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
-
-        await metamaskController.changePassword('new-password', 'old-password');
-
-        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
-        expect(removePasskeySpy).not.toHaveBeenCalled();
-        expect(releaseLock).toHaveBeenCalledTimes(1);
       });
     });
 

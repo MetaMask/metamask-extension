@@ -449,7 +449,6 @@ import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ow
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
-import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 
@@ -1025,7 +1024,6 @@ export default class MetamaskController extends EventEmitter {
           // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
-          await getSnapKeyring(this.controllerMessenger);
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
@@ -3206,7 +3204,6 @@ export default class MetamaskController extends EventEmitter {
           this.accountTreeController,
         ),
       syncAccountTreeWithUserStorage: async () => {
-        await getSnapKeyring(this.controllerMessenger);
         await this.accountTreeController.syncWithUserStorage();
       },
 
@@ -3416,7 +3413,10 @@ export default class MetamaskController extends EventEmitter {
       restoreSocialBackupAndGetSeedPhrase:
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
-      changePassword: this.changePassword.bind(this),
+      changePassword: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:changePassword',
+      ),
       getIsSeedlessOnboardingUserAuthenticated:
         this.seedlessOnboardingController.getIsUserAuthenticated.bind(
           this.seedlessOnboardingController,
@@ -4754,61 +4754,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  /**
-   * Changes the password for the wallet.
-   *
-   * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
-   *
-   * @param {string} newPassword - The new password.
-   * @param {string} oldPassword - The old password.
-   */
-  async changePassword(newPassword, oldPassword) {
-    const releaseLock = await this.seedlessOperationMutex.acquire();
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    try {
-      await this.keyringController.changePassword(newPassword);
-
-      if (isSocialLoginFlow) {
-        try {
-          await this.seedlessOnboardingController.changePassword(
-            newPassword,
-            oldPassword,
-          );
-          // store the new keyring encryption key in the seedless onboarding controller
-          const keyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            keyringEncKey,
-          );
-        } catch (err) {
-          log.error('error while changing seedless-onboarding password', err);
-          log.error('reverting keyring password change');
-          // revert the keyring password change by changing the password back to the old password
-          await this.keyringController.changePassword(oldPassword);
-          // store the old keyring encryption key in the seedless onboarding controller
-          const revertedKeyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            revertedKeyringEncKey,
-          );
-
-          this.controllerMessenger?.captureException?.(
-            createSentryError(
-              'error while changing password for social login flow',
-              err,
-            ),
-          );
-          throw err;
-        }
-      }
-    } catch (error) {
-      log.error('error while changing password', error);
-      throw error;
-    } finally {
-      releaseLock();
-    }
-  }
-
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
   //=============================================================================
@@ -4868,10 +4813,6 @@ export default class MetamaskController extends EventEmitter {
 
       // Then we can build the initial tree.
       this.accountTreeController.reinit();
-
-      // We "force-create" the Snap keyring right after now to ensure it is available as soon
-      // as possible after vault creation (enabling faster keyring access for future operations).
-      await getSnapKeyring(this.controllerMessenger);
 
       return primaryKeyring;
     } finally {
@@ -4933,8 +4874,6 @@ export default class MetamaskController extends EventEmitter {
         throw new Error('No keyring id to discover accounts for');
       }
 
-      // Ensure the snap keyring is initialized
-      await getSnapKeyring(this.controllerMessenger);
       const wallet = this.multichainAccountService.getMultichainAccountWallet({
         entropySource: keyringIdToDiscover,
       });
@@ -5223,10 +5162,6 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
-
-      // We "force-create" the Snap keyring right after now to ensure it is available as soon
-      // as possible after vault creation (enabling faster keyring access for future operations).
-      await getSnapKeyring(this.controllerMessenger);
 
       if (completedOnboarding) {
         // check if external services are enabled
