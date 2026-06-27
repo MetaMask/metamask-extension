@@ -222,6 +222,7 @@ import {
   getIsShieldSubscriptionActive,
 } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/lib/error';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -282,7 +283,6 @@ import {
   getBooleanFlag,
   convertEnglishWordlistIndicesToCodepoints,
 } from './lib/util';
-import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
