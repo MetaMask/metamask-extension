@@ -282,7 +282,7 @@ import {
   getBooleanFlag,
   convertEnglishWordlistIndicesToCodepoints,
 } from './lib/util';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
