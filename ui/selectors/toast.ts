@@ -350,9 +350,6 @@ const getExtensionTransactionToastEnabled = createSelector(
 export const selectToastImplementation = createSelector(
   getExtensionTransactionToastEnabled,
   (isEventBased): 'messenger' | 'redux' => {
-    // The messenger-based implementation takes priority when enabled; otherwise
-    // the redux implementation is the default. (The legacy status-page path is
-    // gone, so there is no longer an `undefined`/no-toast case.)
     if (isEventBased) {
       return 'messenger';
     }

@@ -81,8 +81,6 @@ export const selectPendingApprovalsForNavigation = createSelector(
   pendingApprovalsSortedSelector,
   (sortedPendingApprovals) =>
     sortedPendingApprovals.filter((approval, index) => {
-      // Smart transaction status approvals are headless (no UI), so they are
-      // never navigable confirmations.
       if (
         approval.type ===
         SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage

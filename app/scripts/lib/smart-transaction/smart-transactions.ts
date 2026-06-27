@@ -305,11 +305,9 @@ class SmartTransactionHook {
     }
   }
 
-  // TODO(cleanup): The `showSmartTransactionStatusPage` approval created here is
-  // headless (the status page UI is gone) and exists only as a data channel for
-  // the `'redux'` smart-transaction toasts. Once the `'redux'` toast path is
-  // removed (see `selectToastImplementation`), delete this approval creation and
-  // its consumers entirely.
+  // This approval is headless (no UI) and only feeds the
+  // `'redux'` smart-transaction toasts. Remove it once the `'redux'` toast path
+  // is gone (see `selectToastImplementation`)
   async #processApprovalIfNeeded(uuid: string) {
     if (this.#shouldShowStatusPage) {
       this.#addApprovalRequest({
