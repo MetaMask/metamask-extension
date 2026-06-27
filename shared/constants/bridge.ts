@@ -279,6 +279,14 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
     name: 'USD Coin',
     assetId: `${MultichainNetworks.SOLANA}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
   },
+  [MultichainNetworks.STELLAR]: {
+    // XLM -> USDC on Stellar
+    address: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+    symbol: 'USDC',
+    decimals: 7,
+    name: 'USDC',
+    assetId: `${MultichainNetworks.STELLAR}/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN`,
+  },
   [MultichainNetworks.BITCOIN]: getNativeAssetForChainId(CHAIN_IDS.MAINNET),
   [MultichainNetworks.TRON]: {
     // TRX -> USDT on Tron
