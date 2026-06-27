@@ -95,6 +95,7 @@ import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-a
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
 import { trackEvent } from './controllers/analytics';
+import * as manifestFlagsModule from '../../shared/lib/manifestFlags';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // and provide the pure flag-evaluation logic without the IN_TEST bypass
@@ -328,6 +329,10 @@ jest.mock('@metamask/core-backend', () => ({
 
 jest.mock('../../shared/lib/environment', () => ({
   ...jest.requireActual('../../shared/lib/environment'),
+}));
+
+jest.mock('../../shared/lib/manifestFlags', () => ({
+  getManifestFlags: jest.fn(() => ({})),
 }));
 
 jest.mock('../../shared/lib/gator-permissions/feature-flags', () => ({
@@ -4365,6 +4370,68 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.discoverAndCreateAccounts,
         ).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('RampsController flag gate', () => {
+      function buildControllerWithRampsFlag(remoteFlag) {
+        const initState = {
+          ...cloneDeep(firstTimeState),
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: { rampsEnabled: remoteFlag },
+            cacheTimestamp: 0,
+          },
+        };
+        return new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState,
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          getRequestAccountTabIds: () => ({}),
+          getOpenMetamaskTabsIds: () => ({}),
+          notificationManager: { markAsAutomaticallyClosed: jest.fn() },
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
+        });
+      }
+
+      beforeEach(() => {
+        jest
+          .spyOn(manifestFlagsModule, 'getManifestFlags')
+          .mockReturnValue({});
+      });
+
+      it('does not assign rampsController when flag is off', () => {
+        const controller = buildControllerWithRampsFlag(false);
+        expect(controller.rampsController).toBeUndefined();
+      });
+
+      it('does not assign rampsController when flag is absent', () => {
+        const controller = buildControllerWithRampsFlag(undefined);
+        expect(controller.rampsController).toBeUndefined();
+      });
+
+      it('assigns rampsController when remote flag is true', () => {
+        const controller = buildControllerWithRampsFlag(true);
+        expect(controller.rampsController).toBeDefined();
+      });
+
+      it('assigns rampsController when manifest flag overrides to true', () => {
+        jest.spyOn(manifestFlagsModule, 'getManifestFlags').mockReturnValue({
+          remoteFeatureFlags: { rampsEnabled: true },
+        });
+        const controller = buildControllerWithRampsFlag(false);
+        expect(controller.rampsController).toBeDefined();
       });
     });
 
