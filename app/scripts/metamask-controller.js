@@ -277,7 +277,7 @@ import {
   getBooleanFlag,
   convertEnglishWordlistIndicesToCodepoints,
 } from './lib/util';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import {
   createDefiReferralMiddleware,
