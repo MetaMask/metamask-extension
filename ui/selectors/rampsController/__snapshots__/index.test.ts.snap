@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rampsController selectors matches snapshot for selectUserRegion and selectTokens 1`] = `
+{
+  "country": {
+    "currency": "USD",
+  },
+  "regionCode": "us-ca",
+}
+`;
+
+exports[`rampsController selectors matches snapshot for selectUserRegion and selectTokens 2`] = `
+{
+  "data": {
+    "allTokens": [],
+    "topTokens": [],
+  },
+  "error": null,
+  "isLoading": false,
+  "selected": null,
+}
+`;

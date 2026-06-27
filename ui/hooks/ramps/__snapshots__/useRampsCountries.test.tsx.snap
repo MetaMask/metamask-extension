@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRampsCountries matches snapshot 1`] = `
+{
+  "countries": [],
+  "error": null,
+  "isLoading": false,
+}
+`;
