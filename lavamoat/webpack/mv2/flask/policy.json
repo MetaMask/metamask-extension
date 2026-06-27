@@ -2153,6 +2153,20 @@
         "@metamask/providers>readable-stream": true
       }
     },
+    "@metamask/ramps-controller": {
+      "globals": {
+        "AbortController": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "clearInterval": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true
+      }
+    },
     "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
       "globals": {
         "URL": true

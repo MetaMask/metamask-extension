@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`wallet-init ramps configurations matches snapshot for config names 1`] = `
+{
+  "rampsController": "RampsController",
+  "rampsService": "RampsService",
+}
+`;

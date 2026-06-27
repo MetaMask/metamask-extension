@@ -431,6 +431,7 @@
     "@metamask/profile-metrics-controller": "^4.0.1",
     "@metamask/profile-sync-controller": "^28.2.0",
     "@metamask/providers": "^22.1.1",
+    "@metamask/ramps-controller": "^14.3.0",
     "@metamask/rate-limit-controller": "^7.0.0",
     "@metamask/react-data-query": "^0.2.0",
     "@metamask/remote-feature-flag-controller": "^4.2.2",

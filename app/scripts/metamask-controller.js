@@ -453,6 +453,7 @@ import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-b
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
+import { getRampsControllerApi } from './wallet-init/ramps-controller-api';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -751,6 +752,21 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMemState = controllerMemState;
     this.controllerPersistedState = controllerPersistedState;
     this.messengerClientsByName = messengerClientsByName;
+
+    this.rampsController = this.wallet.getInstance('RampsController');
+    if (this.rampsController) {
+      this.rampsController
+        .init()
+        .then(() => {
+          this.rampsController.startOrderPolling();
+        })
+        .catch(() => {
+          // Initialization failed - error state is available via selectors.
+        });
+    }
+    this.rampsControllerApi = this.rampsController
+      ? getRampsControllerApi(this.rampsController)
+      : {};
 
     // Backwards compatibility for existing references
     this.approvalController = this.wallet.getInstance('ApprovalController');
@@ -1452,6 +1468,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      RampsController: this.rampsController,
       DeFiPositionsController: this.deFiPositionsController,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
@@ -3276,6 +3293,9 @@ export default class MetamaskController extends EventEmitter {
       getGeolocation: this.geolocationController.getGeolocation.bind(
         this.geolocationController,
       ),
+
+      // RampsController
+      ...this.rampsControllerApi,
 
       // SeedlessOnboardingController
       preloadToprfNodeDetails:
