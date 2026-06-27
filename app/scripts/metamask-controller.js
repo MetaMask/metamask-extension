@@ -1508,6 +1508,9 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        ...(this.rampsController
+          ? { RampsController: this.rampsController }
+          : {}),
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
