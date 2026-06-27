@@ -2306,6 +2306,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  rampsEnabled: {
+    name: 'rampsEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
   rewardsEnabled: {
     name: 'rewardsEnabled',
     type: FeatureFlagType.Remote,
