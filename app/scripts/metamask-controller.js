@@ -750,8 +750,8 @@ export default class MetamaskController extends EventEmitter {
 
     const rampsEnabled = Boolean(
       getManifestFlags().remoteFeatureFlags?.rampsEnabled ??
-        messengerClientsByName.RemoteFeatureFlagController?.state
-          ?.remoteFeatureFlags?.rampsEnabled,
+      messengerClientsByName.RemoteFeatureFlagController?.state
+        ?.remoteFeatureFlags?.rampsEnabled,
     );
     this.rampsController = rampsEnabled
       ? this.wallet.getInstance('RampsController')
