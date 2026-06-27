@@ -282,6 +282,7 @@ import {
   getBooleanFlag,
   convertEnglishWordlistIndicesToCodepoints,
 } from './lib/util';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
@@ -753,7 +754,14 @@ export default class MetamaskController extends EventEmitter {
     this.controllerPersistedState = controllerPersistedState;
     this.messengerClientsByName = messengerClientsByName;
 
-    this.rampsController = this.wallet.getInstance('RampsController');
+    const rampsEnabled = Boolean(
+      getManifestFlags().remoteFeatureFlags?.rampsEnabled ??
+        messengerClientsByName.RemoteFeatureFlagController?.state
+          ?.remoteFeatureFlags?.rampsEnabled,
+    );
+    this.rampsController = rampsEnabled
+      ? this.wallet.getInstance('RampsController')
+      : undefined;
     if (this.rampsController) {
       this.rampsController
         .init()
@@ -1468,7 +1476,9 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
-      RampsController: this.rampsController,
+      ...(this.rampsController
+        ? { RampsController: this.rampsController }
+        : {}),
       DeFiPositionsController: this.deFiPositionsController,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
