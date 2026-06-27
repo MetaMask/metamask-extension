@@ -5522,9 +5522,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:@metamask-previews/assets-controller@9.1.0-preview-53326764b":
-  version: 9.1.0-preview-53326764b
-  resolution: "@metamask-previews/assets-controller@npm:9.1.0-preview-53326764b"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@9.1.0-preview-18dd0df9c":
+  version: 9.1.0-preview-18dd0df9c
+  resolution: "@metamask-previews/assets-controller@npm:9.1.0-preview-18dd0df9c"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5555,7 +5555,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/89d0ba641bf018b5640c54ba8deaea398027e6da23a7686184b78393de32c684607afe66d4808ad13371c99aca01757c165b362f0eaa18eb6d304ac3753d1d11
+  checksum: 10/bd92f44666f1ac8d1a494e21dfec6c71cd9d712839464eff1a1d56737b0f7e11e5cb61ca5c6a785856c829d6ae267b495e4f878cbb2d281158db255a7d6265fb
   languageName: node
   linkType: hard
 
@@ -5977,9 +5977,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:@metamask-previews/core-backend@6.3.3-preview-53326764b":
-  version: 6.3.3-preview-53326764b
-  resolution: "@metamask-previews/core-backend@npm:6.3.3-preview-53326764b"
+"@metamask/core-backend@npm:@metamask-previews/core-backend@6.3.3-preview-18dd0df9c":
+  version: 6.3.3-preview-18dd0df9c
+  resolution: "@metamask-previews/core-backend@npm:6.3.3-preview-18dd0df9c"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.3"
     "@metamask/controller-utils": "npm:^12.3.0"
@@ -5990,7 +5990,7 @@ __metadata:
     "@tanstack/query-core": "npm:^5.62.16"
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/bde46e2fd87c8214871451122deb0dd678aaaddf97987587144e58797c03ed7c163c32b4656788362ccd11e34a74474a241e05d81268c9cf5e472863ce8427fd
+  checksum: 10/8c4cf0c8f9669f78c168d8c31cf749ffc552af40049b34f6ed6fd0066c4f8fcd57eb134da6ea87bc03f471b5ee6c80b78d68b26d27b553752573f7f438691e69
   languageName: node
   linkType: hard
 

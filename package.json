@@ -161,8 +161,8 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@9.1.0-preview-53326764b",
-    "@metamask/core-backend": "npm:@metamask-previews/core-backend@6.3.3-preview-53326764b",
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@9.1.0-preview-18dd0df9c",
+    "@metamask/core-backend": "npm:@metamask-previews/core-backend@6.3.3-preview-18dd0df9c",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "33.0.0",
