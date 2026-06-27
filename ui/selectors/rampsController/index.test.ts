@@ -4,17 +4,15 @@ describe('rampsController selectors', () => {
   it('matches snapshot for selectUserRegion and selectTokens', () => {
     const state = {
       metamask: {
-        RampsController: {
-          userRegion: {
-            regionCode: 'us-ca',
-            country: { currency: 'USD' },
-          },
-          tokens: {
-            data: { topTokens: [], allTokens: [] },
-            selected: null,
-            isLoading: false,
-            error: null,
-          },
+        userRegion: {
+          regionCode: 'us-ca',
+          country: { currency: 'USD' },
+        },
+        tokens: {
+          data: { topTokens: [], allTokens: [] },
+          selected: null,
+          isLoading: false,
+          error: null,
         },
       },
     };

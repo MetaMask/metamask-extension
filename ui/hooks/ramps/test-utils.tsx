@@ -4,37 +4,35 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import configureStore from 'redux-mock-store';
 
 export const rampsMockMetamaskState = {
-  RampsController: {
-    userRegion: {
-      regionCode: 'us-ca',
-      country: { currency: 'USD', isoCode: 'US', name: 'United States' },
-    },
-    countries: {
-      data: [],
-      selected: null,
-      isLoading: false,
-      error: null,
-    },
-    providers: {
-      data: [],
-      selected: null,
-      isLoading: false,
-      error: null,
-    },
-    tokens: {
-      data: { topTokens: [], allTokens: [] },
-      selected: null,
-      isLoading: false,
-      error: null,
-    },
-    paymentMethods: {
-      data: [],
-      selected: null,
-      isLoading: false,
-      error: null,
-    },
-    orders: [],
+  userRegion: {
+    regionCode: 'us-ca',
+    country: { currency: 'USD', isoCode: 'US', name: 'United States' },
   },
+  countries: {
+    data: [],
+    selected: null,
+    isLoading: false,
+    error: null,
+  },
+  providers: {
+    data: [],
+    selected: null,
+    isLoading: false,
+    error: null,
+  },
+  tokens: {
+    data: { topTokens: [], allTokens: [] },
+    selected: null,
+    isLoading: false,
+    error: null,
+  },
+  paymentMethods: {
+    data: [],
+    selected: null,
+    isLoading: false,
+    error: null,
+  },
+  orders: [],
   internalAccounts: {
     selectedAccount: 'account-1',
     accounts: {
