@@ -1363,7 +1363,7 @@
     },
     "@metamask/eip-5792-middleware": {
       "packages": {
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/accounts-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
@@ -1770,23 +1770,6 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/accounts-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
     "@metamask/delegation-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -1909,6 +1892,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/account-api": true,
+        "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/keyring-snap-client": true,
@@ -2399,9 +2383,7 @@
     },
     "@metamask/snap-account-service": {
       "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
+        "console.error": true
       },
       "packages": {
         "@metamask/eth-snap-keyring": true,
@@ -2432,7 +2414,7 @@
         "@metamask/post-message-stream": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-registry": true,
-        "@metamask/snaps-rpc-methods": true,
+        "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -2473,6 +2455,20 @@
       }
     },
     "@metamask/snaps-rpc-methods": {
+      "packages": {
+        "@metamask/json-rpc-engine": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true,
+        "async-mutex": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/json-rpc-engine": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
