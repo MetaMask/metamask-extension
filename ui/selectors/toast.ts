@@ -7,7 +7,6 @@ import { createSelector } from 'reselect';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
-import { getExtensionSkipTransactionStatusPage } from '../../shared/lib/selectors/smart-transactions';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import type { MetaMaskReduxState } from '../store/store';
 import {
@@ -350,14 +349,13 @@ const getExtensionTransactionToastEnabled = createSelector(
 
 export const selectToastImplementation = createSelector(
   getExtensionTransactionToastEnabled,
-  getExtensionSkipTransactionStatusPage,
-  (isEventBased, isSmartTxEnabled): 'messenger' | 'redux' | undefined => {
+  (isEventBased): 'messenger' | 'redux' => {
+    // The messenger-based implementation takes priority when enabled; otherwise
+    // the redux implementation is the default. (The legacy status-page path is
+    // gone, so there is no longer an `undefined`/no-toast case.)
     if (isEventBased) {
       return 'messenger';
     }
-    if (isSmartTxEnabled) {
-      return 'redux';
-    }
-    return undefined;
+    return 'redux';
   },
 );
