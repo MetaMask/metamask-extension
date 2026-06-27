@@ -24,11 +24,13 @@ const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
 
 const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'AccountTreeController:selectedAccountGroupChange',
-  'ClientController:stateChange',
+  'ClientController:stateChanged',
   'NetworkEnablementController:stateChange',
+  'NetworkEnablementController:stateChanged',
   'KeyringController:lock',
   'KeyringController:unlock',
   'NetworkController:stateChange',
+  'NetworkController:networkDidChange',
   'NetworkController:networkRemoved',
   'NetworkController:networkAdded',
   'BackendWebSocketService:connectionStateChanged',
@@ -37,7 +39,7 @@ const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'PermissionController:stateChange',
   'SnapController:snapInstalled',
   'PreferencesController:stateChange',
-  'AccountTreeController:stateChange',
+  'AccountTreeController:stateChanged',
   'TransactionController:transactionConfirmed',
   'TransactionController:unapprovedTransactionAdded',
 ] as const;
@@ -80,6 +82,21 @@ describe('getAssetsControllerMessenger', () => {
       expect.objectContaining({
         events: expect.arrayContaining([
           'AccountActivityService:balanceUpdated',
+        ]),
+      }),
+    );
+  });
+
+  it('delegates NetworkController networkDidChange event', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: expect.arrayContaining([
+          'NetworkController:networkDidChange',
         ]),
       }),
     );
