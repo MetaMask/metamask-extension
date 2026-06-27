@@ -4389,9 +4389,7 @@ describe('MetaMaskController', () => {
       }
 
       beforeEach(() => {
-        jest
-          .spyOn(manifestFlagsModule, 'getManifestFlags')
-          .mockReturnValue({});
+        jest.spyOn(manifestFlagsModule, 'getManifestFlags').mockReturnValue({});
       });
 
       it('does not assign rampsController when flag is off', () => {
