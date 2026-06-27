@@ -79,6 +79,7 @@ import {
 } from '../../shared/constants/defi-referrals';
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
+import * as manifestFlagsModule from '../../shared/lib/manifestFlags';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../test/stub/keyring-bridge';
 import * as utils from './lib/util';
@@ -95,7 +96,6 @@ import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-a
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
 import { trackEvent } from './controllers/analytics';
-import * as manifestFlagsModule from '../../shared/lib/manifestFlags';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // and provide the pure flag-evaluation logic without the IN_TEST bypass
