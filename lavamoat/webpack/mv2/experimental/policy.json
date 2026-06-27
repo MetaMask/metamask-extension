@@ -2157,14 +2157,18 @@
       "globals": {
         "AbortController": true,
         "URL": true,
-        "URLSearchParams": true,
         "clearInterval": true,
-        "setInterval": true,
-        "setTimeout": true
+        "setInterval": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
+        "@metamask/controller-utils": true,
+        "cockatiel": true
       }
     },
     "@metamask/transaction-pay-controller>@metamask/ramps-controller": {

@@ -5,17 +5,18 @@ import {
   RAMPS_CONTROLLER_REQUIRED_SERVICE_ACTIONS,
 } from '@metamask/ramps-controller';
 import type { Json } from '@metamask/utils';
+import type { DefaultActions, DefaultEvents, RootMessenger } from '@metamask/wallet';
 
 import type { RampsControllerInstanceOptions } from './types';
 
 export type RampsControllerInitializationConfiguration = {
   name: 'RampsController';
-  init: (args: {
+  init(args: {
     messenger: RampsControllerMessenger;
     state?: Record<string, Json>;
     options: RampsControllerInstanceOptions;
-  }) => RampsController;
-  getMessenger: (parent: Messenger) => RampsControllerMessenger;
+  }): RampsController;
+  getMessenger(parent: RootMessenger<DefaultActions, DefaultEvents>): RampsControllerMessenger;
 };
 
 export const rampsController: RampsControllerInitializationConfiguration = {
