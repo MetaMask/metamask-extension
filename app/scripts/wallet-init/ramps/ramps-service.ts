@@ -3,7 +3,11 @@ import {
   RampsService,
   RampsServiceMessenger,
 } from '@metamask/ramps-controller';
-import type { DefaultActions, DefaultEvents, RootMessenger } from '@metamask/wallet';
+import type {
+  DefaultActions,
+  DefaultEvents,
+  RootMessenger,
+} from '@metamask/wallet';
 
 import type { RampsServiceInstanceOptions } from './types';
 
@@ -13,7 +17,9 @@ export type RampsServiceInitializationConfiguration = {
     messenger: RampsServiceMessenger;
     options: RampsServiceInstanceOptions;
   }): RampsService;
-  getMessenger(parent: RootMessenger<DefaultActions, DefaultEvents>): RampsServiceMessenger;
+  getMessenger(
+    parent: RootMessenger<DefaultActions, DefaultEvents>,
+  ): RampsServiceMessenger;
 };
 
 export const rampsService: RampsServiceInitializationConfiguration = {
