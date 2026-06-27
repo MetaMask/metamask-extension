@@ -79,6 +79,7 @@ import {
 } from '../../shared/constants/defi-referrals';
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
+import * as manifestFlagsModule from '../../shared/lib/manifestFlags';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../test/stub/keyring-bridge';
 import * as utils from './lib/util';
 import { ReferralStatus } from './controllers/preferences-controller';
@@ -91,7 +92,6 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
-import * as manifestFlagsModule from '../../shared/lib/manifestFlags';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // and provide the pure flag-evaluation logic without the IN_TEST bypass
