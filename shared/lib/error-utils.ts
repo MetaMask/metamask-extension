@@ -1,5 +1,10 @@
 import { memoize, escape as lodashEscape } from 'lodash';
-import type { ErrorLike } from '../constants/errors';
+import { MISSING_VAULT_ERROR, type ErrorLike } from '../constants/errors';
+import {
+  CriticalErrorRepairAction,
+  isStateCorruptionErrorType,
+  type CriticalErrorType,
+} from '../constants/state-corruption';
 import type { I18NMessageDict } from './i18n';
 import {
   fetchLocale,
@@ -141,7 +146,8 @@ export async function maybeGetLocaleContext(
  * @param error - The error object to log.
  * @param localeContext - The MetaMask state containing the current locale and translation function.
  * @param supportLink - The support link to include in the footer.
- * @param hasBackup - Whether a vault backup exists in IndexedDB.
+ * @param repairAction - The repair action to render.
+ * @param criticalErrorType - The type of critical error to render.
  * @returns The HTML string for the critical error message.
  */
 export function getErrorHtml(
@@ -149,27 +155,46 @@ export function getErrorHtml(
   error: ErrorLike | undefined,
   localeContext: LocaleContext,
   supportLink?: string,
-  hasBackup = false,
+  repairAction: CriticalErrorRepairAction = CriticalErrorRepairAction.None,
+  criticalErrorType?: CriticalErrorType,
 ): string {
   switchDirectionForPreferredLocale(localeContext.preferredLocale);
   const { t, preferredLocale, localeMessages, enLocaleMessages } =
     localeContext;
+  const isStateCorruptionError = isStateCorruptionErrorType(criticalErrorType);
 
   const legalText = `
     <span>${lodashEscape(t('errorLegalTextSummary'))}</span>
     <p>• ${lodashEscape(t('errorLegalTextFirstInfo'))}</p>
     <p>• ${lodashEscape(t('errorLegalTextSecondInfo'))}</p>
     <span>${lodashEscape(t('errorLegalTextNoPersonalInfo'))}</span>
-`;
+  `;
+  let repairButtonLabel;
+  if (repairAction === CriticalErrorRepairAction.Recover) {
+    if (error?.message === MISSING_VAULT_ERROR) {
+      // In the case of "missing vault" error, the recovery is expected to work,
+      // which is why we display "Recover accounts".
+      repairButtonLabel = t('criticalErrorRecoverAccounts');
+    } else {
+      // In the case of errors other than "missing vault", we don't have 100% guarantee
+      // that the recovery will work, which is why we display "Attempt recovery".
+      repairButtonLabel = t('criticalErrorAttemptRecovery');
+    }
+  } else if (repairAction === CriticalErrorRepairAction.Reset) {
+    repairButtonLabel = t('criticalErrorResetMetaMaskState');
+  }
 
-  const attemptRecoveryButton = hasBackup
-    ? `<button
-          id="critical-error-restore-link"
+  const repairButtonClass = isStateCorruptionError
+    ? 'critical-error__button-restore button btn-primary'
+    : 'critical-error__button-secondary button';
+
+  const repairButton = `<button
+          id="critical-error-repair-button"
           type="button"
-          class="critical-error__button-secondary button">
-          ${lodashEscape(t('criticalErrorAttemptRecovery'))}
-        </button>`
-    : '';
+          disabled
+          class="${repairButtonClass}">
+          ${lodashEscape(repairButtonLabel)}
+        </button>`;
 
   const externalIconSvg = `<svg
     class="critical-error__external-icon"
@@ -192,15 +217,16 @@ export function getErrorHtml(
         ${externalIconSvg}
       </a>`;
 
-  const dividerSection = `<div class="critical-error__divider">
-        <span>${lodashEscape(t('criticalErrorStillHavingIssues'))}</span>
-      </div>`;
+  const retryButton = `<button
+        id="critical-error-button"
+        class="critical-error__button-restore button btn-primary"
+        title="Report this error and restart MetaMask">
+        ${lodashEscape(t('restartMetamask'))}
+      </button>`;
 
-  const secondaryActions = `
-      ${dividerSection}
-      ${attemptRecoveryButton}
-      ${reinstallButton}
-    `;
+  const dividerSection = `<div class="critical-error__divider">
+          <span>${lodashEscape(t('criticalErrorStillHavingIssues'))}</span>
+        </div>`;
 
   let footer = '';
   if (supportLink) {
@@ -247,6 +273,17 @@ export function getErrorHtml(
     ? `<p class="critical-error__details"><code>${lodashEscape(error?.message)}</code></p>`
     : '';
 
+  let troubleStartingMessage = t('troubleStartingMessage');
+  if (isStateCorruptionError) {
+    if (repairAction === CriticalErrorRepairAction.Reset) {
+      troubleStartingMessage = t('criticalErrorStateCorruptionResetMessage');
+    } else if (repairAction === CriticalErrorRepairAction.Recover) {
+      troubleStartingMessage = t('criticalErrorStateCorruptionRecoverMessage');
+    } else {
+      troubleStartingMessage = '';
+    }
+  }
+
   /**
    * The pattern ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
    * is necessary because we need linter to see the string
@@ -260,7 +297,7 @@ export function getErrorHtml(
       </div>
       <div class="critical-error__body">
         <p class="critical-error__intro">
-          ${errorKey === 'troubleStarting' ? t('troubleStartingMessage') : ''}
+          ${errorKey === 'troubleStarting' ? troubleStartingMessage : ''}
           ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
         </p>
         <div class="critical-error__error-section">
@@ -297,13 +334,9 @@ export function getErrorHtml(
         ${legalText}
       </div>
       <div class="critical-error__footer-actions">
-        <button
-          id="critical-error-button"
-          class="critical-error__button-restore button btn-primary"
-          title="Report this error and restart MetaMask">
-          ${lodashEscape(t('restartMetamask'))}
-        </button>
-        ${secondaryActions}
+        ${isStateCorruptionError ? '' : `${retryButton}${dividerSection}`}
+        ${repairAction === CriticalErrorRepairAction.None ? '' : repairButton}
+        ${reinstallButton}
         ${footer}
       </div>
     `);

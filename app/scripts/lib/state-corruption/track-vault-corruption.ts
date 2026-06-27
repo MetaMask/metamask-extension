@@ -1,6 +1,6 @@
 // Vault corruption events are tracked via the early Segment tracking utility,
 // which is available before MetaMetricsController is initialized.
-import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
+import type { CriticalErrorType } from '../../../../shared/constants/state-corruption';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -21,7 +21,7 @@ import { trackEarlySegmentEvent } from '../segment/custom-segment-tracking';
 export function trackVaultCorruptionEvent(
   backup: Backup | null,
   eventName: MetaMetricsEventName,
-  corruptionType: VaultCorruptionType,
+  corruptionType: CriticalErrorType,
 ): void {
   trackEarlySegmentEvent({
     state: backup,

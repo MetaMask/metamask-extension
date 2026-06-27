@@ -11,7 +11,9 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 const setup = (
-  options: { localMock?: { get?: unknown; set?: unknown } | false } = {},
+  options: {
+    localMock?: { get?: unknown; set?: unknown; remove?: unknown } | false;
+  } = {},
 ) => {
   if (typeof options.localMock === 'undefined') {
     // @ts-expect-error Mock used just to spy on calls, doesn't implement API
@@ -116,6 +118,72 @@ describe('ExtensionStore', () => {
 
       expect(result).toBe(MOCK_STATE);
       expect(getMock).toHaveBeenCalledWith(['data', 'meta']);
+    });
+  });
+
+  describe('reset', () => {
+    it('throws an error if called in a browser that does not support local storage', async () => {
+      const localStore = setup({ localMock: false });
+      await expect(() => localStore.reset()).rejects.toThrow(
+        'MetaMask - cannot persist state to local store as this browser does not support this action',
+      );
+    });
+
+    it('removes persisted manifest keys when in-memory manifest is empty', async () => {
+      const getMock = jest.fn().mockResolvedValue({
+        manifest: ['meta', 'KeyringController', 'PreferencesController'],
+      });
+      const removeMock = jest.fn().mockResolvedValue(undefined);
+      const localStore = setup({
+        localMock: { get: getMock, remove: removeMock },
+      });
+
+      await localStore.reset();
+
+      expect(getMock).toHaveBeenCalledWith(['manifest']);
+      expect(removeMock).toHaveBeenCalledWith([
+        'manifest',
+        'meta',
+        'KeyringController',
+        'PreferencesController',
+      ]);
+    });
+
+    it('uses persisted manifest keys instead of in-memory manifest keys when available', async () => {
+      const getMock = jest.fn().mockResolvedValue({
+        manifest: ['KeyringController'],
+      });
+      const setMock = jest.fn().mockResolvedValue(undefined);
+      const removeMock = jest.fn().mockResolvedValue(undefined);
+      const localStore = setup({
+        localMock: { get: getMock, set: setMock, remove: removeMock },
+      });
+
+      await localStore.set(MOCK_STATE);
+      await localStore.reset();
+
+      expect(getMock).toHaveBeenCalledWith(['manifest']);
+      expect(removeMock).toHaveBeenCalledWith([
+        'manifest',
+        'KeyringController',
+      ]);
+    });
+
+    it('falls back to in-memory manifest keys when reading persisted manifest fails', async () => {
+      const getMock = jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to read manifest'));
+      const setMock = jest.fn().mockResolvedValue(undefined);
+      const removeMock = jest.fn().mockResolvedValue(undefined);
+      const localStore = setup({
+        localMock: { get: getMock, set: setMock, remove: removeMock },
+      });
+
+      await localStore.set(MOCK_STATE);
+      await localStore.reset();
+
+      expect(getMock).toHaveBeenCalledWith(['manifest']);
+      expect(removeMock).toHaveBeenCalledWith(['manifest', 'data', 'meta']);
     });
   });
 });

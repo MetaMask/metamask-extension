@@ -1,12 +1,15 @@
+import 'navigator.locks';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../../shared/constants/start-up-errors';
 import {
+  CriticalErrorRepairAction,
   CriticalErrorType,
-  METHOD_REPAIR_DATABASE_TIMEOUT,
+  METHOD_REPAIR_DATABASE,
 } from '../../../../shared/constants/state-corruption';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
 import { captureException } from '../../../../shared/lib/sentry';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
 import {
   CriticalErrorHandler,
   RegisterPortForCriticalErrorConfig,
@@ -15,6 +18,10 @@ import { trackCriticalErrorEvent } from './track-critical-error';
 
 jest.mock('./track-critical-error', () => ({
   trackCriticalErrorEvent: jest.fn(),
+}));
+
+jest.mock('../state-corruption/track-vault-corruption', () => ({
+  trackVaultCorruptionEvent: jest.fn(),
 }));
 
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -55,6 +62,9 @@ function createMockPort(): chrome.runtime.Port {
     emitTestMessage(message: unknown) {
       messageListeners.forEach((fn) => fn(message));
     },
+    emitTestDisconnect() {
+      disconnectListeners.forEach((fn) => fn());
+    },
   } as unknown as chrome.runtime.Port;
 }
 
@@ -64,6 +74,48 @@ function createConfig(
   const port = createMockPort();
   const repairCallback = jest.fn().mockResolvedValue(true);
   return { port, repairCallback, ...overrides };
+}
+
+function createRepairMessage({
+  backup,
+  criticalErrorType = CriticalErrorType.BackgroundInitTimeout,
+  repairAction = CriticalErrorRepairAction.Recover,
+}: {
+  backup?: Backup | null;
+  criticalErrorType?: CriticalErrorType;
+  repairAction?: CriticalErrorRepairAction;
+} = {}) {
+  return {
+    data: {
+      method: METHOD_REPAIR_DATABASE,
+      params: {
+        repairAction,
+        criticalErrorType,
+        backup,
+      },
+    },
+  };
+}
+
+function createScreenViewedMessage({
+  backup,
+  criticalErrorType = CriticalErrorType.BackgroundStateSyncTimeout,
+  repairAction = CriticalErrorRepairAction.Recover,
+}: {
+  backup?: Backup | null;
+  criticalErrorType?: CriticalErrorType;
+  repairAction?: CriticalErrorRepairAction;
+} = {}) {
+  return {
+    data: {
+      method: CRITICAL_ERROR_SCREEN_VIEWED,
+      params: {
+        backup,
+        repairAction,
+        criticalErrorType,
+      },
+    },
+  };
 }
 
 describe('CriticalErrorHandler', () => {
@@ -110,8 +162,8 @@ describe('CriticalErrorHandler', () => {
     });
   });
 
-  describe('when port receives METHOD_REPAIR_DATABASE_TIMEOUT', () => {
-    it('calls repairCallback and tracks restore click', async () => {
+  describe('when port receives METHOD_REPAIR_DATABASE', () => {
+    it('handles recover repair click through the shared repair callback', async () => {
       const backup: Backup = { KeyringController: {} };
       const repairCallback = jest.fn().mockResolvedValue(true);
       const config = createConfig({ repairCallback });
@@ -121,23 +173,21 @@ describe('CriticalErrorHandler', () => {
       const portWithEmit = config.port as chrome.runtime.Port & {
         emitTestMessage: (message: unknown) => void;
       };
-      portWithEmit.emitTestMessage({
-        data: {
-          method: METHOD_REPAIR_DATABASE_TIMEOUT,
-          params: {
-            criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
-            backup,
-          },
-        },
-      });
+      portWithEmit.emitTestMessage(createRepairMessage({ backup }));
 
       await flushPromises();
 
-      expect(repairCallback).toHaveBeenCalledWith();
+      expect(repairCallback).toHaveBeenCalledWith(
+        CriticalErrorRepairAction.Recover,
+      );
       expect(jest.mocked(trackCriticalErrorEvent)).toHaveBeenCalledWith(
         backup,
         MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
         CriticalErrorType.BackgroundInitTimeout,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          repair_action: CriticalErrorRepairAction.Recover,
+        },
       );
       expect(handler.connectedPorts.size).toBe(0);
     });
@@ -156,15 +206,9 @@ describe('CriticalErrorHandler', () => {
       const portWithEmit = config.port as chrome.runtime.Port & {
         emitTestMessage: (message: unknown) => void;
       };
-      portWithEmit.emitTestMessage({
-        data: {
-          method: METHOD_REPAIR_DATABASE_TIMEOUT,
-          params: {
-            criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
-            backup: backupFromUi,
-          },
-        },
-      });
+      portWithEmit.emitTestMessage(
+        createRepairMessage({ backup: backupFromUi }),
+      );
 
       await flushPromises();
 
@@ -173,6 +217,10 @@ describe('CriticalErrorHandler', () => {
         backupFromUi,
         MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
         CriticalErrorType.BackgroundInitTimeout,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          repair_action: CriticalErrorRepairAction.Recover,
+        },
       );
     });
 
@@ -184,14 +232,7 @@ describe('CriticalErrorHandler', () => {
       const portWithEmit = config.port as chrome.runtime.Port & {
         emitTestMessage: (message: unknown) => void;
       };
-      portWithEmit.emitTestMessage({
-        data: {
-          method: METHOD_REPAIR_DATABASE_TIMEOUT,
-          params: {
-            criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
-          },
-        },
-      });
+      portWithEmit.emitTestMessage(createRepairMessage());
 
       await flushPromises();
 
@@ -210,12 +251,7 @@ describe('CriticalErrorHandler', () => {
       const portWithEmit = config1.port as chrome.runtime.Port & {
         emitTestMessage: (message: unknown) => void;
       };
-      portWithEmit.emitTestMessage({
-        data: {
-          method: METHOD_REPAIR_DATABASE_TIMEOUT,
-          params: { backup },
-        },
-      });
+      portWithEmit.emitTestMessage(createRepairMessage({ backup }));
 
       await flushPromises();
 
@@ -224,10 +260,47 @@ describe('CriticalErrorHandler', () => {
       expect(sharedRestore).toHaveBeenCalledTimes(1);
       expect(handler.connectedPorts.size).toBe(0);
     });
+
+    it('handles state corruption reset repair click through the shared repair callback', async () => {
+      const repairCallback = jest.fn().mockResolvedValue(true);
+      const config = createConfig({ repairCallback });
+      handler.registerPortForCriticalError(config);
+
+      const portWithEmit = config.port as chrome.runtime.Port & {
+        emitTestMessage: (message: unknown) => void;
+      };
+      portWithEmit.emitTestMessage(
+        createRepairMessage({
+          backup: null,
+          repairAction: CriticalErrorRepairAction.Reset,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        }),
+      );
+
+      await flushPromises();
+
+      expect(repairCallback).toHaveBeenCalledWith(
+        CriticalErrorRepairAction.Reset,
+      );
+      expect(jest.mocked(trackVaultCorruptionEvent)).toHaveBeenCalledWith(
+        null,
+        MetaMetricsEventName.VaultCorruptionRestoreWalletButtonPressed,
+        CriticalErrorType.MissingVaultInDatabase,
+      );
+      expect(jest.mocked(trackCriticalErrorEvent)).toHaveBeenCalledWith(
+        null,
+        MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
+        CriticalErrorType.MissingVaultInDatabase,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          repair_action: CriticalErrorRepairAction.Reset,
+        },
+      );
+    });
   });
 
   describe('when port receives CRITICAL_ERROR_SCREEN_VIEWED', () => {
-    it('tracks event with backup and criticalErrorType', async () => {
+    it('tracks critical error screen view event with backup and criticalErrorType', async () => {
       const backup: Backup = { KeyringController: {} };
       const config = createConfig();
 
@@ -236,16 +309,7 @@ describe('CriticalErrorHandler', () => {
       const portWithEmit = config.port as chrome.runtime.Port & {
         emitTestMessage: (message: unknown) => void;
       };
-      portWithEmit.emitTestMessage({
-        data: {
-          method: CRITICAL_ERROR_SCREEN_VIEWED,
-          params: {
-            backup,
-            canTriggerRestore: true,
-            criticalErrorType: CriticalErrorType.BackgroundStateSyncTimeout,
-          },
-        },
-      });
+      portWithEmit.emitTestMessage(createScreenViewedMessage({ backup }));
 
       await flushPromises();
 
@@ -253,8 +317,45 @@ describe('CriticalErrorHandler', () => {
         backup,
         MetaMetricsEventName.CriticalErrorScreenViewed,
         CriticalErrorType.BackgroundStateSyncTimeout,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { restore_accounts_enabled: true },
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          repair_action: CriticalErrorRepairAction.Recover,
+        },
+      );
+    });
+
+    it('tracks state corruption screen view events with backup and criticalErrorType', async () => {
+      const backup: Backup = { KeyringController: { vault: 'vault' } };
+      const config = createConfig();
+
+      handler.registerPortForCriticalError(config);
+
+      const portWithEmit = config.port as chrome.runtime.Port & {
+        emitTestMessage: (message: unknown) => void;
+      };
+      portWithEmit.emitTestMessage(
+        createScreenViewedMessage({
+          backup,
+          repairAction: CriticalErrorRepairAction.Reset,
+          criticalErrorType: CriticalErrorType.InaccessibleDatabase,
+        }),
+      );
+
+      await flushPromises();
+
+      expect(jest.mocked(trackVaultCorruptionEvent)).toHaveBeenCalledWith(
+        backup,
+        MetaMetricsEventName.VaultCorruptionRestoreWalletScreenViewed,
+        CriticalErrorType.InaccessibleDatabase,
+      );
+      expect(jest.mocked(trackCriticalErrorEvent)).toHaveBeenCalledWith(
+        backup,
+        MetaMetricsEventName.CriticalErrorScreenViewed,
+        CriticalErrorType.InaccessibleDatabase,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          repair_action: CriticalErrorRepairAction.Reset,
+        },
       );
     });
   });

@@ -193,6 +193,25 @@ export default class ExtensionStore implements BaseStore {
       );
     }
     const { local } = browser.storage;
-    return await local.remove(['manifest', ...this.#manifest]);
+    let keysToRemove: string[] | undefined;
+    try {
+      const response = await local.get(['manifest']);
+      if (
+        isObject(response) &&
+        hasProperty(response, 'manifest') &&
+        Array.isArray(response.manifest)
+      ) {
+        keysToRemove = response.manifest.filter(
+          (key): key is string => typeof key === 'string',
+        );
+      }
+    } catch (error) {
+      log.warn(
+        '[ExtensionStore]: Failed to read manifest before reset:',
+        error,
+      );
+    }
+    await local.remove(['manifest', ...(keysToRemove ?? this.#manifest)]);
+    this.#manifest.clear();
   }
 }

@@ -2910,6 +2910,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMaskを再インストール"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMaskのステートのリセット"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "問題が解決されませんか？"
   },
@@ -8387,9 +8390,6 @@
   "send": {
     "message": "送金"
   },
-  "sendBugReport": {
-    "message": "バグの報告をお送りください."
-  },
   "sendSelectReceiveAsset": {
     "message": "受け取るアラートを選択してください"
   },
@@ -9727,42 +9727,6 @@
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1に従ってヴォールトを復元することを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "$1に従ってMetaMaskをリセットすることを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "ヴォールトを自動的に復元することができません。"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "ヴォールトは自動バックアップから復元することができます。自動リカバリーでは現在の設定が削除され、ヴォールトのみが復元されます。"
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "内部エラー: データベースにアクセスできません"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMaskのステートのリセット"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "データベースをリセットしています…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "アカウントの復元"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "データベースを復元しています…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "これらの手順",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "シークレットリカバリーフレーズの復元方法"
-  },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。後程もう一度お試しください。"
   },
@@ -10602,9 +10566,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1との接続が利用できません。続行する前にネットワーク接続情報を更新するか、後でもう一度お試しください。",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "これは予期せぬ動作なので、アカウントが復元されたとしても、バグとして報告すべきです。"
   },
   "unexpectedError": {
     "message": "予期せぬエラーが発生しました。",
