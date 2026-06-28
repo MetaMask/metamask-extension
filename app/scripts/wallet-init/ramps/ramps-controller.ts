@@ -8,22 +8,29 @@ import type { Json } from '@metamask/utils';
 
 import type { RampsControllerInstanceOptions } from './types';
 
-export const rampsController = {
-  name: 'RampsController' as const,
-  init: ({
-    state,
-    messenger,
-    options,
-  }: {
+// Method shorthand (not arrow property) is required so this type is bivariant
+// and assignable to InitializationConfiguration<unknown, unknown>[].
+export type RampsControllerInitializationConfiguration = {
+  name: 'RampsController';
+  init(args: {
     messenger: RampsControllerMessenger;
     state?: Record<string, Json>;
     options: RampsControllerInstanceOptions;
-  }): RampsController =>
+  }): RampsController;
+  getMessenger(parent: any): RampsControllerMessenger;
+};
+
+export const rampsController: RampsControllerInitializationConfiguration = {
+  name: 'RampsController',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  init: ({ state, messenger, options }: any): RampsController =>
     new RampsController({
-      messenger,
-      state: state ?? {},
-      requestCacheTTL: options.requestCacheTTL,
-      requestCacheMaxSize: options.requestCacheMaxSize,
+      messenger: messenger as RampsControllerMessenger,
+      state: (state as Record<string, Json> | undefined) ?? {},
+      requestCacheTTL: (options as RampsControllerInstanceOptions)
+        .requestCacheTTL,
+      requestCacheMaxSize: (options as RampsControllerInstanceOptions)
+        .requestCacheMaxSize,
     }),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getMessenger: (parent: any): RampsControllerMessenger => {
