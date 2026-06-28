@@ -142,7 +142,8 @@ function normalizeSmartContracts(smartContract) {
  * @typedef {object} UnifiedEvmAccountsApiBalances
  * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5). Auto-populated from the local node when chainId is 1 and omitted.
  * @property {string} [localhostNativeEthHuman] - Localhost (eip155:1337) native balance string. Auto-populated from the local node when omitted, so smart-contract deployment gas is reflected.
- * @property {string} [hardwareWalletNativeEthHuman] - Localhost (eip155:1337) native balance for the Trezor/Ledger stub address (Accounts API v5).
+ * @property {string} [hardwareWalletNativeEthHuman] - Native balance for the Trezor/Ledger stub address (Accounts API v5) on all EVM chains when set; defaults to {@link HARDWARE_WALLET_NATIVE_ETH_HUMAN} on localhost (1337) only.
+ * @property {string} [nativeBalance] - Default native ETH balance (human-readable) for all EVM chains in Accounts API v5 when no chain-specific override applies.
  * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
  */
 

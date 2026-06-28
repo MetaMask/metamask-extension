@@ -69,8 +69,21 @@ export const BRIDGE_L2_ETH_BALANCE_PER_CHAIN = 25;
 export const BRIDGE_TOTAL_ETH_BALANCE_HUMAN =
   BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST + BRIDGE_L2_ETH_BALANCE_PER_CHAIN * 2;
 
+/** Total native ETH on mainnet + Linea + Arbitrum when each chain has 25 ETH (L2 bridge E2E). */
+export const BRIDGE_L2_TOTAL_ETH_BALANCE_HUMAN =
+  BRIDGE_L2_ETH_BALANCE_PER_CHAIN * 3;
+
 export const BRIDGE_ETH_USD_SPOT_PRICE =
   BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_TOTAL_ETH_BALANCE_HUMAN;
+
+export const BRIDGE_L2_ETH_USD_SPOT_PRICE =
+  BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_L2_TOTAL_ETH_BALANCE_HUMAN;
+
+/** Homepage fiat total string for bridge login assertions. */
+export const BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED = `$${BRIDGE_EXPECTED_FIAT_BALANCE_USD.toLocaleString(
+  'en-US',
+  { minimumFractionDigits: 2, maximumFractionDigits: 2 },
+)}`;
 
 export const MOCK_CURRENCY_RATES = {
   currencyRates: {
@@ -88,6 +101,16 @@ export const BRIDGE_MOCK_CURRENCY_RATES = {
       conversionDate: 1665507609.0,
       conversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
       usdConversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
+    },
+  },
+};
+
+export const BRIDGE_L2_MOCK_CURRENCY_RATES = {
+  currencyRates: {
+    ETH: {
+      conversionDate: 1665507609.0,
+      conversionRate: BRIDGE_L2_ETH_USD_SPOT_PRICE,
+      usdConversionRate: BRIDGE_L2_ETH_USD_SPOT_PRICE,
     },
   },
 };

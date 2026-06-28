@@ -5,7 +5,7 @@ import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transact
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { WINDOW_TITLES } from '../../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_ID, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
@@ -39,6 +39,25 @@ const SPOT_PRICES = {
   [USDC_ASSET_ID]: { price: 1, marketCap: 0, pricePercentChange1d: 0 },
 };
 
+const ZERO_MAINNET_ASSETS_CONTROLLER = {
+  assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+  assetsBalance: {
+    [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+      'eip155:1/slip44:60': { amount: '0' },
+    },
+  },
+};
+
+const ZERO_MAINNET_FIXTURE_OPTIONS = {
+  unifiedEvmAccountsApiBalances: {
+    mainnetNativeEthHuman: '0',
+  },
+  localNodeOptions: {
+    loadState:
+      './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
+  },
+};
+
 describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
   it('confirms transaction if successful', async function () {
     await withFixtures(
@@ -48,18 +67,11 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .withSmartTransactionsOptedOut()
-          .withAssetsController(
-            {
-              assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
-              assetsBalance: {},
-            },
-            { overwrite: true },
-          )
+          .withAssetsController(ZERO_MAINNET_ASSETS_CONTROLLER, {
+            overwrite: true,
+          })
           .build(),
-        localNodeOptions: {
-          loadState:
-            './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
-        },
+        ...ZERO_MAINNET_FIXTURE_OPTIONS,
         testSpecificMock: (mockServer: MockttpServer) => {
           mockSimulationResponse(mockServer);
           mockEip7702FeatureFlag(mockServer);
@@ -120,18 +132,11 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
-          .withAssetsController(
-            {
-              assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
-              assetsBalance: {},
-            },
-            { overwrite: true },
-          )
+          .withAssetsController(ZERO_MAINNET_ASSETS_CONTROLLER, {
+            overwrite: true,
+          })
           .build(),
-        localNodeOptions: {
-          loadState:
-            './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
-        },
+        ...ZERO_MAINNET_FIXTURE_OPTIONS,
         testSpecificMock: (mockServer: MockttpServer) => {
           mockSimulationResponse(mockServer);
           mockEip7702FeatureFlag(mockServer);

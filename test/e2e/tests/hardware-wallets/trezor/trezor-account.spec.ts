@@ -11,10 +11,17 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { checkAccountAddressDisplayedInAccountList } from '../../../page-objects/flows/account-list.flow';
 
 describe('Trezor Hardware', function () {
+  const trezorAccountFixtureOptions = {
+    fixtures: new FixtureBuilderV2().build(),
+    unifiedEvmAccountsApiBalances: {
+      hardwareWalletNativeEthHuman: '0',
+    },
+  };
+
   it('derives the correct accounts and unlocks the first account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...trezorAccountFixtureOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -61,7 +68,7 @@ describe('Trezor Hardware', function () {
   it('unlocks multiple accounts at once and removes one', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...trezorAccountFixtureOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

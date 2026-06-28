@@ -1607,11 +1607,10 @@ async function setupMocking(
         const chainRef = parts[1];
         let nativeBalance = '25';
         if (isHardwareWallet) {
-          if (chainRef === '1337') {
-            nativeBalance =
-              hardwareWalletNativeOverride ?? HARDWARE_WALLET_NATIVE_ETH_HUMAN;
-          } else if (defaultNativeOverride !== null) {
-            nativeBalance = defaultNativeOverride;
+          if (hardwareWalletNativeOverride !== null) {
+            nativeBalance = hardwareWalletNativeOverride;
+          } else if (chainRef === '1337') {
+            nativeBalance = HARDWARE_WALLET_NATIVE_ETH_HUMAN;
           }
         } else if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
