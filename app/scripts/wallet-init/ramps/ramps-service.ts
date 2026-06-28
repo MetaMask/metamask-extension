@@ -1,33 +1,42 @@
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
 import {
   RampsService,
   RampsServiceMessenger,
 } from '@metamask/ramps-controller';
-import type {
-  DefaultActions,
-  DefaultEvents,
-  RootMessenger,
-} from '@metamask/wallet';
+import type { RootMessenger, WalletOptions } from '@metamask/wallet';
 
 import type { RampsServiceInstanceOptions } from './types';
 
-// Method shorthand (not arrow property) is required so this type is bivariant
-// and assignable to InitializationConfiguration<unknown, unknown>[].
-export type RampsServiceInitializationConfiguration = {
-  name: 'RampsService';
-  init(args: {
-    messenger: RampsServiceMessenger;
-    options: RampsServiceInstanceOptions;
-  }): RampsService;
-  getMessenger(
-    parent: RootMessenger<DefaultActions, DefaultEvents>,
-  ): RampsServiceMessenger;
-};
+/**
+ * The element type of the wallet's `initializationConfigurations` array. The
+ * `InitializationConfiguration<unknown, unknown>` type is not exported from
+ * `@metamask/wallet` directly, so we recover it from the public `WalletOptions`
+ * type. Typing the config as this exact type guarantees assignability when it is
+ * passed to `new Wallet(...)`.
+ */
+type WalletInitializationConfiguration = NonNullable<
+  WalletOptions['initializationConfigurations']
+>[number];
 
-export const rampsService: RampsServiceInitializationConfiguration = {
+/**
+ * The root messenger widened to the actions and events this service's messenger
+ * needs. The wallet types the `getMessenger` parent with only the default
+ * actions/events, but the live root messenger also carries the authentication
+ * action delegated below. This matches the pattern used by the extension's
+ * other restricted messengers (e.g. `getNameControllerMessenger`).
+ */
+type RampsServiceRootMessenger = RootMessenger<
+  MessengerActions<RampsServiceMessenger>,
+  MessengerEvents<RampsServiceMessenger>
+>;
+
+export const rampsService: WalletInitializationConfiguration = {
   name: 'RampsService',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  init: ({ messenger, options }: any): RampsService =>
+  init: ({ messenger, options }) =>
     new RampsService({
       messenger: messenger as RampsServiceMessenger,
       environment: (options as RampsServiceInstanceOptions).environment,
@@ -36,16 +45,14 @@ export const rampsService: RampsServiceInitializationConfiguration = {
       policyOptions: (options as RampsServiceInstanceOptions).policyOptions,
       baseUrlOverride: (options as RampsServiceInstanceOptions).baseUrlOverride,
     }),
-  getMessenger: (
-    parent: RootMessenger<DefaultActions, DefaultEvents>,
-  ): RampsServiceMessenger => {
+  getMessenger: (parent) => {
+    const rootMessenger = parent as unknown as RampsServiceRootMessenger;
     const messenger: RampsServiceMessenger = new Messenger({
       namespace: 'RampsService',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      parent: parent as any,
+      parent: rootMessenger,
     });
 
-    parent.delegate({
+    rootMessenger.delegate({
       messenger,
       actions: ['AuthenticationController:getBearerToken'],
       events: [],
