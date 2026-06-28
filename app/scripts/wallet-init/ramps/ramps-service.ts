@@ -3,6 +3,11 @@ import {
   RampsService,
   RampsServiceMessenger,
 } from '@metamask/ramps-controller';
+import type {
+  DefaultActions,
+  DefaultEvents,
+  RootMessenger,
+} from '@metamask/wallet';
 
 import type { RampsServiceInstanceOptions } from './types';
 
@@ -14,7 +19,9 @@ export type RampsServiceInitializationConfiguration = {
     messenger: RampsServiceMessenger;
     options: RampsServiceInstanceOptions;
   }): RampsService;
-  getMessenger(parent: any): RampsServiceMessenger;
+  getMessenger(
+    parent: RootMessenger<DefaultActions, DefaultEvents>,
+  ): RampsServiceMessenger;
 };
 
 export const rampsService: RampsServiceInitializationConfiguration = {
@@ -29,11 +36,13 @@ export const rampsService: RampsServiceInitializationConfiguration = {
       policyOptions: (options as RampsServiceInstanceOptions).policyOptions,
       baseUrlOverride: (options as RampsServiceInstanceOptions).baseUrlOverride,
     }),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getMessenger: (parent: any): RampsServiceMessenger => {
+  getMessenger: (
+    parent: RootMessenger<DefaultActions, DefaultEvents>,
+  ): RampsServiceMessenger => {
     const messenger: RampsServiceMessenger = new Messenger({
       namespace: 'RampsService',
-      parent,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      parent: parent as any,
     });
 
     parent.delegate({

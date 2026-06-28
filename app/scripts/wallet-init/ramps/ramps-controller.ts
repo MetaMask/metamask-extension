@@ -5,6 +5,11 @@ import {
   RAMPS_CONTROLLER_REQUIRED_SERVICE_ACTIONS,
 } from '@metamask/ramps-controller';
 import type { Json } from '@metamask/utils';
+import type {
+  DefaultActions,
+  DefaultEvents,
+  RootMessenger,
+} from '@metamask/wallet';
 
 import type { RampsControllerInstanceOptions } from './types';
 
@@ -17,7 +22,9 @@ export type RampsControllerInitializationConfiguration = {
     state?: Record<string, Json>;
     options: RampsControllerInstanceOptions;
   }): RampsController;
-  getMessenger(parent: any): RampsControllerMessenger;
+  getMessenger(
+    parent: RootMessenger<DefaultActions, DefaultEvents>,
+  ): RampsControllerMessenger;
 };
 
 export const rampsController: RampsControllerInitializationConfiguration = {
@@ -32,11 +39,13 @@ export const rampsController: RampsControllerInitializationConfiguration = {
       requestCacheMaxSize: (options as RampsControllerInstanceOptions)
         .requestCacheMaxSize,
     }),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getMessenger: (parent: any): RampsControllerMessenger => {
+  getMessenger: (
+    parent: RootMessenger<DefaultActions, DefaultEvents>,
+  ): RampsControllerMessenger => {
     const messenger: RampsControllerMessenger = new Messenger({
       namespace: 'RampsController',
-      parent,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      parent: parent as any,
     });
 
     parent.delegate({
