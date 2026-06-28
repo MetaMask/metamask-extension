@@ -38,8 +38,10 @@ async function mockAllMultichainAccountBalances(
     .asPriority(99)
     .thenCallback((req) => {
       const accountIds =
-        new URL(req.url).searchParams.get('accountIds')?.split(',').filter(Boolean) ??
-        [];
+        new URL(req.url).searchParams
+          .get('accountIds')
+          ?.split(',')
+          .filter(Boolean) ?? [];
 
       const balances = accountIds.map((id) => {
         const chainRef = id.split(':')[1] ?? '1';

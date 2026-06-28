@@ -2,7 +2,10 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
-import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED } from './constants';
+import {
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+} from './constants';
 import { getBridgeL2Fixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
