@@ -352,10 +352,7 @@ class TokensTab extends HomePage {
       tokenName,
     );
     const toggle = this.tokenManagementSearchToggle(tokenName);
-    await this.driver.waitForElementToStopMoving({
-      text: tokenName,
-      tag: 'p',
-    });
+    await this.driver.waitForSelector(toggle);
     await this.driver.clickElement(toggle);
     await this.driver.waitForSelector(toggle, {
       state: 'enabled',
@@ -378,7 +375,7 @@ class TokensTab extends HomePage {
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenManagementSearchInput, name);
       const toggle = this.tokenManagementSearchToggle(name);
-      await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
+      await this.driver.waitForSelector(toggle);
       await this.driver.clickElement(toggle);
       await this.driver.waitForSelector(toggle, {
         state: 'enabled',
