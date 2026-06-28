@@ -5,6 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   ACCOUNT_2,
   DAPP_PATH,
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   PRIVATE_KEY_TWO,
   WINDOW_TITLES,
 } from '../../constants';
@@ -22,6 +23,48 @@ import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-k
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
+/** ~25 ETH on local Anvil; matches default-fixture.json AccountTracker on 0x539. */
+const LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE_HEX = '0x15af1d78b58c40000';
+
+/**
+ * Unified assets only mock v5 balances for the default (and hardware) accounts.
+ * Snap keyring imports get new account IDs, so seed localhost native ETH for every
+ * requested eip155:1337 account in this test.
+ *
+ * @param mockServer - Mockttp server for this test run.
+ * @param nativeBalanceHuman - Human-readable ETH balance for localhost accounts.
+ */
+async function mockSnapAccountLocalhostBalances(
+  mockServer: Mockttp,
+  nativeBalanceHuman: string = DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+) {
+  await mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .asPriority(99)
+    .thenCallback((req) => {
+      const accountIds =
+        new URL(req.url).searchParams.get('accountIds')?.split(',').filter(Boolean) ??
+        [];
+
+      const balances = accountIds
+        .filter((id) => id.split(':')[1] === '1337')
+        .map((id) => ({
+          accountId: id,
+          assetId: 'eip155:1337/slip44:1',
+          balance: nativeBalanceHuman,
+        }));
+
+      return {
+        statusCode: 200,
+        json: {
+          count: balances.length,
+          balances,
+          unprocessedNetworks: [],
+        },
+      };
+    });
+}
+
 describe('Snap Account Contract interaction', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
   it('deposits to piggybank contract', async function () {
@@ -36,9 +79,20 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp({
             account: ACCOUNT_2,
           })
+          .withAccountTracker({
+            accountsByChainId: {
+              '0x539': {
+                [ACCOUNT_2]: {
+                  balance: LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE_HEX,
+                  stakedBalance: '0x0',
+                },
+              },
+            },
+          })
           .build(),
         smartContract,
         testSpecificMock: async (mockServer: Mockttp) => {
+          await mockSnapAccountLocalhostBalances(mockServer);
           const snapMocks = await mockSnapSimpleKeyringAndSite(
             mockServer,
             8081,

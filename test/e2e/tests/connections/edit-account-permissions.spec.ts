@@ -1,6 +1,8 @@
+import { Mockttp } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT,
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -18,12 +20,55 @@ import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flo
 const accountLabel1 = 'Account 1';
 const accountLabel2 = 'Account 2';
 const accountLabel3 = 'Account 3';
+
+/**
+ * Default v5 mock only balances the primary fixture account. This test creates
+ * Account 2 and Account 3, which need native balances or the homepage never renders
+ * `overview__primary-currency`.
+ *
+ * @param mockServer - Mockttp server for this test run.
+ * @param nativeBalanceHuman - Human-readable native ETH balance per chain/account.
+ */
+async function mockAllMultichainAccountBalances(
+  mockServer: Mockttp,
+  nativeBalanceHuman: string = DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+) {
+  await mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .asPriority(99)
+    .thenCallback((req) => {
+      const accountIds =
+        new URL(req.url).searchParams.get('accountIds')?.split(',').filter(Boolean) ??
+        [];
+
+      const balances = accountIds.map((id) => {
+        const chainRef = id.split(':')[1] ?? '1';
+        const slip44 = chainRef === '1337' ? '1' : '60';
+        return {
+          accountId: id,
+          assetId: `eip155:${chainRef}/slip44:${slip44}`,
+          balance: nativeBalanceHuman,
+        };
+      });
+
+      return {
+        statusCode: 200,
+        json: {
+          count: balances.length,
+          balances,
+          unprocessedNetworks: [],
+        },
+      };
+    });
+}
+
 describe('Edit Accounts Permissions', function () {
   it('should be able to edit accounts', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2().build(),
+        testSpecificMock: mockAllMultichainAccountBalances,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
