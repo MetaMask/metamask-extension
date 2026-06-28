@@ -23,6 +23,10 @@ import {
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import {
+  formatPerpsFiatUniversal,
+  formatPerpsLiquidationPrice,
+} from '../utils/formatPerpsDisplayPrice';
+import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
@@ -600,6 +604,64 @@ export const UpdateTPSLModalContent = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+      {/* Price context — entry / current / liquidation, matches mobile PerpsTPSLView */}
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={1}
+        data-testid="perps-update-tpsl-price-info"
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          data-testid="perps-update-tpsl-entry-price"
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsEntryPrice')}
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            data-testid="perps-update-tpsl-entry-price-value"
+          >
+            {formatPerpsFiatUniversal(position.entryPrice)}
+          </Text>
+        </Box>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          data-testid="perps-update-tpsl-current-price"
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsCurrentPrice')}
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            data-testid="perps-update-tpsl-current-price-value"
+          >
+            {formatPerpsFiatUniversal(currentPrice)}
+          </Text>
+        </Box>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          data-testid="perps-update-tpsl-liquidation-price"
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsLiquidationPrice')}
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            data-testid="perps-update-tpsl-liquidation-price-value"
+          >
+            {formatPerpsLiquidationPrice(position.liquidationPrice)}
+          </Text>
+        </Box>
+      </Box>
       {/* Take Profit */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text
