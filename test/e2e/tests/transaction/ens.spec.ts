@@ -2,7 +2,11 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { NETWORK_CLIENT_ID } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -10,6 +14,10 @@ import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import SendPage from '../../page-objects/pages/send/send-page';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
+
+/** 20 ETH in wei; matches mockMultiNetworkBalancePolling eth_getBalance mock. */
+const MOCK_MAINNET_ETH_BALANCE_HEX = '0x1158E460913D00000';
+const MOCK_MAINNET_ETH_BALANCE_HUMAN = '20';
 
 describe('ENS', function (this: Suite) {
   const shortSampleAddress = shortenAddress(
@@ -54,17 +62,40 @@ describe('ENS', function (this: Suite) {
               '0x1': true,
             },
           })
+          .withAccountTracker({
+            accountsByChainId: {
+              '0x1': {
+                [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+                  balance: MOCK_MAINNET_ETH_BALANCE_HEX,
+                  stakedBalance: '0x0',
+                },
+              },
+            },
+          })
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1/slip44:60': {
+                  amount: MOCK_MAINNET_ETH_BALANCE_HUMAN,
+                },
+              },
+            },
+          })
           .build(),
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: MOCK_MAINNET_ETH_BALANCE_HUMAN,
+        },
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, {
+          expectedBalance: '20 ETH',
+          waitForNonEvmAccounts: false,
+        });
 
-        // click send button on homepage to start send flow
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
-        await homepage.checkExpectedBalanceIsDisplayed('20');
         await homepage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
