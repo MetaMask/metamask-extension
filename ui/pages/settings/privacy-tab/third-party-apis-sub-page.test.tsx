@@ -46,13 +46,13 @@ describe('ThirdPartyApisSubPage', () => {
     });
   });
 
-  it('only shows IPFS when consolidated Basic Functionality is enabled', () => {
+  it('redirects when consolidated Basic Functionality is enabled', () => {
     renderWithProvider(
       <ThirdPartyApisSubPage />,
       createStore({ basicFunctionality: true }, true),
     );
 
-    expect(screen.getByTestId('ipfs-gateway-toggle')).toBeInTheDocument();
+    expect(screen.queryByTestId('ipfs-gateway-toggle')).not.toBeInTheDocument();
     expect(
       screen.queryByTestId('network-details-check-toggle'),
     ).not.toBeInTheDocument();

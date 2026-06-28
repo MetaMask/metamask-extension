@@ -108,7 +108,7 @@ export const getIsTokenManagementFilterEnabled = createSelector(
  */
 export const getIsBasicFunctionalityToggleEnabled = createSelector(
   getRemoteFeatureFlags,
-  ({ basicFunctionality }) => getBooleanFeatureFlag(basicFunctionality, false),
+  ({ basicFunctionality }) => true,
 );
 
 /**

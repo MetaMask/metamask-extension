@@ -28,7 +28,7 @@ const HIDDEN_BY_CONSOLIDATED_BASIC_FUNCTIONALITY: Record<
     'autodetect-nfts',
     'autodetect-tokens',
   ]),
-  privacy: new Set(['batch-account-balance-requests']),
+  privacy: new Set(['third-party-apis', 'batch-account-balance-requests']),
   'security-and-password': new Set(['phishing-detection']),
   transactions: new Set([
     'estimate-balance-changes',
@@ -58,15 +58,18 @@ function getSearchConfig(
     const hiddenItems =
       HIDDEN_BY_CONSOLIDATED_BASIC_FUNCTIONALITY[config.tabId] ?? new Set();
     const items = config.items.filter((item) => !hiddenItems.has(item.id));
-    const subPages = config.subPages?.map((subPage) => ({
-      ...subPage,
-      items: subPage.items.filter(
-        (item) =>
-          !HIDDEN_SUBPAGE_ITEMS_BY_CONSOLIDATED_BASIC_FUNCTIONALITY.has(
-            item.id,
-          ),
-      ),
-    }));
+    const subPages =
+      config.tabId === 'privacy'
+        ? undefined
+        : config.subPages?.map((subPage) => ({
+            ...subPage,
+            items: subPage.items.filter(
+              (item) =>
+                !HIDDEN_SUBPAGE_ITEMS_BY_CONSOLIDATED_BASIC_FUNCTIONALITY.has(
+                  item.id,
+                ),
+            ),
+          }));
 
     return { ...config, items, subPages };
   });

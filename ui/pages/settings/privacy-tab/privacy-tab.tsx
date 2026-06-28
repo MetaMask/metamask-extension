@@ -17,6 +17,7 @@ import { DataCollectionToggleItem } from './data-collection-item';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
 import { ExportYourDataItem } from './export-your-data-item';
+import { IpfsGatewayItem } from './ipfs-gateway-item';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
@@ -69,7 +70,7 @@ const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
 
 const CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS: SettingItemConfig[] = [
   { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
-  { id: 'third-party-apis', component: ThirdPartyApisItem },
+  { id: 'ipfs-gateway', component: IpfsGatewayItem },
   { id: 'skip-link-confirmation', component: SkipLinkConfirmationToggleItem },
   {
     id: 'metametrics',

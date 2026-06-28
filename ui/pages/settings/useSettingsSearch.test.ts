@@ -66,6 +66,7 @@ jest.mock('./search-config', () => ({
       tabId: 'privacy',
       items: [
         { id: 'third-party-apis', titleKey: 'thirdPartyApis' },
+        { id: 'ipfs-gateway', titleKey: 'ipfsGateway' },
         {
           id: 'batch-account-balance-requests',
           titleKey: 'useMultiAccountBalanceChecker',
@@ -75,7 +76,6 @@ jest.mock('./search-config', () => ({
         {
           path: '/settings/privacy/third-party-apis',
           items: [
-            { id: 'ipfs-gateway', titleKey: 'ipfsGateway' },
             { id: 'autodetect-nfts', titleKey: 'useNftDetection' },
           ],
         },
@@ -150,16 +150,14 @@ describe('useSettingsSearch', () => {
     expect(result.current).toEqual([]);
   });
 
-  it('keeps IPFS searchable on the Third-party APIs page when the flag is enabled', () => {
+  it('keeps IPFS searchable on the Privacy page when the flag is enabled', () => {
     const { result } = renderHook(() => useSettingsSearch('ipfs'), {
       wrapper: createWrapper({ basicFunctionality: true }, true),
     });
 
     expect(result.current).toHaveLength(1);
     expect(result.current[0].titleKey).toBe('ipfsGateway');
-    expect(result.current[0].tabRoute).toBe(
-      '/settings/privacy/third-party-apis',
-    );
+    expect(result.current[0].tabRoute).toBe('/settings/privacy');
   });
 
   it('keeps granular settings searchable when the flag is enabled without the local cohort marker', () => {

@@ -53,9 +53,10 @@ describe('PrivacyTab', () => {
     expect(
       screen.getByTestId('basic-functionality-toggle'),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('ipfs-gateway-toggle')).toBeInTheDocument();
     expect(
-      screen.getByText(messages.thirdPartyApis.message),
-    ).toBeInTheDocument();
+      screen.queryByText(messages.thirdPartyApis.message),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByTestId('batch-account-balance-requests-toggle'),
     ).not.toBeInTheDocument();
