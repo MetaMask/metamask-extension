@@ -51,13 +51,7 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
     usedInUi: true,
     includeInStateLogs: true,
   },
-  selectedAccountIds: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
-  selectedSyncDataType: {
+  selectedAccountGroupIds: {
     persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
@@ -102,8 +96,7 @@ export function getDefaultQrSyncControllerState(): QrSyncControllerState {
     qrPayload: null,
     otpAttempts: 0,
     syncOffer: null,
-    selectedAccountIds: [],
-    selectedSyncDataType: null,
+    selectedAccountGroupIds: [],
     lastActionType: null,
     importedAccountIds: [],
     error: null,

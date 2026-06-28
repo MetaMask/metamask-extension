@@ -10,6 +10,7 @@ import {
   DappClient,
   type OtpRequiredPayload,
 } from '@metamask/mobile-wallet-protocol-dapp-client';
+import type { AccountGroupId } from '@metamask/account-api';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 
@@ -19,7 +20,6 @@ import {
   QR_SYNC_PHASES,
   type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
-import { convertEnglishWordlistIndicesToCodepoints } from '../../lib/util';
 import { QR_SYNC_CONTROLLER_NAME, QrSyncActionTypes, QrSyncErrorMessages, QrSyncMessageVersion } from './constants';
 import type { KeyManager } from './key-manager';
 import {
@@ -33,6 +33,7 @@ import {
 } from './types';
 import { controllerMetadata, getDefaultQrSyncControllerState, MESSENGER_EXPOSED_METHODS } from './metadata';
 import { InMemoryKvStore } from './kv-store';
+import { encodeMnemonicForWalletExport } from './wallet-export-encoding';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -214,6 +215,7 @@ export class QrSyncController extends BaseController<
     }
 
     const syncData: QrSyncData = {
+      version: QrSyncMessageVersion.V1,
       data: await Promise.all(
         entropyIds.map(async (entropyId) => {
           const seedPhrase = await this.messenger.call(
@@ -221,16 +223,13 @@ export class QrSyncController extends BaseController<
             { password },
             entropyId,
           );
-          const encodedMnemonic = convertEnglishWordlistIndicesToCodepoints(seedPhrase);
-          const b64EncodedMnemonic = bytesToBase64(encodedMnemonic);
 
           return {
-            value: b64EncodedMnemonic,
-            type: 'MNEMONIC',
-            metadata: {
-              hiddenIndexes: [],
-              isPrimary: primaryEntropyId === entropyId,
-            },
+            type: 'Mnemonic' as const,
+            mnemonic: encodeMnemonicForWalletExport(seedPhrase),
+            // TODO(phase-2): Populate groups from AccountTreeController metadata.
+            groups: [],
+            ...(primaryEntropyId === entropyId ? { isPrimary: true } : {}),
           };
         }),
       ),
@@ -238,8 +237,8 @@ export class QrSyncController extends BaseController<
     };
 
     this.update((state) => {
-      state.selectedAccountIds = [...entropyIds];
-      state.selectedSyncDataType = 'MNEMONIC';
+      // TODO(phase-2): Store the UI-selected account group IDs.
+      state.selectedAccountGroupIds = [...entropyIds] as AccountGroupId[];
       state.lastActionType = QrSyncActionTypes.SYNC_READY;
       state.error = null;
       state.updatedAt = Date.now();
@@ -701,8 +700,7 @@ export class QrSyncController extends BaseController<
       };
       state.syncOffer = null;
       state.qrPayload = null;
-      state.selectedAccountIds = [];
-      state.selectedSyncDataType = null;
+      state.selectedAccountGroupIds = [];
       state.updatedAt = Date.now();
     });
   }
@@ -733,8 +731,7 @@ export class QrSyncController extends BaseController<
       state.error = error;
       state.syncOffer = null;
       state.qrPayload = null;
-      state.selectedAccountIds = [];
-      state.selectedSyncDataType = null;
+      state.selectedAccountGroupIds = [];
       state.updatedAt = Date.now();
     });
   }

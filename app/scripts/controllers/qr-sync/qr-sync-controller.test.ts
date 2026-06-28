@@ -506,13 +506,12 @@ describe('QrSyncController', () => {
           type: QrSyncActionTypes.SYNC_READY,
           version: '1.0.0',
           data: expect.objectContaining({
+            version: '1.0.0',
             data: [
               expect.objectContaining({
-                type: 'MNEMONIC',
-                metadata: {
-                  hiddenIndexes: [],
-                  isPrimary: true,
-                },
+                type: 'Mnemonic',
+                groups: [],
+                isPrimary: true,
               }),
             ],
           }),
@@ -521,10 +520,9 @@ describe('QrSyncController', () => {
       expect(controller.state.phase).toBe(
         QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
       );
-      expect(controller.state.selectedAccountIds).toStrictEqual([
+      expect(controller.state.selectedAccountGroupIds).toStrictEqual([
         TEST_ENTROPY_ID,
       ]);
-      expect(controller.state.selectedSyncDataType).toBe('MNEMONIC');
 
       mockEmitSyncCompleted();
     });
@@ -545,20 +543,31 @@ describe('QrSyncController', () => {
         TEST_SECONDARY_ENTROPY_ID,
       ]);
 
-      expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            data: expect.arrayContaining([
-              expect.objectContaining({
-                metadata: expect.objectContaining({ isPrimary: true }),
-              }),
-              expect.objectContaining({
-                metadata: expect.objectContaining({ isPrimary: false }),
-              }),
-            ]),
+      const syncReadyPayload = mockMwp.dappClient?.sendRequest.mock.calls.find(
+        ([message]) => message.type === QrSyncActionTypes.SYNC_READY,
+      )?.[0];
+
+      expect(syncReadyPayload?.data?.data).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            type: 'Mnemonic',
+            isPrimary: true,
           }),
-        }),
+          expect.objectContaining({
+            type: 'Mnemonic',
+          }),
+        ]),
       );
+      expect(
+        syncReadyPayload?.data?.data?.find(
+          (entry: { isPrimary?: boolean }) => entry.isPrimary === true,
+        ),
+      ).toBeDefined();
+      expect(
+        syncReadyPayload?.data?.data?.filter(
+          (entry: { isPrimary?: boolean }) => entry.isPrimary === true,
+        ),
+      ).toHaveLength(1);
 
       mockEmitSyncCompleted();
     });
