@@ -7,7 +7,7 @@ import { verifyPassword } from '../../../../store/actions';
 import { SyncAccountsStep } from '../constant';
 import EnterPassword from './enter-password';
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   verifyPassword: jest.fn(),
 }));
 

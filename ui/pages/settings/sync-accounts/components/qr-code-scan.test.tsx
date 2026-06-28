@@ -11,13 +11,13 @@ import { submitRequestToBackground } from '../../../../store/background-connecti
 import QrCodeScan from './qr-code-scan';
 
 jest.mock(
-  '../../../components/app/deeplink-qr-code/deeplink-qr-code',
+  '../../../../components/app/deeplink-qr-code/deeplink-qr-code',
   () => ({
     QRCodeImage: () => <div data-testid="qr-code-image" />,
   }),
 );
 
-jest.mock('../../../store/background-connection', () => ({
+jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
