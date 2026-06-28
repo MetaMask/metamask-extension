@@ -1,6 +1,10 @@
 import { MockttpServer } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -14,7 +18,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 import { mockGetTxStatus } from '../bridge/bridge-test-utils';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { getMockAssetsPrice, mockSpotPrices } from '../tokens/utils/mocks';
 import {
   mockSmartTransactionRequests,
   mockGasIncludedTransactionRequests,
@@ -23,17 +27,27 @@ import {
   mockSentinelNetworks,
 } from './mocks';
 
+const SMART_TX_MAINNET_ETH_BALANCE = '20';
+const SMART_TX_EXPECTED_BALANCE = '20 ETH';
+const SMART_TX_ETH_USD_PRICE = 1700;
+
 async function withFixturesForSmartTransactions(
   {
     title,
     testSpecificMock,
     ignoredConsoleErrors,
-    expectedBalance = '20 ETH',
+    expectedBalance = SMART_TX_EXPECTED_BALANCE,
+    unifiedEvmAccountsApiBalances = {
+      mainnetNativeEthHuman: SMART_TX_MAINNET_ETH_BALANCE,
+    },
   }: {
     title?: string;
     testSpecificMock: (mockServer: MockttpServer) => Promise<void>;
     ignoredConsoleErrors?: string[];
     expectedBalance?: string;
+    unifiedEvmAccountsApiBalances?: {
+      mainnetNativeEthHuman?: string;
+    };
   },
   runTestWithFixtures: (args: { driver: Driver }) => Promise<void>,
 ) {
@@ -48,12 +62,21 @@ async function withFixturesForSmartTransactions(
             '0x1': true,
           },
         })
+        .withAssetsController({
+          assetsBalance: {
+            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+              'eip155:1/slip44:60': { amount: SMART_TX_MAINNET_ETH_BALANCE },
+            },
+          },
+          assetsPrice: getMockAssetsPrice(SMART_TX_ETH_USD_PRICE),
+        })
         .build(),
       title,
       localNodeOptions: {
         hardfork: 'london',
         chainId: '1',
       },
+      unifiedEvmAccountsApiBalances,
       manifestFlags: {
         remoteFeatureFlags: {
           bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
@@ -77,7 +100,7 @@ describe('Smart Transactions', function () {
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price: 1700,
+              price: SMART_TX_ETH_USD_PRICE,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
@@ -122,7 +145,7 @@ describe('Smart Transactions', function () {
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price: 1700,
+              price: SMART_TX_ETH_USD_PRICE,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },

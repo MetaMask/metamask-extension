@@ -14,12 +14,17 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
-import { MOCK_ANALYTICS_ID } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  MOCK_ANALYTICS_ID,
+} from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
-  ETH_CONVERSION_RATE_USD,
-  MOCK_CURRENCY_RATES,
+  BRIDGE_ETH_USD_SPOT_PRICE,
+  BRIDGE_L2_ETH_BALANCE_PER_CHAIN,
+  BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST,
+  BRIDGE_MOCK_CURRENCY_RATES,
   MOCK_TOKENS_ARBITRUM,
   MOCK_TOKENS_ETHEREUM,
   MOCK_TOKENS_LINEA,
@@ -46,6 +51,23 @@ import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usdc-gas-sponsored.json';
+
+const DEFAULT_FIXTURE_ACCOUNT_ID = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
+
+/** Native ETH balances seeded for bridge fixtures (mainnet loses ~0.002 ETH to HST deploy gas). */
+const getBridgeFixtureAssetsBalance = () => ({
+  [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+    'eip155:1/slip44:60': {
+      amount: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
+    },
+    'eip155:59144/slip44:60': {
+      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+    },
+    'eip155:42161/slip44:60': {
+      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+    },
+  },
+});
 
 export class BridgePage {
   driver: Driver;
@@ -169,6 +191,7 @@ async function mockTokensEthereum(mockServer: Mockttp) {
 async function mockTokensLinea(mockServer: Mockttp) {
   return await mockServer
     .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/59144(\?.*)?$/u)
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -219,16 +242,19 @@ const toBridgeTokenResponse = (
 };
 
 async function mockHistoricalPrices(mockServer: Mockttp) {
-  return mockServer.forGet(/historical-prices/u).thenCallback(() => ({
-    statusCode: 200,
-    json: {
-      prices: [
-        { timestamp: 1717566000000, price: 1 },
-        { timestamp: 1717566322300, price: 2 },
-        { timestamp: 1717566611338, price: 3 },
-      ],
-    },
-  }));
+  return mockServer
+    .forGet(/historical-prices/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        prices: [
+          [1717566000000, 1],
+          [1717566322300, 2],
+          [1717566611338, 3],
+        ],
+      },
+    }));
 }
 
 const MUSD_ASSET_ID =
@@ -276,7 +302,10 @@ export async function mockTokensWithSecurityData(
 }
 
 export async function mockGetPopularTokens(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+  return await mockServer
+    .forPost(/getTokens\/popular/u)
+    .always()
+    .thenCallback(() => ({
     statusCode: 200,
     json: [
       MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
@@ -311,6 +340,7 @@ async function mockSearchTokens(mockServer: Mockttp) {
       .withJsonBodyIncluding({
         chainIds: ['eip155:1'],
       })
+      .always()
       .thenCallback(async (request) => {
         const body = (await request.body.getJson()) as { query?: string };
         const tokens = filterTokensByQuery(
@@ -333,6 +363,7 @@ async function mockSearchTokens(mockServer: Mockttp) {
       .withJsonBodyIncluding({
         chainIds: ['eip155:59144'],
       })
+      .always()
       .thenCallback(async (request) => {
         const body = (await request.body.getJson()) as { query?: string };
         const tokens = filterTokensByQuery(MOCK_TOKENS_LINEA, body.query ?? '');
@@ -352,6 +383,7 @@ async function mockSearchTokens(mockServer: Mockttp) {
       .withJsonBodyIncluding({
         chainIds: ['eip155:42161'],
       })
+      .always()
       .thenCallback(async (request) => {
         const body = (await request.body.getJson()) as { query?: string };
         const allArbitrum = [
@@ -784,6 +816,7 @@ async function mockAccountsTransactions(mockServer: Mockttp) {
     .forGet(
       /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/.*\/transactions/u,
     )
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -798,11 +831,62 @@ async function mockAccountsTransactions(mockServer: Mockttp) {
     });
 }
 
+/**
+ * Mocks Accounts API v1 transaction-by-hash used by the transaction details page
+ * (`useTransactionQuery`). Without this, requests hit the mock-e2e catch-all empty
+ * 200 and the UI throws `SyntaxError: Unexpected end of JSON input`.
+ * @param mockServer
+ */
+async function mockAccountsTransactionByHash(mockServer: Mockttp) {
+  return mockServer
+    .forGet(
+      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/networks\/\d+\/transactions\/0x[a-fA-F0-9]+/u,
+    )
+    .always()
+    .thenCallback((req) => {
+      const pathParts = new URL(req.url).pathname.split('/');
+      const chainId = Number(pathParts[3] ?? '1');
+      const hash = pathParts[5] ?? '0x0';
+
+      return {
+        statusCode: 200,
+        json: {
+          data: {
+            hash,
+            timestamp: new Date().toISOString(),
+            chainId,
+            blockNumber: 1,
+            blockHash:
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+            gas: 21000,
+            gasUsed: 21000,
+            gasPrice: '1',
+            effectiveGasPrice: '1',
+            nonce: 1,
+            cumulativeGasUsed: 21000,
+            methodId: null,
+            value: '0',
+            from: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            to: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            isError: false,
+            valueTransfers: [],
+            logs: [],
+            transactionCategory: 'BRIDGE',
+            transactionType: 'STANDARD',
+            transactionProtocol: 'ACROSS',
+            readable: 'Bridged',
+          },
+        },
+      };
+    });
+}
+
 async function mockAccountsBalances(mockServer: Mockttp) {
   return await mockServer
     .forGet(
       /^https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/accounts\/.*\/balances/u,
     )
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -841,6 +925,7 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
     .forGet(
       /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
     )
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -869,7 +954,7 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 }
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
-  const resolvedEthPrice = 3010;
+  const resolvedEthPrice = BRIDGE_ETH_USD_SPOT_PRICE;
 
   const tokenEntry = (
     id: string,
@@ -884,6 +969,7 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
       const vsCurrency = url.searchParams.get('vsCurrency')?.toLowerCase();
@@ -899,6 +985,12 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
           'musd',
           0.9999,
         ),
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': tokenEntry(
+          'usdc',
+          0.9999,
+        ),
+        'eip155:59144/erc20:0x176211869ca2b568f2a7d4ee941e073a821ee1ff':
+          tokenEntry('usdc', 0.9999),
       };
 
       const json =
@@ -1285,7 +1377,7 @@ export const getBridgeFixtures = ({
       completedMetaMetricsOnboarding: true,
       optedIn: true,
     })
-    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -1336,14 +1428,8 @@ export const getBridgeFixtures = ({
       },
     })
     .withAssetsController({
-      assetsBalance: {
-        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-          'eip155:1/slip44:60': { amount: '25' },
-          'eip155:59144/slip44:60': { amount: '25' },
-          'eip155:42161/slip44:60': { amount: '25' },
-        },
-      },
-      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsBalance: getBridgeFixtureAssetsBalance(),
+      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
     });
 
   return {
@@ -1370,6 +1456,7 @@ export const getBridgeFixtures = ({
           STX_MAINNET_NETWORK_CONFIG,
         ),
         await mockAccountsTransactions(mockServer),
+        await mockAccountsTransactionByHash(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPricesV3(mockServer),
         await mockSwapAggregatorLinea(mockServer),
@@ -1415,10 +1502,7 @@ export const getBridgeFixtures = ({
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
-    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    unifiedEvmAccountsApiBalances: {
-      mainnetNativeEthHuman: String(225730.11 / ETH_CONVERSION_RATE_USD),
-    },
+    ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1441,13 +1525,7 @@ export const getQuoteNegativeCasesFixtures = (
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withEnabledNetworks({
-      eip155: {
-        '0x1': true,
-      },
-    });
+    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1500,13 +1578,7 @@ export const getBridgeNegativeCasesFixtures = (
   batchStatusOverride?: Record<string, unknown>,
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withEnabledNetworks({
-      eip155: {
-        '0x1': true,
-      },
-    });
+    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1559,13 +1631,7 @@ export const getInsufficientFundsFixtures = (
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withEnabledNetworks({
-      eip155: {
-        '0x1': true,
-      },
-    });
+    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1613,7 +1679,7 @@ export const getBridgeL2Fixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0xe708')
-    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withTokenListController({
       tokensChainsCache: {
         '0xa4b1': {
@@ -1663,14 +1729,8 @@ export const getBridgeL2Fixtures = (
       },
     })
     .withAssetsController({
-      assetsBalance: {
-        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-          'eip155:1/slip44:60': { amount: '25' },
-          'eip155:59144/slip44:60': { amount: '25' },
-          'eip155:42161/slip44:60': { amount: '25' },
-        },
-      },
-      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsBalance: getBridgeFixtureAssetsBalance(),
+      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
     });
 
   return {
@@ -1722,10 +1782,7 @@ export const getBridgeL2Fixtures = (
         ...STX_LINEA_NETWORK_CONFIG,
       },
     },
-    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    unifiedEvmAccountsApiBalances: {
-      mainnetNativeEthHuman: String(225750 / ETH_CONVERSION_RATE_USD),
-    },
+    ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1834,7 +1891,7 @@ async function mockGasIncludedSwapUSDCtoDAI(mockServer: Mockttp) {
 export const getGasIncludedSwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1843,14 +1900,8 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
       },
     })
     .withAssetsController({
-      assetsBalance: {
-        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-          'eip155:1/slip44:60': { amount: '25' },
-          'eip155:59144/slip44:60': { amount: '25' },
-          'eip155:42161/slip44:60': { amount: '25' },
-        },
-      },
-      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsBalance: getBridgeFixtureAssetsBalance(),
+      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
     });
 
   return {
@@ -1874,6 +1925,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
           STX_MAINNET_NETWORK_CONFIG,
         ),
         await mockAccountsTransactions(mockServer),
+        await mockAccountsTransactionByHash(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
         await mockPriceSpotPricesV3(mockServer),
@@ -1893,7 +1945,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
-    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1932,7 +1984,7 @@ async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
 export const getGasless7702SwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1941,14 +1993,8 @@ export const getGasless7702SwapFixtures = (title?: string) => {
       },
     })
     .withAssetsController({
-      assetsBalance: {
-        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-          'eip155:1/slip44:60': { amount: '25' },
-          'eip155:59144/slip44:60': { amount: '25' },
-          'eip155:42161/slip44:60': { amount: '25' },
-        },
-      },
-      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsBalance: getBridgeFixtureAssetsBalance(),
+      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
     });
 
   return {
@@ -1981,6 +2027,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
           },
         ),
         await mockAccountsTransactions(mockServer),
+        await mockAccountsTransactionByHash(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
         await mockPriceSpotPricesV3(mockServer),
@@ -2009,7 +2056,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         },
       },
     },
-    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {

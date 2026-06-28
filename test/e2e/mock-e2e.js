@@ -14,6 +14,8 @@ const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
+  HARDWARE_WALLET_ADDRESS,
+  HARDWARE_WALLET_NATIVE_ETH_HUMAN,
 } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const { SOLANA_WS_PORT } = require('./websocket/solana-mocks');
@@ -1308,11 +1310,15 @@ async function setupMocking(
     .forGet(
       'https://bafybeidxfmwycgzcp4v2togflpqh2gnibuexjy4m4qqwxp7nh3jx5zlh4y.ipfs.dweb.link/1.json',
     )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-      };
-    });
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        name: 'Test NFT',
+        image:
+          'https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000001.png',
+      },
+    }));
 
   // Override notification list with empty response to prevent unread dot.
   // .always() ensures every fetch returns [] (not just the first one).
@@ -1581,16 +1587,33 @@ async function setupMocking(
       )
         ? unifiedEvmAccountsApiBalances.mainnetAdditionalBalances
         : [];
+      const hardwareWalletNativeOverride =
+        typeof unifiedEvmAccountsApiBalances.hardwareWalletNativeEthHuman ===
+        'string'
+          ? unifiedEvmAccountsApiBalances.hardwareWalletNativeEthHuman
+          : null;
 
       const balances = [];
       for (const id of accountIds) {
-        if (!id.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)) {
+        const idLower = id.toLowerCase();
+        const isDefaultAccount = idLower.includes(
+          DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+        );
+        const isHardwareWallet = idLower.includes(HARDWARE_WALLET_ADDRESS);
+        if (!isDefaultAccount && !isHardwareWallet) {
           continue;
         }
         const parts = id.split(':');
         const chainRef = parts[1];
         let nativeBalance = '25';
-        if (chainRef === '1' && mainnetNativeOverride !== null) {
+        if (isHardwareWallet) {
+          if (chainRef === '1337') {
+            nativeBalance =
+              hardwareWalletNativeOverride ?? HARDWARE_WALLET_NATIVE_ETH_HUMAN;
+          } else if (defaultNativeOverride !== null) {
+            nativeBalance = defaultNativeOverride;
+          }
+        } else if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
         } else if (chainRef === '1337' && localhostNativeOverride !== null) {
           nativeBalance = localhostNativeOverride;
@@ -1606,7 +1629,11 @@ async function setupMocking(
           balance: nativeBalance,
         });
 
-        if (chainRef === '1' && mainnetAdditional.length > 0) {
+        if (
+          isDefaultAccount &&
+          chainRef === '1' &&
+          mainnetAdditional.length > 0
+        ) {
           for (const row of mainnetAdditional) {
             if (row?.assetId && row.balance !== undefined) {
               balances.push({
@@ -1669,20 +1696,19 @@ async function setupMocking(
       };
     });
 
-  // Nft API: tokens
+  // Nft API: tokens — match any EVM user address (default + hardware wallet fixtures).
   await server
     .forGet(
-      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+      /^https:\/\/nft\.api\.cx\.metamask\.io\/users\/0x[a-fA-F0-9]{40}\/tokens/u,
     )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          tokens: [],
-          continuation: null,
-        },
-      };
-    });
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        tokens: [],
+        continuation: null,
+      },
+    }));
 
   // On Ramp: Eligibility MetaMask Card
   await server

@@ -10,75 +10,141 @@ import {
   createNewWalletOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
+import { Driver } from '../../webdriver/driver';
+
+const INFURA_URL =
+  'https://mainnet.infura.io/v3/00000000000000000000000000000000';
+const SAMPLE_ADDRESS = '1111111111111111111111111111111111111111';
+
+type OnboardingInfuraMocks = {
+  infuraEndpoints: MockedEndpoint[];
+  ethBlockNumberEndpoint: MockedEndpoint;
+  ethGetBalanceEndpoint: MockedEndpoint;
+  accountsApiBalancesEndpoint: MockedEndpoint;
+};
 
 // Mock function implementation for Infura requests
-async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
-  const infuraUrl =
-    'https://mainnet.infura.io/v3/00000000000000000000000000000000';
-  const sampleAddress = '1111111111111111111111111111111111111111';
-  return [
+async function mockInfura(mockServer: Mockttp): Promise<OnboardingInfuraMocks> {
+  const ethBlockNumberEndpoint = await mockServer
+    .forPost(INFURA_URL)
+    .withJsonBodyIncluding({ method: 'eth_blockNumber' })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        jsonrpc: '2.0',
+        id: '1111111111111111',
+        result: '0x1',
+      },
+    }));
+
+  const ethGetBalanceEndpoint = await mockServer
+    .forPost(INFURA_URL)
+    .withJsonBodyIncluding({ method: 'eth_getBalance' })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        jsonrpc: '2.0',
+        id: '1111111111111111',
+        result: '0x0',
+      },
+    }));
+
+  const infuraEndpoints = [
+    ethBlockNumberEndpoint,
+    ethGetBalanceEndpoint,
     await mockServer
-      .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'eth_blockNumber' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: '1111111111111111',
-            result: '0x1',
-          },
-        };
-      }),
-    await mockServer
-      .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'eth_getBalance' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: '1111111111111111',
-            result: '0x0',
-          },
-        };
-      }),
-    await mockServer
-      .forPost(infuraUrl)
+      .forPost(INFURA_URL)
       .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: '1111111111111111',
-            result: {},
-          },
-        };
-      }),
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: {},
+        },
+      })),
     await mockServer
-      .forPost(infuraUrl)
+      .forPost(INFURA_URL)
       .withJsonBodyIncluding({ method: 'eth_call' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: '1111111111111111',
-            result: `0x000000000000000000000000${sampleAddress}`,
-          },
-        };
-      }),
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: `0x000000000000000000000000${SAMPLE_ADDRESS}`,
+        },
+      })),
     await mockServer
-      .forPost(infuraUrl)
+      .forPost(INFURA_URL)
       .withJsonBodyIncluding({ method: 'net_version' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: { id: 8262367391254633, jsonrpc: '2.0', result: '1337' },
-        };
-      }),
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: { id: 8262367391254633, jsonrpc: '2.0', result: '1337' },
+      })),
   ];
+
+  const accountsApiBalancesEndpoint = await mockServer
+    .forGet(`${ACCOUNTS_PROD_API_BASE_URL}/v5/multiaccount/balances`)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: 0,
+        balances: [],
+        unprocessedNetworks: [],
+      },
+    }));
+
+  return {
+    infuraEndpoints,
+    ethBlockNumberEndpoint,
+    ethGetBalanceEndpoint,
+    accountsApiBalancesEndpoint,
+  };
+}
+
+async function assertNoInfuraBeforeOnboarding(
+  infuraEndpoints: MockedEndpoint[],
+): Promise<void> {
+  for (const [index, mockedEndpoint] of infuraEndpoints.entries()) {
+    const requests = await mockedEndpoint.getSeenRequests();
+    assert.equal(
+      requests.length,
+      0,
+      `Infura mock ${index} should make no requests before onboarding`,
+    );
+  }
+}
+
+async function assertPostOnboardingNetworkActivity(
+  driver: Driver,
+  {
+    ethBlockNumberEndpoint,
+    ethGetBalanceEndpoint,
+    accountsApiBalancesEndpoint,
+  }: OnboardingInfuraMocks,
+): Promise<void> {
+  // Network polling still uses Infura after onboarding.
+  await driver.wait(async () => {
+    return (await ethBlockNumberEndpoint.getSeenRequests()).length > 0;
+  }, driver.timeout);
+
+  // With assets unify enabled, native balances come from Accounts API v5, not Infura.
+  await driver.wait(async () => {
+    return (await accountsApiBalancesEndpoint.getSeenRequests()).length > 0;
+  }, driver.timeout);
+
+  assert.equal(
+    (await ethGetBalanceEndpoint.getSeenRequests()).length,
+    0,
+    'eth_getBalance should not use Infura when unified assets is enabled',
+  );
 }
 
 describe('MetaMask onboarding', function () {
@@ -91,52 +157,25 @@ describe('MetaMask onboarding', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({ driver, mockedEndpoint: onboardingMocks }) => {
+        const mocks = onboardingMocks as unknown as OnboardingInfuraMocks;
+
         await createNewWalletOnboardingFlow({ driver });
 
-        // Check no requests are made before completing creat new wallet onboarding
         // Intended delay to ensure we cover at least 1 polling loop of time for the network request
         await driver.delay(regularDelayMs);
-        for (const mockedEndpoint of mockedEndpoints) {
-          const isPending = await mockedEndpoint.isPending();
-          assert.equal(
-            isPending,
-            true,
-            `${mockedEndpoint} mock should still be pending before onboarding`,
-          );
-          const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length,
-            0,
-            `${mockedEndpoint} should make no requests before onboarding`,
-          );
-        }
+        await assertNoInfuraBeforeOnboarding(mocks.infuraEndpoints);
 
-        // complete create new wallet onboarding
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
-        // Handle sidepanel navigation if needed
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // network requests happen here
-        for (const mockedEndpoint of mockedEndpoints) {
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, driver.timeout);
-
-          const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length > 0,
-            true,
-            `${mockedEndpoint} should make requests after onboarding`,
-          );
-        }
+        await assertPostOnboardingNetworkActivity(driver, mocks);
       },
     );
   });
@@ -150,46 +189,24 @@ describe('MetaMask onboarding', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({ driver, mockedEndpoint: onboardingMocks }) => {
+        const mocks = onboardingMocks as unknown as OnboardingInfuraMocks;
+
         await importSRPOnboardingFlow({ driver });
 
-        // Check no requests before completing onboarding
-        // Intended delay to ensure we cover at least 1 polling loop of time for the network request
         await driver.delay(regularDelayMs);
-        for (const mockedEndpoint of mockedEndpoints) {
-          const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length,
-            0,
-            `${mockedEndpoint} should make no requests before import wallet onboarding complete`,
-          );
-        }
+        await assertNoInfuraBeforeOnboarding(mocks.infuraEndpoints);
 
-        // complete import wallet onboarding
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
-        // Handle sidepanel navigation if needed
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // requests happen here
-        for (const mockedEndpoint of mockedEndpoints) {
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, 20000);
-
-          const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length > 0,
-            true,
-            `${mockedEndpoint} should make requests after onboarding`,
-          );
-        }
+        await assertPostOnboardingNetworkActivity(driver, mocks);
       },
     );
   });

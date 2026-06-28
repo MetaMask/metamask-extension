@@ -56,12 +56,38 @@ export const LOCATOR = {
 };
 
 export const ETH_CONVERSION_RATE_USD = 1;
+
+/** Aggregated homepage fiat total for bridge fixtures. */
+export const BRIDGE_EXPECTED_FIAT_BALANCE_USD = 225_730.11;
+
+/** Mainnet native ETH after HST deploy gas on the local Anvil node. */
+export const BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST = 24.998;
+
+export const BRIDGE_L2_ETH_BALANCE_PER_CHAIN = 25;
+
+/** Total native ETH across mainnet + Linea + Arbitrum in standard bridge fixtures. */
+export const BRIDGE_TOTAL_ETH_BALANCE_HUMAN =
+  BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST + BRIDGE_L2_ETH_BALANCE_PER_CHAIN * 2;
+
+export const BRIDGE_ETH_USD_SPOT_PRICE =
+  BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_TOTAL_ETH_BALANCE_HUMAN;
+
 export const MOCK_CURRENCY_RATES = {
   currencyRates: {
     ETH: {
       conversionDate: 1665507609.0,
       conversionRate: ETH_CONVERSION_RATE_USD,
       usdConversionRate: ETH_CONVERSION_RATE_USD,
+    },
+  },
+};
+
+export const BRIDGE_MOCK_CURRENCY_RATES = {
+  currencyRates: {
+    ETH: {
+      conversionDate: 1665507609.0,
+      conversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
+      usdConversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
     },
   },
 };

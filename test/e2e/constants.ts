@@ -90,6 +90,21 @@ export const HARDWARE_WALLET_ACCOUNT_ID =
 /** Trezor hardware wallet address (lowercase) */
 export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
+/**
+ * Stub hardware wallet address (Trezor/Ledger E2E use the same key from
+ * `KNOWN_PUBLIC_KEY_ADDRESSES[0]`).
+ */
+export const HARDWARE_WALLET_ADDRESS = TREZOR_ADDRESS;
+
+/**
+ * Wei balance hex passed to `Anvil.setAccountBalance` in hardware wallet E2E
+ * tests. Parsed as hex (not decimal wei) — displays as ~1.21M ETH.
+ */
+export const HARDWARE_WALLET_SET_BALANCE_HEX = '0x100000000000000000000';
+
+/** Human-readable ETH matching {@link HARDWARE_WALLET_SET_BALANCE_HEX} for unified assets fixtures/mocks. */
+export const HARDWARE_WALLET_NATIVE_ETH_HUMAN = '1208925.8196146293';
+
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 

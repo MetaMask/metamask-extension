@@ -140,8 +140,9 @@ function normalizeSmartContracts(smartContract) {
 
 /**
  * @typedef {object} UnifiedEvmAccountsApiBalances
- * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5).
+ * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5). Auto-populated from the local node when chainId is 1 and omitted.
  * @property {string} [localhostNativeEthHuman] - Localhost (eip155:1337) native balance string. Auto-populated from the local node when omitted, so smart-contract deployment gas is reflected.
+ * @property {string} [hardwareWalletNativeEthHuman] - Localhost (eip155:1337) native balance for the Trezor/Ledger stub address (Accounts API v5).
  * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
  */
 
@@ -331,15 +332,25 @@ async function withFixtures(options, testSuite) {
     // even after smart-contract deployment has consumed gas.
     let effectiveUnifiedEvmAccountsApiBalances =
       unifiedEvmAccountsApiBalances ?? {};
-    if (
-      localNodes[0] &&
-      !effectiveUnifiedEvmAccountsApiBalances.localhostNativeEthHuman
-    ) {
+    if (localNodes[0]) {
       const nodeBalance = await localNodes[0].getBalance();
+      const humanBalance = Number(nodeBalance.toFixed(3)).toString();
       effectiveUnifiedEvmAccountsApiBalances = {
         ...effectiveUnifiedEvmAccountsApiBalances,
-        localhostNativeEthHuman: Number(nodeBalance.toFixed(3)).toString(),
+        ...(effectiveUnifiedEvmAccountsApiBalances.localhostNativeEthHuman
+          ? {}
+          : { localhostNativeEthHuman: humanBalance }),
       };
+      const localChainId = localNodeOptsNormalized[0]?.options?.chainId;
+      if (
+        localChainId === 1 &&
+        !effectiveUnifiedEvmAccountsApiBalances.mainnetNativeEthHuman
+      ) {
+        effectiveUnifiedEvmAccountsApiBalances = {
+          ...effectiveUnifiedEvmAccountsApiBalances,
+          mainnetNativeEthHuman: humanBalance,
+        };
+      }
     }
 
     // Decide between the regular setupMocking and the passThrough version

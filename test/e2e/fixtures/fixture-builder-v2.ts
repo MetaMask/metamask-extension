@@ -60,6 +60,7 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   HARDWARE_WALLET_ACCOUNT_ID,
+  HARDWARE_WALLET_NATIVE_ETH_HUMAN,
   IMPORTED_ACCOUNT_FIXTURE_VAULT,
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
@@ -761,7 +762,19 @@ class FixtureBuilderV2 {
     const ledgerAddressLower =
       KNOWN_PUBLIC_KEY_ADDRESSES[0].address.toLowerCase();
 
-    this.withKeyringController({
+    this.withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1337/slip44:1': { amount: '25' },
+        },
+        [HARDWARE_WALLET_ACCOUNT_ID]: {
+          'eip155:1337/slip44:1': {
+            amount: HARDWARE_WALLET_NATIVE_ETH_HUMAN,
+          },
+        },
+      },
+    })
+      .withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
     }).withAccountsController({
       internalAccounts: {
@@ -1355,7 +1368,9 @@ class FixtureBuilderV2 {
           'eip155:1337/slip44:1': { amount: '25' },
         },
         [HARDWARE_WALLET_ACCOUNT_ID]: {
-          'eip155:1337/slip44:1': { amount: '100' },
+          'eip155:1337/slip44:1': {
+            amount: HARDWARE_WALLET_NATIVE_ETH_HUMAN,
+          },
         },
       },
     })

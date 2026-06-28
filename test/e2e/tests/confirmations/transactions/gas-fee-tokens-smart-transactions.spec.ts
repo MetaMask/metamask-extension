@@ -47,6 +47,9 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
             },
           });
         },
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
@@ -107,6 +110,9 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
             error: true,
           });
           await mockSentinelNetworks(mockServer);
+        },
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
         },
         title: this.test?.fullTitle(),
       },
