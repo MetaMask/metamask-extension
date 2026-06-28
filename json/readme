@@ -1,1 +1,118 @@
 https://sapphire-obedient-slug-671.mypinata.cloud/ipfs/bafkreie3qrcnhhuq3vbdejvgsijpks7zwrolgn6dmhec2xgc7kgmvktvty
+BTC.auto
+
+BTC.auto, Bitcoin tarzı değer saklamayı modern Web3 ve DeFi ekosistemine getirmek için tasarlanmış merkeziyetsiz bir kripto para birimi tokenidir. Proje, blok zinciri şeffaflığını, akıllı sözleşme otomasyonunu ve merkeziyetsiz ticaret altyapısını bir araya getiriyor.
+
+Genel Bakış
+
+BTC.auto, akıllı sözleşme tabanlı bir blok zinciri ağında (örneğin BNB Smart Chain) konuşlandırılmış, EVM uyumlu bir tokendir. Bu token, kullanıcıların bankalar veya aracı kurumlar olmadan doğrudan değer saklamasına, transfer etmesine ve alım satımını yapmasına olanak tanır.
+
+Sistem tamamen blok zinciri üzerinde çalışır ve işlemler blok zinciri ağı tarafından doğrulanır.
+
+Token Bilgileri Parametre Değeri Adı BTC.auto Sembolü BTC.a Standart BEP-20 Uyumlu Ondalık Basamak Sayısı 18 Toplam Arz 2.600.000 Ağ EVM Uyumlu Ağ Türü Merkezi Olmayan Token Temel Özellikleri Merkezi Olmayan
+
+Kullanıcı fonlarını kontrol eden merkezi bir otorite bulunmamaktadır. Tüm transferler kişiler arası (peer-to-peer) olarak gerçekleşir.
+
+Şeffaf
+
+Her işlem, bir blockchain gezgini aracılığıyla görüntülenebilir.
+
+Güvenli
+
+Mülkiyet, kriptografik özel anahtarlar ve değiştirilemez akıllı sözleşmeler aracılığıyla korunmaktadır.
+
+DeFi ile uyumlu
+
+BTC.auto, merkeziyetsiz borsalarda işlem görebilir ve gözetimsiz cüzdanlarda saklanabilir.
+
+Nasıl Çalışır
+
+Kullanıcı BTC.auto'yu başka bir cüzdan adresine gönderiyor.
+
+Blok zinciri işlemi doğrular.
+
+Akıllı sözleşme bakiyeleri günceller.
+
+Transfer işlemi kalıcı olarak kaydedilir.
+
+Herhangi bir şirket veya kurumdan onay alınmasına gerek yoktur.
+
+Kullanım Senaryoları
+
+Kişiler arası ödemeler
+
+Dijital varlık depolama
+
+DeFi ticareti
+
+Likidite havuzları
+
+Topluluk ekosistemi ödemeleri
+
+Kurulum / Entegrasyon Cüzdana Token Ekleme
+
+BTC.auto'yu bir cüzdanda (örneğin MetaMask veya Trust Wallet) görüntülemek için:
+
+Cüzdanınızı açın.
+
+İçe Aktarma Belirteci Seç
+
+Sözleşme adresini girin
+
+Onaylamak
+
+Cüzdan, token bakiyesini otomatik olarak gösterecektir.
+
+Akıllı Sözleşme
+
+Akıllı sözleşme herkese açık olarak dağıtılmıştır ve bir blockchain gezgini üzerinde doğrulanabilir.
+
+Kullanıcılar aşağıdaki konularda bağımsız denetim yapabilirler:
+
+Toplam arz
+
+Transferler
+
+Sahipler
+
+İşlemler
+
+Güvenlik
+
+Kullanıcılar özel anahtarlarını güvende tutmalıdır. Proje ekibi kayıp cüzdanları veya unutulmuş kurtarma ifadelerini kurtaramaz.
+
+Asla paylaşmayın:
+
+Özel anahtarlar
+
+Tohum ifadeleri
+
+Cüzdan kurtarma kelimeleri
+
+Yol Haritası Aşama 1
+
+Token dağıtımı
+
+Başlangıç ​​likiditesi
+
+Web sitesi lansmanı
+
+Faz 2
+
+Topluluk gelişimi
+
+Explorer doğrulaması
+
+Pazarlama kampanyaları
+
+Aşama 3
+
+Borsa entegrasyonları
+
+DeFi yardımcı programları
+
+Ekosistem genişlemesi
+
+Yasal Uyarı
+
+BTC.auto dijital bir blockchain tokenıdır ve herhangi bir şirketteki öz sermayeyi, hisseyi veya sahipliği temsil etmez. Kripto para piyasaları değişkendir. Kullanıcılar katılmadan önce kendi araştırmalarını (DYOR) yapmalıdır.
