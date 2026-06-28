@@ -306,16 +306,18 @@ export async function mockGetPopularTokens(mockServer: Mockttp) {
     .forPost(/getTokens\/popular/u)
     .always()
     .thenCallback(() => ({
-    statusCode: 200,
-    json: [
-      MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
-      MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
-      MOCK_TOKENS_ARBITRUM.map((token) => toBridgeTokenResponse(42161, token)),
-      MOCK_GET_TOKEN_ARBITRUM.map((token) =>
-        toBridgeTokenResponse(42161, token),
-      ),
-    ].flat(),
-  }));
+      statusCode: 200,
+      json: [
+        MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
+        MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
+        MOCK_TOKENS_ARBITRUM.map((token) =>
+          toBridgeTokenResponse(42161, token),
+        ),
+        MOCK_GET_TOKEN_ARBITRUM.map((token) =>
+          toBridgeTokenResponse(42161, token),
+        ),
+      ].flat(),
+    }));
 }
 
 function filterTokensByQuery<Token extends { symbol: string; name: string }>(
@@ -1524,8 +1526,9 @@ export const getQuoteNegativeCasesFixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
 ) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
+  const fixtureBuilder = new FixtureBuilderV2().withCurrencyController(
+    BRIDGE_MOCK_CURRENCY_RATES,
+  );
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1577,8 +1580,9 @@ export const getBridgeNegativeCasesFixtures = (
   title?: string,
   batchStatusOverride?: Record<string, unknown>,
 ) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
+  const fixtureBuilder = new FixtureBuilderV2().withCurrencyController(
+    BRIDGE_MOCK_CURRENCY_RATES,
+  );
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1630,8 +1634,9 @@ export const getInsufficientFundsFixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
 ) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
+  const fixtureBuilder = new FixtureBuilderV2().withCurrencyController(
+    BRIDGE_MOCK_CURRENCY_RATES,
+  );
 
   return {
     fixtures: fixtureBuilder.build(),

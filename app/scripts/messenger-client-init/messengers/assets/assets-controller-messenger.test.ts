@@ -67,7 +67,9 @@ describe('getAssetsControllerMessenger', () => {
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        actions: expect.arrayContaining([...ASSETS_CONTROLLER_DELEGATED_ACTIONS]),
+        actions: expect.arrayContaining([
+          ...ASSETS_CONTROLLER_DELEGATED_ACTIONS,
+        ]),
       }),
     );
   });
@@ -95,9 +97,7 @@ describe('getAssetsControllerMessenger', () => {
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        events: expect.arrayContaining([
-          'NetworkController:networkDidChange',
-        ]),
+        events: expect.arrayContaining(['NetworkController:networkDidChange']),
       }),
     );
   });
