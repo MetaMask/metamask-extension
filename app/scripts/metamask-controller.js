@@ -773,9 +773,10 @@ export default class MetamaskController extends EventEmitter {
     // future wallet bump that renames that default would silently fall back to the
     // package controller, so fail loud at boot rather than later as an obscure error.
     if (
-      typeof /** @type {{ setAccountLabel?: unknown }} */ (
-        preferencesController
-      ).setAccountLabel !== 'function'
+      typeof (
+        /** @type {{ setAccountLabel?: unknown }} */ (preferencesController)
+          .setAccountLabel
+      ) !== 'function'
     ) {
       throw new Error(
         'PreferencesController did not resolve to the extension superset; the @metamask/wallet default config name likely diverged from "PreferencesController".',
