@@ -211,9 +211,12 @@ export const HardwareWalletProvider = ({
     updateConnectionState(ConnectionState.ready());
   }, [updateConnectionState]);
 
-  const setSigningInProgress = useCallback((value: boolean) => {
-    refs.isSigningInProgressRef.current = value;
-  }, [refs]);
+  const setSigningInProgress = useCallback(
+    (value: boolean) => {
+      refs.isSigningInProgressRef.current = value;
+    },
+    [refs],
+  );
 
   const stableActionsRef = useRef({
     connect,
