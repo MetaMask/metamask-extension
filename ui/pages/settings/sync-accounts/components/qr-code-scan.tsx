@@ -9,6 +9,11 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
   TextButton,
+  Button,
+  Icon,
+  IconName,
+  IconColor,
+  IconSize,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
@@ -27,7 +32,10 @@ const QrCodeScan = () => {
   const qrPayload = useSelector(selectQrSyncQrPayload);
   const qrSyncError = useSelector(selectQrSyncError);
   console.log('qrSyncError', qrSyncError);
-  const [secondsLeft, setSecondsLeft] = useState(MWP_SESSION_REQUEST_EXPIRY_SECONDS);
+  const [secondsLeft, setSecondsLeft] = useState(
+    MWP_SESSION_REQUEST_EXPIRY_SECONDS,
+  );
+  const [hasAcknowledgedWarning, setHasAcknowledgedWarning] = useState(false);
   const hasError = Boolean(qrSyncError);
   const isExpired = secondsLeft <= 0;
   const shouldDimQr = isExpired || Boolean(qrSyncError);
@@ -79,6 +87,47 @@ const QrCodeScan = () => {
     );
   }
 
+  if (!hasAcknowledgedWarning) {
+    return (
+      <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          gap={4}
+          marginTop={4}
+        >
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.WarningDefault}
+            size={IconSize.Xl}
+          />
+          <Text
+            variant={TextVariant.HeadingLg}
+            color={TextColor.TextDefault}
+            fontWeight={FontWeight.Bold}
+            textAlign="text-center"
+          >
+            {t('qrSyncScreenShareWarningTitle')}
+          </Text>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            textAlign="text-center"
+          >
+            {t('qrSyncScreenShareWarningDesc')}
+          </Text>
+        </Box>
+        <Button
+          className="w-full mt-auto"
+          onClick={() => setHasAcknowledgedWarning(true)}
+        >
+          {t('qrSyncShowQrCode')}
+        </Button>
+      </Box>
+    );
+  }
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
       <Text
@@ -99,10 +148,10 @@ const QrCodeScan = () => {
       >
         <Box style={{ opacity: shouldDimQr ? 0.3 : 1 }}>
           {qrPayload ? (
-          <QRCodeImage data={qrPayload} />
-        ) : (
-          <Skeleton width={240} height={240} />
-        )}
+            <QRCodeImage data={qrPayload} />
+          ) : (
+            <Skeleton width={240} height={240} />
+          )}
         </Box>
         {statusContent}
       </Box>

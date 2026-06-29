@@ -34,6 +34,12 @@ const createMockStore = (metamaskOverrides = {}) =>
     },
   });
 
+const acknowledgeWarning = () => {
+  act(() => {
+    fireEvent.click(screen.getByText(messages.qrSyncShowQrCode.message));
+  });
+};
+
 describe('QrCodeScan', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -43,9 +49,29 @@ describe('QrCodeScan', () => {
     jest.useRealTimers();
   });
 
+  it('renders the screen-share warning before revealing the QR code', () => {
+    const mockStore = createMockStore();
+    renderWithProvider(<QrCodeScan />, mockStore);
+
+    expect(
+      screen.getByText(messages.qrSyncScreenShareWarningTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.qrSyncScreenShareWarningDesc.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.qrSyncShowQrCode.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.scanQrCode.message),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders the heading, description and QR code image', () => {
     const mockStore = createMockStore();
     renderWithProvider(<QrCodeScan />, mockStore);
+
+    acknowledgeWarning();
 
     expect(screen.getByText(messages.scanQrCode.message)).toBeInTheDocument();
     expect(
@@ -58,6 +84,8 @@ describe('QrCodeScan', () => {
     const mockStore = createMockStore();
     renderWithProvider(<QrCodeScan />, mockStore);
 
+    acknowledgeWarning();
+
     expect(
       screen.getByText(`Expires in ${MWP_SESSION_REQUEST_EXPIRY_SECONDS}s`),
     ).toBeInTheDocument();
@@ -67,6 +95,8 @@ describe('QrCodeScan', () => {
     jest.useFakeTimers();
     const mockStore = createMockStore();
     renderWithProvider(<QrCodeScan />, mockStore);
+
+    acknowledgeWarning();
 
     act(() => {
       jest.advanceTimersByTime(MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000);
@@ -89,6 +119,8 @@ describe('QrCodeScan', () => {
     });
     renderWithProvider(<QrCodeScan />, mockStore);
 
+    acknowledgeWarning();
+
     expect(
       screen.getByText(messages.qrCodeScanError.message),
     ).toBeInTheDocument();
@@ -101,6 +133,8 @@ describe('QrCodeScan', () => {
     jest.useFakeTimers();
     const mockStore = createMockStore();
     renderWithProvider(<QrCodeScan />, mockStore);
+
+    acknowledgeWarning();
 
     act(() => {
       jest.advanceTimersByTime(MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000);

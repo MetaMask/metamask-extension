@@ -7958,6 +7958,18 @@
     "message": "Wrong QR code",
     "description": "Title shown when the UR type does not match what is expected during signing."
   },
+  "qrSyncScreenShareWarningDesc": {
+    "message": "Don't share this QR code over screen-sharing or remote desktop. Anyone who sees it can add your accounts to their device.",
+    "description": "Body text warning the user not to expose the sync QR code via screen-sharing or remote desktop before it is shown."
+  },
+  "qrSyncScreenShareWarningTitle": {
+    "message": "Make sure no one is watching your screen",
+    "description": "Title of the screen-share/remote-desktop warning shown before revealing the sync QR code."
+  },
+  "qrSyncShowQrCode": {
+    "message": "Show QR code",
+    "description": "Button label that reveals the sync QR code after acknowledging the screen-share warning."
+  },
   "queued": {
     "message": "Queued"
   },
@@ -8375,8 +8387,8 @@
     "description": "Text shown while the user is signing in to view their rewards points"
   },
   "rewardsVipReferralTagLabel": {
-    "description": "Label on the gold VIP tag shown next to a VIP referral code",
-    "message": "VIP"
+    "message": "VIP",
+    "description": "Label on the gold VIP tag shown next to a VIP referral code"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
