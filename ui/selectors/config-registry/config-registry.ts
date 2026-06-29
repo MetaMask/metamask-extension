@@ -5,12 +5,7 @@ import {
   InfuraRpcEndpoint,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
-import {
-  add0x,
-  CaipChainIdStruct,
-  Hex,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { CaipChainIdStruct } from '@metamask/utils';
 import type {
   ConfigRegistryControllerState,
   RegistryNetworkConfig,
@@ -20,6 +15,7 @@ import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feat
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
+import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 
 /**
  * Get the Configs from the ConfigRegistryController state.
@@ -69,14 +65,6 @@ export type FeaturedNetwork = AddNetworkFields & {
   imageUrl?: string;
 };
 
-function caipChainIdReferenceToHex(reference: string): Hex {
-  const decimalChainId = parseInt(reference, 10);
-  if (Number.isNaN(decimalChainId)) {
-    throw new Error(`Invalid CAIP reference: ${reference}`);
-  }
-  return add0x(decimalChainId.toString(16));
-}
-
 /**
  * Converts a RegistryNetworkConfig (EVM only) to AddNetworkFields for the add-network flow.
  * Returns null for non-EVM, missing default RPC, or invalid RPC URL (non-https).
@@ -88,11 +76,7 @@ function registryConfigToAddNetworkFields(
 ): FeaturedNetwork | null {
   try {
     CaipChainIdStruct.assert(config.chainId);
-    const { namespace, reference } = parseCaipChainId(config.chainId);
-    if (namespace !== 'eip155') {
-      return null;
-    }
-    const hexChainId = caipChainIdReferenceToHex(reference);
+    const hexChainId = convertCaipToHexChainId(config.chainId);
 
     const defaultRpc = config.rpcProviders?.default;
     if (!defaultRpc || !isAllowedRpcUrl(defaultRpc.url)) {
