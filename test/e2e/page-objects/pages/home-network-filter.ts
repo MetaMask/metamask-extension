@@ -6,12 +6,12 @@ class HomeNetworkFilter {
   private readonly allDefaultNetworksItem =
     '[data-testid="home-network-filter-all-default"]';
 
+  protected readonly driver: Driver;
+
   private readonly modalCloseButton =
     '.mm-modal-header button[aria-label="Close"]';
 
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
-
-  protected readonly driver: Driver;
 
   constructor(driver: Driver) {
     this.driver = driver;
