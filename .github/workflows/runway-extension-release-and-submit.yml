@@ -1,0 +1,217 @@
+name: Runway extension release and store submit
+
+# INFRA-3735 — Runway single entrypoint for release cut + CWS + AMO store uploads.
+#
+# Starter (Phase 0 only): validates branch, version, optional release SHA, and CI status.
+# Phases 1–3 (publish-release, CWS, AMO) are stubbed until callee workflows support
+# workflow_call and dependent PRs merge (#43785, #43144, #44016).
+#
+# Do not wire Runway Production to this workflow until execute_store_phases is implemented.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version X.Y.Z — must match release/X.Y.Z branch semver when run from release/*'
+        required: true
+        type: string
+      release_sha:
+        description: 'Optional integrity check — must match the commit this workflow runs on (Runway record)'
+        required: false
+        type: string
+      skip_publish:
+        description: 'Break-glass — skip Phase 1 publish-release (requires execute_store_phases)'
+        required: false
+        type: boolean
+        default: false
+      skip_cws:
+        description: 'Break-glass — skip Phase 2 CWS uploads (requires execute_store_phases)'
+        required: false
+        type: boolean
+        default: false
+      skip_amo:
+        description: 'Break-glass — skip Phase 3 AMO uploads (requires execute_store_phases)'
+        required: false
+        type: boolean
+        default: false
+      execute_store_phases:
+        description: 'Run publish + store upload phases (disabled until workflow_call wiring lands)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  statuses: read
+
+jobs:
+  validate:
+    name: Phase 0 — validate preconditions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.validate-version.outputs.version }}
+      release_sha: ${{ steps.resolve-sha.outputs.release_sha }}
+      release_tag: ${{ steps.validate-version.outputs.release_tag }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Validate branch ref
+        env:
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            echo "Branch: main (allowed for orchestrator dispatch)"
+          elif [[ "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
+            echo "Branch: ${GITHUB_REF#refs/heads/}"
+          else
+            echo "::error::Orchestrator must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
+            exit 1
+          fi
+
+      - name: Validate version input
+        id: validate-version
+        env:
+          VERSION: ${{ inputs.version }}
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version: ${VERSION} — expected numeric X.Y.Z"
+            exit 1
+          fi
+          if [[ "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
+            branch_version="${GITHUB_REF#refs/heads/release/}"
+            if [[ "${branch_version}" != "${VERSION}" ]]; then
+              echo "::error::Version input ${VERSION} does not match branch release/${branch_version}"
+              exit 1
+            fi
+          fi
+          {
+            echo "version=${VERSION}"
+            echo "release_tag=v${VERSION}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Resolve release SHA
+        id: resolve-sha
+        env:
+          INPUT_SHA: ${{ inputs.release_sha }}
+          WORKFLOW_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          RELEASE_SHA="${INPUT_SHA:-${WORKFLOW_SHA}}"
+          if [[ -n "${INPUT_SHA}" && "${INPUT_SHA}" != "${WORKFLOW_SHA}" ]]; then
+            echo "::error::release_sha ${INPUT_SHA} does not match workflow commit ${WORKFLOW_SHA}"
+            exit 1
+          fi
+          echo "release_sha=${RELEASE_SHA}" >> "${GITHUB_OUTPUT}"
+
+      - name: Verify Runway sender (UX quick-fail)
+        if: startsWith(github.ref, 'refs/heads/release/')
+        env:
+          RUNWAY_ACTOR_LOGIN: 'runway-github[bot]'
+          RUNWAY_ACTOR_ID: '73448015'
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event.sender.type }}" != "Bot" ]]; then
+            echo "::error::Release-branch orchestrator dispatch must come from a GitHub App bot (got: ${{ github.event.sender.type }})"
+            exit 1
+          fi
+          if [[ "${{ github.actor }}" != "${RUNWAY_ACTOR_LOGIN}" ]]; then
+            echo "::error::Expected actor ${RUNWAY_ACTOR_LOGIN}, got ${{ github.actor }}"
+            exit 1
+          fi
+          if [[ "${{ github.event.sender.id }}" != "${RUNWAY_ACTOR_ID}" ]]; then
+            echo "::error::Expected sender id ${RUNWAY_ACTOR_ID}, got ${{ github.event.sender.id }}"
+            exit 1
+          fi
+          echo "Runway sender verified (YAML quick-fail; cloud trust remains authoritative)."
+
+      - name: Verify required CI checks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_SHA: ${{ steps.resolve-sha.outputs.release_sha }}
+        run: .github/scripts/verify-ci-checks.sh
+
+      - name: Summary
+        env:
+          VERSION: ${{ steps.validate-version.outputs.version }}
+          RELEASE_SHA: ${{ steps.resolve-sha.outputs.release_sha }}
+          EXECUTE_STORE: ${{ inputs.execute_store_phases }}
+        run: |
+          {
+            echo "### Phase 0 — validation passed"
+            echo ""
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| Version | \`${VERSION}\` |"
+            echo "| Release SHA | \`${RELEASE_SHA}\` |"
+            echo "| Ref | \`${{ github.ref }}\` |"
+            echo "| execute_store_phases | \`${EXECUTE_STORE}\` |"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  store-phases-pending:
+    name: Phases 1–3 — pending workflow_call wiring
+    needs:
+      - validate
+    if: ${{ inputs.execute_store_phases }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Block until callee workflows support workflow_call
+        env:
+          VERSION: ${{ needs.validate.outputs.version }}
+          SKIP_PUBLISH: ${{ inputs.skip_publish }}
+          SKIP_CWS: ${{ inputs.skip_cws }}
+          SKIP_AMO: ${{ inputs.skip_amo }}
+        run: |
+          set -euo pipefail
+          echo "::error::Store phases are not wired in this starter orchestrator (INFRA-3735)."
+          echo ""
+          echo "Planned sequence once workflow_call refactors land:"
+          echo "  Phase 1 — publish-release-from-release-head.yml (skip_publish=${SKIP_PUBLISH})"
+          echo "  Phase 2 — upload-extension-to-cws.yml production + flask (skip_cws=${SKIP_CWS})"
+          echo "  Phase 3 — upload-extension-to-amo.yml production + flask (skip_amo=${SKIP_AMO})"
+          echo ""
+          echo "Merge prerequisites first:"
+          echo "  - metamask-extension#43785 (AMO reviewer S3 publish)"
+          echo "  - metamask-extension#43144 (upload-extension-to-amo.yml)"
+          echo "  - metamask-extension#44016 (CWS flask target)"
+          echo ""
+          echo "Then update this workflow to call callees via workflow_call."
+          exit 1
+
+  orchestrator-summary:
+    name: Orchestrator summary
+    needs:
+      - validate
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write summary
+        env:
+          VALIDATE_RESULT: ${{ needs.validate.result }}
+          EXECUTE_STORE: ${{ inputs.execute_store_phases }}
+        run: |
+          {
+            echo "### Runway orchestrator (INFRA-3735 starter)"
+            echo ""
+            if [[ "${VALIDATE_RESULT}" == "success" ]]; then
+              echo "Phase 0 validation: **passed**"
+            else
+              echo "Phase 0 validation: **${VALIDATE_RESULT}**"
+            fi
+            if [[ "${EXECUTE_STORE}" != "true" ]]; then
+              echo ""
+              echo "Store phases were **skipped** (\`execute_store_phases=false\`). Safe for dry validation runs."
+            else
+              echo ""
+              echo "Store phases: **blocked** — enable \`workflow_call\` wiring in a follow-up commit (see \`store-phases-pending\` job)."
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
