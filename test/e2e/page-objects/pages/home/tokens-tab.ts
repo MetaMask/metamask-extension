@@ -119,6 +119,18 @@ class TokensTab extends HomePage {
     return `[data-testid="token-management-cell-search-${assetId.toLowerCase()}-toggle"]`;
   }
 
+  private tokenManagementSearchToggleControl(tokenName: string): string {
+    const assetId = SEARCH_TOKEN_ASSET_IDS[tokenName.toUpperCase()];
+
+    if (!assetId) {
+      throw new Error(
+        `No e2e token-management search asset ID for ${tokenName}`,
+      );
+    }
+
+    return `[data-testid="token-management-cell-search-${assetId.toLowerCase()}-toggle-control"]`;
+  }
+
   private readonly tokenManagementAddCustomTokenButton =
     '[data-testid="token-management-add-custom-token-button"]';
 
@@ -352,8 +364,9 @@ class TokensTab extends HomePage {
       tokenName,
     );
     const toggle = this.tokenManagementSearchToggle(tokenName);
+    const toggleControl = this.tokenManagementSearchToggleControl(tokenName);
     await this.driver.waitForSelector(toggle);
-    await this.driver.clickElement(toggle);
+    await this.driver.clickElement(toggleControl);
     await this.driver.waitForSelector(toggle, {
       state: 'enabled',
       waitAtLeastGuard: 1000,
@@ -375,8 +388,9 @@ class TokensTab extends HomePage {
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenManagementSearchInput, name);
       const toggle = this.tokenManagementSearchToggle(name);
+      const toggleControl = this.tokenManagementSearchToggleControl(name);
       await this.driver.waitForSelector(toggle);
-      await this.driver.clickElement(toggle);
+      await this.driver.clickElement(toggleControl);
       await this.driver.waitForSelector(toggle, {
         state: 'enabled',
         waitAtLeastGuard: 1000,
