@@ -1,7 +1,7 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React from 'react';
 import { TokenFiatDisplayInfo } from '../../types';
-import { isStellarClassicTrustlineInactiveForDisplay } from '../../../../../../shared/lib/multichain/stellar';
+import { isClassicTrustlineInactiveForDisplay } from '../../../../../../shared/lib/multichain/trustline';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { StellarTrustlineInactiveBadge } from '../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
@@ -22,7 +22,7 @@ export const TokenCellTitle = React.memo(
     const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(token);
 
-    const isStellarInactive = isStellarClassicTrustlineInactiveForDisplay({
+    const isTrustlineInactive = isClassicTrustlineInactiveForDisplay({
       chainId: token.chainId,
       assetId: token.assetId,
       isNative: token.isNative,
@@ -34,7 +34,7 @@ export const TokenCellTitle = React.memo(
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
         {label && <Tag label={label} />}
-        {isStellarInactive && <StellarTrustlineInactiveBadge />}
+        {isTrustlineInactive && <StellarTrustlineInactiveBadge />}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
         )}

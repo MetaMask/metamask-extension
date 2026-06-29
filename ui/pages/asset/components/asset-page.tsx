@@ -35,7 +35,8 @@ import {
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getStellarAssetPageState } from '../../../../shared/lib/multichain/stellar';
+import { getTrustlineAssetPageState } from '../../../../shared/lib/multichain/trustline';
+import { getStellarNativeAssetPageState } from '../../../../shared/lib/multichain/stellar';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -276,23 +277,29 @@ const AssetPage = ({
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   };
 
-  // Derive whether Stellar classic trustline is inactive (for badge/hide behavior)
-  // Derive Stellar-specific asset page state from shared helper
-  const stellarPageState = getStellarAssetPageState({
+  // Derive trustline and Stellar native page state via focused helpers.
+  const trustlinePageState = getTrustlineAssetPageState({
     chainId,
     assetId: bip44Asset?.assetId ?? assetId,
     type,
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   });
 
+  const stellarNativePageState = getStellarNativeAssetPageState({
+    chainId,
+    type,
+    accountAssetInfo: assetWithBalance?.accountAssetInfo,
+  });
+
   const {
-    isStellarClassicTrustlineTrackedToken,
-    showStellarClassicTrustlineActivate,
-    hasStellarClassicTrustlineToRemove,
-    stellarNativeBaseReserve,
-    showStellarNativeBalanceSection,
-    isStellarTrustlineInactive,
-  } = stellarPageState;
+    isClassicTrustlineTrackedToken,
+    isTrustlineInactive,
+    showClassicTrustlineActivate,
+    hasClassicTrustlineToRemove,
+  } = trustlinePageState;
+
+  const { stellarNativeBaseReserve, showStellarNativeBalanceSection } =
+    stellarNativePageState;
 
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
@@ -336,7 +343,7 @@ const AssetPage = ({
   };
 
   const renderAssetTitleSection = () => {
-    if (isStellarTrustlineInactive) {
+    if (isTrustlineInactive) {
       return (
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -458,7 +465,7 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       <StellarClassicTrustlineActivateCard
-        visible={showStellarClassicTrustlineActivate}
+        visible={showClassicTrustlineActivate}
         account={selectedAccount}
         chainId={chainId as CaipChainId}
         assetId={assetId as CaipAssetType}
@@ -493,9 +500,9 @@ const AssetPage = ({
             disableSendForNonEvm
             isMarketClosed={isMarketClosed}
             stellarClassicTrustlineRemove={
-              isStellarClassicTrustlineTrackedToken
+              isClassicTrustlineTrackedToken
                 ? {
-                    hasTrustline: hasStellarClassicTrustlineToRemove,
+                    hasTrustline: hasClassicTrustlineToRemove,
                     accountId: selectedAccount.id,
                     assetId: assetId as CaipAssetType,
                     scope: chainId as CaipChainId,
