@@ -74,13 +74,12 @@ function onHash(hash: string): void {
 }
 
 if (socketUrl) {
-  connectToDevServer(
-    socketUrl,
-    () => false,
-    (type, data) => {
+  connectToDevServer({
+    url: socketUrl,
+    onMessage: (type, data) => {
       if (type === UI_RELOAD_MESSAGE_TYPE && typeof data === 'string') {
         onHash(data);
       }
     },
-  );
+  });
 }

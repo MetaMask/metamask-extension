@@ -85,13 +85,13 @@ async function onFingerprint(
 }
 
 if (socketUrl) {
-  connectToDevServer(
-    socketUrl,
-    () => reloading,
-    (type, data, socket) => {
+  connectToDevServer({
+    url: socketUrl,
+    isDone: () => reloading,
+    onMessage: (type, data, socket) => {
       if (type === BACKGROUND_RELOAD_MESSAGE_TYPE && typeof data === 'string') {
         void onFingerprint(data, socket);
       }
     },
-  );
+  });
 }

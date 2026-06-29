@@ -590,17 +590,16 @@ describe('./utils/dev-server', () => {
           socket: FakeWebSocket;
         }[] = [];
 
-        connectToDevServer(
-          'ws://localhost:12345/ws',
-          () => false,
-          (type, data, socket) => {
+        connectToDevServer({
+          url: 'ws://localhost:12345/ws',
+          onMessage: (type, data, socket) => {
             messages.push({
               type,
               data,
               socket: socket as unknown as FakeWebSocket,
             });
           },
-        );
+        });
 
         const socket = FakeWebSocket.sockets[0];
         socket.dispatch('message', {
@@ -643,11 +642,11 @@ describe('./utils/dev-server', () => {
           },
         );
 
-        connectToDevServer(
-          'ws://localhost:12345/ws',
-          () => done,
-          () => undefined,
-        );
+        connectToDevServer({
+          url: 'ws://localhost:12345/ws',
+          isDone: () => done,
+          onMessage: () => undefined,
+        });
 
         FakeWebSocket.sockets[0].dispatch('close');
         assert.strictEqual(setTimeoutMock.callCount(), 1);
@@ -671,11 +670,10 @@ describe('./utils/dev-server', () => {
           return undefined as unknown as ReturnType<typeof setTimeout>;
         });
 
-        connectToDevServer(
-          'ws://localhost:12345/ws',
-          () => false,
-          (type) => messages.push(type),
-        );
+        connectToDevServer({
+          url: 'ws://localhost:12345/ws',
+          onMessage: (type) => messages.push(type),
+        });
 
         const firstSocket = FakeWebSocket.sockets[0];
         assert.strictEqual(firstSocket.listeners.get('open')?.length, 1);
