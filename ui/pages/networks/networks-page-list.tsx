@@ -6,7 +6,6 @@ import {
   toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
-import { isStrictHexString, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -160,15 +159,6 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
 
 const SectionDivider = () => <Box className="mx-4 border-t border-muted" />;
 
-const isCurrentNetwork = (
-  network: MultichainNetworkConfiguration,
-  selectedChainId: string,
-) =>
-  network.chainId === selectedChainId ||
-  (network.isEvm &&
-    isStrictHexString(network.chainId) &&
-    toEvmCaipChainId(network.chainId as Hex) === selectedChainId);
-
 type NetworksPageListProps = {
   searchQuery: string;
   footerContent?: React.ReactNode;
@@ -269,7 +259,7 @@ export const NetworksPageList = ({
           name={network.name}
           iconSrc={getNetworkIcon(network)}
           focus={false}
-          selected={isCurrentNetwork(network, currentMultichainChainId)}
+          selected={false}
           rpcEndpoint={
             network.isEvm && hasMultiRpcOptions(network)
               ? getRpcDataByChainId(network.chainId, evmNetworks)
@@ -288,7 +278,6 @@ export const NetworksPageList = ({
       );
     },
     [
-      currentMultichainChainId,
       evmNetworks,
       getItemCallbacks,
       hasMultiRpcOptions,
