@@ -5,7 +5,6 @@ import { LEDGER_CONNECTION_STATUS } from '../ledger-connection-status.constants'
 import {
   DEVICE_NOT_FOUND_INSTRUCTION_MESSAGE_KEYS,
   getLocalizedMessage,
-  type LocaleMessageKey,
 } from '../../../../../../test/unit/hardware-wallets/ledger/helpers';
 import { LedgerConnectionStatusInstructions } from '.';
 
@@ -22,10 +21,8 @@ describe('LedgerConnectionStatusInstructions', () => {
     ).toHaveLength(4);
   });
 
-  // @ts-expect-error: each is a valid test function in jest
-  it.each(DEVICE_NOT_FOUND_INSTRUCTION_MESSAGE_KEYS)(
-    'renders localized copy for %s',
-    (messageKey: LocaleMessageKey) => {
+  DEVICE_NOT_FOUND_INSTRUCTION_MESSAGE_KEYS.forEach((messageKey) => {
+    it(`renders localized copy for ${messageKey}`, () => {
       renderWithLocalization(
         <LedgerConnectionStatusInstructions
           status={LEDGER_CONNECTION_STATUS.DeviceNotFound}
@@ -43,6 +40,6 @@ describe('LedgerConnectionStatusInstructions', () => {
       expect(
         screen.getByTestId('ledger-connection-status-instructions'),
       ).toBeInTheDocument();
-    },
-  );
+    });
+  });
 });

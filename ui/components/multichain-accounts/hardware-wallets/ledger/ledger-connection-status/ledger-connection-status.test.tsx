@@ -10,8 +10,6 @@ import {
   STATUSES_WITHOUT_DESCRIPTION,
   STATUSES_WITHOUT_INSTRUCTIONS,
   STATUSES_WITH_DESCRIPTION,
-  type StatusWithDescription,
-  type StatusWithoutDescription,
 } from '../../../../../../test/unit/hardware-wallets/ledger/helpers';
 import type { LedgerConnectionStatusProps } from './ledger-connection-status.types';
 import {
@@ -19,7 +17,6 @@ import {
   LEDGER_CONNECTION_STATUS_CONTENT,
   LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL,
   LedgerConnectionStatus,
-  type LedgerConnectionStatusType,
 } from '.';
 
 const renderLedgerConnectionStatus = (props: LedgerConnectionStatusProps) =>
@@ -27,31 +24,29 @@ const renderLedgerConnectionStatus = (props: LedgerConnectionStatusProps) =>
 
 describe('LedgerConnectionStatus', () => {
   describe('status content', () => {
-    // @ts-expect-error: each is a valid test function in jest
-    it.each(STATUSES_WITH_DESCRIPTION)(
-      'renders localized title and description for $status',
-      ({ status, titleKey, descriptionKey }: StatusWithDescription) => {
-        renderLedgerConnectionStatus({ status });
+    STATUSES_WITH_DESCRIPTION.forEach(
+      ({ status, titleKey, descriptionKey }) => {
+        it(`renders localized title and description for ${status}`, () => {
+          renderLedgerConnectionStatus({ status });
 
-        expect(
-          screen.getByTestId(getStatusRootTestId(status)),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByTestId('ledger-connection-status-title'),
-        ).toHaveTextContent(getLocalizedMessage(titleKey));
-        expect(
-          screen.getByTestId('ledger-connection-status-description'),
-        ).toHaveTextContent(getLocalizedMessage(descriptionKey));
-        expect(
-          screen.getByTestId('ledger-connection-status-illustration'),
-        ).toBeInTheDocument();
+          expect(
+            screen.getByTestId(getStatusRootTestId(status)),
+          ).toBeInTheDocument();
+          expect(
+            screen.getByTestId('ledger-connection-status-title'),
+          ).toHaveTextContent(getLocalizedMessage(titleKey));
+          expect(
+            screen.getByTestId('ledger-connection-status-description'),
+          ).toHaveTextContent(getLocalizedMessage(descriptionKey));
+          expect(
+            screen.getByTestId('ledger-connection-status-illustration'),
+          ).toBeInTheDocument();
+        });
       },
     );
 
-    // @ts-expect-error: each is a valid test function in jest
-    it.each(STATUSES_WITHOUT_DESCRIPTION)(
-      'renders localized title without a description for $status',
-      ({ status, titleKey }: StatusWithoutDescription) => {
+    STATUSES_WITHOUT_DESCRIPTION.forEach(({ status, titleKey }) => {
+      it(`renders localized title without a description for ${status}`, () => {
         renderLedgerConnectionStatus({ status });
 
         expect(
@@ -60,8 +55,8 @@ describe('LedgerConnectionStatus', () => {
         expect(
           screen.queryByTestId('ledger-connection-status-description'),
         ).not.toBeInTheDocument();
-      },
-    );
+      });
+    });
   });
 
   describe('device selector integration', () => {
@@ -121,17 +116,15 @@ describe('LedgerConnectionStatus', () => {
       ).toBeInTheDocument();
     });
 
-    // @ts-expect-error: each is a valid test function in jest
-    it.each(STATUSES_WITHOUT_INSTRUCTIONS)(
-      'does not render troubleshooting instructions for %s',
-      (status: LedgerConnectionStatusType) => {
+    STATUSES_WITHOUT_INSTRUCTIONS.forEach((status) => {
+      it(`does not render troubleshooting instructions for ${status}`, () => {
         renderLedgerConnectionStatus({ status });
 
         expect(
           screen.queryByTestId('ledger-connection-status-instructions'),
         ).not.toBeInTheDocument();
-      },
-    );
+      });
+    });
   });
 
   describe('back navigation', () => {
