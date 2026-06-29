@@ -211,7 +211,7 @@ git add "${STATS_FILE}"
 git commit --message "${COMMIT_MESSAGE}"
 
 repo_slug="${OWNER}/extension_benchmark_stats"
-git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" main
+git push "https://x-access-token:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" main
 
 cd ..
 rm -rf "${CLONE_DIR}"
