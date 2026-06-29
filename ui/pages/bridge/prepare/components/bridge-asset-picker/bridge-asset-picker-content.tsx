@@ -166,7 +166,7 @@ export const BridgeAssetPickerContent = forwardRef<
 
     return (
       <>
-        <div className="flex flex-col gap-4 pt-4">
+        <div className="flex flex-col gap-4">
           <ButtonBase
             ref={networkPickerButtonRef}
             onClick={() =>

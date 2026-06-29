@@ -926,7 +926,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
           data-testid="bridge-asset-picker-modal__body"
         >
           <div
-            class="flex flex-col gap-4 pt-4"
+            class="flex flex-col gap-4"
           >
             <button
               class="inline-flex items-center justify-center gap-x-1 font-medium overflow-hidden relative h-8 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] mx-4 w-max rounded-lg border border-muted bg-default px-2 text-default"
@@ -1316,7 +1316,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
           data-testid="bridge-asset-picker-modal__body"
         >
           <div
-            class="flex flex-col gap-4 pt-4"
+            class="flex flex-col gap-4"
           >
             <button
               class="inline-flex items-center justify-center gap-x-1 font-medium overflow-hidden relative h-8 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] mx-4 w-max rounded-lg border border-muted bg-default px-2 text-default"
