@@ -16,12 +16,15 @@ import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
   MOCK_ANALYTICS_ID,
 } from '../../constants';
 import { getEventPayloads } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
   BRIDGE_ETH_USD_SPOT_PRICE,
+  BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
   BRIDGE_L2_ETH_BALANCE_PER_CHAIN,
   BRIDGE_L2_ETH_USD_SPOT_PRICE,
   BRIDGE_L2_MOCK_CURRENCY_RATES,
@@ -72,6 +75,45 @@ const getBridgeFixtureAssetsBalance = () => ({
       amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
     },
   },
+});
+
+const BRIDGE_NATIVE_ETH_ASSETS_INFO = {
+  'eip155:1/slip44:60': {
+    aggregators: [],
+    decimals: 18,
+    image:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+    name: 'Ethereum',
+    symbol: 'ETH',
+    type: 'native',
+  },
+  'eip155:59144/slip44:60': {
+    aggregators: [],
+    decimals: 18,
+    image:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/slip44/60.png',
+    name: 'Ethereum',
+    symbol: 'ETH',
+    type: 'native',
+  },
+  'eip155:42161/slip44:60': {
+    aggregators: [],
+    decimals: 18,
+    image:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/slip44/60.png',
+    name: 'Ethereum',
+    symbol: 'ETH',
+    type: 'native',
+  },
+} as const;
+
+const getBridgeAssetsControllerFixture = (
+  assetsBalance: ReturnType<typeof getBridgeFixtureAssetsBalance>,
+  ethUsdSpotPrice: number,
+) => ({
+  assetsInfo: BRIDGE_NATIVE_ETH_ASSETS_INFO,
+  assetsBalance,
+  assetsPrice: getMockAssetsPrice(ethUsdSpotPrice),
 });
 
 /** Native ETH balances for L2 bridge E2E (25 ETH on mainnet, Linea, and Arbitrum). */
@@ -1460,6 +1502,17 @@ async function mockSmartTransactionsForBridge(
     });
 }
 
+/**
+ * Logs in and waits for the aggregated bridge homepage fiat balance to hydrate.
+ * @param driver
+ */
+export async function bridgeLogin(driver: Driver) {
+  await login(driver, {
+    expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+    balanceAssertionTimeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+  });
+}
+
 export const getBridgeFixtures = ({
   title,
   featureFlags = {},
@@ -1526,10 +1579,12 @@ export const getBridgeFixtures = ({
         '0xa4b1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeFixtureAssetsBalance(),
-      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
-    });
+    .withAssetsController(
+      getBridgeAssetsControllerFixture(
+        getBridgeFixtureAssetsBalance(),
+        BRIDGE_ETH_USD_SPOT_PRICE,
+      ),
+    );
 
   return {
     forceBip44Version: false,
@@ -1832,10 +1887,12 @@ export const getBridgeL2Fixtures = (
         '0xa4b1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeL2FixtureAssetsBalance(),
-      assetsPrice: getMockAssetsPrice(BRIDGE_L2_ETH_USD_SPOT_PRICE),
-    });
+    .withAssetsController(
+      getBridgeAssetsControllerFixture(
+        getBridgeL2FixtureAssetsBalance(),
+        BRIDGE_L2_ETH_USD_SPOT_PRICE,
+      ),
+    );
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -2007,10 +2064,12 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         '0xa4b1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeFixtureAssetsBalance(),
-      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
-    });
+    .withAssetsController(
+      getBridgeAssetsControllerFixture(
+        getBridgeFixtureAssetsBalance(),
+        BRIDGE_ETH_USD_SPOT_PRICE,
+      ),
+    );
 
   return {
     forceBip44Version: false,
@@ -2102,10 +2161,12 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         '0xa4b1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeFixtureAssetsBalance(),
-      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
-    });
+    .withAssetsController(
+      getBridgeAssetsControllerFixture(
+        getBridgeFixtureAssetsBalance(),
+        BRIDGE_ETH_USD_SPOT_PRICE,
+      ),
+    );
 
   return {
     forceBip44Version: false,
