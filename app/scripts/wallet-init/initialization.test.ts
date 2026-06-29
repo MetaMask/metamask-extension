@@ -1,0 +1,146 @@
+import { Wallet } from '@metamask/wallet';
+import { Json } from '@metamask/utils';
+import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
+import { initializeWallet } from './initialization';
+import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { createMockMessenger } from './test-utils';
+
+jest.mock('@metamask/wallet');
+jest.mock('./keyrings', () => ({
+  getKeyringBuilders: jest.fn(() => []),
+  getKeyringV2Builders: jest.fn(() => []),
+}));
+jest.mock('./remote-feature-flags', () => ({
+  getRemoteFeatureFlagClientConfigApiService: jest.fn(() => ({
+    fetchRemoteFeatureFlags: jest.fn(),
+  })),
+  setupRemoteFeatureFlagToggle: jest.fn(),
+}));
+jest.mock('../../../shared/lib/feature-flags/version-gating', () => ({
+  getBaseSemVerVersion: jest.fn(() => '1.2.3'),
+}));
+
+const MockWallet = jest.mocked(Wallet);
+
+/**
+ * Calls `initializeWallet` with the given persisted state and returns the
+ * `remoteFeatureFlagController` instance options the wallet was constructed
+ * with.
+ *
+ * @param state - The persisted state passed to `initializeWallet`.
+ * @returns The `remoteFeatureFlagController` instance options.
+ */
+function getRemoteFeatureFlagOptions(
+  state: Record<string, Record<string, Json>>,
+) {
+  initializeWallet({
+    messenger: createMockMessenger(),
+    state,
+    connectivityAdapter: {} as unknown as ConnectivityAdapter,
+  });
+  return MockWallet.mock.calls[0][0].instanceOptions
+    .remoteFeatureFlagController;
+}
+
+describe('initializeWallet — RemoteFeatureFlagController options', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('passes prevClientVersion from persisted AppMetadataController.currentAppVersion', () => {
+    const options = getRemoteFeatureFlagOptions({
+      AppMetadataController: { currentAppVersion: '1.0.0' },
+    });
+
+    expect(options?.prevClientVersion).toBe('1.0.0');
+  });
+
+  it('leaves prevClientVersion undefined when AppMetadataController state is absent', () => {
+    const options = getRemoteFeatureFlagOptions({});
+
+    expect(options?.prevClientVersion).toBeUndefined();
+  });
+
+  it('is enabled when onboarding is complete and external services are on', () => {
+    const options = getRemoteFeatureFlagOptions({
+      OnboardingController: { completedOnboarding: true },
+      PreferencesController: { useExternalServices: true },
+    });
+
+    expect(options?.disabled).toBe(false);
+  });
+
+  it('is disabled when onboarding is incomplete', () => {
+    const options = getRemoteFeatureFlagOptions({
+      OnboardingController: { completedOnboarding: false },
+      PreferencesController: { useExternalServices: true },
+    });
+
+    expect(options?.disabled).toBe(true);
+  });
+
+  it('is disabled when external services are turned off', () => {
+    const options = getRemoteFeatureFlagOptions({
+      OnboardingController: { completedOnboarding: true },
+      PreferencesController: { useExternalServices: false },
+    });
+
+    expect(options?.disabled).toBe(true);
+  });
+
+  it('is disabled when neither onboarding nor preferences state is present', () => {
+    const options = getRemoteFeatureFlagOptions({});
+
+    expect(options?.disabled).toBe(true);
+  });
+
+  it('stays enabled when onboarding is complete and useExternalServices is absent (defaults to on)', () => {
+    const options = getRemoteFeatureFlagOptions({
+      OnboardingController: { completedOnboarding: true },
+      PreferencesController: {},
+    });
+
+    expect(options?.disabled).toBe(false);
+  });
+});
+
+describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
+  const mockSetupToggle = jest.mocked(setupRemoteFeatureFlagToggle);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('wires the enable/disable toggle over the messenger with a default-preserving baseline', () => {
+    const messenger = createMockMessenger();
+
+    initializeWallet({
+      messenger,
+      state: { OnboardingController: { completedOnboarding: true } },
+      connectivityAdapter: {} as unknown as ConnectivityAdapter,
+    });
+
+    expect(mockSetupToggle).toHaveBeenCalledWith({
+      messenger,
+      // `useExternalServices` is absent, so it defaults to on, matching the
+      // live `PreferencesController` default.
+      preferencesState: { useExternalServices: true },
+      onboardingState: { completedOnboarding: true },
+    });
+  });
+
+  it('treats an explicit useExternalServices=false as opting out in the baseline', () => {
+    initializeWallet({
+      messenger: createMockMessenger(),
+      state: { PreferencesController: { useExternalServices: false } },
+      connectivityAdapter: {} as unknown as ConnectivityAdapter,
+    });
+
+    expect(mockSetupToggle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        preferencesState: { useExternalServices: false },
+        onboardingState: { completedOnboarding: false },
+      }),
+    );
+  });
+});
