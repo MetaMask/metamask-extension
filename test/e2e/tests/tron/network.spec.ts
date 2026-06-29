@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
@@ -48,7 +49,7 @@ describe('Tron - Network', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: async (mockServer) => [
+        testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
         ...NETWORK_MANAGEMENT_FLAGS,
@@ -72,7 +73,7 @@ describe('Tron - Network', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: async (mockServer) => [
+        testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
         ...NETWORK_MANAGEMENT_FLAGS,
@@ -94,7 +95,7 @@ describe('Tron - Network', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer) => [
+        testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
         localNodeOptions: [
@@ -138,7 +139,7 @@ describe('Tron - Network', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: async (mockServer) => [
+        testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
         ...NETWORK_MANAGEMENT_FLAGS,
@@ -162,7 +163,7 @@ describe('Tron - Network', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: async (mockServer) => [
+        testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
         ...NETWORK_MANAGEMENT_FLAGS,
@@ -186,7 +187,7 @@ describe('Tron - Network', function (this: Suite) {
           // Tron-only flows.
           'anvil',
         ],
-        testSpecificMock: async (mockServer) => [
+        testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
         ...NETWORK_MANAGEMENT_FLAGS,
