@@ -34,13 +34,9 @@ import {
 import type {
   ClosePositionParams,
   OrderType,
-  OrderParams,
   PriceUpdate,
 } from '@metamask/perps-controller';
-import {
-  ORDER_SLIPPAGE_CONFIG,
-  PERFORMANCE_CONFIG,
-} from '@metamask/perps-controller';
+import { PERFORMANCE_CONFIG } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
@@ -125,6 +121,7 @@ import {
   OrderEntry,
   DirectionTabs,
   OrderSummary,
+  formStateToOrderParams,
   type OrderDirection,
   type OrderFormState,
   type OrderMode,
@@ -163,64 +160,6 @@ export function shouldShowPerpsOrderSubmissionToasts(
   hasPendingPerpsDeposit: boolean,
 ) {
   return !hasPendingPerpsDeposit;
-}
-
-/**
- * Convert UI OrderFormState to PerpsController OrderParams
- *
- * @param formState - Current order form state
- * @param currentPrice - Current asset price in USD
- * @param mode - Order mode (new, modify, close)
- * @param existingPositionSize - Size of existing position when closing
- * @param maxSlippageBps
- */
-function formStateToOrderParams(
-  formState: OrderFormState,
-  currentPrice: number,
-  mode: OrderMode,
-  existingPositionSize?: string,
-  maxSlippageBps?: number,
-): OrderParams {
-  const isBuy = formState.direction === 'long';
-  const marginAmount = Number.parseFloat(formState.amount) || 0;
-  const positionSize =
-    currentPrice > 0 ? (marginAmount * formState.leverage) / currentPrice : 0;
-  const size =
-    mode === 'close' && existingPositionSize
-      ? Math.abs(Number.parseFloat(existingPositionSize)).toString()
-      : positionSize.toString();
-  const cleanAmount = formState.amount.replaceAll(',', '');
-
-  const params: OrderParams = {
-    symbol: formState.asset,
-    isBuy,
-    size,
-    orderType: formState.type,
-    leverage: formState.leverage,
-    currentPrice,
-    usdAmount: cleanAmount,
-    priceAtCalculation: currentPrice,
-    maxSlippageBps:
-      formState.type === 'limit'
-        ? ORDER_SLIPPAGE_CONFIG.DefaultLimitSlippageBps
-        : (maxSlippageBps ?? ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps),
-  };
-
-  if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = formState.limitPrice.replaceAll(',', '');
-  }
-  if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    params.takeProfitPrice = formState.takeProfitPrice.replaceAll(',', '');
-  }
-  if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    params.stopLossPrice = formState.stopLossPrice.replaceAll(',', '');
-  }
-  if (mode === 'close') {
-    params.reduceOnly = true;
-    params.isFullClose = true;
-  }
-
-  return params;
 }
 
 const FULL_CLOSE_PERCENT = 100;
@@ -591,24 +530,24 @@ const PerpsOrderEntryPage = () => {
 
     const tpInvalid = Boolean(
       tp?.trim() &&
-      !isValidTakeProfitPrice(tp, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidTakeProfitPrice(tp, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-      !isValidStopLossPrice(sl, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidStopLossPrice(sl, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slLiquidationInvalid = Boolean(
       sl?.trim() &&
-      !isStopLossSafeFromLiquidation(sl, {
-        liquidationPrice,
-        direction: dir,
-      }),
+        !isStopLossSafeFromLiquidation(sl, {
+          liquidationPrice,
+          direction: dir,
+        }),
     );
 
     return tpInvalid || slInvalid || slLiquidationInvalid;

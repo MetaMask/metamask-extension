@@ -53,8 +53,10 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
+  PERPS_MARKET_EXPANDED_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
 } from '../../helpers/constants/routes';
+import { isPopupOrSidePanelEnvironment } from '../../../shared/lib/environment-type';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -967,6 +969,33 @@ const PerpsMarketDetailPage = () => {
     });
   }, [decodedSymbol, track]);
 
+  // Opens the full-width expanded trading view. From the narrow popup / side
+  // panel we open a dedicated full browser tab; from the already-fullscreen tab
+  // we navigate in place (no extra tab) so the affordance is available wherever
+  // the user views the market.
+  const handleExpandClick = useCallback(() => {
+    if (!decodedSymbol) {
+      return;
+    }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+    });
+    const expandedPath = `${PERPS_MARKET_EXPANDED_ROUTE}/${encodeURIComponent(
+      decodedSymbol,
+    )}`;
+    if (isPopupOrSidePanelEnvironment()) {
+      global.platform.openExtensionInBrowser(expandedPath);
+    } else {
+      navigate(expandedPath);
+    }
+  }, [decodedSymbol, navigate, track]);
+
   // Opens the cancel order modal for the selected order
   const handleOrderClick = useCallback((order: Order) => {
     setCancelOrderTarget(order);
@@ -1152,6 +1181,19 @@ const PerpsMarketDetailPage = () => {
         </Box>
 
         <Box className="flex-1" />
+
+        <Box
+          data-testid="perps-market-detail-expand-button"
+          aria-label={t('perpsExpandView')}
+          className="p-2 cursor-pointer transition-transform hover:scale-110"
+          onClick={handleExpandClick}
+        >
+          <Icon
+            name={IconName.Expand}
+            size={IconSize.Md}
+            color={IconColor.IconAlternative}
+          />
+        </Box>
 
         <Box
           data-testid="perps-market-detail-favorite-button"

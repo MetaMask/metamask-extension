@@ -1,6 +1,9 @@
 // Main component export
 export { OrderEntry } from './order-entry';
 
+// Order params conversion (shared by order entry page + expanded view)
+export { formStateToOrderParams } from './order-params';
+
 // Type exports
 export type {
   OrderEntryProps,
