@@ -2164,6 +2164,17 @@ export async function getTransactions(
   ]);
 }
 
+export async function checkFirstTimeInteraction(request: {
+  from: string;
+  to: string;
+  chainId: number;
+}): Promise<boolean | undefined> {
+  return submitRequestToBackground<boolean | undefined>(
+    'checkFirstTimeInteraction',
+    [request],
+  );
+}
+
 function completedTx(
   txId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4292,6 +4303,10 @@ export function setTokenSortConfig(value: SortCriteria) {
 
 export function setTokenNetworkFilter(value: Record<string, boolean>) {
   return setPreference('tokenNetworkFilter', value, false);
+}
+
+export function setGasSponsorshipOptOut(value: Record<string, boolean>) {
+  return setPreference('gasSponsorshipOptOutByChainId', value, false);
 }
 
 export function setSmartTransactionsPreferenceEnabled(
