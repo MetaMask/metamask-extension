@@ -83,7 +83,9 @@ export function mockAccountsApiV5WithBtc(
           continue;
         }
 
-        if (accountId.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)) {
+        if (
+          accountId.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)
+        ) {
           const chainRef = accountId.split(':')[1] ?? '1';
           const slip44 = chainRef === '1337' ? '1' : '60';
           balances.push({

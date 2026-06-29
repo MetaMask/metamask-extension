@@ -13,6 +13,7 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import {
   mockAccountsApiV2WithBtc,
   mockAccountsApiV5WithBtc,
+  mockBtcSpotPrices,
   mockExchangeRates,
   mockCurrencyExchangeRates,
   mockFiatExchangeRates,
@@ -25,6 +26,30 @@ import {
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 
 const isUnifiedAssetsEnabled = true;
+
+const BTC_CAIP_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
+
+const BTC_SEND_ASSETS_CONTROLLER_FIXTURE = {
+  assetsInfo: {
+    [BTC_CAIP_ASSET_ID]: {
+      decimals: 8,
+      image:
+        'https://static.cx.metamask.io/api/v1/tokenIcons/bip122/000000000019d6689c085ae165831e93/slip44/0.png',
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      type: 'native',
+    },
+  },
+};
+
+function buildBtcSendFixtures() {
+  if (!isUnifiedAssetsEnabled) {
+    return new FixtureBuilderV2().build();
+  }
+  return new FixtureBuilderV2()
+    .withAssetsController(BTC_SEND_ASSETS_CONTROLLER_FIXTURE)
+    .build();
+}
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
@@ -44,6 +69,7 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
     await mockPriceMultiBtcAndSol(mockServer),
     await mockTokensV2SupportedNetworks(mockServer),
     await mockTokensV3Assets(mockServer),
+    await mockBtcSpotPrices(mockServer),
   ];
 }
 
@@ -54,7 +80,7 @@ describe('BTC Account - Send', function (this: Suite) {
   it('fields validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcSendFixtures(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -84,7 +110,7 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcSendFixtures(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -120,7 +146,7 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcSendFixtures(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,

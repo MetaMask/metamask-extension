@@ -12,7 +12,10 @@ export {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from './tokens-api';
-export { mockAccountsApiV2WithBtc, mockAccountsApiV5WithBtc } from './accounts-api';
+export {
+  mockAccountsApiV2WithBtc,
+  mockAccountsApiV5WithBtc,
+} from './accounts-api';
 export {
   mockAllBridgeEndpoints,
   mockBridgeFeatureFlags,

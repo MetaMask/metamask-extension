@@ -1,6 +1,10 @@
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
-import { TEST_SEED_PHRASE, WALLET_PASSWORD } from '../../constants';
+import {
+  TEST_SEED_PHRASE,
+  WALLET_PASSWORD,
+  HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+} from '../../constants';
 import {
   convertToHexValue,
   withFixtures,
@@ -10,6 +14,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
@@ -32,6 +37,20 @@ import LoginPage from '../../page-objects/pages/login-page';
 import { lockAndWaitForPasskeyUnlockPage } from '../../page-objects/flows/login.flow';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
+const IMPORTED_SRP_ACCOUNT_1_LOWER = IMPORTED_SRP_ACCOUNT_1.toLowerCase();
+const CUSTOM_NETWORK_CHAIN_ID = 1338;
+const CUSTOM_NETWORK_ETH_BALANCE = '10';
+const CUSTOM_NETWORK_NATIVE_ASSET_ID = 'eip155:1338/slip44:60';
+
+const CUSTOM_NETWORK_ASSETS_INFO = {
+  [CUSTOM_NETWORK_NATIVE_ASSET_ID]: {
+    decimals: 18,
+    image: '',
+    name: 'Ethereum',
+    symbol: 'ETH',
+    type: 'native' as const,
+  },
+};
 
 async function mockSpotPrices(mockServer: Mockttp) {
   return await mockServer
@@ -40,6 +59,118 @@ async function mockSpotPrices(mockServer: Mockttp) {
       statusCode: 200,
       json: {
         'eip155:1/slip44:60': {
+          id: 'ethereum',
+          price: 1700,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+}
+
+/**
+ * Unified-assets mocks for onboarding custom-network test: chain 1338 balance
+ * comes from Accounts API v5 (not Anvil RPC / AccountTracker).
+ * @param mockServer
+ */
+async function mockCustomNetworkOnboardingMocks(mockServer: Mockttp) {
+  await mockServer
+    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .asPriority(99)
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        1,
+        137,
+        56,
+        59144,
+        8453,
+        10,
+        42161,
+        534352,
+        1337,
+        CUSTOM_NETWORK_CHAIN_ID,
+      ],
+      partialSupport: { balances: [42220, 43114] },
+    });
+
+  await mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+    )
+    .asPriority(99)
+    .always()
+    .thenCallback((req) => {
+      const accountIds =
+        new URL(req.url).searchParams
+          .get('accountIds')
+          ?.split(',')
+          .filter(Boolean) ?? [];
+
+      const balances = [];
+
+      for (const accountId of accountIds) {
+        if (!accountId.toLowerCase().includes(IMPORTED_SRP_ACCOUNT_1_LOWER)) {
+          continue;
+        }
+
+        const chainRef = accountId.split(':')[1];
+        if (chainRef === String(CUSTOM_NETWORK_CHAIN_ID)) {
+          balances.push({
+            accountId,
+            assetId: CUSTOM_NETWORK_NATIVE_ASSET_ID,
+            balance: CUSTOM_NETWORK_ETH_BALANCE,
+          });
+        }
+      }
+
+      return {
+        statusCode: 200,
+        json: {
+          count: balances.length,
+          balances,
+          unprocessedNetworks: [],
+        },
+      };
+    });
+
+  await mockServer
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    .always()
+    .thenCallback((request) => {
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .join(',');
+
+      if (!assetIds.includes('1338')) {
+        return { statusCode: 200, json: [] };
+      }
+
+      return {
+        statusCode: 200,
+        json: [
+          {
+            assetId: CUSTOM_NETWORK_NATIVE_ASSET_ID,
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18,
+          },
+        ],
+      };
+    });
+
+  return await mockServer
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1/slip44:60': {
+          id: 'ethereum',
+          price: 1700,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+        [`eip155:${CUSTOM_NETWORK_CHAIN_ID}/slip44:60`]: {
           id: 'ethereum',
           price: 1700,
           marketCap: 382623505141,
@@ -211,6 +342,19 @@ describe('MetaMask onboarding', function () {
               showNativeTokenAsMainBalance: true,
             },
           })
+          .withAccountTracker({
+            accountsByChainId: {
+              '0x53a': {
+                [IMPORTED_SRP_ACCOUNT_1]: {
+                  balance: convertToHexValue(10000000000000000000),
+                  stakedBalance: '0x0',
+                },
+              },
+            },
+          })
+          .withAssetsController({
+            assetsInfo: CUSTOM_NETWORK_ASSETS_INFO,
+          })
           .build(),
         localNodeOptions: [
           {
@@ -224,7 +368,7 @@ describe('MetaMask onboarding', function () {
             },
           },
         ],
-        testSpecificMock: mockSpotPrices,
+        testSpecificMock: mockCustomNetworkOnboardingMocks,
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
@@ -261,9 +405,17 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Custom', networkName);
+        await driver.refresh();
+        await homePage.checkPageIsLoaded();
 
         // Fiat value should be displayed as we mock the price and that is not a 'test network'
-        await homePage.checkExpectedBalanceIsDisplayed('10', 'ETH');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          CUSTOM_NETWORK_ETH_BALANCE,
+          'ETH',
+          true,
+          HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        );
 
         // Check for network addition toast
         // Note: With sidepanel enabled, appState is lost during page reload,
