@@ -44,6 +44,7 @@ export const persistenceManager = new PersistenceManager({ localStore })
       payload.backup,
       MetaMetricsEventName.VaultCorruptionDetected,
       payload.corruptionType,
+      payload.diagnostics,
     );
   })
   .on('splitStateMigrationSucceeded', (payload) => {

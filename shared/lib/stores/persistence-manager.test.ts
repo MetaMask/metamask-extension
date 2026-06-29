@@ -5,10 +5,12 @@ import log from 'loglevel';
 
 import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import { VaultCorruptionType } from '../../constants/state-corruption';
 import { PersistenceManager } from './persistence-manager';
 import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
+import type { SplitStateReadDiagnostics } from './persistence-diagnostics';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 
@@ -16,6 +18,7 @@ const mockStoreSet = jest.fn();
 const mockStoreSetKeyValues = jest.fn();
 const mockStoreGet = jest.fn();
 const mockStoreReset = jest.fn();
+const mockStoreGetSplitStateReadDiagnostics = jest.fn();
 
 jest.mock('./extension-store', () => {
   return jest.fn().mockImplementation(() => {
@@ -23,6 +26,7 @@ jest.mock('./extension-store', () => {
       set: mockStoreSet,
       setKeyValues: mockStoreSetKeyValues,
       get: mockStoreGet,
+      getSplitStateReadDiagnostics: mockStoreGetSplitStateReadDiagnostics,
       reset: mockStoreReset,
     };
   });
@@ -46,9 +50,11 @@ const mockedCaptureMessage = jest.mocked(captureMessage);
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
+    await manager.reset();
+    jest.clearAllMocks();
   });
 
   describe('open', () => {
@@ -292,6 +298,69 @@ describe('PersistenceManager', () => {
         MISSING_VAULT_ERROR,
       );
     });
+
+    it('emits split-state diagnostics when storage is inaccessible and a backup exists', async () => {
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+      manager.update('PreferencesController', { selectedAddress: '0xabc' });
+      await manager.persist();
+
+      const readDiagnostics: SplitStateReadDiagnostics = {
+        manifestStatus: 'readable',
+        manifestKeyCount: 2,
+        readableKeys: ['KeyringController'],
+        missingKeys: [],
+        failedKeys: [
+          {
+            key: 'PreferencesController',
+            errorName: 'Error',
+            errorMessage: 'block checksum mismatch',
+          },
+        ],
+      };
+      const storageError = new Error('Database read failed');
+      const listener = jest.fn();
+      manager.on('vaultCorruptionDetected', listener);
+      mockStoreGet.mockRejectedValueOnce(storageError);
+      mockStoreGetSplitStateReadDiagnostics.mockResolvedValueOnce(
+        readDiagnostics,
+      );
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'backup-vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        MISSING_VAULT_ERROR,
+      );
+
+      expect(listener).toHaveBeenCalledWith({
+        backup: {
+          KeyringController: {
+            vault: 'backup-vault',
+          },
+        },
+        corruptionType: VaultCorruptionType.InaccessibleDatabase,
+        diagnostics: expect.objectContaining({
+          totalQueuedUpdates: 2,
+          totalPersistedBatches: 1,
+          readDiagnostics,
+          topWrittenKeys: expect.arrayContaining([
+            expect.objectContaining({
+              key: 'KeyringController',
+              queuedUpdates: 1,
+              persistedWrites: 1,
+            }),
+            expect.objectContaining({
+              key: 'PreferencesController',
+              queuedUpdates: 1,
+              persistedWrites: 1,
+            }),
+          ]),
+        }),
+      });
+    });
   });
 
   describe('getBackup', () => {
@@ -381,6 +450,35 @@ describe('PersistenceManager', () => {
       /* eslint-enable jest/prefer-strict-equal */
       expect(passedMap.has('BarController')).toBe(true);
       expect(passedMap.get('BarController')).toBeUndefined();
+    });
+
+    it('records split-state write diagnostics after successful persistence', async () => {
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+      manager.update('PreferencesController', { preferences: true });
+
+      const [result, error] = await manager.persist();
+
+      expect(result).toBe(true);
+      expect(error).toBeUndefined();
+      expect(
+        manager.getSplitStatePersistenceDiagnosticsSnapshot(undefined, 1000),
+      ).toMatchObject({
+        totalQueuedUpdates: 2,
+        totalPersistedBatches: 1,
+        topWrittenKeys: expect.arrayContaining([
+          expect.objectContaining({
+            key: 'KeyringController',
+            queuedUpdates: 1,
+            persistedWrites: 1,
+          }),
+          expect.objectContaining({
+            key: 'PreferencesController',
+            queuedUpdates: 1,
+            persistedWrites: 1,
+          }),
+        ]),
+      });
     });
 
     it('logs error and captures exception if store.setKeyValues throws', async () => {

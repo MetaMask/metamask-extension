@@ -6,6 +6,10 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
+import {
+  getSplitStateDiagnosticError,
+  type SplitStateReadDiagnostics,
+} from './persistence-diagnostics';
 
 const { sentry } = globalThis;
 
@@ -73,6 +77,78 @@ export default class ExtensionStore implements BaseStore {
     } finally {
       console.timeEnd('[ExtensionStore]: Reading from local store');
     }
+  }
+
+  async getSplitStateReadDiagnostics(): Promise<SplitStateReadDiagnostics> {
+    const emptyDiagnostics = {
+      readableKeys: [],
+      missingKeys: [],
+      failedKeys: [],
+    };
+
+    if (!this.isSupported) {
+      return {
+        manifestStatus: 'failed',
+        ...emptyDiagnostics,
+        manifestError: {
+          errorName: 'UnsupportedStorage',
+          errorMessage: 'Storage local API not available.',
+        },
+      };
+    }
+
+    const { local } = browser.storage;
+    let manifest: unknown;
+
+    try {
+      const manifestResponse = await local.get(['manifest']);
+      manifest = isObject(manifestResponse)
+        ? manifestResponse.manifest
+        : undefined;
+    } catch (error) {
+      return {
+        manifestStatus: 'failed',
+        ...emptyDiagnostics,
+        manifestError: getSplitStateDiagnosticError(error),
+      };
+    }
+
+    if (!Array.isArray(manifest)) {
+      return {
+        manifestStatus: 'missing',
+        ...emptyDiagnostics,
+      };
+    }
+
+    const diagnostics: SplitStateReadDiagnostics = {
+      manifestStatus: 'readable',
+      manifestKeyCount: manifest.length,
+      readableKeys: [],
+      missingKeys: [],
+      failedKeys: [],
+    };
+
+    for (const key of manifest) {
+      if (typeof key !== 'string') {
+        continue;
+      }
+
+      try {
+        const response = await local.get([key]);
+        if (isObject(response) && hasProperty(response, key)) {
+          diagnostics.readableKeys.push(key);
+        } else {
+          diagnostics.missingKeys.push(key);
+        }
+      } catch (error) {
+        diagnostics.failedKeys.push({
+          key,
+          ...getSplitStateDiagnosticError(error),
+        });
+      }
+    }
+
+    return diagnostics;
   }
 
   async setKeyValues(pairs: Map<string, unknown>): Promise<void> {

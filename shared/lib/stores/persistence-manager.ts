@@ -8,6 +8,12 @@ import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
 import { IndexedDBStore } from './indexeddb-store';
+import {
+  getSplitStateDiagnosticError,
+  SplitStatePersistenceDiagnostics,
+  type SplitStatePersistenceDiagnosticsSnapshot,
+  type SplitStateReadDiagnostics,
+} from './persistence-diagnostics';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
@@ -41,6 +47,7 @@ export type Backup = {
 export type VaultCorruptionDetectedEvent = {
   backup: Backup;
   corruptionType: VaultCorruptionType;
+  diagnostics?: SplitStatePersistenceDiagnosticsSnapshot;
 };
 
 export type SplitStateMigrationSucceededEvent = {
@@ -217,6 +224,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #backupDb: IndexedDBStore | null = null;
 
+  #splitStateDiagnostics = new SplitStatePersistenceDiagnostics();
+
   #backup?: string;
 
   #open: boolean = false;
@@ -356,6 +365,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return structuredClone(this.#metadata);
   }
 
+  getSplitStatePersistenceDiagnosticsSnapshot(
+    readDiagnostics?: SplitStateReadDiagnostics,
+    now = Date.now(),
+  ): SplitStatePersistenceDiagnosticsSnapshot {
+    return this.#splitStateDiagnostics.getSnapshot(readDiagnostics, now);
+  }
+
   setMetadata(metadata: MetaData) {
     // don't rewrite if nothing has changed
     // this is a cheap comparison since metadata is small.
@@ -439,6 +455,37 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   async #setKeyValuesInLocalStore(pairs: Map<string, unknown>): Promise<void> {
     this.#maybeSimulateSetFailure();
     await this.#localStore.setKeyValues(pairs);
+  }
+
+  async #persistSplitStateDiagnosticsSnapshot(): Promise<void> {
+    try {
+      await this.#splitStateDiagnostics.persistSnapshotIfDue();
+    } catch {
+      // Diagnostics must never affect persistence success.
+    }
+  }
+
+  async #getSplitStatePersistenceDiagnosticsSnapshotForReport(): Promise<
+    SplitStatePersistenceDiagnosticsSnapshot | undefined
+  > {
+    let readDiagnostics: SplitStateReadDiagnostics | undefined;
+
+    try {
+      readDiagnostics =
+        await this.#localStore.getSplitStateReadDiagnostics?.();
+    } catch (error) {
+      readDiagnostics = {
+        manifestStatus: 'failed',
+        readableKeys: [],
+        missingKeys: [],
+        failedKeys: [],
+        manifestError: getSplitStateDiagnosticError(error),
+      };
+    }
+
+    return await this.#splitStateDiagnostics.getSnapshotForReport(
+      readDiagnostics,
+    );
   }
 
   /**
@@ -567,6 +614,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
     this.#pendingPairs.set(key, value);
+    this.#splitStateDiagnostics.recordQueuedUpdate(String(key));
   }
 
   async persist(): Promise<[boolean, Error | undefined]> {
@@ -612,6 +660,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           try {
             // save the pairs (includes test simulation check)
             await this.#setKeyValuesInLocalStore(clone);
+            this.#splitStateDiagnostics.recordPersistedBatch(clone);
+            await this.#persistSplitStateDiagnosticsSnapshot();
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -763,9 +813,16 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               const corruptionType = localStoreError
                 ? VaultCorruptionType.InaccessibleDatabase
                 : VaultCorruptionType.MissingVaultInDatabase;
+              const shouldCollectSplitStateDiagnostics = localStoreError
+                ? this.storageKind === 'split'
+                : (result?.meta?.storageKind ?? 'data') === 'split';
+              const diagnostics = shouldCollectSplitStateDiagnostics
+                ? await this.#getSplitStatePersistenceDiagnosticsSnapshotForReport()
+                : undefined;
               this.emit('vaultCorruptionDetected', {
                 backup,
                 corruptionType,
+                diagnostics,
               });
 
               // We've got some data (we haven't checked for a vault, as the
@@ -824,6 +881,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         await Promise.all([
           this.#localStore.reset(),
           await this.#backupDb?.reset(),
+          this.#splitStateDiagnostics.reset(),
         ]);
         this.#backup = undefined;
         this.#isExtensionInitialized = false;

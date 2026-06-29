@@ -5,6 +5,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
+import type { SplitStatePersistenceDiagnosticsSnapshot } from '../../../../shared/lib/stores/persistence-diagnostics';
 import { trackVaultCorruptionEvent } from './track-vault-corruption';
 
 jest.mock('../segment', () => ({
@@ -55,6 +56,65 @@ describe('trackVaultCorruptionEvent', () => {
         },
       },
     });
+    expect(mockSegment.flush).toHaveBeenCalledTimes(1);
+  });
+
+  it('includes split-state persistence diagnostics when provided', () => {
+    const backup: Backup = {
+      KeyringController: { vault: 'encrypted-vault-data' },
+      AnalyticsController: {
+        optedIn: true,
+        analyticsId: 'test-metrics-id-123',
+      },
+    };
+    const diagnostics: SplitStatePersistenceDiagnosticsSnapshot = {
+      schemaVersion: 1,
+      updatedAt: 1000,
+      totalQueuedUpdates: 1,
+      totalPersistedBatches: 1,
+      topWrittenKeys: [
+        {
+          key: 'PreferencesController',
+          queuedUpdates: 1,
+          persistedWrites: 1,
+          lastSizeBucket: 'lt_4kb',
+          maxSizeBucket: 'lt_4kb',
+        },
+      ],
+      recentWideBatches: [],
+      readDiagnostics: {
+        manifestStatus: 'readable',
+        manifestKeyCount: 1,
+        readableKeys: [],
+        missingKeys: [],
+        failedKeys: [
+          {
+            key: 'PreferencesController',
+            errorName: 'Error',
+            errorMessage: 'block checksum mismatch',
+          },
+        ],
+      },
+    };
+
+    trackVaultCorruptionEvent(
+      backup,
+      MetaMetricsEventName.VaultCorruptionDetected,
+      VaultCorruptionType.InaccessibleDatabase,
+      diagnostics,
+    );
+
+    expect(mockSegment.track).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_type: VaultCorruptionType.InaccessibleDatabase,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          split_state_persistence_diagnostics: diagnostics,
+          category: MetaMetricsEventCategory.Error,
+        },
+      }),
+    );
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
   });
 

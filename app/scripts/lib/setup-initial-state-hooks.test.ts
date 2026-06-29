@@ -1,9 +1,12 @@
 import type { PersistenceManager as PersistenceManagerType } from '../../../shared/lib/stores/persistence-manager';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { VaultCorruptionType } from '../../../shared/constants/state-corruption';
 
 const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
 const mockPersistenceOn = jest.fn();
+const mockTrackVaultCorruptionEvent = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
@@ -51,6 +54,10 @@ jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
   }),
 }));
 
+jest.mock('./state-corruption/track-vault-corruption', () => ({
+  trackVaultCorruptionEvent: mockTrackVaultCorruptionEvent,
+}));
+
 /**
  * Re-imports the module with a fresh module registry so top-level code
  * re-runs with the current `globalThis.self.location.href`.
@@ -79,6 +86,7 @@ describe('setup-initial-state-hooks', () => {
     mockMostRecentRetrievedState = null;
     mockCleanUpMostRecentRetrievedState.mockClear();
     mockPersistenceOn.mockClear();
+    mockTrackVaultCorruptionEvent.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -202,6 +210,37 @@ describe('setup-initial-state-hooks', () => {
       expect(mockPersistenceOn).toHaveBeenCalledWith(
         'splitStateMigrationFailed',
         expect.any(Function),
+      );
+    });
+
+    it('passes split-state diagnostics to the vault corruption tracker', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      const vaultCorruptionListener = mockPersistenceOn.mock.calls.find(
+        ([eventName]) => eventName === 'vaultCorruptionDetected',
+      )?.[1] as (payload: unknown) => void;
+      const backup = { KeyringController: { vault: 'vault' } };
+      const diagnostics = {
+        schemaVersion: 1,
+        updatedAt: 1000,
+        totalQueuedUpdates: 1,
+        totalPersistedBatches: 1,
+        topWrittenKeys: [],
+        recentWideBatches: [],
+      };
+
+      vaultCorruptionListener({
+        backup,
+        corruptionType: VaultCorruptionType.InaccessibleDatabase,
+        diagnostics,
+      });
+
+      expect(mockTrackVaultCorruptionEvent).toHaveBeenCalledWith(
+        backup,
+        MetaMetricsEventName.VaultCorruptionDetected,
+        VaultCorruptionType.InaccessibleDatabase,
+        diagnostics,
       );
     });
   });
