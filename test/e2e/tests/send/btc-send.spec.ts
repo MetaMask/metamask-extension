@@ -11,6 +11,8 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import {
+  mockAccountsApiV2WithBtc,
+  mockAccountsApiV5WithBtc,
   mockExchangeRates,
   mockCurrencyExchangeRates,
   mockFiatExchangeRates,
@@ -22,8 +24,16 @@ import {
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 
+const isUnifiedAssetsEnabled = true;
+
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
+    ...(isUnifiedAssetsEnabled
+      ? [
+          mockAccountsApiV2WithBtc(mockServer),
+          mockAccountsApiV5WithBtc(mockServer),
+        ]
+      : []),
     await mockInitialFullScan(mockServer),
     await mockExchangeRates(mockServer),
     await mockCurrencyExchangeRates(mockServer),

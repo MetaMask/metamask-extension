@@ -57,6 +57,9 @@ import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usd
 const DEFAULT_FIXTURE_ACCOUNT_ID = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
 
 /** Native ETH balances seeded for bridge fixtures (mainnet loses ~0.002 ETH to HST deploy gas). */
+const BRIDGE_L2_ETH_BALANCE_HEX = '0x15af1d78b58c40000';
+const BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST_HEX = '0x15aeabc8e0f370000';
+
 const getBridgeFixtureAssetsBalance = () => ({
   [DEFAULT_FIXTURE_ACCOUNT_ID]: {
     'eip155:1/slip44:60': {
@@ -85,6 +88,80 @@ const getBridgeL2FixtureAssetsBalance = () => ({
     },
   },
 });
+
+const BRIDGE_UNIFIED_EVM_API_BALANCES = {
+  mainnetNativeEthHuman: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
+  nativeBalance: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+};
+
+const getBridgeFixtureAccountTracker = () => ({
+  accountsByChainId: {
+    '0x1': {
+      [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+        balance: BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST_HEX,
+        stakedBalance: '0x0',
+      },
+    },
+    '0xe708': {
+      [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+        balance: BRIDGE_L2_ETH_BALANCE_HEX,
+        stakedBalance: '0x0',
+      },
+    },
+    '0xa4b1': {
+      [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+        balance: BRIDGE_L2_ETH_BALANCE_HEX,
+        stakedBalance: '0x0',
+      },
+    },
+  },
+});
+
+/**
+ * Accounts API v5 balances for mainnet + Linea + Arbitrum native ETH (unified assets).
+ *
+ * @param mockServer - Mockttp server for this test run.
+ */
+async function mockUnifiedBridgeAccountBalances(mockServer: Mockttp) {
+  const balanceByChainRef: Record<string, string> = {
+    '1': String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
+    '59144': String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+    '42161': String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+  };
+
+  return await mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .asPriority(99)
+    .thenCallback((req) => {
+      const accountIds =
+        new URL(req.url).searchParams
+          .get('accountIds')
+          ?.split(',')
+          .filter(Boolean) ?? [];
+
+      const balances = accountIds.map((accountId) => {
+        const chainRef = accountId.split(':')[1] ?? '1';
+        const balance =
+          balanceByChainRef[chainRef] ??
+          String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN);
+        const slip44 = chainRef === '1337' ? '1' : '60';
+        return {
+          accountId,
+          assetId: `eip155:${chainRef}/slip44:${slip44}`,
+          balance,
+        };
+      });
+
+      return {
+        statusCode: 200,
+        json: {
+          count: balances.length,
+          balances,
+          unprocessedNetworks: [],
+        },
+      };
+    });
+}
 
 export class BridgePage {
   driver: Driver;
@@ -1457,11 +1534,10 @@ export const getBridgeFixtures = ({
   return {
     forceBip44Version: false,
     fixtures: fixtureBuilder.build(),
-    unifiedEvmAccountsApiBalances: {
-      mainnetNativeEthHuman: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
-    },
+    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_API_BALANCES,
     testSpecificMock: async (mockServer: Mockttp) => {
       const standardMocks = [
+        await mockUnifiedBridgeAccountBalances(mockServer),
         await mockPortfolioPage(mockServer),
         await mockGetTxStatus(mockServer),
         await mockTopAssetsLinea(mockServer),
@@ -1939,8 +2015,10 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
   return {
     forceBip44Version: false,
     fixtures: fixtureBuilder.build(),
+    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_API_BALANCES,
     testSpecificMock: async (mockServer: Mockttp) => {
       const mocks = [
+        await mockUnifiedBridgeAccountBalances(mockServer),
         await mockPortfolioPage(mockServer),
         await mockGetTxStatus(mockServer),
         await mockTopAssetsLinea(mockServer),
@@ -2032,8 +2110,10 @@ export const getGasless7702SwapFixtures = (title?: string) => {
   return {
     forceBip44Version: false,
     fixtures: fixtureBuilder.build(),
+    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_API_BALANCES,
     testSpecificMock: async (mockServer: Mockttp) => {
       const mocks = [
+        await mockUnifiedBridgeAccountBalances(mockServer),
         await mockPortfolioPage(mockServer),
         await mockGetTxStatus(mockServer),
         await mockTopAssetsLinea(mockServer),

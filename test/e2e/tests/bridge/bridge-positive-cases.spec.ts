@@ -9,7 +9,10 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
+import {
+  BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+} from './constants';
 import {
   checkQuoteRequestsAreNotMadeAfterTimestamp,
   getBridgeFixtures,
@@ -25,7 +28,9 @@ describe('Bridge tests', function (this: Suite) {
       }),
       async ({ driver }) => {
         // the balance has been fixed now , we show native balance when currency controller is set
-        await login(driver, { expectedBalance: '$225,730.11' });
+        await login(driver, {
+          expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+        });
 
         const homePage = new HomePage(driver);
         await bridgeTransaction({
@@ -98,7 +103,9 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver, mockedEndpoint }) => {
-        await login(driver, { expectedBalance: '$225,730.11' });
+        await login(driver, {
+          expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+        });
         const networkManager = new NetworkManager(driver);
 
         // Navigate to Bridge page
@@ -139,7 +146,9 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver, mockedEndpoint }) => {
-        await login(driver, { expectedBalance: '$225,730.11' });
+        await login(driver, {
+          expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+        });
 
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
@@ -182,7 +191,9 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '$225,730.11' });
+        await login(driver, {
+          expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+        });
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
@@ -213,7 +224,9 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '$225,730.11' });
+        await login(driver, {
+          expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+        });
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
@@ -247,7 +260,9 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '$225,730.11' });
+        await login(driver, {
+          expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+        });
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
@@ -284,7 +299,9 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '$225,730.11' });
+        await login(driver, {
+          expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
+        });
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
