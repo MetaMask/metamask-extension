@@ -70,6 +70,7 @@
     "pendingRedirectRoute": null,
     "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
+    "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
@@ -123,6 +124,12 @@
   "ComplianceController": {
     "lastCheckedAt": null,
     "walletComplianceStatusMap": "object"
+  },
+  "ConfigRegistryController": {
+    "configs": "object",
+    "etag": null,
+    "lastFetched": null,
+    "version": null
   },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
@@ -279,6 +286,7 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
+      "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,

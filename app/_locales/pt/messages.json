@@ -1584,9 +1584,6 @@
   "back": {
     "message": "Voltar"
   },
-  "backToHome": {
-    "message": "Volta à página inicial"
-  },
   "backUpIncomplete": {
     "message": "Backup incompleto"
   },
@@ -2421,9 +2418,6 @@
   "closeSlide": {
     "message": "Encerrar $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "Você pode fechar esta janela a qualquer momento."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -5577,9 +5571,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Atualizamos nossa política de privacidade"
   },
-  "newRpcUrl": {
-    "message": "Novo URL da RPC"
-  },
   "newTokensImportedMessage": {
     "message": "Você importou $1 com sucesso.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5716,9 +5707,6 @@
   },
   "notCurrentAccount": {
     "message": "Essa é a conta correta? É diferente da conta atualmente selecionada na sua carteira"
-  },
-  "notEnoughGas": {
-    "message": "Não há gás suficiente"
   },
   "notificationDetail": {
     "message": "Detalhes"
@@ -9303,24 +9291,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "As trocas inteligentes estão temporariamente indisponíveis."
   },
-  "smartTransactionCancelled": {
-    "message": "Sua transação foi cancelada"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Não foi possível concluir sua transação. Ela foi cancelada para evitar que você pague taxas de gás desnecessárias."
-  },
-  "smartTransactionError": {
-    "message": "Falha na transação"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Mudanças repentinas no mercado podem provocar falhas. Se o problema continuar, fale com o suporte ao cliente da MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Sua transação foi enviada"
-  },
-  "smartTransactionSuccess": {
-    "message": "Sua transação foi concluída"
-  },
   "smartTransactions": {
     "message": "Transações inteligentes"
   },
@@ -10287,9 +10257,6 @@
   "tokenContractAddress": {
     "message": "Endereço de contrato do token"
   },
-  "tokenContractError": {
-    "message": "Este endereço é um endereço de contrato de token. Se você enviar tokens para este endereço, você os perderá."
-  },
   "tokenContractWarning": {
     "message": "Aviso sobre contrato de token"
   },
@@ -10779,9 +10746,6 @@
   "view": {
     "message": "Ver"
   },
-  "viewActivity": {
-    "message": "Ver atividade"
-  },
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
@@ -10808,9 +10772,6 @@
   },
   "viewTokenDetails": {
     "message": "Ver detalhes do token"
-  },
-  "viewTransaction": {
-    "message": "Ver transação"
   },
   "viewinExplorer": {
     "message": "Ver $1 no explorador",

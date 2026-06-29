@@ -1584,9 +1584,6 @@
   "back": {
     "message": "Bumalik"
   },
-  "backToHome": {
-    "message": "Bumalik sa home"
-  },
   "backUpIncomplete": {
     "message": "Hindi nakumpleto ang pag-back up"
   },
@@ -2421,9 +2418,6 @@
   "closeSlide": {
     "message": "Isara ang $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "Maaari mong isara ang window na ito anumang oras."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -5577,9 +5571,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Binago namin ang aming patakaran sa pagkapribado"
   },
-  "newRpcUrl": {
-    "message": "Bagong RPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "Matagumpay mong na-import ang $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5716,9 +5707,6 @@
   },
   "notCurrentAccount": {
     "message": "Ito ba ang tamang account? Iba ito sa kasalukuyang napiling account sa iyong wallet"
-  },
-  "notEnoughGas": {
-    "message": "Hindi Sapat ang Gas"
   },
   "notificationDetail": {
     "message": "Mga detalye"
@@ -9303,24 +9291,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Pansamantalang hindi available ang mga Smart Swap."
   },
-  "smartTransactionCancelled": {
-    "message": "Nakansela ang transaksyon mo"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Hindi nakumpleto ang transaksyon mo, kaya kinansela ito para maiwasan mo ang pagbabayad ng mga hindi kinakailangang gas fee."
-  },
-  "smartTransactionError": {
-    "message": "Nabigo ang transaksyon mo"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Maaaring magdulot ng pagkabigo ang biglaang pagbabago sa merkado. Kung magpatuloy ang problema, makipag-ugnayan sa customer support ng MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Isinumite ang iyong transaksyon"
-  },
-  "smartTransactionSuccess": {
-    "message": "Nakumpleto ang transaksyon mo"
-  },
   "smartTransactions": {
     "message": "Mga Smart Transaction"
   },
@@ -10287,9 +10257,6 @@
   "tokenContractAddress": {
     "message": "Address ng kontrata ng token"
   },
-  "tokenContractError": {
-    "message": "Ang address na ito ay isang address ng kontrata ng token. Kung magpapadala ka ng mga token sa address na ito, mawawala ang mga ito sa iyo."
-  },
   "tokenContractWarning": {
     "message": "Babala sa kontrata ng token"
   },
@@ -10779,9 +10746,6 @@
   "view": {
     "message": "Tingnan"
   },
-  "viewActivity": {
-    "message": "Tingnan ang aktibidad"
-  },
   "viewAddressOnExplorer": {
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
@@ -10808,9 +10772,6 @@
   },
   "viewTokenDetails": {
     "message": "Tingnan ang mga detalye ng token"
-  },
-  "viewTransaction": {
-    "message": "Tingnan ang transaksyon"
   },
   "viewinExplorer": {
     "message": "Tingnan ang $1 sa Explorer",

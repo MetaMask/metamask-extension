@@ -1,4 +1,5 @@
 import { noop } from 'lodash';
+import { getAnalyticsMessenger } from '../../controllers/analytics';
 import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 import {
   getPPOMControllerMessenger,
@@ -7,6 +8,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
+  getMultichainRoutingServiceInitMessenger,
   getMultichainRoutingServiceMessenger,
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
@@ -92,6 +94,7 @@ import {
   getSubscriptionControllerMessenger,
 } from './subscription';
 import { getConnectivityControllerMessenger } from './connectivity';
+import { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -200,6 +203,7 @@ import {
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
+import { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
 import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 import { getComplianceControllerMessenger } from './compliance-controller-messenger';
@@ -207,6 +211,7 @@ import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
+import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -226,6 +231,7 @@ export {
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
+export { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 export type { CurrencyRateControllerInitMessenger } from './currency-rate-controller-messenger';
 export {
   getCurrencyRateControllerMessenger,
@@ -338,6 +344,7 @@ export {
 } from './user-operation-controller-messenger';
 export { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 export { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
+export { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
 
 export const MESSENGER_FACTORIES = {
   AccountOrderController: {
@@ -374,7 +381,7 @@ export const MESSENGER_FACTORIES = {
   },
   AnalyticsController: {
     getMessenger: getAnalyticsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getAnalyticsMessenger,
   },
   AssetsController: {
     getMessenger: getAssetsControllerMessenger,
@@ -414,6 +421,14 @@ export const MESSENGER_FACTORIES = {
   },
   ComplianceController: {
     getMessenger: getComplianceControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ConfigRegistryController: {
+    getMessenger: getConfigRegistryControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ConfigRegistryApiService: {
+    getMessenger: getConfigRegistryApiServiceMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {
@@ -518,7 +533,7 @@ export const MESSENGER_FACTORIES = {
   },
   MultichainRoutingService: {
     getMessenger: getMultichainRoutingServiceMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainRoutingServiceInitMessenger,
   },
   NameController: {
     getMessenger: getNameControllerMessenger,
@@ -734,6 +749,10 @@ export const MESSENGER_FACTORIES = {
   },
   ProfileMetricsService: {
     getMessenger: getProfileMetricsServiceMessenger,
+    getInitMessenger: noop,
+  },
+  ProofOfOwnershipService: {
+    getMessenger: getProofOfOwnershipServiceMessenger,
     getInitMessenger: noop,
   },
 } as const;
