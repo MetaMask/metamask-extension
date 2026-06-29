@@ -114,7 +114,7 @@
     },
     "test/integration/defi/defi-positions.test.tsx": {
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 5,
+      "Reselect: Input stability warnings": 6,
       "error: Error: AggregateError": 4,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 4,
       "error: Warning: Home uses the legacy": 1,
@@ -134,6 +134,7 @@
     },
     "test/integration/notifications&auth/notifications-activation.test.tsx": {
       "React: State updates on unmounted components": 1,
+      "React: State updates on unmounted components": 1,
       "Reselect: Input stability warnings": 6,
       "warn: Selector unknown returned a different": 2,
       "warn: ⚠️ React Router Future Flag": 1
@@ -152,13 +153,13 @@
     },
     "test/integration/onboarding/import-wallet.test.tsx": {
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 5,
+      "Reselect: Input stability warnings": 6,
       "warn: Selector unknown returned a different": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/onboarding/wallet-created.test.tsx": {
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 5,
+      "Reselect: Input stability warnings": 6,
       "warn: Selector unknown returned a different": 1,
       "warn: ⚠️ React Router Future Flag": 1
     }

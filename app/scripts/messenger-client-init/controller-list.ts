@@ -90,6 +90,7 @@ import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
+  ProofOfOwnershipService,
 } from '@metamask/profile-metrics-controller';
 import {
   GeolocationApiService,
@@ -110,7 +111,6 @@ import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
-import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 import { SubscriptionService } from '../services/subscription/subscription-service';
 import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
@@ -202,7 +202,6 @@ export type MessengerClient =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
-  | SnapKeyringBuilder
   | SnapRegistryController
   | SubscriptionController
   | SnapsNameProvider
@@ -235,6 +234,7 @@ export type MessengerClient =
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
+  | ProofOfOwnershipService
   | ConnectivityController;
 
 /**

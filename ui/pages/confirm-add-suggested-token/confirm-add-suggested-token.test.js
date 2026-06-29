@@ -133,7 +133,7 @@ const renderComponent = (tokens = []) => {
       mostRecentOverviewPage: '/',
     },
   });
-  return renderWithProvider(<ConfirmAddSuggestedToken />, store);
+  return { ...renderWithProvider(<ConfirmAddSuggestedToken />, store), store };
 };
 
 describe('ConfirmAddSuggestedToken Component', () => {
@@ -252,5 +252,22 @@ describe('ConfirmAddSuggestedToken Component', () => {
         screen.getByText(messages.reusedTokenNameWarning.message),
       ).toBeInTheDocument();
     });
+  });
+
+  it('navigates to the overview page when suggested tokens are cleared after mount', () => {
+    const { store } = renderComponent();
+
+    mockNavigate.mockClear();
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          pendingApprovals: {},
+        },
+      });
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });

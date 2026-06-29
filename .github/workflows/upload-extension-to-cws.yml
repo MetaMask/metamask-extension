@@ -4,7 +4,7 @@ name: Upload extension to Chrome Web Store
 # Beta: cws-beta environment + *_BETA repo variables (INFRA-3645).
 # Production: cws-production environment + prod variables (INFRA-3644).
 # CWS API v2 upload (v1.1 sunsets 2026-10-15): chromewebstore.googleapis.com/upload/v2/...
-# Runway sender verification: deferred to INFRA-3649 (RAPID runtime identity enforcement).
+# INFRA-3649 — Runway sender verification (defense-in-depth; primary gate is WIF CEL on actor_id).
 
 on:
   workflow_dispatch:
@@ -21,6 +21,11 @@ on:
         options:
           - beta
           - production
+      dry-run:
+        description: 'Verify sender identity and WIF auth without uploading (skips download and CWS upload)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -121,7 +126,44 @@ jobs:
             echo "| Service account | \`${WIF_SERVICE_ACCOUNT}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"
 
+      # Defense-in-depth: fail fast if a non-Runway actor dispatches a production run.
+      # The authoritative gate is WIF CEL (INFRA-3644) which rejects non-Runway OIDC
+      # tokens at GCP token exchange; this step provides an earlier, human-readable error.
+      - name: Verify Runway sender (production only)
+        if: inputs.target == 'production'
+        env:
+          SENDER_ID: ${{ github.event.sender.id }}
+          SENDER_LOGIN: ${{ github.event.sender.login }}
+          RUNWAY_ACTOR_ID: '73448015'
+          RUNWAY_ACTOR_LOGIN: 'runway-github[bot]'
+        run: |
+          set -euo pipefail
+          echo "Sender: ${SENDER_LOGIN} (id=${SENDER_ID})"
+          echo "Expected: ${RUNWAY_ACTOR_LOGIN} (id=${RUNWAY_ACTOR_ID})"
+          if [[ "${SENDER_ID}" != "${RUNWAY_ACTOR_ID}" ]]; then
+            echo "::error::Production uploads must be dispatched by Runway (expected sender_id=${RUNWAY_ACTOR_ID} / ${RUNWAY_ACTOR_LOGIN}, got ${SENDER_ID} / ${SENDER_LOGIN}). WIF CEL would also reject this request at GCP token exchange."
+            exit 1
+          fi
+          echo "Sender verified: ${SENDER_LOGIN} (id=${SENDER_ID})"
+
+      - name: Dry-run complete
+        if: inputs.dry-run
+        run: |
+          {
+            echo "## Dry-run complete"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Target | \`${{ inputs.target }}\` |"
+            echo "| Version | \`${{ inputs.version }}\` |"
+            echo "| Sender | \`${{ github.event.sender.login }}\` (id=\`${{ github.event.sender.id }}\`) |"
+            echo "| Dry-run | \`true\` |"
+            echo "| Result | Validation and sender verification passed. No download or upload performed. |"
+          } >> "${GITHUB_STEP_SUMMARY}"
+          echo "Dry-run mode: skipping download, GCP auth, and CWS upload."
+
       - name: Download release asset
+        if: ${{ !inputs.dry-run }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -134,7 +176,7 @@ jobs:
 
       # Beta/dev listing rejects manifest.key tied to production extension ID (POC lesson).
       - name: Strip manifest key from zip (beta only)
-        if: inputs.target == 'beta'
+        if: inputs.target == 'beta' && !inputs.dry-run
         run: |
           set -euo pipefail
           mkdir -p /tmp/extension
@@ -146,6 +188,7 @@ jobs:
           echo "Stripped manifest key and set version in manifest.json"
 
       - name: Authenticate to Google Cloud
+        if: ${{ !inputs.dry-run }}
         id: auth
         uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
@@ -155,6 +198,7 @@ jobs:
           access_token_scopes: https://www.googleapis.com/auth/chromewebstore
 
       - name: Upload to Chrome Web Store
+        if: ${{ !inputs.dry-run }}
         id: cws-upload
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
@@ -231,7 +275,7 @@ jobs:
           echo "Package uploaded (draft/pending review). Not published to users."
 
       - name: Summary
-        if: always()
+        if: ${{ always() && !inputs.dry-run }}
         run: |
           {
             echo ""

@@ -6,9 +6,9 @@ import {
   getLocalizedSnapManifest,
   SnapStatus,
 } from '@metamask/snaps-utils';
-import { memoize } from 'lodash';
+import { cloneDeep, memoize } from 'lodash';
 import semver from 'semver';
-import { createSelector } from 'reselect';
+import { createSelector, lruMemoize } from 'reselect';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
@@ -32,6 +32,7 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 
 import log from 'loglevel';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
@@ -172,6 +173,7 @@ import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   createDeepEqualSelector,
   createParameterizedSelector,
+  createParameterizedDeepEqualSelector,
   createParameterizedShallowEqualSelector,
   createResultEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
@@ -657,7 +659,11 @@ export const getInternalAccountsSortedByKeyring = createSelector(
     /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount[]>} */
     const entropySourceToAccountsMap = Object.values(accounts).reduce(
       (map, account) => {
-        if (account.metadata?.keyring?.type === KeyringTypes.snap) {
+        const keyringType = account.metadata?.keyring?.type;
+        if (
+          keyringType === KeyringTypes.snap ||
+          keyringType === KeyringTypeV2.Snap
+        ) {
           const { entropySource = thirdPartySnaps } = account.options || {};
           if (!map[entropySource]) {
             map[entropySource] = [];
@@ -687,7 +693,10 @@ export const getInternalAccountsSortedByKeyring = createSelector(
           entropySourceToAccountsMap[keyring.metadata.id] || [];
         internalAccounts.push(...keyringAccounts, ...snapAccounts);
         return internalAccounts;
-      } else if (keyring.type === KeyringTypes.snap) {
+      } else if (
+        keyring.type === KeyringTypes.snap ||
+        keyring.type === KeyringTypeV2.Snap
+      ) {
         const thirdpartySnapAccounts =
           entropySourceToAccountsMap[thirdPartySnaps] || [];
         // In a scenario where there are multiple snap keyrings, which isn't the case for today
@@ -1340,9 +1349,8 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
-// Deep-equal memo: pendingApprovals map identity can change while approvals list is unchanged.
-export const getUnapprovedConfirmations = createDeepEqualSelector(
-  (state) => state.metamask.pendingApprovals || {},
+export const getUnapprovedConfirmations = createSelector(
+  (state) => state.metamask.pendingApprovals ?? EMPTY_OBJECT,
   (pendingApprovals) => Object.values(pendingApprovals),
 );
 
@@ -1466,10 +1474,9 @@ export function getTokenSortConfig(state) {
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
  *
- * Deep-equal memo: merged tokenNetworkFilter object is often a new reference for the same filter.
  */
 // @deprecated('Use `getEnabledNetworks` instead')
-export const getTokenNetworkFilter = createDeepEqualSelector(
+export const getTokenNetworkFilter = createSelector(
   getCurrentChainId,
   getPreferences,
   getIsEvmMultichainNetworkSelected,
@@ -2065,16 +2072,18 @@ export const getMetadataContractName = createSelector(
 
 export const getTxData = (state) => state.confirmTransaction.txData;
 
-// Deep-equal memo: tx map lookups; controller-backed maps can get new references with same txs.
-export const getUnapprovedTransaction = createDeepEqualSelector(
+const unapprovedTransactionSelectorFactory =
+  createParameterizedDeepEqualSelector(20);
+
+export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
   (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) =>
-    Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
+  (unapprovedTxs, transactionId) => unapprovedTxs?.[transactionId],
 );
 
-// Deep-equal memo: find + EMPTY_OBJECT fallback makes output reference unstable without deep memo.
-export const getTransaction = createDeepEqualSelector(
+const transactionSelectorFactory = createParameterizedDeepEqualSelector(50);
+
+export const getTransaction = transactionSelectorFactory(
   getCurrentNetworkTransactions,
   (_, transactionId) => transactionId,
   (transactions, transactionId) => {
@@ -2082,26 +2091,31 @@ export const getTransaction = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: merges txData and tx meta; nested objects often re-created for the same tx.
-export const getFullTxData = createDeepEqualSelector(
+const fullTxDataSelectorFactory = createParameterizedDeepEqualSelector(20);
+
+export const getFullTxData = fullTxDataSelectorFactory(
   getTxData,
   (state, transactionId, status) => {
-    if (status === TransactionStatus.unapproved) {
-      return getUnapprovedTransaction(state, transactionId) ?? {};
+    const transaction =
+      status === TransactionStatus.unapproved
+        ? getUnapprovedTransaction(state, transactionId)
+        : getTransaction(state, transactionId);
+    if (!transaction?.id) {
+      return EMPTY_OBJECT;
     }
-    return getTransaction(state, transactionId);
+    // Snapshot for memoization: child selectors may return live transaction
+    // objects that mutate in place, which reference/deep input checks miss.
+    return cloneDeep(transaction);
   },
+  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
   (
     _state,
     _transactionId,
     _status,
-    customTxParamsData,
+    _customTxParamsData,
     hexTransactionAmount,
-  ) => ({
-    customTxParamsData,
-    hexTransactionAmount,
-  }),
-  (txData, transaction, { customTxParamsData, hexTransactionAmount }) => {
+  ) => hexTransactionAmount,
+  (txData, transaction, customTxParamsData, hexTransactionAmount) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       fullTxData.simulationFails = { ...transaction.simulationFails };
@@ -2125,6 +2139,16 @@ export const getFullTxData = createDeepEqualSelector(
       };
     }
     return fullTxData;
+  },
+  {
+    // Always re-run input selectors so in-place transaction mutations are visible.
+    // argsMemoize defaults to weakMapMemoize keyed by state reference, which skips
+    // input selectors when the Redux state object is unchanged.
+    argsMemoize: lruMemoize,
+    argsMemoizeOptions: {
+      maxSize: 1,
+      equalityCheck: () => false,
+    },
   },
 );
 
@@ -2988,9 +3012,8 @@ export function getTokenScanCache(state) {
  * @param {string[]} tokenAddresses
  * @returns {Record<string, TokenScanCacheResult>}
  *
- * Deep-equal memo: builds a fresh results object from cache + address list args.
  */
-export const getTokenScanResultsForAddresses = createDeepEqualSelector(
+export const getTokenScanResultsForAddresses = createParameterizedSelector(30)(
   getTokenScanCache,
   (_state, chainId) => chainId,
   (_state, _chainId, tokenAddresses) => tokenAddresses,
