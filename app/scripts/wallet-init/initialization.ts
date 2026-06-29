@@ -7,11 +7,6 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
-import type {
-  RemoteFeatureFlagControllerEnableAction,
-  RemoteFeatureFlagControllerDisableAction,
-  RemoteFeatureFlagControllerUpdateRemoteFeatureFlagsAction,
-} from '@metamask/remote-feature-flag-controller';
 import { RootMessenger } from '../lib/messenger';
 import type { PreferencesControllerStateChangeEvent } from '../controllers/preferences-controller';
 import type { OnboardingControllerStateChangeEvent } from '../controllers/onboarding';
@@ -28,16 +23,13 @@ const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
- * extra actions/events the extension-side wiring reads (the metaMetrics id and
- * the remote feature flag enable/disable/update actions, plus the preference
- * and onboarding state-change events the toggle subscribes to).
+ * extra actions/events the extension-side wiring reads (the metaMetrics id from
+ * `AnalyticsController`, plus the preference and onboarding state-change events
+ * the toggle subscribes to). The remote feature flag enable/disable/update
+ * actions the toggle calls are already covered by `DefaultActions`.
  */
 export type WalletInitMessenger = RootMessenger<
-  | DefaultActions
-  | AnalyticsControllerGetStateAction
-  | RemoteFeatureFlagControllerEnableAction
-  | RemoteFeatureFlagControllerDisableAction
-  | RemoteFeatureFlagControllerUpdateRemoteFeatureFlagsAction,
+  DefaultActions | AnalyticsControllerGetStateAction,
   | DefaultEvents
   | PreferencesControllerStateChangeEvent
   | OnboardingControllerStateChangeEvent
