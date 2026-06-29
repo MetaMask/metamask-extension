@@ -1,5 +1,6 @@
 import { XlmScope } from '@metamask/keyring-api';
 import { parseCaipAssetType } from '@metamask/utils';
+import { CLASSIC_TRUSTLINE_CHAIN_IDS } from '../constants';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 
 type TrustlineAccountAssetInfo = {
@@ -25,11 +26,6 @@ function isTrustlineInactiveFromAccountAssetInfo(
 
   return parsed <= 0;
 }
-
-const CLASSIC_TRUSTLINE_CHAIN_IDS: CaipChainId[] = [
-  XlmScope.Pubnet,
-  // TODO: Add the Ripple/XRP chain id when the exact scope constant is confirmed.
-];
 
 function isClassicTrustlineChainId(chainId: CaipChainId | string): boolean {
   return CLASSIC_TRUSTLINE_CHAIN_IDS.includes(chainId as CaipChainId);

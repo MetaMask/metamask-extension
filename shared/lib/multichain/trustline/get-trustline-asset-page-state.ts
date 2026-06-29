@@ -1,5 +1,6 @@
 import { type CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { XlmScope } from '@metamask/keyring-api';
+import { CLASSIC_TRUSTLINE_CHAIN_IDS } from '../constants';
 import { AssetType } from '../../../constants/transaction';
 import { isClassicTrustlineInactiveForDisplay } from './trustline-from-account-asset-info';
 
@@ -24,6 +25,22 @@ function isSep41Asset(chainId: string, assetId?: string): boolean {
   }
 }
 
+function isSupportedClassicTrustlineAsset(assetIdParam?: string): boolean {
+  if (!assetIdParam) {
+    return false;
+  }
+
+  try {
+    const parsed = parseCaipAssetType(assetIdParam as CaipAssetType);
+    return (
+      CLASSIC_TRUSTLINE_CHAIN_IDS.includes(parsed.chainId as string) &&
+      parsed.assetNamespace === 'asset'
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function getTrustlineAssetPageState({
   chainId,
   assetId,
@@ -35,25 +52,6 @@ export function getTrustlineAssetPageState({
   type: AssetType;
   accountAssetInfo?: AccountAssetInfo;
 }) {
-  function isSupportedClassicTrustlineAsset(assetIdParam?: string): boolean {
-    if (!assetIdParam) {
-      return false;
-    }
-
-    // Only the chains listed here support classic `asset:` trustlines.
-    const CLASSIC_TRUSTLINE_CHAIN_IDS: string[] = [XlmScope.Pubnet];
-
-    try {
-      const parsed = parseCaipAssetType(assetIdParam as CaipAssetType);
-      return (
-        CLASSIC_TRUSTLINE_CHAIN_IDS.includes(parsed.chainId as string) &&
-        parsed.assetNamespace === 'asset'
-      );
-    } catch {
-      return false;
-    }
-  }
-
   const isClassicTrustlineTrackedToken =
     type === AssetType.token &&
     Boolean(assetId) &&

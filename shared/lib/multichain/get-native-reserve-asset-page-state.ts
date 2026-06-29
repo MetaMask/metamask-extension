@@ -1,12 +1,9 @@
 import { XlmScope } from '@metamask/keyring-api';
 import { AssetType } from '../../constants/transaction';
 import { getBaseReserveFromAccountAssetInfo } from './stellar/base-reserve-from-account-asset-info';
+import { NATIVE_RESERVE_CHAIN_IDS } from './constants';
 
 export type AccountAssetInfo = { baseReserve?: string } | undefined;
-
-const NATIVE_RESERVE_CHAINS = [
-  XlmScope.Pubnet /* TODO: Add Ripple/XRP when supported */,
-];
 
 export function getNativeReserveAssetPageState({
   chainId,
@@ -17,9 +14,7 @@ export function getNativeReserveAssetPageState({
   type: AssetType;
   accountAssetInfo?: AccountAssetInfo;
 }) {
-  const isNativeReserveChain = NATIVE_RESERVE_CHAINS.includes(
-    chainId as XlmScope,
-  );
+  const isNativeReserveChain = NATIVE_RESERVE_CHAIN_IDS.includes(chainId);
 
   const nativeReserveBaseReserve =
     isNativeReserveChain && type === AssetType.native
