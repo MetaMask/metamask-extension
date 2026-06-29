@@ -277,7 +277,7 @@ const AssetPage = ({
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   };
 
-  // Derive trustline and Stellar native page state via focused helpers.
+  // Derive trustline and native reserve page state via focused helpers.
   const trustlinePageState = getTrustlineAssetPageState({
     chainId,
     assetId: bip44Asset?.assetId ?? assetId,

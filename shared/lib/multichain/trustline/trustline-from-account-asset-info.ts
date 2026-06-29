@@ -1,4 +1,3 @@
-import { XlmScope } from '@metamask/keyring-api';
 import { parseCaipAssetType } from '@metamask/utils';
 import { CLASSIC_TRUSTLINE_CHAIN_IDS } from '../constants';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';

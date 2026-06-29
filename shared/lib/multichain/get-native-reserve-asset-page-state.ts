@@ -1,4 +1,3 @@
-import { XlmScope } from '@metamask/keyring-api';
 import { AssetType } from '../../constants/transaction';
 import { getBaseReserveFromAccountAssetInfo } from './stellar/base-reserve-from-account-asset-info';
 import { NATIVE_RESERVE_CHAIN_IDS } from './constants';
