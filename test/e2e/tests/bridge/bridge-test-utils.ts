@@ -714,10 +714,6 @@ async function mockFeatureFlags(
   featureFlags: Partial<FeatureFlagResponse>,
   additionalFlags: Record<string, unknown> = {},
 ) {
-  const extensionSkipTransactionStatusPage =
-    additionalFlags.extensionSkipTransactionStatusPage ??
-    getRegistryBooleanFlag('extensionSkipTransactionStatusPage');
-
   const extensionUxActivityListRedesign =
     additionalFlags.extensionUxActivityListRedesign ??
     getRegistryBooleanFlag('extensionUxActivityListRedesign');
@@ -731,7 +727,6 @@ async function mockFeatureFlags(
         json: [
           {
             bridgeConfig: featureFlags,
-            extensionSkipTransactionStatusPage,
             extensionUxActivityListRedesign,
             ...additionalFlags,
           },
@@ -1320,13 +1315,7 @@ const STX_MAINNET_SENTINEL_URL =
 const STX_LINEA_SENTINEL_URL =
   'https://tx-sentinel-linea-mainnet.api.cx.metamask.io';
 
-const extensionSkipTransactionStatusPage = getRegistryBooleanFlag(
-  'extensionSkipTransactionStatusPage',
-  true,
-);
-
 const STX_MAINNET_NETWORK_CONFIG = {
-  extensionSkipTransactionStatusPage,
   smartTransactionsNetworks: {
     '0x1': {
       extensionActive: true,
@@ -1338,7 +1327,6 @@ const STX_MAINNET_NETWORK_CONFIG = {
 };
 
 const STX_LINEA_NETWORK_CONFIG = {
-  extensionSkipTransactionStatusPage,
   smartTransactionsNetworks: {
     '0xe708': {
       extensionActive: true,
@@ -2216,7 +2204,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
     },
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionSkipTransactionStatusPage,
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         smartTransactionsNetworks: {
           '0x1': {

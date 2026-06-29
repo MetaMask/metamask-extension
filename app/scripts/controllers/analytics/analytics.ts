@@ -12,6 +12,7 @@ import type {
   AnalyticsEventBuildOptions,
 } from '../../../../shared/lib/analytics/create-event-builder';
 import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
+import type { FlattenedBackgroundStateProxy } from '../../../../shared/types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
@@ -59,6 +60,12 @@ const MARKETING_UTM_PARAMETERS = [...UTM_PARAMETERS];
 
 let messenger: AnalyticsMessenger | undefined;
 let appVersion = '';
+let cachedProfileIdentity:
+  | {
+      profileId?: string;
+      canonicalProfileId?: string;
+    }
+  | undefined;
 
 function getMessenger(): AnalyticsMessenger {
   if (!messenger) {
@@ -83,6 +90,42 @@ export function configureAnalytics({
   messenger = configuredMessenger;
   appVersion =
     environment === 'production' ? version : `${version}-${environment}`;
+}
+
+/**
+ * Cache profile identity derived from SRP session data for event properties.
+ * Only profile IDs are retained, not access tokens or other session fields.
+ *
+ * @param srpSessionData - Current SRP session data from MetaMask state.
+ */
+export function updateProfileSessionData(
+  srpSessionData: FlattenedBackgroundStateProxy['srpSessionData'],
+): void {
+  const profile = Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile;
+
+  if (!profile) {
+    cachedProfileIdentity = undefined;
+    return;
+  }
+
+  cachedProfileIdentity = {
+    profileId: profile.profileId,
+    canonicalProfileId: profile.canonicalProfileId,
+  };
+}
+
+function getProfileIdentityProperties(): Record<string, string> {
+  return omitBy(
+    {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      profile_id: cachedProfileIdentity?.profileId,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      canonical_profile_id: cachedProfileIdentity?.canonicalProfileId,
+    },
+    (value) => !value,
+  ) as Record<string, string>;
 }
 
 function getCurrentChainId(networkClientId?: NetworkClientId): Hex {
@@ -277,6 +320,7 @@ function buildTrackEventPayload(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
+        ...getProfileIdentityProperties(),
       },
       (propertyValue) => propertyValue === undefined,
     ) as AnalyticsEventProperties,
@@ -312,6 +356,7 @@ function buildTrackPagePayload(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
+        ...getProfileIdentityProperties(),
       },
       (propertyValue) => propertyValue === undefined,
     ) as AnalyticsEventProperties,
