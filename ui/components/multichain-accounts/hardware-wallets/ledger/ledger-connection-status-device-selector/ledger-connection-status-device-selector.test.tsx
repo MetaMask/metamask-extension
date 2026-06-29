@@ -60,7 +60,9 @@ describe('LedgerConnectionStatusDeviceSelector', () => {
       });
 
       expect(
-        screen.getByTestId('ledger-connection-status-device-selector-indicator'),
+        screen.getByTestId(
+          'ledger-connection-status-device-selector-indicator',
+        ),
       ).toBeInTheDocument();
     });
 
