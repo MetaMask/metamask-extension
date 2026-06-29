@@ -33473,7 +33473,6 @@ __metadata:
     tslib: "npm:~2.6.0"
     tsx: "npm:^4.22.4"
     tweetnacl: "npm:^1.0.3"
-    type-fest: "npm:4.41.0"
     typescript: "npm:~5.6.0"
     unicode-confusables: "npm:^0.1.1"
     unzipper: "npm:^0.12.3"
