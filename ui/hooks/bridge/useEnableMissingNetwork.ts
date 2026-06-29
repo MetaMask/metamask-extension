@@ -6,9 +6,9 @@ import {
 } from '@metamask/bridge-controller';
 import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
 import { useSelector, useDispatch } from 'react-redux';
-import { getEnabledNetworksByNamespace } from '../../../selectors';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
-import { setEnabledAllPopularNetworks } from '../../../store/actions';
+import { getEnabledNetworksByNamespace } from '../../selectors';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../shared/constants/network';
+import { setEnabledAllPopularNetworks } from '../../store/actions';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)

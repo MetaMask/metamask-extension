@@ -5718,9 +5718,6 @@
   "notCurrentAccount": {
     "message": "Bu hesap doğru mu? Cüzdanınızdaki mevcut seçili hesaptan farklı"
   },
-  "notEnoughGas": {
-    "message": "Yeterli gaz yok"
-  },
   "notificationDetail": {
     "message": "Ayrıntılar"
   },

@@ -5627,9 +5627,6 @@
   "notCurrentAccount": {
     "message": "¿Esta es la cuenta correcta? No coincide con la cuenta seleccionada actualmente en la cartera"
   },
-  "notEnoughGas": {
-    "message": "No hay gas suficiente"
-  },
   "notificationDetail": {
     "message": "Detalles"
   },

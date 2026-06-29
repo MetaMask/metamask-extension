@@ -174,13 +174,13 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const currentPageLabelKey = meta?.labelKey;
 
   const handleClose = useCallback(() => {
-    if (backRoute.startsWith(DEFAULT_ROUTE)) {
+    if (isOnSettingsRoot) {
       runCloseTransition(() => navigate(backRoute));
       return;
     }
 
     navigate(backRoute);
-  }, [backRoute, navigate, runCloseTransition]);
+  }, [backRoute, isOnSettingsRoot, navigate, runCloseTransition]);
 
   // Header: "Settings" on fullscreen; tab or sub-page name on popup/sidepanel
   const headerTitle =

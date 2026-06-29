@@ -1,4 +1,5 @@
 import { noop } from 'lodash';
+import { getAnalyticsMessenger } from '../../controllers/analytics';
 import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 import {
   getPPOMControllerMessenger,
@@ -7,6 +8,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
+  getMultichainRoutingServiceInitMessenger,
   getMultichainRoutingServiceMessenger,
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
@@ -376,7 +378,7 @@ export const MESSENGER_FACTORIES = {
   },
   AnalyticsController: {
     getMessenger: getAnalyticsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getAnalyticsMessenger,
   },
   AssetsController: {
     getMessenger: getAssetsControllerMessenger,
@@ -520,7 +522,7 @@ export const MESSENGER_FACTORIES = {
   },
   MultichainRoutingService: {
     getMessenger: getMultichainRoutingServiceMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainRoutingServiceInitMessenger,
   },
   NameController: {
     getMessenger: getNameControllerMessenger,
