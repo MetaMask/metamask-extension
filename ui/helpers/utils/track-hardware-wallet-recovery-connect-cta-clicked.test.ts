@@ -36,19 +36,21 @@ describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
     });
 
     expect(trackEvent).toHaveBeenCalledTimes(1);
-    expect(trackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Accounts,
-      event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
-      properties: expect.objectContaining({
-        location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
-        device_type: MetaMetricsHardwareWalletDeviceType.Ledger,
-        device_model: 'N/A',
-        error_type:
-          MetaMetricsHardwareWalletRecoveryErrorType.DeviceDisconnected,
-        error_type_view_count: 1,
-        error_code: 'DeviceDisconnected',
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Accounts,
+          location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+          device_type: MetaMetricsHardwareWalletDeviceType.Ledger,
+          device_model: 'N/A',
+          error_type:
+            MetaMetricsHardwareWalletRecoveryErrorType.DeviceDisconnected,
+          error_type_view_count: 1,
+          error_code: 'DeviceDisconnected',
+        }),
       }),
-    });
+    );
   });
 
   it('passes the given recovery location into properties', () => {
