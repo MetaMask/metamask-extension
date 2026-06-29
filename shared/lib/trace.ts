@@ -573,21 +573,12 @@ function startSpan<T>(
   } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
-  // In the UI document context, inherit from the active span (the
-  // browserTracingIntegration pageload/navigation transaction) when no
-  // explicit parent is provided. Must capture the active span *before*
-  // sentryWithIsolationScope severs the active-span context chain.
-  // forceTransaction preserves transaction-level visibility for monitoring
-  // while linking to the auto-instrumentation hierarchy.
-  //
-  // NOTE: The MV3 service-worker context has browserTracingIntegration's
-  // instrumentPageLoad/instrumentNavigation disabled (see setupSentry.js), so
-  // there is no ambient pageload root. But an in-flight operation's own span is
-  // still active for the duration of its (async) callback, so a second
-  // background operation that starts concurrently would otherwise nest under
-  // it and share its trace id. Callers that must root independently
-  // (e.g. per-operation background RPC) pass `root: true` to skip this block and
-  // always create their own root span, matching Sentry's per-task trace guidance.
+  // Inherit the active span (e.g. the browserTracingIntegration pageload) when no
+  // parent is given; capture it before sentryWithIsolationScope severs the
+  // active-span chain. `root: true` skips this to force an independent root —
+  // needed in the SW, where a concurrent background op would otherwise nest under
+  // an in-flight op's still-active span and share its trace id. forceTransaction
+  // keeps transaction-level visibility.
   let forceTransaction: boolean | undefined;
   if (!root && !parentSpan && !parentContext) {
     const activeSpan = sentryGetActiveSpan();

@@ -46,14 +46,10 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let error: unknown;
     try {
       if (!traceContext) {
-        // No upstream trace context from the UI.  Root this operation in a new
-        // per-operation trace so that any auto-instrumented spans (e.g.
-        // http.client) emitted during the call have a parent, now that the MV3
-        // service-worker pageload root is disabled.  `root: true` forces a fresh
-        // root even when another background RPC handler is concurrently in
-        // flight, so overlapping operations get independent trace ids instead of
-        // nesting under each other.  Sentry's tracesSampleRate still gates
-        // whether the trace is actually recorded.
+        // No upstream UI trace context — root this op in its own trace so
+        // background spans (e.g. http.client) have a parent now the SW pageload
+        // root is gone. `root: true` forces a fresh root even with another RPC
+        // handler concurrently in flight, so overlapping ops get independent ids.
         result = await trace(
           {
             name: spanName,
@@ -81,10 +77,9 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
           () => handler.call(api, ...cleanParams),
         );
       } else {
-        // Wrapper sub-sample rejects: skip the `rpc.handler` span but still
-        // propagate trace context so nested auto-instrumented and core-package
-        // spans (e.g. `http.client`, `assets-controller` `trace()` callers)
-        // attach to the originating UI trace instead of becoming orphans.
+        // Sub-sample rejects: skip the `rpc.handler` span but still propagate
+        // context so nested spans (http.client, core-package trace() callers)
+        // attach to the UI trace instead of orphaning.
         result = await continueTraceContext(traceContext, () =>
           handler.call(api, ...cleanParams),
         );

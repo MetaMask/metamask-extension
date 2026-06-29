@@ -302,14 +302,8 @@ jest.mock('./lib/rpc-method-middleware', () => ({
 
 jest.mock('../../shared/lib/trace', () => ({
   ...jest.requireActual('../../shared/lib/trace'),
-  // Run the callback only for createMetaRPCHandler's background-RPC dispatch,
-  // which now routes the no-trace-context path through
-  // trace({ op: 'rpc.handler' }, () => handler.call(...)). A blanket no-op mock
-  // would swallow that handler call (e.g. safelistPhishingDomain,
-  // getCookieFromMarketingPage) and report 0 invocations, while a blanket
-  // pass-through would run the other instrumentation traces (e.g.
-  // discoverAndCreateAccounts) that the rest of the suite relies on being
-  // no-ops. Gate on op so only the RPC-dispatch path executes.
+  // Run the callback only for the RPC-dispatch path; other instrumentation
+  // traces stay no-ops, as the rest of the suite assumes.
   trace: jest.fn((request, fn) =>
     request?.op === 'rpc.handler' ? fn?.() : undefined,
   ),
