@@ -234,6 +234,7 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
+import { checkGmxHasReferralCode } from './lib/defi-referral-onchain-check';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -5764,6 +5765,23 @@ export default class MetamaskController extends EventEmitter {
 
     // We should redirect to the referral url if the account is approved
     const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
+
+    if (
+      partner.id === DefiReferralPartner.GMX &&
+      (shouldShowApproval || shouldRedirect)
+    ) {
+      const hasExistingCode = await checkGmxHasReferralCode(
+        this.networkController,
+        activePermittedAccount,
+      );
+      if (hasExistingCode) {
+        this.preferencesController.addReferralPassedAccount(
+          partner.id,
+          activePermittedAccount,
+        );
+        return;
+      }
+    }
 
     if (shouldShowApproval) {
       try {
