@@ -5,7 +5,7 @@ import { ShowApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { RootMessenger } from '../lib/messenger';
-import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
+import { IndexedDBStorageAdapter } from '../../../shared/lib/stores/indexeddb-storage-adapter';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { getKeyringBuilders, getKeyringV2Builders } from './keyrings';
 
@@ -58,7 +58,7 @@ export function initializeWallet({
         keyringV2Builders: getKeyringV2Builders(),
       },
       storageService: {
-        storage: new BrowserStorageAdapter(),
+        storage: new IndexedDBStorageAdapter(),
       },
     } as WalletInstanceOptions,
   });
