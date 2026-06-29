@@ -8210,7 +8210,11 @@ export default class MetamaskController extends EventEmitter {
       // unlocked.
       this.controllerMessenger.call('SnapController:setClientActive', open);
 
-      if (open) {
+      const { completedOnboarding } = this.controllerMessenger.call(
+        'OnboardingController:getState',
+      );
+
+      if (open && completedOnboarding) {
         // If the client is open and unlocked, request a periodic update of the
         // Snaps registry.
         this.controllerMessenger
