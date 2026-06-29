@@ -59,8 +59,8 @@ class TronAssetDetailsPage {
   private readonly tronDailyResourcesBandwidthDescription =
     '[data-testid="tron-daily-resources-bandwidth-description"]';
 
-  private readonly tronStakedBalanceRow =
-    '[data-testid="tron-staked-balance-row"]';
+  private readonly tronStakedBalanceRowEnergy =
+    '[data-testid="tron-staked-balance-row-energy"]';
 
   private readonly tokenBuyButton = '[data-testid="token-overview-buy"]';
 
@@ -150,7 +150,7 @@ class TronAssetDetailsPage {
    * asset details (e.g. "Staked for Energy" with 20 TRX).
    */
   async checkStakedForEnergyBalanceRow(expectedBalance: string): Promise<void> {
-    await this.driver.waitForSelector(this.tronStakedBalanceRow);
+    await this.driver.waitForSelector(this.tronStakedBalanceRowEnergy);
     await this.driver.waitForSelector({ text: 'Staked for Energy' });
     await this.driver.waitForSelector({ text: expectedBalance });
   }

@@ -6,18 +6,15 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
-} from '@metamask/design-system-react';
-import {
-  Text,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-} from '../../../components/component-library';
-import {
+  Text,
   TextColor,
   TextVariant,
-  IconColor,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTronResources, TronResource } from '../hooks/useTronResources';
 
@@ -98,7 +95,7 @@ const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
       >
         <Icon
           name={iconName}
-          color={IconColor.iconDefault}
+          color={IconColor.IconDefault}
           size={IconSize.Sm}
         />
       </Box>
@@ -145,14 +142,15 @@ const ResourceRow = ({
         <ResourceCircle resource={resource} iconName={iconName} />
         <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={1}>
           <Text
-            variant={TextVariant.bodyLgMedium}
-            color={TextColor.textDefault}
+            variant={TextVariant.BodyLg}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
           >
             {label}
           </Text>
           <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
             data-testid={descriptionTestId}
           >
             {description}
@@ -160,10 +158,10 @@ const ResourceRow = ({
         </Box>
       </Box>
       <Box className="flex" flexDirection={BoxFlexDirection.Row}>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
           {currentValue}
         </Text>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           /{maxValue}
         </Text>
       </Box>
@@ -221,15 +219,15 @@ export const TronDailyResources = ({
         marginBottom={3}
       >
         <Text
-          variant={TextVariant.headingSm}
-          color={TextColor.textDefault}
+          variant={TextVariant.HeadingSm}
+          color={TextColor.TextDefault}
           data-testid="tron-daily-resources-title"
         >
           {t('tronDailyResources')}
         </Text>
         <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
           data-testid="tron-daily-resources-description"
         >
           {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}

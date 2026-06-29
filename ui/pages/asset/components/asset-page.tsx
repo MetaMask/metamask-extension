@@ -35,6 +35,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
+import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
 import { isEvmChainId, isTronStakedAsset, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
@@ -107,6 +108,20 @@ import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
+
+const getTronStakedBalanceRowTestId = (assetId: CaipAssetType): string => {
+  const { assetNamespace, assetReference } = parseCaipAssetType(assetId);
+  const caipType = `${assetNamespace}:${assetReference}`;
+
+  switch (caipType) {
+    case TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_ENERGY:
+      return 'tron-staked-balance-row-energy';
+    case TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_BANDWIDTH:
+      return 'tron-staked-balance-row-bandwidth';
+    default:
+      return 'tron-staked-balance-row';
+  }
+};
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -475,7 +490,9 @@ const AssetPage = ({
               return (
                 <Box
                   key={stakedAsset.assetId}
-                  data-testid="tron-staked-balance-row"
+                  data-testid={getTronStakedBalanceRowTestId(
+                    stakedAsset.assetId as CaipAssetType,
+                  )}
                 >
                   <TokenCell
                     token={{
