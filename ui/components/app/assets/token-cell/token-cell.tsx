@@ -41,6 +41,7 @@ import {
 export type TokenCellMusdOptions = {
   /** When set, enables Merkl fetch/badge for this cell. */
   merklClaimBonus?: { location: MerklClaimBonusAnalyticsLocation };
+  /** When set, enables footer convert link (subject to `useMusdCtaVisibility` / balance rules). */
   convert?: { entryPoint: MusdConvertLinkEntryPoint };
 };
 
@@ -73,6 +74,7 @@ export default function TokenCell({
     [safeChains, token.chainId],
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+
   const showMerklBadge = Boolean(musd?.merklClaimBonus);
 
   // Check whether there are rewards available for the user
@@ -182,22 +184,18 @@ export default function TokenCell({
         }
         headerLeftDisplay={<TokenCellTitle token={displayToken} />}
         headerRightDisplay={
-          (
-            <TokenCellSecondaryDisplay
-              token={displayToken}
-              handleScamWarningModal={handleScamWarningModal}
-              privacyMode={privacyMode}
-            />
-          )
+          <TokenCellSecondaryDisplay
+            token={displayToken}
+            handleScamWarningModal={handleScamWarningModal}
+            privacyMode={privacyMode}
+          />
         }
         footerLeftDisplay={renderFooterLeft()}
         footerRightDisplay={
-          (
-            <TokenCellPrimaryDisplay
-              token={displayToken}
-              privacyMode={privacyMode}
-            />
-          )
+          <TokenCellPrimaryDisplay
+            token={displayToken}
+            privacyMode={privacyMode}
+          />
         }
       />
       {isEvm && showScamWarningModal && (
