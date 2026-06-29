@@ -81,6 +81,12 @@
       "lastCheckedAt": null,
       "walletComplianceStatusMap": "object"
     },
+    "ConfigRegistryController": {
+      "configs": "object",
+      "etag": null,
+      "lastFetched": null,
+      "version": null
+    },
     "CurrencyController": {
       "currencyRates": {
         "ETH": {

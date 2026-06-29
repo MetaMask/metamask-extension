@@ -355,6 +355,7 @@
     "@metamask/claims-controller": "^0.4.2",
     "@metamask/client-controller": "^1.0.0",
     "@metamask/compliance-controller": "^2.1.0",
+    "@metamask/config-registry-controller": "^0.4.0",
     "@metamask/connectivity-controller": "^0.2.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^12.3.0",
