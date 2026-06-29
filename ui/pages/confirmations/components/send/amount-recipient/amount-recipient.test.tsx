@@ -1,6 +1,6 @@
 import React from 'react';
+import { act, waitFor } from '@testing-library/react';
 import { fireEvent } from '@testing-library/dom';
-import { act } from '@testing-library/react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import {
@@ -41,6 +41,15 @@ jest.mock('../../../hooks/send/useAddressPoisoningDetection', () => ({
     pending: false,
   })),
 }));
+
+// Stub to avoid hitting the background controller in tests that exercise the
+// real `useRecipientValidation` chain.
+jest.mock(
+  '../../../hooks/send/alerts/useFirstTimeInteractionSendAlert',
+  () => ({
+    useFirstTimeInteractionSendAlert: jest.fn(() => null),
+  }),
+);
 
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
@@ -130,18 +139,24 @@ describe('AmountRecipient', () => {
       recipientWarning: null,
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
-      validateRecipient: jest.fn(),
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
     } as unknown as ReturnType<
       typeof RecipientValidation.useRecipientValidation
     >);
 
     const { getAllByRole, getByText } = render();
 
-    fireEvent.change(getAllByRole('textbox')[0], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[0], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(getByText(messages.continue.message));
+    await act(async () => {
+      fireEvent.click(getByText(messages.continue.message));
+    });
     expect(mockHandleSubmit).toHaveBeenCalled();
     expect(mockCaptureAmountSelected).toHaveBeenCalled();
     expect(mockCaptureRecipientSelected).toHaveBeenCalled();
@@ -178,13 +193,17 @@ describe('AmountRecipient', () => {
 
     const { getAllByRole, getByRole } = render();
 
-    fireEvent.change(getAllByRole('textbox')[1], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[1], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(
-      getByRole('button', { name: messages.insufficientFundsSend.message }),
-    );
+    await act(async () => {
+      fireEvent.click(
+        getByRole('button', { name: messages.insufficientFundsSend.message }),
+      );
+    });
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 
@@ -233,13 +252,17 @@ describe('AmountRecipient', () => {
       },
     });
 
-    fireEvent.change(getAllByRole('textbox')[2], {
-      target: { value: '###' },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[2], {
+        target: { value: '###' },
+      });
     });
 
-    fireEvent.click(
-      getByRole('button', { name: messages.invalidHexData.message }),
-    );
+    await act(async () => {
+      fireEvent.click(
+        getByRole('button', { name: messages.invalidHexData.message }),
+      );
+    });
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 
@@ -288,6 +311,9 @@ describe('AmountRecipient', () => {
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
       toAddressValidated: MOCK_ADDRESS,
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
       validateRecipient: jest.fn(),
     } as unknown as ReturnType<
       typeof RecipientValidation.useRecipientValidation
@@ -347,6 +373,9 @@ describe('AmountRecipient', () => {
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
       toAddressValidated: MOCK_ADDRESS,
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
       validateRecipient: jest.fn(),
     } as unknown as ReturnType<
       typeof RecipientValidation.useRecipientValidation
@@ -420,7 +449,9 @@ describe('AmountRecipient', () => {
       recipientWarning: null,
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
-      validateRecipient: jest.fn(),
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
     } as unknown as ReturnType<
       typeof RecipientValidation.useRecipientValidation
     >);
@@ -431,15 +462,19 @@ describe('AmountRecipient', () => {
 
     const { getAllByRole, getByText } = render();
 
-    fireEvent.change(getAllByRole('textbox')[0], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[0], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(getByText(messages.continue.message));
+    await act(async () => {
+      fireEvent.click(getByText(messages.continue.message));
+    });
 
-    await new Promise(process.nextTick);
-
-    expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    });
     expect(mockHandleSubmit).toHaveBeenCalled();
     expect(mockCaptureAmountSelected).toHaveBeenCalled();
     expect(mockCaptureRecipientSelected).toHaveBeenCalled();
@@ -497,7 +532,9 @@ describe('AmountRecipient', () => {
       recipientWarning: null,
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
-      validateRecipient: jest.fn(),
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
     } as unknown as ReturnType<
       typeof RecipientValidation.useRecipientValidation
     >);
@@ -508,22 +545,32 @@ describe('AmountRecipient', () => {
 
     const { getAllByRole, getByText } = render();
 
-    fireEvent.change(getAllByRole('textbox')[0], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[0], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(getByText(messages.continue.message));
+    await act(async () => {
+      fireEvent.click(getByText(messages.continue.message));
+    });
 
-    await new Promise(process.nextTick);
-
-    expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    });
     expect(mockHandleSubmit).not.toHaveBeenCalled();
     expect(mockCaptureAmountSelected).not.toHaveBeenCalled();
     expect(mockCaptureRecipientSelected).not.toHaveBeenCalled();
   });
 
-  describe('token contract address alert modal', () => {
-    it('shows alert modal instead of submitting when recipient is acknowledgeable', () => {
+  describe('send alert modal', () => {
+    const TOKEN_CONTRACT_ALERT = {
+      key: 'tokenContract',
+      title: 'Smart contract address',
+      message: 'This may result in fund loss.',
+    };
+
+    it('shows alert modal instead of submitting when there are unacknowledged alerts', async () => {
       const mockHandleSubmit = jest.fn();
       jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
         handleSubmit: mockHandleSubmit,
@@ -546,13 +593,13 @@ describe('AmountRecipient', () => {
       jest
         .spyOn(RecipientValidation, 'useRecipientValidation')
         .mockReturnValue({
-          recipientError: 'tokenContractError',
-          recipientErrorAllowAcknowledge: true,
-
-          acknowledgeError: jest.fn(),
+          recipientError: undefined,
           recipientWarning: null,
           recipientResolvedLookup: null,
           recipientConfusableCharacters: [],
+          alerts: [TOKEN_CONTRACT_ALERT],
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: jest.fn(),
         } as unknown as ReturnType<
           typeof RecipientValidation.useRecipientValidation
         >);
@@ -562,7 +609,9 @@ describe('AmountRecipient', () => {
       const continueButton = getByText(messages.continue.message);
       expect(continueButton).not.toBeDisabled();
 
-      fireEvent.click(continueButton);
+      await act(async () => {
+        fireEvent.click(continueButton);
+      });
 
       expect(mockHandleSubmit).not.toHaveBeenCalled();
       expect(
@@ -572,7 +621,7 @@ describe('AmountRecipient', () => {
 
     it('proceeds with submit after acknowledging in modal', async () => {
       const mockHandleSubmit = jest.fn();
-      const mockAcknowledgeError = jest.fn();
+      const mockAcknowledgeAlerts = jest.fn();
       jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
         handleSubmit: mockHandleSubmit,
       } as unknown as ReturnType<typeof SendActions.useSendActions>);
@@ -611,25 +660,31 @@ describe('AmountRecipient', () => {
       jest
         .spyOn(RecipientValidation, 'useRecipientValidation')
         .mockReturnValue({
-          recipientError: 'tokenContractError',
-          recipientErrorAllowAcknowledge: true,
-
-          acknowledgeError: mockAcknowledgeError,
+          recipientError: undefined,
           recipientWarning: null,
           recipientResolvedLookup: null,
           recipientConfusableCharacters: [],
+          alerts: [TOKEN_CONTRACT_ALERT],
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: mockAcknowledgeAlerts,
         } as unknown as ReturnType<
           typeof RecipientValidation.useRecipientValidation
         >);
 
       const { getByText, getByTestId } = render();
 
-      fireEvent.click(getByText(messages.continue.message));
-      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      await act(async () => {
+        fireEvent.click(getByText(messages.continue.message));
+      });
+      await act(async () => {
+        fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      });
 
-      await new Promise(process.nextTick);
-
-      expect(mockAcknowledgeError).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockAcknowledgeAlerts).toHaveBeenCalledWith([
+          TOKEN_CONTRACT_ALERT.key,
+        ]);
+      });
       expect(mockHandleSubmit).toHaveBeenCalled();
     });
 
@@ -666,7 +721,7 @@ describe('AmountRecipient', () => {
 
     it('does not submit when acknowledging from icon-triggered modal', async () => {
       const mockHandleSubmit = jest.fn();
-      const mockAcknowledgeError = jest.fn();
+      const mockAcknowledgeAlerts = jest.fn();
       jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
         handleSubmit: mockHandleSubmit,
       } as unknown as ReturnType<typeof SendActions.useSendActions>);
@@ -688,25 +743,31 @@ describe('AmountRecipient', () => {
       jest
         .spyOn(RecipientValidation, 'useRecipientValidation')
         .mockReturnValue({
-          recipientError: 'tokenContractError',
-          recipientErrorAllowAcknowledge: true,
-
-          acknowledgeError: mockAcknowledgeError,
+          recipientError: undefined,
           recipientWarning: null,
           recipientResolvedLookup: null,
           recipientConfusableCharacters: [],
+          alerts: [TOKEN_CONTRACT_ALERT],
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: mockAcknowledgeAlerts,
         } as unknown as ReturnType<
           typeof RecipientValidation.useRecipientValidation
         >);
 
       const { getByTestId } = render();
 
-      fireEvent.click(getByTestId('recipient-alert-icon'));
-      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      await act(async () => {
+        fireEvent.click(getByTestId('recipient-alert-icon'));
+      });
+      await act(async () => {
+        fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      });
 
-      await new Promise(process.nextTick);
-
-      expect(mockAcknowledgeError).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockAcknowledgeAlerts).toHaveBeenCalledWith([
+          TOKEN_CONTRACT_ALERT.key,
+        ]);
+      });
       expect(mockHandleSubmit).not.toHaveBeenCalled();
     });
   });
