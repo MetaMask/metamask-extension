@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { SNAP_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
@@ -27,7 +27,7 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '0 TRX',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -56,7 +56,7 @@ describe('Check balance', function (this: Suite) {
         // Total Fiat = TRX $1.79, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $10.18
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$10.18',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -81,7 +81,7 @@ describe('Check balance', function (this: Suite) {
         // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '6.072 TRX',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );

@@ -28,6 +28,7 @@ import {
   getUnapprovedTransactions,
   getTransactionsByChainId,
   incomingTxListSelectorAllChains,
+  incomingTxListSelector,
   selectedAddressTxListSelectorAllChain,
   selectedAddressTxListSelector,
   transactionSubSelectorAllChains,
@@ -949,6 +950,45 @@ describe('Transaction Selectors', () => {
     });
   });
 
+  describe('incomingTxListSelector', () => {
+    it('returns an empty array when provider configuration is missing', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'missingNetworkClientId',
+          networkConfigurationsByChainId: {},
+        },
+      };
+
+      expect(incomingTxListSelector(state)).toStrictEqual([]);
+    });
+  });
+
   describe('selectedAddressTxListSelectorAllChain', () => {
     it('returns an empty array if there are no transactions or smart transactions', () => {
       const state = {
@@ -1367,6 +1407,46 @@ describe('Transaction Selectors', () => {
       const result = selectedAddressTxListSelector(state);
 
       expect(result).toStrictEqual([state.metamask.transactions[1]]);
+    });
+
+    it('returns an empty array when provider configuration is missing', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.simpleSend,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+          selectedNetworkClientId: 'missingNetworkClientId',
+          networkConfigurationsByChainId: {},
+        },
+      };
+
+      expect(selectedAddressTxListSelector(state)).toStrictEqual([]);
     });
   });
 

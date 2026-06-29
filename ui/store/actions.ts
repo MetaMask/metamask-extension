@@ -161,6 +161,10 @@ import {
   MetaMetricsUserTraits,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
+import type {
+  AnalyticsEvent,
+  AnalyticsEventBuildOptions,
+} from '../../shared/lib/analytics/create-event-builder';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getSmartTransactionsOptInStatusInternal } from '../../shared/lib/selectors';
@@ -1153,7 +1157,9 @@ export function unlockAndGetSeedPhrase(
 }
 
 export function submitPassword(password: string): Promise<void> {
-  return submitRequestToBackground('submitPassword', [password]);
+  return submitRequestToBackground('submitPasswordOrEncryptionKey', [
+    { password },
+  ]);
 }
 
 /**
@@ -4288,6 +4294,10 @@ export function setTokenNetworkFilter(value: Record<string, boolean>) {
   return setPreference('tokenNetworkFilter', value, false);
 }
 
+export function setGasSponsorshipOptOut(value: Record<string, boolean>) {
+  return setPreference('gasSponsorshipOptOutByChainId', value, false);
+}
+
 export function setSmartTransactionsPreferenceEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -6364,6 +6374,17 @@ export function trackMetaMetricsEvent(
   return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
 }
 
+export function trackAnalyticsEvent(
+  payload: AnalyticsEvent,
+  options: AnalyticsEventBuildOptions & {
+    environmentType: string;
+    page?: MetaMetricsPageObject;
+    referrer?: MetaMetricsReferrerObject;
+  },
+) {
+  return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
+}
+
 export function createEventFragment(
   options: MetaMetricsEventFragment,
 ): Promise<string> {
@@ -7694,6 +7715,18 @@ export function setMultichainAccountsIntroModalShown(value: boolean) {
 export function setMusdConversionEducationSeen(value: boolean) {
   return async () => {
     await submitRequestToBackground('setMusdConversionEducationSeen', [value]);
+  };
+}
+
+/**
+ * Persist that the user has seen (and dismissed) the Perps tab "New" badge.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setPerpsTabBadgeSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setPerpsTabBadgeSeen', [value]);
   };
 }
 

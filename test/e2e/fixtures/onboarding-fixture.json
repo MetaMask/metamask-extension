@@ -59,6 +59,7 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
+      "perpsTabBadgeSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
@@ -2053,6 +2054,7 @@
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
+        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",
