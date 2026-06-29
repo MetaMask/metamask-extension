@@ -277,12 +277,7 @@ export const NetworksPageList = ({
         />
       );
     },
-    [
-      evmNetworks,
-      getItemCallbacks,
-      hasMultiRpcOptions,
-      isNetworkEnabled,
-    ],
+    [evmNetworks, getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled],
   );
 
   const handleToggleTestNetworks = useCallback(
