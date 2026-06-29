@@ -405,8 +405,10 @@ export function sanitizeBreadcrumbsInReport(report) {
   }
 }
 
-// `op: 'mark'` span names with no diagnostic value, dropped from transactions.
-const LOW_VALUE_TRACE_MARKS = new Set(['sentry-tracing-init']);
+// `op: 'mark'` span names with no Sentry-side consumer, dropped from transactions.
+// (`mm-hero-painted` is a benchmark LCP marker read locally via the Performance
+// API; its Sentry span is incidental.)
+const LOW_VALUE_TRACE_MARKS = new Set(['sentry-tracing-init', 'mm-hero-painted']);
 
 /**
  * Removes zero-diagnostic-value `op: 'mark'` child spans from a transaction

@@ -348,27 +348,28 @@ describe('Setup Sentry', () => {
   });
 
   describe('dropLowValueMarkSpans', () => {
-    it('drops the sentry-tracing-init mark span while keeping the transaction and meaningful spans', () => {
+    it('drops low-value mark spans while keeping the transaction and meaningful spans', () => {
       const testReport = {
         type: 'transaction',
         transaction: 'ui.popup',
         spans: [
           { op: 'mark', description: 'sentry-tracing-init' },
           { op: 'mark', description: 'mm-hero-painted' },
+          { op: 'mark', description: 'first-contentful-paint' },
           { op: 'http.client', description: 'GET /foo' },
         ],
       };
       dropLowValueMarkSpans(testReport);
       expect(testReport.transaction).toBe('ui.popup');
       expect(testReport.spans).toStrictEqual([
-        { op: 'mark', description: 'mm-hero-painted' },
+        { op: 'mark', description: 'first-contentful-paint' },
         { op: 'http.client', description: 'GET /foo' },
       ]);
     });
 
-    it('leaves a transaction without the low-value mark unchanged', () => {
+    it('leaves a transaction without a low-value mark unchanged', () => {
       const spans = [
-        { op: 'mark', description: 'mm-hero-painted' },
+        { op: 'mark', description: 'first-contentful-paint' },
         { op: 'http.client', description: 'GET /foo' },
       ];
       const testReport = {
@@ -405,11 +406,12 @@ describe('Setup Sentry', () => {
         spans: [
           { op: 'mark', name: 'sentry-tracing-init' },
           { op: 'mark', name: 'mm-hero-painted' },
+          { op: 'mark', name: 'first-contentful-paint' },
         ],
       };
       dropLowValueMarkSpans(testReport);
       expect(testReport.spans).toStrictEqual([
-        { op: 'mark', name: 'mm-hero-painted' },
+        { op: 'mark', name: 'first-contentful-paint' },
       ]);
     });
   });
