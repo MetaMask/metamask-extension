@@ -66,6 +66,7 @@ import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   backedUpStateKeys,
   hasVault,
+  shouldFlushPersistenceImmediately,
 } from '../../shared/lib/stores/persistence-manager';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
@@ -163,7 +164,7 @@ const inTestState = inTest
   ? { restoreInProgress: false, hasVaultAtStartup: null }
   : null;
 
-const { safePersist, requestSafeReload, evacuate } =
+const { safePersist, requestSafeReload, evacuate, flushPersist } =
   getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
@@ -1613,15 +1614,27 @@ export function setupController(
         persistenceManager.update(key, currentState[key]);
       });
       // then persist it
-      safePersist().catch((error) => {
-        log.error('Error persisting updated state:', error);
-        sentry?.captureException(error);
-      });
+      safePersist()
+        .then(async (didQueuePersist) => {
+          if (
+            didQueuePersist &&
+            changedControllerKeys.some(shouldFlushPersistenceImmediately)
+          ) {
+            await flushPersist();
+          }
+        })
+        .catch((error) => {
+          log.error('Error persisting updated state:', error);
+          sentry?.captureException(error);
+        });
     }
 
     controller.store.on(
       'stateChange',
       async ({ controllerKey, newState, _oldState, _patches }) => {
+        const shouldFlushPersistImmediately =
+          shouldFlushPersistenceImmediately(controllerKey);
+
         persistenceManager.update(controllerKey, newState);
 
         // if this key is one of the `backedUpStateKeys` we must always
@@ -1657,7 +1670,10 @@ export function setupController(
           });
         }
         try {
-          await safePersist();
+          const didQueuePersist = await safePersist();
+          if (didQueuePersist && shouldFlushPersistImmediately) {
+            await flushPersist();
+          }
         } catch (error) {
           log.error('Error persisting state change:', error);
           sentry?.captureException(error);
@@ -1670,10 +1686,19 @@ export function setupController(
         `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
       );
       // persist the new state
-      safePersist(currentState).catch((error) => {
-        log.error('Error persisting updated controller state:', error);
-        sentry?.captureException(error);
-      });
+      safePersist(currentState)
+        .then(async (didQueuePersist) => {
+          if (
+            didQueuePersist &&
+            changedControllerKeys.some(shouldFlushPersistenceImmediately)
+          ) {
+            await flushPersist();
+          }
+        })
+        .catch((error) => {
+          log.error('Error persisting updated controller state:', error);
+          sentry?.captureException(error);
+        });
     }
     controller.store.on('update', safePersist);
   }

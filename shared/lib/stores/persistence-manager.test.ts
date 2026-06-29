@@ -5,7 +5,12 @@ import log from 'loglevel';
 
 import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
-import { PersistenceManager } from './persistence-manager';
+import {
+  PERSISTENCE_OPERATION_DEBOUNCE_MS,
+  PERSISTENCE_OPERATION_MAX_WAIT_MS,
+  PersistenceManager,
+  shouldFlushPersistenceImmediately,
+} from './persistence-manager';
 import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
@@ -49,6 +54,20 @@ describe('PersistenceManager', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
+  });
+
+  describe('persistence operation timing', () => {
+    it('uses a 5 second debounce with a 30 minute maxWait', () => {
+      expect(PERSISTENCE_OPERATION_DEBOUNCE_MS).toBe(5_000);
+      expect(PERSISTENCE_OPERATION_MAX_WAIT_MS).toBe(30 * 60 * 1000);
+    });
+
+    it('flushes immediately for KeyringController only', () => {
+      expect(shouldFlushPersistenceImmediately('KeyringController')).toBe(true);
+      expect(shouldFlushPersistenceImmediately('AppMetadataController')).toBe(
+        false,
+      );
+    });
   });
 
   describe('open', () => {

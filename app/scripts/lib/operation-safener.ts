@@ -127,6 +127,26 @@ export class OperationSafener<O extends Op = Op> {
   };
 
   /**
+   * Executes the latest pending operation immediately without preventing future
+   * operations from being queued.
+   *
+   * @returns A boolean indicating whether future operations are still allowed.
+   */
+  flush = async () => {
+    if (this.#evacuating) {
+      log.warn('evacuating, ignoring call to `flush`');
+      return false;
+    }
+
+    const finalInvocation = this.#bouncer.flush();
+    if (finalInvocation) {
+      await finalInvocation;
+    }
+
+    return true;
+  };
+
+  /**
    * Executes the operation with the provided parameters, debouncing it if
    * necessary.
    *

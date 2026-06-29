@@ -1,8 +1,12 @@
 import browser from 'webextension-polyfill';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
-import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
-import { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
+import {
+  PERSISTENCE_OPERATION_DEBOUNCE_MS,
+  PERSISTENCE_OPERATION_MAX_WAIT_MS,
+  type PersistenceManager,
+} from '../../../shared/lib/stores/persistence-manager';
+import type { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
 import { OperationSafener } from './operation-safener';
 
 /** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
@@ -36,7 +40,8 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
         );
       }
     },
-    wait: 1000,
+    wait: PERSISTENCE_OPERATION_DEBOUNCE_MS,
+    options: { maxWait: PERSISTENCE_OPERATION_MAX_WAIT_MS },
   });
 
   return {
@@ -78,5 +83,13 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
      * @returns A Promise that resolves when the evacuation is complete.
      */
     evacuate: () => operationSafener.evacuate(),
+    /**
+     * Immediately executes the latest queued persistence operation without
+     * preventing future operations from being queued.
+     *
+     * @returns true if writes are still allowed, false if writes are not
+     * allowed because the operation queue is evacuating.
+     */
+    flushPersist: () => operationSafener.flush(),
   };
 }
