@@ -13,7 +13,7 @@ declare const __resourceQuery: string;
 const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 
 // Storage key holding the UI build hash this page's code was loaded under.
-// `self.sessionStorage` (not `browser.storage.session`) on purpose: it is
+// `globalThis.sessionStorage` (not `browser.storage.session`) on purpose: it is
 // scoped to the tab, so concurrently open pages each keep their own record.
 const HASH_KEY = 'MM_UI_RELOAD_HASH';
 
@@ -23,7 +23,7 @@ const HASH_KEY = 'MM_UI_RELOAD_HASH';
  */
 function getStoredHash(): string | null {
   try {
-    return self.sessionStorage.getItem(HASH_KEY);
+    return globalThis.sessionStorage.getItem(HASH_KEY);
   } catch {
     // Unreadable storage reads as "nothing recorded": the announcement gets
     // treated as a baseline rather than triggering a hot update.
@@ -38,7 +38,7 @@ function getStoredHash(): string | null {
  */
 function setStoredHash(hash: string): void {
   try {
-    self.sessionStorage.setItem(HASH_KEY, hash);
+    globalThis.sessionStorage.setItem(HASH_KEY, hash);
   } catch {
     // Without storage every announcement looks like a baseline, so the page
     // degrades to never hot-updating rather than hot-updating in a loop.
@@ -66,8 +66,11 @@ function onHash(hash: string): void {
     // dev server's own output, so only record the baseline.
     return;
   }
-  console.info('[webpack-dev-server] App hot update...');
-  (self as Window).postMessage({ type: UI_HOT_UPDATE_MESSAGE_TYPE, hash }, '*');
+  console.info('[webpack-dev-server] UI hot update...');
+  globalThis.postMessage(
+    { type: UI_HOT_UPDATE_MESSAGE_TYPE, hash },
+    globalThis.location.origin,
+  );
 }
 
 if (socketUrl) {
