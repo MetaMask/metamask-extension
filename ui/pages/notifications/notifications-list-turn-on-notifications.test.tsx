@@ -6,6 +6,19 @@ import thunk from 'redux-thunk';
 import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
 
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const initialState = {
   metamask: {
     theme: 'light',

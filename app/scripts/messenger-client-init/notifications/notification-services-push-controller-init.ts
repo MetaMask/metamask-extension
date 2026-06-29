@@ -18,10 +18,12 @@ import {
   onPushNotificationClicked,
   onPushNotificationReceived,
 } from '../../controllers/push-notifications';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 
 /**
  * normalises the extension locale path to use hyphens ('-') instead of underscores ('_')
@@ -86,17 +88,18 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
         ? (notification.chain_id as number)
         : null;
 
-      initMessenger.call('MetaMetricsController:trackEvent', {
-        category: MetaMetricsEventCategory.PushNotifications,
-        event: MetaMetricsEventName.PushNotificationReceived,
-        properties: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          notification_id: notification.id,
-          notification_type: notification.type,
-          chain_id: chainId,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PushNotificationReceived)
+          .addCategory(MetaMetricsEventCategory.PushNotifications)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            notification_id: notification.id,
+            notification_type: notification.type,
+            chain_id: chainId,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build({ environmentType: ENVIRONMENT_TYPE_BACKGROUND }),
+      );
     },
   );
 
@@ -117,18 +120,19 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
         return undefined;
       };
 
-      initMessenger.call('MetaMetricsController:trackEvent', {
-        category: MetaMetricsEventCategory.PushNotifications,
-        event: MetaMetricsEventName.PushNotificationClicked,
-        properties: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          notification_id: notification.id,
-          notification_type: notification.type,
-          ...otherNotificationProperties(),
-          data: notification, // data blob for feature teams to analyse their notification shapes
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PushNotificationClicked)
+          .addCategory(MetaMetricsEventCategory.PushNotifications)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            notification_id: notification.id,
+            notification_type: notification.type,
+            ...otherNotificationProperties(),
+            data: notification, // data blob for feature teams to analyse their notification shapes
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build({ environmentType: ENVIRONMENT_TYPE_BACKGROUND }),
+      );
     },
   );
 

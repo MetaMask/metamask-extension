@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -32,7 +32,7 @@ import {
 
 export const NotificationsListTurnOnNotifications = () => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { listNotifications } = useMetamaskNotificationsContext();
 
   const { enableNotifications, error: errorEnableNotifications } =
@@ -54,16 +54,17 @@ export const NotificationsListTurnOnNotifications = () => {
 
   const handleTurnOnNotifications = async () => {
     await enableNotifications();
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationsActivated,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        action_type: 'completed',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_profile_syncing_enabled: true,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NotificationsActivated)
+        .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          action_type: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_profile_syncing_enabled: true,
+        })
+        .build(),
+    );
     if (!error && !isUpdatingMetamaskNotifications) {
       listNotifications();
     }

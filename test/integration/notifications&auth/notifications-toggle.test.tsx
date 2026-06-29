@@ -57,22 +57,21 @@ const verifyMetametricsEvent = async (
     const metametrics =
       mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
         (call) =>
-          call[0] === 'trackMetaMetricsEvent' &&
-          call[1]?.[0].category === expectedCategory,
+          call[0] === 'trackAnalyticsEvent' &&
+          call[1]?.[0]?.properties?.category === expectedCategory,
       );
 
-    expect(metametrics?.[0]).toBe('trackMetaMetricsEvent');
+    expect(metametrics?.[0]).toBe('trackAnalyticsEvent');
 
     const [metricsEvent] = metametrics?.[1] as unknown as [
       {
-        event: string;
-        category: string;
+        name: string;
         properties: Record<string, unknown>;
       },
     ];
 
-    expect(metricsEvent?.event).toBe(expectedEvent);
-    expect(metricsEvent?.category).toBe(expectedCategory);
+    expect(metricsEvent?.name).toBe(expectedEvent);
+    expect(metricsEvent?.properties?.category).toBe(expectedCategory);
     expect(metricsEvent?.properties).toMatchObject(expectedProperties);
   });
 };

@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback } from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -60,7 +60,7 @@ export const NotificationsSettingsPerAccount = ({
   disabledSwitch,
   refetchAccountSettings,
 }: NotificationsSettingsPerAccountProps) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const {
     toggleAccount,
@@ -74,23 +74,24 @@ export const NotificationsSettingsPerAccount = ({
   const error = accountError;
 
   const handleToggleAccountNotifications = useCallback(async () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationSettings,
-      event: MetaMetricsEventName.NotificationsSettingsUpdated,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_type: 'account_notifications',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        old_value: isEnabled,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_value: !isEnabled,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+        .addCategory(MetaMetricsEventCategory.NotificationSettings)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          settings_type: 'account_notifications',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          old_value: isEnabled,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_value: !isEnabled,
+        })
+        .build(),
+    );
     await toggleAccount(!isEnabled);
-  }, [address, isEnabled, toggleAccount, trackEvent]);
+  }, [createEventBuilder, isEnabled, toggleAccount, trackEvent]);
 
   const checksumAddress = toChecksumHexAddress(address);
   const shortenedAddress = shortenAddress(checksumAddress);
