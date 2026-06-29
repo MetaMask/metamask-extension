@@ -19,9 +19,14 @@ import {
   SnapControllerInitMessenger,
 } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
+import { trackEvent } from '../../controllers/analytics';
 import { SnapControllerInit } from './snap-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
+jest.mock('../../controllers/analytics', () => ({
+  ...jest.requireActual('../../controllers/analytics'),
+  trackEvent: jest.fn(),
+}));
 
 function getInitRequestMock(
   baseMessenger = getRootMessenger(),
@@ -42,6 +47,8 @@ function getInitRequestMock(
 }
 
 describe('SnapControllerInit', () => {
+  const trackEventMock = jest.mocked(trackEvent);
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -68,14 +75,37 @@ describe('SnapControllerInit', () => {
         forcePreinstalledSnaps: false,
         autoUpdatePreinstalledSnaps: false,
       },
-      clientConfig: {
-        type: 'extension',
-        version: 'MOCK_VERSION',
-      },
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
+      trackEvent: expect.any(Function),
       ensureOnboardingComplete: expect.any(Function),
+    });
+  });
+
+  it('routes trackEvent through AnalyticsController', () => {
+    SnapControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(SnapController);
+    const { trackEvent: controllerTrackEvent } =
+      controllerMock.mock.calls[0][0];
+
+    controllerTrackEvent?.({
+      event: 'Snap Installed',
+      category: 'Snaps',
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_id: 'npm:example',
+      },
+    });
+
+    expect(trackEventMock.mock.calls[0]?.[0]).toMatchObject({
+      name: 'Snap Installed',
+      properties: expect.objectContaining({
+        category: 'Snaps',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_id: 'npm:example',
+      }),
     });
   });
 
