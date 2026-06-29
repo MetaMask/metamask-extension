@@ -8222,9 +8222,11 @@ export default class MetamaskController extends EventEmitter {
       if (open) {
         // If the client is open and unlocked, request a periodic update of the
         // Snaps registry.
-        this.controllerMessenger.call(
-          'SnapRegistryController:requestPeriodicUpdate',
-        );
+        this.controllerMessenger
+          .call('SnapRegistryController:requestPeriodicUpdate')
+          .catch((error) => {
+            captureException(error);
+          });
       }
     }
 
