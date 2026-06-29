@@ -293,6 +293,7 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
+      "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,

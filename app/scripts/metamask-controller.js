@@ -449,7 +449,6 @@ import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ow
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
-import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 
@@ -1025,7 +1024,6 @@ export default class MetamaskController extends EventEmitter {
           // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
-          await getSnapKeyring(this.controllerMessenger);
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
@@ -2219,93 +2217,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstallStarted`,
-      (snapId, origin, isUpdate) => {
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: isUpdate
-            ? MetaMetricsEventName.SnapUpdateStarted
-            : MetaMetricsEventName.SnapInstallStarted,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstallFailed`,
-      (snapId, origin, isUpdate, error) => {
-        const isRejected = error.includes('User rejected the request.');
-        const failedEvent = isUpdate
-          ? MetaMetricsEventName.SnapUpdateFailed
-          : MetaMetricsEventName.SnapInstallFailed;
-        const rejectedEvent = isUpdate
-          ? MetaMetricsEventName.SnapUpdateRejected
-          : MetaMetricsEventName.SnapInstallRejected;
-
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: isRejected ? rejectedEvent : failedEvent,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstalled`,
-      (truncatedSnap, origin, preinstalled) => {
-        if (preinstalled) {
-          return;
-        }
-
-        const snapId = truncatedSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SnapInstalled,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            version: truncatedSnap.version,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapUpdated`,
-      (newSnap, oldVersion, origin, preinstalled) => {
-        if (preinstalled) {
-          return;
-        }
-
-        const snapId = newSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SnapUpdated,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            old_version: oldVersion,
-            new_version: newSnap.version,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapTerminated`,
       (truncatedSnap) => {
         const approvals = Object.values(
@@ -2337,18 +2248,6 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesController.deleteNotificationsById(
           notificationIds,
         );
-
-        const snapId = truncatedSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SnapUninstalled,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            version: truncatedSnap.version,
-            snap_category: snapCategory,
-          },
-        });
       },
     );
   }
@@ -3206,7 +3105,6 @@ export default class MetamaskController extends EventEmitter {
           this.accountTreeController,
         ),
       syncAccountTreeWithUserStorage: async () => {
-        await getSnapKeyring(this.controllerMessenger);
         await this.accountTreeController.syncWithUserStorage();
       },
 
@@ -3461,7 +3359,10 @@ export default class MetamaskController extends EventEmitter {
         txController.approveTransactionsWithSameNonce.bind(txController),
       createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
-      estimateGas: this.estimateGas.bind(this),
+      estimateGas: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:estimateGas',
+      ),
       estimateGasFee: txController.estimateGasFee.bind(txController),
       getNextNonce: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -4817,10 +4718,6 @@ export default class MetamaskController extends EventEmitter {
       // Then we can build the initial tree.
       this.accountTreeController.reinit();
 
-      // We "force-create" the Snap keyring right after now to ensure it is available as soon
-      // as possible after vault creation (enabling faster keyring access for future operations).
-      await getSnapKeyring(this.controllerMessenger);
-
       return primaryKeyring;
     } finally {
       releaseLock();
@@ -4881,8 +4778,6 @@ export default class MetamaskController extends EventEmitter {
         throw new Error('No keyring id to discover accounts for');
       }
 
-      // Ensure the snap keyring is initialized
-      await getSnapKeyring(this.controllerMessenger);
       const wallet = this.multichainAccountService.getMultichainAccountWallet({
         entropySource: keyringIdToDiscover,
       });
@@ -5171,10 +5066,6 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
-
-      // We "force-create" the Snap keyring right after now to ensure it is available as soon
-      // as possible after vault creation (enabling faster keyring access for future operations).
-      await getSnapKeyring(this.controllerMessenger);
 
       if (completedOnboarding) {
         // check if external services are enabled
@@ -6296,18 +6187,6 @@ export default class MetamaskController extends EventEmitter {
     );
     const state = this.getState();
     return state;
-  }
-
-  async estimateGas(estimateGasParams) {
-    return new Promise((resolve, reject) => {
-      this.provider
-        .request({
-          method: 'eth_estimateGas',
-          params: [estimateGasParams],
-        })
-        .then((result) => resolve(result.toString(16)))
-        .catch((err) => reject(err));
-    });
   }
 
   /**
@@ -8330,6 +8209,16 @@ export default class MetamaskController extends EventEmitter {
       // Notify Snaps that the client is open or closed when the client is
       // unlocked.
       this.controllerMessenger.call('SnapController:setClientActive', open);
+
+      if (open) {
+        // If the client is open and unlocked, request a periodic update of the
+        // Snaps registry.
+        this.controllerMessenger
+          .call('SnapRegistryController:requestPeriodicUpdate')
+          .catch((error) => {
+            captureException(error);
+          });
+      }
     }
 
     if (open) {
