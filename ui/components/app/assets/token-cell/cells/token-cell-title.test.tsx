@@ -112,16 +112,15 @@ describe('TokenCellTitle', () => {
   it('renders stellar trustline inactive badge when displayOverrides provide titleBadge', () => {
     const token = createMockToken({
       accountType: undefined,
-      extra: { limit: '0' },
-    });
-    const { getByTestId } = render(
-      <TokenCellTitle
-        token={token}
-        displayOverrides={{
-          titleBadge: <span data-testid="stellar-trustline-inactive-badge" />,
-        }}
-      />,
-    );
+      chainId: 'stellar:pubnet',
+      assetId:
+        'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+      isNative: false,
+      accountAssetInfo: { limit: '0' },
+      balance: '0',
+    } as any);
+
+    const { getByTestId } = render(<TokenCellTitle token={token} />);
 
     expect(getByTestId('stellar-trustline-inactive-badge')).toBeInTheDocument();
   });
