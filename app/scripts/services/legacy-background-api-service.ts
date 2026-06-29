@@ -72,7 +72,6 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
-import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import {
   MultichainAccountServiceResyncAccountsAction,
   MultichainAccountServiceAlignWalletsAction,
@@ -103,7 +102,6 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
-import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerTrackEventAction,
@@ -215,8 +213,7 @@ type AllowedActions =
   | SubscriptionControllerStopAllPollingAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
-  | TransactionControllerWipeTransactionsAction
-  | SnapAccountServiceGetLegacySnapKeyringAction;
+  | TransactionControllerWipeTransactionsAction;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -696,10 +693,7 @@ export class LegacyBackgroundApiService {
    * @returns The addresses of the accounts managed by the snap.
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
-    return getAccountsBySnapId(
-      getSnapKeyring.bind(null, this.#messenger),
-      snapId,
-    );
+    return getAccountsBySnapId(this.#messenger, snapId);
   }
 
   /**
@@ -1026,10 +1020,6 @@ export class LegacyBackgroundApiService {
 
     // Force account-tree refresh after all accounts have been updated.
     this.#messenger.call('AccountTreeController:init');
-
-    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
-    // available as soon as possible (enabling faster keyring access for future operations).
-    await getSnapKeyring(this.#messenger);
 
     // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
     // for mobile.

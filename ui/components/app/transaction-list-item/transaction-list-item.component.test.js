@@ -356,7 +356,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to UNISigningCancel',
+      'Swap USDC to UNISigningCancel',
     );
     expect(getByText(messages.signing.message)).toBeInTheDocument();
   });
@@ -368,7 +368,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to UNIConfirmed-2 USDC',
+      'Swap USDC to UNIConfirmed-2 USDC',
     );
   });
 
@@ -387,7 +387,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to UNIFailed-2 USDC',
+      'Swap USDC to UNIFailed-2 USDC',
     );
     expect(getByText(messages.failed.message)).toBeInTheDocument();
   });

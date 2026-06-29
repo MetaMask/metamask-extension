@@ -1578,6 +1578,9 @@ describe('PerpsStreamBridge', () => {
       await jest.advanceTimersByTimeAsync(300);
 
       expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledWith({
+        useTerminalApi: true,
+      });
       expect(controller.getPositions).toHaveBeenCalledWith({
         skipCache: true,
       });
