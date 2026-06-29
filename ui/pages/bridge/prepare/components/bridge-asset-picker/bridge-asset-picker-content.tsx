@@ -166,81 +166,85 @@ export const BridgeAssetPickerContent = forwardRef<
 
     return (
       <>
-        <ButtonBase
-          ref={networkPickerButtonRef}
-          onClick={() =>
-            isNetworkPickerOpen
-              ? setIsNetworkPickerOpen(false)
-              : setIsNetworkPickerOpen(true)
-          }
-          data-testid="multichain-asset-picker__network"
-          size={ButtonBaseSize.Sm}
-          startIconName={IconName.Filter}
-          startIconProps={{ size: IconSize.Md }}
-          className={`mx-4 mt-4 w-max rounded-lg border border-muted bg-default px-2 ${
-            selectedChainId ? 'text-primary-default' : 'text-default'
-          }`}
-        >
-          <Text
-            variant={DsTextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={
-              selectedChainId ? TextColor.PrimaryDefault : TextColor.TextDefault
+        <div className="flex flex-col gap-4 pt-4">
+          <ButtonBase
+            ref={networkPickerButtonRef}
+            onClick={() =>
+              isNetworkPickerOpen
+                ? setIsNetworkPickerOpen(false)
+                : setIsNetworkPickerOpen(true)
             }
-            ellipsis
+            data-testid="multichain-asset-picker__network"
+            size={ButtonBaseSize.Sm}
+            startIconName={IconName.Filter}
+            startIconProps={{ size: IconSize.Md }}
+            className={`mx-4 w-max rounded-lg border border-muted bg-default px-2 ${
+              selectedChainId ? 'text-primary-default' : 'text-default'
+            }`}
           >
-            {selectedNetworkName}
-          </Text>
-        </ButtonBase>
-        <NetworkPicker
-          buttonElement={
-            isNetworkManagementEnabled
-              ? undefined
-              : networkPickerButtonRef.current
-          }
-          isOpen={isNetworkPickerOpen}
-          chains={chains}
-          selectedChainId={selectedChainId}
-          disabledChainId={disabledChainId}
-          onNetworkChange={(chainId) => {
-            setSelectedChainId(chainId);
-            setIsNetworkPickerOpen(false);
-          }}
-          onClose={() => setIsNetworkPickerOpen(false)}
-          testId="bridge-network-picker-popover"
-        />
-        <TextField
-          autoFocus
-          testId={'bridge-asset-picker-search-input'}
-          placeholder={t('enterTokenNameOrAddress')}
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-          }}
-          borderRadius={BorderRadius.XL}
-          borderWidth={1}
-          borderColor={BorderColor.borderMuted}
-          inputProps={{
-            disableStateStyles: true,
-            textVariant: TextVariant.bodyMd,
-            paddingRight: 2,
-            borderColor: BorderColor.borderMuted,
-          }}
-          style={{
-            minHeight: 48,
-            paddingRight: 8,
-            outline: 'none',
-            borderColor: BorderColor.borderMuted,
-          }}
-          marginInline={4}
-          startAccessory={
-            <Icon
-              color={IconColor.IconAlternative}
-              name={IconName.Search}
-              size={IconSize.Md}
-            />
-          }
-        />
+            <Text
+              variant={DsTextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={
+                selectedChainId
+                  ? TextColor.PrimaryDefault
+                  : TextColor.TextDefault
+              }
+              ellipsis
+            >
+              {selectedNetworkName}
+            </Text>
+          </ButtonBase>
+          <NetworkPicker
+            buttonElement={
+              isNetworkManagementEnabled
+                ? undefined
+                : networkPickerButtonRef.current
+            }
+            isOpen={isNetworkPickerOpen}
+            chains={chains}
+            selectedChainId={selectedChainId}
+            disabledChainId={disabledChainId}
+            onNetworkChange={(chainId) => {
+              setSelectedChainId(chainId);
+              setIsNetworkPickerOpen(false);
+            }}
+            onClose={() => setIsNetworkPickerOpen(false)}
+            testId="bridge-network-picker-popover"
+          />
+          <TextField
+            autoFocus
+            testId={'bridge-asset-picker-search-input'}
+            placeholder={t('enterTokenNameOrAddress')}
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+            }}
+            borderRadius={BorderRadius.XL}
+            borderWidth={1}
+            borderColor={BorderColor.borderMuted}
+            inputProps={{
+              disableStateStyles: true,
+              textVariant: TextVariant.bodyMd,
+              paddingRight: 2,
+              borderColor: BorderColor.borderMuted,
+            }}
+            style={{
+              minHeight: 48,
+              paddingRight: 8,
+              outline: 'none',
+              borderColor: BorderColor.borderMuted,
+            }}
+            marginInline={4}
+            startAccessory={
+              <Icon
+                color={IconColor.IconAlternative}
+                name={IconName.Search}
+                size={IconSize.Md}
+              />
+            }
+          />
+        </div>
 
         {isNetworkManagementEnabled || !isNetworkPickerOpen ? (
           <BridgeAssetList
