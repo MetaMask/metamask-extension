@@ -101,8 +101,11 @@ function getClientOptions() {
     // which would otherwise make the next error look like a different stack (background timers
     // usually run after beforeSend finished; rapid UI captures often dedupe first).
     beforeSend: (report) => rewriteReport(safeCloneReport(report)),
-    beforeSendTransaction: (report) =>
-      rewriteTransactionReport(safeCloneReport(report)),
+    beforeSendTransaction: (report) => {
+      const transaction = rewriteTransactionReport(safeCloneReport(report));
+      dropLowValueMarkSpans(transaction);
+      return transaction;
+    },
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -411,7 +414,7 @@ const LOW_VALUE_TRACE_MARKS = new Set(['sentry-tracing-init']);
  *
  * @param {object} report - A Sentry transaction event object.
  */
-function dropLowValueMarkSpans(report) {
+export function dropLowValueMarkSpans(report) {
   if (!Array.isArray(report.spans)) {
     return;
   }
@@ -423,16 +426,15 @@ function dropLowValueMarkSpans(report) {
 }
 
 /**
- * Scrubs breadcrumb payloads and drops low-diagnostic-value `op: 'mark'` spans
- * on performance transaction events before send. {@link rewriteReport} handles
- * errors via `beforeSend`; transactions use `beforeSendTransaction` instead.
+ * Scrubs breadcrumb payloads on performance transaction events before send.
+ * {@link rewriteReport} handles errors via `beforeSend`; transactions use
+ * `beforeSendTransaction` instead.
  *
  * @param {object} report - A Sentry transaction event object.
  * @returns {object} The modified report (same reference).
  */
 export function rewriteTransactionReport(report) {
   sanitizeBreadcrumbsInReport(report);
-  dropLowValueMarkSpans(report);
   return report;
 }
 

@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
 import {
+  dropLowValueMarkSpans,
   removeUrlsFromBreadCrumb,
   rewriteReport,
   rewriteTransactionReport,
@@ -344,7 +345,9 @@ describe('Setup Sentry', () => {
       rewriteTransactionReport(testReport);
       expect(testReport.breadcrumbs[0].data.url).toStrictEqual('');
     });
+  });
 
+  describe('dropLowValueMarkSpans', () => {
     it('drops the sentry-tracing-init mark span while keeping the transaction and meaningful spans', () => {
       const testReport = {
         type: 'transaction',
@@ -355,7 +358,7 @@ describe('Setup Sentry', () => {
           { op: 'http.client', description: 'GET /foo' },
         ],
       };
-      rewriteTransactionReport(testReport);
+      dropLowValueMarkSpans(testReport);
       expect(testReport.transaction).toBe('ui.popup');
       expect(testReport.spans).toStrictEqual([
         { op: 'mark', description: 'mm-hero-painted' },
@@ -373,7 +376,7 @@ describe('Setup Sentry', () => {
         transaction: 'ui.popup',
         spans,
       };
-      rewriteTransactionReport(testReport);
+      dropLowValueMarkSpans(testReport);
       expect(testReport.spans).toStrictEqual(spans);
     });
 
@@ -383,7 +386,7 @@ describe('Setup Sentry', () => {
         transaction: 'ui.popup',
         spans: [{ op: 'http.client', description: 'sentry-tracing-init' }],
       };
-      rewriteTransactionReport(testReport);
+      dropLowValueMarkSpans(testReport);
       expect(testReport.spans).toStrictEqual([
         { op: 'http.client', description: 'sentry-tracing-init' },
       ]);
@@ -391,7 +394,7 @@ describe('Setup Sentry', () => {
 
     it('does not throw when the transaction has no spans array', () => {
       const testReport = { type: 'transaction', transaction: 'ui.popup' };
-      expect(() => rewriteTransactionReport(testReport)).not.toThrow();
+      expect(() => dropLowValueMarkSpans(testReport)).not.toThrow();
       expect(testReport.spans).toBeUndefined();
     });
 
@@ -404,7 +407,7 @@ describe('Setup Sentry', () => {
           { op: 'mark', name: 'mm-hero-painted' },
         ],
       };
-      rewriteTransactionReport(testReport);
+      dropLowValueMarkSpans(testReport);
       expect(testReport.spans).toStrictEqual([
         { op: 'mark', name: 'mm-hero-painted' },
       ]);
