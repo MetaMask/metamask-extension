@@ -68,7 +68,6 @@ export default class ConfirmDeleteNetwork extends PureComponent {
       <Modal
         isOpen
         onClose={() => this.props.hideModal()}
-        isClosedOnOutsideClick={false}
         data-testid="confirm-delete-network-modal"
       >
         <ModalOverlay />
