@@ -299,16 +299,24 @@ if (args.bundleAnalyzer) {
 const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
-const reactRefreshTsxLoader = getSwcLoader('typescript', true, safeVariables, {
-  ...swcConfig,
-  refresh: true,
-});
-const reactRefreshJsxLoader = getSwcLoader('ecmascript', true, safeVariables, {
-  ...swcConfig,
-  refresh: true,
-});
+
+const swcReactRefreshConfig = { ...swcConfig, refresh: true };
+const reactRefreshTsxLoader = getSwcLoader(
+  'typescript',
+  true,
+  safeVariables,
+  swcReactRefreshConfig,
+);
+const reactRefreshJsxLoader = getSwcLoader(
+  'ecmascript',
+  true,
+  safeVariables,
+  swcReactRefreshConfig,
+);
+
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+
 const isChunkableInitial = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
