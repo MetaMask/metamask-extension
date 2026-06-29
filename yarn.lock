@@ -5522,9 +5522,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:@metamask-previews/assets-controller@9.1.0-preview-18dd0df9c":
-  version: 9.1.0-preview-18dd0df9c
-  resolution: "@metamask-previews/assets-controller@npm:9.1.0-preview-18dd0df9c"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@9.1.0-preview-12040e2d0":
+  version: 9.1.0-preview-12040e2d0
+  resolution: "@metamask-previews/assets-controller@npm:9.1.0-preview-12040e2d0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5555,7 +5555,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/bd92f44666f1ac8d1a494e21dfec6c71cd9d712839464eff1a1d56737b0f7e11e5cb61ca5c6a785856c829d6ae267b495e4f878cbb2d281158db255a7d6265fb
+  checksum: 10/0130be11e8130de59c77e3a756c4b4de329aba5ec339b1fb9fc254e66659fdb8582ace726f560411789e0cc160694488eab3763bd23b9fdb59e1494bc28966b8
   languageName: node
   linkType: hard
 
@@ -5977,9 +5977,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:@metamask-previews/core-backend@6.3.3-preview-18dd0df9c":
-  version: 6.3.3-preview-18dd0df9c
-  resolution: "@metamask-previews/core-backend@npm:6.3.3-preview-18dd0df9c"
+"@metamask/core-backend@npm:@metamask-previews/core-backend@6.3.3-preview-12040e2d0":
+  version: 6.3.3-preview-12040e2d0
+  resolution: "@metamask-previews/core-backend@npm:6.3.3-preview-12040e2d0"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.3"
     "@metamask/controller-utils": "npm:^12.3.0"
@@ -5990,7 +5990,7 @@ __metadata:
     "@tanstack/query-core": "npm:^5.62.16"
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/8c4cf0c8f9669f78c168d8c31cf749ffc552af40049b34f6ed6fd0066c4f8fcd57eb134da6ea87bc03f471b5ee6c80b78d68b26d27b553752573f7f438691e69
+  checksum: 10/46933928be7eddd6338d7e4614e63e4bc8068a0ba0c1045e182475189114a316a17d4bce990595b6a768d8bea54ebee3472a668ec71dc4331cac02278cdd87a9
   languageName: node
   linkType: hard
 
@@ -6024,12 +6024,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.25.0":
-  version: 0.25.0
-  resolution: "@metamask/design-system-react@npm:0.25.0"
+"@metamask/design-system-react@npm:^0.28.0":
+  version: 0.28.0
+  resolution: "@metamask/design-system-react@npm:0.28.0"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
-    "@metamask/design-system-shared": "npm:^0.21.0"
+    "@metamask/design-system-shared": "npm:^0.24.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6041,18 +6041,18 @@ __metadata:
     "@metamask/utils": ^11.11.0
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/778c4a1ccea0f920e80db6d76a97e58fa456f2bebc4391b1096a61e0946a9bcc289d051f202e9534c8b6bf594c615860a34198af526bbee02ed6e5430993de82
+  checksum: 10/ea0136c108fb84c6917b0c2cb7bab606275e2e6aed85c7cb4862375391a8795d50bba0e319d9d106f69d661b609d79809931217304783c9560500b7e75e0a80e
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.21.0":
-  version: 0.21.0
-  resolution: "@metamask/design-system-shared@npm:0.21.0"
+"@metamask/design-system-shared@npm:^0.24.0":
+  version: 0.24.0
+  resolution: "@metamask/design-system-shared@npm:0.24.0"
   dependencies:
     "@metamask/utils": "npm:^11.11.0"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/77839755eba0c6e8efeb503a98cf0cd1b4891c551bbbf3bc43482867ab89cc24d2653fd4618f2e513f9d8652f3ce33c55dfd6d8d24151720c57ed762488668ee
+  checksum: 10/97c1988099436de634f464c7dd534bf4faf58b54eb6734fbccd63407e9791db77d7eb1abcf8719bf064ad032387e41fb07bca43239375c4b567f1dad114d4231
   languageName: node
   linkType: hard
 
@@ -7286,9 +7286,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^8.1.0":
-  version: 8.3.0
-  resolution: "@metamask/perps-controller@npm:8.3.0"
+"@metamask/perps-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/perps-controller@npm:9.0.0"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7304,7 +7304,7 @@ __metadata:
   dependenciesMeta:
     "@myx-trade/sdk":
       optional: true
-  checksum: 10/b0eb2ee8facfca59f319d2d69619776e8ce0e137eac813650282dfefd7ee47a51946e86f471298b4a8075821c49d98677820ac3bd9c2062f86a94c0c7fc0236e
+  checksum: 10/49cecb9a6da5e745aff63163d985130f5d5f7ba4a7eced16634d30ef20720404cfbe570d979a92c11885d951ec532655a7d46ee998363df8c60dc0b9ad3b23f2
   languageName: node
   linkType: hard
 
@@ -7636,7 +7636,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:^10.0.1":
+"@metamask/seedless-onboarding-controller@npm:^10.0.3":
   version: 10.0.3
   resolution: "@metamask/seedless-onboarding-controller@npm:10.0.3"
   dependencies:
@@ -8293,7 +8293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-controller@npm:^23.6.0":
+"@metamask/transaction-pay-controller@npm:^23.16.1":
   version: 23.17.1
   resolution: "@metamask/transaction-pay-controller@npm:23.17.1"
   dependencies:
@@ -32988,7 +32988,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:^9.1.0"
-    "@metamask/assets-controllers": "npm:^109.2.2"
+    "@metamask/assets-controllers": "npm:^109.2.1"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-wallet-snap": "npm:^1.14.0"
@@ -33010,8 +33010,8 @@ __metadata:
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
-    "@metamask/design-system-react": "npm:^0.25.0"
-    "@metamask/design-system-shared": "npm:^0.21.0"
+    "@metamask/design-system-react": "npm:^0.28.0"
+    "@metamask/design-system-shared": "npm:^0.24.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.9.0"
     "@metamask/design-tokens": "npm:^8.5.0"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
@@ -33074,7 +33074,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
-    "@metamask/perps-controller": "npm:^8.1.0"
+    "@metamask/perps-controller": "npm:^9.0.0"
     "@metamask/phishing-controller": "npm:^17.2.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/polling-controller": "npm:^16.0.7"
@@ -33091,7 +33091,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:^10.0.1"
+    "@metamask/seedless-onboarding-controller": "npm:^10.0.3"
     "@metamask/selected-network-controller": "npm:^26.1.4"
     "@metamask/shield-controller": "npm:^5.0.1"
     "@metamask/signature-controller": "npm:^39.2.6"
@@ -33119,7 +33119,7 @@ __metadata:
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.4.2"
     "@metamask/transaction-controller": "npm:^68.1.1"
-    "@metamask/transaction-pay-controller": "npm:^23.6.0"
+    "@metamask/transaction-pay-controller": "npm:^23.16.1"
     "@metamask/tron-wallet-snap": "npm:^1.27.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
