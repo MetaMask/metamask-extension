@@ -5848,9 +5848,15 @@ export default class MetamaskController extends EventEmitter {
       (account) => referralStatusByAccount[account] === ReferralStatus.Declined,
     );
 
+    // We should show approval screen if the account does not have a status
+    const shouldShowApproval = permittedAccountStatus === undefined;
+
+    // We should redirect to the referral url if the account is approved
+    const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
+
     if (
       partner.id === DefiReferralPartner.GMX &&
-      permittedAccountStatus === undefined
+      (shouldShowApproval || shouldRedirect)
     ) {
       const hasExistingCode = await checkGmxHasReferralCode(
         this.networkController,
@@ -5864,12 +5870,6 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
     }
-
-    // We should show approval screen if the account does not have a status
-    const shouldShowApproval = permittedAccountStatus === undefined;
-
-    // We should redirect to the referral url if the account is approved
-    const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
 
     if (shouldShowApproval) {
       try {
