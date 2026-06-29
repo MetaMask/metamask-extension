@@ -286,7 +286,9 @@ describe('./utils/dev-server', () => {
       const { devServer } = createDevServer();
       const { setupMiddlewares } = DEV_SERVER_OPTIONS;
       assert(setupMiddlewares, 'setupMiddlewares should be set');
-      const middlewares = [];
+      const middlewares: Parameters<
+        NonNullable<typeof DEV_SERVER_OPTIONS.setupMiddlewares>
+      >[0] = [];
 
       const result = setupMiddlewares(middlewares, {
         ...devServer,
