@@ -71,7 +71,7 @@ describe('useAnalytics', () => {
   });
 
   describe('trackEvent', () => {
-    it('buffers events when participation is enabled but analyticsId is missing', async () => {
+    it('tracks events when participation is enabled but analyticsId is missing', async () => {
       renderHookConsumer({
         eventName: MetaMetricsEventName.AnalyticsPreferenceSelected,
         state: {
@@ -84,20 +84,20 @@ describe('useAnalytics', () => {
       });
 
       await waitFor(() => {
-        expect(mockedSubmitRequestToBackground).toHaveBeenCalledWith(
-          'addEventBeforeMetricsOptIn',
-          [
-            expect.objectContaining({
-              event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-              properties: {
-                category: MetaMetricsEventCategory.Onboarding,
-              },
-            }),
-          ],
+        expect(mockedTrackAnalyticsEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.AnalyticsPreferenceSelected,
+            properties: {
+              category: MetaMetricsEventCategory.Onboarding,
+            },
+          }),
+          expect.objectContaining({
+            environmentType: expect.any(String),
+          }),
         );
       });
 
-      expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
+      expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
     it('tracks events immediately when participation is enabled and analyticsId exists', async () => {

@@ -7,7 +7,6 @@ import {
 } from '../../shared/lib/analytics/create-event-builder';
 import {
   MetaMetricsEventName,
-  type MetaMetricsEventPayload,
   type MetaMetricsPageObject,
   type MetaMetricsReferrerObject,
 } from '../../shared/constants/metametrics';
@@ -17,7 +16,6 @@ import {
   getCompletedMetaMetricsOnboarding,
   getOptedIn,
 } from '../selectors';
-import { submitRequestToBackground } from '../store/background-connection';
 import { trackAnalyticsEvent } from '../store/actions';
 import { useSegmentContext } from './useSegmentContext';
 
@@ -31,20 +29,6 @@ type UseAnalyticsResult = {
   createEventBuilder: typeof createEventBuilder;
   trackEvent: (built: AnalyticsEvent) => void;
 };
-
-function toMetaMetricsEventPayload(
-  built: AnalyticsEvent,
-  options: UIAnalyticsTrackEventOptions,
-): MetaMetricsEventPayload {
-  return {
-    event: built.name,
-    properties: built.properties,
-    sensitiveProperties: built.sensitiveProperties,
-    environmentType: options.environmentType,
-    page: options.page,
-    referrer: options.referrer,
-  };
-}
 
 export function useAnalytics(): UseAnalyticsResult {
   const context = useSegmentContext();
@@ -68,13 +52,10 @@ export function useAnalytics(): UseAnalyticsResult {
 
       if (
         canTrackImmediately ||
+        canMaybeTrackLater ||
         built.name === MetaMetricsEventName.MetricsOptOut
       ) {
         trackAnalyticsEvent(built, options).catch(() => undefined);
-      } else if (canMaybeTrackLater) {
-        submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          toMetaMetricsEventPayload(built, options),
-        ]).catch(() => undefined);
       }
     },
     [canMaybeTrackLater, canTrackImmediately, context],

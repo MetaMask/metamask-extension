@@ -1378,10 +1378,10 @@ function trackDappView(remotePort) {
  * @param {string} environmentType - The environment type where the app is opening
  */
 function emitAppOpenedMetricEvent(environmentType) {
-  const { completedMetaMetricsOnboarding, optedIn } = controller.getState();
+  const { consentDecisionMade, optedIn } = controller.getState();
 
   // Skip if user hasn't opted into metrics
-  if (!completedMetaMetricsOnboarding || !optedIn) {
+  if (!consentDecisionMade || !optedIn) {
     return;
   }
 
@@ -2202,30 +2202,14 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     properties: eventProperties,
   };
 
-  const { completedMetaMetricsOnboarding, optedIn, analyticsId } =
-    controller.getState();
+  const { consentDecisionMade, optedIn } = controller.getState();
 
-  if (completedMetaMetricsOnboarding === true && optedIn === false) {
+  if (consentDecisionMade === true && optedIn === false) {
     // We can skip tracking completely if they've already explicitly opted out
     return;
   }
 
-  // Track immediately only once consent is active and the analytics ID is
-  // available. Otherwise keep the event buffered for the opt-in flush path so
-  // it is not dropped.
-  if (
-    completedMetaMetricsOnboarding === true &&
-    optedIn === true &&
-    analyticsId
-  ) {
-    controller.metaMetricsController.trackEvent(appInstalledEvent);
-  } else {
-    // Onboarding is incomplete, or the user opted in without an analytics ID yet,
-    // so we queue the metrics event for possible submission later.
-    controller.metaMetricsController.addEventBeforeMetricsOptIn(
-      appInstalledEvent,
-    );
-  }
+  controller.metaMetricsController.trackEvent(appInstalledEvent);
 };
 
 /**

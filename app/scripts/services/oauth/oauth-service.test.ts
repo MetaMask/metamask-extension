@@ -114,9 +114,6 @@ const mockWebAuthenticator: WebAuthenticator = {
 const mockBufferedTrace = jest.fn();
 const mockBufferedEndTrace = jest.fn();
 const mockTrackEvent = jest.fn();
-const mockAddEventBeforeMetricsOptIn = jest.fn();
-const mockGetCompletedMetaMetricsOnboarding = jest.fn().mockReturnValue(true);
-const mockGetOptedIn = jest.fn().mockReturnValue(true);
 const mockPlatform = new ExtensionPlatform();
 let messenger: OAuthServiceTestMessenger;
 
@@ -164,9 +161,6 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Google);
@@ -195,9 +189,6 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Apple);
@@ -280,9 +271,6 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     const result = await oauthService.startOAuthLogin(AuthConnection.Telegram);
@@ -376,9 +364,6 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Telegram);
@@ -413,9 +398,6 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     await expect(
@@ -440,9 +422,6 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     await expect(
@@ -485,9 +464,6 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
       platform: mockPlatform,
     });
 
@@ -527,9 +503,6 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
       platform: mockPlatform,
     });
 
@@ -567,9 +540,6 @@ describe('OAuthService - startOAuthLogin', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
       platform: mockPlatform,
     });
 
@@ -599,10 +569,6 @@ describe('OAuthService - startOAuthLogin', () => {
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
-        addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-        getCompletedMetaMetricsOnboarding:
-          mockGetCompletedMetaMetricsOnboarding,
-        getOptedIn: mockGetOptedIn,
       });
 
       await messenger.call(
@@ -658,9 +624,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     const result = await oauthService.getNewRefreshToken({
@@ -721,9 +684,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     await expect(
@@ -762,10 +722,6 @@ describe('OAuthService - getNewRefreshToken', () => {
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
-        addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-        getCompletedMetaMetricsOnboarding:
-          mockGetCompletedMetaMetricsOnboarding,
-        getOptedIn: mockGetOptedIn,
       });
 
       const result = await messenger.call('OAuthService:getNewRefreshToken', {
@@ -809,9 +765,6 @@ describe('OAuthService - renewRefreshToken', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
     const oauthConfig = loadOAuthConfig();
 
@@ -864,9 +817,6 @@ describe('OAuthService - renewRefreshToken', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     await expect(
@@ -901,9 +851,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
     const oauthConfig = loadOAuthConfig();
 
@@ -951,9 +898,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
-      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-      getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
-      getOptedIn: mockGetOptedIn,
     });
 
     await expect(
@@ -992,10 +936,6 @@ describe('OAuthService - revokeRefreshToken', () => {
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
-        addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
-        getCompletedMetaMetricsOnboarding:
-          mockGetCompletedMetaMetricsOnboarding,
-        getOptedIn: mockGetOptedIn,
       });
 
       const result = await messenger.call('OAuthService:renewRefreshToken', {

@@ -39,6 +39,7 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
     state: persisted as AnalyticsControllerState,
     isAnonymousEventsFeatureEnabled: true,
     isEventQueuePersistenceEnabled: true,
+    isPreConsentQueueEnabled: true,
   });
   controller.init();
 

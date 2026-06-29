@@ -50,7 +50,7 @@ describe('NFTs list', () => {
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
       selectedNetworkClientId: 'testNetworkConfigurationId',
       enabledNetworkMap: {

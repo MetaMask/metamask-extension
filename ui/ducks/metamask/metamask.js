@@ -53,7 +53,7 @@ const initialState = {
   use4ByteResolution: true,
   analyticsId: null,
   optedIn: false,
-  completedMetaMetricsOnboarding: false,
+  consentDecisionMade: false,
   dataCollectionForMarketing: null,
   currencyRates: {
     ETH: {
@@ -138,7 +138,7 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
       return {
         ...metamaskState,
-        completedMetaMetricsOnboarding: action.value !== null,
+        consentDecisionMade: action.value !== null,
         optedIn: action.value === true,
       };
 
@@ -175,7 +175,7 @@ export default function reduceMetamask(state = initialState, action) {
         // reset analytics opt-in status
         analyticsId: null,
         optedIn: false,
-        completedMetaMetricsOnboarding: false,
+        consentDecisionMade: false,
       };
     }
 

@@ -39,10 +39,7 @@ export function metaMetricsIntegration({
       // session requests will always be handled by the custom transport.
       const analyticsState = await getAnalyticsState();
 
-      if (
-        !analyticsState?.completedMetaMetricsOnboarding ||
-        !analyticsState.optedIn
-      ) {
+      if (!analyticsState?.consentDecisionMade || !analyticsState.optedIn) {
         log('Event dropped as metrics disabled');
         return null;
       }

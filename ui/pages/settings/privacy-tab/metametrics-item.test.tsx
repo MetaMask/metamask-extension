@@ -42,7 +42,7 @@ const createMockStore = (overrides = {}) =>
     metamask: {
       ...mockState.metamask,
       useExternalServices: true,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: false,
       dataCollectionForMarketing: false,
       ...overrides,

@@ -13,7 +13,7 @@ export function makeTransport(
   return Sentry.makeFetchTransport(options, async (...args) => {
     const state = await getAnalyticsState();
 
-    if (!state?.completedMetaMetricsOnboarding || !state.optedIn) {
+    if (!state?.consentDecisionMade || !state.optedIn) {
       throw new Error('Network request skipped as metrics disabled');
     }
 

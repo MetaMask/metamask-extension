@@ -34,7 +34,7 @@ const renderProvider = ({
   state: {
     metamask: {
       analyticsId: string | null;
-      completedMetaMetricsOnboarding: boolean;
+      consentDecisionMade: boolean;
       optedIn: boolean;
     };
   };
@@ -85,31 +85,29 @@ describe('MetaMetricsProvider', () => {
     jest.clearAllMocks();
   });
 
-  it('buffers events when participation is enabled but analyticsId is missing', async () => {
+  it('tracks events when participation is enabled but analyticsId is missing', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
           analyticsId: null,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         },
       },
     });
 
     await waitFor(() => {
-      expect(mockedSubmitRequestToBackground).toHaveBeenCalledWith(
-        'addEventBeforeMetricsOptIn',
-        [
-          expect.objectContaining({
-            category: MetaMetricsEventCategory.Onboarding,
-            event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          }),
-        ],
+      expect(mockedTrackMetaMetricsEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        }),
+        undefined,
       );
     });
 
-    expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
+    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('tracks events immediately when participation is enabled and analyticsId exists', async () => {
@@ -118,7 +116,7 @@ describe('MetaMetricsProvider', () => {
       state: {
         metamask: {
           analyticsId: '0x123',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         },
       },
@@ -143,7 +141,7 @@ describe('MetaMetricsProvider', () => {
       state: {
         metamask: {
           analyticsId: null,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
         },
       },
@@ -168,7 +166,7 @@ describe('MetaMetricsProvider', () => {
       state: {
         metamask: {
           analyticsId: '0x123',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
         },
       },

@@ -96,6 +96,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppMetadataController.currentAppVersion',
   // Random ids
   'data.AnalyticsController.analyticsId',
+  'data.AnalyticsController.preConsentEventQueue',
   'data.MultichainBalancesController',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',

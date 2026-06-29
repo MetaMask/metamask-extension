@@ -107,7 +107,7 @@ describe('Unlock wallet - ', function () {
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           await onboardingMetricsFlow(driver, {
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: false,
             dataCollectionForMarketing: false,
           });

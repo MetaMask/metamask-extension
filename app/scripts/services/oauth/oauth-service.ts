@@ -11,7 +11,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventAccountType,
   MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
 } from '../../../../shared/constants/metametrics';
 import {
   AuthConnection,
@@ -64,12 +63,6 @@ export class OAuthService {
 
   #trackEvent: OAuthServiceOptions['trackEvent'];
 
-  #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
-
-  #getCompletedMetaMetricsOnboarding: OAuthServiceOptions['getCompletedMetaMetricsOnboarding'];
-
-  #getOptedIn: OAuthServiceOptions['getOptedIn'];
-
   constructor({
     messenger,
     webAuthenticator,
@@ -77,9 +70,6 @@ export class OAuthService {
     bufferedTrace,
     bufferedEndTrace,
     trackEvent,
-    addEventBeforeMetricsOptIn,
-    getCompletedMetaMetricsOnboarding,
-    getOptedIn,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -89,38 +79,11 @@ export class OAuthService {
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
     this.#trackEvent = trackEvent;
-    this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
-    this.#getCompletedMetaMetricsOnboarding = getCompletedMetaMetricsOnboarding;
-    this.#getOptedIn = getOptedIn;
 
     this.#messenger.registerMethodActionHandlers(
       this,
       MESSENGER_EXPOSED_METHODS,
     );
-  }
-
-  /**
-   * Track a MetaMetrics event with buffering (handles consent checking)
-   *
-   * @param payload - The event payload
-   * @param options - Optional event options
-   */
-  #trackEventWithBuffering(
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ): void {
-    const isMetricsEnabled =
-      this.#getCompletedMetaMetricsOnboarding() && this.#getOptedIn();
-
-    if (isMetricsEnabled) {
-      this.#trackEvent(payload, options);
-    } else {
-      const bufferedPayload = {
-        ...payload,
-        actionId: `${Date.now() + Math.random()}`,
-      };
-      this.#addEventBeforeMetricsOptIn(bufferedPayload);
-    }
   }
 
   /**
@@ -383,7 +346,7 @@ export class OAuthService {
     errorCategory: 'provider_login' | 'get_auth_tokens';
     failureType: 'error' | 'user_cancelled';
   }): void {
-    this.#trackEventWithBuffering({
+    this.#trackEvent({
       event: MetaMetricsEventName.SocialLoginFailed,
       category: MetaMetricsEventCategory.Onboarding,
       properties: {

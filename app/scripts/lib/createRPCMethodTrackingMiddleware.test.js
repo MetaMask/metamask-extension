@@ -85,6 +85,7 @@ messenger.registerActionHandler(
 const analyticsControllerState = {
   analyticsId: '00000000-0000-4000-8000-000000000001',
   optedIn: false,
+  consentDecisionMade: false,
 };
 
 messenger.registerActionHandler('AnalyticsController:getState', () => ({
@@ -93,11 +94,21 @@ messenger.registerActionHandler('AnalyticsController:getState', () => ({
 
 messenger.registerActionHandler('AnalyticsController:optIn', () => {
   analyticsControllerState.optedIn = true;
+  analyticsControllerState.consentDecisionMade = true;
 });
 
 messenger.registerActionHandler('AnalyticsController:optOut', () => {
   analyticsControllerState.optedIn = false;
+  analyticsControllerState.consentDecisionMade = true;
 });
+
+messenger.registerActionHandler(
+  'AnalyticsController:resetConsentDecision',
+  () => {
+    analyticsControllerState.optedIn = false;
+    analyticsControllerState.consentDecisionMade = false;
+  },
+);
 
 messenger.registerActionHandler('AnalyticsController:trackEvent', jest.fn());
 messenger.registerActionHandler('AnalyticsController:identify', jest.fn());
@@ -114,6 +125,7 @@ messenger.delegate({
     'AnalyticsController:getState',
     'AnalyticsController:optIn',
     'AnalyticsController:optOut',
+    'AnalyticsController:resetConsentDecision',
     'AnalyticsController:trackEvent',
     'AnalyticsController:identify',
     'AnalyticsController:trackView',
