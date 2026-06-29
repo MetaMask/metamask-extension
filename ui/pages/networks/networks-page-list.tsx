@@ -6,6 +6,7 @@ import {
   toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
+import { isStrictHexString, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,7 +30,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { AdditionalNetworksInfo } from '../../components/multichain/network-manager/components/additional-networks-info';
-import { useNetworkChangeHandlers } from '../../components/multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../components/multichain/network-manager/hooks/useNetworkItemCallbacks';
 import { NetworkListItem } from '../../components/multichain/network-list-item';
 import ToggleButton from '../../components/ui/toggle-button';
@@ -158,6 +158,15 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
 
 const SectionDivider = () => <Box className="mx-4 border-t border-muted" />;
 
+const isCurrentNetwork = (
+  network: MultichainNetworkConfiguration,
+  selectedChainId: string,
+) =>
+  network.chainId === selectedChainId ||
+  (network.isEvm &&
+    isStrictHexString(network.chainId) &&
+    toEvmCaipChainId(network.chainId as Hex) === selectedChainId);
+
 type NetworksPageListProps = {
   searchQuery: string;
   footerContent?: React.ReactNode;
@@ -188,7 +197,6 @@ export const NetworksPageList = ({
     });
   const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
     useNetworkItemCallbacks();
-  const { handleNetworkChange } = useNetworkChangeHandlers();
 
   const orderedNetworks = useMemo(
     () =>
@@ -259,28 +267,28 @@ export const NetworksPageList = ({
           name={network.name}
           iconSrc={getNetworkIcon(network)}
           focus={false}
-          selected={false}
+          selected={isCurrentNetwork(network, currentMultichainChainId)}
           rpcEndpoint={
             network.isEvm && hasMultiRpcOptions(network)
               ? getRpcDataByChainId(network.chainId, evmNetworks)
                   .defaultRpcEndpoint
               : undefined
           }
-          onClick={() => handleNetworkChange(network.chainId)}
+          onClick={() => undefined}
           onDeleteClick={onDelete}
           deleteMenuLabel={onDeleteMenuLabel}
           onEditClick={onEdit}
           onDiscoverClick={onDiscoverClick}
           onRpcEndpointClick={onRpcSelect}
           disabled={!isNetworkEnabled(network)}
-          notSelectable={false}
+          notSelectable
         />
       );
     },
     [
+      currentMultichainChainId,
       evmNetworks,
       getItemCallbacks,
-      handleNetworkChange,
       hasMultiRpcOptions,
       isNetworkEnabled,
     ],
@@ -310,7 +318,7 @@ export const NetworksPageList = ({
       className="flex h-full min-h-0 w-full flex-col"
       data-testid="networks-page-list"
     >
-      <Box className="flex-1 overflow-y-auto pt-2">
+      <Box className="flex-1 overflow-y-auto pt-4">
         {defaultNetworks.length > 0 ? (
           <Box
             padding={4}
@@ -324,7 +332,7 @@ export const NetworksPageList = ({
           </Box>
         ) : null}
 
-        <Box>{defaultNetworks.map(renderNetworkListItem)}</Box>
+        <Box className="pb-2">{defaultNetworks.map(renderNetworkListItem)}</Box>
 
         {customNetworks.length > 0 ? (
           <>
@@ -342,7 +350,7 @@ export const NetworksPageList = ({
           </>
         ) : null}
 
-        <Box>{customNetworks.map(renderNetworkListItem)}</Box>
+        <Box className="pb-2">{customNetworks.map(renderNetworkListItem)}</Box>
 
         {sortedTestNetworks.length > 0 ? (
           <>
@@ -370,14 +378,16 @@ export const NetworksPageList = ({
         ) : null}
 
         {showTestnets || currentlyOnTestnet ? (
-          <>{sortedTestNetworks.map(renderNetworkListItem)}</>
+          <Box className="pb-2">
+            {sortedTestNetworks.map(renderNetworkListItem)}
+          </Box>
         ) : null}
 
         {featuredNetworksNotYetEnabled.length > 0 ? (
           <>
             <SectionDivider />
             <AdditionalNetworksInfo />
-            <Box>
+            <Box className="pb-2">
               {featuredNetworksNotYetEnabled.map((network) => (
                 <AdditionalNetworkRow key={network.chainId} network={network} />
               ))}

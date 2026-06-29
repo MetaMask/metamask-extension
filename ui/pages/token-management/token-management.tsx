@@ -788,6 +788,8 @@ export const TokenManagementPage = () => {
   }, [commitStagedHides]);
 
   const networkFilterLabel = useNetworkFilterButtonLabel();
+  const isSingleNetworkFilterSelected =
+    allEnabledNetworksForAllNamespaces.length === 1;
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
@@ -1496,13 +1498,22 @@ export const TokenManagementPage = () => {
           data-testid="token-management-network-filter"
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          className="bg-default text-default border border-muted"
+          startIconProps={{ size: IconSize.Md }}
+          className={`rounded-lg border border-muted bg-default px-2 ${
+            isSingleNetworkFilterSelected
+              ? 'text-primary-default'
+              : 'text-default'
+          }`}
           onClick={handleOpenNetworkFilter}
         >
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
+            color={
+              isSingleNetworkFilterSelected
+                ? TextColor.PrimaryDefault
+                : TextColor.TextDefault
+            }
             ellipsis
           >
             {networkFilterLabel}

@@ -14,17 +14,12 @@ import {
   IconName,
   IconSize,
   Text,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Icon,
   ButtonIconSize,
   ButtonIcon,
 } from '../../../../../components/component-library';
 import {
   BackgroundColor,
   TextColor,
-  Display,
-  AlignItems,
   BorderColor,
 } from '../../../../../helpers/constants/design-system';
 import { NetworkListItem } from '../../../../../components/multichain';
@@ -121,28 +116,19 @@ export const NetworkFilter = ({
     });
   }, [tokens, nfts]);
 
-  const { displayName, displayIcon, isAllNetworks } = useMemo(() => {
+  const displayName = useMemo(() => {
     if (selectedChainId === null) {
-      return {
-        displayName: 'All networks',
-        displayIcon: IconName.Global,
-        isAllNetworks: true,
-      };
+      return t('allNetworks');
     }
 
     const networkName = chainNetworkNAmeAndImageMap.get(
       selectedChainId as string,
     )?.networkName;
-    const networkImage = chainNetworkNAmeAndImageMap.get(
-      selectedChainId as string,
-    )?.networkImage;
 
-    return {
-      displayName: networkName || `Chain ${selectedChainId}`,
-      displayIcon: networkImage || '',
-      isAllNetworks: false,
-    };
-  }, [selectedChainId, chainNetworkNAmeAndImageMap]);
+    return networkName || `Chain ${selectedChainId}`;
+  }, [selectedChainId, chainNetworkNAmeAndImageMap, t]);
+
+  const isSingleNetworkSelected = selectedChainId !== null;
 
   const handleNetworkFilterClick = useCallback(() => {
     setIsNetworkFilterPopoverOpen((isOpen) => !isOpen);
@@ -217,28 +203,30 @@ export const NetworkFilter = ({
         <ButtonBase
           data-testid="send-network-filter-toggle"
           onClick={handleNetworkFilterClick}
-          size={ButtonBaseSize.Md}
-          endIconName={IconName.ArrowDown}
+          size={ButtonBaseSize.Sm}
+          startIconName={IconName.Filter}
+          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           backgroundColor={BackgroundColor.backgroundDefault}
-          color={TextColor.textDefault}
-          borderColor={BorderColor.borderDefault}
+          color={
+            isSingleNetworkSelected
+              ? TextColor.primaryDefault
+              : TextColor.textDefault
+          }
+          borderColor={BorderColor.borderMuted}
           marginBottom={2}
           marginTop={2}
           ellipsis
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {isAllNetworks ? (
-              <Icon name={displayIcon as IconName} size={IconSize.Sm} />
-            ) : (
-              <AvatarNetwork
-                name={displayName}
-                src={displayIcon}
-                size={AvatarNetworkSize.Sm}
-                borderWidth={0}
-              />
-            )}
-            <Text ellipsis>{displayName}</Text>
-          </Box>
+          <Text
+            color={
+              isSingleNetworkSelected
+                ? TextColor.primaryDefault
+                : TextColor.textDefault
+            }
+            ellipsis
+          >
+            {displayName}
+          </Text>
         </ButtonBase>
       </Box>
       {isNetworkManagementEnabled ? (
