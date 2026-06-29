@@ -257,9 +257,9 @@ describe('initializeWallet — PreferencesController override', () => {
   it('overrides the default PreferencesController via initializationConfigurations', () => {
     const { initializationConfigurations } = getWalletOptions({});
 
-    expect(
-      initializationConfigurations?.map((config) => config.name),
-    ).toContain('PreferencesController');
+    expect(initializationConfigurations).toContain(
+      preferencesControllerConfiguration,
+    );
   });
 
   it('seeds currentLocale from initLangCode, with persisted state taking precedence', () => {
@@ -276,9 +276,29 @@ describe('initializeWallet — PreferencesController override', () => {
     ).toBe('de');
   });
 
+  it('lets a persisted empty-string currentLocale win over initLangCode', () => {
+    // The merge is a spread, not a `??`/`||` fallback, so a persisted empty
+    // string still takes precedence over the seed.
+    expect(
+      getWalletOptions({
+        state: { PreferencesController: { currentLocale: '' } },
+        initLangCode: 'fr',
+      }).state?.PreferencesController?.currentLocale,
+    ).toBe('');
+  });
+
   it('defaults currentLocale to an empty string when no locale is provided', () => {
     expect(
       getWalletOptions({}).state?.PreferencesController?.currentLocale,
     ).toBe('');
+  });
+
+  it('seeds currentLocale while preserving other persisted PreferencesController state', () => {
+    expect(
+      getWalletOptions({
+        state: { PreferencesController: { useExternalServices: false } },
+        initLangCode: 'fr',
+      }).state?.PreferencesController,
+    ).toStrictEqual({ currentLocale: 'fr', useExternalServices: false });
   });
 });

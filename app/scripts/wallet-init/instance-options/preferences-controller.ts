@@ -27,9 +27,11 @@ export const preferencesControllerConfiguration: InitializationConfiguration<
   getMessenger: (parent) => {
     const messenger: PreferencesControllerMessenger = new Messenger({
       namespace: 'PreferencesController',
-      // Root is typed from the package controller, so the superset's extra
-      // actions can't type-check against the parent (they exist only at runtime).
-      // TODO: drop once the wallet types the root from the configured controller.
+      // The wallet types the root from its own `PreferencesController`, so the
+      // superset's extra `PreferencesController:*` method actions aren't on the
+      // parent and its `Parent` constraint rejects the child. (The delegated
+      // `AccountsController` actions below already exist on the parent.)
+      // TODO(MetaMask/core#9232): drop once the wallet types the root from the configured controller.
       parent: parent as unknown as RootMessenger<
         MessengerActions<PreferencesControllerMessenger>,
         MessengerEvents<PreferencesControllerMessenger>
