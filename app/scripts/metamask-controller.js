@@ -773,8 +773,8 @@ export default class MetamaskController extends EventEmitter {
     // future wallet bump that renames that default would silently fall back to the
     // package controller, so fail loud at boot rather than later as an obscure error.
     if (
-      typeof (
-        /** @type {{ setAccountLabel?: unknown }} */ (preferencesController)
+      typeof /** @type {{ setAccountLabel?: unknown }} */ (
+        preferencesController
       ).setAccountLabel !== 'function'
     ) {
       throw new Error(
