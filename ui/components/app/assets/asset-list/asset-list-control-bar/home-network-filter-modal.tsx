@@ -284,7 +284,7 @@ export const NetworkSelectionModal = ({
             ))}
           </Box>
           {footerButton ? (
-            <Box className="px-4 pb-4 pt-2">
+            <Box className="px-4 pt-4">
               <Button
                 data-testid={footerButton.testId}
                 className="h-12 w-full rounded-xl border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"

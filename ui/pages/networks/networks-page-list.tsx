@@ -97,22 +97,23 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
       network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
 
+  const handleAddNetwork = async () => {
+    await dispatch(addNetwork(network, { setActive: false }));
+    dispatch(
+      setEditedNetwork({
+        chainId: network.chainId,
+        nickname: network.name,
+        editCompleted: true,
+        newNetwork: true,
+      }),
+    );
+  };
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Start}
-      onClick={async () => {
-        await dispatch(addNetwork(network, { setActive: false }));
-        dispatch(
-          setEditedNetwork({
-            chainId: network.chainId,
-            nickname: network.name,
-            editCompleted: true,
-            newNetwork: true,
-          }),
-        );
-      }}
       paddingTop={4}
       paddingBottom={4}
       gap={4}
@@ -151,6 +152,7 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
         data-testid="test-add-button"
         className="ml-auto"
         ariaLabel={t('addNetwork')}
+        onClick={handleAddNetwork}
       />
     </Box>
   );
@@ -318,7 +320,7 @@ export const NetworksPageList = ({
       className="flex h-full min-h-0 w-full flex-col"
       data-testid="networks-page-list"
     >
-      <Box className="flex-1 overflow-y-auto pt-4">
+      <Box className="flex-1 overflow-y-auto">
         {defaultNetworks.length > 0 ? (
           <Box
             padding={4}
