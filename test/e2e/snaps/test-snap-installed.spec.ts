@@ -90,19 +90,12 @@ describe('Test Snap installed', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Installed');
         assert.deepStrictEqual(events[0].properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          /* eslint-disable @typescript-eslint/naming-convention */
           snap_id: 'npm:@metamask/dialog-example-snap',
+          snap_category: null,
+          /* eslint-enable @typescript-eslint/naming-convention */
           origin: 'http://127.0.0.1:8080',
           version: '2.3.1',
-          category: 'Snaps',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'background',
           ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
 

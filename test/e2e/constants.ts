@@ -122,8 +122,8 @@ export const DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC = '25';
 /* Default local node USD balance in format for when first login */
 export const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,000.00';
 
-/** Max ms to wait for Snap-fetched non-EVM balances to appear on the homepage. */
-export const SNAP_BALANCE_ASSERTION_TIMEOUT_MS = 30_000;
+/** Max ms to wait for asynchronously-loaded homepage balances (Snap non-EVM, Anvil local node, etc.). */
+export const HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS = 30_000;
 
 /* Dapp host addresses and URL*/
 export const DAPP_HOST_ADDRESS = '127.0.0.1:8080';

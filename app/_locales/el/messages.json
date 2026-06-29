@@ -5714,9 +5714,6 @@
   "notCurrentAccount": {
     "message": "Είναι αυτός ο σωστός λογαριασμός; Είναι διαφορετικός από τον τρέχοντα επιλεγμένο λογαριασμό στο πορτοφόλι σας."
   },
-  "notEnoughGas": {
-    "message": "Δεν υπάρχει αρκετό τέλος συναλλαγής"
-  },
   "notificationDetail": {
     "message": "Λεπτομέρειες"
   },
@@ -10283,9 +10280,6 @@
   },
   "tokenContractAddress": {
     "message": "Διεύθυνση συμβολαίου token"
-  },
-  "tokenContractError": {
-    "message": "Αυτή η διεύθυνση είναι διεύθυνση συμβολαίου token. Αν στείλετε tokens σε αυτήν τη διεύθυνση, θα τα χάσετε."
   },
   "tokenContractWarning": {
     "message": "Προειδοποίηση συμβολαίου token"

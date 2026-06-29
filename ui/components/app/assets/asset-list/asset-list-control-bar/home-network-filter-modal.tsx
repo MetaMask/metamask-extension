@@ -6,6 +6,9 @@ import { type AddNetworkFields } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -14,6 +17,8 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  IconColor as DsIconColor,
+  IconName as DsIconName,
   Text,
   TextColor,
   TextVariant,
@@ -166,6 +171,34 @@ const HomeNetworkFilterRow = ({
   );
 };
 
+const getDsIconName = (iconName: IconName): DsIconName =>
+  Object.keys(IconName).find(
+    (key) => IconName[key as keyof typeof IconName] === iconName,
+  ) as DsIconName;
+
+const NetworkSelectionItemIcon = ({
+  name,
+  iconSrc,
+}: {
+  name: string;
+  iconSrc?: string;
+}) => {
+  if (isIconName(iconSrc)) {
+    return (
+      <AvatarIcon
+        iconName={getDsIconName(iconSrc)}
+        size={AvatarIconSize.Md}
+        severity={AvatarIconSeverity.Neutral}
+        iconProps={{ color: DsIconColor.IconDefault }}
+      />
+    );
+  }
+
+  return (
+    <AvatarNetwork name={name} src={iconSrc} size={AvatarNetworkSize.Md} />
+  );
+};
+
 export const NetworkSelectionModal = ({
   isOpen,
   onClose,
@@ -189,12 +222,12 @@ export const NetworkSelectionModal = ({
           size={ModalContentSize.Sm}
           modalDialogProps={{
             padding: 0,
-            className: 'overflow-hidden',
+            className: 'flex h-full flex-col overflow-hidden',
           }}
         >
           <ModalHeader onClose={onClose}>{title}</ModalHeader>
           <Box
-            className="max-h-[calc(100vh-168px)] overflow-y-auto"
+            className="min-h-0 flex-1 overflow-y-auto"
             flexDirection={BoxFlexDirection.Column}
           >
             {topItem ? (
@@ -207,15 +240,10 @@ export const NetworkSelectionModal = ({
                 onClick={topItem.onClick}
               >
                 <Box className="flex min-w-0 items-center gap-3">
-                  {isIconName(topItem.iconSrc) ? (
-                    <Icon name={topItem.iconSrc} size={IconSize.Sm} />
-                  ) : (
-                    <AvatarNetwork
-                      name={topItem.name}
-                      src={topItem.iconSrc}
-                      size={AvatarNetworkSize.Md}
-                    />
-                  )}
+                  <NetworkSelectionItemIcon
+                    name={topItem.name}
+                    iconSrc={topItem.iconSrc}
+                  />
                   <Text
                     variant={TextVariant.BodyMd}
                     color={TextColor.TextDefault}

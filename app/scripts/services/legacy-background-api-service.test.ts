@@ -7,10 +7,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { SupportedCurrency } from '@metamask/core-backend';
-import {
-  AccountImportStrategy,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
+import { AccountImportStrategy } from '@metamask/keyring-controller';
 import { add0x, hexToBytes } from '@metamask/utils';
 import {
   EncAccountDataType,
@@ -409,6 +406,50 @@ describe('LegacyBackgroundApiService', () => {
 
         expect(result).toStrictEqual(5);
         expect(releaseLock).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('estimateGas', () => {
+    it('estimates the gas for a transaction using the selected network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const request = jest.fn().mockResolvedValue(21000);
+        rootMessenger.registerActionHandler(
+          'NetworkController:getSelectedNetworkClient',
+          jest.fn().mockReturnValue({
+            provider: {
+              request,
+            },
+          }),
+        );
+
+        const estimateGasParams = { to: '0x123', value: '0x0' };
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:estimateGas',
+          estimateGasParams,
+        );
+
+        expect(request).toHaveBeenCalledWith({
+          method: 'eth_estimateGas',
+          params: [estimateGasParams],
+        });
+        expect(result).toStrictEqual((21000).toString(16));
+      });
+    });
+
+    it('throws if there is no selected network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getSelectedNetworkClient',
+          jest.fn().mockReturnValue(undefined),
+        );
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:estimateGas', {
+            to: '0x123',
+          }),
+        ).rejects.toThrow('No network client available for gas estimation');
       });
     });
   });
@@ -1026,16 +1067,10 @@ describe('LegacyBackgroundApiService', () => {
 
   describe('getAccountsBySnapId', () => {
     it('returns the address from the snap keyring', async () => {
-      const snapKeyring = {
-        id: 'foo',
-        type: KeyringTypes.snap,
-        getAccountsBySnapId: jest.fn().mockReturnValue(['0x123']),
-      };
-
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(
-          'SnapAccountService:getLegacySnapKeyring',
-          jest.fn().mockResolvedValue(snapKeyring),
+          'KeyringController:withKeyringV2',
+          jest.fn().mockResolvedValue(['0x123']),
         );
 
         const result = await rootMessenger.call(
@@ -1044,6 +1079,83 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(['0x123']);
+      });
+    });
+  });
+
+  describe('exportAccount', () => {
+    it('verifies the password and returns the private key', async () => {
+      const address = '0xAddress';
+      const password = 'a-test-password';
+      const privateKey = 'a-test-private-key';
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const verifyPasswordHandler = jest.fn().mockResolvedValue(undefined);
+        const exportAccountHandler = jest.fn().mockResolvedValue(privateKey);
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:verifyPassword',
+          verifyPasswordHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportAccount',
+          exportAccountHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:exportAccount',
+          address,
+          password,
+        );
+
+        expect(result).toStrictEqual(privateKey);
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:verifyPassword',
+          password,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:exportAccount',
+          { password },
+          address,
+        );
+      });
+    });
+
+    it('rejects and does not export the account when the password is invalid', async () => {
+      const address = '0xAddress';
+      const password = 'wrong-password';
+      const error = new Error('Incorrect password.');
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const verifyPasswordHandler = jest.fn().mockRejectedValue(error);
+        const exportAccountHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:verifyPassword',
+          verifyPasswordHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportAccount',
+          exportAccountHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:exportAccount',
+            address,
+            password,
+          ),
+        ).rejects.toThrow(error);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:verifyPassword',
+          password,
+        );
+        expect(exportAccountHandler).not.toHaveBeenCalled();
       });
     });
   });
@@ -1321,6 +1433,230 @@ describe('LegacyBackgroundApiService', () => {
           'password',
         );
       });
+    });
+  });
+
+  describe('changePassword', () => {
+    it('changes the keyring password and releases the lock for a non-social login flow', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        const changePasswordHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          changePasswordHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(changePasswordHandler).toHaveBeenCalledTimes(1);
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:changePassword',
+          'new-password',
+        );
+        // No seedless onboarding controller calls for a non-social login flow.
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'SeedlessOnboardingController:changePassword',
+          expect.anything(),
+          expect.anything(),
+        );
+      });
+    });
+
+    it('releases the seedless operation mutex after a successful change', async () => {
+      const releaseLock = jest.fn();
+      const seedlessOperationMutex = new Mutex();
+      jest
+        .spyOn(seedlessOperationMutex, 'acquire')
+        .mockResolvedValue(releaseLock);
+
+      await withService(
+        { options: { seedlessOperationMutex } },
+        async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getIsSocialLoginFlow',
+            jest.fn().mockReturnValue(false),
+          );
+          rootMessenger.registerActionHandler(
+            'KeyringController:changePassword',
+            jest.fn().mockResolvedValue(undefined),
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          );
+
+          expect(seedlessOperationMutex.acquire).toHaveBeenCalledTimes(1);
+          expect(releaseLock).toHaveBeenCalledTimes(1);
+        },
+      );
+    });
+
+    it('also changes the seedless onboarding password and stores the new keyring encryption key for a social login flow', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:changePassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportEncryptionKey',
+          jest.fn().mockResolvedValue('new-encryption-key'),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:changePassword',
+          'new-password',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:changePassword',
+          'new-password',
+          'old-password',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:exportEncryptionKey',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          'new-encryption-key',
+        );
+      });
+    });
+
+    it('reverts the keyring password change and captures the error when the seedless onboarding password change fails', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const error = new Error('seedless change failed');
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        const changePasswordHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          changePasswordHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:changePassword',
+          jest.fn().mockRejectedValue(error),
+        );
+        const exportEncryptionKeyHandler = jest
+          .fn()
+          .mockResolvedValue('reverted-encryption-key');
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportEncryptionKey',
+          exportEncryptionKeyHandler,
+        );
+        const storeKeyringEncryptionKeyHandler = jest
+          .fn()
+          .mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          storeKeyringEncryptionKeyHandler,
+        );
+
+        const captureExceptionSpy = jest.spyOn(
+          serviceMessenger,
+          'captureException',
+        );
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).rejects.toThrow(error);
+
+        // The keyring password is first changed to the new password, then
+        // reverted to the old password.
+        expect(changePasswordHandler).toHaveBeenNthCalledWith(
+          1,
+          'new-password',
+        );
+        expect(changePasswordHandler).toHaveBeenNthCalledWith(
+          2,
+          'old-password',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          'reverted-encryption-key',
+        );
+        expect(captureExceptionSpy).toHaveBeenCalledWith(
+          createSentryError(
+            'error while changing password for social login flow',
+            error,
+          ),
+        );
+      });
+    });
+
+    it('releases the lock and rethrows when the keyring password change fails', async () => {
+      const releaseLock = jest.fn();
+      const seedlessOperationMutex = new Mutex();
+      jest
+        .spyOn(seedlessOperationMutex, 'acquire')
+        .mockResolvedValue(releaseLock);
+
+      await withService(
+        { options: { seedlessOperationMutex } },
+        async ({ rootMessenger }) => {
+          const error = new Error('keyring change failed');
+
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getIsSocialLoginFlow',
+            jest.fn().mockReturnValue(false),
+          );
+          rootMessenger.registerActionHandler(
+            'KeyringController:changePassword',
+            jest.fn().mockRejectedValue(error),
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:changePassword',
+              'new-password',
+              'old-password',
+            ),
+          ).rejects.toThrow(error);
+
+          expect(releaseLock).toHaveBeenCalledTimes(1);
+        },
+      );
     });
   });
 
@@ -1948,6 +2284,7 @@ function getMessenger(
     actions: [
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getSelectedNetworkClient',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:setSelectedCurrency',
@@ -1970,7 +2307,6 @@ function getMessenger(
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:updateBackupMetadataState',
       'PermissionController:updatePermissionsByCaveat',
-      'SnapAccountService:getLegacySnapKeyring',
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
@@ -1978,11 +2314,13 @@ function getMessenger(
       'SeedlessOnboardingController:runMigrations',
       'MetaMetricsController:trackEvent',
       'KeyringController:verifyPassword',
+      'KeyringController:exportAccount',
       'KeyringController:changePassword',
       'KeyringController:exportEncryptionKey',
       'KeyringController:setLocked',
       'KeyringController:submitEncryptionKey',
       'KeyringController:submitPassword',
+      'SeedlessOnboardingController:changePassword',
       'SeedlessOnboardingController:loadKeyringEncryptionKey',
       'SeedlessOnboardingController:revokePendingRefreshTokens',
       'SeedlessOnboardingController:setLocked',
@@ -2073,10 +2411,6 @@ function registerUnlockSideEffectHandlers(rootMessenger: RootMessenger): void {
   );
   rootMessenger.registerActionHandler(
     'MultichainAccountService:alignWallets',
-    jest.fn(),
-  );
-  rootMessenger.registerActionHandler(
-    'SnapAccountService:getLegacySnapKeyring',
     jest.fn(),
   );
 }

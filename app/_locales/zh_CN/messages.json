@@ -5714,9 +5714,6 @@
   "notCurrentAccount": {
     "message": "这是正确的账户吗？这与您钱包中当前选择的账户不同"
   },
-  "notEnoughGas": {
-    "message": "燃料不足"
-  },
   "notificationDetail": {
     "message": "详情"
   },
@@ -10283,9 +10280,6 @@
   },
   "tokenContractAddress": {
     "message": "代币合约地址"
-  },
-  "tokenContractError": {
-    "message": "此地址为代币合约地址。若向该地址发送代币，将导致代币丢失。"
   },
   "tokenContractWarning": {
     "message": "代币合约警告"
