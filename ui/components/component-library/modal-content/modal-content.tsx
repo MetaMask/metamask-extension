@@ -3,6 +3,7 @@ import classnames from 'clsx';
 
 import {
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   BlockSize,
   Display,
@@ -113,6 +114,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             role="dialog"
             aria-modal="true"
             backgroundColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.borderMuted}
             borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
             display={Display.Flex}
