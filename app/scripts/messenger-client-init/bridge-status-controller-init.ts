@@ -80,11 +80,11 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
 
     // @ts-expect-error: `trace` function type does not match the expected type.
     traceFn: (...args) => trace(...args),
-    onQuoteStatusManagerError: (error: QuoteStatusUpdateError | QuoteStatusGetError) => {
-      console.error(error)
-
+    onQuoteStatusManagerError: (
+      error: QuoteStatusUpdateError | QuoteStatusGetError,
+    ) => {
       if (error instanceof QuoteStatusUpdateError) {
-        captureException(error)
+        captureException(error);
       }
     },
     isQuoteStatusManagerEnabled: () => {

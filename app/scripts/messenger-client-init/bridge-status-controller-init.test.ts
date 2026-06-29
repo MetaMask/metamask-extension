@@ -1,6 +1,8 @@
 import {
   BridgeStatusController,
   BridgeStatusControllerMessenger,
+  QuoteStatusGetError,
+  QuoteStatusUpdateError,
 } from '@metamask/bridge-status-controller';
 import { TransactionController } from '@metamask/transaction-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
@@ -11,7 +13,10 @@ import { buildControllerInitRequestMock } from './test/utils';
 import { getBridgeStatusControllerMessenger } from './messengers';
 import { BridgeStatusControllerInit } from './bridge-status-controller-init';
 
-jest.mock('@metamask/bridge-status-controller');
+jest.mock('@metamask/bridge-status-controller', () => ({
+  ...jest.requireActual('@metamask/bridge-status-controller'),
+  BridgeStatusController: jest.fn(),
+}));
 jest.mock('../../../shared/lib/sentry');
 
 function getInitRequestMock(): jest.Mocked<
@@ -29,6 +34,10 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('BridgeStatusControllerInit', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('initializes the controller', () => {
     const { messengerClient } =
       BridgeStatusControllerInit(getInitRequestMock());
@@ -155,11 +164,22 @@ describe('BridgeStatusControllerInit', () => {
       return onQuoteStatusManagerError!;
     }
 
-    it('calls captureException with the error', () => {
+    it('calls captureException for QuoteStatusUpdateError', () => {
       const onQuoteStatusManagerError = getOnQuoteStatusManagerError();
-      const error = new Error('bridge quote status update failed');
+      const error = new QuoteStatusUpdateError('update failed', {
+        quoteId: 'quote-1',
+      });
       onQuoteStatusManagerError(error);
       expect(captureException).toHaveBeenCalledWith(error);
+    });
+
+    it('does not call captureException for QuoteStatusGetError', () => {
+      const onQuoteStatusManagerError = getOnQuoteStatusManagerError();
+      const error = new QuoteStatusGetError('get failed', {
+        quoteId: 'quote-1',
+      });
+      onQuoteStatusManagerError(error);
+      expect(captureException).not.toHaveBeenCalled();
     });
   });
 
