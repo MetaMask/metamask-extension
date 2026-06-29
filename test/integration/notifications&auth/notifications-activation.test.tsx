@@ -54,9 +54,7 @@ const trackNotificationsActivatedMetaMetricsEvent = async (
           is_profile_syncing_enabled: profileSyncEnabled,
         }),
       }),
-      expect.objectContaining({
-        environmentType: expect.any(String),
-      }),
+      expect.anything(),
     ],
   ];
 

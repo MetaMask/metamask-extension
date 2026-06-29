@@ -18,7 +18,6 @@ import {
   onPushNotificationClicked,
   onPushNotificationReceived,
 } from '../../controllers/push-notifications';
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -98,7 +97,7 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
             chain_id: chainId,
             /* eslint-enable @typescript-eslint/naming-convention */
           })
-          .build({ environmentType: ENVIRONMENT_TYPE_BACKGROUND }),
+          .build(),
       );
     },
   );
@@ -131,7 +130,7 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
             data: notification, // data blob for feature teams to analyse their notification shapes
             /* eslint-enable @typescript-eslint/naming-convention */
           })
-          .build({ environmentType: ENVIRONMENT_TYPE_BACKGROUND }),
+          .build(),
       );
     },
   );
