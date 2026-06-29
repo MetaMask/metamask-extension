@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { getRegistryBooleanFlag } from '../../../feature-flags/feature-flag-registry';
 
 export type BridgeQuote = {
   amount: string;
@@ -74,9 +73,6 @@ class BridgeQuotePage {
   private sourceAmount = '[data-testid="from-amount"]';
 
   public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
-
-  private statusPageCloseButton =
-    '[data-testid="smart-transaction-status-page-footer-close-button"]';
 
   private submitButton = '[data-testid="bridge-cta-button"]';
 
@@ -304,27 +300,8 @@ class BridgeQuotePage {
     await this.submitQuote();
 
     // If no price data is available a confirmation modal appears before submission.
-    // Dismiss it so the transaction can proceed to the status page.
+    // Dismiss it so the transaction can proceed.
     await this.approveModalIfPresent();
-
-    await this.dismissStatusPageIfPresent();
-  };
-
-  dismissStatusPageIfPresent = async () => {
-    const skipStatusPage = getRegistryBooleanFlag(
-      'extensionSkipTransactionStatusPage',
-    );
-
-    if (skipStatusPage) {
-      return;
-    }
-
-    try {
-      await this.driver.waitForSelector(this.statusPageCloseButton);
-      await this.driver.clickElement(this.statusPageCloseButton);
-    } catch {
-      // Status page may have auto-closed or not appeared
-    }
   };
 
   confirmBridgeTransaction = async () => {
