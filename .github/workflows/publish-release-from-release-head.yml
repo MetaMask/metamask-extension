@@ -326,7 +326,6 @@ jobs:
         uses: ./.github/actions/publish-amo-reviewer-artifacts
         with:
           firefox_bundle_script_ref: ${{ vars.FIREFOX_BUNDLE_SCRIPT_REF }}
-          amo_last_listed_version: ${{ vars.AMO_LAST_LISTED_VERSION }}
 
       - name: Summary
         env:

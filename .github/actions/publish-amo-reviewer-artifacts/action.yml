@@ -16,10 +16,6 @@ inputs:
       empty uses script default SHA until merged to main)
     required: false
     default: ''
-  amo_last_listed_version:
-    description: Previous AMO-listed version for submission notes (optional)
-    required: false
-    default: ''
 
 runs:
   using: composite
@@ -28,7 +24,6 @@ runs:
       shell: bash
       env:
         FIREFOX_BUNDLE_SCRIPT_REF: ${{ inputs.firefox_bundle_script_ref }}
-        AMO_LAST_LISTED_VERSION: ${{ inputs.amo_last_listed_version }}
       run: bash "${GITHUB_WORKSPACE}/.github/scripts/publish-firefox-reviewer-artifacts.sh" package
 
     - name: Configure AWS credentials (PRD reviewer publisher)
