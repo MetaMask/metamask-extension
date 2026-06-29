@@ -34,7 +34,7 @@ const ConnectedAccountsPermissions = ({ permissions = [] }) => {
     setExpanded((_expanded) => !_expanded);
   };
 
-  if (!permissions.length) {
+  if (!permissions?.length) {
     return null;
   }
 

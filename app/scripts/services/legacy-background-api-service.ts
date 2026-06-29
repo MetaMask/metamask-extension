@@ -2,6 +2,7 @@ import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
@@ -11,6 +12,7 @@ import {
   AccountImportStrategy,
   KeyringControllerAddNewKeyringAction,
   KeyringControllerChangePasswordAction,
+  KeyringControllerExportAccountAction,
   KeyringControllerExportEncryptionKeyAction,
   KeyringControllerExportSeedPhraseAction,
   KeyringControllerGetKeyringsByTypeAction,
@@ -30,6 +32,7 @@ import {
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import {
+  TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
@@ -48,6 +51,7 @@ import {
   EncAccountDataType,
   SecretType,
   SeedlessOnboardingControllerAddNewSecretDataAction,
+  SeedlessOnboardingControllerChangePasswordAction,
   SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerRunMigrationsAction,
@@ -69,7 +73,6 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
-import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import {
   MultichainAccountServiceResyncAccountsAction,
   MultichainAccountServiceAlignWalletsAction,
@@ -100,7 +103,6 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
-import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerTrackEventAction,
@@ -121,10 +123,14 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'changePassword',
   'checkIsSeedlessPasswordOutdated',
+  'estimateGas',
+  'exportAccount',
   'getAccountsBySnapId',
   'getCode',
   'getGlobalChainId',
+  'getNextNonce',
   'getOpenMetamaskTabsIds',
   'getRequestAccountTabIds',
   'getSeedPhrase',
@@ -166,6 +172,7 @@ type AllowedActions =
   | CurrencyRateControllerSetCurrentCurrencyAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerChangePasswordAction
+  | KeyringControllerExportAccountAction
   | KeyringControllerExportEncryptionKeyAction
   | KeyringControllerExportSeedPhraseAction
   | KeyringControllerGetKeyringsByTypeAction
@@ -184,6 +191,7 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceResyncAccountsAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
@@ -192,6 +200,7 @@ type AllowedActions =
   | PreferencesControllerSetPasswordForgottenAction
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
+  | SeedlessOnboardingControllerChangePasswordAction
   | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerRunMigrationsAction
@@ -205,9 +214,9 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SubscriptionControllerStopAllPollingAction
+  | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
-  | TransactionControllerWipeTransactionsAction
-  | SnapAccountServiceGetLegacySnapKeyringAction;
+  | TransactionControllerWipeTransactionsAction;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -398,6 +407,31 @@ export class LegacyBackgroundApiService {
       method: 'eth_getCode',
       params: [address],
     });
+  }
+
+  /**
+   * Estimates the gas for a given transaction using the currently selected
+   * network client.
+   *
+   * @param estimateGasParams - The parameters of the transaction to estimate
+   * the gas for.
+   * @returns The estimated gas as a hexadecimal string.
+   */
+  async estimateGas(estimateGasParams: Json): Promise<string> {
+    const networkClient = this.#messenger.call(
+      'NetworkController:getSelectedNetworkClient',
+    );
+
+    if (!networkClient) {
+      throw new Error('No network client available for gas estimation');
+    }
+
+    const result = await networkClient.provider.request<Json[], number>({
+      method: 'eth_estimateGas',
+      params: [estimateGasParams],
+    });
+
+    return result.toString(16);
   }
 
   /**
@@ -687,10 +721,98 @@ export class LegacyBackgroundApiService {
    * @returns The addresses of the accounts managed by the snap.
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
-    return getAccountsBySnapId(
-      getSnapKeyring.bind(null, this.#messenger),
-      snapId,
+    return getAccountsBySnapId(this.#messenger, snapId);
+  }
+
+  /**
+   * Returns the next nonce according to the nonce-tracker
+   *
+   * @param address - The hex string address for the transaction
+   * @param networkClientId - The networkClientId to get the nonce lock with
+   * @returns The next nonce.
+   */
+  async getNextNonce(
+    address: string,
+    networkClientId: string,
+  ): Promise<number> {
+    const nonceLock = await this.#messenger.call(
+      'TransactionController:getNonceLock',
+      address,
+      networkClientId,
     );
+    nonceLock.releaseLock();
+    return nonceLock.nextNonce;
+  }
+
+  /**
+   * Changes the password for the wallet.
+   *
+   * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
+   *
+   * @param newPassword - The new password.
+   * @param oldPassword - The old password.
+   */
+  async changePassword(
+    newPassword: string,
+    oldPassword: string,
+  ): Promise<void> {
+    const releaseLock = await this.#seedlessOperationMutex.acquire();
+    const isSocialLoginFlow = this.#messenger.call(
+      'OnboardingController:getIsSocialLoginFlow',
+    );
+    try {
+      await this.#messenger.call(
+        'KeyringController:changePassword',
+        newPassword,
+      );
+
+      if (isSocialLoginFlow) {
+        try {
+          await this.#messenger.call(
+            'SeedlessOnboardingController:changePassword',
+            newPassword,
+            oldPassword,
+          );
+          // store the new keyring encryption key in the seedless onboarding controller
+          const keyringEncKey = await this.#messenger.call(
+            'KeyringController:exportEncryptionKey',
+          );
+          await this.#messenger.call(
+            'SeedlessOnboardingController:storeKeyringEncryptionKey',
+            keyringEncKey,
+          );
+        } catch (err) {
+          log.error('error while changing seedless-onboarding password', err);
+          log.error('reverting keyring password change');
+          // revert the keyring password change by changing the password back to the old password
+          await this.#messenger.call(
+            'KeyringController:changePassword',
+            oldPassword,
+          );
+          // store the old keyring encryption key in the seedless onboarding controller
+          const revertedKeyringEncKey = await this.#messenger.call(
+            'KeyringController:exportEncryptionKey',
+          );
+          await this.#messenger.call(
+            'SeedlessOnboardingController:storeKeyringEncryptionKey',
+            revertedKeyringEncKey,
+          );
+
+          this.#messenger.captureException?.(
+            createSentryError(
+              'error while changing password for social login flow',
+              err,
+            ),
+          );
+          throw err;
+        }
+      }
+    } catch (error) {
+      log.error('error while changing password', error);
+      throw error;
+    } finally {
+      releaseLock();
+    }
   }
 
   /**
@@ -927,10 +1049,6 @@ export class LegacyBackgroundApiService {
     // Force account-tree refresh after all accounts have been updated.
     this.#messenger.call('AccountTreeController:init');
 
-    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
-    // available as soon as possible (enabling faster keyring access for future operations).
-    await getSnapKeyring(this.#messenger);
-
     // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
     // for mobile.
     // NOTE: We run this asynchronously on purpose, see FIXME^.
@@ -1024,6 +1142,22 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call(
       'SeedlessOnboardingController:storeKeyringEncryptionKey',
       keyringEncryptionKey,
+    );
+  }
+
+  /**
+   * Verifies the password and exports the private key for the given account.
+   *
+   * @param address - The address of the account to export.
+   * @param password - The password of the vault.
+   * @returns The private key of the account.
+   */
+  async exportAccount(address: string, password: string): Promise<string> {
+    await this.#messenger.call('KeyringController:verifyPassword', password);
+    return this.#messenger.call(
+      'KeyringController:exportAccount',
+      { password },
+      address,
     );
   }
 }

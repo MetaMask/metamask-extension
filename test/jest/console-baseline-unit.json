@@ -3392,11 +3392,6 @@
       "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
-    "ui/hooks/useSuppressConfirmNavigate.test.ts": {
-      "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 3,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
-    },
     "ui/hooks/useTheme.test.ts": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 7,
@@ -3743,12 +3738,6 @@
       "error: Warning: ReactDOM.render is no longer": 9,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
-    "ui/pages/bridge/hooks/useEnableMissingNetwork.test.ts": {
-      "Deprecation warnings": 1,
-      "MetaMask: Background connection not initialized": 1,
-      "error: Warning: ReactDOM.render is no longer": 3,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
-    },
     "ui/pages/bridge/hooks/useEnsureNetworkEnabled.test.ts": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 5,
@@ -3783,13 +3772,6 @@
     "ui/pages/bridge/hooks/useSecurityAlerts.test.ts": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 18,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
-    },
-    "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
-      "Deprecation warnings": 1,
-      "Reselect: Identity function warnings": 1,
-      "error: Error: submit failed": 1,
-      "error: Warning: ReactDOM.render is no longer": 7,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/bridge/index.test.tsx": {
@@ -6565,16 +6547,6 @@
       "MetaMask: Background connection not initialized": 3,
       "React: Act warnings (component updates not wrapped)": 13,
       "error: Warning: ReactDOM.render is no longer": 1,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
-    },
-    "ui/pages/smart-transactions/smart-transaction-status-page/smart-transaction-status-animation.test.tsx": {
-      "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 6,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
-    },
-    "ui/pages/smart-transactions/smart-transaction-status-page/smart-transactions-status-page.test.tsx": {
-      "Deprecation warnings": 1,
-      "error: Warning: ReactDOM.render is no longer": 5,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/snap-account-redirect/create-snap-redirect.test.tsx": {

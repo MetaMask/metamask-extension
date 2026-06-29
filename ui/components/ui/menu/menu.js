@@ -59,7 +59,7 @@ Menu.propTypes = {
   className: PropTypes.string,
   onHide: PropTypes.func.isRequired,
   popperOptions: PropTypes.object,
-  dataTestId: PropTypes.string,
+  'data-testid': PropTypes.string,
 };
 
 export default Menu;

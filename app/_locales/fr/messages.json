@@ -1584,9 +1584,6 @@
   "back": {
     "message": "Retour"
   },
-  "backToHome": {
-    "message": "Retour à la page d’accueil"
-  },
   "backUpIncomplete": {
     "message": "Sauvegarde incomplète"
   },
@@ -2421,9 +2418,6 @@
   "closeSlide": {
     "message": "Fermer $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "Vous pouvez fermer cette fenêtre à tout moment."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -5713,9 +5707,6 @@
   },
   "notCurrentAccount": {
     "message": "S’agit-il du bon compte ? Il est différent de celui actuellement sélectionné dans votre portefeuille"
-  },
-  "notEnoughGas": {
-    "message": "Pas assez de gaz"
   },
   "notificationDetail": {
     "message": "Détails"
@@ -9300,24 +9291,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Les contrats de swap intelligents sont temporairement indisponibles."
   },
-  "smartTransactionCancelled": {
-    "message": "Votre transaction a été annulée"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Votre transaction n’a pas pu être finalisée, elle a donc été annulée pour vous éviter de payer inutilement des frais de gaz."
-  },
-  "smartTransactionError": {
-    "message": "Votre transaction a échoué"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Des changements soudains sur le marché peuvent entraîner des échecs de transaction. Si le problème persiste, contactez le service d’assistance à la clientèle de MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Votre transaction a été soumise"
-  },
-  "smartTransactionSuccess": {
-    "message": "Votre transaction a été finalisée"
-  },
   "smartTransactions": {
     "message": "Transactions intelligentes"
   },
@@ -10284,9 +10257,6 @@
   "tokenContractAddress": {
     "message": "Adresse du contrat de jeton"
   },
-  "tokenContractError": {
-    "message": "Cette adresse est une adresse de contrat de jetons. Si vous envoyez des jetons à cette adresse, vous les perdrez."
-  },
   "tokenContractWarning": {
     "message": "Avertissement concernant le contrat de jetons"
   },
@@ -10776,9 +10746,6 @@
   "view": {
     "message": "Affichez"
   },
-  "viewActivity": {
-    "message": "Voir l’activité"
-  },
   "viewAddressOnExplorer": {
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
@@ -10805,9 +10772,6 @@
   },
   "viewTokenDetails": {
     "message": "Afficher les détails du jeton"
-  },
-  "viewTransaction": {
-    "message": "Voir la transaction"
   },
   "viewinExplorer": {
     "message": "Voir $1 dans l’explorateur",

@@ -85,6 +85,19 @@ export type LegacyBackgroundApiServiceGetCodeAction = {
 };
 
 /**
+ * Estimates the gas for a given transaction using the currently selected
+ * network client.
+ *
+ * @param estimateGasParams - The parameters of the transaction to estimate
+ * the gas for.
+ * @returns The estimated gas as a hexadecimal string.
+ */
+export type LegacyBackgroundApiServiceEstimateGasAction = {
+  type: `LegacyBackgroundApiService:estimateGas`;
+  handler: LegacyBackgroundApiService['estimateGas'];
+};
+
+/**
  * Verifies the validity of the current vault's seed phrase.
  *
  * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -161,6 +174,31 @@ export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
 };
 
 /**
+ * Returns the next nonce according to the nonce-tracker
+ *
+ * @param address - The hex string address for the transaction
+ * @param networkClientId - The networkClientId to get the nonce lock with
+ * @returns The next nonce.
+ */
+export type LegacyBackgroundApiServiceGetNextNonceAction = {
+  type: `LegacyBackgroundApiService:getNextNonce`;
+  handler: LegacyBackgroundApiService['getNextNonce'];
+};
+
+/**
+ * Changes the password for the wallet.
+ *
+ * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
+ *
+ * @param newPassword - The new password.
+ * @param oldPassword - The old password.
+ */
+export type LegacyBackgroundApiServiceChangePasswordAction = {
+  type: `LegacyBackgroundApiService:changePassword`;
+  handler: LegacyBackgroundApiService['changePassword'];
+};
+
+/**
  * Checks if the seedless password is outdated.
  *
  * @param args - The arguments for the checkIsSeedlessPasswordOutdated method.
@@ -221,6 +259,18 @@ export type LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction = {
 };
 
 /**
+ * Verifies the password and exports the private key for the given account.
+ *
+ * @param address - The address of the account to export.
+ * @param password - The password of the vault.
+ * @returns The private key of the account.
+ */
+export type LegacyBackgroundApiServiceExportAccountAction = {
+  type: `LegacyBackgroundApiService:exportAccount`;
+  handler: LegacyBackgroundApiService['exportAccount'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -232,6 +282,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction
+  | LegacyBackgroundApiServiceEstimateGasAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
@@ -239,8 +290,11 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceOnAccountRemovedAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
+  | LegacyBackgroundApiServiceGetNextNonceAction
+  | LegacyBackgroundApiServiceChangePasswordAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
   | LegacyBackgroundApiServiceSetLockedAction
-  | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction;
+  | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
+  | LegacyBackgroundApiServiceExportAccountAction;

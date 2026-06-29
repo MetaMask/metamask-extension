@@ -1584,9 +1584,6 @@
   "back": {
     "message": "Zurück"
   },
-  "backToHome": {
-    "message": "Zurück zur Startseite"
-  },
   "backUpIncomplete": {
     "message": "Sicherung unvollständig"
   },
@@ -2421,9 +2418,6 @@
   "closeSlide": {
     "message": "$1 schließen",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "Sie können dieses Fenster jederzeit schließen."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -5713,9 +5707,6 @@
   },
   "notCurrentAccount": {
     "message": "Ist dies das richtige Konto? Es unterscheidet sich von dem aktuell ausgewählten Konto in Ihrem Wallet"
-  },
-  "notEnoughGas": {
-    "message": "Nicht genügend Gas"
   },
   "notificationDetail": {
     "message": "Details"
@@ -9300,24 +9291,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps sind vorrübergehend nicht verfügbar."
   },
-  "smartTransactionCancelled": {
-    "message": "Ihre Transaktion wurde storniert"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Ihre Transaktion konnte nicht abgeschlossen werden und wurde daher storniert, damit Sie keine unnötigen Gas-Gebühren zahlen müssen."
-  },
-  "smartTransactionError": {
-    "message": "Ihre Transaktion ist fehlgeschlagen"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Plötzliche Marktveränderungen können zu Ausfällen führen. Wenn das Problem weiterhin besteht, wenden Sie sich an den MetaMask-Kundensupport."
-  },
-  "smartTransactionPending": {
-    "message": "Ihre Transaktion wurde übermittelt"
-  },
-  "smartTransactionSuccess": {
-    "message": "Ihre Transaktion ist abgeschlossen."
-  },
   "smartTransactions": {
     "message": "Smart Transactions"
   },
@@ -10284,9 +10257,6 @@
   "tokenContractAddress": {
     "message": "Token-Contract-Adresse"
   },
-  "tokenContractError": {
-    "message": "Diese Adresse ist eine Token-Contract-Adresse. Das Senden von Token an diese Adresse führt zu deren Verlust."
-  },
   "tokenContractWarning": {
     "message": "Token-Contract-Warnung"
   },
@@ -10776,9 +10746,6 @@
   "view": {
     "message": "Ansehen"
   },
-  "viewActivity": {
-    "message": "Aktivität anzeigen"
-  },
   "viewAddressOnExplorer": {
     "message": "Auf $1 ansehen",
     "description": "$1 is the block explorer name"
@@ -10805,9 +10772,6 @@
   },
   "viewTokenDetails": {
     "message": "Token-Details einsehen"
-  },
-  "viewTransaction": {
-    "message": "Transaktion einsehen"
   },
   "viewinExplorer": {
     "message": "$1 im Explorer anzeigen",

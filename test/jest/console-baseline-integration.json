@@ -6,8 +6,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 3,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit-seaport.test.tsx": {
@@ -16,8 +14,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 4,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit-single.test.tsx": {
@@ -26,8 +22,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 4,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit-tradeOrder.test.tsx": {
@@ -36,8 +30,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 3,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit.test.tsx": {
@@ -46,8 +38,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 5,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/personalSign.test.tsx": {
@@ -56,8 +46,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 2,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/alerts.test.tsx": {
@@ -66,8 +54,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 15,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/contract-deployment.test.tsx": {
@@ -76,8 +62,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 4,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/contract-interaction.test.tsx": {
@@ -86,8 +70,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 6,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/dapp-swap-comparison-banner.test.tsx": {
@@ -96,8 +78,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 7,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/erc20-approve.test.tsx": {
@@ -106,8 +86,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 6,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/erc721-approve.test.tsx": {
@@ -116,8 +94,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 4,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
@@ -126,8 +102,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 4,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/increase-approval.test.tsx": {
@@ -136,8 +110,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 1,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
@@ -146,8 +118,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 2,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/set-approval-for-all.test.tsx": {
@@ -156,8 +126,6 @@
       "Reselect: Input stability warnings": 1,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
-      "error: Warning: ReactDOM.render is no longer": 4,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/defi/defi-positions.test.tsx": {
@@ -169,9 +137,7 @@
       "error: Warning: Home uses the legacy": 1,
       "error: Warning: LegacyI18nProvider uses the legacy": 1,
       "error: Warning: LegacyMetaMetricsProvider uses the legacy": 1,
-      "error: Warning: ReactDOM.render is no longer": 3,
       "error: Warning: The current testing environment": 2,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: Selector unknown returned a different": 4,
       "warn: ⚠️ React Router Future Flag": 1
     },
@@ -181,8 +147,6 @@
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 3,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 3,
-      "error: Warning: ReactDOM.render is no longer": 3,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: Selector unknown returned a different": 3,
       "warn: ⚠️ React Router Future Flag": 1
     },
@@ -190,16 +154,12 @@
       "Deprecation warnings": 1,
       "React: State updates on unmounted components": 1,
       "Reselect: Input stability warnings": 6,
-      "error: Warning: ReactDOM.render is no longer": 2,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: Selector unknown returned a different": 2,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/notifications&auth/notifications-list.test.tsx": {
       "Deprecation warnings": 1,
       "Reselect: Input stability warnings": 5,
-      "error: Warning: ReactDOM.render is no longer": 4,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: Selector unknown returned a different": 4,
       "warn: ⚠️ React Router Future Flag": 1
     },
@@ -208,8 +168,6 @@
       "React: Missing key props in lists": 1,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 8,
-      "error: Warning: ReactDOM.render is no longer": 2,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: Selector unknown returned a different": 2,
       "warn: ⚠️ React Router Future Flag": 1
     },
@@ -217,8 +175,6 @@
       "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 6,
-      "error: Warning: ReactDOM.render is no longer": 1,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: Selector unknown returned a different": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
@@ -226,8 +182,6 @@
       "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 6,
-      "error: Warning: ReactDOM.render is no longer": 1,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1,
       "warn: Selector unknown returned a different": 1,
       "warn: ⚠️ React Router Future Flag": 1
     }
