@@ -3,6 +3,7 @@ import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import {
   getIsPerpsExperienceAvailable,
+  getIsPerpsTerminalBackendEnabled,
   getIsVipProgramEnabled,
 } from './feature-flags';
 
@@ -171,6 +172,63 @@ describe('Perps Feature Flags', () => {
         expect(getIsPerpsExperienceAvailable(state)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0-beta.1');
       });
+    });
+  });
+
+  describe('getIsPerpsTerminalBackendEnabled', () => {
+    it('returns true when flag is enabled and version satisfies', () => {
+      semverGteMock.mockReturnValue(true);
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsTerminalBackendEnabled: {
+              enabled: true,
+              minimumVersion: '12.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(true);
+    });
+
+    it('returns false when flag is disabled', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsTerminalBackendEnabled: {
+              enabled: false,
+              minimumVersion: '12.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(false);
+    });
+
+    it('returns false when flag is not present', () => {
+      const state = { metamask: { remoteFeatureFlags: {} } };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(false);
+    });
+
+    it('returns false when version does not satisfy', () => {
+      semverGteMock.mockReturnValue(false);
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsTerminalBackendEnabled: {
+              enabled: true,
+              minimumVersion: '99.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(false);
     });
   });
 

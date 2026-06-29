@@ -72,6 +72,7 @@ type BridgeOverrides = {
   onControllerStateChange?: jest.Mock;
   onConnectivityChange?: jest.Mock;
   isConnectionAlive?: () => boolean;
+  isTerminalBackendEnabled?: () => boolean;
   emit?: jest.Mock;
 };
 
@@ -86,6 +87,8 @@ function createBridge(overrides: BridgeOverrides = {}) {
   const onConnectivityChange =
     overrides.onConnectivityChange ?? jest.fn().mockReturnValue(jest.fn());
   const isConnectionAlive = overrides.isConnectionAlive ?? (() => true);
+  const isTerminalBackendEnabled =
+    overrides.isTerminalBackendEnabled ?? (() => false);
 
   const bridge = new PerpsStreamBridge({
     controller,
@@ -95,6 +98,7 @@ function createBridge(overrides: BridgeOverrides = {}) {
     perpsDisconnect: controllerApi.perpsDisconnect,
     perpsToggleTestnet: controllerApi.perpsToggleTestnet,
     isConnectionAlive,
+    isTerminalBackendEnabled,
     emit,
   });
 
@@ -1579,7 +1583,7 @@ describe('PerpsStreamBridge', () => {
 
       expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
       expect(controller.getMarketDataWithPrices).toHaveBeenCalledWith({
-        useTerminalApi: true,
+        useTerminalApi: false,
       });
       expect(controller.getPositions).toHaveBeenCalledWith({
         skipCache: true,
@@ -1591,6 +1595,31 @@ describe('PerpsStreamBridge', () => {
       expect(emit).toHaveBeenCalledWith('positions', mockPositions);
       expect(emit).toHaveBeenCalledWith('orders', mockOrders);
       expect(emit).toHaveBeenCalledWith('account', mockAccount);
+
+      jest.useRealTimers();
+    });
+
+    it('hydrates with useTerminalApi: true when terminal backend is enabled', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+      controller.getMarketDataWithPrices.mockResolvedValue([] as never);
+
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        isTerminalBackendEnabled: () => true,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const listener = getConnectionStateListener(controller);
+      listener(WebSocketConnectionState.Disconnected);
+      listener(WebSocketConnectionState.Connected);
+
+      await jest.advanceTimersByTimeAsync(300);
+
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledWith({
+        useTerminalApi: true,
+      });
 
       jest.useRealTimers();
     });

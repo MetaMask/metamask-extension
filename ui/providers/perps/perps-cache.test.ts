@@ -17,14 +17,36 @@ describe('perps-cache', () => {
   });
 
   describe('fetchMarketInfos', () => {
-    it('passes useTerminalApi: true to perpsGetMarkets', async () => {
+    it('passes useTerminalApi: true when terminal backend is enabled', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue([]);
+
+      await fetchMarketInfos('provider:mainnet:0xabc', true);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetMarkets',
+        [{ useTerminalApi: true }],
+      );
+    });
+
+    it('passes useTerminalApi: false when terminal backend is disabled', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue([]);
+
+      await fetchMarketInfos('provider:mainnet:0xabc', false);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetMarkets',
+        [{ useTerminalApi: false }],
+      );
+    });
+
+    it('defaults useTerminalApi to false when not specified', async () => {
       mockSubmitRequestToBackground.mockResolvedValue([]);
 
       await fetchMarketInfos('provider:mainnet:0xabc');
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsGetMarkets',
-        [{ useTerminalApi: true }],
+        [{ useTerminalApi: false }],
       );
     });
 

@@ -65,7 +65,10 @@ export function peekCachedMarketInfos(
   return undefined;
 }
 
-export function fetchMarketInfos(cacheKey: string): Promise<MarketInfo[]> {
+export function fetchMarketInfos(
+  cacheKey: string,
+  useTerminalApi = false,
+): Promise<MarketInfo[]> {
   const entry = getMarketInfoCacheEntry(cacheKey);
   if (isMarketInfoCacheWarm(entry)) {
     return Promise.resolve(entry.cached as MarketInfo[]);
@@ -73,7 +76,7 @@ export function fetchMarketInfos(cacheKey: string): Promise<MarketInfo[]> {
   if (!entry.inflight) {
     entry.inflight = submitRequestToBackground<MarketInfo[]>(
       'perpsGetMarkets',
-      [{ useTerminalApi: true }],
+      [{ useTerminalApi }],
     )
       .then((infos) => {
         const validated = Array.isArray(infos) ? infos : [];

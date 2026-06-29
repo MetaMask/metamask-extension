@@ -272,12 +272,36 @@ describe('PerpsStreamManager', () => {
 
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsGetMarketDataWithPrices',
-          [{ useTerminalApi: true }],
+          [{ useTerminalApi: false }],
         );
         expect(onData).toHaveBeenCalledWith([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
           '[PerpsStreamManager] Failed to fetch markets',
           expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+      }
+    });
+
+    it('passes useTerminalApi: true when setUseTerminalApi(true) has been called', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockResolvedValue([]);
+
+        manager.setUseTerminalApi(true);
+        manager.markets.subscribe(jest.fn());
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: true }],
         );
       } finally {
         consoleErrorSpy.mockRestore();

@@ -46,6 +46,7 @@ type PerpsStreamBridgeOptions = {
   perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
   isConnectionAlive: () => boolean;
+  isTerminalBackendEnabled: () => boolean;
   emit: EmitFn;
 };
 
@@ -95,6 +96,8 @@ export class PerpsStreamBridge {
   readonly #perpsToggleTestnet: PerpsStreamBridgeOptions['perpsToggleTestnet'];
 
   readonly #isConnectionAlive: () => boolean;
+
+  readonly #isTerminalBackendEnabled: () => boolean;
 
   readonly #emit: EmitFn;
 
@@ -148,6 +151,7 @@ export class PerpsStreamBridge {
     this.#perpsDisconnect = options.perpsDisconnect;
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
     this.#isConnectionAlive = options.isConnectionAlive;
+    this.#isTerminalBackendEnabled = options.isTerminalBackendEnabled;
     this.#emit = options.emit;
   }
 
@@ -504,7 +508,9 @@ export class PerpsStreamBridge {
 
     try {
       const marketsResult = await this.#controller
-        .getMarketDataWithPrices({ useTerminalApi: true })
+        .getMarketDataWithPrices({
+          useTerminalApi: this.#isTerminalBackendEnabled(),
+        })
         .catch(() => null);
 
       if (marketsResult) {
