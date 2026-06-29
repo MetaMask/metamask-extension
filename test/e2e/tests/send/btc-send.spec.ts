@@ -20,14 +20,61 @@ import {
   mockInitialFullScan,
   mockSolanaSpotPrices,
   mockSupportedVsCurrencies,
-  mockTokensV3Assets,
-  mockTokensV2SupportedNetworks,
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 
 const isUnifiedAssetsEnabled = true;
 
-const BTC_CAIP_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
+const BTC_CHAIN_CAIP_ID = 'bip122:000000000019d6689c085ae165831e93';
+const BTC_CAIP_ASSET_ID = `${BTC_CHAIN_CAIP_ID}/slip44:0`;
+
+const BTC_V3_ASSET_ENTRY = {
+  assetId: BTC_CAIP_ASSET_ID,
+  name: 'Bitcoin',
+  symbol: 'BTC',
+  decimals: 8,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/bip122/000000000019d6689c085ae165831e93/slip44/0.png',
+  coingeckoId: 'bitcoin',
+  type: 'native',
+};
+
+/**
+ * Overrides global mock-e2e `supportedNetworks` (registered after testSpecificMock)
+ * so TokenDataSource treats Bitcoin as supported and fetches BTC metadata.
+ * @param mockServer
+ */
+function mockBtcSendTokensSupportedNetworks(mockServer: Mockttp) {
+  return mockServer
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .asPriority(99)
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        BTC_CHAIN_CAIP_ID,
+        'eip155:1',
+        'eip155:1337',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      ],
+      partialSupport: [],
+    });
+}
+
+/**
+ * Overrides global mock-e2e `/v3/assets` so BTC metadata is always available
+ * for unified-assets token list rendering on the Bitcoin network.
+ * @param mockServer
+ */
+function mockBtcSendTokensV3Assets(mockServer: Mockttp) {
+  return mockServer
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    .asPriority(99)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [BTC_V3_ASSET_ENTRY],
+    }));
+}
 
 const BTC_SEND_ASSETS_CONTROLLER_FIXTURE = {
   assetsInfo: {
@@ -67,8 +114,8 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceMulti(mockServer),
     await mockPriceMultiBtcAndSol(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
+    mockBtcSendTokensSupportedNetworks(mockServer),
+    mockBtcSendTokensV3Assets(mockServer),
     await mockBtcSpotPrices(mockServer),
   ];
 }

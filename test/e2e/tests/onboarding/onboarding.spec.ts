@@ -135,32 +135,35 @@ async function mockCustomNetworkOnboardingMocks(mockServer: Mockttp) {
     });
 
   await mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .asPriority(99)
     .always()
-    .thenCallback((request) => {
-      const assetIds = new URL(request.url).searchParams
-        .getAll('assetIds')
-        .join(',');
-
-      if (!assetIds.includes('1338')) {
-        return { statusCode: 200, json: [] };
-      }
-
-      return {
-        statusCode: 200,
-        json: [
-          {
-            assetId: CUSTOM_NETWORK_NATIVE_ASSET_ID,
-            name: 'Ethereum',
-            symbol: 'ETH',
-            decimals: 18,
-          },
-        ],
-      };
+    .thenJson(200, {
+      fullSupport: ['eip155:1', `eip155:${CUSTOM_NETWORK_CHAIN_ID}`],
+      partialSupport: [],
     });
+
+  await mockServer
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    .asPriority(99)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        {
+          assetId: CUSTOM_NETWORK_NATIVE_ASSET_ID,
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+          type: 'native',
+        },
+      ],
+    }));
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .asPriority(99)
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -369,6 +372,9 @@ describe('MetaMask onboarding', function () {
           },
         ],
         testSpecificMock: mockCustomNetworkOnboardingMocks,
+        unifiedEvmAccountsApiBalances: {
+          nativeBalance: CUSTOM_NETWORK_ETH_BALANCE,
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
@@ -405,29 +411,19 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+
         await switchToNetworkFromNetworkSelect(driver, 'Custom', networkName);
         await driver.refresh();
         await homePage.checkPageIsLoaded();
 
-        // Fiat value should be displayed as we mock the price and that is not a 'test network'
+        // Balance on the custom network confirms add-network during onboarding.
+        // Toast uses ephemeral Redux appState and is cleared by refresh (same as sidepanel).
         await homePage.checkExpectedBalanceIsDisplayed(
           CUSTOM_NETWORK_ETH_BALANCE,
           'ETH',
           true,
           HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         );
-
-        // Check for network addition toast
-        // Note: With sidepanel enabled, appState is lost during page reload,
-        // so the toast notification won't appear. The successful balance display
-        // above confirms the network was added correctly.
-        if (await isSidePanelEnabled()) {
-          console.log(
-            `Skipping toast check for sidepanel build - network '${networkName}' added successfully (verified by balance display)`,
-          );
-        } else {
-          await homePage.checkAddNetworkMessageIsDisplayed(networkName);
-        }
       },
     );
   });
