@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { Driver } from '../../webdriver/driver';
 import {
   login,
   lockAndWaitForLoginPage,
@@ -32,22 +31,6 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
         { assetsEnableNotificationsByDefaultV2: { value: false } },
       ],
     }));
-}
-
-/**
- * Re-opens Settings > Notifications from a fresh (locked then unlocked) session
- * so the notification preferences are re-fetched from authenticated user storage
- * rather than read from in-memory state.
- *
- * @param driver - The webdriver instance used to interact with the browser.
- */
-async function reopenNotificationsSettingsAfterUnlock(
-  driver: Driver,
-): Promise<void> {
-  await driver.navigate();
-  await lockAndWaitForLoginPage(driver);
-  await login(driver);
-  await goToNotificationsSettingsPage(driver);
 }
 
 /**
@@ -105,9 +88,13 @@ describe('Notification Preferences Sections', function () {
           expectedState === 'enabled',
         );
 
-        // After a fresh session, the persisted state is re-fetched from
-        // authenticated user storage and reflected in the UI.
-        await reopenNotificationsSettingsAfterUnlock(driver);
+        // Re-open Settings > Notifications from a fresh (locked then unlocked)
+        // session so the preferences are re-fetched from authenticated user
+        // storage rather than read from in-memory state.
+        await driver.navigate();
+        await lockAndWaitForLoginPage(driver);
+        await login(driver);
+        await goToNotificationsSettingsPage(driver);
         await notificationsSettingsPage.checkSectionInAppNotificationState({
           section: 'perps',
           expectedState,
