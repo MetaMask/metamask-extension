@@ -774,8 +774,9 @@ export default class MetamaskController extends EventEmitter {
     // package controller, so fail loud at boot rather than later as an obscure error.
     if (
       typeof (
-        /** @type {{ setAccountLabel?: unknown }} */ (preferencesController)
-          .setAccountLabel
+        /** @type {{ setAccountLabel?: unknown }} */ (
+          preferencesController
+        ).setAccountLabel
       ) !== 'function'
     ) {
       throw new Error(
