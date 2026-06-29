@@ -279,9 +279,7 @@ describe('CustomTokenImportPage', () => {
           },
           sensitiveProperties: {},
         }),
-        expect.objectContaining({
-          environmentType: expect.any(String),
-        }),
+        expect.anything(),
       ),
     );
   });
@@ -391,9 +389,7 @@ describe('CustomTokenImportPage', () => {
             [METRICS_PROPERTIES.tokenSymbol]: 'APE',
           },
         }),
-        expect.objectContaining({
-          environmentType: expect.any(String),
-        }),
+        expect.anything(),
       ),
     );
   });

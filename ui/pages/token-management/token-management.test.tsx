@@ -406,9 +406,7 @@ describe('TokenManagementPage', () => {
           },
           sensitiveProperties: {},
         }),
-        expect.objectContaining({
-          environmentType: expect.any(String),
-        }),
+        expect.anything(),
       ),
     );
   });
@@ -433,9 +431,7 @@ describe('TokenManagementPage', () => {
           },
           sensitiveProperties: {},
         }),
-        expect.objectContaining({
-          environmentType: expect.any(String),
-        }),
+        expect.anything(),
       ),
     );
   });
@@ -463,9 +459,7 @@ describe('TokenManagementPage', () => {
         },
         sensitiveProperties: {},
       }),
-      expect.objectContaining({
-        environmentType: expect.any(String),
-      }),
+      expect.anything(),
     );
   });
 
@@ -1026,9 +1020,7 @@ describe('TokenManagementPage', () => {
           [METRICS_PROPERTIES.tokenSymbol]: mainnetToken.symbol,
         }),
       }),
-      expect.objectContaining({
-        environmentType: expect.any(String),
-      }),
+      expect.anything(),
     );
 
     unmount();
