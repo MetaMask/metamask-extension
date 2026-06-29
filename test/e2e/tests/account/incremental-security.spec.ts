@@ -28,7 +28,42 @@ const BALANCE_CHECKER_1_ETH_RESULT =
   '0000000000000000000000000000000000000000000000000000000000000001' +
   '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
 
+async function mockMainnetAccountBalances(
+  mockServer: Mockttp,
+  nativeBalanceHuman: string,
+) {
+  await mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .asPriority(99)
+    .thenCallback((req) => {
+      const accountIds =
+        new URL(req.url).searchParams
+          .get('accountIds')
+          ?.split(',')
+          .filter(Boolean) ?? [];
+
+      const balances = accountIds
+        .filter((id) => id.split(':')[1] === '1')
+        .map((id) => ({
+          accountId: id,
+          assetId: 'eip155:1/slip44:60',
+          balance: nativeBalanceHuman,
+        }));
+
+      return {
+        statusCode: 200,
+        json: {
+          count: balances.length,
+          balances,
+          unprocessedNetworks: [],
+        },
+      };
+    });
+}
+
 async function mockSpotPrices(mockServer: Mockttp) {
+  await mockMainnetAccountBalances(mockServer, '1');
+
   await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .thenCallback(() => ({
