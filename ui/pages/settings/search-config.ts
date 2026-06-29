@@ -104,7 +104,6 @@ export const EXPERIMENTAL_ITEMS = {
 
 export const NOTIFICATIONS_ITEMS = {
   'allow-notifications': 'notifications',
-  'account-activity': 'accountActivity',
 } as const;
 
 export const NOTIFICATIONS_SECTION_ITEMS = {

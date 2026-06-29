@@ -416,16 +416,6 @@ export function NotificationSettingsSection({
       gap={6}
       data-testid={`notifications-settings-section-content-${section.type}`}
     >
-      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-        <Text
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Regular}
-          color={TextColor.TextAlternative}
-        >
-          {section.description}
-        </Text>
-      </Box>
-
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Stretch}
