@@ -1,8 +1,10 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React from 'react';
-import { TokenFiatDisplayInfo, TokenDisplayOverrides } from '../../types';
+import { TokenFiatDisplayInfo } from '../../types';
+import { isStellarClassicTrustlineInactiveForDisplay } from '../../../../../../shared/lib/multichain/stellar';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
+import { StellarTrustlineInactiveBadge } from '../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
@@ -10,22 +12,29 @@ import { StockBadge } from '../../stock-badge/stock-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
-  displayOverrides?: TokenDisplayOverrides;
 };
 
 export const TokenCellTitle = React.memo(
-  ({ token, displayOverrides }: TokenCellTitleProps) => {
+  ({ token }: TokenCellTitleProps) => {
     const label = token.accountType
       ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
     const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(token);
 
+    const isStellarInactive = isStellarClassicTrustlineInactiveForDisplay({
+      chainId: token.chainId,
+      assetId: token.assetId,
+      isNative: token.isNative,
+      accountAssetInfo: token.accountAssetInfo,
+      balance: token.balance,
+    });
+
     return (
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
         {label && <Tag label={label} />}
-        {displayOverrides?.titleBadge}
+        {isStellarInactive && <StellarTrustlineInactiveBadge />}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
         )}
@@ -49,7 +58,10 @@ export const TokenCellTitle = React.memo(
       nextProps.token.rwaData?.nextPause?.end &&
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.chainId === nextProps.token.chainId &&
+    prevProps.token.assetId === nextProps.token.assetId &&
+    prevProps.token.isNative === nextProps.token.isNative &&
     prevProps.token.symbol === nextProps.token.symbol &&
-    prevProps.displayOverrides?.titleBadge ===
-      nextProps.displayOverrides?.titleBadge,
+    prevProps.token.balance === nextProps.token.balance &&
+    prevProps.token.accountAssetInfo?.limit ===
+      nextProps.token.accountAssetInfo?.limit,
 );

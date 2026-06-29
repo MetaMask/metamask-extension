@@ -240,9 +240,9 @@ describe('Account Send Utils', () => {
 
   describe('isStellarAccountForSend', () => {
     it('returns false when account is null', () => {
-      expect(
-        isStellarAccountForSend(null as unknown as InternalAccount),
-      ).toBe(false);
+      expect(isStellarAccountForSend(null as unknown as InternalAccount)).toBe(
+        false,
+      );
     });
 
     it('returns false when account is undefined', () => {

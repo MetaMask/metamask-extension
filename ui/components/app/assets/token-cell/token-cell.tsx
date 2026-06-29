@@ -30,7 +30,8 @@ import type {
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { useTokenDisplayInfo } from '../hooks';
-import { type TokenWithFiatAmount, type TokenDisplayOverrides } from '../types';
+import { type TokenWithFiatAmount } from '../types';
+import { isStellarClassicTrustlineInactiveForDisplay } from '../../../../../shared/lib/multichain/stellar';
 import {
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
@@ -41,7 +42,6 @@ import {
 export type TokenCellMusdOptions = {
   /** When set, enables Merkl fetch/badge for this cell. */
   merklClaimBonus?: { location: MerklClaimBonusAnalyticsLocation };
-  /** When set, enables footer convert link (subject to `useMusdCtaVisibility` / balance rules). */
   convert?: { entryPoint: MusdConvertLinkEntryPoint };
 };
 
@@ -53,8 +53,6 @@ export type TokenCellProps = {
   safeChains?: SafeChain[];
   /** Merkl claim bonus and/or mUSD convert surfaces; parent must pass explicit analytics locations. */
   musd?: TokenCellMusdOptions;
-  /** Optional display overrides for chain-specific UI (e.g., Stellar trustline-inactive). */
-  displayOverrides?: TokenDisplayOverrides;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -66,7 +64,6 @@ export default function TokenCell({
   fixCurrencyToUSD = false,
   safeChains,
   musd,
-  displayOverrides,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -77,7 +74,6 @@ export default function TokenCell({
     [safeChains, token.chainId],
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-
   const showMerklBadge = Boolean(musd?.merklClaimBonus);
 
   // Check whether there are rewards available for the user
@@ -128,6 +124,24 @@ export default function TokenCell({
       ...tokenDisplayInfo,
     }),
     [token, tokenDisplayInfo],
+  );
+
+  const isStellarTrustlineInactive = useMemo(
+    () =>
+      isStellarClassicTrustlineInactiveForDisplay({
+        chainId: token.chainId,
+        assetId: token.assetId,
+        isNative: token.isNative,
+        accountAssetInfo: token.accountAssetInfo,
+        balance: token.balance,
+      }),
+    [
+      token.chainId,
+      token.assetId,
+      token.isNative,
+      token.accountAssetInfo,
+      token.balance,
+    ],
   );
 
   const merklBonusAmountRange = useMemo(
@@ -185,25 +199,24 @@ export default function TokenCell({
             assetId={token.assetId}
           />
         }
-        headerLeftDisplay={
-          <TokenCellTitle
-            token={displayToken}
-            displayOverrides={displayOverrides}
-          />
-        }
+        headerLeftDisplay={<TokenCellTitle token={displayToken} />}
         headerRightDisplay={
-          <TokenCellSecondaryDisplay
-            token={displayToken}
-            handleScamWarningModal={handleScamWarningModal}
-            privacyMode={privacyMode}
-          />
+          !isStellarTrustlineInactive && (
+            <TokenCellSecondaryDisplay
+              token={displayToken}
+              handleScamWarningModal={handleScamWarningModal}
+              privacyMode={privacyMode}
+            />
+          )
         }
         footerLeftDisplay={renderFooterLeft()}
         footerRightDisplay={
-          <TokenCellPrimaryDisplay
-            token={displayToken}
-            privacyMode={privacyMode}
-          />
+          !isStellarTrustlineInactive && (
+            <TokenCellPrimaryDisplay
+              token={displayToken}
+              privacyMode={privacyMode}
+            />
+          )
         }
       />
       {isEvm && showScamWarningModal && (

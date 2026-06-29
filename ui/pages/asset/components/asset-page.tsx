@@ -35,7 +35,7 @@ import {
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useStellarAssetDisplayOverrides } from '../../../components/app/assets/hooks';
+import { getStellarAssetPageState } from '../../../../shared/lib/multichain/stellar';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -99,6 +99,7 @@ import {
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
+import { StellarTrustlineInactiveBadge } from '../../../components/app/assets/stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -109,7 +110,6 @@ import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
-import { useStellarAssetPageState } from '../hooks/useStellarAssetPageState';
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -276,28 +276,23 @@ const AssetPage = ({
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   };
 
-  // Get Stellar-specific display overrides (badge, hidden displays, etc.)
-  const stellarDisplayOverrides = useStellarAssetDisplayOverrides({
+  // Derive whether Stellar classic trustline is inactive (for badge/hide behavior)
+  // Derive Stellar-specific asset page state from shared helper
+  const stellarPageState = getStellarAssetPageState({
     chainId,
     assetId: bip44Asset?.assetId ?? assetId,
-    isNative: type === AssetType.native,
+    type,
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
-    balance,
   });
 
-  // Get Stellar-specific asset page state (centralized detection, parsing, tracking)
   const {
     isStellarClassicTrustlineTrackedToken,
     showStellarClassicTrustlineActivate,
     hasStellarClassicTrustlineToRemove,
     stellarNativeBaseReserve,
     showStellarNativeBalanceSection,
-  } = useStellarAssetPageState({
-    chainId,
-    assetId,
-    type,
-    accountAssetInfo: assetWithBalance?.accountAssetInfo,
-  });
+    isStellarTrustlineInactive,
+  } = stellarPageState;
 
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
@@ -341,7 +336,7 @@ const AssetPage = ({
   };
 
   const renderAssetTitleSection = () => {
-    if (stellarDisplayOverrides?.titleBadge) {
+    if (isStellarTrustlineInactive) {
       return (
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -350,7 +345,7 @@ const AssetPage = ({
           data-testid="stellar-inactive-asset-header"
         >
           {assetNameElement}
-          {stellarDisplayOverrides.titleBadge}
+          <StellarTrustlineInactiveBadge />
         </Box>
       );
     }
@@ -434,7 +429,6 @@ const AssetPage = ({
             token={tokenWithFiatAmount as TokenWithFiatAmount}
             safeChains={safeChains}
             musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
-            displayOverrides={stellarDisplayOverrides}
           />
         )}
       </>

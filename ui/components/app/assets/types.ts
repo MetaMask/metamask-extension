@@ -13,21 +13,6 @@ export type TokenBalanceValues = {
   balance?: string;
 };
 
-/**
- * Generic display overrides for chain-specific token UI requirements.
- * Allows components to accept generic UI override props instead of checking
- * for chain-specific conditions (e.g., Stellar trustline-inactive).
- * Future chains like Ripple can use the same pattern.
- */
-export type TokenDisplayOverrides = {
-  /** React node to render as a title badge (e.g., trustline-inactive badge) */
-  titleBadge?: React.ReactNode;
-  /** Whether to hide the primary display (token balance) */
-  hidePrimaryDisplay?: boolean;
-  /** Whether to hide the secondary display (fiat value) */
-  hideSecondaryDisplay?: boolean;
-};
-
 // Base token type with common fields
 export type BaseToken = {
   address: Hex;
@@ -73,7 +58,7 @@ export type TokenWithFiatAmount = Token &
     rwaData?: TokenListToken['rwaData'];
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
     accountType?: KeyringAccountType;
-    accountAssetInfo?: Asset['extra'];
+    accountAssetInfo?: Asset['accountAssetInfo'];
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;

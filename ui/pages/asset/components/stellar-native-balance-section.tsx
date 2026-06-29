@@ -100,25 +100,25 @@ export function StellarNativeBalanceSection({
             {totalDisplay}
           </Text>
         </Box>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={1}
-            style={{ flex: 1 }}
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={1}
+          style={{ flex: 1 }}
+        >
+          <Text
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextAlternative}
           >
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextAlternative}
-            >
-              {t('stellarNativeValue')}
-            </Text>
-            <Text
-              variant={TextVariant.BodyMd}
-              data-testid="stellar-native-fiat-value"
-            >
-              {valueDisplay}
-            </Text>
-          </Box>
+            {t('stellarNativeValue')}
+          </Text>
+          <Text
+            variant={TextVariant.BodyMd}
+            data-testid="stellar-native-fiat-value"
+          >
+            {valueDisplay}
+          </Text>
+        </Box>
       </Box>
       <Box flexDirection={BoxFlexDirection.Row} gap={3}>
         <Box

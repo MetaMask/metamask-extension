@@ -69,9 +69,7 @@ export const toAssetId = (
   }
   // Stellar classic: `CODE-ISSUER` (issuer StrKey starts with G).
   // SEP-41 (Soroban) tokens: contract StrKey is `C` + 55 Base32 chars ([A-Z2-7]), 56 chars total.
-  if (
-    chainIdToUse === MultichainNetworks.STELLAR
-  ) {
+  if (chainIdToUse === MultichainNetworks.STELLAR) {
     const ref = String(addressToUse);
     if (/^[A-Za-z0-9]{1,12}-G[A-Z2-7]{55}$/u.test(ref)) {
       return CaipAssetTypeStruct.create(`${chainIdToUse}/asset:${ref}`);

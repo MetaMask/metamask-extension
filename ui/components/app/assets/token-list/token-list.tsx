@@ -56,7 +56,6 @@ import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import { isMusdToken } from '../../musd/constants';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useStellarAssetDisplayOverrides } from '../hooks';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -134,40 +133,6 @@ const isDecliningBalanceSort = (
   tokenSortConfig?.key === 'tokenFiatAmount' &&
   tokenSortConfig?.order === 'dsc' &&
   tokenSortConfig?.sortCallback === 'stringNumeric';
-
-/**
- * Wrapper component that computes display overrides for a token and renders TokenCell.
- * This allows the useStellarAssetDisplayOverrides hook to be called at component level.
- * @param options0
- * @param options0.token
- * @param options0.privacyMode
- * @param options0.onClick
- * @param options0.safeChains
- */
-const TokenCellWithDisplayOverrides = ({
-  token,
-  privacyMode,
-  onClick,
-  safeChains,
-}: {
-  token: TokenWithFiatAmount;
-  privacyMode: boolean;
-  onClick?: () => void;
-  safeChains?: SafeChain[];
-}) => {
-  const displayOverrides = useStellarAssetDisplayOverrides(token);
-
-  return (
-    <TokenCell
-      token={token}
-      privacyMode={privacyMode}
-      onClick={onClick}
-      safeChains={safeChains}
-      musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
-      displayOverrides={displayOverrides}
-    />
-  );
-};
 
 const getTokenListItemKey = (item: TokenListDisplayItem, index: number) => {
   if (item.type === 'low-value-toggle') {
@@ -422,11 +387,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     );
 
     return (
-      <TokenCellWithDisplayOverrides
+      <TokenCell
         token={token}
         privacyMode={privacyMode}
         onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
         safeChains={safeChains}
+        musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
       />
     );
   };

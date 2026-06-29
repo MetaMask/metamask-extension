@@ -481,9 +481,7 @@ export const TRON_CHAINS: CaipChainId[] = [
 
 export const BTC_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
 
-export const STELLAR_CHAINS: CaipChainId[] = [
-  MultichainNetworks.STELLAR,
-];
+export const STELLAR_CHAINS: CaipChainId[] = [MultichainNetworks.STELLAR];
 
 type NonEvmAccountChangedConfig = {
   network: MultichainNetworks;

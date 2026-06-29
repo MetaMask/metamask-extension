@@ -21,10 +21,7 @@ type TokenCellPrimaryDisplayProps = {
 };
 
 export const TokenCellPrimaryDisplay = React.memo(
-  ({
-    token,
-    privacyMode,
-  }: TokenCellPrimaryDisplayProps) => {
+  ({ token, privacyMode }: TokenCellPrimaryDisplayProps) => {
     const { formatTokenQuantity } = useFormatters();
     const anyEnabledNetworksAreAvailable = useSelector(
       selectAnyEnabledNetworksAreAvailable,

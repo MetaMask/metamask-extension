@@ -248,7 +248,6 @@ function getStellarState(
   };
 }
 
-
 function getSolanaState(
   account = MOCK_ACCOUNT_SOLANA_MAINNET,
   selectedChainId: SupportedCaipChainId = SolScope.Mainnet,
@@ -780,7 +779,10 @@ describe('Multichain Selectors', () => {
     });
 
     it('returns false for Stellar pubnet account', () => {
-      const state = getStellarState(MOCK_ACCOUNT_STELLAR_PUBNET, XlmScope.Pubnet);
+      const state = getStellarState(
+        MOCK_ACCOUNT_STELLAR_PUBNET,
+        XlmScope.Pubnet,
+      );
       expect(getMultichainIsTestnet(state)).toBe(false);
     });
   });
