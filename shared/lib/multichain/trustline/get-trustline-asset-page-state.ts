@@ -16,7 +16,9 @@ function isSep41Asset(chainId: string, assetId?: string): boolean {
   }
 
   try {
-    return parseCaipAssetType(assetId as CaipAssetType).assetNamespace === 'sep41';
+    return (
+      parseCaipAssetType(assetId as CaipAssetType).assetNamespace === 'sep41'
+    );
   } catch {
     return false;
   }

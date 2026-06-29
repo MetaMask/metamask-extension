@@ -36,7 +36,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getTrustlineAssetPageState } from '../../../../shared/lib/multichain/trustline';
-import { getStellarNativeAssetPageState } from '../../../../shared/lib/multichain/stellar';
+import { getNativeReserveAssetPageState } from '../../../../shared/lib/multichain/get-native-reserve-asset-page-state';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -285,7 +285,7 @@ const AssetPage = ({
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   });
 
-  const stellarNativePageState = getStellarNativeAssetPageState({
+  const nativeReservePageState = getNativeReserveAssetPageState({
     chainId,
     type,
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
@@ -298,8 +298,8 @@ const AssetPage = ({
     hasClassicTrustlineToRemove,
   } = trustlinePageState;
 
-  const { stellarNativeBaseReserve, showStellarNativeBalanceSection } =
-    stellarNativePageState;
+  const { nativeReserveBaseReserve, showNativeReserveBalanceSection } =
+    nativeReservePageState;
 
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
@@ -411,12 +411,12 @@ const AssetPage = ({
       );
     }
 
-    if (showStellarNativeBalanceSection) {
+    if (showNativeReserveBalanceSection) {
       return (
         <StellarNativeBalanceSection
           totalBalance={String(balance)}
           symbol={symbol}
-          baseReserve={stellarNativeBaseReserve ?? '0'}
+          baseReserve={nativeReserveBaseReserve ?? '0'}
           fiatValue={tokenFiatAmount}
         />
       );

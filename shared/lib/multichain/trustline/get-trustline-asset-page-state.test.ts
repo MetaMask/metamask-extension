@@ -45,7 +45,8 @@ describe('getTrustlineAssetPageState', () => {
   });
 
   it('identifies an active classic trustline that can be removed', () => {
-    const assetId = 'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+    const assetId =
+      'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 
     const state = getTrustlineAssetPageState({
       chainId: XlmScope.Pubnet,
