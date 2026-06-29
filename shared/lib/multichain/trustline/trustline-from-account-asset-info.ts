@@ -55,20 +55,18 @@ function isClassicTrustlineAssetCaip19(assetId: CaipAssetType): boolean {
  * @param options
  * @param options.chainId
  * @param options.assetId
- * @param options.isNative
  * @param options.accountAssetInfo
  * @param options.balance
  */
 export function isClassicTrustlineInactiveForDisplay(options: {
   chainId: CaipChainId | string;
   assetId?: CaipAssetType | string;
-  isNative?: boolean;
   accountAssetInfo?: TrustlineAccountAssetInfo;
   balance?: string;
 }): boolean {
-  const { chainId, assetId, isNative, accountAssetInfo, balance } = options;
+  const { chainId, assetId, accountAssetInfo, balance } = options;
 
-  if (isNative || !assetId || !isClassicTrustlineChainId(chainId)) {
+  if (!assetId || !isClassicTrustlineChainId(chainId)) {
     return false;
   }
 

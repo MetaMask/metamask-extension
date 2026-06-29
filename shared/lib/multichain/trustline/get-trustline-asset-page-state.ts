@@ -35,9 +35,29 @@ export function getTrustlineAssetPageState({
   type: AssetType;
   accountAssetInfo?: AccountAssetInfo;
 }) {
+  function isSupportedClassicTrustlineAsset(assetIdParam?: string): boolean {
+    if (!assetIdParam) {
+      return false;
+    }
+
+    // Only the chains listed here support classic `asset:` trustlines.
+    const CLASSIC_TRUSTLINE_CHAIN_IDS: string[] = [XlmScope.Pubnet];
+
+    try {
+      const parsed = parseCaipAssetType(assetIdParam as CaipAssetType);
+      return (
+        CLASSIC_TRUSTLINE_CHAIN_IDS.includes(parsed.chainId as string) &&
+        parsed.assetNamespace === 'asset'
+      );
+    } catch {
+      return false;
+    }
+  }
+
   const isClassicTrustlineTrackedToken =
     type === AssetType.token &&
     Boolean(assetId) &&
+    isSupportedClassicTrustlineAsset(assetId) &&
     !isSep41Asset(chainId, assetId);
 
   const isTrustlineInactive =
@@ -45,7 +65,6 @@ export function getTrustlineAssetPageState({
     isClassicTrustlineInactiveForDisplay({
       chainId,
       assetId: assetId ?? '',
-      isNative: type === AssetType.native,
       accountAssetInfo,
     });
 
@@ -58,7 +77,6 @@ export function getTrustlineAssetPageState({
     !isClassicTrustlineInactiveForDisplay({
       chainId,
       assetId: assetId ?? '',
-      isNative: type === AssetType.native,
       accountAssetInfo,
     });
 

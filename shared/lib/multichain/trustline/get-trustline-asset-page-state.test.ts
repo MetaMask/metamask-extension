@@ -60,4 +60,21 @@ describe('getTrustlineAssetPageState', () => {
     expect(state.showClassicTrustlineActivate).toBe(false);
     expect(state.hasClassicTrustlineToRemove).toBe(true);
   });
+
+  it('does not mark unrelated tokens (e.g. EVM ERC-20) as classic trustline tracked', () => {
+    const evmAssetId =
+      'eip155:1/erc20:0x0000000000000000000000000000000000000000';
+
+    const state = getTrustlineAssetPageState({
+      chainId: 'eip155:1',
+      assetId: evmAssetId,
+      type: AssetType.token,
+      accountAssetInfo: undefined,
+    });
+
+    expect(state.isClassicTrustlineTrackedToken).toBe(false);
+    expect(state.isTrustlineInactive).toBe(false);
+    expect(state.showClassicTrustlineActivate).toBe(false);
+    expect(state.hasClassicTrustlineToRemove).toBe(false);
+  });
 });

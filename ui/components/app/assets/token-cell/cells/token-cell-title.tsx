@@ -25,7 +25,6 @@ export const TokenCellTitle = React.memo(
     const isTrustlineInactive = isClassicTrustlineInactiveForDisplay({
       chainId: token.chainId,
       assetId: token.assetId,
-      isNative: token.isNative,
       accountAssetInfo: token.accountAssetInfo,
       balance: token.balance,
     });
@@ -59,7 +58,6 @@ export const TokenCellTitle = React.memo(
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.chainId === nextProps.token.chainId &&
     prevProps.token.assetId === nextProps.token.assetId &&
-    prevProps.token.isNative === nextProps.token.isNative &&
     prevProps.token.symbol === nextProps.token.symbol &&
     prevProps.token.balance === nextProps.token.balance &&
     prevProps.token.accountAssetInfo?.limit ===
