@@ -19,8 +19,10 @@ import {
 } from '../../../../../components/component-library';
 import {
   BackgroundColor,
+  BorderRadius,
   TextColor,
   BorderColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { NetworkListItem } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -207,17 +209,21 @@ export const NetworkFilter = ({
           startIconName={IconName.Filter}
           startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           backgroundColor={BackgroundColor.backgroundDefault}
+          borderRadius={BorderRadius.LG}
           color={
             isSingleNetworkSelected
               ? TextColor.primaryDefault
               : TextColor.textDefault
           }
           borderColor={BorderColor.borderMuted}
+          paddingLeft={2}
+          paddingRight={2}
           marginBottom={2}
           marginTop={2}
           ellipsis
         >
           <Text
+            variant={TextVariant.bodySmMedium}
             color={
               isSingleNetworkSelected
                 ? TextColor.primaryDefault
