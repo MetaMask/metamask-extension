@@ -27,12 +27,16 @@ import type { LedgerConnectionStatusProps } from './ledger-connection-status.typ
  * @param props - Component props.
  * @param props.status - Connection state for the illustration, copy, and optional sections.
  * @param props.deviceModelName - Ledger model name when status is device-found.
+ * @param props.deviceCount - Number of detected Ledger devices for the device-found state.
+ * @param props.isDeviceSelectionEnabled - Enables device selection when multiple devices are detected.
  * @param props.onBack - Back button click handler. Omit to hide the back button.
- * @param props.onDeviceSelectorClick - Device selector click handler for the device-found state.
+ * @param props.onDeviceSelectorClick - Device selector click handler when device selection is enabled.
  */
 export const LedgerConnectionStatus = ({
   status,
   deviceModelName,
+  deviceCount,
+  isDeviceSelectionEnabled,
   onBack,
   onDeviceSelectorClick,
 }: Readonly<LedgerConnectionStatusProps>) => {
@@ -108,6 +112,8 @@ export const LedgerConnectionStatus = ({
         {contentConfig.showDeviceSelector && deviceModelName ? (
           <LedgerConnectionStatusDeviceSelector
             deviceModelName={deviceModelName}
+            deviceCount={deviceCount}
+            isDeviceSelectionEnabled={isDeviceSelectionEnabled}
             onDeviceSelectorClick={onDeviceSelectorClick}
           />
         ) : null}

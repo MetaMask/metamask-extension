@@ -8,63 +8,109 @@ const renderDeviceSelector = (
   props: LedgerConnectionStatusDeviceSelectorProps,
 ) => render(<LedgerConnectionStatusDeviceSelector {...props} />);
 
+const getSelector = () =>
+  screen.getByTestId('ledger-connection-status-device-selector');
+
 describe('LedgerConnectionStatusDeviceSelector', () => {
   describe('static presentation', () => {
     it('renders the provided device model name', () => {
       renderDeviceSelector({ deviceModelName: 'Nano X' });
 
       expect(screen.getByText('Nano X')).toBeInTheDocument();
-      expect(
-        screen.getByTestId('ledger-connection-status-device-selector'),
-      ).toBeInTheDocument();
+      expect(getSelector()).toBeInTheDocument();
     });
 
-    it('renders an empty model name without a clickable wrapper', () => {
-      renderDeviceSelector({ deviceModelName: '' });
-
-      expect(
-        screen.getByTestId('ledger-connection-status-device-selector'),
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByTestId('ledger-connection-status-device-selector-button'),
-      ).not.toBeInTheDocument();
-    });
-
-    it('does not render a clickable wrapper without onDeviceSelectorClick', () => {
+    it('omits the selection indicator for a single detected device', () => {
       renderDeviceSelector({ deviceModelName: 'Nano X' });
 
       expect(
-        screen.queryByTestId('ledger-connection-status-device-selector-button'),
+        screen.queryByTestId(
+          'ledger-connection-status-device-selector-indicator',
+        ),
       ).not.toBeInTheDocument();
+    });
+
+    it('renders an empty model name as a non-interactive row', () => {
+      renderDeviceSelector({ deviceModelName: '' });
+
+      expect(getSelector()).toBeInTheDocument();
+    });
+
+    it('does not invoke onDeviceSelectorClick when device selection is disabled', async () => {
+      const user = userEvent.setup();
+      const onDeviceSelectorClick = jest.fn();
+
+      renderDeviceSelector({
+        deviceModelName: 'Nano X',
+        deviceCount: 2,
+        onDeviceSelectorClick,
+      });
+
+      await user.click(getSelector());
+
+      expect(onDeviceSelectorClick).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('multiple device presentation', () => {
+    it('renders the selection indicator when multiple devices are detected', () => {
+      renderDeviceSelector({
+        deviceModelName: 'Nano X',
+        deviceCount: 2,
+      });
+
+      expect(
+        screen.getByTestId('ledger-connection-status-device-selector-indicator'),
+      ).toBeInTheDocument();
+    });
+
+    it('keeps the row non-interactive until device selection is enabled', async () => {
+      const user = userEvent.setup();
+      const onDeviceSelectorClick = jest.fn();
+
+      renderDeviceSelector({
+        deviceModelName: 'Nano X',
+        deviceCount: 2,
+        onDeviceSelectorClick,
+      });
+
+      await user.click(getSelector());
+
+      expect(onDeviceSelectorClick).not.toHaveBeenCalled();
     });
   });
 
   describe('clickable presentation', () => {
-    it('wraps the selector in a button when onDeviceSelectorClick is provided', () => {
-      renderDeviceSelector({
-        deviceModelName: 'Nano X',
-        onDeviceSelectorClick: jest.fn(),
-      });
-
-      expect(
-        screen.getByTestId('ledger-connection-status-device-selector-button'),
-      ).toBeInTheDocument();
-    });
-
     it('invokes onDeviceSelectorClick when the selector is clicked', async () => {
       const user = userEvent.setup();
       const onDeviceSelectorClick = jest.fn();
 
       renderDeviceSelector({
         deviceModelName: 'Stax',
+        deviceCount: 2,
+        isDeviceSelectionEnabled: true,
         onDeviceSelectorClick,
       });
 
-      await user.click(
-        screen.getByTestId('ledger-connection-status-device-selector-button'),
-      );
+      await user.click(getSelector());
 
       expect(onDeviceSelectorClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not invoke onDeviceSelectorClick for a single detected device', async () => {
+      const user = userEvent.setup();
+      const onDeviceSelectorClick = jest.fn();
+
+      renderDeviceSelector({
+        deviceModelName: 'Nano X',
+        deviceCount: 1,
+        isDeviceSelectionEnabled: true,
+        onDeviceSelectorClick,
+      });
+
+      await user.click(getSelector());
+
+      expect(onDeviceSelectorClick).not.toHaveBeenCalled();
     });
   });
 });
