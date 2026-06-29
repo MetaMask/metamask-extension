@@ -372,6 +372,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return this.#splitStateDiagnostics.getSnapshot(readDiagnostics, now);
   }
 
+  async getWeeklySplitStatePersistenceDiagnosticsSnapshot(
+    now = Date.now(),
+  ): Promise<SplitStatePersistenceDiagnosticsSnapshot | undefined> {
+    return await this.#splitStateDiagnostics.getWeeklyBaselineSnapshot(now);
+  }
+
   setMetadata(metadata: MetaData) {
     // don't rewrite if nothing has changed
     // this is a cheap comparison since metadata is small.

@@ -142,6 +142,48 @@ describe('SplitStatePersistenceDiagnostics', () => {
     });
   });
 
+  it('returns a baseline snapshot at most once per week', async () => {
+    diagnostics.recordQueuedUpdate('KeyringController');
+    diagnostics.recordPersistedBatch(
+      new Map<string, unknown>([['KeyringController', { vault: 'secret' }]]),
+    );
+
+    const firstSnapshot = await diagnostics.getWeeklyBaselineSnapshot(1000);
+    const secondSnapshot = await diagnostics.getWeeklyBaselineSnapshot(
+      1000 + 6 * 24 * 60 * 60 * 1000,
+    );
+    const thirdSnapshot = await diagnostics.getWeeklyBaselineSnapshot(
+      1000 + 7 * 24 * 60 * 60 * 1000,
+    );
+
+    expect(firstSnapshot).toMatchObject({
+      totalQueuedUpdates: 1,
+      totalPersistedBatches: 1,
+    });
+    expect(secondSnapshot).toBeUndefined();
+    expect(thirdSnapshot).toMatchObject({
+      totalQueuedUpdates: 1,
+      totalPersistedBatches: 1,
+    });
+  });
+
+  it('persists the weekly baseline gate across diagnostics instances', async () => {
+    diagnostics.recordQueuedUpdate('KeyringController');
+    diagnostics.recordPersistedBatch(
+      new Map<string, unknown>([['KeyringController', { vault: 'secret' }]]),
+    );
+    await diagnostics.getWeeklyBaselineSnapshot(1000);
+    diagnostics.close();
+
+    const nextDiagnostics = new SplitStatePersistenceDiagnostics();
+    const snapshot = await nextDiagnostics.getWeeklyBaselineSnapshot(
+      1000 + 6 * 24 * 60 * 60 * 1000,
+    );
+    nextDiagnostics.close();
+
+    expect(snapshot).toBeUndefined();
+  });
+
   it('can report read diagnostics even when there are no write stats', async () => {
     const readDiagnostics: SplitStateReadDiagnostics = {
       manifestStatus: 'readable',

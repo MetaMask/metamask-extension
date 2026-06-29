@@ -16,13 +16,7 @@ import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
 
 const platform = new ExtensionPlatform();
 
-function createLocalStore() {
-  const useFixtureStore =
-    process.env.IN_TEST &&
-    getManifestFlags().testing?.forceExtensionStore !== true;
-  if (!useFixtureStore) {
-    return new ExtensionStore();
-  }
+function isBackgroundContext() {
   // Use globalThis.self (not window) so this works in both the UI and the background/service worker, where window is undefined.
   const locationHref = globalThis.self?.location?.href;
   if (!locationHref) {
@@ -30,9 +24,17 @@ function createLocalStore() {
       'setup-initial-state-hooks: globalThis.self?.location?.href is not defined; expected to run in a document or service worker context.',
     );
   }
-  const isBackground =
-    getEnvironmentType(locationHref) === ENVIRONMENT_TYPE_BACKGROUND;
-  return new FixtureExtensionStore({ initialize: isBackground });
+  return getEnvironmentType(locationHref) === ENVIRONMENT_TYPE_BACKGROUND;
+}
+
+function createLocalStore() {
+  const useFixtureStore =
+    process.env.IN_TEST &&
+    getManifestFlags().testing?.forceExtensionStore !== true;
+  if (!useFixtureStore) {
+    return new ExtensionStore();
+  }
+  return new FixtureExtensionStore({ initialize: isBackgroundContext() });
 }
 
 const localStore = createLocalStore();
@@ -68,7 +70,33 @@ export const persistenceManager = new PersistenceManager({ localStore })
  * @returns The persisted wallet state.
  */
 globalThis.stateHooks.getPersistedState = async function () {
-  return await persistenceManager.get({ validateVault: false });
+  const persistedState = await persistenceManager.get({ validateVault: false });
+
+  if (
+    persistedState?.meta?.storageKind === 'split' &&
+    persistedState.data &&
+    isBackgroundContext()
+  ) {
+    try {
+      const diagnostics =
+        await persistenceManager.getWeeklySplitStatePersistenceDiagnosticsSnapshot();
+
+      if (diagnostics) {
+        trackEarlySegmentEvent({
+          state: persistedState.data,
+          event: MetaMetricsEventName.SplitStatePersistenceBaseline,
+          category: MetaMetricsEventCategory.Background,
+          properties: {
+            split_state_persistence_diagnostics: diagnostics,
+          },
+        });
+      }
+    } catch {
+      // Diagnostics must never affect startup.
+    }
+  }
+
+  return persistedState;
 };
 
 /**

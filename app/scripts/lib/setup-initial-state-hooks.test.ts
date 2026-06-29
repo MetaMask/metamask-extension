@@ -1,5 +1,8 @@
 import type { PersistenceManager as PersistenceManagerType } from '../../../shared/lib/stores/persistence-manager';
-import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { VaultCorruptionType } from '../../../shared/constants/state-corruption';
 
 const mockGet = jest.fn();
@@ -7,6 +10,8 @@ const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
 const mockPersistenceOn = jest.fn();
 const mockTrackVaultCorruptionEvent = jest.fn();
+const mockTrackEarlySegmentEvent = jest.fn();
+const mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
@@ -40,6 +45,8 @@ jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
     const instance = {
       get: mockGet,
       getBackup: mockGetBackup,
+      getWeeklySplitStatePersistenceDiagnosticsSnapshot:
+        mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
       cleanUpMostRecentRetrievedState: mockCleanUpMostRecentRetrievedState,
       on: (...args: unknown[]) => {
         mockPersistenceOn(...args);
@@ -56,6 +63,10 @@ jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
 
 jest.mock('./state-corruption/track-vault-corruption', () => ({
   trackVaultCorruptionEvent: mockTrackVaultCorruptionEvent,
+}));
+
+jest.mock('./segment/custom-segment-tracking', () => ({
+  trackEarlySegmentEvent: mockTrackEarlySegmentEvent,
 }));
 
 /**
@@ -87,6 +98,8 @@ describe('setup-initial-state-hooks', () => {
     mockCleanUpMostRecentRetrievedState.mockClear();
     mockPersistenceOn.mockClear();
     mockTrackVaultCorruptionEvent.mockClear();
+    mockTrackEarlySegmentEvent.mockClear();
+    mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -261,6 +274,72 @@ describe('setup-initial-state-hooks', () => {
       await globalThis.stateHooks.getPersistedState();
 
       expect(mockGet).toHaveBeenCalledWith({ validateVault: false });
+    });
+
+    it('tracks a weekly split-state persistence baseline in background context', async () => {
+      const persistedState = {
+        data: {
+          AnalyticsController: {
+            optedIn: true,
+            analyticsId: 'test-metrics-id',
+          },
+          PreferencesController: {},
+        },
+        meta: {
+          storageKind: 'split',
+          version: 1,
+        },
+      };
+      const diagnostics = {
+        schemaVersion: 1,
+        updatedAt: 1000,
+        totalQueuedUpdates: 1,
+        totalPersistedBatches: 1,
+        topWrittenKeys: [],
+        recentWideBatches: [],
+      };
+      mockGet.mockResolvedValueOnce(persistedState);
+      mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot.mockResolvedValueOnce(
+        diagnostics,
+      );
+      setSelfHref('chrome-extension://abc123/scripts/app-init.js');
+      await importFresh();
+
+      await globalThis.stateHooks.getPersistedState();
+
+      expect(
+        mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
+      ).toHaveBeenCalledTimes(1);
+      expect(mockTrackEarlySegmentEvent).toHaveBeenCalledWith({
+        state: persistedState.data,
+        event: MetaMetricsEventName.SplitStatePersistenceBaseline,
+        category: MetaMetricsEventCategory.Background,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          split_state_persistence_diagnostics: diagnostics,
+        },
+      });
+    });
+
+    it('does not track a weekly split-state persistence baseline in UI context', async () => {
+      mockGet.mockResolvedValueOnce({
+        data: {
+          PreferencesController: {},
+        },
+        meta: {
+          storageKind: 'split',
+          version: 1,
+        },
+      });
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      await globalThis.stateHooks.getPersistedState();
+
+      expect(
+        mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
+      ).not.toHaveBeenCalled();
+      expect(mockTrackEarlySegmentEvent).not.toHaveBeenCalled();
     });
 
     it('registers getBackupState on globalThis.stateHooks', async () => {

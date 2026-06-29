@@ -7,8 +7,12 @@ export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_DB_NAME =
 export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_DB_VERSION = 1;
 export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_KEY =
   'split-state-persistence-diagnostics';
+export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_KEY =
+  'split-state-persistence-diagnostics-baseline';
 export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_INTERVAL_MS =
   5 * 60 * 1000;
+export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_INTERVAL_MS =
+  7 * 24 * 60 * 60 * 1000;
 
 const TOP_WRITTEN_KEYS_LIMIT = 10;
 const RECENT_WIDE_BATCHES_LIMIT = 20;
@@ -72,6 +76,11 @@ export type SplitStatePersistenceDiagnosticsSnapshot = {
   topWrittenKeys: SplitStateWrittenKeyDiagnostics[];
   recentWideBatches: SplitStateWideBatchDiagnostics[];
   readDiagnostics?: SplitStateReadDiagnostics;
+};
+
+type SplitStatePersistenceDiagnosticsBaselineMetadata = {
+  schemaVersion: 1;
+  lastSentAt: number;
 };
 
 type KeyStats = {
@@ -202,6 +211,18 @@ function isSplitStatePersistenceDiagnosticsSnapshot(
     Array.isArray(value.topWrittenKeys) &&
     hasProperty(value, 'recentWideBatches') &&
     Array.isArray(value.recentWideBatches)
+  );
+}
+
+function isSplitStatePersistenceDiagnosticsBaselineMetadata(
+  value: unknown,
+): value is SplitStatePersistenceDiagnosticsBaselineMetadata {
+  return (
+    isObject(value) &&
+    hasProperty(value, 'schemaVersion') &&
+    value.schemaVersion === 1 &&
+    hasProperty(value, 'lastSentAt') &&
+    typeof value.lastSentAt === 'number'
   );
 }
 
@@ -394,6 +415,42 @@ export class SplitStatePersistenceDiagnostics {
       ),
     });
     this.#lastPersistedAt = now;
+  }
+
+  async getWeeklyBaselineSnapshot(
+    now = Date.now(),
+  ): Promise<SplitStatePersistenceDiagnosticsSnapshot | undefined> {
+    await this.#openDatabase();
+
+    if (!this.#db || !this.hasData()) {
+      return undefined;
+    }
+
+    const [baselineMetadata] = await this.#db.get([
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_KEY,
+    ]);
+
+    if (
+      isSplitStatePersistenceDiagnosticsBaselineMetadata(
+        baselineMetadata,
+      ) &&
+      now - baselineMetadata.lastSentAt <
+        SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_INTERVAL_MS
+    ) {
+      return undefined;
+    }
+
+    const snapshot = this.getSnapshot(undefined, now);
+    await this.#db.set({
+      [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_KEY]: snapshot,
+      [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_KEY]: {
+        schemaVersion: 1,
+        lastSentAt: now,
+      },
+    });
+    this.#lastPersistedAt = now;
+
+    return snapshot;
   }
 
   async reset(): Promise<void> {
