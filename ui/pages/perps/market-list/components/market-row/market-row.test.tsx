@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import type { PerpsMarketData } from '../../../../../components/app/perps/types';
 import { MarketRow } from './market-row';
 
@@ -50,7 +51,9 @@ describe('MarketRow', () => {
     it('displays the full asset name', () => {
       renderWithProvider(<MarketRow {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.networkNameBitcoin.message),
+      ).toBeInTheDocument();
     });
 
     it('falls back to the ticker when the asset has no name', () => {

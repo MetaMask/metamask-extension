@@ -58,7 +58,9 @@ describe('OrderCard', () => {
     );
 
     // Title shows the full name
-    expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameBitcoin.message),
+    ).toBeInTheDocument();
     // Size line keeps the ticker as its unit
     expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
   });

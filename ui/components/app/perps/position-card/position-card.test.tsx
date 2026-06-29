@@ -4,6 +4,7 @@ import type { Position } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { PositionCard } from './position-card';
 
 jest.mock('../../../../hooks/useFormatters', () => ({
@@ -76,7 +77,9 @@ describe('PositionCard', () => {
     );
 
     // Title shows the full name
-    expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameBitcoin.message),
+    ).toBeInTheDocument();
     // Size line keeps the ticker as its unit
     expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
   });
