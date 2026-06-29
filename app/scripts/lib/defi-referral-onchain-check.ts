@@ -5,14 +5,9 @@ import { toFunctionSelector } from '../../../shared/lib/delegation/utils';
 /** Minimal shape of NetworkController required for the on-chain referral check. */
 type NetworkControllerLike = {
   findNetworkClientIdByChainId: (chainId: string) => string;
-  getNetworkClientById: (
-    networkClientId: string,
-  ) => {
+  getNetworkClientById: (networkClientId: string) => {
     provider: {
-      request: (args: {
-        method: string;
-        params: unknown[];
-      }) => Promise<string>;
+      request: (args: { method: string; params: unknown[] }) => Promise<string>;
     };
   };
 };

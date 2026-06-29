@@ -5546,13 +5546,18 @@ describe('MetaMaskController', () => {
       });
 
       describe('GMX on-chain referral code check', () => {
-        const GMX_ORIGIN = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin;
+        const GMX_ORIGIN =
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin;
         const GMX_APPROVAL_TYPE =
           DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].approvalType;
 
         beforeEach(() => {
           jest
-            .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
+            .spyOn(
+              metamaskController.remoteFeatureFlagController,
+              'state',
+              'get',
+            )
             .mockReturnValue({
               remoteFeatureFlags: {
                 extensionUxDefiReferralPartners: {
@@ -5623,7 +5628,9 @@ describe('MetaMaskController', () => {
             mockNewConnectionTriggerType,
           );
 
-          expect(metamaskController.approvalController.add).toHaveBeenCalledWith(
+          expect(
+            metamaskController.approvalController.add,
+          ).toHaveBeenCalledWith(
             expect.objectContaining({
               origin: GMX_ORIGIN,
               type: GMX_APPROVAL_TYPE,
