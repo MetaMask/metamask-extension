@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   type AddPrecreatedOrderParams,
   type BuyWidget,
@@ -251,52 +252,122 @@ const STUB_ORDER: RampsOrder = {
 
 const STUB_ORDERS: RampsOrder[] = [STUB_ORDER];
 
-// --- Static result -----------------------------------------------------------
+// --- Mutable selection store -------------------------------------------------
 
-const STUB_RESULT: UseRampsControllerResult = {
-  userRegion: STUB_USER_REGION,
-  setUserRegion: async () => STUB_USER_REGION,
-  selectedProvider: STUB_TRANSAK,
-  setSelectedProvider: async () => undefined,
-  providers: STUB_PROVIDERS,
-  providersLoading: false,
-  providersError: null,
-  tokens: STUB_TOKENS,
-  selectedToken: STUB_ETH,
-  setSelectedToken: async () => undefined,
-  tokensLoading: false,
-  tokensError: null,
-  countries: STUB_COUNTRIES,
-  countriesLoading: false,
-  countriesError: null,
-  paymentMethods: STUB_PAYMENT_METHODS,
-  selectedPaymentMethod: STUB_CARD,
-  setSelectedPaymentMethod: async () => undefined,
-  paymentMethodsLoading: false,
-  paymentMethodsFetching: false,
-  paymentMethodsStatus: 'success',
-  paymentMethodsError: null,
-  getQuotes: async () => STUB_QUOTES,
-  getBuyWidgetData: async () => STUB_BUY_WIDGET,
-  orders: STUB_ORDERS,
-  getOrderById: (providerOrderId) =>
-    STUB_ORDERS.find((order) => order.providerOrderId === providerOrderId),
-  addOrder: async () => undefined,
-  addPrecreatedOrder: async () => undefined,
-  removeOrder: async () => undefined,
-  refreshOrder: async () => STUB_ORDER,
-  getOrderFromCallback: async () => STUB_ORDER,
+// The real hook keeps selection in controller (redux) state, which is shared
+// across pages. To mirror that for the stub — so a token picked on the token
+// page shows up on the build-quote page — selection lives in a tiny module-level
+// store with a subscription. All of this disappears when the redux-backed hook
+// replaces this file.
+
+type Selection = {
+  assetId: string | null;
+  providerId: string | null;
+  paymentMethodId: string | null;
 };
+
+let selection: Selection = {
+  assetId: STUB_ETH.assetId,
+  providerId: STUB_TRANSAK.id,
+  paymentMethodId: STUB_CARD.id,
+};
+
+const selectionListeners = new Set<() => void>();
+
+function setSelection(patch: Partial<Selection>): void {
+  selection = { ...selection, ...patch };
+  selectionListeners.forEach((listener) => listener());
+}
+
+function useSelection(): Selection {
+  const [, forceRender] = useState(0);
+  useEffect(() => {
+    const listener = () => forceRender((count) => count + 1);
+    selectionListeners.add(listener);
+    return () => {
+      selectionListeners.delete(listener);
+    };
+  }, []);
+  return selection;
+}
+
+const ALL_TOKENS = STUB_TOKENS.allTokens;
 
 /**
  * Returns ramps controller data and actions for the money-movement UI.
  *
- * STUB: returns static fixture data. See the file header for the swap plan.
+ * STUB: returns static fixture data, with selection backed by a module-level
+ * store so it persists across page navigations. See the file header for the
+ * swap plan.
  *
  * @returns The stubbed ramps controller result.
  */
 export function useRampsController(): UseRampsControllerResult {
-  return STUB_RESULT;
+  const { assetId, providerId, paymentMethodId } = useSelection();
+
+  const setSelectedToken = useCallback(async (nextAssetId: string) => {
+    setSelection({ assetId: nextAssetId });
+  }, []);
+
+  const setSelectedProvider = useCallback(async (provider: Provider | null) => {
+    setSelection({ providerId: provider?.id ?? null });
+  }, []);
+
+  const setSelectedPaymentMethod = useCallback(
+    async (paymentMethod: PaymentMethod | null) => {
+      setSelection({ paymentMethodId: paymentMethod?.id ?? null });
+    },
+    [],
+  );
+
+  return useMemo<UseRampsControllerResult>(
+    () => ({
+      userRegion: STUB_USER_REGION,
+      setUserRegion: async () => STUB_USER_REGION,
+      selectedProvider:
+        STUB_PROVIDERS.find((provider) => provider.id === providerId) ?? null,
+      setSelectedProvider,
+      providers: STUB_PROVIDERS,
+      providersLoading: false,
+      providersError: null,
+      tokens: STUB_TOKENS,
+      selectedToken:
+        ALL_TOKENS.find((token) => token.assetId === assetId) ?? null,
+      setSelectedToken,
+      tokensLoading: false,
+      tokensError: null,
+      countries: STUB_COUNTRIES,
+      countriesLoading: false,
+      countriesError: null,
+      paymentMethods: STUB_PAYMENT_METHODS,
+      selectedPaymentMethod:
+        STUB_PAYMENT_METHODS.find((method) => method.id === paymentMethodId) ??
+        null,
+      setSelectedPaymentMethod,
+      paymentMethodsLoading: false,
+      paymentMethodsFetching: false,
+      paymentMethodsStatus: 'success',
+      paymentMethodsError: null,
+      getQuotes: async () => STUB_QUOTES,
+      getBuyWidgetData: async () => STUB_BUY_WIDGET,
+      orders: STUB_ORDERS,
+      getOrderById: (providerOrderId: string) =>
+        STUB_ORDERS.find((order) => order.providerOrderId === providerOrderId),
+      addOrder: async () => undefined,
+      addPrecreatedOrder: async () => undefined,
+      removeOrder: async () => undefined,
+      refreshOrder: async () => STUB_ORDER,
+      getOrderFromCallback: async () => STUB_ORDER,
+    }),
+    [
+      assetId,
+      providerId,
+      paymentMethodId,
+      setSelectedToken,
+      setSelectedProvider,
+      setSelectedPaymentMethod,
+    ],
+  );
 }
 
 export default useRampsController;

@@ -5,11 +5,18 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import configureStore from '../../../store/store';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { RAMPS_ROUTE } from '../../../helpers/constants/routes';
 import useRamps, { RampsMetaMaskEntry } from './useRamps';
 
 jest.mock('../../../../shared/lib/asset-utils', () => ({
   ...jest.requireActual('../../../../shared/lib/asset-utils'),
   isEvmChainId: jest.fn(),
+}));
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
 }));
 
 const mockedMetametricsId = '0xtestMetaMetricsId';
@@ -61,45 +68,17 @@ describe('useRamps', () => {
     });
   });
 
-  it('should default the metamask entry param when opening the buy crypto URL', () => {
-    const metaMaskEntry = 'ext_buy_sell_button';
-    const mockChainId = '1';
-    (isEvmChainId as jest.Mock).mockReturnValueOnce(true);
-
-    mockStoreState = {
-      ...mockStoreState,
-      metamask: {
-        ...mockStoreState.metamask,
-        ...mockNetworkState({ chainId: '0x1' }),
-      },
-    };
-
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
-    const openTabSpy = jest.spyOn(global.platform, 'openTab');
+  it('navigates to the in-extension ramps route when opening buy crypto', () => {
+    mockNavigate.mockClear();
 
     const { result } = renderHook(() => useRamps(), { wrapper });
 
     result.current.openBuyCryptoInPdapp();
-    expect(openTabSpy).toHaveBeenCalledWith({
-      url: mockBuyURI,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_ROUTE);
   });
 
-  it('should use the correct metamask entry param when opening the buy crypto URL', () => {
-    const metaMaskEntry = 'ext_buy_banner_tokens';
-    const mockChainId = '1';
-    (isEvmChainId as jest.Mock).mockReturnValueOnce(true);
-
-    mockStoreState = {
-      ...mockStoreState,
-      metamask: {
-        ...mockStoreState.metamask,
-        ...mockNetworkState({ chainId: '0x1' }),
-      },
-    };
-
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
-    const openTabSpy = jest.spyOn(global.platform, 'openTab');
+  it('navigates to the ramps route regardless of the metamask entry', () => {
+    mockNavigate.mockClear();
 
     const { result } = renderHook(
       () => useRamps(RampsMetaMaskEntry.TokensBanner),
@@ -107,9 +86,7 @@ describe('useRamps', () => {
     );
 
     result.current.openBuyCryptoInPdapp();
-    expect(openTabSpy).toHaveBeenCalledWith({
-      url: mockBuyURI,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_ROUTE);
   });
 
   it('should return the default URL when an invalid URL is provided', () => {

@@ -77,9 +77,11 @@ import {
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
   RAMPS_ROUTE,
+  RAMPS_BUILD_QUOTE_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
-import RampsPage from '../ramps/ramps-page';
+import TokenPage from '../ramps/token-page';
+import BuildQuotePage from '../ramps/build-quote-page';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -541,7 +543,11 @@ export const routeConfig = [
           },
           {
             path: RAMPS_ROUTE,
-            element: <RampsPage />,
+            element: <TokenPage />,
+          },
+          {
+            path: RAMPS_BUILD_QUOTE_ROUTE,
+            element: <BuildQuotePage />,
           },
           {
             path: SHIELD_PLAN_ROUTE,
