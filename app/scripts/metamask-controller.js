@@ -234,6 +234,7 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
+import { checkGmxHasReferralCode } from './lib/defi-referral-onchain-check';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -5846,6 +5847,23 @@ export default class MetamaskController extends EventEmitter {
     const declinedAccounts = Object.keys(referralStatusByAccount).filter(
       (account) => referralStatusByAccount[account] === ReferralStatus.Declined,
     );
+
+    if (
+      partner.id === DefiReferralPartner.GMX &&
+      permittedAccountStatus === undefined
+    ) {
+      const hasExistingCode = await checkGmxHasReferralCode(
+        this.networkController,
+        activePermittedAccount,
+      );
+      if (hasExistingCode) {
+        this.preferencesController.addReferralPassedAccount(
+          partner.id,
+          activePermittedAccount,
+        );
+        return;
+      }
+    }
 
     // We should show approval screen if the account does not have a status
     const shouldShowApproval = permittedAccountStatus === undefined;
