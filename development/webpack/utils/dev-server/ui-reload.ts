@@ -17,19 +17,19 @@ export function setupUiReload(
   devServer: WebpackDevServer,
   compilers: Compiler[],
 ): void {
+  const reactRefreshRuntimeClientEntry =
+    require.resolve('./react-refresh-runtime-client');
+  const uiClientEntry = getClientEntry(devServer, 'ui-reload-client.ts');
+
   for (const compiler of compilers) {
     new compiler.webpack.EntryPlugin(
       compiler.context,
-      require.resolve('./react-refresh-runtime-client'),
+      reactRefreshRuntimeClientEntry,
       {},
     ).apply(compiler);
-    new compiler.webpack.EntryPlugin(
-      compiler.context,
-      getClientEntry(devServer, 'ui-reload-client.ts'),
-      {
-        name: UI_RELOAD_CLIENT_ENTRY_NAME,
-        chunkLoading: false,
-      },
-    ).apply(compiler);
+    new compiler.webpack.EntryPlugin(compiler.context, uiClientEntry, {
+      name: UI_RELOAD_CLIENT_ENTRY_NAME,
+      chunkLoading: false,
+    }).apply(compiler);
   }
 }
