@@ -1499,7 +1499,7 @@ export const TokenManagementPage = () => {
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
           startIconProps={{ size: IconSize.Md }}
-          className={`rounded-lg border border-muted bg-default px-2 ${
+          className={`rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed ${
             isSingleNetworkFilterSelected
               ? 'text-primary-default'
               : 'text-default'
