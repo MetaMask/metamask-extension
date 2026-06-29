@@ -105,6 +105,7 @@
     "assetExchangeRates": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
+    "inputPrimaryDenomination": "string",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
     "quoteRequest": "object",
