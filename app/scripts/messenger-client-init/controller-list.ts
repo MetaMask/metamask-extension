@@ -87,6 +87,10 @@ import {
 import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
+import {
+  ConfigRegistryApiService,
+  ConfigRegistryController,
+} from '@metamask/config-registry-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
@@ -231,6 +235,8 @@ export type MessengerClient =
   | ClientController
   | ComplianceController
   | ComplianceService
+  | ConfigRegistryController
+  | ConfigRegistryApiService
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
@@ -258,6 +264,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   ClaimsController['state'] &
   ClientController['state'] &
   ComplianceController['state'] &
+  ConfigRegistryController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &

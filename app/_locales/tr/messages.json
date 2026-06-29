@@ -1581,9 +1581,6 @@
   "back": {
     "message": "Geri"
   },
-  "backToHome": {
-    "message": "Ana sayfaya geri dön"
-  },
   "backUpIncomplete": {
     "message": "Yedekleme tamamlanmadı"
   },
@@ -2418,9 +2415,6 @@
   "closeSlide": {
     "message": "Kapat: $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "Dilediğiniz zaman bu pencereyi kapatabilirsiniz."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9290,24 +9284,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Akıllı Swap'lar geçici olarak kullanılamıyor."
   },
-  "smartTransactionCancelled": {
-    "message": "İşleminiz iptal edildi"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "İşleminiz tamamlanamadığından gereksiz gaz ücreti ödemenizi önlemek amacıyla iptal edildi."
-  },
-  "smartTransactionError": {
-    "message": "İşleminiz başarısız oldu"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Ani piyasa değişimleri başarısızlıklara sebep olabilir. Sorun devam ederse MetaMask müşteri destek bölümüne ulaşın."
-  },
-  "smartTransactionPending": {
-    "message": "İşleminiz gönderildi"
-  },
-  "smartTransactionSuccess": {
-    "message": "İşleminiz tamamlandı"
-  },
   "smartTransactions": {
     "message": "Akıllı İşlemler"
   },
@@ -10763,9 +10739,6 @@
   "view": {
     "message": "Görüntüle"
   },
-  "viewActivity": {
-    "message": "Aktiviteyi görüntüle"
-  },
   "viewAddressOnExplorer": {
     "message": "$1 üzerinde görüntüle",
     "description": "$1 is the block explorer name"
@@ -10792,9 +10765,6 @@
   },
   "viewTokenDetails": {
     "message": "Token bilgilerini görüntüle"
-  },
-  "viewTransaction": {
-    "message": "İşlemi görüntüle"
   },
   "viewinExplorer": {
     "message": "Explorer'da $1 görüntüle",

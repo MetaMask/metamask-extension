@@ -1581,9 +1581,6 @@
   "back": {
     "message": "뒤로"
   },
-  "backToHome": {
-    "message": "홈으로 돌아가기"
-  },
   "backUpIncomplete": {
     "message": "백업 미완료"
   },
@@ -2418,9 +2415,6 @@
   "closeSlide": {
     "message": "$1 닫기",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "언제든 이 창을 닫을 수 있습니다."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9290,24 +9284,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "스마트 스왑을 잠시 사용할 수 없습니다."
   },
-  "smartTransactionCancelled": {
-    "message": "트랜잭션이 취소되었습니다"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "트랜잭션이 완료되지 않았습니다. 가스비 지출이 없도록 트랜잭션을 취소했습니다."
-  },
-  "smartTransactionError": {
-    "message": "트랜잭션 실패"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 MetaMask 고객 지원으로 문의하세요."
-  },
-  "smartTransactionPending": {
-    "message": "트랜잭션이 제출되었습니다"
-  },
-  "smartTransactionSuccess": {
-    "message": "트랜잭션이 완료되었습니다"
-  },
   "smartTransactions": {
     "message": "스마트 트랜잭션"
   },
@@ -10763,9 +10739,6 @@
   "view": {
     "message": "보기"
   },
-  "viewActivity": {
-    "message": "활동 보기"
-  },
   "viewAddressOnExplorer": {
     "message": "$1에서 보기",
     "description": "$1 is the block explorer name"
@@ -10792,9 +10765,6 @@
   },
   "viewTokenDetails": {
     "message": "토큰 세부 정보 보기"
-  },
-  "viewTransaction": {
-    "message": "트랜잭션 보기"
   },
   "viewinExplorer": {
     "message": "Explorer에서 $1 보기",

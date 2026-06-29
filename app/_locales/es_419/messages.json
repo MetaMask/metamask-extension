@@ -1562,9 +1562,6 @@
   "back": {
     "message": "Volver"
   },
-  "backToHome": {
-    "message": "Volver a inicio"
-  },
   "backUpIncomplete": {
     "message": "Copia de seguridad incompleta"
   },
@@ -2378,9 +2375,6 @@
   "closeSlide": {
     "message": "Cerrar $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "Puede cerrar esta ventana en cualquier momento."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9171,24 +9165,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Los intercambios inteligentes no están disponibles temporalmente."
   },
-  "smartTransactionCancelled": {
-    "message": "Su transacción se canceló"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Su transacción no se pudo completar, por lo que se canceló para evitarle pagar tarifas de gas innecesarias."
-  },
-  "smartTransactionError": {
-    "message": "Su transacción falló"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Los cambios repentinos en el mercado pueden provocar fallos. Si el problema continúa, comuníquese con el soporte al cliente de MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Se envió su transacción"
-  },
-  "smartTransactionSuccess": {
-    "message": "Su transacción está completa"
-  },
   "smartTransactions": {
     "message": "Transacciones inteligentes"
   },
@@ -10641,9 +10617,6 @@
   "view": {
     "message": "Ver"
   },
-  "viewActivity": {
-    "message": "Ver actividad"
-  },
   "viewAddressOnExplorer": {
     "message": "Ver en $1",
     "description": "$1 is the block explorer name"
@@ -10670,9 +10643,6 @@
   },
   "viewTokenDetails": {
     "message": "Ver detalles del token"
-  },
-  "viewTransaction": {
-    "message": "Ver transacción"
   },
   "viewinExplorer": {
     "message": "Ver $1 en el explorador",

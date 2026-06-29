@@ -1581,9 +1581,6 @@
   "back": {
     "message": "戻る"
   },
-  "backToHome": {
-    "message": "ホームに戻る"
-  },
   "backUpIncomplete": {
     "message": "バックアップ未完了"
   },
@@ -2418,9 +2415,6 @@
   "closeSlide": {
     "message": "$1を閉じる",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "このウィンドウはいつでも閉じることができます。"
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9286,24 +9280,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "smartTransactionCancelled": {
-    "message": "トランザクションがキャンセルされました"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "トランザクションを完了できなかったため、不要なガス代の支払いを避けるためにキャンセルされました。"
-  },
-  "smartTransactionError": {
-    "message": "トランザクションに失敗しました"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "突然の市場の変化により失敗する場合があります。問題が解決されない場合は、MetaMaskカスタマーサポートにお問い合わせください。"
-  },
-  "smartTransactionPending": {
-    "message": "トランザクションが送信されました"
-  },
-  "smartTransactionSuccess": {
-    "message": "トランザクションが完了しました"
-  },
   "smartTransactions": {
     "message": "スマートトランザクション"
   },
@@ -10759,9 +10735,6 @@
   "view": {
     "message": "表示"
   },
-  "viewActivity": {
-    "message": "アクティビティを表示"
-  },
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
@@ -10788,9 +10761,6 @@
   },
   "viewTokenDetails": {
     "message": "トークンの詳細を表示"
-  },
-  "viewTransaction": {
-    "message": "トランザクションを表示"
   },
   "viewinExplorer": {
     "message": "$1をエクスプローラーで表示",

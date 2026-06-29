@@ -1581,9 +1581,6 @@
   "back": {
     "message": "返回"
   },
-  "backToHome": {
-    "message": "返回首页"
-  },
   "backUpIncomplete": {
     "message": "备份未完成"
   },
@@ -2418,9 +2415,6 @@
   "closeSlide": {
     "message": "关闭 $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "您可以随时关闭此窗口。"
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9282,24 +9276,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "智能兑换暂时不可用。"
   },
-  "smartTransactionCancelled": {
-    "message": "您的交易已取消"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "您的交易无法完成，因此已取消，以避免您支付不必要的燃料费。"
-  },
-  "smartTransactionError": {
-    "message": "您的交易失败"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "市场的突然变化可导致失败。如果问题仍然存在，请联系 MetaMask 客户支持团队。"
-  },
-  "smartTransactionPending": {
-    "message": "您的交易已提交"
-  },
-  "smartTransactionSuccess": {
-    "message": "您的交易已完成"
-  },
   "smartTransactions": {
     "message": "智能交易"
   },
@@ -10755,9 +10731,6 @@
   "view": {
     "message": "查看"
   },
-  "viewActivity": {
-    "message": "查看活动"
-  },
   "viewAddressOnExplorer": {
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
@@ -10784,9 +10757,6 @@
   },
   "viewTokenDetails": {
     "message": "查看代币详情"
-  },
-  "viewTransaction": {
-    "message": "查看交易"
   },
   "viewinExplorer": {
     "message": "在 Explorer 中查看 $1",

@@ -1581,9 +1581,6 @@
   "back": {
     "message": "Quay lại"
   },
-  "backToHome": {
-    "message": "Quay lại trang chủ"
-  },
   "backUpIncomplete": {
     "message": "Sao lưu chưa hoàn tất"
   },
@@ -2418,9 +2415,6 @@
   "closeSlide": {
     "message": "Đóng $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "Bạn có thể đóng cửa sổ này bất kỳ lúc nào."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9290,24 +9284,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Hoán đổi thông minh tạm thời không khả dụng."
   },
-  "smartTransactionCancelled": {
-    "message": "Giao dịch của bạn đã bị hủy"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Giao dịch của bạn không thể hoàn tất nên nó đã bị hủy để giúp bạn không phải trả phí gas không cần thiết."
-  },
-  "smartTransactionError": {
-    "message": "Giao dịch của bạn đã thất bại"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Biến động đột ngột của thị trường có thể gây ra lỗi. Nếu sự cố tiếp diễn, hãy liên hệ với bộ phận hỗ trợ khách hàng của MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Giao dịch của bạn đã được gửi"
-  },
-  "smartTransactionSuccess": {
-    "message": "Giao dịch của bạn đã hoàn tất"
-  },
   "smartTransactions": {
     "message": "Giao dịch thông minh"
   },
@@ -10763,9 +10739,6 @@
   "view": {
     "message": "Xem"
   },
-  "viewActivity": {
-    "message": "Xem hoạt động"
-  },
   "viewAddressOnExplorer": {
     "message": "Xem trên $1",
     "description": "$1 is the block explorer name"
@@ -10792,9 +10765,6 @@
   },
   "viewTokenDetails": {
     "message": "Xem chi tiết token"
-  },
-  "viewTransaction": {
-    "message": "Xem giao dịch"
   },
   "viewinExplorer": {
     "message": "Xem $1 trong trình khám phá",
