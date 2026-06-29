@@ -91,7 +91,6 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
-import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // and provide the pure flag-evaluation logic without the IN_TEST bypass
@@ -131,27 +130,6 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         // Never-resolving promise: prevents any Snap provider from proceeding
         // past `ensureReady`, so no Snap accounts get created during init.
         () => new Promise(() => undefined),
-      );
-      controllerMessenger.registerActionHandler(
-        'SnapAccountService:getLegacySnapKeyring',
-        async () => {
-          const result = await controllerMessenger.call(
-            'KeyringController:withController',
-            async (controller) => {
-              const found = controller.keyrings.find(
-                ({ keyring }) => keyring.type === 'Snap Keyring',
-              );
-              let snapKeyring = found?.keyring;
-              if (!snapKeyring) {
-                const { keyring } =
-                  await controller.addNewKeyring('Snap Keyring');
-                snapKeyring = keyring;
-              }
-              return { snapKeyring };
-            },
-          );
-          return result.snapKeyring;
-        },
       );
       return {
         memStateKey: null,
@@ -1062,69 +1040,6 @@ describe('MetaMaskController', () => {
         const { getSmartTransactionsEnabled } =
           metamaskController.getTransactionMetricsRequest();
         expect(getSmartTransactionsEnabled(MAINNET_CHAIN_ID)).toBe(false);
-      });
-    });
-
-    describe('submitPassword', () => {
-      it('removes any identities that do not correspond to known accounts.', async () => {
-        const localMetaMaskController = new MetaMaskController({
-          showUserConfirmation: noop,
-          encryptor: mockEncryptor,
-          initState: {
-            ...cloneDeep(firstTimeState),
-            KeyringController: {
-              keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
-              isUnlocked: true,
-            },
-          },
-          initLangCode: 'en_US',
-          platform: {
-            showTransactionNotification: () => undefined,
-            getVersion: () => 'foo',
-          },
-          browser: browserPolyfillMock,
-          getRequestAccountTabIds: () => ({}),
-          getOpenMetamaskTabsIds: () => ({}),
-          notificationManager: {
-            markAsAutomaticallyClosed: jest.fn(),
-          },
-          infuraProjectId: 'foo',
-          isFirstMetaMaskControllerSetup: true,
-          cronjobControllerStorageManager:
-            createMockCronjobControllerStorageManager(),
-          controllerMessenger: new Messenger({
-            namespace: MOCK_ANY_NAMESPACE,
-          }),
-        });
-
-        const accountsControllerSpy = jest.spyOn(
-          localMetaMaskController.accountsController,
-          'updateAccounts',
-        );
-
-        const password = 'password';
-        await localMetaMaskController.createNewVaultAndKeychain(password);
-
-        await localMetaMaskController.submitPassword(password);
-
-        const addresses =
-          await localMetaMaskController.keyringController.getAccounts();
-
-        const internalAccounts =
-          localMetaMaskController.accountsController.listAccounts();
-
-        internalAccounts.forEach((account) => {
-          expect(addresses).toContain(account.address);
-        });
-
-        addresses.forEach((address) => {
-          expect(
-            internalAccounts.find((account) => account.address === address),
-          ).toBeDefined();
-        });
-
-        // + 1 in `createNewVaultAndKeychain` (onboarding)
-        expect(accountsControllerSpy).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -2297,8 +2212,8 @@ describe('MetaMaskController', () => {
           );
 
           expect(
-            // 0: HD keyring, 1: Snap keyring, 2: Trezor keyring
-            metamaskController.keyringController.state.keyrings[2].type,
+            // 0: HD keyring, 1: Trezor keyring (v2 Snap keyrings are lazy)
+            metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(TrezorKeyring.type);
           expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
         });
@@ -2310,8 +2225,8 @@ describe('MetaMaskController', () => {
           );
 
           expect(
-            // 0: HD keyring, 1: Snap keyring, 2: Ledger keyring
-            metamaskController.keyringController.state.keyrings[2].type,
+            // 0: HD keyring, 1: Ledger keyring (v2 Snap keyrings are lazy)
+            metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(LedgerKeyring.type);
           expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
         });
@@ -2588,8 +2503,8 @@ describe('MetaMaskController', () => {
                 );
 
                 expect(
-                  // 0: HD keyring, 1: Snap keyring, 2: Ledger/Trezor keyring
-                  metamaskController.keyringController.state.keyrings[2]
+                  // 0: HD keyring, 1: Ledger/Trezor keyring (v2 Snap keyrings are lazy)
+                  metamaskController.keyringController.state.keyrings[1]
                     .accounts,
                 ).toStrictEqual([
                   KNOWN_PUBLIC_KEY_ADDRESSES[
@@ -4332,26 +4247,29 @@ describe('MetaMaskController', () => {
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
-        await metamaskController.submitPassword(password); // Force-unlock to trigger Snap keyring creation.
+        await metamaskController.legacyBackgroundApiService.submitPasswordOrEncryptionKey(
+          { password },
+        ); // Force-unlock to trigger Snap keyring creation.
 
         const previousKeyrings = cloneDeep(
           metamaskController.keyringController.state.keyrings,
         );
 
-        // 0: Primary HD keyring, 1: Snap keyring
-        expect(previousKeyrings).toHaveLength(2);
+        // 0: Primary HD keyring
+        expect(previousKeyrings).toHaveLength(1);
 
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
 
-        // 0: Primary HD keyring, 1: Snap keyring, 2: Newly imported HD keyring
+        // 0: Primary HD keyring, 1: Newly imported HD keyring
+        // (v2 Snap keyrings are created lazily per-snap, not eagerly here)
         expect(
           metamaskController.keyringController.state.keyrings,
-        ).toHaveLength(3);
+        ).toHaveLength(2);
         const newlyAddedKeyringId =
-          metamaskController.keyringController.state.keyrings[2].metadata.id;
+          metamaskController.keyringController.state.keyrings[1].metadata.id;
         const newSRP = Buffer.from(
           await metamaskController.legacyBackgroundApiService.getSeedPhrase(
             password,
@@ -4362,9 +4280,6 @@ describe('MetaMaskController', () => {
         expect(
           currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
         ).toHaveLength(2);
-        expect(
-          currentKeyrings.filter((kr) => kr.type === 'Snap Keyring'),
-        ).toHaveLength(1);
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
         expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
@@ -6049,11 +5964,6 @@ describe('MetaMaskController', () => {
         controllerMessenger: new Messenger({
           namespace: MOCK_ANY_NAMESPACE,
         }),
-      });
-
-      // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({
-        setSelectedAccounts: jest.fn(),
       });
 
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED);

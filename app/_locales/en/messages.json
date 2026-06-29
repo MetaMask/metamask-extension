@@ -1103,6 +1103,9 @@
   "addCustomToken": {
     "message": "Add a custom token"
   },
+  "addDevice": {
+    "message": "Sync with mobile"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1185,6 +1188,59 @@
   },
   "addWallet": {
     "message": "Add wallet"
+  },
+  "add_device_success_desc_imported_plural": {
+    "message": "$1 imported accounts were synced to your phone.",
+    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
+  },
+  "add_device_success_desc_imported_singular": {
+    "message": "1 imported account was synced to your phone.",
+    "description": "Used when a single imported account was synced"
+  },
+  "add_device_success_desc_wallet_plural": {
+    "message": "$1 wallets were synced to your phone.",
+    "description": "$1 is the number of wallets. Used when only wallets were synced"
+  },
+  "add_device_success_desc_wallet_plural_imported_plural": {
+    "message": "$1 wallets and $2 imported accounts were synced to your phone.",
+    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
+  },
+  "add_device_success_desc_wallet_plural_imported_singular": {
+    "message": "$1 wallets and 1 imported account were synced to your phone.",
+    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
+  },
+  "add_device_success_desc_wallet_singular": {
+    "message": "1 wallet was synced to your phone.",
+    "description": "Used when a single wallet was synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_plural": {
+    "message": "1 wallet and $1 imported accounts were synced to your phone.",
+    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_singular": {
+    "message": "1 wallet and 1 imported account were synced to your phone.",
+    "description": "Used when a single wallet and a single imported account were synced"
+  },
+  "add_device_success_title": {
+    "message": "Device paired"
+  },
+  "add_device_syncing_desc": {
+    "message": "Sending your selected accounts to your phone."
+  },
+  "add_device_syncing_title": {
+    "message": "Importing accounts"
+  },
+  "add_device_validating_desc": {
+    "message": "Establishing a secure, encrypted connection with your phone."
+  },
+  "add_device_validating_title": {
+    "message": "Pairing devices"
+  },
+  "add_wallets": {
+    "message": "Choose what to sync"
+  },
+  "add_wallets_desc": {
+    "message": "Pick the wallets and accounts to import to your phone. You can change this later."
   },
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
@@ -3673,6 +3729,28 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter MetaMask password"
   },
+  "enter_verification_code": {
+    "message": "Enter verification code"
+  },
+  "enter_verification_code_desc": {
+    "message": "For security, enter the code shown in the MetaMask app on your device."
+  },
+  "enter_verification_code_error": {
+    "message": "Incorrect code. Please try again."
+  },
+  "enter_verification_code_expired": {
+    "message": "Verification code expired"
+  },
+  "enter_verification_code_expires_in": {
+    "message": "Expires in $1s",
+    "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_your_password": {
+    "message": "Enter your password"
+  },
+  "enter_your_password_desc": {
+    "message": "For account security, enter your password to view the QR code."
+  },
   "enteredMalicious": {
     "message": "The Address You Entered"
   },
@@ -3967,6 +4045,12 @@
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
   },
+  "gasSponsorshipModalTitle": {
+    "message": "Network fee"
+  },
+  "gasSponsorshipOptOutTooltip": {
+    "message": "MetaMask covers the network fee for this transaction. This includes a one-time smart account activation."
+  },
   "gasSponsorshipReserveBalanceWarning": {
     "message": "This specific network requires maintaining a reserve of $1 $2 in your account.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
@@ -4060,6 +4144,9 @@
     "message": "Max allowance",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsMetaMaskFacilitator": {
+    "message": "MetaMask x402 facilitator"
+  },
   "gatorPermissionsPermit2ApproveRevocation": {
     "message": "Permit2 approve(token, spender, 0, 0)",
     "description": "Token approval revocation method for Permit2 approve reset"
@@ -4123,6 +4210,9 @@
   },
   "generalDescription": {
     "message": "Sync settings across devices, select network preferences, and track token data"
+  },
+  "generateNewQrCode": {
+    "message": "Generate new QR code"
   },
   "genericExplorerView": {
     "message": "View account on $1"
@@ -4493,6 +4583,9 @@
   },
   "includes": {
     "message": "Includes"
+  },
+  "includesSmartAccountActivation": {
+    "message": "Includes smart account activation"
   },
   "includesXTransactions": {
     "message": "Includes $1 transactions"
@@ -6853,6 +6946,9 @@
   "perpsCrossMarginNotSupportedTitle": {
     "message": "Cross margin not supported"
   },
+  "perpsCurrentPrice": {
+    "message": "Current price"
+  },
   "perpsDateToday": {
     "message": "Today"
   },
@@ -7886,6 +7982,16 @@
     "message": "Camera access needed",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrCodeExpired": {
+    "message": "QR code expired"
+  },
+  "qrCodeExpiresIn": {
+    "message": "Expires in $1s",
+    "description": "$1 is the number of seconds remaining before the QR code expires"
+  },
+  "qrCodeScanError": {
+    "message": "Something went wrong scanning the QR code. Generate a new one to try again."
+  },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -7999,6 +8105,9 @@
   },
   "redeemer": {
     "message": "Redeemer"
+  },
+  "redeemers": {
+    "message": "Redeemers"
   },
   "redeposit": {
     "message": "Redeposit"
@@ -8371,6 +8480,9 @@
   },
   "scanQrCode": {
     "message": "Scan QR code"
+  },
+  "scan_qr_code_desc": {
+    "message": "Scan this with the MetaMask app on the device you want to add."
   },
   "scrollDown": {
     "message": "Scroll down"
@@ -9880,6 +9992,9 @@
   },
   "standardAccountLabel": {
     "message": "Standard account"
+  },
+  "start_with_new_qr_code": {
+    "message": "Start with a new QR code"
   },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"

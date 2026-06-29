@@ -8,6 +8,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
+  getMultichainRoutingServiceInitMessenger,
   getMultichainRoutingServiceMessenger,
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
@@ -526,7 +527,7 @@ export const MESSENGER_FACTORIES = {
   },
   MultichainRoutingService: {
     getMessenger: getMultichainRoutingServiceMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainRoutingServiceInitMessenger,
   },
   NameController: {
     getMessenger: getNameControllerMessenger,
