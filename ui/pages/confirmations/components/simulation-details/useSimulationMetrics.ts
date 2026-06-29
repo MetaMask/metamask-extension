@@ -4,7 +4,7 @@ import {
   SimulationData,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import {
@@ -13,7 +13,7 @@ import {
   useDisplayNames,
 } from '../../../../hooks/useDisplayName';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -153,7 +153,7 @@ function useIncompleteAssetEvent(
     [address: string]: UseDisplayNameResponse | undefined;
   },
 ) {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [processedAssets, setProcessedAssets] = useState<string[]>([]);
 
   for (const change of balanceChanges) {
@@ -172,20 +172,23 @@ function useIncompleteAssetEvent(
       continue;
     }
 
-    trackEvent({
-      event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
-      category: MetaMetricsEventCategory.Transactions,
-      properties: {
-        asset_address: change.asset.address,
-        asset_petname: getPetnameType(change, displayName),
-        asset_symbol: displayName?.contractDisplayName,
-        asset_type: getAssetType(change.asset.standard),
-        fiat_conversion_available: change.fiatAmount
-          ? FiatType.Available
-          : FiatType.NotAvailable,
-        location: 'confirmation',
-      },
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
+      )
+        .addCategory(MetaMetricsEventCategory.Transactions)
+        .addProperties({
+          asset_address: change.asset.address,
+          asset_petname: getPetnameType(change, displayName),
+          asset_symbol: displayName?.contractDisplayName,
+          asset_type: getAssetType(change.asset.standard),
+          fiat_conversion_available: change.fiatAmount
+            ? FiatType.Available
+            : FiatType.NotAvailable,
+          location: 'confirmation',
+        })
+        .build(),
+    );
 
     setProcessedAssets([...processedAssets, assetAddress]);
   }
