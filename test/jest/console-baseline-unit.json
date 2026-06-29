@@ -2192,9 +2192,6 @@
     "ui/hooks/useStaticTokensPolling.test.ts": {
       "Deprecation warnings": 1
     },
-    "ui/hooks/useSuppressConfirmNavigate.test.ts": {
-      "Deprecation warnings": 1
-    },
     "ui/hooks/useTheme.test.ts": {
       "Deprecation warnings": 1
     },
@@ -4186,12 +4183,6 @@
       "Deprecation warnings": 1,
       "MetaMask: Background connection not initialized": 3,
       "React: Act warnings (component updates not wrapped)": 13
-    },
-    "ui/pages/smart-transactions/smart-transaction-status-page/smart-transaction-status-animation.test.tsx": {
-      "Deprecation warnings": 1
-    },
-    "ui/pages/smart-transactions/smart-transaction-status-page/smart-transactions-status-page.test.tsx": {
-      "Deprecation warnings": 1
     },
     "ui/pages/snap-account-redirect/create-snap-redirect.test.tsx": {
       "Deprecation warnings": 1

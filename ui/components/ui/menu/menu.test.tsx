@@ -64,12 +64,4 @@ describe('Menu Component', () => {
     );
     expect(getByTestId('test-menu')).toBeInTheDocument();
   });
-
-  it('renders menu container with className as data-testid', () => {
-    render(<Menu {...defaultProps} className="my-menu-class" />);
-    const menuContainer = document.body.querySelector(
-      '[data-testid="my-menu-class"]',
-    );
-    expect(menuContainer).toBeInTheDocument();
-  });
 });

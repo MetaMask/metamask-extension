@@ -7,7 +7,6 @@ import {
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
-import { getExtensionSkipTransactionStatusPage } from '../../../shared/lib/selectors/smart-transactions';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -54,7 +53,6 @@ export default function useSubmitBridgeTransaction() {
     useBridgeNavigation();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
-  const toastEnabled = useSelector(getExtensionSkipTransactionStatusPage);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
@@ -150,8 +148,7 @@ export default function useSubmitBridgeTransaction() {
       setIsSubmitting(false);
     }
 
-    const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
-    navigate(to, {
+    navigate(DEFAULT_ROUTE, {
       state: { stayOnHomePage: true },
       replace: true,
     });

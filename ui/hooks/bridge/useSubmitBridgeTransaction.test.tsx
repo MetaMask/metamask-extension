@@ -224,7 +224,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -277,7 +277,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -328,7 +328,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             },
           ],
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -407,15 +407,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
@@ -450,15 +447,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
       expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
@@ -504,16 +498,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
         { state: {} },
       );
-      expect(mockUseNavigate).toHaveBeenNthCalledWith(
-        2,
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(2, DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
