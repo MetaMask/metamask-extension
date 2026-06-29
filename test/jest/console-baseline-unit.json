@@ -1016,6 +1016,12 @@
     "ui/pages/settings/about-tab/about-info.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
+    "ui/pages/settings/add-device-tab/add-device-settings.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/add-device-tab/components/qr-code-scan.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/pages/settings/assets-tab/assets-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },

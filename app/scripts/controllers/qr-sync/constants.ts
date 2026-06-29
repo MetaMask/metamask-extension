@@ -1,6 +1,7 @@
 export const QR_SYNC_CONTROLLER_NAME = 'QrSyncController' as const;
 
-export const RELAY_URL = 'wss://mm-sdk-relay.api.cx.metamask.io/connection/websocket';
+export const RELAY_URL =
+  'wss://mm-sdk-relay.api.cx.metamask.io/connection/websocket';
 
 export enum QrSyncMessageVersion {
   V1 = '1.0.0',

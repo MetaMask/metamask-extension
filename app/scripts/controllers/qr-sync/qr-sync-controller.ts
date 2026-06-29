@@ -20,7 +20,12 @@ import {
   type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
 import { convertEnglishWordlistIndicesToCodepoints } from '../../lib/util';
-import { QR_SYNC_CONTROLLER_NAME, QrSyncActionTypes, QrSyncErrorMessages, QrSyncMessageVersion } from './constants';
+import {
+  QR_SYNC_CONTROLLER_NAME,
+  QrSyncActionTypes,
+  QrSyncErrorMessages,
+  QrSyncMessageVersion,
+} from './constants';
 import type { KeyManager } from './key-manager';
 import {
   QrSyncMessage,
@@ -31,7 +36,11 @@ import {
   type QrSyncError,
   type QrSyncOffer,
 } from './types';
-import { controllerMetadata, getDefaultQrSyncControllerState, MESSENGER_EXPOSED_METHODS } from './metadata';
+import {
+  controllerMetadata,
+  getDefaultQrSyncControllerState,
+  MESSENGER_EXPOSED_METHODS,
+} from './metadata';
 import { InMemoryKvStore } from './kv-store';
 
 export class QrSyncController extends BaseController<
@@ -157,7 +166,9 @@ export class QrSyncController extends BaseController<
         state.error = {
           code: 'OTP_INVALID',
           message:
-            error instanceof Error ? error.message : QrSyncErrorMessages.OTP_VALIDATION_FAILED,
+            error instanceof Error
+              ? error.message
+              : QrSyncErrorMessages.OTP_VALIDATION_FAILED,
         };
         state.updatedAt = Date.now();
       });
@@ -196,8 +207,8 @@ export class QrSyncController extends BaseController<
     );
 
     const availableEntropyIds = new Set(
-      validatedEntropyIds.filter(
-        (entropyId): entropyId is string => Boolean(entropyId),
+      validatedEntropyIds.filter((entropyId): entropyId is string =>
+        Boolean(entropyId),
       ),
     );
     // Across the app, the first HD keyring is treated as the primary SRP.
@@ -221,7 +232,8 @@ export class QrSyncController extends BaseController<
             { password },
             entropyId,
           );
-          const encodedMnemonic = convertEnglishWordlistIndicesToCodepoints(seedPhrase);
+          const encodedMnemonic =
+            convertEnglishWordlistIndicesToCodepoints(seedPhrase);
           const b64EncodedMnemonic = bytesToBase64(encodedMnemonic);
 
           return {
@@ -282,7 +294,9 @@ export class QrSyncController extends BaseController<
       this.#setError({
         code: 'CHANNEL_INIT_FAILED',
         message:
-          error instanceof Error ? error.message : QrSyncErrorMessages.SYNC_FAILED_TO_INITIALIZE,
+          error instanceof Error
+            ? error.message
+            : QrSyncErrorMessages.SYNC_FAILED_TO_INITIALIZE,
       });
       throw error;
     } finally {
@@ -874,7 +888,10 @@ export class QrSyncController extends BaseController<
       removableClient.removeListener?.bind(removableClient);
 
     if (removeHandler) {
-      removeHandler('session_request', this.#clientEventHandlers.sessionRequest);
+      removeHandler(
+        'session_request',
+        this.#clientEventHandlers.sessionRequest,
+      );
       removeHandler('message', this.#clientEventHandlers.message);
       removeHandler('otp_required', this.#clientEventHandlers.otpRequired);
       removeHandler('connected', this.#clientEventHandlers.connected);

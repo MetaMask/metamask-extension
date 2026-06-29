@@ -20,7 +20,10 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 
-import { QR_SYNC_PHASES, MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_PHASES,
+  MWP_SESSION_REQUEST_EXPIRY_SECONDS,
+} from '../../../../shared/constants/qr-sync';
 import { QrSyncActionTypes, QrSyncErrorMessages } from './constants';
 import { getDefaultQrSyncControllerState } from './metadata';
 import { QrSyncController } from './qr-sync-controller';
@@ -195,7 +198,9 @@ function mockEmitSessionRequest(
 }
 
 function mockEmitOtpRequired(
-  submit: (otp: string) => Promise<void> = jest.fn().mockResolvedValue(undefined),
+  submit: (otp: string) => Promise<void> = jest
+    .fn()
+    .mockResolvedValue(undefined),
   cancel: () => void = jest.fn(),
   deadline = Date.now() + 60_000,
 ): void {
@@ -425,7 +430,9 @@ describe('QrSyncController', () => {
         version: '1.0.0',
       });
       expect(controller.state.phase).toBe(QR_SYNC_PHASES.CANCELLED);
-      expect(controller.state.lastActionType).toBe(QrSyncActionTypes.SYNC_CANCEL);
+      expect(controller.state.lastActionType).toBe(
+        QrSyncActionTypes.SYNC_CANCEL,
+      );
       expect(controller.state.sessionId).toBe(TEST_SESSION_ID);
     });
 
@@ -661,7 +668,9 @@ describe('QrSyncController', () => {
 
       expect(controller.state.phase).toBe(QR_SYNC_PHASES.CANCELLED);
       expect(controller.state.connectionStatus).toBe('disconnected');
-      expect(controller.state.lastActionType).toBe(QrSyncActionTypes.SYNC_CANCEL);
+      expect(controller.state.lastActionType).toBe(
+        QrSyncActionTypes.SYNC_CANCEL,
+      );
       expect(controller.state.error).toStrictEqual({
         code: 'SYNC_REJECTED',
         message: QrSyncErrorMessages.SYNC_SESSION_CANCELLED_BY_PEER,
