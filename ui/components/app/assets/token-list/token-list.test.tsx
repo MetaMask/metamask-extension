@@ -117,9 +117,6 @@ jest.mock('../../../../selectors/assets', () => ({
   selectAccountGroupBalanceForEmptyState: jest.fn(),
 }));
 
-// No hooks from ../hooks are mocked here; prefer failing tests if
-// deleted exports are still referenced so stale imports are removed.
-
 const CHAIN_ID = '0x1' as Hex;
 const LINEA_CHAIN_ID = '0xe708' as Hex;
 const ACCOUNT_ID = 'account-1';
@@ -222,7 +219,6 @@ describe('TokenList', () => {
         typeof getSelectedMultichainNetworkConfiguration
       >);
     jest.mocked(selectAccountGroupBalanceForEmptyState).mockReturnValue(true);
-    // No Stellar display overrides hook to mock after refactor.
   });
 
   it('collapses non-native tokens with fiat balance below one dollar', () => {
