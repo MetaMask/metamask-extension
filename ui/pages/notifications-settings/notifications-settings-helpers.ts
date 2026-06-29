@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 
+import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
 import type { AccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree.types';
 
 export type NotificationAccount = {
@@ -55,5 +58,14 @@ export function getNotificationWalletGroups(
       return walletGroups;
     },
     [],
+  );
+}
+
+export function useNotificationAccountGroups(): NotificationWalletGroup[] {
+  const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
+
+  return useMemo(
+    () => getNotificationWalletGroups(accountGroups),
+    [accountGroups],
   );
 }

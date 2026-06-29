@@ -970,6 +970,9 @@
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 3
     },
+    "ui/pages/notifications-settings/notifications-settings.test.tsx": {
+      "Reselect: Input stability warnings": 2
+    },
     "ui/pages/notifications/notification-components/snap/snap-footer-button.test.tsx": {
       "error: Warning: React does not recognize": 1
     },
