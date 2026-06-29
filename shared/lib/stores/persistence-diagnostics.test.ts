@@ -2,6 +2,7 @@ import 'fake-indexeddb/auto';
 
 import {
   SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_DB_NAME,
+  SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE,
   SplitStatePersistenceDiagnostics,
   getSplitStateDiagnosticError,
   getSplitStateSizeBucket,
@@ -21,6 +22,16 @@ async function deleteDiagnosticsDatabase(): Promise<void> {
 
 describe('SplitStatePersistenceDiagnostics', () => {
   let diagnostics: SplitStatePersistenceDiagnostics;
+
+  function recordUnsampledPersistedBatches(count: number) {
+    for (let index = 0; index < count; index++) {
+      diagnostics.recordPersistedBatch(
+        new Map<string, unknown>([
+          ['UnsampledController', { value: index }],
+        ]),
+      );
+    }
+  }
 
   beforeEach(async () => {
     await deleteDiagnosticsDatabase();
@@ -56,15 +67,11 @@ describe('SplitStatePersistenceDiagnostics', () => {
           key: 'AccountTreeController',
           queuedUpdates: 1,
           persistedWrites: 1,
-          lastSizeBucket: 'lt_4kb',
-          maxSizeBucket: 'lt_4kb',
         },
         {
           key: 'KeyringController',
           queuedUpdates: 1,
           persistedWrites: 1,
-          lastSizeBucket: 'lt_4kb',
-          maxSizeBucket: 'lt_4kb',
         },
       ],
       recentWideBatches: [],
@@ -73,7 +80,51 @@ describe('SplitStatePersistenceDiagnostics', () => {
     expect(JSON.stringify(snapshot)).not.toContain('0x123');
   });
 
+  it('samples persisted value sizes once every 20 batches', () => {
+    const stringifySpy = jest.spyOn(JSON, 'stringify');
+
+    try {
+      recordUnsampledPersistedBatches(
+        SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE - 1,
+      );
+
+      expect(stringifySpy).not.toHaveBeenCalled();
+
+      diagnostics.recordPersistedBatch(
+        new Map<string, unknown>([
+          ['KeyringController', { vault: 'secret-vault' }],
+          ['PreferencesController', { preferences: true }],
+        ]),
+      );
+      const snapshot = diagnostics.getSnapshot(undefined, 1000);
+
+      expect(stringifySpy).toHaveBeenCalledTimes(2);
+      expect(snapshot).toMatchObject({
+        totalPersistedBatches:
+          SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE,
+        topWrittenKeys: expect.arrayContaining([
+          expect.objectContaining({
+            key: 'KeyringController',
+            lastSizeBucket: 'lt_4kb',
+            maxSizeBucket: 'lt_4kb',
+          }),
+          expect.objectContaining({
+            key: 'PreferencesController',
+            lastSizeBucket: 'lt_4kb',
+            maxSizeBucket: 'lt_4kb',
+          }),
+        ]),
+      });
+    } finally {
+      stringifySpy.mockRestore();
+    }
+  });
+
   it('records recent wide batches with largest key size buckets', () => {
+    recordUnsampledPersistedBatches(
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE - 1,
+    );
+
     diagnostics.recordPersistedBatch(
       new Map<string, unknown>([
         ['SmallController', { value: true }],

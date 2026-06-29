@@ -13,6 +13,7 @@ export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_INTERVAL_MS =
   5 * 60 * 1000;
 export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_INTERVAL_MS =
   7 * 24 * 60 * 60 * 1000;
+export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE = 20;
 
 const TOP_WRITTEN_KEYS_LIMIT = 10;
 const RECENT_WIDE_BATCHES_LIMIT = 20;
@@ -259,36 +260,52 @@ export class SplitStatePersistenceDiagnostics {
   }
 
   recordPersistedBatch(pairs: Map<string, unknown>): void {
-    const measuredEntries = [...pairs.entries()]
-      .filter(([key]) => isSplitStateDataKey(key))
-      .map(([key, value]) => ({
-        key,
-        ...measureValue(value),
-      }));
+    const persistedEntries = [...pairs.entries()].filter(([key]) =>
+      isSplitStateDataKey(key),
+    );
 
-    if (measuredEntries.length === 0) {
+    if (persistedEntries.length === 0) {
       return;
     }
 
     this.#totalPersistedBatches += 1;
+    const shouldSampleSizes =
+      this.#totalPersistedBatches %
+        SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE ===
+      0;
+    const measuredEntries: (MeasuredValue & { key: string })[] = [];
 
-    for (const entry of measuredEntries) {
-      const stats = this.#getStats(entry.key);
+    for (const [key, value] of persistedEntries) {
+      const stats = this.#getStats(key);
       stats.persistedWrites += 1;
-      stats.lastSizeBucket = entry.sizeBucket;
+
+      if (!shouldSampleSizes) {
+        continue;
+      }
+
+      const measuredEntry = {
+        key,
+        ...measureValue(value),
+      };
+      measuredEntries.push(measuredEntry);
+
+      stats.lastSizeBucket = measuredEntry.sizeBucket;
       stats.maxSizeBucket = getLargerSizeBucket(
         stats.maxSizeBucket,
-        entry.sizeBucket,
+        measuredEntry.sizeBucket,
       );
       if (
-        entry.sizeInChars !== null &&
-        entry.sizeInChars > stats.maxSizeInChars
+        measuredEntry.sizeInChars !== null &&
+        measuredEntry.sizeInChars > stats.maxSizeInChars
       ) {
-        stats.maxSizeInChars = entry.sizeInChars;
+        stats.maxSizeInChars = measuredEntry.sizeInChars;
       }
     }
 
-    if (measuredEntries.length < WIDE_BATCH_MIN_KEY_COUNT) {
+    if (
+      !shouldSampleSizes ||
+      measuredEntries.length < WIDE_BATCH_MIN_KEY_COUNT
+    ) {
       return;
     }
 
@@ -345,13 +362,22 @@ export class SplitStatePersistenceDiagnostics {
       totalQueuedUpdates: this.#totalQueuedUpdates,
       totalPersistedBatches: this.#totalPersistedBatches,
       topWrittenKeys: [...this.#keyStats.entries()]
-        .map(([key, stats]) => ({
-          key,
-          queuedUpdates: stats.queuedUpdates,
-          persistedWrites: stats.persistedWrites,
-          lastSizeBucket: stats.lastSizeBucket,
-          maxSizeBucket: stats.maxSizeBucket,
-        }))
+        .map(([key, stats]) => {
+          const keyDiagnostics: SplitStateWrittenKeyDiagnostics = {
+            key,
+            queuedUpdates: stats.queuedUpdates,
+            persistedWrites: stats.persistedWrites,
+          };
+
+          if (stats.lastSizeBucket) {
+            keyDiagnostics.lastSizeBucket = stats.lastSizeBucket;
+          }
+          if (stats.maxSizeBucket) {
+            keyDiagnostics.maxSizeBucket = stats.maxSizeBucket;
+          }
+
+          return keyDiagnostics;
+        })
         .toSorted(
           (first, second) =>
             second.persistedWrites - first.persistedWrites ||
