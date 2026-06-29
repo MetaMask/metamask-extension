@@ -1227,6 +1227,7 @@
       "tokenNetworkFilter": {
         "0x539": "boolean"
       },
+      "gasSponsorshipOptOutByChainId": "object",
       "tokenSortConfig": {
         "key": "string",
         "order": "string",
