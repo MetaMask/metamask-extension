@@ -24,22 +24,19 @@ const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
 
 const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'AccountTreeController:selectedAccountGroupChange',
-  'ClientController:stateChanged',
+  'ClientController:stateChange',
   'NetworkEnablementController:stateChange',
-  'NetworkEnablementController:stateChanged',
   'KeyringController:lock',
   'KeyringController:unlock',
   'NetworkController:stateChange',
-  'NetworkController:networkDidChange',
   'NetworkController:networkRemoved',
   'NetworkController:networkAdded',
   'BackendWebSocketService:connectionStateChanged',
-  'AccountActivityService:balanceUpdated',
   'AccountsController:accountBalancesUpdated',
   'PermissionController:stateChange',
   'SnapController:snapInstalled',
   'PreferencesController:stateChange',
-  'AccountTreeController:stateChanged',
+  'AccountTreeController:stateChange',
   'TransactionController:transactionConfirmed',
   'TransactionController:unapprovedTransactionAdded',
 ] as const;
@@ -74,7 +71,7 @@ describe('getAssetsControllerMessenger', () => {
     );
   });
 
-  it('delegates AccountActivityService balanceUpdated event', () => {
+  it('delegates AccountsController accountBalancesUpdated event', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 
@@ -83,13 +80,13 @@ describe('getAssetsControllerMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         events: expect.arrayContaining([
-          'AccountActivityService:balanceUpdated',
+          'AccountsController:accountBalancesUpdated',
         ]),
       }),
     );
   });
 
-  it('delegates NetworkController networkDidChange event', () => {
+  it('delegates NetworkController stateChange event', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 
@@ -97,7 +94,7 @@ describe('getAssetsControllerMessenger', () => {
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        events: expect.arrayContaining(['NetworkController:networkDidChange']),
+        events: expect.arrayContaining(['NetworkController:stateChange']),
       }),
     );
   });
