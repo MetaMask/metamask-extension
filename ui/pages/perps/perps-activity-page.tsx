@@ -39,7 +39,6 @@ import type {
 } from '../../components/app/perps/types';
 import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
 import { usePerpsEventTracking } from '../../hooks/perps';
-import { usePerpsAssetNames } from '../../hooks/perps/stream';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   Dropdown,
@@ -66,7 +65,6 @@ const PerpsActivityPage = () => {
   const { transactions, isLoading, error } = usePerpsTransactionHistory({
     forceFreshOnMount: true,
   });
-  const { resolveAssetName } = usePerpsAssetNames();
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -225,7 +223,6 @@ const PerpsActivityPage = () => {
                     <TransactionCard
                       key={transaction.id}
                       transaction={transaction}
-                      assetName={resolveAssetName(transaction.symbol)}
                       onClick={
                         transaction.type === 'order'
                           ? handleTransactionClick

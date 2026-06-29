@@ -50,15 +50,17 @@ describe('OrderCard', () => {
     expect(screen.getByText('TSLA')).toBeInTheDocument();
   });
 
-  it('displays the full asset name when assetName is provided', () => {
+  it('displays the full asset name as the title while keeping the ticker next to the size', () => {
     const order = createMockOrder({ symbol: 'BTC', size: '2.5' });
     renderWithProvider(
       <OrderCard order={order} assetName="Bitcoin" />,
       mockStore,
     );
 
-    expect(screen.getByText('2.5 Bitcoin')).toBeInTheDocument();
-    expect(screen.queryByText(/^BTC$/u)).not.toBeInTheDocument();
+    // Title shows the full name
+    expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+    // Size line keeps the ticker as its unit
+    expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
   });
 
   describe('order label (formatOrderLabel)', () => {
