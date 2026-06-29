@@ -3,26 +3,26 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
-import { createMemoryRouterWrapper } from '../../../../test/lib/render-helpers-navigate';
+import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
   MOCK_LEDGER_ACCOUNT,
-} from '../../../../test/data/bridge/mock-bridge-store';
+} from '../../../test/data/bridge/mock-bridge-store';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
-} from '../../../../test/data/bridge/dummy-quotes';
+} from '../../../test/data/bridge/dummy-quotes';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
-import * as keyringSelectors from '../../../../shared/lib/selectors/keyring';
-import * as sentry from '../../../../shared/lib/sentry';
-import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
-import * as bridgeActions from '../../../ducks/bridge/actions';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
+} from '../../helpers/constants/routes';
+import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
+import * as sentry from '../../../shared/lib/sentry';
+import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
+import * as bridgeActions from '../../ducks/bridge/actions';
+import { setBackgroundConnection } from '../../store/background-connection';
+import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 const mockUseNavigate = jest.fn();
@@ -33,8 +33,8 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../../../ducks/bridge/utils', () => ({
-  ...jest.requireActual('../../../ducks/bridge/utils'),
+jest.mock('../../ducks/bridge/utils', () => ({
+  ...jest.requireActual('../../ducks/bridge/utils'),
   getTxGasEstimates: jest.fn(() => ({
     baseAndPriorityFeePerGas: '0',
     maxFeePerGas: '0x1036640',
@@ -43,10 +43,10 @@ jest.mock('../../../ducks/bridge/utils', () => ({
 }));
 
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
-jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => {
+jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
   return {
     ...jest.requireActual(
-      '../../../contexts/hardware-wallets/HardwareWalletContext',
+      '../../contexts/hardware-wallets/HardwareWalletContext',
     ),
     useHardwareWalletActions: () => ({
       ensureDeviceReady: () => mockEnsureDeviceReady(),
@@ -54,8 +54,8 @@ jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => {
   };
 });
 
-jest.mock('../../../store/actions', () => {
-  const original = jest.requireActual('../../../store/actions');
+jest.mock('../../store/actions', () => {
+  const original = jest.requireActual('../../store/actions');
   return {
     ...original,
     addTransaction: jest.fn(),
@@ -98,10 +98,8 @@ const MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID = {
   },
 };
 
-jest.mock('../../../../shared/lib/selectors/networks', () => {
-  const original = jest.requireActual(
-    '../../../../shared/lib/selectors/networks',
-  );
+jest.mock('../../../shared/lib/selectors/networks', () => {
+  const original = jest.requireActual('../../../shared/lib/selectors/networks');
   return {
     ...original,
     getSelectedNetworkClientId: () => 'mainnet',
@@ -132,8 +130,8 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
   };
 });
 
-jest.mock('../../../selectors', () => {
-  const original = jest.requireActual('../../../selectors');
+jest.mock('../../selectors', () => {
+  const original = jest.requireActual('../../selectors');
   return {
     ...original,
     getIsBridgeEnabled: () => true,
@@ -141,8 +139,8 @@ jest.mock('../../../selectors', () => {
     checkNetworkAndAccountSupports1559: () => true,
   };
 });
-jest.mock('../../../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
+jest.mock('../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/keyring'),
   getHardwareWalletType: jest.fn(() => undefined),
   isHardwareWallet: jest.fn(() => false),
 }));

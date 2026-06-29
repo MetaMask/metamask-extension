@@ -1760,6 +1760,9 @@
     "ui/hooks/bridge/useCountdownTimer.test.ts": {
       "Deprecation warnings": 1
     },
+    "ui/hooks/bridge/useEnableMissingNetwork.test.ts": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/hooks/bridge/useHasSufficientGasForQuoteForMetrics.test.ts": {
       "Deprecation warnings": 1
     },
@@ -1787,6 +1790,10 @@
     },
     "ui/hooks/bridge/useSmartSlippage.test.ts": {
       "Deprecation warnings": 1
+    },
+    "ui/hooks/bridge/useSubmitBridgeTransaction.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "error: Error: submit failed": 1
     },
     "ui/hooks/bridge/useTokenSearchResults.test.ts": {
       "Deprecation warnings": 1,
@@ -2402,10 +2409,6 @@
     "ui/pages/bridge/hooks/useDestinationAccount.test.tsx": {
       "Deprecation warnings": 1
     },
-    "ui/pages/bridge/hooks/useEnableMissingNetwork.test.ts": {
-      "Deprecation warnings": 1,
-      "MetaMask: Background connection not initialized": 1
-    },
     "ui/pages/bridge/hooks/useEnsureNetworkEnabled.test.ts": {
       "Deprecation warnings": 1
     },
@@ -2429,11 +2432,6 @@
     },
     "ui/pages/bridge/hooks/useSecurityAlerts.test.ts": {
       "Deprecation warnings": 1
-    },
-    "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
-      "Deprecation warnings": 1,
-      "Reselect: Identity function warnings": 1,
-      "error: Error: submit failed": 1
     },
     "ui/pages/bridge/index.test.tsx": {
       "Deprecation warnings": 1,
@@ -2794,7 +2792,7 @@
       "MetaMask: Background connection not initialized": 132
     },
     "ui/pages/confirmations/components/confirm/info/shared/edit-gas-icon/edit-gas-icon-button.test.tsx": {
-      "Deprecation warnings": 1
+      "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-icon/gas-fee-token-icon.test.tsx": {
       "Deprecation warnings": 1
@@ -3085,7 +3083,7 @@
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
       "Deprecation warnings": 1,
       "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 9
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/send/amount/amount.test.tsx": {
       "Deprecation warnings": 1,
@@ -3409,6 +3407,9 @@
     },
     "ui/pages/confirmations/hooks/pay/useWithdrawTokenFilter.test.tsx": {
       "Deprecation warnings": 1
+    },
+    "ui/pages/confirmations/hooks/send/alerts/useFirstTimeInteractionSendAlert.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 7
     },
     "ui/pages/confirmations/hooks/send/metrics/useAmountSelectionMetrics.test.tsx": {
       "Deprecation warnings": 1
