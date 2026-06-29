@@ -2655,6 +2655,74 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('acceptPermissionsRequest', () => {
+    it('accepts the permissions request', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const acceptPermissionsRequestHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'PermissionController:acceptPermissionsRequest',
+          acceptPermissionsRequestHandler,
+        );
+
+        const request = {
+          metadata: { id: 'DUMMY_ID', origin: 'https://example.com' },
+          permissions: {},
+        };
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:acceptPermissionsRequest',
+          request,
+        );
+
+        expect(acceptPermissionsRequestHandler).toHaveBeenCalledWith(request);
+      });
+    });
+
+    it('does not propagate PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new PermissionsRequestNotFoundError('123');
+        rootMessenger.registerActionHandler(
+          'PermissionController:acceptPermissionsRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:acceptPermissionsRequest',
+            {
+              metadata: { id: 'DUMMY_ID', origin: 'https://example.com' },
+              permissions: {},
+            },
+          ),
+        ).not.toThrow(error);
+      });
+    });
+
+    it('propagates errors other than PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('Test error');
+        rootMessenger.registerActionHandler(
+          'PermissionController:acceptPermissionsRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:acceptPermissionsRequest',
+            {
+              metadata: { id: 'DUMMY_ID', origin: 'https://example.com' },
+              permissions: {},
+            },
+          ),
+        ).toThrow(error);
+      });
+    });
+  });
 });
 
 /**
@@ -2782,6 +2850,7 @@ function getMessenger(
       'TransactionController:isAtomicBatchSupported',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
+      'PermissionController:acceptPermissionsRequest',
     ],
   });
 
