@@ -5,17 +5,12 @@ import {
   ALL_LEDGER_CONNECTION_STATUSES,
   getIllustrationImage,
 } from '../../../../../../test/unit/hardware-wallets/ledger/helpers';
-import {
-  LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL,
-  type LedgerConnectionStatusType,
-} from '../ledger-connection-status.constants';
+import { LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL } from '../ledger-connection-status.constants';
 import { LedgerConnectionStatusIllustration } from '.';
 
 describe('LedgerConnectionStatusIllustration', () => {
-  // @ts-expect-error: each is a valid test function in jest
-  it.each(ALL_LEDGER_CONNECTION_STATUSES)(
-    'renders the illustration mapped to %s',
-    (status: LedgerConnectionStatusType) => {
+  ALL_LEDGER_CONNECTION_STATUSES.forEach((status) => {
+    it(`renders the illustration mapped to ${status}`, () => {
       const { container } = render(
         <LedgerConnectionStatusIllustration status={status} />,
       );
@@ -30,6 +25,6 @@ describe('LedgerConnectionStatusIllustration', () => {
         LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL[status],
       );
       expect(image).toHaveAttribute('alt', '');
-    },
-  );
+    });
+  });
 });
