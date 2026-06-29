@@ -14,6 +14,7 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
+import { preferencesControllerConfiguration } from './instance-options/preferences-controller';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -42,6 +43,7 @@ export type WalletInitMessenger = RootMessenger<
  * approval request to the user.
  * @param options.connectivityAdapter - Adapter that observes the device's
  * network connectivity.
+ * @param options.initLangCode - The language code to use for the extension.
  * @returns The constructed `Wallet`.
  */
 export function initializeWallet({
@@ -50,16 +52,26 @@ export function initializeWallet({
   encryptor,
   showApprovalRequest,
   connectivityAdapter,
+  initLangCode,
 }: {
   messenger: WalletInitMessenger;
   state: Record<string, Record<string, Json>>;
   encryptor?: Encryptor;
   showApprovalRequest?: ShowApprovalRequest;
   connectivityAdapter: ConnectivityAdapter;
+  initLangCode?: string;
 }) {
   const wallet = new Wallet({
     messenger,
-    state,
+    state: {
+      ...state,
+      // Default `currentLocale`, letting persisted state win (mirrors prior init).
+      PreferencesController: {
+        currentLocale: initLangCode ?? '',
+        ...state.PreferencesController,
+      },
+    },
+    initializationConfigurations: [preferencesControllerConfiguration],
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
@@ -79,7 +91,7 @@ export function initializeWallet({
 
   // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
   // and the external-services preference, seeded from the same persisted state
-  // as the initial `disabled` value above. The controller is driven over the
+  // as the initial `disabled` value. The controller is driven over the
   // shared messenger, so no instance reference is needed.
   setupRemoteFeatureFlagToggle({
     messenger,

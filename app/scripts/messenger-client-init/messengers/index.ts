@@ -150,7 +150,6 @@ import {
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
 import { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
-import { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 import { getAppStateControllerMessenger } from './app-state-controller-messenger';
 import {
   getPermissionControllerMessenger,
@@ -268,7 +267,6 @@ export {
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
-export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export type {
   PermissionControllerMessenger,
   PermissionControllerInitMessenger,
@@ -634,10 +632,6 @@ export const MESSENGER_FACTORIES = {
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
     getInitMessenger: getPPOMControllerInitMessenger,
-  },
-  PreferencesController: {
-    getMessenger: getPreferencesControllerMessenger,
-    getInitMessenger: noop,
   },
   TokenBalancesController: {
     getMessenger: getTokenBalancesControllerMessenger,

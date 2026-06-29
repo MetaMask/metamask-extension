@@ -2236,6 +2236,11 @@
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
+    "@metamask/preferences-controller": {
+      "packages": {
+        "@metamask/base-controller": true
+      }
+    },
     "@metamask/profile-metrics-controller": {
       "globals": {
         "URL": true,
@@ -2874,6 +2879,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
+        "@metamask/preferences-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/scure-bip39": true,
         "@metamask/storage-service": true,

@@ -411,7 +411,6 @@ import { AccountTrackerControllerInit } from './messenger-client-init/account-tr
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
 import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
-import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
 import { AppStateControllerInit } from './messenger-client-init/app-state-controller-init';
 import { PermissionControllerInit } from './messenger-client-init/permission-controller-init';
 import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
@@ -550,6 +549,7 @@ export default class MetamaskController extends EventEmitter {
       encryptor: this.opts.encryptor,
       showApprovalRequest: this.opts.showUserConfirmation,
       connectivityAdapter,
+      initLangCode: this.opts.initLangCode,
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -623,7 +623,6 @@ export default class MetamaskController extends EventEmitter {
     const messengerClientInitFunctions = {
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
-      PreferencesController: PreferencesControllerInit,
       AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
       DecryptMessageManager: DecryptMessageManagerInit,
@@ -752,7 +751,30 @@ export default class MetamaskController extends EventEmitter {
     this.approvalController = this.wallet.getInstance('ApprovalController');
     this.loggingController = messengerClientsByName.LoggingController;
     this.appMetadataController = messengerClientsByName.AppMetadataController;
-    this.preferencesController = messengerClientsByName.PreferencesController;
+    const preferencesController = this.wallet.getInstance(
+      'PreferencesController',
+    );
+    // The override replaces the wallet's default by matching its config `name`. A
+    // future wallet bump that renames that default would silently fall back to the
+    // package controller, so fail loud at boot rather than later as an obscure error.
+    if (
+      typeof (
+        /** @type {{ setAccountLabel?: unknown }} */ (
+          preferencesController
+        ).setAccountLabel
+      ) !== 'function'
+    ) {
+      throw new Error(
+        'PreferencesController did not resolve to the extension superset; the @metamask/wallet default config name likely diverged from "PreferencesController".',
+      );
+    }
+    // `getInstance` is typed as the package controller, but the override builds
+    // the superset at runtime, so cast.
+    // TODO(MetaMask/core#9232): drop once `getInstance` reflects the override type.
+    this.preferencesController =
+      /** @type {import('./controllers/preferences-controller').PreferencesController} */ (
+        preferencesController
+      );
     this.keyringController = this.wallet.getInstance('KeyringController');
     this.snapAccountService = messengerClientsByName.SnapAccountService;
     this.accountsController = this.wallet.getInstance('AccountsController');

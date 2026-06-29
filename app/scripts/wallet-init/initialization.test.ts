@@ -1,6 +1,8 @@
 import { Wallet } from '@metamask/wallet';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
+import { Json } from '@metamask/utils';
+import { RootMessenger } from '../lib/messenger';
 import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
@@ -8,6 +10,7 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
+import { preferencesControllerConfiguration } from './instance-options/preferences-controller';
 import { createMockMessenger } from './test-utils';
 
 jest.mock('@metamask/wallet', () => ({ Wallet: jest.fn() }));
@@ -46,17 +49,18 @@ describe('initializeWallet', () => {
 
     initializeWallet({ messenger, state, connectivityAdapter });
 
-    expect(MockWallet).toHaveBeenCalledWith({
-      messenger,
-      state,
-      instanceOptions: {
-        approvalController: 'approval-options',
-        connectivityController: 'connectivity-options',
-        keyringController: 'keyring-options',
-        remoteFeatureFlagController: 'rffc-options',
-        storageService: 'storage-options',
-      },
-    });
+    expect(MockWallet).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messenger,
+        instanceOptions: {
+          approvalController: 'approval-options',
+          connectivityController: 'connectivity-options',
+          keyringController: 'keyring-options',
+          remoteFeatureFlagController: 'rffc-options',
+          storageService: 'storage-options',
+        },
+      }),
+    );
   });
 
   it('threads the messenger, state, and injected values through to the builders', () => {
@@ -129,5 +133,84 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
         onboardingState: { completedOnboarding: false },
       }),
     );
+  });
+});
+
+describe('initializeWallet — PreferencesController override', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  /**
+   * Calls `initializeWallet` and returns the options the wallet was
+   * constructed with.
+   *
+   * @param args - Overrides for the `initializeWallet` call.
+   * @param args.state - The persisted state.
+   * @param args.initLangCode - The initial locale code.
+   * @returns The wallet constructor options.
+   */
+  function getWalletOptions({
+    state = {},
+    initLangCode,
+  }: {
+    state?: Record<string, Record<string, Json>>;
+    initLangCode?: string;
+  }) {
+    initializeWallet({
+      messenger: {} as unknown as RootMessenger,
+      state,
+      connectivityAdapter: {} as unknown as ConnectivityAdapter,
+      initLangCode,
+    });
+    return MockWallet.mock.calls[MockWallet.mock.calls.length - 1][0];
+  }
+
+  it('overrides the default PreferencesController via initializationConfigurations', () => {
+    const { initializationConfigurations } = getWalletOptions({});
+
+    expect(initializationConfigurations).toContain(
+      preferencesControllerConfiguration,
+    );
+  });
+
+  it('seeds currentLocale from initLangCode, with persisted state taking precedence', () => {
+    expect(
+      getWalletOptions({ initLangCode: 'fr' }).state?.PreferencesController
+        ?.currentLocale,
+    ).toBe('fr');
+
+    expect(
+      getWalletOptions({
+        state: { PreferencesController: { currentLocale: 'de' } },
+        initLangCode: 'fr',
+      }).state?.PreferencesController?.currentLocale,
+    ).toBe('de');
+  });
+
+  it('lets a persisted empty-string currentLocale win over initLangCode', () => {
+    // The merge is a spread, not a `??`/`||` fallback, so a persisted empty
+    // string still takes precedence over the seed.
+    expect(
+      getWalletOptions({
+        state: { PreferencesController: { currentLocale: '' } },
+        initLangCode: 'fr',
+      }).state?.PreferencesController?.currentLocale,
+    ).toBe('');
+  });
+
+  it('defaults currentLocale to an empty string when no locale is provided', () => {
+    expect(
+      getWalletOptions({}).state?.PreferencesController?.currentLocale,
+    ).toBe('');
+  });
+
+  it('seeds currentLocale while preserving other persisted PreferencesController state', () => {
+    expect(
+      getWalletOptions({
+        state: { PreferencesController: { useExternalServices: false } },
+        initLangCode: 'fr',
+      }).state?.PreferencesController,
+    ).toStrictEqual({ currentLocale: 'fr', useExternalServices: false });
   });
 });
