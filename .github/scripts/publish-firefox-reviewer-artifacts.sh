@@ -6,21 +6,20 @@
 #   publish-firefox-reviewer-artifacts.sh upload
 #
 # package — clone firefox-bundle-script and run prepare_release.sh for production
-#           and Flask to create submission packages (requires PR #9+ script contract).
+#           and Flask to create submission packages.
 # upload  — s3 cp artifacts (requires AMO_REVIEWER_BUCKET + active AWS creds from OIDC).
 #
 # Environment:
 #   RELEASE_TAG                  — e.g. v13.37.0 (required)
 #   FIREFOX_BUNDLE_SCRIPT_TOKEN  — clone private repo + read release branch bundle.sh
-#   FIREFOX_BUNDLE_SCRIPT_REF    — git ref (default: PR #9 SHA until merged to main)
+#   FIREFOX_BUNDLE_SCRIPT_REF    — git ref (default: main)
 #   AMO_REVIEWER_PACKAGE_ROOT    — output root (default: $RUNNER_TEMP/amo-reviewer-artifacts)
 #   AMO_REVIEWER_BUCKET            — required for upload
 #   AWS_DEFAULT_REGION             — default us-east-2
 
 set -euo pipefail
 
-# MetaMask/firefox-bundle-script PR #9 — Flask + webpack reproducibility. Bump after merge to main.
-DEFAULT_FIREFOX_BUNDLE_SCRIPT_REF="fea5132b24a17a4765d87d4735bd6684ce8c78c4"
+DEFAULT_FIREFOX_BUNDLE_SCRIPT_REF="main"
 
 MODE="${1:-}"
 if [[ "${MODE}" != "package" && "${MODE}" != "upload" ]]; then
