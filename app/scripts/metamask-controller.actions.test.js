@@ -489,32 +489,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#removePermissionsFor', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        revokePermissions: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        revokePermissions: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
-      ).toThrow(error);
-    });
-  });
-
   describe('#acceptPermissionsRequest', function () {
     it('should not propagate PermissionsRequestNotFoundError', function () {
       const error = new PermissionsRequestNotFoundError('123');
