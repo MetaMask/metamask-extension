@@ -71,7 +71,6 @@ export function initializeWallet({
         ...state.PreferencesController,
       },
     },
-    // Override the wallet's default PreferencesController with the superset.
     initializationConfigurations: [preferencesControllerConfiguration],
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
