@@ -31,7 +31,6 @@ import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { useTokenDisplayInfo } from '../hooks';
 import { type TokenWithFiatAmount } from '../types';
-import { isStellarClassicTrustlineInactiveForDisplay } from '../../../../../shared/lib/multichain/stellar';
 import {
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
@@ -126,24 +125,6 @@ export default function TokenCell({
     [token, tokenDisplayInfo],
   );
 
-  const isStellarTrustlineInactive = useMemo(
-    () =>
-      isStellarClassicTrustlineInactiveForDisplay({
-        chainId: token.chainId,
-        assetId: token.assetId,
-        isNative: token.isNative,
-        accountAssetInfo: token.accountAssetInfo,
-        balance: token.balance,
-      }),
-    [
-      token.chainId,
-      token.assetId,
-      token.isNative,
-      token.accountAssetInfo,
-      token.balance,
-    ],
-  );
-
   const merklBonusAmountRange = useMemo(
     () => getBonusAmountRange(claimableRewardDisplay ?? '< 0.01'),
     [claimableRewardDisplay],
@@ -201,7 +182,7 @@ export default function TokenCell({
         }
         headerLeftDisplay={<TokenCellTitle token={displayToken} />}
         headerRightDisplay={
-          !isStellarTrustlineInactive && (
+          (
             <TokenCellSecondaryDisplay
               token={displayToken}
               handleScamWarningModal={handleScamWarningModal}
@@ -211,7 +192,7 @@ export default function TokenCell({
         }
         footerLeftDisplay={renderFooterLeft()}
         footerRightDisplay={
-          !isStellarTrustlineInactive && (
+          (
             <TokenCellPrimaryDisplay
               token={displayToken}
               privacyMode={privacyMode}
