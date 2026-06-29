@@ -188,8 +188,8 @@ const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
 
 const hasValidAssetId = (
   result: TokenSearchResult,
-): result is TokenSearchResult & { assetId: string } =>
-  typeof result.assetId === 'string' && result.assetId.length > 0;
+): result is TokenSearchResult & { assetId: CaipAssetType } =>
+  typeof result.assetId === 'string';
 
 const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
   const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
