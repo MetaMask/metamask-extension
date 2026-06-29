@@ -773,7 +773,6 @@
     "postcss-rtlcss": "^6.0.0",
     "prettier": "^3.6.2",
     "prettier-2": "npm:prettier@^2.8.8",
-    "prettier-eslint": "^16.4.2",
     "prettier-plugin-sort-json": "^4.1.1",
     "process": "^0.11.10",
     "pumpify": "^2.0.1",
