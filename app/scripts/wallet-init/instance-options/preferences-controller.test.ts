@@ -31,9 +31,8 @@ describe('preferencesControllerConfiguration', () => {
 
   describe('init', () => {
     it('constructs the extension superset PreferencesController with the given state and messenger', () => {
-      const messenger = preferencesControllerConfiguration.getMessenger(
-        getParentMessenger(),
-      );
+      const messenger =
+        preferencesControllerConfiguration.getMessenger(getParentMessenger());
       const state = {
         currentLocale: 'en-US',
       } as PreferencesControllerState;

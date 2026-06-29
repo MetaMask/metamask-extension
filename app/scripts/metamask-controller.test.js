@@ -1254,8 +1254,9 @@ describe('MetaMaskController', () => {
 
         expect(label).toBe('Account Foo');
         expect(
-          metamaskController.accountsController.getAccountByAddress(TEST_ADDRESS)
-            .metadata.name,
+          metamaskController.accountsController.getAccountByAddress(
+            TEST_ADDRESS,
+          ).metadata.name,
         ).toBe('Account Foo');
       });
 
