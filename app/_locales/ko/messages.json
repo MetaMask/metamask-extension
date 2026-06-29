@@ -5581,9 +5581,6 @@
   "newPrivacyPolicyTitle": {
     "message": "개인정보 처리방침이 개정되었습니다"
   },
-  "newRpcUrl": {
-    "message": "새 RPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "$1 토큰을 성공적으로 불러왔습니다.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5720,9 +5717,6 @@
   },
   "notCurrentAccount": {
     "message": "올바른 계정인가요? 현재 지갑에서 선택된 계정과 다릅니다."
-  },
-  "notEnoughGas": {
-    "message": "가스 부족"
   },
   "notificationDetail": {
     "message": "세부 정보"
@@ -10294,9 +10288,6 @@
   },
   "tokenContractAddress": {
     "message": "토큰 계약 주소"
-  },
-  "tokenContractError": {
-    "message": "이 주소는 토큰 계약 주소입니다. 이 주소로 토큰을 보내면 토큰을 잃게 됩니다."
   },
   "tokenContractWarning": {
     "message": "토큰 계약 경고"

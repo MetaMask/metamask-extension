@@ -5577,9 +5577,6 @@
   "newPrivacyPolicyTitle": {
     "message": "हमने अपनी गोपनीयता नीति अपडेट कर दी है"
   },
-  "newRpcUrl": {
-    "message": "नया RPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "आपने सफलतापूर्वक $1 इम्पोर्ट कर लिया है।",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5716,9 +5713,6 @@
   },
   "notCurrentAccount": {
     "message": "क्या यह सही अकाउंट है? यह आपके वॉलेट में वर्तमान में चुना गया अकाउंट से अलग है"
-  },
-  "notEnoughGas": {
-    "message": "गैस कम है"
   },
   "notificationDetail": {
     "message": "विवरण"
@@ -10286,9 +10280,6 @@
   },
   "tokenContractAddress": {
     "message": "टोकन कॉन्ट्रैक्ट एड्रेस"
-  },
-  "tokenContractError": {
-    "message": "यह एड्रेस एक टोकन कॉन्ट्रैक्ट एड्रेस है। अगर आप इस एड्रेस पर टोकन भेजते हैं, तो आप उन्हें खो देंगे।"
   },
   "tokenContractWarning": {
     "message": "टोकन कॉन्ट्रैक्ट वार्निंग"

@@ -5581,9 +5581,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Kami telah memperbarui kebijakan privasi"
   },
-  "newRpcUrl": {
-    "message": "URL RPC Baru"
-  },
   "newTokensImportedMessage": {
     "message": "Anda berhasil mengimpor $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5720,9 +5717,6 @@
   },
   "notCurrentAccount": {
     "message": "Apa ini akun yang benar? Ini berbeda dari akun yang saat ini dipilih di dompet Anda"
-  },
-  "notEnoughGas": {
-    "message": "Gas tidak cukup"
   },
   "notificationDetail": {
     "message": "Detail"
@@ -10294,9 +10288,6 @@
   },
   "tokenContractAddress": {
     "message": "Alamat kontrak token"
-  },
-  "tokenContractError": {
-    "message": "Alamat ini merupakan alamat kontrak token. Jika mengirim token ke alamat ini, Anda akan kehilangan token tersebut."
   },
   "tokenContractWarning": {
     "message": "Peringatan kontrak token"

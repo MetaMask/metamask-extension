@@ -5577,9 +5577,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Мы обновили нашу политику конфиденциальности"
   },
-  "newRpcUrl": {
-    "message": "Новый URL RPC"
-  },
   "newTokensImportedMessage": {
     "message": "Вы успешно импортировали $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5716,9 +5713,6 @@
   },
   "notCurrentAccount": {
     "message": "Это правильный счет? Он отличается от счета, выбранного в настоящее время в вашем кошельке."
-  },
-  "notEnoughGas": {
-    "message": "Недостаточно газа"
   },
   "notificationDetail": {
     "message": "Подробности"
@@ -10286,9 +10280,6 @@
   },
   "tokenContractAddress": {
     "message": "Адрес контракта токена"
-  },
-  "tokenContractError": {
-    "message": "Этот адрес — адрес контракта токенов. Если вы отправите токены на этот адрес, вы их потеряете."
   },
   "tokenContractWarning": {
     "message": "Предупреждение о контракте токена"

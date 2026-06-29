@@ -5577,9 +5577,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Binago namin ang aming patakaran sa pagkapribado"
   },
-  "newRpcUrl": {
-    "message": "Bagong RPC URL"
-  },
   "newTokensImportedMessage": {
     "message": "Matagumpay mong na-import ang $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5716,9 +5713,6 @@
   },
   "notCurrentAccount": {
     "message": "Ito ba ang tamang account? Iba ito sa kasalukuyang napiling account sa iyong wallet"
-  },
-  "notEnoughGas": {
-    "message": "Hindi Sapat ang Gas"
   },
   "notificationDetail": {
     "message": "Mga detalye"
@@ -10286,9 +10280,6 @@
   },
   "tokenContractAddress": {
     "message": "Address ng kontrata ng token"
-  },
-  "tokenContractError": {
-    "message": "Ang address na ito ay isang address ng kontrata ng token. Kung magpapadala ka ng mga token sa address na ito, mawawala ang mga ito sa iyo."
   },
   "tokenContractWarning": {
     "message": "Babala sa kontrata ng token"

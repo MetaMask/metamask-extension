@@ -5490,9 +5490,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Actualizamos nuestra política de privacidad"
   },
-  "newRpcUrl": {
-    "message": "Nueva dirección URL de RPC"
-  },
   "newTokensImportedMessage": {
     "message": "Ha importado $1 exitosamente.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5629,9 +5626,6 @@
   },
   "notCurrentAccount": {
     "message": "¿Esta es la cuenta correcta? No coincide con la cuenta seleccionada actualmente en la cartera"
-  },
-  "notEnoughGas": {
-    "message": "No hay gas suficiente"
   },
   "notificationDetail": {
     "message": "Detalles"
@@ -10172,9 +10166,6 @@
   },
   "tokenContractAddress": {
     "message": "Dirección de contrato del token"
-  },
-  "tokenContractError": {
-    "message": "Esta dirección es una dirección de contrato de tókens. Si envías tókens a esta dirección, los perderás."
   },
   "tokenContractWarning": {
     "message": "Advertencia sobre el contrato de tokens"
