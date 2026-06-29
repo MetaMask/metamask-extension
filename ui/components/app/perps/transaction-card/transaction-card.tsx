@@ -24,6 +24,8 @@ export type TransactionCardProps = {
   variant?: 'default' | 'muted';
   showTopBorder?: boolean;
   screenName?: string;
+  /** Full asset name (e.g. 'Bitcoin'); falls back to the ticker when omitted */
+  assetName?: string;
 };
 
 const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
@@ -45,6 +47,7 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
  * @param options0.variant - Visual variant - 'default' for normal, 'muted' for subdued
  * @param options0.showTopBorder
  * @param options0.screenName - Forwarded to PerpsFillTag for analytics attribution
+ * @param options0.assetName - Full asset name; falls back to the ticker when omitted
  */
 export const TransactionCard = ({
   transaction,
@@ -52,9 +55,10 @@ export const TransactionCard = ({
   variant = 'default',
   showTopBorder = false,
   screenName,
+  assetName,
 }: TransactionCardProps) => {
   const t = useI18nContext();
-  const displayName = getDisplayName(transaction.symbol);
+  const displayName = assetName || getDisplayName(transaction.symbol);
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -116,12 +120,17 @@ export const TransactionCard = ({
     if (transaction.type === 'trade' && transaction.fill) {
       return `${transaction.fill.size} ${displayName}`;
     }
-    // For orders, extract size + symbol from subtitle (format: "X SYMBOL @ $Y.YY")
+    // For orders, the pre-built subtitle is "X SYMBOL[ @ $Y.YY]"; rebuild it
+    // from the size and the resolved asset name (dropping the optional price).
     if (transaction.type === 'order') {
-      const atIndex = transaction.subtitle.indexOf(' @');
-      if (atIndex > 0) {
-        return transaction.subtitle.substring(0, atIndex);
-      }
+      const sizeAndSymbol = (() => {
+        const atIndex = transaction.subtitle.indexOf(' @');
+        return atIndex > 0
+          ? transaction.subtitle.substring(0, atIndex)
+          : transaction.subtitle;
+      })();
+      const [sizePart] = sizeAndSymbol.split(' ');
+      return sizePart ? `${sizePart} ${displayName}` : displayName;
     }
     // For funding, show asset symbol
     if (transaction.type === 'funding') {

@@ -53,14 +53,14 @@ describe('PerpsWatchlist', () => {
     expect(screen.getByTestId('perps-watchlist-ETH')).toBeInTheDocument();
   });
 
-  it('displays market symbol, volume, and price for each watchlist item', () => {
+  it('displays full asset name, volume, and price for each watchlist item', () => {
     renderWithProvider(
       <PerpsWatchlist markets={mockCryptoMarkets.slice(0, 2)} />,
       mockStore,
     );
 
-    expect(screen.getByText('BTC')).toBeInTheDocument();
-    expect(screen.getByText('ETH')).toBeInTheDocument();
+    expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+    expect(screen.getByText('Ethereum')).toBeInTheDocument();
     expect(screen.getByText('$1.2B')).toBeInTheDocument();
     expect(screen.getByText('$850M')).toBeInTheDocument();
     expect(screen.getByText('$45,250.00')).toBeInTheDocument();

@@ -291,6 +291,9 @@ jest.mock('../../hooks/perps/stream', () => ({
   }),
   usePerpsLiveAccount: () => mockLiveAccount(),
   usePerpsLiveMarketData: () => mockLiveMarketData(),
+  usePerpsAssetNames: () => ({
+    resolveAssetName: (symbol: string) => symbol,
+  }),
   usePerpsLiveCandles: () => ({
     candleData: {
       symbol: 'ETH',

@@ -428,6 +428,84 @@ describe('TransactionCard', () => {
     });
   });
 
+  describe('Full asset name (assetName prop)', () => {
+    it('shows the full asset name in the trade subtitle', () => {
+      const transaction = createMockTransaction({
+        type: 'trade',
+        symbol: 'ETH',
+        fill: {
+          shortTitle: messages.perpsTransactionTitleOpenedLong.message,
+          amount: '+$7,125.00',
+          amountNumber: 7125,
+          isPositive: true,
+          size: '2.5',
+          entryPrice: '2850.00',
+          points: '0',
+          pnl: '0',
+          fee: '7.13',
+          action: 'Opened',
+          feeToken: 'USDC',
+          fillType: FillType.Standard,
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} assetName="Ethereum" />,
+        mockStore,
+      );
+
+      expect(screen.getByText('2.5 Ethereum')).toBeInTheDocument();
+      expect(screen.queryByText('2.5 ETH')).not.toBeInTheDocument();
+    });
+
+    it('shows the full asset name in the funding subtitle', () => {
+      const transaction = createMockTransaction({
+        type: 'funding',
+        category: 'funding_fee',
+        symbol: 'ETH',
+        title: 'Received funding fee',
+        fill: undefined,
+        fundingAmount: {
+          isPositive: true,
+          fee: '+$8.30',
+          feeNumber: 8.3,
+          rate: '0.0001',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} assetName="Ethereum" />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Ethereum')).toBeInTheDocument();
+    });
+
+    it('shows the full asset name in the order subtitle', () => {
+      const transaction = createMockTransaction({
+        type: 'order',
+        category: 'limit_order',
+        symbol: 'SOL',
+        title: 'Limit long',
+        subtitle: '25 SOL @ $95.00',
+        fill: undefined,
+        order: {
+          text: PerpsOrderTransactionStatus.Open,
+          statusType: PerpsOrderTransactionStatusType.Pending,
+          type: 'limit',
+          size: '$2,375.00',
+          limitPrice: '95.00',
+          filled: '0%',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} assetName="Solana" />,
+        mockStore,
+      );
+
+      expect(screen.getByText('25 Solana')).toBeInTheDocument();
+      expect(screen.queryByText('25 SOL')).not.toBeInTheDocument();
+    });
+  });
+
   describe('Variant styling', () => {
     it('applies default styling by default', () => {
       const transaction = createMockTransaction();

@@ -17,6 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePerpsAssetNames } from '../../../../hooks/perps/stream';
 import { TransactionCard } from '../transaction-card';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../../shared/constants/perps';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
@@ -53,6 +54,7 @@ export const PerpsRecentActivity = ({
 }: PerpsRecentActivityProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { resolveAssetName } = usePerpsAssetNames();
 
   const recentTransactions: PerpsTransaction[] = [...transactions]
     .sort((a, b) => b.timestamp - a.timestamp)
@@ -152,6 +154,7 @@ export const PerpsRecentActivity = ({
           <TransactionCard
             key={transaction.id}
             transaction={transaction}
+            assetName={resolveAssetName(transaction.symbol)}
             onClick={handleRowClick}
             screenName={PERPS_EVENT_VALUE.SCREEN_NAME.WALLET_HOME_PERPS_TAB}
           />

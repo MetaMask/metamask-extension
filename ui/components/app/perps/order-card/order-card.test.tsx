@@ -50,6 +50,17 @@ describe('OrderCard', () => {
     expect(screen.getByText('TSLA')).toBeInTheDocument();
   });
 
+  it('displays the full asset name when assetName is provided', () => {
+    const order = createMockOrder({ symbol: 'BTC', size: '2.5' });
+    renderWithProvider(
+      <OrderCard order={order} assetName="Bitcoin" />,
+      mockStore,
+    );
+
+    expect(screen.getByText('2.5 Bitcoin')).toBeInTheDocument();
+    expect(screen.queryByText(/^BTC$/u)).not.toBeInTheDocument();
+  });
+
   describe('order label (formatOrderLabel)', () => {
     it('displays "Limit long" for a plain buy limit order', () => {
       const order = createMockOrder({ side: 'buy', orderType: 'limit' });

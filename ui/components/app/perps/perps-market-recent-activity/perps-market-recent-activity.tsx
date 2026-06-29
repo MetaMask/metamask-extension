@@ -16,6 +16,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsMarketFills } from '../../../../hooks/perps';
+import { usePerpsAssetNames } from '../../../../hooks/perps/stream';
 import { transformFillsToTransactions } from '../utils/transactionTransforms';
 import { TransactionCard } from '../transaction-card';
 import { PERPS_CONSTANTS } from '../constants';
@@ -54,9 +55,11 @@ const RecentActivityEmpty = () => {
 const RecentActivityList = ({
   transactions,
   onTransactionClick,
+  assetName,
 }: {
   transactions: PerpsTransaction[];
   onTransactionClick: () => void;
+  assetName?: string;
 }) => (
   <Box
     flexDirection={BoxFlexDirection.Column}
@@ -66,6 +69,7 @@ const RecentActivityList = ({
       <TransactionCard
         key={transaction.id}
         transaction={transaction}
+        assetName={assetName}
         variant="muted"
         showTopBorder={index > 0}
         onClick={onTransactionClick}
@@ -84,6 +88,7 @@ export const PerpsMarketRecentActivity = ({
 }: PerpsMarketRecentActivityProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { resolveAssetName } = usePerpsAssetNames();
 
   const { fills, isInitialLoading } = usePerpsMarketFills({
     symbol,
@@ -134,6 +139,7 @@ export const PerpsMarketRecentActivity = ({
           <RecentActivityList
             transactions={transactions}
             onTransactionClick={handleSeeAll}
+            assetName={resolveAssetName(symbol)}
           />
         )}
       </Box>

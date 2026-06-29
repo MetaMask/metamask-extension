@@ -68,6 +68,17 @@ describe('PositionCard', () => {
     expect(screen.getByText('TSLA')).toBeInTheDocument();
   });
 
+  it('displays the full asset name when assetName is provided', () => {
+    const position = createMockPosition({ symbol: 'BTC' });
+    renderWithProvider(
+      <PositionCard position={position} assetName="Bitcoin" />,
+      mockStore,
+    );
+
+    expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+    expect(screen.queryByText('BTC')).not.toBeInTheDocument();
+  });
+
   it('displays long direction for positive size', () => {
     const position = createMockPosition({
       size: '5.0',
