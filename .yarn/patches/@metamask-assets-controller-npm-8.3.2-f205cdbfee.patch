@@ -40,7 +40,7 @@ index 7869c149db4678616dd467723a686b722629ec96..6a27b9953164fea3352a3f17246aad9e
              });
          }
      }
--}, _AssetsController_executeMiddlewares =
+-}, _AssetsController_executeMiddlewares = 
 +}, _AssetsController_executeMiddlewares =
  // ============================================================================
  // MIDDLEWARE EXECUTION
@@ -92,7 +92,7 @@ index 7869c149db4678616dd467723a686b722629ec96..6a27b9953164fea3352a3f17246aad9e
          }
      }
      return result;
--}, _AssetsController_handleAccountGroupChanged =
+-}, _AssetsController_handleAccountGroupChanged = 
 +}, _AssetsController_handleAccountGroupChanged =
  // ============================================================================
  // EVENT HANDLERS
@@ -139,7 +139,7 @@ index 7552c96a765368243d30f099187c739b88c838c2..2ee3f81f5a58fd6502f0858bb98982e5
              });
          }
      }
--}, _AssetsController_executeMiddlewares =
+-}, _AssetsController_executeMiddlewares = 
 +}, _AssetsController_executeMiddlewares =
  // ============================================================================
  // MIDDLEWARE EXECUTION
@@ -191,7 +191,7 @@ index 7552c96a765368243d30f099187c739b88c838c2..2ee3f81f5a58fd6502f0858bb98982e5
          }
      }
      return result;
--}, _AssetsController_handleAccountGroupChanged =
+-}, _AssetsController_handleAccountGroupChanged = 
 +}, _AssetsController_handleAccountGroupChanged =
  // ============================================================================
  // EVENT HANDLERS
@@ -231,8 +231,8 @@ index 88f557ab6b2b6add5e3ca3620d230d01745bf168..9ab917c4cbe720e5e14fcc23ce7d1dfe
      }
  }
  exports.BackendWebsocketDataSource = BackendWebsocketDataSource;
--_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_isNativeAsset = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains =
-+_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_getAssetType = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains =
+-_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_isNativeAsset = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains = 
++_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_getAssetType = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains = 
  // ============================================================================
  // INITIALIZATION
  // ============================================================================
@@ -312,8 +312,8 @@ index 567e5b2407a7e925397c9c178e329f72895f40f3..a3a5d8497a12d7efee35ecd24ce5fab0
          super.destroy();
      }
  }
--_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_isNativeAsset = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains =
-+_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_getAssetType = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains =
+-_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_isNativeAsset = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains = 
++_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_getAssetType = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains = 
  // ============================================================================
  // INITIALIZATION
  // ============================================================================
@@ -592,8 +592,8 @@ index fb38ba11a58bb1d6e2e678838286e4eff75346ef..e3db944242bcb8957a71a4064ab1e97e
      }
  }
  exports.TokenDataSource = TokenDataSource;
--_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks =
-+_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_getAssetType = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks =
+-_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks = 
++_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_getAssetType = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks = 
  /**
   * Gets the supported networks from the API.
   * Caching is handled by ApiPlatformClient.
@@ -711,8 +711,8 @@ index 9b5fb897c9ffffe9a0663f7aec99654c76496cc7..0f0e8529c6159c531c3bb92a678a9df1
          });
      }
  }
--_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks =
-+_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_getAssetType = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks =
+-_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks = 
++_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_getAssetType = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks = 
  /**
   * Gets the supported networks from the API.
   * Caching is handled by ApiPlatformClient.
