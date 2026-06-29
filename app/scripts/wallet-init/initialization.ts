@@ -78,7 +78,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
 
   // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
   // and the external-services preference, seeded from the same persisted state
-  // as the initial `disabled` value above. The controller is driven over the
+  // as the initial `disabled` value. The controller is driven over the
   // shared messenger, so no instance reference is needed.
   setupRemoteFeatureFlagToggle({
     messenger,
