@@ -14,7 +14,6 @@ import { DAPP_PATH } from '../constants';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
-const { MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES } = require('../constants');
 
 type TestSuiteArguments = {
   driver: Driver;
@@ -96,7 +95,6 @@ describe('Test Snap installed', function () {
           /* eslint-enable @typescript-eslint/naming-convention */
           origin: 'http://127.0.0.1:8080',
           version: '2.3.1',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
 
         // Click to connect to errors snap and validate the install snaps result

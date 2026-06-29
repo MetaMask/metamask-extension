@@ -8,7 +8,6 @@ import {
   MOCK_ANALYTICS_ID,
   DAPP_PATH,
   DAPP_URL,
-  MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
   WINDOW_TITLES,
 } from '../constants';
 import {
@@ -188,7 +187,6 @@ describe('Test Snap Metrics', function () {
           snap_id: 'npm:@metamask/notification-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
         assert.deepStrictEqual(events[1].event, 'Snap Installed');
         assert.deepStrictEqual(events[1].properties, {
@@ -196,7 +194,6 @@ describe('Test Snap Metrics', function () {
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
           version: '2.3.0',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
         assert.deepStrictEqual(events[2].event, 'Snap Export Used');
         assert.deepStrictEqual(events[2].properties, {
@@ -205,7 +202,6 @@ describe('Test Snap Metrics', function () {
           origin: 'http://127.0.0.1:8080',
           export: 'onRpcRequest',
           success: true,
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
       },
     );
@@ -268,14 +264,12 @@ describe('Test Snap Metrics', function () {
           snap_id: 'npm:@metamask/notification-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
         assert.deepStrictEqual(events[1].event, 'Snap Install Rejected');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
       },
     );
@@ -337,14 +331,12 @@ describe('Test Snap Metrics', function () {
           snap_id: 'npm:@metamask/notification-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
         assert.deepStrictEqual(events[1].event, 'Snap Install Failed');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
       },
     );
@@ -410,7 +402,6 @@ describe('Test Snap Metrics', function () {
           snap_id: 'npm:@metamask/notification-example-snap',
           snap_category: null,
           version: '2.3.0',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
       },
     );
@@ -480,7 +471,6 @@ describe('Test Snap Metrics', function () {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
         assert.deepStrictEqual(events[1].event, 'Snap Updated');
         assert.deepStrictEqual(events[1].properties, {
@@ -492,7 +482,6 @@ describe('Test Snap Metrics', function () {
           ota: false,
           client_type: 'extension',
           client_version: packageJson.version,
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
       },
     );
@@ -566,14 +555,12 @@ describe('Test Snap Metrics', function () {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Rejected');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
       },
     );
@@ -642,14 +629,12 @@ describe('Test Snap Metrics', function () {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Failed');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
         });
       },
     );
