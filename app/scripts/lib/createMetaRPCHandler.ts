@@ -46,10 +46,11 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let error: unknown;
     try {
       if (!traceContext) {
-        // No upstream UI trace context — root this op in its own trace so
-        // background spans (e.g. http.client) have a parent now the SW pageload
-        // root is gone. `root: true` forces a fresh root even with another RPC
-        // handler concurrently in flight, so overlapping ops get independent ids.
+        // No upstream UI trace context — root this op in its own trace so it
+        // peels off the long-lived SW pageload root instead of accumulating
+        // into the keepalive mega-trace. `root: true` forces a fresh root even
+        // with another RPC handler concurrently in flight, so overlapping ops
+        // get independent trace ids.
         result = await trace(
           {
             name: spanName,

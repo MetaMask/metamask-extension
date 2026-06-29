@@ -576,9 +576,10 @@ function startSpan<T>(
   // Inherit the active span (e.g. the browserTracingIntegration pageload) when no
   // parent is given; capture it before sentryWithIsolationScope severs the
   // active-span chain. `root: true` skips this to force an independent root —
-  // needed in the SW, where a concurrent background op would otherwise nest under
-  // an in-flight op's still-active span and share its trace id. forceTransaction
-  // keeps transaction-level visibility.
+  // needed in the SW so a background op peels off the long-lived pageload root
+  // (and any concurrent in-flight op's still-active span) instead of sharing its
+  // trace id and feeding the keepalive mega-trace. forceTransaction keeps
+  // transaction-level visibility.
   let forceTransaction: boolean | undefined;
   if (!root && !parentSpan && !parentContext) {
     const activeSpan = sentryGetActiveSpan();

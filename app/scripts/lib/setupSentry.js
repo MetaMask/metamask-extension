@@ -90,21 +90,6 @@ function safeCloneReport(report) {
   }
 }
 
-/**
- * Whether the current context is the MV3 service-worker global (vs a UI
- * document). The `typeof` guard is required: reading the undeclared
- * `ServiceWorkerGlobalScope` global in a non-SW context throws a ReferenceError.
- *
- * @returns {boolean} True if the current context is a service worker.
- */
-function isServiceWorkerContext() {
-  return (
-    typeof ServiceWorkerGlobalScope !== 'undefined' &&
-    // eslint-disable-next-line no-undef
-    self instanceof ServiceWorkerGlobalScope
-  );
-}
-
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
@@ -130,14 +115,6 @@ function getClientOptions() {
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
         shouldCreateSpanForRequest,
-        // In the SW the pageload transaction never ends (fixed pathname, no
-        // navigation), so it would accumulate every background span into one
-        // keepalive-lived mega-trace. Background ops root their own traces in
-        // createMetaRPCHandler.ts; UI document contexts keep pageload/navigation.
-        ...(isServiceWorkerContext() && {
-          instrumentPageLoad: false,
-          instrumentNavigation: false,
-        }),
       }),
       metaMetricsIntegration({
         getAnalyticsState,
