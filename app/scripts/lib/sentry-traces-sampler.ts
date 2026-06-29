@@ -1,16 +1,7 @@
 /**
- * Sentry transaction sample rates keyed by transaction `name` (which, for our
- * custom `trace()` spans, is the `TraceName` / span description). A name listed
- * here is sampled at the given rate instead of the global `tracesSampleRate`, so
- * a single high-volume custom transaction can be capped without lowering
- * visibility into everything else.
- *
- * Seeded with the two assets-controller transactions that breached the Sentry
- * span quota in 13.32.0 (see #43211 / #43226). They are pinned to `0` so that if
- * the instrumentation is re-enabled — the controller `trace` callback was removed
- * in PR #43213 — these spans stay dropped until a deliberate, budgeted rate is
- * set here, or supplied per build/release via the `SENTRY_SAMPLE_RATE_OVERRIDES`
- * env var (declared in `builds.yml`).
+ * Per-`name` sample rates that override the global `tracesSampleRate`, so a
+ * high-volume custom transaction can be capped without lowering visibility
+ * elsewhere. Seeded with the two assets-controller transactions pinned to `0`.
  */
 export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   Record<string, number>
@@ -20,21 +11,10 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
 });
 
 /**
- * Releases whose spans are dropped wholesale by the sampler: when the build's
- * own release matches one of these, `getTransactionSampleRate` returns `0` for
- * EVERY transaction, regardless of name, parent decision, or default rate.
- *
- * Seeded with the assets-controller quota-breach releases (13.32.0, 13.32.1,
- * 13.33.0). Per Sentry support: inbound filters apply to ERROR
- * events, not spans, so a server-side inbound filter cannot reduce span quota —
- * the only lever for span volume is this SDK `tracesSampler`.
- *
- * CRITICAL LIMITATION: a build's SDK only ever samples its OWN release. This
- * release-drop therefore CANNOT retroactively touch already-installed builds of
- * 13.32.x / 13.33.0 — it only takes effect in a build whose release is in this
- * set AND that users actually run. For the existing installed base the real
- * mitigation is a forced-update drain; this list only helps insofar as it ships
- * in a build those users update to. It does NOT fix shipped releases in place.
+ * Releases dropped wholesale: when the build's own release matches, the sampler
+ * returns `0` for every transaction (regardless of name/parent/default). Only
+ * affects a build's OWN release — it cannot reach already-installed builds of a
+ * dropped release; those need a forced-update drain.
  */
 export const DEFAULT_DROPPED_RELEASES: readonly string[] = Object.freeze([
   '13.32.0',
@@ -51,10 +31,8 @@ export type TransactionSamplingContext = {
    */
   name?: string;
   /**
-   * Deprecated duplicate of `name` carried by older SDK shapes. Still populated
-   * in `@sentry/types` 8.x (marked `@deprecated`, "will be removed eventually"),
-   * so we read it as a fallback to stay robust across SDK version drift. Harmless
-   * once the SDK drops it — the fallback simply resolves to `undefined`.
+   * Deprecated duplicate of `name` on older SDK shapes; read as a fallback for
+   * version drift.
    */
   transactionContext?: { name?: string };
   /**
@@ -73,10 +51,9 @@ type SampleRateOptions = {
    */
   sampleRateOverrides: Record<string, number>;
   /**
-   * This build's own release (the bare version, e.g. `'13.32.0'`). When it is
-   * in {@link droppedReleases}, every transaction is dropped. Note this is the
-   * BUILD's release, not a per-transaction value — a build only samples its own
-   * release, so this can never reach already-shipped builds.
+   * This build's OWN release (bare version, e.g. `'13.32.0'`), not a
+   * per-transaction value. When in {@link droppedReleases}, every transaction is
+   * dropped.
    */
   release?: string;
   /**
@@ -87,24 +64,11 @@ type SampleRateOptions = {
 };
 
 /**
- * Resolve the effective sample rate for a single transaction.
- *
- * Pure decision function (no SDK access) so it can be unit-tested directly. A
- * name with an override is pinned to that rate, regardless of any parent
- * decision, so a throttled custom transaction can't ride in on a sampled parent
- * trace and re-breach the budget. Everything else inherits the head-of-trace
- * decision when there is one (so we don't split traces), otherwise falls back to
- * the global default rate.
- *
- * The transaction name is read from `name`, falling back to the deprecated
- * `transactionContext.name`, so the lookup is robust across SDK shapes.
- *
- * When this build's own `release` is in `droppedReleases`, EVERY transaction is
- * dropped (returns `0`) before any name/parent/default logic — a whole-release
- * kill. This only affects the build's own release: a build's SDK only ever
- * samples its own release, so it cannot retroactively touch already-installed
- * builds of a dropped release. For the installed base the mitigation is a
- * forced-update drain; release-drop only helps in a build those users run.
+ * Resolve the effective sample rate for one transaction. Pure (no SDK access)
+ * for direct unit testing. Order: a dropped `release` kills everything; else a
+ * per-name override pins its rate (regardless of parent, so a throttled
+ * transaction can't ride in on a sampled parent); else inherit the parent
+ * decision; else the default. Name reads from `name` or `transactionContext.name`.
  *
  * @param samplingContext - The (subset of the) Sentry sampling context.
  * @param options - Default rate, per-name overrides, and release-drop config.
@@ -153,9 +117,8 @@ export function getTransactionSampleRate(
 
 /**
  * Parse the build-time `SENTRY_SAMPLE_RATE_OVERRIDES` env var: a JSON object of
- * `{ "<transaction name>": <rate 0..1> }`, inlined per build/release from
- * `builds.yml` (or `.metamaskprodrc` / CI). Absent or malformed yields no
- * overrides — defensive so a bad value can never break Sentry init.
+ * `{ "<transaction name>": <rate 0..1> }`. Absent/malformed yields no overrides
+ * (defensive: a bad value can't break Sentry init).
  *
  * @param raw - The raw env-var string, if any.
  * @returns A validated name -> rate map; entries with non-numeric or
@@ -185,12 +148,9 @@ function parseSampleRateOverridesEnv(
 }
 
 /**
- * Parse the build-time `SENTRY_DROP_RELEASES` env var: a comma-separated list of
- * bare release versions (e.g. `"13.32.0,13.33.0"`) whose spans are dropped
- * wholesale, merged over the built-in {@link DEFAULT_DROPPED_RELEASES}. Inlined
- * per build/release from `builds.yml` (or `.metamaskprodrc` / CI). Absent or
- * empty yields no extra releases — defensive so a bad value can never break
- * Sentry init.
+ * Parse the build-time `SENTRY_DROP_RELEASES` env var: comma-separated bare
+ * versions (e.g. `"13.32.0,13.33.0"`), merged over {@link DEFAULT_DROPPED_RELEASES}.
+ * Absent/empty yields none (defensive: a bad value can't break Sentry init).
  *
  * @param raw - The raw env-var string, if any.
  * @returns The list of release versions, trimmed, with empties dropped.
@@ -206,30 +166,15 @@ export function parseDroppedReleasesEnv(raw: string | undefined): string[] {
 }
 
 /**
- * Build the `tracesSampler` callback passed to `Sentry.init`.
- *
- * The override map is resolved once, when the SDK is configured, from the
- * built-in {@link DEFAULT_TRANSACTION_SAMPLE_RATES} merged with the build-time
- * `SENTRY_SAMPLE_RATE_OVERRIDES` env var (declared in `builds.yml`, settable per
- * release via CI / `.metamaskprodrc`). This is build-time: changing a rate still
- * requires a new build, not a runtime/remote toggle.
- *
- * The dropped-release set is likewise resolved once, from the built-in
- * {@link DEFAULT_DROPPED_RELEASES} merged with the build-time
- * `SENTRY_DROP_RELEASES` env var. When this build's own `release` is in that
- * set, the sampler drops every transaction.
- *
- * CRITICAL: `release` is the BUILD's own release, so the release-drop only ever
- * affects builds whose own release is in the set. It CANNOT retroactively touch
- * already-installed builds of a dropped release — those keep emitting until a
- * forced-update drain moves users onto a build that carries this drop.
+ * Build the `tracesSampler` callback passed to `Sentry.init`. Resolves the
+ * per-name overrides and dropped-release set once, merging the built-in defaults
+ * with the build-time `SENTRY_SAMPLE_RATE_OVERRIDES` / `SENTRY_DROP_RELEASES` env
+ * vars — build-time only; changing a rate needs a new build, not a runtime toggle.
  *
  * @param options - Sampler options.
- * @param options.defaultSampleRate - Global fallback rate (the value that would
- * otherwise be passed as `tracesSampleRate`).
- * @param options.release - This build's own release (the bare version like
- * `'13.32.0'`, matching {@link DEFAULT_DROPPED_RELEASES} — NOT the full
- * `metamask-extension@x.y.z` release string).
+ * @param options.defaultSampleRate - Global fallback rate (the `tracesSampleRate`).
+ * @param options.release - This build's own bare release (e.g. `'13.32.0'`), not
+ * the full `metamask-extension@x.y.z` string.
  * @returns A Sentry `tracesSampler` callback.
  */
 export function createTracesSampler({
