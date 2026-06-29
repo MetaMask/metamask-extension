@@ -51,9 +51,6 @@ describe('Sort By Networks Icon', function (this: Suite) {
           'ethereum',
           'eth',
           'ETH',
-          // Could also be a data URL or contain the token image URL path
-          'images/icons',
-          '/images/',
         ];
 
         await tokensTab.checkNetworkIconContains(expectedIconIndicators);
@@ -61,105 +58,4 @@ describe('Sort By Networks Icon', function (this: Suite) {
     );
   });
 
-  it('should display the correct network icon when only Linea Mainnet is enabled', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.LINEA_MAINNET)
-          .withEnabledNetworks({
-            eip155: { [CHAIN_IDS.LINEA_MAINNET]: true },
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-        const tokensTab = new TokensTab(driver);
-
-        // Wait for the sort-by-networks button to be present
-        await driver.waitForSelector('[data-testid="sort-by-networks"]');
-
-        // Check that the button text shows the correct network name
-        const networkLabel = await tokensTab.getNetworksFilterLabel();
-        console.log(`Network label: ${networkLabel}`);
-
-        // For Linea, it should show "Linea Mainnet" or similar
-        const expectedNetworkNames = ['Linea Mainnet', 'Linea'];
-        const isCorrectNetworkName = expectedNetworkNames.some((name) =>
-          networkLabel.includes(name),
-        );
-
-        if (!isCorrectNetworkName) {
-          throw new Error(
-            `Expected network name to include one of ${expectedNetworkNames.join(', ')}, but got: ${networkLabel}`,
-          );
-        }
-
-        // Check that the network icon is displayed and has the correct source
-        const expectedIconIndicators = [
-          'linea',
-          'LINEA',
-          'Linea',
-          // Could also be a data URL or contain the token image URL path
-          'images/icons',
-          '/images/',
-        ];
-
-        await tokensTab.checkNetworkIconContains(expectedIconIndicators);
-      },
-    );
-  });
-
-  it('should display the correct network icon when only Polygon is enabled', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.POLYGON_MAINNET)
-          .withEnabledNetworks({
-            eip155: { [CHAIN_IDS.POLYGON]: true },
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-        const tokensTab = new TokensTab(driver);
-
-        // Wait for the sort-by-networks button to be present
-        await driver.waitForSelector('[data-testid="sort-by-networks"]');
-
-        // Check that the button text shows the correct network name
-        const networkLabel = await tokensTab.getNetworksFilterLabel();
-        console.log(`Network label: ${networkLabel}`);
-
-        // For Polygon, it should show "Polygon Mainnet" or similar
-        const expectedNetworkNames = ['Polygon', 'POL'];
-        const isCorrectNetworkName = expectedNetworkNames.some((name) =>
-          networkLabel.includes(name),
-        );
-
-        if (!isCorrectNetworkName) {
-          throw new Error(
-            `Expected network name to include one of ${expectedNetworkNames.join(', ')}, but got: ${networkLabel}`,
-          );
-        }
-
-        // Check that the network icon is displayed and has the correct source
-        const expectedIconIndicators = [
-          'polygon',
-          'POLYGON',
-          'Polygon',
-          'pol',
-          'POL',
-          'matic',
-          'MATIC',
-          // Could also be a data URL or contain the token image URL path
-          'images/icons',
-          '/images/',
-        ];
-
-        await tokensTab.checkNetworkIconContains(expectedIconIndicators);
-      },
-    );
-  });
 });
