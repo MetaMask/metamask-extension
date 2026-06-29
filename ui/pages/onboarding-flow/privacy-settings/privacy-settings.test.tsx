@@ -11,6 +11,19 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import PrivacySettings from './privacy-settings';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
   return {
     type: SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
