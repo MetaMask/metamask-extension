@@ -8,9 +8,7 @@ import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import {
-  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-} from './constants';
+import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
   checkQuoteRequestsAreNotMadeAfterTimestamp,
   bridgeLogin,
