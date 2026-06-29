@@ -44,7 +44,7 @@ const getStatusText = (
     active.push(t('notificationsSettingsStatusPush'));
   }
   if (prefs?.inAppNotificationsEnabled) {
-    active.push(t('notificationsSettingsStatusInApp'));
+    active.push(t('notificationsSettingsStatusInApp').toLowerCase());
   }
 
   return active.length > 0
@@ -63,7 +63,7 @@ const NotificationSectionRow = ({
 }) => {
   return (
     <button
-      className="border-0 bg-transparent py-0 px-4 -mx-4 text-left text-inherit cursor-pointer hover:bg-background-default-hover"
+      className="border-0 bg-transparent py-3 px-4 -mx-4 text-left text-inherit cursor-pointer hover:bg-background-default-hover"
       data-testid={`notifications-settings-section-${section.type}`}
       onClick={onClick}
     >
@@ -71,7 +71,7 @@ const NotificationSectionRow = ({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Between}
-        className="w-full min-w-0 py-2"
+        className="w-full min-w-0"
         gap={4}
       >
         <Box
@@ -85,32 +85,32 @@ const NotificationSectionRow = ({
             size={IconSize.Lg}
             color={IconColor.IconAlternative}
           />
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            alignItems={BoxAlignItems.Start}
-            className="min-w-0"
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
           >
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
-            >
-              {section.title}
-            </Text>
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Regular}
-              color={TextColor.TextAlternative}
-            >
-              {status}
-            </Text>
-          </Box>
+            {section.title}
+          </Text>
         </Box>
-        <Icon
-          name={IconName.ArrowRight}
-          size={IconSize.Sm}
-          color={IconColor.IconAlternative}
-        />
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+        >
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Regular}
+            color={TextColor.TextAlternative}
+          >
+            {status}
+          </Text>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+          />
+        </Box>
       </Box>
     </button>
   );
@@ -169,7 +169,6 @@ export function NotificationsSettingsTypes({
     <Box
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Stretch}
-      gap={0}
       data-testid="notifications-settings-per-types"
     >
       {sections.map((section) => (

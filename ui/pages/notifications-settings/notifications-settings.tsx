@@ -155,7 +155,6 @@ export function NotificationsSettingsContent() {
       />
       {isMetamaskNotificationsEnabled && (
         <>
-          <Box className="w-full h-px border-t border-muted" />
           <NotificationsSettingsTypes
             preferences={preferences}
             onSelectSection={navigateToSection}

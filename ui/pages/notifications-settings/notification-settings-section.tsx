@@ -418,13 +418,6 @@ export function NotificationSettingsSection({
     >
       <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Text
-          variant={TextVariant.HeadingMd}
-          fontWeight={FontWeight.Bold}
-          color={TextColor.TextDefault}
-        >
-          {section.title}
-        </Text>
-        <Text
           variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Regular}
           color={TextColor.TextAlternative}
