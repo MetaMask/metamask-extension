@@ -47,14 +47,6 @@ export const TRON_PORTFOLIO_ACCOUNT: TronFixtureAccount = {
 
 export const TRON_STAKED_PORTFOLIO_ACCOUNT: TronFixtureAccount = {
   ...TRON_PORTFOLIO_ACCOUNT,
-  assets: TRON_PORTFOLIO_ACCOUNT.assets?.map((asset) =>
-    asset.type === 'native'
-      ? {
-          ...asset,
-          balance: TRON_PORTFOLIO_TRX_BALANCE_IN_SUN + 20_000_000,
-        }
-      : asset,
-  ),
   stakedTrxBalance: '20000000',
 };
 

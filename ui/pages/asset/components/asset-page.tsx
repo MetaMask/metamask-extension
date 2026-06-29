@@ -35,7 +35,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
+import { isEvmChainId, isTronStakedAsset, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
@@ -71,6 +71,7 @@ import {
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroupWithTronSpecialAssets,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
 import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
@@ -124,6 +125,9 @@ const AssetPage = ({
   // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const accountGroupAssetsWithTronSpecial = useSelector(
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets,
+  );
   const caipChainId = isCaipChainId(asset.chainId)
     ? asset.chainId
     : formatChainIdToCaip(asset.chainId);
@@ -294,6 +298,19 @@ const AssetPage = ({
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
   const showTronResources = isTron && type === AssetType.native;
 
+  const tronStakedBalanceAssets = useMemo(() => {
+    if (!showTronResources) {
+      return [];
+    }
+
+    return (accountGroupAssetsWithTronSpecial[chainId] ?? []).filter(
+      (asset) =>
+        isTronStakedAsset(asset.assetId) &&
+        asset.balance !== '0' &&
+        asset.balance !== undefined,
+    );
+  }, [showTronResources, accountGroupAssetsWithTronSpecial, chainId]);
+
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
   const isMusdAssetPage =
@@ -451,6 +468,37 @@ const AssetPage = ({
                 musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
               />
             )}
+            {tronStakedBalanceAssets.map((stakedAsset) => {
+              const stakedBalance = stakedAsset.balance ?? '0';
+              const stakedFiatAmount = stakedAsset.fiat?.balance ?? 0;
+
+              return (
+                <Box
+                  key={stakedAsset.assetId}
+                  data-testid="tron-staked-balance-row"
+                >
+                  <TokenCell
+                    token={{
+                      address: stakedAsset.assetId as Hex,
+                      chainId,
+                      symbol: stakedAsset.symbol,
+                      image: stakedAsset.image,
+                      title: stakedAsset.name ?? stakedAsset.symbol,
+                      tokenFiatAmount: showFiat ? stakedFiatAmount : null,
+                      string: stakedBalance ? stakedBalance.toString() : '',
+                      decimals: stakedAsset.decimals,
+                      aggregators: [],
+                      isNative: false,
+                      balance: stakedBalance,
+                      secondary: stakedBalance ? Number(stakedBalance) : 0,
+                      accountType: stakedAsset.accountType,
+                      assetId: stakedAsset.assetId,
+                    }}
+                    safeChains={safeChains}
+                  />
+                </Box>
+              );
+            })}
           </>
         )}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}

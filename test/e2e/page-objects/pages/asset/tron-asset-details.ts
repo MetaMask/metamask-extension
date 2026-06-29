@@ -1,7 +1,4 @@
-import { TRON_CHAIN_ID } from '../../../tests/tron/mocks/common-tron';
 import { Driver } from '../../../webdriver/driver';
-
-const TRON_ASSET_DETAILS_TIMEOUT_MS = 30_000;
 
 const SECTION_TITLES = [
   'Your balance',
@@ -61,6 +58,9 @@ class TronAssetDetailsPage {
 
   private readonly tronDailyResourcesBandwidthDescription =
     '[data-testid="tron-daily-resources-bandwidth-description"]';
+
+  private readonly tronStakedBalanceRow =
+    '[data-testid="tron-staked-balance-row"]';
 
   private readonly tokenBuyButton = '[data-testid="token-overview-buy"]';
 
@@ -142,44 +142,17 @@ class TronAssetDetailsPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    // Use a section title that is rendered for every Tron asset (including
-    // view-only assets like Staked TRX which have no action buttons).
     await this.driver.waitForSelector({ text: 'Your balance' });
   }
 
   /**
-   * Opens a Tron asset details page by CAIP asset id (hash-router navigation).
-   * Matches `onClickAsset` in account-overview-tabs:
-   * `/asset/${chainId}/${encodeURIComponent(assetId)}`
+   * Asserts a staked TRX breakdown row under "Your balance" on native TRX
+   * asset details (e.g. "Staked for Energy" with 20 TRX).
    */
-  async openTronAssetById(assetId: string): Promise<void> {
-    const slashIndex = assetId.indexOf('/');
-    const chainId =
-      slashIndex === -1 ? TRON_CHAIN_ID : assetId.slice(0, slashIndex);
-    const path = `/asset/${chainId}/${encodeURIComponent(assetId)}`;
-    await this.driver.executeScript((assetPath) => {
-      window.location.hash = assetPath;
-    }, path);
-    await this.driver.waitForUrlContaining({
-      url: 'staked-for-energy',
-      timeout: TRON_ASSET_DETAILS_TIMEOUT_MS,
-    });
-    await this.driver.waitForSelector(this.assetName, {
-      timeout: TRON_ASSET_DETAILS_TIMEOUT_MS,
-    });
-  }
-
-  /**
-   * View-only Tron assets (e.g. Staked TRX) have no send/swap/receive actions.
-   */
-  async checkViewOnlyAssetDetails(): Promise<void> {
-    await this.checkPageIsLoaded();
-    await this.driver.assertElementNotPresent(this.nativeSendButton);
-    await this.driver.assertElementNotPresent(this.nativeSwapButton);
-    await this.driver.assertElementNotPresent(this.nativeOverflowMoreButton);
-    await this.driver.assertElementNotPresent(this.tokenBuyButton);
-    await this.driver.assertElementNotPresent(this.tokenSendButton);
-    await this.driver.assertElementNotPresent(this.tokenSwapButton);
+  async checkStakedForEnergyBalanceRow(expectedBalance: string): Promise<void> {
+    await this.driver.waitForSelector(this.tronStakedBalanceRow);
+    await this.driver.waitForSelector({ text: 'Staked for Energy' });
+    await this.driver.waitForSelector({ text: expectedBalance });
   }
 
   async checkPriceChart(): Promise<void> {

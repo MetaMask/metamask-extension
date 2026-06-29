@@ -13,10 +13,7 @@ import {
   TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES,
   TRON_STAKED_PORTFOLIO_ACCOUNT,
 } from './fixtures/environments';
-import {
-  STAKED_TRX_ASSET_ID,
-  withTronFixtures,
-} from './fixtures/with-tron-fixtures';
+import { withTronFixtures } from './fixtures/with-tron-fixtures';
 
 /** Max wait for Tron Snap balances to appear in the token list after refresh. */
 const TRON_ASSET_LIST_TIMEOUT_MS = 30_000;
@@ -287,10 +284,9 @@ describe('Tron - Assets', function (this: Suite) {
           await details.checkPriceChart();
           await details.checkTokenActionButtons();
           await details.checkAllStandardSections();
-          await driver.assertElementNotPresent({
-            text: 'Daily resource',
-            tag: 'h4',
-          });
+          await driver.assertElementNotPresent(
+            '[data-testid="tron-daily-resources"]',
+          );
         },
       );
     });
@@ -306,15 +302,17 @@ describe('Tron - Assets', function (this: Suite) {
           const tokensTab = new TokensTab(driver);
           await waitForTronAssetList(tokensTab);
 
-          // Open native TRX details, then route to the view-only staked asset page.
           await tokensTab.clickOnAsset('Tron');
           const details = new TronAssetDetailsPage(driver);
           await details.checkPageIsLoaded();
-          await details.openTronAssetById(STAKED_TRX_ASSET_ID);
-          await details.checkPageIsLoaded();
-          await details.checkAssetTitleContains('Staked for Energy');
-          await details.checkBalanceText('20');
-          await details.checkViewOnlyAssetDetails();
+          await details.checkAssetTitleContains('TRX');
+          await details.checkStakedForEnergyBalanceRow('20');
+          await details.checkActionButtons({
+            swap: true,
+            send: true,
+            receive: true,
+          });
+          await details.checkDailyResourcesSection();
           await details.checkAllStandardSections();
         },
       );

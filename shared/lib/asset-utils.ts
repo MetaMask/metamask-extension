@@ -22,6 +22,7 @@ import {
 
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
+  TRON_SPECIAL_ASSET_CAIP_TYPES,
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
@@ -300,6 +301,34 @@ export const isTronSpecialAsset = (
   }
 
   return TRON_SPECIAL_ASSET_CAIP_TYPES_SET.has(
+    `${assetNamespace}:${assetReference}` as TronSpecialAssetCaipType,
+  );
+};
+
+const TRON_STAKED_ASSET_CAIP_TYPES_SET: ReadonlySet<TronSpecialAssetCaipType> =
+  new Set([
+    TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_ENERGY,
+    TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_BANDWIDTH,
+  ]);
+
+/**
+ * Checks if the given CAIP asset ID represents staked TRX (frozen for energy
+ * or bandwidth). These are shown on the native TRX asset details page but
+ * filtered from portfolio lists.
+ */
+export const isTronStakedAsset = (
+  assetId: CaipAssetType | string | undefined,
+): boolean => {
+  if (!assetId || !isCaipAssetType(assetId)) {
+    return false;
+  }
+  const { chain, assetNamespace, assetReference } = parseCaipAssetType(assetId);
+
+  if (chain.namespace !== KnownCaipNamespace.Tron) {
+    return false;
+  }
+
+  return TRON_STAKED_ASSET_CAIP_TYPES_SET.has(
     `${assetNamespace}:${assetReference}` as TronSpecialAssetCaipType,
   );
 };

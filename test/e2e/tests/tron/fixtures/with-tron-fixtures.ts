@@ -125,7 +125,12 @@ export function buildTronNodeOptions(
   for (const account of accounts) {
     for (const asset of account.assets ?? []) {
       if (asset.type === 'native') {
-        initialBalances[account.address] = asset.balance;
+        const stakedTopUp = account.stakedTrxBalance
+          ? Number(account.stakedTrxBalance)
+          : 0;
+        // Fund the local node with enough liquid TRX to freeze staked amounts;
+        // portfolio API mocks still report liquid and staked balances separately.
+        initialBalances[account.address] = asset.balance + stakedTopUp;
       } else if (asset.type === 'trc10') {
         trc10Balances[account.address] = {
           ...trc10Balances[account.address],

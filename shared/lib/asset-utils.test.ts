@@ -20,6 +20,7 @@ import {
   fetchAssetMetadataForAssetIds,
   isEvmChainId,
   isTronSpecialAsset,
+  isTronStakedAsset,
 } from './asset-utils';
 
 jest.mock('@metamask/multichain-network-controller');
@@ -587,6 +588,40 @@ describe('asset-utils', () => {
       expect(isTronSpecialAsset('0xabc123')).toBe(false);
       expect(isTronSpecialAsset('')).toBe(false);
       expect(isTronSpecialAsset('not-a-caip-id')).toBe(false);
+    });
+  });
+
+  describe('isTronStakedAsset', () => {
+    const tronMainnet = MultichainNetworks.TRON;
+
+    it('returns true for staked-for-energy', () => {
+      expect(
+        isTronStakedAsset(
+          `${tronMainnet}/${TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_ENERGY}` as CaipAssetType,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true for staked-for-bandwidth', () => {
+      expect(
+        isTronStakedAsset(
+          `${tronMainnet}/${TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_BANDWIDTH}` as CaipAssetType,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for energy resource assets', () => {
+      expect(
+        isTronStakedAsset(
+          `${tronMainnet}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetType,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for native TRX', () => {
+      expect(
+        isTronStakedAsset(`${tronMainnet}/slip44:195` as CaipAssetType),
+      ).toBe(false);
     });
   });
 });
