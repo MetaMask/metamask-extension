@@ -3,6 +3,11 @@ import {
   TokenDetectionControllerMessenger,
 } from '@metamask/assets-controllers';
 import { getRootMessenger } from '../lib/messenger';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { trackEvent } from '../controllers/analytics';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -13,6 +18,11 @@ import {
 import { TokenDetectionControllerInit } from './token-detection-controller-init';
 
 jest.mock('@metamask/assets-controllers');
+jest.mock('../controllers/analytics', () => ({
+  createEventBuilder: jest.requireActual('../controllers/analytics')
+    .createEventBuilder,
+  trackEvent: jest.fn(),
+}));
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
@@ -32,6 +42,12 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('TokenDetectionControllerInit', () => {
+  const trackEventMock = jest.mocked(trackEvent);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('initializes the controller', () => {
     const { messengerClient } =
       TokenDetectionControllerInit(getInitRequestMock());
@@ -52,5 +68,38 @@ describe('TokenDetectionControllerInit', () => {
       useTokenDetection: expect.any(Function),
       tokenListService: expect.any(Object),
     });
+  });
+
+  it('routes trackMetaMetricsEvent through AnalyticsController', () => {
+    TokenDetectionControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(TokenDetectionController);
+    const { trackMetaMetricsEvent } = controllerMock.mock.calls[0][0];
+
+    trackMetaMetricsEvent?.({
+      event: MetaMetricsEventName.TokenDetected,
+      category: MetaMetricsEventCategory.Wallet,
+      properties: {
+        tokens: ['0xabc'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_standard: 'ERC20',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        asset_type: 'token',
+      },
+    });
+
+    expect(trackEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenDetected,
+        properties: {
+          tokens: ['0xabc'],
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_standard: 'ERC20',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_type: 'token',
+          category: MetaMetricsEventCategory.Wallet,
+        },
+      }),
+    );
   });
 });

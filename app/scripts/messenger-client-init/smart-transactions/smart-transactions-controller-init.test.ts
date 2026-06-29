@@ -23,13 +23,17 @@ import {
   SmartTransactionsControllerInitMessenger,
 } from '../messengers/smart-transactions-controller-messenger';
 import { MessengerClientFlatState } from '../controller-list';
-import type {
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
-} from '../../../../shared/constants/metametrics';
+import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { trackEvent } from '../../controllers/analytics';
 import { SmartTransactionsControllerInit } from './smart-transactions-controller-init';
 
 jest.mock('@metamask/smart-transactions-controller');
+jest.mock('../../controllers/analytics', () => ({
+  createEventBuilder: jest.requireActual('../../controllers/analytics')
+    .createEventBuilder,
+  trackEvent: jest.fn(),
+}));
 
 // Define mock types for the dependencies
 type MockAccountsController = Pick<AccountsController, 'getSelectedAccount'>;
@@ -61,6 +65,11 @@ describe('SmartTransactionsController Init', () => {
   const smartTransactionsControllerClassMock = jest.mocked(
     SmartTransactionsController,
   );
+  const trackEventMock = jest.mocked(trackEvent);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   /**
    * Build a mock for required dependencies.
@@ -207,16 +216,11 @@ describe('SmartTransactionsController Init', () => {
       getDeviceModel: jest.fn().mockResolvedValue('Ledger Nano S'),
       getHardwareTypeForMetric: jest.fn().mockResolvedValue('Ledger'),
       trace: jest.fn((_request, fn) => fn?.()),
-      trackEvent: jest.fn(),
       ...options,
     } as TestInitRequest;
 
     return { fullRequest, mocks };
   }
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
 
   it('returns controller instance', () => {
     const { fullRequest } = buildInitRequest();
@@ -290,13 +294,8 @@ describe('SmartTransactionsController Init', () => {
     );
   });
 
-  it('configures trackMetaMetricsEvent correctly', () => {
+  it('routes trackMetaMetricsEvent through AnalyticsController', () => {
     const { fullRequest } = buildInitRequest();
-    const listener = jest.fn();
-    fullRequest.baseControllerMessenger.registerActionHandler(
-      'MetaMetricsController:trackEvent',
-      listener,
-    );
     SmartTransactionsControllerInit(fullRequest);
 
     const constructorCall =
@@ -304,20 +303,27 @@ describe('SmartTransactionsController Init', () => {
 
     expect(typeof constructorCall.trackMetaMetricsEvent).toBe('function');
 
-    const trackMetaMetricsEvent = constructorCall.trackMetaMetricsEvent as (
-      payload: MetaMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ) => void;
-
     const testPayload: MetaMetricsEventPayload = {
       event: 'TestEvent',
-      category: 'TestCategory',
+      category: MetaMetricsEventCategory.Transactions,
       properties: { test: true },
     };
 
-    trackMetaMetricsEvent(testPayload);
+    constructorCall.trackMetaMetricsEvent?.(
+      testPayload as Parameters<
+        NonNullable<typeof constructorCall.trackMetaMetricsEvent>
+      >[0],
+    );
 
-    expect(listener).toHaveBeenCalledWith(testPayload);
+    expect(trackEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'TestEvent',
+        properties: {
+          test: true,
+          category: MetaMetricsEventCategory.Transactions,
+        },
+      }),
+    );
   });
 
   describe('getMetaMetricsProps', () => {
