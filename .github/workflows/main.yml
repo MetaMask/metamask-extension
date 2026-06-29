@@ -538,8 +538,6 @@ jobs:
     needs:
       - get-requirements
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
-    secrets:
-      TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
 
   publish-prerelease:
     name: Publish prerelease
