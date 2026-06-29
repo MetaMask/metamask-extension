@@ -20,39 +20,45 @@ import { NotificationSectionSubPage } from './notification-section-sub-page';
 
 const mockSwitchAccountNotifications = jest.fn();
 
-jest.mock('../../notifications-settings/notifications-settings-per-account', () => ({
-  NotificationsSettingsPerAccount: ({
-    address,
-    name,
-    disabledSwitch,
-    isEnabled,
-    onToggle,
-  }: {
-    address: string;
-    name: string;
-    disabledSwitch: boolean;
-    isEnabled: boolean;
-    onToggle: (nextValue: boolean) => Promise<void>;
-  }) => (
-    <button
-      data-testid={`notifications-settings-account-${address}`}
-      disabled={disabledSwitch}
-      onClick={() => {
-        onToggle(!isEnabled).catch(() => undefined);
-      }}
-    >
-      {name}
-    </button>
-  ),
-}));
+jest.mock(
+  '../../notifications-settings/notifications-settings-per-account',
+  () => ({
+    NotificationsSettingsPerAccount: ({
+      address,
+      name,
+      disabledSwitch,
+      isEnabled,
+      onToggle,
+    }: {
+      address: string;
+      name: string;
+      disabledSwitch: boolean;
+      isEnabled: boolean;
+      onToggle: (nextValue: boolean) => Promise<void>;
+    }) => (
+      <button
+        data-testid={`notifications-settings-account-${address}`}
+        disabled={disabledSwitch}
+        onClick={() => {
+          onToggle(!isEnabled).catch(() => undefined);
+        }}
+      >
+        {name}
+      </button>
+    ),
+  }),
+);
 
-jest.mock('../../../hooks/metamask-notifications/useSwitchNotifications', () => ({
-  useAccountSettingsProps: jest.fn(),
-  useSwitchAccountNotificationsChange: jest.fn(() => ({
-    onChange: mockSwitchAccountNotifications,
-    error: null,
-  })),
-}));
+jest.mock(
+  '../../../hooks/metamask-notifications/useSwitchNotifications',
+  () => ({
+    useAccountSettingsProps: jest.fn(),
+    useSwitchAccountNotificationsChange: jest.fn(() => ({
+      onChange: mockSwitchAccountNotifications,
+      error: null,
+    })),
+  }),
+);
 
 jest.mock(
   '../../../hooks/metamask-notifications/useNotificationPreferences',

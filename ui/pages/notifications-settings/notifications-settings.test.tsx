@@ -66,7 +66,9 @@ describe('NotificationsSettingsContent', () => {
       NOTIFICATIONS_SETTINGS_ROUTE,
     );
 
-    expect(screen.getByTestId('notifications-settings-allow')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('notifications-settings-allow'),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('notifications-settings-per-types'),
     ).toBeInTheDocument();
