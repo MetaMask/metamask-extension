@@ -40,7 +40,7 @@ describe('Token List Sorting', function () {
     });
   }
 
-  it('should sort tokens alphabetically and by decreasing balance TEST', async function () {
+  it('should sort tokens alphabetically and by decreasing balance', async function () {
     await withFixtures(
       {
         ...testFixtures,
