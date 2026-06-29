@@ -4,7 +4,11 @@ import type {
 } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HwSignTrackerAction, SignedEventClassifier } from './types';
-import { APPROVAL_TYPES, BRIDGE_TRANSACTION_TYPES, TRADE_TYPES } from './constants';
+import {
+  APPROVAL_TYPES,
+  BRIDGE_TRANSACTION_TYPES,
+  TRADE_TYPES,
+} from './constants';
 
 /**
  * Checks whether a transaction matches the expected sender address and is one

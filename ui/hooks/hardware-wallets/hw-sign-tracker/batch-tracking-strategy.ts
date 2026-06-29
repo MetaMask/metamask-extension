@@ -87,7 +87,12 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     this.#trackedTxIds.add(transactionMeta.id);
 
     if (status === TransactionStatus.signed) {
-      return this.#handleSigned(transactionMeta, batchId, type, classifySignedEvent);
+      return this.#handleSigned(
+        transactionMeta,
+        batchId,
+        type,
+        classifySignedEvent,
+      );
     }
 
     if (status === TransactionStatus.failed) {

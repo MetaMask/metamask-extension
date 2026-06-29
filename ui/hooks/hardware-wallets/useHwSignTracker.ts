@@ -177,11 +177,7 @@ export function useHwSignTracker(
 
       return null;
     },
-    [
-      expectedTransactionParams,
-      expectedTxIdSet,
-      includeSendBundleTransactions,
-    ],
+    [expectedTransactionParams, expectedTxIdSet, includeSendBundleTransactions],
   );
 
   const strategy = useMemo(
@@ -310,7 +306,9 @@ export function useHwSignTracker(
       // as an array, so the first element is either `{ transactionMeta }` or
       // the bare meta. Unwrap both shapes so `transactionFinished` is parsed
       // correctly (destructuring `status` from a bare meta previously crashed).
-      ([firstArg]: [{ transactionMeta: TransactionMeta } | TransactionMeta]) => {
+      ([firstArg]: [
+        { transactionMeta: TransactionMeta } | TransactionMeta,
+      ]) => {
         if (cancelled) {
           return;
         }
@@ -369,13 +367,8 @@ export function useHwSignTracker(
         registerSubscription(() =>
           subscribeToMessengerEvent<[{ transactionMeta: TransactionMeta }]>(
             'TransactionController:transactionStatusUpdated',
-            createEventHandler(
-              'statusUpdated',
-              (txMeta) =>
-                strategy.processStatusUpdated(
-                  txMeta,
-                  classifySignedEventForFlow,
-                ),
+            createEventHandler('statusUpdated', (txMeta) =>
+              strategy.processStatusUpdated(txMeta, classifySignedEventForFlow),
             ),
           ),
         ),
