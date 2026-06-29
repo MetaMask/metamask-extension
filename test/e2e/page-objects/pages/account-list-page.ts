@@ -9,9 +9,6 @@ import SettingsPage from './settings/settings-page';
 class AccountListPage {
   private readonly driver: Driver;
 
-  private readonly accountListAddressItem =
-    '[data-testid="account-list-address"]';
-
   private readonly accountListBalance =
     '[data-testid="first-currency-display"]';
 
@@ -36,28 +33,14 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly accountNameInput = '#account-name';
-
-  private readonly accountOptionsMenuButton =
-    '[data-testid="account-list-item-menu-button"]';
-
   private readonly multichainAccountOptionsMenuButton =
     '[data-testid="multichain-account-cell-end-accessory"]';
 
-  private readonly addAccountConfirmButton =
-    '[data-testid="submit-add-account-with-name"]';
-
-  private readonly addEthereumAccountButton =
-    '[data-testid="multichain-account-menu-popover-add-account"]';
-
-  private readonly addEoaAccountButton =
-    '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
-
   private readonly addHardwareWalletButton =
-    '[data-testid="add-wallet-modal-hardware-wallet"]';
+    '[data-testid="choose-wallet-type-hardware-wallet"]';
 
-  private readonly addImportedAccountButton =
-    '[data-testid="multichain-account-menu-popover-add-imported-account"]';
+  private readonly chooseWalletTypeWatchEthereumAccountButton =
+    '[data-testid="choose-wallet-type-watch-ethereum-account"]';
 
   private readonly addingAccountMessage = {
     text: 'Adding account...',
@@ -65,7 +48,7 @@ class AccountListPage {
   };
 
   private readonly addSnapAccountButton =
-    '[data-testid="add-wallet-modal-snap-account"]';
+    '[data-testid="choose-wallet-type-snap-account"]';
 
   private readonly walletDetailsButton = {
     text: 'Details',
@@ -75,6 +58,8 @@ class AccountListPage {
   private readonly closeAccountModalButton =
     'header button[aria-label="Close"]';
 
+  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
+
   private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
 
@@ -82,10 +67,10 @@ class AccountListPage {
     '[data-testid="account-list-add-wallet-button"]';
 
   private readonly importWalletFromMultichainWalletModalButton =
-    '[data-testid="add-wallet-modal-import-wallet"]';
+    '[data-testid="choose-wallet-type-import-wallet"]';
 
   private readonly importAccountFromMultichainWalletModalButton =
-    '[data-testid="add-wallet-modal-import-account"]';
+    '[data-testid="choose-wallet-type-import-account"]';
 
   private readonly multichainAccountMenuItem =
     '.multichain-account-cell-menu-item';
@@ -94,10 +79,7 @@ class AccountListPage {
     '[data-testid="account-name-input"] input';
 
   private readonly multichainAccountNameInputConfirmButton =
-    '.mm-button-base[aria-label="Confirm"]';
-
-  private readonly createAccountButton =
-    '[data-testid="multichain-account-menu-popover-action-button"]';
+    '[data-testid="account-name-confirm-button"]';
 
   private readonly addMultichainAccountButton =
     '[data-testid="add-multichain-account-button"]';
@@ -227,16 +209,13 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
+  async checkPageIsLoaded(
+    timeout: number = 10000,
+    { waitForSync = true }: { waitForSync?: boolean } = {},
+  ): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [
-          {
-            css: this.addMultichainAccountButton,
-            text: 'Add account',
-          },
-          this.addMultichainWalletButton,
-        ],
+        [this.addMultichainAccountButton, this.addMultichainWalletButton],
         { timeout },
       );
     } catch (e) {
@@ -244,7 +223,9 @@ class AccountListPage {
       throw e;
     }
 
-    await this.waitUntilSyncingIsCompleted();
+    if (waitForSync) {
+      await this.waitUntilSyncingIsCompleted();
+    }
     console.log('Account list is loaded');
   }
 
@@ -259,8 +240,10 @@ class AccountListPage {
     expectedErrorMessage: string = '',
   ): Promise<void> {
     console.log(`Watch EOA account with address ${address}`);
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.addEoaAccountButton);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.driver.clickElement(
+      this.chooseWalletTypeWatchEthereumAccountButton,
+    );
     await this.driver.waitForSelector(this.watchAccountModalTitle);
     await this.driver.fill(this.watchAccountAddressInput, address);
     if (expectedErrorMessage) {
@@ -284,37 +267,16 @@ class AccountListPage {
    *
    * @param privateKey - Private key of the account
    * @param expectedErrorMessage - Expected error message if the import should fail
-   * @param options - Additional options
-   * @param options.isMultichainAccountsState2Enabled - Whether the multichain accounts state 2 feature is enabled
    */
   async addNewImportedAccount(
     privateKey: string,
     expectedErrorMessage?: string,
-    options?: { isMultichainAccountsState2Enabled?: boolean },
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    if (options?.isMultichainAccountsState2Enabled) {
-      await this.driver.clickElement(this.addMultichainWalletButton);
-      await this.driver.clickElement(
-        this.importAccountFromMultichainWalletModalButton,
-      );
-      await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
-      if (expectedErrorMessage) {
-        await this.driver.clickElement(this.importAccountConfirmButton);
-        await this.driver.waitForSelector({
-          css: '.mm-help-text',
-          text: expectedErrorMessage,
-        });
-      } else {
-        await this.driver.clickElementAndWaitToDisappear(
-          this.importAccountConfirmButton,
-        );
-      }
-      return;
-    }
-
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.addImportedAccountButton);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.driver.clickElement(
+      this.importAccountFromMultichainWalletModalButton,
+    );
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
     if (expectedErrorMessage) {
       await this.driver.clickElement(this.importAccountConfirmButton);
@@ -326,6 +288,7 @@ class AccountListPage {
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
       );
+      await this.closeChooseWalletTypePage();
     }
   }
 
@@ -351,10 +314,8 @@ class AccountListPage {
    */
   async waitUntilSyncingIsCompleted(): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    await this.driver.assertElementNotPresent({
-      css: this.addMultichainAccountButton,
-      text: 'Syncing',
-    });
+    await this.checkAddWalletButtonIsDisplayed();
+    await this.driver.assertElementNotPresent(this.syncingMessage);
   }
 
   /**
@@ -395,6 +356,11 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
     );
+  }
+
+  async closeChooseWalletTypePage(): Promise<void> {
+    console.log(`Navigate back from choose wallet type page`);
+    await this.driver.clickElement(this.chooseWalletTypeBackButton);
   }
 
   async closeMultichainAccountsPage(): Promise<void> {
@@ -439,6 +405,7 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
+    await this.closeChooseWalletTypePage();
   }
 
   /**
@@ -728,18 +695,6 @@ class AccountListPage {
     });
   }
 
-  async checkMultichainAccountNameNotDisplayed(
-    expectedLabel: string,
-  ): Promise<void> {
-    console.log(
-      `Check that multichain account label ${expectedLabel} is not displayed on account list page`,
-    );
-    await this.driver.assertElementNotPresent({
-      css: this.multichainAccountListItem,
-      text: expectedLabel,
-    });
-  }
-
   async checkWalletDisplayedInAccountListMenu(
     expectedLabel: string = 'Wallet',
   ): Promise<void> {
@@ -755,6 +710,11 @@ class AccountListPage {
   async checkWalletDetailsButtonIsDisplayed(): Promise<void> {
     console.log('Check wallet details button is displayed');
     await this.driver.waitForSelector(this.walletDetailsButton);
+  }
+
+  async checkAddWalletButtonIsDisplayed(): Promise<void> {
+    console.log('Check add wallet button is displayed');
+    await this.driver.waitForSelector(this.addMultichainWalletButton);
   }
 
   async clickWalletDetailsButton(): Promise<void> {
@@ -812,24 +772,27 @@ class AccountListPage {
   }
 
   /**
-   * Checks that the add watch account button is displayed in the create account modal.
+   * Checks that the watch ethereum account option is displayed in the choose wallet type page.
    *
-   * @param expectedAvailability - Whether the add watch account button is expected to be displayed.
+   * @param expectedAvailability - Whether the watch ethereum account option is expected to be displayed.
    */
   async checkAddWatchAccountAvailable(
     expectedAvailability: boolean,
   ): Promise<void> {
     console.log(
-      `Check add watch account button is ${
+      `Check watch ethereum account option is ${
         expectedAvailability ? 'displayed ' : 'not displayed'
       }`,
     );
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.waitForSelector(this.addEthereumAccountButton);
+    await this.driver.clickElement(this.addMultichainWalletButton);
     if (expectedAvailability) {
-      await this.driver.waitForSelector(this.addEoaAccountButton);
+      await this.driver.waitForSelector(
+        this.chooseWalletTypeWatchEthereumAccountButton,
+      );
     } else {
-      await this.driver.assertElementNotPresent(this.addEoaAccountButton);
+      await this.driver.assertElementNotPresent(
+        this.chooseWalletTypeWatchEthereumAccountButton,
+      );
     }
   }
 
@@ -925,7 +888,7 @@ class AccountListPage {
         } is equal to ${expectedNumberOfAccounts}? ${isValid}`,
       );
       return isValid;
-    }, 20000);
+    });
   }
 
   /**
