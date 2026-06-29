@@ -38,6 +38,7 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
   '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
+export const ADD_DEVICE_ROUTE = '/settings/add-device';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -134,8 +135,11 @@ export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
   '/encryption-public-key-request';
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
+export const TX_DETAILS_ROUTE = '/tx';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+export const PREPARE_SWAP_ASSETS_ROUTE = '/swaps/prepare-bridge-page/assets';
+export const SWAP_ASSETS_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ASSETS_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
 export const HARDWARE_WALLET_SIGNATURES_ROUTE =
   '/swaps/hardware-wallet-signatures';
@@ -188,6 +192,11 @@ export const REWARDS_ROUTE = '/rewards';
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
+  {
+    path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
+    label: 'Transaction Details',
+    trackInAnalytics: true,
+  },
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },

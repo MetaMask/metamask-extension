@@ -86,7 +86,7 @@ type ControllerStateSelector<
   metamask: Pick<InputState, ResultField>;
 }) => InputState[ResultField];
 
-const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
+export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
   [
     (state: { metamask: RemoteFeatureFlagControllerState }) =>
       state.metamask?.remoteFeatureFlags ?? {},
@@ -363,7 +363,8 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
         const assetAddress = toChecksumHexAddress(
           metadata.type === 'native'
-            ? getNativeTokenAddress(hexChainId)
+            ? // TokenBalancesController always uses zero address for native tokens
+              '0x0000000000000000000000000000000000000000'
             : assetType.assetReference,
         ) as Hex;
 
@@ -857,11 +858,21 @@ export const getMultichainAssetsRatesControllerConversionRates =
           expirationTime: undefined,
           marketData: {
             fungible: true,
-            allTimeHigh: `${assetPrice.allTimeHigh}`,
-            allTimeLow: `${assetPrice.allTimeLow}`,
-            circulatingSupply: `${assetPrice.circulatingSupply}`,
-            marketCap: `${assetPrice.marketCap}`,
-            totalVolume: `${assetPrice.totalVolume}`,
+            allTimeHigh: Number.isFinite(assetPrice.allTimeHigh)
+              ? `${assetPrice.allTimeHigh}`
+              : undefined,
+            allTimeLow: Number.isFinite(assetPrice.allTimeLow)
+              ? `${assetPrice.allTimeLow}`
+              : undefined,
+            circulatingSupply: Number.isFinite(assetPrice.circulatingSupply)
+              ? `${assetPrice.circulatingSupply}`
+              : undefined,
+            marketCap: Number.isFinite(assetPrice.marketCap)
+              ? `${assetPrice.marketCap}`
+              : undefined,
+            totalVolume: Number.isFinite(assetPrice.totalVolume)
+              ? `${assetPrice.totalVolume}`
+              : undefined,
             pricePercentChange: {
               PT1H: assetPrice.pricePercentChange1h as number,
               P1D: assetPrice.pricePercentChange1d as number,
@@ -899,7 +910,7 @@ export const getRatesControllerRates = createDeepEqualSelector(
     const result: RatesControllerState['rates'] = {};
 
     for (const [assetId, metadata] of Object.entries(assetsInfo)) {
-      const symbol = metadata.symbol.toLowerCase();
+      const symbol = metadata.symbol?.toLowerCase();
 
       // Skip if we already have an entry for this symbol
       if (result[symbol]) {

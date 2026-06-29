@@ -161,6 +161,24 @@ describe('OrderSummary', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('announces the exceed state to screen readers when slippage exceeds the cap', () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+          showSlippageRow
+          slippageDisplay="Est: 0.14% / Max: 0.1%"
+          exceedsMaxSlippage
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-order-slippage-exceeds-indicator'),
+      ).toHaveTextContent(messages.perpsSlippageExceeded.message);
+    });
+
     it('does not show discounted fee when estimatedFees is null even if a discount is active', () => {
       renderWithProvider(
         <OrderSummary

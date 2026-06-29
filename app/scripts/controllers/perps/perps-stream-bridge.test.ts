@@ -717,6 +717,36 @@ describe('PerpsStreamBridge', () => {
       expect(emit).toHaveBeenCalledWith('orderBook', { bids: [], asks: [] });
     });
 
+    it('forwards levels / nSigFigs / mantissa to the controller', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+          levels?: number;
+          nSigFigs?: 2 | 3 | 4 | 5;
+          mantissa?: 2 | 5;
+        }) => Promise<void>
+      )({
+        symbol: 'ETH',
+        levels: 25,
+        nSigFigs: 4,
+        mantissa: 5,
+      });
+
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        levels: 25,
+        nSigFigs: 4,
+        mantissa: 5,
+        callback: expect.any(Function),
+      });
+    });
+
     it('deactivateOrderBookStream tears down order book subscription', async () => {
       const controller = createMockController();
       const unsub = jest.fn();
@@ -1548,6 +1578,9 @@ describe('PerpsStreamBridge', () => {
       await jest.advanceTimersByTimeAsync(300);
 
       expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledWith({
+        useTerminalApi: true,
+      });
       expect(controller.getPositions).toHaveBeenCalledWith({
         skipCache: true,
       });

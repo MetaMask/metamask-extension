@@ -242,7 +242,7 @@ export const selectLocalTxForTxHash = (
  * @param txHash - the tx hash
  * @returns the bridge history item for the given tx hash
  */
-const selectBridgeHistoryItemForTxHash = createSelector(
+export const selectBridgeHistoryItemForTxHash = createSelector(
   [
     selectBridgeHistory,
     selectLocalTxForTxHash,

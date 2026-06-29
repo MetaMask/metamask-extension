@@ -6,6 +6,7 @@ import { Color, TextVariant } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
 import { ButtonIcon, IconName, Text } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
+import { I18nContext } from '../../../contexts/i18n';
 
 export default class EditableLabel extends Component {
   static propTypes = {
@@ -15,9 +16,7 @@ export default class EditableLabel extends Component {
     accounts: PropTypes.array,
   };
 
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   state = {
     isEditing: false,
@@ -36,7 +35,7 @@ export default class EditableLabel extends Component {
   renderEditing() {
     const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
       this.props.accounts,
-      this.context,
+      { t: this.context },
       this.state.value,
       this.props.defaultValue,
     );
@@ -61,7 +60,7 @@ export default class EditableLabel extends Component {
           error={!isValidAccountName}
           helpText={errorMessage}
           autoFocus
-          placeholder={this.context.t('accountName')}
+          placeholder={this.context('accountName')}
         />
         <ButtonIcon
           iconName={IconName.Check}
@@ -83,7 +82,7 @@ export default class EditableLabel extends Component {
         </Text>
         <ButtonIcon
           iconName={IconName.Edit}
-          ariaLabel={this.context.t('edit')}
+          ariaLabel={this.context('edit')}
           data-testid="editable-label-button"
           onClick={() => this.setState({ isEditing: true })}
           color={Color.iconDefault}

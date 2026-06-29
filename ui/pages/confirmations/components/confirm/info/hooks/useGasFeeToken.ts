@@ -18,7 +18,7 @@ import {
   getShouldShowFiat,
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
-import { formatAmount } from '../../../simulation-details/formatAmount';
+import { formatAmount } from '../../../../../../../shared/lib/format-amount';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useFeeCalculations } from './useFeeCalculations';
 import { useNativeCurrencySymbol } from './useNativeCurrencySymbol';
@@ -118,7 +118,7 @@ function useNativeGasFeeToken(): GasFeeToken {
   );
 
   const balance = useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId),
+    selectTransactionAvailableBalance(state, transactionId, chainId),
   );
 
   const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);

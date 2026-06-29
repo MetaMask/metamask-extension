@@ -1,4 +1,5 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringType } from '@metamask/keyring-api/v2';
 
 /**
  * Hardware wallets supported by MetaMask.
@@ -157,14 +158,18 @@ export const DEVICE_KEYRING_MAP = {
 };
 
 export const KEYRING_DEVICE_PROPERTY_MAP = {
-  [KeyringTypes.ledger]: 'Ledger',
-  [KeyringTypes.trezor]: 'Trezor',
-  [KeyringTypes.oneKey]: 'OneKey',
-  [KeyringTypes.lattice]: 'Lattice',
-  [KeyringTypes.qr]: 'QR Hardware',
+  [KeyringType.Ledger]: 'Ledger',
+  [KeyringType.Trezor]: 'Trezor',
+  [KeyringType.OneKey]: 'OneKey',
+  [KeyringType.Lattice]: 'Lattice',
+  [KeyringType.Qr]: 'QR Hardware',
 };
 
 export const U2F_ERROR = 'U2F';
+
+/** Trezor SDK error code when Trezor Suite Desktop is unavailable (Firefox MV2). */
+export const TREZOR_DESKTOP_CONNECTION_MISSING_CODE =
+  'Desktop_ConnectionMissing';
 
 export const LEDGER_ERRORS_CODES = {
   '0x650f': 'ledgerErrorConnectionIssue',

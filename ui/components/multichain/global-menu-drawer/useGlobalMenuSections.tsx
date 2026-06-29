@@ -63,8 +63,9 @@ import {
   getAnySnapUpdateAvailable,
   getThirdPartyNotifySnaps,
   getUseExternalServices,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getDataCollectionForMarketing,
 } from '../../../selectors';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
@@ -137,8 +138,12 @@ export function useGlobalMenuSections(
     ],
   );
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const supportText =
@@ -181,6 +186,7 @@ export function useGlobalMenuSections(
     });
     navigate(
       `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+      { state: { globalMenuTransition: 'forward' } },
     );
   }, [
     hasThirdPartyNotifySnaps,
@@ -279,7 +285,7 @@ export function useGlobalMenuSections(
         const url = getPortfolioUrl(
           'explore/tokens',
           'ext_portfolio_button',
-          metaMetricsId,
+          analyticsId,
           isMetaMetricsEnabled === true,
           isMarketingEnabled === true,
         );
@@ -310,31 +316,43 @@ export function useGlobalMenuSections(
       });
     }
 
-    if (
+    const shouldRenderSidePanelToggle =
       getBrowserName() !== PLATFORM_FIREFOX &&
-      browserSupportsSidePanel === true &&
+      browserSupportsSidePanel !== false &&
       isSidePanelEnabled &&
-      (isPopup || isSidepanel)
-    ) {
-      section2.items.push({
-        id: 'global-menu-toggle-view',
-        iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
-        label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
-        onClick: async () => {
-          await dispatch(toggleDefaultView());
-          trackEvent({
-            event: MetaMetricsEventName.ViewportSwitched,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: METRICS_LOCATION,
-              to: isSidepanel
-                ? ENVIRONMENT_TYPE_POPUP
-                : ENVIRONMENT_TYPE_SIDEPANEL,
-            },
-          });
-          onClose();
-        },
-      });
+      (isPopup || isSidepanel);
+
+    if (shouldRenderSidePanelToggle) {
+      if (browserSupportsSidePanel === null) {
+        section2.items.push({
+          id: 'global-menu-toggle-view-placeholder',
+          iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
+          label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
+          onClick: () => undefined,
+          disabled: true,
+          className: 'invisible pointer-events-none',
+        });
+      } else {
+        section2.items.push({
+          id: 'global-menu-toggle-view',
+          iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
+          label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
+          onClick: async () => {
+            await dispatch(toggleDefaultView());
+            trackEvent({
+              event: MetaMetricsEventName.ViewportSwitched,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+                to: isSidepanel
+                  ? ENVIRONMENT_TYPE_POPUP
+                  : ENVIRONMENT_TYPE_SIDEPANEL,
+              },
+            });
+            onClose();
+          },
+        });
+      }
     }
 
     const section2Manage: GlobalMenuSection = {
@@ -477,7 +495,7 @@ export function useGlobalMenuSections(
     onClose,
     dispatch,
     trackEvent,
-    metaMetricsId,
+    analyticsId,
     isMetaMetricsEnabled,
     isMarketingEnabled,
     browserSupportsSidePanel,

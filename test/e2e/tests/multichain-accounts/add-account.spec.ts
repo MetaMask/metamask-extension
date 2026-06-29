@@ -10,7 +10,7 @@ import {
 } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
@@ -81,9 +81,9 @@ describe('Add account', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAmountInActivity('-2.8 ETH');
-        await activityList.waitPendingTxToNotBeVisible();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAmountInActivity('-2.8 ETH');
+        await activityTab.waitPendingTxToNotBeVisible();
         await headerNavbar.openAccountMenu();
         await accountListPage.checkMultichainAccountBalanceDisplayed({
           wallet: 'Wallet 1',
@@ -134,7 +134,7 @@ describe('Add account', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '$75,250.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -187,7 +187,7 @@ describe('Add account', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '$85,025.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -256,7 +256,7 @@ describe('Add account', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '$75,250.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  act,
   createEvent,
   fireEvent,
   render,
@@ -12,6 +13,7 @@ import {
   MetaMetricsContext,
   type MetaMetricsContextValue,
 } from '../../../../contexts/metametrics';
+import * as resolveDeepLinkHrefUtils from '../../../../helpers/utils/resolve-deep-link-href';
 import {
   ExtensionLinkButton,
   ExternalLinkButton,
@@ -68,14 +70,18 @@ function createFeatureAnnouncementNotificationWithExtensionLink(
   }) as FeatureAnnouncementNotification;
 }
 
-function renderExternalLinkButton(externalLinkUrl: string) {
-  render(
+function createExternalLinkButton(externalLinkUrl: string) {
+  return (
     <MetaMetricsContext.Provider value={metametricsContext}>
       <ExternalLinkButton
         notification={createFeatureAnnouncementNotification(externalLinkUrl)}
       />
-    </MetaMetricsContext.Provider>,
+    </MetaMetricsContext.Provider>
   );
+}
+
+function renderExternalLinkButton(externalLinkUrl: string) {
+  return render(createExternalLinkButton(externalLinkUrl));
 }
 
 function renderExtensionLinkButton(extensionLinkRoute?: string) {
@@ -88,6 +94,18 @@ function renderExtensionLinkButton(extensionLinkRoute?: string) {
       />
     </MetaMetricsContext.Provider>,
   );
+}
+
+function createDeferred<ResolvedValue = void>() {
+  let resolvePromise: (
+    value: ResolvedValue | PromiseLike<ResolvedValue>,
+  ) => void = () => undefined;
+
+  const promise = new Promise<ResolvedValue>((resolvedValue) => {
+    resolvePromise = resolvedValue;
+  });
+
+  return { promise, resolve: resolvePromise };
 }
 
 describe('Feature announcement footer buttons', () => {
@@ -142,7 +160,13 @@ describe('Feature announcement footer buttons', () => {
     );
 
     const link = screen.getByRole('link', { name: linkText });
-    await waitFor(() => expect(link).not.toHaveAttribute('target'));
+    await waitFor(() => {
+      expect(link).toHaveAttribute(
+        'href',
+        '/settings?showShieldEntryModal=true&utm_source=contentful',
+      );
+      expect(link).not.toHaveAttribute('target');
+    });
 
     fireEvent.click(link);
 
@@ -167,6 +191,146 @@ describe('Feature announcement footer buttons', () => {
     expect(clickEvent.defaultPrevented).toBe(false);
     expect(global.platform.openTab).not.toHaveBeenCalled();
     expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+  });
+
+  it('reuses an in-flight deep link resolution when clicked', async () => {
+    const deferredResolution = createDeferred<string>();
+    const resolveTrustedDeepLinkHrefSpy = jest
+      .spyOn(resolveDeepLinkHrefUtils, 'resolveTrustedDeepLinkHref')
+      .mockReturnValue(deferredResolution.promise);
+
+    renderExternalLinkButton('https://link.metamask.io/buy?amount=100');
+
+    await waitFor(() =>
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledTimes(1),
+    );
+
+    fireEvent.click(screen.getByRole('link', { name: linkText }));
+
+    expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledTimes(1);
+
+    deferredResolution.resolve('https://app.metamask.io/buy?amount=100');
+
+    await waitFor(() =>
+      expect(global.platform.openTab).toHaveBeenCalledWith({
+        url: 'https://app.metamask.io/buy?amount=100',
+      }),
+    );
+  });
+
+  it('does not reuse a resolved href after the external link URL changes', async () => {
+    const firstUrl = 'https://link.metamask.io/buy?amount=100';
+    const firstResolvedUrl = 'https://app.metamask.io/buy?amount=100';
+    const secondUrl = 'https://link.metamask.io/buy?amount=200';
+    const secondResolvedUrl = 'https://app.metamask.io/buy?amount=200';
+    const secondResolution = createDeferred<string>();
+    const resolveTrustedDeepLinkHrefSpy = jest
+      .spyOn(resolveDeepLinkHrefUtils, 'resolveTrustedDeepLinkHref')
+      .mockImplementation((href) => {
+        if (href === firstUrl) {
+          return Promise.resolve(firstResolvedUrl);
+        }
+
+        if (href === secondUrl) {
+          return secondResolution.promise;
+        }
+
+        return Promise.resolve(href);
+      });
+    const { rerender } = renderExternalLinkButton(firstUrl);
+
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: linkText })).toHaveAttribute(
+        'href',
+        firstResolvedUrl,
+      ),
+    );
+
+    rerender(createExternalLinkButton(secondUrl));
+
+    expect(screen.getByRole('link', { name: linkText })).toHaveAttribute(
+      'href',
+      secondUrl,
+    );
+    await waitFor(() =>
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(secondUrl),
+    );
+
+    fireEvent.click(screen.getByRole('link', { name: linkText }));
+
+    expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      secondResolution.resolve(secondResolvedUrl);
+      await secondResolution.promise;
+    });
+
+    await waitFor(() =>
+      expect(global.platform.openTab).toHaveBeenCalledWith({
+        url: secondResolvedUrl,
+      }),
+    );
+    expect(global.platform.openTab).not.toHaveBeenCalledWith({
+      url: firstResolvedUrl,
+    });
+  });
+
+  it('keeps the current in-flight deep link resolution when an older preload settles', async () => {
+    const firstUrl = 'https://link.metamask.io/buy?amount=100';
+    const firstResolvedUrl = 'https://app.metamask.io/buy?amount=100';
+    const secondUrl = 'https://link.metamask.io/buy?amount=200';
+    const secondResolvedUrl = 'https://app.metamask.io/buy?amount=200';
+    const firstResolution = createDeferred<string>();
+    const secondResolution = createDeferred<string>();
+    const resolveTrustedDeepLinkHrefSpy = jest
+      .spyOn(resolveDeepLinkHrefUtils, 'resolveTrustedDeepLinkHref')
+      .mockImplementation((href) => {
+        if (href === firstUrl) {
+          return firstResolution.promise;
+        }
+
+        if (href === secondUrl) {
+          return secondResolution.promise;
+        }
+
+        return Promise.resolve(href);
+      });
+    const { rerender } = renderExternalLinkButton(firstUrl);
+
+    await waitFor(() =>
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(firstUrl),
+    );
+
+    rerender(createExternalLinkButton(secondUrl));
+
+    await waitFor(() =>
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(secondUrl),
+    );
+    expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      firstResolution.resolve(firstResolvedUrl);
+      await firstResolution.promise;
+      await Promise.resolve();
+    });
+
+    fireEvent.click(screen.getByRole('link', { name: linkText }));
+
+    expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      secondResolution.resolve(secondResolvedUrl);
+      await secondResolution.promise;
+    });
+
+    await waitFor(() =>
+      expect(global.platform.openTab).toHaveBeenCalledWith({
+        url: secondResolvedUrl,
+      }),
+    );
+    expect(global.platform.openTab).not.toHaveBeenCalledWith({
+      url: firstResolvedUrl,
+    });
   });
 
   it('lets non-primary clicks use native link navigation', async () => {

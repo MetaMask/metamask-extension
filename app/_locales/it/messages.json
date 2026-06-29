@@ -1,10 +1,4 @@
 {
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Errore"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Dati incongruenti. Controlla i dati della transazione."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Non ci sono altri account. Se desideri accedere a un altro account non elencato di seguito, ricollega il tuo portafoglio hardware e selezionalo."
   },
@@ -764,9 +758,6 @@
   },
   "notCurrentAccount": {
     "message": "È questo l'account corretto? È diverso dall'account selezionato nel tuo portafoglio"
-  },
-  "notEnoughGas": {
-    "message": "Gas Non Sufficiente"
   },
   "ofTextNofM": {
     "message": "di"

@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 212,
+      "currentMigrationVersion": 215,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -59,6 +59,7 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
+      "perpsTabBadgeSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
@@ -186,7 +187,6 @@
         }
       ],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
       "completedMetaMetricsOnboarding": false,
       "tracesBeforeMetricsOptIn": [
@@ -2046,6 +2046,7 @@
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
+        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",
@@ -2079,6 +2080,7 @@
     },
     "ProfileMetricsController": {
       "initialEnqueueCompleted": false,
+      "proofBackfillEnqueued": false,
       "syncQueue": {}
     },
     "RemoteFeatureFlagController": {
@@ -2274,6 +2276,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 212
+    "version": 215
   }
 }
