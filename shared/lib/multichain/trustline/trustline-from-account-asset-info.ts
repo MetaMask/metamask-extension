@@ -43,6 +43,20 @@ function isClassicTrustlineAssetCaip19(assetId: CaipAssetType): boolean {
   }
 }
 
+export function isClassicTrustlineAsset(options: {
+  chainId: CaipChainId | string;
+  assetId?: CaipAssetType | string;
+}): boolean {
+  const { chainId, assetId } = options;
+  if (!assetId) {
+    return false;
+  }
+  return (
+    isClassicTrustlineChainId(chainId) &&
+    isClassicTrustlineAssetCaip19(assetId as CaipAssetType)
+  );
+}
+
 /**
  * Generic helper that determines whether a classic `asset:` trustline
  * should be considered inactive for display purposes.
@@ -62,11 +76,7 @@ export function isClassicTrustlineInactiveForDisplay(options: {
 }): boolean {
   const { chainId, assetId, accountAssetInfo, balance } = options;
 
-  if (!assetId || !isClassicTrustlineChainId(chainId)) {
-    return false;
-  }
-
-  if (!isClassicTrustlineAssetCaip19(assetId as CaipAssetType)) {
+  if (!isClassicTrustlineAsset({ chainId, assetId })) {
     return false;
   }
 
