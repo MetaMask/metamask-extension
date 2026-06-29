@@ -504,7 +504,7 @@ export class PerpsStreamBridge {
 
     try {
       const marketsResult = await this.#controller
-        .getMarketDataWithPrices()
+        .getMarketDataWithPrices({ useTerminalApi: true })
         .catch(() => null);
 
       if (marketsResult) {
