@@ -73,6 +73,12 @@
       "lastCheckedAt": null,
       "walletComplianceStatusMap": "object"
     },
+    "ConfigRegistryController": {
+      "configs": "object",
+      "etag": null,
+      "lastFetched": null,
+      "version": null
+    },
     "CurrencyController": {
       "currencyRates": {
         "ETH": {
@@ -195,6 +201,7 @@
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
+        "gasSponsorshipOptOutByChainId": "object",
         "hideZeroBalanceTokens": false,
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,

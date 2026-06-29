@@ -1584,9 +1584,6 @@
   "back": {
     "message": "वापस जाएं"
   },
-  "backToHome": {
-    "message": "होम स्क्रीन पर वापस लौटें"
-  },
   "backUpIncomplete": {
     "message": "बैकअप अधूरा है"
   },
@@ -2421,9 +2418,6 @@
   "closeSlide": {
     "message": "$1 बंद करें",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "आप इस विंडो को कभी भी बंद कर सकते हैं।"
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -9297,24 +9291,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "स्मार्ट स्वैप अस्थायी रूप से अनुपलब्ध हैं।"
   },
-  "smartTransactionCancelled": {
-    "message": "आपका ट्रांसेक्शन कैंसिल कर दिया गया था"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "आपका ट्रांसेक्शन पूरा नहीं हो सका, इसलिए आपको अनावश्यक गैस फीस भरने से बचाने के लिए इसे कैंसिल कर दिया गया।"
-  },
-  "smartTransactionError": {
-    "message": "आपका ट्रांसेक्शन नहीं हो पाया"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "बाज़ार में अचानक हुए परिवर्तन विफलताओं का कारण बन सकते हैं। यदि समस्या बनी रहती है, तो MetaMask कस्टमर सपोर्ट से संपर्क करें।"
-  },
-  "smartTransactionPending": {
-    "message": "आपका ट्रांसेक्शन सबमिट किया गया"
-  },
-  "smartTransactionSuccess": {
-    "message": "आपका ट्रांसेक्शन पूरा हो गया है"
-  },
   "smartTransactions": {
     "message": "स्मार्ट ट्रांसेक्शन"
   },
@@ -10281,9 +10257,6 @@
   "tokenContractAddress": {
     "message": "टोकन कॉन्ट्रैक्ट एड्रेस"
   },
-  "tokenContractError": {
-    "message": "यह एड्रेस एक टोकन कॉन्ट्रैक्ट एड्रेस है। अगर आप इस एड्रेस पर टोकन भेजते हैं, तो आप उन्हें खो देंगे।"
-  },
   "tokenContractWarning": {
     "message": "टोकन कॉन्ट्रैक्ट वार्निंग"
   },
@@ -10773,9 +10746,6 @@
   "view": {
     "message": "देखें"
   },
-  "viewActivity": {
-    "message": "एक्टिविटी देखें"
-  },
   "viewAddressOnExplorer": {
     "message": "$1 पर देखें",
     "description": "$1 is the block explorer name"
@@ -10802,9 +10772,6 @@
   },
   "viewTokenDetails": {
     "message": "टोकन का विवरण देखें"
-  },
-  "viewTransaction": {
-    "message": "ट्रांसेक्शन देखें"
   },
   "viewinExplorer": {
     "message": "एक्सप्लोरर में $1 देखें",

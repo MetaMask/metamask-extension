@@ -91,7 +91,7 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
-import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
+import { checkGmxHasReferralCode } from './lib/defi-referral-onchain-check';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // and provide the pure flag-evaluation logic without the IN_TEST bypass
@@ -131,27 +131,6 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         // Never-resolving promise: prevents any Snap provider from proceeding
         // past `ensureReady`, so no Snap accounts get created during init.
         () => new Promise(() => undefined),
-      );
-      controllerMessenger.registerActionHandler(
-        'SnapAccountService:getLegacySnapKeyring',
-        async () => {
-          const result = await controllerMessenger.call(
-            'KeyringController:withController',
-            async (controller) => {
-              const found = controller.keyrings.find(
-                ({ keyring }) => keyring.type === 'Snap Keyring',
-              );
-              let snapKeyring = found?.keyring;
-              if (!snapKeyring) {
-                const { keyring } =
-                  await controller.addNewKeyring('Snap Keyring');
-                snapKeyring = keyring;
-              }
-              return { snapKeyring };
-            },
-          );
-          return result.snapKeyring;
-        },
       );
       return {
         memStateKey: null,
@@ -367,6 +346,10 @@ jest.mock('../../shared/lib/selectors/smart-transactions', () => {
 
 jest.mock('./lib/forwardRequestToSnap', () => ({
   forwardRequestToSnap: jest.fn().mockResolvedValue({}),
+}));
+
+jest.mock('./lib/defi-referral-onchain-check', () => ({
+  checkGmxHasReferralCode: jest.fn().mockResolvedValue(false),
 }));
 
 const TEST_SEED =
@@ -2234,8 +2217,8 @@ describe('MetaMaskController', () => {
           );
 
           expect(
-            // 0: HD keyring, 1: Snap keyring, 2: Trezor keyring
-            metamaskController.keyringController.state.keyrings[2].type,
+            // 0: HD keyring, 1: Trezor keyring (v2 Snap keyrings are lazy)
+            metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(TrezorKeyring.type);
           expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
         });
@@ -2247,8 +2230,8 @@ describe('MetaMaskController', () => {
           );
 
           expect(
-            // 0: HD keyring, 1: Snap keyring, 2: Ledger keyring
-            metamaskController.keyringController.state.keyrings[2].type,
+            // 0: HD keyring, 1: Ledger keyring (v2 Snap keyrings are lazy)
+            metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(LedgerKeyring.type);
           expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
         });
@@ -2525,8 +2508,8 @@ describe('MetaMaskController', () => {
                 );
 
                 expect(
-                  // 0: HD keyring, 1: Snap keyring, 2: Ledger/Trezor keyring
-                  metamaskController.keyringController.state.keyrings[2]
+                  // 0: HD keyring, 1: Ledger/Trezor keyring (v2 Snap keyrings are lazy)
+                  metamaskController.keyringController.state.keyrings[1]
                     .accounts,
                 ).toStrictEqual([
                   KNOWN_PUBLIC_KEY_ADDRESSES[
@@ -4277,20 +4260,21 @@ describe('MetaMaskController', () => {
           metamaskController.keyringController.state.keyrings,
         );
 
-        // 0: Primary HD keyring, 1: Snap keyring
-        expect(previousKeyrings).toHaveLength(2);
+        // 0: Primary HD keyring
+        expect(previousKeyrings).toHaveLength(1);
 
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
 
-        // 0: Primary HD keyring, 1: Snap keyring, 2: Newly imported HD keyring
+        // 0: Primary HD keyring, 1: Newly imported HD keyring
+        // (v2 Snap keyrings are created lazily per-snap, not eagerly here)
         expect(
           metamaskController.keyringController.state.keyrings,
-        ).toHaveLength(3);
+        ).toHaveLength(2);
         const newlyAddedKeyringId =
-          metamaskController.keyringController.state.keyrings[2].metadata.id;
+          metamaskController.keyringController.state.keyrings[1].metadata.id;
         const newSRP = Buffer.from(
           await metamaskController.legacyBackgroundApiService.getSeedPhrase(
             password,
@@ -4301,9 +4285,6 @@ describe('MetaMaskController', () => {
         expect(
           currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
         ).toHaveLength(2);
-        expect(
-          currentKeyrings.filter((kr) => kr.type === 'Snap Keyring'),
-        ).toHaveLength(1);
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
         expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
@@ -5564,6 +5545,110 @@ describe('MetaMaskController', () => {
         ).not.toHaveBeenCalled();
       });
 
+      describe('GMX on-chain referral code check', () => {
+        const GMX_ORIGIN =
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin;
+        const GMX_APPROVAL_TYPE =
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].approvalType;
+
+        beforeEach(() => {
+          jest
+            .spyOn(
+              metamaskController.remoteFeatureFlagController,
+              'state',
+              'get',
+            )
+            .mockReturnValue({
+              remoteFeatureFlags: {
+                extensionUxDefiReferralPartners: {
+                  [DefiReferralPartner.GMX]: true,
+                },
+              },
+            });
+          jest
+            .spyOn(metamaskController, 'getPermittedAccounts')
+            .mockReturnValue(mockPermittedAccounts);
+          jest.spyOn(
+            metamaskController.preferencesController,
+            'addReferralPassedAccount',
+          );
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.GMX] = {};
+          });
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is undefined', async () => {
+          checkGmxHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(DefiReferralPartner.GMX, mockPermittedAccount);
+          expect(
+            metamaskController.approvalController.add,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is Approved', async () => {
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.GMX] = {
+              [mockPermittedAccount]: ReferralStatus.Approved,
+            };
+          });
+          checkGmxHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(DefiReferralPartner.GMX, mockPermittedAccount);
+          expect(
+            metamaskController._handleDefiReferralRedirect,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('proceeds to show the prompt when wallet has no GMX referral code', async () => {
+          checkGmxHasReferralCode.mockResolvedValueOnce(false);
+          jest
+            .spyOn(metamaskController.approvalController, 'add')
+            .mockResolvedValueOnce({});
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.approvalController.add,
+          ).toHaveBeenCalledWith(
+            expect.objectContaining({
+              origin: GMX_ORIGIN,
+              type: GMX_APPROVAL_TYPE,
+            }),
+          );
+        });
+
+        it('does not call checkGmxHasReferralCode for non-GMX partners', async () => {
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(checkGmxHasReferralCode).not.toHaveBeenCalled();
+        });
+      });
+
       describe('_handleDefiReferralApprovedAccount', () => {
         beforeEach(() => {
           jest.spyOn(
@@ -5988,11 +6073,6 @@ describe('MetaMaskController', () => {
         controllerMessenger: new Messenger({
           namespace: MOCK_ANY_NAMESPACE,
         }),
-      });
-
-      // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({
-        setSelectedAccounts: jest.fn(),
       });
 
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
