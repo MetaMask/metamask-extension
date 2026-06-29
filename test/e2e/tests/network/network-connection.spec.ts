@@ -107,7 +107,9 @@ function mockNetworkConnectionApis(mockServer: Mockttp, config: NetworkConfig) {
 
   return [
     mockServer
-      .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+      .forGet(
+        /https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
+      )
       .asPriority(99)
       .always()
       .thenJson(200, {
@@ -145,9 +147,7 @@ function mockNetworkConnectionApis(mockServer: Mockttp, config: NetworkConfig) {
 
         const balances = accountIds
           .filter((accountId) =>
-            accountId
-              .toLowerCase()
-              .includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE),
+            accountId.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE),
           )
           .map((accountId) => {
             const chainRef =
