@@ -351,6 +351,14 @@
       },
       "drafts": []
     },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
+    },
     "CurrencyController": {
       "currencyRates": {
         "ETH": {
@@ -1060,6 +1068,7 @@
         "tokenNetworkFilter": {
           "0x539": true
         },
+        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",

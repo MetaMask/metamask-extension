@@ -2103,17 +2103,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  extensionSkipTransactionStatusPage: {
-    name: 'extensionSkipTransactionStatusPage',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: {
-      enabled: true,
-      minimumVersion: '13.32.0',
-    },
-    status: FeatureFlagStatus.Active,
-  },
-
   coreExtensionUxCeux1096AbtestReferralUi: {
     name: 'coreExtensionUxCeux1096AbtestReferralUi',
     type: FeatureFlagType.Remote,
