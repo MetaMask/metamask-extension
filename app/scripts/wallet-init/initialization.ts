@@ -3,23 +3,17 @@ import type { DefaultActions, DefaultEvents } from '@metamask/wallet';
 import { Json } from '@metamask/utils';
 import { Encryptor } from '@metamask/keyring-controller';
 import { ShowApprovalRequest } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import { RootMessenger } from '../lib/messenger';
 import type { PreferencesControllerStateChangeEvent } from '../controllers/preferences-controller';
 import type { OnboardingControllerStateChangeEvent } from '../controllers/onboarding';
-import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
-import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
-import { getKeyringBuilders, getKeyringV2Builders } from './keyrings';
-import {
-  getRemoteFeatureFlagClientConfigApiService,
-  setupRemoteFeatureFlagToggle,
-} from './remote-feature-flags';
-
-const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
+import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
+import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
+import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
+import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -35,6 +29,21 @@ export type WalletInitMessenger = RootMessenger<
   | OnboardingControllerStateChangeEvent
 >;
 
+/**
+ * Construct the `@metamask/wallet` `Wallet` for the extension. Each
+ * controller's client-specific options live in its own builder under
+ * `./instance-options/`.
+ *
+ * @param options - Options bag.
+ * @param options.messenger - The extension's root messenger.
+ * @param options.state - The persisted state, keyed per controller name.
+ * @param options.encryptor - The extension's vault encryptor.
+ * @param options.showApprovalRequest - Callback that surfaces a pending
+ * approval request to the user.
+ * @param options.connectivityAdapter - Adapter that observes the device's
+ * network connectivity.
+ * @returns The constructed `Wallet`.
+ */
 export function initializeWallet({
   messenger,
   state,
@@ -52,48 +61,19 @@ export function initializeWallet({
     messenger,
     state,
     instanceOptions: {
-      approvalController: {
+      approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
-        typesExcludedFromRateLimiting: [
-          ApprovalType.PersonalSign,
-          ApprovalType.EthSignTypedData,
-          ApprovalType.Transaction,
-          ApprovalType.WatchAsset,
-          ApprovalType.EthGetEncryptionPublicKey,
-          ApprovalType.EthDecrypt,
-
-          // Exclude Smart TX Status Page from rate limiting to allow sequential
-          // transactions.
-          SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-
-          // Allow one flavor of snap_dialog to be queued.
-          DIALOG_APPROVAL_TYPES.default,
-        ],
-      },
-      connectivityController: {
+      }),
+      connectivityController: getConnectivityControllerInstanceOptions({
         connectivityAdapter,
-      },
-      keyringController: {
+      }),
+      keyringController: getKeyringControllerInstanceOptions({
+        messenger,
         encryptor,
-        keyringBuilders: getKeyringBuilders(messenger),
-        keyringV2Builders: getKeyringV2Builders(),
-      },
-      remoteFeatureFlagController: {
-        clientConfigApiService: getRemoteFeatureFlagClientConfigApiService(),
-        getMetaMetricsId: () =>
-          messenger.call('AnalyticsController:getState').analyticsId,
-        clientVersion: getBaseSemVerVersion(),
-        prevClientVersion: state.AppMetadataController?.currentAppVersion as
-          | string
-          | undefined,
-        fetchInterval: REMOTE_FEATURE_FLAG_FETCH_INTERVAL,
-        disabled:
-          state.OnboardingController?.completedOnboarding !== true ||
-          state.PreferencesController?.useExternalServices === false,
-      },
-      storageService: {
-        storage: new BrowserStorageAdapter(),
-      },
+      }),
+      remoteFeatureFlagController:
+        getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
+      storageService: getStorageServiceInstanceOptions(),
     },
   });
 

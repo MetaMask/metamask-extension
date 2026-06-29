@@ -1,106 +1,93 @@
 import { Wallet } from '@metamask/wallet';
-import { Json } from '@metamask/utils';
+import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
+import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
+import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
+import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
 import { createMockMessenger } from './test-utils';
 
-jest.mock('@metamask/wallet');
-jest.mock('./keyrings', () => ({
-  getKeyringBuilders: jest.fn(() => []),
-  getKeyringV2Builders: jest.fn(() => []),
-}));
+jest.mock('@metamask/wallet', () => ({ Wallet: jest.fn() }));
 jest.mock('./remote-feature-flags', () => ({
-  getRemoteFeatureFlagClientConfigApiService: jest.fn(() => ({
-    fetchRemoteFeatureFlags: jest.fn(),
-  })),
   setupRemoteFeatureFlagToggle: jest.fn(),
 }));
-jest.mock('../../../shared/lib/feature-flags/version-gating', () => ({
-  getBaseSemVerVersion: jest.fn(() => '1.2.3'),
+jest.mock('./instance-options/approval-controller', () => ({
+  getApprovalControllerInstanceOptions: jest.fn(() => 'approval-options'),
+}));
+jest.mock('./instance-options/connectivity-controller', () => ({
+  getConnectivityControllerInstanceOptions: jest.fn(
+    () => 'connectivity-options',
+  ),
+}));
+jest.mock('./instance-options/keyring-controller', () => ({
+  getKeyringControllerInstanceOptions: jest.fn(() => 'keyring-options'),
+}));
+jest.mock('./instance-options/remote-feature-flag-controller', () => ({
+  getRemoteFeatureFlagControllerInstanceOptions: jest.fn(() => 'rffc-options'),
+}));
+jest.mock('./instance-options/storage-service', () => ({
+  getStorageServiceInstanceOptions: jest.fn(() => 'storage-options'),
 }));
 
 const MockWallet = jest.mocked(Wallet);
+const connectivityAdapter = {} as unknown as ConnectivityAdapter;
 
-/**
- * Calls `initializeWallet` with the given persisted state and returns the
- * `remoteFeatureFlagController` instance options the wallet was constructed
- * with.
- *
- * @param state - The persisted state passed to `initializeWallet`.
- * @returns The `remoteFeatureFlagController` instance options.
- */
-function getRemoteFeatureFlagOptions(
-  state: Record<string, Record<string, Json>>,
-) {
-  initializeWallet({
-    messenger: createMockMessenger(),
-    state,
-    connectivityAdapter: {} as unknown as ConnectivityAdapter,
-  });
-  return MockWallet.mock.calls[0][0].instanceOptions
-    .remoteFeatureFlagController;
-}
-
-describe('initializeWallet — RemoteFeatureFlagController options', () => {
+describe('initializeWallet', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('passes prevClientVersion from persisted AppMetadataController.currentAppVersion', () => {
-    const options = getRemoteFeatureFlagOptions({
-      AppMetadataController: { currentAppVersion: '1.0.0' },
+  it('constructs a Wallet, wiring each builder output to its instanceOptions slot', () => {
+    const messenger = createMockMessenger();
+    const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
+
+    initializeWallet({ messenger, state, connectivityAdapter });
+
+    expect(MockWallet).toHaveBeenCalledWith({
+      messenger,
+      state,
+      instanceOptions: {
+        approvalController: 'approval-options',
+        connectivityController: 'connectivity-options',
+        keyringController: 'keyring-options',
+        remoteFeatureFlagController: 'rffc-options',
+        storageService: 'storage-options',
+      },
+    });
+  });
+
+  it('threads the messenger, state, and injected values through to the builders', () => {
+    const messenger = createMockMessenger();
+    const state = { OnboardingController: { completedOnboarding: true } };
+    const encryptor = {} as unknown as Encryptor;
+    const showApprovalRequest = jest.fn();
+
+    initializeWallet({
+      messenger,
+      state,
+      encryptor,
+      showApprovalRequest,
+      connectivityAdapter,
     });
 
-    expect(options?.prevClientVersion).toBe('1.0.0');
-  });
-
-  it('leaves prevClientVersion undefined when AppMetadataController state is absent', () => {
-    const options = getRemoteFeatureFlagOptions({});
-
-    expect(options?.prevClientVersion).toBeUndefined();
-  });
-
-  it('is enabled when onboarding is complete and external services are on', () => {
-    const options = getRemoteFeatureFlagOptions({
-      OnboardingController: { completedOnboarding: true },
-      PreferencesController: { useExternalServices: true },
+    expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
+      showApprovalRequest,
     });
-
-    expect(options?.disabled).toBe(false);
-  });
-
-  it('is disabled when onboarding is incomplete', () => {
-    const options = getRemoteFeatureFlagOptions({
-      OnboardingController: { completedOnboarding: false },
-      PreferencesController: { useExternalServices: true },
+    expect(getConnectivityControllerInstanceOptions).toHaveBeenCalledWith({
+      connectivityAdapter,
     });
-
-    expect(options?.disabled).toBe(true);
-  });
-
-  it('is disabled when external services are turned off', () => {
-    const options = getRemoteFeatureFlagOptions({
-      OnboardingController: { completedOnboarding: true },
-      PreferencesController: { useExternalServices: false },
+    expect(getKeyringControllerInstanceOptions).toHaveBeenCalledWith({
+      messenger,
+      encryptor,
     });
-
-    expect(options?.disabled).toBe(true);
-  });
-
-  it('is disabled when neither onboarding nor preferences state is present', () => {
-    const options = getRemoteFeatureFlagOptions({});
-
-    expect(options?.disabled).toBe(true);
-  });
-
-  it('stays enabled when onboarding is complete and useExternalServices is absent (defaults to on)', () => {
-    const options = getRemoteFeatureFlagOptions({
-      OnboardingController: { completedOnboarding: true },
-      PreferencesController: {},
+    expect(getRemoteFeatureFlagControllerInstanceOptions).toHaveBeenCalledWith({
+      messenger,
+      state,
     });
-
-    expect(options?.disabled).toBe(false);
+    expect(getStorageServiceInstanceOptions).toHaveBeenCalledWith();
   });
 });
 
@@ -117,7 +104,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
     initializeWallet({
       messenger,
       state: { OnboardingController: { completedOnboarding: true } },
-      connectivityAdapter: {} as unknown as ConnectivityAdapter,
+      connectivityAdapter,
     });
 
     expect(mockSetupToggle).toHaveBeenCalledWith({
@@ -133,7 +120,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
     initializeWallet({
       messenger: createMockMessenger(),
       state: { PreferencesController: { useExternalServices: false } },
-      connectivityAdapter: {} as unknown as ConnectivityAdapter,
+      connectivityAdapter,
     });
 
     expect(mockSetupToggle).toHaveBeenCalledWith(
