@@ -11,3 +11,5 @@ export {
   getHip3AllowedSources,
   getHip3AllowedSourcesSet,
 } from './feature-flags';
+
+export { getPerpsTabBadgeSeen } from './persisted-state';
