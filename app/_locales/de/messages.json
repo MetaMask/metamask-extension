@@ -5714,9 +5714,6 @@
   "notCurrentAccount": {
     "message": "Ist dies das richtige Konto? Es unterscheidet sich von dem aktuell ausgewählten Konto in Ihrem Wallet"
   },
-  "notEnoughGas": {
-    "message": "Nicht genügend Gas"
-  },
   "notificationDetail": {
     "message": "Details"
   },
@@ -10283,9 +10280,6 @@
   },
   "tokenContractAddress": {
     "message": "Token-Contract-Adresse"
-  },
-  "tokenContractError": {
-    "message": "Diese Adresse ist eine Token-Contract-Adresse. Das Senden von Token an diese Adresse führt zu deren Verlust."
   },
   "tokenContractWarning": {
     "message": "Token-Contract-Warnung"

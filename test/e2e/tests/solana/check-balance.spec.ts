@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { SNAP_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
@@ -25,7 +25,7 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '0 SOL',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -48,7 +48,7 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$0',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -73,7 +73,7 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$5,643.50',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -94,7 +94,7 @@ describe('Check balance', function (this: Suite) {
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '50 SOL',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );

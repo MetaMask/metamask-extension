@@ -5714,9 +5714,6 @@
   "notCurrentAccount": {
     "message": "S’agit-il du bon compte ? Il est différent de celui actuellement sélectionné dans votre portefeuille"
   },
-  "notEnoughGas": {
-    "message": "Pas assez de gaz"
-  },
   "notificationDetail": {
     "message": "Détails"
   },
@@ -10283,9 +10280,6 @@
   },
   "tokenContractAddress": {
     "message": "Adresse du contrat de jeton"
-  },
-  "tokenContractError": {
-    "message": "Cette adresse est une adresse de contrat de jetons. Si vous envoyez des jetons à cette adresse, vous les perdrez."
   },
   "tokenContractWarning": {
     "message": "Avertissement concernant le contrat de jetons"

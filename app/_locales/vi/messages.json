@@ -5718,9 +5718,6 @@
   "notCurrentAccount": {
     "message": "Tài khoản này có chính xác không? Tài khoản này khác với tài khoản bạn đang chọn trong ví của mình"
   },
-  "notEnoughGas": {
-    "message": "Không đủ phí gas"
-  },
   "notificationDetail": {
     "message": "Chi tiết"
   },
@@ -10291,9 +10288,6 @@
   },
   "tokenContractAddress": {
     "message": "Địa chỉ hợp đồng của token"
-  },
-  "tokenContractError": {
-    "message": "Đây là địa chỉ hợp đồng token. Nếu bạn gửi token đến địa chỉ này, bạn sẽ bị mất chúng."
   },
   "tokenContractWarning": {
     "message": "Cảnh báo hợp đồng token"
