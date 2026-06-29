@@ -63,7 +63,7 @@ describe('LedgerDMKBridgeHandler', () => {
       const handler = new LedgerDMKBridgeHandler();
 
       await expect(
-        handler.handleAction(LedgerAction.GetAppConfiguration),
+        handler.handleAction(LedgerAction.getAppConfiguration),
       ).rejects.toThrow('Ledger DMK stub handler is not initialised');
     });
 
@@ -74,12 +74,12 @@ describe('LedgerDMKBridgeHandler', () => {
       await handler.init();
 
       const result = await handler.handleAction(
-        LedgerAction.GetAddress,
+        LedgerAction.getPublicKey,
         params,
       );
 
       expect(mockLegacyHandleAction).toHaveBeenCalledWith(
-        LedgerAction.GetAddress,
+        LedgerAction.getPublicKey,
         params,
       );
       expect(result).toEqual({ ok: true });
