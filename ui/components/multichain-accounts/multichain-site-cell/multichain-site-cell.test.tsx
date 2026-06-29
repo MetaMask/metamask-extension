@@ -13,14 +13,17 @@ import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../s
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainSiteCell } from './multichain-site-cell';
 
-jest.mock('../../../contexts/metametrics', () => {
-  const { createContext } = jest.requireActual('react');
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
   return {
-    MetaMetricsContext: createContext({
-      trackEvent: jest.fn(),
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
     }),
   };
 });

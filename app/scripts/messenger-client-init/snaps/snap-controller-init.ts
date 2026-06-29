@@ -2,7 +2,7 @@ import {
   SnapController,
   SnapControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { createDeferredPromise, Json } from '@metamask/utils';
+import { createDeferredPromise, type Json } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -15,7 +15,19 @@ import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
-import { getClientConfig } from './utils';
+import {
+  createEventBuilder,
+  trackEvent as trackAnalyticsEvent,
+} from '../../controllers/analytics';
+
+// Copied from `@metamask/snaps-controllers`, since it is not exported.
+type TrackingEventPayload = {
+  event: string;
+  category: string;
+  properties: Record<string, Json | undefined>;
+};
+
+type TrackEventHook = (event: TrackingEventPayload) => void;
 
 /**
  * Initialize the Snap controller.
@@ -112,8 +124,6 @@ export const SnapControllerInit: MessengerClientInitFunction<
       forcePreinstalledSnaps,
     },
 
-    clientConfig: getClientConfig(),
-
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected
     // type.
     // TODO: Look into the type mismatch.
@@ -125,6 +135,17 @@ export const SnapControllerInit: MessengerClientInitFunction<
     getFeatureFlags,
 
     ensureOnboardingComplete,
+
+    trackEvent: ((payload: TrackingEventPayload) => {
+      trackAnalyticsEvent(
+        createEventBuilder(payload.event)
+          .addProperties({
+            ...payload.properties,
+            category: payload.category,
+          })
+          .build(),
+      );
+    }) as TrackEventHook,
   });
 
   initMessenger.subscribe('KeyringController:lock', () => {
