@@ -39,7 +39,10 @@ describe('ledger-utils', () => {
       });
       expect(serializeError(undefined)).toEqual({ message: 'undefined' });
       expect(serializeError({ foo: 'bar' })).toEqual({
-        message: '[object Object]',
+        message: '{"foo":"bar"}',
+      });
+      expect(serializeError({ message: 'from object' })).toEqual({
+        message: 'from object',
       });
     });
   });

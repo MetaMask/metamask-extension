@@ -7,6 +7,7 @@ import {
   HardwareWalletError,
   Severity,
 } from '@metamask/hw-wallet-sdk';
+import { extractMessageFromUnknownError } from '../../../shared/lib/error';
 
 /**
  * Serialized shape of a Ledger error that is safe to send across message
@@ -48,7 +49,7 @@ export function serializeError(error: unknown): SerializedLedgerError {
 
     return serialized;
   }
-  return { message: String(error) };
+  return { message: extractMessageFromUnknownError(error) };
 }
 
 /**

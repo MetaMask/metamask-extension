@@ -3,7 +3,8 @@ import {
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
-import { LedgerDMKBridgeHandler, serializeLedgerError } from './ledger-dmk';
+import { LedgerDMKBridgeHandler } from './ledger-dmk';
+import { serializeLedgerError } from './ledger-utils';
 import initLegacy from './ledger';
 
 /** Interface that both DMK and Legacy handlers share for action dispatch. */
@@ -179,7 +180,7 @@ export default async function initLedger(
 export async function switchLedgerHandler(
   mode: LedgerHandlerMode,
 ): Promise<void> {
-  if (initInProgress) {
+  if (initInProgress !== null) {
     await initInProgress;
   }
 

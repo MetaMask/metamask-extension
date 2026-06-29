@@ -1,11 +1,6 @@
 import { LedgerAction } from '../../../shared/constants/offscreen-communication';
 import initLegacy, { LedgerLegacyHandler } from './ledger';
 
-// Re-export so existing callers (`./ledger-router`) keep a stable import path
-// while the shared implementation lives in `./ledger-utils`.
-export { serializeLedgerError } from './ledger-utils';
-export type { SerializedLedgerError } from './ledger-utils';
-
 /**
  * Temporary DMK handler stub that delegates to the legacy offscreen handler.
  *

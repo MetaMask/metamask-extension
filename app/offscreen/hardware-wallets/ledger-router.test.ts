@@ -31,13 +31,16 @@ jest.mock('./ledger-dmk', () => {
       };
       return mockDmkInstance;
     }),
-    serializeLedgerError: jest.fn((error: unknown) =>
-      error instanceof Error
-        ? { message: error.message, name: error.name }
-        : { message: String(error) },
-    ),
   };
 });
+
+jest.mock('./ledger-utils', () => ({
+  serializeLedgerError: jest.fn((error: unknown) =>
+    error instanceof Error
+      ? { message: error.message, name: error.name }
+      : { message: String(error) },
+  ),
+}));
 
 jest.mock('./ledger', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -378,8 +381,8 @@ describe('LedgerRouter', () => {
       const legacyDestroyBefore = mockLegacyDestroy.mock.calls.length;
 
       await initLedger(LedgerHandlerMode.Legacy);
-      expect(mockDmkDestroy.mock.calls.length).toBe(dmkDestroyBefore + 1);
-      expect(mockLegacyDestroy.mock.calls.length).toBe(legacyDestroyBefore);
+      expect(mockDmkDestroy.mock.calls).toHaveLength(dmkDestroyBefore + 1);
+      expect(mockLegacyDestroy.mock.calls).toHaveLength(legacyDestroyBefore);
     });
   });
 });

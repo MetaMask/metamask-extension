@@ -178,9 +178,8 @@ export class LedgerOffscreenBridge implements Omit<
           } else {
             const error = response?.payload?.error;
             if (
-              error &&
-              error.name === 'HardwareWalletError' &&
-              typeof error.code === 'number'
+              error?.name === 'HardwareWalletError' &&
+              typeof error?.code === 'number'
             ) {
               reject(
                 new HardwareWalletError(error.message, {
