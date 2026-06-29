@@ -17,6 +17,7 @@ import {
   LoadingStep,
   QrCodeScan,
   Success,
+  SyncError,
 } from './components';
 import type { SyncAccountsRequest } from './types';
 
@@ -131,8 +132,9 @@ const SyncAccountsSettings = () => {
             onDone={() => handleExit().catch(() => undefined)}
           />
         ) : null;
-      case QR_SYNC_PHASES.CANCELLED:
       case QR_SYNC_PHASES.FAILED:
+        return <SyncError />;
+      case QR_SYNC_PHASES.CANCELLED:
       default:
         return null;
     }

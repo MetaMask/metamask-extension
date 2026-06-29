@@ -1189,6 +1189,12 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "add_device_error_desc": {
+    "message": "Something went wrong while pairing with your phone. Start with a new QR code to try again."
+  },
+  "add_device_error_title": {
+    "message": "Pairing failed"
+  },
   "add_device_success_desc": {
     "message": "$1 accounts from $2 Secret Recovery Phrases were synced to your phone.",
     "description": "$1 is the number of accounts, $2 is the number of Secret Recovery Phrases"

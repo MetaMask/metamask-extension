@@ -18,12 +18,8 @@ export const QR_SYNC_PHASES = {
   FAILED: 'failed',
 } as const;
 
-export type QrSyncPhase =
-  (typeof QR_SYNC_PHASES)[keyof typeof QR_SYNC_PHASES];
+export type QrSyncPhase = (typeof QR_SYNC_PHASES)[keyof typeof QR_SYNC_PHASES];
 
-export const QR_SYNC_TERMINAL_PHASES = [
-  QR_SYNC_PHASES.CANCELLED,
-  QR_SYNC_PHASES.FAILED,
-] as const;
+export const QR_SYNC_TERMINAL_PHASES = [QR_SYNC_PHASES.CANCELLED] as const;
 
 export const MWP_SESSION_REQUEST_EXPIRY_SECONDS = 60;
