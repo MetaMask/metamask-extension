@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -19,6 +18,7 @@ import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -97,7 +97,6 @@ import {
   fetchTokenExchangeRates,
 } from '../../../helpers/utils/util';
 import { tokenInfoGetter } from '../../../helpers/utils/token-util';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
@@ -300,7 +299,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const infoGetter = useRef(tokenInfoGetter());
 
   // CONFIRMATION MODE
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const pendingTokens = useSelector(getPendingTokens);
 
   // Get accounts for non-EVM chains using the account tree selector
@@ -410,21 +409,22 @@ export const ImportTokensModal = ({ onClose }) => {
       }
 
       addedTokenValues.forEach((pendingToken) => {
-        trackEvent({
-          event: MetaMetricsEventName.TokenAdded,
-          category: MetaMetricsEventCategory.Wallet,
-          sensitiveProperties: {
-            token_symbol: pendingToken.symbol,
-            token_contract_address: pendingToken.address,
-            token_decimal_precision: pendingToken.decimals,
-            unlisted: pendingToken.unlisted,
-            source_connection_method: pendingToken.isCustom
-              ? MetaMetricsTokenEventSource.Custom
-              : MetaMetricsTokenEventSource.List,
-            token_standard: isNonEvm ? TokenStandard.none : ERC20,
-            asset_type: AssetType.token,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenAdded)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              token_symbol: pendingToken.symbol,
+              token_contract_address: pendingToken.address,
+              token_decimal_precision: pendingToken.decimals,
+              unlisted: pendingToken.unlisted,
+              source_connection_method: pendingToken.isCustom
+                ? MetaMetricsTokenEventSource.Custom
+                : MetaMetricsTokenEventSource.List,
+              token_standard: isNonEvm ? TokenStandard.none : ERC20,
+              asset_type: AssetType.token,
+            })
+            .build(),
+        );
       });
       const tokenSymbols = [];
       for (const key in pendingTokens) {
