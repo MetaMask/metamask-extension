@@ -177,7 +177,7 @@ export const BridgeAssetPickerContent = forwardRef<
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
           startIconProps={{ size: IconSize.Md }}
-          className={`mx-4 w-max rounded-lg border border-muted bg-default px-2 ${
+          className={`mx-4 mt-4 w-max rounded-lg border border-muted bg-default px-2 ${
             selectedChainId ? 'text-primary-default' : 'text-default'
           }`}
         >

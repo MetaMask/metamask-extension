@@ -98,7 +98,9 @@ const solanaDevnetNetwork = {
 describe('useNetworkItemCallbacks', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(getSelectedMultichainNetworkChainId).mockReturnValue('eip155:1');
+    jest
+      .mocked(getSelectedMultichainNetworkChainId)
+      .mockReturnValue('eip155:1');
   });
 
   it('shows Disable label and removes default networks without confirmation', () => {
