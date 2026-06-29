@@ -7,18 +7,16 @@ type ReactRefreshRuntime = {
   injectIntoGlobalHook(globalObject: typeof globalThis): void;
 };
 
-const safeThis =
-  require('core-js-pure/features/global-this') as typeof globalThis;
 const RefreshRuntime = require('react-refresh/runtime') as ReactRefreshRuntime;
 
 /**
  * @returns Whether this entry is running in a React UI page script.
  */
 function shouldInjectReactRefreshRuntime(): boolean {
-  if (typeof document === 'undefined') {
-    return false;
-  }
-  if (document.getElementById('app-content') === null) {
+  if (
+    typeof document === 'undefined' ||
+    document.getElementById('app-content') === null
+  ) {
     return false;
   }
 
@@ -33,22 +31,18 @@ function shouldInjectReactRefreshRuntime(): boolean {
 
 if (
   process.env.NODE_ENV !== 'production' &&
-  safeThis !== undefined &&
   shouldInjectReactRefreshRuntime()
 ) {
   let refreshInjectedKey = '__reactRefreshInjected';
 
-  if (
-    typeof __react_refresh_library__ !== 'undefined' &&
-    __react_refresh_library__
-  ) {
+  if (__react_refresh_library__ !== undefined && __react_refresh_library__) {
     refreshInjectedKey += `_${__react_refresh_library__}`;
   }
 
-  const globalScope = safeThis as typeof globalThis & Record<string, unknown>;
+  const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
 
   if (!globalScope[refreshInjectedKey]) {
-    RefreshRuntime.injectIntoGlobalHook(safeThis);
+    RefreshRuntime.injectIntoGlobalHook(globalThis);
     globalScope[refreshInjectedKey] = true;
   }
 }
