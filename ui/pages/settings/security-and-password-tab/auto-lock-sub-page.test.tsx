@@ -13,6 +13,21 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import AutoLockSubPage from './auto-lock-sub-page';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -78,26 +93,20 @@ describe('AutoLockSubPage', () => {
   });
 
   it('dispatches setAutoLockTimeLimit and navigates on click', () => {
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
-    renderWithProvider(
-      <AutoLockSubPage />,
-      createMockStore(),
-      '/',
-      render,
-      () => trackEvent,
-    );
+    renderWithProvider(<AutoLockSubPage />, createMockStore());
 
     fireEvent.click(screen.getByText(messages.autoLockAfter1Minute.message));
 
-    expect(trackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.SettingsUpdated,
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.SettingsUpdated,
       properties: {
+        category: MetaMetricsEventCategory.Settings,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         auto_lock_time_limit_minutes: 1,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         previous_auto_lock_time_limit_minutes: 0,
       },
+      sensitiveProperties: {},
     });
     expect(mockSetAutoLockTimeLimit).toHaveBeenCalledWith(1);
     expect(mockNavigate).toHaveBeenCalledWith(SECURITY_AND_PASSWORD_ROUTE);
