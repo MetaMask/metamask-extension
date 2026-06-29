@@ -881,6 +881,7 @@
     "initializationState": "string",
     "initialEnqueueCompleted": "boolean",
     "initialDelayEndTimestamp": "number",
+    "inputPrimaryDenomination": "string",
     "insights": {},
     "interfaces": {},
     "internalAccounts": {
