@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CaipChainId, Hex, hexToNumber } from '@metamask/utils';
 import { ChainId } from '../../../../shared/constants/network';
-import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { RAMPS_ROUTE } from '../../../helpers/constants/routes';
 import {
   getDataCollectionForMarketing,
   getAnalyticsId,
@@ -29,7 +30,7 @@ export enum RampsMetaMaskEntry {
 const useRamps = (
   metamaskEntry: RampsMetaMaskEntry = RampsMetaMaskEntry.BuySellButton,
 ): IUseRamps => {
-  const chainId = useSelector(getCurrentChainId);
+  const navigate = useNavigate();
   const analyticsId = useSelector(getAnalyticsId);
   const completedMetaMetricsOnboarding = useSelector(
     getCompletedMetaMetricsOnboarding,
@@ -72,12 +73,12 @@ const useRamps = (
 
   const openBuyCryptoInPdapp = useCallback(
     (_chainId?: ChainId | CaipChainId) => {
-      const buyUrl = getBuyURI(_chainId || chainId);
-      global.platform.openTab({
-        url: buyUrl,
-      });
+      // Overridden to route to the in-extension money-movement page instead of
+      // redirecting out to the Portfolio dapp. `getBuyURI` is retained for
+      // callers that still build the Portfolio URL directly.
+      navigate(RAMPS_ROUTE);
     },
-    [chainId, getBuyURI],
+    [navigate],
   );
 
   return { openBuyCryptoInPdapp, getBuyURI };

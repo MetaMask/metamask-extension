@@ -76,8 +76,10 @@ import {
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
+  RAMPS_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
+import RampsPage from '../ramps/ramps-page';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -536,6 +538,10 @@ export const routeConfig = [
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
             element: <MusdConversionPage />,
+          },
+          {
+            path: RAMPS_ROUTE,
+            element: <RampsPage />,
           },
           {
             path: SHIELD_PLAN_ROUTE,
