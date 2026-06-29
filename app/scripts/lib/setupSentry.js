@@ -103,7 +103,7 @@ function getClientOptions() {
     beforeSend: (report) => rewriteReport(safeCloneReport(report)),
     beforeSendTransaction: (report) => {
       const transaction = rewriteTransactionReport(safeCloneReport(report));
-      dropMarkSpans(transaction);
+      dropLowValueMarkSpans(transaction);
       return transaction;
     },
     debug: METAMASK_DEBUG,
@@ -405,18 +405,26 @@ export function sanitizeBreadcrumbsInReport(report) {
   }
 }
 
+// `op: 'mark'` span names with no Sentry-side consumer, dropped from transactions.
+const LOW_VALUE_TRACE_MARKS = new Set([
+  'sentry-tracing-init',
+  'mm-hero-painted',
+]);
+
 /**
- * Removes `op: 'mark'` child spans (captured `performance.mark()` annotations
- * with no Sentry-side consumer) from a transaction event in place. Measures and
- * all other spans are kept.
+ * Removes the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'` child spans from a
+ * transaction event in place. Measures and all other spans are kept.
  *
  * @param {object} report - A Sentry transaction event object.
  */
-export function dropMarkSpans(report) {
+export function dropLowValueMarkSpans(report) {
   if (!Array.isArray(report.spans)) {
     return;
   }
-  report.spans = report.spans.filter((span) => span?.op !== 'mark');
+  report.spans = report.spans.filter((span) => {
+    const markName = span?.description ?? span?.name;
+    return !(span?.op === 'mark' && LOW_VALUE_TRACE_MARKS.has(markName));
+  });
 }
 
 /**

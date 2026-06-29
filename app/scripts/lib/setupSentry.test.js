@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import {
-  dropMarkSpans,
+  dropLowValueMarkSpans,
   removeUrlsFromBreadCrumb,
   rewriteReport,
   rewriteTransactionReport,
@@ -347,8 +347,8 @@ describe('Setup Sentry', () => {
     });
   });
 
-  describe('dropMarkSpans', () => {
-    it('drops all op:mark spans while keeping the transaction, measures, and other spans', () => {
+  describe('dropLowValueMarkSpans', () => {
+    it('drops the listed low-value mark spans, keeping the transaction and other marks/spans', () => {
       const testReport = {
         type: 'transaction',
         transaction: 'ui.popup',
@@ -356,33 +356,32 @@ describe('Setup Sentry', () => {
           { op: 'mark', description: 'sentry-tracing-init' },
           { op: 'mark', description: 'mm-hero-painted' },
           { op: 'mark', description: 'first-contentful-paint' },
-          { op: 'measure', description: 'boot' },
           { op: 'http.client', description: 'GET /foo' },
         ],
       };
-      dropMarkSpans(testReport);
+      dropLowValueMarkSpans(testReport);
       expect(testReport.transaction).toBe('ui.popup');
       expect(testReport.spans).toStrictEqual([
-        { op: 'measure', description: 'boot' },
+        { op: 'mark', description: 'first-contentful-paint' },
         { op: 'http.client', description: 'GET /foo' },
       ]);
     });
 
-    it('keeps a non-mark span even if its description matches a mark name', () => {
+    it('keeps a non-mark span even if its description matches a low-value mark name', () => {
       const testReport = {
         type: 'transaction',
         transaction: 'ui.popup',
         spans: [{ op: 'http.client', description: 'sentry-tracing-init' }],
       };
-      dropMarkSpans(testReport);
+      dropLowValueMarkSpans(testReport);
       expect(testReport.spans).toStrictEqual([
         { op: 'http.client', description: 'sentry-tracing-init' },
       ]);
     });
 
-    it('leaves a transaction with no mark spans unchanged', () => {
+    it('leaves a transaction without a low-value mark unchanged', () => {
       const spans = [
-        { op: 'measure', description: 'boot' },
+        { op: 'mark', description: 'first-contentful-paint' },
         { op: 'http.client', description: 'GET /foo' },
       ];
       const testReport = {
@@ -390,14 +389,29 @@ describe('Setup Sentry', () => {
         transaction: 'ui.popup',
         spans,
       };
-      dropMarkSpans(testReport);
+      dropLowValueMarkSpans(testReport);
       expect(testReport.spans).toStrictEqual(spans);
     });
 
     it('does not throw when the transaction has no spans array', () => {
       const testReport = { type: 'transaction', transaction: 'ui.popup' };
-      expect(() => dropMarkSpans(testReport)).not.toThrow();
+      expect(() => dropLowValueMarkSpans(testReport)).not.toThrow();
       expect(testReport.spans).toBeUndefined();
+    });
+
+    it('matches the mark name on the `name` field (SDK v10 forward-compat)', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [
+          { op: 'mark', name: 'sentry-tracing-init' },
+          { op: 'mark', name: 'first-contentful-paint' },
+        ],
+      };
+      dropLowValueMarkSpans(testReport);
+      expect(testReport.spans).toStrictEqual([
+        { op: 'mark', name: 'first-contentful-paint' },
+      ]);
     });
   });
 
