@@ -11,6 +11,7 @@ import {
   getIsUpdatingMetamaskNotificationsAccount,
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
+import { useSafeState } from './useNotifications';
 
 export type UseSwitchAccountNotificationsData = { [address: string]: boolean };
 
@@ -81,9 +82,9 @@ export function useAccountSettingsProps(accounts: string[]) {
   );
   const isEnabled = useSelector(selectIsMetamaskNotificationsEnabled);
   const fetchAccountSettings = useRefetchAccountSettings();
-  const [data, setData] = useState<UseSwitchAccountNotificationsData>({});
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useSafeState<UseSwitchAccountNotificationsData>({});
+  const [loading, setLoading] = useSafeState<boolean>(false);
+  const [error, setError] = useSafeState<string | null>(null);
 
   // Memoize the accounts array to avoid unnecessary re-fetching
   const jsonAccounts = useMemo(() => JSON.stringify(accounts), [accounts]);
