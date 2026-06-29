@@ -129,11 +129,9 @@ function getClientOptions() {
     // Must be a top-level init option.
     ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
       tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
-      // Must be gated alongside `tracePropagationTargets`: when distributed
-      // tracing is killed (`SENTRY_DISTRIBUTED_TRACING_DISABLED`) the SDK must
-      // not inject a W3C `traceparent` header at all. When enabled, the SDK
-      // attaches `traceparent` natively, but only to the restricted backend
-      // targets above.
+      // Gate with `tracePropagationTargets`: when distributed tracing is killed
+      // the SDK must not inject `traceparent`; when enabled it attaches natively
+      // to the restricted backend targets above.
       // TODO(sentry-v10, #42867): now that `propagateTraceparent` is enabled,
       // remove the manual traceparent injection from
       // `consensysTracePropagationIntegration` (keep the RAPID baggage and the

@@ -7477,11 +7477,10 @@ export default class MetamaskController extends EventEmitter {
             this.metaMetricsController,
           ),
           startTrace: (options) => {
-            // `snap_startTrace` must return a JSON-serializable `TraceContext`
-            // (`@metamask/snaps-sdk`). Spreading the raw Sentry `Span` leaks
-            // internal fields whose `undefined` values (e.g. `_endTime` in
-            // `@sentry/core` v10) fail the snap response's JSON validation and
-            // reject the RPC. Return the W3C ids from `spanContext()` instead.
+            // snap_startTrace must return a JSON-serializable TraceContext:
+            // spreading the raw Sentry Span leaks internal `undefined` fields
+            // (e.g. v10's `_endTime`) that fail the snap response's JSON
+            // validation. Return the spanContext() W3C ids instead.
             const span = trace(options);
             const spanContext = span?.spanContext?.();
             return spanContext
