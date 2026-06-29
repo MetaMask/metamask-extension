@@ -10,16 +10,12 @@ import type {
 import {
   PreferencesController,
   type PreferencesControllerMessenger,
-} from '../controllers/preferences-controller';
+} from '../../controllers/preferences-controller';
 
 /**
  * Overrides `@metamask/wallet`'s default `PreferencesController` with the
- * extension's diverging superset (`../controllers/preferences-controller`)
- * instead of converging to the package controller: a config whose `name`
- * matches a default replaces it. See MetaMask/core#9232.
- *
- * Relies on the temporarily pinned `@metamask-previews/wallet` build; revisit
- * when it moves to a stable release.
+ * extension's diverging superset instead of converging to the package
+ * controller: a config whose `name` matches a default replaces it.
  */
 export const preferencesControllerConfiguration: InitializationConfiguration<
   PreferencesController,
@@ -33,8 +29,7 @@ export const preferencesControllerConfiguration: InitializationConfiguration<
       namespace: 'PreferencesController',
       // Root is typed from the package controller, so the superset's extra
       // actions can't type-check against the parent (they exist only at runtime).
-      // TODO(MetaMask/core#9232): drop once the wallet types the root from the
-      // configured controller.
+      // TODO: drop once the wallet types the root from the configured controller.
       parent: parent as unknown as RootMessenger<
         MessengerActions<PreferencesControllerMessenger>,
         MessengerEvents<PreferencesControllerMessenger>
