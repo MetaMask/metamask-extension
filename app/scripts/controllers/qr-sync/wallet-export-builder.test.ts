@@ -12,6 +12,7 @@ import type {
   AccountWalletObject,
 } from '@metamask/account-tree-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { createMockInternalAccount } from '../../../../test/data/mock-accounts';
 
 import { buildWalletExportEntries } from './wallet-export-builder';
 
@@ -55,6 +56,44 @@ function createEntropyFixture(
   return { walletId, groupId, group, wallet };
 }
 
+function createHdKeyringFixture(entropyId = TEST_ENTROPY_ID, groupIndex = 0) {
+  const walletId = toAccountWalletId(AccountWalletType.Keyring, entropyId);
+  const groupId = `${walletId}/account-${groupIndex}` as AccountGroupId;
+  const group = {
+    type: AccountGroupType.SingleAccount,
+    id: groupId,
+    accounts: [TEST_ACCOUNT_ID],
+    metadata: {
+      name: `Account ${groupIndex + 1}`,
+      pinned: false,
+      hidden: false,
+      lastSelected: 0,
+    },
+  } as AccountGroupObject;
+  const wallet = {
+    type: AccountWalletType.Keyring,
+    id: walletId,
+    status: 'ready',
+    groups: { [groupId]: group },
+    metadata: {
+      name: 'HD Wallet',
+      keyring: { type: KeyringTypes.hd },
+    },
+  } as AccountWalletObject;
+  const account = createMockInternalAccount({
+    id: TEST_ACCOUNT_ID,
+    options: {
+      entropy: {
+        type: 'mnemonic',
+        id: entropyId,
+        groupIndex,
+      },
+    },
+  });
+
+  return { walletId, groupId, group, wallet, account };
+}
+
 function createPrivateKeyFixture() {
   const walletId = toAccountWalletId(AccountWalletType.Keyring, 'imported');
   const groupId =
@@ -93,6 +132,7 @@ describe('buildWalletExportEntries', () => {
         groupId === fixture.groupId ? fixture.group : undefined,
       getAccountWalletObject: (walletId) =>
         walletId === fixture.walletId ? fixture.wallet : undefined,
+      getAccount: () => undefined,
       getAccountAddress: () => '0x123',
       exportSeedPhrase: async () => TEST_SEED_PHRASE_INDICES,
       exportPrivateKey: async () => '0xabc',
@@ -132,6 +172,7 @@ describe('buildWalletExportEntries', () => {
     const entries = await buildWalletExportEntries([group1.groupId], {
       getAccountGroupObject: (groupId) => groupsById.get(groupId),
       getAccountWalletObject: () => wallet,
+      getAccount: () => undefined,
       getAccountAddress: () => '0x123',
       exportSeedPhrase: async () => TEST_SEED_PHRASE_INDICES,
       exportPrivateKey: async () => '0xabc',
@@ -159,6 +200,7 @@ describe('buildWalletExportEntries', () => {
         groupId === fixture.groupId ? fixture.group : undefined,
       getAccountWalletObject: (walletId) =>
         walletId === fixture.walletId ? fixture.wallet : undefined,
+      getAccount: () => undefined,
       getAccountAddress: (accountId) =>
         accountId === TEST_PRIVATE_KEY_ACCOUNT_ID ? '0ximported' : undefined,
       exportSeedPhrase: async () => TEST_SEED_PHRASE_INDICES,
@@ -171,6 +213,37 @@ describe('buildWalletExportEntries', () => {
         type: 'PrivateKey',
         name: 'Imported Account',
         privateKey: 'MHhwcml2YXRl',
+      }),
+    ]);
+  });
+
+  it('builds a mnemonic export for HD keyring wallets', async () => {
+    const fixture = createHdKeyringFixture(TEST_ENTROPY_ID, 2);
+
+    const entries = await buildWalletExportEntries([fixture.groupId], {
+      getAccountGroupObject: (groupId) =>
+        groupId === fixture.groupId ? fixture.group : undefined,
+      getAccountWalletObject: (walletId) =>
+        walletId === fixture.walletId ? fixture.wallet : undefined,
+      getAccount: (accountId) =>
+        accountId === TEST_ACCOUNT_ID ? fixture.account : undefined,
+      getAccountAddress: () => '0x123',
+      exportSeedPhrase: async () => TEST_SEED_PHRASE_INDICES,
+      exportPrivateKey: async () => '0xabc',
+      getPrimaryEntropyId: async () => TEST_ENTROPY_ID,
+    });
+
+    expect(entries).toEqual([
+      expect.objectContaining({
+        type: 'Mnemonic',
+        name: 'HD Wallet',
+        isPrimary: true,
+        groups: [
+          expect.objectContaining({
+            groupIndex: 2,
+            name: 'Account 3',
+          }),
+        ],
       }),
     ]);
   });
@@ -192,6 +265,7 @@ describe('buildWalletExportEntries', () => {
       buildWalletExportEntries([fixture.groupId], {
         getAccountGroupObject: () => fixture.group,
         getAccountWalletObject: () => hardwareWallet,
+        getAccount: () => undefined,
         getAccountAddress: () => '0x123',
         exportSeedPhrase: async () => TEST_SEED_PHRASE_INDICES,
         exportPrivateKey: async () => '0xabc',

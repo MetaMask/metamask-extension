@@ -601,22 +601,20 @@ describe('QrSyncController', () => {
         expect.objectContaining({
           type: QrSyncActionTypes.SYNC_READY,
           version: '1.0.0',
-          data: expect.objectContaining({
-            version: '1.0.0',
-            data: [
-              expect.objectContaining({
-                type: 'Mnemonic',
-                name: 'Wallet 1',
-                groups: [
-                  expect.objectContaining({
-                    groupIndex: 0,
-                    name: 'Account 1',
-                  }),
-                ],
-                isPrimary: true,
-              }),
-            ],
-          }),
+          deadline: expect.any(Number),
+          data: [
+            expect.objectContaining({
+              type: 'Mnemonic',
+              name: 'Wallet 1',
+              groups: [
+                expect.objectContaining({
+                  groupIndex: 0,
+                  name: 'Account 1',
+                }),
+              ],
+              isPrimary: true,
+            }),
+          ],
         }),
       );
       expect(controller.state.phase).toBe(
@@ -649,7 +647,7 @@ describe('QrSyncController', () => {
         ([message]) => message.type === QrSyncActionTypes.SYNC_READY,
       )?.[0];
 
-      expect(syncReadyPayload?.data?.data).toEqual(
+      expect(syncReadyPayload?.data).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             type: 'Mnemonic',
@@ -661,12 +659,12 @@ describe('QrSyncController', () => {
         ]),
       );
       expect(
-        syncReadyPayload?.data?.data?.find(
+        syncReadyPayload?.data?.find(
           (entry: { isPrimary?: boolean }) => entry.isPrimary === true,
         ),
       ).toBeDefined();
       expect(
-        syncReadyPayload?.data?.data?.filter(
+        syncReadyPayload?.data?.filter(
           (entry: { isPrimary?: boolean }) => entry.isPrimary === true,
         ),
       ).toHaveLength(1);

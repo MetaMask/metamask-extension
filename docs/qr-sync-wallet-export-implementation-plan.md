@@ -37,24 +37,15 @@ syncAccounts()   ──sync-ready──────►  imports wallets
 
 ## 3. Payload contract (locked in)
 
-### 3.1 MWP envelope
+### 3.1 MWP envelope (`sync-ready`)
 
 Every MWP message uses `QrSyncMessageVersion.V1` (`'1.0.0'`) from `app/scripts/controllers/qr-sync/constants.ts`.
+
+The `sync-ready` message carries the wallet export entries directly in `data`, with `deadline` at the envelope level:
 
 ```json
 {
   "type": "sync-ready",
-  "version": "1.0.0",
-  "data": { /* QrSyncData — see below */ }
-}
-```
-
-### 3.2 Inner payload (`QrSyncData`)
-
-Defined in `app/scripts/controllers/qr-sync/types.ts`.
-
-```json
-{
   "version": "1.0.0",
   "deadline": 1700000060000,
   "data": [
@@ -77,6 +68,10 @@ Defined in `app/scripts/controllers/qr-sync/types.ts`.
 }
 ```
 
+### 3.2 Export entries (`QrSyncReadyData`)
+
+Defined in `app/scripts/controllers/qr-sync/types.ts` as `WalletExportEntry[]` (alias `QrSyncReadyData`).
+
 ### 3.3 Encoding rules
 
 | Field | Encoding |
@@ -94,7 +89,7 @@ Helpers live in `app/scripts/controllers/qr-sync/wallet-export-encoding.ts`.
 | No `address` fields on export entries | User verifies correctness manually on mobile |
 | Omit `hidden` / `pinned` when `false` | Smaller payload; document in types, apply when building entries in Phase 2 |
 | Omit `isPrimary` when not primary | Only one wallet should have `isPrimary: true` |
-| `QrSyncData.version` reuses `QrSyncMessageVersion` | Same `'1.0.0'` as outer MWP envelope — no separate numeric bundle version |
+| `deadline` on MWP envelope, not nested | Same level as `type` and `version`; avoids redundant wrapper object |
 | One `Mnemonic` entry per entropy source (SRP) | Multiple HD keyrings → multiple mnemonic entries, each with its own `groups[]` |
 | One `PrivateKey` entry per imported account | Each simple-key-pair account is its own top-level entry |
 
@@ -104,11 +99,13 @@ Helpers live in `app/scripts/controllers/qr-sync/wallet-export-encoding.ts`.
 
 The wallet picker reads from Redux account tree (`getAccountTree` selector).
 
-| `AccountWalletType` | Typical contents | Exportable? |
-|---------------------|------------------|-------------|
-| `Entropy` | HD / SRP wallets | **Yes** → `Mnemonic` entry |
-| `Keyring` | Hardware wallets (Ledger, Trezor, …) | **No** — disable in UI |
-| `Snap` | Snap-managed wallets | **No** — disable in UI |
+| `AccountWalletType` | Typical contents | Exportable? | Shown in picker? |
+|---------------------|------------------|-------------|------------------|
+| `AccountWalletType.Entropy` | HD / SRP wallets (multichain tree) | **Yes** → `Mnemonic` entry | **Yes** (whole wallet) |
+| `AccountWalletType.Keyring` + `KeyringTypes.hd` | HD keyring wallets | **Yes** → `Mnemonic` entry | **Yes** (whole wallet) |
+| `AccountWalletType.Keyring` + `KeyringTypes.simple` | Imported private-key accounts | **Yes** → `PrivateKey` entry | **Yes** (whole wallet) |
+| `Keyring` (hardware) | Ledger, Trezor, … | **No** | **Hidden** |
+| `Snap` | Snap-managed wallets | **No** | **Hidden** |
 
 Within an entropy wallet, each **account group** maps to one HD derivation index:
 
@@ -126,10 +123,10 @@ Imported private-key accounts (`KeyringTypes.simple` / `InternalKeyringType.impo
 
 ### 5.1 Completed
 
-- [x] Export types: `AccountGroupExport`, `MnemonicWalletExport`, `PrivateKeyAccountExport`, `WalletExportEntry`, `QrSyncData`
+- [x] Export types: `AccountGroupExport`, `MnemonicWalletExport`, `PrivateKeyAccountExport`, `WalletExportEntry`, `QrSyncReadyData`
 - [x] State field `selectedAccountGroupIds: AccountGroupId[]` (replacing legacy `selectedAccountIds` + `selectedSyncDataType`)
 - [x] Encoding helpers for mnemonic and private key
-- [x] `syncAccounts()` builds new `QrSyncData` shape with `type: 'Mnemonic'` entries
+- [x] `syncAccounts()` builds `sync-ready` payload with `WalletExportEntry[]` in `data`
 - [x] `isPrimary` flag for first HD keyring
 - [x] Controller + encoding unit tests updated for `version: '1.0.0'`
 - [x] Removed duplicate `QR_SYNC_WALLET_EXPORT_BUNDLE_VERSION` and unused `omitFalseBooleanFlags` helper
@@ -145,8 +142,7 @@ Imported private-key accounts (`KeyringTypes.simple` / `InternalKeyringType.impo
 | `AddDeviceSyncRequest` only has `entropyIds` | `add-device-tab/types.ts` |
 | Messenger lacks `AccountTreeController` / `AccountsController` actions | `qr-sync-controller-messenger.ts` |
 | Private-key accounts not exported | controller |
-| Hardware/Snap wallets still selectable in list (partially — entropy wallet accounts lack per-account checkboxes but wallet-level toggle selects all) | `wallet-selection-list.tsx` |
-| `#isQrSyncOffer` accepts any object (including `{}`) — test expects rejection | `qr-sync-controller.ts:682-688` |
+| `#isQrSyncOffer` accepts any object (including `{}`) — test expects rejection | `qr-sync-controller.ts` |
 
 ---
 
@@ -154,7 +150,7 @@ Imported private-key accounts (`KeyringTypes.simple` / `InternalKeyringType.impo
 
 ### Phase 2 — Wire selection + build real export payload
 
-**Objective:** `syncAccounts` receives the exact account groups the user selected and produces a complete `QrSyncData` payload.
+**Objective:** `syncAccounts` receives the exact account groups the user selected and produces a complete `sync-ready` payload.
 
 #### Step 2.1 — Extend messenger
 
@@ -237,31 +233,32 @@ Require `deadline` to be a positive number (matches `QrSyncOffer` type). This fi
 
 ---
 
-### Phase 3 — UI polish for non-exportable wallets
+### Phase 3 — Syncable wallet picker
 
-**Objective:** User cannot select wallets/accounts that cannot be synced.
+**Objective:** Only show wallets that can be synced; selection is all-or-nothing per wallet.
 
-#### Step 3.1 — Disable non-exportable wallets in picker
+#### Step 3.1 — Hide non-exportable wallets
+
+**Files:** `utils.ts`, `add-wallets.tsx`
+
+- Filter account tree to **Entropy** (SRP) and **Keyring + `KeyringTypes.simple`** (imported private-key) wallets only
+- **Do not show** hardware (`Keyring` with Ledger/Trezor/etc.) or **Snap** wallets in the picker
+
+#### Step 3.2 — Whole-wallet selection only
 
 **File:** `wallet-selection-list.tsx`
 
-- Hardware (`AccountWalletType.Keyring`) and Snap wallets: show disabled state, no checkbox
-- Optionally show helper text (“Hardware wallets cannot be synced”)
-
-#### Step 3.2 — Entropy wallet per-account selection (optional product decision)
-
-Currently entropy wallet accounts have `selectable: false` — only the wallet-level checkbox works (all-or-nothing per SRP). If product wants per-account selection within an SRP:
-
-- Set `selectable: true` for entropy groups
-- Ensure Phase 2 `groups[]` only includes checked accounts
-
-Confirm with design before changing.
+- Wallet-level checkbox selects or deselects **all** account groups in that wallet
+- Account rows are display-only (no per-account checkboxes)
+- No partial / indeterminate wallet selection
 
 #### Phase 3 acceptance criteria
 
-- [ ] Hardware/Snap wallets visible but not selectable
-- [ ] Continue button disabled when only non-exportable items would sync
-- [ ] Wallet selection list tests updated
+- [ ] Hardware and Snap wallets are not shown in the picker
+- [ ] SRP and imported private-key wallets are shown
+- [ ] User can only sync entire wallets (all account groups per wallet)
+- [ ] Continue button disabled when no wallets are selected
+- [ ] Unit tests updated for filtering and whole-wallet selection
 
 ---
 
@@ -330,7 +327,6 @@ E2E (if added later): follow `test/e2e/AGENTS.md` and `.agents/skills/mms-e2e-te
 | `#isQrSyncOffer` too permissive | P0 — fix in Phase 2 | `{}` passes validation; breaks invalid-payload test |
 | OTP display grant not implemented | P2 | `qr-sync-controller.ts` TODO ~line 571 |
 | `importedAccountIds` always `[]` on completion | P2 | Mobile may send imported IDs later |
-| Inner `version` duplicates outer MWP `version` | P3 | Kept for mobile contract; confirm with mobile team if redundant |
 
 ---
 

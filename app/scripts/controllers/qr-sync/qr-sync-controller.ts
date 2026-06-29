@@ -27,7 +27,7 @@ import {
   type QrSyncControllerInitOptions,
   type QrSyncControllerMessenger,
   type QrSyncControllerState,
-  type QrSyncData,
+  type QrSyncReadyData,
   type QrSyncError,
   type QrSyncOffer,
 } from './types';
@@ -187,6 +187,8 @@ export class QrSyncController extends BaseController<
             'AccountTreeController:getAccountWalletObject',
             walletId as AccountWalletId,
           ),
+        getAccount: (accountId) =>
+          this.messenger.call('AccountsController:getAccount', accountId),
         getAccountAddress: (accountId) =>
           this.messenger.call('AccountsController:getAccount', accountId)
             ?.address,
@@ -211,11 +213,7 @@ export class QrSyncController extends BaseController<
       },
     );
 
-    const syncData: QrSyncData = {
-      version: QrSyncMessageVersion.V1,
-      data: exportData,
-      deadline: Date.now() + MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000,
-    };
+    const deadline = Date.now() + MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000;
 
     this.update((state) => {
       state.selectedAccountGroupIds = [...selectedAccountGroupIds];
@@ -223,8 +221,8 @@ export class QrSyncController extends BaseController<
       state.error = null;
       state.updatedAt = Date.now();
     });
-
-    await this.#sendSyncData(syncData);
+    console.log('QR Sync: exportData', exportData);
+    await this.#sendSyncData({ deadline, data: exportData });
   }
 
   async #initialize(): Promise<void> {
@@ -269,12 +267,16 @@ export class QrSyncController extends BaseController<
     }
   }
 
-  async #sendSyncData(syncData: QrSyncData): Promise<void> {
+  async #sendSyncData(syncPayload: {
+    deadline: number;
+    data: QrSyncReadyData;
+  }): Promise<void> {
     this.#assertPhase([QR_SYNC_PHASES.REVIEWING_SYNC_OFFER]);
 
-    await this.#sendMessage({
+    await this.#sendMessage<QrSyncReadyData>({
       type: QrSyncActionTypes.SYNC_READY,
-      data: syncData,
+      deadline: syncPayload.deadline,
+      data: syncPayload.data,
     });
 
     this.update((state) => {
@@ -284,7 +286,7 @@ export class QrSyncController extends BaseController<
 
     // asynchronously wait for the sync completion message from the mobile wallet client
     // if the sync completion message is not received within the timeout period, fail the sync with SESSION_EXPIRED error
-    this.#waitForSyncCompletion(syncData).catch((error) => {
+    this.#waitForSyncCompletion(syncPayload.deadline).catch((error) => {
       this.#failAwaitingSyncCompletion(error);
     });
   }
@@ -350,9 +352,9 @@ export class QrSyncController extends BaseController<
     }
   }
 
-  async #waitForSyncCompletion(syncData: QrSyncData): Promise<void> {
+  async #waitForSyncCompletion(deadline: number): Promise<void> {
     const timeoutMs =
-      Math.max(syncData.deadline - Date.now(), 0) ||
+      Math.max(deadline - Date.now(), 0) ||
       MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000;
 
     try {

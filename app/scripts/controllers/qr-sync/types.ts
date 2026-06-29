@@ -49,6 +49,12 @@ export type QrSyncActionType =
 export type QrSyncMessage<DataType = undefined> = {
   type: QrSyncActionType;
   version: QrSyncMessageVersion;
+  /**
+   * Expiry timestamp for time-bound messages such as `sync-ready`.
+   *
+   * @type {number}
+   */
+  deadline?: number;
   data?: DataType;
 };
 
@@ -202,38 +208,12 @@ export type WalletExportEntry =
   | PrivateKeyAccountExport;
 
 /**
- * The data payload for the sync action.
- * This is the data that is sent to the mobile wallet client.
- * The mobile will use this data to perform the sync operation.
+ * Wallet export entries sent in the `sync-ready` message `data` field.
  *
- * During the sync operation, this data is encrypted together with the parent
- * payload. (i.e. `SYNC_READY` payload)
- *
- * The MWP envelope is `{ type: 'sync-ready', version: '1.0.0', data: QrSyncData }`.
- *
- * @type {object}
+ * The MWP envelope is
+ * `{ type: 'sync-ready', version: '1.0.0', deadline, data: QrSyncReadyData }`.
  */
-export type QrSyncData = {
-  /**
-   * The protocol version of the wallet export bundle. Matches the MWP message
-   * `version` on the parent `sync-ready` payload.
-   *
-   * @type {QrSyncMessageVersion}
-   */
-  version: QrSyncMessageVersion;
-  /**
-   * The deadline of the sync operation.
-   *
-   * @type {number}
-   */
-  deadline: number;
-  /**
-   * The account/wallet data for the sync action.
-   *
-   * @type {WalletExportEntry[]}
-   */
-  data: WalletExportEntry[];
-};
+export type QrSyncReadyData = WalletExportEntry[];
 
 export type QrSyncControllerState = {
   /**
