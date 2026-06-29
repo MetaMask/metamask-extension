@@ -157,6 +157,19 @@ export type LegacyBackgroundApiServiceOnAccountRemovedAction = {
   handler: LegacyBackgroundApiService['onAccountRemoved'];
 };
 
+/**
+ * Rejects a pending permissions request.
+ *
+ * Swallows `PermissionsRequestNotFoundError` so that rejecting an already
+ * resolved request does not throw.
+ *
+ * @param requestId - The ID of the permissions request to reject.
+ */
+export type LegacyBackgroundApiServiceRejectPermissionsRequestAction = {
+  type: `LegacyBackgroundApiService:rejectPermissionsRequest`;
+  handler: LegacyBackgroundApiService['rejectPermissionsRequest'];
+};
+
 export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
   type: `LegacyBackgroundApiService:importAccountWithStrategy`;
   handler: LegacyBackgroundApiService['importAccountWithStrategy'];
@@ -288,6 +301,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
+  | LegacyBackgroundApiServiceRejectPermissionsRequestAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
   | LegacyBackgroundApiServiceGetNextNonceAction
