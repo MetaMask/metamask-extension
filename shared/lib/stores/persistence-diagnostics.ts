@@ -14,12 +14,57 @@ export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_INTERVAL_MS =
 export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_INTERVAL_MS =
   7 * 24 * 60 * 60 * 1000;
 export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE = 20;
+export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG =
+  'splitStatePersistenceDiagnostics';
 
-const TOP_WRITTEN_KEYS_LIMIT = 10;
-const RECENT_WIDE_BATCHES_LIMIT = 20;
-const WIDE_BATCH_MIN_KEY_COUNT = 4;
-const LARGEST_KEYS_PER_BATCH_LIMIT = 5;
+const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_TOP_WRITTEN_KEYS_LIMIT = 10;
+const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_RECENT_WIDE_BATCHES_LIMIT = 20;
+const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_WIDE_BATCH_KEY_THRESHOLD = 4;
+const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_LARGEST_KEYS_PER_BATCH_LIMIT = 5;
 const ERROR_MESSAGE_MAX_LENGTH = 200;
+
+export type SplitStatePersistenceDiagnosticsConfig = {
+  enabled: true;
+  baselineEnabled: boolean;
+  corruptionEnabled: boolean;
+  sizeSampleRate: number;
+  baselineIntervalMs: number;
+  snapshotPersistIntervalMs: number;
+  wideBatchKeyThreshold: number;
+  topWrittenKeysLimit: number;
+  recentWideBatchesLimit: number;
+  largestKeysPerBatchLimit: number;
+};
+
+const DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG: SplitStatePersistenceDiagnosticsConfig =
+  {
+    enabled: true,
+    baselineEnabled: true,
+    corruptionEnabled: true,
+    sizeSampleRate: SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE,
+    baselineIntervalMs:
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_INTERVAL_MS,
+    snapshotPersistIntervalMs:
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_INTERVAL_MS,
+    wideBatchKeyThreshold:
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_WIDE_BATCH_KEY_THRESHOLD,
+    topWrittenKeysLimit:
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_TOP_WRITTEN_KEYS_LIMIT,
+    recentWideBatchesLimit:
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_RECENT_WIDE_BATCHES_LIMIT,
+    largestKeysPerBatchLimit:
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_LARGEST_KEYS_PER_BATCH_LIMIT,
+  };
+
+const NUMERIC_CONFIG_LIMITS = {
+  sizeSampleRate: { min: 1, max: 1000 },
+  baselineIntervalMs: { min: 60 * 1000, max: 90 * 24 * 60 * 60 * 1000 },
+  snapshotPersistIntervalMs: { min: 60 * 1000, max: 24 * 60 * 60 * 1000 },
+  wideBatchKeyThreshold: { min: 2, max: 100 },
+  topWrittenKeysLimit: { min: 1, max: 50 },
+  recentWideBatchesLimit: { min: 1, max: 100 },
+  largestKeysPerBatchLimit: { min: 1, max: 20 },
+} as const;
 
 export type SplitStateSizeBucket =
   | 'unknown'
@@ -71,6 +116,7 @@ export type SplitStateWideBatchDiagnostics = {
 
 export type SplitStatePersistenceDiagnosticsSnapshot = {
   schemaVersion: 1;
+  config: SplitStatePersistenceDiagnosticsConfig;
   updatedAt: number;
   totalQueuedUpdates: number;
   totalPersistedBatches: number;
@@ -107,6 +153,99 @@ const SIZE_BUCKET_ORDER = new Map<SplitStateSizeBucket, number>([
   ['256kb_1mb', 5],
   ['gt_1mb', 6],
 ]);
+
+function getBooleanConfigValue(value: unknown, fallback: boolean): boolean {
+  return typeof value === 'boolean' ? value : fallback;
+}
+
+function getNumericConfigValue(
+  value: unknown,
+  fallback: number,
+  {
+    min,
+    max,
+  }: {
+    min: number;
+    max: number;
+  },
+): number {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return fallback;
+  }
+
+  return Math.min(Math.max(Math.trunc(value), min), max);
+}
+
+/**
+ * Normalizes the split-state persistence diagnostics remote feature flag.
+ *
+ * @param remoteFeatureFlags - Remote feature flags, including manifest overrides.
+ * @returns Normalized diagnostics config, or undefined when disabled/missing.
+ */
+export function getSplitStatePersistenceDiagnosticsConfig(
+  remoteFeatureFlags: Record<string, unknown> | null | undefined,
+): SplitStatePersistenceDiagnosticsConfig | undefined {
+  const featureFlag = remoteFeatureFlags?.[
+    SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG
+  ];
+
+  if (!isObject(featureFlag) || featureFlag.enabled !== true) {
+    return undefined;
+  }
+
+  const config: SplitStatePersistenceDiagnosticsConfig = {
+    ...DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG,
+    baselineEnabled: getBooleanConfigValue(
+      featureFlag.baselineEnabled,
+      DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG.baselineEnabled,
+    ),
+    corruptionEnabled: getBooleanConfigValue(
+      featureFlag.corruptionEnabled,
+      DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG.corruptionEnabled,
+    ),
+    sizeSampleRate: getNumericConfigValue(
+      featureFlag.sizeSampleRate,
+      DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG.sizeSampleRate,
+      NUMERIC_CONFIG_LIMITS.sizeSampleRate,
+    ),
+    baselineIntervalMs: getNumericConfigValue(
+      featureFlag.baselineIntervalMs,
+      DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG.baselineIntervalMs,
+      NUMERIC_CONFIG_LIMITS.baselineIntervalMs,
+    ),
+    snapshotPersistIntervalMs: getNumericConfigValue(
+      featureFlag.snapshotPersistIntervalMs,
+      DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG.snapshotPersistIntervalMs,
+      NUMERIC_CONFIG_LIMITS.snapshotPersistIntervalMs,
+    ),
+    wideBatchKeyThreshold: getNumericConfigValue(
+      featureFlag.wideBatchKeyThreshold,
+      DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG.wideBatchKeyThreshold,
+      NUMERIC_CONFIG_LIMITS.wideBatchKeyThreshold,
+    ),
+    topWrittenKeysLimit: getNumericConfigValue(
+      featureFlag.topWrittenKeysLimit,
+      DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG.topWrittenKeysLimit,
+      NUMERIC_CONFIG_LIMITS.topWrittenKeysLimit,
+    ),
+    recentWideBatchesLimit: getNumericConfigValue(
+      featureFlag.recentWideBatchesLimit,
+      DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG.recentWideBatchesLimit,
+      NUMERIC_CONFIG_LIMITS.recentWideBatchesLimit,
+    ),
+    largestKeysPerBatchLimit: getNumericConfigValue(
+      featureFlag.largestKeysPerBatchLimit,
+      DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG.largestKeysPerBatchLimit,
+      NUMERIC_CONFIG_LIMITS.largestKeysPerBatchLimit,
+    ),
+  };
+
+  if (!config.baselineEnabled && !config.corruptionEnabled) {
+    return undefined;
+  }
+
+  return config;
+}
 
 /**
  * Builds a small, value-free diagnostic error object.
@@ -206,6 +345,8 @@ function isSplitStatePersistenceDiagnosticsSnapshot(
     isObject(value) &&
     hasProperty(value, 'schemaVersion') &&
     value.schemaVersion === 1 &&
+    hasProperty(value, 'config') &&
+    isObject(value.config) &&
     hasProperty(value, 'updatedAt') &&
     typeof value.updatedAt === 'number' &&
     hasProperty(value, 'topWrittenKeys') &&
@@ -250,8 +391,20 @@ export class SplitStatePersistenceDiagnostics {
 
   #recentWideBatches: SplitStateWideBatchDiagnostics[] = [];
 
+  #config: SplitStatePersistenceDiagnosticsConfig | undefined;
+
+  setConfig(
+    config: SplitStatePersistenceDiagnosticsConfig | undefined,
+  ): void {
+    this.#config = config;
+
+    if (!config) {
+      this.#resetInMemory();
+    }
+  }
+
   recordQueuedUpdate(key: string): void {
-    if (!isSplitStateDataKey(key)) {
+    if (!this.#config || !isSplitStateDataKey(key)) {
       return;
     }
 
@@ -260,6 +413,11 @@ export class SplitStatePersistenceDiagnostics {
   }
 
   recordPersistedBatch(pairs: Map<string, unknown>): void {
+    const config = this.#config;
+    if (!config) {
+      return;
+    }
+
     const persistedEntries = [...pairs.entries()].filter(([key]) =>
       isSplitStateDataKey(key),
     );
@@ -270,9 +428,7 @@ export class SplitStatePersistenceDiagnostics {
 
     this.#totalPersistedBatches += 1;
     const shouldSampleSizes =
-      this.#totalPersistedBatches %
-        SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE ===
-      0;
+      this.#totalPersistedBatches % config.sizeSampleRate === 0;
     const measuredEntries: (MeasuredValue & { key: string })[] = [];
 
     for (const [key, value] of persistedEntries) {
@@ -304,7 +460,7 @@ export class SplitStatePersistenceDiagnostics {
 
     if (
       !shouldSampleSizes ||
-      measuredEntries.length < WIDE_BATCH_MIN_KEY_COUNT
+      measuredEntries.length < config.wideBatchKeyThreshold
     ) {
       return;
     }
@@ -331,7 +487,7 @@ export class SplitStatePersistenceDiagnostics {
           (first, second) =>
             (second.sizeInChars ?? -1) - (first.sizeInChars ?? -1),
         )
-        .slice(0, LARGEST_KEYS_PER_BATCH_LIMIT)
+        .slice(0, config.largestKeysPerBatchLimit)
         .map(({ key, sizeBucket }) => ({
           key,
           sizeBucket,
@@ -339,7 +495,7 @@ export class SplitStatePersistenceDiagnostics {
     });
 
     this.#recentWideBatches = this.#recentWideBatches.slice(
-      -RECENT_WIDE_BATCHES_LIMIT,
+      -config.recentWideBatchesLimit,
     );
   }
 
@@ -355,9 +511,16 @@ export class SplitStatePersistenceDiagnostics {
   getSnapshot(
     readDiagnostics?: SplitStateReadDiagnostics,
     now = Date.now(),
-  ): SplitStatePersistenceDiagnosticsSnapshot {
+  ): SplitStatePersistenceDiagnosticsSnapshot | undefined {
+    const config = this.#config;
+
+    if (!config) {
+      return undefined;
+    }
+
     const snapshot: SplitStatePersistenceDiagnosticsSnapshot = {
       schemaVersion: 1,
+      config,
       updatedAt: now,
       totalQueuedUpdates: this.#totalQueuedUpdates,
       totalPersistedBatches: this.#totalPersistedBatches,
@@ -384,7 +547,7 @@ export class SplitStatePersistenceDiagnostics {
             second.queuedUpdates - first.queuedUpdates ||
             first.key.localeCompare(second.key),
         )
-        .slice(0, TOP_WRITTEN_KEYS_LIMIT),
+        .slice(0, config.topWrittenKeysLimit),
       recentWideBatches: this.#recentWideBatches,
     };
 
@@ -400,7 +563,10 @@ export class SplitStatePersistenceDiagnostics {
   ): Promise<SplitStatePersistenceDiagnosticsSnapshot | undefined> {
     await this.#openDatabase().catch(() => undefined);
 
-    if (!this.hasData() && !readDiagnostics) {
+    if (
+      !this.#config?.corruptionEnabled ||
+      (!this.hasData() && !readDiagnostics)
+    ) {
       return undefined;
     }
 
@@ -408,14 +574,14 @@ export class SplitStatePersistenceDiagnostics {
   }
 
   async persistSnapshotIfDue(now = Date.now()): Promise<void> {
-    if (!this.hasData()) {
+    const config = this.#config;
+    if (!config || !this.hasData()) {
       return;
     }
 
     if (
       this.#lastPersistedAt !== 0 &&
-      now - this.#lastPersistedAt <
-        SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_INTERVAL_MS
+      now - this.#lastPersistedAt < config.snapshotPersistIntervalMs
     ) {
       return;
     }
@@ -424,7 +590,7 @@ export class SplitStatePersistenceDiagnostics {
   }
 
   async persistSnapshot(now = Date.now()): Promise<void> {
-    if (!this.hasData()) {
+    if (!this.#config || !this.hasData()) {
       return;
     }
 
@@ -434,11 +600,13 @@ export class SplitStatePersistenceDiagnostics {
       return;
     }
 
+    const snapshot = this.getSnapshot(undefined, now);
+    if (!snapshot) {
+      return;
+    }
+
     await this.#db.set({
-      [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_KEY]: this.getSnapshot(
-        undefined,
-        now,
-      ),
+      [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_KEY]: snapshot,
     });
     this.#lastPersistedAt = now;
   }
@@ -446,6 +614,12 @@ export class SplitStatePersistenceDiagnostics {
   async getWeeklyBaselineSnapshot(
     now = Date.now(),
   ): Promise<SplitStatePersistenceDiagnosticsSnapshot | undefined> {
+    const config = this.#config;
+
+    if (!config?.baselineEnabled) {
+      return undefined;
+    }
+
     await this.#openDatabase();
 
     if (!this.#db || !this.hasData()) {
@@ -460,13 +634,16 @@ export class SplitStatePersistenceDiagnostics {
       isSplitStatePersistenceDiagnosticsBaselineMetadata(
         baselineMetadata,
       ) &&
-      now - baselineMetadata.lastSentAt <
-        SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_INTERVAL_MS
+      now - baselineMetadata.lastSentAt < config.baselineIntervalMs
     ) {
       return undefined;
     }
 
     const snapshot = this.getSnapshot(undefined, now);
+    if (!snapshot) {
+      return undefined;
+    }
+
     await this.#db.set({
       [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_KEY]: snapshot,
       [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_KEY]: {
@@ -480,11 +657,7 @@ export class SplitStatePersistenceDiagnostics {
   }
 
   async reset(): Promise<void> {
-    this.#totalQueuedUpdates = 0;
-    this.#totalPersistedBatches = 0;
-    this.#keyStats.clear();
-    this.#recentWideBatches = [];
-    this.#lastPersistedAt = 0;
+    this.#resetInMemory();
     this.#hydrated = true;
 
     await this.#openDatabase().catch(() => undefined);
@@ -509,6 +682,14 @@ export class SplitStatePersistenceDiagnostics {
       this.#keyStats.set(key, stats);
     }
     return stats;
+  }
+
+  #resetInMemory(): void {
+    this.#totalQueuedUpdates = 0;
+    this.#totalPersistedBatches = 0;
+    this.#keyStats.clear();
+    this.#recentWideBatches = [];
+    this.#lastPersistedAt = 0;
   }
 
   async #openDatabase(): Promise<void> {
@@ -570,6 +751,10 @@ export class SplitStatePersistenceDiagnostics {
     this.#totalPersistedBatches += snapshot.totalPersistedBatches;
     this.#lastPersistedAt = Math.max(this.#lastPersistedAt, snapshot.updatedAt);
 
+    if (!this.#config && snapshot.config) {
+      this.#config = snapshot.config;
+    }
+
     for (const keyDiagnostics of snapshot.topWrittenKeys) {
       const stats = this.#getStats(keyDiagnostics.key);
       stats.queuedUpdates += keyDiagnostics.queuedUpdates;
@@ -583,8 +768,16 @@ export class SplitStatePersistenceDiagnostics {
     }
 
     this.#recentWideBatches = [
-      ...snapshot.recentWideBatches.slice(-RECENT_WIDE_BATCHES_LIMIT),
+      ...snapshot.recentWideBatches.slice(
+        -(this.#config?.recentWideBatchesLimit ??
+          snapshot.config.recentWideBatchesLimit),
+      ),
       ...this.#recentWideBatches,
-    ].slice(-RECENT_WIDE_BATCHES_LIMIT);
+    ].slice(
+      -(
+        this.#config?.recentWideBatchesLimit ??
+        snapshot.config.recentWideBatchesLimit
+      ),
+    );
   }
 }

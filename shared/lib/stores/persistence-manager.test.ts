@@ -10,7 +10,12 @@ import { PersistenceManager } from './persistence-manager';
 import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
-import type { SplitStateReadDiagnostics } from './persistence-diagnostics';
+import {
+  SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG,
+  getSplitStatePersistenceDiagnosticsConfig,
+  type SplitStatePersistenceDiagnosticsConfig,
+  type SplitStateReadDiagnostics,
+} from './persistence-diagnostics';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 
@@ -46,6 +51,20 @@ jest.mock('../trace', () => ({
 }));
 const mockedCaptureException = jest.mocked(captureException);
 const mockedCaptureMessage = jest.mocked(captureMessage);
+
+function getDiagnosticsConfig(): SplitStatePersistenceDiagnosticsConfig {
+  const config = getSplitStatePersistenceDiagnosticsConfig({
+    [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+      enabled: true,
+    },
+  });
+
+  if (!config) {
+    throw new Error('Expected diagnostics config to be enabled');
+  }
+
+  return config;
+}
 
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
@@ -300,6 +319,8 @@ describe('PersistenceManager', () => {
     });
 
     it('emits split-state diagnostics when storage is inaccessible and a backup exists', async () => {
+      const diagnosticsConfig = getDiagnosticsConfig();
+      manager.setSplitStatePersistenceDiagnosticsConfig(diagnosticsConfig);
       manager.setMetadata({ version: 10, storageKind: 'split' });
       manager.update('KeyringController', { vault: 'encrypted-vault' });
       manager.update('PreferencesController', { selectedAddress: '0xabc' });
@@ -329,6 +350,13 @@ describe('PersistenceManager', () => {
         KeyringController: {
           vault: 'backup-vault',
         },
+        RemoteFeatureFlagController: {
+          remoteFeatureFlags: {
+            [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+              enabled: true,
+            },
+          },
+        },
       });
 
       await expect(manager.get({ validateVault: true })).rejects.toThrow(
@@ -340,9 +368,17 @@ describe('PersistenceManager', () => {
           KeyringController: {
             vault: 'backup-vault',
           },
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: {
+              [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+                enabled: true,
+              },
+            },
+          },
         },
         corruptionType: VaultCorruptionType.InaccessibleDatabase,
         diagnostics: expect.objectContaining({
+          config: diagnosticsConfig,
           totalQueuedUpdates: 2,
           totalPersistedBatches: 1,
           readDiagnostics,
@@ -359,6 +395,38 @@ describe('PersistenceManager', () => {
             }),
           ]),
         }),
+      });
+    });
+
+    it('does not collect split-state diagnostics for corruption when the remote flag is missing from the backup', async () => {
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+      await manager.persist();
+
+      const listener = jest.fn();
+      manager.on('vaultCorruptionDetected', listener);
+      mockStoreGet.mockRejectedValueOnce(new Error('Database read failed'));
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'backup-vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        MISSING_VAULT_ERROR,
+      );
+
+      expect(
+        mockStoreGetSplitStateReadDiagnostics,
+      ).not.toHaveBeenCalled();
+      expect(listener).toHaveBeenCalledWith({
+        backup: {
+          KeyringController: {
+            vault: 'backup-vault',
+          },
+        },
+        corruptionType: VaultCorruptionType.InaccessibleDatabase,
+        diagnostics: undefined,
       });
     });
   });
@@ -405,6 +473,7 @@ describe('PersistenceManager', () => {
           analyticsId: '0xabc123',
           optedIn: true,
         },
+        RemoteFeatureFlagController: undefined,
         meta: {
           version: 10,
         },
@@ -453,6 +522,8 @@ describe('PersistenceManager', () => {
     });
 
     it('records split-state write diagnostics after successful persistence', async () => {
+      const diagnosticsConfig = getDiagnosticsConfig();
+      manager.setSplitStatePersistenceDiagnosticsConfig(diagnosticsConfig);
       manager.setMetadata({ version: 10, storageKind: 'split' });
       manager.update('KeyringController', { vault: 'encrypted-vault' });
       manager.update('PreferencesController', { preferences: true });
@@ -464,6 +535,7 @@ describe('PersistenceManager', () => {
       expect(
         manager.getSplitStatePersistenceDiagnosticsSnapshot(undefined, 1000),
       ).toMatchObject({
+        config: diagnosticsConfig,
         totalQueuedUpdates: 2,
         totalPersistedBatches: 1,
         topWrittenKeys: expect.arrayContaining([

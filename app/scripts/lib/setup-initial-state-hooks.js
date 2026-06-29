@@ -11,6 +11,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
+import { getSplitStatePersistenceDiagnosticsConfig } from '../../../shared/lib/stores/persistence-diagnostics';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
 
@@ -35,6 +36,18 @@ function createLocalStore() {
     return new ExtensionStore();
   }
   return new FixtureExtensionStore({ initialize: isBackgroundContext() });
+}
+
+function getRemoteFeatureFlagsFromPersistedState(persistedState) {
+  const remoteFeatureFlags =
+    persistedState?.data?.RemoteFeatureFlagController?.remoteFeatureFlags;
+
+  return {
+    ...(remoteFeatureFlags && typeof remoteFeatureFlags === 'object'
+      ? remoteFeatureFlags
+      : {}),
+    ...(getManifestFlags().remoteFeatureFlags ?? {}),
+  };
 }
 
 const localStore = createLocalStore();
@@ -71,8 +84,15 @@ export const persistenceManager = new PersistenceManager({ localStore })
  */
 globalThis.stateHooks.getPersistedState = async function () {
   const persistedState = await persistenceManager.get({ validateVault: false });
+  const diagnosticsConfig = getSplitStatePersistenceDiagnosticsConfig(
+    getRemoteFeatureFlagsFromPersistedState(persistedState),
+  );
+  persistenceManager.setSplitStatePersistenceDiagnosticsConfig(
+    diagnosticsConfig,
+  );
 
   if (
+    diagnosticsConfig?.baselineEnabled &&
     persistedState?.meta?.storageKind === 'split' &&
     persistedState.data &&
     isBackgroundContext()

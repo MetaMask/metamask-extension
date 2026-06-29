@@ -4,6 +4,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { VaultCorruptionType } from '../../../shared/constants/state-corruption';
+import { SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG } from '../../../shared/lib/stores/persistence-diagnostics';
 
 const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
@@ -12,6 +13,7 @@ const mockPersistenceOn = jest.fn();
 const mockTrackVaultCorruptionEvent = jest.fn();
 const mockTrackEarlySegmentEvent = jest.fn();
 const mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot = jest.fn();
+const mockSetSplitStatePersistenceDiagnosticsConfig = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
@@ -47,6 +49,8 @@ jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
       getBackup: mockGetBackup,
       getWeeklySplitStatePersistenceDiagnosticsSnapshot:
         mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
+      setSplitStatePersistenceDiagnosticsConfig:
+        mockSetSplitStatePersistenceDiagnosticsConfig,
       cleanUpMostRecentRetrievedState: mockCleanUpMostRecentRetrievedState,
       on: (...args: unknown[]) => {
         mockPersistenceOn(...args);
@@ -100,6 +104,7 @@ describe('setup-initial-state-hooks', () => {
     mockTrackVaultCorruptionEvent.mockClear();
     mockTrackEarlySegmentEvent.mockClear();
     mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot.mockClear();
+    mockSetSplitStatePersistenceDiagnosticsConfig.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -283,6 +288,13 @@ describe('setup-initial-state-hooks', () => {
             optedIn: true,
             analyticsId: 'test-metrics-id',
           },
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: {
+              [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+                enabled: true,
+              },
+            },
+          },
           PreferencesController: {},
         },
         meta: {
@@ -310,6 +322,16 @@ describe('setup-initial-state-hooks', () => {
       expect(
         mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
       ).toHaveBeenCalledTimes(1);
+      expect(
+        mockSetSplitStatePersistenceDiagnosticsConfig,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          enabled: true,
+          baselineEnabled: true,
+          corruptionEnabled: true,
+          wideBatchKeyThreshold: 4,
+        }),
+      );
       expect(mockTrackEarlySegmentEvent).toHaveBeenCalledWith({
         state: persistedState.data,
         event: MetaMetricsEventName.SplitStatePersistenceBaseline,
@@ -324,6 +346,13 @@ describe('setup-initial-state-hooks', () => {
     it('does not track a weekly split-state persistence baseline in UI context', async () => {
       mockGet.mockResolvedValueOnce({
         data: {
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: {
+              [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+                enabled: true,
+              },
+            },
+          },
           PreferencesController: {},
         },
         meta: {
@@ -336,6 +365,30 @@ describe('setup-initial-state-hooks', () => {
 
       await globalThis.stateHooks.getPersistedState();
 
+      expect(
+        mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
+      ).not.toHaveBeenCalled();
+      expect(mockTrackEarlySegmentEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not collect or track split-state persistence diagnostics when the remote flag is missing', async () => {
+      mockGet.mockResolvedValueOnce({
+        data: {
+          PreferencesController: {},
+        },
+        meta: {
+          storageKind: 'split',
+          version: 1,
+        },
+      });
+      setSelfHref('chrome-extension://abc123/scripts/app-init.js');
+      await importFresh();
+
+      await globalThis.stateHooks.getPersistedState();
+
+      expect(
+        mockSetSplitStatePersistenceDiagnosticsConfig,
+      ).toHaveBeenCalledWith(undefined);
       expect(
         mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
       ).not.toHaveBeenCalled();

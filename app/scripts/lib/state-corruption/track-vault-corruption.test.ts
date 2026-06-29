@@ -5,7 +5,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
-import type { SplitStatePersistenceDiagnosticsSnapshot } from '../../../../shared/lib/stores/persistence-diagnostics';
+import {
+  SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG,
+  getSplitStatePersistenceDiagnosticsConfig,
+  type SplitStatePersistenceDiagnosticsSnapshot,
+} from '../../../../shared/lib/stores/persistence-diagnostics';
 import { trackVaultCorruptionEvent } from './track-vault-corruption';
 
 jest.mock('../segment', () => ({
@@ -16,6 +20,20 @@ jest.mock('../segment', () => ({
 }));
 
 const mockSegment = segment as jest.Mocked<typeof segment>;
+
+function getDiagnosticsConfig() {
+  const config = getSplitStatePersistenceDiagnosticsConfig({
+    [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+      enabled: true,
+    },
+  });
+
+  if (!config) {
+    throw new Error('Expected diagnostics config to be enabled');
+  }
+
+  return config;
+}
 
 describe('trackVaultCorruptionEvent', () => {
   beforeEach(() => {
@@ -69,6 +87,7 @@ describe('trackVaultCorruptionEvent', () => {
     };
     const diagnostics: SplitStatePersistenceDiagnosticsSnapshot = {
       schemaVersion: 1,
+      config: getDiagnosticsConfig(),
       updatedAt: 1000,
       totalQueuedUpdates: 1,
       totalPersistedBatches: 1,

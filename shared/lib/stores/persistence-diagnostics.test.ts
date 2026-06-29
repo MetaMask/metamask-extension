@@ -2,10 +2,14 @@ import 'fake-indexeddb/auto';
 
 import {
   SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_DB_NAME,
+  SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG,
   SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE,
   SplitStatePersistenceDiagnostics,
+  getSplitStatePersistenceDiagnosticsConfig,
   getSplitStateDiagnosticError,
   getSplitStateSizeBucket,
+  type SplitStatePersistenceDiagnosticsConfig,
+  type SplitStatePersistenceDiagnosticsSnapshot,
   type SplitStateReadDiagnostics,
 } from './persistence-diagnostics';
 
@@ -20,8 +24,26 @@ async function deleteDiagnosticsDatabase(): Promise<void> {
   });
 }
 
+function getEnabledConfig(
+  overrides: Record<string, unknown> = {},
+): SplitStatePersistenceDiagnosticsConfig {
+  const config = getSplitStatePersistenceDiagnosticsConfig({
+    [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+      enabled: true,
+      ...overrides,
+    },
+  });
+
+  if (!config) {
+    throw new Error('Expected diagnostics config to be enabled');
+  }
+
+  return config;
+}
+
 describe('SplitStatePersistenceDiagnostics', () => {
   let diagnostics: SplitStatePersistenceDiagnostics;
+  let config: SplitStatePersistenceDiagnosticsConfig;
 
   function recordUnsampledPersistedBatches(count: number) {
     for (let index = 0; index < count; index++) {
@@ -35,7 +57,9 @@ describe('SplitStatePersistenceDiagnostics', () => {
 
   beforeEach(async () => {
     await deleteDiagnosticsDatabase();
+    config = getEnabledConfig();
     diagnostics = new SplitStatePersistenceDiagnostics();
+    diagnostics.setConfig(config);
   });
 
   afterEach(() => {
@@ -59,6 +83,7 @@ describe('SplitStatePersistenceDiagnostics', () => {
 
     expect(snapshot).toStrictEqual({
       schemaVersion: 1,
+      config,
       updatedAt: 1000,
       totalQueuedUpdates: 2,
       totalPersistedBatches: 1,
@@ -80,6 +105,49 @@ describe('SplitStatePersistenceDiagnostics', () => {
     expect(JSON.stringify(snapshot)).not.toContain('0x123');
   });
 
+  it('does not collect diagnostics without the remote feature flag config', () => {
+    diagnostics.setConfig(undefined);
+
+    diagnostics.recordQueuedUpdate('KeyringController');
+    diagnostics.recordPersistedBatch(
+      new Map<string, unknown>([['KeyringController', { vault: 'secret' }]]),
+    );
+
+    expect(diagnostics.getSnapshot(undefined, 1000)).toBeUndefined();
+  });
+
+  it('normalizes and clamps remote feature flag config', () => {
+    expect(
+      getSplitStatePersistenceDiagnosticsConfig({
+        [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+          enabled: true,
+          baselineEnabled: false,
+          corruptionEnabled: true,
+          sizeSampleRate: 0,
+          baselineIntervalMs: Number.POSITIVE_INFINITY,
+          snapshotPersistIntervalMs: 1,
+          wideBatchKeyThreshold: 200,
+          topWrittenKeysLimit: 100,
+          recentWideBatchesLimit: 0,
+          largestKeysPerBatchLimit: 100,
+        },
+      }),
+    ).toStrictEqual({
+      enabled: true,
+      baselineEnabled: false,
+      corruptionEnabled: true,
+      sizeSampleRate: 1,
+      baselineIntervalMs: config.baselineIntervalMs,
+      snapshotPersistIntervalMs: 60 * 1000,
+      wideBatchKeyThreshold: 100,
+      topWrittenKeysLimit: 50,
+      recentWideBatchesLimit: 1,
+      largestKeysPerBatchLimit: 20,
+    });
+
+    expect(getSplitStatePersistenceDiagnosticsConfig({})).toBeUndefined();
+  });
+
   it('samples persisted value sizes once every 20 batches', () => {
     const stringifySpy = jest.spyOn(JSON, 'stringify');
 
@@ -96,7 +164,10 @@ describe('SplitStatePersistenceDiagnostics', () => {
           ['PreferencesController', { preferences: true }],
         ]),
       );
-      const snapshot = diagnostics.getSnapshot(undefined, 1000);
+      const snapshot = diagnostics.getSnapshot(
+        undefined,
+        1000,
+      ) as SplitStatePersistenceDiagnosticsSnapshot;
 
       expect(stringifySpy).toHaveBeenCalledTimes(2);
       expect(snapshot).toMatchObject({
@@ -135,7 +206,12 @@ describe('SplitStatePersistenceDiagnostics', () => {
     );
 
     expect(
-      diagnostics.getSnapshot(undefined, 1000).recentWideBatches,
+      (
+        diagnostics.getSnapshot(
+          undefined,
+          1000,
+        ) as SplitStatePersistenceDiagnosticsSnapshot
+      ).recentWideBatches,
     ).toStrictEqual([
       {
         keys: [

@@ -10,7 +10,9 @@ import { StorageWriteErrorType } from '../../constants/app-state';
 import { IndexedDBStore } from './indexeddb-store';
 import {
   getSplitStateDiagnosticError,
+  getSplitStatePersistenceDiagnosticsConfig,
   SplitStatePersistenceDiagnostics,
+  type SplitStatePersistenceDiagnosticsConfig,
   type SplitStatePersistenceDiagnosticsSnapshot,
   type SplitStateReadDiagnostics,
 } from './persistence-diagnostics';
@@ -29,6 +31,7 @@ export const backedUpStateKeys = [
   'AppMetadataController',
   'MetaMetricsController',
   'AnalyticsController',
+  'RemoteFeatureFlagController',
 ] as const;
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
@@ -127,6 +130,26 @@ function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
   }
   backup.meta = meta;
   return backup;
+}
+
+function getRemoteFeatureFlagsFromState(
+  state: MetaMaskStateType | Backup | null | undefined,
+): Record<string, unknown> {
+  const remoteFeatureFlagController =
+    isObject(state) && hasProperty(state, 'RemoteFeatureFlagController')
+      ? state.RemoteFeatureFlagController
+      : undefined;
+  const remoteFeatureFlags =
+    isObject(remoteFeatureFlagController) &&
+    hasProperty(remoteFeatureFlagController, 'remoteFeatureFlags') &&
+    isObject(remoteFeatureFlagController.remoteFeatureFlags)
+      ? remoteFeatureFlagController.remoteFeatureFlags
+      : {};
+
+  return {
+    ...remoteFeatureFlags,
+    ...(getManifestFlags().remoteFeatureFlags ?? {}),
+  };
 }
 
 /**
@@ -368,8 +391,14 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   getSplitStatePersistenceDiagnosticsSnapshot(
     readDiagnostics?: SplitStateReadDiagnostics,
     now = Date.now(),
-  ): SplitStatePersistenceDiagnosticsSnapshot {
+  ): SplitStatePersistenceDiagnosticsSnapshot | undefined {
     return this.#splitStateDiagnostics.getSnapshot(readDiagnostics, now);
+  }
+
+  setSplitStatePersistenceDiagnosticsConfig(
+    config: SplitStatePersistenceDiagnosticsConfig | undefined,
+  ) {
+    this.#splitStateDiagnostics.setConfig(config);
   }
 
   async getWeeklySplitStatePersistenceDiagnosticsSnapshot(
@@ -471,9 +500,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
   }
 
-  async #getSplitStatePersistenceDiagnosticsSnapshotForReport(): Promise<
-    SplitStatePersistenceDiagnosticsSnapshot | undefined
-  > {
+  async #getSplitStatePersistenceDiagnosticsSnapshotForReport(
+    config: SplitStatePersistenceDiagnosticsConfig | undefined,
+  ): Promise<SplitStatePersistenceDiagnosticsSnapshot | undefined> {
+    if (!config?.corruptionEnabled) {
+      return undefined;
+    }
+
+    this.#splitStateDiagnostics.setConfig(config);
+
     let readDiagnostics: SplitStateReadDiagnostics | undefined;
 
     try {
@@ -819,11 +854,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               const corruptionType = localStoreError
                 ? VaultCorruptionType.InaccessibleDatabase
                 : VaultCorruptionType.MissingVaultInDatabase;
+              const diagnosticsConfig =
+                getSplitStatePersistenceDiagnosticsConfig(
+                  getRemoteFeatureFlagsFromState(backup),
+                );
               const shouldCollectSplitStateDiagnostics = localStoreError
                 ? this.storageKind === 'split'
                 : (result?.meta?.storageKind ?? 'data') === 'split';
               const diagnostics = shouldCollectSplitStateDiagnostics
-                ? await this.#getSplitStatePersistenceDiagnosticsSnapshotForReport()
+                ? await this.#getSplitStatePersistenceDiagnosticsSnapshotForReport(
+                    diagnosticsConfig,
+                  )
                 : undefined;
               this.emit('vaultCorruptionDetected', {
                 backup,
