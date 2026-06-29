@@ -12,7 +12,7 @@ describe('wallet-export-encoding', () => {
       const wordlistIndices = new Uint8Array(indices.buffer);
 
       expect(encodeMnemonicForWalletExport(wordlistIndices)).toBe(
-        'dGVzdCB0ZXN0IHRlc3QgdGVzdCB0ZXN0IHRlc3QgdGVzdCB0ZXN0IHRlc3QganVuaw==',
+        'dGVzdCB0ZXN0IHRlc3QgdGVzdCB0ZXN0IHRlc3QgdGVzdCB0ZXN0IHRlc3QgdGVzdCB0ZXN0IGp1bms=',
       );
     });
   });

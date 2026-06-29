@@ -33,6 +33,9 @@ export function getQrSyncControllerMessenger(
       'KeyringController:withKeyringV2',
       'KeyringController:exportSeedPhrase',
       'KeyringController:exportAccount',
+      'AccountTreeController:getAccountGroupObject',
+      'AccountTreeController:getAccountWalletObject',
+      'AccountsController:getAccount',
     ],
   });
 

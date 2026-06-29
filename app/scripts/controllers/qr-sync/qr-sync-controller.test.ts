@@ -13,6 +13,17 @@
  */
 import { KeyringType } from '@metamask/keyring-api/v2';
 import {
+  AccountGroupType,
+  AccountWalletType,
+  toAccountWalletId,
+  type AccountGroupId,
+  type AccountWalletId,
+} from '@metamask/account-api';
+import type {
+  AccountGroupObject,
+  AccountWalletObject,
+} from '@metamask/account-tree-controller';
+import {
   MOCK_ANY_NAMESPACE,
   Messenger,
   MessengerActions,
@@ -21,6 +32,7 @@ import {
 } from '@metamask/messenger';
 
 import { QR_SYNC_PHASES, MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../shared/constants/qr-sync';
+import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { QrSyncActionTypes, QrSyncErrorMessages } from './constants';
 import { getDefaultQrSyncControllerState } from './metadata';
 import { QrSyncController } from './qr-sync-controller';
@@ -39,6 +51,49 @@ const TEST_ENTROPY_ID = 'entropy-primary';
 const TEST_SECONDARY_ENTROPY_ID = 'entropy-secondary';
 const TEST_PASSWORD = 'test-password';
 const TEST_SEED_PHRASE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+const TEST_ACCOUNT_ID = 'test-account-id';
+
+function createEntropyWalletFixture(
+  entropyId: string,
+  walletName: string,
+  groupIndex = 0,
+) {
+  const walletId = toAccountWalletId(AccountWalletType.Entropy, entropyId);
+  const groupId = `${walletId}/${groupIndex}` as AccountGroupId;
+  const group = {
+    type: AccountGroupType.MultichainAccount,
+    id: groupId,
+    accounts: [TEST_ACCOUNT_ID],
+    metadata: {
+      name: `Account ${groupIndex + 1}`,
+      pinned: false,
+      hidden: false,
+      lastSelected: 0,
+      entropy: { groupIndex },
+    },
+  } as AccountGroupObject;
+  const wallet = {
+    type: AccountWalletType.Entropy,
+    id: walletId,
+    status: 'ready',
+    groups: { [groupId]: group },
+    metadata: {
+      name: walletName,
+      entropy: { id: entropyId },
+    },
+  } as AccountWalletObject;
+
+  return { walletId, groupId, group, wallet };
+}
+
+const primaryEntropyFixture = createEntropyWalletFixture(
+  TEST_ENTROPY_ID,
+  'Wallet 1',
+);
+const secondaryEntropyFixture = createEntropyWalletFixture(
+  TEST_SECONDARY_ENTROPY_ID,
+  'Wallet 2',
+);
 
 const mockMwp = {
   dappClient: null as {
@@ -104,15 +159,29 @@ function setupController(
       primaryEntropyId?: string;
       seedPhrase?: number[];
     };
+    entropyFixtures?: ReturnType<typeof createEntropyWalletFixture>[];
   } = {},
 ) {
-  const {
-    entropyIds = [TEST_ENTROPY_ID],
-    primaryEntropyId = TEST_ENTROPY_ID,
-    seedPhrase = TEST_SEED_PHRASE,
-  } = options.keyringHandlers ?? {};
+  const entropyIds =
+    options.keyringHandlers?.entropyIds ?? [TEST_ENTROPY_ID];
+  const primaryEntropyId =
+    options.keyringHandlers?.primaryEntropyId ?? TEST_ENTROPY_ID;
+  const seedPhrase = options.keyringHandlers?.seedPhrase ?? TEST_SEED_PHRASE;
+  const entropyFixtures =
+    options.entropyFixtures ??
+    entropyIds.map((entropyId) =>
+      entropyId === TEST_SECONDARY_ENTROPY_ID
+        ? secondaryEntropyFixture
+        : primaryEntropyFixture,
+    );
 
   const exportSeedPhrase = jest.fn().mockResolvedValue(seedPhrase);
+  const groupsById = new Map<AccountGroupId, AccountGroupObject>(
+    entropyFixtures.map((fixture) => [fixture.groupId, fixture.group]),
+  );
+  const walletsById = new Map<AccountWalletId, AccountWalletObject>(
+    entropyFixtures.map((fixture) => [fixture.walletId, fixture.wallet]),
+  );
 
   const rootMessenger: RootMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
@@ -130,6 +199,9 @@ function setupController(
       'KeyringController:exportSeedPhrase',
       'KeyringController:getState',
       'KeyringController:exportAccount',
+      'AccountTreeController:getAccountGroupObject',
+      'AccountTreeController:getAccountWalletObject',
+      'AccountsController:getAccount',
     ],
     events: [],
   });
@@ -164,13 +236,39 @@ function setupController(
     exportSeedPhrase,
   );
 
+  rootMessenger.registerActionHandler(
+    'AccountTreeController:getAccountGroupObject',
+    jest.fn((groupId: AccountGroupId) => groupsById.get(groupId)),
+  );
+
+  rootMessenger.registerActionHandler(
+    'AccountTreeController:getAccountWalletObject',
+    jest.fn((walletId: AccountWalletId) => walletsById.get(walletId)),
+  );
+
+  rootMessenger.registerActionHandler(
+    'AccountsController:getAccount',
+    jest.fn(() => ({
+      ...MOCK_ACCOUNT_EOA,
+      id: TEST_ACCOUNT_ID,
+      address: '0x123',
+    })),
+  );
+
   const controller = new QrSyncController({
     keyManager: mockKeyManager,
     messenger: qrSyncMessenger,
     relayUrl: TEST_RELAY_URL,
   });
 
-  return { controller, rootMessenger, qrSyncMessenger, exportSeedPhrase };
+  return {
+    controller,
+    rootMessenger,
+    qrSyncMessenger,
+    exportSeedPhrase,
+    primaryGroupId: entropyFixtures[0]?.groupId ?? primaryEntropyFixture.groupId,
+    entropyFixtures,
+  };
 }
 
 async function mockStartSession(controller: QrSyncController): Promise<void> {
@@ -214,19 +312,16 @@ function mockEmitInvalidSyncOffer(): void {
   });
 }
 
-function mockEmitSyncOffer(deadline = Date.now() + 60_000): void {
+function mockEmitSyncOffer(isOnboardingCompleted = true): void {
   mockMwp.dappClient?.emit('message', {
     type: QrSyncActionTypes.SYNC_OFFER,
     version: '1.0.0',
-    data: { deadline },
+    data: { isOnboardingCompleted },
   });
 }
 
-function mockSetReviewingSyncOffer(
-  controller: QrSyncController,
-  deadline = Date.now() + 60_000,
-): void {
-  mockEmitSyncOffer(deadline);
+function mockSetReviewingSyncOffer(controller: QrSyncController): void {
+  mockEmitSyncOffer();
   if (controller.state.phase !== QR_SYNC_PHASES.REVIEWING_SYNC_OFFER) {
     throw new Error('Expected reviewing sync offer phase');
   }
@@ -465,11 +560,12 @@ describe('QrSyncController', () => {
       mockEmitOtpRequired();
       await controller.submitOtp('123456');
 
-      const deadline = Date.now() + 120_000;
-      mockEmitSyncOffer(deadline);
+      mockEmitSyncOffer();
 
       expect(controller.state.phase).toBe(QR_SYNC_PHASES.REVIEWING_SYNC_OFFER);
-      expect(controller.state.syncOffer).toStrictEqual({ deadline });
+      expect(controller.state.syncOffer).toStrictEqual({
+        isOnboardingCompleted: true,
+      });
     });
 
     it('ignores sync offers with an invalid payload', async () => {
@@ -490,12 +586,12 @@ describe('QrSyncController', () => {
 
   describe('syncAccounts', () => {
     it('exports selected mnemonics and sends sync-ready to mobile', async () => {
-      const { controller, exportSeedPhrase } = setupController();
+      const { controller, exportSeedPhrase, primaryGroupId } = setupController();
 
       await mockStartSession(controller);
       mockSetReviewingSyncOffer(controller);
 
-      await controller.syncAccounts(TEST_PASSWORD, [TEST_ENTROPY_ID]);
+      await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
 
       expect(exportSeedPhrase).toHaveBeenCalledWith(
         { password: TEST_PASSWORD },
@@ -510,7 +606,13 @@ describe('QrSyncController', () => {
             data: [
               expect.objectContaining({
                 type: 'Mnemonic',
-                groups: [],
+                name: 'Wallet 1',
+                groups: [
+                  expect.objectContaining({
+                    groupIndex: 0,
+                    name: 'Account 1',
+                  }),
+                ],
                 isPrimary: true,
               }),
             ],
@@ -521,7 +623,7 @@ describe('QrSyncController', () => {
         QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
       );
       expect(controller.state.selectedAccountGroupIds).toStrictEqual([
-        TEST_ENTROPY_ID,
+        primaryGroupId,
       ]);
 
       mockEmitSyncCompleted();
@@ -539,8 +641,8 @@ describe('QrSyncController', () => {
       mockSetReviewingSyncOffer(controller);
 
       await controller.syncAccounts(TEST_PASSWORD, [
-        TEST_ENTROPY_ID,
-        TEST_SECONDARY_ENTROPY_ID,
+        primaryEntropyFixture.groupId,
+        secondaryEntropyFixture.groupId,
       ]);
 
       const syncReadyPayload = mockMwp.dappClient?.sendRequest.mock.calls.find(
@@ -573,14 +675,14 @@ describe('QrSyncController', () => {
     });
 
     it('fails the session when sync completion times out', async () => {
-      const { controller } = setupController();
+      const { controller, primaryGroupId } = setupController();
 
       await mockStartSession(controller);
       mockSetReviewingSyncOffer(controller);
 
       jest.useFakeTimers();
       try {
-        await controller.syncAccounts(TEST_PASSWORD, [TEST_ENTROPY_ID]);
+        await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
 
         expect(controller.state.phase).toBe(
           QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
@@ -604,11 +706,11 @@ describe('QrSyncController', () => {
 
   describe('sync completion', () => {
     it('finishes the flow when mobile reports sync-completed', async () => {
-      const { controller } = setupController();
+      const { controller, primaryGroupId } = setupController();
 
       await mockStartSession(controller);
       mockSetReviewingSyncOffer(controller);
-      await controller.syncAccounts(TEST_PASSWORD, [TEST_ENTROPY_ID]);
+      await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
       mockEmitSyncCompleted();
 
       expect(controller.state.phase).toBe(QR_SYNC_PHASES.COMPLETED);

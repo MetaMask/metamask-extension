@@ -1,5 +1,10 @@
 import type { AccountGroupId } from '@metamask/account-api';
 import type {
+  AccountTreeControllerGetAccountGroupObjectAction,
+  AccountTreeControllerGetAccountWalletObjectAction,
+} from '@metamask/account-tree-controller';
+import type { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
+import type {
   ControllerGetStateAction,
   ControllerStateChangedEvent,
 } from '@metamask/base-controller';
@@ -49,17 +54,17 @@ export type QrSyncMessage<DataType = undefined> = {
 
 export type QrSyncOffer = {
   /**
+   * Whether onboarding has been completed on the receiving mobile device.
+   *
+   * @type {boolean}
+   */
+  isOnboardingCompleted: boolean;
+  /**
    * Optional session identifier from the mobile sync offer.
    *
    * @type {string}
    */
   sessionId?: string;
-  /**
-   * The deadline by which the sync must complete.
-   *
-   * @type {number}
-   */
-  deadline: number;
 };
 
 export type QrSyncErrorCode =
@@ -258,16 +263,13 @@ export type QrSyncControllerState = {
    */
   otpAttempts: number;
   /**
-   * The sync offer received from mobile, including the sync deadline.
+   * The sync offer received from mobile.
    *
    * @type {QrSyncOffer | null}
    */
   syncOffer: QrSyncOffer | null;
   /**
    * Account group IDs the user chose to sync.
-   *
-   * Phase 2 will populate this from the wallet picker UI; until then the
-   * controller may still receive entropy IDs from the legacy call path.
    *
    * @type {AccountGroupId[]}
    */
@@ -360,7 +362,10 @@ export type QrSyncAllowedActions =
   | KeyringControllerGetStateAction
   | KeyringControllerWithKeyringV2Action
   | KeyringControllerExportSeedPhraseAction
-  | KeyringControllerExportAccountAction;
+  | KeyringControllerExportAccountAction
+  | AccountTreeControllerGetAccountGroupObjectAction
+  | AccountTreeControllerGetAccountWalletObjectAction
+  | AccountsControllerGetAccountAction;
 
 export type QrSyncControllerMessenger = Messenger<
   typeof QR_SYNC_CONTROLLER_NAME,

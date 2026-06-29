@@ -10,7 +10,7 @@ import {
   DappClient,
   type OtpRequiredPayload,
 } from '@metamask/mobile-wallet-protocol-dapp-client';
-import type { AccountGroupId } from '@metamask/account-api';
+import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 
@@ -33,7 +33,7 @@ import {
 } from './types';
 import { controllerMetadata, getDefaultQrSyncControllerState, MESSENGER_EXPOSED_METHODS } from './metadata';
 import { InMemoryKvStore } from './kv-store';
-import { encodeMnemonicForWalletExport } from './wallet-export-encoding';
+import { buildWalletExportEntries } from './wallet-export-builder';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -170,75 +170,55 @@ export class QrSyncController extends BaseController<
 
   async syncAccounts(
     password: string,
-    selectedEntropyIds: string[],
+    selectedAccountGroupIds: AccountGroupId[],
   ): Promise<void> {
     this.#assertPhase([QR_SYNC_PHASES.REVIEWING_SYNC_OFFER]);
 
-    // TODO: The following logic should be replaced with `exportMetadata` from Accounts.
-    const entropyIds = [...new Set(selectedEntropyIds)];
-    if (entropyIds.length === 0) {
-      throw new Error('At least one entropy source must be selected.');
-    }
-
-    const validatedEntropyIds = await Promise.all(
-      entropyIds.map(async (entropyId) => {
-        try {
-          return (await this.messenger.call(
-            'KeyringController:withKeyringV2',
-            { id: entropyId },
-            async ({ keyring, metadata }) => {
-              return keyring.type === KeyringType.Hd ? metadata.id : null;
-            },
-          )) as string | null;
-        } catch {
-          return null;
-        }
-      }),
-    );
-
-    const availableEntropyIds = new Set(
-      validatedEntropyIds.filter(
-        (entropyId): entropyId is string => Boolean(entropyId),
-      ),
-    );
-    // Across the app, the first HD keyring is treated as the primary SRP.
-    const primaryEntropyId = (await this.messenger.call(
-      'KeyringController:withKeyringV2',
-      { type: KeyringType.Hd, index: 0 },
-      async ({ metadata }) => metadata.id,
-    )) as string | undefined;
-
-    for (const entropyId of entropyIds) {
-      if (!availableEntropyIds.has(entropyId)) {
-        throw new Error(`Entropy source with ID "${entropyId}" not found.`);
-      }
-    }
-
-    const syncData: QrSyncData = {
-      version: QrSyncMessageVersion.V1,
-      data: await Promise.all(
-        entropyIds.map(async (entropyId) => {
-          const seedPhrase = await this.messenger.call(
+    const exportData = await buildWalletExportEntries(
+      selectedAccountGroupIds,
+      {
+        getAccountGroupObject: (groupId) =>
+          this.messenger.call(
+            'AccountTreeController:getAccountGroupObject',
+            groupId,
+          ),
+        getAccountWalletObject: (walletId) =>
+          this.messenger.call(
+            'AccountTreeController:getAccountWalletObject',
+            walletId as AccountWalletId,
+          ),
+        getAccountAddress: (accountId) =>
+          this.messenger.call('AccountsController:getAccount', accountId)
+            ?.address,
+        exportSeedPhrase: (entropyId) =>
+          this.messenger.call(
             'KeyringController:exportSeedPhrase',
             { password },
             entropyId,
-          );
+          ),
+        exportPrivateKey: (address) =>
+          this.messenger.call(
+            'KeyringController:exportAccount',
+            { password },
+            address,
+          ),
+        getPrimaryEntropyId: async () =>
+          (await this.messenger.call(
+            'KeyringController:withKeyringV2',
+            { type: KeyringType.Hd, index: 0 },
+            async ({ metadata }) => metadata.id,
+          )) as string | undefined,
+      },
+    );
 
-          return {
-            type: 'Mnemonic' as const,
-            mnemonic: encodeMnemonicForWalletExport(seedPhrase),
-            // TODO(phase-2): Populate groups from AccountTreeController metadata.
-            groups: [],
-            ...(primaryEntropyId === entropyId ? { isPrimary: true } : {}),
-          };
-        }),
-      ),
-      deadline: Date.now() + MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000, // 60s deadline
+    const syncData: QrSyncData = {
+      version: QrSyncMessageVersion.V1,
+      data: exportData,
+      deadline: Date.now() + MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000,
     };
 
     this.update((state) => {
-      // TODO(phase-2): Store the UI-selected account group IDs.
-      state.selectedAccountGroupIds = [...entropyIds] as AccountGroupId[];
+      state.selectedAccountGroupIds = [...selectedAccountGroupIds];
       state.lastActionType = QrSyncActionTypes.SYNC_READY;
       state.error = null;
       state.updatedAt = Date.now();
@@ -680,11 +660,14 @@ export class QrSyncController extends BaseController<
   }
 
   #isQrSyncOffer(value: unknown): value is QrSyncOffer {
-    if (!value || typeof value !== 'object') {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) {
       return false;
     }
 
-    return true;
+    return (
+      typeof (value as { isOnboardingCompleted?: unknown })
+        .isOnboardingCompleted === 'boolean'
+    );
   }
 
   #handlePeerCancel(): void {
