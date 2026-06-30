@@ -82,12 +82,6 @@
   "account": {
     "message": "Account"
   },
-  "accountActivity": {
-    "message": "Account activity"
-  },
-  "accountActivityText": {
-    "message": "Select the accounts you want to be notified about:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Log in"
   },
@@ -3100,12 +3094,6 @@
   "customerSupport": {
     "message": "customer support"
   },
-  "customizeYourNotifications": {
-    "message": "Customize your notifications"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Turn on the types of notifications you want to receive:"
-  },
   "dappConnections": {
     "message": "Dapp Connections"
   },
@@ -5103,7 +5091,7 @@
     "message": "MetaMask fee"
   },
   "metamaskNotificationsAreOff": {
-    "message": "Wallet notifications are currently not active."
+    "message": "Turn on notifications"
   },
   "metamaskSwap": {
     "message": "MetaMask Swap"
@@ -5991,6 +5979,9 @@
   "notificationItemUnStakingRequested": {
     "message": "Unstaking requested"
   },
+  "notificationSettings": {
+    "message": "Notification settings"
+  },
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -6045,14 +6036,65 @@
   "notificationsPageNoNotificationsContent": {
     "message": "You have not received any notifications yet."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "CLI connection requests, approvals, and session updates for Agentic"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "Agentic CLI"
+  },
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."
   },
+  "notificationsSettingsDeselectAll": {
+    "message": "Deselect all"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "In-app"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "Product updates, feature announcements, and new releases"
+  },
+  "notificationsSettingsMarketingTitle": {
+    "message": "Updates and rewards"
+  },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1 we protect your privacy while using this feature."
+    "message": "Choose what you're notified about and how."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"
+  },
+  "notificationsSettingsPerpsDescription": {
+    "message": "Perps position changes, liquidations, funding rates, and margin updates"
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "Trading activity"
+  },
+  "notificationsSettingsPushNotifications": {
+    "message": "Push"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "Accounts"
+  },
+  "notificationsSettingsSelectAccountsDescription": {
+    "message": "Choose which accounts you'd like to get notifications for."
+  },
+  "notificationsSettingsStatusInApp": {
+    "message": "In-app"
+  },
+  "notificationsSettingsStatusOff": {
+    "message": "Off"
+  },
+  "notificationsSettingsStatusPush": {
+    "message": "Push"
+  },
+  "notificationsSettingsWalletActivityDescription": {
+    "message": "Buys, sells, transfers, swaps and rewards"
+  },
+  "notificationsSettingsWalletActivityTitle": {
+    "message": "Wallet activity"
   },
   "numberOfTokens": {
     "message": "Number of tokens"
@@ -7741,9 +7783,6 @@
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
-  },
-  "productAnnouncements": {
-    "message": "Product announcements"
   },
   "provide": {
     "message": "Provide"

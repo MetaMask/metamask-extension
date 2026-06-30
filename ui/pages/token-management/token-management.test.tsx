@@ -85,7 +85,7 @@ const getMockedActions = () =>
   jest.requireMock('../../store/actions') as MockedTokenManagementActions;
 
 type MockSearchResult = {
-  assetId: string;
+  assetId?: string | null;
   symbol: string;
   decimals: number;
   name: string;
@@ -804,6 +804,44 @@ describe('TokenManagementPage', () => {
 
     expect(screen.queryByText('Alpha Token')).not.toBeInTheDocument();
     expect(screen.getByText('USD Coin')).toBeInTheDocument();
+  });
+
+  it('ignores API-backed results with missing asset IDs', () => {
+    const badTokenName = 'Bad Token';
+    const missingAssetIdTokenName = 'Missing Asset ID Token';
+    const validTokenName = 'USD Coin';
+
+    setTokenSearchState({
+      results: [
+        {
+          assetId: null,
+          symbol: 'BAD',
+          decimals: 18,
+          name: badTokenName,
+        },
+        {
+          symbol: 'MISSING',
+          decimals: 18,
+          name: missingAssetIdTokenName,
+        },
+        {
+          assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          symbol: 'USDC',
+          decimals: 6,
+          name: validTokenName,
+        },
+      ],
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usd' },
+    });
+
+    expect(screen.queryByText(badTokenName)).not.toBeInTheDocument();
+    expect(screen.queryByText(missingAssetIdTokenName)).not.toBeInTheDocument();
+    expect(screen.getByText(validTokenName)).toBeInTheDocument();
   });
 
   it('renders imported tokens first and non-imported API browse results below as OFF', () => {

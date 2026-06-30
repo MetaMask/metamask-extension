@@ -187,6 +187,11 @@ const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   return assetReference || assetId;
 };
 
+const hasValidAssetId = (
+  result: TokenSearchResult,
+): result is TokenSearchResult & { assetId: CaipAssetType } =>
+  typeof result.assetId === 'string';
+
 const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
   const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
   const address =
@@ -660,7 +665,9 @@ export const TokenManagementPage = () => {
       return EMPTY_TOKEN_SEARCH_RESULTS;
     }
 
-    const results = searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS;
+    const results = (searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS).filter(
+      hasValidAssetId,
+    );
 
     // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
     // display duplicate. Drop it from search/browse results too.
