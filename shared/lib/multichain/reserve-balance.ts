@@ -1,8 +1,20 @@
 import { AssetType } from '../../constants/transaction';
-import { getBaseReserveFromAccountAssetInfo } from './base-reserve-from-account-asset-info';
 import { NATIVE_RESERVE_CHAIN_IDS } from './constants';
 
 export type AccountAssetInfo = { baseReserve?: string } | undefined;
+
+function parseFloatSafe(
+  value ?: string,
+): string | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+  const parsed = Number.parseFloat(value);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return undefined;
+  }
+  return value;
+}
 
 export function getNativeReserveAssetPageState({
   chainId,
@@ -17,7 +29,7 @@ export function getNativeReserveAssetPageState({
 
   const nativeReserveBaseReserve =
     isNativeReserveChain && type === AssetType.native
-      ? (getBaseReserveFromAccountAssetInfo(accountAssetInfo) ?? '0')
+      ? (parseFloatSafe(accountAssetInfo?.baseReserve) ?? '0')
       : undefined;
 
   const showNativeReserveBalanceSection =

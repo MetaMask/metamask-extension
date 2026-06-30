@@ -13,6 +13,10 @@ export const useAssetActivation = ({
     assetId: string;
   };
 }) => {
+  // TODO: keep all activate / inactive asset logic here
+  // And keep the state to control the loading status and error message for each operation
+
+
   const [isDeactivating, setIsDeactivating] =
     useState(false);
   const [trustlineRemoveErrorMessage, setTrustlineRemoveErrorMessage] =
