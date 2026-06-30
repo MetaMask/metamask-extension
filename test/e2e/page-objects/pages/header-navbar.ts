@@ -201,7 +201,7 @@ class HeaderNavbar {
     console.log(
       `Verify notification count is ${count} and open notifications list`,
     );
-    await this.openGlobalMenu({ withNotificationCounter: true });
+    await this.openGlobalMenu();
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),
