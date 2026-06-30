@@ -1152,6 +1152,21 @@
     "ui/pages/token-management/token-management.test.tsx": {
       "MetaMask: Background connection not initialized": 4
     },
+    "ui/pages/unlock-page/passkey/unlock-passkey-icon-button.test.tsx": {
+      "Test errors: Uncaught TypeErrors": 1,
+      "error: Error handled by React Router": 1,
+      "error: React Router caught the following": 1
+    },
+    "ui/pages/unlock-page/passkey/unlock-passkey-section.test.tsx": {
+      "Test errors: Uncaught TypeErrors": 8,
+      "error: Error handled by React Router": 8,
+      "error: React Router caught the following": 8
+    },
+    "ui/pages/unlock-page/unlock-page.component.test.tsx": {
+      "Test errors: Uncaught TypeErrors": 7,
+      "error: Error handled by React Router": 7,
+      "error: React Router caught the following": 7
+    },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },
