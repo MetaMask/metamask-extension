@@ -2934,6 +2934,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_hardware: {
     name: 'confirmations_pay_hardware',
     type: FeatureFlagType.Remote,
