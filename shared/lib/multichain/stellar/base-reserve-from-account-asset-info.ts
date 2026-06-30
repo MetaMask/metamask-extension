@@ -1,5 +1,5 @@
 /**
- * Extracts native XLM base reserve from accountAssetInfo.
+ * Extracts native base reserve for compatible chain (stellar, ripple) from accountAssetInfo.
  *
  * @param accountAssetInfo - Per-asset enrichment on the balance row.
  * @returns Display-unit base reserve string, or undefined when absent/invalid.
