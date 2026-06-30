@@ -96,6 +96,24 @@ const customNetworkConfiguration = {
   },
 };
 
+const gnosisNetworkConfiguration = {
+  '0x64': {
+    chainId: '0x64',
+    name: 'Gnosis',
+    rpcEndpoints: [
+      {
+        url: 'https://rpc.gnosischain.com',
+        type: RpcEndpointType.Custom,
+        networkClientId: 'gnosis-mainnet',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://gnosisscan.io'],
+    defaultBlockExplorerUrlIndex: 0,
+    nativeCurrency: 'xDAI',
+  },
+};
+
 const testNetworkConfiguration = {
   '0xaa36a7': {
     chainId: '0xaa36a7',
@@ -217,7 +235,9 @@ describe('NetworksPage', () => {
   });
 
   it('renders the Chainlist picker from the query param', async () => {
-    renderNetworksPage({ pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist` });
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+    });
 
     expect(
       await screen.findByPlaceholderText(
@@ -235,7 +255,9 @@ describe('NetworksPage', () => {
   });
 
   it('loads more Chainlist networks as the user scrolls', async () => {
-    renderNetworksPage({ pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist` });
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+    });
 
     expect(await screen.findByText('Chainlist Network 99')).toBeInTheDocument();
     expect(screen.queryByText('Chainlist Network 100')).not.toBeInTheDocument();
@@ -258,7 +280,27 @@ describe('NetworksPage', () => {
 
     fireEvent.scroll(networkList);
 
-    expect(await screen.findByText('Chainlist Network 100')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Chainlist Network 100'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows an Added pill for already configured Chainlist networks', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        ...gnosisNetworkConfiguration,
+      },
+    });
+
+    expect(await screen.findByText('Gnosis')).toBeInTheDocument();
+    expect(screen.getByText('Gnosis').closest('button')).toHaveClass(
+      'bg-background-alternative',
+    );
+    expect(
+      screen.getByTestId('networks-page-chainlist-added-pill'),
+    ).toHaveTextContent(messages.added.message);
   });
 
   it('renders the custom rpc page with footer actions and adds the rpc', async () => {

@@ -9,6 +9,7 @@ import {
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
+  FontWeight,
   Icon,
   IconColor,
   IconName,
@@ -100,6 +101,9 @@ type ChainlistNetwork = SafeChain & {
   explorers?: { url?: string }[];
 };
 
+const getHexChainId = (chainId: string | number) =>
+  `0x${Number(chainId).toString(16)}`.toLowerCase();
+
 const getUsableUrls = (urls: string[] = []) =>
   urls.filter((url) => {
     if (!url || url.includes('${')) {
@@ -129,8 +133,10 @@ const CHAINLIST_PAGE_SIZE = 100;
 const CHAINLIST_SCROLL_THRESHOLD_PX = 120;
 
 const ChainlistNetworkPicker = ({
+  existingNetworkChainIds,
   onSelect,
 }: {
+  existingNetworkChainIds: Set<string>;
   onSelect: (network: ChainlistNetwork) => void;
 }) => {
   const t = useI18nContext();
@@ -142,21 +148,20 @@ const ChainlistNetworkPicker = ({
   const chainlistNetworks = useMemo(() => {
     const normalizedSearchValue = searchValue.trim().toLowerCase();
 
-    return ((safeChains ?? []) as ChainlistNetwork[])
-      .filter((network) => {
-        if (getUsableUrls(network.rpc).length === 0) {
-          return false;
-        }
+    return ((safeChains ?? []) as ChainlistNetwork[]).filter((network) => {
+      if (getUsableUrls(network.rpc).length === 0) {
+        return false;
+      }
 
-        if (!normalizedSearchValue) {
-          return true;
-        }
+      if (!normalizedSearchValue) {
+        return true;
+      }
 
-        return (
-          network.name.toLowerCase().includes(normalizedSearchValue) ||
-          String(network.chainId).includes(normalizedSearchValue)
-        );
-      });
+      return (
+        network.name.toLowerCase().includes(normalizedSearchValue) ||
+        String(network.chainId).includes(normalizedSearchValue)
+      );
+    });
   }, [safeChains, searchValue]);
 
   const visibleChainlistNetworks = useMemo(
@@ -208,34 +213,64 @@ const ChainlistNetworkPicker = ({
         data-testid="networks-page-chainlist-network-list"
         onScroll={handleChainlistScroll}
       >
-        {visibleChainlistNetworks.map((network, index) => (
-          <button
-            className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed"
-            data-testid="networks-page-chainlist-network"
-            key={`${network.chainId}-${network.name}`}
-            onClick={() => onSelect(network)}
-            type="button"
-          >
-            <Box
-              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-medium text-text-default ${
-                CHAINLIST_ROW_COLORS[index % CHAINLIST_ROW_COLORS.length]
+        {visibleChainlistNetworks.map((network, index) => {
+          const isExistingNetwork = existingNetworkChainIds.has(
+            getHexChainId(network.chainId),
+          );
+
+          return (
+            <button
+              className={`flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed ${
+                isExistingNetwork ? 'bg-background-alternative' : ''
               }`}
+              data-testid="networks-page-chainlist-network"
+              key={`${network.chainId}-${network.name}`}
+              onClick={() => onSelect(network)}
+              type="button"
             >
-              {network.name.charAt(0).toUpperCase()}
-            </Box>
-            <Box className="min-w-0 flex-1">
-              <Text variant={TextVariant.BodyMdMedium} className="truncate">
-                {network.name}
-              </Text>
-              <Text variant={TextVariant.BodyMd} className="truncate text-text-alternative">
-                {t('chainlistNetworkDetails', [
-                  network.nativeCurrency.symbol,
-                  String(network.chainId),
-                ])}
-              </Text>
-            </Box>
-          </button>
-        ))}
+              <Box
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-medium text-text-default ${
+                  CHAINLIST_ROW_COLORS[index % CHAINLIST_ROW_COLORS.length]
+                }`}
+              >
+                {network.name.charAt(0).toUpperCase()}
+              </Box>
+              <Box className="min-w-0 flex-1">
+                <Box className="flex min-w-0 items-center gap-2">
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                    className="truncate"
+                  >
+                    {network.name}
+                  </Text>
+                  {isExistingNetwork ? (
+                    <Box
+                      className="shrink-0 rounded-full bg-muted px-2 py-0.5"
+                      data-testid="networks-page-chainlist-added-pill"
+                    >
+                      <Text
+                        variant={TextVariant.BodySm}
+                        className="text-text-alternative"
+                      >
+                        {t('added')}
+                      </Text>
+                    </Box>
+                  ) : null}
+                </Box>
+                <Text
+                  variant={TextVariant.BodyMd}
+                  className="truncate text-text-alternative"
+                >
+                  {t('chainlistNetworkDetails', [
+                    network.nativeCurrency.symbol,
+                    String(network.chainId),
+                  ])}
+                </Text>
+              </Box>
+            </button>
+          );
+        })}
       </Box>
     </Box>
   );
@@ -279,6 +314,15 @@ export const NetworksPage = () => {
   }, [editingChainId, editCompleted, evmNetworks, view]);
 
   const networkFormState = useNetworkFormState(editedNetwork);
+  const existingNetworkChainIds = useMemo(
+    () =>
+      new Set(
+        Object.values(evmNetworks).map((network) =>
+          network.chainId.toLowerCase(),
+        ),
+      ),
+    [evmNetworks],
+  );
 
   const setView = useCallback(
     (nextView?: string) => {
@@ -512,7 +556,10 @@ export const NetworksPage = () => {
             onClose={handleClose}
           />
           <NetworksPageFormBody>
-            <ChainlistNetworkPicker onSelect={handleChainlistNetworkSelect} />
+            <ChainlistNetworkPicker
+              existingNetworkChainIds={existingNetworkChainIds}
+              onSelect={handleChainlistNetworkSelect}
+            />
           </NetworksPageFormBody>
         </>
       ) : null}

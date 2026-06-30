@@ -23,6 +23,9 @@ export const AddNetwork = ({
       toggleNetworkMenuAfterSubmit={false}
       usePageFooterStyle={true}
       onComplete={() => {
+        if (!isEdit) {
+          networkFormState.clear();
+        }
         setSearchParams({});
       }}
       onEdit={() => {

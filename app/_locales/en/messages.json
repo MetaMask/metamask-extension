@@ -1070,9 +1070,6 @@
   "addACustomNetwork": {
     "message": "Add a custom network"
   },
-  "addFromChainlist": {
-    "message": "Add from Chainlist"
-  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -1139,6 +1136,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
+  },
+  "addFromChainlist": {
+    "message": "Add from Chainlist"
   },
   "addFunds": {
     "message": "Add funds"
@@ -1247,6 +1247,9 @@
   },
   "add_wallets_desc": {
     "message": "Pick the wallets and accounts to import to your phone. You can change this later."
+  },
+  "added": {
+    "message": "Added"
   },
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
@@ -2471,10 +2474,6 @@
   "chainId": {
     "message": "Chain ID"
   },
-  "chainlistNetworkDetails": {
-    "message": "Symbol: $1 · ID: $2",
-    "description": "$1 is the native currency symbol and $2 is the network chain ID."
-  },
   "chainIdDefinition": {
     "message": "The chain ID used to sign transactions for this network."
   },
@@ -2483,6 +2482,10 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
+  },
+  "chainlistNetworkDetails": {
+    "message": "Symbol: $1 · ID: $2",
+    "description": "$1 is the native currency symbol and $2 is the network chain ID."
   },
   "changeInSettings": {
     "message": "Change in Settings"
@@ -8455,11 +8458,11 @@
   "searchForAnAssetToSend": {
     "message": "Search for an asset to send"
   },
-  "searchNetworks": {
-    "message": "Search networks"
-  },
   "searchNetworkNameOrChainId": {
     "message": "Search network name or chain ID"
+  },
+  "searchNetworks": {
+    "message": "Search networks"
   },
   "searchNfts": {
     "message": "Search NFTs"
