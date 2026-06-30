@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { UITrackEventMethod } from '../../../contexts/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   createEventBuilder,
@@ -55,26 +56,48 @@ export type ViewExplorerMenuItemProps = {
   account: InternalAccount;
 };
 
+type BlockExplorerTrackEvent =
+  | UITrackEventMethod
+  | ((built: AnalyticsEvent) => void);
+
 export const openBlockExplorer = (
   addressLink: string,
   metricsLocation: string,
-  trackEvent: (built: AnalyticsEvent) => void,
+  trackEvent: BlockExplorerTrackEvent,
   closeMenu?: () => void,
 ) => {
-  trackEvent(
-    createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
-      .addCategory(MetaMetricsEventCategory.Navigation)
-      .addProperties({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        link_type: MetaMetricsEventLinkType.AccountTracker,
-        location: metricsLocation,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        url_domain: getURLHostName(addressLink),
-      })
-      .build(),
-  );
+  const properties = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    link_type: MetaMetricsEventLinkType.AccountTracker,
+    location: metricsLocation,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    url_domain: getURLHostName(addressLink),
+  };
+  const legacyPayload = {
+    event: MetaMetricsEventName.ExternalLinkClicked,
+    category: MetaMetricsEventCategory.Navigation,
+    properties,
+  };
+  const built = createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
+    .addCategory(MetaMetricsEventCategory.Navigation)
+    .addProperties(properties)
+    .build();
+  try {
+    const legacyResult = (trackEvent as UITrackEventMethod)(legacyPayload);
+    if (
+      typeof legacyResult === 'object' &&
+      legacyResult !== null &&
+      'then' in legacyResult
+    ) {
+      legacyResult.catch(() => undefined);
+    } else {
+      (trackEvent as (built: AnalyticsEvent) => void)(built);
+    }
+  } catch {
+    // Analytics must not block navigation.
+  }
 
   global.platform.openTab({
     url: addressLink,

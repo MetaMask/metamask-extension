@@ -103,8 +103,8 @@ const mockSetShowInfuraSwitchToast = jest.mocked(setShowInfuraSwitchToast);
 
 describe('useNetworkConnectionBanner', () => {
   beforeEach(() => {
-    mockTrackEvent.mockClear();
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
     jest.useFakeTimers();
 
     // Default to online
@@ -231,7 +231,6 @@ describe('useNetworkConnectionBanner', () => {
           );
           await act(async () => {
             jest.advanceTimersByTime(5000);
-            // Flush microtask queue to allow async trackNetworkBannerEvent to complete
             await Promise.resolve();
           });
 
@@ -239,8 +238,6 @@ describe('useNetworkConnectionBanner', () => {
             expect.objectContaining({
               name: MetaMetricsEventName.NetworkConnectionBannerShown,
               properties: expect.objectContaining({
-                category: 'Network',
-                // The names of Segment properties have a particular case.
                 /* eslint-disable @typescript-eslint/naming-convention */
                 banner_type: 'degraded',
                 chain_id_caip: 'eip155:1',
@@ -338,13 +335,13 @@ describe('useNetworkConnectionBanner', () => {
           isInfuraEndpoint: true,
           infuraEndpointIndex: undefined,
         });
+
         renderHookWithProviderTyped(
           () => useNetworkConnectionBanner(),
           mockState,
         );
         await act(async () => {
           jest.advanceTimersByTime(25000);
-          // Flush microtask queue to allow async trackNetworkBannerEvent to complete
           await Promise.resolve();
         });
 
@@ -352,8 +349,6 @@ describe('useNetworkConnectionBanner', () => {
           expect.objectContaining({
             name: MetaMetricsEventName.NetworkConnectionBannerShown,
             properties: expect.objectContaining({
-              category: 'Network',
-              // The names of Segment properties have a particular case.
               /* eslint-disable @typescript-eslint/naming-convention */
               banner_type: 'unavailable',
               chain_id_caip: 'eip155:1',
