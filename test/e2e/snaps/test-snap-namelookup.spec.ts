@@ -103,7 +103,7 @@ describe('Name lookup', function () {
         await homePage.startSendFlow();
 
         await sendPage.selectToken('0x1', 'ETH');
-        await sendPage.fillRecipient('metamask.domain');
+        await sendPage.fillRecipient({ recipientAddress: 'metamask.domain' });
 
         await driver.findElement({ text: '0xc0ffe...54979' });
       },
