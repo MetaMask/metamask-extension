@@ -92,6 +92,7 @@ import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
 import { checkGmxHasReferralCode } from './lib/defi-referral-onchain-check';
+import { checkHyperliquidHasReferralCode } from './lib/defi-referral-api-check';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // and provide the pure flag-evaluation logic without the IN_TEST bypass
@@ -350,6 +351,10 @@ jest.mock('./lib/forwardRequestToSnap', () => ({
 
 jest.mock('./lib/defi-referral-onchain-check', () => ({
   checkGmxHasReferralCode: jest.fn().mockResolvedValue(false),
+}));
+
+jest.mock('./lib/defi-referral-api-check', () => ({
+  checkHyperliquidHasReferralCode: jest.fn().mockResolvedValue(false),
 }));
 
 const TEST_SEED =
@@ -5646,6 +5651,111 @@ describe('MetaMaskController', () => {
           );
 
           expect(checkGmxHasReferralCode).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('Hyperliquid API referral code check', () => {
+        beforeEach(() => {
+          jest
+            .spyOn(
+              metamaskController.remoteFeatureFlagController,
+              'state',
+              'get',
+            )
+            .mockReturnValue({
+              remoteFeatureFlags: {
+                extensionUxDefiReferralPartners: {
+                  [DefiReferralPartner.Hyperliquid]: true,
+                },
+              },
+            });
+          jest
+            .spyOn(metamaskController, 'getPermittedAccounts')
+            .mockReturnValue(mockPermittedAccounts);
+          jest.spyOn(
+            metamaskController.preferencesController,
+            'addReferralPassedAccount',
+          );
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.Hyperliquid] = {};
+          });
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is undefined', async () => {
+          checkHyperliquidHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(
+            DefiReferralPartner.Hyperliquid,
+            mockPermittedAccount,
+          );
+          expect(
+            metamaskController.approvalController.add,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is Approved', async () => {
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.Hyperliquid] = {
+              [mockPermittedAccount]: ReferralStatus.Approved,
+            };
+          });
+          checkHyperliquidHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(
+            DefiReferralPartner.Hyperliquid,
+            mockPermittedAccount,
+          );
+          expect(
+            metamaskController._handleDefiReferralRedirect,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('proceeds to show the prompt when wallet has no Hyperliquid referral code', async () => {
+          checkHyperliquidHasReferralCode.mockResolvedValueOnce(false);
+          jest
+            .spyOn(metamaskController.approvalController, 'add')
+            .mockResolvedValueOnce({});
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.approvalController.add,
+          ).toHaveBeenCalledWith(
+            expect.objectContaining({
+              origin: HYPERLIQUID_ORIGIN,
+              type: HYPERLIQUID_APPROVAL_TYPE,
+            }),
+          );
+        });
+
+        it('does not call checkHyperliquidHasReferralCode for non-Hyperliquid partners', async () => {
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(checkHyperliquidHasReferralCode).not.toHaveBeenCalled();
         });
       });
 
