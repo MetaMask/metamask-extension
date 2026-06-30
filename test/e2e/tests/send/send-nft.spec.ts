@@ -231,7 +231,7 @@ describe('Send NFT', function () {
     });
   });
 
-  describe('ERC1155', function () {
+  describe('ERC1155 TEST', function () {
     const smartContract = SMART_CONTRACTS.ERC1155;
 
     describe('Wallet initiated', function () {

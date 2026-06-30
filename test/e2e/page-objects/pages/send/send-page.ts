@@ -43,6 +43,8 @@ class SendPage {
     testId: 'send-network-filter-toggle',
   };
 
+  private readonly recipientClassRendered = '.break-all';
+
   private readonly recipientModalButton = {
     testId: 'open-recipient-modal-btn',
   };
@@ -194,6 +196,7 @@ class SendPage {
   async fillRecipient(recipientAddress: string): Promise<void> {
     console.log(`Filling recipient with ${recipientAddress}`);
     await this.driver.pasteIntoField(this.inputRecipient, recipientAddress);
+    await this.driver.waitForSelector(this.recipientClassRendered);
   }
 
   async getAmountInputValue(): Promise<string> {
