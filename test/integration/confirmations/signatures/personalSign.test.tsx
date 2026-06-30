@@ -11,6 +11,7 @@ import * as backgroundConnection from '../../../../ui/store/background-connectio
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import {
+  createMockImplementation,
   getSelectedAccountGroupAccounts,
   getSelectedAccountGroupName,
 } from '../../helpers';
@@ -70,6 +71,9 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
 describe('PersonalSign Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
+      createMockImplementation({}),
+    );
   });
 
   it('displays the header account modal with correct data', async () => {
