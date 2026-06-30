@@ -29,8 +29,20 @@ export const TokenDetectionControllerInit: MessengerClientInitFunction<
     trackMetaMetricsEvent: (...args) =>
       initMessenger.call('MetaMetricsController:trackEvent', ...args),
     useTokenDetection: () => Boolean(getRetypedPrefState().useTokenDetection),
-    useExternalServices: () =>
-      Boolean(getRetypedPrefState().useExternalServices),
+    // Don't reach external services (token list API + balance multicall) until
+    // onboarding is complete — otherwise detection triggered by the vault
+    // unlock during onboarding leaks network calls before the user can opt out.
+    // Mirrors the `completedOnboarding` gate on the token-balances and
+    // account-tracker controllers.
+    useExternalServices: () => {
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
+      );
+      return (
+        completedOnboarding &&
+        Boolean(getRetypedPrefState().useExternalServices)
+      );
+    },
     tokenListService,
   });
 
