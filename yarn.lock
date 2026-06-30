@@ -5857,30 +5857,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^73.0.0":
-  version: 73.0.0
-  resolution: "@metamask/bridge-status-controller@npm:73.0.0"
-  dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.3"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/bridge-controller": "npm:^77.0.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/gas-fee-controller": "npm:^26.2.3"
-    "@metamask/keyring-controller": "npm:^27.1.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/network-controller": "npm:^33.0.0"
-    "@metamask/polling-controller": "npm:^16.0.7"
-    "@metamask/profile-sync-controller": "npm:^28.2.0"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^68.2.0"
-    "@metamask/utils": "npm:^11.11.0"
-    bignumber.js: "npm:^9.1.2"
-    uuid: "npm:^8.3.2"
-  checksum: 10/e95224183980ba231dae62cec2297caf87f6e43973d4de082d30172adf720091f02c636aceade05d2cec11da416c305fa57a00bc28283e0b173caa7ec3746a57
-  languageName: node
-  linkType: hard
-
 "@metamask/bridge-status-controller@npm:^74.0.0":
   version: 74.0.0
   resolution: "@metamask/bridge-status-controller@npm:74.0.0"
@@ -8474,9 +8450,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-controller@npm:^23.16.1":
-  version: 23.16.1
-  resolution: "@metamask/transaction-pay-controller@npm:23.16.1"
+"@metamask/transaction-pay-controller@npm:^23.17.2":
+  version: 23.17.2
+  resolution: "@metamask/transaction-pay-controller@npm:23.17.2"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -8484,8 +8460,8 @@ __metadata:
     "@metamask/assets-controller": "npm:^9.1.0"
     "@metamask/assets-controllers": "npm:^109.2.2"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/bridge-controller": "npm:^77.0.0"
-    "@metamask/bridge-status-controller": "npm:^73.0.0"
+    "@metamask/bridge-controller": "npm:^77.1.0"
+    "@metamask/bridge-status-controller": "npm:^74.0.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/gas-fee-controller": "npm:^26.2.3"
     "@metamask/keyring-controller": "npm:^27.1.0"
@@ -8500,7 +8476,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
-  checksum: 10/708ede9b28b037dae9895f05abfadabc2ce315b751836fa4a2ea6b1803223c6e039e0d794aa9406cc4b25ff9680f561b5643ae43a69bc359791502a6d602a1fa
+  checksum: 10/2b9bed8a07a235f1addbf646a4b5a4645956fb020896d4ad234be45af5e8a2cbc4aeef04c4a20b26040e031b33525e1c5c6eded287b45fcaae23a03329568d1d
   languageName: node
   linkType: hard
 
@@ -33223,7 +33199,7 @@ __metadata:
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.4.2"
     "@metamask/transaction-controller": "npm:^68.1.1"
-    "@metamask/transaction-pay-controller": "npm:^23.16.1"
+    "@metamask/transaction-pay-controller": "npm:^23.17.2"
     "@metamask/tron-wallet-snap": "npm:^1.27.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"

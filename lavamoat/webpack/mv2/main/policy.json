@@ -939,11 +939,8 @@
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
-        "clearInterval": true,
         "console.error": true,
         "console.warn": true,
-        "fetch": true,
-        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
