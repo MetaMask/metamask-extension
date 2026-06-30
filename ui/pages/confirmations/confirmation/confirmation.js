@@ -308,7 +308,6 @@ export default function ConfirmationPage({
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
 
-
   const hasHeaderMaybe = isSnapDialog;
   const hasHeader =
     isSnapCustomUIDialog ||
@@ -474,7 +473,6 @@ export default function ConfirmationPage({
 
     return null;
   }
-
 
   const hasInputState = (type) => {
     return INPUT_STATE_CONFIRMATIONS.includes(type);
