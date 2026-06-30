@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -17,6 +17,13 @@ const mockSafeChains = [
     rpc: ['https://rpc.gnosischain.com'],
     explorers: [{ url: 'https://gnosisscan.io' }],
   },
+  ...Array.from({ length: 101 }, (_, index) => ({
+    name: `Chainlist Network ${index + 1}`,
+    chainId: 1000 + index,
+    nativeCurrency: { symbol: `T${index + 1}` },
+    rpc: [`https://rpc-${index + 1}.example.com`],
+    explorers: [{ url: `https://explorer-${index + 1}.example.com` }],
+  })),
 ];
 
 jest.mock('../../components/multichain/networks-form/use-safe-chains', () => ({
@@ -225,6 +232,33 @@ describe('NetworksPage', () => {
           .replace('$2', '100'),
       ),
     ).toBeInTheDocument();
+  });
+
+  it('loads more Chainlist networks as the user scrolls', async () => {
+    renderNetworksPage({ pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist` });
+
+    expect(await screen.findByText('Chainlist Network 99')).toBeInTheDocument();
+    expect(screen.queryByText('Chainlist Network 100')).not.toBeInTheDocument();
+
+    const networkList = screen.getByTestId(
+      'networks-page-chainlist-network-list',
+    );
+    Object.defineProperty(networkList, 'scrollHeight', {
+      configurable: true,
+      value: 1000,
+    });
+    Object.defineProperty(networkList, 'clientHeight', {
+      configurable: true,
+      value: 500,
+    });
+    Object.defineProperty(networkList, 'scrollTop', {
+      configurable: true,
+      value: 450,
+    });
+
+    fireEvent.scroll(networkList);
+
+    expect(await screen.findByText('Chainlist Network 100')).toBeInTheDocument();
   });
 
   it('renders the custom rpc page with footer actions and adds the rpc', async () => {

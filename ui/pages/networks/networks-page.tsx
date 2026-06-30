@@ -125,6 +125,9 @@ const CHAINLIST_ROW_COLORS = [
   'bg-primary-muted',
 ];
 
+const CHAINLIST_PAGE_SIZE = 100;
+const CHAINLIST_SCROLL_THRESHOLD_PX = 120;
+
 const ChainlistNetworkPicker = ({
   onSelect,
 }: {
@@ -132,6 +135,8 @@ const ChainlistNetworkPicker = ({
 }) => {
   const t = useI18nContext();
   const [searchValue, setSearchValue] = useState('');
+  const [visibleNetworkCount, setVisibleNetworkCount] =
+    useState(CHAINLIST_PAGE_SIZE);
   const { safeChains } = useSafeChains();
 
   const chainlistNetworks = useMemo(() => {
@@ -151,9 +156,33 @@ const ChainlistNetworkPicker = ({
           network.name.toLowerCase().includes(normalizedSearchValue) ||
           String(network.chainId).includes(normalizedSearchValue)
         );
-      })
-      .slice(0, 100);
+      });
   }, [safeChains, searchValue]);
+
+  const visibleChainlistNetworks = useMemo(
+    () => chainlistNetworks.slice(0, visibleNetworkCount),
+    [chainlistNetworks, visibleNetworkCount],
+  );
+
+  useEffect(() => {
+    setVisibleNetworkCount(CHAINLIST_PAGE_SIZE);
+  }, [searchValue]);
+
+  const handleChainlistScroll = useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      const { scrollHeight, scrollTop, clientHeight } = event.currentTarget;
+      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+
+      if (distanceFromBottom > CHAINLIST_SCROLL_THRESHOLD_PX) {
+        return;
+      }
+
+      setVisibleNetworkCount((currentCount) =>
+        Math.min(currentCount + CHAINLIST_PAGE_SIZE, chainlistNetworks.length),
+      );
+    },
+    [chainlistNetworks.length],
+  );
 
   return (
     <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
@@ -174,8 +203,12 @@ const ChainlistNetworkPicker = ({
           />
         </Box>
       </Box>
-      <Box className="min-h-0 flex-1 overflow-y-auto">
-        {chainlistNetworks.map((network, index) => (
+      <Box
+        className="min-h-0 flex-1 overflow-y-auto"
+        data-testid="networks-page-chainlist-network-list"
+        onScroll={handleChainlistScroll}
+      >
+        {visibleChainlistNetworks.map((network, index) => (
           <button
             className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed"
             data-testid="networks-page-chainlist-network"
