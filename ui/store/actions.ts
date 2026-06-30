@@ -2165,6 +2165,17 @@ export async function getTransactions(
   ]);
 }
 
+export async function checkFirstTimeInteraction(request: {
+  from: string;
+  to: string;
+  chainId: number;
+}): Promise<boolean | undefined> {
+  return submitRequestToBackground<boolean | undefined>(
+    'checkFirstTimeInteraction',
+    [request],
+  );
+}
+
 function completedTx(
   txId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4295,6 +4306,10 @@ export function setTokenNetworkFilter(value: Record<string, boolean>) {
   return setPreference('tokenNetworkFilter', value, false);
 }
 
+export function setGasSponsorshipOptOut(value: Record<string, boolean>) {
+  return setPreference('gasSponsorshipOptOutByChainId', value, false);
+}
+
 export function setSmartTransactionsPreferenceEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -6380,13 +6395,6 @@ export function trackAnalyticsEvent(
   },
 ) {
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
-}
-
-/**
- * @param payload - details of the page viewed
- */
-export function trackAnalyticsPage(payload: MetaMetricsPagePayload) {
-  return submitRequestToBackground('trackAnalyticsPage', [payload]);
 }
 
 export function createEventFragment(

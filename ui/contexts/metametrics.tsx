@@ -33,7 +33,7 @@ import {
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { submitRequestToBackground } from '../store/background-connection';
-import { trackAnalyticsPage } from '../store/actions';
+import { trackMetaMetricsPage } from '../store/actions';
 import type {
   TraceName,
   TraceRequest,
@@ -238,7 +238,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       const { pattern, params } = match;
       const { path } = pattern;
       const name = PATH_NAME_MAP.get(path as AppRoutes['path']);
-      trackAnalyticsPage({
+      trackMetaMetricsPage({
         name,
         // We do not want to send addresses or accounts in any events
         // Some routes include these as params.

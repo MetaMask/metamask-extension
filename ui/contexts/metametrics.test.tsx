@@ -17,7 +17,7 @@ jest.mock('../hooks/useSegmentContext', () => ({
 
 jest.mock('../store/actions', () => ({
   trackAnalyticsEvent: jest.fn().mockResolvedValue(undefined),
-  trackAnalyticsPage: jest.fn(),
+  trackMetaMetricsPage: jest.fn(),
 }));
 
 jest.mock('../store/background-connection', () => ({
