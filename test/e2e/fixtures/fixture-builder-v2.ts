@@ -1,15 +1,17 @@
 import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
-import type { Hex, Json } from '@metamask/utils';
+import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type {
+  AccountTrackerControllerState,
   CurrencyRateState,
   MultichainAssetsRatesControllerState,
   NftControllerState,
   RatesControllerState,
+  TokenRatesControllerState,
   TokenBalancesControllerState,
   TokenListMap,
   TokenListState,
@@ -20,6 +22,7 @@ import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
@@ -54,6 +57,7 @@ import {
   DAPP_TWO_URL,
   DAPP_URL,
   DAPP_URL_LOCALHOST,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   HARDWARE_WALLET_ACCOUNT_ID,
   IMPORTED_ACCOUNT_FIXTURE_VAULT,
@@ -123,6 +127,13 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
+type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  analyticsId?: string | null;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  optedIn?: boolean;
+};
+
 type StorageServiceNamespaceMap = {
   [STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER]: {
     key: string;
@@ -188,6 +199,15 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAccountTracker(data: Partial<AccountTrackerControllerState>): this {
+    const fixtureData = this.fixture.data as Record<string, unknown>;
+    if (!fixtureData.AccountTracker) {
+      fixtureData.AccountTracker = { accountsByChainId: {} };
+    }
+    merge(fixtureData.AccountTracker as AccountTrackerControllerState, data);
+    return this;
+  }
+
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -203,14 +223,20 @@ class FixtureBuilderV2 {
    * `AssetsControllerState` from `@metamask/assets-controller`.
    *
    * @param patch - Subset of `AssetsControllerState` to deep-merge; see {@link AssetsControllerFixturePatch}.
+   * @param opts - Options for the AssetsController state.
+   * @param opts.overwrite - Whether to overwrite the partial AssetsController state.
    */
-  withAssetsController(patch: AssetsControllerFixturePatch = {}): this {
+  withAssetsController(
+    patch: AssetsControllerFixturePatch = {},
+    opts = { overwrite: false },
+  ): this {
+    const { overwrite } = opts;
     const {
-      assetsBalance = {},
-      assetsPrice = {},
-      assetsInfo = {},
-      customAssets = {},
-      assetPreferences = {},
+      assetsBalance,
+      assetsPrice,
+      assetsInfo,
+      customAssets,
+      assetPreferences,
       selectedCurrency,
     } = patch;
     if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
@@ -223,13 +249,26 @@ class FixtureBuilderV2 {
     ac.assetsInfo ??= {};
     ac.customAssets ??= {};
     ac.assetPreferences ??= {};
-    merge(ac.assetsBalance, assetsBalance);
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
-      merge(ac.assetsPrice, assetsPrice);
-    }
-    merge(ac.assetsInfo, assetsInfo);
-    merge(ac.customAssets, customAssets);
-    merge(ac.assetPreferences, assetPreferences);
+
+    const applyOverwriteOrMerge = <
+      AssetsControllerStateKey extends keyof AssetsControllerState,
+    >(
+      key: AssetsControllerStateKey,
+      value: AssetsControllerState[AssetsControllerStateKey] | undefined,
+    ): void => {
+      if (overwrite && value) {
+        ac[key] = value;
+      } else {
+        ac[key] = merge(ac[key], value);
+      }
+    };
+
+    applyOverwriteOrMerge('assetsBalance', assetsBalance);
+    applyOverwriteOrMerge('assetsPrice', assetsPrice);
+    applyOverwriteOrMerge('assetsInfo', assetsInfo);
+    applyOverwriteOrMerge('customAssets', customAssets);
+    applyOverwriteOrMerge('assetPreferences', assetPreferences);
+
     if (selectedCurrency !== undefined) {
       ac.selectedCurrency = selectedCurrency;
     }
@@ -256,8 +295,30 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
-    merge(this.fixture.data.MetaMetricsController, data);
+  withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
+    const { analyticsId, optedIn, ...metaMetricsControllerPatch } = data;
+
+    merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
+
+    if (analyticsId !== undefined || optedIn !== undefined) {
+      const fixtureData = this.fixture.data as Record<string, unknown>;
+      if (!fixtureData.AnalyticsController) {
+        fixtureData.AnalyticsController = {};
+      }
+      const analyticsController = fixtureData.AnalyticsController as Record<
+        string,
+        unknown
+      >;
+      const analyticsPatch: Record<string, unknown> = {};
+      if (analyticsId !== undefined) {
+        analyticsPatch.analyticsId = analyticsId;
+      }
+      if (optedIn !== undefined) {
+        analyticsPatch.optedIn = optedIn;
+      }
+      merge(analyticsController, analyticsPatch);
+    }
+
     return this;
   }
 
@@ -330,6 +391,13 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withRemoteFeatureFlagController(
+    data: Partial<RemoteFeatureFlagControllerState>,
+  ): this {
+    merge(this.fixture.data.RemoteFeatureFlagController, data);
+    return this;
+  }
+
   withPreferencesController(
     data: Omit<Partial<PreferencesControllerState>, 'preferences'> & {
       preferences?: Partial<Preferences>;
@@ -365,6 +433,11 @@ class FixtureBuilderV2 {
       (this.fixture.data as Record<string, unknown>).TokenListController,
       data,
     );
+    return this;
+  }
+
+  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
+    merge(this.fixture.data.TokenRatesController, data);
     return this;
   }
 
@@ -1247,24 +1320,32 @@ class FixtureBuilderV2 {
   }
 
   withTokensControllerERC20({ chainId = 1337 } = {}): this {
-    return this.withTokensController({
-      allTokens: {
-        [toHex(chainId)]: {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-            {
-              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
-              symbol: 'TST',
-              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
-              isERC721: false,
-              decimals: 4,
-              aggregators: ['Metamask', 'Aave'],
-              name: 'test',
+    const tokenAddress: Hex = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
+    const assetId: CaipAssetType = `eip155:${chainId}/erc20:${tokenAddress}`;
+    return (
+      this
+        // When `assetsUnifyState` is enabled the asset list is derived from the
+        // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
+        // not from TokensController/TokenBalancesController.
+        .withAssetsController({
+          customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
+          assetsBalance: {
+            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+              [assetId]: { amount: '10' },
             },
-          ],
-        },
-      },
-      allIgnoredTokens: {},
-    });
+          },
+          assetsInfo: {
+            [assetId]: {
+              aggregators: ['Metamask', 'Aave'],
+              decimals: 4,
+              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
+              name: 'TST',
+              symbol: 'TST',
+              type: 'erc20',
+            },
+          },
+        })
+    );
   }
 
   withTrezorAccount(): this {
@@ -1456,19 +1537,6 @@ class FixtureBuilderV2 {
   }
 
   build(): FixtureBuildResult {
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true') {
-      const ac = (this.fixture.data as Record<string, unknown>)
-        .AssetsController as
-        | {
-            assetsPrice?: Record<string, unknown>;
-            assetsInfo?: Record<string, unknown>;
-          }
-        | undefined;
-      if (ac) {
-        ac.assetsPrice = {};
-        ac.assetsInfo = {};
-      }
-    }
     return {
       ...this.fixture,
       storageServiceData: this.storageServiceData,

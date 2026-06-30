@@ -99,3 +99,27 @@ export const getIsTokenManagementFilterEnabled = createSelector(
   ({ extensionUxTokenManagementFilter }) =>
     getBooleanFeatureFlag(extensionUxTokenManagementFilter, false),
 );
+
+/**
+ * Get the state of the `extensionBasicFunctionalityToggle` remote feature flag.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled, false otherwise.
+ */
+export const getIsBasicFunctionalityToggleEnabled = createSelector(
+  getRemoteFeatureFlags,
+  ({ extensionBasicFunctionalityToggle }) =>
+    getBooleanFeatureFlag(extensionBasicFunctionalityToggle, false),
+);
+
+/**
+ * Get the state of the `extensionUxNetworkManagement` remote feature flag.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled, false otherwise.
+ */
+export const getIsNetworkManagementEnabled = createSelector(
+  getRemoteFeatureFlags,
+  ({ extensionUxNetworkManagement }) =>
+    getBooleanFeatureFlag(extensionUxNetworkManagement, false),
+);

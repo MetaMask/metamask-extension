@@ -5,7 +5,7 @@ import { Driver } from '../webdriver/driver';
 import { getEventPayloads, withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
-  MOCK_META_METRICS_ID,
+  MOCK_ANALYTICS_ID,
   DAPP_PATH,
   DAPP_URL,
   WINDOW_TITLES,
@@ -21,6 +21,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import HomePage from '../page-objects/pages/home/homepage';
 import SnapListPage from '../page-objects/pages/snap-list-page';
+import packageJson from '../../../package.json';
 
 async function mockedSnapInstall(mockServer: Mockttp) {
   return mockServer
@@ -148,8 +149,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -183,32 +185,23 @@ describe('Test Snap Metrics', function () {
         assert.deepStrictEqual(events[0].event, 'Snap Install Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Installed');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
           version: '2.3.0',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
         assert.deepStrictEqual(events[2].event, 'Snap Export Used');
         assert.deepStrictEqual(events[2].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
           export: 'onRpcRequest',
           success: true,
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
       },
     );
@@ -230,8 +223,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -268,20 +262,14 @@ describe('Test Snap Metrics', function () {
         assert.deepStrictEqual(events[0].event, 'Snap Install Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Install Rejected');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
       },
     );
@@ -304,8 +292,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -340,20 +329,14 @@ describe('Test Snap Metrics', function () {
         assert.deepStrictEqual(events[0].event, 'Snap Install Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Install Failed');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
       },
     );
@@ -375,8 +358,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -416,11 +400,8 @@ describe('Test Snap Metrics', function () {
         );
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
+          snap_category: null,
           version: '2.3.0',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
       },
     );
@@ -444,8 +425,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -487,22 +469,19 @@ describe('Test Snap Metrics', function () {
         assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Updated');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
+          snap_category: null,
           new_version: '2.1.3',
           old_version: '2.0.0',
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
+          ota: false,
+          client_type: 'extension',
+          client_version: packageJson.version,
         });
       },
     );
@@ -526,8 +505,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -573,20 +553,14 @@ describe('Test Snap Metrics', function () {
         assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Rejected');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
       },
     );
@@ -610,8 +584,9 @@ describe('Test Snap Metrics', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
@@ -652,20 +627,14 @@ describe('Test Snap Metrics', function () {
         assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Failed');
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/webpack-plugin-example-snap',
+          snap_category: null,
           origin: 'http://127.0.0.1:8080',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
       },
     );

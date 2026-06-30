@@ -62,12 +62,6 @@
     "^ background; v popup": {},
     "wait-on>axios": {
       "globals": {
-        "Buffer": false,
-        "Buffer.alloc": true,
-        "Buffer.byteLength": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true,
         "postMessage": true,
         "fetch": true,
         "Request": true,
@@ -268,6 +262,13 @@
         "WebSocketPair": false,
         "WorkerGlobalScope": false,
         "importScripts": false
+      }
+    },
+    "@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
       }
     }
   }

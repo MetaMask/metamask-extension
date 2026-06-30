@@ -17,6 +17,14 @@ jest.mock('./createPerpsDepositTransaction', () => ({
   createPerpsDepositTransaction: jest.fn(),
 }));
 
+const mockEnsureArbitrumNetworkExists = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('./usePerpsNetworkManagement', () => ({
+  usePerpsNetworkManagement: () => ({
+    ensureArbitrumNetworkExists: mockEnsureArbitrumNetworkExists,
+  }),
+}));
+
 const mockCreatePerpsDepositTransaction =
   createPerpsDepositTransaction as jest.MockedFunction<
     typeof createPerpsDepositTransaction
@@ -44,11 +52,38 @@ describe('usePerpsDepositConfirmation', () => {
     });
 
     expect(mockCreatePerpsDepositTransaction).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith({
-      pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
-      search: `loader=${ConfirmationLoader.CustomAmount}`,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      {
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
+        search: `loader=${ConfirmationLoader.CustomAmount}`,
+      },
+      { replace: true },
+    );
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-123' });
+  });
+
+  it('ensures the Arbitrum network exists before creating the deposit transaction', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-net',
+    });
+
+    const { result } = renderHookWithProvider(
+      () => usePerpsDepositConfirmation(),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockEnsureArbitrumNetworkExists).toHaveBeenCalledTimes(1);
+    // The network must be ensured BEFORE the deposit tx is created, otherwise
+    // the controller throws "Invalid chain ID" and the deposit silently fails.
+    expect(
+      mockEnsureArbitrumNetworkExists.mock.invocationCallOrder[0],
+    ).toBeLessThan(
+      mockCreatePerpsDepositTransaction.mock.invocationCallOrder[0],
+    );
   });
 
   it('includes goBackTo param when triggered from a non-root route', async () => {
@@ -66,10 +101,13 @@ describe('usePerpsDepositConfirmation', () => {
       await result.current.trigger();
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith({
-      pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-return`,
-      search: `loader=${ConfirmationLoader.CustomAmount}&goBackTo=%2Fperps%2Ftrade%2FBTC`,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      {
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-return`,
+        search: `loader=${ConfirmationLoader.CustomAmount}&goBackTo=%2Fperps%2Ftrade%2FBTC`,
+      },
+      { replace: true },
+    );
   });
 
   it('returns transaction id without navigating when navigateOnCreate is false', async () => {

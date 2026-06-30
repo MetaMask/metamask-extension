@@ -1,15 +1,15 @@
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
-import { getMetaMetricsId } from '../../../../selectors/selectors';
+import { getAnalyticsId } from '../../../../selectors/selectors';
 import { openWindow } from '../../../../helpers/utils/window';
 import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  Box,
   ModalFooter,
   ButtonPrimary,
   ButtonPrimarySize,
@@ -19,7 +19,6 @@ import {
   ButtonSecondarySize,
 } from '../../../component-library';
 import {
-  Display,
   TextVariant,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
@@ -29,6 +28,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  buildSupportLinkWithUserData,
+  type SupportLinkUserData,
+} from '../../../../../shared/lib/build-support-link';
 import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
 
@@ -37,41 +40,26 @@ type VisitSupportDataConsentModalProps = {
   isOpen: boolean;
 };
 
-const VisitSupportDataConsentModal: React.FC<
-  VisitSupportDataConsentModalProps
-> = ({ isOpen, onClose }) => {
+const VisitSupportDataConsentModal = ({
+  isOpen,
+  onClose,
+}: VisitSupportDataConsentModalProps) => {
   const version = process.env.METAMASK_VERSION as string;
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const sessionData = useSelector(selectSessionData);
   const profileId = sessionData?.profile?.profileId;
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const canonicalProfileId = sessionData?.profile?.canonicalProfileId;
+  const analyticsId = useSelector(getAnalyticsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
   const handleClickContactSupportButton = useCallback(
-    (params: {
-      version: string;
-      profileId?: string;
-      metaMetricsId?: string;
-      shieldCustomerId?: string;
-    }) => {
+    (params: SupportLinkUserData) => {
       onClose();
-      const url = new URL(SUPPORT_LINK as string);
-      url.searchParams.append('metamask_version', params.version);
-      if (params.profileId) {
-        url.searchParams.append('metamask_profile_id', params.profileId);
-      }
-      if (params.metaMetricsId) {
-        url.searchParams.append(
-          'metamask_metametrics_id',
-          params.metaMetricsId,
-        );
-      }
-      if (params.shieldCustomerId) {
-        url.searchParams.append('shield_id', params.shieldCustomerId);
-      }
-
-      const supportLinkWithUserId = url.toString();
+      const supportLinkWithUserId = buildSupportLinkWithUserData(
+        SUPPORT_LINK as string,
+        params,
+      );
 
       trackEvent(
         {
@@ -129,7 +117,7 @@ const VisitSupportDataConsentModal: React.FC<
         </ModalBody>
 
         <ModalFooter>
-          <Box display={Display.Flex} gap={4}>
+          <Box className="flex" gap={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               width={BlockSize.Half}
@@ -145,7 +133,8 @@ const VisitSupportDataConsentModal: React.FC<
                 handleClickContactSupportButton({
                   version,
                   profileId,
-                  metaMetricsId,
+                  canonicalProfileId,
+                  analyticsId,
                   shieldCustomerId,
                 })
               }

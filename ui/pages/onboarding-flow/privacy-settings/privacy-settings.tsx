@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import log from 'loglevel';
 import {
@@ -20,8 +20,8 @@ import {
   FontWeight,
   TextButton,
 } from '@metamask/design-system-react';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
+import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { TextField } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
@@ -139,9 +139,7 @@ export default function PrivacySettings() {
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
+  const { isFromReminder } = useOnboardingSearchParams();
 
   const handleSubmit = () => {
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));

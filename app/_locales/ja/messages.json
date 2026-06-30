@@ -7,12 +7,6 @@
     "message": "読み込みに通常より時間がかかっています。",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "エラー"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "トランザクションデータが一致していません。トランザクションの詳細を確認してください。"
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "他にアカウントはありません。以下のリストにない別のアカウントにアクセスする場合は、ハードウェアウォレットを接続しなおして選択してください。"
   },
@@ -70,6 +64,18 @@
     "message": "$1を読んで同意しました",
     "description": "$1 is the `terms` message"
   },
+  "accessRestrictedContactSupport": {
+    "message": "サポートへのお問い合わせ"
+  },
+  "accessRestrictedDescriptionLine1": {
+    "message": "このウォレットアドレスは、コンプライアンス審査の過程でフラグが立てられました。その結果、MetaMaskの一部のサービスをご利用いただけません。"
+  },
+  "accessRestrictedDescriptionLine2": {
+    "message": "これが誤りであると思われる場合は、サポートに連絡して再調査を依頼してください。"
+  },
+  "accessRestrictedTitle": {
+    "message": "アクセスが制限されました"
+  },
   "accessingYourCamera": {
     "message": "カメラにアクセス中..."
   },
@@ -88,6 +94,9 @@
   "accountAlreadyExistsLoginDescription": {
     "message": "「$1」を使用しているウォレットがすでに存在します。代わりにログインしてみますか？",
     "description": "$1 is the account email"
+  },
+  "accountAlreadyExistsLoginDescriptionTelegram": {
+    "message": "このTelegramアカウントにはウォレットがすでにリンクされています。このウォレットのロックを解除しますか？"
   },
   "accountAlreadyExistsTitle": {
     "message": "ウォレットがすでに存在します"
@@ -123,6 +132,10 @@
   "accountNotFoundDescription": {
     "message": "「$1」に対応するウォレットは見つかりませんでした。このログイン情報を使って新規ウォレットを作成しますか？",
     "description": "$1 is the account email"
+  },
+  "accountNotFoundDescriptionTelegram": {
+    "message": "この$1アカウントにリンクされているウォレットが見つかりませんでした。このログイン情報で新しいウォレットを作成しますか？",
+    "description": "$1 is the social login provider"
   },
   "accountNotFoundTitle": {
     "message": "ウォレットが見つかりません"
@@ -163,23 +176,68 @@
   "activity": {
     "message": "アクティビティ"
   },
+  "activityEmptyDescription": {
+    "message": "今すぐ最初のトークンをスワップしましょう。"
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "ウォレットに資金を追加して開始します。"
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_failed_title": {
+    "message": "承認に失敗しました"
   },
   "activity_approveSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_approveSpendingCap_pending_title": {
+    "message": "使用上限を承認しています"
+  },
   "activity_approveSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_title": {
+    "message": "使用上限を承認しました"
   },
   "activity_bridge_failed_description": {
     "message": "ブリッジに失敗しました"
   },
   "activity_bridge_failed_title": {
     "message": "ブリッジに失敗しました"
+  },
+  "activity_bridge_pending_description": {
+    "message": "$1をブリッジしています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_pending_title": {
+    "message": "$1をブリッジしています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_description": {
+    "message": "$1をブリッジしました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_title": {
+    "message": "$1をブリッジしました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_failed_description": {
+    "message": "購入に失敗しました"
+  },
+  "activity_buy_failed_title": {
+    "message": "購入に失敗しました"
+  },
+  "activity_buy_pending_description": {
+    "message": "$1を購入しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_pending_title": {
+    "message": "$1を購入しています",
+    "description": "$1 is the token symbol"
   },
   "activity_buy_success_description": {
     "message": "$1を購入しました",
@@ -189,14 +247,119 @@
     "message": "$1を購入しました",
     "description": "$1 is the token symbol"
   },
+  "activity_claimMusdBonus_failed_title": {
+    "message": "請求に失敗しました"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "mUSDボーナスを請求しています"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "mUSDボーナスを請求しました"
+  },
+  "activity_claim_failed_description": {
+    "message": "請求に失敗しました"
+  },
+  "activity_claim_failed_title": {
+    "message": "請求に失敗しました"
+  },
+  "activity_claim_pending_description": {
+    "message": "$1を請求しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "$1を請求しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "$1を請求しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "$1を請求しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractDeployment_failed_description": {
+    "message": "デプロイに失敗しました"
+  },
+  "activity_contractDeployment_failed_title": {
+    "message": "デプロイに失敗しました"
+  },
+  "activity_contractDeployment_pending_description": {
+    "message": "コントラクトをデプロイしています"
+  },
+  "activity_contractDeployment_pending_title": {
+    "message": "コントラクトをデプロイしています"
+  },
+  "activity_contractDeployment_success_description": {
+    "message": "コントラクトがデプロイされました"
+  },
+  "activity_contractDeployment_success_title": {
+    "message": "コントラクトがデプロイされました"
+  },
+  "activity_contractInteraction_failed_description": {
+    "message": "アドレス: $1",
+    "description": "$1 is the shortened contract address"
+  },
+  "activity_contractInteraction_failed_title": {
+    "message": "操作に失敗しました"
+  },
+  "activity_contractInteraction_pending_description": {
+    "message": "アドレス: $1",
+    "description": "$1 is the shortened contract address"
+  },
+  "activity_contractInteraction_pending_title": {
+    "message": "操作中です"
+  },
+  "activity_contractInteraction_success_description": {
+    "message": "アドレス: $1",
+    "description": "$1 is the shortened contract address"
+  },
   "activity_contractInteraction_success_title": {
-    "message": "スマートコントラクトのインタラクション"
+    "message": "コントラクトインタラクション"
+  },
+  "activity_convert_failed_description": {
+    "message": "換金に失敗しました"
+  },
+  "activity_convert_failed_title": {
+    "message": "換金に失敗しました"
+  },
+  "activity_convert_pending_description": {
+    "message": "$1に換金しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_pending_title": {
+    "message": "$1に換金しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_description": {
+    "message": "$1に換金しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_title": {
+    "message": "$1を変換しました",
+    "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
     "message": "デポジット失敗"
   },
   "activity_deposit_failed_title": {
     "message": "デポジット失敗"
+  },
+  "activity_deposit_pending_description": {
+    "message": "$1をデポジットしています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_pending_title": {
+    "message": "$1をデポジットしています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_description": {
+    "message": "$1をデポジットしました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_title": {
+    "message": "$1をデポジットしました",
+    "description": "$1 is the token symbol"
   },
   "activity_fallback_description": {
     "message": "トランザクション"
@@ -208,16 +371,31 @@
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_failed_title": {
+    "message": "増額に失敗しました"
+  },
   "activity_increaseSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_title": {
+    "message": "使用上限を上げています"
   },
   "activity_increaseSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_success_title": {
+    "message": "使用上限を上げました"
+  },
   "activity_lendingDeposit_failed_title": {
     "message": "デポジット失敗"
+  },
+  "activity_lendingDeposit_pending_title": {
+    "message": "レンディング用デポジット"
+  },
+  "activity_lendingDeposit_success_title": {
+    "message": "レンディング用デポジット"
   },
   "activity_lendingWithdrawal_failed_description": {
     "message": "出金失敗"
@@ -225,15 +403,230 @@
   "activity_lendingWithdrawal_failed_title": {
     "message": "出金失敗"
   },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "貸付金の引き出し"
+  "activity_lendingWithdrawal_pending_description": {
+    "message": "$1を引き出しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingWithdrawal_pending_title": {
+    "message": "$1を引き出しています",
+    "description": "$1 is the token symbol"
   },
   "activity_lendingWithdrawal_success_title": {
-    "message": "貸付金の引き出し"
+    "message": "貸付通貨の引き出し"
+  },
+  "activity_marketCloseShort_failed_description": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_marketCloseShort_failed_title": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_marketCloseShort_pending_description": {
+    "message": "ショートをクローズしています - マーケットクローズ"
+  },
+  "activity_marketCloseShort_pending_title": {
+    "message": "ショートをクローズしています - マーケットクローズ"
+  },
+  "activity_marketCloseShort_success_description": {
+    "message": "ショートをクローズしました - マーケットクローズ"
+  },
+  "activity_marketCloseShort_success_title": {
+    "message": "ショートをクローズしました - マーケットクローズ"
+  },
+  "activity_marketShort_failed_description": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_marketShort_failed_title": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_marketShort_pending_description": {
+    "message": "ショートをクローズしています - マーケット"
+  },
+  "activity_marketShort_pending_title": {
+    "message": "ショートをクローズしています - マーケット"
+  },
+  "activity_marketShort_success_description": {
+    "message": "ショートをクローズしました - マーケット"
+  },
+  "activity_marketShort_success_title": {
+    "message": "ショートをクローズしました - マーケット"
+  },
+  "activity_nftBuy_failed_title": {
+    "message": "購入に失敗しました"
+  },
+  "activity_nftBuy_pending_title": {
+    "message": "$1を購入しています",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftBuy_success_title": {
+    "message": "$1を購入しました",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftMint_failed_title": {
+    "message": "ミントに失敗しました"
+  },
+  "activity_nftMint_pending_title": {
+    "message": "$1をミントしています",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_success_title": {
     "message": "$1をミントしました",
     "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsAddFunds_failed_description": {
+    "message": "入金に失敗しました"
+  },
+  "activity_perpsAddFunds_failed_title": {
+    "message": "入金に失敗しました"
+  },
+  "activity_perpsAddFunds_pending_description": {
+    "message": "入金しています"
+  },
+  "activity_perpsAddFunds_pending_title": {
+    "message": "入金しています"
+  },
+  "activity_perpsAddFunds_success_description": {
+    "message": "アカウントに入金されました"
+  },
+  "activity_perpsAddFunds_success_title": {
+    "message": "アカウントに入金されました"
+  },
+  "activity_perpsCloseLongLiquidated_failed_description": {
+    "message": "ロングをクローズ - 清算に失敗しました"
+  },
+  "activity_perpsCloseLongLiquidated_failed_title": {
+    "message": "ロングをクローズ - 清算に失敗しました"
+  },
+  "activity_perpsCloseLongLiquidated_pending_description": {
+    "message": "ロングをクローズしています - 清算されました"
+  },
+  "activity_perpsCloseLongLiquidated_pending_title": {
+    "message": "ロングをクローズしています - 清算されました"
+  },
+  "activity_perpsCloseLongLiquidated_success_description": {
+    "message": "ロングをクローズしました - 清算されました"
+  },
+  "activity_perpsCloseLongLiquidated_success_title": {
+    "message": "ロングをクローズしました - 清算されました"
+  },
+  "activity_perpsCloseLongStopLoss_failed_description": {
+    "message": "ロングをクローズ - ストップロスに失敗しました"
+  },
+  "activity_perpsCloseLongStopLoss_failed_title": {
+    "message": "ロングをクローズ - ストップロスに失敗しました"
+  },
+  "activity_perpsCloseLongStopLoss_pending_description": {
+    "message": "ロングをクローズしています - ストップロス"
+  },
+  "activity_perpsCloseLongStopLoss_pending_title": {
+    "message": "ロングをクローズしています - ストップロス"
+  },
+  "activity_perpsCloseLongStopLoss_success_description": {
+    "message": "ロングをクローズしました - ストップロス"
+  },
+  "activity_perpsCloseLongStopLoss_success_title": {
+    "message": "ロングをクローズしました - ストップロス"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_description": {
+    "message": "ロングのクローズに失敗しました"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_title": {
+    "message": "ロングのクローズに失敗しました"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_description": {
+    "message": "ロングをクローズしています - 利益確定"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_title": {
+    "message": "ロングをクローズしています - 利益確定"
+  },
+  "activity_perpsCloseLongTakeProfit_success_description": {
+    "message": "ロングをクローズしました - 利益確定"
+  },
+  "activity_perpsCloseLongTakeProfit_success_title": {
+    "message": "ロングをクローズしました - 利益確定"
+  },
+  "activity_perpsCloseLong_failed_description": {
+    "message": "ロングのクローズに失敗しました"
+  },
+  "activity_perpsCloseLong_failed_title": {
+    "message": "ロングのクローズに失敗しました"
+  },
+  "activity_perpsCloseLong_pending_description": {
+    "message": "ロングをクローズしています"
+  },
+  "activity_perpsCloseLong_pending_title": {
+    "message": "ロングをクローズしています"
+  },
+  "activity_perpsCloseLong_success_description": {
+    "message": "ロングをクローズしました"
+  },
+  "activity_perpsCloseLong_success_title": {
+    "message": "ロングをクローズしました"
+  },
+  "activity_perpsCloseShortLiquidated_failed_description": {
+    "message": "ショートをクローズ - 清算に失敗しました"
+  },
+  "activity_perpsCloseShortLiquidated_failed_title": {
+    "message": "ショートをクローズ - 清算に失敗しました"
+  },
+  "activity_perpsCloseShortLiquidated_pending_description": {
+    "message": "ショートをクローズしています - 清算されました"
+  },
+  "activity_perpsCloseShortLiquidated_pending_title": {
+    "message": "ショートをクローズしています - 清算されました"
+  },
+  "activity_perpsCloseShortLiquidated_success_description": {
+    "message": "ショートをクローズしました - 清算されました"
+  },
+  "activity_perpsCloseShortLiquidated_success_title": {
+    "message": "ショートをクローズしました - 清算されました"
+  },
+  "activity_perpsCloseShortStopLoss_failed_description": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_perpsCloseShortStopLoss_failed_title": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_perpsCloseShortStopLoss_pending_description": {
+    "message": "ショートをクローズしています - ストップロス"
+  },
+  "activity_perpsCloseShortStopLoss_pending_title": {
+    "message": "ショートをクローズしています - ストップロス"
+  },
+  "activity_perpsCloseShortStopLoss_success_description": {
+    "message": "ショートをクローズしました - ストップロス"
+  },
+  "activity_perpsCloseShortStopLoss_success_title": {
+    "message": "ショートをクローズしました - ストップロス"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_description": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_title": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_description": {
+    "message": "ショートをクローズしています - 利益確定"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_title": {
+    "message": "ショートをクローズしています - 利益確定"
+  },
+  "activity_perpsCloseShortTakeProfit_success_description": {
+    "message": "ショートをクローズしました - 利益確定"
+  },
+  "activity_perpsCloseShortTakeProfit_success_title": {
+    "message": "ショートをクローズしました - 利益確定"
+  },
+  "activity_perpsCloseShort_failed_description": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_perpsCloseShort_failed_title": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_perpsCloseShort_pending_description": {
+    "message": "ショートをクローズしています"
+  },
+  "activity_perpsCloseShort_pending_title": {
+    "message": "ショートをクローズしています"
   },
   "activity_perpsCloseShort_success_description": {
     "message": "ショートをクローズしました"
@@ -241,17 +634,101 @@
   "activity_perpsCloseShort_success_title": {
     "message": "ショートをクローズしました"
   },
+  "activity_perpsOpenLong_failed_description": {
+    "message": "ロングのオープンに失敗しました"
+  },
+  "activity_perpsOpenLong_failed_title": {
+    "message": "ロングのオープンに失敗しました"
+  },
+  "activity_perpsOpenLong_pending_description": {
+    "message": "ロングをオープンしています"
+  },
+  "activity_perpsOpenLong_pending_title": {
+    "message": "ロングをオープンしています"
+  },
   "activity_perpsOpenLong_success_description": {
     "message": "ロングをオープンしました"
   },
   "activity_perpsOpenLong_success_title": {
     "message": "ロングをオープンしました"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsOpenShort_failed_description": {
+    "message": "ショートのオープンに失敗しました"
+  },
+  "activity_perpsOpenShort_failed_title": {
+    "message": "ショートのオープンに失敗しました"
+  },
+  "activity_perpsOpenShort_pending_description": {
+    "message": "ショートをオープンしています"
+  },
+  "activity_perpsOpenShort_pending_title": {
+    "message": "ショートをオープンしています"
+  },
+  "activity_perpsOpenShort_success_description": {
+    "message": "ショートをオープンしました"
+  },
+  "activity_perpsOpenShort_success_title": {
+    "message": "ショートをオープンしました"
+  },
+  "activity_perpsPaidFundingFees_failed_description": {
+    "message": "入金の支払いに失敗しました"
+  },
+  "activity_perpsPaidFundingFees_failed_title": {
+    "message": "入金の支払いに失敗しました"
+  },
+  "activity_perpsPaidFundingFees_pending_description": {
+    "message": "入金手数料を支払っています"
+  },
+  "activity_perpsPaidFundingFees_pending_title": {
+    "message": "入金手数料を支払っています"
+  },
+  "activity_perpsPaidFundingFees_success_description": {
+    "message": "入金手数料を支払いました"
+  },
+  "activity_perpsPaidFundingFees_success_title": {
+    "message": "入金手数料を支払いました"
+  },
+  "activity_perpsReceivedFundingFees_failed_description": {
+    "message": "手数料の受取に失敗しました"
+  },
+  "activity_perpsReceivedFundingFees_failed_title": {
+    "message": "手数料の受取に失敗しました"
+  },
+  "activity_perpsReceivedFundingFees_pending_description": {
+    "message": "入金手数料を受け取っています"
+  },
+  "activity_perpsReceivedFundingFees_pending_title": {
+    "message": "入金手数料を受け取っています"
+  },
+  "activity_perpsReceivedFundingFees_success_description": {
+    "message": "入金手数料を受け取りました"
+  },
+  "activity_perpsReceivedFundingFees_success_title": {
+    "message": "入金手数料を受け取りました"
+  },
+  "activity_perpsWithdraw_failed_description": {
     "message": "出金失敗"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "出金失敗"
+  },
+  "activity_perpsWithdraw_pending_description": {
+    "message": "資金を引き出しています"
+  },
+  "activity_perpsWithdraw_pending_title": {
+    "message": "資金を引き出しています"
+  },
+  "activity_perpsWithdraw_success_description": {
+    "message": "パーペチュアルの引き出し"
+  },
+  "activity_perpsWithdraw_success_title": {
+    "message": "パーペチュアルの引き出し"
+  },
+  "activity_predictionCashedOut_failed_description": {
+    "message": "キャッシュアウトに失敗しました"
+  },
+  "activity_predictionCashedOut_failed_title": {
+    "message": "キャッシュアウトに失敗しました"
   },
   "activity_predictionCashedOut_pending_description": {
     "message": "キャッシュアウトしています"
@@ -265,11 +742,59 @@
   "activity_predictionCashedOut_success_title": {
     "message": "キャッシュアウト済み"
   },
+  "activity_predictionClaimWinnings_failed_description": {
+    "message": "請求に失敗しました"
+  },
+  "activity_predictionClaimWinnings_failed_title": {
+    "message": "請求に失敗しました"
+  },
+  "activity_predictionClaimWinnings_pending_description": {
+    "message": "獲得額を請求しています"
+  },
+  "activity_predictionClaimWinnings_pending_title": {
+    "message": "獲得額を請求しています"
+  },
+  "activity_predictionClaimWinnings_success_description": {
+    "message": "獲得額を請求しました"
+  },
+  "activity_predictionClaimWinnings_success_title": {
+    "message": "獲得額を請求しました"
+  },
+  "activity_predictionPlaced_failed_description": {
+    "message": "予測に失敗しました"
+  },
+  "activity_predictionPlaced_failed_title": {
+    "message": "予測に失敗しました"
+  },
+  "activity_predictionPlaced_pending_description": {
+    "message": "予測を作成しています"
+  },
+  "activity_predictionPlaced_pending_title": {
+    "message": "予測を作成しています"
+  },
   "activity_predictionPlaced_success_description": {
     "message": "予測が作成されました"
   },
   "activity_predictionPlaced_success_title": {
     "message": "予測が作成されました"
+  },
+  "activity_predictionsAddFunds_failed_description": {
+    "message": "入金に失敗しました"
+  },
+  "activity_predictionsAddFunds_failed_title": {
+    "message": "入金に失敗しました"
+  },
+  "activity_predictionsAddFunds_pending_description": {
+    "message": "入金しています"
+  },
+  "activity_predictionsAddFunds_pending_title": {
+    "message": "入金しています"
+  },
+  "activity_predictionsAddFunds_success_description": {
+    "message": "アカウントに入金されました"
+  },
+  "activity_predictionsAddFunds_success_title": {
+    "message": "アカウントに入金されました"
   },
   "activity_predictionsWithdrawFunds_failed_description": {
     "message": "出金失敗"
@@ -283,33 +808,84 @@
   "activity_predictionsWithdrawFunds_pending_title": {
     "message": "引き出し中"
   },
+  "activity_predictionsWithdrawFunds_success_description": {
+    "message": "予測の引き出し"
+  },
+  "activity_predictionsWithdrawFunds_success_title": {
+    "message": "予測の引き出し"
+  },
   "activity_receive_failed_description": {
     "message": "移動元: $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_failed_title": {
+    "message": "受取に失敗しました"
   },
   "activity_receive_pending_description": {
     "message": "移動元: $1",
     "description": "$1 is the shortened sender address"
   },
+  "activity_receive_pending_title": {
+    "message": "$1を受け取っています",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_success_description": {
     "message": "移動元: $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_title": {
+    "message": "$1を受け取りました",
+    "description": "$1 is the token symbol"
   },
   "activity_revokeSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_failed_title": {
+    "message": "取り消しに失敗しました"
+  },
   "activity_revokeSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_title": {
+    "message": "使用上限を取り消しています"
   },
   "activity_revokeSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_success_title": {
+    "message": "使用上限を取り消しました"
+  },
+  "activity_sell_failed_description": {
+    "message": "売却に失敗しました"
+  },
+  "activity_sell_failed_title": {
+    "message": "売却に失敗しました"
+  },
+  "activity_sell_pending_description": {
+    "message": "$1を売却しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_pending_title": {
+    "message": "$1を売却しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_description": {
+    "message": "$1を売却しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_title": {
+    "message": "$1を売却しました",
+    "description": "$1 is the token symbol"
+  },
   "activity_send_failed_description": {
     "message": "移動先: $1",
     "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_failed_title": {
+    "message": "送信に失敗しました"
   },
   "activity_send_pending_description": {
     "message": "移動先: $1",
@@ -327,11 +903,107 @@
     "message": "$1を送金しました",
     "description": "$1 is the token symbol"
   },
+  "activity_smartAccountUpgrade_failed_description": {
+    "message": "アップグレードに失敗しました"
+  },
+  "activity_smartAccountUpgrade_failed_title": {
+    "message": "アップグレードに失敗しました"
+  },
+  "activity_smartAccountUpgrade_pending_description": {
+    "message": "スマートアカウントをアップグレードしています"
+  },
+  "activity_smartAccountUpgrade_pending_title": {
+    "message": "スマートアカウントをアップグレードしています"
+  },
+  "activity_smartAccountUpgrade_success_description": {
+    "message": "スマートアカウントをアップグレードしました"
+  },
+  "activity_smartAccountUpgrade_success_title": {
+    "message": "スマートアカウントをアップグレードしました"
+  },
+  "activity_stopMarketCloseShort_failed_description": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_stopMarketCloseShort_failed_title": {
+    "message": "ショートのクローズに失敗しました"
+  },
+  "activity_stopMarketCloseShort_pending_description": {
+    "message": "ショートをクローズしています - ストップマーケット"
+  },
+  "activity_stopMarketCloseShort_pending_title": {
+    "message": "ショートをクローズしています - ストップマーケット"
+  },
+  "activity_stopMarketCloseShort_success_description": {
+    "message": "ショートをクローズしました - ストップマーケット"
+  },
+  "activity_stopMarketCloseShort_success_title": {
+    "message": "ショートをクローズしました - ストップマーケット"
+  },
   "activity_swapIncomplete_failed_title": {
     "message": "スワップに失敗しました"
   },
+  "activity_swapIncomplete_pending_title": {
+    "message": "$1をスワップしています",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swapIncomplete_success_title": {
+    "message": "$1をスワップしました",
+    "description": "$1 is the source token symbol"
+  },
   "activity_swap_failed_title": {
     "message": "スワップに失敗しました"
+  },
+  "activity_swap_pending_title": {
+    "message": "$1を$2にスワップしています",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_swap_success_title": {
+    "message": "$1を$2にスワップしました",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_unwrap_failed_description": {
+    "message": "ラップの解除に失敗しました"
+  },
+  "activity_unwrap_failed_title": {
+    "message": "ラップの解除に失敗しました"
+  },
+  "activity_unwrap_pending_description": {
+    "message": "$1のラップを解除しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_pending_title": {
+    "message": "$1のラップを解除しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_description": {
+    "message": "$1のラップを解除しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_title": {
+    "message": "$1のラップを解除しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_failed_description": {
+    "message": "ラップに失敗しました"
+  },
+  "activity_wrap_failed_title": {
+    "message": "ラップに失敗しました"
+  },
+  "activity_wrap_pending_description": {
+    "message": "$1をラップしています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_pending_title": {
+    "message": "$1をラップしています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_description": {
+    "message": "$1をラップしました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_title": {
+    "message": "$1をラップしました",
+    "description": "$1 is the token symbol"
   },
   "add": {
     "message": "追加"
@@ -493,6 +1165,15 @@
   "addressMismatchPunycode": {
     "message": "Punycodeバージョン: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressPoisoningBadge": {
+    "message": "ポイズニング"
+  },
+  "addressPoisoningMessage": {
+    "message": "このアドレスは以前使用したアドレスに非常に似ています。誤った受取人に送金させようとしている可能性があります。"
+  },
+  "addressPoisoningTitle": {
+    "message": "アドレスポイズニングが検出されました"
   },
   "addressQrCodeModalDescription": {
     "message": "このアドレスを使用して、$1上でトークンやコレクティブルを受け取れます",
@@ -848,21 +1529,9 @@
   "assetsDescription": {
     "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
   },
-  "asterdexReferralConfirmText": {
-    "message": "はい、4%の還元を受けます",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引額の4%が返ってきます。",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "MetaMask紹介コードを使って取引すると、4%還元されます。この割引はAsterDEXの$1に従い、すべての先物取引に適用されます。MetaMaskは手数料をいただきます。",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "AsterDEXで4%還元",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "無料でスワップのキャンセルを試行"
@@ -914,9 +1583,6 @@
   },
   "back": {
     "message": "戻る"
-  },
-  "backToHome": {
-    "message": "ホームに戻る"
   },
   "backUpIncomplete": {
     "message": "バックアップ未完了"
@@ -1055,6 +1721,54 @@
   "basicFunctionalityRequired_toggleLabel": {
     "message": "基本機能"
   },
+  "batchSell": {
+    "message": "一括売却"
+  },
+  "batchSellContinueNAssetsCTAPlural": {
+    "message": "$1個のトークンで続行"
+  },
+  "batchSellContinueNAssetsCTASingle": {
+    "message": "$1個のトークンで続行"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "トークンがありません。でも問題ありません。一括売却するトークンを検索して購入しましょう。"
+  },
+  "batchSellGetNewQuotes": {
+    "message": "新しいクォートを入手"
+  },
+  "batchSellHighRateAlert": {
+    "message": "割高レートに関するアラート"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "一括売却するトークンが1種類の場合は、レートが高くなる可能性があります。代わりにスワップを行いますか？"
+  },
+  "batchSellMaxSelectedTokens": {
+    "message": "最大で$1個のトークンを売却できます"
+  },
+  "batchSellMinimumReceiveExplanation": {
+    "message": "トランザクションの処理中に価格が変動した場合に、お客様のスリッページ許容値に基づいて受け取る最低額です。これは流動性プロバイダーからの見積もりであり、最終的な金額は異なる場合があります。"
+  },
+  "batchSellNetworkFeeTooltip": {
+    "message": "ネットワーク手数料は、ネットワークの混雑状況とトランザクションの複雑さによって異なります。"
+  },
+  "batchSellReceiveStablecoin": {
+    "message": "ステーブルコインを選択"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "すべてのトークンが同一ネットワーク上にある必要があります。"
+  },
+  "batchSellSelectHeaderTitle": {
+    "message": "トークンを最大5つまでお選びください"
+  },
+  "batchSellSlippageDescription": {
+    "message": "価格がスリッページの割合を超えて変動した場合、トランザクションは処理されません。"
+  },
+  "batchSellYouSellTokenCount": {
+    "message": "$1個のトークン"
+  },
+  "batchSellYouSellTokenCountPlural": {
+    "message": "$1個のトークン"
+  },
   "bestQuote": {
     "message": "最も有利なクォート"
   },
@@ -1155,6 +1869,9 @@
   "bridge": {
     "message": "ブリッジ"
   },
+  "bridgeAgain": {
+    "message": "再度ブリッジ"
+  },
   "bridgeAllowSwappingOf": {
     "message": "ブリッジ用に$3の$1 $2への正確なアクセスを許可する",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -1175,15 +1892,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Solanaアカウントを作成"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Solanaネットワークにスワップするには、アカウントと受取アドレスが必要です。"
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "はじめにSolanaアカウントが必要です。"
-  },
   "bridgeDetailsTitle": {
     "message": "ブリッジの詳細",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1193,6 +1901,9 @@
   },
   "bridgeExplorerLinkViewOn": {
     "message": "$1で表示"
+  },
+  "bridgeExplorerPopupDescription": {
+    "message": "このトランザクションは2つのネットワーク上に存在します。一つのリンクはソースを表示し、もう一つのリンクは確定後に送金先を表示します。"
   },
   "bridgeFee": {
     "message": "ブリッジ手数料"
@@ -1459,9 +2170,6 @@
   "bridgeSendLoading": {
     "message": "ブリッジ元のチェーンから送金中"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solanaアカウントが作成されました"
-  },
   "bridgeStatusComplete": {
     "message": "完了",
     "description": "Status text indicating a bridge transaction has successfully completed."
@@ -1711,9 +2419,6 @@
     "message": "$1を閉じる",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "このウィンドウはいつでも閉じることができます。"
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -1727,6 +2432,9 @@
   "communityContributedLanguagesSectionTitle": {
     "message": "コミュニティ貢献",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
+  },
+  "compareAddresses": {
+    "message": "アドレスを比較"
   },
   "completed": {
     "message": "完了"
@@ -1920,6 +2628,9 @@
   },
   "confirmTitleDescSign": {
     "message": "確定する前に要求の詳細を確認してください。"
+  },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "このサイトがトークンの承認取り消し許可を求めています。"
   },
   "confirmTitlePermission": {
     "message": "許可のリクエスト"
@@ -2332,6 +3043,9 @@
   "dateCreated": {
     "message": "作成日"
   },
+  "day": {
+    "message": "日"
+  },
   "debitCreditPurchaseOptions": {
     "message": "デビットカードまたはクレジットカードの購入オプション"
   },
@@ -2363,6 +3077,12 @@
   },
   "decryptRequest": {
     "message": "リクエストを解読"
+  },
+  "deepLinkQrPredictDescription": {
+    "message": "MetaMask予測市場にアクセスするには、モバイルデバイスでQRコードをスキャンしてください。"
+  },
+  "deepLinkQrPredictTitle": {
+    "message": "予測市場をモバイルで開く"
   },
   "deepLink_Caution": {
     "message": "慎重に進めてください"
@@ -2458,6 +3178,9 @@
   "default": {
     "message": "デフォルト"
   },
+  "defaultNetworks": {
+    "message": "デフォルトのネットワーク"
+  },
   "defaultRpcUrl": {
     "message": "デフォルトのRPC URL"
   },
@@ -2473,17 +3196,12 @@
   "defiEmptyDescription": {
     "message": "ウォレット内で貸し借りや取引ができます。"
   },
+  "defiIcon": {
+    "message": "DeFiアイコン"
+  },
   "defiReferralCheckboxLabel": {
     "message": "MetaMaskに紹介コードを追加することを許可してください。これは後で変更できません。このサイトは利用規約に基づいて割引を提供し、MetaMaskは手数料を受け取ります。",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
-  "defiReferralNoThanks": {
-    "message": "いいえ、結構です",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "規約に同意したものとみなされます",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -2815,9 +3533,6 @@
   "enabled": {
     "message": "有効にしました"
   },
-  "enabledNetworks": {
-    "message": "ネットワークが有効になりました"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1は公開暗号鍵を必要とします。同意することによって、このサイトは暗号化されたメッセージを作成できます。",
     "description": "$1 is the web3 site name"
@@ -2891,6 +3606,9 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "MetaMaskのパスワードを入力してください"
+  },
+  "enteredMalicious": {
+    "message": "入力したアドレス"
   },
   "errorCode": {
     "message": "コード: $1",
@@ -3008,6 +3726,9 @@
   },
   "exploreDefi": {
     "message": "DeFiを探索"
+  },
+  "exploreTokens": {
+    "message": "トークンの閲覧"
   },
   "exportYourData": {
     "message": "データのエクスポート"
@@ -3241,6 +3962,18 @@
     "message": "週次",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "ERC-20、ERC-1155、ERC-721のすべての取り消し基本命令。",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "ERC-20 approve(spender, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
+  "gatorPermissionsErc721ApproveRevocation": {
+    "message": "ERC-721 approve(address(0), tokenId)",
+    "description": "Token approval revocation method for ERC-721 single-token approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "有効期限日",
     "description": "Label for the expiration date of a permission"
@@ -3261,6 +3994,22 @@
     "message": "最大割当",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsPermit2ApproveRevocation": {
+    "message": "Permit2 approve(token, spender, 0, 0)",
+    "description": "Token approval revocation method for Permit2 approve reset"
+  },
+  "gatorPermissionsPermit2InvalidateNonces": {
+    "message": "Permit2 invalidate nonces",
+    "description": "Token approval revocation method for Permit2 nonce invalidation"
+  },
+  "gatorPermissionsPermit2Lockdown": {
+    "message": "Permit2ブロックチェーン",
+    "description": "Token approval revocation method for Permit2 lockdown"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "取り消し方法",
+    "description": "Label for the enabled token approval revocation methods"
+  },
   "gatorPermissionsRevocationPending": {
     "message": "取り消し保留中",
     "description": "Label for a gator permission that is pending a revocation transaction"
@@ -3268,6 +4017,10 @@
   "gatorPermissionsRevoke": {
     "message": "取り消す",
     "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsSetApprovalForAllRevocation": {
+    "message": "ERC-721/ERC-1155 setApprovalForAll(false)",
+    "description": "Token approval revocation method for setApprovalForAll reset"
   },
   "gatorPermissionsShowDetails": {
     "message": "詳細を表示",
@@ -3318,21 +4071,9 @@
     "message": "Web3を使用できるようにウォレットを準備しましょう",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "はい、5%節約します",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引手数料が最大5%割引されます。",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "MetaMask紹介コードを使って取引すると、5%節約できます。この割引はGMXの$1に従い、すべての先物取引に適用されます。MetaMaskは手数料をいただきます。",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "GMXで5%節約",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "サイトに移動"
@@ -3418,6 +4159,39 @@
   "hardwareWalletLookingForDevice": {
     "message": "$1を探しています...",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletRepairDetecting": {
+    "message": "デバイスを検出中..."
+  },
+  "hardwareWalletRepairDeviceNotDetected": {
+    "message": "デバイスが検出されませんでした。これまでの手順を確認して、もう一度お試しください。"
+  },
+  "hardwareWalletRepairLink": {
+    "message": "接続を最初からやり直す"
+  },
+  "hardwareWalletRepairPermissionsTitle": {
+    "message": "MetaMaskに次の権限を与えてください:"
+  },
+  "hardwareWalletRepairStepOneDescription": {
+    "message": "USBケーブルがデバイスとパソコンの両方にしっかりと接続されていることを確認してください。別のUSBポートまたはケーブルをお試しください。"
+  },
+  "hardwareWalletRepairStepOneTitle": {
+    "message": "USB接続を確認する"
+  },
+  "hardwareWalletRepairStepTwoDescription": {
+    "message": "ハードウェアウォレットのロックを解除するための暗証番号を入力してください。"
+  },
+  "hardwareWalletRepairStepTwoTitle": {
+    "message": "デバイスのロックを解除する"
+  },
+  "hardwareWalletRepairSuccessDescription": {
+    "message": "デバイスが再接続されました。このタブは閉じていただいて結構です。"
+  },
+  "hardwareWalletRepairSuccessTitle": {
+    "message": "デバイスが接続されました"
+  },
+  "hardwareWalletRepairTitle": {
+    "message": "ハードウェアデバイスの接続"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "$1が接続されていて、イーサリアムアプリを選択していることを確認してください。"
@@ -3547,21 +4321,9 @@
   "honeypotTitle": {
     "message": "ハニーポット"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "はい、4%節約します",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引手数料が最大4%割引されます。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "MetaMask紹介コードを使って取引すると、4%節約できます。この割引はHyperliquidの$1に従い、すべての先物取引に適用されます。MetaMaskは手数料をいただきます。",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "Hyperliquidで4%節約",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "理解しています"
@@ -3650,6 +4412,9 @@
   "imported": {
     "message": "インポートされました",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "includes": {
+    "message": "込み"
   },
   "includesXTransactions": {
     "message": "$1件のトランザクションを含む"
@@ -3825,6 +4590,9 @@
   },
   "knownAddressRecipient": {
     "message": "既知のコントラクトアドレスです。"
+  },
+  "knownSafeAddress": {
+    "message": "既知のアドレス"
   },
   "knownTokenWarning": {
     "message": "このアクションは、ウォレットに既に一覧表示されているトークンを編集します。これは、フィッシングに使用される可能性があります。これらのトークンの表す内容を変更する意図が確実な場合にのみ承認します。$1に関する詳細をご覧ください"
@@ -4009,6 +4777,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "セッションの期限が切れました"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "Telegramをアップデート"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "Telegramに接続できませんでした。これは通常Telegramアプリが古い場合に起こります。Telegramをアップデートしてもう一度お試しください。"
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "Telegramでサインインできませんでした"
+  },
   "logo": {
     "message": "$1ロゴ",
     "description": "$1 is the name of the ticker"
@@ -4022,6 +4799,10 @@
   },
   "lowLowercase": {
     "message": "低"
+  },
+  "lowValueAssets": {
+    "message": "低価値のトークン ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "イーサリアムメインネット"
@@ -4202,6 +4983,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "弊社の記録によると、送信されたRPC URLの値がこのチェーンIDの既知のプロバイダーと一致しません。"
+  },
+  "mmFee": {
+    "message": "$1%のMM手数料。"
   },
   "month": {
     "message": "月"
@@ -4758,7 +5542,7 @@
     "message": "「$1」が追加されました！"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "「設定」>「セキュリティとプライバシー」でオフにできます。"
+    "message": "設定 > 資産"
   },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "OpenSeaを使用してNFTを表示するには、$1で「NFTメディアの表示」をオンにしてください。",
@@ -4790,9 +5574,6 @@
   },
   "newPrivacyPolicyTitle": {
     "message": "プライバシーポリシーが更新されました"
-  },
-  "newRpcUrl": {
-    "message": "新しいRPC URL"
   },
   "newTokensImportedMessage": {
     "message": "$1をインポートしました。",
@@ -4889,6 +5670,9 @@
   "noOptionsAvailableMessage": {
     "message": "この取引ルートは現在使用できません。金額、ネットワーク、またはトークンを変更すれば、最適なオプションをお探しします。"
   },
+  "noQuoteAvailable": {
+    "message": "クォートが利用できません"
+  },
   "noSnaps": {
     "message": "snapがインストールされていません"
   },
@@ -4927,9 +5711,6 @@
   },
   "notCurrentAccount": {
     "message": "これは正しいアカウントですか？ウォレットで現在選択されているアカウントと異なっています"
-  },
-  "notEnoughGas": {
-    "message": "ガスが不足しています"
   },
   "notificationDetail": {
     "message": "詳細"
@@ -5264,6 +6045,9 @@
   "openWallet": {
     "message": "ウォレットを開く"
   },
+  "opensInNewTab": {
+    "message": "新しいタブで開きます"
+  },
   "options": {
     "message": "オプション"
   },
@@ -5291,6 +6075,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "このサイトのその他のアクセス許可"
+  },
+  "otherQrWallet": {
+    "message": "他のQRウォレット"
   },
   "otherSnaps": {
     "message": "他のsnap",
@@ -5862,6 +6649,9 @@
     "message": "取引に利用可能",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBalance": {
+    "message": "パーペチュアル残高"
+  },
   "perpsBasicFunctionalityOff": {
     "message": "この機能は、基本機能がオフの間利用できません。"
   },
@@ -5891,6 +6681,12 @@
   },
   "perpsCloseAll": {
     "message": "すべてクローズ"
+  },
+  "perpsCloseAllDescription": {
+    "message": "すべての未決済のポジションを現在の市場価格でクローズします。"
+  },
+  "perpsCloseAllPositions": {
+    "message": "すべてのポジションをクローズ"
   },
   "perpsCloseAmount": {
     "message": "クローズ金額"
@@ -6008,11 +6804,20 @@
   "perpsFilterCrypto": {
     "message": "仮想通貨"
   },
+  "perpsFilterEtf": {
+    "message": "ETF"
+  },
   "perpsFilterForex": {
     "message": "FX"
   },
+  "perpsFilterIndex": {
+    "message": "インデックス"
+  },
   "perpsFilterNew": {
     "message": "新登場"
+  },
+  "perpsFilterPreIpo": {
+    "message": "プレIPO"
   },
   "perpsFilterStocks": {
     "message": "株式"
@@ -6043,6 +6848,9 @@
   },
   "perpsInsufficientMargin": {
     "message": "この注文に十分な証拠金がありません。"
+  },
+  "perpsKeepPositions": {
+    "message": "ポジションをキープ"
   },
   "perpsLearnBasics": {
     "message": "パーペチュアルの基本"
@@ -6237,8 +7045,26 @@
   "perpsSize": {
     "message": "サイズ"
   },
+  "perpsSlippage": {
+    "message": "スリッページ"
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "価格がこのしきい値を超えて変化した場合、トランザクションは実行されません。"
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "スリッページの設定"
+  },
+  "perpsSlippageCustom": {
+    "message": "カスタム"
+  },
   "perpsSlippageExceeded": {
     "message": "スリッページが超過しました。スリッページ許容範囲を調整してもう一度お試しください。"
+  },
+  "perpsSlippageInputLabel": {
+    "message": "最大スリッページ割合"
+  },
+  "perpsSlippageSet": {
+    "message": "設定"
   },
   "perpsSortByFundingRate": {
     "message": "資金調達率"
@@ -6328,6 +7154,22 @@
   "perpsToastCancelOrderSuccess": {
     "message": "注文がキャンセルされました",
     "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseAllFailed": {
+    "message": "全ポジションのクローズに失敗しました",
+    "description": "Error toast text shown when batch closing all perps positions fails"
+  },
+  "perpsToastCloseAllInProgress": {
+    "message": "すべてのポジションをクローズ中",
+    "description": "In-progress toast text shown while batch closing all perps positions"
+  },
+  "perpsToastCloseAllPartial": {
+    "message": "$2個中$1個のポジションをクローズしました",
+    "description": "Warning toast text shown when only some perps positions were successfully closed. $1 is success count, $2 is total attempted count."
+  },
+  "perpsToastCloseAllSuccess": {
+    "message": "すべてのポジションをクローズしました",
+    "description": "Success toast text shown when all perps positions are successfully closed"
   },
   "perpsToastCloseFailed": {
     "message": "ポジションをクローズできませんでした",
@@ -6889,6 +7731,10 @@
     "message": "カメラへのアクセスが必要です",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorMismatchedTransactionTitle": {
+    "message": "QRコードが間違っています",
+    "description": "Title shown when a signature QR belongs to a different transaction."
+  },
   "qrErrorNonUrPairingBody": {
     "message": "ハードウェアウォレットに戻り、アカウントの共有またはエクスポートのオプションを探してください。MetaMaskを選択して、QRコードをスキャンします。",
     "description": "Body text for the non-UR QR code error during pairing."
@@ -7391,6 +8237,9 @@
     "message": "アカウントを検索",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
+  "searchingForBestQuotes": {
+    "message": "最も有利なクォートを検索しています"
+  },
   "second": {
     "message": "秒"
   },
@@ -7525,6 +8374,9 @@
   },
   "selectedAccountMismatch": {
     "message": "別のアカウントが選択されました"
+  },
+  "sellAll": {
+    "message": "すべて売却"
   },
   "send": {
     "message": "送金"
@@ -8443,24 +9295,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "smartTransactionCancelled": {
-    "message": "トランザクションがキャンセルされました"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "トランザクションを完了できなかったため、不要なガス代の支払いを避けるためにキャンセルされました。"
-  },
-  "smartTransactionError": {
-    "message": "トランザクションに失敗しました"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "突然の市場の変化により失敗する場合があります。問題が解決されない場合は、MetaMaskカスタマーサポートにお問い合わせください。"
-  },
-  "smartTransactionPending": {
-    "message": "トランザクションが送信されました"
-  },
-  "smartTransactionSuccess": {
-    "message": "トランザクションが完了しました"
-  },
   "smartTransactions": {
     "message": "スマートトランザクション"
   },
@@ -8766,6 +9600,19 @@
     "message": "シークレットリカバリーフレーズ全体をいずれかのフィールドに張り付けできます。",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
+  "srpRevealMaliciousBlockBody": {
+    "message": "$1の攻撃者がシークレットリカバリーフレーズを教えるように仕向けています。フレーズを知っていれば、誰でもウォレットからすべてを盗むことができます。",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "安全な場所に戻る"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "今騙されている可能性があります"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "危険"
+  },
   "srpSecurityQuizGetStarted": {
     "message": "利用を開始する"
   },
@@ -9020,6 +9867,9 @@
   },
   "swapAdjustSlippage": {
     "message": "スリッページの調整"
+  },
+  "swapAgain": {
+    "message": "再度スワップ"
   },
   "swapAggregator": {
     "message": "アグリゲーター"
@@ -9368,9 +10218,6 @@
   "termsOfUseTitle": {
     "message": "利用規約が更新されました"
   },
-  "testNetworks": {
-    "message": "テストネットワーク"
-  },
   "testnets": {
     "message": "テストネット"
   },
@@ -9413,9 +10260,6 @@
   },
   "tokenContractAddress": {
     "message": "トークンコントラクトアドレス"
-  },
-  "tokenContractError": {
-    "message": "このアドレスはトークンコントラクトアドレスです。このアドレスにトークンを送ると、トークンが失われます。"
   },
   "tokenContractWarning": {
     "message": "トークンコントラクトに関する警告"
@@ -9487,6 +10331,12 @@
   "total": {
     "message": "合計"
   },
+  "totalAmount": {
+    "message": "合計額"
+  },
+  "totalReceived": {
+    "message": "受取額合計"
+  },
   "totalVolume": {
     "message": "トークン数"
   },
@@ -9544,6 +10394,10 @@
   },
   "transactionIncludesTypes": {
     "message": "このトランザクションには$1が含まれています。"
+  },
+  "transactionProtectedByEnforcedSimulations": {
+    "message": "このトランザクションは保護されました。予期せぬ資金の損失を防ぐため、トランザクションがキャンセルされました。",
+    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
   },
   "transactionSettings": {
     "message": "トランザクション設定"
@@ -9715,8 +10569,19 @@
   "unavailable": {
     "message": "利用不可"
   },
+  "unavailableNetworkConnection": {
+    "message": "利用できないネットワーク接続"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "$1との接続が利用できません。続行する前にネットワーク接続情報を更新するか、後でもう一度お試しください。",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "これは予期せぬ動作なので、アカウントが復元されたとしても、バグとして報告すべきです。"
+  },
+  "unexpectedError": {
+    "message": "予期せぬエラーが発生しました。",
+    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "スワップ用に$3での$1 $2への正確なアクセスを許可してください"
@@ -9741,6 +10606,9 @@
   "unknownNetworkForKeyEntropy": {
     "message": "不明なネットワーク",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownPermissionType": {
+    "message": "不明なアクセス許可タイプ"
   },
   "unknownQrCode": {
     "message": "エラー: QRコードを識別できませんでした"
@@ -9882,9 +10750,6 @@
   "view": {
     "message": "表示"
   },
-  "viewActivity": {
-    "message": "アクティビティを表示"
-  },
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
@@ -9912,12 +10777,13 @@
   "viewTokenDetails": {
     "message": "トークンの詳細を表示"
   },
-  "viewTransaction": {
-    "message": "トランザクションを表示"
-  },
   "viewinExplorer": {
     "message": "$1をエクスプローラーで表示",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "サイトにアクセス"
@@ -10033,6 +10899,9 @@
   "yes": {
     "message": "はい"
   },
+  "yesSwap": {
+    "message": "はい、スワップを行います"
+  },
   "you": {
     "message": "ユーザー"
   },
@@ -10045,6 +10914,9 @@
   "youReceived": {
     "message": "受取額:",
     "description": "Label indicating the amount and asset the user received."
+  },
+  "youSell": {
+    "message": "売却"
   },
   "youSent": {
     "message": "送金額:",

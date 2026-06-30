@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -29,14 +29,14 @@ export type SnapUIRadioGroupProps = {
   disabled?: boolean;
 };
 
-export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
+export const SnapUIRadioGroup = ({
   name,
   label,
   error,
   form,
   disabled,
   ...props
-}) => {
+}: SnapUIRadioGroupProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as string;

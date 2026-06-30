@@ -18,9 +18,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { isWebUrl } from '../../../../../app/scripts/lib/util';
+import { isWebUrl } from '../../../../../shared/lib/url-utils';
 
 const AddBlockExplorerModal = ({
   onAdded,

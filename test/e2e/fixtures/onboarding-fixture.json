@@ -31,11 +31,15 @@
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false
+    },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 211,
+      "currentMigrationVersion": 215,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -59,6 +63,7 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
+      "perpsTabBadgeSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
@@ -89,6 +94,9 @@
     "AuthenticationController": {
       "isSignedIn": false
     },
+    "BridgeController": {
+      "inputPrimaryDenomination": "token_amount"
+    },
     "BridgeStatusController": {
       "txHistory": {}
     },
@@ -99,6 +107,18 @@
         "validSubmissionWindowDays": 21
       },
       "drafts": []
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
+    },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -173,6 +193,7 @@
       "logs": {}
     },
     "MetaMetricsController": {
+      "completedMetaMetricsOnboarding": false,
       "dataCollectionForMarketing": null,
       "eventsBeforeMetricsOptIn": [
         {
@@ -182,11 +203,7 @@
         }
       ],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
-      "metaMetricsId": null,
-      "participateInMetaMetrics": null,
-      "segmentApiCalls": {},
       "tracesBeforeMetricsOptIn": [
         {
           "request": {
@@ -2040,6 +2057,7 @@
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
+        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",
@@ -2073,6 +2091,7 @@
     },
     "ProfileMetricsController": {
       "initialEnqueueCompleted": false,
+      "proofBackfillEnqueued": false,
       "syncQueue": {}
     },
     "RemoteFeatureFlagController": {
@@ -2093,6 +2112,7 @@
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
+      "migrationVersion": 0,
       "socialBackupsMetadata": []
     },
     "SelectedNetworkController": {
@@ -2267,6 +2287,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 211
+    "version": 215
   }
 }

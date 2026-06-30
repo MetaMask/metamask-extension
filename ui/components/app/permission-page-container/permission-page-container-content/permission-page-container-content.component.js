@@ -6,20 +6,20 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import { I18nContext } from '../../../../contexts/i18n';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
   FontWeight,
-  JustifyContent,
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../component-library';
+import { Text } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 
 export default class PermissionPageContainerContent extends PureComponent {
@@ -46,12 +46,10 @@ export default class PermissionPageContainerContent extends PureComponent {
     selectedCaipChainIds: null,
   };
 
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
 
     const {
       selectedPermissions,
@@ -88,21 +86,17 @@ export default class PermissionPageContainerContent extends PureComponent {
     );
     return (
       <Box
-        className="permission-page-container-content"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.flexStart}
-        alignItems={AlignItems.center}
-        height={BlockSize.Full}
+        className="permission-page-container-content flex flex-col h-full"
+        justifyContent={BoxJustifyContent.Start}
+        alignItems={BoxAlignItems.Center}
         paddingLeft={4}
         paddingRight={4}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          className="flex flex-col"
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           paddingTop={4}
           paddingBottom={4}
         >
@@ -123,13 +117,12 @@ export default class PermissionPageContainerContent extends PureComponent {
           </Text>
         </Box>
         <Box
-          display={Display.Flex}
-          backgroundColor={BackgroundColor.backgroundDefault}
+          className="flex rounded-xl"
+          backgroundColor={BoxBackgroundColor.BackgroundDefault}
           paddingLeft={4}
           paddingRight={4}
           paddingTop={2}
           paddingBottom={2}
-          borderRadius={BorderRadius.XL}
         >
           <PermissionsConnectPermissionList
             isRequestApprovalPermittedChains={Boolean(

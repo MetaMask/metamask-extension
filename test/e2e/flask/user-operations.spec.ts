@@ -1,11 +1,9 @@
 import {
   BUNDLER_URL,
   DAPP_PATH,
-  DAPP_URL,
   ENTRYPOINT,
   ERC_4337_ACCOUNT,
   ERC_4337_ACCOUNT_SALT,
-  ERC_4337_ACCOUNT_SNAP_URL,
   LOCAL_NODE_ACCOUNT,
   LOCAL_NODE_PRIVATE_KEY,
   SIMPLE_ACCOUNT_FACTORY,
@@ -19,8 +17,12 @@ import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
+import TestDappIndividualRequest from '../page-objects/pages/test-dapp-individual-request';
+import SnapAccountAbstractionKeyringPage from '../page-objects/pages/snap-account-abstraction-keyring-page';
+import ActivityTab from '../page-objects/pages/home/activity-tab';
+import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
-import { createInternalTransaction } from '../page-objects/flows/transaction';
+import { createInternalTransaction } from '../page-objects/flows/transaction.flow';
 import { login } from '../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../page-objects/flows/test-dapp.flow';
 
@@ -29,107 +31,10 @@ enum TransactionDetailRowIndex {
   GasUsed = 3,
 }
 
-async function installExampleSnap(driver: Driver) {
-  await driver.openNewPage(ERC_4337_ACCOUNT_SNAP_URL);
-  await driver.clickElement('#connectButton');
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement({
-    text: 'Connect',
-    tag: 'button',
-  });
-  await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-  });
-  await driver.clickElementAndWaitForWindowToClose({
-    text: 'OK',
-    tag: 'button',
-  });
-}
-
-async function createSnapAccount(
-  driver: Driver,
-  privateKey: string,
-  salt: string,
-) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
-  await driver.clickElement({ text: 'Create account' });
-  await driver.fill('#create-account-private-key', privateKey);
-  await driver.fill('#create-account-salt', salt);
-  await driver.clickElement({ text: 'Create Account', tag: 'button' });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement({ text: 'Create', tag: 'button' });
-  await driver.clickElement({ text: 'Add account', tag: 'button' });
-  await driver.clickElement({ text: 'Ok', tag: 'button' });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
-}
-
-async function setSnapConfig(
-  driver: Driver,
-  {
-    bundlerUrl,
-    entrypoint,
-    simpleAccountFactory,
-    paymaster,
-    paymasterSK,
-  }: {
-    bundlerUrl: string;
-    entrypoint: string;
-    simpleAccountFactory: string;
-    paymaster?: string;
-    paymasterSK?: string;
-  },
-) {
-  await driver.switchToWindowWithTitle('Account Abstraction Snap');
-  await driver.clickElement('[data-testid="chain-select"]');
-  await driver.clickElement('[data-testid="chain-id-1337"]');
-  await driver.fill('[data-testid="bundlerUrl"]', bundlerUrl);
-  await driver.fill('[data-testid="entryPoint"]', entrypoint);
-  await driver.fill(
-    '[data-testid="simpleAccountFactory"]',
-    simpleAccountFactory,
-  );
-  if (paymaster) {
-    await driver.fill(
-      '[data-testid="customVerifyingPaymasterAddress"]',
-      paymaster,
-    );
-  }
-  if (paymasterSK) {
-    await driver.fill(
-      '[data-testid="customVerifyingPaymasterSK"]',
-      paymasterSK,
-    );
-  }
-
-  await driver.clickElement({ text: 'Set Chain Config', tag: 'button' });
-}
-
 async function confirmTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement({ text: 'Confirm' });
-}
-
-async function openConfirmedTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
-
-  await driver.clickElement('[data-tx-status="confirmed"]');
-}
-
-async function expectTransactionDetail(
-  driver: Driver,
-  rowIndex: number,
-  expectedText: string,
-) {
-  await driver.findElement({
-    css: `[data-testid="transaction-breakdown-row"]:nth-child(${
-      2 + rowIndex
-    }) [data-testid="transaction-breakdown-row-value"]`,
-    text: expectedText,
-  });
+  const transactionConfirmation = new TransactionConfirmation(driver);
+  await transactionConfirmation.clickFooterConfirmButton();
 }
 
 async function expectTransactionDetailsMatchReceipt(
@@ -138,7 +43,7 @@ async function expectTransactionDetailsMatchReceipt(
 ) {
   const hexToDecimalString = (hex: string) => String(parseInt(hex, 16));
 
-  const userOperationHash = await bundlerServer.getUserOperationHashes()[0];
+  const userOperationHash = bundlerServer.getUserOperationHashes()[0];
 
   if (!userOperationHash) {
     throw new Error('No user operation hash found');
@@ -151,14 +56,14 @@ async function expectTransactionDetailsMatchReceipt(
     throw new Error('No user operation receipt found');
   }
 
-  await expectTransactionDetail(
-    driver,
+  const activityTab = new ActivityTab(driver);
+
+  await activityTab.checkTransactionBreakdownRowValue(
     TransactionDetailRowIndex.Nonce,
     hexToDecimalString(receipt.nonce),
   );
 
-  await expectTransactionDetail(
-    driver,
+  await activityTab.checkTransactionBreakdownRowValue(
     TransactionDetailRowIndex.GasUsed,
     hexToDecimalString(receipt.actualGasUsed),
   );
@@ -174,11 +79,19 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
       })),
   ];
 }
+
 async function mockSnapAndSwaps(mockServer: Mockttp) {
   return [
     ...(await mockSnapAccountAbstractionKeyRingAndSite(mockServer, 8081)),
     await mockSwapsTransactionQuote(mockServer),
   ];
+}
+
+async function openConfirmedTransaction(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  const activityTab = new ActivityTab(driver);
+  await activityTab.goToActivityList();
+  await activityTab.clickConfirmedTransaction();
 }
 
 async function withAccountSnap(
@@ -191,7 +104,9 @@ async function withAccountSnap(
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilderV2().build(),
+      fixtures: new FixtureBuilderV2()
+        .withSnapsPrivacyWarningAlreadyShown()
+        .build(),
       title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),
@@ -216,19 +131,18 @@ async function withAccountSnap(
       driver: Driver;
       bundlerServer: Bundler;
     }) => {
-      // Todo: use POM and consolidate balance check when balance is 0 ('fund your wallet' is displayed)
       await login(driver, { validateBalance: false });
-      await installExampleSnap(driver);
 
-      await setSnapConfig(driver, {
+      const snapAccountAbstractionKeyringPage =
+        new SnapAccountAbstractionKeyringPage(driver);
+      await snapAccountAbstractionKeyringPage.install();
+      await snapAccountAbstractionKeyringPage.setChainConfig({
         bundlerUrl: BUNDLER_URL,
         entrypoint: ENTRYPOINT,
         simpleAccountFactory: SIMPLE_ACCOUNT_FACTORY,
         paymaster,
       });
-
-      await createSnapAccount(
-        driver,
+      await snapAccountAbstractionKeyringPage.createAccount(
         LOCAL_NODE_PRIVATE_KEY,
         ERC_4337_ACCOUNT_SALT,
       );
@@ -248,27 +162,32 @@ async function withAccountSnap(
   );
 }
 
-// Bug #37823 When sending a transaction to dApp the confirmation dialog crashes
+async function sendDappTransaction(driver: Driver) {
+  const testDappIndividualRequest = new TestDappIndividualRequest(driver);
+  await testDappIndividualRequest.request('eth_sendTransaction', [
+    {
+      from: ERC_4337_ACCOUNT,
+      to: LOCAL_NODE_ACCOUNT,
+      value: convertETHToHexGwei(1),
+      maxFeePerGas: '0x0',
+      maxPriorityFeePerGas: '0x0',
+    },
+  ]);
+}
+
+// Bug #37823 (CLOSED Jan 2026): BIP44 confirmation crash was fixed.
+// TODO: Unskip -- #37823 is resolved, verify tests pass and remove describe.skip
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('User Operations', function () {
   it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
-      const transaction = {
-        from: ERC_4337_ACCOUNT,
-        to: LOCAL_NODE_ACCOUNT,
-        value: convertETHToHexGwei(1),
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
-      };
-      await driver.openNewPage(
-        `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
-      );
-
+      await sendDappTransaction(driver);
       await confirmTransaction(driver);
     });
   });
 
-  // https://github.com/MetaMask/metamask-extension/issues/36567
+  // Issue #36567 (OPEN): Test depends on old confirmation flow and needs rewriting.
+  // TODO: #36567 (open) -- rewrite to use new confirmation flow
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('from send transaction', async function () {
     await withAccountSnap(
@@ -286,6 +205,7 @@ describe.skip('User Operations', function () {
     );
   });
 
+  // TODO: Implement swap test for ERC-4337 user operations
   // it.skip('from swap', async function () {
   //   await withAccountSnap(
   //     { title: this.test?.fullTitle() },
@@ -314,17 +234,7 @@ describe.skip('User Operations', function () {
         ],
       },
       async (driver, bundlerServer) => {
-        const transaction = {
-          from: ERC_4337_ACCOUNT,
-          to: LOCAL_NODE_ACCOUNT,
-          value: convertETHToHexGwei(1),
-          maxFeePerGas: '0x0',
-          maxPriorityFeePerGas: '0x0',
-        };
-        await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
-        );
-
+        await sendDappTransaction(driver);
         await confirmTransaction(driver);
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);

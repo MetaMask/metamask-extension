@@ -5,6 +5,7 @@ import {
 } from '../../../stub/keyring-bridge';
 import AccountListPage from '../pages/account-list-page';
 import AddressListModal from '../pages/multichain/address-list-modal';
+import HomePage from '../pages/home/homepage';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 
 export async function checkAccountAddressDisplayedInAccountList(
@@ -31,3 +32,24 @@ export async function checkAccountAddressDisplayedInAccountList(
     await addressListModal.goBack();
   }
 }
+
+/**
+ * Switches to the specified account via the homepage account menu.
+ *
+ * @param driver
+ * @param accountName
+ */
+export const switchToAccount = async (
+  driver: Driver,
+  accountName: string,
+): Promise<void> => {
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.headerNavbar.openAccountMenu();
+
+  const accountListPage = new AccountListPage(driver);
+  await accountListPage.checkPageIsLoaded();
+  await accountListPage.checkAccountDisplayedInAccountList(accountName);
+  await accountListPage.switchToAccount(accountName);
+  await homePage.headerNavbar.checkAccountLabel(accountName);
+};

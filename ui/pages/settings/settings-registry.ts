@@ -31,8 +31,10 @@ import {
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
+  ADD_DEVICE_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import { getIsAddDeviceSyncEnabled } from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
 
@@ -45,7 +47,7 @@ export type SettingsRouteMeta = {
   /** Parent path for back navigation; undefined = settings root */
   parentPath?: string;
   /** Lazy-loaded component to render for this route */
-  component?: ComponentType;
+  component?: ComponentType<React.PropsWithChildren<unknown>>;
   /** If true, this route appears as a tab in the TabBar */
   isTab?: boolean;
   /** Icon for TabBar (required if isTab is true) */
@@ -75,6 +77,7 @@ export const SETTINGS_ROOT_SECTIONS: readonly {
       DEVELOPER_OPTIONS_ROUTE,
       DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
+      ...(getIsAddDeviceSyncEnabled() ? [ADD_DEVICE_ROUTE] : []),
     ],
   },
 ] as const;
@@ -284,6 +287,19 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     isTab: true,
     iconName: IconName.SwapVertical,
   },
+
+  // --- Add Device tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
+  ...(getIsAddDeviceSyncEnabled()
+    ? {
+        [ADD_DEVICE_ROUTE]: {
+          labelKey: 'addDevice',
+          parentPath: SETTINGS_ROUTE,
+          component: mmLazy(() => import('./add-device-tab/index.ts')),
+          isTab: true,
+          iconName: IconName.Mobile,
+        },
+      }
+    : {}),
 
   // --- Experimental tab ---
   [EXPERIMENTAL_ROUTE]: {

@@ -8,6 +8,7 @@ import React, {
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'clsx';
+import log from 'loglevel';
 import {
   Box,
   BoxBackgroundColor,
@@ -32,7 +33,7 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
-  SECURITY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_SETUP_PASSKEY_ROUTE,
@@ -60,8 +61,7 @@ import {
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -70,6 +70,7 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
+import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -86,6 +87,7 @@ import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
+import { useOnboardingSearchParams } from './hooks/useOnboardingSearchParams';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
@@ -98,7 +100,9 @@ import SetupPasskey from './setup-passkey/setup-passkey';
 const ExperimentalArea = mmLazy(
   // eslint-disable-next-line import-x/extensions, import-x/no-useless-path-segments -- these are needed for mmLazy
   () => import('../../components/app/flask/experimental-area/index.js'),
-) as React.LazyExoticComponent<React.ComponentType<{ redirectTo: string }>>;
+) as React.LazyExoticComponent<
+  React.ComponentType<React.PropsWithChildren<{ redirectTo: string }>>
+>;
 
 // Helper to convert onboarding paths to relative paths for nested route matching
 const toRelativePath = (path: string) =>
@@ -110,17 +114,15 @@ export default function OnboardingFlow() {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const location = useLocation();
-  const { pathname, search } = location;
+  const { pathname } = location;
   const navigate = useNavigate();
   const theme = useTheme();
   const isSidePanelEnabled = useSidePanelEnabled();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
-  const isFromReminder = new URLSearchParams(search).get('isFromReminder');
-  const isFromSettingsSecurity = new URLSearchParams(search).get(
-    'isFromSettingsSecurity',
-  );
+  const { isFromReminder, isFromSettingsSecurity } =
+    useOnboardingSearchParams();
   const { bufferedTrace, onboardingParentContext, trackEvent } =
     useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
@@ -189,9 +191,12 @@ export default function OnboardingFlow() {
       isSRPBackupRoute &&
       completedOnboarding
     ) {
-      navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE, {
-        replace: true,
-      });
+      navigate(
+        isFromSettingsSecurity ? SECURITY_AND_PASSWORD_ROUTE : DEFAULT_ROUTE,
+        {
+          replace: true,
+        },
+      );
     }
   }, [
     isUnlocked,
@@ -237,23 +242,11 @@ export default function OnboardingFlow() {
       if (newSecretRecoveryPhrase) {
         setSecretRecoveryPhrase(newSecretRecoveryPhrase);
       }
+    } catch (error) {
+      log.error('OnboardingFlow: failed to create new account', error);
+      throw error;
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleSocialLoginRehydration = async () => {
-    if (isSidePanelEnabled) {
-      await dispatch(setUseSidePanelAsDefault(true));
-      await dispatch(setCompletedOnboardingWithSidepanel());
-
-      // for sidepanel, we need to navigate to the next route (i.e. Home)
-      navigate(nextRoute, { replace: true });
-    } else {
-      // For existing social login users, set onboarding complete
-      // The useEffect watching completedOnboarding will handle navigation to DEFAULT_ROUTE
-      // Don't navigate here - let the useEffect handle it to avoid duplicate navigations
-      await dispatch(setCompletedOnboarding());
     }
   };
 
@@ -278,13 +271,46 @@ export default function OnboardingFlow() {
       if (retrievedSecretRecoveryPhrase) {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
-      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        await handleSocialLoginRehydration();
-        return;
-      }
-      navigate(nextRoute, { replace: true });
+    } catch (error) {
+      log.error('OnboardingFlow: failed to unlock wallet', error);
+      throw error;
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  /**
+   * Redirects after a successful unlock (`handleUnlock` is called).
+   * Previously, navigation was handled immediately after `handleUnlock` is called.
+   * This functions is explicitly provided to `Unlock` component to allow for custom logics (e.g. metrics) before the navigation.
+   */
+  const handleNavigationAfterUnlock = async () => {
+    try {
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        if (isSidePanelEnabled) {
+          await dispatch(setUseSidePanelAsDefault(true));
+          await dispatch(setCompletedOnboardingWithSidepanel());
+
+          // for sidepanel, we need to navigate to the next route (i.e. Home)
+          navigate(DEFAULT_ROUTE, { replace: true });
+        } else {
+          await dispatch(setCompletedOnboarding());
+          let redirectTo = DEFAULT_ROUTE;
+          const fromLocation = location.state?.from;
+          if (fromLocation?.pathname) {
+            redirectTo = fromLocation.pathname + (fromLocation.search || '');
+          }
+          navigate(redirectTo, { replace: true });
+        }
+      } else {
+        navigate(nextRoute, { replace: true });
+      }
+    } catch (error) {
+      log.error(
+        'OnboardingFlow: failed to complete navigation after unlock',
+        error,
+      );
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
   };
 
@@ -354,97 +380,104 @@ export default function OnboardingFlow() {
               : 'var(--color-background-muted)',
         }}
       >
-        <Suspense fallback={null}>
-          <Routes>
-            <Route
-              path={toRelativePath(ONBOARDING_ACCOUNT_EXIST)}
-              element={<AccountExist />}
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_ACCOUNT_NOT_FOUND)}
-              element={<AccountNotFound />}
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_CREATE_PASSWORD_ROUTE)}
-              element={
-                <CreatePassword
-                  createNewAccount={handleCreateNewAccount}
-                  importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
-                  secretRecoveryPhrase={secretRecoveryPhrase}
-                />
-              }
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
-              element={<SetupPasskey />}
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}
-              element={
-                <RevealRecoveryPhrase
-                  setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-                />
-              }
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_REVIEW_SRP_ROUTE)}
-              element={
-                <ReviewRecoveryPhrase
-                  secretRecoveryPhrase={secretRecoveryPhrase}
-                />
-              }
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_CONFIRM_SRP_ROUTE)}
-              element={
-                <ConfirmRecoveryPhrase
-                  secretRecoveryPhrase={secretRecoveryPhrase}
-                />
-              }
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_IMPORT_WITH_SRP_ROUTE)}
-              element={
-                <ImportSRP
-                  submitSecretRecoveryPhrase={setSecretRecoveryPhrase}
-                />
-              }
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
-              element={<Unlock onSubmit={handleUnlock} />}
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
-              element={<PrivacySettings />}
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_COMPLETION_ROUTE)}
-              element={<CreationSuccessful />}
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_WELCOME_ROUTE)}
-              element={<OnboardingWelcome />}
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_METAMETRICS)}
-              element={<MetaMetricsComponent />}
-            />
-            <Route
-              path={toRelativePath(ONBOARDING_DOWNLOAD_APP_ROUTE)}
-              element={<OnboardingDownloadApp />}
-            />
-            {isFlask() && (
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <Routes>
               <Route
-                path={toRelativePath(ONBOARDING_EXPERIMENTAL_AREA)}
+                path={toRelativePath(ONBOARDING_ACCOUNT_EXIST)}
+                element={<AccountExist />}
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_ACCOUNT_NOT_FOUND)}
+                element={<AccountNotFound />}
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_CREATE_PASSWORD_ROUTE)}
                 element={
-                  <ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />
+                  <CreatePassword
+                    createNewAccount={handleCreateNewAccount}
+                    importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
+                    secretRecoveryPhrase={secretRecoveryPhrase}
+                  />
                 }
               />
-            )}
-            <Route path="*" element={<OnboardingFlowSwitch />} />
-          </Routes>
-        </Suspense>
+              <Route
+                path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
+                element={<SetupPasskey />}
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}
+                element={
+                  <RevealRecoveryPhrase
+                    setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+                  />
+                }
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_REVIEW_SRP_ROUTE)}
+                element={
+                  <ReviewRecoveryPhrase
+                    secretRecoveryPhrase={secretRecoveryPhrase}
+                  />
+                }
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_CONFIRM_SRP_ROUTE)}
+                element={
+                  <ConfirmRecoveryPhrase
+                    secretRecoveryPhrase={secretRecoveryPhrase}
+                  />
+                }
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_IMPORT_WITH_SRP_ROUTE)}
+                element={
+                  <ImportSRP
+                    submitSecretRecoveryPhrase={setSecretRecoveryPhrase}
+                  />
+                }
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
+                element={
+                  <Unlock
+                    onSubmit={handleUnlock}
+                    navigateAfterUnlock={handleNavigationAfterUnlock}
+                  />
+                }
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+                element={<PrivacySettings />}
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_COMPLETION_ROUTE)}
+                element={<CreationSuccessful />}
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_WELCOME_ROUTE)}
+                element={<OnboardingWelcome />}
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_METAMETRICS)}
+                element={<MetaMetricsComponent />}
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_DOWNLOAD_APP_ROUTE)}
+                element={<OnboardingDownloadApp />}
+              />
+              {isFlask() && (
+                <Route
+                  path={toRelativePath(ONBOARDING_EXPERIMENTAL_AREA)}
+                  element={
+                    <ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />
+                  }
+                />
+              )}
+              <Route path="*" element={<OnboardingFlowSwitch />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </Box>
       {isLoading && <LoadingScreen />}
     </Box>

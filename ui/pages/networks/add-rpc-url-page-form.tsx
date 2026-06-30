@@ -13,9 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { BorderRadius } from '../../helpers/constants/design-system';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { isWebUrl } from '../../../app/scripts/lib/util';
+import { isWebUrl } from '../../../shared/lib/url-utils';
 
 type AddRpcUrlPageFormProps = {
   onCancel: () => void;

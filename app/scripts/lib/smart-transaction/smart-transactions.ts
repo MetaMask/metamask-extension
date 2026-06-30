@@ -1,8 +1,5 @@
 import {
-  ApprovalControllerAcceptRequestAction,
   ApprovalControllerAddRequestAction,
-  ApprovalControllerEndFlowAction,
-  ApprovalControllerStartFlowAction,
   ApprovalControllerUpdateRequestStateAction,
 } from '@metamask/approval-controller';
 import {
@@ -32,7 +29,6 @@ import {
 import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
 import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import {
-  getExtensionSkipTransactionStatusPage,
   getIsSmartTransaction,
   getSmartTransactionsFeatureFlagsForChain,
 } from '../../../../shared/lib/selectors';
@@ -41,16 +37,17 @@ import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
 import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionById } from '../transaction/util';
-import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
+import {
+  getClientForTransactionMetadata,
+  getClientVersionForTransactionMetadata,
+  sanitizeOrigin,
+} from './utils';
 
 const namespace = 'SmartTransactions';
 
 export type AllowedActions =
   | ApprovalControllerAddRequestAction
-  | ApprovalControllerUpdateRequestStateAction
-  | ApprovalControllerStartFlowAction
-  | ApprovalControllerAcceptRequestAction
-  | ApprovalControllerEndFlowAction;
+  | ApprovalControllerUpdateRequestStateAction;
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
 export type SmartTransactionHookMessenger = Messenger<
@@ -59,9 +56,7 @@ export type SmartTransactionHookMessenger = Messenger<
   AllowedEvents
 >;
 
-export type FeatureFlags = SmartTransactionsNetworkConfig & {
-  extensionSkipTransactionStatusPage?: boolean;
-};
+export type FeatureFlags = SmartTransactionsNetworkConfig;
 
 type SmartTransactionSubmitSignedTransactionsRequest = Parameters<
   SmartTransactionsController['submitSignedTransactions']
@@ -85,13 +80,7 @@ export type SubmitSmartTransactionRequest = {
 };
 
 class SmartTransactionHook {
-  // Static property to store the approval flow ID across instances
-  static #sharedApprovalFlowId = '';
-
   #approvalFlowEnded: boolean;
-
-  // UI flow identifier
-  #approvalFlowId: string;
 
   // Pending approval identifier
   #approvalRequestId: string;
@@ -118,11 +107,8 @@ class SmartTransactionHook {
 
   #txParams: TransactionParams;
 
-  // Approval flow and UI rendering
+  // Whether a headless status approval is created for this transaction
   #shouldShowStatusPage: boolean;
-
-  // UI rendering only
-  #shouldRenderStatusPage: boolean;
 
   #getSentinelMetadata(
     transactionMeta: TransactionMeta,
@@ -133,6 +119,7 @@ class SmartTransactionHook {
       // runtime, so bridge the duplicate package types at this boundary.
       txType: transactionMeta.type as SmartTransactionTxType,
       client: getClientForTransactionMetadata(),
+      clientVersion: getClientVersionForTransactionMetadata(),
       origin: sanitizeOrigin(transactionMeta.origin),
     };
   }
@@ -148,7 +135,6 @@ class SmartTransactionHook {
       featureFlags,
       transactions,
     } = request;
-    this.#approvalFlowId = '';
     this.#approvalRequestId = '';
     this.#approvalFlowEnded = false;
     this.#transactionMeta = transactionMeta as TransactionMeta;
@@ -172,10 +158,6 @@ class SmartTransactionHook {
     );
 
     this.#shouldShowStatusPage = legacyShowStatusPage;
-
-    this.#shouldRenderStatusPage =
-      this.#shouldShowStatusPage &&
-      !this.#featureFlags.extensionSkipTransactionStatusPage;
 
     log.info(
       '[SmartTransaction] shouldShowStatusPage:',
@@ -323,56 +305,11 @@ class SmartTransactionHook {
     }
   }
 
-  async #endApprovalFlow(flowId: string): Promise<void> {
-    try {
-      await this.#controllerMessenger.call('ApprovalController:endFlow', {
-        id: flowId,
-      });
-    } catch (error) {
-      // If the flow is already ended, we can ignore the error.
-    }
-  }
-
-  async #endExistingApprovalFlow(approvalFlowId: string): Promise<void> {
-    try {
-      // End the existing flow
-      await this.#endApprovalFlow(approvalFlowId);
-
-      // Accept the request to close the UI
-      await this.#controllerMessenger.call(
-        'ApprovalController:acceptRequest',
-        approvalFlowId,
-      );
-
-      SmartTransactionHook.#sharedApprovalFlowId = '';
-    } catch (error) {
-      log.error('Error ending existing approval flow', error);
-    }
-  }
-
-  async #startApprovalFlow() {
-    if (SmartTransactionHook.#sharedApprovalFlowId) {
-      await this.#endExistingApprovalFlow(
-        SmartTransactionHook.#sharedApprovalFlowId,
-      );
-    }
-
-    // Create a new approval flow
-    const { id: approvalFlowId } = await this.#controllerMessenger.call(
-      'ApprovalController:startFlow',
-    );
-
-    // Store the flow ID both in the instance and in the static property
-    this.#approvalFlowId = approvalFlowId;
-    SmartTransactionHook.#sharedApprovalFlowId = approvalFlowId;
-  }
-
+  // This approval is headless (no UI) and only feeds the
+  // `'redux'` smart-transaction toasts. Remove it once the `'redux'` toast path
+  // is gone (see `selectToastImplementation`)
   async #processApprovalIfNeeded(uuid: string) {
     if (this.#shouldShowStatusPage) {
-      if (this.#shouldRenderStatusPage) {
-        await this.#startApprovalFlow();
-      }
-
       this.#addApprovalRequest({
         uuid,
       });
@@ -387,26 +324,13 @@ class SmartTransactionHook {
       return;
     }
     this.#approvalFlowEnded = true;
-
-    if (!this.#shouldRenderStatusPage) {
-      return;
-    }
-
-    this.#endApprovalFlow(this.#approvalFlowId);
-
-    // Clear the shared approval flow ID when we end the flow
-    if (SmartTransactionHook.#sharedApprovalFlowId === this.#approvalFlowId) {
-      SmartTransactionHook.#sharedApprovalFlowId = '';
-    }
   }
 
   #addApprovalRequest({ uuid }: { uuid: string }) {
     const onApproveOrRejectWrapper = () => {
       this.#onApproveOrReject();
     };
-    this.#approvalRequestId = this.#shouldRenderStatusPage
-      ? this.#approvalFlowId
-      : uuid;
+    this.#approvalRequestId = uuid;
 
     this.#controllerMessenger
       .call(
@@ -426,7 +350,7 @@ class SmartTransactionHook {
             txId: this.#transactionMeta.id,
           },
         },
-        this.#shouldRenderStatusPage,
+        false,
       )
       .then(onApproveOrRejectWrapper, onApproveOrRejectWrapper);
   }
@@ -646,18 +570,12 @@ export function getSmartTransactionCommonParams(
     uiState,
     effectiveChainId,
   );
-  const extensionSkipTransactionStatusPage =
-    // @ts-expect-error Smart transaction selector types does not match controller state
-    getExtensionSkipTransactionStatusPage(uiState);
 
   const isHardwareWalletAccount = isHardwareWallet(uiState);
 
   return {
     isSmartTransaction,
-    featureFlags: {
-      ...featureFlags,
-      extensionSkipTransactionStatusPage,
-    },
+    featureFlags,
     isHardwareWalletAccount,
   };
 }

@@ -30,7 +30,7 @@ import {
 } from '../../component-library/avatar-base';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
-export const AvatarGroup: React.FC<AvatarGroupProps> = ({
+export const AvatarGroup = ({
   className = '',
   limit = 4,
   members = [],
@@ -39,7 +39,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   borderColor,
   isTagOverlay = false,
   variant = AvatarAccountVariant.Maskicon,
-}): JSX.Element => {
+}: AvatarGroupProps): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
   const showTag = membersCount > limit;

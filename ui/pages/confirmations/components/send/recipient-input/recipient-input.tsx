@@ -52,12 +52,12 @@ export const RecipientInput = ({
   const {
     recipientConfusableCharacters,
     recipientError,
-    recipientErrorAllowAcknowledge,
+    hasUnacknowledgedAlerts,
     recipientResolvedLookup,
     toAddressValidated,
   } = recipientValidationResult;
-  const isWarning = Boolean(recipientErrorAllowAcknowledge);
-  const isHardError = Boolean(recipientError) && !isWarning;
+  const isHardError = Boolean(recipientError);
+  const isWarning = !isHardError && Boolean(hasUnacknowledgedAlerts);
   const avatarSeedAddress =
     accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||
     recipientResolvedLookup ||
@@ -65,8 +65,8 @@ export const RecipientInput = ({
     '';
 
   const onToChange = useCallback(
-    (e) => {
-      if (e.nativeEvent.inputType === 'insertFromPaste') {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if ((e.nativeEvent as InputEvent).inputType === 'insertFromPaste') {
         setRecipientInputMethodPasted();
       } else {
         setRecipientInputMethodManual();

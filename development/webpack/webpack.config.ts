@@ -2,7 +2,7 @@
  * @file The main webpack configuration file for the browser extension.
  */
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
@@ -17,7 +17,6 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
@@ -25,7 +24,6 @@ import {
   getMinimizers,
   NODE_MODULES_RE,
   UI_COMPONENT_RE,
-  __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
   UI_DIR_RE,
@@ -39,6 +37,13 @@ import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
+import { injectEntryScripts } from './utils/dev-server';
+import {
+  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+  UI_RELOAD_CLIENT_ENTRY_NAME,
+} from './utils/dev-server/reload-protocol';
+import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
+import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -49,9 +54,10 @@ if (args.dryRun) {
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
+const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifestVersion;
-const browsersListPath = join(context, '../.browserslistrc');
+const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables, version, buildEnvVarDeclarations } =
@@ -81,9 +87,10 @@ const cache = args.cache
         // `buildDependencies`
         config: [
           __filename,
-          join(context, '../.metamaskprodrc'),
-          join(context, '../.metamaskrc'),
-          join(context, '../builds.yml'),
+          ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
+            existsSync,
+          ),
+          join(root, 'builds.yml'),
           browsersListPath,
         ],
       },
@@ -95,6 +102,11 @@ const cache = args.cache
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 
 const manifestPlugin = new ManifestPlugin({
+  html: [
+    { directory: join('html', 'ui'), category: 'ui' },
+    { directory: join('html', 'background'), category: 'background' },
+    { directory: join('html', 'other'), category: 'other' },
+  ],
   web_accessible_resources: webAccessibleResources,
   manifest_version: MANIFEST_VERSION,
   description: commitHash
@@ -113,7 +125,7 @@ const manifestPlugin = new ManifestPlugin({
     ? {
         zipOptions: {
           outFilePath: `../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
-          mtime: getLatestCommit().timestamp(),
+          mtime: getDefaultZipMtime(),
           excludeExtensions: ['.map'],
           // `level: 9` is the highest; it may increase build time by ~5% over level 1
           level: 9,
@@ -125,6 +137,12 @@ const manifestPlugin = new ManifestPlugin({
   // know if the build contents have changed. Can be useful during testing or
   // development.
   setBuildId: args.test,
+  stats: args.stats
+    ? {
+        outFile: BUNDLE_SIZE_SUMMARY_FILE,
+        debug: true,
+      }
+    : false,
 });
 
 const plugins: WebpackPluginInstance[] = [
@@ -135,6 +153,34 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
+    // In watch mode, inject dev-only ui and background reload clients into the relevant HTML pages.
+    beforeEmit: (content, entry, compilation) => {
+      if (!args.watch) {
+        return content;
+      }
+      // UI pages (identified by the `#app-content` React mount point, present
+      // via `partial-body.html` on every page that renders the React UI and no
+      // other extension page) get the UI reload client
+      if (content.includes('id="app-content"')) {
+        return injectEntryScripts(
+          content,
+          compilation,
+          UI_RELOAD_CLIENT_ENTRY_NAME,
+        );
+      }
+      // The MV2 (Firefox) background page gets the background reload client,
+      // which triggers `chrome.runtime.reload()` only when a background or
+      // content-script bundle changes. (On MV3 the client is bundled into the
+      // service worker instead, since it loads a single JS file.)
+      if (MANIFEST_VERSION === 2 && entry.name === 'background') {
+        return injectEntryScripts(
+          content,
+          compilation,
+          BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+        );
+      }
+      return content;
+    },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
@@ -220,11 +266,6 @@ if (args.lavamoat) {
   } = require('./utils/plugins/LavamoatPlugin');
   plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
 }
-// enable React Refresh in 'development' mode when `watch` is enabled
-if (__HMR_READY__ && isDevelopment && args.watch) {
-  const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
-  plugins.push(new ReactRefreshWebpackPlugin());
-}
 if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
@@ -245,7 +286,7 @@ if (args.bundleAnalyzer) {
 
 // #endregion plugins
 
-const swcConfig = { args, browsersListQuery, isDevelopment };
+const swcConfig = { browsersListQuery, isDevelopment };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
@@ -271,7 +312,7 @@ const config = {
   plugins,
   context,
   mode: args.mode,
-  stats: args.stats ? 'normal' : 'none',
+  stats: 'none',
   name: `MetaMask – ${args.mode}`,
   // use the `.browserlistrc` file directly to avoid browserslist searching
   target: `browserslist:${browsersListPath}:defaults`,

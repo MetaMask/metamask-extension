@@ -7,12 +7,6 @@
     "message": "Загрузка занимает больше времени, чем обычно.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Ошибка"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Несоответствующие данные транзакции. Проверьте ее реквизиты."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Больше нет счетов. Если вы хотите получить доступ к другому счету, не указанному ниже, повторно подключите аппаратный кошелек и выберите его."
   },
@@ -70,6 +64,18 @@
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
   },
+  "accessRestrictedContactSupport": {
+    "message": "Связаться с поддержкой"
+  },
+  "accessRestrictedDescriptionLine1": {
+    "message": "Этот адрес кошелька был отмечен во время проверки на соответствие требованиям. В результате некоторые сервисы MetaMask недоступны."
+  },
+  "accessRestrictedDescriptionLine2": {
+    "message": "Если вы считаете, что это ошибка, обратитесь в службу поддержки для запроса проверки."
+  },
+  "accessRestrictedTitle": {
+    "message": "Доступ ограничен"
+  },
   "accessingYourCamera": {
     "message": "Доступ к камере..."
   },
@@ -88,6 +94,9 @@
   "accountAlreadyExistsLoginDescription": {
     "message": "Кошелек, использующий «$1», уже существует. Хотите попробовать войти в него вместо этого?",
     "description": "$1 is the account email"
+  },
+  "accountAlreadyExistsLoginDescriptionTelegram": {
+    "message": "Кошелек уже привязан к этому аккаунту Telegram. Хотите разблокировать этот кошелек?"
   },
   "accountAlreadyExistsTitle": {
     "message": "Кошелек уже существует"
@@ -123,6 +132,10 @@
   "accountNotFoundDescription": {
     "message": "Мы не смогли найти кошелек для «$1». Хотите создать новый с этим логином?",
     "description": "$1 is the account email"
+  },
+  "accountNotFoundDescriptionTelegram": {
+    "message": "Нам не удалось найти кошелек, привязанный к этому аккаунту $1. Вы хотите создать новый с этим логином?",
+    "description": "$1 is the social login provider"
   },
   "accountNotFoundTitle": {
     "message": "Кошелек не найден"
@@ -163,23 +176,68 @@
   "activity": {
     "message": "Деятельность"
   },
+  "activityEmptyDescription": {
+    "message": "Обменяйте свой первый токен сегодня."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "Пополните свой кошелек, чтобы начать."
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_failed_title": {
+    "message": "Ошибка одобрения"
   },
   "activity_approveSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_approveSpendingCap_pending_title": {
+    "message": "Одобрение лимита расходов"
+  },
   "activity_approveSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_title": {
+    "message": "Лимит расходов одобрен"
   },
   "activity_bridge_failed_description": {
     "message": "Сбой моста"
   },
   "activity_bridge_failed_title": {
     "message": "Сбой моста"
+  },
+  "activity_bridge_pending_description": {
+    "message": "Перевод $1 через мост",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_pending_title": {
+    "message": "Перевод $1 через мост",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_description": {
+    "message": "Переведено $1 через мост",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_title": {
+    "message": "Переведено $1 через мост",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_failed_description": {
+    "message": "Ошибка покупки"
+  },
+  "activity_buy_failed_title": {
+    "message": "Ошибка покупки"
+  },
+  "activity_buy_pending_description": {
+    "message": "Покупка $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_pending_title": {
+    "message": "Покупка $1",
+    "description": "$1 is the token symbol"
   },
   "activity_buy_success_description": {
     "message": "Куплено $1",
@@ -189,14 +247,119 @@
     "message": "Куплено $1",
     "description": "$1 is the token symbol"
   },
+  "activity_claimMusdBonus_failed_title": {
+    "message": "Ошибка получения"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "Получение бонуса mUSD"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "Бонус mUSD получен"
+  },
+  "activity_claim_failed_description": {
+    "message": "Ошибка получения"
+  },
+  "activity_claim_failed_title": {
+    "message": "Ошибка получения"
+  },
+  "activity_claim_pending_description": {
+    "message": "Получение $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "Получение $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "Получено $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "Получено $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractDeployment_failed_description": {
+    "message": "Ошибка развертывания"
+  },
+  "activity_contractDeployment_failed_title": {
+    "message": "Ошибка развертывания"
+  },
+  "activity_contractDeployment_pending_description": {
+    "message": "Развертывание контракта"
+  },
+  "activity_contractDeployment_pending_title": {
+    "message": "Развертывание контракта"
+  },
+  "activity_contractDeployment_success_description": {
+    "message": "Контракт развернут"
+  },
+  "activity_contractDeployment_success_title": {
+    "message": "Контракт развернут"
+  },
+  "activity_contractInteraction_failed_description": {
+    "message": "С $1",
+    "description": "$1 is the shortened contract address"
+  },
+  "activity_contractInteraction_failed_title": {
+    "message": "Ошибка взаимодействия"
+  },
+  "activity_contractInteraction_pending_description": {
+    "message": "С $1",
+    "description": "$1 is the shortened contract address"
+  },
+  "activity_contractInteraction_pending_title": {
+    "message": "Взаимодействие выполняется"
+  },
+  "activity_contractInteraction_success_description": {
+    "message": "С $1",
+    "description": "$1 is the shortened contract address"
+  },
   "activity_contractInteraction_success_title": {
-    "message": "Взаимодействие со смарт-контрактом"
+    "message": "Взаимодействие по контракту"
+  },
+  "activity_convert_failed_description": {
+    "message": "Ошибка конвертации"
+  },
+  "activity_convert_failed_title": {
+    "message": "Ошибка конвертации"
+  },
+  "activity_convert_pending_description": {
+    "message": "Конвертация в $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_pending_title": {
+    "message": "Конвертация в $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_description": {
+    "message": "Сконвертировано в $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_title": {
+    "message": "Обменян $1",
+    "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
     "message": "Ошибка депозита"
   },
   "activity_deposit_failed_title": {
     "message": "Ошибка депозита"
+  },
+  "activity_deposit_pending_description": {
+    "message": "Внесение $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_pending_title": {
+    "message": "Внесение $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_description": {
+    "message": "Внесено $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_title": {
+    "message": "Внесено $1",
+    "description": "$1 is the token symbol"
   },
   "activity_fallback_description": {
     "message": "Транзакция"
@@ -208,16 +371,31 @@
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_failed_title": {
+    "message": "Ошибка увеличения"
+  },
   "activity_increaseSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_title": {
+    "message": "Увеличение лимита трат"
   },
   "activity_increaseSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_success_title": {
+    "message": "Лимит трат увеличен"
+  },
   "activity_lendingDeposit_failed_title": {
     "message": "Ошибка депозита"
+  },
+  "activity_lendingDeposit_pending_title": {
+    "message": "Кредитный депозит"
+  },
+  "activity_lendingDeposit_success_title": {
+    "message": "Кредитный депозит"
   },
   "activity_lendingWithdrawal_failed_description": {
     "message": "Ошибка вывода средств"
@@ -225,15 +403,230 @@
   "activity_lendingWithdrawal_failed_title": {
     "message": "Ошибка вывода средств"
   },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "Кредитование вывода средств"
+  "activity_lendingWithdrawal_pending_description": {
+    "message": "Вывод $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingWithdrawal_pending_title": {
+    "message": "Вывод $1",
+    "description": "$1 is the token symbol"
   },
   "activity_lendingWithdrawal_success_title": {
-    "message": "Кредитование вывода средств"
+    "message": "Вывод кредита"
+  },
+  "activity_marketCloseShort_failed_description": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_marketCloseShort_failed_title": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_marketCloseShort_pending_description": {
+    "message": "Закрытие короткой позиции — закрытие рынка"
+  },
+  "activity_marketCloseShort_pending_title": {
+    "message": "Закрытие короткой позиции — закрытие рынка"
+  },
+  "activity_marketCloseShort_success_description": {
+    "message": "Короткая позиция закрыта — закрытие рынка"
+  },
+  "activity_marketCloseShort_success_title": {
+    "message": "Короткая позиция закрыта — закрытие рынка"
+  },
+  "activity_marketShort_failed_description": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_marketShort_failed_title": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_marketShort_pending_description": {
+    "message": "Закрытие короткой позиции — рынок"
+  },
+  "activity_marketShort_pending_title": {
+    "message": "Закрытие короткой позиции — рынок"
+  },
+  "activity_marketShort_success_description": {
+    "message": "Короткая позиция закрыта — рынок"
+  },
+  "activity_marketShort_success_title": {
+    "message": "Короткая позиция закрыта — рынок"
+  },
+  "activity_nftBuy_failed_title": {
+    "message": "Ошибка покупки"
+  },
+  "activity_nftBuy_pending_title": {
+    "message": "Покупка $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftBuy_success_title": {
+    "message": "Куплено $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftMint_failed_title": {
+    "message": "Ошибка минтинга"
+  },
+  "activity_nftMint_pending_title": {
+    "message": "Минтинг $1",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_success_title": {
     "message": "Сминчено $1",
     "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsAddFunds_failed_description": {
+    "message": "Ошибка пополнения"
+  },
+  "activity_perpsAddFunds_failed_title": {
+    "message": "Ошибка пополнения"
+  },
+  "activity_perpsAddFunds_pending_description": {
+    "message": "Выполняется пополнение"
+  },
+  "activity_perpsAddFunds_pending_title": {
+    "message": "Выполняется пополнение"
+  },
+  "activity_perpsAddFunds_success_description": {
+    "message": "Счет пополнен"
+  },
+  "activity_perpsAddFunds_success_title": {
+    "message": "Счет пополнен"
+  },
+  "activity_perpsCloseLongLiquidated_failed_description": {
+    "message": "Закрытие длинной позиции — ошибка ликвидации"
+  },
+  "activity_perpsCloseLongLiquidated_failed_title": {
+    "message": "Закрытие длинной позиции — ошибка ликвидации"
+  },
+  "activity_perpsCloseLongLiquidated_pending_description": {
+    "message": "Закрытие длинной позиции — ликвидирована"
+  },
+  "activity_perpsCloseLongLiquidated_pending_title": {
+    "message": "Закрытие длинной позиции — ликвидирована"
+  },
+  "activity_perpsCloseLongLiquidated_success_description": {
+    "message": "Длинная позиция закрыта — ликвидирована"
+  },
+  "activity_perpsCloseLongLiquidated_success_title": {
+    "message": "Длинная позиция закрыта — ликвидирована"
+  },
+  "activity_perpsCloseLongStopLoss_failed_description": {
+    "message": "Закрытие длинной позиции — ошибка стоп-лосса"
+  },
+  "activity_perpsCloseLongStopLoss_failed_title": {
+    "message": "Закрытие длинной позиции — ошибка стоп-лосса"
+  },
+  "activity_perpsCloseLongStopLoss_pending_description": {
+    "message": "Закрытие длинной позиции — стоп-лосс"
+  },
+  "activity_perpsCloseLongStopLoss_pending_title": {
+    "message": "Закрытие длинной позиции — стоп-лосс"
+  },
+  "activity_perpsCloseLongStopLoss_success_description": {
+    "message": "Длинная позиция закрыта — стоп-лосс"
+  },
+  "activity_perpsCloseLongStopLoss_success_title": {
+    "message": "Длинная позиция закрыта — стоп-лосс"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_description": {
+    "message": "Ошибка закрытия длинной позиции"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_title": {
+    "message": "Ошибка закрытия длинной позиции"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_description": {
+    "message": "Закрытие длинной позиции — тейк-профит"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_title": {
+    "message": "Закрытие длинной позиции — тейк-профит"
+  },
+  "activity_perpsCloseLongTakeProfit_success_description": {
+    "message": "Длинная позиция закрыта — тейк-профит"
+  },
+  "activity_perpsCloseLongTakeProfit_success_title": {
+    "message": "Длинная позиция закрыта — тейк-профит"
+  },
+  "activity_perpsCloseLong_failed_description": {
+    "message": "Ошибка закрытия длинной позиции"
+  },
+  "activity_perpsCloseLong_failed_title": {
+    "message": "Ошибка закрытия длинной позиции"
+  },
+  "activity_perpsCloseLong_pending_description": {
+    "message": "Закрытие длинной позиции"
+  },
+  "activity_perpsCloseLong_pending_title": {
+    "message": "Закрытие длинной позиции"
+  },
+  "activity_perpsCloseLong_success_description": {
+    "message": "Длинная позиция закрыта"
+  },
+  "activity_perpsCloseLong_success_title": {
+    "message": "Длинная позиция закрыта"
+  },
+  "activity_perpsCloseShortLiquidated_failed_description": {
+    "message": "Закрытие короткой позиции — ошибка ликвидации"
+  },
+  "activity_perpsCloseShortLiquidated_failed_title": {
+    "message": "Закрытие короткой позиции — ошибка ликвидации"
+  },
+  "activity_perpsCloseShortLiquidated_pending_description": {
+    "message": "Закрытие короткой позиции — ликвидирована"
+  },
+  "activity_perpsCloseShortLiquidated_pending_title": {
+    "message": "Закрытие короткой позиции — ликвидирована"
+  },
+  "activity_perpsCloseShortLiquidated_success_description": {
+    "message": "Короткая позиция закрыта — ликвидирована"
+  },
+  "activity_perpsCloseShortLiquidated_success_title": {
+    "message": "Короткая позиция закрыта — ликвидирована"
+  },
+  "activity_perpsCloseShortStopLoss_failed_description": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_perpsCloseShortStopLoss_failed_title": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_perpsCloseShortStopLoss_pending_description": {
+    "message": "Закрытие короткой позиции — стоп-лосс"
+  },
+  "activity_perpsCloseShortStopLoss_pending_title": {
+    "message": "Закрытие короткой позиции — стоп-лосс"
+  },
+  "activity_perpsCloseShortStopLoss_success_description": {
+    "message": "Короткая позиция закрыта — стоп-лосс"
+  },
+  "activity_perpsCloseShortStopLoss_success_title": {
+    "message": "Короткая позиция закрыта — стоп-лосс"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_description": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_title": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_description": {
+    "message": "Закрытие короткой позиции — тейк-профит"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_title": {
+    "message": "Закрытие короткой позиции — тейк-профит"
+  },
+  "activity_perpsCloseShortTakeProfit_success_description": {
+    "message": "Короткая позиция закрыта — тейк-профит"
+  },
+  "activity_perpsCloseShortTakeProfit_success_title": {
+    "message": "Короткая позиция закрыта — тейк-профит"
+  },
+  "activity_perpsCloseShort_failed_description": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_perpsCloseShort_failed_title": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_perpsCloseShort_pending_description": {
+    "message": "Закрытие короткой позиции"
+  },
+  "activity_perpsCloseShort_pending_title": {
+    "message": "Закрытие короткой позиции"
   },
   "activity_perpsCloseShort_success_description": {
     "message": "Закрыта короткая позиция"
@@ -241,16 +634,100 @@
   "activity_perpsCloseShort_success_title": {
     "message": "Закрыта короткая позиция"
   },
+  "activity_perpsOpenLong_failed_description": {
+    "message": "Ошибка открытия длинной позиции"
+  },
+  "activity_perpsOpenLong_failed_title": {
+    "message": "Ошибка открытия длинной позиции"
+  },
+  "activity_perpsOpenLong_pending_description": {
+    "message": "Открытие длинной позиции"
+  },
+  "activity_perpsOpenLong_pending_title": {
+    "message": "Открытие длинной позиции"
+  },
   "activity_perpsOpenLong_success_description": {
     "message": "Открыта длинная позиция"
   },
   "activity_perpsOpenLong_success_title": {
     "message": "Открыта длинная позиция"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsOpenShort_failed_description": {
+    "message": "Ошибка открытия короткой позиции"
+  },
+  "activity_perpsOpenShort_failed_title": {
+    "message": "Ошибка открытия короткой позиции"
+  },
+  "activity_perpsOpenShort_pending_description": {
+    "message": "Открытие короткой позиции"
+  },
+  "activity_perpsOpenShort_pending_title": {
+    "message": "Открытие короткой позиции"
+  },
+  "activity_perpsOpenShort_success_description": {
+    "message": "Короткая позиция открыта"
+  },
+  "activity_perpsOpenShort_success_title": {
+    "message": "Короткая позиция открыта"
+  },
+  "activity_perpsPaidFundingFees_failed_description": {
+    "message": "Ошибка выплаты финансирования"
+  },
+  "activity_perpsPaidFundingFees_failed_title": {
+    "message": "Ошибка выплаты финансирования"
+  },
+  "activity_perpsPaidFundingFees_pending_description": {
+    "message": "Выплата комиссии за финансирование"
+  },
+  "activity_perpsPaidFundingFees_pending_title": {
+    "message": "Выплата комиссии за финансирование"
+  },
+  "activity_perpsPaidFundingFees_success_description": {
+    "message": "Комиссия за финансирование выплачена"
+  },
+  "activity_perpsPaidFundingFees_success_title": {
+    "message": "Комиссия за финансирование выплачена"
+  },
+  "activity_perpsReceivedFundingFees_failed_description": {
+    "message": "Не удалось получить комиссию"
+  },
+  "activity_perpsReceivedFundingFees_failed_title": {
+    "message": "Не удалось получить комиссию"
+  },
+  "activity_perpsReceivedFundingFees_pending_description": {
+    "message": "Получение комиссии за финансирование"
+  },
+  "activity_perpsReceivedFundingFees_pending_title": {
+    "message": "Получение комиссии за финансирование"
+  },
+  "activity_perpsReceivedFundingFees_success_description": {
+    "message": "Комиссия за финансирование получена"
+  },
+  "activity_perpsReceivedFundingFees_success_title": {
+    "message": "Комиссия за финансирование получена"
+  },
+  "activity_perpsWithdraw_failed_description": {
     "message": "Ошибка вывода средств"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
+    "message": "Ошибка вывода средств"
+  },
+  "activity_perpsWithdraw_pending_description": {
+    "message": "Вывод средств"
+  },
+  "activity_perpsWithdraw_pending_title": {
+    "message": "Вывод средств"
+  },
+  "activity_perpsWithdraw_success_description": {
+    "message": "Вывод средств бессрочных контрактов"
+  },
+  "activity_perpsWithdraw_success_title": {
+    "message": "Вывод средств бессрочных контрактов"
+  },
+  "activity_predictionCashedOut_failed_description": {
+    "message": "Ошибка вывода средств"
+  },
+  "activity_predictionCashedOut_failed_title": {
     "message": "Ошибка вывода средств"
   },
   "activity_predictionCashedOut_pending_description": {
@@ -265,11 +742,59 @@
   "activity_predictionCashedOut_success_title": {
     "message": "Деньги выведены"
   },
+  "activity_predictionClaimWinnings_failed_description": {
+    "message": "Ошибка получения выигрыша"
+  },
+  "activity_predictionClaimWinnings_failed_title": {
+    "message": "Ошибка получения выигрыша"
+  },
+  "activity_predictionClaimWinnings_pending_description": {
+    "message": "Получение выигрыша"
+  },
+  "activity_predictionClaimWinnings_pending_title": {
+    "message": "Получение выигрыша"
+  },
+  "activity_predictionClaimWinnings_success_description": {
+    "message": "Выигрыш получен"
+  },
+  "activity_predictionClaimWinnings_success_title": {
+    "message": "Выигрыш получен"
+  },
+  "activity_predictionPlaced_failed_description": {
+    "message": "Ошибка прогноза"
+  },
+  "activity_predictionPlaced_failed_title": {
+    "message": "Ошибка прогноза"
+  },
+  "activity_predictionPlaced_pending_description": {
+    "message": "Размещение прогноза"
+  },
+  "activity_predictionPlaced_pending_title": {
+    "message": "Размещение прогноза"
+  },
   "activity_predictionPlaced_success_description": {
     "message": "Прогноз сделан"
   },
   "activity_predictionPlaced_success_title": {
     "message": "Прогноз сделан"
+  },
+  "activity_predictionsAddFunds_failed_description": {
+    "message": "Ошибка пополнения"
+  },
+  "activity_predictionsAddFunds_failed_title": {
+    "message": "Ошибка пополнения"
+  },
+  "activity_predictionsAddFunds_pending_description": {
+    "message": "Выполняется пополнение"
+  },
+  "activity_predictionsAddFunds_pending_title": {
+    "message": "Выполняется пополнение"
+  },
+  "activity_predictionsAddFunds_success_description": {
+    "message": "Счет пополнен"
+  },
+  "activity_predictionsAddFunds_success_title": {
+    "message": "Счет пополнен"
   },
   "activity_predictionsWithdrawFunds_failed_description": {
     "message": "Ошибка вывода средств"
@@ -283,33 +808,84 @@
   "activity_predictionsWithdrawFunds_pending_title": {
     "message": "Выполняется вывод"
   },
+  "activity_predictionsWithdrawFunds_success_description": {
+    "message": "Вывод средств прогнозов"
+  },
+  "activity_predictionsWithdrawFunds_success_title": {
+    "message": "Вывод средств прогнозов"
+  },
   "activity_receive_failed_description": {
     "message": "От: $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_failed_title": {
+    "message": "Ошибка получения"
   },
   "activity_receive_pending_description": {
     "message": "От: $1",
     "description": "$1 is the shortened sender address"
   },
+  "activity_receive_pending_title": {
+    "message": "Получение $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_success_description": {
     "message": "От: $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_title": {
+    "message": "Получено $1",
+    "description": "$1 is the token symbol"
   },
   "activity_revokeSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_failed_title": {
+    "message": "Ошибка отзыва"
+  },
   "activity_revokeSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_title": {
+    "message": "Отзыв лимита трат"
   },
   "activity_revokeSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_success_title": {
+    "message": "Лимит трат отозван"
+  },
+  "activity_sell_failed_description": {
+    "message": "Ошибка продажи"
+  },
+  "activity_sell_failed_title": {
+    "message": "Ошибка продажи"
+  },
+  "activity_sell_pending_description": {
+    "message": "Продажа $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_pending_title": {
+    "message": "Продажа $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_description": {
+    "message": "Продано $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_title": {
+    "message": "Продано $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_send_failed_description": {
     "message": "Адресат: $1",
     "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_failed_title": {
+    "message": "Ошибка отправки"
   },
   "activity_send_pending_description": {
     "message": "Адресат: $1",
@@ -327,11 +903,107 @@
     "message": "Отправлено $1",
     "description": "$1 is the token symbol"
   },
+  "activity_smartAccountUpgrade_failed_description": {
+    "message": "Ошибка обновления"
+  },
+  "activity_smartAccountUpgrade_failed_title": {
+    "message": "Ошибка обновления"
+  },
+  "activity_smartAccountUpgrade_pending_description": {
+    "message": "Обновление смарт-счета"
+  },
+  "activity_smartAccountUpgrade_pending_title": {
+    "message": "Обновление смарт-счета"
+  },
+  "activity_smartAccountUpgrade_success_description": {
+    "message": "Смарт-счет обновлен"
+  },
+  "activity_smartAccountUpgrade_success_title": {
+    "message": "Смарт-счет обновлен"
+  },
+  "activity_stopMarketCloseShort_failed_description": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_stopMarketCloseShort_failed_title": {
+    "message": "Ошибка закрытия короткой позиции"
+  },
+  "activity_stopMarketCloseShort_pending_description": {
+    "message": "Закрытие короткой позиции — стоп-маркет"
+  },
+  "activity_stopMarketCloseShort_pending_title": {
+    "message": "Закрытие короткой позиции — стоп-маркет"
+  },
+  "activity_stopMarketCloseShort_success_description": {
+    "message": "Короткая позиция закрыта — стоп-маркет"
+  },
+  "activity_stopMarketCloseShort_success_title": {
+    "message": "Короткая позиция закрыта — стоп-маркет"
+  },
   "activity_swapIncomplete_failed_title": {
     "message": "Своп не удался"
   },
+  "activity_swapIncomplete_pending_title": {
+    "message": "Своп $1",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swapIncomplete_success_title": {
+    "message": "Выполнен своп $1",
+    "description": "$1 is the source token symbol"
+  },
   "activity_swap_failed_title": {
     "message": "Своп не удался"
+  },
+  "activity_swap_pending_title": {
+    "message": "Своп $1 на $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_swap_success_title": {
+    "message": "Выполнен своп $1 на $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_unwrap_failed_description": {
+    "message": "Ошибка развертывания"
+  },
+  "activity_unwrap_failed_title": {
+    "message": "Ошибка развертывания"
+  },
+  "activity_unwrap_pending_description": {
+    "message": "Развертывание $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_pending_title": {
+    "message": "Развертывание $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_description": {
+    "message": "Развернут $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_title": {
+    "message": "Развернут $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_failed_description": {
+    "message": "Ошибка обертывания"
+  },
+  "activity_wrap_failed_title": {
+    "message": "Ошибка обертывания"
+  },
+  "activity_wrap_pending_description": {
+    "message": "Обертывание $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_pending_title": {
+    "message": "Обертывание $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_description": {
+    "message": "Обернут $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_title": {
+    "message": "Обернут $1",
+    "description": "$1 is the token symbol"
   },
   "add": {
     "message": "Добавить"
@@ -493,6 +1165,15 @@
   "addressMismatchPunycode": {
     "message": "Версия пьюникода: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressPoisoningBadge": {
+    "message": "Подменен"
+  },
+  "addressPoisoningMessage": {
+    "message": "Этот адрес очень похож на тот, который вы использовали ранее. Возможно, он был создан для того, чтобы обманом заставить вас отправить средства не тому получателю."
+  },
+  "addressPoisoningTitle": {
+    "message": "Обнаружена подмена адреса"
   },
   "addressQrCodeModalDescription": {
     "message": "Используйте этот адрес для получения токенов и предметов коллекционирования на $1",
@@ -848,21 +1529,9 @@
   "assetsDescription": {
     "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
   },
-  "asterdexReferralConfirmText": {
-    "message": "Да, получить 4% возврата",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "Получайте 4% кэшбэка от сделок с реферальным кодом MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "Получайте возврат 4% со сделок по реферальному коду MetaMask. Эта скидка применяется ко всем будущим сделкам согласно $1 AsterDEX.\nMetaMask взимает комиссию.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "Получите возврат 4% на AsterDEX",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Бесплатная попытка отменить своп"
@@ -914,9 +1583,6 @@
   },
   "back": {
     "message": "Назад"
-  },
-  "backToHome": {
-    "message": "Назад на главную"
   },
   "backUpIncomplete": {
     "message": "Резервное копирование не завершено"
@@ -1055,6 +1721,54 @@
   "basicFunctionalityRequired_toggleLabel": {
     "message": "Базовый функционал"
   },
+  "batchSell": {
+    "message": "Пакетная продажа"
+  },
+  "batchSellContinueNAssetsCTAPlural": {
+    "message": "Продолжить с ($1) токенами"
+  },
+  "batchSellContinueNAssetsCTASingle": {
+    "message": "Продолжить с ($1) токеном"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "Нет токенов. Нет проблем. Ищите и покупайте токены для пакетной продажи."
+  },
+  "batchSellGetNewQuotes": {
+    "message": "Получить новые котировки"
+  },
+  "batchSellHighRateAlert": {
+    "message": "Предупреждение о высоком курсе"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "Пакетная продажа одного токена может привести к более высокому курсу. Хотите вместо этого выполнить своп?"
+  },
+  "batchSellMaxSelectedTokens": {
+    "message": "Разрешено не более $1 токенов"
+  },
+  "batchSellMinimumReceiveExplanation": {
+    "message": "Минимальная сумма, которую вы получите, если цена изменится во время обработки вашей транзакции, рассчитывается исходя из вашей допустимой задержки. Это оценка, предоставленная нашими поставщиками ликвидности. Окончательные суммы могут отличаться."
+  },
+  "batchSellNetworkFeeTooltip": {
+    "message": "Комиссии сети зависят от загруженности сети и сложности транзакции."
+  },
+  "batchSellReceiveStablecoin": {
+    "message": "Выберите стейблкоин"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "Все токены должны быть в одной сети."
+  },
+  "batchSellSelectHeaderTitle": {
+    "message": "Выберите до 5 токенов"
+  },
+  "batchSellSlippageDescription": {
+    "message": "Ваша транзакция не будет завершена, если изменение цены превысит допустимый процент проскальзывания."
+  },
+  "batchSellYouSellTokenCount": {
+    "message": "$1 токен"
+  },
+  "batchSellYouSellTokenCountPlural": {
+    "message": "$1 токенов"
+  },
   "bestQuote": {
     "message": "Лучшая котировка"
   },
@@ -1155,6 +1869,9 @@
   "bridge": {
     "message": "Мост"
   },
+  "bridgeAgain": {
+    "message": "Повторить мост"
+  },
   "bridgeAllowSwappingOf": {
     "message": "Разрешить точный доступ к $1, $2 и $3 для создания моста",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -1175,15 +1892,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Вам нужно будет подтвердить 2 транзакции в Вашем аппаратном кошельке:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Создать счет Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Для выполнения свопа в сеть Solana понадобится счет и принимающий адрес."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Сначала вам понадобится счет Solana."
-  },
   "bridgeDetailsTitle": {
     "message": "Сведения о мосте",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1193,6 +1901,9 @@
   },
   "bridgeExplorerLinkViewOn": {
     "message": "Смотреть на $1"
+  },
+  "bridgeExplorerPopupDescription": {
+    "message": "Эта транзакция существует в двух сетях. Одна ссылка показывает источник, а другая — пункт назначения после подтверждения транзакции."
   },
   "bridgeFee": {
     "message": "Комиссия моста"
@@ -1459,9 +2170,6 @@
   "bridgeSendLoading": {
     "message": "Отправка из исходного блокчейна"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Создан счет Solana"
-  },
   "bridgeStatusComplete": {
     "message": "Завершено",
     "description": "Status text indicating a bridge transaction has successfully completed."
@@ -1711,9 +2419,6 @@
     "message": "Закрыть $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Вы можете закрыть это окно в любое время."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -1727,6 +2432,9 @@
   "communityContributedLanguagesSectionTitle": {
     "message": "Взнос, внесенный сообществом",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
+  },
+  "compareAddresses": {
+    "message": "Сравнить адреса"
   },
   "completed": {
     "message": "Завершено"
@@ -1920,6 +2628,9 @@
   },
   "confirmTitleDescSign": {
     "message": "Прежде чем подтвердить запрос, просмотрите детали запроса."
+  },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "Этот сайт запрашивает разрешение на отзыв одобрений ваших токенов."
   },
   "confirmTitlePermission": {
     "message": "Запрос разрешения"
@@ -2332,6 +3043,9 @@
   "dateCreated": {
     "message": "Дата создания"
   },
+  "day": {
+    "message": "День"
+  },
   "debitCreditPurchaseOptions": {
     "message": "Варианты покупки с помощью дебетовой или кредитной карты"
   },
@@ -2363,6 +3077,12 @@
   },
   "decryptRequest": {
     "message": "Расшифровать запрос"
+  },
+  "deepLinkQrPredictDescription": {
+    "message": "Чтобы получить доступ к Рынкам прогнозов MetaMask, отсканируйте QR-код своим мобильным устройством."
+  },
+  "deepLinkQrPredictTitle": {
+    "message": "Открыть Рынок прогнозов на мобильном"
   },
   "deepLink_Caution": {
     "message": "Действуйте с осторожностью"
@@ -2458,6 +3178,9 @@
   "default": {
     "message": "По умолчанию"
   },
+  "defaultNetworks": {
+    "message": "Сети по умолчанию"
+  },
   "defaultRpcUrl": {
     "message": "URL-адрес RPC по умолчанию"
   },
@@ -2473,17 +3196,12 @@
   "defiEmptyDescription": {
     "message": "Давайте в долг, занимайте и торгуйте прямо в своем кошельке."
   },
+  "defiIcon": {
+    "message": "Значок DeFi"
+  },
   "defiReferralCheckboxLabel": {
     "message": "Разрешите MetaMask добавлять реферальный код. Это действие нельзя отменить. Сайт предлагает скидки в соответствии со своими условиями. MetaMask получает комиссию.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
-  "defiReferralNoThanks": {
-    "message": "Нет, спасибо",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "условиями",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -2815,9 +3533,6 @@
   "enabled": {
     "message": "Включено"
   },
-  "enabledNetworks": {
-    "message": "Включенные сети"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 запрашивает ваш открытый ключ шифрования. После получения вашего согласия на это данный сайт сможет создавать зашифрованные сообщения для отправки в ваш адрес.",
     "description": "$1 is the web3 site name"
@@ -2891,6 +3606,9 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "Введите пароль MetaMask"
+  },
+  "enteredMalicious": {
+    "message": "Введенный вами адрес"
   },
   "errorCode": {
     "message": "Код: $1",
@@ -3008,6 +3726,9 @@
   },
   "exploreDefi": {
     "message": "Изучить DeFi"
+  },
+  "exploreTokens": {
+    "message": "Обзор токенов"
   },
   "exportYourData": {
     "message": "Экспортируйте свои данные"
@@ -3241,6 +3962,18 @@
     "message": "Недельный",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "Все примитивы отзыва для ERC-20, ERC-1155, ERC-721.",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "Одобрить ERC-20(кто расходует, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
+  "gatorPermissionsErc721ApproveRevocation": {
+    "message": "Одобрить ERC-721(адрес(0), tokenId)",
+    "description": "Token approval revocation method for ERC-721 single-token approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "Дата истечения срока действия",
     "description": "Label for the expiration date of a permission"
@@ -3260,6 +3993,22 @@
   "gatorPermissionsMaxAllowance": {
     "message": "Максимальная квота",
     "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsPermit2ApproveRevocation": {
+    "message": "Одобрить Permit2 (токен, кто расходует, 0, 0)",
+    "description": "Token approval revocation method for Permit2 approve reset"
+  },
+  "gatorPermissionsPermit2InvalidateNonces": {
+    "message": "Permit2: аннулирование одноразовых кодов",
+    "description": "Token approval revocation method for Permit2 nonce invalidation"
+  },
+  "gatorPermissionsPermit2Lockdown": {
+    "message": "Блокировка Permit2",
+    "description": "Token approval revocation method for Permit2 lockdown"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "Методы отзыва",
+    "description": "Label for the enabled token approval revocation methods"
   },
   "gatorPermissionsRevocationPending": {
     "message": "Ожидается отзыв",
@@ -3318,21 +4067,9 @@
     "message": "Подготовьте свой кошелек к использованию web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "Да, сэкономить 5%",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "Экономьте до 5% на сделках с реферальным кодом MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "Экономьте 5% на сделках с реферальным кодом MetaMask. Эта скидка применяется ко всем будущим сделкам согласно $1 GMX. MetaMask взимает комиссию.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "Сэкономьте 5% на GMX",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Перейти на сайт"
@@ -3418,6 +4155,39 @@
   "hardwareWalletLookingForDevice": {
     "message": "Ищем ваше устройство $1…",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletRepairDetecting": {
+    "message": "Обнаружение устройства..."
+  },
+  "hardwareWalletRepairDeviceNotDetected": {
+    "message": "Устройство не обнаружено. Проверьте предыдущие шаги и повторите попытку."
+  },
+  "hardwareWalletRepairLink": {
+    "message": "Переподключиться с самого начала"
+  },
+  "hardwareWalletRepairPermissionsTitle": {
+    "message": "Предоставить MetaMask разрешения:"
+  },
+  "hardwareWalletRepairStepOneDescription": {
+    "message": "Убедитесь, что USB-кабель надежно подключен к устройству и компьютеру. Попробуйте другой USB-порт или кабель."
+  },
+  "hardwareWalletRepairStepOneTitle": {
+    "message": "Проверьте USB-соединение"
+  },
+  "hardwareWalletRepairStepTwoDescription": {
+    "message": "Введите свой PIN-код, чтобы разблокировать аппаратный кошелек."
+  },
+  "hardwareWalletRepairStepTwoTitle": {
+    "message": "Разблокируйте свое устройство"
+  },
+  "hardwareWalletRepairSuccessDescription": {
+    "message": "Ваше устройство успешно переподключено. Вы можете закрыть эту вкладку."
+  },
+  "hardwareWalletRepairSuccessTitle": {
+    "message": "Устройство подключено"
+  },
+  "hardwareWalletRepairTitle": {
+    "message": "Подключить аппаратное устройство"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Убедитесь, что $1 подключен, и выберите приложение Ethereum."
@@ -3547,21 +4317,9 @@
   "honeypotTitle": {
     "message": "Ловушка"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "Да, сэкономить 4%",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Экономьте до 4% на сделках с реферальным кодом MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle2": {
-    "message": "Экономьте 4% на сделках с реферальным кодом MetaMask. Применяется ко всем будущим сделкам согласно $1 Hyperliquid. MetaMask взимает комиссию.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "hyperliquidReferralTitle": {
-    "message": "Сэкономьте 4% на Hyperliquid",
-    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Я понимаю"
@@ -3650,6 +4408,9 @@
   "imported": {
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "includes": {
+    "message": "Включает"
   },
   "includesXTransactions": {
     "message": "Включает $1 транзакции(-й)"
@@ -3825,6 +4586,9 @@
   },
   "knownAddressRecipient": {
     "message": "Известный адрес контракта."
+  },
+  "knownSafeAddress": {
+    "message": "Известный адрес"
   },
   "knownTokenWarning": {
     "message": "Это действие изменит токены, уже указанные в вашем кошельке, которые можно использовать для фишинга. Утверждайте, только если вы уверены, что хотите изменить то, что представляют эти токены. Узнайте подробнее о $1"
@@ -4009,6 +4773,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "Срок вашего сеанса истек"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "Обновить Telegram"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "Нам не удалось подключиться к Telegram. Обычно это происходит, если ваше приложение Telegram устарело. Обновите Telegram и повторите попытку."
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "Не удалось войти с помощью Telegram"
+  },
   "logo": {
     "message": "Логотип $1",
     "description": "$1 is the name of the ticker"
@@ -4022,6 +4795,10 @@
   },
   "lowLowercase": {
     "message": "низкая"
+  },
+  "lowValueAssets": {
+    "message": "Токены с низкой стоимостью ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Мейн-нет Ethereum"
@@ -4202,6 +4979,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "Согласно нашим записям, отправленное значение URL RPC не соответствует известному поставщику для этого ID блокчейна."
+  },
+  "mmFee": {
+    "message": "Комиссия MM $1%."
   },
   "month": {
     "message": "месяц"
@@ -4758,7 +5538,7 @@
     "message": "«$1» успешно добавлен!"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "Настройки > Безопасность и конфиденциальность"
+    "message": "Настройки > Активы"
   },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "Чтобы использовать OpenSea для просмотра своих NFT, включите «Показать носитель NFT» в $1.",
@@ -4790,9 +5570,6 @@
   },
   "newPrivacyPolicyTitle": {
     "message": "Мы обновили нашу политику конфиденциальности"
-  },
-  "newRpcUrl": {
-    "message": "Новый URL RPC"
   },
   "newTokensImportedMessage": {
     "message": "Вы успешно импортировали $1.",
@@ -4889,6 +5666,9 @@
   "noOptionsAvailableMessage": {
     "message": "Этот торговый путь сейчас недоступен. Попробуйте изменить сумму, сеть или токен и мы подберем лучший вариант."
   },
+  "noQuoteAvailable": {
+    "message": "Нет доступных котировок"
+  },
   "noSnaps": {
     "message": "Snaps не установлены."
   },
@@ -4927,9 +5707,6 @@
   },
   "notCurrentAccount": {
     "message": "Это правильный счет? Он отличается от счета, выбранного в настоящее время в вашем кошельке."
-  },
-  "notEnoughGas": {
-    "message": "Недостаточно газа"
   },
   "notificationDetail": {
     "message": "Подробности"
@@ -5264,6 +6041,9 @@
   "openWallet": {
     "message": "Открыть кошелек"
   },
+  "opensInNewTab": {
+    "message": "открывается в новой вкладке"
+  },
   "options": {
     "message": "Параметры"
   },
@@ -5291,6 +6071,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "Другие разрешения на этом сайте"
+  },
+  "otherQrWallet": {
+    "message": "Другой QR-кошелек"
   },
   "otherSnaps": {
     "message": "другие snaps",
@@ -5862,6 +6645,9 @@
     "message": "Доступно для торговли",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBalance": {
+    "message": "Баланс перпов"
+  },
   "perpsBasicFunctionalityOff": {
     "message": "Эта функция недоступна, пока отключены базовые функции."
   },
@@ -5891,6 +6677,12 @@
   },
   "perpsCloseAll": {
     "message": "Закрыть все"
+  },
+  "perpsCloseAllDescription": {
+    "message": "Мы закроем все ваши открытые позиции по текущей рыночной цене."
+  },
+  "perpsCloseAllPositions": {
+    "message": "Закрыть все позиции"
   },
   "perpsCloseAmount": {
     "message": "Сумма закрытия"
@@ -6008,11 +6800,20 @@
   "perpsFilterCrypto": {
     "message": "Крипто"
   },
+  "perpsFilterEtf": {
+    "message": "ETF"
+  },
   "perpsFilterForex": {
     "message": "Валюты"
   },
+  "perpsFilterIndex": {
+    "message": "Указатель"
+  },
   "perpsFilterNew": {
     "message": "Новые"
+  },
+  "perpsFilterPreIpo": {
+    "message": "До IPO"
   },
   "perpsFilterStocks": {
     "message": "Акции"
@@ -6043,6 +6844,9 @@
   },
   "perpsInsufficientMargin": {
     "message": "Недостаточно маржи для размещения этого ордера."
+  },
+  "perpsKeepPositions": {
+    "message": "Сохранить позиции"
   },
   "perpsLearnBasics": {
     "message": "Изучите основы перпов"
@@ -6237,8 +7041,26 @@
   "perpsSize": {
     "message": "Размер"
   },
+  "perpsSlippage": {
+    "message": "Проскальзывание"
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "Ваша транзакция не будет выполнена, если цена выйдет за пределы этого порога."
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "Установить проскальзывание"
+  },
+  "perpsSlippageCustom": {
+    "message": "Пользовательские"
+  },
   "perpsSlippageExceeded": {
     "message": "Превышен показатель проскальзывания. Откорректируйте допустимое проскальзывание и попробуйте снова."
+  },
+  "perpsSlippageInputLabel": {
+    "message": "Макс. процент проскальзывания"
+  },
+  "perpsSlippageSet": {
+    "message": "Установить"
   },
   "perpsSortByFundingRate": {
     "message": "Ставка финансирования"
@@ -6328,6 +7150,22 @@
   "perpsToastCancelOrderSuccess": {
     "message": "Ордер отменен",
     "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseAllFailed": {
+    "message": "Не удалось закрыть позиции",
+    "description": "Error toast text shown when batch closing all perps positions fails"
+  },
+  "perpsToastCloseAllInProgress": {
+    "message": "Закрытие всех позиций",
+    "description": "In-progress toast text shown while batch closing all perps positions"
+  },
+  "perpsToastCloseAllPartial": {
+    "message": "Закрыты $1 из $2 позиций",
+    "description": "Warning toast text shown when only some perps positions were successfully closed. $1 is success count, $2 is total attempted count."
+  },
+  "perpsToastCloseAllSuccess": {
+    "message": "Все позиции закрыты",
+    "description": "Success toast text shown when all perps positions are successfully closed"
   },
   "perpsToastCloseFailed": {
     "message": "Не удалось закрыть позицию",
@@ -6889,6 +7727,10 @@
     "message": "Необходим доступ к камере",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorMismatchedTransactionTitle": {
+    "message": "Неверный QR-код",
+    "description": "Title shown when a signature QR belongs to a different transaction."
+  },
   "qrErrorNonUrPairingBody": {
     "message": "Вернитесь в свой аппаратный кошелек и найдите опцию поделиться или экспортировать свои счета, выберите MetaMask, затем отсканируйте QR-код.",
     "description": "Body text for the non-UR QR code error during pairing."
@@ -7391,6 +8233,9 @@
     "message": "Поиск по вашим счетам",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
+  "searchingForBestQuotes": {
+    "message": "Поиск наилучшх котировок"
+  },
   "second": {
     "message": "сек."
   },
@@ -7525,6 +8370,9 @@
   },
   "selectedAccountMismatch": {
     "message": "Выбран другой счет"
+  },
+  "sellAll": {
+    "message": "Продать все"
   },
   "send": {
     "message": "Отправить"
@@ -8443,24 +9291,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Смарт-свопы временно недоступны."
   },
-  "smartTransactionCancelled": {
-    "message": "Ваша транзакция отменена"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Не удалось завершить вашу транзакцию, поэтому она была отменена, чтобы избавить вас от ненужной платы за газ."
-  },
-  "smartTransactionError": {
-    "message": "Ваша транзакция не удалась"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Внезапные изменения на рынке могут привести к неудачам. Если проблема не исчезнет, ​​обратитесь в поддержку MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Ваша транзакция отправляется"
-  },
-  "smartTransactionSuccess": {
-    "message": "Ваша транзакция завершена"
-  },
   "smartTransactions": {
     "message": "Умные транзакции"
   },
@@ -8766,6 +9596,19 @@
     "message": "Вы можете вставить всю свою секретную фразу для восстановления в любое поле",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
+  "srpRevealMaliciousBlockBody": {
+    "message": "Злоумышленники на $1 пытаются обманом заставить вас поделиться своей секретной фразой для восстановления. Любой, кто завладеет вашей фразой, сможет украсть все из вашего кошелька.",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "Назад в безопасное место"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "Возможно, вас прямо сейчас пытаются обмануть"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "Опасность"
+  },
   "srpSecurityQuizGetStarted": {
     "message": "С чего начать"
   },
@@ -9020,6 +9863,9 @@
   },
   "swapAdjustSlippage": {
     "message": "Откорректировать проскальзывание"
+  },
+  "swapAgain": {
+    "message": "Повторить своп"
   },
   "swapAggregator": {
     "message": "Агрегатор"
@@ -9368,9 +10214,6 @@
   "termsOfUseTitle": {
     "message": "Наши Условия использования обновлены"
   },
-  "testNetworks": {
-    "message": "Протестировать сети"
-  },
   "testnets": {
     "message": "Тестнеты"
   },
@@ -9413,9 +10256,6 @@
   },
   "tokenContractAddress": {
     "message": "Адрес контракта токена"
-  },
-  "tokenContractError": {
-    "message": "Этот адрес — адрес контракта токенов. Если вы отправите токены на этот адрес, вы их потеряете."
   },
   "tokenContractWarning": {
     "message": "Предупреждение о контракте токена"
@@ -9487,6 +10327,12 @@
   "total": {
     "message": "Итого"
   },
+  "totalAmount": {
+    "message": "Общая сумма"
+  },
+  "totalReceived": {
+    "message": "Всего получено"
+  },
   "totalVolume": {
     "message": "Общий объем"
   },
@@ -9544,6 +10390,10 @@
   },
   "transactionIncludesTypes": {
     "message": "Эта транзакция включает: $1."
+  },
+  "transactionProtectedByEnforcedSimulations": {
+    "message": "Эта транзакция была защищена. Мы отменили ее, чтобы предотвратить непредвиденную потерю средств.",
+    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
   },
   "transactionSettings": {
     "message": "Настройки транзакции"
@@ -9715,8 +10565,19 @@
   "unavailable": {
     "message": "Недоступно"
   },
+  "unavailableNetworkConnection": {
+    "message": "Подключение к сети недоступно"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "Подключение к $1 ненадежно. Обновите данные о подключении к сети, прежде чем продолжить, или повторите попытку позже.",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "Такое поведение является неожиданным, и о нем следует сообщить как об ошибке, даже если ваши счета восстановлены."
+  },
+  "unexpectedError": {
+    "message": "Произошла неожиданная ошибка.",
+    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Разрешите точный доступ к $1 $2 на $3 для обмена"
@@ -9741,6 +10602,9 @@
   "unknownNetworkForKeyEntropy": {
     "message": "Неизвестная сеть",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownPermissionType": {
+    "message": "Неизвестный тип разрешения"
   },
   "unknownQrCode": {
     "message": "Ошибка: мы не смогли идентифицировать этот QR-код"
@@ -9882,9 +10746,6 @@
   "view": {
     "message": "Просмотр"
   },
-  "viewActivity": {
-    "message": "Смотреть активность"
-  },
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
@@ -9912,12 +10773,13 @@
   "viewTokenDetails": {
     "message": "Смотреть сведения о токене"
   },
-  "viewTransaction": {
-    "message": "Смотреть транзакцию"
-  },
   "viewinExplorer": {
     "message": "Смотреть $1 в обозревателе",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "Посетить сайт"
@@ -10033,6 +10895,9 @@
   "yes": {
     "message": "Да"
   },
+  "yesSwap": {
+    "message": "Да, выполнить своп"
+  },
   "you": {
     "message": "Вы"
   },
@@ -10045,6 +10910,9 @@
   "youReceived": {
     "message": "Вы получили",
     "description": "Label indicating the amount and asset the user received."
+  },
+  "youSell": {
+    "message": "Вы продаете"
   },
   "youSent": {
     "message": "Вы отправили",

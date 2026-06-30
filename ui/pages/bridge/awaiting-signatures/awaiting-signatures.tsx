@@ -4,17 +4,18 @@ import isEqual from 'lodash/isEqual';
 import { isCrossChain } from '@metamask/bridge-controller';
 
 import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../../shared/lib/selectors/keyring';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import {
   TextVariant,
-  JustifyContent,
   TextColor,
-  BlockSize,
-  Display,
-  FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -22,7 +23,6 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import {
   AvatarBase,
   AvatarBaseSize,
-  Box,
   Text,
 } from '../../../components/component-library';
 import {
@@ -33,12 +33,16 @@ import {
   getToChain,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useNavigateOnQrScanComplete } from '../hooks/useNavigateOnQrScanComplete';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AwaitingSignatures() {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);
+
+  // Navigate to activity tab when QR scan is completed
+  useNavigateOnQrScanComplete();
   const fromAmount = activeQuote?.sentAmount?.amount;
   const fromToken = useSelector(getFromToken, isEqual);
   const toToken = useSelector(getToToken, isEqual);
@@ -89,10 +93,9 @@ export default function AwaitingSignatures() {
       <Box
         paddingLeft={6}
         paddingRight={6}
-        height={BlockSize.Full}
-        justifyContent={JustifyContent.center}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        className="h-full flex"
+        justifyContent={BoxJustifyContent.Center}
+        flexDirection={BoxFlexDirection.Column}
       >
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />

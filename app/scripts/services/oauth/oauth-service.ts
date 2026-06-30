@@ -22,7 +22,6 @@ import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
   OAuthConfig,
-  OAuthLoginEnv,
   OAuthLoginResult,
   OAuthRefreshTokenResult,
   OAuthServiceMessenger,
@@ -53,7 +52,7 @@ export class OAuthService {
 
   #messenger: OAuthServiceMessenger;
 
-  #env: OAuthConfig & OAuthLoginEnv;
+  #config: OAuthConfig;
 
   #webAuthenticator: WebAuthenticator;
 
@@ -67,33 +66,32 @@ export class OAuthService {
 
   #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
 
-  #getParticipateInMetaMetrics: OAuthServiceOptions['getParticipateInMetaMetrics'];
+  #getCompletedMetaMetricsOnboarding: OAuthServiceOptions['getCompletedMetaMetricsOnboarding'];
+
+  #getOptedIn: OAuthServiceOptions['getOptedIn'];
 
   constructor({
     messenger,
-    env,
     webAuthenticator,
     platform,
     bufferedTrace,
     bufferedEndTrace,
     trackEvent,
     addEventBeforeMetricsOptIn,
-    getParticipateInMetaMetrics,
+    getCompletedMetaMetricsOnboarding,
+    getOptedIn,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
-    const oauthConfig = loadOAuthConfig();
-    this.#env = {
-      ...env,
-      ...oauthConfig,
-    };
+    this.#config = loadOAuthConfig();
     this.#webAuthenticator = webAuthenticator;
     this.#platform = platform;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
     this.#trackEvent = trackEvent;
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
-    this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
+    this.#getCompletedMetaMetricsOnboarding = getCompletedMetaMetricsOnboarding;
+    this.#getOptedIn = getOptedIn;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -111,7 +109,8 @@ export class OAuthService {
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): void {
-    const isMetricsEnabled = Boolean(this.#getParticipateInMetaMetrics());
+    const isMetricsEnabled =
+      this.#getCompletedMetaMetricsOnboarding() && this.#getOptedIn();
 
     if (isMetricsEnabled) {
       this.#trackEvent(payload, options);
@@ -155,9 +154,17 @@ export class OAuthService {
     // this is to get the Jwt Token in the exchange for the Authorization Code
     const loginHandler = createLoginHandler(
       authConnection,
-      this.#env,
+      this.#config,
       this.#webAuthenticator,
     );
+
+    // get the user location to determine if the user is in US region
+    // the location value will be used later to determine if Marketing Opt-in should be enabled by default
+    this.#messenger
+      .call('GeolocationController:getGeolocation')
+      .catch((error) => {
+        log.error('Error getting user location:', error);
+      });
 
     const oAuthLoginResult = await this.#handleOAuthLogin(
       loginHandler,
@@ -181,7 +188,7 @@ export class OAuthService {
     const { connection, refreshToken } = options;
     const loginHandler = createLoginHandler(
       connection,
-      this.#env,
+      this.#config,
       this.#webAuthenticator,
     );
 
@@ -210,7 +217,7 @@ export class OAuthService {
     const { connection, revokeToken } = options;
     const loginHandler = createLoginHandler(
       connection,
-      this.#env,
+      this.#config,
       this.#webAuthenticator,
     );
 
@@ -228,7 +235,7 @@ export class OAuthService {
     const { connection, revokeToken } = options;
     const loginHandler = createLoginHandler(
       connection,
-      this.#env,
+      this.#config,
       this.#webAuthenticator,
     );
 
@@ -251,11 +258,9 @@ export class OAuthService {
     loginHandler: BaseLoginHandler,
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
-    const authUrl = await loginHandler.getAuthUrl();
     const isRehydration = this.#isRehydrationFlow();
     const redirectUrlFromOAuth = await this.#performOAuthProviderLogin({
       authConnection,
-      authUrl,
       isRehydration,
       loginHandler,
     });
@@ -270,12 +275,10 @@ export class OAuthService {
 
   async #performOAuthProviderLogin({
     authConnection,
-    authUrl,
     isRehydration,
     loginHandler,
   }: {
     authConnection: AuthConnection;
-    authUrl: string;
     isRehydration: boolean | null;
     loginHandler: BaseLoginHandler;
   }): Promise<string> {
@@ -288,7 +291,6 @@ export class OAuthService {
       });
       const redirectUrlFromOAuth = await this.#launchAuthFlow(
         authConnection,
-        authUrl,
         loginHandler,
       );
       providerLoginSuccess = true;
@@ -442,14 +444,14 @@ export class OAuthService {
       authConnectionId = MOCK_AUTH_CONNECTION_ID;
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
     } else if (loginHandler.authConnection === AuthConnection.Google) {
-      authConnectionId = this.#env.googleAuthConnectionId;
-      groupedAuthConnectionId = this.#env.googleGroupedAuthConnectionId;
+      authConnectionId = this.#config.googleAuthConnectionId;
+      groupedAuthConnectionId = this.#config.googleGroupedAuthConnectionId;
     } else if (loginHandler.authConnection === AuthConnection.Apple) {
-      authConnectionId = this.#env.appleAuthConnectionId;
-      groupedAuthConnectionId = this.#env.appleGroupedAuthConnectionId;
+      authConnectionId = this.#config.appleAuthConnectionId;
+      groupedAuthConnectionId = this.#config.appleGroupedAuthConnectionId;
     } else if (loginHandler.authConnection === AuthConnection.Telegram) {
-      authConnectionId = this.#env.telegramAuthConnectionId;
-      groupedAuthConnectionId = this.#env.telegramGroupedAuthConnectionId;
+      authConnectionId = this.#config.telegramAuthConnectionId;
+      groupedAuthConnectionId = this.#config.telegramGroupedAuthConnectionId;
     }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
@@ -492,9 +494,9 @@ export class OAuthService {
 
   async #launchAuthFlow(
     authConnection: AuthConnection,
-    authUrl: string,
     loginHandler: BaseLoginHandler,
   ): Promise<string> {
+    const authUrl = await loginHandler.getAuthUrl();
     if (authConnection === AuthConnection.Telegram) {
       return this.#launchTabAuthFlow(
         authUrl,
@@ -629,7 +631,7 @@ export class OAuthService {
       };
 
       const res = await fetch(
-        `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+        `${this.#config.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
         {
           method: 'POST',
           headers: {
@@ -668,7 +670,7 @@ export class OAuthService {
       }
 
       const res = await fetch(
-        `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+        `${this.#config.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
         {
           method: 'GET',
           headers: {

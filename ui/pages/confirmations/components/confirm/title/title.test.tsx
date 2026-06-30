@@ -69,7 +69,9 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="confirm-title-skeleton"]'),
+    ).toBeInTheDocument();
   });
 
   it('should not render title skeleton when loader is send', () => {
@@ -88,11 +90,13 @@ describe('ConfirmTitle', () => {
       '/confirm-transaction?loader=send',
     );
 
-    expect(container.querySelector('.mm-skeleton')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="confirm-title-skeleton"]'),
+    ).not.toBeInTheDocument();
   });
 
   it('should render the title and description for a personal signature', () => {
-    const mockStore = configureMockStore([])(getMockPersonalSignConfirmState);
+    const mockStore = configureMockStore([])(getMockPersonalSignConfirmState());
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
       mockStore,

@@ -43,6 +43,25 @@ type RawPayTokensFlag = {
   preferredTokens?: PreferredTokensConfig;
 };
 
+export type PayPrefilledAmountConfig = {
+  enabled?: boolean;
+};
+
+type RawPayExtendedFlag = {
+  prefilledAmount?: {
+    default?: PayPrefilledAmountConfig;
+    overrides?: Record<string, PayPrefilledAmountConfig>;
+    [transactionType: string]:
+      | PayPrefilledAmountConfig
+      | Record<string, PayPrefilledAmountConfig>
+      | undefined;
+  };
+};
+
+type HardwareWalletConfig = {
+  enabled?: boolean;
+};
+
 const selectConfirmationsPayDappsFlag = createSelector(
   getRemoteFeatureFlags,
   (flags) =>
@@ -84,6 +103,30 @@ const selectPayTokensFlag = createSelector(
   /* eslint-enable @typescript-eslint/naming-convention */
 );
 
+const selectPayExtendedFlag = createSelector(
+  getRemoteFeatureFlags,
+  (flags) =>
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay_extended?: RawPayExtendedFlag;
+      }
+    ).confirmations_pay_extended,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
+const selectPayHardwareFlag = createSelector(
+  getRemoteFeatureFlags,
+  /* eslint-disable @typescript-eslint/naming-convention */
+  (flags) =>
+    (
+      flags as unknown as {
+        confirmations_pay_hardware?: HardwareWalletConfig;
+      }
+    ).confirmations_pay_hardware,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
 /**
  * Resolves the effective post-quote config for a given transaction type.
  * Transaction-specific config may be supplied either as
@@ -119,6 +162,31 @@ export const selectPayQuoteConfig = createSelector(
   },
 );
 
+/**
+ * Resolves whether the amount field should be pre-filled with the max balance
+ * for a given transaction type. Transaction-specific config may be supplied
+ * either as `overrides[transactionType]` or directly at `[transactionType]`.
+ * @param _state
+ * @param transactionType
+ */
+export const selectIsPayAmountPrefillEnabled = createSelector(
+  [
+    selectPayExtendedFlag,
+    (_state, transactionType?: string) => transactionType,
+  ],
+  (flag, transactionType): boolean => {
+    const prefill = flag?.prefilledAmount;
+    const defaultEnabled = prefill?.default?.enabled ?? false;
+
+    const transactionConfig = transactionType
+      ? (prefill?.overrides?.[transactionType] ??
+        (prefill?.[transactionType] as PayPrefilledAmountConfig | undefined))
+      : undefined;
+
+    return transactionConfig?.enabled ?? defaultEnabled;
+  },
+);
+
 export const selectPreferredPayToken = createSelector(
   [selectPayTokensFlag, (_state, transactionType?: string) => transactionType],
   (flag, transactionType): PreferredPayToken | undefined => {
@@ -141,6 +209,11 @@ export const selectEnforcedSimulationsSlippage = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags): number =>
     getEnforcedSimulationsSlippage({ remoteFeatureFlags }),
+);
+
+export const selectIsPayHardwareEnabled = createSelector(
+  selectPayHardwareFlag,
+  (flag): boolean => flag?.enabled ?? false,
 );
 
 function getPreferredTokensForTransaction(

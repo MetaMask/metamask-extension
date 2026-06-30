@@ -11,13 +11,6 @@ export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
   return process.env.SEEDLESS_ONBOARDING_ENABLED?.toString() === 'true';
 };
 
-export const getIsTelegramLoginFeatureEnabled = (): boolean => {
-  return (
-    getIsSeedlessOnboardingFeatureEnabled() &&
-    process.env.TELEGRAM_LOGIN_ENABLED?.toString() === 'true'
-  );
-};
-
 export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
   return process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true';
 };
@@ -49,6 +42,15 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
   return (
     process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED?.toString() === 'true'
   );
+};
+
+/**
+ * Compile-time gate (`ADD_DEVICE_SYNC_ENABLED`): when true the
+ * Add Device tab is shown in Settings, allowing users to pair a second device
+ * via QR code scan and verification code.
+ */
+export const getIsAddDeviceSyncEnabled = (): boolean => {
+  return process.env.ADD_DEVICE_SYNC_ENABLED?.toString() === 'true';
 };
 
 /**

@@ -62,12 +62,6 @@
     "^ background; v popup": {},
     "wait-on>axios": {
       "globals": {
-        "Buffer": false,
-        "Buffer.alloc": true,
-        "Buffer.byteLength": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true,
         "postMessage": true,
         "fetch": true,
         "Request": true,
@@ -83,13 +77,6 @@
     "buffer": {
       "globals": {
         "SharedArrayBuffer": true
-      }
-    },
-    "core-js-pure": {
-      "globals": {
-        "navigator.userAgent": true,
-        "MessageChannel": true,
-        "location": true
       }
     },
     "ethers>@ethersproject/random": {

@@ -18,9 +18,7 @@ import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { Header, Page } from '../../components/multichain/pages/page';
@@ -50,7 +48,6 @@ import {
   isAssetIdHiddenInPreferencesMap,
 } from '../../selectors/assets-unify-state/asset-preferences';
 import { checkExistingAddresses } from '../../helpers/utils/util';
-import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { isEvmChainId, toAssetId } from '../../../shared/lib/asset-utils';
@@ -100,7 +97,7 @@ function trimImportedTokenField(value: unknown): string {
  * values. When RPC omits a field (e.g. `name`), the list value is still used.
  *
  * @param rpcTokenInfo - Result from {@link getTokenStandardAndDetailsByChain}.
- * @param info - Result from {@link tokenInfoGetter} for the current network.
+ * @param info - Token-list entry for the address on the current network.
  */
 export function mergeCustomTokenMetadataForImport(
   rpcTokenInfo: TokenMetadataSource | undefined,
@@ -145,9 +142,8 @@ export const CustomTokenImportPage = () => {
   );
   const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
   // Chain-scoped token-list cache, same source the backend uses inside
-  // `getTokenStandardAndDetailsByChain`. Provides the metadata fallback for
-  // `tokenInfoGetter` when on-chain `symbol()`/`decimals()`/`name()` calls
-  // can't return a value.
+  // `getTokenStandardAndDetailsByChain`. Provides a metadata fallback when
+  // on-chain `symbol()`/`decimals()`/`name()` calls can't return a value.
   const erc20TokensByChain = useSelector(selectERC20TokensByChain) as Record<
     string,
     { data?: Record<string, unknown> } | undefined
@@ -236,7 +232,6 @@ export const CustomTokenImportPage = () => {
   const [showSymbolAndDecimals, setShowSymbolAndDecimals] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const infoGetter = useRef(tokenInfoGetter());
   const clickedSecurityLinkRef = useRef(false);
   // Tracks the in-flight `handleAddressChange` invocation so async results
   // from previous calls (stale address or stale network) can be discarded.
@@ -357,31 +352,19 @@ export const CustomTokenImportPage = () => {
       }
 
       // Mirror `attemptToAutoFillTokenParams` from the legacy modal.
-      try {
-        const info = await infoGetter.current(
-          standardAddress,
-          tokenListForSelectedNetwork,
-        );
-        if (!isLatestLookup()) {
-          return;
-        }
-        const {
-          symbol: mergedSymbol,
-          name: mergedName,
-          decimals: mergedDecimals,
-        } = mergeCustomTokenMetadataForImport(rpcTokenInfo, info);
-        setSymbol(mergedSymbol);
-        setName(mergedName);
-        setDecimals(mergedDecimals);
-        setShowSymbolAndDecimals(true);
-        if (!mergedSymbol || mergedDecimals === '') {
-          trackViewed(CUSTOM_TOKEN_IMPORT_LOOKUP_FAILED_VIEW_STATE);
-        }
-      } catch {
-        if (!isLatestLookup()) {
-          return;
-        }
-        setShowSymbolAndDecimals(true);
+      const info = tokenListForSelectedNetwork?.[
+        standardAddress.toLowerCase()
+      ] as TokenMetadataSource | undefined;
+      const {
+        symbol: mergedSymbol,
+        name: mergedName,
+        decimals: mergedDecimals,
+      } = mergeCustomTokenMetadataForImport(rpcTokenInfo, info);
+      setSymbol(mergedSymbol);
+      setName(mergedName);
+      setDecimals(mergedDecimals);
+      setShowSymbolAndDecimals(true);
+      if (!mergedSymbol || mergedDecimals === '') {
         trackViewed(CUSTOM_TOKEN_IMPORT_LOOKUP_FAILED_VIEW_STATE);
       }
     },
