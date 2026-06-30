@@ -11,6 +11,7 @@ import type { Migrate } from './types';
 export const version = 216;
 
 type StorageServiceEntry = [string, unknown];
+type BrowserStorageLocal = Pick<typeof browser.storage.local, 'get' | 'remove'>;
 
 function getStorageServiceEntries(
   storageData: Record<string, unknown>,
@@ -18,6 +19,23 @@ function getStorageServiceEntries(
   return Object.entries(storageData).filter(([key]) => {
     return key.startsWith(STORAGE_KEY_PREFIX);
   });
+}
+
+function getBrowserStorageLocal(): BrowserStorageLocal | undefined {
+  const storageLocal = (
+    browser as unknown as {
+      storage?: { local?: Partial<BrowserStorageLocal> };
+    }
+  ).storage?.local;
+
+  if (
+    typeof storageLocal?.get !== 'function' ||
+    typeof storageLocal.remove !== 'function'
+  ) {
+    return undefined;
+  }
+
+  return storageLocal as BrowserStorageLocal;
 }
 
 /**
@@ -35,7 +53,12 @@ export const migrate = (async (versionedData) => {
   let database: IndexedDBStore | undefined;
 
   try {
-    const allStorage = await browser.storage.local.get(null);
+    const storageLocal = getBrowserStorageLocal();
+    if (!storageLocal) {
+      return;
+    }
+
+    const allStorage = await storageLocal.get(null);
     const storageServiceEntries = getStorageServiceEntries(allStorage);
 
     if (storageServiceEntries.length === 0) {
@@ -70,7 +93,7 @@ export const migrate = (async (versionedData) => {
       await database.set(Object.fromEntries(entriesToMigrate));
     }
 
-    await browser.storage.local.remove(storageServiceKeys);
+    await storageLocal.remove(storageServiceKeys);
   } catch (error) {
     console.error(
       `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,

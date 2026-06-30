@@ -158,10 +158,7 @@ describe('IndexedDBStorageAdapter', () => {
   describe('getAllKeys', () => {
     it('returns keys from IndexedDB and legacy browser.storage.local storage', async () => {
       const fallbackStorage = createFallbackStorage();
-      fallbackStorage.getAllKeys.mockResolvedValueOnce([
-        'key2',
-        'legacyKey',
-      ]);
+      fallbackStorage.getAllKeys.mockResolvedValueOnce(['key2', 'legacyKey']);
       const { adapter } = createAdapter({ fallbackStorage });
 
       await adapter.setItem('TestController', 'key1', 'value1');

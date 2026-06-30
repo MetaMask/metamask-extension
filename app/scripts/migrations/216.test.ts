@@ -84,6 +84,23 @@ describe(`migration #${version}`, () => {
     expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
   });
 
+  it('does nothing when browser.storage.local is unavailable', async () => {
+    const oldStorage = buildVersionedData();
+    const browserWithOptionalStorage = mockBrowser as unknown as {
+      storage?: typeof mockBrowser.storage;
+    };
+    const originalStorage = browserWithOptionalStorage.storage;
+    browserWithOptionalStorage.storage = undefined;
+
+    try {
+      await migrate(oldStorage, new Set());
+    } finally {
+      browserWithOptionalStorage.storage = originalStorage;
+    }
+
+    expect(oldStorage.meta).toStrictEqual({ version });
+  });
+
   it('moves storageService keys from browser.storage.local to IndexedDB', async () => {
     const storageServiceValue = {
       timestamp: 1234567890,
@@ -97,7 +114,9 @@ describe(`migration #${version}`, () => {
 
     await migrate(oldStorage, new Set());
 
-    await expect(readIndexedDBValue(STORAGE_SERVICE_KEY)).resolves.toStrictEqual(
+    await expect(
+      readIndexedDBValue(STORAGE_SERVICE_KEY),
+    ).resolves.toStrictEqual(
       expect.objectContaining({
         data: expect.objectContaining({
           '0xToken': expect.objectContaining({ name: 'Token' }),
@@ -126,7 +145,9 @@ describe(`migration #${version}`, () => {
 
     await migrate(buildVersionedData(), new Set());
 
-    await expect(readIndexedDBValue(STORAGE_SERVICE_KEY)).resolves.toStrictEqual(
+    await expect(
+      readIndexedDBValue(STORAGE_SERVICE_KEY),
+    ).resolves.toStrictEqual(
       expect.objectContaining({
         sourceCode: 'indexeddb-source-code',
       }),
@@ -142,7 +163,9 @@ describe(`migration #${version}`, () => {
       'A mutation operation was attempted on a database that did not allow mutations.',
       'InvalidStateError',
     );
-    jest.spyOn(IndexedDBStore.prototype, 'open').mockRejectedValue(blockedError);
+    jest
+      .spyOn(IndexedDBStore.prototype, 'open')
+      .mockRejectedValue(blockedError);
     mockBrowser.storage.local.get.mockResolvedValueOnce({
       [STORAGE_SERVICE_KEY]: { sourceCode: 'legacy-source-code' },
     });
