@@ -11,7 +11,6 @@ import * as backgroundConnection from '../../../../ui/store/background-connectio
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import {
-  createMockImplementation,
   getSelectedAccountGroupAccounts,
   getSelectedAccountGroupName,
 } from '../../helpers';
@@ -71,9 +70,6 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
 describe('PersonalSign Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
-      createMockImplementation({}),
-    );
   });
 
   it('displays the header account modal with correct data', async () => {
@@ -132,19 +128,19 @@ describe('PersonalSign Confirmation', () => {
     await waitFor(() => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackAnalyticsEvent',
+          (call) => call[0] === 'trackMetaMetricsEvent',
         );
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackAnalyticsEvent',
+        'trackMetaMetricsEvent',
       );
     });
 
     expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: MetaMetricsEventName.AccountDetailsOpened,
-          properties: expect.objectContaining({
-            category: MetaMetricsEventCategory.Confirmations,
+          category: MetaMetricsEventCategory.Confirmations,
+          event: MetaMetricsEventName.AccountDetailsOpened,
+          properties: {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -153,9 +149,8 @@ describe('PersonalSign Confirmation', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
-          }),
+          },
         }),
-        expect.anything(),
       ]),
     );
 
