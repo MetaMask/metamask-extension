@@ -34,7 +34,7 @@ export const DEV_SERVER_OPTIONS: Configuration = {
       'compilers' in devServer.compiler
         ? devServer.compiler.compilers
         : [devServer.compiler];
-    // Registers the ui client and the hot-update bridge.
+    // Registers the UI reload client.
     setupUiReload(devServer, compilers);
     // Registers the background client into the background/service worker context.
     setupBackgroundReload(devServer, compilers);

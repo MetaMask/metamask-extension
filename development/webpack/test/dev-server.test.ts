@@ -276,7 +276,7 @@ describe('./utils/dev-server', () => {
       assert.strictEqual(DEV_SERVER_OPTIONS.client, false);
     });
 
-    it('registers React Refresh UI reload entries from the static middleware config', () => {
+    it('registers reload clients from the static middleware config', () => {
       const manifestPlugin = createManifestPlugin({
         serviceWorkerEntryName: 'service-worker',
       });
@@ -296,16 +296,21 @@ describe('./utils/dev-server', () => {
       } as never);
 
       assert.strictEqual(result, middlewares);
-      assert.strictEqual(entryPluginCalls.length, 3);
-      assert.match(entryPluginCalls[0].entry, /react-refresh-client/u);
-      assert.deepStrictEqual(entryPluginCalls[0].options, {});
+      assert.strictEqual(entryPluginCalls.length, 2);
       assert.match(
-        entryPluginCalls[1].entry,
+        entryPluginCalls[0].entry,
         /ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
       );
-      assert.deepStrictEqual(entryPluginCalls[1].options, {
+      assert.deepStrictEqual(entryPluginCalls[0].options, {
         name: UI_RELOAD_CLIENT_ENTRY_NAME,
         chunkLoading: false,
+      });
+      assert.match(
+        entryPluginCalls[1].entry,
+        /background-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
+      );
+      assert.deepStrictEqual(entryPluginCalls[1].options, {
+        name: 'service-worker',
       });
     });
   });
@@ -385,20 +390,18 @@ describe('./utils/dev-server', () => {
   });
 
   describe('setupUiReload', () => {
-    it('registers the React Refresh runtime client and UI reload client', () => {
+    it('registers the UI reload client', () => {
       const { compiler, entryPluginCalls } = createCompiler();
       const { devServer } = createDevServer({ host: 'localhost', port: 24680 });
 
       setupUiReload(devServer as never, [compiler]);
 
-      assert.strictEqual(entryPluginCalls.length, 2);
-      assert.match(entryPluginCalls[0].entry, /react-refresh-client/u);
-      assert.deepStrictEqual(entryPluginCalls[0].options, {});
+      assert.strictEqual(entryPluginCalls.length, 1);
       assert.match(
-        entryPluginCalls[1].entry,
+        entryPluginCalls[0].entry,
         /development[\\/]webpack[\\/]utils[\\/]dev-server[\\/]ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A24680%2Fws/u,
       );
-      assert.deepStrictEqual(entryPluginCalls[1].options, {
+      assert.deepStrictEqual(entryPluginCalls[0].options, {
         name: UI_RELOAD_CLIENT_ENTRY_NAME,
         chunkLoading: false,
       });
