@@ -72,7 +72,7 @@ exports[`BridgeAlertModal quote-card should render alert banner when there is a 
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)] mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-alternative mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -219,7 +219,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)] mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-alternative mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -338,7 +338,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)] mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-alternative mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -457,7 +457,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)] mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-alternative mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -576,7 +576,7 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)] mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-alternative mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -810,7 +810,7 @@ exports[`BridgeAlertModal submit-cta should render when there is a price impact 
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)] mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-alternative mm-box--rounded-lg"
           role="dialog"
         >
           <header
