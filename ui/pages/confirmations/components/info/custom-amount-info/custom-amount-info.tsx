@@ -31,7 +31,10 @@ import {
   PercentageButtonsSkeleton,
 } from '../../percentage-buttons';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  isPerpsWithdrawTransaction,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
@@ -104,7 +107,11 @@ export const CustomAmountInfo = React.memo(
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
     const availableTokens = useTransactionPayAvailableTokens();
-    const hasTokens = availableTokens.length > 0;
+    const isPostQuoteWithdraw =
+      isPostQuoteWithdrawTransaction(currentConfirmation);
+    // Post-quote withdrawals (e.g. Perps) source funds off-chain, not from a
+    // wallet token, so the amount input stays usable without wallet tokens.
+    const hasTokens = availableTokens.length > 0 || isPostQuoteWithdraw;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
     const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
 
