@@ -221,6 +221,7 @@ import {
   getIsShieldSubscriptionActive,
 } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/lib/error';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -454,6 +455,7 @@ import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-b
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
+import { getRampsControllerApi } from './wallet-init/ramps-controller-api';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -750,6 +752,28 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMemState = controllerMemState;
     this.controllerPersistedState = controllerPersistedState;
     this.messengerClientsByName = messengerClientsByName;
+
+    const rampsEnabled = Boolean(
+      getManifestFlags().remoteFeatureFlags?.rampsEnabled ??
+      messengerClientsByName.RemoteFeatureFlagController?.state
+        ?.remoteFeatureFlags?.rampsEnabled,
+    );
+    this.rampsController = rampsEnabled
+      ? this.wallet.getInstance('RampsController')
+      : undefined;
+    if (this.rampsController) {
+      this.rampsController
+        .init()
+        .then(() => {
+          this.rampsController.startOrderPolling();
+        })
+        .catch(() => {
+          // Initialization failed - error state is available via selectors.
+        });
+    }
+    this.rampsControllerApi = this.rampsController
+      ? getRampsControllerApi(this.rampsController)
+      : {};
 
     // Backwards compatibility for existing references
     this.approvalController = this.wallet.getInstance('ApprovalController');
@@ -1433,6 +1457,9 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      ...(this.rampsController
+        ? { RampsController: this.rampsController }
+        : {}),
       DeFiPositionsController: this.deFiPositionsController,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
@@ -1499,6 +1526,9 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        ...(this.rampsController
+          ? { RampsController: this.rampsController }
+          : {}),
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
@@ -3303,6 +3333,9 @@ export default class MetamaskController extends EventEmitter {
       getGeolocation: this.geolocationController.getGeolocation.bind(
         this.geolocationController,
       ),
+
+      // RampsController
+      ...this.rampsControllerApi,
 
       // SeedlessOnboardingController
       preloadToprfNodeDetails:
