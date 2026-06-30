@@ -14,7 +14,6 @@ import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsSelectItem } from '../settings/shared';
 import { getNotificationsSettingsSectionRoute } from './notifications-settings-routes';
-import { accountActivityWebSocketConfig } from 'test/e2e/websocket/account-activity-mocks';
 
 export type NotificationsSettingsSectionType =
   | 'walletActivity'
