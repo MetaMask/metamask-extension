@@ -240,7 +240,7 @@ async function mockSetReviewingSyncOffer(
   mockEmitOtpRequired();
   await controller.submitOtp('123456');
   mockEmitSyncOffer(isOnboardingCompleted);
-  if (controller.state.phase !== QR_SYNC_PHASES.REVIEWING_SYNC_OFFER) {
+  if (controller.state.qrSyncPhase !== QR_SYNC_PHASES.REVIEWING_SYNC_OFFER) {
     throw new Error('Expected reviewing sync offer phase');
   }
 }
@@ -304,19 +304,19 @@ describe('QrSyncController', () => {
         },
         mode: 'untrusted',
       });
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.DISPLAYING_QR);
-      expect(controller.state.sessionId).toBe(TEST_SESSION_ID);
-      expect(controller.state.qrPayload).toMatch(
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.DISPLAYING_QR);
+      expect(controller.state.qrSyncSessionId).toBe(TEST_SESSION_ID);
+      expect(controller.state.qrSyncQrPayload).toMatch(
         /^metamask:\/\/connect\/mwp\?p=[A-Za-z0-9+/]+=*$/u,
       );
       const decodedSessionRequest = JSON.parse(
         Buffer.from(
-          controller.state.qrPayload?.split('p=')[1] ?? '',
+          controller.state.qrSyncQrPayload?.split('p=')[1] ?? '',
           'base64',
         ).toString('utf8'),
       );
       expect(decodedSessionRequest.id).toBe(TEST_SESSION_ID);
-      expect(controller.state.connectionStatus).toBe('connecting');
+      expect(controller.state.qrSyncConnectionStatus).toBe('connecting');
     });
 
     it('marks the session as failed when the relay connection fails', async () => {
@@ -327,8 +327,8 @@ describe('QrSyncController', () => {
         'Relay unavailable',
       );
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.error).toStrictEqual({
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncError).toStrictEqual({
         code: 'CHANNEL_INIT_FAILED',
         message: 'Relay unavailable',
       });
@@ -346,8 +346,9 @@ describe('QrSyncController', () => {
       await controller.submitOtp(' 123456 ');
 
       expect(submitOtp).toHaveBeenCalledWith('123456');
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
-      expect(controller.state.otpAttempts).toBe(1);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+      );
 
       mockEmitSyncOffer();
     });
@@ -363,7 +364,9 @@ describe('QrSyncController', () => {
       try {
         await controller.submitOtp('123456');
 
-        expect(controller.state.phase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
+        expect(controller.state.qrSyncPhase).toBe(
+          QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+        );
 
         await jest.advanceTimersByTimeAsync(
           MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000,
@@ -382,9 +385,9 @@ describe('QrSyncController', () => {
             version: '1.0.0',
           }),
         );
-        expect(controller.state.phase).toBe(QR_SYNC_PHASES.FAILED);
-        expect(controller.state.connectionStatus).toBe('errored');
-        expect(controller.state.error).toStrictEqual({
+        expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+        expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+        expect(controller.state.qrSyncError).toStrictEqual({
           code: 'SESSION_EXPIRED',
           message: QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT,
         });
@@ -406,8 +409,10 @@ describe('QrSyncController', () => {
         'Incorrect code',
       );
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.AWAITING_OTP_INPUT);
-      expect(controller.state.error).toStrictEqual({
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_OTP_INPUT,
+      );
+      expect(controller.state.qrSyncError).toStrictEqual({
         code: 'OTP_INVALID',
         message: 'Incorrect code',
       });
@@ -437,11 +442,8 @@ describe('QrSyncController', () => {
         type: QrSyncActionTypes.SYNC_CANCEL,
         version: '1.0.0',
       });
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.CANCELLED);
-      expect(controller.state.lastActionType).toBe(
-        QrSyncActionTypes.SYNC_CANCEL,
-      );
-      expect(controller.state.sessionId).toBe(TEST_SESSION_ID);
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.CANCELLED);
+      expect(controller.state.qrSyncSessionId).toBe(TEST_SESSION_ID);
     });
 
     it('records a cancellation reason when provided', async () => {
@@ -456,8 +458,8 @@ describe('QrSyncController', () => {
         type: QrSyncActionTypes.SYNC_CANCEL,
         version: '1.0.0',
       });
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.CANCELLED);
-      expect(controller.state.error).toStrictEqual({
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.CANCELLED);
+      expect(controller.state.qrSyncError).toStrictEqual({
         code: 'SYNC_FAILED',
         message: 'User closed verification screen',
       });
@@ -482,7 +484,9 @@ describe('QrSyncController', () => {
 
       mockEmitSyncOffer();
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.REVIEWING_SYNC_OFFER);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
+      );
       expect(controller.state.syncOffer).toStrictEqual({
         sessionId: TEST_SESSION_ID,
         isOnboardingCompleted: true,
@@ -506,7 +510,9 @@ describe('QrSyncController', () => {
         `QrSyncController: ${QrSyncErrorMessages.PREMATURE_SYNC_OFFER_RECEIVED}`,
       );
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+      );
       expect(controller.state.syncOffer).toBeNull();
     });
 
@@ -523,7 +529,9 @@ describe('QrSyncController', () => {
         `QrSyncController: ${QrSyncErrorMessages.PREMATURE_SYNC_OFFER_RECEIVED}`,
       );
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.AWAITING_OTP_INPUT);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_OTP_INPUT,
+      );
       expect(controller.state.syncOffer).toBeNull();
     });
 
@@ -536,7 +544,9 @@ describe('QrSyncController', () => {
 
       mockEmitInvalidSyncOffer();
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+      );
       expect(controller.state.syncOffer).toBeNull();
 
       mockEmitSyncOffer();
@@ -573,13 +583,12 @@ describe('QrSyncController', () => {
           }),
         }),
       );
-      expect(controller.state.phase).toBe(
+      expect(controller.state.qrSyncPhase).toBe(
         QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
       );
-      expect(controller.state.selectedAccountIds).toStrictEqual([
+      expect(controller.state.qrSyncSelectedAccountIds).toStrictEqual([
         TEST_ENTROPY_ID,
       ]);
-      expect(controller.state.selectedSyncDataType).toBe('MNEMONIC');
 
       mockEmitSyncCompleted();
     });
@@ -628,7 +637,7 @@ describe('QrSyncController', () => {
       try {
         await controller.syncAccounts(TEST_PASSWORD, [TEST_ENTROPY_ID]);
 
-        expect(controller.state.phase).toBe(
+        expect(controller.state.qrSyncPhase).toBe(
           QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
         );
 
@@ -636,9 +645,9 @@ describe('QrSyncController', () => {
           MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000,
         );
 
-        expect(controller.state.phase).toBe(QR_SYNC_PHASES.FAILED);
-        expect(controller.state.connectionStatus).toBe('errored');
-        expect(controller.state.error).toStrictEqual({
+        expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+        expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+        expect(controller.state.qrSyncError).toStrictEqual({
           code: 'SESSION_EXPIRED',
           message: QrSyncErrorMessages.SYNC_COMPLETION_TIMED_OUT,
         });
@@ -657,8 +666,8 @@ describe('QrSyncController', () => {
       await controller.syncAccounts(TEST_PASSWORD, [TEST_ENTROPY_ID]);
       mockEmitSyncCompleted();
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.COMPLETED);
-      expect(controller.state.importedAccountIds).toStrictEqual([]);
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.COMPLETED);
+      expect(controller.state.qrSyncImportedAccountIds).toStrictEqual([]);
     });
   });
 
@@ -673,8 +682,8 @@ describe('QrSyncController', () => {
         type: QrSyncActionTypes.SYNC_CANCEL,
         version: '1.0.0',
       });
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.CANCELLED);
-      expect(controller.state.error).toStrictEqual({
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.CANCELLED);
+      expect(controller.state.qrSyncError).toStrictEqual({
         code: 'SYNC_REJECTED',
         message: 'User closed the flow',
       });
@@ -698,9 +707,9 @@ describe('QrSyncController', () => {
       await mockStartSession(controller);
       mockMwp.dappClient?.emit('disconnected');
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.connectionStatus).toBe('errored');
-      expect(controller.state.error).toStrictEqual({
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+      expect(controller.state.qrSyncError).toStrictEqual({
         code: 'CHANNEL_DISCONNECTED',
         message: 'The sync channel disconnected.',
       });
@@ -714,12 +723,9 @@ describe('QrSyncController', () => {
       await mockStartSession(controller);
       mockEmitSyncCancel();
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.CANCELLED);
-      expect(controller.state.connectionStatus).toBe('disconnected');
-      expect(controller.state.lastActionType).toBe(
-        QrSyncActionTypes.SYNC_CANCEL,
-      );
-      expect(controller.state.error).toStrictEqual({
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.CANCELLED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('disconnected');
+      expect(controller.state.qrSyncError).toStrictEqual({
         code: 'SYNC_REJECTED',
         message: QrSyncErrorMessages.SYNC_SESSION_CANCELLED_BY_PEER,
       });
@@ -733,9 +739,9 @@ describe('QrSyncController', () => {
         message: 'Mobile could not complete the sync',
       });
 
-      expect(controller.state.phase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.connectionStatus).toBe('errored');
-      expect(controller.state.error).toStrictEqual({
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+      expect(controller.state.qrSyncError).toStrictEqual({
         code: 'SYNC_FAILED',
         message: 'Mobile could not complete the sync',
       });
@@ -748,7 +754,7 @@ describe('QrSyncController', () => {
       mockEmitSyncCancel();
       mockEmitSyncCancel();
 
-      expect(controller.state.error?.message).toBe(
+      expect(controller.state.qrSyncError?.message).toBe(
         QrSyncErrorMessages.SYNC_SESSION_CANCELLED_BY_PEER,
       );
     });

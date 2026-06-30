@@ -47,9 +47,9 @@ const qrSyncState = {
   ...mockState,
   metamask: {
     ...mockState.metamask,
-    phase: QR_SYNC_PHASES.IDLE,
-    qrPayload: 'metamask://connect/mwp?p=test',
-    error: null,
+    qrSyncPhase: QR_SYNC_PHASES.IDLE,
+    qrSyncQrPayload: 'metamask://connect/mwp?p=test',
+    qrSyncError: null,
   },
 };
 
@@ -74,7 +74,7 @@ describe('SyncAccountsSettings', () => {
       ...qrSyncState,
       metamask: {
         ...qrSyncState.metamask,
-        phase: QR_SYNC_PHASES.DISPLAYING_QR,
+        qrSyncPhase: QR_SYNC_PHASES.DISPLAYING_QR,
       },
     });
     renderWithProvider(<AddDeviceSettings />, store);
@@ -86,7 +86,7 @@ describe('SyncAccountsSettings', () => {
       ...qrSyncState,
       metamask: {
         ...qrSyncState.metamask,
-        phase: QR_SYNC_PHASES.AWAITING_OTP_INPUT,
+        qrSyncPhase: QR_SYNC_PHASES.AWAITING_OTP_INPUT,
       },
     });
     renderWithProvider(<AddDeviceSettings />, store);
@@ -98,7 +98,7 @@ describe('SyncAccountsSettings', () => {
       ...qrSyncState,
       metamask: {
         ...qrSyncState.metamask,
-        phase: QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+        qrSyncPhase: QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
       },
     });
     renderWithProvider(<AddDeviceSettings />, store);
@@ -110,7 +110,7 @@ describe('SyncAccountsSettings', () => {
       ...qrSyncState,
       metamask: {
         ...qrSyncState.metamask,
-        phase: QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
+        qrSyncPhase: QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
       },
     });
     renderWithProvider(<AddDeviceSettings />, store);
@@ -122,7 +122,7 @@ describe('SyncAccountsSettings', () => {
       ...qrSyncState,
       metamask: {
         ...qrSyncState.metamask,
-        phase: QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
+        qrSyncPhase: QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
       },
     });
     renderWithProvider(<AddDeviceSettings />, store);
@@ -146,7 +146,7 @@ describe('SyncAccountsSettings', () => {
       ...qrSyncState,
       metamask: {
         ...qrSyncState.metamask,
-        phase: QR_SYNC_PHASES.CANCELLED,
+        qrSyncPhase: QR_SYNC_PHASES.CANCELLED,
       },
     });
     renderWithProvider(<AddDeviceSettings />, store);
