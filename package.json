@@ -307,6 +307,7 @@
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
     "@metamask/assets-controller@npm:^7.1.2": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
     "@metamask/assets-controller@npm:^8.1.0": "patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch",
+    "@ecies/ciphers@npm:^0.2.6": "patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch",
     "@metamask/accounts-controller": "^39.0.3",
     "@metamask/multichain-account-service": "^11.0.0"
   },
