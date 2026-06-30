@@ -26,6 +26,7 @@ import { isWebHidAvailable, isWebUsbAvailable } from './webConnectionUtils';
 export type HardwareWalletConfigContextType = {
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
+  accountAddress: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
@@ -56,6 +57,7 @@ export type HardwareWalletContextType = {
   // State (may cause rerenders)
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
+  accountAddress: string | null;
   connectionState: HardwareWalletConnectionState;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
@@ -162,6 +164,7 @@ export const HardwareWalletProvider = ({
     connectionState,
     walletType,
     isHardwareWalletAccount,
+    accountAddress,
   } = state;
 
   const {
@@ -303,6 +306,7 @@ export const HardwareWalletProvider = ({
       // State
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       connectionState,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
@@ -322,6 +326,7 @@ export const HardwareWalletProvider = ({
     [
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       connectionState,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
@@ -335,6 +340,7 @@ export const HardwareWalletProvider = ({
     () => ({
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
@@ -342,6 +348,7 @@ export const HardwareWalletProvider = ({
     [
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,
