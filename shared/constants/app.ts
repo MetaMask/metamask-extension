@@ -167,6 +167,7 @@ export const MESSAGE_TYPE = {
   HYPERLIQUID_REFERRAL_CONSENT: 'hyperliquid_referral_consent',
   ASTERDEX_REFERRAL_CONSENT: 'asterdex_referral_consent',
   GMX_REFERRAL_CONSENT: 'gmx_referral_consent',
+  VARIATIONAL_REFERRAL_CONSENT: 'variational_referral_consent',
 } as const;
 
 export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
@@ -176,6 +177,7 @@ export const HYPERLIQUID_APPROVAL_TYPE =
   MESSAGE_TYPE.HYPERLIQUID_REFERRAL_CONSENT;
 export const ASTERDEX_APPROVAL_TYPE = MESSAGE_TYPE.ASTERDEX_REFERRAL_CONSENT;
 export const GMX_APPROVAL_TYPE = MESSAGE_TYPE.GMX_REFERRAL_CONSENT;
+export const VARIATIONAL_APPROVAL_TYPE = MESSAGE_TYPE.VARIATIONAL_REFERRAL_CONSENT;
 
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
