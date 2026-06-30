@@ -56,6 +56,7 @@ if (args.dryRun) {
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
+const uiEntryPath = join(context, 'scripts/load/ui.ts');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const isDevelopmentWatchMode = isDevelopment && args.watch;
 const MANIFEST_VERSION = args.manifestVersion;
@@ -162,7 +163,7 @@ const plugins: WebpackPluginInstance[] = [
       }
       // UI pages (identified by the `#app-content` React mount point, present
       // via `partial-body.html` on every page that renders the React UI and no
-      // other extension page) get the UI reload client
+      // other extension page) get the UI reload client.
       if (content.includes('id="app-content"')) {
         return injectEntryScripts(
           content,
@@ -283,7 +284,11 @@ if (isDevelopmentWatchMode) {
   const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
   plugins.push(
     new HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin({ include: UI_DIR_RE, overlay: false }),
+    new ReactRefreshWebpackPlugin({
+      include: UI_DIR_RE,
+      overlay: false,
+      runtimeEntry: false,
+    }),
   );
 }
 
@@ -396,11 +401,6 @@ const config = {
     // 2. @metamask/design-system-react could patch the Radix UI packages
     // 3. @metamask/design-system-react could re-export components with a build step that fixes imports
     alias: {
-      // Use a guarded React Refresh runtime entry so extension-only scripts,
-      // such as bootstrap and reload clients, do not install React Refresh.
-      '@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry':
-        require.resolve('./utils/dev-server/react-refresh-entry'),
-      //
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
     },
@@ -458,6 +458,12 @@ const config = {
           loader: require.resolve('./utils/loaders/envValidationLoader'),
           options: { declarations: [...buildEnvVarDeclarations] },
         },
+      },
+      isDevelopmentWatchMode && {
+        test: /\.ts$/u,
+        include: uiEntryPath,
+        enforce: 'pre' as const,
+        use: require.resolve('./utils/loaders/reactRefreshRuntimeLoader'),
       },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {

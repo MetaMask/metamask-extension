@@ -4,11 +4,15 @@ import { UI_RELOAD_CLIENT_ENTRY_NAME } from './reload-protocol';
 import { getClientEntry } from './websocket';
 
 /**
- * Registers the React Refresh runtime client and UI reload client entry on
- * each compiler. `HtmlBundlerPlugin.beforeEmit` injects the reload client into
- * every UI page, where it asks a guarded UI runtime entry to check for hot updates.
- * Whether a build only reloads the UI pages or the whole extension is decided per build in
- * `setupBackgroundReload` — deciding in one place is what keeps a page reload from racing a background reload.
+ * Registers the UI reload client entry on each compiler.
+ * `HtmlBundlerPlugin.beforeEmit` injects the reload client into every UI page,
+ * where it asks the UI runtime to check for hot updates. The stock React
+ * Refresh entry and runtime bridge are prepended to the actual UI entry by
+ * `reactRefreshRuntimeLoader`.
+ *
+ * Whether a build only reloads the UI pages or the whole extension is decided
+ * per build in `setupBackgroundReload`; deciding in one place is what keeps a
+ * page reload from racing a background reload.
  *
  * @param devServer - The running webpack dev server.
  * @param compilers - The compilers attached to the dev server.
@@ -17,16 +21,9 @@ export function setupUiReload(
   devServer: WebpackDevServer,
   compilers: Compiler[],
 ): void {
-  const reactRefreshRuntimeClientEntry =
-    require.resolve('./react-refresh-runtime-client');
   const uiClientEntry = getClientEntry(devServer, 'ui-reload-client.ts');
 
   for (const compiler of compilers) {
-    new compiler.webpack.EntryPlugin(
-      compiler.context,
-      reactRefreshRuntimeClientEntry,
-      {},
-    ).apply(compiler);
     new compiler.webpack.EntryPlugin(compiler.context, uiClientEntry, {
       name: UI_RELOAD_CLIENT_ENTRY_NAME,
       chunkLoading: false,
