@@ -82,9 +82,6 @@
   "account": {
     "message": "Tài khoản"
   },
-  "accountActivity": {
-    "message": "Hoạt động của tài khoản"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Đăng nhập"
   },

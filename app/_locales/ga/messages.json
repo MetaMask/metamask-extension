@@ -64,9 +64,6 @@
   "account": {
     "message": "Cuntas"
   },
-  "accountActivity": {
-    "message": "Gníomhaíocht chuntais"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Logáil isteach"
   },

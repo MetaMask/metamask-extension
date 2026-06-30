@@ -82,9 +82,6 @@
   "account": {
     "message": "Account"
   },
-  "accountActivity": {
-    "message": "Aktibidad ng account"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Mag-log in"
   },

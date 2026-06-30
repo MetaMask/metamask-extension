@@ -82,9 +82,6 @@
   "account": {
     "message": "Λογαριασμός"
   },
-  "accountActivity": {
-    "message": "Δραστηριότητα λογαριασμού"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Σύνδεση"
   },

@@ -82,9 +82,6 @@
   "account": {
     "message": "Счет"
   },
-  "accountActivity": {
-    "message": "Активность счета"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Войти"
   },

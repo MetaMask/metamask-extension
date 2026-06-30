@@ -82,9 +82,6 @@
   "account": {
     "message": "계정"
   },
-  "accountActivity": {
-    "message": "계정 활동"
-  },
   "accountAlreadyExistsLogin": {
     "message": "로그인"
   },

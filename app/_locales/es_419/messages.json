@@ -82,9 +82,6 @@
   "account": {
     "message": "Cuenta"
   },
-  "accountActivity": {
-    "message": "Actividad de la cuenta"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Inicia sesión"
   },
