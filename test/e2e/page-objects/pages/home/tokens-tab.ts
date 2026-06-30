@@ -593,6 +593,7 @@ class TokensTab extends HomePage {
    *
    * @param expectedTokenBalance - The expected balance to be displayed.
    * @param symbol - The symbol of the currency or token.
+   * @param timeout - Optional timeout in milliseconds for the selector wait.
    */
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
