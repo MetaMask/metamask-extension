@@ -28,6 +28,21 @@ on:
         required: false
         type: boolean
         default: false
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: 'Chrome manifest version — must match GitHub Release tag v{version}'
+      target:
+        required: true
+        type: string
+        description: 'CWS target — production or flask (orchestrator); dev allowed for manual workflow_call'
+      dry-run:
+        required: false
+        type: boolean
+        default: false
+        description: 'Verify sender and WIF without uploading'
 
 permissions:
   contents: read
