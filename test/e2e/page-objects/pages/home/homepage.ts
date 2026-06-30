@@ -17,14 +17,12 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
-// Interim (#43958). The global non-EVM snap-discovery mocks are incomplete: the
-// Solana snap calls 15 discovery RPC methods but `setupDefaultNonEvmDiscoveryMocks`
-// only mocks `getSignaturesForAddress`, so the other 14 (incl. the `getGenesisHash`
+// The global non-EVM snap-discovery mocks are incomplete: the Solana snap calls
+// 15 discovery RPC methods but `setupDefaultNonEvmDiscoveryMocks` only mocks
+// `getSignaturesForAddress`, so the other 14 (incl. the `getGenesisHash`
 // network-identity check) fall through to the empty-200 catch-all and drive a
-// ~516-request retry storm that delays the Solana icon past the default 10s wait.
-// The v10 Sentry SDK's heavier startup envelope volume is what pushes it over.
-// Bitcoin's analogous gap (`/esplora/block-height/0`) is already fixed in this PR.
-// Remove this once #43958 completes the Solana discovery mocks.
+// retry storm that delays the Solana icon past the default 10s wait. Widen the
+// wait until #43958 globalizes the Solana discovery mocks.
 const NON_EVM_ICON_TIMEOUT = 20_000;
 
 class HomePage {

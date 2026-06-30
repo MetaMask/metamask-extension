@@ -14,14 +14,14 @@ import { v4 as uuidv4 } from 'uuid';
 
 const NAME = 'ConsensysTracePropagation';
 
-/** RAPID baggage application identifier. */
+/** Consensys baggage application identifier. */
 const CONSENSYS_APPLICATION = 'metamask-extension';
 
 /**
  * Backend API host patterns that should receive distributed-trace propagation
  * on outbound HTTPS. The Sentry SDK injects `sentry-trace` / `traceparent` on
  * these hosts (via `tracePropagationTargets` + `propagateTraceparent`); this
- * integration appends the RAPID `baggage`.
+ * integration appends the Consensys `baggage`.
  */
 export const BACKEND_TRACE_PROPAGATION_TARGETS: RegExp[] = [
   /^https:\/\/[a-z0-9.-]+\.(?:[a-z0-9]+-)?api\.cx\.metamask\.io(?:[/?#]|$)/u,
@@ -101,7 +101,7 @@ function getCurrentTraceId(): string | undefined {
 }
 
 /**
- * Build the RAPID `baggage` segment for an outbound request.
+ * Build the Consensys `baggage` segment for an outbound request.
  *
  * @param requestId - The `consensys-request-id` value.
  * @returns A baggage segment string.
@@ -154,7 +154,7 @@ function toHeaders(existing: unknown): Headers {
 }
 
 /**
- * Build a new `Headers` for an outbound fetch with the RAPID `baggage`
+ * Build a new `Headers` for an outbound fetch with the Consensys `baggage`
  * appended. Seeds from the existing request headers (the SDK's `sentry-trace` /
  * `baggage` / `traceparent` are already present when this runs after Sentry's
  * instrumentation), so nothing the caller or the SDK set is lost.
@@ -208,7 +208,7 @@ function setRequestIdForTraceId(traceId: string, requestId: string): void {
 }
 
 /**
- * Sentry integration that appends RAPID baggage (`consensys-request-id`,
+ * Sentry integration that appends Consensys baggage (`consensys-request-id`,
  * `consensys-application=metamask-extension`) on outbound HTTPS to backend API
  * hosts, and tags Sentry events with the correlation ids (`otelTraceId`,
  * `consensysRequestId`). The W3C `traceparent` / `sentry-trace` headers are

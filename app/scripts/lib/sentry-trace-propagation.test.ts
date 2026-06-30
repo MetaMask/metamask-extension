@@ -78,7 +78,7 @@ describe('matchesBackendTarget', () => {
 });
 
 describe('buildConsensysBaggage', () => {
-  it('formats the RAPID baggage segment', () => {
+  it('formats the Consensys baggage segment', () => {
     expect(buildConsensysBaggage('abc')).toBe(
       'consensys-request-id=abc,consensys-application=metamask-extension',
     );

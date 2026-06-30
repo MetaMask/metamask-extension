@@ -129,10 +129,10 @@ function getClientOptions() {
     // Must be a top-level init option.
     ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
       tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
-      // Gate with `tracePropagationTargets`: when distributed tracing is killed
-      // the SDK must not inject `traceparent`; when enabled it attaches it
-      // natively to the restricted backend targets above. The custom
-      // `consensysTracePropagationIntegration` now only appends RAPID baggage.
+      // Gated here so the kill switch also disables native `traceparent`
+      // injection; when enabled the SDK attaches it to the backend targets
+      // above. `consensysTracePropagationIntegration` appends the Consensys
+      // `baggage` segment (`consensys-request-id`).
       propagateTraceparent: true,
     }),
     // Client reports are automatically sent when a page's visibility changes to
