@@ -59,9 +59,8 @@ import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usd
 
 const DEFAULT_FIXTURE_ACCOUNT_ID = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
 
-/** Native ETH balances seeded for bridge fixtures (mainnet loses ~0.002 ETH to HST deploy gas). */
 const BRIDGE_L2_ETH_BALANCE_HEX = '0x15af1d78b58c40000';
-const BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST_HEX = '0x15aeabc8e0f370000';
+const BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST_HEX = '0x15aea03f5d217b800';
 
 const getBridgeFixtureAssetsBalance = () => ({
   [DEFAULT_FIXTURE_ACCOUNT_ID]: {
@@ -69,10 +68,10 @@ const getBridgeFixtureAssetsBalance = () => ({
       amount: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
     },
     'eip155:59144/slip44:60': {
-      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+      amount: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
     },
     'eip155:42161/slip44:60': {
-      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+      amount: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
     },
   },
 });
@@ -133,7 +132,7 @@ const getBridgeL2FixtureAssetsBalance = () => ({
 
 const BRIDGE_UNIFIED_EVM_API_BALANCES = {
   mainnetNativeEthHuman: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
-  nativeBalance: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+  nativeBalance: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
 };
 
 const getBridgeFixtureAccountTracker = () => ({
@@ -146,13 +145,13 @@ const getBridgeFixtureAccountTracker = () => ({
     },
     '0xe708': {
       [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-        balance: BRIDGE_L2_ETH_BALANCE_HEX,
+        balance: BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST_HEX,
         stakedBalance: '0x0',
       },
     },
     '0xa4b1': {
       [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-        balance: BRIDGE_L2_ETH_BALANCE_HEX,
+        balance: BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST_HEX,
         stakedBalance: '0x0',
       },
     },
@@ -167,8 +166,8 @@ const getBridgeFixtureAccountTracker = () => ({
 async function mockUnifiedBridgeAccountBalances(mockServer: Mockttp) {
   const balanceByChainRef: Record<string, string> = {
     '1': String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
-    '59144': String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
-    '42161': String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+    '59144': String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
+    '42161': String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
   };
 
   return await mockServer
@@ -185,7 +184,7 @@ async function mockUnifiedBridgeAccountBalances(mockServer: Mockttp) {
         const chainRef = accountId.split(':')[1] ?? '1';
         const balance =
           balanceByChainRef[chainRef] ??
-          String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN);
+          String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST);
         const slip44 = chainRef === '1337' ? '1' : '60';
         return {
           accountId,
