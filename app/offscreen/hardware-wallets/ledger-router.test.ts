@@ -23,7 +23,7 @@ let mockLegacyInstance: MockHandler;
 
 jest.mock('./ledger-dmk', () => {
   return {
-    LedgerDMKBridgeHandler: jest.fn().mockImplementation(() => {
+    LedgerDmkBridgeHandler: jest.fn().mockImplementation(() => {
       mockDmkInstance = {
         init: mockDmkInit,
         destroy: mockDmkDestroy,
@@ -141,7 +141,7 @@ describe('LedgerRouter', () => {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const legacyModule = require('./ledger') as LegacyModule;
       mockedDmkCtor = jest.mocked(
-        dmkModule.LedgerDMKBridgeHandler,
+        dmkModule.LedgerDmkBridgeHandler,
       ) as jest.Mock;
       mockedLegacyCtor = jest.mocked(legacyModule.default) as jest.Mock;
     });

@@ -67,7 +67,7 @@ function getSelectorWithLegacyFallback(tx: string): string | undefined {
  * Legacy Ledger handler using `@ledgerhq/hw-app-eth` + `TransportWebHID`.
  *
  * This is the original Ledger implementation, kept as a fallback for the
- * newer `LedgerDMKBridgeHandler` (in `./ledger-dmk.ts`). Selection between
+ * newer `LedgerDmkBridgeHandler` (in `./ledger-dmk.ts`). Selection between
  * the two is driven by the `ledgerDmkBridge` remote feature flag.
  *
  * Handles Ledger communication in the offscreen document.

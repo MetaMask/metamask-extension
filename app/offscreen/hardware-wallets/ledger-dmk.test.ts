@@ -1,5 +1,5 @@
 import { LedgerAction } from '../../../shared/constants/offscreen-communication';
-import { LedgerDMKBridgeHandler } from './ledger-dmk';
+import { LedgerDmkBridgeHandler } from './ledger-dmk';
 
 const mockLegacyInit = jest.fn();
 const mockLegacyDestroy = jest.fn();
@@ -16,8 +16,8 @@ jest.mock('./ledger', () => ({
 }));
 
 // Coverage-only tests for the temporary DMK stub. These will be replaced when
-// the real LedgerDMKBridgeHandler implementation lands.
-describe('LedgerDMKBridgeHandler', () => {
+// the real LedgerDmkBridgeHandler implementation lands.
+describe('LedgerDmkBridgeHandler', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLegacyInit.mockResolvedValue(undefined);
@@ -28,7 +28,7 @@ describe('LedgerDMKBridgeHandler', () => {
   describe('init', () => {
     // Satisfies coverage for the stub init path; update when DMK bridge is real.
     it('initialises the underlying legacy handler', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
 
       await handler.init();
 
@@ -39,7 +39,7 @@ describe('LedgerDMKBridgeHandler', () => {
   describe('destroy', () => {
     // Satisfies coverage for the stub destroy path; update when DMK bridge is real.
     it('destroys the underlying legacy handler', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
       await handler.init();
 
       await handler.destroy();
@@ -49,7 +49,7 @@ describe('LedgerDMKBridgeHandler', () => {
 
     // Satisfies coverage for destroy before init; update when DMK bridge is real.
     it('resolves when called before init', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
 
       await expect(handler.destroy()).resolves.toBeUndefined();
 
@@ -60,7 +60,7 @@ describe('LedgerDMKBridgeHandler', () => {
   describe('handleAction', () => {
     // Satisfies coverage for the uninitialised guard; update when DMK bridge is real.
     it('throws when called before init', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
 
       await expect(
         handler.handleAction(LedgerAction.getAppConfiguration),
@@ -69,7 +69,7 @@ describe('LedgerDMKBridgeHandler', () => {
 
     // Satisfies coverage for the stub delegation path; update when DMK bridge is real.
     it('delegates to the underlying legacy handler', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
       const params = { hdPath: "m/44'/60'/0'/0/0" };
       await handler.init();
 

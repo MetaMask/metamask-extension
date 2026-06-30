@@ -3,7 +3,7 @@ import {
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
-import { LedgerDMKBridgeHandler } from './ledger-dmk';
+import { LedgerDmkBridgeHandler } from './ledger-dmk';
 import { serializeLedgerError } from './ledger-utils';
 import initLegacy from './ledger';
 
@@ -111,13 +111,13 @@ function ensureMessageListener(): void {
  * own.
  *
  * @param mode - The handler implementation to construct. `DMK` instantiates
- * `LedgerDMKBridgeHandler`, any other value instantiates the legacy
+ * `LedgerDmkBridgeHandler`, any other value instantiates the legacy
  * `LedgerLegacyHandler`.
  * @returns Initialised handler ready to receive actions.
  */
 async function createHandler(mode: LedgerHandlerMode): Promise<LedgerHandler> {
   if (mode === LedgerHandlerMode.DMK) {
-    const handler = new LedgerDMKBridgeHandler();
+    const handler = new LedgerDmkBridgeHandler();
     await handler.init();
     return handler;
   }

@@ -7,7 +7,7 @@ import initLegacy, { LedgerLegacyHandler } from './ledger';
  * Replaced by the real DMK bridge implementation in a follow-up PR. Exists so
  * the router can already target a distinct handler implementation today.
  */
-export class LedgerDMKBridgeHandler {
+export class LedgerDmkBridgeHandler {
   private legacyHandler: LedgerLegacyHandler | null = null;
 
   /**
