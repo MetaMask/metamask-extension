@@ -3,6 +3,9 @@ import { DEFAULT_BTC_CONVERSION_RATE } from '../../../constants';
 
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 
+const BTC_NATIVE_CAIP_ASSET_ID =
+  'bip122:000000000019d6689c085ae165831e93/slip44:0';
+
 export const mockCurrencyExchangeRates = (mockServer: Mockttp) =>
   mockServer
     .forGet(`${PRICE_API_URL}/v1/exchange-rates`)
@@ -133,17 +136,43 @@ export const mockSolanaSpotPrices = (mockServer: Mockttp) =>
       'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501': null,
     });
 
-// Mock for BTC spot prices (used for bridge/swap)
+/**
+ * Mock GET /v3/spot-prices for Bitcoin native BTC.
+ *
+ * Handles requests such as:
+ * `/v3/spot-prices?assetIds=bip122:000000000019d6689c085ae165831e93/slip44:0&vsCurrency=usd&includeMarketData=true&cacheOnly=false`
+ *
+ * @param mockServer - The mock server instance.
+ */
 export const mockBtcSpotPrices = (mockServer: Mockttp) =>
   mockServer
     .forGet(`${PRICE_API_URL}/v3/spot-prices`)
     .withQuery({
-      assetIds: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+      assetIds: BTC_NATIVE_CAIP_ASSET_ID,
       vsCurrency: 'usd',
+      includeMarketData: 'true',
     })
     .thenJson(200, {
-      'bip122:000000000019d6689c085ae165831e93/slip44:0': {
-        usd: 82661,
+      [BTC_NATIVE_CAIP_ASSET_ID]: {
+        id: 'bitcoin',
+        price: DEFAULT_BTC_CONVERSION_RATE,
+        marketCap: 1836592437357,
+        allTimeHigh: 126080,
+        allTimeLow: 67.81,
+        totalVolume: 45216146754,
+        high1d: 92435,
+        low1d: 90129,
+        circulatingSupply: 19975290,
+        dilutedMarketCap: 1836592437357,
+        marketCapPercentChange1d: 1.72888,
+        priceChange1d: 1535.29,
+        pricePercentChange1h: -0.09840133404969334,
+        pricePercentChange1d: 1.6980683447716627,
+        pricePercentChange7d: -1.6285705945180806,
+        pricePercentChange14d: 4.795747124043681,
+        pricePercentChange30d: 2.1388997840239408,
+        pricePercentChange200d: -14.088182161660676,
+        pricePercentChange1y: -1.0484081200296924,
       },
     });
 

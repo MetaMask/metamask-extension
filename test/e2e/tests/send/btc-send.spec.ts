@@ -10,80 +10,20 @@ import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
-import { Driver } from '../../webdriver/driver';
 import {
-  mockAccountsApiV2WithBtc,
-  mockAccountsApiV5WithBtc,
-  mockBtcSpotPrices,
   mockExchangeRates,
   mockCurrencyExchangeRates,
   mockFiatExchangeRates,
   mockInitialFullScan,
+  mockBtcSpotPrices,
   mockSolanaSpotPrices,
   mockSupportedVsCurrencies,
+  mockTokensV3Assets,
+  mockTokensV2SupportedNetworks,
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 
-const isUnifiedAssetsEnabled = true;
-
-const BTC_CHAIN_CAIP_ID = 'bip122:000000000019d6689c085ae165831e93';
-const BTC_CAIP_ASSET_ID = `${BTC_CHAIN_CAIP_ID}/slip44:0`;
-const BTC_BALANCE_ASSERTION_TIMEOUT_MS = 60000;
-
-const BTC_V3_ASSET_ENTRY = {
-  assetId: BTC_CAIP_ASSET_ID,
-  name: 'Bitcoin',
-  symbol: 'BTC',
-  decimals: 8,
-  iconUrl:
-    'https://static.cx.metamask.io/api/v1/tokenIcons/bip122/000000000019d6689c085ae165831e93/slip44/0.png',
-  coingeckoId: 'bitcoin',
-  type: 'native',
-};
-
-/**
- * Overrides global mock-e2e `supportedNetworks` (registered after testSpecificMock)
- * so TokenDataSource treats Bitcoin as supported and fetches BTC metadata.
- * @param mockServer
- */
-function mockBtcSendTokensSupportedNetworks(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-    .asPriority(99)
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        BTC_CHAIN_CAIP_ID,
-        'eip155:1',
-        'eip155:1337',
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      ],
-      partialSupport: [],
-    });
-}
-
-/**
- * Overrides global mock-e2e `/v3/assets` (registered after testSpecificMock) so
- * BTC metadata is returned only when requested. Returning BTC for every request
- * breaks unrelated asset metadata fetches and prevents balances from rendering.
- * @param mockServer
- */
-function mockBtcSendTokensV3Assets(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
-    .asPriority(99)
-    .always()
-    .thenCallback((request) => {
-      const url = new URL(request.url);
-      const assetIds = url.searchParams.getAll('assetIds').join(',');
-
-      if (!assetIds.includes(BTC_CHAIN_CAIP_ID)) {
-        return { statusCode: 200, json: [] };
-      }
-
-      return { statusCode: 200, json: [BTC_V3_ASSET_ENTRY] };
-    });
-}
+const BTC_CAIP_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 
 const BTC_SEND_ASSETS_CONTROLLER_FIXTURE = {
   assetsInfo: {
@@ -99,34 +39,13 @@ const BTC_SEND_ASSETS_CONTROLLER_FIXTURE = {
 };
 
 function buildBtcSendFixtures() {
-  if (!isUnifiedAssetsEnabled) {
-    return new FixtureBuilderV2().build();
-  }
   return new FixtureBuilderV2()
     .withAssetsController(BTC_SEND_ASSETS_CONTROLLER_FIXTURE)
     .build();
 }
 
-async function waitForBtcBalanceOnHomepage(driver: Driver): Promise<void> {
-  const tokensTab = new TokensTab(driver);
-  await tokensTab.checkTokenExistsInList(
-    'Bitcoin',
-    `${DEFAULT_BTC_BALANCE} BTC`,
-    {
-      timeout: BTC_BALANCE_ASSERTION_TIMEOUT_MS,
-      amountTimeout: BTC_BALANCE_ASSERTION_TIMEOUT_MS,
-    },
-  );
-}
-
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
-    ...(isUnifiedAssetsEnabled
-      ? [
-          mockAccountsApiV2WithBtc(mockServer),
-          mockAccountsApiV5WithBtc(mockServer),
-        ]
-      : []),
     await mockInitialFullScan(mockServer),
     await mockExchangeRates(mockServer),
     await mockCurrencyExchangeRates(mockServer),
@@ -135,9 +54,9 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceMulti(mockServer),
     await mockPriceMultiBtcAndSol(mockServer),
-    mockBtcSendTokensSupportedNetworks(mockServer),
-    mockBtcSendTokensV3Assets(mockServer),
     await mockBtcSpotPrices(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -158,11 +77,12 @@ describe('BTC Account - Send', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
-        await homePage.checkPageIsLoaded();
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkPageIsLoaded();
-        await waitForBtcBalanceOnHomepage(driver);
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
+        );
 
         const sendPage = new SendPage(driver);
         await homePage.startSendFlow();
@@ -187,11 +107,12 @@ describe('BTC Account - Send', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
-        await homePage.checkPageIsLoaded();
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkPageIsLoaded();
-        await waitForBtcBalanceOnHomepage(driver);
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
+        );
 
         const sendPage = new SendPage(driver);
         await homePage.startSendFlow();
@@ -222,11 +143,12 @@ describe('BTC Account - Send', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
-        await homePage.checkPageIsLoaded();
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkPageIsLoaded();
-        await waitForBtcBalanceOnHomepage(driver);
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
+        );
 
         const sendPage = new SendPage(driver);
         const activityTab = new ActivityTab(driver);
