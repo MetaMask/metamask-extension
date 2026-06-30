@@ -221,7 +221,7 @@ const ChainlistNetworkPicker = ({
           return (
             <button
               className={`flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed ${
-                isExistingNetwork ? 'bg-background-alternative' : ''
+                isExistingNetwork ? 'bg-muted' : ''
               }`}
               data-testid="networks-page-chainlist-network"
               key={`${network.chainId}-${network.name}`}
@@ -345,6 +345,21 @@ export const NetworksPage = () => {
 
   const handleChainlistNetworkSelect = useCallback(
     (network: ChainlistNetwork) => {
+      const chainIdHex = getHexChainId(network.chainId);
+      const existingNetwork =
+        evmNetworks[chainIdHex as keyof typeof evmNetworks];
+
+      if (existingNetwork) {
+        dispatch(
+          setEditedNetwork({
+            chainId: chainIdHex,
+            nickname: existingNetwork.name,
+          }),
+        );
+        setView('edit');
+        return;
+      }
+
       const rpcEndpoints = getUsableUrls(network.rpc).map((url) => ({
         url,
         type: RpcEndpointType.Custom,
@@ -366,7 +381,7 @@ export const NetworksPage = () => {
       });
       setView('add');
     },
-    [networkFormState, setView],
+    [dispatch, evmNetworks, networkFormState, setView],
   );
 
   const handleAddRPC = useCallback(

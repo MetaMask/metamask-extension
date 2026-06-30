@@ -295,12 +295,17 @@ describe('NetworksPage', () => {
     });
 
     expect(await screen.findByText('Gnosis')).toBeInTheDocument();
-    expect(screen.getByText('Gnosis').closest('button')).toHaveClass(
-      'bg-background-alternative',
-    );
+    const gnosisButton = screen.getByText('Gnosis').closest('button');
+    expect(gnosisButton).toHaveClass('bg-muted');
     expect(
       screen.getByTestId('networks-page-chainlist-added-pill'),
     ).toHaveTextContent(messages.added.message);
+
+    fireEvent.click(gnosisButton as HTMLButtonElement);
+
+    expect(
+      await screen.findByText(messages.editNetwork.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the custom rpc page with footer actions and adds the rpc', async () => {
