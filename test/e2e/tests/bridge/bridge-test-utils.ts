@@ -104,7 +104,7 @@ const BRIDGE_NATIVE_ETH_ASSETS_INFO = {
     symbol: 'ETH',
     type: 'native',
   },
-} as const;
+};
 
 const getBridgeAssetsControllerFixture = (
   assetsBalance: ReturnType<typeof getBridgeFixtureAssetsBalance>,

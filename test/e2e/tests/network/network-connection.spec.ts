@@ -229,7 +229,7 @@ networkConfigs.forEach((config) => {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: buildNetworkConnectionFixtures(config),
           title: this.test?.fullTitle(),
-          testSpecificMock: (mockServer) =>
+          testSpecificMock: (mockServer: Mockttp) =>
             mockNetworkConnectionApis(mockServer, config),
         },
         async ({ driver }: { driver: Driver }) => {

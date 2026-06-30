@@ -43,9 +43,6 @@ export const login = async (
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
-  console.log('Waiting for 10 seconds=====');
-  await driver.delay(10000);
-  console.log('Waiting for 10 seconds=====');
   if (options?.waitForNonEvmAccounts !== false) {
     await homePage.waitForNonEvmAccountsLoaded();
   }
