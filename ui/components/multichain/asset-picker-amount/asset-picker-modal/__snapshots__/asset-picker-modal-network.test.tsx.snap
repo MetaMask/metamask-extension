@@ -26,7 +26,7 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)] mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -97,7 +97,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)] mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -260,7 +260,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)] mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative mm-box--rounded-lg"
           role="dialog"
         >
           <header

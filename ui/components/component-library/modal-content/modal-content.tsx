@@ -124,7 +124,6 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             className={classnames(
               'mm-modal-content__dialog',
               `mm-modal-content__dialog--size-${size}`,
-              'border border-[color-mix(in_srgb,var(--brand-colors-grey-grey000)_4%,transparent)]',
               modalDialogProps?.className,
             )}
           >
