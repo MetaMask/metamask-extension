@@ -61,13 +61,17 @@ export const ETH_CONVERSION_RATE_USD = 1;
 export const BRIDGE_EXPECTED_FIAT_BALANCE_USD = 225_730.11;
 
 /** Mainnet native ETH after HST deploy gas on the local Anvil node. */
-export const BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST = 24.998;
+export const BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST = 24.997797036;
 
 export const BRIDGE_L2_ETH_BALANCE_PER_CHAIN = 25;
 
-/** Total native ETH across mainnet + Linea + Arbitrum in standard bridge fixtures. */
+/**
+ * Total native ETH across mainnet + Linea + Arbitrum in standard bridge fixtures.
+ * All 3 chains read from the same Anvil node via RpcDataSource (L2 Infura hosts
+ * are blocklisted → redirected to localhost:8545), so all converge to the same balance.
+ */
 export const BRIDGE_TOTAL_ETH_BALANCE_HUMAN =
-  BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST + BRIDGE_L2_ETH_BALANCE_PER_CHAIN * 2;
+  BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST * 3;
 
 /** Total native ETH on mainnet + Linea + Arbitrum when each chain has 25 ETH (L2 bridge E2E). */
 export const BRIDGE_L2_TOTAL_ETH_BALANCE_HUMAN =

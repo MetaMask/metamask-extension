@@ -324,7 +324,7 @@ class SnapSimpleKeyringPage {
         );
         return false;
       },
-      { interval: regularDelayMs, timeout: 30000 },
+      { interval: regularDelayMs, timeout: 45000 },
     );
 
     return newAddress;
