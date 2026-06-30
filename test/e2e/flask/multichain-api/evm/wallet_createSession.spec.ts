@@ -11,6 +11,7 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { login } from '../../../page-objects/flows/login.flow';
@@ -101,6 +102,7 @@ describe('Multichain API', function () {
             validateBalance: false,
             waitForNonEvmAccounts: false,
           });
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -435,6 +437,7 @@ describe('Multichain API', function () {
             validateBalance: false,
             waitForNonEvmAccounts: false,
           });
+          new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
