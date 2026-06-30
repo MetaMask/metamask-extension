@@ -21,7 +21,6 @@ export async function checkHyperliquidHasReferralCode(
     }
 
     const data = await response.json();
-    console.log('amelie', data);
 
     // `referredBy` is non-null when the user has already been referred
     return Boolean(data?.referredBy);
