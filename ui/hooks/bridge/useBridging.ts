@@ -21,6 +21,7 @@ import {
 } from '../../ducks/bridge/selectors';
 import {
   resetInputFields,
+  setBridgeLocation,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
@@ -63,7 +64,7 @@ const useBridging = () => {
    */
   const openBridgeExperience = useCallback(
     (
-      location: MetaMetricsSwapsEventSource | 'Carousel',
+      location: MetaMetricsSwapsEventSource,
       sourceToken?: {
         symbol: string;
         address: string;
@@ -78,6 +79,7 @@ const useBridging = () => {
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
       });
+      dispatch(setBridgeLocation(location));
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
           location: location as never,
