@@ -22,7 +22,7 @@ describe('Sort By Networks Filter', function (this: Suite) {
         await login(driver, { validateBalance: false });
         const tokensTab = new TokensTab(driver);
 
-        await driver.waitForSelector('[data-testid="sort-by-networks"]');
+        await tokensTab.waitForNetworksFilter();
         await tokensTab.waitUntilFilterLabelIs('Network: Ethereum');
       },
     );

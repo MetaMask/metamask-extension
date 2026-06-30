@@ -255,6 +255,11 @@ class TokensTab extends HomePage {
     return text;
   }
 
+  async waitForNetworksFilter(): Promise<void> {
+    console.log(`Waiting for the network filter`);
+    await this.driver.waitForSelector(this.networksToggle);
+  }
+
   async getNumberOfAssets(): Promise<number> {
     console.log(`Returning the total number of asset items in the token list`);
     const assets = await this.driver.findElements(this.tokenListItem);
