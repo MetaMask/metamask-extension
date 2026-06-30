@@ -5,6 +5,7 @@ import { APP_INIT_LIVENESS_METHOD } from '../../shared/constants/ui-initializati
 // "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
 // small we won't ever have a problem with these two files being "split".
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
+import { waitUntil } from './lib/service-worker-wait-until';
 
 const { chrome } = globalThis;
 
@@ -28,9 +29,18 @@ globalThis.stateHooks.lazyListener = lazyListener;
 let scriptsLoadInitiated = false;
 const testMode = process.env.IN_TEST;
 
+const keepAliveEstablished = Promise.withResolvers();
+
+globalThis.stateHooks.notifyServiceWorkerKeepAliveEstablished =
+  keepAliveEstablished.resolve;
+
 const loadTimeLogs = [];
 // eslint-disable-next-line import-x/unambiguous
 function tryImport(...fileNames) {
+  if (fileNames.length === 0) {
+    return;
+  }
+
   try {
     const startTime = new Date().getTime();
     // eslint-disable-next-line
@@ -43,13 +53,10 @@ function tryImport(...fileNames) {
       startTime,
       endTime,
     });
-
-    return true;
   } catch (e) {
     console.error(e);
+    throw e;
   }
-
-  return false;
 }
 
 function importAllScripts() {
@@ -57,7 +64,6 @@ function importAllScripts() {
   if (scriptsLoadInitiated) {
     return;
   }
-  scriptsLoadInitiated = true;
   const files = [];
 
   // In testMode individual files are imported, this is to help capture load time stats
@@ -116,6 +122,8 @@ function importAllScripts() {
   // Import all required resources
   tryImport(...files);
 
+  scriptsLoadInitiated = true;
+
   const endImportScriptsTime = Date.now();
 
   // for performance metrics/reference
@@ -144,9 +152,24 @@ function importAllScripts() {
   }
 }
 
+function waitUntilImportAllScripts() {
+  return waitUntil(
+    (async () => {
+      if (!scriptsLoadInitiated) {
+        importAllScripts();
+      }
+      await keepAliveEstablished.promise;
+    })(),
+  ).catch((error) => {
+    console.error('MetaMask service worker startup failed', error);
+  });
+}
+
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
-self.addEventListener('install', importAllScripts);
+self.addEventListener('install', (event) => {
+  event.waitUntil(waitUntilImportAllScripts());
+});
 
 // listen for connection events from other contexts, and respond to liveness
 // checks, and ping them to let them know we're listening.
@@ -185,5 +208,5 @@ chrome.runtime.onConnect.addListener((port) => {
  */
 // eslint-disable-next-line no-undef
 if (self.serviceWorker.state === 'activated') {
-  importAllScripts();
+  waitUntilImportAllScripts();
 }

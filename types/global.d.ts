@@ -287,6 +287,12 @@ type StateHooks = {
    */
   lazyListener?: ExtensionLazyListener<typeof globalThis.chrome>;
   /**
+   * Called by `background.js` once MV3 keep-alive has started (or when startup
+   * will not start keep-alive). Used by the service worker entry to extend its
+   * lifetime until keep-alive is established.
+   */
+  notifyServiceWorkerKeepAliveEstablished?: () => void;
+  /**
    * Reload the extension. This is used to trigger extension reload from a page context by E2E
    * tests.
    */

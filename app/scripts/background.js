@@ -755,6 +755,25 @@ function saveTimestamp() {
   browser.storage.session.set({ timestamp });
 }
 
+function notifyServiceWorkerKeepAliveEstablished() {
+  globalThis.stateHooks.notifyServiceWorkerKeepAliveEstablished?.();
+}
+
+function startServiceWorkerKeepAlive(enableTimestampSave) {
+  if (!isManifestV3) {
+    return;
+  }
+
+  if (enableTimestampSave !== false) {
+    const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+    saveTimestamp();
+    setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+  }
+
+  notifyServiceWorkerKeepAliveEstablished();
+}
+
 /**
  * @typedef {import('@metamask/transaction-controller').TransactionMeta} TransactionMeta
  */
@@ -849,14 +868,9 @@ async function initialize(backup) {
   }
 
   if (isManifestV3) {
-    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-    // miliseconds. This keeps the service worker alive.
-    if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
-      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-      saveTimestamp();
-      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
-    }
+    startServiceWorkerKeepAlive(
+      initState.PreferencesController?.enableMV3TimestampSave,
+    );
 
     const sessionData = await browser.storage.session.get([
       'isFirstMetaMaskControllerSetup',
@@ -2598,6 +2612,7 @@ async function initBackground(backup) {
   } catch (error) {
     log.error(error);
     rejectInitialization(error);
+    notifyServiceWorkerKeepAliveEstablished();
   }
 }
 /**
@@ -2606,6 +2621,7 @@ async function initBackground(backup) {
  */
 async function initOrRestoreBackground() {
   if (process.env.SKIP_BACKGROUND_INITIALIZATION) {
+    notifyServiceWorkerKeepAliveEstablished();
     return;
   }
 

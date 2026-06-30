@@ -3,6 +3,7 @@
 import './scripts/load/bootstrap';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
+import { waitUntil } from './scripts/lib/service-worker-wait-until';
 
 const { chrome } = globalThis;
 
@@ -18,17 +19,23 @@ globalThis.stateHooks.lazyListener = lazyListener;
 
 let runImportScriptsInitiated = false;
 
+const keepAliveEstablished = Promise.withResolvers<void>();
+globalThis.stateHooks.notifyServiceWorkerKeepAliveEstablished =
+  keepAliveEstablished.resolve;
+
 async function runImportScripts() {
   // Bail if we've already run importScripts
   if (runImportScriptsInitiated) {
+    await keepAliveEstablished.promise;
     return;
   }
-  runImportScriptsInitiated = true;
 
   const startImportScriptsTime = performance.now();
 
   // eslint-disable-next-line import-x/extensions
   await import('./scripts/background.js');
+
+  runImportScriptsInitiated = true;
 
   const endImportScriptsTime = performance.now();
 
@@ -38,11 +45,21 @@ async function runImportScripts() {
       (endImportScriptsTime - startImportScriptsTime) / 1000
     } seconds`,
   );
+
+  await keepAliveEstablished.promise;
+}
+
+function waitUntilRunImportScripts() {
+  return waitUntil(runImportScripts()).catch((error) => {
+    console.error('MetaMask service worker startup failed', error);
+  });
 }
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
-self.addEventListener('install', runImportScripts);
+self.addEventListener('install', (event) => {
+  event.waitUntil(waitUntilRunImportScripts());
+});
 
 // listen for connection events from other contexts, and respond to liveness
 // checks, and ping them to let them know we're listening.
@@ -82,5 +99,5 @@ chrome.runtime.onConnect.addListener((port) => {
 // @ts-expect-error - typescript doesn't know about this
 // eslint-disable-next-line no-undef
 if (self.serviceWorker.state === 'activated') {
-  runImportScripts();
+  waitUntilRunImportScripts();
 }
