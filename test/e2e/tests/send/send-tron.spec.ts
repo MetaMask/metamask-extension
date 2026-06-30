@@ -37,11 +37,7 @@ describe('Send Tron', function () {
         // Tron account is created by a snap at runtime so the balance cannot
         // be pre-seeded — allow extra time for the v5 API fetch on slow CI.
         await driver.refresh();
-        await tokensTab.checkExpectedTokenBalanceIsDisplayed(
-          '6.072',
-          'TRX',
-          45000,
-        );
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('6.072', 'TRX');
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );

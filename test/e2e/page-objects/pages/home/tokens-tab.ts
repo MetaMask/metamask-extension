@@ -597,9 +597,16 @@ class TokensTab extends HomePage {
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
+    timeout?: number,
   ): Promise<void> {
     await this.expandLowValueAssetsIfPresent();
-    await this.checkTokenAmountIsDisplayed(`${expectedTokenBalance} ${symbol}`);
+    const text = `${expectedTokenBalance} ${symbol}`;
+    console.log(`Waiting for token amount ${text} to be displayed`);
+    await this.driver.waitForSelector(
+      { css: this.tokenAmountValue, text },
+      timeout === undefined ? {} : { timeout },
+    );
+    console.log(`Token amount ${text} was found`);
   }
 
   /**
