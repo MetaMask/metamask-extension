@@ -103,11 +103,11 @@ function PaySelectorContent({
 }
 
 export type PayWithRowProps = {
-  rowSize?: ConfirmInfoRowSize;
+  variant?: ConfirmInfoRowSize;
 };
 
 export function PayWithRow({
-  rowSize = ConfirmInfoRowSize.Small,
+  variant = ConfirmInfoRowSize.Small,
 }: PayWithRowProps = {}) {
   const {
     displayToken,
@@ -133,7 +133,7 @@ export function PayWithRow({
         ownerId={ownerId}
         data-testid="pay-with-row"
         label={label}
-        rowVariant={rowSize}
+        rowVariant={variant}
       >
         <Box
           data-testid="pay-with-pill"
