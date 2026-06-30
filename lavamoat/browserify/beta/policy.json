@@ -3550,11 +3550,12 @@
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
-        "addEventListener": true,
+        "addEventListener": false,
         "clearInterval": true,
         "clearTimeout": true,
         "console": true,
-        "document": true,
+        "document": false,
+        "document.visibilityState": true,
         "navigator": true,
         "removeEventListener": true,
         "setInterval": true,
