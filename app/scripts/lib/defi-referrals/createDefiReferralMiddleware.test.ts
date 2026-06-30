@@ -4,8 +4,8 @@ import type { Json } from '@metamask/utils';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
-} from '../../../shared/constants/defi-referrals';
-import { SECOND } from '../../../shared/constants/time';
+} from '../../../../shared/constants/defi-referrals';
+import { SECOND } from '../../../../shared/constants/time';
 import type { ExtendedJSONRPCRequest } from './createDefiReferralMiddleware';
 
 const mockLogError = jest.fn();
