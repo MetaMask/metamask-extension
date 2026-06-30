@@ -474,6 +474,9 @@
     "ui/components/multichain/receive-modal/receive-modal.test.js": {
       "React: DOM nesting violations": 1
     },
+    "ui/components/multichain/token-list-item/token-list-item.test.tsx": {
+      "MetaMask: Background connection not initialized": 2
+    },
     "ui/components/multichain/token-management-cell/token-management-cell.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, useCallback, useContext } from 'react';
+import React, { Component, useContext } from 'react';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
@@ -12,7 +12,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { SubjectType } from '@metamask/permission-controller';
 import { Box } from '@metamask/design-system-react';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import PermissionsConnectFooter from '../permissions-connect-footer';
@@ -303,29 +303,9 @@ class PermissionPageContainerBase extends Component {
 
 function PermissionPageContainer(props) {
   const t = useContext(I18nContext);
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const trackEventLegacy = useCallback(
-    (payload, options) => {
-      let builder = createEventBuilder(payload.event);
-      if (payload.category) {
-        builder = builder.addCategory(payload.category);
-      }
-      if (payload.properties) {
-        builder = builder.addProperties(payload.properties);
-      }
-      if (payload.sensitiveProperties) {
-        builder = builder.addSensitiveProperties(payload.sensitiveProperties);
-      }
-      trackEvent(builder.build(options));
-    },
-    [createEventBuilder, trackEvent],
-  );
+  const { trackEvent } = useContext(MetaMetricsContext);
   return (
-    <PermissionPageContainerBase
-      {...props}
-      t={t}
-      trackEvent={trackEventLegacy}
-    />
+    <PermissionPageContainerBase {...props} t={t} trackEvent={trackEvent} />
   );
 }
 

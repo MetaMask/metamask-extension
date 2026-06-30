@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getErrorMessage } from '../../../../shared/lib/error';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventAccountImportType,
   MetaMetricsEventAccountType,
@@ -11,6 +10,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { Box, ButtonLink, Label, Text } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   BlockSize,
   FontWeight,
@@ -31,7 +31,7 @@ import PrivateKeyImportView from './private-key';
 export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
@@ -91,17 +91,16 @@ export const ImportAccount = ({ onActionComplete }) => {
       ? MetaMetricsEventName.AccountAdded
       : MetaMetricsEventName.AccountAddFailed;
 
-    trackEvent(
-      createEventBuilder(event)
-        .addCategory(MetaMetricsEventCategory.Accounts)
-        .addProperties({
-          account_type: MetaMetricsEventAccountType.Imported,
-          account_import_type: accountImportType,
-          hd_entropy_index: hdEntropyIndex,
-          is_suggested_name: true,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Imported,
+        account_import_type: accountImportType,
+        hd_entropy_index: hdEntropyIndex,
+        is_suggested_name: true,
+      },
+    });
   }
 
   function getLoadingMessage(strategy) {

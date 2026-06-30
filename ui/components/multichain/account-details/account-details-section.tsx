@@ -6,7 +6,6 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import QrCodeView from '../../ui/qr-code-view';
 
 import {
@@ -17,6 +16,7 @@ import {
   isAbleToExportAccount,
   isAbleToRevealSrp,
 } from '../../../helpers/utils/util';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -32,7 +32,7 @@ export const AccountDetailsSection = ({
   address: string;
   onExportClick: (str: string) => void;
 }) => {
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
@@ -56,20 +56,19 @@ export const AccountDetailsSection = ({
           isFullWidth
           className="mb-1"
           onClick={() => {
-            trackEvent(
-              createEventBuilder(MetaMetricsEventName.KeyExportSelected)
-                .addCategory(MetaMetricsEventCategory.Accounts)
-                .addProperties({
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  key_type: MetaMetricsEventKeyType.Pkey,
-                  location: 'Account Details Modal',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  hd_entropy_index: hdEntropyIndex,
-                })
-                .build(),
-            );
+            trackEvent({
+              category: MetaMetricsEventCategory.Accounts,
+              event: MetaMetricsEventName.KeyExportSelected,
+              properties: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Pkey,
+                location: 'Account Details Modal',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              },
+            });
             onExportClick('PrivateKey');
           }}
         >

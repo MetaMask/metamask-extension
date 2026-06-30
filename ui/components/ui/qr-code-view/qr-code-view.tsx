@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
 import { isHexPrefixed } from 'ethereumjs-util';
 import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   IconColor,
   TextAlign,
@@ -34,7 +34,7 @@ function QrCodeView({
   accountName?: string;
   location?: string;
 }) {
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // useCopyToClipboard analysis: As of writing this, this is only used for public addresses
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
@@ -121,14 +121,13 @@ function QrCodeView({
         data-clipboard-text={checksummedAddress}
         onClick={() => {
           handleCopy(checksummedAddress);
-          trackEvent(
-            createEventBuilder(MetaMetricsEventName.PublicAddressCopied)
-              .addCategory(MetaMetricsEventCategory.Accounts)
-              .addProperties({
-                location,
-              })
-              .build(),
-          );
+          trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.PublicAddressCopied,
+            properties: {
+              location,
+            },
+          });
         }}
       >
         <Icon
