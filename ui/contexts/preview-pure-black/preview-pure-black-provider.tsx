@@ -11,6 +11,12 @@ import { useTheme } from '../../hooks/useTheme';
 
 const PREVIEW_PURE_BLACK_STORAGE_KEY = 'metamask-preview-pure-black';
 
+/**
+ * Pure black preview is only available in local development builds (`yarn start`).
+ */
+export const isPureBlackPreviewAvailable = (): boolean =>
+  process.env.METAMASK_DEBUG === 'true';
+
 type PreviewPureBlackContextValue = {
   isPureBlackEnabled: boolean;
   setIsPureBlackEnabled: (enabled: boolean) => void;
@@ -50,7 +56,9 @@ export const PreviewPureBlackProvider = ({
   }, []);
 
   const isPureBlackActive =
-    theme === ThemeType.dark && isPureBlackEnabled;
+    isPureBlackPreviewAvailable() &&
+    theme === ThemeType.dark &&
+    isPureBlackEnabled;
 
   const contextValue = useMemo(
     () => ({

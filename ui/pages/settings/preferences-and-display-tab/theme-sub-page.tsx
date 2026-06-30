@@ -25,7 +25,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useTheme } from '../../../hooks/useTheme';
-import { usePreviewPureBlack } from '../../../contexts/preview-pure-black/preview-pure-black-provider';
+import { usePreviewPureBlack, isPureBlackPreviewAvailable } from '../../../contexts/preview-pure-black/preview-pure-black-provider';
 import { THEME_OPTIONS } from './theme-utils';
 
 const ThemeSubPage = () => {
@@ -81,7 +81,7 @@ const ThemeSubPage = () => {
           </Box>
         );
       })}
-      {resolvedTheme === ThemeType.dark ? (
+      {isPureBlackPreviewAvailable() && resolvedTheme === ThemeType.dark ? (
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
