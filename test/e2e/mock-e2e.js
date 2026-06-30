@@ -1553,7 +1553,7 @@ async function setupMocking(
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
-  // Default: 25 ETH native per requested chain for the default fixture account. Override via
+  // Default: 25 ETH native per requested EVM account/chain. Override via
   // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a custom fiat total.
   await server
     .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
@@ -1584,11 +1584,14 @@ async function setupMocking(
 
       const balances = [];
       for (const id of accountIds) {
-        if (!id.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)) {
+        const parts = id.split(':');
+        if (parts[0] !== 'eip155' || parts.length < 3) {
           continue;
         }
-        const parts = id.split(':');
         const chainRef = parts[1];
+        const isDefaultFixtureAccount = id
+          .toLowerCase()
+          .includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE);
         let nativeBalance = '25';
         if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
@@ -1606,7 +1609,11 @@ async function setupMocking(
           balance: nativeBalance,
         });
 
-        if (chainRef === '1' && mainnetAdditional.length > 0) {
+        if (
+          chainRef === '1' &&
+          mainnetAdditional.length > 0 &&
+          isDefaultFixtureAccount
+        ) {
           for (const row of mainnetAdditional) {
             if (row?.assetId && row.balance !== undefined) {
               balances.push({

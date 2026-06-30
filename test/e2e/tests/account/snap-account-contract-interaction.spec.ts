@@ -33,6 +33,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         },
         fixtures: new FixtureBuilderV2()
           .withSnapsPrivacyWarningAlreadyShown()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp({
             account: ACCOUNT_2,
           })
@@ -63,6 +64,10 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         // Import snap account with private key on snap simple keyring page.
         await snapSimpleKeyringPage.importAccountWithPrivateKey(
           PRIVATE_KEY_TWO,
+        );
+        await (localNodes[0] as Anvil).setAccountBalance(
+          ACCOUNT_2,
+          '25000000000000000000',
         );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
