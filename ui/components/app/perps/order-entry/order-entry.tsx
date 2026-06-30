@@ -19,6 +19,7 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { getDisplaySymbol } from '../utils';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -211,6 +212,76 @@ export const OrderEntry = ({
           : t('perpsOpenShort', [getDisplaySymbol(asset)]);
     }
   }, [mode, isLong, asset, t]);
+
+  // Submit guards for the in-form submit button (used by the expanded trade
+  // view). The full order-entry page renders OrderEntry with
+  // showSubmitButton={false} and owns its own disabled button, so without these
+  // the expanded view's internal button had no validation and could submit an
+  // invalid size — e.g. a $9 ("09") order the order-entry page would reject.
+  // These mirror the page's isBelowMinOrderSize / isInsufficientFunds /
+  // isLimitPriceInvalid checks so both surfaces behave the same.
+  const orderUsdAmount = useMemo(
+    () => Number.parseFloat(formState.amount.replace(/,/gu, '')) || 0,
+    [formState.amount],
+  );
+
+  const isBelowMinOrderSize = useMemo(() => {
+    if (formState.type !== 'market' || (mode !== 'new' && mode !== 'modify')) {
+      return false;
+    }
+    // Modify with an empty amount is the TP/SL-only path — exempt.
+    if (mode === 'modify' && formState.amount.replace(/,/gu, '').trim() === '') {
+      return false;
+    }
+    return orderUsdAmount < PERPS_MIN_MARKET_ORDER_USD;
+  }, [formState.type, formState.amount, mode, orderUsdAmount]);
+
+  const isInsufficientFunds = useMemo(() => {
+    if (mode === 'close' || orderUsdAmount <= 0 || formState.leverage <= 0) {
+      return false;
+    }
+    return orderUsdAmount / formState.leverage > availableBalance;
+  }, [mode, orderUsdAmount, formState.leverage, availableBalance]);
+
+  const isLimitPriceInvalid = useMemo(() => {
+    if (formState.type !== 'limit') {
+      return false;
+    }
+    const cleaned = formState.limitPrice?.replaceAll(',', '') ?? '';
+    const parsed = Number.parseFloat(cleaned);
+    return !cleaned || Number.isNaN(parsed) || parsed <= 0;
+  }, [formState.type, formState.limitPrice]);
+
+  const isSubmitDisabled = useMemo(() => {
+    if (mode === 'close') {
+      return currentPrice <= 0 || (closePercent ?? 100) <= 0;
+    }
+    return (
+      currentPrice <= 0 ||
+      isBelowMinOrderSize ||
+      isInsufficientFunds ||
+      isLimitPriceInvalid
+    );
+  }, [
+    mode,
+    currentPrice,
+    closePercent,
+    isBelowMinOrderSize,
+    isInsufficientFunds,
+    isLimitPriceInvalid,
+  ]);
+
+  const resolvedSubmitButtonText = useMemo(() => {
+    if (mode !== 'close') {
+      if (isBelowMinOrderSize) {
+        return t('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]);
+      }
+      if (isInsufficientFunds) {
+        return t('insufficientFundsSend');
+      }
+    }
+    return submitButtonText;
+  }, [mode, isBelowMinOrderSize, isInsufficientFunds, submitButtonText, t]);
 
   // Get position size for close mode
   const positionSize = existingPosition?.size ?? '0';
@@ -432,15 +503,17 @@ export const OrderEntry = ({
             variant={ButtonVariant.Primary}
             size={ButtonSize.Md}
             onClick={handleSubmit}
+            disabled={isSubmitDisabled}
             className={twMerge(
               'w-full',
               isLong
                 ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
                 : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
+              isSubmitDisabled && 'opacity-70 cursor-not-allowed',
             )}
             data-testid="order-entry-submit-button"
           >
-            {submitButtonText}
+            {resolvedSubmitButtonText}
           </Button>
         </Box>
       )}
