@@ -33,8 +33,8 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../../../ducks/bridge/utils', () => ({
-  ...jest.requireActual('../../../ducks/bridge/utils'),
+jest.mock('../../ducks/bridge/utils', () => ({
+  ...jest.requireActual('../../ducks/bridge/utils'),
   getTxGasEstimates: jest.fn(() => ({
     baseAndPriorityFeePerGas: '0',
     maxFeePerGas: '0x1036640',
@@ -43,10 +43,10 @@ jest.mock('../../../ducks/bridge/utils', () => ({
 }));
 
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
-jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => {
+jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
   return {
     ...jest.requireActual(
-      '../../../contexts/hardware-wallets/HardwareWalletContext',
+      '../../contexts/hardware-wallets/HardwareWalletContext',
     ),
     useHardwareWalletActions: () => ({
       ensureDeviceReady: () => mockEnsureDeviceReady(),
@@ -54,8 +54,8 @@ jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => {
   };
 });
 
-jest.mock('../../../store/actions', () => {
-  const original = jest.requireActual('../../../store/actions');
+jest.mock('../../store/actions', () => {
+  const original = jest.requireActual('../../store/actions');
   return {
     ...original,
     addTransaction: jest.fn(),
@@ -98,10 +98,8 @@ const MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID = {
   },
 };
 
-jest.mock('../../../../shared/lib/selectors/networks', () => {
-  const original = jest.requireActual(
-    '../../../../shared/lib/selectors/networks',
-  );
+jest.mock('../../../shared/lib/selectors/networks', () => {
+  const original = jest.requireActual('../../../shared/lib/selectors/networks');
   return {
     ...original,
     getSelectedNetworkClientId: () => 'mainnet',
@@ -132,8 +130,8 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
   };
 });
 
-jest.mock('../../../selectors', () => {
-  const original = jest.requireActual('../../../selectors');
+jest.mock('../../selectors', () => {
+  const original = jest.requireActual('../../selectors');
   return {
     ...original,
     getIsBridgeEnabled: () => true,
@@ -141,8 +139,8 @@ jest.mock('../../../selectors', () => {
     checkNetworkAndAccountSupports1559: () => true,
   };
 });
-jest.mock('../../../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
+jest.mock('../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/keyring'),
   getHardwareWalletType: jest.fn(() => undefined),
   isHardwareWallet: jest.fn(() => false),
 }));
@@ -202,6 +200,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       setBackgroundConnection({
         submitTx: submitTxSpy,
         submitIntent: submitIntentSpy,
+        getLocation: jest.fn().mockResolvedValue('Main View'),
         getStatePatches: jest.fn(),
         setEnabledAllPopularNetworks: jest.fn(),
         resetState: () => mockResetState(),
@@ -226,7 +225,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -279,7 +278,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -330,7 +329,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             },
           ],
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -406,18 +405,16 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(submitIntentSpy).toHaveBeenCalledWith({
         quoteResponse: quoteWithIntent,
         accountAddress: expect.any(String),
+        location: 'Main View',
         tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
@@ -452,15 +449,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
       expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
@@ -503,16 +497,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
         { state: {} },
       );
-      expect(mockUseNavigate).toHaveBeenNthCalledWith(
-        2,
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(2, DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
