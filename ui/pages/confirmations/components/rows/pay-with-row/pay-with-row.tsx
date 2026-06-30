@@ -102,7 +102,7 @@ function PaySelectorContent({
   );
 }
 
-export type PayWithRowProps = {
+type PayWithRowProps = {
   variant?: ConfirmInfoRowSize;
 };
 

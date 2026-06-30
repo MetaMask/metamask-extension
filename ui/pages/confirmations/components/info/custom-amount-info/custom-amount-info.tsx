@@ -18,11 +18,8 @@ import {
   PayTokenAmount,
   PayTokenAmountSkeleton,
 } from '../../pay-token-amount/pay-token-amount';
-import {
-  PayWithRow,
-  PayWithRowSkeleton,
-} from '../../rows/pay-with-row/pay-with-row';
-import { PayWithPill } from '../../pay-with-pill';
+import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
+import { PayWithPill, PayWithPillSkeleton } from '../../pay-with-pill';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
@@ -175,7 +172,6 @@ export function CustomAmountInfoSkeleton() {
       data-testid="custom-amount-info-skeleton"
     >
       <CenterContainerSkeleton />
-      <PayWithRowSkeleton />
     </Box>
   );
 }
@@ -260,6 +256,7 @@ function CenterContainerSkeleton() {
     >
       <CustomAmountSkeleton />
       <PayTokenAmountSkeleton />
+      <PayWithPillSkeleton />
     </Box>
   );
 }

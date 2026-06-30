@@ -48,6 +48,7 @@ jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
 }));
 jest.mock('../../pay-with-pill', () => ({
   PayWithPill: () => <div data-testid="pay-with-pill" />,
+  PayWithPillSkeleton: () => <div data-testid="pay-with-pill-skeleton" />,
 }));
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
   BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
@@ -484,6 +485,6 @@ describe('CustomAmountInfoSkeleton', () => {
     expect(getByTestId('custom-amount-info-skeleton')).toBeInTheDocument();
     expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
     expect(getByTestId('pay-token-amount-skeleton')).toBeInTheDocument();
-    expect(getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
+    expect(getByTestId('pay-with-pill-skeleton')).toBeInTheDocument();
   });
 });

@@ -20,7 +20,7 @@ export type PayWithDisplayToken = {
   balanceUsd: string;
 };
 
-export type PayWithToken = {
+type PayWithToken = {
   displayToken: PayWithDisplayToken | undefined;
   balanceUsdFormatted: string;
   label: string;
