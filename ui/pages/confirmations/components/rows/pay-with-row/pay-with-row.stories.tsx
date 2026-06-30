@@ -119,7 +119,7 @@ export const DefaultStory = () => <PayWithRow />;
 DefaultStory.storyName = 'Default';
 
 export const SmallStory = () => (
-  <PayWithRow variant={ConfirmInfoRowSize.Small} />
+  <PayWithRow rowSize={ConfirmInfoRowSize.Small} />
 );
 SmallStory.storyName = 'Small';
 

@@ -22,14 +22,11 @@ import {
   PayWithRow,
   PayWithRowSkeleton,
 } from '../../rows/pay-with-row/pay-with-row';
+import { PayWithPill } from '../../pay-with-pill';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
-import {
-  PercentageButtons,
-  PercentageButtonsSkeleton,
-} from '../../percentage-buttons';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
@@ -70,15 +67,14 @@ export type CustomAmountInfoProps = {
    * When true, it disables MetaMask Pay for transactions that just need custom amount input
    */
   disablePay?: boolean;
-  hasMax?: boolean;
   hidePayTokenAmount?: boolean;
   /**
    * When true, pre-fills the amount field with the max balance on load.
    */
   prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
-  overrideBottomContent?: ReactNode;
-  overrideCenterContent?: (amountHuman: string) => ReactNode;
+  overrideBottomContent?: (hasInput: boolean) => ReactNode;
+  overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
 };
 
 export const CustomAmountInfo = React.memo(
@@ -89,7 +85,6 @@ export const CustomAmountInfo = React.memo(
     currency,
     disableAutomaticToken,
     disablePay,
-    hasMax,
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
@@ -110,30 +105,19 @@ export const CustomAmountInfo = React.memo(
 
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
-    const {
-      amountFiat,
-      amountHuman,
-      updatePendingAmount,
-      updatePendingAmountPercentage,
-    } = useTransactionCustomAmount({
-      balanceUsdOverride,
-      currency,
-      disableUpdate,
-      prefillMaxOnLoad,
-    });
+    const { amountFiat, amountHuman, hasInput, updatePendingAmount } =
+      useTransactionCustomAmount({
+        balanceUsdOverride,
+        currency,
+        disableUpdate,
+        prefillMaxOnLoad,
+      });
 
     const handleAmountChange = useCallback(
       (value: string) => {
         updatePendingAmount(value);
       },
       [updatePendingAmount],
-    );
-
-    const handlePercentageClick = useCallback(
-      (percentage: number) => {
-        updatePendingAmountPercentage(percentage);
-      },
-      [updatePendingAmountPercentage],
     );
 
     if (!currentConfirmation || isAwaitingRequiredToken) {
@@ -153,20 +137,20 @@ export const CustomAmountInfo = React.memo(
           amountHuman={amountHuman}
           currency={currency}
           disablePay={disablePay}
-          hasMax={hasMax}
+          hasInput={hasInput}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
           onAmountChange={handleAmountChange}
-          onPercentageClick={handlePercentageClick}
           overrideCenterContent={overrideCenterContent}
         >
           {children}
         </CenterContainer>
         <AlertMessage />
-        {overrideBottomContent ?? (
+        {overrideBottomContent?.(hasInput) ?? (
           <BottomContainer
             amountFiat={amountFiat}
             disablePay={disablePay}
+            hasInput={hasInput}
             hasTokens={hasTokens}
           />
         )}
@@ -196,12 +180,11 @@ type CenterContainerProps = {
   children?: ReactNode;
   currency?: string;
   disablePay?: boolean;
-  hasMax?: boolean;
+  hasInput: boolean;
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
   onAmountChange: (value: string) => void;
-  onPercentageClick: (percentage: number) => void;
-  overrideCenterContent?: (amountHuman: string) => ReactNode;
+  overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
 };
 
 function CenterContainer({
@@ -211,13 +194,14 @@ function CenterContainer({
   children,
   currency,
   disablePay,
-  hasMax,
+  hasInput,
   hasTokens,
   hidePayTokenAmount,
   onAmountChange,
-  onPercentageClick,
   overrideCenterContent,
 }: CenterContainerProps) {
+  const showCenteredPayWith = !overrideCenterContent && disablePay !== true && hasTokens && !hasInput;
+
   return (
     <Box
       display={Display.Flex}
@@ -236,7 +220,7 @@ function CenterContainer({
       />
 
       {overrideCenterContent ? (
-        overrideCenterContent(amountHuman)
+        overrideCenterContent(amountHuman, hasInput)
       ) : (
         <Box
           display={Display.Flex}
@@ -251,9 +235,7 @@ function CenterContainer({
         </Box>
       )}
 
-      {hasTokens && hasMax && (
-        <PercentageButtons onPercentageClick={onPercentageClick} />
-      )}
+      {showCenteredPayWith && <PayWithPill />}
     </Box>
   );
 }
@@ -270,7 +252,6 @@ function CenterContainerSkeleton() {
     >
       <CustomAmountSkeleton />
       <PayTokenAmountSkeleton />
-      <PercentageButtonsSkeleton />
     </Box>
   );
 }
@@ -278,10 +259,12 @@ function CenterContainerSkeleton() {
 function BottomContainer({
   amountFiat,
   disablePay,
+  hasInput,
   hasTokens,
 }: {
   amountFiat: string;
   disablePay?: boolean;
+  hasInput: boolean;
   hasTokens: boolean;
 }) {
   const t = useI18nContext();
@@ -298,7 +281,7 @@ function BottomContainer({
       gap={2}
       paddingBottom={4}
     >
-      {disablePay !== true && hasTokens && <PayWithRow />}
+      {disablePay !== true && hasTokens && hasInput && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
           <BridgeFeeRow
