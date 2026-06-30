@@ -278,11 +278,11 @@ import {
   convertEnglishWordlistIndicesToCodepoints,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
 import {
-  checkGmxHasReferralCode,
   createDefiReferralMiddleware,
   ReferralTriggerType,
-} from './lib/defi-referrals';
+} from './lib/defi-referrals/createDefiReferralMiddleware';
 
 import {
   diffMap,

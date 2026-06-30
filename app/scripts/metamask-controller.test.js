@@ -89,10 +89,8 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import {
-  checkGmxHasReferralCode,
-  ReferralTriggerType,
-} from './lib/defi-referrals';
+import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
+import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -350,8 +348,7 @@ jest.mock('./lib/forwardRequestToSnap', () => ({
   forwardRequestToSnap: jest.fn().mockResolvedValue({}),
 }));
 
-jest.mock('./lib/defi-referrals', () => ({
-  ...jest.requireActual('./lib/defi-referrals'),
+jest.mock('./lib/defi-referrals/referral-onchain-check', () => ({
   checkGmxHasReferralCode: jest.fn().mockResolvedValue(false),
 }));
 

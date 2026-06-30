@@ -1,6 +1,6 @@
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { GMX_REFERRAL_STORAGE_ADDRESS } from '../../../../shared/constants/defi-referrals';
-import { checkGmxHasReferralCode } from './defi-referral-onchain-check';
+import { checkGmxHasReferralCode } from './referral-onchain-check';
 
 const WALLET_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_NETWORK_CLIENT_ID = 'arbitrum-mainnet';
