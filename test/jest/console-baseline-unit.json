@@ -1121,6 +1121,7 @@
       "error: Warning: React does not recognize": 1
     },
     "ui/pages/swaps/awaiting-signatures/awaiting-signatures.test.js": {
+      "MetaMask: Background connection not initialized": 1,
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/swaps/awaiting-swap/awaiting-swap.test.js": {
