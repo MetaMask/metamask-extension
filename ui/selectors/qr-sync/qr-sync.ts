@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { QrSyncControllerState } from '../../../app/scripts/controllers/qr-sync/types';
 import {
   QR_SYNC_PHASES,
