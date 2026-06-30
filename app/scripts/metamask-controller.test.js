@@ -351,6 +351,7 @@ jest.mock('./lib/forwardRequestToSnap', () => ({
 }));
 
 jest.mock('./lib/defi-referrals', () => ({
+  ...jest.requireActual('./lib/defi-referrals'),
   checkGmxHasReferralCode: jest.fn().mockResolvedValue(false),
 }));
 
