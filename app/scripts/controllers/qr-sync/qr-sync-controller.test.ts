@@ -36,13 +36,14 @@ import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { QrSyncActionTypes, QrSyncErrorMessages } from './constants';
 import { getDefaultQrSyncControllerState } from './metadata';
 import { QrSyncController } from './qr-sync-controller';
+import { QrSyncDataService } from './qr-sync-data-service';
 import type { KeyManager } from './key-manager';
-import type { QrSyncControllerMessenger } from './types';
+import type { QrSyncControllerMessenger, QrSyncDataServiceMessenger } from './types';
 
 type RootMessenger = Messenger<
   MockAnyNamespace,
-  MessengerActions<QrSyncControllerMessenger>,
-  MessengerEvents<QrSyncControllerMessenger>
+  MessengerActions<QrSyncControllerMessenger | QrSyncDataServiceMessenger>,
+  MessengerEvents<QrSyncControllerMessenger | QrSyncDataServiceMessenger>
 >;
 
 const TEST_RELAY_URL = 'wss://test-relay.example/connection/websocket';
@@ -192,18 +193,32 @@ function setupController(
     parent: rootMessenger,
   });
 
+  const dataServiceMessenger: QrSyncDataServiceMessenger = new Messenger({
+    namespace: 'QrSyncDataService',
+    parent: rootMessenger,
+  });
+
   rootMessenger.delegate({
-    messenger: qrSyncMessenger,
+    messenger: dataServiceMessenger,
     actions: [
       'KeyringController:withKeyringV2',
       'KeyringController:exportSeedPhrase',
-      'KeyringController:getState',
       'KeyringController:exportAccount',
       'AccountTreeController:getAccountGroupObject',
       'AccountTreeController:getAccountWalletObject',
       'AccountsController:getAccount',
     ],
     events: [],
+  });
+
+  rootMessenger.delegate({
+    messenger: qrSyncMessenger,
+    actions: ['QrSyncDataService:buildWalletExportEntries'],
+    events: [],
+  });
+
+  const qrSyncDataService = new QrSyncDataService({
+    messenger: dataServiceMessenger,
   });
 
   rootMessenger.registerActionHandler(
@@ -237,6 +252,11 @@ function setupController(
   );
 
   rootMessenger.registerActionHandler(
+    'KeyringController:exportAccount',
+    jest.fn().mockResolvedValue('0xprivate'),
+  );
+
+  rootMessenger.registerActionHandler(
     'AccountTreeController:getAccountGroupObject',
     jest.fn((groupId: AccountGroupId) => groupsById.get(groupId)),
   );
@@ -265,6 +285,7 @@ function setupController(
     controller,
     rootMessenger,
     qrSyncMessenger,
+    qrSyncDataService,
     exportSeedPhrase,
     primaryGroupId: entropyFixtures[0]?.groupId ?? primaryEntropyFixture.groupId,
     entropyFixtures,

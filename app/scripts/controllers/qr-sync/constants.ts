@@ -1,5 +1,7 @@
 export const QR_SYNC_CONTROLLER_NAME = 'QrSyncController' as const;
 
+export const QR_SYNC_DATA_SERVICE_NAME = 'QrSyncDataService' as const;
+
 export const RELAY_URL =
   'wss://mm-sdk-relay.api.cx.metamask.io/connection/websocket';
 

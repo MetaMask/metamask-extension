@@ -1,31 +1,26 @@
 import type { AccountGroupId } from '@metamask/account-api';
 import type {
-  AccountTreeControllerGetAccountGroupObjectAction,
-  AccountTreeControllerGetAccountWalletObjectAction,
-} from '@metamask/account-tree-controller';
-import type { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
-import type {
   ControllerGetStateAction,
   ControllerStateChangedEvent,
 } from '@metamask/base-controller';
-import type {
-  KeyringControllerExportAccountAction,
-  KeyringControllerExportSeedPhraseAction,
-  KeyringControllerGetStateAction,
-  KeyringControllerWithKeyringV2Action,
-} from '@metamask/keyring-controller';
 import type { Messenger } from '@metamask/messenger';
 
+
+import { KeyringControllerExportAccountAction, KeyringControllerExportSeedPhraseAction, KeyringControllerWithKeyringV2Action } from '@metamask/keyring-controller';
+import { AccountTreeControllerGetAccountGroupObjectAction, AccountTreeControllerGetAccountWalletObjectAction } from '@metamask/account-tree-controller';
+import { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
 import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
 import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
 import type { QrSyncController } from './qr-sync-controller';
 import type { KeyManager } from './key-manager';
 import {
   QR_SYNC_CONTROLLER_NAME,
+  QR_SYNC_DATA_SERVICE_NAME,
   QrSyncActionTypes,
   QrSyncConnectionStatus,
   QrSyncMessageVersion,
 } from './constants';
+import { QrSyncDataService } from './qr-sync-data-service';
 
 export type QrSyncConnectionStatusType =
   (typeof QrSyncConnectionStatus)[keyof typeof QrSyncConnectionStatus];
@@ -315,16 +310,38 @@ export type QrSyncControllerActions =
 
 export type QrSyncAllowedActions =
   | QrSyncControllerActions
-  | KeyringControllerGetStateAction
-  | KeyringControllerWithKeyringV2Action
-  | KeyringControllerExportSeedPhraseAction
-  | KeyringControllerExportAccountAction
-  | AccountTreeControllerGetAccountGroupObjectAction
-  | AccountTreeControllerGetAccountWalletObjectAction
-  | AccountsControllerGetAccountAction;
+  | QrSyncDataServiceBuildWalletExportEntriesAction;
 
 export type QrSyncControllerMessenger = Messenger<
   typeof QR_SYNC_CONTROLLER_NAME,
   QrSyncAllowedActions,
   QrSyncControllerEvents
+>;
+
+/**
+ * Builds sync-ready wallet export entries from the user's account group selection.
+ *
+ * @param password - The wallet password used to export secrets.
+ * @param selectedAccountGroupIds - The account groups selected for sync.
+ * @returns Wallet export entries for the sync-ready payload.
+ */
+export type QrSyncDataServiceBuildWalletExportEntriesAction = {
+  type: 'QrSyncDataService:buildWalletExportEntries';
+  handler: QrSyncDataService['buildWalletExportEntries'];
+};
+
+
+export type QrSyncDataServiceAllowedActions =
+  | QrSyncDataServiceBuildWalletExportEntriesAction
+  | AccountTreeControllerGetAccountGroupObjectAction
+  | AccountTreeControllerGetAccountWalletObjectAction
+  | AccountsControllerGetAccountAction
+  | KeyringControllerExportSeedPhraseAction
+  | KeyringControllerExportAccountAction
+  | KeyringControllerWithKeyringV2Action;
+
+export type QrSyncDataServiceMessenger = Messenger<
+  typeof QR_SYNC_DATA_SERVICE_NAME,
+  QrSyncDataServiceAllowedActions,
+  never
 >;

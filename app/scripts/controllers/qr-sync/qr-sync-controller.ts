@@ -10,8 +10,7 @@ import {
   DappClient,
   type OtpRequiredPayload,
 } from '@metamask/mobile-wallet-protocol-dapp-client';
-import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
-import { KeyringType } from '@metamask/keyring-api/v2';
+import type { AccountGroupId } from '@metamask/account-api';
 
 import log from 'loglevel';
 import {
@@ -55,7 +54,6 @@ import {
   MESSENGER_EXPOSED_METHODS,
 } from './metadata';
 import { InMemoryKvStore } from './kv-store';
-import { buildWalletExportEntries } from './wallet-export-builder';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -199,44 +197,11 @@ export class QrSyncController extends BaseController<
       QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
     ]);
 
-    const exportData = await buildWalletExportEntries(
+    const exportData = (await this.messenger.call(
+      'QrSyncDataService:buildWalletExportEntries',
+      password,
       selectedAccountGroupIds,
-      {
-        getAccountGroupObject: (groupId) =>
-          this.messenger.call(
-            'AccountTreeController:getAccountGroupObject',
-            groupId,
-          ),
-        getAccountWalletObject: (walletId) =>
-          this.messenger.call(
-            'AccountTreeController:getAccountWalletObject',
-            walletId as AccountWalletId,
-          ),
-        getAccount: (accountId) =>
-          this.messenger.call('AccountsController:getAccount', accountId),
-        getAccountAddress: (accountId) =>
-          this.messenger.call('AccountsController:getAccount', accountId)
-            ?.address,
-        exportSeedPhrase: (entropyId) =>
-          this.messenger.call(
-            'KeyringController:exportSeedPhrase',
-            { password },
-            entropyId,
-          ),
-        exportPrivateKey: (address) =>
-          this.messenger.call(
-            'KeyringController:exportAccount',
-            { password },
-            address,
-          ),
-        getPrimaryEntropyId: async () =>
-          (await this.messenger.call(
-            'KeyringController:withKeyringV2',
-            { type: KeyringType.Hd, index: 0 },
-            async ({ metadata }) => metadata.id,
-          )) as string | undefined,
-      },
-    );
+    )) as QrSyncReadyData;
 
     const deadline = Date.now() + QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT;
 
