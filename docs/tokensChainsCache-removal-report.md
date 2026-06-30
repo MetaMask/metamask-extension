@@ -1,14 +1,23 @@
-# `tokensChainsCache` Removal — Updated Usage Report & Migration Guide
+# `tokensChainsCache` Removal — Usage Report & Migration Guide
 
-> **Date:** May 28, 2026
-> **Audited against:** current `main` branch at time of writing
+> **Date:** June 30, 2026 (audited against current `main`)
+> **Related ticket:** [ASSETS-3281](https://consensyssoftware.atlassian.net/browse/ASSETS-3281)
 > **Reference PR:** [#42545 — remove tokensChainsCache usage from useTokenDisplayInfo][pr-42545]
 
 ---
 
 ## Background
 
-`tokensChainsCache` is persisted state from `TokenListController` that stores ERC-20 token metadata (name, symbol, iconUrl) keyed by chain ID and contract address. It has **no migration path** in the new unified assets state (see `shared/lib/selectors/assets-migration.ts`), which means every read site must be migrated or removed before the state can be dropped.
+`tokensChainsCache` is **in-memory state** on `TokenListController` that can hold ERC-20 token metadata (name, symbol, iconUrl) keyed by chain ID and contract address. The UI reads it via Redux (`state.metamask.tokensChainsCache`).
+
+**From extension v13.39.0 onward**, the persistence model changed:
+
+| Layer | Behavior |
+|-------|----------|
+| **Persisted controller state** | Always `{}`. `tokensChainsCache` has `persist: false` in controller metadata; [migration 190](../app/scripts/migrations/190.ts) moves any legacy data to `browser.storage.local` under `storageService:TokenListController:tokensChainsCache:{chainId}` and clears state. |
+| **Assets-unify deprecation** | When `TokenListController` is listed in the `assetsUnifyState` remote feature flag’s `deprecatedControllers`, the controller keeps `tokensChainsCache` as `{}`, clears StorageService entries, and stops fetching. |
+
+Remaining work is **removing or replacing runtime selector reads** before the controller and selectors can be deleted entirely.
 
 The Assets team has begun this cleanup iteratively. [PR #42545][pr-42545] demonstrates the pattern: replace `tokensChainsCache` selector reads with either direct prop access or dynamic fetches via the `useTokensData` hook.
 
@@ -32,14 +41,17 @@ getMemoizedMetadataContract → returns metadata for a single address
 getMetadataContractName     → returns .name for a single address
 ```
 
+With an empty cache (default in 13.39.0+ persisted state, or when the controller is deprecated), these selectors return `{}` and downstream lookups become no-ops.
+
 ---
 
 ## Current Usages — Verified & Validated
 
 ### Legend
-- ✅ **Still active** — file currently imports/uses a `tokensChainsCache`-backed selector
-- ❌ **Removed** — file existed in previous report but no longer uses `tokensChainsCache`
-- 🆕 **New** — file was not in the previous report
+
+- ✅ **Active** — still on a live production path; migration or removal still worthwhile
+- ✅ **Done** — no **migration** needed now (behavior is correct with empty cache). The file may still be in use; selector imports or branches remain and are tracked under [Cleanup (Phase 2)](#cleanup-phase-2)
+- ❌ **Removed** — no longer imports or uses a `tokensChainsCache`-backed selector
 
 ---
 
@@ -47,25 +59,25 @@ getMetadataContractName     → returns .name for a single address
 
 | # | File | CODEOWNERS Team | Status |
 |---|------|----------------|--------|
-| 1 | `ui/hooks/useTransactionDisplayData.js` | *(no specific owner)* | ✅ Active |
-| 2 | `ui/components/multichain/import-tokens-modal/import-tokens-modal-confirm.js` | **@MetaMask/core-extension-ux** | ✅ Active |
-| 3 | `ui/hooks/gator-permissions/useGatorPermissionTokenInfo.ts` | **@MetaMask/delegation** | 🆕 ✅ Active |
-| 4 | `ui/components/multichain/asset-picker-amount/asset-picker-modal/Asset.tsx` | **@MetaMask/core-extension-ux** | ✅ Active |
+| 1 | `ui/hooks/useTransactionDisplayData.js` | *(no specific owner)* | ❌ Removed |
+| 2 | `ui/components/multichain/import-tokens-modal/import-tokens-modal-confirm.js` | **@MetaMask/core-extension-ux** | ✅ Done — `ImportTokensModal` path (still opened from asset list); [token-management](../ui/pages/token-management/token-management.tsx) is the primary new import flow |
+| 3 | `ui/hooks/gator-permissions/useGatorPermissionTokenInfo.ts` | **@MetaMask/delegation** | ✅ Active |
+| 4 | `ui/components/multichain/asset-picker-amount/asset-picker-modal/Asset.tsx` | **@MetaMask/core-extension-ux** | ✅ Done — only used inside `AssetPickerModal` (bridge / Shield); not in unified send |
 | 5 | `ui/pages/asset/components/token-asset.tsx` | *(no specific owner)* | ✅ Active |
-| 6 | `ui/pages/confirmations/.../gas-fee-token-icon.tsx` | **@MetaMask/confirmations** | 🆕 ✅ Active |
-| 7 | `ui/pages/custom-token-import/custom-token-import.tsx` | *(no specific owner)* | 🆕 ✅ Active |
-| 8 | `ui/components/app/assets/hooks/useTokenDisplayInfo.tsx` | **@MetaMask/metamask-assets** | ✅ Active *([PR #42545][pr-42545] in progress)* |
+| 6 | `ui/pages/confirmations/.../gas-fee-token-icon.tsx` | **@MetaMask/confirmations** | ✅ Active |
+| 7 | `ui/pages/custom-token-import/custom-token-import.tsx` | *(no specific owner)* | ✅ Active — part of new token-management custom-import flow; uses cache as metadata fallback |
+| 8 | `ui/components/app/assets/hooks/useTokenDisplayInfo.tsx` | **@MetaMask/metamask-assets** | ✅ Done — **file still used** for token list display; primary path uses `getAllTokens`; remaining `selectERC20TokensByChain` fallback is a no-op with empty cache |
 
 ### Usages via `getTokenList` (current-chain flattened)
 
 | # | File | CODEOWNERS Team | Status |
 |---|------|----------------|--------|
-| 9 | `ui/pages/asset/components/token-asset.tsx` | *(no specific owner)* | ✅ Active (also uses selectERC20TokensByChain) |
-| 10 | `ui/components/app/assets/hooks/useTokenDisplayInfo.tsx` | **@MetaMask/metamask-assets** | ✅ Active *([PR #42545][pr-42545] in progress)* |
-| 11 | `ui/hooks/useIsOriginalTokenSymbol.js` | *(no specific owner)* | ✅ Active |
+| 9 | `ui/pages/asset/components/token-asset.tsx` | *(no specific owner)* | ✅ Active (also uses `selectERC20TokensByChain`) |
+| 10 | `ui/components/app/assets/hooks/useTokenDisplayInfo.tsx` | **@MetaMask/metamask-assets** | ✅ Done (no longer uses `getTokenList`) |
+| 11 | `ui/hooks/useIsOriginalTokenSymbol.js` | *(no specific owner)* | ✅ Done — consumed via `TokenBalance` in `import-tokens-modal-confirm.js` and [`confirm-add-suggested-token.js`](../ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.js); cache branch is a no-op |
 | 12 | `ui/hooks/useAccountTotalFiatBalance.js` | *(no specific owner)* | ✅ Active |
-| 13 | `ui/hooks/useTokensToSearch.js` | *(no specific owner)* | ✅ Active |
-| 14 | `ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx` | **@MetaMask/core-extension-ux** | ✅ Active |
+| 13 | `ui/hooks/useTokensToSearch.js` | *(no specific owner)* | ✅ Done — only imported by `asset-picker-modal.tsx` (not unified send) |
+| 14 | `ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx` | **@MetaMask/core-extension-ux** | ✅ Done — not used in unified send; remains for bridge / Shield payment flows |
 | 15 | `ui/components/ui/nickname-popover/nickname-popover.component.js` | *(no specific owner)* | ✅ Active |
 | 16 | `ui/components/ui/update-nickname-popover/update-nickname-popover.js` | *(no specific owner)* | ✅ Active |
 
@@ -73,30 +85,34 @@ getMetadataContractName     → returns .name for a single address
 
 | # | File | CODEOWNERS Team | Status |
 |---|------|----------------|--------|
-| 17 | `ui/components/app/confirm/info/row/hook.ts` | *(no specific owner)* | 🆕 ✅ Active |
+| 17 | `ui/components/app/confirm/info/row/hook.ts` | *(no specific owner)* | ✅ Active |
 
 ### Direct `state.metamask.tokensChainsCache` access
 
 | # | File | CODEOWNERS Team | Status |
 |---|------|----------------|--------|
-| 18 | `ui/hooks/bridge/useTokensWithFiltering.ts` | **@MetaMask/swaps-engineers** | ✅ Active |
-| 19 | `ui/ducks/bridge/asset-selectors.ts` | **@MetaMask/swaps-engineers** | ✅ Active |
+| 18 | `ui/hooks/bridge/useTokensWithFiltering.ts` | **@MetaMask/swaps-engineers** | ✅ Done — **file still used by bridge**; cache read is a no-op. **Cleanup:** see checklist |
+| 19 | `ui/ducks/bridge/asset-selectors.ts` | **@MetaMask/swaps-engineers** | ✅ Done — **file still used by bridge**; cache branch is a no-op — `allTokens` covers metadata. **Cleanup:** see checklist |
+| 20 | `ui/ducks/batch-sell/selectors.ts` | **@MetaMask/swaps-engineers** *(inferred)* | ✅ Done — **file still used by batch-sell**; cache fallback is a no-op. **Cleanup:** see checklist |
+
+*No CODEOWNERS entry for `batch-sell/`; owner inferred as bridge-adjacent (`**/bridge/**` → @MetaMask/swaps-engineers).*
 
 ### Shared / Background (non-UI)
 
 | # | File | CODEOWNERS Team | Notes |
 |---|------|----------------|-------|
-| 20 | `shared/lib/gator-permissions/gator-permissions-utils.ts` | **@MetaMask/delegation** | 🆕 ✅ Active — receives `erc20TokensByChain` as param |
-| 21 | `shared/types/background.ts` | *(no specific owner)* | Type definition — remove when state is dropped |
-| 22 | `app/scripts/constants/sentry-state.ts` | *(no specific owner)* | Sentry allowlist — remove when state is dropped |
-| 23 | `app/scripts/metamask-controller.js` | *(no specific owner)* | Controller wiring — remove when state is dropped |
-| 24 | `ui/selectors/selectors.js` | *(no specific owner)* | Selector definitions — remove when all consumers gone |
+| 21 | `shared/lib/gator-permissions/gator-permissions-utils.ts` | **@MetaMask/delegation** | ✅ Active — receives `erc20TokensByChain` as param |
+| 22 | `shared/types/background.ts` | *(no specific owner)* | Type definition — remove when state is dropped |
+| 23 | `app/scripts/constants/sentry-state.ts` | *(no specific owner)* | Sentry allowlist — remove when state is dropped |
+| 24 | `app/scripts/metamask-controller.js` | *(no specific owner)* | Background reads `tokenListController.state.tokensChainsCache` — remove when controller is dropped |
+| 25 | `ui/selectors/selectors.js` | *(no specific owner)* | Selector definitions — remove when all consumers gone |
 
-### Files from previous report that have been cleaned up ❌
+### Files already cleaned up ❌
 
 | File | Previously Used |
 |------|-----------------|
 | `ui/hooks/useDisplayName.ts` | `selectERC20TokensByChain` |
+| `ui/hooks/useTransactionDisplayData.js` | `selectERC20TokensByChain` |
 | `ui/ducks/send/send.js` | `getTokenList` |
 | `ui/pages/swaps/prepare-swap-page/prepare-swap-page.js` | `getTokenList` |
 | `ui/pages/settings/settings-tab/settings-tab.container.js` | `getTokenList` |
@@ -110,19 +126,84 @@ getMetadataContractName     → returns .name for a single address
 
 ---
 
-## Teams Responsible for Remaining Removals
+## Team action summary
 
-| Team | Files to Migrate | Count |
-|------|-----------------|-------|
-| **@MetaMask/metamask-assets** | `useTokenDisplayInfo.tsx` *([PR #42545][pr-42545] in progress)* | 1 |
-| **@MetaMask/core-extension-ux** | `import-tokens-modal-confirm.js`, `Asset.tsx`, `asset-picker-modal.tsx` | 3 |
-| **@MetaMask/swaps-engineers** | `useTokensWithFiltering.ts`, `asset-selectors.ts` | 2 |
-| **@MetaMask/confirmations** | `gas-fee-token-icon.tsx` | 1 |
-| **@MetaMask/delegation** | `useGatorPermissionTokenInfo.ts`, `gator-permissions-utils.ts` | 2 |
-| **No specific CODEOWNER** | `useTransactionDisplayData.js`, `token-asset.tsx`, `custom-token-import.tsx`, `useIsOriginalTokenSymbol.js`, `useAccountTotalFiatBalance.js`, `useTokensToSearch.js`, `nickname-popover`, `update-nickname-popover`, `hook.ts` (confirm info row) | 9 |
+All remaining work falls into **two phases**:
 
-**Total remaining production UI usages: 19 files**
-(Plus 4 infrastructure files that auto-clean when state is dropped)
+| Phase | When | What |
+|-------|------|------|
+| **1 — Migration** | Now | **Active** files only — replace or remove `tokensChainsCache`-backed selectors with another data source (`useTokensData`, Strategy 1, etc.) |
+| **2 — Cleanup** | After migration (and safe to defer for **Done** files today) | Remove every remaining selector import, dead branch, then global infra — **files stay**; only cache references are deleted |
+
+**Done** status means **no migration** — behavior is already correct. Those teams still own **cleanup** items before `tokensChainsCache` can be removed from the codebase entirely.
+
+| Team | Migration (now) | Cleanup (later) | Your action |
+|------|-----------------|-----------------|-------------|
+| **@MetaMask/confirmations** | `gas-fee-token-icon.tsx` — drop `selectERC20TokensByChain` or use existing fallbacks / `useTokensData` | — | **Migrate now** (1 file) |
+| **@MetaMask/delegation** | `useGatorPermissionTokenInfo.ts`, `gator-permissions-utils.ts` — `useTokensData`; stop passing cache param | — | **Migrate now** (2 files) |
+| **@MetaMask/metamask-assets** | — | `useTokenDisplayInfo.tsx` — remove stale `selectERC20TokensByChain` fallback | **Cleanup later**; coordinate **unowned** migration below |
+| **@MetaMask/core-extension-ux** | — | `import-tokens-modal-confirm.js`, `Asset.tsx`, `asset-picker-modal.tsx`, `useTokensToSearch.js`, `useIsOriginalTokenSymbol.js` | **Cleanup later** (5 files) |
+| **@MetaMask/swaps-engineers** | — | `useTokensWithFiltering.ts`, `asset-selectors.ts`, `batch-sell/selectors.ts` *(inferred owner — no CODEOWNERS entry for batch-sell)* — remove cache branches only; **do not delete files** | **Cleanup later** (3 files) |
+| **No specific CODEOWNER** | `token-asset.tsx`, `custom-token-import.tsx`, `useAccountTotalFiatBalance.js`, nickname popovers, confirm info `hook.ts` | Same files — remove any leftover selector imports after migration | **Migrate now** (6 files); needs coordinating team (Assets or Core Extension UX) |
+| **Platform / shared** | — | `selectors.js`, `background.ts`, `sentry-state.ts`, `metamask-controller.js`, `TokenListController` | **Global cleanup last** — after all team migration + per-file cleanup |
+
+---
+
+## Migration (Phase 1)
+
+Required now for **Active** files only (verified against current `main`):
+
+| File | Owner team | Selector / access | Suggested approach |
+|------|------------|-------------------|-------------------|
+| `ui/pages/confirmations/.../gas-fee-token-icon.tsx` | **@MetaMask/confirmations** | `selectERC20TokensByChain` | Remove selector; `PreferredAvatar` / native icon fallbacks already work — or `useTokensData` |
+| `ui/pages/asset/components/token-asset.tsx` | **No specific CODEOWNER** | `getTokenList`, `selectERC20TokensByChain` | `useTokensData` or assets API |
+| `ui/pages/custom-token-import/custom-token-import.tsx` | **No specific CODEOWNER** | `selectERC20TokensByChain` | `useTokensData` or on-chain / assets metadata only |
+| `ui/hooks/useAccountTotalFiatBalance.js` | **No specific CODEOWNER** | `getTokenList` | Strategy 1 — token images from token objects |
+| `ui/components/ui/nickname-popover/nickname-popover.component.js` | **No specific CODEOWNER** | `getTokenList` | Strategy 1 — icon from context / token object |
+| `ui/components/ui/update-nickname-popover/update-nickname-popover.js` | **No specific CODEOWNER** | `getTokenList` | Strategy 1 — same as nickname-popover |
+| `ui/components/app/confirm/info/row/hook.ts` | **No specific CODEOWNER** | `getMetadataContractName` | `useTokensData` or name from transaction/token context |
+| `ui/hooks/gator-permissions/useGatorPermissionTokenInfo.ts` | **@MetaMask/delegation** | `selectERC20TokensByChain` | `useTokensData`; stop passing cache into utils |
+| `shared/lib/gator-permissions/gator-permissions-utils.ts` | **@MetaMask/delegation** | `erc20TokensByChain` param | Remove param; use `useTokensData` at call site or imported-token data only |
+
+Unowned files: coordinate with **@MetaMask/metamask-assets** or **@MetaMask/core-extension-ux**.
+
+---
+
+## Cleanup (Phase 2)
+
+Not required for correct behavior today for **Done** files. **Must** be completed before deleting `selectERC20TokensByChain`, `getTokenList`, `getMetadataContractName`, and `TokenListController`.
+
+### Per-file cleanup
+
+No `useTokensData` migration — remove listed selector usage only (**files stay**).
+
+| File | Owner team | Selector / access | What to remove |
+|------|------------|-------------------|----------------|
+| `ui/components/app/assets/hooks/useTokenDisplayInfo.tsx` | **@MetaMask/metamask-assets** | `selectERC20TokensByChain` | Import, `useSelector`, and `erc20TokensByChain?.[chainId]?.data` fallback in `title` / `tokenImage` |
+| `ui/components/multichain/import-tokens-modal/import-tokens-modal-confirm.js` | **@MetaMask/core-extension-ux** | `selectERC20TokensByChain` | Import and `tokenListByChain` usage (`ImportTokensModal` path; still reachable from asset list) |
+| `ui/components/multichain/asset-picker-amount/asset-picker-modal/Asset.tsx` | **@MetaMask/core-extension-ux** | `selectERC20TokensByChain` | Import and `cachedTokens` lookup |
+| `ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx` | **@MetaMask/core-extension-ux** | `getTokenList` | Import and `evmTokenMetadataByAddress` selector |
+| `ui/hooks/useTokensToSearch.js` | **@MetaMask/core-extension-ux** | `getTokenList` | Import and `tokenList` in `useTokensToSearch` / `getRenderableTokenData` |
+| `ui/hooks/useIsOriginalTokenSymbol.js` | **@MetaMask/core-extension-ux** | `getTokenList` | Import and cache read in `useEffect` (keep on-chain `getTokenSymbol` fallback); consumers: `TokenBalance` in `import-tokens-modal-confirm.js` and `confirm-add-suggested-token.js` |
+| `ui/hooks/bridge/useTokensWithFiltering.ts` | **@MetaMask/swaps-engineers** | `state.metamask.tokensChainsCache` | `cachedTokens` selector, `cachedTokenList` / `isTokenListCached` branch; rely on `fetchBridgeTokens` only |
+| `ui/ducks/bridge/asset-selectors.ts` | **@MetaMask/swaps-engineers** | `tokensChainsCache` in `getERC20AssetsWithBalance` | Selector input (~line 80) and `cacheToken` branch (~130–148); keep `allTokens` fallback |
+| `ui/ducks/batch-sell/selectors.ts` | **@MetaMask/swaps-engineers** *(inferred)* | `state.metamask.tokensChainsCache` | Selector input (~305–323) and last-resort `tokenData` block (~351–367) |
+
+After **Phase 1 migration**, remove any leftover selector imports from those nine Active files as part of cleanup.
+
+### Global cleanup
+
+Run only when grep shows **zero** production consumers of `selectERC20TokensByChain`, `getTokenList`, `getMetadataContractName`, and direct `tokensChainsCache` access.
+
+| File | What to remove |
+|------|----------------|
+| `ui/selectors/selectors.js` | `selectERC20TokensByChain`, `selectERC20Tokens`, `getTokenList`, `getMemoizedMetadataContract`, `getMetadataContractName` |
+| `shared/types/background.ts` | `tokensChainsCache` on background state type |
+| `app/scripts/constants/sentry-state.ts` | `tokensChainsCache` allowlist entry |
+| `app/scripts/metamask-controller.js` | Reads of `this.tokenListController.state.tokensChainsCache` (~3957, ~4079) |
+| `TokenListController` + migration 190 storage keys | Drop controller wiring when no consumers remain |
+
+**Consumer grep checklist (production UI):** `selectERC20TokensByChain` (7 files), `getTokenList` (7 files), `getMetadataContractName` (1 file), direct `state.metamask.tokensChainsCache` (3 files), plus definitions in `ui/selectors/selectors.js`.
 
 ---
 
@@ -132,7 +213,7 @@ getMetadataContractName     → returns .name for a single address
 
 In many cases the component doesn't actually need data from `tokensChainsCache` because the token metadata (name, symbol, image) is **already available upstream** — passed down as props from Redux state or another hook that already resolves this data.
 
-**When to use:** The token object you're working with already has `.name`, `.symbol`, and `.image` populated (e.g. from `TokensController` state, from the import flow, or from a parent component).
+**When to use:** The token object you're working with already has `.name`, `.symbol`, and `.image` populated (e.g. from `TokensController` / `AssetsController` state, from the import flow, or from a parent component).
 
 **Example:** [PR #42545][pr-42545] — `useTokenDisplayInfo` was doing:
 ```typescript
@@ -142,13 +223,12 @@ const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 // ...linear scan by symbol+address to find name/image
 
 // AFTER: just use what's already on the token prop
-const title = token.name || fallbackFromApi;
-const tokenImage = token.image || fallbackFromApi;
+const title = tokenData?.name || token.symbol;
+const tokenImage = tokenData?.image || token.image;
 ```
 
 **Likely candidates for outright removal:**
 - `nickname-popover` / `update-nickname-popover` — only uses `getTokenList` for icon URL lookup; icon may already be available from the token object in context
-- `useIsOriginalTokenSymbol` — validates symbol against the cached list, but may be obsolete if token detection provides canonical data
 - `useAccountTotalFiatBalance` — uses `getTokenList` only for token images; images may already be on the token objects from `TokensController`
 
 ### Strategy 2: Migrate to `useTokensData` Hook
@@ -187,33 +267,28 @@ const symbol = tokenInfo?.symbol ?? '';
 
 **Likely candidates for `useTokensData` migration:**
 - `gas-fee-token-icon.tsx` — has token address + chain ID, needs icon URL
-- `useTransactionDisplayData.js` — has token addresses from transaction data, needs display metadata
-- `Asset.tsx` — has token addresses in the asset picker context
+- `token-asset.tsx` — asset detail page with address + chain
+- `custom-token-import.tsx` — metadata fallback during custom import
 - `hook.ts` (confirm info row) — has contract address, needs display name
 - `gator-permissions-utils.ts` — receives token address + chain ID, looks up name/symbol/icon
 
-### Strategy 3: For Bridge/Swap selectors (direct state access)
+### Strategy 3: Cleanup only (Done files / bridge / batch-sell)
 
-For `ui/ducks/bridge/asset-selectors.ts` and `ui/hooks/bridge/useTokensWithFiltering.ts`, which access `state.metamask.tokensChainsCache` directly to build aggregate cross-chain token lists — the Swaps team should evaluate whether:
-- The data can be sourced from `fetchBridgeTokens` (already partially done in `useTokensWithFiltering`)
-- A new selector backed by the `/v3/assets` API or a controller-level cache can replace the raw state read
+See [Cleanup (Phase 2)](#cleanup-phase-2). **Not required for correct behavior today** on Done files. Required before global selectors and `TokenListController` can be deleted.
+
+Bridge/batch-sell files **must not be deleted** — only remove `tokensChainsCache` branches listed in the per-file cleanup table.
 
 ---
 
-## Summary & Next Steps
+## Summary
 
 | Status | Count |
 |--------|-------|
-| Already cleaned up | 11 files |
-| In-progress ([PR #42545][pr-42545]) | 1 file |
-| Remaining to migrate | 18 files |
-| Infrastructure (auto-clean) | 4 files |
+| Already cleaned up (selector removed) | 12 files |
+| **Migration (Phase 1)** — Active, work required now | 9 files |
+| **Cleanup (Phase 2)** — Done files + global infra | 9 per-file + 5 global |
+| Done in usage tables (cleanup only, no migration) | 9 files |
 
-**Recommended actions:**
-1. **Assets team** — land [PR #42545][pr-42545] (`useTokenDisplayInfo`)
-2. **Tag teams in #metamask-performance** with this report and the migration patterns above
-3. **Each team picks up their files** using Strategy 1 (outright removal) where possible, falling back to Strategy 2 (`useTokensData`) where a lookup is genuinely needed
-4. **Files with no CODEOWNER** (9 files) — Assets team or Core Extension UX to coordinate ownership
-5. **Once all UI consumers are gone** — remove the selectors from `selectors.js`, the type from `background.ts`, and the Sentry allowlist entry, completing the cleanup
+**Next steps:** use the [Team action summary](#team-action-summary) for ownership. Complete **Migration (Phase 1)** first, then **Cleanup (Phase 2)** per-file items, then **Global cleanup** when grep shows zero consumers.
 
 [pr-42545]: https://github.com/MetaMask/metamask-extension/pull/42545
